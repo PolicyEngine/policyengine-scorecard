@@ -1,0 +1,23 @@
+{
+  "id": "urban-sotsn",
+  "name": "Urban Institute — State of the Safety Net 2025",
+  "organization": "Urban Institute",
+  "url": "https://apps.urban.org/features/state-safety-net/",
+  "data_url": "https://apps.urban.org/features/state-safety-net/data/map.json",
+  "fetched": "2026-08-01",
+  "fetch_notes": "apps.urban.org accepts curl with a browser User-Agent; datacatalog.urban.org returns 403.",
+  "model": {
+    "name": "ATTIS",
+    "open_source": false,
+    "method": "Simulates program eligibility on pooled 2022+2023 ACS (2.7M households, adjusted to 2023). Participation rate = actual administrative caseload / simulated eligible count; the numerator is admin data, not simulation. Estimates refer to the average month of 2023.",
+    "method_basis": "March 2026 slides (sources/urban-sotsn/ raw slides), slide 14"
+  },
+  "period": "2023 average month",
+  "programs": [
+    "snap", "ssi", "tanf", "wic", "ccdf", "housing", "liheap",
+    "eitc", "ctc_refund", "spm_poverty"
+  ],
+  "geographies": "US + 50 states + DC (52)",
+  "funders_note": "Funders include the Pritzker Children's Initiative (also a PolicyEngine funder), Annie E. Casey, and Packard.",
+  "diagnosis_upstream": "ATTIS is closed-source; divergence diagnoses classified as external-model issues become a comparison memo, not an upstream PR."
+}

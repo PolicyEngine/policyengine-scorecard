@@ -1,0 +1,142 @@
+{
+  "_schema": {
+    "applies_to": "matcher on {program, metrics, subgroups}; null = any",
+    "severity": "period | definitional | construction | caution | gap",
+    "basis": "traceability: docs/replication-assessment.md section, engine metadata recorded in data/pe/pe_meta.json, a GitHub issue, or a measured diagnostic in this repo's data"
+  },
+  "annotations": [
+    {
+      "id": "period-vintage",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "period",
+      "text": "PolicyEngine values are annual 2024 on the certified Populace artifact; Urban values are average-month 2023. Level differences partly reflect period and vintage, not only model differences.",
+      "basis": "docs/replication-assessment.md §8"
+    },
+    {
+      "id": "participation-numerator",
+      "applies_to": {"program": null, "metrics": ["participation_rate", "participation_gap_count"]},
+      "severity": "construction",
+      "text": "Urban's participation numerator is the actual administrative caseload divided by ATTIS-simulated eligibles. PolicyEngine's is simulated participation (seeded take-up flags + calibrated weights); for count-targeted programs (SNAP, SSI) the numerator is disciplined by the same class of admin counts, so convergence there is partly by construction.",
+      "basis": "docs/replication-assessment.md §1, §3, §8"
+    },
+    {
+      "id": "snap-bbce",
+      "applies_to": {"program": "snap", "metrics": ["eligible_count", "eligibility_rate"]},
+      "severity": "definitional",
+      "text": "PolicyEngine's is_snap_eligible includes the full eligibility battery including BBCE categorical eligibility, matching Urban's denominator concept.",
+      "basis": "docs/replication-assessment.md §2; engine metadata for is_snap_eligible in data/pe/pe_meta.json"
+    },
+    {
+      "id": "ssi-payable-denominator",
+      "applies_to": {"program": "ssi", "metrics": ["eligible_count", "eligibility_rate", "participation_rate", "participation_gap_count"]},
+      "severity": "construction",
+      "text": "PolicyEngine's native is_ssi_eligible is explicitly 'without income test' — broader than Urban's payable concept. The scorecard instead uses adults with SSI amount > 0 under forced take-up (fullpart run) as the payable denominator, approximating Urban's concept. Child SSI is excluded (Urban's universe is adults 18+).",
+      "basis": "docs/replication-assessment.md §2, §7 item 6; engine metadata for is_ssi_eligible; construction measured in data/pe/pe_metrics.json (run=fullpart_urban6)"
+    },
+    {
+      "id": "tanf-payable-denominator",
+      "applies_to": {"program": "tanf", "metrics": ["eligible_count", "eligibility_rate", "participation_rate", "participation_gap_count"]},
+      "severity": "construction",
+      "text": "PolicyEngine has no national income-tested TANF eligibility variable (state-by-state machinery only). The scorecard uses persons in units where TANF pays > 0 under forced take-up as the income-eligible counterpart. TANF dollars on Build P miss the ACF admin total by −36%, so treat TANF comparisons as provisional.",
+      "basis": "docs/replication-assessment.md §2, §5, §7 item 1"
+    },
+    {
+      "id": "tanf-ssf",
+      "applies_to": {"program": "tanf", "metrics": ["participation_rate"], "variants": ["with_SSF", "no_SSF"]},
+      "severity": "definitional",
+      "text": "Urban publishes family-level TANF participation with and without solely-state-funded (SSF) programs. PolicyEngine's TANF models the assistance-unit program without an SSF distinction; family-unit rows are not yet computed.",
+      "basis": "docs/replication-assessment.md §1"
+    },
+    {
+      "id": "wic-children-only",
+      "applies_to": {"program": "wic", "metrics": null},
+      "severity": "definitional",
+      "text": "Both sides count children ages 0–4 only; PolicyEngine's WIC eligibility also covers pregnant/postpartum women, excluded here by the age cut on both eligibility and participation.",
+      "basis": "docs/replication-assessment.md §1, §8"
+    },
+    {
+      "id": "wic-untargeted",
+      "applies_to": {"program": "wic", "metrics": ["participation_rate"]},
+      "severity": "caution",
+      "text": "WIC has zero calibration targets on Build P; the seeded legacy gate floats free. The close match to Urban's national rate (52.8% vs 53.5% in the replication assessment) is coincidence, not anchoring — FNS WIC targets are on the build list.",
+      "basis": "docs/replication-assessment.md §3, §6, §7 item 2"
+    },
+    {
+      "id": "wic-infant-state-geography",
+      "applies_to": {"program": "wic", "metrics": null, "subgroups": ["age_0"], "geography": "states"},
+      "severity": "caution",
+      "text": "Populace's national-default state geography has known 2–3x errors for infants in some states (e.g. CA hot, MI cold). State-level infant WIC rows carry that uncertainty.",
+      "basis": "PolicyEngine/populace#520"
+    },
+    {
+      "id": "eitc-forced-claims-denominator",
+      "applies_to": {"program": "eitc", "metrics": ["eligible_count", "eligibility_rate"]},
+      "severity": "construction",
+      "text": "PolicyEngine's eligible counterpart is tax units with EITC > 0 under forced take-up. Baseline EITC claims are SOI-targeted and include erroneous claims — nationally, claims (≈23.7M) exceed Urban's simulated eligibles (18.4M), one reason Urban publishes no EITC participation rate.",
+      "basis": "docs/replication-assessment.md §5, §8"
+    },
+    {
+      "id": "ctc-claims-calibrated",
+      "applies_to": {"program": "ctc_refund", "metrics": ["eligible_count", "eligibility_rate"]},
+      "severity": "construction",
+      "text": "Build P stores no CTC take-up flag; refundable CTC > 0 is the formula outcome with claims and dollars calibrated to SOI. The count is closer to 'claims' than to a pure eligibility simulation.",
+      "basis": "docs/replication-assessment.md §3, §5; data/pe/pe_meta.json (no takes_up flag for CTC among stored inputs)"
+    },
+    {
+      "id": "housing-ami-and-unit",
+      "applies_to": {"program": "housing", "metrics": null},
+      "severity": "definitional",
+      "text": "PolicyEngine's housing eligibility is current recipient OR renter at ≤80% of area median income, at the SPM-unit level; Urban uses ≤50% AMI at the household level. PolicyEngine's computed housing assistance dollars also under-deliver vs HUD administrative totals, so participation-side comparisons are provisional.",
+      "basis": "docs/replication-assessment.md §2, §5, §7 item 3"
+    },
+    {
+      "id": "liheap-gap",
+      "applies_to": {"program": "liheap", "metrics": null},
+      "severity": "gap",
+      "text": "PolicyEngine has LIHEAP only as state fragments (DC, IL, MA, plus TX CEAP and Riverside County) with no national output. National LIHEAP is on the build list.",
+      "basis": "docs/replication-assessment.md §2, §7 item 5"
+    },
+    {
+      "id": "ccdf-gap",
+      "applies_to": {"program": "ccdf", "metrics": null},
+      "severity": "gap",
+      "text": "PolicyEngine has CCDF only via state child-care subsidy programs and a generic SPM-unit subsidy variable, with no national CCDF coverage. National CCDF is on the build list.",
+      "basis": "docs/replication-assessment.md §2, §7 item 5"
+    },
+    {
+      "id": "fullpart-flag-list",
+      "applies_to": {"program": "spm_poverty", "metrics": ["poverty_rate_fullpart", "poverty_rate_relative_change_fullpart", "poverty_count_change_fullpart"]},
+      "severity": "construction",
+      "text": "Urban's counterfactual gives every eligible person/household all benefits for which they are eligible (all nine programs). PolicyEngine's headline counterfactual sets every stored take-up flag True plus the WIC gate (exact toggle list recorded in data/pe/pe_meta.json); it cannot add LIHEAP or CCDF (not nationally modeled), and a variant toggling only the six Urban-program flags is also computed to bound the difference.",
+      "basis": "Urban slides p.34; data/pe/pe_meta.json runs log; both variants in data/pe/pe_metrics.json"
+    },
+    {
+      "id": "race-construction",
+      "applies_to": {"program": null, "metrics": null, "subgroups": ["race_white", "race_black", "race_hispanic", "race_aapi", "race_multi_other"]},
+      "severity": "definitional",
+      "text": "PolicyEngine race categories come from the artifact's stored race variable (categories recorded in data/pe/pe_meta.json); Urban uses ACS-based non-Hispanic groupings with AAPI including Pacific Islanders. Category construction differs; treat subgroup deltas as indicative.",
+      "basis": "data/pe/pe_meta.json race_categories_on_artifact + variable metadata"
+    },
+    {
+      "id": "disability-construction",
+      "applies_to": {"program": null, "metrics": null, "subgroups": ["disability_yes", "disability_no"]},
+      "severity": "definitional",
+      "text": "Urban's disability subgroups use the ACS disability questions; PolicyEngine's is_disabled definition is recorded from engine metadata in data/pe/pe_meta.json. The constructions differ.",
+      "basis": "data/pe/pe_meta.json variable metadata for is_disabled"
+    },
+    {
+      "id": "locale-gap",
+      "applies_to": {"program": null, "metrics": null, "subgroups": ["locale_metro", "locale_nonmetro"]},
+      "severity": "gap",
+      "text": "The Populace artifact carries no metro/non-metro flag; metro-status subgroups are not yet computable.",
+      "basis": "data/pe/pe_meta.json stored-input inventory"
+    },
+    {
+      "id": "subgroup-not-computed",
+      "applies_to": {"program": null, "metrics": null, "subgroups": ["fam_earners_yes", "fam_earners_no", "status_citizen", "status_noncitizen"]},
+      "severity": "gap",
+      "text": "Earner-presence and citizenship subgroups are computable from the artifact but not yet included in the scorecard pipeline (v1 backlog).",
+      "basis": "v1 scope decision; see pipeline/compute_counterparts.py"
+    }
+  ]
+}

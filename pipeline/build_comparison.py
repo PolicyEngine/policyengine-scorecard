@@ -1,0 +1,374 @@
+"""Join external tidy rows with PE counterpart metrics -> data/comparison.json.
+
+Counts come raw from pipeline/compute_counterparts.py (data/pe/pe_metrics.json);
+every rate/gap/delta is derived HERE so there is one source of arithmetic truth.
+
+Status taxonomy (honesty made structural — misses stay on the page):
+  comparable       PE measures the same concept (annotations may still apply)
+  constructed      PE approximates Urban's concept via a documented
+                   construction (e.g. payable-under-forced-take-up denominators)
+  concept_mismatch PE value exists but measures a different concept (housing)
+  pe_gap           the model/artifact cannot produce this today (LIHEAP, CCDF,
+                   metro/non-metro)
+  not_computed     producible but not yet in the pipeline (v1 backlog)
+  suppressed       Urban suppressed the cell
+"""
+
+import json
+from datetime import date
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+DATA = ROOT / "data"
+
+PE_GAP_PROGRAMS = {"liheap", "ccdf"}
+PE_GAP_SUBGROUPS = {"locale_metro", "locale_nonmetro"}
+
+# Person-level subgroups the sim emits for snap/ssi/tanf (age bands + probed
+# demographics); wic uses its own band set. Anything else -> not_computed.
+AGE_SUBS = {
+    "age_0thr17", "age_18plus", "age_0thr3", "age_4thr5", "age_6thr17",
+    "age_18thr24", "age_25thr59", "age_60thr64", "age_65plus",
+}
+DEMO_SUBS = {
+    "race_white", "race_black", "race_hispanic", "race_aapi",
+    "race_multi_other", "disability_yes", "disability_no",
+}
+WIC_SUBS = {"total", "age_0", "age_1thr4", "age_0thr3", "age_4"}
+SSI_SUBS = {"total", "age_18thr24", "age_25thr59", "age_60thr64",
+            "age_65plus"} | DEMO_SUBS
+
+
+def load_pe():
+    rows = json.loads((DATA / "pe" / "pe_metrics.json").read_text())
+    idx = {}
+    for r in rows:
+        idx[(r["run"], r["program"], r["metric"], r["subgroup"],
+             r["geography"])] = r["value"]
+    return idx
+
+
+class PE:
+    def __init__(self, idx):
+        self.idx = idx
+
+    def get(self, run, program, metric, subgroup, geo):
+        return self.idx.get((run, program, metric, subgroup, geo))
+
+
+def ratio(a, b):
+    if a is None or b in (None, 0):
+        return None
+    return a / b
+
+
+def counterpart(pe, program, metric, subgroup, variant, geo):
+    """Return (pe_value, status, construction) for one external row.
+
+    construction is a short machine-readable recipe string; None value with a
+    non-gap status means the lookup failed unexpectedly (kept visible).
+    """
+    g = pe.get
+
+    if program in PE_GAP_PROGRAMS:
+        return None, "pe_gap", None
+    if subgroup in PE_GAP_SUBGROUPS:
+        return None, "pe_gap", None
+
+    def person_denom(sub, denom_program="_persons"):
+        s = "total" if sub == "total" else sub
+        return g("baseline", denom_program, "count", s, geo)
+
+    if program == "snap":
+        if subgroup not in ({"total"} | AGE_SUBS | DEMO_SUBS):
+            return None, "not_computed", None
+        elig = g("baseline", "snap", "eligible_count", subgroup, geo)
+        both = g("baseline", "snap", "elig_participant_count", subgroup, geo)
+        if metric == "eligible_count":
+            return elig, "comparable", "baseline is_snap_eligible→person"
+        if metric == "eligibility_rate":
+            return (
+                ratio(elig, person_denom(subgroup)), "comparable",
+                "baseline is_snap_eligible→person ÷ persons",
+            )
+        if metric == "participation_rate":
+            return (
+                ratio(both, elig), "comparable",
+                "baseline snap>0∩eligible ÷ eligible (persons)",
+            )
+        if metric == "participation_gap_count":
+            if elig is None or both is None:
+                return None, "not_computed", None
+            return elig - both, "comparable", "eligible − participating∩eligible"
+
+    if program == "ssi":
+        if subgroup not in SSI_SUBS:
+            return None, "not_computed", None
+        payable = g("fullpart_urban6", "ssi", "participant_count", subgroup, geo)
+        base = g("baseline", "ssi", "participant_count", subgroup, geo)
+        recipe = "adults with ssi>0 under forced take-up (fullpart_urban6)"
+        if metric == "eligible_count":
+            return payable, "constructed", recipe
+        if metric == "eligibility_rate":
+            denom_sub = "age_18plus" if subgroup == "total" else subgroup
+            return (
+                ratio(payable, person_denom(denom_sub)), "constructed",
+                recipe + " ÷ adults",
+            )
+        if metric == "participation_rate":
+            return (
+                ratio(base, payable), "constructed",
+                "baseline ssi>0 ÷ " + recipe,
+            )
+        if metric == "participation_gap_count":
+            if payable is None or base is None:
+                return None, "not_computed", None
+            return payable - base, "constructed", recipe + " − baseline"
+
+    if program == "tanf":
+        # Urban publishes person-level (pop) plus family-unit variants; the
+        # unit/SSF rows are not yet computed.
+        if variant is not None:
+            return None, "not_computed", None
+        if subgroup not in ({"total"} | AGE_SUBS | DEMO_SUBS):
+            return None, "not_computed", None
+        payable = g(
+            "fullpart_urban6", "tanf", "participant_count", subgroup, geo
+        )
+        base = g("baseline", "tanf", "participant_count", subgroup, geo)
+        recipe = "persons in units with tanf>0 under forced take-up"
+        if metric == "eligible_count":
+            return payable, "constructed", recipe
+        if metric == "eligibility_rate":
+            return (
+                ratio(payable, person_denom(subgroup)), "constructed",
+                recipe + " ÷ persons",
+            )
+        if metric == "participation_rate":
+            return (
+                ratio(base, payable), "constructed",
+                "baseline tanf>0 persons ÷ " + recipe,
+            )
+        if metric == "participation_gap_count":
+            if payable is None or base is None:
+                return None, "not_computed", None
+            return payable - base, "constructed", recipe + " − baseline"
+
+    if program == "wic":
+        if subgroup not in (WIC_SUBS | DEMO_SUBS):
+            return None, "not_computed", None
+        elig = g("baseline", "wic", "eligible_count", subgroup, geo)
+        both = g("baseline", "wic", "elig_participant_count", subgroup, geo)
+        if metric == "eligible_count":
+            return elig, "comparable", "baseline is_wic_eligible, ages 0–4"
+        if metric == "eligibility_rate":
+            return (
+                ratio(elig, person_denom(subgroup, "_children_0thr4")),
+                "comparable",
+                "eligible children ÷ children 0–4",
+            )
+        if metric == "participation_rate":
+            return (
+                ratio(both, elig), "comparable",
+                "wic>0∩eligible ÷ eligible (children 0–4)",
+            )
+        if metric == "participation_gap_count":
+            if elig is None or both is None:
+                return None, "not_computed", None
+            return elig - both, "comparable", "eligible − participating∩eligible"
+
+    if program == "eitc":
+        sub_map = {"total": "total", "age_child": "age_child",
+                   "age_nochild": "age_nochild"}
+        if subgroup not in sub_map:
+            return None, "not_computed", None
+        forced = g(
+            "fullpart_urban6", "eitc", "participant_count",
+            sub_map[subgroup], geo,
+        )
+        recipe = "tax units with eitc>0 under forced take-up"
+        if metric == "eligible_count":
+            return forced, "constructed", recipe
+        if metric == "eligibility_rate":
+            if subgroup != "total":
+                return None, "not_computed", None
+            return (
+                ratio(forced, g("baseline", "_tax_units", "count", "total",
+                                geo)),
+                "constructed", recipe + " ÷ tax units",
+            )
+
+    if program == "ctc_refund":
+        if subgroup != "total":
+            return None, "not_computed", None
+        claims = g("baseline", "ctc_refund", "participant_count", "total", geo)
+        recipe = "baseline refundable_ctc>0 (claims-calibrated; no take-up flag)"
+        if metric == "eligible_count":
+            return claims, "constructed", recipe
+        if metric == "eligibility_rate":
+            return (
+                ratio(claims, g("baseline", "_tax_units", "count", "total",
+                                geo)),
+                "constructed", recipe + " ÷ tax units",
+            )
+
+    if program == "housing":
+        if subgroup != "total":
+            return None, "not_computed", None
+        elig = g("baseline", "housing", "eligible_count", "total", geo)
+        both = g("baseline", "housing", "elig_participant_count", "total", geo)
+        if metric == "eligible_count":
+            return (
+                elig, "concept_mismatch",
+                "spm units: recipient OR renter ≤80% AMI (Urban: households ≤50% AMI)",
+            )
+        if metric == "eligibility_rate":
+            return (
+                ratio(elig, g("baseline", "_spm_units", "count", "total",
+                              geo)),
+                "concept_mismatch", "eligible spm units ÷ spm units",
+            )
+        if metric == "participation_rate":
+            return (
+                ratio(both, elig), "concept_mismatch",
+                "housing_assistance>0∩eligible ÷ eligible (spm units)",
+            )
+        if metric == "participation_gap_count":
+            if elig is None or both is None:
+                return None, "not_computed", None
+            return elig - both, "concept_mismatch", "eligible − participating"
+
+    if program == "spm_poverty":
+        sub = subgroup  # total | child
+        def pov(run):
+            poor = g(run, "_poverty", "poor_count", sub, geo)
+            popn = g(run, "_poverty", "population", sub, geo)
+            return poor, popn
+        b_poor, b_pop = pov("baseline")
+        f_poor, f_pop = pov("fullpart_all")
+        if metric == "poverty_rate":
+            return ratio(b_poor, b_pop), "comparable", "baseline SPM poverty"
+        if metric == "poverty_rate_fullpart":
+            return (
+                ratio(f_poor, f_pop), "constructed",
+                "all stored take-up flags True + WIC gate (see pe_meta runs)",
+            )
+        if metric == "poverty_rate_relative_change_fullpart":
+            br, fr = ratio(b_poor, b_pop), ratio(f_poor, f_pop)
+            if br in (None, 0) or fr is None:
+                return None, "not_computed", None
+            return (fr - br) / br, "constructed", "(fullpart − base) ÷ base"
+        if metric == "poverty_count_change_fullpart":
+            if b_poor is None or f_poor is None:
+                return None, "not_computed", None
+            return f_poor - b_poor, "constructed", "fullpart poor − base poor"
+
+    return None, "not_computed", None
+
+
+def load_annotations():
+    spec = json.loads(
+        (ROOT / "sources" / "urban-sotsn" / "annotations.json").read_text()
+    )
+    return spec["annotations"]
+
+
+def annotation_ids(annotations, row):
+    out = []
+    for a in annotations:
+        m = a["applies_to"]
+        if m.get("program") not in (None, row["program"]):
+            continue
+        if m.get("metrics") is not None and row["metric"] not in m["metrics"]:
+            continue
+        if (
+            m.get("subgroups") is not None
+            and row["subgroup"] not in m["subgroups"]
+        ):
+            continue
+        if (
+            m.get("variants") is not None
+            and row["variant"] not in m["variants"]
+        ):
+            continue
+        if m.get("geography") == "states" and row["geography"] == "US":
+            continue
+        out.append(a["id"])
+    return out
+
+
+def main():
+    pe = PE(load_pe())
+    annotations = load_annotations()
+    externals = []
+    for f in sorted((DATA / "externals").glob("*.json")):
+        externals.extend(json.loads(f.read_text()))
+
+    pe_meta = json.loads((DATA / "pe" / "pe_meta.json").read_text())
+
+    out_rows = []
+    for ext in externals:
+        if ext["status"] == "suppressed":
+            status, pe_value, construction = "suppressed", None, None
+        else:
+            pe_value, status, construction = counterpart(
+                pe, ext["program"], ext["metric"], ext["subgroup"],
+                ext["variant"], ext["geography"],
+            )
+        row = dict(ext)
+        row["external_value"] = row.pop("value")
+        row["pe_value"] = pe_value
+        row["pe_period"] = "2024 annual" if pe_value is not None else None
+        row["status"] = status
+        row["pe_construction"] = construction
+        if pe_value is not None and row["external_value"] not in (None, 0):
+            row["ratio"] = pe_value / row["external_value"]
+            row["delta"] = pe_value - row["external_value"]
+        else:
+            row["ratio"] = None
+            row["delta"] = None
+        row["annotations"] = annotation_ids(annotations, row)
+        out_rows.append(row)
+
+    by_status = {}
+    for r in out_rows:
+        by_status[r["status"]] = by_status.get(r["status"], 0) + 1
+
+    comparison = {
+        "built": str(date.today()),
+        "source_meta": json.loads(
+            (ROOT / "sources" / "urban-sotsn" / "source.json").read_text()
+        ),
+        "pe_bundle": pe_meta.get("bundle", {}),
+        "pe_runs": pe_meta.get("runs", {}),
+        "annotations": {a["id"]: a for a in annotations},
+        "summary": {"n_rows": len(out_rows), "by_status": by_status},
+        "rows": out_rows,
+    }
+    out = DATA / "comparison.json"
+    out.write_text(json.dumps(comparison))
+    print(f"{len(out_rows)} rows -> {out}")
+    print("by status:", json.dumps(by_status, indent=2))
+
+    # Headline sanity block (national, total rows)
+    for prog, metric in [
+        ("snap", "participation_rate"), ("ssi", "participation_rate"),
+        ("tanf", "participation_rate"), ("wic", "participation_rate"),
+        ("housing", "participation_rate"),
+        ("snap", "eligible_count"), ("eitc", "eligible_count"),
+        ("spm_poverty", "poverty_rate_relative_change_fullpart"),
+    ]:
+        for r in out_rows:
+            if (
+                r["program"] == prog and r["metric"] == metric
+                and r["geography"] == "US" and r["subgroup"] in ("total",)
+                and r["variant"] is None
+            ):
+                print(
+                    f"  {prog:12s} {metric:38s} urban={r['external_value']!r} "
+                    f"pe={r['pe_value']!r} status={r['status']}"
+                )
+
+
+if __name__ == "__main__":
+    main()
