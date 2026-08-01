@@ -111,6 +111,20 @@
       "basis": "Urban slides p.34; data/pe/pe_meta.json runs log; both variants in data/pe/pe_metrics.json"
     },
     {
+      "id": "fullpart-headroom",
+      "applies_to": {"program": "spm_poverty", "metrics": ["poverty_rate_fullpart", "poverty_rate_relative_change_fullpart", "poverty_count_change_fullpart"]},
+      "severity": "definitional",
+      "text": "The counterfactuals start from structurally different baselines. PolicyEngine's calibrated baseline already places annual participation near administrative levels (e.g. SNAP ≈91% of annual eligibles — see the SNAP participation row), so forcing the remaining flags adds little; Urban's average-month baseline has participation at admin caseload ÷ eligibles (SNAP 57.5%), leaving far more headroom. The two 'full participation' poverty deltas answer different questions until PolicyEngine publishes average-month semantics.",
+      "basis": "measured in this repo (snap participation_rate row vs Urban's); docs/replication-assessment.md §8; average-month semantics tracked in populace#332"
+    },
+    {
+      "id": "period-participation-semantics",
+      "applies_to": {"program": null, "metrics": ["participation_rate", "participation_gap_count"]},
+      "severity": "period",
+      "text": "PolicyEngine participation is annual-ever (any benefit during 2024) over annual eligibility; Urban's is average-month. Annual-ever rates exceed average-month rates by construction, independent of model quality.",
+      "basis": "docs/replication-assessment.md §8; populace#332"
+    },
+    {
       "id": "race-construction",
       "applies_to": {"program": null, "metrics": null, "subgroups": ["race_white", "race_black", "race_hispanic", "race_aapi", "race_multi_other"]},
       "severity": "definitional",

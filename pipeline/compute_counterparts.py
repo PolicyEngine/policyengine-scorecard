@@ -112,11 +112,20 @@ def build_sim(run_name, flags_true):
         entity = vs[f].entity.key
         n = sim.populations[entity].count
         arr = np.ones(n, dtype=bool)
+        monthly = str(getattr(vs[f], "definition_period", "")).lower() in (
+            "month", "monthly",
+        )
+        periods = (
+            [f"{YEAR}-{m:02d}" for m in range(1, 13)] if monthly else [YEAR]
+        )
         try:
-            sim.set_input(f, YEAR, arr)
-            run_meta["flags_set_true"].append(f)
+            for p in periods:
+                sim.set_input(f, p, arr)
+            run_meta["flags_set_true"].append(
+                f + (" (12 months)" if monthly else "")
+            )
         except Exception as e:
-            log(f"  set_input({f}, {YEAR}) failed: {e}; trying eternity")
+            log(f"  set_input({f}) failed: {e}; trying eternity")
             try:
                 sim.set_input(f, "eternity", arr)
                 run_meta["flags_set_true"].append(f + " (eternity)")
@@ -126,9 +135,13 @@ def build_sim(run_name, flags_true):
     for f in flags_true:
         if f in vs:
             try:
+                monthly = str(
+                    getattr(vs[f], "definition_period", "")
+                ).lower() in ("month", "monthly")
+                probe = f"{YEAR}-06" if monthly else YEAR
                 run_meta["flag_means_after"][f] = float(
                     np.mean(
-                        np.array(sim.calculate(f, YEAR).values, dtype=float)
+                        np.array(sim.calculate(f, probe).values, dtype=float)
                     )
                 )
             except Exception:
@@ -468,12 +481,37 @@ def analyze(run_name, flags_true):
 
 
 def main():
-    analyze("baseline", [])
-    analyze("fullpart_all", ALL_FLAGS + [WIC_GATE])
-    analyze("fullpart_urban6", URBAN6_FLAGS + [WIC_GATE])
+    import sys
 
-    (OUT / "pe_metrics.json").write_text(json.dumps(rows))
-    (OUT / "pe_meta.json").write_text(json.dumps(meta, indent=2))
+    run_specs = {
+        "baseline": [],
+        "fullpart_all": ALL_FLAGS + [WIC_GATE],
+        "fullpart_urban6": URBAN6_FLAGS + [WIC_GATE],
+    }
+    selected = sys.argv[1].split(",") if len(sys.argv) > 1 else list(run_specs)
+
+    # Merge with prior output when re-running a subset of runs.
+    metrics_path = OUT / "pe_metrics.json"
+    meta_path = OUT / "pe_meta.json"
+    if metrics_path.exists() and set(selected) != set(run_specs):
+        prior = json.loads(metrics_path.read_text())
+        rows.extend(r for r in prior if r["run"] not in selected)
+        if meta_path.exists():
+            prior_meta = json.loads(meta_path.read_text())
+            meta["variables"].update(prior_meta.get("variables", {}))
+            for k, v in prior_meta.get("runs", {}).items():
+                if k not in selected:
+                    meta["runs"][k] = v
+            for k in ("bundle", "race_categories_on_artifact"):
+                if k in prior_meta:
+                    meta.setdefault(k, prior_meta[k])
+        log(f"merging: kept {len(rows)} prior rows from other runs")
+
+    for name in selected:
+        analyze(name, run_specs[name])
+
+    metrics_path.write_text(json.dumps(rows))
+    meta_path.write_text(json.dumps(meta, indent=2))
     log(f"DONE: {len(rows)} rows -> {OUT}")
 
 

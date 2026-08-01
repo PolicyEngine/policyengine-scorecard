@@ -1,0 +1,185 @@
+{
+  "year": 2024,
+  "runs": {
+    "baseline": {
+      "flags_set_true": [],
+      "flag_means_after": {}
+    },
+    "fullpart_all": {
+      "flags_set_true": [
+        "takes_up_aca_if_eligible",
+        "takes_up_eitc",
+        "takes_up_head_start_if_eligible",
+        "takes_up_housing_assistance_if_eligible",
+        "takes_up_medicaid_if_eligible",
+        "takes_up_medicare_if_eligible",
+        "takes_up_snap_if_eligible",
+        "takes_up_ssi_if_eligible",
+        "takes_up_tanf_if_eligible",
+        "would_claim_wic (12 months)"
+      ],
+      "flag_means_after": {
+        "takes_up_aca_if_eligible": 1.0,
+        "takes_up_eitc": 1.0,
+        "takes_up_head_start_if_eligible": 1.0,
+        "takes_up_housing_assistance_if_eligible": 1.0,
+        "takes_up_medicaid_if_eligible": 1.0,
+        "takes_up_medicare_if_eligible": 1.0,
+        "takes_up_snap_if_eligible": 1.0,
+        "takes_up_ssi_if_eligible": 1.0,
+        "takes_up_tanf_if_eligible": 1.0,
+        "would_claim_wic": 1.0
+      }
+    },
+    "fullpart_urban6": {
+      "flags_set_true": [
+        "takes_up_snap_if_eligible",
+        "takes_up_ssi_if_eligible",
+        "takes_up_tanf_if_eligible",
+        "takes_up_housing_assistance_if_eligible",
+        "takes_up_eitc",
+        "would_claim_wic (12 months)"
+      ],
+      "flag_means_after": {
+        "takes_up_snap_if_eligible": 1.0,
+        "takes_up_ssi_if_eligible": 1.0,
+        "takes_up_tanf_if_eligible": 1.0,
+        "takes_up_housing_assistance_if_eligible": 1.0,
+        "takes_up_eitc": 1.0,
+        "would_claim_wic": 1.0
+      }
+    }
+  },
+  "variables": {
+    "race": {
+      "label": "race",
+      "entity": "person",
+      "definition_period": "year",
+      "documentation": "The broadest racial category (White only, Black only, Hispanic, Other)"
+    },
+    "is_disabled": {
+      "label": "Is disabled",
+      "entity": "person",
+      "definition_period": "year",
+      "documentation": null
+    },
+    "is_snap_eligible": {
+      "label": "SNAP eligible",
+      "entity": "spm_unit",
+      "definition_period": "month",
+      "documentation": "Whether this SPM unit is eligible for SNAP benefits"
+    },
+    "snap": {
+      "label": "SNAP allotment",
+      "entity": "spm_unit",
+      "definition_period": "month",
+      "documentation": "Final SNAP benefit amount, equal to net income minus food contribution"
+    },
+    "ssi": {
+      "label": "SSI",
+      "entity": "person",
+      "definition_period": "month",
+      "documentation": "Supplemental Security Income"
+    },
+    "is_ssi_eligible": {
+      "label": "Is SSI eligible person",
+      "entity": "person",
+      "definition_period": "month",
+      "documentation": null
+    },
+    "tanf": {
+      "label": "TANF",
+      "entity": "spm_unit",
+      "definition_period": "year",
+      "documentation": "Value of Temporary Assistance for Needy Families benefit received, summing all state-specific TANF programs."
+    },
+    "is_demographic_tanf_eligible": {
+      "label": "Demographic eligibility for TANF",
+      "entity": "spm_unit",
+      "definition_period": "month",
+      "documentation": "Whether any person in a family applying for the Temporary Assistance for Needy Families program meets demographic requirements."
+    },
+    "wic": {
+      "label": "WIC",
+      "entity": "person",
+      "definition_period": "month",
+      "documentation": "Benefit value for the Special Supplemental Nutrition Program for Women, Infants and Children (WIC)"
+    },
+    "is_wic_eligible": {
+      "label": "Is eligible for WIC",
+      "entity": "person",
+      "definition_period": "month",
+      "documentation": "Is eligible for the Special Supplemental Nutrition Program for Women, Infants and Children (WIC)"
+    },
+    "would_claim_wic": {
+      "label": "Would claim WIC",
+      "entity": "person",
+      "definition_period": "month",
+      "documentation": null
+    },
+    "eitc": {
+      "label": "Federal earned income credit",
+      "entity": "tax_unit",
+      "definition_period": "year",
+      "documentation": null
+    },
+    "refundable_ctc": {
+      "label": "refundable CTC",
+      "entity": "tax_unit",
+      "definition_period": "year",
+      "documentation": "The portion of the Child Tax Credit that is refundable."
+    },
+    "eitc_child_count": {
+      "label": "EITC-qualifying children",
+      "entity": "tax_unit",
+      "definition_period": "year",
+      "documentation": "Number of children qualifying as children for the EITC."
+    },
+    "housing_assistance": {
+      "label": "Housing assistance",
+      "entity": "spm_unit",
+      "definition_period": "year",
+      "documentation": "Housing assistance"
+    },
+    "is_eligible_for_housing_assistance": {
+      "label": "Is eligible for HUD voucher",
+      "entity": "spm_unit",
+      "definition_period": "year",
+      "documentation": "HUD housing assistance payment"
+    },
+    "spm_unit_is_in_spm_poverty": {
+      "label": "SPM unit in SPM poverty",
+      "entity": "spm_unit",
+      "definition_period": "year",
+      "documentation": null
+    }
+  },
+  "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+  },
+  "race_categories_on_artifact": [
+    "BLACK",
+    "HISPANIC",
+    "OTHER",
+    "WHITE"
+  ]
+}

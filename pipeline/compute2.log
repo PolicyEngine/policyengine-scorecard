@@ -1,0 +1,27 @@
+[    0.0s] merging: kept 9838 prior rows from other runs
+[    0.0s] === run fullpart_all: constructing sim ===
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[   56.0s]   flag means after set: {'takes_up_aca_if_eligible': 1.0, 'takes_up_eitc': 1.0, 'takes_up_head_start_if_eligible': 1.0, 'takes_up_housing_assistance_if_eligible': 1.0, 'takes_up_medicaid_if_eligible': 1.0, 'takes_up_medicare_if_eligible': 1.0, 'takes_up_snap_if_eligible': 1.0, 'takes_up_ssi_if_eligible': 1.0, 'takes_up_tanf_if_eligible': 1.0, 'would_claim_wic': 1.0}
+[   56.0s] === run fullpart_all: sim ready ===
+[   56.6s] denominators done
+[  264.8s] snap done
+[  265.5s] ssi done
+[  266.4s] tanf done
+[  280.6s] wic done
+[  280.7s] eitc/ctc done
+[  280.8s] housing done
+[  308.2s] poverty done (var=spm_unit_is_in_spm_poverty)
+[  308.2s] === run fullpart_all complete: 19676 cumulative rows ===
+[  310.1s] === run fullpart_urban6: constructing sim ===
+[  329.5s]   flag means after set: {'takes_up_snap_if_eligible': 1.0, 'takes_up_ssi_if_eligible': 1.0, 'takes_up_tanf_if_eligible': 1.0, 'takes_up_housing_assistance_if_eligible': 1.0, 'takes_up_eitc': 1.0, 'would_claim_wic': 1.0}
+[  329.5s] === run fullpart_urban6: sim ready ===
+[  329.8s] denominators done
+[  511.3s] snap done
+[  511.7s] ssi done
+[  512.3s] tanf done
+[  520.3s] wic done
+[  520.4s] eitc/ctc done
+[  520.4s] housing done
+[  548.1s] poverty done (var=spm_unit_is_in_spm_poverty)
+[  548.1s] === run fullpart_urban6 complete: 29514 cumulative rows ===
+[  551.5s] DONE: 29514 rows -> /Users/maxghenis/PolicyEngine/policyengine-scorecard/data/pe

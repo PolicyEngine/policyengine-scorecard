@@ -62,7 +62,21 @@ def ratio(a, b):
     return a / b
 
 
-def counterpart(pe, program, metric, subgroup, variant, geo):
+# The unit concept each program's PE construction measures. External rows in
+# a different unit (e.g. TANF family-unit rows next to its person rows) are
+# not_computed rather than silently compared across units.
+EXPECTED_UNIT = {
+    "snap": "persons",
+    "ssi": "adults_18plus",
+    "tanf": "persons",
+    "wic": "children_0thr4",
+    "eitc": "tax_units",
+    "ctc_refund": "tax_units",
+    "housing": "households",
+}
+
+
+def counterpart(pe, program, metric, subgroup, variant, geo, unit_concept):
     """Return (pe_value, status, construction) for one external row.
 
     construction is a short machine-readable recipe string; None value with a
@@ -74,6 +88,8 @@ def counterpart(pe, program, metric, subgroup, variant, geo):
         return None, "pe_gap", None
     if subgroup in PE_GAP_SUBGROUPS:
         return None, "pe_gap", None
+    if program in EXPECTED_UNIT and unit_concept != EXPECTED_UNIT[program]:
+        return None, "not_computed", None
 
     def person_denom(sub, denom_program="_persons"):
         s = "total" if sub == "total" else sub
@@ -94,12 +110,12 @@ def counterpart(pe, program, metric, subgroup, variant, geo):
         if metric == "participation_rate":
             return (
                 ratio(both, elig), "comparable",
-                "baseline snap>0∩eligible ÷ eligible (persons)",
+                "baseline snap>0 & eligible, ÷ eligible (persons)",
             )
         if metric == "participation_gap_count":
             if elig is None or both is None:
                 return None, "not_computed", None
-            return elig - both, "comparable", "eligible − participating∩eligible"
+            return elig - both, "comparable", "eligible − participating & eligible"
 
     if program == "ssi":
         if subgroup not in SSI_SUBS:
@@ -170,12 +186,12 @@ def counterpart(pe, program, metric, subgroup, variant, geo):
         if metric == "participation_rate":
             return (
                 ratio(both, elig), "comparable",
-                "wic>0∩eligible ÷ eligible (children 0–4)",
+                "wic>0 & eligible ÷ eligible (children 0–4)",
             )
         if metric == "participation_gap_count":
             if elig is None or both is None:
                 return None, "not_computed", None
-            return elig - both, "comparable", "eligible − participating∩eligible"
+            return elig - both, "comparable", "eligible − participating & eligible"
 
     if program == "eitc":
         sub_map = {"total": "total", "age_child": "age_child",
@@ -231,7 +247,7 @@ def counterpart(pe, program, metric, subgroup, variant, geo):
         if metric == "participation_rate":
             return (
                 ratio(both, elig), "concept_mismatch",
-                "housing_assistance>0∩eligible ÷ eligible (spm units)",
+                "housing_assistance>0 & eligible ÷ eligible (spm units)",
             )
         if metric == "participation_gap_count":
             if elig is None or both is None:
@@ -313,7 +329,7 @@ def main():
         else:
             pe_value, status, construction = counterpart(
                 pe, ext["program"], ext["metric"], ext["subgroup"],
-                ext["variant"], ext["geography"],
+                ext["variant"], ext["geography"], ext["unit_concept"],
             )
         row = dict(ext)
         row["external_value"] = row.pop("value")
