@@ -31,9 +31,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+import sys as _sys
+
 OUT = Path(__file__).resolve().parent.parent / "data" / "pe"
 OUT.mkdir(parents=True, exist_ok=True)
-YEAR = 2024
+YEAR = int(_sys.argv[2]) if len(_sys.argv) > 2 else 2024
+_SUFFIX = "" if YEAR == 2024 else f"_{YEAR}"
 
 t0 = time.time()
 
@@ -491,8 +494,8 @@ def main():
     selected = sys.argv[1].split(",") if len(sys.argv) > 1 else list(run_specs)
 
     # Merge with prior output when re-running a subset of runs.
-    metrics_path = OUT / "pe_metrics.json"
-    meta_path = OUT / "pe_meta.json"
+    metrics_path = OUT / f"pe_metrics{_SUFFIX}.json"
+    meta_path = OUT / f"pe_meta{_SUFFIX}.json"
     if metrics_path.exists() and set(selected) != set(run_specs):
         prior = json.loads(metrics_path.read_text())
         rows.extend(r for r in prior if r["run"] not in selected)
