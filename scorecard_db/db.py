@@ -76,6 +76,29 @@ CREATE TABLE IF NOT EXISTS diagnoses (
     action_link TEXT NOT NULL DEFAULT ''
 );
 
+CREATE TABLE IF NOT EXISTS pe_exhibits (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    exhibit TEXT NOT NULL,
+    reform_key TEXT NOT NULL,
+    reform_json TEXT NOT NULL,
+    metric TEXT NOT NULL,
+    unit_concept TEXT NOT NULL,
+    period INTEGER NOT NULL,
+    time_basis TEXT NOT NULL,
+    conditions TEXT NOT NULL DEFAULT '{}',
+    geography TEXT,
+    program TEXT,
+    value REAL NOT NULL,
+    baseline_value REAL,
+    delta REAL,
+    engine_version TEXT NOT NULL,
+    data_bundle TEXT NOT NULL,
+    run_id TEXT NOT NULL DEFAULT '',
+    computed_at TEXT NOT NULL DEFAULT '',
+    note TEXT NOT NULL DEFAULT ''
+);
+CREATE INDEX IF NOT EXISTS idx_exhibits_kind ON pe_exhibits(exhibit);
+
 CREATE TABLE IF NOT EXISTS lanes (
     lane TEXT PRIMARY KEY,
     stage TEXT NOT NULL CHECK (stage IN (
@@ -178,6 +201,37 @@ class ScorecardDB:
                 rows,
             )
         return len(rows)
+
+    def add_exhibits(self, rows: Iterable[dict]) -> int:
+        """PE-only exhibits: computations with no external claim to attach
+        to (e.g. per-program take-up poverty attribution)."""
+        prepared = [
+            (
+                r["exhibit"], r["reform_key"], r["reform_json"], r["metric"],
+                r["unit_concept"], r["period"], r["time_basis"],
+                json.dumps(r.get("conditions", {}), sort_keys=True),
+                r.get("geography"), r.get("program"), r["value"],
+                r.get("baseline_value"), r.get("delta"),
+                r["engine_version"], r["data_bundle"], r.get("run_id", ""),
+                r.get("computed_at", ""), r.get("note", ""),
+            )
+            for r in rows
+        ]
+        with self.conn:
+            self.conn.executemany(
+                "INSERT INTO pe_exhibits (exhibit, reform_key, reform_json,"
+                " metric, unit_concept, period, time_basis, conditions,"
+                " geography, program, value, baseline_value, delta,"
+                " engine_version, data_bundle, run_id, computed_at, note)"
+                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                prepared,
+            )
+        return len(prepared)
+
+    def exhibits(self, exhibit: str) -> list[sqlite3.Row]:
+        return self.conn.execute(
+            "SELECT * FROM pe_exhibits WHERE exhibit = ?", (exhibit,)
+        ).fetchall()
 
     def set_lane(self, lane: str, stage: str, detail: str = "", at: str = ""):
         with self.conn:
