@@ -363,7 +363,11 @@ CALIBRATION_RELATIONSHIP = {
         "out-of-sample"),
     ("housing", None): ("held_out", "§4: zero housing targets"),
     ("spm_poverty", None): ("held_out",
-        "§4: no poverty targets in the Build P surface"),
+        "PERMANENT holdout — survey-derived statistic; targets come from "
+        "administrative systems only (doctrine 2026-08-02). Calibrating to "
+        "it would launder survey error back in and destroy the validation "
+        "signal. Release gates may fail on held-out regressions; fitting "
+        "the statistic is prohibited."),
     ("liheap", None): ("held_out", "no PE national model consumes these"),
     ("ccdf", None): ("held_out", "no PE national model consumes these"),
 }

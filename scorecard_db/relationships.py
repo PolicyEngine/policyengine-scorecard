@@ -84,17 +84,41 @@ _MAP = {
     ("liheap", None): (CR.HELD_OUT, "no PE national model consumes these"),
     ("ccdf", None): (CR.HELD_OUT, "no PE national model consumes these"),
     # poverty blocks (Urban tidy programs "base"/"fullpart")
-    ("base", None): (
-        CR.HELD_OUT, "§4: no poverty targets in the Build P surface",
-    ),
-    ("fullpart", None): (
-        CR.HELD_OUT, "§4: no poverty targets in the Build P surface",
-    ),
+    ("base", None): (CR.HELD_OUT, None),  # basis set below (permanent)
+    ("fullpart", None): (CR.HELD_OUT, None),
 }
+
+# Doctrine (Max, 2026-08-02): poverty and other survey-derived statistics are
+# PERMANENT holdouts — never calibration targets, not "not yet targeted".
+# Populace exists to fix the survey's defects through imputation, computed
+# taxes and benefits, and calibration to ADMINISTRATIVE systems; consuming a
+# survey-derived statistic would launder survey error back into the model and
+# destroy the validation signal these comparisons exist to provide. Release
+# gates may fail on held-out regressions (issue #1 point 3); fitting the
+# statistic is categorically different and prohibited.
+PERMANENT_HOLDOUT_METRICS = frozenset(
+    {
+        Metric.POVERTY_RATE,
+        Metric.POVERTY_RATE_CHANGE,
+        Metric.POVERTY_COUNT_CHANGE,
+    }
+)
+PERMANENT_HOLDOUT_BASIS = (
+    "PERMANENT holdout — survey-derived statistic; targets come from "
+    "administrative systems only (doctrine 2026-08-02). Calibrating to it "
+    "would launder survey error back in and destroy the validation signal."
+)
+
+
+def never_calibrate(metric) -> bool:
+    """True if this metric may never become a calibration target."""
+    return Metric(metric) in PERMANENT_HOLDOUT_METRICS
 
 
 def effective_relationship(program, metric):
     """(CalibrationRelationship, basis) for a program × Metric pair."""
+    if metric is not None and never_calibrate(metric):
+        return CR.HELD_OUT, PERMANENT_HOLDOUT_BASIS
     hit = _MAP.get((program, metric)) or _MAP.get((program, None))
     if hit is None:
         return CR.HELD_OUT, "no PE consumption identified"
