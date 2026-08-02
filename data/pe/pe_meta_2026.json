@@ -30,6 +30,24 @@
         "takes_up_tanf_if_eligible": 1.0,
         "would_claim_wic": 1.0
       }
+    },
+    "fullpart_urban6": {
+      "flags_set_true": [
+        "takes_up_snap_if_eligible",
+        "takes_up_ssi_if_eligible",
+        "takes_up_tanf_if_eligible",
+        "takes_up_housing_assistance_if_eligible",
+        "takes_up_eitc",
+        "would_claim_wic (12 months)"
+      ],
+      "flag_means_after": {
+        "takes_up_snap_if_eligible": 1.0,
+        "takes_up_ssi_if_eligible": 1.0,
+        "takes_up_tanf_if_eligible": 1.0,
+        "takes_up_housing_assistance_if_eligible": 1.0,
+        "takes_up_eitc": 1.0,
+        "would_claim_wic": 1.0
+      }
     }
   },
   "variables": {

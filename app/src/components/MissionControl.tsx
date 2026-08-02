@@ -1,7 +1,6 @@
-import { closeness } from "../format";
-import type { Comparison, LanesFeed, Row } from "../types";
+import { closeness, fmtDivergence } from "../format";
+import type { Comparison, LanesFeed } from "../types";
 import { METRIC_LABELS, PROGRAM_LABELS } from "../types";
-import { fmtDivergence } from "../format";
 
 /**
  * The home view is mission control (issue #7): running lanes, the held-out

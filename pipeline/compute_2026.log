@@ -28,3 +28,13 @@ Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF
 [  371.0s]   flag means after set: {'takes_up_snap_if_eligible': 1.0, 'takes_up_ssi_if_eligible': 1.0, 'takes_up_tanf_if_eligible': 1.0, 'takes_up_housing_assistance_if_eligible': 1.0, 'takes_up_eitc': 1.0, 'would_claim_wic': 1.0}
 [  371.0s] === run fullpart_urban6: sim ready ===
 [  371.3s] denominators done
+[  629.4s] snap done
+[  629.7s] ssi done
+[  630.2s] tanf done
+[  642.6s] wic done
+[  643.2s] eitc/ctc done
+[  644.3s] housing done
+[  692.6s] poverty done (var=spm_unit_is_in_spm_poverty)
+[  692.6s] === run fullpart_urban6 complete: 29514 cumulative rows ===
+[  703.5s] persisted 29514 rows after fullpart_urban6
+[  703.5s] DONE: 29514 rows -> /Users/maxghenis/PolicyEngine/policyengine-scorecard/data/pe
