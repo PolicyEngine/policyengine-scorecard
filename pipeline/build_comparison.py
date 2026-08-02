@@ -315,6 +315,66 @@ def annotation_ids(annotations, row):
     return out
 
 
+# --- calibration_relationship (oracle doctrine, issue #1 point 2) ---
+# Mandatory on every external number: agreement on consumed targets is a
+# tautology, never a win; the published validation column is held_out only.
+# Mapping is (program, metric)-level, evidence-based from the replication
+# assessment (docs/replication-assessment.md §3 seeds, §4 target surface).
+_FNS = ("consumed_as_target",
+        "§3-§4: SNAP participating units count-calibrated to FNS "
+        "average-month household counts (national + state) — the same "
+        "admin-caseload class as Urban's numerator")
+_SSA = ("consumed_as_target",
+        "§3: SSI count-calibrated to SSA state recipient counts and payments")
+_ASPE = ("seed_source",
+         "§3: TANF flag seeded at ASPE 0.219 — a TRIM3 rate, the same model "
+         "family as ATTIS; only dollar targets exist (missed −36%)")
+_HELD_ELIG = ("held_out",
+              "§4: no eligibility targets; eligibility is disciplined only "
+              "indirectly via income/demographic margins")
+CALIBRATION_RELATIONSHIP = {
+    ("snap", "participation_rate"): _FNS,
+    ("snap", "participation_gap_count"): _FNS,
+    ("snap", "eligible_count"): _HELD_ELIG,
+    ("snap", "eligibility_rate"): _HELD_ELIG,
+    ("ssi", "participation_rate"): _SSA,
+    ("ssi", "participation_gap_count"): _SSA,
+    ("ssi", "eligible_count"): ("held_out",
+        "payable-under-forced construction; §4 targets recipient counts, "
+        "not eligible counts"),
+    ("ssi", "eligibility_rate"): ("held_out",
+        "payable-under-forced construction; §4 targets recipient counts, "
+        "not eligible counts"),
+    ("tanf", "participation_rate"): _ASPE,
+    ("tanf", "participation_gap_count"): _ASPE,
+    ("tanf", "eligible_count"): _HELD_ELIG,
+    ("tanf", "eligibility_rate"): _HELD_ELIG,
+    ("eitc", "eligible_count"): ("held_out",
+        "forced-flag positive-credit count is not itself a target; SOI "
+        "claims targets discipline a subset (see construction annotation)"),
+    ("eitc", "eligibility_rate"): ("held_out",
+        "forced-flag positive-credit count is not itself a target; SOI "
+        "claims targets discipline a subset (see construction annotation)"),
+    ("ctc_refund", None): ("consumed_as_target",
+        "§4-§5: refundable CTC claims and dollars are SOI-targeted; no "
+        "take-up flag exists, so the count is claims-shaped"),
+    ("wic", None): ("held_out",
+        "§4: zero WIC calibration targets; §6: the near-match is "
+        "out-of-sample"),
+    ("housing", None): ("held_out", "§4: zero housing targets"),
+    ("spm_poverty", None): ("held_out",
+        "§4: no poverty targets in the Build P surface"),
+    ("liheap", None): ("held_out", "no PE national model consumes these"),
+    ("ccdf", None): ("held_out", "no PE national model consumes these"),
+}
+
+
+def calibration_relationship(program, metric):
+    hit = CALIBRATION_RELATIONSHIP.get((program, metric)) or \
+        CALIBRATION_RELATIONSHIP.get((program, None))
+    return hit if hit else ("held_out", "no PE consumption identified")
+
+
 INTERCHANGE = Path.home() / "populace-sotsn-takeup" / "comparison"
 
 # Interchange (program, metric) -> platform (program, metric). Poverty maps
@@ -359,8 +419,22 @@ def load_2026():
     return v2026, v2024
 
 
+def load_pe_2026():
+    """Own 2026 grid (full constructions), if computed."""
+    p = DATA / "pe" / "pe_metrics_2026.json"
+    if not p.exists():
+        return None
+    rows = json.loads(p.read_text())
+    return PE({
+        (r["run"], r["program"], r["metric"], r["subgroup"], r["geography"]):
+            r["value"]
+        for r in rows
+    })
+
+
 def main():
     pe = PE(load_pe())
+    pe26 = load_pe_2026()
     annotations = load_annotations()
     ic_2026, ic_2024 = load_2026()
     externals = []
@@ -384,16 +458,25 @@ def main():
         row["pe_period"] = "2024 annual" if pe_value is not None else None
         row["status"] = status
         row["pe_construction"] = construction
-        # 2026 projection from the canonical interchange, attached only when
-        # the interchange's 2024 value matches ours within 0.5% — an
-        # automatic same-construction gate (excludes broad-denominator rows).
+        # 2026 projection. Preferred source: our own 2026 grid (identical
+        # constructions by definition — full subgroup/state coverage).
+        # Fallback: the canonical interchange behind a 0.5%
+        # same-construction gate on the 2024 value.
         row["pe_value_2026"] = None
-        if pe_value is not None and ext["subgroup"] == "total" and not ext["variant"]:
+        if pe_value is not None and pe26 is not None:
+            v26, s26, _ = counterpart(
+                pe26, ext["program"], ext["metric"], ext["subgroup"],
+                ext["variant"], ext["geography"], ext["unit_concept"],
+            )
+            if v26 is not None and s26 == status:
+                row["pe_value_2026"] = v26
+        if (
+            row["pe_value_2026"] is None and pe_value is not None
+            and ext["subgroup"] == "total" and not ext["variant"]
+        ):
             k = (ext["program"], ext["metric"], ext["geography"],
-                 "total" if ext["program"] != "spm_poverty" else ext["subgroup"])
-            if ext["program"] == "spm_poverty":
-                k = (ext["program"], ext["metric"], ext["geography"],
-                     ext["subgroup"])
+                 ext["subgroup"] if ext["program"] == "spm_poverty"
+                 else "total")
             ic24 = ic_2024.get(k)
             ic26 = ic_2026.get(k)
             if (
@@ -401,6 +484,11 @@ def main():
                 and abs(ic24 - pe_value) <= abs(pe_value) * 0.005 + 1e-9
             ):
                 row["pe_value_2026"] = ic26
+        rel, rel_basis = calibration_relationship(
+            ext["program"], ext["metric"]
+        )
+        row["calibration_relationship"] = rel
+        row["calibration_basis"] = rel_basis
         if pe_value is not None and row["external_value"] not in (None, 0):
             row["ratio"] = pe_value / row["external_value"]
             row["delta"] = pe_value - row["external_value"]
@@ -411,8 +499,11 @@ def main():
         out_rows.append(row)
 
     by_status = {}
+    by_relationship = {}
     for r in out_rows:
         by_status[r["status"]] = by_status.get(r["status"], 0) + 1
+        rel = r["calibration_relationship"]
+        by_relationship[rel] = by_relationship.get(rel, 0) + 1
 
     comparison = {
         "built": str(date.today()),
@@ -422,7 +513,11 @@ def main():
         "pe_bundle": pe_meta.get("bundle", {}),
         "pe_runs": pe_meta.get("runs", {}),
         "annotations": {a["id"]: a for a in annotations},
-        "summary": {"n_rows": len(out_rows), "by_status": by_status},
+        "summary": {
+            "n_rows": len(out_rows),
+            "by_status": by_status,
+            "by_relationship": by_relationship,
+        },
         "rows": out_rows,
     }
     out = DATA / "comparison.json"

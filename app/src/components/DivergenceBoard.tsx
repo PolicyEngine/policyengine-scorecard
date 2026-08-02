@@ -83,6 +83,17 @@ function DivergenceCard({ row, data }: { row: Row; data: Comparison }) {
               · {row.geography}
             </span>
           )}
+          <span
+            className={
+              "ml-1.5 align-middle rounded-sm border px-1 py-px text-[9px] uppercase tracking-wide " +
+              (row.calibration_relationship === "held_out"
+                ? "border-[var(--chart-1)] text-[var(--chart-3)]"
+                : "border-dashed border-border text-muted-foreground")
+            }
+            title={row.calibration_basis}
+          >
+            {row.calibration_relationship.replace(/_/g, " ")}
+          </span>
         </span>
         <span className="fig text-destructive">{fmtDivergence(row)}</span>
       </div>

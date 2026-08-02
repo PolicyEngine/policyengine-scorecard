@@ -512,9 +512,11 @@ def main():
 
     for name in selected:
         analyze(name, run_specs[name])
+        # Persist after every run so a killed process loses at most one run.
+        metrics_path.write_text(json.dumps(rows))
+        meta_path.write_text(json.dumps(meta, indent=2))
+        log(f"persisted {len(rows)} rows after {name}")
 
-    metrics_path.write_text(json.dumps(rows))
-    meta_path.write_text(json.dumps(meta, indent=2))
     log(f"DONE: {len(rows)} rows -> {OUT}")
 
 
