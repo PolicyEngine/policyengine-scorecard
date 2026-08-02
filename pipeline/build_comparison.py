@@ -452,6 +452,13 @@ def main():
                 pe, ext["program"], ext["metric"], ext["subgroup"],
                 ext["variant"], ext["geography"], ext["unit_concept"],
             )
+            # A mapped construction whose PE lookup came back empty (e.g. a
+            # subgroup the artifact cannot produce, like race_aapi) is
+            # not_computed, not a valueless "comparable".
+            if pe_value is None and status in (
+                "comparable", "constructed", "concept_mismatch"
+            ):
+                status, construction = "not_computed", None
         row = dict(ext)
         row["external_value"] = row.pop("value")
         row["pe_value"] = pe_value
