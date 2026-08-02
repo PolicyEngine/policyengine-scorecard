@@ -13,7 +13,7 @@
    "stage": "diagnosing",
    "running": true,
    "updated": "2026-08-01",
-   "note": "Instance 1 built: 24,717 unsuppressed cells, 7,850 counterparts; divergence batch 1 with an agent lane"
+   "note": "Instance 1 built: 24,717 unsuppressed cells, 7,912 counterparts; batch-1 diagnoses on the board"
   },
   {
    "id": "urban-sotsn-2026",
@@ -30,10 +30,10 @@
    "source": "Urban SotSN",
    "area": "divergence diagnosis (10 items)",
    "mode": 1,
-   "stage": "diagnosing",
-   "running": true,
+   "stage": "computed",
+   "running": false,
    "updated": "2026-08-01",
-   "note": "sol lane on diagnosis/BRIEF.md; branch diagnosis-batch-1; resumed after harness restart"
+   "note": "10/10 adjudicated: 6 pe_gap, 3 concept_mismatch, 1 external issue; fix drafts in diagnosis/DIAGNOSES.md"
   },
   {
    "id": "urban-sotsn-solo-attribution",

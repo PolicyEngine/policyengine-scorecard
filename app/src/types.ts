@@ -48,6 +48,13 @@ export interface Row {
   source_column: string;
   calibration_relationship: CalibrationRelationship;
   calibration_basis: string;
+  diagnosis: {
+    queue_id: number;
+    classification: string;
+    confidence: string;
+    title: string;
+    fix_type: string | null;
+  } | null;
 }
 
 export const RELATIONSHIP_LABELS: Record<CalibrationRelationship, string> = {

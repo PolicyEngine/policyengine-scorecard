@@ -105,6 +105,27 @@ function DivergenceCard({ row, data }: { row: Row; data: Comparison }) {
         Urban {fmtValue(row.external_value, row.metric)} · PolicyEngine{" "}
         {fmtValue(row.pe_value, row.metric)}
       </p>
+      {row.diagnosis && (
+        <p className="mt-1.5 text-xs">
+          <span
+            className={
+              "mr-1.5 rounded-sm px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide " +
+              (row.diagnosis.classification === "external_model_issue"
+                ? "bg-[var(--chart-2)] text-white"
+                : row.diagnosis.classification === "pe_gap"
+                  ? "bg-[var(--destructive)] text-white"
+                  : "bg-border")
+            }
+          >
+            diagnosed: {row.diagnosis.classification.replace(/_/g, " ")}
+          </span>
+          {row.diagnosis.title} ({row.diagnosis.confidence} confidence
+          {row.diagnosis.fix_type
+            ? `, fix drafted: ${row.diagnosis.fix_type.replace(/_/g, " ")}`
+            : ""}
+          )
+        </p>
+      )}
       {row.pe_construction && (
         <p className="mt-1 text-xs text-muted-foreground">
           {row.pe_construction}

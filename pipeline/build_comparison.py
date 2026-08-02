@@ -432,11 +432,22 @@ def load_pe_2026():
     })
 
 
+def load_diagnoses():
+    p = DATA / "diagnoses_rows.json"
+    if not p.exists():
+        return {}
+    return {
+        (d["program"], d["metric"], d["geography"], d["subgroup"]): d
+        for d in json.loads(p.read_text())
+    }
+
+
 def main():
     pe = PE(load_pe())
     pe26 = load_pe_2026()
     annotations = load_annotations()
     ic_2026, ic_2024 = load_2026()
+    diagnoses = load_diagnoses()
     externals = []
     for f in sorted((DATA / "externals").glob("*.json")):
         externals.extend(json.loads(f.read_text()))
@@ -496,6 +507,21 @@ def main():
         )
         row["calibration_relationship"] = rel
         row["calibration_basis"] = rel_basis
+        d = diagnoses.get(
+            (ext["program"], ext["metric"], ext["geography"],
+             ext["subgroup"])
+        )
+        row["diagnosis"] = (
+            {
+                "queue_id": d["queue_id"],
+                "classification": d["classification"],
+                "confidence": d["confidence"],
+                "title": d["title"],
+                "fix_type": d["fix_type"],
+            }
+            if d and not ext["variant"]
+            else None
+        )
         if pe_value is not None and row["external_value"] not in (None, 0):
             row["ratio"] = pe_value / row["external_value"]
             row["delta"] = pe_value - row["external_value"]
