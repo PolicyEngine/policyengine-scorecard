@@ -245,3 +245,129 @@ class TestUrbanIngest:
             " AND value IS NULL"
         ).fetchone()["c"]
         assert n > 0
+
+
+class TestEffectiveRelationship:
+    """The tautology labels (issue #1 point 2) are assigned, not defaulted."""
+
+    def test_snap_participation_is_consumed(self):
+        from scorecard_db.models import CalibrationRelationship, Metric
+        from scorecard_db.relationships import effective_relationship
+
+        rel, basis = effective_relationship(
+            "snap", Metric.PARTICIPATION_RATE
+        )
+        assert rel is CalibrationRelationship.CONSUMED_AS_TARGET
+        assert "FNS" in basis
+
+    def test_snap_eligibility_held_out(self):
+        from scorecard_db.models import CalibrationRelationship, Metric
+        from scorecard_db.relationships import effective_relationship
+
+        rel, _ = effective_relationship("snap", Metric.ELIGIBLE_COUNT)
+        assert rel is CalibrationRelationship.HELD_OUT
+
+    def test_tanf_participation_is_seeded(self):
+        from scorecard_db.models import CalibrationRelationship, Metric
+        from scorecard_db.relationships import effective_relationship
+
+        rel, basis = effective_relationship(
+            "tanf", Metric.PARTICIPATION_RATE
+        )
+        assert rel is CalibrationRelationship.SEED_SOURCE
+        assert "ASPE" in basis
+
+    def test_wic_all_held_out(self):
+        from scorecard_db.models import CalibrationRelationship, Metric
+        from scorecard_db.relationships import effective_relationship
+
+        for m in (
+            Metric.ELIGIBLE_COUNT,
+            Metric.PARTICIPATION_RATE,
+            Metric.PARTICIPATION_GAP_COUNT,
+        ):
+            rel, _ = effective_relationship("wic", m)
+            assert rel is CalibrationRelationship.HELD_OUT
+
+
+class TestInputOverrideFramework:
+    def test_inputs_framework_accepted(self):
+        r = ReformRef(
+            framework="policyengine_us_inputs",
+            reform={"takes_up_snap_if_eligible": True},
+        )
+        assert r.key() != BASELINE.key()
+
+    def test_inputs_framework_requires_dict(self):
+        with pytest.raises(ValueError):
+            ReformRef(framework="policyengine_us_inputs")
+
+    def test_fullpart_reform_is_input_override(self):
+        from scorecard_db.ingest_urban import FULLPART_REFORM
+
+        assert FULLPART_REFORM.framework == "policyengine_us_inputs"
+        # No fabricated parameter paths: descriptor keys are variables.
+        assert all(
+            "." not in k for k in FULLPART_REFORM.reform
+        ), "input-override descriptors must not look like parameter paths"
+
+
+class TestPlatformProbe:
+    """ingest_platform must rebuild ingest_urban's claim identities exactly."""
+
+    def _tidy_claim(self, **kw):
+        base = dict(
+            source="urban_sotsn",
+            metric="participation_rate",
+            unit_concept="share",
+            period=2023,
+            time_basis="average_month",
+            value=0.575,
+            conditions={
+                "geography": "US", "program": "snap", "rate_unit": "pop",
+            },
+        )
+        base.update(kw)
+        return ExternalScore(**base)
+
+    def test_rate_row_roundtrip(self):
+        from scorecard_db.ingest_platform import _probe
+
+        row = {
+            "program": "snap", "metric": "participation_rate",
+            "subgroup": "total", "variant": None, "geography": "US",
+            "unit_concept": "persons",
+        }
+        assert _probe(row).claim_id() == self._tidy_claim().claim_id()
+
+    def test_variant_embeds_into_subgroup(self):
+        from scorecard_db.ingest_platform import _probe
+
+        row = {
+            "program": "tanf", "metric": "participation_rate",
+            "subgroup": "total", "variant": "no_SSF", "geography": "US",
+            "unit_concept": "families",
+        }
+        claim = self._tidy_claim(
+            conditions={
+                "geography": "US", "program": "tanf", "rate_unit": "units",
+                "subgroup": "total_no_SSF",
+            },
+        )
+        assert _probe(row).claim_id() == claim.claim_id()
+
+    def test_fullpart_poverty_row(self):
+        from scorecard_db.ingest_platform import _probe
+        from scorecard_db.ingest_urban import FULLPART_REFORM
+
+        row = {
+            "program": "spm_poverty", "metric": "poverty_rate_fullpart",
+            "subgroup": "child", "variant": None, "geography": "AK",
+            "unit_concept": "children",
+        }
+        claim = self._tidy_claim(
+            metric="poverty_rate",
+            conditions={"geography": "AK", "subgroup": "child"},
+            reform=FULLPART_REFORM,
+        )
+        assert _probe(row).claim_id() == claim.claim_id()

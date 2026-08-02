@@ -28,6 +28,7 @@ can check, one SQLite file, reform-keyed.
 
 ```bash
 PYTHONPATH=. python -m scorecard_db.ingest_urban data/scorecard.db
+PYTHONPATH=. python -m scorecard_db.ingest_platform data/scorecard.db
 python -m pytest tests/test_scorecard_db.py
 ```
 
@@ -38,5 +39,15 @@ db.comparisons(program="snap", geography="US", held_out_only=True)
 db.coverage()
 ```
 
-First population: Urban SotSN — 30,004 claims (24,717 published values),
-678 PE results (certified Build P via policyengine.py), all held_out.
+First population: Urban SotSN — 30,004 claims (24,717 published values).
+`calibration_relationship` is assigned per (program, metric) from the
+certified build's documented target surface and seeds
+(`scorecard_db/relationships.py`), never defaulted: SNAP/SSI participation
+and refundable-CTC counts are `consumed_as_target`, TANF participation is
+`seed_source` (ASPE/TRIM3), everything else `held_out`. PE results: the
+interchange's 678 totals (run `sotsn-first-cut`) plus the platform's 7,912
+subgroup × state grid (run `platform-grid-2024`, with the real status
+taxonomy and annotation ids); the `comparisons` view serves the latest per
+claim. Counterfactual worlds use the `policyengine_us_inputs` framework —
+input-override descriptors (forced take-up flags), not parametric reform
+paths, because no such parameters exist in the engine.
