@@ -111,6 +111,13 @@
       "basis": "Urban slides p.34; data/pe/pe_meta.json runs log; both variants in data/pe/pe_metrics.json"
     },
     {
+      "id": "projected-2026",
+      "applies_to": {"program": null, "metrics": null, "has_2026": true},
+      "severity": "period",
+      "text": "The 2026 column ages the same certified artifact to 2026 under current law as encoded in the engine (input uprating; not re-calibrated to 2026 projections). It exists to show what a live model adds over a fixed-vintage report; Urban's tool publishes 2023 only. Attached only where the interchange run's 2024 value matches this pipeline's within 0.5% (same construction); the interchange 2026 full-participation poverty rows are excluded pending the WIC-gate fix (see RECONCILIATION.md).",
+      "basis": "comparison/ FINDINGS.md '2026 column' section; comparison/RECONCILIATION.md #2; construction gate in pipeline/build_comparison.py"
+    },
+    {
       "id": "fullpart-headroom",
       "applies_to": {"program": "spm_poverty", "metrics": ["poverty_rate_fullpart", "poverty_rate_relative_change_fullpart", "poverty_count_change_fullpart"]},
       "severity": "definitional",

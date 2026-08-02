@@ -17,6 +17,7 @@ export interface Row {
   period: string;
   external_value: number | null;
   pe_value: number | null;
+  pe_value_2026: number | null;
   pe_period: string | null;
   status: Status;
   pe_construction: string | null;

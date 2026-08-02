@@ -29,6 +29,17 @@ export function AboutView({ data }: { data: Comparison }) {
         </p>
       </section>
       <section>
+        <h2 className="mb-2 text-lg font-semibold">The 2026 column</h2>
+        <p>
+          Where present, the projected column ages the same certified
+          artifact to 2026 under current law as encoded in the engine
+          (input uprating; not re-calibrated to 2026 projections). It is
+          attached only where the interchange run's 2024 value matches this
+          pipeline's within 0.5% — a same-construction gate. Urban's tool
+          publishes 2023 only; a live model can keep moving.
+        </p>
+      </section>
+      <section>
         <h2 className="mb-2 text-lg font-semibold">Full-participation runs</h2>
         {Object.entries(data.pe_runs)
           .filter(([k]) => k !== "baseline")

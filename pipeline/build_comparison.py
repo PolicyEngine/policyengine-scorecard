@@ -293,6 +293,8 @@ def annotation_ids(annotations, row):
     out = []
     for a in annotations:
         m = a["applies_to"]
+        if m.get("has_2026") and row.get("pe_value_2026") is None:
+            continue
         if m.get("program") not in (None, row["program"]):
             continue
         if m.get("metrics") is not None and row["metric"] not in m["metrics"]:
@@ -313,9 +315,54 @@ def annotation_ids(annotations, row):
     return out
 
 
+INTERCHANGE = Path.home() / "populace-sotsn-takeup" / "comparison"
+
+# Interchange (program, metric) -> platform (program, metric). Poverty maps
+# from A's base/fullpart pseudo-programs; fullpart 2026 rows are excluded
+# (their 2026 run predates the WIC-gate fix — RECONCILIATION.md #2).
+INTERCHANGE_METRIC = {
+    "elig_pop": "eligible_count",
+    "elig_units": "eligible_count",
+    "elig_rate": "eligibility_rate",
+    "part_rate": "participation_rate",
+    "part_gap": "participation_gap_count",
+}
+
+
+def load_2026():
+    """{(program, metric, geography): pe_value_2026} from the canonical
+    interchange, keyed in platform vocabulary. Only totals rows exist."""
+    import csv
+
+    path = INTERCHANGE / "comparison.csv"
+    if not path.exists():
+        return {}, {}
+    v2026, v2024 = {}, {}
+    with open(path) as f:
+        for r in csv.DictReader(f):
+            if r.get("breakdown") != "total":
+                continue
+            prog, met = r["program"], r["metric"]
+            if prog == "base" and met.startswith("spm_pov_rate_100"):
+                key = ("spm_poverty", "poverty_rate", r["geography"],
+                       "child" if met.endswith("_child") else "total")
+            elif prog in ("base", "fullpart"):
+                continue  # fullpart 2026 excluded; change rows derive from it
+            elif met in INTERCHANGE_METRIC:
+                key = (prog, INTERCHANGE_METRIC[met], r["geography"], "total")
+            else:
+                continue
+            for col, store in (("pe_value_2026", v2026), ("pe_value", v2024)):
+                val = r.get(col)
+                if val not in (None, ""):
+                    store[key] = float(val)
+    return v2026, v2024
+
+
 def main():
     pe = PE(load_pe())
     annotations = load_annotations()
+    ic_2026, ic_2024 = load_2026()
     externals = []
     for f in sorted((DATA / "externals").glob("*.json")):
         externals.extend(json.loads(f.read_text()))
@@ -337,6 +384,23 @@ def main():
         row["pe_period"] = "2024 annual" if pe_value is not None else None
         row["status"] = status
         row["pe_construction"] = construction
+        # 2026 projection from the canonical interchange, attached only when
+        # the interchange's 2024 value matches ours within 0.5% — an
+        # automatic same-construction gate (excludes broad-denominator rows).
+        row["pe_value_2026"] = None
+        if pe_value is not None and ext["subgroup"] == "total" and not ext["variant"]:
+            k = (ext["program"], ext["metric"], ext["geography"],
+                 "total" if ext["program"] != "spm_poverty" else ext["subgroup"])
+            if ext["program"] == "spm_poverty":
+                k = (ext["program"], ext["metric"], ext["geography"],
+                     ext["subgroup"])
+            ic24 = ic_2024.get(k)
+            ic26 = ic_2026.get(k)
+            if (
+                ic24 is not None and ic26 is not None
+                and abs(ic24 - pe_value) <= abs(pe_value) * 0.005 + 1e-9
+            ):
+                row["pe_value_2026"] = ic26
         if pe_value is not None and row["external_value"] not in (None, 0):
             row["ratio"] = pe_value / row["external_value"]
             row["delta"] = pe_value - row["external_value"]

@@ -170,14 +170,21 @@ export function ComparisonTable({
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/60 text-left text-xs text-muted-foreground">
-              <th className="px-3 py-2 font-medium">Program</th>
-              <th className="px-3 py-2 font-medium">Metric</th>
-              <th className="px-3 py-2 font-medium">Subgroup</th>
-              <th className="px-3 py-2 font-medium">Geo</th>
-              <th className="px-3 py-2 text-right font-medium">Urban</th>
-              <th className="px-3 py-2 text-right font-medium">PolicyEngine</th>
-              <th className="px-3 py-2 text-right font-medium">Δ</th>
-              <th className="px-3 py-2 font-medium">Status</th>
+              <th className="px-2 py-2 font-medium">Program</th>
+              <th className="px-2 py-2 font-medium">Metric</th>
+              <th className="px-2 py-2 font-medium">Subgroup</th>
+              <th className="px-2 py-2 font-medium">Geo</th>
+              <th className="px-2 py-2 text-right font-medium">
+                Urban <VintageChip label="2023 avg-month" tone="external" />
+              </th>
+              <th className="px-2 py-2 text-right font-medium">
+                PolicyEngine <VintageChip label="2024 calibrated" tone="pe" />
+              </th>
+              <th className="px-2 py-2 text-right font-medium">Δ</th>
+              <th className="px-2 py-2 text-right font-medium">
+                <VintageChip label="2026+ projected" tone="proj" />
+              </th>
+              <th className="px-2 py-2 font-medium">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -195,7 +202,7 @@ export function ComparisonTable({
           </tbody>
         </table>
         {filtered.length > MAX_RENDER && (
-          <p className="border-t border-border px-3 py-2 text-xs text-muted-foreground">
+          <p className="border-t border-border px-2 py-2 text-xs text-muted-foreground">
             Showing the first {MAX_RENDER} of{" "}
             {filtered.length.toLocaleString()} rows — narrow the filters to see
             the rest.
@@ -232,29 +239,34 @@ function RowLine({
         (expanded ? "bg-muted/40" : "")
       }
     >
-      <td className="px-3 py-1.5 whitespace-nowrap">
+      <td className="px-2 py-1.5 whitespace-nowrap">
         {PROGRAM_LABELS[row.program] ?? row.program}
         {row.variant ? (
           <span className="text-muted-foreground"> · {row.variant}</span>
         ) : null}
       </td>
-      <td className="px-3 py-1.5 whitespace-nowrap">
+      <td className="px-2 py-1.5 whitespace-nowrap">
         {METRIC_LABELS[row.metric] ?? row.metric}
       </td>
-      <td className="px-3 py-1.5 whitespace-nowrap text-muted-foreground">
+      <td className="px-2 py-1.5 whitespace-nowrap text-muted-foreground">
         {row.subgroup}
       </td>
-      <td className="px-3 py-1.5 fig">{row.geography}</td>
-      <td className="px-3 py-1.5 text-right fig">
+      <td className="px-2 py-1.5 fig">{row.geography}</td>
+      <td className="px-2 py-1.5 text-right fig">
         {fmtValue(row.external_value, row.metric)}
       </td>
-      <td className="px-3 py-1.5 text-right fig">
+      <td className="px-2 py-1.5 text-right fig">
         {fmtValue(row.pe_value, row.metric)}
       </td>
-      <td className={"px-3 py-1.5 text-right fig " + divergenceColor}>
+      <td className={"px-2 py-1.5 text-right fig " + divergenceColor}>
         {fmtDivergence(row)}
       </td>
-      <td className="px-3 py-1.5">
+      <td className="px-2 py-1.5 text-right fig text-muted-foreground">
+        {row.pe_value_2026 !== null
+          ? fmtValue(row.pe_value_2026, row.metric)
+          : ""}
+      </td>
+      <td className="px-2 py-1.5">
         <StatusChip bucket={bucket} status={row.status} />
         {row.annotations.length > 0 && (
           <span
@@ -266,6 +278,30 @@ function RowLine({
         )}
       </td>
     </tr>
+  );
+}
+
+function VintageChip({
+  label,
+  tone,
+}: {
+  label: string;
+  tone: "external" | "pe" | "proj";
+}) {
+  const styles: Record<string, string> = {
+    external: "border-border text-muted-foreground",
+    pe: "border-[var(--chart-1)] text-[var(--chart-3)]",
+    proj: "border-[var(--chart-2)] text-[var(--chart-4)]",
+  };
+  return (
+    <span
+      className={
+        "ml-1 inline-block rounded-sm border px-1 py-px text-[9px] font-medium uppercase tracking-wide " +
+        styles[tone]
+      }
+    >
+      {label}
+    </span>
   );
 }
 
@@ -296,7 +332,7 @@ function StatusChip({
 function RowDetail({ row, data }: { row: Row; data: Comparison }) {
   return (
     <tr className="border-b border-border bg-muted/30">
-      <td colSpan={8} className="px-4 py-3">
+      <td colSpan={9} className="px-4 py-3">
         <div className="grid gap-3 text-xs md:grid-cols-2">
           <div>
             <p className="mb-1 font-semibold">Construction</p>
@@ -305,8 +341,10 @@ function RowDetail({ row, data }: { row: Row; data: Comparison }) {
             </p>
             <p className="mt-2 text-muted-foreground">
               Urban: {row.unit_concept}, {row.period} · PolicyEngine:{" "}
-              {row.pe_period ?? "—"} · source column{" "}
-              <span className="fig">{row.source_column}</span>
+              {row.pe_period ?? "—"}
+              {row.pe_value_2026 !== null &&
+                " · 2026 projection: same artifact, engine-side uprating"}{" "}
+              · source column <span className="fig">{row.source_column}</span>
             </p>
           </div>
           <div>
