@@ -121,7 +121,7 @@
       "id": "poverty-deviation-expected",
       "applies_to": {"program": "spm_poverty", "metrics": null},
       "severity": "definitional",
-      "text": "Deviations from official or survey-based poverty statistics are expected by construction and are never inherently problematic: Populace corrects survey benefit underreporting (benefit dollars are calibrated to administrative totals that exceed survey-reported amounts), so its poverty rates should differ from — typically sit below — survey-derived rates. Official numbers here are comparators, not truth, and poverty is a permanent calibration holdout: targets come from administrative systems only.",
+      "text": "Deviations from official or survey-based poverty statistics are expected by construction and are never inherently problematic: Populace corrects survey benefit underreporting (benefit dollars are calibrated to administrative totals that exceed survey-reported amounts), so its poverty rates should differ from — typically sit below — survey-derived rates. Official numbers here are comparators, not truth, and poverty is a permanent calibration holdout: modeled-outcome statistics are never targets (frame/structure margins like ACS population by geography remain legitimate ones).",
       "basis": "doctrine 2026-08-02 (Max); docs/replication-assessment.md §3-§4 (admin-dollar calibration; no poverty targets); scorecard_db/relationships.py::never_calibrate"
     },
     {

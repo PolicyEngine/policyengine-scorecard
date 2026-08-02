@@ -88,14 +88,17 @@ _MAP = {
     ("fullpart", None): (CR.HELD_OUT, None),
 }
 
-# Doctrine (Max, 2026-08-02): poverty and other survey-derived statistics are
-# PERMANENT holdouts — never calibration targets, not "not yet targeted".
-# Populace exists to fix the survey's defects through imputation, computed
-# taxes and benefits, and calibration to ADMINISTRATIVE systems; consuming a
-# survey-derived statistic would launder survey error back into the model and
-# destroy the validation signal these comparisons exist to provide. Release
-# gates may fail on held-out regressions (issue #1 point 3); fitting the
-# statistic is categorically different and prohibited.
+# Doctrine (Max, 2026-08-02, refined same day): MODELED-OUTCOME statistics
+# are PERMANENT holdouts — never calibration targets, not "not yet
+# targeted". The test is outcome-vs-frame, not survey-vs-admin: poverty
+# rates and other outputs of the simulated tax/benefit system embed exactly
+# the survey defects populace corrects, so fitting them launders the error
+# back in and destroys the validation signal. Frame/structure margins
+# (population, demographics, geography — e.g. ACS aggregates by
+# congressional district) are legitimate targets from the best available
+# source, admin preferred where it covers the same cell. Release gates may
+# fail on held-out regressions (issue #1 point 3); fitting the statistic is
+# categorically different and prohibited.
 PERMANENT_HOLDOUT_METRICS = frozenset(
     {
         Metric.POVERTY_RATE,
@@ -104,9 +107,11 @@ PERMANENT_HOLDOUT_METRICS = frozenset(
     }
 )
 PERMANENT_HOLDOUT_BASIS = (
-    "PERMANENT holdout — survey-derived statistic; targets come from "
-    "administrative systems only (doctrine 2026-08-02). Calibrating to it "
-    "would launder survey error back in and destroy the validation signal."
+    "PERMANENT holdout — modeled-outcome statistic (doctrine 2026-08-02): "
+    "poverty is an output of the simulated tax/benefit system, so fitting "
+    "it would launder survey error back in and destroy the validation "
+    "signal. Frame/structure margins (e.g. ACS population by geography) "
+    "remain legitimate targets; outcomes never are."
 )
 
 
