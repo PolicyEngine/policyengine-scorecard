@@ -2,7 +2,7 @@
 
 ## State
 
-Required context reads and the static evidence audit of all ten queue items are complete on branch `diagnosis-batch-1`. Drafting the two contracted deliverables is next. The audit remains restricted to static code reading and the supplied JSON data; no microsimulation runs were made. The separate 2026 projection/full-participation adjudication remains out of scope.
+Required context reads, all ten static audits, and the validated machine-readable diagnosis set are complete on branch `diagnosis-batch-1`. Drafting the maintainer memo is next. The audit remains restricted to static code reading and the supplied JSON data; no microsimulation runs were made. The separate 2026 projection/full-participation adjudication remains out of scope.
 
 ## Done
 
@@ -19,9 +19,9 @@ Required context reads and the static evidence audit of all ten queue items are 
 - Confirmed that the Early Head Start valuation defect contributes exactly zero to the scorecard's SPM poverty result because the certified `spm_unit_benefits` list omits both Head Start variables.
 - Rejected `17,312,260` as a TY2023 ACTC count: its underlying `22incd.csv` source is TY2022 despite a generated artifact's incorrect period label. No trustworthy local TY2023 count is available under the no-network constraint.
 - Used the rebuilt comparison at local commit `c80b6c4` as the authoritative calibration-relationship layer because the merged working-tree copy predates those two structural fields; the ten queued values are unchanged.
+- Wrote `diagnosis/diagnoses.json` with ten ordered records, complete deliverable keys, evidence-backed classifications, metric-specific calibration relationships, quantification, fix drafts, and open questions; validated its JSON syntax, IDs, keys, evidence presence, and split sum.
 
 ## Next
 
-- Write `diagnoses.json` with one evidence-backed record and fix draft per queue item.
 - Write the maintainer-facing `DIAGNOSES.md`, ordered by remediation importance and distinguishing calibration findings from held-out validation.
 - Validate JSON/schema/content consistency, request an independent read-only review, address findings, and commit the completed batch.
