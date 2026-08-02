@@ -44,7 +44,9 @@ CREATE TABLE IF NOT EXISTS external_scores (
     calibration_relationship TEXT NOT NULL CHECK (
         calibration_relationship IN
         ('consumed_as_target','seed_source','held_out')
-    )
+    ),
+    period_start INTEGER,
+    period_end INTEGER
 );
 CREATE INDEX IF NOT EXISTS idx_scores_source ON external_scores(source);
 CREATE INDEX IF NOT EXISTS idx_scores_geo ON external_scores(geography);
@@ -139,6 +141,28 @@ class ScorecardDB:
         self.conn = sqlite3.connect(self.path)
         self.conn.row_factory = sqlite3.Row
         self.conn.executescript(DDL)
+        self._migrate()
+
+    def _migrate(self):
+        """Bring a pre-existing file up to the current schema.
+
+        CREATE TABLE IF NOT EXISTS leaves old files untouched, so columns
+        added later (period_start/period_end, 2026-08-02) are ALTERed in.
+        The comparisons view stores its SELECT as text and expands s.* at
+        query time, so it needs no rebuild.
+        """
+        cols = {
+            r["name"]
+            for r in self.conn.execute(
+                "PRAGMA table_info(external_scores)"
+            )
+        }
+        with self.conn:
+            for col in ("period_start", "period_end"):
+                if col not in cols:
+                    self.conn.execute(
+                        f"ALTER TABLE external_scores ADD COLUMN {col} INTEGER"
+                    )
 
     def close(self):
         self.conn.close()
@@ -168,12 +192,19 @@ class ScorecardDB:
                     s.value_kind,
                     s.status,
                     s.calibration_relationship.value,
+                    s.period_start,
+                    s.period_end,
                 )
             )
         with self.conn:
             self.conn.executemany(
-                "INSERT OR REPLACE INTO external_scores VALUES "
-                "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                "INSERT OR REPLACE INTO external_scores"
+                " (claim_id, source, source_model, ledger_fact,"
+                " source_column, publication, reform_key, reform_json,"
+                " metric, unit_concept, period, time_basis, conditions,"
+                " geography, program, value, value_kind, status,"
+                " calibration_relationship, period_start, period_end)"
+                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 rows,
             )
         return len(rows)

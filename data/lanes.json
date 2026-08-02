@@ -3,7 +3,7 @@
   "stage": "registered | cataloged | ingested | computed | diagnosing | published | regressed",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-08-01",
+ "updated": "2026-08-02",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -190,30 +190,30 @@
    "source": "JCT",
    "area": "tax expenditures + revenue estimates",
    "mode": 2,
-   "stage": "registered",
+   "stage": "ingested",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "Ledger already carries JCT reform facts \u2014 consumed for those, held_out for new (#4)"
+   "updated": "2026-08-02",
+   "note": "6771 claims across 7 JCX conventional tables (per-provision \u00d7 FY2025-34; JCX-29/30 vs current-policy baseline); JCX-45-25 tax-expenditure report pending coordinate-aware parser"
   },
   {
    "id": "cbo-cost-estimates",
    "source": "CBO",
    "area": "per-bill cost estimates",
    "mode": 2,
-   "stage": "registered",
+   "stage": "ingested",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "#4"
+   "updated": "2026-08-02",
+   "note": "1 single-year claims from the PL 119-21 SNAP supplement (61367, Jan-2025 baseline vintage); OBBBA cost-estimate PDFs are period-ranged verbatim pointers pending period-window staging"
   },
   {
    "id": "tpc-distribution",
    "source": "TPC",
    "area": "distribution tables",
    "mode": 2,
-   "stage": "registered",
+   "stage": "ingested",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "#4"
+   "updated": "2026-08-02",
+   "note": "922 claims from 21 T-series tables (Senate-OBBBA distributions, CTC/AFA/WPTRA sets, tariffs); dropped: 468 tax-benefit-family rows (beyond vocab), 48 T26-0009 rows (by-race workbook, staging defect \u2014 re-harvest); T26-0010 page/file mismatch keyed off workbook-internal table (external-issue seed)"
   },
   {
    "id": "taxsim-cases",
@@ -244,6 +244,56 @@
    "running": false,
    "updated": "2026-08-01",
    "note": "Connector runnable per axiom-oracles#264 (#5)"
+  },
+  {
+   "id": "cbo-baseline",
+   "source": "CBO",
+   "area": "Feb-2026 baseline workbooks",
+   "mode": 1,
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-02",
+   "note": "930 Feb-2026 outlook claims (Medicaid/SSI/SNAP/UI/CHIP + 330-row IIT walk); 317 consumed_as_target (pre-verified vs pe-us calibration/gov/cbo); June-2026 spending refresh + 4 more artifacts pending browser fetch"
+  },
+  {
+   "id": "pwbm-reform-scores",
+   "source": "PWBM",
+   "area": "reform scores + distributions",
+   "mode": 2,
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-02",
+   "note": "717 claims: OBBBA signed/House (incl. primary-deficit Table 3), SS-benefit-tax elimination, KYPA/WATCA, TCJA-extension-baseline option sets; distribution income concept is after-tax-and-transfer"
+  },
+  {
+   "id": "tax-foundation-scores",
+   "source": "Tax Foundation",
+   "area": "revenue + tariff scores",
+   "mode": 2,
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-02",
+   "note": "663 claims: OBBBA conv/dyn revenue + provision-level TCJA permanence + tariff tracker (July-2026 vintage); state/district Datawrapper CSVs pending follow-up fetch"
+  },
+  {
+   "id": "budget-lab-scores",
+   "source": "Budget Lab",
+   "area": "budget + distribution scores",
+   "mode": 2,
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-02",
+   "note": "1229 claims: reconciliation distributional workbook (transfer-side complement), 16-scenario CTC options under two baselines, provision-level House-vs-Senate distributions, KYPA/WATCA, cap-gains indexing; %GDP, $/household and share-of-tax-cut columns held back (out of vocab)"
+  },
+  {
+   "id": "cpsp-poverty",
+   "source": "Columbia CPSP",
+   "area": "US poverty statistics",
+   "mode": 1,
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-02",
+   "note": "1033 claims: monthly SPM 2024-01\u21922025-12 (final series \u2014 project ended Dec 2025), CTC counterfactuals 2023/2024 at 100% take-up, state refundable-CTC designs, SNAP TFP-revocation state tables (TRIM3 2015-19 base); annual-SPM\u2248Census reviewed \u2192 held_out (no poverty targets in pe-us calibration); 16.6-vs-11.4 erratum diagnosed external_issue"
   }
  ]
 }

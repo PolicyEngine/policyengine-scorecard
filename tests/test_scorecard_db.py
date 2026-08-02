@@ -312,6 +312,122 @@ class TestInputOverrideFramework:
         ), "input-override descriptors must not look like parameter paths"
 
 
+class TestClaimIdBackCompat:
+    """2026-08-02 schema extensions must not move existing identities:
+    the DB on disk keys 30k urban claims by these hashes."""
+
+    def test_fixture_claim_id_unchanged(self):
+        assert score().claim_id() == "157243b61838075381ed"
+
+    def test_baseline_reform_key_unchanged(self):
+        assert BASELINE.key() == "03395a10966bb849"
+
+
+class TestPeriodRange:
+    def window(self, **kw):
+        base = dict(period=2034, period_start=2025, period_end=2034)
+        base.update(kw)
+        return score(**base)
+
+    def test_start_and_end_come_together(self):
+        with pytest.raises(ValueError):
+            score(period_start=2025)
+        with pytest.raises(ValueError):
+            score(period_end=2034)
+
+    def test_start_before_end(self):
+        with pytest.raises(ValueError):
+            self.window(period_start=2034)
+
+    def test_period_equals_end(self):
+        with pytest.raises(ValueError):
+            self.window(period=2025)
+        assert self.window().period == 2034
+
+    def test_window_id_distinct_from_single_year(self):
+        assert self.window().claim_id() != score(period=2034).claim_id()
+
+    def test_db_roundtrip(self, tmp_path):
+        db = ScorecardDB(tmp_path / "t.db")
+        w = self.window()
+        db.upsert_scores([w])
+        row = db.comparisons()[0]
+        assert (row["period_start"], row["period_end"]) == (2025, 2034)
+        db.close()
+
+
+class TestPolicyRef:
+    def test_requires_policy_slug(self):
+        with pytest.raises(ValueError):
+            ReformRef(framework="policy_ref")
+        with pytest.raises(ValueError):
+            ReformRef(framework="policy_ref", reform={"law": "PL 119-21"})
+
+    def test_baseline_descriptor_needs_slug(self):
+        with pytest.raises(ValueError):
+            ReformRef(
+                framework="policy_ref",
+                reform={"policy": "obbba"},
+                baseline={"note": "current policy"},
+            )
+
+    def test_rulespec_rejected(self):
+        with pytest.raises(ValueError):
+            ReformRef(
+                framework="policy_ref",
+                reform={"policy": "obbba"},
+                rulespec_ref="x",
+            )
+
+    def test_baseline_variant_changes_key(self):
+        plain = ReformRef(framework="policy_ref", reform={"policy": "o"})
+        vs_cp = ReformRef(
+            framework="policy_ref",
+            reform={"policy": "o"},
+            baseline={"policy": "current_policy"},
+        )
+        assert plain.key() != vs_cp.key()
+        assert ReformRef.from_json(vs_cp.to_json()).key() == vs_cp.key()
+
+
+class TestMigration:
+    """Opening a pre-window-schema file adds the new columns in place."""
+
+    _OLD_DDL = """
+    CREATE TABLE external_scores (
+        claim_id TEXT PRIMARY KEY, source TEXT NOT NULL,
+        source_model TEXT, ledger_fact TEXT, source_column TEXT,
+        publication TEXT NOT NULL DEFAULT '{}',
+        reform_key TEXT NOT NULL, reform_json TEXT NOT NULL,
+        metric TEXT NOT NULL, unit_concept TEXT NOT NULL,
+        period INTEGER NOT NULL, time_basis TEXT NOT NULL,
+        conditions TEXT NOT NULL DEFAULT '{}',
+        geography TEXT, program TEXT, value REAL,
+        value_kind TEXT NOT NULL, status TEXT NOT NULL,
+        calibration_relationship TEXT NOT NULL
+    );
+    """
+
+    def test_old_file_gains_period_columns(self, tmp_path):
+        import sqlite3
+
+        path = tmp_path / "old.db"
+        conn = sqlite3.connect(path)
+        conn.executescript(self._OLD_DDL)
+        conn.close()
+        db = ScorecardDB(path)
+        cols = {
+            r["name"]
+            for r in db.conn.execute("PRAGMA table_info(external_scores)")
+        }
+        assert {"period_start", "period_end"} <= cols
+        db.upsert_scores(
+            [score(period=2034, period_start=2025, period_end=2034)]
+        )
+        assert db.comparisons()[0]["period_start"] == 2025
+        db.close()
+
+
 class TestPlatformProbe:
     """ingest_platform must rebuild ingest_urban's claim identities exactly."""
 
