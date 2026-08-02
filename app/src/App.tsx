@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Comparison, Row } from "./types";
+import type { Comparison, LanesFeed, Row } from "./types";
 import { PROGRAM_LABELS } from "./types";
 import { bucketOf, type SpineBucket } from "./spine";
 import { CoverageSpine } from "./components/CoverageSpine";
@@ -7,6 +7,7 @@ import { ComparisonTable } from "./components/ComparisonTable";
 import { DivergenceBoard } from "./components/DivergenceBoard";
 import { GapsView } from "./components/GapsView";
 import { AboutView } from "./components/AboutView";
+import { MissionControl } from "./components/MissionControl";
 
 const TABS = [
   { id: "scorecard", label: "Scorecard" },
@@ -34,6 +35,7 @@ const DEFAULT_FILTERS: Filters = {
 
 export default function App() {
   const [data, setData] = useState<Comparison | null>(null);
+  const [lanes, setLanes] = useState<LanesFeed | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<TabId>("scorecard");
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
@@ -46,6 +48,10 @@ export default function App() {
       })
       .then(setData)
       .catch((e) => setError(String(e)));
+    fetch("./data/lanes.json")
+      .then((r) => (r.ok ? r.json() : null))
+      .then(setLanes)
+      .catch(() => setLanes(null));
   }, []);
 
   const buckets = useMemo(() => {
@@ -114,6 +120,7 @@ export default function App() {
             setTab("scorecard");
           }}
         />
+        <MissionControl data={data} lanes={lanes} />
       </div>
 
       <nav

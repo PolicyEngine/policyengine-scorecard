@@ -6,6 +6,27 @@ export type Status =
   | "not_computed"
   | "suppressed";
 
+export type CalibrationRelationship =
+  | "consumed_as_target"
+  | "seed_source"
+  | "held_out";
+
+export interface Lane {
+  id: string;
+  source: string;
+  area: string;
+  mode: number;
+  stage: string;
+  running: boolean;
+  updated: string;
+  note: string;
+}
+
+export interface LanesFeed {
+  updated: string;
+  lanes: Lane[];
+}
+
 export interface Row {
   source: string;
   program: string;
@@ -25,7 +46,15 @@ export interface Row {
   delta: number | null;
   annotations: string[];
   source_column: string;
+  calibration_relationship: CalibrationRelationship;
+  calibration_basis: string;
 }
+
+export const RELATIONSHIP_LABELS: Record<CalibrationRelationship, string> = {
+  consumed_as_target: "target consumed",
+  seed_source: "seed source",
+  held_out: "held out",
+};
 
 export interface Annotation {
   id: string;

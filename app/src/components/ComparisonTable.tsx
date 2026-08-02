@@ -268,6 +268,16 @@ function RowLine({
       </td>
       <td className="px-2 py-1.5">
         <StatusChip bucket={bucket} status={row.status} />
+        {row.calibration_relationship !== "held_out" && (
+          <span
+            className="ml-1 align-middle rounded-sm border border-dashed border-border px-1 py-px text-[9px] uppercase tracking-wide text-muted-foreground"
+            title={row.calibration_basis}
+          >
+            {row.calibration_relationship === "seed_source"
+              ? "seed"
+              : "target"}
+          </span>
+        )}
         {row.annotations.length > 0 && (
           <span
             className="ml-1.5 align-middle text-[10px] text-muted-foreground"
@@ -345,6 +355,12 @@ function RowDetail({ row, data }: { row: Row; data: Comparison }) {
               {row.pe_value_2026 !== null &&
                 " · 2026 projection: same artifact, engine-side uprating"}{" "}
               · source column <span className="fig">{row.source_column}</span>
+            </p>
+            <p className="mt-2 text-muted-foreground">
+              <span className="mr-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide">
+                {row.calibration_relationship.replace(/_/g, " ")}
+              </span>
+              {row.calibration_basis}
             </p>
           </div>
           <div>
