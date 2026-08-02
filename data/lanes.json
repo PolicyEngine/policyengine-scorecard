@@ -213,7 +213,7 @@
    "stage": "ingested",
    "running": false,
    "updated": "2026-08-02",
-   "note": "922 claims from 21 T-series tables (Senate-OBBBA distributions, CTC/AFA/WPTRA sets, tariffs); dropped: 468 tax-benefit-family rows (beyond vocab), 48 T26-0009 rows (by-race workbook, staging defect \u2014 re-harvest); T26-0010 page/file mismatch keyed off workbook-internal table (external-issue seed)"
+   "note": "1057 claims from 31 T-series tables (Senate-OBBBA distributions, OBBBA-by-race, CTC/AFA/WPTRA sets, tariffs); dropped: 468 tax-benefit-family rows (beyond vocab); T26-0009 re-staged per-sheet after the harvest parse defect (race as subgroup condition); T26-0010 page/file mismatch keyed off workbook-internal table (external-issue seed)"
   },
   {
    "id": "taxsim-cases",

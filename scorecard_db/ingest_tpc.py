@@ -19,7 +19,19 @@ overrides verified against the sha256-manifested workbooks:
 Cross-source reform keys: JCX-35-25 / T25-0229 / T25-0236 / T26-0009 all
 score the enacted Title VII text (obbba_enacted_title_vii); the
 manager's-amendment distributions join JCX-31-25's world
-(obbba_senate_managers_20250628).
+(obbba_senate_managers_20250628). T26-0009 (published March 2026, after
+enactment) states its counterfactual baseline explicitly — "Law Prior to
+the 2025 Budget Reconciliation Act" — so its rows ride
+ReformRef.baseline = pre_obbba_law and key separately from the
+current-law-baseline 2025 scorings of the same text.
+
+T26-0009's original staging was verified defective against the manifested
+workbook (the five-sheet by-racial/ethnic-group set; the generic parser
+merged the per-sheet tax-change and baseline panels and collapsed the
+race axis). Its rows were excluded from the first ingest and re-staged by
+the coordinate-pinned sources/harvest-2026-08-02/tpc/reparse_t26_0009.py:
+race rides conditions["subgroup"] (absent on the all-tax-units rows),
+percent and dollar columns land in their own metrics.
 """
 
 from __future__ import annotations
@@ -71,6 +83,13 @@ TABLES = {
         "trump_tariffs_announced_20250120_20251023", PRE_2025_TARIFFS,
         None, "Baseline: Current Law with Pre-2025 Tariffs",
     ),
+    "T26-0009": (
+        # Post-enactment scoring of the enacted text: same slug as
+        # T25-0229/T25-0236/JCX-35-25, distinguished by the explicit
+        # pre-OBBBA baseline the workbook states.
+        ENACTED_VII, PRE_OBBBA, None,
+        "Baseline: Law Prior to the 2025 Budget Reconciliation Act",
+    ),
     "T26-0010": (
         # File-internal truth (see module docstring); page title is wrong.
         "trump_tariffs_announced_20250120_20260402", PRE_2025_TARIFFS,
@@ -114,20 +133,12 @@ TABLES = {
     ),
 }
 
-# Staged rows verified DEFECTIVE against the manifested artifact — held
-# out of the DB pending re-harvest, never ingested wrong.
-EXCLUDED_TABLES = {
-    "T26-0009": (
-        "workbook is the OBBBA-by-racial/ethnic-group set (five sheets: "
-        "All + White/Black/Hispanic/Additional Races, each a baseline "
-        "panel plus a tax-change panel); staging collapsed the race axis "
-        "and mixed dollar columns into pct rows (e.g. 1020.0 staged as "
-        "percent). Needs a per-sheet coordinate-aware re-parse."
-    ),
-}
-
 INCOME_AXES = {
     "Expanded Cash Income Percentile 2,": "Expanded Cash Income Percentile",
+    # Full footnote-marked header, staged verbatim by the T26-0009
+    # coordinate re-parse (the generic parser's footnote-stripper had
+    # truncated "2,3" to "2,").
+    "Expanded Cash Income Percentile 2,3": "Expanded Cash Income Percentile",
     "Tax Units with a Tax Increase or Tax Cut, by Expanded Cash Income"
     " Percentile, 2025": "Expanded Cash Income Percentile",
     "Distribution of Federal Tax Change by Expanded Cash Income"
@@ -158,20 +169,20 @@ _KNOWN_FIELDS = frozenset(
     }
 )
 _KNOWN_CONDITIONS = frozenset(
-    {"geography", "income_group", "income_axis", "provision_row", "option"}
+    {
+        "geography", "income_group", "income_axis", "provision_row",
+        "option", "subgroup",
+    }
 )
 
 
 def stage_scores() -> tuple[list[ExternalScore], dict]:
     scores = []
-    dropped = {"benefit_family": 0, "defective_staging": 0}
+    dropped = {"benefit_family": 0}
     for row in load_staged("tpc"):
         require_fields(row, _KNOWN_FIELDS, "tpc")
         if row.get("beyond_mission_vocab"):
             dropped["benefit_family"] += 1
-            continue
-        if row["table_id"] in EXCLUDED_TABLES:
-            dropped["defective_staging"] += 1
             continue
         staged_conds = dict(row["conditions"])
         unknown = set(staged_conds) - _KNOWN_CONDITIONS
@@ -208,6 +219,8 @@ def stage_scores() -> tuple[list[ExternalScore], dict]:
             conditions["provision"] = staged_conds["provision_row"]
         if "option" in staged_conds:
             conditions["option"] = staged_conds["option"]
+        if "subgroup" in staged_conds:
+            conditions["subgroup"] = staged_conds["subgroup"]
         with_baseline_condition(conditions, reform)
 
         period = row["period"]
@@ -266,16 +279,17 @@ def stage_scores() -> tuple[list[ExternalScore], dict]:
 
 def ingest(db_path: Path) -> dict:
     scores, dropped = stage_scores()
+    n_tables = len({s.publication["table_id"] for s in scores})
     db = ScorecardDB(db_path)
     n = db.upsert_scores(scores)
     db.set_lane(
         "tpc-distribution",
         "ingested",
-        f"{n} claims from 21 T-series tables (Senate-OBBBA distributions, "
-        f"CTC/AFA/WPTRA sets, tariffs); dropped: "
-        f"{dropped['benefit_family']} tax-benefit-family rows (beyond "
-        f"vocab), {dropped['defective_staging']} T26-0009 rows (by-race "
-        "workbook, staging defect — re-harvest); T26-0010 page/file "
+        f"{n} claims from {n_tables} T-series tables (Senate-OBBBA "
+        "distributions, OBBBA-by-race, CTC/AFA/WPTRA sets, tariffs); "
+        f"dropped: {dropped['benefit_family']} tax-benefit-family rows "
+        "(beyond vocab); T26-0009 re-staged per-sheet after the harvest "
+        "parse defect (race as subgroup condition); T26-0010 page/file "
         "mismatch keyed off workbook-internal table (external-issue seed)",
         "2026-08-02",
     )

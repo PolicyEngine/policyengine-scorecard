@@ -51,8 +51,9 @@ Run before committing the ingest (2026-08-02). Two layers:
 - **TPC T26-0009 staging defective** (verified against the workbook):
   it is the OBBBA-by-racial/ethnic-group five-sheet set; staging
   collapsed the race axis and mixed dollar columns into percent rows.
-  Its 48 rows are excluded pending a per-sheet re-parse
-  (`ingest_tpc.EXCLUDED_TABLES`).
+  Its 48 rows were excluded from the first ingest
+  (`ingest_tpc.EXCLUDED_TABLES`) and later replaced by a per-sheet
+  re-parse — see the addendum below.
 - **Same-statistic republication twins** (TF page vs XLSX; TPC
   distribution vs cut/increase tables; BL Table 1 vs Table 3): merged
   with rounding-consistency assertions, twin provenance kept under
@@ -73,3 +74,32 @@ Run before committing the ingest (2026-08-02). Two layers:
   Census reviewed: policyengine-us calibration consumes Census only for
   population totals (calibration/gov/census/populations/), no SPM or
   poverty targets — held_out stands.
+
+## Addendum — T26-0009 per-sheet re-parse (2026-08-02)
+
+The 48 defective rows were replaced by
+`tpc/reparse_t26_0009.py` (coordinate-pinned: title block, header
+anchors, row labels, and the baseline panel's position are asserted
+verbatim on every sheet before any value is read). 135 rows staged:
+5 sheets (All Tax Units + White/Black non-Hispanic, Hispanic, Additional
+Races as `conditions.subgroup`) x 9 income groups x 3 metrics
+(share_with_tax_cut C / pct_change_after_tax_income K /
+avg_tax_change_usd O, tax-change panel rows 15-25 only). Checks run
+before commit:
+
+| check | result | detail |
+|---|---|---|
+| sha256 T26-0009.xlsx == manifest | MATCH | 2ff5369423befd72 |
+| staged rows re-verified against the workbook cell each publication names | 135/135 MATCH | reparse_t26_0009.verify |
+| coverage is the full sheet x group x metric cross-product | MATCH | 5 x 9 x 3 |
+| hand-transcribed spot values (raw openpyxl dump, independent of the parser) | 18/18 MATCH | e.g. All!K20 2.8, White!O19 −12710, Black!C15 57.3, Hispanic!K25 4.0, Additional Races!O25 −26820 |
+| baseline-panel dollar cells absent from staged values | MATCH | 1020 / 50060 / 19900 / 20910 not staged |
+| percent-unit rows on the percent scale | MATCH | all in [−10, 100]; dollar rows integer-valued |
+
+Ingest: rows ride `obbba_enacted_title_vii` against
+`ReformRef.baseline = {"policy": "pre_obbba_law"}` (the workbook's
+stated "Law Prior to the 2025 Budget Reconciliation Act"), keyed
+separately from the current-law-baseline 2025 scorings of the same text
+(T25-0229/0236, JCX-35-25). TPC claims 922 → 1,057; harvest total
+12,266 → 12,401. Spot values are asserted in
+tests/test_harvest_ingest.py (TestTPC.test_t26_0009_*).
