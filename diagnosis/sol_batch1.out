@@ -1,0 +1,9 @@
+Completed diagnosis batch 1 on `diagnosis-batch-1`.
+
+- Final memo: [DIAGNOSES.md](/Users/maxghenis/PolicyEngine/_worktrees/scorecard-diagnosis/diagnosis/DIAGNOSES.md)
+- Machine-readable results: [diagnoses.json](/Users/maxghenis/PolicyEngine/_worktrees/scorecard-diagnosis/diagnosis/diagnoses.json)
+- Final state log: [PROGRESS.md](/Users/maxghenis/PolicyEngine/_worktrees/scorecard-diagnosis/diagnosis/PROGRESS.md)
+
+All ten items were audited, independently reviewed, corrected, and validated. The JSON contract passes, the branch is clean, and the final commit is `b01b250`. No push was made.
+
+One documented evidence limitation remains: the trustworthy local ACTC source is TY2022, not TY2023; the memo rejects mislabeling its 17,312,260 count and records TY2023 verification as an open question.
