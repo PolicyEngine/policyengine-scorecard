@@ -17,7 +17,6 @@ from pathlib import Path
 from .db import ScorecardDB
 from .models import (
     BASELINE,
-    CalibrationRelationship,
     ComparisonStatus,
     ExternalScore,
     Metric,
@@ -26,6 +25,7 @@ from .models import (
     TimeBasis,
     UnitConcept,
 )
+from .relationships import effective_relationship
 
 COMPARISON_DIR = Path.home() / "populace-sotsn-takeup" / "comparison"
 
@@ -40,20 +40,24 @@ PUBLICATION = {
 }
 
 # All take-up gates forced True — the published "full participation" world.
+# Input-override descriptor, NOT a parametric reform: no such parameter path
+# exists in policyengine-us; the pipeline executes this via set_input on the
+# take-up flag variables (monthly variables set per month).
 FULLPART_REFORM = ReformRef(
-    framework="policyengine_us",
-    reform={"gov.simulation.take_up.all_flags": {"2024-01-01.2026-12-31": True}},
+    framework="policyengine_us_inputs",
+    reform={"takes_up_*": True, "would_claim_wic": True},
 )
 
 
 def solo_reform(program: str) -> ReformRef:
+    """Single-program forced take-up world (input-override descriptor)."""
+    flag = (
+        "would_claim_wic" if program == "wic"
+        else f"takes_up_{program}_if_eligible"
+    )
     return ReformRef(
-        framework="policyengine_us",
-        reform={
-            f"gov.simulation.take_up.{program}": {
-                "2024-01-01.2026-12-31": True
-            }
-        },
+        framework="policyengine_us_inputs",
+        reform={flag: True},
     )
 
 
@@ -126,6 +130,7 @@ def urban_scores(tidy_csv: Path) -> list[ExternalScore]:
         if program == "fullpart" and r["breakdown"] == "child":
             conditions["subgroup"] = "child"
         suppressed = r["value"] in ("", "None")
+        relationship, _basis = effective_relationship(program, metric)
         scores.append(
             ExternalScore(
                 source="urban_sotsn",
@@ -137,7 +142,7 @@ def urban_scores(tidy_csv: Path) -> list[ExternalScore]:
                 value=None if suppressed else float(r["value"]),
                 conditions=conditions,
                 reform=reform,
-                calibration_relationship=CalibrationRelationship.HELD_OUT,
+                calibration_relationship=relationship,
                 source_column=r.get("raw") or None,
                 publication=PUBLICATION,
                 value_kind=r["value_kind"] if not suppressed else "count",

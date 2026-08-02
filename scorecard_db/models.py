@@ -107,10 +107,18 @@ class ReformRef:
     baseline: Optional[dict] = None
     rulespec_ref: Optional[str] = None  # axiom, reserved
 
+    # policyengine_us/_uk: executable parametric reform dicts (parameter
+    # path -> period-keyed values). policyengine_us_inputs/_uk_inputs:
+    # counterfactuals defined by INPUT-VARIABLE overrides (e.g. forcing
+    # take-up flags), which are not expressible as parameter paths — the
+    # dict is a descriptor {variable: value}, executed by the pipeline's
+    # set_input machinery, not by a Reform class.
     VALID_FRAMEWORKS = (
         "baseline",
         "policyengine_us",
         "policyengine_uk",
+        "policyengine_us_inputs",
+        "policyengine_uk_inputs",
         "axiom",
     )
 
