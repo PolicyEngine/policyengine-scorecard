@@ -3,6 +3,7 @@ import { divergenceScore, fmtDivergence, fmtValue } from "../format";
 import type { Comparison, Row } from "../types";
 import { METRIC_LABELS, PROGRAM_LABELS } from "../types";
 import type { SpineBucket } from "../spine";
+import { AttributionPanel } from "./AttributionPanel";
 
 /**
  * The diagnosis queue: the largest material divergences among rows where the
@@ -33,6 +34,7 @@ export function DivergenceBoard({
   const states = candidates.filter((r) => r.geography !== "US").slice(0, 30);
 
   return (
+    <div>
     <div className="grid gap-8 lg:grid-cols-2">
       <section>
         <h2 className="mb-1 text-lg font-semibold">National</h2>
@@ -66,6 +68,8 @@ export function DivergenceBoard({
           ))}
         </ol>
       </section>
+    </div>
+    <AttributionPanel />
     </div>
   );
 }

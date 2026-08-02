@@ -2,3 +2,39 @@
 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
 [   16.5s] === run baseline: sim ready ===
 [   17.0s] denominators done
+[  149.7s] snap done
+[  150.0s] ssi done
+[  150.6s] tanf done
+[  157.8s] wic done
+[  157.8s] eitc/ctc done
+[  157.8s] housing done
+[  186.7s] poverty done (var=spm_unit_is_in_spm_poverty)
+[  186.7s] === run baseline complete: 9838 cumulative rows ===
+[  188.1s] persisted 9838 rows after baseline
+[  188.1s] === run fullpart_all: constructing sim ===
+[  193.6s]   flag means after set: {'takes_up_aca_if_eligible': 1.0, 'takes_up_eitc': 1.0, 'takes_up_head_start_if_eligible': 1.0, 'takes_up_housing_assistance_if_eligible': 1.0, 'takes_up_medicaid_if_eligible': 1.0, 'takes_up_medicare_if_eligible': 1.0, 'takes_up_snap_if_eligible': 1.0, 'takes_up_ssi_if_eligible': 1.0, 'takes_up_tanf_if_eligible': 1.0, 'would_claim_wic': 1.0}
+[  193.6s] === run fullpart_all: sim ready ===
+[  193.9s] denominators done
+[  330.2s] snap done
+[  330.7s] ssi done
+[  331.4s] tanf done
+[  341.2s] wic done
+[  341.3s] eitc/ctc done
+[  341.3s] housing done
+[  359.5s] poverty done (var=spm_unit_is_in_spm_poverty)
+[  359.5s] === run fullpart_all complete: 19676 cumulative rows ===
+[  362.5s] persisted 19676 rows after fullpart_all
+[  362.5s] === run fullpart_urban6: constructing sim ===
+[  371.0s]   flag means after set: {'takes_up_snap_if_eligible': 1.0, 'takes_up_ssi_if_eligible': 1.0, 'takes_up_tanf_if_eligible': 1.0, 'takes_up_housing_assistance_if_eligible': 1.0, 'takes_up_eitc': 1.0, 'would_claim_wic': 1.0}
+[  371.0s] === run fullpart_urban6: sim ready ===
+[  371.3s] denominators done
+[  629.4s] snap done
+[  629.7s] ssi done
+[  630.2s] tanf done
+[  642.6s] wic done
+[  643.2s] eitc/ctc done
+[  644.3s] housing done
+[  692.6s] poverty done (var=spm_unit_is_in_spm_poverty)
+[  692.6s] === run fullpart_urban6 complete: 29514 cumulative rows ===
+[  703.5s] persisted 29514 rows after fullpart_urban6
+[  703.5s] DONE: 29514 rows -> /Users/maxghenis/PolicyEngine/policyengine-scorecard/data/pe
