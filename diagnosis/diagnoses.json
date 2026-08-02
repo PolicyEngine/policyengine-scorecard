@@ -9,8 +9,8 @@
       "c80b6c4:data/comparison.json, SNAP/US/total rows: eligible_count is held_out; participation_rate is consumed_as_target through FNS average-month household counts, not a direct person target.",
       "pipeline/compute_counterparts.py:300-306 maps the SPM-unit annual SNAP amount and eligibility result to every person, so it counts all SPM-unit members rather than identified SNAP assistance-unit members.",
       "PEUS@92e6052d3e:policyengine_us/variables/gov/usda/snap/snap.py:4-35 defines monthly SNAP at SPM-unit level and applies an annual SPM-unit take-up flag.",
-      "POP:tools/build_us_target_parity_manifest.py:179-198 says the FNS person indicator overcounts by about 50% in PE because the model lacks sub-unit participation; the calibrated counterpart is the household caseload.",
-      "POP:packages/populace-build/tests/test_us_fiscal_targets.py:1130-1149 deliberately excludes FNS average-month person targets until sub-unit participation is modeled.",
+      "POP@8828dee:tools/build_us_target_parity_manifest.py:179-198 says the FNS person indicator overcounts by about 50% in PE because the model lacks sub-unit participation; the calibrated counterpart is the household caseload.",
+      "POP@8828dee:packages/populace-build/tests/test_us_fiscal_targets.py:1130-1149 deliberately excludes FNS average-month person targets until sub-unit participation is modeled.",
       "USDA FNS SNAP Monthly State Participation and Benefit Summary FY69 to Current, US Summary row 21 column C: 42,176,946.1667 average-month persons in FY2023 and 41,690,237.75 in FY2024; LEDGER:tests/test_ledger_source_package.py:2932-3006 verifies the FY2024 series.",
       "docs/replication-assessment.md:38-60,64-78,130-135 distinguishes Urban's 2023 average-month caseload from PE's annual 2024 construction and Build P's household-count calibration."
     ],
@@ -36,9 +36,9 @@
       "c80b6c4:data/comparison.json, TANF/US/total rows: eligible_count is held_out and participation_rate is seed_source, based on the ASPE 0.219 TRIM3 rate; it is not independent validation.",
       "PEUS@92e6052d3e:policyengine_us/variables/gov/hhs/tanf/cash/tanf.py:3-80 enumerates and sums all 51 state/DC cash programs, ruling out a simple missing-state aggregator stub.",
       "PEUS@92e6052d3e:policyengine_us/variables/gov/hhs/tanf/cash/eligibility/is_tanf_enrolled.py:4-9 is an input-only Boolean; unspecified Booleans default false under policyengine-core variables/config.py:8-15 and variables/variable.py:196-201.",
-      "POP:packages/populace-build/src/populace/build/us/take_up_contract.json:30-45 seeds TANF at 0.219 but states that no ASEC PAW receipt anchor is threaded through the base spine.",
+      "POP@8828dee:packages/populace-build/src/populace/build/us/take_up_contract.json:30-45 seeds TANF at 0.219 but states that no ASEC PAW receipt anchor is threaded through the base spine.",
       "PEUS@92e6052d3e TX tx_tanf_income_eligible.py:14-40, IN in_tanf_countable_income_eligible.py:17-44, and DE de_tanf_net_income_eligible.py:12-28 branch on is_tanf_enrolled, so forced take-up still uses applicant rules when that input is false.",
-      "POP:tools/build_us_target_parity_manifest.py:469-507 defers ACF family and recipient counts because no TANF receipt indicator is wired; only cash dollars are compiled.",
+      "POP@8828dee:tools/build_us_target_parity_manifest.py:469-507 defers ACF family and recipient counts because no TANF receipt indicator is wired; only cash dollars are compiled.",
       "Build P calibration_diagnostics.json, hhs_acf_tanf FY2024 US basic assistance: $7,788,317,474.55 target versus $4,973,467,154.25 final (-36.1419566%); this divergence is on a consumed target.",
       "data/pe/pe_metrics.json: full-participation positive TANF persons = 8,495,755.523 and baseline persons = 3,469,582.981."
     ],
@@ -66,7 +66,7 @@
       "PEUS@92e6052d3e:policyengine_us/variables/gov/irs/credits/earned_income/eligibility/eitc_eligible.py:11-27 applies demographic, investment-income, filer-identification, and separate-filer tests.",
       "PEUS@92e6052d3e eitc_investment_income_eligible.py:11-14, filer_meets_eitc_identification_requirements.py:14-22, and filing_status.py:20-40 implement the named investment, identification, and separate-filer channels.",
       "PEUS@92e6052d3e:policyengine_us/variables/gov/irs/credits/earned_income/eitc.py:13-31 additionally requires a filer and multiplies by the take-up flag.",
-      "POP:packages/populace-build/src/populace/build/us/take_up_contract.json:48-63 cites National Taxpayer Advocate 2020 Report to Congress, volume 3, figure A.7: TY2016 EITC participation was 78% overall, with child-bin rates used only for seeding.",
+      "POP@8828dee:packages/populace-build/src/populace/build/us/take_up_contract.json:48-63 cites National Taxpayer Advocate 2020 Report to Congress, volume 3, figure A.7: TY2016 EITC participation was 78% overall, with child-bin rates used only for seeding.",
       "Build P calibration_diagnostics.json, irs_soi.ty2022.historic_table_2.us.all.eitc_claims@2024: 23,692,190 target versus 23,685,601 final (-0.0278%).",
       "docs/replication-assessment.md:50-66,74-81 notes that SOI claims can include erroneous claims and that Urban omits a participation rate partly because claims exceed its simulated eligibles.",
       "data/pe/pe_metrics.json: forced positive-credit tax units = 26,939,208.405; baseline claims = 23,685,601.235."
@@ -89,7 +89,7 @@
     "title": "Refundable CTC compares a claims-shaped PE count with ATTIS eligibility",
     "classification": "concept_mismatch",
     "split": null,
-    "confidence": "high",
+    "confidence": "medium",
     "evidence": [
       "c80b6c4:data/comparison.json, CTC refund/US/total eligible_count: consumed_as_target; calibration_basis says ACTC claims and dollars are SOI-targeted, no take-up flag exists, and the count is claims-shaped.",
       "PEUS@92e6052d3e:policyengine_us/variables/gov/irs/credits/ctc/refundable/refundable_ctc.py:13-38 computes a rules-based positive credit without a filing or take-up multiplier.",
@@ -119,15 +119,15 @@
     "evidence": [
       "c80b6c4:data/comparison.json, SSI/US rows: eligible_count is held_out payable-under-forced; participation_rate is consumed_as_target through SSA recipient controls.",
       "c80b6c4:data/comparison.json age rows: PE versus Urban payable adults are 1.335M vs 0.861M ages 18-24, 3.783M vs 4.526M ages 25-59, 0.162M vs 1.083M ages 60-64, and 4.713M vs 6.132M ages 65+.",
-      "POP:packages/populace-build/src/populace/build/us_runtime/ssi_take_up.py:164-210 binds SSA adult recipient controls only for pooled 18-64 and 65+ bands.",
+      "POP@8828dee:packages/populace-build/src/populace/build/us_runtime/ssi_take_up.py:164-210 binds SSA adult recipient controls only for pooled 18-64 and 65+ bands.",
       "SSA SSI Monthly Statistics, December 2024, table 1 federal-payment recipients: 3,905,779 ages 18-64 and 2,382,142 ages 65+; LEDGER:packages/ssa/ssi_monthly_statistics_2024_12/source_package.yaml:84-127,146-158.",
-      "POP:packages/populace-build/src/populace/build/us_runtime/ssi_disability_criteria.py:1-29,143-158,924-1043 trains the under-65 latent disability criterion on 577 positive and 8,769 negative SIPP records and hard-gates predictions to measured disability, SSDI, or disability-income signals.",
-      "POP:packages/populace-build/src/populace/build/us_runtime/ssi_disability_criteria.py:1167-1205 checks a global true-share band and reporter preservation, not adult age-shape fidelity.",
+      "POP@8828dee:packages/populace-build/src/populace/build/us_runtime/ssi_disability_criteria.py:1-29,143-158,924-1043 trains the under-65 latent disability criterion on 577 positive and 8,769 negative SIPP records and hard-gates predictions to measured disability, SSDI, or disability-income signals.",
+      "POP@8828dee:packages/populace-build/src/populace/build/us_runtime/ssi_disability_criteria.py:1167-1205 checks a global true-share band and reporter preservation, not adult age-shape fidelity.",
       "PEUS@92e6052d3e is_ssi_eligible.py:4-18, uncapped_ssi.py:4-16, and ssi.py:13-40 require ABD/resource/immigration eligibility and a positive federal benefit after countable income before applying take-up.",
       "PEUS@92e6052d3e:policyengine_us/variables/gov/ssa/ssi/ssi_amount_if_eligible.py:15-70 covers the federal FBR and living-arrangement rules but not state supplementary-payment or essential-person amounts.",
       "SSA Annual Statistical Supplement 2025 table 7.B1 reports 7,404,820 federally administered recipients versus 7,289,843 federal-payment recipients, only 114,977 state-supplement-only recipients; LEDGER SSI table 7.B1 and December 2024 table 1 CSVs."
     ],
-    "quantification": "The held-out PE payable denominator is 2.609M (20.7%) below Urban. PE is +55.0% at ages 18-24, -16.4% at 25-59, -85.0% at 60-64, and -23.1% at 65+. Multiplying each model's eligible count by its rate implies PE participants of 0.955M, 2.835M, 0.117M, and 2.454M versus Urban/admin numerators of 0.495M, 2.743M, 0.782M, and 2.404M. PE approximately meets the consumed pooled 18-64 and 65+ counts while shifting about 0.66M recipients out of ages 60-64 and about 0.46M into ages 18-24. The broader federally administered universe adds only 114,977 state-supplement-only recipients, 4.4% of the 2.609M eligibility gap.",
+    "quantification": "The held-out PE payable denominator is 2.609M (20.7%) below Urban. PE is +55.0% at ages 18-24, -16.4% at 25-59, -85.0% at 60-64, and -23.1% at 65+. Multiplying each model's eligible count by its rate implies PE participants of 0.955M, 2.835M, 0.117M, and 2.454M versus Urban/admin numerators of 0.495M, 2.743M, 0.782M, and 2.404M. PE approximately meets the consumed pooled 18-64 and 65+ counts while shifting about 0.66M recipients out of ages 60-64 and about 0.46M into ages 18-24. SSA reports 114,977 more federally administered than federal-payment recipients, but that recipient difference does not bound the corresponding eligible population without a take-up assumption.",
     "fix_draft": {
       "type": "pe_issue",
       "title": "Validate SSI payable eligibility and recipient composition in finer adult age bands",
@@ -153,23 +153,23 @@
       "c80b6c4:data/comparison.json, housing/US/total rows: every quantity is held_out with calibration_basis 'zero housing targets'; PE reports 25,386,222 eligible SPM units and 2.714% participation versus Urban's 16,781,000 households and 26.0%.",
       "PEUS@92e6052d3e:policyengine_us/variables/gov/hud/is_eligible_for_housing_assistance.py:69-88 defines eligibility as current receipt or renter in especially-low, very-low, or low income levels, through 80% AMI.",
       "PEUS@92e6052d3e housing_assistance.py:4-18, hud_hap.py:4-18, and hud_max_subsidy.py:4-16 compute assistance as HAP times take-up, capped by payment standard or gross rent less tenant payment.",
-      "POP:packages/populace-build/src/populace/build/us_runtime/housing_inputs.py:1-20,491-520,974-1131 anchors take-up to measured CPS SPM_CAPHOUSESUB receipt (plus CPS-to-PUF prediction) and deliberately adds no unobserved recipients.",
-      "POP:packages/populace-build/src/populace/build/us/target_parity_manifest.json:513-521 records HUD housing assistance as a source-absent exclusion pending Ledger HUD ingest.",
-      "data/pe/pe_metrics.json and scorecard result extract: 25.386M eligible, 2.681M weighted receipt/take-up flags, 0.689M with positive housing_assistance, and $5.571B HAP.",
+      "POP@8828dee:packages/populace-build/src/populace/build/us_runtime/housing_inputs.py:1-20,491-520,974-1131 anchors take-up to measured CPS SPM_CAPHOUSESUB receipt (plus CPS-to-PUF prediction) and deliberately adds no unobserved recipients.",
+      "POP@8828dee:packages/populace-build/src/populace/build/us/target_parity_manifest.json:513-521 records HUD housing assistance as a source-absent exclusion pending Ledger HUD ingest.",
+      "data/pe/pe_metrics.json: PE has 25.386M eligible SPM units, 0.689M units with positive housing_assistance, and $5.571B HAP.",
       "docs/replication-assessment.md:85,113,124 benchmarks roughly 4.6M HUD-assisted households and more than $50B against PE's 0.69M positive units and $5.6B; it also identifies the needed <=50%-AMI variant.",
       "Archived policyengine-us-data@42ed5d45:policyengine_us_data/db/etl_housing_assistance.py:77-131 specifies HUD Picture of Subsidized Households, Summary of All HUD Programs, number_reported, as a December national/state assisted-household target."
     ],
-    "quantification": "PE's <=80%-AMI SPM-unit denominator is 8.605M (51.3%) above Urban's <=50%-AMI household denominator. Urban participants inferred from eligible minus gap are 4.358M; PE has only 0.689M positive HAP units, a 3.669M (84.2%) shortfall. PE's stored receipt flag covers 2.681M eligible units (10.56%); HAP is zero for 1.992M, or 74.3%, of those flagged units. A symmetric Shapley decomposition of the 23.29-point rate gap assigns 5.10 points (21.9%) to the denominator concept and 18.16 points (78.1%) to participation/HAP, giving the 0.22/0.78 split. PE's $5.571B is at most about 11% of the documented $50B-plus benchmark.",
+    "quantification": "PE's <=80%-AMI SPM-unit denominator is 8.605M (51.3%) above Urban's <=50%-AMI household denominator. Applying Urban's rounded 26.0% rate to its 16.781M denominator implies 4.363M participants; PE has 0.689M positive HAP units, a 3.674M (84.2%) shortfall. A symmetric Shapley decomposition using those same rate-implied numerators assigns 5.10 points (21.9%) of the 23.286-point rate gap to the denominator concept and 18.18 points (78.1%) to participation/HAP, giving the 0.22/0.78 split. PE's $5.571B is at most about 11% of the documented $50B-plus benchmark.",
     "fix_draft": {
       "type": "pe_issue",
       "title": "Add HUD assisted-household controls and fix zero-valued HAP for receipt-anchored units",
-      "body": "Housing is fully held out. Ingest a pinned HUD Picture of Subsidized Households state extract (Summary of All HUD Programs, number_reported, December point-in-time) with national and state household-count facts. Preserve the household-to-SPM-unit bridge explicitly and validate before binding. Add a separately sourced HUD expenditure/HAP control; publish receipt-flag mass, share of flagged units with hud_hap > 0, total HAP, and mean positive HAP; and diagnose why 74.3% of receipt-anchored eligible units receive zero HAP. Add a scorecard-only <=50%-AMI household denominator for a same-concept Urban comparison rather than changing the engine's broader statutory variable."
+      "body": "Housing is fully held out. Ingest a pinned HUD Picture of Subsidized Households state extract (Summary of All HUD Programs, number_reported, December point-in-time) with national and state household-count facts. Preserve the household-to-SPM-unit bridge explicitly and validate before binding. Add a separately sourced HUD expenditure/HAP control; publish receipt-flag mass, positive-HAP mass, total HAP, and mean positive HAP; and diagnose attrition from receipt anchors to positive HAP. Add a scorecard-only <=50%-AMI household denominator for a same-concept Urban comparison rather than changing the engine's broader statutory variable."
     },
     "open_questions": [
       "Which HUD expenditure series and universe underlies the $50B-plus benchmark?",
       "Can HUD Picture household counts be mapped to SPM units without synthetic identities, or should they remain validation-only?",
-      "Which HAP input causes zero benefits for 74.3% of flagged eligible units?",
-      "How much of Urban's 4.358M versus HUD's roughly 4.6M is period or universe rather than model error?"
+      "How much receipt-to-positive-HAP attrition does the certified release contain, and which HAP input causes it?",
+      "How much of Urban's rate-implied 4.363M versus HUD's roughly 4.6M is period or universe rather than model error?"
     ]
   },
   {
@@ -207,9 +207,9 @@
     "confidence": "high",
     "evidence": [
       "c80b6c4:data/comparison.json, child SPM poverty_rate: held_out with no Build P poverty targets; PE 16.9689% versus Urban 13.8%.",
-      "POP:packages/populace-build/src/populace/build/us/state_spm_poverty_levels.json:1-32 records Census P60-287 single-year 2024 benchmarks of 13.4% for children under 18 and 12.9% overall; these are out-of-sample.",
+      "POP@8828dee:packages/populace-build/src/populace/build/us/state_spm_poverty_levels.json:1-32 records Census P60-287 single-year 2024 benchmarks of 13.4% for children under 18 and 12.9% overall; these are out-of-sample.",
       "data/pe/pe_metrics.json: PE 2024 child poor count 13,012,226.578 / population 76,683,005.281 = 16.9689%; total is 46,264,651.701 / 340,077,321.941 = 13.6042%.",
-      "PEUS@92e6052d3e spm_unit_is_in_spm_poverty.py:10-13 compares spm_unit_net_income with spm_unit_spm_threshold; spm_unit_net_income.py:11-18 adds market income and benefits and subtracts taxes and SPM expenses.",
+      "PEUS@92e6052d3e spm_unit_is_in_spm_poverty.py:10-13 compares spm_unit_net_income with spm_unit_spm_threshold; in_poverty.py:11-12 and poverty_gap.py:12-15 implement the same strict comparison used by the Census backtest; spm_unit_net_income.py:11-18 adds market income and benefits and subtracts taxes and SPM expenses.",
       "docs/replication-assessment.md:19,130-133 documents PE annual 2024 versus ATTIS average-month 2023 on pooled 2022+2023 ACS.",
       "PEUS@92e6052d3e:policyengine_us/variables/household/income/spm_unit/spm_unit_benefits.py:11-84 omits Head Start and Early Head Start, ruling out the $112.3B EHS valuation defect as a cause of this SPM rate."
     ],
@@ -235,16 +235,16 @@
       "c80b6c4:data/comparison.json, Alaska SNAP: eligible_count is held_out; participation_rate is consumed_as_target through FNS state average-month household counts. A divergence on the consumed quantity is therefore a calibration-machinery finding.",
       "Build P us_snap_state_take_up.json: the pre-calibration Alaska FY2024 target is 31,319.25 households, eligible weight 33,205.856, caseload 31,109.222, and saturated=false; the diagnostic explicitly uses pre-calibration design weights.",
       "Build P calibration_diagnostics.json, usda_snap.fy2024.state_average_monthly_households.wro.ak.average_monthly_households@2024: 31,319.25 target versus 31,325.745 final (+0.0207%), so the official household target is internally consistent and hit.",
-      "POP:packages/populace-build/src/populace/build/us_runtime/snap_state_take_up.py:186-211 derives target / weighted eligible and clips at one; lines 307-380 define saturation and document pre-calibration weights.",
-      "POP:packages/populace-build/src/populace/build/us/source_stages.json:1806 states that saturated states set all eligible units to take-up and that person targets are deliberately absent because SPM-unit membership overcounts SNAP assistance-unit participants.",
+      "POP@8828dee:packages/populace-build/src/populace/build/us_runtime/snap_state_take_up.py:186-211 derives target / weighted eligible and clips at one; lines 307-380 define saturation and document pre-calibration weights.",
+      "POP@8828dee:packages/populace-build/src/populace/build/us/source_stages.json:1806 states that saturated states set all eligible units to take-up and that person targets are deliberately absent because SPM-unit membership overcounts SNAP assistance-unit participants.",
       "pipeline/compute_counterparts.py:300-306 nevertheless maps SPM-unit receipt and eligibility to every person for the scorecard.",
       "c80b6c4:data/comparison.json, state SNAP total rows: 15 jurisdictions are exactly 100%; 18 are at least 99.9% after adding AK, SD, and TX."
     ],
-    "quantification": "AK has 107,166.399 PE eligible persons, 107,163.924 mapped participant persons, a 99.99769% rate, and a 2.476-person gap; Urban reports 86,000 eligible, 34.2%, and about 57,000 gap. The FY2024 FNS Alaska household target is hit within 6.495 households (0.0207%), yet the person statistic saturates. Fifteen jurisdictions are exactly 100% (AL, AR, DC, HI, ID, IN, LA, MS, MO, ND, OK, RI, TN, UT, WY); AK, SD, and TX bring the >=99.9% count to 18. The release-stage pre-calibration diagnostic marks 30 states saturated, while the scorecard's final-weight rates show 18 at or above 99.9%, demonstrating that current stage diagnostics do not describe the final-weight person result.",
+    "quantification": "AK has 107,166.399 PE eligible persons, 107,163.924 mapped participant persons, a 99.99769% rate, and a 2.476-person gap; Urban reports 86,000 eligible, 34.2%, and about 57,000 gap. The FY2024 FNS Alaska household target is hit within 6.495 households (0.0207%), yet the person statistic nearly saturates. Fifteen jurisdictions are exactly 100% (AL, AR, DC, HI, ID, IN, LA, MS, MO, ND, OK, RI, TN, UT, WY); AK, SD, and TX bring the >=99.9% count to 18. The release-stage pre-calibration diagnostic marks 30 states saturated but marks AK false, whereas AK's final-weight person rate is 99.998%; this establishes that the current stage diagnostic does not describe the final-weight person result, but post-calibration eligible-unit weights are still needed to identify AK's exact causal path.",
     "fix_draft": {
       "type": "pe_issue",
       "title": "Stop SNAP state saturation from passing release and publish a person-compatible validation",
-      "body": "Build P accepts target-at-or-above-eligible SPM-unit weight as saturation, and its stage diagnostic uses pre-calibration weights. AK then ships as 99.998% of eligible persons although its FY2024 FNS household target is hit within 0.021%. Make saturation release-blocking unless explicitly reviewed with a grain-compatible justification; emit final-calibrated-weight eligible and caseload diagnostics; and add AK/systemic-saturation regression tests. In the scorecard, do not translate household-targeted SPM-unit receipt into an administrative-shaped person numerator by counting every member; add a SNAP assistance-unit/person counterpart or a separate FNS average-month-person validation."
+      "body": "Build P accepts target-at-or-above-eligible SPM-unit weight as saturation, and its stage diagnostic uses pre-calibration weights. AK nevertheless ships as 99.998% of eligible persons although its FY2024 FNS household target is hit within 0.021%; the pre-calibration diagnostic itself marks AK unsaturated. Make unexplained final-weight saturation release-blocking; emit final-calibrated-weight eligible and caseload diagnostics; and add AK/systemic-saturation regression tests. In the scorecard, do not translate household-targeted SPM-unit receipt into an administrative-shaped person numerator by counting every member; add a SNAP assistance-unit/person counterpart or a separate FNS average-month-person validation."
     },
     "open_questions": [
       "What are the post-calibration state eligible-unit weights?",
@@ -254,22 +254,22 @@
   },
   {
     "queue_id": 10,
-    "title": "WIC is a held-out national validation with offsetting age errors",
-    "classification": "concept_mismatch",
+    "title": "WIC validates the national level but exposes offsetting held-out age errors",
+    "classification": "pe_gap",
     "split": null,
-    "confidence": "high",
+    "confidence": "medium",
     "evidence": [
       "c80b6c4:data/comparison.json, WIC national total and age rows: every eligible and participation quantity is held_out; calibration_basis says zero WIC calibration targets and identifies the match as out-of-sample.",
-      "POP:packages/populace-build/src/populace/build/us/target_parity_manifest.json:680-689 excludes WIC targets; docs/mechanics-audit.md:200-205 and docs/replication-assessment.md:64-68 confirm the zero-target surface.",
+      "POP@8828dee:packages/populace-build/src/populace/build/us/target_parity_manifest.json:680-689 excludes WIC targets; docs/mechanics-audit.md:200-205 and docs/replication-assessment.md:64-68 confirm the zero-target surface.",
       "docs/RECONCILIATION.md:20-25,39-44 records bit-exact agreement between independent implementations; lines 31-32 record the corrected monthly WIC gate.",
-      "POP:packages/populace-build/src/populace/build/us/source_stages.json:2250-2301 and us_runtime/wic_claim.py:89-130,283-338 seed would_claim_wic from distinct FNS CY2022 category rates, including 78.4% for infants and 46.0% for children.",
+      "POP@8828dee:packages/populace-build/src/populace/build/us/source_stages.json:2250-2301 and us_runtime/wic_claim.py:89-130,283-338 seed would_claim_wic from distinct FNS CY2022 category rates, including 78.4% for infants and 46.0% for children.",
       "c80b6c4:data/comparison.json WIC age rows: infant eligibility is 1.394M PE vs 1.829M Urban; age 1-4 is 7.973M vs 7.616M. Rates are 81.520% vs 79.9% and 46.148% vs 47.2%, respectively."
     ],
     "quantification": "National eligibility is 9,367,299 PE versus 9,444,000 Urban (-76,701, -0.812%); participation is 51.412% versus 53.5% (-2.088 points); the gap is 4,551,354 versus 4,389,000 (+162,354). Eligibility agreement hides an infant shortfall of 434,957 (-23.78%) offset by 357,256 (+4.69%) more children ages 1-4. Participation rates differ by +1.620 points for infants and -1.052 points for ages 1-4; age-specific gap differences of -109,375 and +271,729 net to the national +162,354.",
     "fix_draft": {
-      "type": "annotation",
-      "title": "WIC is calibration-held-out, but its claim gate is source-seeded",
-      "body": "Build P has zero WIC calibration targets, so Urban's national 2023 totals are held-out and independently recomputed. The claim gate is nevertheless seeded from FNS CY2022 category coverage rates (78.4% infants and 46.0% children). Treat 9.37M versus 9.44M eligible as the cleanest out-of-sample validation and 51.4% versus 53.5% participation as cross-source validation, not an unanchored forecast. The close national total hides a 435k infant shortfall offset by 357k more children ages 1-4."
+      "type": "pe_issue",
+      "title": "Preserve the WIC holdout and diagnose the infant/child eligibility offset",
+      "body": "Build P has zero WIC calibration targets, so Urban's national 2023 totals are held-out and independently recomputed. National eligibility agrees within 0.8%, but that total hides a 435k (23.8%) infant shortfall offset by 357k (4.7%) more children ages 1-4. Add held-out age and state diagnostics, beginning with the populace#520 infant-geography concern; preserve a validation holdout or target rotation before adding WIC controls. Continue to label participation as source-seeded from FNS CY2022 category rates, not an unanchored forecast or a consumed calibration target."
     },
     "open_questions": [
       "What causes the offsetting infant and age-1-4 eligibility errors?",

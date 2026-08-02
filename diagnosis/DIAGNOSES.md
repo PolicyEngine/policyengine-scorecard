@@ -6,7 +6,7 @@ PolicyEngine maintainers should address housing first, then TANF, SNAP state sat
 
 1. Housing is entirely held out and combines an approximate 22% denominator-concept contribution with a 78% PE receipt/HAP contribution to the 23.29-point participation-rate gap. PE pays positive HAP to only 0.69 million units and computes $5.57 billion, versus roughly 4.6 million assisted households and more than $50 billion administratively.
 2. TANF eligibility is held out, its participation rate comes from a seed rather than a caseload target, and its consumed national cash target still misses by 36.1%. The absence of a recipient/enrollment input leaves several states on applicant rules even under forced take-up.
-3. Alaska SNAP is a calibration-machinery finding. Build P hits the FY2024 FNS Alaska household target within 0.021%, then reports 99.998% of eligible people participating. Eighteen jurisdictions finish at or above 99.9% because household-targeted SPM-unit receipt is mapped to every person and current saturation diagnostics use pre-calibration weights.
+3. Alaska SNAP is a calibration-machinery finding. Build P hits the FY2024 FNS Alaska household target within 0.021%, then reports 99.998% of eligible people participating. Eighteen jurisdictions finish at or above 99.9%; static evidence confirms a household-to-person grain bridge and pre-calibration diagnostics, but final-weight eligible-unit diagnostics are needed to identify each state's exact saturation path.
 4. SSI's held-out payable denominator is 20.7% below Urban, while consumed recipient controls mask an age-shape failure: PE is 85% below Urban at ages 60-64 and 55% above Urban at ages 18-24.
 5. PE's 2024 child SPM poverty rate is 16.97%, 3.57 points above the same-year Census P60-287 benchmark of 13.4%. Total SPM poverty is only 0.70 point above Census, which makes this a child-specific held-out PE gap.
 
@@ -21,13 +21,13 @@ WIC is the strongest control result. It has zero calibration targets and indepen
 | 1 | National SNAP person rate | `concept_mismatch` | High | Eligibility held out; rate indirectly consumed through household targets |
 | 2 | TANF eligibility, rate, and cash | `pe_gap` | High | Eligibility held out; rate seeded; cash target consumed and missed |
 | 3 | EITC eligible tax units | `external_model_issue` | Medium | Forced-positive denominator held out; baseline claims consumed |
-| 4 | Refundable CTC eligible/claim count | `concept_mismatch` | High | Count consumed and claims-shaped |
+| 4 | Refundable CTC eligible/claim count | `concept_mismatch` | Medium | Count consumed and claims-shaped; TY2023 anchor blocked |
 | 5 | SSI payable adults | `pe_gap` | Medium | Payable denominator held out; recipient rate consumed |
 | 6 | Housing participation | `pe_gap` (78% PE / 22% concept) | High | Fully held out; zero targets |
 | 7 | Full-participation poverty | `concept_mismatch` | High | Fully held out; zero poverty targets |
 | 8 | Baseline child SPM poverty | `pe_gap` | High | Held out; same-year Census benchmark available |
 | 9 | Alaska SNAP saturation | `pe_gap` | High | Eligibility held out; household-caseload quantity consumed |
-| 10 | WIC control | `concept_mismatch` | High | Fully held out from calibration; claim gate separately seeded |
+| 10 | WIC control and age offsets | `pe_gap` | Medium | Fully held out from calibration; claim gate separately seeded |
 
 Consumed-target agreement is not validation. Conversely, disagreement on a consumed quantity identifies the calibration surface, grain bridge, or release gate rather than the underlying eligibility formula alone. Seeded quantities test what the seed plus downstream model produces, not an independent take-up estimate. Held-out quantities provide the cleanest validation.
 
@@ -35,9 +35,9 @@ Consumed-target agreement is not validation. Conversely, disagreement on a consu
 
 PE defines housing eligibility broadly: current receipt or a renter through 80% of area median income. Urban uses households at or below 50% of area median income. PE therefore reports 25.386 million eligible SPM units versus Urban's 16.781 million households. That is a real concept difference, but it does not explain most of the participation-rate gap.
 
-Urban's published eligible count and gap imply 4.358 million participating households. PE stores receipt/take-up flags for 2.681 million eligible units, then computes positive housing assistance for only 0.689 million. In other words, 1.992 million flagged units, or 74.3%, receive zero HAP. PE computes $5.571 billion, at most about 11% of the documented $50 billion-plus administrative benchmark.
+Applying Urban's rounded 26.0% rate to its 16.781 million denominator implies 4.363 million participating households. PE computes positive housing assistance for only 0.689 million units, a 3.674 million or 84.2% shortfall. PE also computes $5.571 billion, at most about 11% of the documented $50 billion-plus administrative benchmark.
 
-A symmetric Shapley decomposition of the 23.29-point rate gap assigns 5.10 points (21.9%) to the denominator difference and 18.16 points (78.1%) to receipt/HAP. This is an arithmetic decomposition, not a causal model, but it establishes priority: matching Urban's denominator would leave most of the divergence.
+A symmetric Shapley decomposition using those same rate-implied numerators assigns 5.10 points (21.9%) of the 23.286-point rate gap to the denominator difference and 18.18 points (78.1%) to receipt/HAP. This is an arithmetic decomposition, not a causal model, but it establishes priority: matching Urban's denominator would leave most of the divergence.
 
 The first PE issue should:
 
@@ -45,7 +45,7 @@ The first PE issue should:
 - keep the household-to-SPM-unit bridge explicit and validate it before using it as a calibration target;
 - add a sourced total-HAP or assisted-housing expenditure control;
 - emit receipt-flag mass, positive-HAP mass, total HAP, and mean positive HAP; and
-- locate whether payment standard, gross rent, tenant payment, or geography makes 74.3% of flagged units zero.
+- locate attrition from receipt anchors to positive HAP across payment standard, gross rent, tenant payment, and geography.
 
 For scorecard comparison, add a separate household, at-or-below-50%-AMI denominator. Do not narrow the engine's broader eligibility variable simply to match Urban. Evidence: certified PE-US 1.764.6 `is_eligible_for_housing_assistance.py:69-88`, `housing_assistance.py:4-18`, `hud_hap.py:4-18`; Populace `housing_inputs.py:1-20,491-520,974-1131`; `docs/replication-assessment.md:85,113,124`.
 
@@ -65,7 +65,7 @@ One mechanics-audit sentence is stale: `docs/mechanics-audit.md:46` describes `i
 
 Alaska's official input is not suspicious. The FY2024 FNS target is 31,319.25 average-month households, and final calibration produces 31,325.745, an error of 6.495 households or 0.0207%. Yet the scorecard maps 107,163.924 participants onto 107,166.399 eligible people: 99.99769% participation and a gap of 2.476 people. Urban reports 34.2% and roughly 57,000 unserved people.
 
-This divergence occurs on a quantity labeled `consumed_as_target`, so it is a calibration-machinery finding. Populace derives a fill rate as target divided by weighted eligible units, clips it at one, and treats target-at-or-above-eligible weight as accepted saturation. The SNAP stage diagnostic uses pre-calibration design weights; final weight calibration can change the effective rate. Fifteen jurisdictions finish at exactly 100%, and Alaska, South Dakota, and Texas bring the count at or above 99.9% to 18.
+This divergence occurs on a quantity labeled `consumed_as_target`, so it is a calibration-machinery finding. Populace derives a fill rate as target divided by weighted eligible units, clips it at one, and treats target-at-or-above-eligible weight as accepted saturation. The SNAP stage diagnostic uses pre-calibration design weights; final weight calibration can change the effective rate. Fifteen jurisdictions finish at exactly 100%, and Alaska, South Dakota, and Texas bring the count at or above 99.9% to 18. The stage diagnostic marks 30 states saturated but marks Alaska unsaturated, so it cannot explain Alaska's final-weight person rate without the missing final-weight eligible-unit surface.
 
 Populace should make unexplained saturation release-blocking, emit final-weight state eligibility and caseload diagnostics, and add Alaska plus systemic-saturation tests. The scorecard also needs a grain-compatible person validation: FNS targets households, while the current statistic counts every member of a targeted SPM unit. Evidence: Populace `snap_state_take_up.py:186-211,307-380`; `source_stages.json:1806`; `pipeline/compute_counterparts.py:300-306`; Build P `us_snap_state_take_up.json` and `calibration_diagnostics.json`.
 
@@ -80,7 +80,7 @@ The held-out PE payable denominator is 9.993 million adults versus Urban's 12.60
 | 60-64 | 0.162M | 1.083M | -85.0% |
 | 65+ | 4.713M | 6.132M | -23.1% |
 
-PE approximately meets consumed recipient counts when adults are pooled into 18-64 and 65+, but inferred recipients shift by about 0.66 million out of ages 60-64 and 0.46 million into ages 18-24. The SIPP disability classifier trains on 577 positives and 8,769 negatives, applies a measured-disability-signal gate, and passes a global share check rather than a fine-age check. State-supplement-only recipients total 114,977, only 4.4% of the eligibility gap, so state supplements cannot explain the national difference alone.
+PE approximately meets consumed recipient counts when adults are pooled into 18-64 and 65+, but inferred recipients shift by about 0.66 million out of ages 60-64 and 0.46 million into ages 18-24. The SIPP disability classifier trains on 577 positives and 8,769 negatives, applies a measured-disability-signal gate, and passes a global share check rather than a fine-age check. SSA reports 114,977 more federally administered than federal-payment recipients; that recipient difference provides concept context but does not bound the corresponding eligible population without a take-up assumption.
 
 Add component diagnostics for disability/ABD, resources, income, and immigration in the four scorecard age bands. Keep eligibility held out; use a detailed-age SSA series first as validation rather than forcing eligibility toward receipt. Evidence: Populace `ssi_take_up.py:164-210`, `ssi_disability_criteria.py:1-29,143-158,924-1043,1167-1205`; certified `is_ssi_eligible.py:4-18`, `uncapped_ssi.py:4-16`, `ssi_amount_if_eligible.py:15-70`.
 
@@ -135,14 +135,16 @@ The requested actual TY2023 ACTC count could not be named from trustworthy local
 
 WIC has zero calibration targets. Independent implementations agree bit-exactly after the monthly-gate fix. PE eligibility is 9.367 million versus Urban's 9.444 million, a 76,701 or 0.8% difference; participation is 51.4% versus 53.5%, a 2.1-point difference.
 
-This is meaningful held-out validation, especially for eligibility. It is not wholly unseeded: PE's claim gate consumes separate FNS CY2022 category rates of 78.4% for infants and 46.0% for children. The national eligibility match also hides a 434,957 infant shortfall offset by 357,256 more children ages 1-4. Preserve WIC as a validation holdout or use a target rotation if future releases add WIC controls. Evidence: Populace `target_parity_manifest.json:680-689`, `source_stages.json:2250-2301`, `wic_claim.py:89-130,283-338`; `docs/RECONCILIATION.md:20-44`.
+This is meaningful held-out validation at national level, especially for eligibility. It is not wholly unseeded: PE's claim gate is seeded from separate FNS CY2022 category rates of 78.4% for infants and 46.0% for children. The national eligibility match also hides a 434,957 (23.8%) infant shortfall offset by 357,256 (4.7%) more children ages 1-4. That masked age composition is the medium-confidence PE gap; Urban's closed construction remains a source of uncertainty. Add age/state diagnostics, investigate the populace#520 infant-geography concern, and preserve a validation holdout or target rotation if future releases add WIC controls. Evidence: Populace `target_parity_manifest.json:680-689`, `source_stages.json:2250-2301`, `wic_claim.py:89-130,283-338`; `docs/RECONCILIATION.md:20-44`.
 
 ## Audit scope and limitations
 
 - This audit used only supplied JSON, static engine/Populace/Ledger code, and existing release diagnostics. It ran no new microsimulation and used no network access.
 - It covers the 2024 scorecard quantities only. It does not adjudicate the separate 2026 projection or full-participation gate work.
 - The certified venv path named in the brief was absent after the harness restart. Engine citations use the local version-identical PE-US 1.764.6 snapshot at commit `92e6052d3e`.
+- Populace file:line citations use the Build P-era local snapshot at commit `8828dee`; current Populace `HEAD` has since moved some of those lines.
 - The branch's checked-out `data/comparison.json` predates the two calibration fields despite the resume note. The locally reachable rebuilt blob at `c80b6c4:data/comparison.json` supplies `calibration_relationship` and `calibration_basis`; all ten queued values match the branch copy.
+- The requested TY2023 ACTC claims count is an explicit evidence blocker: no trustworthy local source contains it, network use is prohibited, and the apparent 17,312,260 row is proven TY2022. Both deliverables are otherwise complete within the brief's constraints.
 - ATTIS is closed-source. The EITC finding therefore has medium rather than high confidence, and several program-level open questions require Urban documentation.
 
 The complete per-item evidence, quantification, proposed issue or annotation text, and open questions are in `diagnosis/diagnoses.json`.

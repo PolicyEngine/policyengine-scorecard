@@ -2,7 +2,7 @@
 
 ## State
 
-Required context reads, all ten static audits, and both contracted deliverables are complete on branch `diagnosis-batch-1`. Independent review and final consistency checks are next. The audit remains restricted to static code reading and the supplied JSON data; no microsimulation runs were made. The separate 2026 projection/full-participation adjudication remains out of scope.
+Diagnosis batch 1 is complete within the task constraints on branch `diagnosis-batch-1`. Both deliverables passed independent review and final consistency checks. One requested evidence point remains explicitly blocked: the actual TY2023 ACTC claim count is not present in trustworthy local sources, network use is prohibited, and the apparent local 17,312,260 row is proven TY2022. The audit remained restricted to static code and supplied data; no microsimulation runs were made. The separate 2026 projection/full-participation adjudication remained out of scope.
 
 ## Done
 
@@ -21,8 +21,10 @@ Required context reads, all ten static audits, and both contracted deliverables 
 - Used the rebuilt comparison at local commit `c80b6c4` as the authoritative calibration-relationship layer because the merged working-tree copy predates those two structural fields; the ten queued values are unchanged.
 - Wrote `diagnosis/diagnoses.json` with ten ordered records, complete deliverable keys, evidence-backed classifications, metric-specific calibration relationships, quantification, fix drafts, and open questions; validated its JSON syntax, IDs, keys, evidence presence, and split sum.
 - Wrote `diagnosis/DIAGNOSES.md`, ordered by maintainer priority, with explicit PE remediation, Urban-facing requests, calibration interpretation, the WIC holdout exhibit, and audit limitations.
+- Completed three independent read-only reviews. Removed a housing flag-mass calculation sourced outside the brief's permitted files, recomputed the housing split from one rounded-rate basis, softened unsupported SSI and Alaska causal bounds, reclassified the WIC age offset as a medium-confidence held-out PE gap, and made Build P-era Populace commit references explicit.
+- Revalidated JSON syntax, IDs, exact keys, field types, classification/fix-draft mapping, split sum, citation residues, housing arithmetic, and whitespace; the post-fix independent delta review returned clean.
 
 ## Next
 
-- Request an independent read-only review of both deliverables and address actionable findings.
-- Re-run JSON/schema/content and git-diff validation, mark this progress log complete, and commit the final batch state.
+- No in-scope work remains.
+- When a trustworthy TY2023 IRS SOI Historic Table 2 N11070 source becomes locally available, replace the explicit item 4 blocker and recheck its confidence; do not use the mislabeled `22incd.csv` value.
