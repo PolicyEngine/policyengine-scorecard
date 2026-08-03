@@ -1,11 +1,12 @@
 # PolicyEngine scorecard
 
-Comparing PolicyEngine/Populace estimates against every external score or
-analysis the model can plausibly run — as a filterable, honest scorecard.
-Every external number appears alongside its PolicyEngine counterpart with
-the delta and any concept-mismatch annotation; the misses stay on the page.
-The register is descriptive: in model-vs-model comparison there is no right
-answer, so divergence is decomposition material, never a verdict (issue #9).
+A repository of every external score we can find, with PolicyEngine scores
+alongside wherever the model can produce them — full provenance on every
+claim, structured around PolicyEngine reform references and (as cataloging
+lands) Ledger series. Every external number appears with its PolicyEngine
+counterpart, the delta, and any concept-mismatch annotation; the misses
+stay on the page. The register is descriptive: each material divergence
+gets a decomposition into the documented choices behind it (issue #9).
 
 **Sources so far** (42,270 claims in data/scorecard.db): Urban Institute's
 [State of the Safety Net](https://apps.urban.org/features/state-safety-net/)

@@ -6,8 +6,8 @@ const fmt = (n: number | undefined) => (n ?? 0).toLocaleString();
 
 /**
  * The four home tiles (issue #9, as amended): coverage · agreement profile
- * in descriptive bins · explained share · random-strand breadth. No
- * pass/fail, no wins — distances, counts, and what has an explanation.
+ * in descriptive bins · explained share · random-strand breadth —
+ * distances, counts, and what has an explanation.
  */
 export function Tiles({ index }: { index: ScorecardIndex }) {
   const t = index.tiles;

@@ -20,7 +20,7 @@ export const SPINE_ORDER: SpineBucket[] = [
   "suppressed",
 ];
 
-/** Bin labels are descriptive distances, never verdicts (issue #9). */
+/** Bin labels are descriptive distances (issue #9). */
 export const SPINE_META: Record<
   SpineBucket,
   { label: string; color: string; text: string }

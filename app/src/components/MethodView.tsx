@@ -21,16 +21,19 @@ export function MethodView({ index }: { index: ScorecardIndex }) {
       <section>
         <h2 className="mb-2 text-lg font-semibold">What this is</h2>
         <p>
-          A standing comparison between PolicyEngine and every external model
-          whose published claims PolicyEngine can plausibly compute:{" "}
+          A repository of every external score we can find, with PolicyEngine
+          scores alongside wherever the model can produce them:{" "}
           {index.catalog.claims.toLocaleString()} claims from{" "}
-          {index.catalog.sources} sources, each stored with its provenance,
-          policy world, baseline, and calibration relationship. The register
-          is descriptive: in model-vs-model comparison there is no right
-          answer, so divergence is decomposition material, not a scoreboard.
-          Nothing on this site is presented as a defect in any system unless
-          a known issue — an erratum, a tracked bug, an internal
-          contradiction — is citable, and then it is linked.
+          {index.catalog.sources} sources, each stored with its publication
+          provenance, policy world, baseline, and calibration relationship.
+          The structure is PolicyEngine-native: every claim keys to a reform
+          reference — current law for levels, a parametric or named-bill
+          world for scores — and picks up its Ledger series id as cataloging
+          lands. Each material divergence gets a decomposition into the
+          documented choices that produce it — data vintage, income concept,
+          scoring convention, baseline. Defect findings carry citations: an
+          erratum, a tracked bug, an internal contradiction, linked from the
+          row.
         </p>
       </section>
       <section>
@@ -39,13 +42,12 @@ export function MethodView({ index }: { index: ScorecardIndex }) {
           <b>Coverage</b> — how much of the catalog has a PolicyEngine
           counterpart; uncovered claims stay visible. <b>Agreement
           profile</b> — the distance distribution over held-out comparisons,
-          in bins (2.5pp/10pp for rates, 10%/30% for counts and dollars);
-          bins describe distance, they do not grade it. <b>Explained
-          share</b> — the fraction of material divergences with a published
-          explanation; this is the metric the project optimizes.{" "}
+          in bins (2.5pp/10pp for rates, 10%/30% for counts and dollars).{" "}
+          <b>Explained share</b> — the fraction of material divergences with
+          a published explanation; this is the metric the project optimizes.{" "}
           <b>Random strand</b> — a fixed-seed sample (seed {strand.seed})
           drawn across the whole catalog and published whatever the result,
-          so the set of published comparisons cannot be curated.
+          which keeps the published set uncurated.
         </p>
       </section>
       <section>

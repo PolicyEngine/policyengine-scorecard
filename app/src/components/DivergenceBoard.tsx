@@ -10,8 +10,8 @@ import { DiagnosisChip } from "./chips";
 /**
  * The decomposition queue: the largest divergences among rows where the
  * concepts are close enough that the distance means something (comparable +
- * constructed only), national totals first, then states. Descriptive — a
- * big number here is material for explanation, not a verdict.
+ * constructed only), national totals first, then states. A big number here
+ * is material for explanation.
  */
 export function DivergenceBoard({
   slice,

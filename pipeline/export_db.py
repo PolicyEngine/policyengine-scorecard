@@ -22,12 +22,12 @@ divergence diagnoses in data/diagnoses_rows.json. Valueless statuses
 --backfill-valueless` (module form: `python3 -m scorecard_db.ingest_platform
 … `) once so the DB itself carries a status for every unsuppressed claim.
 
-Register rules (issue #9 latest comments, binding): descriptive by default.
-Tolerance bands are bins, never pass/fail. Consumed-target / seed rows are
-labeled and excluded from every aggregate agreement figure. A diagnosis is
-presented normatively (pe_gap / external_issue) only when action_link cites
-a known issue; the export emits `normative` per diagnosis and the app gates
-verdict language on it.
+Register rules (issue #9 latest comments, binding): descriptive throughout.
+Tolerance bands are descriptive distance bins. Consumed-target / seed rows
+are labeled and excluded from every aggregate agreement figure. A diagnosis
+is presented normatively (pe_gap / external_issue) only when action_link
+cites a known issue; the export emits `normative` per diagnosis and the app
+gates issue-class chips on it.
 """
 
 from __future__ import annotations

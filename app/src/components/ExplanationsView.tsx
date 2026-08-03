@@ -5,10 +5,9 @@ import { DiagnosisChip } from "./chips";
 
 /**
  * How the models differ: published explanations of material divergences.
- * Descriptive by default — an entry states which documented choices the
- * models make differently. Verdict language appears only on entries whose
- * class cites a known issue (an erratum, a tracked bug, an internal
- * contradiction), linked from the chip.
+ * An entry traces one divergence to the documented choices behind it;
+ * known-issue chips (erratum, tracked bug, internal contradiction) carry
+ * their citations on the chip.
  */
 export function ExplanationsView({
   index,
@@ -24,11 +23,10 @@ export function ExplanationsView({
   return (
     <div>
       <p className="mb-4 max-w-3xl text-sm text-muted-foreground">
-        There is no right answer in model-vs-model comparison — divergences
-        are material for decomposition, not verdicts. Each entry explains one
-        divergence: what the models do differently and where that is
-        documented. Normative classes appear only where a known issue in one
-        of the systems is citable.
+        Each entry explains one divergence: which documented choices produce
+        it, in which model, and where each choice is stated. Known-issue
+        chips — an erratum, a tracked bug, an internal contradiction — link
+        to their citations.
       </p>
       <ol className="grid gap-3 md:grid-cols-2">
         {explanations.map((e) => (

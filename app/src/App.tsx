@@ -128,29 +128,31 @@ export default function App() {
         <>
           <header className="mx-auto max-w-content px-4 pt-8 pb-2">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-              Model validation · every comparison published
+              Score repository · full provenance
             </p>
             <h1 className="mt-1 text-3xl font-bold tracking-tight">
               PolicyEngine scorecard{" "}
               <span className="font-normal text-muted-foreground">
-                vs {index.catalog.sources} external models
+                every external score we can find
               </span>
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-              {index.catalog.sources} sources publish{" "}
+              A repository of external scores:{" "}
               <b className="text-foreground fig">
                 {index.catalog.ok.toLocaleString()}
               </b>{" "}
-              claims this project can hold PolicyEngine against — safety-net
-              statistics, revenue scores, distribution tables, poverty
-              series. PolicyEngine currently produces a counterpart for{" "}
+              claims from {index.catalog.sources} models — revenue
+              estimates, distribution tables, poverty series, safety-net
+              statistics — each with its publication provenance and keyed to
+              the policy world it scores. PolicyEngine computes its own
+              number wherever it can,{" "}
               <b className="text-foreground fig">
                 {index.catalog.computed.toLocaleString()}
               </b>{" "}
-              of them; the rest stay on the page as out-of-model or
-              not-yet-computed rows. Distances are shown in descriptive
-              bins — in model-vs-model comparison, divergence is material
-              for explanation, not a verdict.
+              so far, with the rest on the page as out-of-model or
+              not-yet-computed rows. Distances land in descriptive bins, and
+              material divergences get explanations tracing them to the
+              models' documented choices.
             </p>
           </header>
 

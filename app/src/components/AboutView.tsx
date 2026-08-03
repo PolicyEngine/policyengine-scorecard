@@ -32,8 +32,7 @@ export function AboutView({
         <p>
           Rates within 2.5 percentage points sit in the closest bin, within
           10pp the middle one, beyond that the outer one. Counts: within 10% /
-          30%. These are descriptive display bins, not pass/fail claims; the
-          exact values sit on every row.
+          30%. These are display bins; the exact values sit on every row.
         </p>
       </section>
       <section>
