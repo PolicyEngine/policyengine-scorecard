@@ -69,11 +69,16 @@ LANE_FEED = {
 }
 
 
-def sync_lane_feed(db: ScorecardDB, feed_path: Path, updated: str) -> int:
+def sync_lane_feed(
+    db: ScorecardDB,
+    feed_path: Path,
+    updated: str,
+    lane_feed: dict | None = None,
+) -> int:
     feed = json.loads(feed_path.read_text())
     by_id = {lane["id"]: lane for lane in feed["lanes"]}
     n = 0
-    for lane_id, meta in LANE_FEED.items():
+    for lane_id, meta in (lane_feed or LANE_FEED).items():
         row = db.conn.execute(
             "SELECT stage, detail, updated_at FROM lanes WHERE lane = ?",
             (lane_id,),

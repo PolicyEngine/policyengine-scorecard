@@ -140,50 +140,50 @@
    "source": "DWP",
    "area": "UK income-related benefits take-up",
    "mode": 1,
-   "stage": "registered",
+   "stage": "ingested",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "Canonical UK take-up publication (#3)"
+   "updated": "2026-08-02",
+   "note": "805 take-up claims with bounds (609 PC rows seed_source \u2014 pe-uk takeup.yaml cites this series; HB rows held_out vs PE takeup=1, policyengine-uk#1813); 102 BECL forecast rows (30 expenditure lines consumed_as_target via OBR 4.9); 102 BECL outturn rows routed to Ledger staging"
   },
   {
    "id": "hbai-poverty",
    "source": "DWP HBAI",
    "area": "UK poverty rates",
    "mode": 1,
-   "stage": "registered",
+   "stage": "ingested",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "#3"
+   "updated": "2026-08-02",
+   "note": "1040 HBAI claims (FYE 1995-2025, relative+absolute \u00d7 BHC+AHC, rates+counts; FYE-2025 + admin-linked FYE-2024 edition pair staged \u2014 the ~2pp methodology-gap diagnosis seed); permanent poverty holdout"
   },
   {
    "id": "hmrc-personal-tax",
    "source": "HMRC",
    "area": "UK personal tax statistics",
    "mode": 1,
-   "stage": "registered",
+   "stage": "ingested",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "#3"
+   "updated": "2026-08-02",
+   "note": "225 ready-reckoner claims (policy worlds per line, FY2026-27+, behavioural per HMRC notes \u2014 the campaign reckoner join surface) + 762 SPI-based projections (726 seed_source via the shared SPI 2023-24 base, 36 whole-population liability totals consumed-class); 1855 outturn/provisional admin rows routed to Ledger staging"
   },
   {
    "id": "obr-welfare",
    "source": "OBR",
    "area": "welfare trends / EFO baselines",
    "mode": 1,
-   "stage": "registered",
+   "stage": "ingested",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "#3"
+   "updated": "2026-08-02",
+   "note": "1121 EFO Mar-2026 claims (receipts 3.4/3.8, welfare 4.9/4.11, threshold analysis 3.17-3.19); 150 consumed_as_target (exact pe-uk-data target lines, targets/sources/obr.py); 133 outturn rows routed to Ledger staging"
   },
   {
    "id": "ukmod-stats",
    "source": "UKMOD",
    "area": "published statistics",
    "mode": 1,
-   "stage": "registered",
+   "stage": "ingested",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "#3"
+   "updated": "2026-08-02",
+   "note": "1392 UKMOD claims \u2014 Country Report 2023-2030 validation block (simulated/official/input-data/HBAI series side by side; take-up priors frozen since 2021 per their own \u00a74.3 warning) + CeMPA 3/26 AB2025 package assessment (209 reform-keyed rows); 300 JRF claims (unrounded AHC headline series, persistent poverty, MIS-adjacent thresholds); 88 MIS weekly-budget cells deliberately dropped (focus-group budget standards, not model-checkable \u2014 recoverable in vendored staging)"
   },
   {
    "id": "jct-reform-scores",
@@ -294,6 +294,46 @@
    "running": false,
    "updated": "2026-08-02",
    "note": "1033 claims: monthly SPM 2024-01\u21922025-12 (final series \u2014 project ended Dec 2025), CTC counterfactuals 2023/2024 at 100% take-up, state refundable-CTC designs, SNAP TFP-revocation state tables (TRIM3 2015-19 base); annual-SPM\u2248Census reviewed \u2192 held_out (no poverty targets in pe-us calibration); 16.6-vs-11.4 erratum diagnosed external_issue"
+  },
+  {
+   "id": "obr-measures",
+   "source": "OBR",
+   "area": "policy measures database (1970\u2192)",
+   "mode": 2,
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-02",
+   "note": "24304 policy-measures-database claims (84 fiscal events since 1970, reform-keyed per measure title, positive_gain_to_exchequer verbatim)"
+  },
+  {
+   "id": "hmt-costings",
+   "source": "HM Treasury",
+   "area": "fiscal-event scorecards + DA",
+   "mode": 2,
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-02",
+   "note": "1218 OBR-certified scorecard costings (AB2024 5.1 / B2025 4.1 / SS2025 3.1; exchequer_impact \u2014 Tax/Spend heads mix by design; 31 suppressed cells verbatim) + 150 IGOTM decile medians (annex 2.C); B2025 two-child measure title embeds the government's 450k-children poverty claim \u2014 pentagon leg"
+  },
+  {
+   "id": "ifs-taxben",
+   "source": "IFS TAXBEN",
+   "area": "poverty + benefit options",
+   "mode": 2,
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-02",
+   "note": "268 TAXBEN claims: absolute-AHC child-poverty series, Green-Budget-2025 options block (164 reform-keyed rows incl. the \u2212540k steady-state two-child-limit leg of the pentagon), threshold-freeze revenue rows; options baseline = registered ifs_2cl_fp_removal_rolled_out world; TAXBEN is entitlements-basis (full take-up) \u2014 registry axis on every poverty comparison"
+  },
+  {
+   "id": "rf-outlook",
+   "source": "Resolution Foundation",
+   "area": "living standards outlook + Budget analysis",
+   "mode": 2,
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-02",
+   "note": "70 Resolution Foundation claims (IPPR Tax Benefit Model on FRS/HBAI 2023-24): LSO 2026 poverty projections incl. the \u2212420k two-child pentagon leg, Budget-2025 decile block, April-2026 uprating set (11 parameter-check rows \u2014 campaign uprating_check joins here); 26 reform-keyed rows; 1 price-index-only row dropped (out of tax/benefit scope, tallied)"
   }
  ]
 }

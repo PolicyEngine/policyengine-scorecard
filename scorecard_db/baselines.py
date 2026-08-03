@@ -111,6 +111,17 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "(sources/harvest-2026-08-02/budget_lab).",
     ),
     (
+        {"policy": "ifs_2cl_fp_removal_rolled_out"},
+        "ifs_2cl_fp_removal_rolled_out",
+        "IFS Green-Budget-2025 options baseline: the current UK "
+        "tax-benefit system with the two-child limit and family-premium "
+        "removal fully rolled out (steady state).",
+        "policy_ref",
+        "IFS staged conditions verbatim: 'current tax-benefit system "
+        "with two-child limit and family premium removal fully rolled "
+        "out' (sources/harvest-uk-2026-08-02/uk_ifs).",
+    ),
+    (
         {"policy": "pre_ab2025"},
         "pre_ab2025",
         "UK current law with the Autumn Budget 2025 two-child-limit "
