@@ -96,3 +96,28 @@ taxonomy and annotation ids); the `comparisons` view serves the latest per
 claim. Counterfactual worlds use the `policyengine_us_inputs` framework —
 input-override descriptors (forced take-up flags), not parametric reform
 paths, because no such parameters exist in the engine.
+
+## 2026-08-03 population: populace reform-validation registry
+
+Third population: the per-release external-checks registry previously
+rendered as calibration-diagnostics' "External checks" tab (being retired
+in favor of this scorecard). 222 claims / 530 per-release pe_results from
+five certified releases (f0af251 through Build O), vendored at
+sources/populace-reform-validation/raw/:
+
+```bash
+PYTHONPATH=. python -m scorecard_db.ingest_reform_validation data/scorecard.db
+```
+
+What it adds that the other populations don't: **regression history** —
+each artifact was computed at its release's exact engine pins
+(ENGINE_VERSIONS), so long-lived claims (state fiscal notes, OBBBA suite)
+carry one pe_result per release and drift across releases is queryable.
+First rows on the reserved TAX_EXPENDITURE metric (JCX-48-24 / Treasury /
+the jct.tax_expenditures.* calibration targets, the latter
+consumed_as_target). Census state SPM rows land as held_out POVERTY_RATE
+claims per the poverty-holdout doctrine. Scored rows key off policy_ref
+descriptors ({"policy": <registry row id>}) until populace's payload
+embeds the executable reform dicts — see the integration issue for the
+JCX-35-25 claim-collision question (our OBBBA suite vs the harvest's
+claims for the same lines).

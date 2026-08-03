@@ -1,0 +1,25 @@
+{
+  "id": "populace-reform-validation",
+  "name": "Populace reform-validation registry (per-release external checks)",
+  "organization": "PolicyEngine (aggregating JCT, CBO, Census, IRS SOI, Treasury, state fiscal offices, state agencies)",
+  "url": "https://github.com/PolicyEngine/populace",
+  "data_url": "vendored from calibration-diagnostics frontend/lib/populace/reform-overrides/ (the retired External checks tab)",
+  "fetched": "2026-08-03",
+  "fetch_notes": "Each raw/<release_id>.json is the reform_validation.json artifact for one certified populace-us release, produced by populace's reform_validation_payload at the release's exact policyengine-us/-core pins (provenance in each file's _backfill_note). New releases arrive from the Modal-backed backfill (cal-diag #112 machinery, being re-homed here).",
+  "model": {
+    "name": "external scorekeepers + admin actuals (mixed)",
+    "open_source": true,
+    "method": "Registry of external checks scored against each release: JCT conventional scores (OBBBA suite, ARPA), CBO budget options, JCT/Treasury tax expenditures, IRS SOI and EITC Central actuals, Census state SPM rates, state fiscal notes (KS/CT/ID/CO/GA/IA/MD/MI/ND/OK/CA), state agency program actuals, and one mechanical UBI check vs Census PEP. The PE value is computed at the release's own engine pins, so results form a per-release regression history.",
+    "method_basis": "populace packages/populace-build/src/populace/build/us/state_reforms.json + reform_validation_payload; curation in populace #513/#519"
+  },
+  "period": "2024-2026 (per row)",
+  "releases": [
+    "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z",
+    "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701",
+    "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z",
+    "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z",
+    "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z"
+  ],
+  "geographies": "US + states (per row)",
+  "diagnosis_upstream": "Registry specs live in PolicyEngine/populace — spec errors become populace PRs; benchmark errors become annotation updates here."
+}
