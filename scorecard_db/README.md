@@ -39,6 +39,51 @@ db.comparisons(program="snap", geography="US", held_out_only=True)
 db.coverage()
 ```
 
+## 2026-08-02 harvest population
+
+Second population: the overnight seven-source harvest — 12,266 claims
+(JCT 6,771 · Budget Lab 1,229 · CPSP 1,033 · CBO 931 · TPC 922 · PWBM
+717 · Tax Foundation 663) from staging vendored at
+sources/harvest-2026-08-02/ (claims + sha256 manifests + notes; raw
+downloads stay outside the repo, pinned by the manifests). Run
+everything with:
+
+```bash
+PYTHONPATH=. python -m scorecard_db.ingest_harvest data/scorecard.db
+```
+
+Schema decisions this population forced (COLLATION worklist):
+
+- **Metric/UnitConcept extensions** for the recurring proposed metrics:
+  pct_change_after_tax_income (PERCENT, 0–100 scale), avg_tax_change_usd
+  and avg_change_after_tax_income_usd (USD_PER_TAX_UNIT for TPC,
+  USD_PER_HOUSEHOLD for PWBM — the denominator split is load-bearing),
+  share_with_tax_cut, primary_deficit_change, tax_expenditure (reserved
+  for JCX-45-25), poverty_count, and the CBO baseline-detail families
+  (IIT walk + program benefit statistics).
+- **Period ranges**: ten-year-window claims carry period_start /
+  period_end with `period == period_end` and
+  conditions["window_kind"] ∈ {total, annual_average}; single-year claim
+  ids are unchanged (the window keys enter the hash only when set).
+- **policy_ref reforms**: named external policy worlds
+  ({"policy": slug, …}) pending PE encoding, with non-current-law
+  baselines as ReformRef.baseline descriptors (TCJA extension, JCT
+  current policy, TPC current-law + Senate Title VII, …), mirrored to
+  conditions["baseline_policy"]. Descriptors stay minimal so identical
+  worlds share a reform key across sources — JCX-35-25 / TPC
+  T25-0229/0236 / TF's enacted-OBBBA page all key to
+  obbba_enacted_title_vii, and the JCX-30/31 manager's-amendment twins
+  share a slug and differ only in baseline.
+- **Conditions vocabulary** standardized in models.STANDARD_CONDITIONS
+  (income_group/income_axis/income_concept, scoring, baseline_policy,
+  option, statistic, window_kind, month, data_vintage).
+- Deliberate exclusions, tallied in lane notes: TPC's 468
+  tax-benefit-family rows (beyond the validation vocabulary) and
+  T26-0009's 48 rows (staging defect verified against the workbook).
+  Same-statistic republication twins (68) are merged with
+  rounding-consistency assertions; see
+  sources/harvest-2026-08-02/VALIDATION.md for the artifact validation.
+
 First population: Urban SotSN — 30,004 claims (24,717 published values).
 `calibration_relationship` is assigned per (program, metric) from the
 certified build's documented target surface and seeds
