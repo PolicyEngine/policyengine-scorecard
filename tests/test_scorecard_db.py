@@ -487,3 +487,32 @@ class TestPlatformProbe:
             reform=FULLPART_REFORM,
         )
         assert _probe(row).claim_id() == claim.claim_id()
+
+
+class TestPermanentHoldout:
+    """Poverty metrics may never become calibration targets (2026-08-02)."""
+
+    def test_poverty_metrics_never_calibrate(self):
+        from scorecard_db.models import CalibrationRelationship, Metric
+        from scorecard_db.relationships import (
+            effective_relationship,
+            never_calibrate,
+        )
+
+        for m in (
+            Metric.POVERTY_RATE,
+            Metric.POVERTY_RATE_CHANGE,
+            Metric.POVERTY_COUNT_CHANGE,
+        ):
+            assert never_calibrate(m)
+            for program in ("base", "fullpart", "snap", "anything"):
+                rel, basis = effective_relationship(program, m)
+                assert rel is CalibrationRelationship.HELD_OUT
+                assert "PERMANENT" in basis
+
+    def test_admin_metrics_unaffected(self):
+        from scorecard_db.models import Metric
+        from scorecard_db.relationships import never_calibrate
+
+        assert not never_calibrate(Metric.PARTICIPATION_RATE)
+        assert not never_calibrate(Metric.ELIGIBLE_COUNT)
