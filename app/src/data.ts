@@ -19,6 +19,11 @@ interface RawSlice extends Omit<SourceSlice, "rows"> {
 
 const sliceCache = new Map<string, Promise<SourceSlice>>();
 
+/** Data URLs are BASE_URL-absolute so the app works at its deploy base
+ * (/scorecard/) with and without a trailing slash on the page URL. */
+export const dataUrl = (name: string): string =>
+  `${import.meta.env.BASE_URL}data/${name}`;
+
 async function fetchJson<T>(path: string): Promise<T> {
   const r = await fetch(path);
   if (!r.ok) throw new Error(`HTTP ${r.status} for ${path}`);
@@ -26,13 +31,13 @@ async function fetchJson<T>(path: string): Promise<T> {
 }
 
 export function fetchIndex(): Promise<ScorecardIndex> {
-  return fetchJson<ScorecardIndex>("./data/index.json");
+  return fetchJson<ScorecardIndex>(dataUrl("index.json"));
 }
 
 export function fetchSlice(id: string): Promise<SourceSlice> {
   let p = sliceCache.get(id);
   if (!p) {
-    p = fetchJson<RawSlice>(`./data/sources/${id}.json`).then((raw) => {
+    p = fetchJson<RawSlice>(dataUrl(`sources/${id}.json`)).then((raw) => {
       const defaults = raw.row_defaults ?? {};
       const annSets = raw.annotation_sets ?? [];
       const rows: Row[] = raw.rows.map((r) => {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { dataUrl } from "../data";
 import { PROGRAM_LABELS } from "../types";
 
 interface ExhibitRow {
@@ -23,7 +24,7 @@ interface Exhibits {
 export function AttributionPanel() {
   const [data, setData] = useState<Exhibits | null>(null);
   useEffect(() => {
-    fetch("./data/exhibits.json")
+    fetch(dataUrl("exhibits.json"))
       .then((r) => (r.ok ? r.json() : null))
       .then(setData)
       .catch(() => setData(null));

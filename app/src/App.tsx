@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { fetchIndex, fetchSlice } from "./data";
+import { PolicyEngineShell } from "@policyengine/ui-kit/layout";
+import { dataUrl, fetchIndex, fetchSlice } from "./data";
 import type { LanesFeed, ScorecardIndex, SourceSlice } from "./types";
 import { Tiles } from "./components/Tiles";
 import { SourceCards } from "./components/SourceCards";
@@ -37,7 +38,7 @@ export default function App() {
         setBrowseSelected(new Set(ix.sources.map((s) => s.id)));
       })
       .catch((e) => setError(String(e)));
-    fetch("./data/lanes.json")
+    fetch(dataUrl("lanes.json"))
       .then((r) => (r.ok ? r.json() : null))
       .then(setLanes)
       .catch(() => setLanes(null));
@@ -80,19 +81,23 @@ export default function App() {
 
   if (error) {
     return (
-      <div className="mx-auto max-w-content p-8">
-        <p className="text-destructive">
-          Could not load data/index.json ({error}). Run
-          pipeline/export_db.py, which writes app/public/data/.
-        </p>
-      </div>
+      <PolicyEngineShell country="us">
+        <div className="mx-auto max-w-content p-8">
+          <p className="text-destructive">
+            Could not load data/index.json ({error}). Run
+            pipeline/export_db.py, which writes app/public/data/.
+          </p>
+        </div>
+      </PolicyEngineShell>
     );
   }
   if (!index) {
     return (
-      <div className="mx-auto max-w-content p-8 text-muted-foreground">
-        Loading the scorecard index…
-      </div>
+      <PolicyEngineShell country="us">
+        <div className="mx-auto max-w-content p-8 text-muted-foreground">
+          Loading the scorecard index…
+        </div>
+      </PolicyEngineShell>
     );
   }
 
@@ -100,7 +105,7 @@ export default function App() {
   const datasetId = (b.certified_data_build_id ?? "").split("-").slice(-2)[0];
 
   return (
-    <div className="min-h-screen">
+    <PolicyEngineShell country="us">
       {/* provenance stamp */}
       <div className="border-b border-border bg-muted/60">
         <div className="mx-auto max-w-content px-4 py-1.5 fig text-[11px] leading-4 text-muted-foreground flex flex-wrap gap-x-4">
@@ -176,7 +181,7 @@ export default function App() {
             ))}
           </nav>
 
-          <main className="mx-auto max-w-content px-4 py-6">
+          <div className="mx-auto max-w-content px-4 py-6">
             {tab === "overview" && (
               <>
                 <Tiles index={index} />
@@ -216,16 +221,16 @@ export default function App() {
               <MissionControl lanes={lanes} index={index} />
             )}
             {tab === "method" && <MethodView index={index} />}
-          </main>
+          </div>
         </>
       )}
 
-      <footer className="border-t border-border">
+      <div className="border-t border-border">
         <div className="mx-auto max-w-content px-4 py-4 text-xs text-muted-foreground">
           Every annotation traces to a source document, engine metadata, or a
           measured diagnostic — see the method page. Misses stay on the page.
         </div>
-      </footer>
-    </div>
+      </div>
+    </PolicyEngineShell>
   );
 }
