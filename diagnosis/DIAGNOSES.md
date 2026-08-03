@@ -8,7 +8,7 @@ PolicyEngine maintainers should address housing first, then TANF, SNAP state sat
 2. TANF eligibility is held out, its participation rate comes from a seed rather than a caseload target, and its consumed national cash target still misses by 36.1%. The absence of a recipient/enrollment input leaves several states on applicant rules even under forced take-up.
 3. Alaska SNAP is a calibration-machinery finding. Build P hits the FY2024 FNS Alaska household target within 0.021%, then reports 99.998% of eligible people participating. Eighteen jurisdictions finish at or above 99.9%; static evidence confirms a household-to-person grain bridge and pre-calibration diagnostics, but final-weight eligible-unit diagnostics are needed to identify each state's exact saturation path.
 4. SSI's held-out payable denominator is 20.7% below Urban, while consumed recipient controls mask an age-shape failure: PE is 85% below Urban at ages 60-64 and 55% above Urban at ages 18-24.
-5. PE's 2024 child SPM poverty rate is 16.97%, 3.57 points above the same-year Census P60-287 benchmark of 13.4%. Total SPM poverty is only 0.70 point above Census, which makes this a child-specific held-out PE gap.
+5. PE's 2024 child SPM poverty rate is 16.97% versus Census P60-287's 13.4%, while the total rate sits only 0.70 point above Census. Deviations from official poverty statistics are expected by construction and never inherently problematic (populace corrects survey benefit underreporting, so sitting below survey rates is the expected direction); the child-vs-total asymmetry, in the unexpected direction, is what makes this a child-specific investigation flag.
 
 Urban's EITC eligible universe also merits clarification: 18.45 million is 22% below the 23.69 million SOI claims total and below the 23-26 million TY2016 NTA/Treasury eligible-universe range. Refundable CTC is not yet a same-concept disagreement: PE's 17.66 million count is claims-shaped by a consumed SOI target, while Urban reports modeled eligibility.
 
@@ -25,7 +25,7 @@ WIC is the strongest control result. It has zero calibration targets and indepen
 | 5 | SSI payable adults | `pe_gap` | Medium | Payable denominator held out; recipient rate consumed |
 | 6 | Housing participation | `pe_gap` (78% PE / 22% concept) | High | Fully held out; zero targets |
 | 7 | Full-participation poverty | `concept_mismatch` | High | Fully held out; zero poverty targets |
-| 8 | Baseline child SPM poverty | `pe_gap` | High | Held out; same-year Census benchmark available |
+| 8 | Baseline child SPM poverty | `pe_gap` | High | Permanent holdout; child-vs-total asymmetry vs same-year Census comparator |
 | 9 | Alaska SNAP saturation | `pe_gap` | High | Eligibility held out; household-caseload quantity consumed |
 | 10 | WIC control and age offsets | `pe_gap` | Medium | Fully held out from calibration; claim gate separately seeded |
 
@@ -86,9 +86,9 @@ Add component diagnostics for disability/ABD, resources, income, and immigration
 
 ## Priority 5: diagnose child SPM resources against Census
 
-PE's 2024 child SPM poverty rate is 16.9689%, versus 13.8% in Urban's 2023 output. The year difference does not carry the diagnosis: Census P60-287 reports 13.4% for children in 2024, so PE misses a same-year held-out benchmark by 3.5689 points, or 26.6%. PE's total SPM rate is 13.6042% versus Census's 12.9%, only 0.7042 point high. The excess is therefore concentrated among children rather than reflecting a general poverty-level shift.
+PE's 2024 child SPM poverty rate is 16.9689%, versus 13.8% in Urban's 2023 output. The year difference does not carry the diagnosis: Census P60-287 reports 13.4% for children in 2024, so PE sits 3.5689 points (26.6%) above a same-year held-out comparator — a deviation that would not by itself be problematic (official rates inherit survey underreporting; populace's corrections should push below them, all else equal), which is exactly why the direction here is anomalous. PE's total SPM rate is 13.6042% versus Census's 12.9%, only 0.7042 point high. The excess is therefore concentrated among children rather than reflecting a general poverty-level shift.
 
-Promote the existing national P60-287 total and child rows from passive backtests to explicit release diagnostics. Decompose market income, benefits, taxes, medical expenses, work/child-care expenses, unit composition, and thresholds by child status. Keep poverty held out initially: locate the resource or threshold error before fitting the outcome. Evidence: Populace `state_spm_poverty_levels.json:1-32`, `reform_validation.py:597-623`; `data/pe/pe_metrics.json`; certified `spm_unit_is_in_spm_poverty.py:10-13`, `spm_unit_net_income.py:11-18`.
+Promote the existing national P60-287 total and child rows from passive backtests to explicit release diagnostics. Decompose market income, benefits, taxes, medical expenses, work/child-care expenses, unit composition, and thresholds by child status. Poverty stays a PERMANENT holdout (doctrine 2026-08-02) — never a calibration target: locate the resource or threshold error; fitting the outcome is prohibited. Evidence: Populace `state_spm_poverty_levels.json:1-32`, `reform_validation.py:597-623`; `data/pe/pe_metrics.json`; certified `spm_unit_is_in_spm_poverty.py:10-13`, `spm_unit_net_income.py:11-18`.
 
 The Early Head Start valuation defect is not a candidate explanation. The scorecard uses `spm_unit_is_in_spm_poverty`, whose net-income benefit list omits both Head Start variables. Its contribution here is exactly $0, zero people, and zero percentage points. The $112.3 billion remains a separate fiscal/model-output defect.
 

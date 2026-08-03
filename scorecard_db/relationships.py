@@ -84,17 +84,46 @@ _MAP = {
     ("liheap", None): (CR.HELD_OUT, "no PE national model consumes these"),
     ("ccdf", None): (CR.HELD_OUT, "no PE national model consumes these"),
     # poverty blocks (Urban tidy programs "base"/"fullpart")
-    ("base", None): (
-        CR.HELD_OUT, "§4: no poverty targets in the Build P surface",
-    ),
-    ("fullpart", None): (
-        CR.HELD_OUT, "§4: no poverty targets in the Build P surface",
-    ),
+    ("base", None): (CR.HELD_OUT, None),  # basis set below (permanent)
+    ("fullpart", None): (CR.HELD_OUT, None),
 }
+
+# Doctrine (Max, 2026-08-02, refined same day): MODELED-OUTCOME statistics
+# are PERMANENT holdouts — never calibration targets, not "not yet
+# targeted". The test is outcome-vs-frame, not survey-vs-admin: poverty
+# rates and other outputs of the simulated tax/benefit system embed exactly
+# the survey defects populace corrects, so fitting them launders the error
+# back in and destroys the validation signal. Frame/structure margins
+# (population, demographics, geography — e.g. ACS aggregates by
+# congressional district) are legitimate targets from the best available
+# source, admin preferred where it covers the same cell. Release gates may
+# fail on held-out regressions (issue #1 point 3); fitting the statistic is
+# categorically different and prohibited.
+PERMANENT_HOLDOUT_METRICS = frozenset(
+    {
+        Metric.POVERTY_RATE,
+        Metric.POVERTY_RATE_CHANGE,
+        Metric.POVERTY_COUNT_CHANGE,
+    }
+)
+PERMANENT_HOLDOUT_BASIS = (
+    "PERMANENT holdout — modeled-outcome statistic (doctrine 2026-08-02): "
+    "poverty is an output of the simulated tax/benefit system, so fitting "
+    "it would launder survey error back in and destroy the validation "
+    "signal. Frame/structure margins (e.g. ACS population by geography) "
+    "remain legitimate targets; outcomes never are."
+)
+
+
+def never_calibrate(metric) -> bool:
+    """True if this metric may never become a calibration target."""
+    return Metric(metric) in PERMANENT_HOLDOUT_METRICS
 
 
 def effective_relationship(program, metric):
     """(CalibrationRelationship, basis) for a program × Metric pair."""
+    if metric is not None and never_calibrate(metric):
+        return CR.HELD_OUT, PERMANENT_HOLDOUT_BASIS
     hit = _MAP.get((program, metric)) or _MAP.get((program, None))
     if hit is None:
         return CR.HELD_OUT, "no PE consumption identified"
