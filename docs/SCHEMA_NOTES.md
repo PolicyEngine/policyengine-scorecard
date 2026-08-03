@@ -66,3 +66,5 @@ the reconciliation:
     `country` and `reform` columns (constant today; keys for EUROMOD/UKMOD
     and CBO/JCT-score sources), and a `composition` metric family for
     SNAP-QC-style caseload-share comparisons.
+
+11. **`source_measurement` typing on claims** (`administrative | survey | model`), so the never-calibrate rule ("no tax-benefit quantity from a survey, nor anything derived from such") can be enforced mechanically for any future source rather than per-metric: a claim that is BOTH a tax-benefit quantity AND survey/model-measured can never be referenced by a target profile. Natural home: the Ledger comparator catalog (#6) carries it per fact package; scorecard_db mirrors it.
