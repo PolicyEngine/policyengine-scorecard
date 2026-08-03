@@ -20,24 +20,25 @@ export const SPINE_ORDER: SpineBucket[] = [
   "suppressed",
 ];
 
+/** Bin labels are descriptive distances, never verdicts (issue #9). */
 export const SPINE_META: Record<
   SpineBucket,
   { label: string; color: string; text: string }
 > = {
   close: {
-    label: "Reproduced",
+    label: "Within 2.5pp / 10%",
     color: "var(--chart-1)",
-    text: "PE counterpart within tolerance (2.5pp / 10%)",
+    text: "Both values exist and sit within the closest descriptive bin",
   },
   moderate: {
-    label: "Diverging",
+    label: "Within 10pp / 30%",
     color: "#FEC601",
-    text: "Within 10pp / 30% — worth a look",
+    text: "Both values exist; middle bin",
   },
   far: {
-    label: "Far apart",
+    label: "Beyond 10pp / 30%",
     color: "var(--destructive)",
-    text: "Beyond 10pp / 30% — diagnosis candidates",
+    text: "Both values exist; outer bin — decomposition material",
   },
   concept_mismatch: {
     label: "Concept mismatch",
@@ -45,7 +46,7 @@ export const SPINE_META: Record<
     text: "Values exist but measure different concepts",
   },
   pe_gap: {
-    label: "Model gap",
+    label: "Out of model",
     color: "#475569",
     text: "PolicyEngine cannot produce this today",
   },
@@ -57,7 +58,7 @@ export const SPINE_META: Record<
   suppressed: {
     label: "Suppressed",
     color: "#F2F4F7",
-    text: "Urban suppressed the cell",
+    text: "The source suppressed the cell",
   },
 };
 

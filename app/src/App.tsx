@@ -1,52 +1,41 @@
-import { useEffect, useMemo, useState } from "react";
-import type { Comparison, LanesFeed, Row } from "./types";
-import { PROGRAM_LABELS } from "./types";
-import { bucketOf, type SpineBucket } from "./spine";
-import { CoverageSpine } from "./components/CoverageSpine";
-import { ComparisonTable } from "./components/ComparisonTable";
-import { DivergenceBoard } from "./components/DivergenceBoard";
-import { GapsView } from "./components/GapsView";
-import { AboutView } from "./components/AboutView";
+import { useCallback, useEffect, useState } from "react";
+import { fetchIndex, fetchSlice } from "./data";
+import type { LanesFeed, ScorecardIndex, SourceSlice } from "./types";
+import { Tiles } from "./components/Tiles";
+import { SourceCards } from "./components/SourceCards";
+import { BrowseTable } from "./components/BrowseTable";
+import { SourcePage } from "./components/SourcePage";
+import { ExplanationsView } from "./components/ExplanationsView";
 import { MissionControl } from "./components/MissionControl";
+import { MethodView } from "./components/MethodView";
 
 const TABS = [
-  { id: "scorecard", label: "Scorecard" },
-  { id: "divergences", label: "Divergences" },
-  { id: "gaps", label: "Gaps" },
-  { id: "about", label: "Method" },
+  { id: "overview", label: "Overview" },
+  { id: "browse", label: "Browse" },
+  { id: "explanations", label: "How models differ" },
+  { id: "mission", label: "Mission control" },
+  { id: "method", label: "Method" },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
-export interface Filters {
-  program: string;
-  metric: string;
-  geography: string; // "US" | "states" | state code
-  subgroup: string; // "total" | "all" | slug
-  bucket: SpineBucket | null;
-}
-
-const DEFAULT_FILTERS: Filters = {
-  program: "all",
-  metric: "all",
-  geography: "US",
-  subgroup: "total",
-  bucket: null,
-};
-
 export default function App() {
-  const [data, setData] = useState<Comparison | null>(null);
+  const [index, setIndex] = useState<ScorecardIndex | null>(null);
   const [lanes, setLanes] = useState<LanesFeed | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<TabId>("scorecard");
-  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
+  const [tab, setTab] = useState<TabId>("overview");
+  const [sourcePage, setSourcePage] = useState<string | null>(null);
+  const [slices, setSlices] = useState<Map<string, SourceSlice>>(new Map());
+  const [loading, setLoading] = useState<Set<string>>(new Set());
+  const [browseSelected, setBrowseSelected] = useState<Set<string>>(
+    new Set(),
+  );
 
   useEffect(() => {
-    fetch("./data/comparison.json")
-      .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
+    fetchIndex()
+      .then((ix) => {
+        setIndex(ix);
+        setBrowseSelected(new Set(ix.sources.map((s) => s.id)));
       })
-      .then(setData)
       .catch((e) => setError(String(e)));
     fetch("./data/lanes.json")
       .then((r) => (r.ok ? r.json() : null))
@@ -54,30 +43,60 @@ export default function App() {
       .catch(() => setLanes(null));
   }, []);
 
-  const buckets = useMemo(() => {
-    if (!data) return new Map<Row, SpineBucket>();
-    return new Map(data.rows.map((r) => [r, bucketOf(r)] as const));
-  }, [data]);
+  const ensureSlice = useCallback(
+    (id: string) => {
+      if (slices.has(id) || loading.has(id)) return;
+      setLoading((prev) => new Set(prev).add(id));
+      fetchSlice(id)
+        .then((slice) => {
+          setSlices((prev) => new Map(prev).set(id, slice));
+        })
+        .catch(() => {})
+        .finally(() => {
+          setLoading((prev) => {
+            const next = new Set(prev);
+            next.delete(id);
+            return next;
+          });
+        });
+    },
+    [slices, loading],
+  );
+
+  // Browse loads every toggled-on source; the source page loads its own.
+  useEffect(() => {
+    if (tab === "browse" && !sourcePage) {
+      for (const id of browseSelected) ensureSlice(id);
+    }
+  }, [tab, sourcePage, browseSelected, ensureSlice]);
+  useEffect(() => {
+    if (sourcePage) ensureSlice(sourcePage);
+  }, [sourcePage, ensureSlice]);
+
+  const openSource = (id: string) => {
+    setSourcePage(id);
+    window.scrollTo(0, 0);
+  };
 
   if (error) {
     return (
       <div className="mx-auto max-w-content p-8">
         <p className="text-destructive">
-          Could not load data/comparison.json ({error}). Run the pipeline,
-          then copy data into app/public/data/.
+          Could not load data/index.json ({error}). Run
+          pipeline/export_db.py, which writes app/public/data/.
         </p>
       </div>
     );
   }
-  if (!data) {
+  if (!index) {
     return (
       <div className="mx-auto max-w-content p-8 text-muted-foreground">
-        Loading comparison data…
+        Loading the scorecard index…
       </div>
     );
   }
 
-  const b = data.pe_bundle;
+  const b = index.pe_bundle;
   const datasetId = (b.certified_data_build_id ?? "").split("-").slice(-2)[0];
 
   return (
@@ -86,122 +105,125 @@ export default function App() {
       <div className="border-b border-border bg-muted/60">
         <div className="mx-auto max-w-content px-4 py-1.5 fig text-[11px] leading-4 text-muted-foreground flex flex-wrap gap-x-4">
           <span>
-            external · {data.source_meta.id} · fetched{" "}
-            {data.source_meta.fetched} · {data.source_meta.period}
+            external · {index.catalog.sources} sources ·{" "}
+            {index.catalog.claims.toLocaleString()} claims
           </span>
           <span>
             policyengine · {b.runtime_dataset} @ {datasetId} ·{" "}
             {b.model_package} {b.model_version} · annual 2024
           </span>
-          <span>built {data.built}</span>
+          <span>built {index.built}</span>
         </div>
       </div>
 
-      <header className="mx-auto max-w-content px-4 pt-8 pb-2">
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-          Model validation · instance 1
-        </p>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight">
-          PolicyEngine scorecard{" "}
-          <span className="font-normal text-muted-foreground">
-            vs Urban Institute's State of the Safety Net
-          </span>
-        </h1>
-        <Headline data={data} buckets={buckets} />
-      </header>
-
-      <div className="mx-auto max-w-content px-4">
-        <CoverageSpine
-          rows={data.rows}
-          buckets={buckets}
-          active={filters.bucket}
-          onSelect={(bucket) => {
-            setFilters({ ...filters, bucket });
-            setTab("scorecard");
-          }}
+      {sourcePage ? (
+        <SourcePage
+          id={sourcePage}
+          index={index}
+          slices={slices}
+          loading={loading}
+          onBack={() => setSourcePage(null)}
         />
-        <MissionControl data={data} lanes={lanes} />
-      </div>
+      ) : (
+        <>
+          <header className="mx-auto max-w-content px-4 pt-8 pb-2">
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary">
+              Model validation · every comparison published
+            </p>
+            <h1 className="mt-1 text-3xl font-bold tracking-tight">
+              PolicyEngine scorecard{" "}
+              <span className="font-normal text-muted-foreground">
+                vs {index.catalog.sources} external models
+              </span>
+            </h1>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
+              {index.catalog.sources} sources publish{" "}
+              <b className="text-foreground fig">
+                {index.catalog.ok.toLocaleString()}
+              </b>{" "}
+              claims this project can hold PolicyEngine against — safety-net
+              statistics, revenue scores, distribution tables, poverty
+              series. PolicyEngine currently produces a counterpart for{" "}
+              <b className="text-foreground fig">
+                {index.catalog.computed.toLocaleString()}
+              </b>{" "}
+              of them; the rest stay on the page as out-of-model or
+              not-yet-computed rows. Distances are shown in descriptive
+              bins — in model-vs-model comparison, divergence is material
+              for explanation, not a verdict.
+            </p>
+          </header>
 
-      <nav
-        className="mx-auto max-w-content px-4 mt-6 border-b border-border flex gap-1"
-        aria-label="Views"
-      >
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={
-              "px-4 py-2 text-sm rounded-t-md border border-b-0 " +
-              (tab === t.id
-                ? "border-border bg-background font-semibold text-primary -mb-px"
-                : "border-transparent text-muted-foreground hover:text-foreground")
-            }
+          <nav
+            className="mx-auto max-w-content px-4 mt-4 border-b border-border flex gap-1 overflow-x-auto"
+            aria-label="Views"
           >
-            {t.label}
-          </button>
-        ))}
-      </nav>
+            {TABS.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className={
+                  "px-4 py-2 text-sm rounded-t-md border border-b-0 whitespace-nowrap " +
+                  (tab === t.id
+                    ? "border-border bg-background font-semibold text-primary -mb-px"
+                    : "border-transparent text-muted-foreground hover:text-foreground")
+                }
+              >
+                {t.label}
+              </button>
+            ))}
+          </nav>
 
-      <main className="mx-auto max-w-content px-4 py-6">
-        {tab === "scorecard" && (
-          <ComparisonTable
-            data={data}
-            buckets={buckets}
-            filters={filters}
-            setFilters={setFilters}
-          />
-        )}
-        {tab === "divergences" && (
-          <DivergenceBoard data={data} buckets={buckets} />
-        )}
-        {tab === "gaps" && <GapsView data={data} />}
-        {tab === "about" && <AboutView data={data} />}
-      </main>
+          <main className="mx-auto max-w-content px-4 py-6">
+            {tab === "overview" && (
+              <>
+                <Tiles index={index} />
+                <h2 className="mt-8 text-lg font-semibold">Sources</h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  One card per external model. Click through for its full
+                  claim set; new ingests (UK sources next) appear here
+                  automatically.
+                </p>
+                <SourceCards index={index} onSelect={openSource} />
+              </>
+            )}
+            {tab === "browse" && (
+              <BrowseTable
+                sources={index.sources}
+                slices={slices}
+                loading={loading}
+                selected={browseSelected}
+                onToggleSource={(id) => {
+                  setBrowseSelected((prev) => {
+                    const next = new Set(prev);
+                    if (next.has(id)) {
+                      next.delete(id);
+                    } else {
+                      next.add(id);
+                      ensureSlice(id);
+                    }
+                    return next;
+                  });
+                }}
+              />
+            )}
+            {tab === "explanations" && (
+              <ExplanationsView index={index} onOpenSource={openSource} />
+            )}
+            {tab === "mission" && (
+              <MissionControl lanes={lanes} index={index} />
+            )}
+            {tab === "method" && <MethodView index={index} />}
+          </main>
+        </>
+      )}
 
       <footer className="border-t border-border">
         <div className="mx-auto max-w-content px-4 py-4 text-xs text-muted-foreground">
-          Every annotation traces to the replication assessment, engine
-          metadata, or a measured diagnostic — see the method tab. Misses stay
-          on the page.
+          Every annotation traces to a source document, engine metadata, or a
+          measured diagnostic — see the method page. Misses stay on the page.
         </div>
       </footer>
     </div>
-  );
-}
-
-function Headline({
-  data,
-  buckets,
-}: {
-  data: Comparison;
-  buckets: Map<Row, SpineBucket>;
-}) {
-  const counts: Record<string, number> = {};
-  for (const r of data.rows) {
-    const bucket = buckets.get(r)!;
-    counts[bucket] = (counts[bucket] ?? 0) + 1;
-  }
-  const compared =
-    (counts.close ?? 0) + (counts.moderate ?? 0) + (counts.far ?? 0);
-  const withValues = compared + (counts.concept_mismatch ?? 0);
-  const n = data.rows.length - (counts.suppressed ?? 0);
-  const programs = new Set(
-    data.rows.map((r) => r.program).filter((p) => p !== "spm_poverty"),
-  ).size;
-  return (
-    <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-      Urban publishes{" "}
-      <b className="text-foreground fig">{n.toLocaleString()}</b> unsuppressed
-      cells across {programs} programs and the poverty counterfactual.
-      PolicyEngine currently produces a counterpart for{" "}
-      <b className="text-foreground fig">{withValues.toLocaleString()}</b> of
-      them ({Math.round((withValues / n) * 100)}%);{" "}
-      <b className="text-foreground fig">
-        {(counts.close ?? 0).toLocaleString()}
-      </b>{" "}
-      land within tolerance. {PROGRAM_LABELS.liheap} and{" "}
-      {PROGRAM_LABELS.ccdf} are honest gaps. Click a segment to filter.
-    </p>
   );
 }

@@ -1,0 +1,612 @@
+{
+ "built": "2026-08-02",
+ "pe_bundle": {
+  "model_package": "policyengine-us",
+  "model_version": "1.764.6",
+  "runtime_dataset": "populace_us_2024",
+  "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "data_package": "populace-data",
+  "data_version": "0.1.0"
+ },
+ "catalog": {
+  "sources": 8,
+  "claims": 42270,
+  "ok": 36983,
+  "suppressed": 5287,
+  "computed": 7912,
+  "by_status": {
+   "pe_gap": 6338,
+   "not_computed": 22733,
+   "comparable": 4103,
+   "suppressed": 5287,
+   "constructed": 3601,
+   "concept_mismatch": 208
+  }
+ },
+ "tiles": {
+  "coverage": {
+   "ok": 36983,
+   "computed": 7912,
+   "sources": 8
+  },
+  "agreement": {
+   "held_out_compared": 5000,
+   "bins": {
+    "far": 2460,
+    "moderate": 1495,
+    "close": 1043
+   },
+   "excluded_labeled": {
+    "seed_source": 1013,
+    "consumed_as_target": 1899
+   }
+  },
+  "explained": {
+   "material": 3955,
+   "explained": 6,
+   "explanations_published": 11
+  },
+  "random_strand": {
+   "seed": 20260802,
+   "drawn": 200,
+   "by_status": {
+    "not_computed": 112,
+    "pe_gap": 37,
+    "concept_mismatch": 5,
+    "comparable": 24,
+    "constructed": 22
+   },
+   "by_source": {
+    "cbo": 6,
+    "jct": 33,
+    "budget_lab": 7,
+    "urban_sotsn": 134,
+    "tax_foundation": 3,
+    "cpsp": 5,
+    "pwbm": 7,
+    "tpc": 5
+   },
+   "by_relationship": {
+    "held_out": 167,
+    "seed_source": 9,
+    "consumed_as_target": 24
+   }
+  }
+ },
+ "sources": [
+  {
+   "id": "urban_sotsn",
+   "name": "Urban Institute \u2014 State of the Safety Net 2025",
+   "org": "Urban Institute",
+   "model": "ATTIS",
+   "url": "https://apps.urban.org/features/state-safety-net/",
+   "fetched": "2026-08-01",
+   "auto": false,
+   "claims": 30004,
+   "ok": 24717,
+   "suppressed": 5287,
+   "by_status": {
+    "pe_gap": 6012,
+    "not_computed": 10793,
+    "comparable": 4103,
+    "suppressed": 5287,
+    "constructed": 3601,
+    "concept_mismatch": 208
+   },
+   "relationships": {
+    "held_out": 22308,
+    "seed_source": 2184,
+    "consumed_as_target": 5512
+   },
+   "agreement_bins": {
+    "far": 2460,
+    "moderate": 1495,
+    "close": 1043
+   },
+   "held_out_compared": 5000,
+   "material_divergences": 3955,
+   "explained": 6,
+   "period_min": 2023,
+   "period_max": 2023,
+   "models": [
+    "attis"
+   ],
+   "computed": 7912,
+   "metrics_top": [
+    {
+     "value": "eligible_count",
+     "n": 10192
+    },
+    {
+     "value": "eligibility_rate",
+     "n": 9516
+    },
+    {
+     "value": "participation_gap_count",
+     "n": 4940
+    },
+    {
+     "value": "participation_rate",
+     "n": 4940
+    }
+   ],
+   "n_policies": 1,
+   "n_baselines": 0,
+   "n_geographies": 52
+  },
+  {
+   "id": "jct",
+   "name": "Joint Committee on Taxation",
+   "org": "US Congress",
+   "model": "JCT conventional revenue estimates",
+   "url": "https://www.jct.gov/",
+   "fetched": "2026-08-02",
+   "auto": false,
+   "claims": 6771,
+   "ok": 6771,
+   "suppressed": 0,
+   "by_status": {
+    "not_computed": 6771
+   },
+   "relationships": {
+    "held_out": 6771
+   },
+   "agreement_bins": {},
+   "held_out_compared": 0,
+   "material_divergences": 0,
+   "explained": 0,
+   "period_min": 2025,
+   "period_max": 2034,
+   "models": [
+    "jct_conventional"
+   ],
+   "computed": 0,
+   "metrics_top": [
+    {
+     "value": "revenue_change",
+     "n": 6771
+    }
+   ],
+   "n_policies": 6,
+   "n_baselines": 1,
+   "n_geographies": 1
+  },
+  {
+   "id": "budget_lab",
+   "name": "The Budget Lab at Yale",
+   "org": "Yale University",
+   "model": "Budget Lab tax microsimulation",
+   "url": "https://budgetlab.yale.edu/",
+   "fetched": "2026-08-02",
+   "auto": false,
+   "claims": 1229,
+   "ok": 1229,
+   "suppressed": 0,
+   "by_status": {
+    "not_computed": 1229
+   },
+   "relationships": {
+    "held_out": 1229
+   },
+   "agreement_bins": {},
+   "held_out_compared": 0,
+   "material_divergences": 0,
+   "explained": 0,
+   "period_min": 2026,
+   "period_max": 2055,
+   "models": [
+    "budget_lab"
+   ],
+   "computed": 0,
+   "metrics_top": [
+    {
+     "value": "revenue_change",
+     "n": 644
+    },
+    {
+     "value": "pct_change_after_tax_income",
+     "n": 585
+    }
+   ],
+   "n_policies": 21,
+   "n_baselines": 4,
+   "n_geographies": 1
+  },
+  {
+   "id": "cpsp",
+   "name": "Columbia Center on Poverty and Social Policy",
+   "org": "Columbia University",
+   "model": "CPSP SPM poverty model",
+   "url": "https://www.povertycenter.columbia.edu/",
+   "fetched": "2026-08-02",
+   "auto": false,
+   "claims": 1033,
+   "ok": 1033,
+   "suppressed": 0,
+   "by_status": {
+    "not_computed": 1033
+   },
+   "relationships": {
+    "held_out": 1033
+   },
+   "agreement_bins": {},
+   "held_out_compared": 0,
+   "material_divergences": 0,
+   "explained": 0,
+   "period_min": 2019,
+   "period_max": 2025,
+   "models": [
+    "cpsp_spm_model"
+   ],
+   "computed": 0,
+   "metrics_top": [
+    {
+     "value": "poverty_rate",
+     "n": 534
+    },
+    {
+     "value": "poverty_rate_change",
+     "n": 318
+    },
+    {
+     "value": "poverty_count_change",
+     "n": 149
+    },
+    {
+     "value": "poverty_count",
+     "n": 32
+    }
+   ],
+   "n_policies": 7,
+   "n_baselines": 2,
+   "n_geographies": 53
+  },
+  {
+   "id": "cbo",
+   "name": "Congressional Budget Office",
+   "org": "US Congress",
+   "model": "CBO baseline projections and cost estimates",
+   "url": "https://www.cbo.gov/",
+   "fetched": "2026-08-02",
+   "auto": false,
+   "claims": 931,
+   "ok": 931,
+   "suppressed": 0,
+   "by_status": {
+    "not_computed": 931
+   },
+   "relationships": {
+    "held_out": 614,
+    "consumed_as_target": 317
+   },
+   "agreement_bins": {},
+   "held_out_compared": 0,
+   "material_divergences": 0,
+   "explained": 0,
+   "period_min": 2022,
+   "period_max": 2036,
+   "models": [
+    "cbo_baseline",
+    "cbo_cost_estimate"
+   ],
+   "computed": 0,
+   "metrics_top": [
+    {
+     "value": "benefit_cost",
+     "n": 380
+    },
+    {
+     "value": "income_aggregate",
+     "n": 165
+    },
+    {
+     "value": "enrollment",
+     "n": 94
+    },
+    {
+     "value": "tax_liability",
+     "n": 60
+    }
+   ],
+   "n_policies": 1,
+   "n_baselines": 0,
+   "n_geographies": 1
+  },
+  {
+   "id": "tpc",
+   "name": "Urban-Brookings Tax Policy Center",
+   "org": "Urban Institute / Brookings Institution",
+   "model": "TPC microsimulation model",
+   "url": "https://www.taxpolicycenter.org/",
+   "fetched": "2026-08-02",
+   "auto": false,
+   "claims": 922,
+   "ok": 922,
+   "suppressed": 0,
+   "by_status": {
+    "not_computed": 922
+   },
+   "relationships": {
+    "held_out": 922
+   },
+   "agreement_bins": {},
+   "held_out_compared": 0,
+   "material_divergences": 0,
+   "explained": 0,
+   "period_min": 2025,
+   "period_max": 2036,
+   "models": [
+    "tpc_microsim"
+   ],
+   "computed": 0,
+   "metrics_top": [
+    {
+     "value": "revenue_change",
+     "n": 425
+    },
+    {
+     "value": "pct_change_after_tax_income",
+     "n": 181
+    },
+    {
+     "value": "avg_tax_change_usd",
+     "n": 166
+    },
+    {
+     "value": "share_with_tax_cut",
+     "n": 150
+    }
+   ],
+   "n_policies": 13,
+   "n_baselines": 2,
+   "n_geographies": 1
+  },
+  {
+   "id": "pwbm",
+   "name": "Penn Wharton Budget Model",
+   "org": "University of Pennsylvania",
+   "model": "PWBM dynamic OLG + microsimulation",
+   "url": "https://budgetmodel.wharton.upenn.edu/",
+   "fetched": "2026-08-02",
+   "auto": false,
+   "claims": 717,
+   "ok": 717,
+   "suppressed": 0,
+   "by_status": {
+    "not_computed": 684,
+    "pe_gap": 33
+   },
+   "relationships": {
+    "held_out": 717
+   },
+   "agreement_bins": {},
+   "held_out_compared": 0,
+   "material_divergences": 0,
+   "explained": 0,
+   "period_min": 2025,
+   "period_max": 2054,
+   "models": [
+    "pwbm"
+   ],
+   "computed": 0,
+   "metrics_top": [
+    {
+     "value": "revenue_change",
+     "n": 382
+    },
+    {
+     "value": "pct_change_after_tax_income",
+     "n": 161
+    },
+    {
+     "value": "avg_change_after_tax_income_usd",
+     "n": 72
+    },
+    {
+     "value": "primary_deficit_change",
+     "n": 66
+    }
+   ],
+   "n_policies": 14,
+   "n_baselines": 2,
+   "n_geographies": 1
+  },
+  {
+   "id": "tax_foundation",
+   "name": "Tax Foundation",
+   "org": "Tax Foundation",
+   "model": "Taxes and Growth model",
+   "url": "https://taxfoundation.org/",
+   "fetched": "2026-08-02",
+   "auto": false,
+   "claims": 663,
+   "ok": 663,
+   "suppressed": 0,
+   "by_status": {
+    "pe_gap": 293,
+    "not_computed": 370
+   },
+   "relationships": {
+    "held_out": 663
+   },
+   "agreement_bins": {},
+   "held_out_compared": 0,
+   "material_divergences": 0,
+   "explained": 0,
+   "period_min": 2025,
+   "period_max": 2035,
+   "models": [
+    "taxes_and_growth"
+   ],
+   "computed": 0,
+   "metrics_top": [
+    {
+     "value": "revenue_change",
+     "n": 489
+    },
+    {
+     "value": "pct_change_after_tax_income",
+     "n": 174
+    }
+   ],
+   "n_policies": 10,
+   "n_baselines": 0,
+   "n_geographies": 1
+  }
+ ],
+ "explanations": [
+  {
+   "source": "cpsp",
+   "claim_id": "19e22099c86cdc071dbf",
+   "program": null,
+   "metric": "poverty_rate",
+   "geography": "US",
+   "subgroup": null,
+   "period": 2024,
+   "class": "external_issue",
+   "normative": true,
+   "rationale": "CPSP's 2024 historical brief states 16.6% in its key findings where body Figure 3 and the underlying arithmetic give 11.4% (anchored-2022 SPM, all persons, 2024); the harvest staged 11.4 and flagged the inconsistency (sources/harvest-2026-08-02/cpsp/NOTES.md).",
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/blob/main/sources/harvest-2026-08-02/cpsp/NOTES.md"
+  },
+  {
+   "source": "urban_sotsn",
+   "claim_id": "1dde967204120b1c96ca",
+   "program": null,
+   "metric": "poverty_rate",
+   "geography": "US",
+   "subgroup": null,
+   "period": 2023,
+   "class": "concept_mismatch",
+   "normative": false,
+   "title": "The full-participation poverty counterfactuals force different programs and baselines",
+   "confidence": "high",
+   "fix_type": "annotation"
+  },
+  {
+   "source": "urban_sotsn",
+   "claim_id": "3fa19242236d053366fd",
+   "program": "ssi",
+   "metric": "eligible_count",
+   "geography": "US",
+   "subgroup": null,
+   "period": 2023,
+   "class": "pe_gap",
+   "normative": false,
+   "title": "SSI payable eligibility is low and misallocated within adult age bands",
+   "confidence": "medium",
+   "fix_type": "pe_issue"
+  },
+  {
+   "source": "urban_sotsn",
+   "claim_id": "40429b7949671b7dd77c",
+   "program": "wic",
+   "metric": "eligible_count",
+   "geography": "US",
+   "subgroup": "age_0",
+   "period": 2023,
+   "class": "pe_gap",
+   "normative": false,
+   "title": "WIC validates the national level but exposes offsetting held-out age errors",
+   "confidence": "medium",
+   "fix_type": "pe_issue"
+  },
+  {
+   "source": "urban_sotsn",
+   "claim_id": "4b7bfe7e9b6464b66f20",
+   "program": "housing",
+   "metric": "participation_rate",
+   "geography": "US",
+   "subgroup": null,
+   "period": 2023,
+   "class": "pe_gap",
+   "normative": false,
+   "title": "Housing combines a broader PE eligibility concept with a larger receipt and HAP failure",
+   "confidence": "high",
+   "fix_type": "pe_issue"
+  },
+  {
+   "source": "urban_sotsn",
+   "claim_id": "7755c4b863838deecc52",
+   "program": "snap",
+   "metric": "participation_rate",
+   "geography": "US",
+   "subgroup": null,
+   "period": 2023,
+   "class": "concept_mismatch",
+   "normative": false,
+   "title": "SNAP participation is not a like-for-like person-rate comparison",
+   "confidence": "high",
+   "fix_type": "annotation"
+  },
+  {
+   "source": "urban_sotsn",
+   "claim_id": "7ba591c3e7b8dfa4f361",
+   "program": "tanf",
+   "metric": "participation_rate",
+   "geography": "US",
+   "subgroup": null,
+   "period": 2023,
+   "class": "pe_gap",
+   "normative": false,
+   "title": "TANF payable eligibility and participation lack receipt support and miss a consumed cash target",
+   "confidence": "high",
+   "fix_type": "pe_issue"
+  },
+  {
+   "source": "urban_sotsn",
+   "claim_id": "98fe67dc788ca2ba0176",
+   "program": "eitc",
+   "metric": "eligible_count",
+   "geography": "US",
+   "subgroup": null,
+   "period": 2023,
+   "class": "external_issue",
+   "normative": false,
+   "title": "Urban's EITC eligible universe is small relative to claims and the NTA range",
+   "confidence": "medium",
+   "fix_type": "upstream_memo"
+  },
+  {
+   "source": "urban_sotsn",
+   "claim_id": "9aca51ca3b388cf438bf",
+   "program": "snap",
+   "metric": "participation_rate",
+   "geography": "AK",
+   "subgroup": null,
+   "period": 2023,
+   "class": "pe_gap",
+   "normative": false,
+   "title": "Alaska SNAP exposes post-calibration household-to-person saturation",
+   "confidence": "high",
+   "fix_type": "pe_issue"
+  },
+  {
+   "source": "urban_sotsn",
+   "claim_id": "f44909741a5ff815e5f6",
+   "program": "ctc_refund",
+   "metric": "eligible_count",
+   "geography": "US",
+   "subgroup": null,
+   "period": 2023,
+   "class": "concept_mismatch",
+   "normative": false,
+   "title": "Refundable CTC compares a claims-shaped PE count with ATTIS eligibility",
+   "confidence": "medium",
+   "fix_type": "annotation"
+  },
+  {
+   "source": "urban_sotsn",
+   "claim_id": "f9a44851c12dd29041e1",
+   "program": null,
+   "metric": "poverty_rate",
+   "geography": "US",
+   "subgroup": "child",
+   "period": 2023,
+   "class": "pe_gap",
+   "normative": false,
+   "title": "Child SPM sits 3.6pp above Census while total sits +0.7pp \u2014 a child-specific composition anomaly to investigate",
+   "confidence": "high",
+   "fix_type": "pe_issue"
+  }
+ ]
+}

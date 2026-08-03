@@ -8,8 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "predev": "mkdir -p public/data && cp ../data/comparison.json ../data/lanes.json ../data/exhibits.json public/data/",
-    "prebuild": "mkdir -p public/data && cp ../data/comparison.json ../data/lanes.json ../data/exhibits.json public/data/"
+    "predev": "mkdir -p public/data/sources && cp ../data/export/index.json public/data/ && cp ../data/export/sources/*.json public/data/sources/ && cp ../data/lanes.json ../data/exhibits.json public/data/",
+    "prebuild": "mkdir -p public/data/sources && cp ../data/export/index.json public/data/ && cp ../data/export/sources/*.json public/data/sources/ && cp ../data/lanes.json ../data/exhibits.json public/data/"
   },
   "dependencies": {
     "@policyengine/ui-kit": "^0.12.1",

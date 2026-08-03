@@ -251,6 +251,13 @@ def ingest(db_path: Path) -> dict:
         erratum_claim(scores).claim_id(),
         "external_issue",
         ERRATUM_RATIONALE,
+        # Register rule (issue #9): a normative class requires a citable
+        # known issue. Here it is the source's own internal contradiction,
+        # documented with the staged evidence.
+        action_link=(
+            "https://github.com/PolicyEngine/policyengine-scorecard/"
+            "blob/main/sources/harvest-2026-08-02/cpsp/NOTES.md"
+        ),
     )
     db.set_lane(
         "cpsp-poverty",

@@ -1,9 +1,11 @@
 import { Fragment, useMemo, useState } from "react";
-import type { Filters } from "../App";
+import { relationshipNote } from "../data";
 import { closeness, divergenceScore, fmtDivergence, fmtValue } from "../format";
-import type { Comparison, Row } from "../types";
-import { METRIC_LABELS, PROGRAM_LABELS, STATUS_LABELS } from "../types";
-import { SPINE_META, type SpineBucket } from "../spine";
+import type { Row, SourceSlice } from "../types";
+import { metricLabel, programLabel, labelize } from "../types";
+import { type SpineBucket } from "../spine";
+import { RelationshipBadge, StatusChip, VintageChip } from "./chips";
+import { RowDetail } from "./BrowseTable";
 
 const PROGRAM_ORDER = [
   "snap", "ssi", "tanf", "wic", "ccdf", "housing", "liheap", "eitc",
@@ -11,70 +13,90 @@ const PROGRAM_ORDER = [
 ];
 const METRIC_ORDER = [
   "eligible_count", "eligibility_rate", "participation_rate",
-  "participation_gap_count", "poverty_rate", "poverty_rate_fullpart",
-  "poverty_rate_relative_change_fullpart", "poverty_count_change_fullpart",
+  "participation_gap_count", "poverty_rate", "poverty_rate_change",
+  "poverty_count_change",
 ];
 const MAX_RENDER = 600;
 
+export interface UrbanFilters {
+  program: string;
+  metric: string;
+  geography: string; // "US" | "states" | state code
+  subgroup: string; // "total" | "all" | slug
+  bucket: SpineBucket | null;
+}
+
+export const DEFAULT_URBAN_FILTERS: UrbanFilters = {
+  program: "all",
+  metric: "all",
+  geography: "US",
+  subgroup: "total",
+  bucket: null,
+};
+
+/** The Urban SotSN grid: program × metric × subgroup × geography. */
 export function ComparisonTable({
-  data,
+  slice,
   buckets,
   filters,
   setFilters,
 }: {
-  data: Comparison;
+  slice: SourceSlice;
   buckets: Map<Row, SpineBucket>;
-  filters: Filters;
-  setFilters: (f: Filters) => void;
+  filters: UrbanFilters;
+  setFilters: (f: UrbanFilters) => void;
 }) {
   const [sortByDivergence, setSortByDivergence] = useState(false);
-  const [expanded, setExpanded] = useState<Row | null>(null);
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   const subgroups = useMemo(
-    () => [...new Set(data.rows.map((r) => r.subgroup))].sort(),
-    [data],
+    () => [...new Set(slice.rows.map((r) => r.subgroup ?? "total"))].sort(),
+    [slice],
   );
   const states = useMemo(
     () =>
-      [...new Set(data.rows.map((r) => r.geography))]
+      [...new Set(slice.rows.map((r) => r.geography))]
         .filter((g) => g !== "US")
         .sort(),
-    [data],
+    [slice],
   );
 
   const filtered = useMemo(() => {
-    let rows = data.rows.filter((r) => {
+    let rows = slice.rows.filter((r) => {
+      const sub = r.subgroup ?? "total";
       if (filters.program !== "all" && r.program !== filters.program)
         return false;
-      if (filters.metric !== "all" && r.metric !== filters.metric) return false;
+      if (filters.metric !== "all" && r.metric !== filters.metric)
+        return false;
       if (filters.geography === "US" && r.geography !== "US") return false;
-      if (filters.geography === "states" && r.geography === "US") return false;
+      if (filters.geography === "states" && r.geography === "US")
+        return false;
       if (
         !["US", "states"].includes(filters.geography) &&
         r.geography !== filters.geography
       )
         return false;
-      if (filters.subgroup !== "all" && r.subgroup !== filters.subgroup)
+      if (filters.subgroup !== "all" && sub !== filters.subgroup)
         return false;
       if (filters.bucket && buckets.get(r) !== filters.bucket) return false;
       return true;
     });
     const key = (r: Row) =>
-      PROGRAM_ORDER.indexOf(r.program) * 100 +
-      METRIC_ORDER.indexOf(r.metric) * 2 +
+      PROGRAM_ORDER.indexOf(r.program ?? "") * 100 +
+      METRIC_ORDER.indexOf(r.metric) * 4 +
+      (r.policy === "full_participation" ? 2 : 0) +
       (r.variant ? 1 : 0);
     rows = rows.sort((a, b) =>
       sortByDivergence
         ? divergenceScore(b) - divergenceScore(a)
         : key(a) - key(b) ||
-          a.subgroup.localeCompare(b.subgroup) ||
+          (a.subgroup ?? "total").localeCompare(b.subgroup ?? "total") ||
           a.geography.localeCompare(b.geography),
     );
     return rows;
-  }, [data, filters, buckets, sortByDivergence]);
+  }, [slice, filters, buckets, sortByDivergence]);
 
-  const sel =
-    "h-8 rounded-md border border-border bg-background px-2 text-sm";
+  const sel = "h-8 rounded-md border border-border bg-background px-2 text-sm";
 
   return (
     <div>
@@ -92,7 +114,7 @@ export function ComparisonTable({
             <option value="all">All programs</option>
             {PROGRAM_ORDER.map((p) => (
               <option key={p} value={p}>
-                {PROGRAM_LABELS[p] ?? p}
+                {programLabel(p)}
               </option>
             ))}
           </select>
@@ -108,7 +130,7 @@ export function ComparisonTable({
             <option value="all">All metrics</option>
             {METRIC_ORDER.map((m) => (
               <option key={m} value={m}>
-                {METRIC_LABELS[m] ?? m}
+                {metricLabel(m)}
               </option>
             ))}
           </select>
@@ -189,14 +211,17 @@ export function ComparisonTable({
           </thead>
           <tbody>
             {filtered.slice(0, MAX_RENDER).map((r) => (
-              <Fragment key={r.source_column + r.geography}>
+              <Fragment key={r.id}>
                 <RowLine
                   row={r}
+                  slice={slice}
                   bucket={buckets.get(r)!}
-                  expanded={expanded === r}
-                  onToggle={() => setExpanded(expanded === r ? null : r)}
+                  expanded={expanded === r.id}
+                  onToggle={() =>
+                    setExpanded(expanded === r.id ? null : r.id)
+                  }
                 />
-                {expanded === r && <RowDetail row={r} data={data} />}
+                {expanded === r.id && <RowDetail row={r} slice={slice} />}
               </Fragment>
             ))}
           </tbody>
@@ -215,11 +240,13 @@ export function ComparisonTable({
 
 function RowLine({
   row,
+  slice,
   bucket,
   expanded,
   onToggle,
 }: {
   row: Row;
+  slice: SourceSlice;
   bucket: SpineBucket;
   expanded: boolean;
   onToggle: () => void;
@@ -240,45 +267,42 @@ function RowLine({
       }
     >
       <td className="px-2 py-1.5 whitespace-nowrap">
-        {PROGRAM_LABELS[row.program] ?? row.program}
+        {programLabel(row.program)}
+        {row.policy === "full_participation" && (
+          <span className="ml-1 rounded-sm bg-muted px-1 py-px text-[10px] text-muted-foreground">
+            full participation
+          </span>
+        )}
         {row.variant ? (
-          <span className="text-muted-foreground"> · {row.variant}</span>
+          <span className="text-muted-foreground">
+            {" "}
+            · {labelize(row.variant)}
+          </span>
         ) : null}
       </td>
       <td className="px-2 py-1.5 whitespace-nowrap">
-        {METRIC_LABELS[row.metric] ?? row.metric}
+        {metricLabel(row.metric)}
       </td>
       <td className="px-2 py-1.5 whitespace-nowrap text-muted-foreground">
-        {row.subgroup}
+        {row.subgroup ?? "total"}
       </td>
       <td className="px-2 py-1.5 fig">{row.geography}</td>
       <td className="px-2 py-1.5 text-right fig">
-        {fmtValue(row.external_value, row.metric)}
+        {fmtValue(row.value ?? null, row)}
       </td>
       <td className="px-2 py-1.5 text-right fig">
-        {fmtValue(row.pe_value, row.metric)}
+        {fmtValue(row.pe?.value ?? null, row)}
       </td>
       <td className={"px-2 py-1.5 text-right fig " + divergenceColor}>
         {fmtDivergence(row)}
       </td>
       <td className="px-2 py-1.5 text-right fig text-muted-foreground">
-        {row.pe_value_2026 !== null
-          ? fmtValue(row.pe_value_2026, row.metric)
-          : ""}
+        {row.pe_2026 !== undefined ? fmtValue(row.pe_2026, row) : ""}
       </td>
       <td className="px-2 py-1.5">
         <StatusChip bucket={bucket} status={row.status} />
-        {row.calibration_relationship !== "held_out" && (
-          <span
-            className="ml-1 align-middle rounded-sm border border-dashed border-border px-1 py-px text-[9px] uppercase tracking-wide text-muted-foreground"
-            title={row.calibration_basis}
-          >
-            {row.calibration_relationship === "seed_source"
-              ? "seed"
-              : "target"}
-          </span>
-        )}
-        {row.annotations.length > 0 && (
+        <RelationshipBadge row={row} note={relationshipNote(slice, row)} />
+        {row.annotations && row.annotations.length > 0 && (
           <span
             className="ml-1.5 align-middle text-[10px] text-muted-foreground"
             title={`${row.annotations.length} annotations — click row`}
@@ -286,105 +310,6 @@ function RowLine({
             ⓘ{row.annotations.length}
           </span>
         )}
-      </td>
-    </tr>
-  );
-}
-
-function VintageChip({
-  label,
-  tone,
-}: {
-  label: string;
-  tone: "external" | "pe" | "proj";
-}) {
-  const styles: Record<string, string> = {
-    external: "border-border text-muted-foreground",
-    pe: "border-[var(--chart-1)] text-[var(--chart-3)]",
-    proj: "border-[var(--chart-2)] text-[var(--chart-4)]",
-  };
-  return (
-    <span
-      className={
-        "ml-1 inline-block rounded-sm border px-1 py-px text-[9px] font-medium uppercase tracking-wide " +
-        styles[tone]
-      }
-    >
-      {label}
-    </span>
-  );
-}
-
-function StatusChip({
-  bucket,
-  status,
-}: {
-  bucket: SpineBucket;
-  status: Row["status"];
-}) {
-  const meta = SPINE_META[bucket];
-  return (
-    <span
-      className="inline-flex items-center gap-1.5 rounded-sm border border-border px-1.5 py-0.5 text-[11px] whitespace-nowrap"
-      title={meta.text}
-    >
-      <span
-        className="h-2 w-2 rounded-[2px]"
-        style={{ background: meta.color }}
-      />
-      {["close", "moderate", "far"].includes(bucket)
-        ? STATUS_LABELS[status]
-        : meta.label}
-    </span>
-  );
-}
-
-function RowDetail({ row, data }: { row: Row; data: Comparison }) {
-  return (
-    <tr className="border-b border-border bg-muted/30">
-      <td colSpan={9} className="px-4 py-3">
-        <div className="grid gap-3 text-xs md:grid-cols-2">
-          <div>
-            <p className="mb-1 font-semibold">Construction</p>
-            <p className="fig text-muted-foreground">
-              {row.pe_construction ?? "no PE counterpart"}
-            </p>
-            <p className="mt-2 text-muted-foreground">
-              Urban: {row.unit_concept}, {row.period} · PolicyEngine:{" "}
-              {row.pe_period ?? "—"}
-              {row.pe_value_2026 !== null &&
-                " · 2026 projection: same artifact, engine-side uprating"}{" "}
-              · source column <span className="fig">{row.source_column}</span>
-            </p>
-            <p className="mt-2 text-muted-foreground">
-              <span className="mr-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide">
-                {row.calibration_relationship.replace(/_/g, " ")}
-              </span>
-              {row.calibration_basis}
-            </p>
-          </div>
-          <div>
-            <p className="mb-1 font-semibold">Annotations</p>
-            {row.annotations.length === 0 && (
-              <p className="text-muted-foreground">None.</p>
-            )}
-            <ul className="space-y-2">
-              {row.annotations.map((id) => {
-                const a = data.annotations[id];
-                if (!a) return null;
-                return (
-                  <li key={id}>
-                    <span className="mr-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide">
-                      {a.severity}
-                    </span>
-                    {a.text}{" "}
-                    <span className="text-muted-foreground">({a.basis})</span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </div>
       </td>
     </tr>
   );

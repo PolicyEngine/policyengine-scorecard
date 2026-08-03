@@ -1,30 +1,35 @@
 # PolicyEngine scorecard
 
-A template for comparing PolicyEngine/Populace estimates against every
-external score or analysis the model can plausibly run — as a filterable,
-honest scorecard. Every external number appears alongside its PolicyEngine
-counterpart with the delta and any concept-mismatch annotation; the misses
-stay on the page.
+Comparing PolicyEngine/Populace estimates against every external score or
+analysis the model can plausibly run — as a filterable, honest scorecard.
+Every external number appears alongside its PolicyEngine counterpart with
+the delta and any concept-mismatch annotation; the misses stay on the page.
+The register is descriptive: in model-vs-model comparison there is no right
+answer, so divergence is decomposition material, never a verdict (issue #9).
 
-**Instance 1: Urban Institute's [State of the Safety
-Net](https://apps.urban.org/features/state-safety-net/)** — nine programs
-(SNAP, SSI, TANF, WIC, CCDF, housing, LIHEAP, EITC, refundable CTC) ×
-eligibility/participation metrics × US + 50 states + DC + demographic
-subgroups, plus the SPM poverty full-participation counterfactual.
+**Sources so far** (42,270 claims in data/scorecard.db): Urban Institute's
+[State of the Safety Net](https://apps.urban.org/features/state-safety-net/)
+(30,004 claims — nine programs × eligibility/participation × US + states +
+subgroups + the SPM full-participation counterfactual, with 7,912 PE
+counterparts), plus the 2026-08-02 US harvest: JCT, CBO, TPC, Tax
+Foundation, PWBM, Budget Lab, and CPSP (12,266 reform-score, baseline, and
+poverty claims — cataloged, counterparts queued). UK sources land through
+the same pipeline and appear in the app automatically once ingested.
 
 ## How it works
 
 ```
-sources/<source-id>/
-  source.json       registry entry: what the source is, method, period
-  raw/              the source's own published data, as fetched
-  adapter.py        raw → tidy external rows (one schema for all sources)
-  annotations.json  concept-mismatch annotations; every one traces to
-                    docs/, engine metadata, or a measured diagnostic
+sources/<source-id>/       registry entry, raw data, adapter, annotations
+scorecard_db/              THE source of truth: models + ingest modules
+                           writing data/scorecard.db (claims × PE results
+                           × diagnoses × lanes; `comparisons` view)
 pipeline/
   compute_counterparts.py  PE metrics on the certified Populace artifact
                            (policyengine.py managed_microsimulation, Build P)
-  build_comparison.py      join + derive rates/deltas → data/comparison.json
+  build_comparison.py      platform join → data/comparison.json (Urban grid)
+  export_db.py             scorecard.db → data/export/: index.json (sources
+                           index + the four home tiles) and per-source row
+                           slices consumed by the app
 app/                       the scorecard UI (bun + vite + react + ui-kit)
 docs/                      replication assessment + engine mechanics audit
 ```
@@ -53,6 +58,12 @@ respect the machine-wide sim lock):
 python sources/urban-sotsn/adapter.py
 simlock -- .venv-pe/bin/python pipeline/compute_counterparts.py
 python pipeline/build_comparison.py
+```
+
+Export the database into the app's feeds (stdlib only — no venv needed):
+
+```bash
+python3 pipeline/export_db.py
 ```
 
 App:

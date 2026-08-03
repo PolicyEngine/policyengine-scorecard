@@ -1,114 +1,91 @@
-import { closeness, fmtDivergence } from "../format";
-import type { Comparison, LanesFeed } from "../types";
-import { METRIC_LABELS, PROGRAM_LABELS } from "../types";
+import type { LanesFeed, ScorecardIndex } from "../types";
+
+const STAGE_ORDER = [
+  "diagnosing",
+  "computed",
+  "ingested",
+  "cataloged",
+  "registered",
+  "published",
+  "regressed",
+];
+
+const STAGE_BLURB: Record<string, string> = {
+  diagnosing: "divergences being decomposed",
+  computed: "PE counterparts computed",
+  ingested: "claims in the database",
+  cataloged: "claims cataloged, not yet ingested",
+  registered: "queued — known source, no claims yet",
+  published: "live on this site",
+  regressed: "moved on a newer certified build",
+};
 
 /**
- * The home view is mission control (issue #7): running lanes, the held-out
- * win/miss record, and the freshest divergences — in-progress work visible,
- * not just results.
+ * The work, visible (issue #7): every lane the project runs, grouped by
+ * stage — in-progress and queued work published next to results.
  */
 export function MissionControl({
-  data,
   lanes,
+  index,
 }: {
-  data: Comparison;
   lanes: LanesFeed | null;
+  index: ScorecardIndex;
 }) {
-  // Held-out record: the only published "validation" column (issue #1).
-  const heldOut = data.rows.filter(
-    (r) =>
-      r.calibration_relationship === "held_out" &&
-      ["comparable", "constructed"].includes(r.status) &&
-      r.pe_value !== null &&
-      r.external_value !== null,
-  );
-  const wins = heldOut.filter((r) => closeness(r) === "close").length;
-
-  const running = (lanes?.lanes ?? []).filter((l) => l.running);
-  const backlog = (lanes?.lanes ?? []).filter(
-    (l) => !l.running && l.stage === "registered",
-  );
-
-  const freshest = data.rows
-    .filter(
-      (r) =>
-        r.geography === "US" &&
-        r.subgroup === "total" &&
-        r.variant === null &&
-        ["comparable", "constructed"].includes(r.status) &&
-        ["moderate", "far"].includes(closeness(r) ?? ""),
-    )
-    .slice(0, 3);
+  const all = lanes?.lanes ?? [];
+  const running = all.filter((l) => l.running);
+  const stages = STAGE_ORDER.filter((s) =>
+    all.some((l) => l.stage === s),
+  ).map((s) => ({ stage: s, lanes: all.filter((l) => l.stage === s) }));
 
   return (
-    <div className="mt-5 grid gap-3 md:grid-cols-3">
-      <section className="rounded-md border border-border p-3">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Held-out record
-        </h2>
-        <p className="mt-1.5 text-2xl font-bold fig">
-          {wins.toLocaleString()}
-          <span className="text-base font-normal text-muted-foreground">
-            {" "}
-            / {heldOut.length.toLocaleString()}
-          </span>
-        </p>
-        <p className="mt-1 text-xs leading-4 text-muted-foreground">
-          Held-out comparisons within tolerance — numbers PolicyEngine never
-          calibrated toward. Consumed-target agreement is a tautology and is
-          labeled, never counted.
-        </p>
-      </section>
-
-      <section className="rounded-md border border-border p-3">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Running lanes
-        </h2>
-        <ul className="mt-1.5 space-y-1.5">
-          {running.map((l) => (
-            <li key={l.id} className="flex items-start gap-2 text-xs">
-              <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-[var(--chart-1)]" />
-              <span>
-                <b>{l.source}</b> · {l.area}
-                <span className="text-muted-foreground"> — {l.stage}</span>
-              </span>
-            </li>
-          ))}
-          {running.length === 0 && (
-            <li className="text-xs text-muted-foreground">
-              No lanes running.
-            </li>
-          )}
-        </ul>
-        <p className="mt-2 text-[11px] text-muted-foreground">
-          {backlog.length} registered lanes queued (US, UK, reform scores,
-          household oracles) — see data/lanes.json.
-        </p>
-      </section>
-
-      <section className="rounded-md border border-border p-3">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Freshest divergences
-        </h2>
-        <ul className="mt-1.5 space-y-1.5">
-          {freshest.map((r) => (
-            <li key={r.source_column} className="text-xs">
-              <b>
-                {PROGRAM_LABELS[r.program] ?? r.program} ·{" "}
-                {METRIC_LABELS[r.metric] ?? r.metric}
-              </b>{" "}
-              <span className="fig text-destructive">{fmtDivergence(r)}</span>
-              {r.calibration_relationship !== "held_out" && (
-                <span className="ml-1 text-muted-foreground">
-                  ({r.calibration_relationship === "seed_source"
-                    ? "seed source"
-                    : "target consumed"})
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
-      </section>
+    <div>
+      <p className="mb-4 max-w-3xl text-sm text-muted-foreground">
+        Every comparison lane this project tracks — {all.length} lanes,{" "}
+        {running.length} active. New sources join by registering a lane;
+        ingested claims appear on the browse page automatically. PE results
+        so far come from a single certified data bundle
+        {index.pe_bundle.certified_data_build_id
+          ? ` (${index.pe_bundle.certified_data_build_id})`
+          : ""}
+        ; per-release regression panels start when the next certified build
+        lands.
+      </p>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {stages.map(({ stage, lanes: group }) => (
+          <section
+            key={stage}
+            className="rounded-md border border-border p-3"
+          >
+            <h2 className="flex items-baseline justify-between text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              {stage}
+              <span className="fig">{group.length}</span>
+            </h2>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
+              {STAGE_BLURB[stage] ?? ""}
+            </p>
+            <ul className="mt-2 space-y-2">
+              {group.map((l) => (
+                <li key={l.id} className="text-xs leading-4">
+                  <span className="flex items-start gap-1.5">
+                    {l.running && (
+                      <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-[var(--chart-1)]" />
+                    )}
+                    <span>
+                      <b>{l.source}</b> · {l.area}
+                      <span className="block text-muted-foreground">
+                        {l.note}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground">
+                        {l.updated}
+                      </span>
+                    </span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
     </div>
   );
 }

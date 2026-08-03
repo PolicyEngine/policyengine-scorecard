@@ -192,8 +192,72 @@ def ingest(db_path: Path, comparison_json: Path | None = None,
     }
 
 
+def backfill_valueless(db_path: Path,
+                       comparison_json: Path | None = None) -> dict:
+    """Ingest the platform statuses for rows with NO PE value.
+
+    The first ingest pass stored only valued results; pe_gap and
+    not_computed rows (the honest-gap taxonomy — LIHEAP, CCDF,
+    metro/non-metro, pipeline backlog) lived solely in comparison.json.
+    This pass adds them as valueless PEResults (models.py allows a null
+    value for those statuses), so the DB carries a status for every
+    unsuppressed claim. Idempotent: claims that already have any result
+    are skipped.
+    """
+    comparison_json = comparison_json or REPO / "data" / "comparison.json"
+    comp = json.loads(comparison_json.read_text())
+    db = ScorecardDB(db_path)
+    have = {
+        r[0] for r in db.conn.execute("SELECT DISTINCT claim_id FROM pe_results")
+    }
+    known = {
+        r[0]
+        for r in db.conn.execute("SELECT claim_id FROM external_scores")
+    }
+    bundle = comp.get("pe_bundle", {})
+    results, unmatched = [], 0
+    for row in comp["rows"]:
+        if row["status"] not in ("pe_gap", "not_computed"):
+            continue
+        probe = _probe(row)
+        if probe is None:
+            continue
+        cid = probe.claim_id()
+        if cid not in known and "rate_unit" in probe.conditions:
+            # A few tidy rate rows (SNAP household-composition splits)
+            # carried no unit column, so their claims have no rate_unit
+            # condition; _probe always sets one. Retry without it.
+            probe.conditions.pop("rate_unit")
+            cid = probe.claim_id()
+        if cid not in known:
+            unmatched += 1
+            continue
+        if cid in have:
+            continue
+        have.add(cid)
+        results.append(
+            PEResult(
+                claim_id=cid,
+                computed_value=None,
+                status=ComparisonStatus(row["status"]),
+                engine_version=bundle.get("model_version", "unknown"),
+                data_bundle=bundle.get("certified_data_build_id", "unknown"),
+                pe_construction="",
+                run_id="platform-grid-2024-status",
+                computed_at=f"{comp.get('built', '')}T12:00:00",
+                annotations=row.get("annotations", []),
+            )
+        )
+    n = db.add_results(results)
+    db.close()
+    return {"valueless_added": n, "unmatched": unmatched}
+
+
 if __name__ == "__main__":
     import sys
 
     out = Path(sys.argv[1] if len(sys.argv) > 1 else "data/scorecard.db")
-    print(json.dumps(ingest(out), indent=1))
+    if "--backfill-valueless" in sys.argv:
+        print(json.dumps(backfill_valueless(out), indent=1))
+    else:
+        print(json.dumps(ingest(out), indent=1))

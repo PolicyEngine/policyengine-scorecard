@@ -12,11 +12,13 @@ export function CoverageSpine({
   buckets,
   active,
   onSelect,
+  label,
 }: {
   rows: Row[];
   buckets: Map<Row, SpineBucket>;
   active: SpineBucket | null;
   onSelect: (b: SpineBucket | null) => void;
+  label: string;
 }) {
   const counts = new Map<SpineBucket, number>();
   for (const r of rows) {
@@ -26,7 +28,7 @@ export function CoverageSpine({
   const total = rows.length || 1;
 
   return (
-    <figure aria-label="Coverage of Urban's published cells by comparison status">
+    <figure aria-label={label}>
       <div className="flex h-9 w-full overflow-hidden rounded-md border border-border">
         {SPINE_ORDER.map((b) => {
           const n = counts.get(b) ?? 0;

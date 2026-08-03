@@ -1,7 +1,15 @@
-import type { Comparison } from "../types";
+import type { SourceSlice } from "../types";
 
-export function AboutView({ data }: { data: Comparison }) {
-  const b = data.pe_bundle;
+/** Urban-instance methodology: what the two columns are, how the 2026
+ * column is built, run definitions, provenance. */
+export function AboutView({
+  slice,
+  peBundle,
+}: {
+  slice: SourceSlice;
+  peBundle: Record<string, string | undefined>;
+}) {
+  const prov = slice.pe_provenance ?? {};
   return (
     <div className="max-w-3xl space-y-6 text-sm leading-6">
       <section>
@@ -13,19 +21,19 @@ export function AboutView({ data }: { data: Comparison }) {
           month of 2023. <b>PolicyEngine</b> simulates both sides on the
           certified Populace artifact: statute-encoded eligibility rules plus
           seeded take-up flags, with calibration to thousands of administrative
-          targets. For count-targeted programs (SNAP, SSI, Medicaid) the
-          participation numerator is disciplined by the same class of admin
-          counts Urban uses directly, so agreement there is partly by
-          construction — stated on every affected row.
+          targets. For count-targeted programs (SNAP, SSI) the participation
+          numerator is disciplined by the same class of admin counts Urban
+          uses directly, so agreement there is partly by construction — stated
+          on every affected row.
         </p>
       </section>
       <section>
-        <h2 className="mb-2 text-lg font-semibold">Tolerances</h2>
+        <h2 className="mb-2 text-lg font-semibold">Distance bins</h2>
         <p>
-          Rates: within 2.5 percentage points is "reproduced", within 10pp
-          "diverging", beyond that "far apart". Counts: within 10% / 30%.
-          These are display buckets, not scientific claims; the exact values
-          sit on every row.
+          Rates within 2.5 percentage points sit in the closest bin, within
+          10pp the middle one, beyond that the outer one. Counts: within 10% /
+          30%. These are descriptive display bins, not pass/fail claims; the
+          exact values sit on every row.
         </p>
       </section>
       <section>
@@ -41,7 +49,7 @@ export function AboutView({ data }: { data: Comparison }) {
       </section>
       <section>
         <h2 className="mb-2 text-lg font-semibold">Full-participation runs</h2>
-        {Object.entries(data.pe_runs)
+        {Object.entries(slice.pe_runs ?? {})
           .filter(([k]) => k !== "baseline")
           .map(([k, run]) => (
             <p key={k} className="fig text-xs text-muted-foreground">
@@ -54,13 +62,17 @@ export function AboutView({ data }: { data: Comparison }) {
         <table className="fig text-xs">
           <tbody>
             {[
-              ["external source", data.source_meta.url],
-              ["fetched", data.source_meta.fetched],
-              ["dataset", b.runtime_dataset_uri],
-              ["engine", `${b.model_package} ${b.model_version}`],
-              ["bundle", b.bundle_id],
-              ["artifact sha256", b.certified_data_artifact_sha256],
-              ["built", data.built],
+              ["external source", slice.meta.url],
+              ["fetched", slice.meta.fetched],
+              ["dataset", prov.runtime_dataset],
+              [
+                "engine",
+                `${peBundle.model_package ?? ""} ${
+                  prov.engine_version ?? peBundle.model_version ?? ""
+                }`,
+              ],
+              ["data bundle", prov.data_bundle],
+              ["built", slice.built],
             ].map(([k, v]) => (
               <tr key={k}>
                 <td className="pr-4 py-0.5 text-muted-foreground whitespace-nowrap align-top">
@@ -76,8 +88,8 @@ export function AboutView({ data }: { data: Comparison }) {
         <h2 className="mb-2 text-lg font-semibold">Docs</h2>
         <p className="text-muted-foreground">
           The full replication assessment (methodology, the three calibration
-          regimes, per-program verdicts) and the engine mechanics audit live in
-          this repo under docs/.
+          regimes, per-program findings) and the engine mechanics audit live
+          in this repo under docs/.
         </p>
       </section>
     </div>
