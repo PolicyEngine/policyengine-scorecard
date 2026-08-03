@@ -235,8 +235,8 @@ class TestPWBM:
 class TestTPC:
     def test_counts_and_drops(self, tpc):
         scores, dropped = tpc
-        assert len(scores) == 922
-        assert dropped == {"benefit_family": 468, "defective_staging": 48}
+        assert len(scores) == 1057
+        assert dropped == {"benefit_family": 468}
 
     def test_family_first_act_unrounded_twin(self, tpc):
         scores, _ = tpc
@@ -284,6 +284,97 @@ class TestTPC:
             == {"policy": "current_law_pre_2025_tariffs"}
             for s in rows
         )
+
+    def test_t26_0009_by_race_coverage(self, tpc):
+        """The re-parsed by-racial/ethnic-group set: 5 sheets x 9 income
+        groups x 3 metrics, race as a subgroup condition (absent on the
+        all-tax-units sheet), one reform world (enacted Title VII vs the
+        explicit pre-OBBBA baseline)."""
+        scores, _ = tpc
+        rows = [
+            s for s in scores if s.publication["table_id"] == "T26-0009"
+        ]
+        assert len(rows) == 135
+        by_subgroup = {}
+        for s in rows:
+            by_subgroup.setdefault(
+                s.conditions.get("subgroup"), []
+            ).append(s)
+        assert set(by_subgroup) == {
+            None, "white_non_hispanic", "black_non_hispanic", "hispanic",
+            "additional_races",
+        }
+        assert all(len(g) == 27 for g in by_subgroup.values())
+        assert all(
+            s.reform.reform == {"policy": "obbba_enacted_title_vii"}
+            and s.reform.baseline == {"policy": "pre_obbba_law"}
+            and s.conditions["baseline_policy"] == "pre_obbba_law"
+            and s.conditions["income_axis"]
+            == "Expanded Cash Income Percentile"
+            and s.period == 2026
+            for s in rows
+        )
+
+    def test_t26_0009_values_match_workbook(self, tpc):
+        """Spot values hand-transcribed from the sha256-manifested
+        workbook (sheet!cell in comments), covering every sheet and all
+        three metrics."""
+        scores, _ = tpc
+        val = {
+            (
+                s.conditions.get("subgroup"),
+                s.conditions["income_group"],
+                s.metric,
+            ): s.value
+            for s in scores
+            if s.publication["table_id"] == "T26-0009"
+        }
+        pct = Metric.PCT_CHANGE_AFTER_TAX_INCOME
+        cut = Metric.SHARE_WITH_TAX_CUT
+        avg = Metric.AVG_TAX_CHANGE_USD
+        assert val[(None, "All", pct)] == pytest.approx(2.8)  # All!K20
+        assert val[(None, "All", cut)] == pytest.approx(85.0)  # All!C20
+        assert val[(None, "All", avg)] == pytest.approx(-2860)  # All!O20
+        assert val[
+            (None, "Top Quintile", avg)
+        ] == pytest.approx(-12200)  # All!O19
+        assert val[
+            ("white_non_hispanic", "Top Quintile", avg)
+        ] == pytest.approx(-12710)  # White!O19
+        assert val[
+            ("black_non_hispanic", "Lowest Quintile", cut)
+        ] == pytest.approx(57.3)  # Black!C15
+        assert val[
+            ("black_non_hispanic", "Lowest Quintile", avg)
+        ] == pytest.approx(-160)  # Black!O15
+        assert val[
+            ("hispanic", "Top 5 Percent", pct)
+        ] == pytest.approx(4.0)  # Hispanic!K25
+        assert val[
+            ("additional_races", "All", pct)
+        ] == pytest.approx(2.9)  # Additional Races!K20
+
+    def test_t26_0009_pct_and_dollar_columns_separated(self, tpc):
+        """The original staging leaked baseline-panel dollar cells into
+        percent metrics (All!K37 = 1020, an average federal tax burden in
+        dollars, staged as a percent change). Percent-unit rows must stay
+        on the percent scale, dollar rows carry the per-tax-unit unit,
+        and the baseline panel stays out entirely."""
+        scores, _ = tpc
+        rows = [
+            s for s in scores if s.publication["table_id"] == "T26-0009"
+        ]
+        for s in rows:
+            if s.metric is Metric.AVG_TAX_CHANGE_USD:
+                assert s.unit_concept is UnitConcept.USD_PER_TAX_UNIT
+            else:
+                assert s.unit_concept is UnitConcept.PERCENT
+                assert -10 <= s.value <= 100
+        assert 1020.0 not in {
+            s.value
+            for s in rows
+            if s.unit_concept is UnitConcept.PERCENT
+        }
 
 
 class TestCBO:
@@ -449,23 +540,32 @@ class TestBudgetLab:
 
 class TestCrossSource:
     def test_enacted_title_vii_key_shared_jct_tpc_tf(self, jct, tpc, tf):
+        """Current-law-baseline scorings of the enacted text share one
+        key across sources. TPC's post-enactment by-race set (T26-0009)
+        scores the same slug against its explicitly stated pre-OBBBA
+        baseline, so it rides the same policy with a second key."""
         scores, _ = tpc
         jct_keys = {
             s.reform.key()
             for s in jct
             if s.conditions["bill_version"] == "JCX-35-25"
         }
-        tpc_keys = {
-            s.reform.key()
-            for s in scores
-            if s.reform.reform["policy"] == "obbba_enacted_title_vii"
-        }
+        tpc_by_baseline = {}
+        for s in scores:
+            if s.reform.reform["policy"] == "obbba_enacted_title_vii":
+                tpc_by_baseline.setdefault(
+                    (s.reform.baseline or {}).get("policy"), set()
+                ).add(s.reform.key())
         tf_keys = {
             s.reform.key()
             for s in tf
             if s.reform.reform["policy"] == "obbba_enacted_title_vii"
         }
+        assert set(tpc_by_baseline) == {None, "pre_obbba_law"}
+        tpc_keys = tpc_by_baseline[None]
         assert jct_keys == tpc_keys == tf_keys and len(jct_keys) == 1
+        assert len(tpc_by_baseline["pre_obbba_law"]) == 1
+        assert tpc_by_baseline["pre_obbba_law"].isdisjoint(tpc_keys)
 
     def test_managers_amendment_key_shared_jct_tpc_bl(self, jct, tpc, bl):
         scores, _ = tpc
@@ -530,15 +630,17 @@ class TestFullIngest:
         }
         assert by_source == {
             "jct": 6771,
-            "tpc": 922,
+            "tpc": 1057,
             "budget_lab": 1229,
             "cpsp": 1033,
             "cbo": 931,
             "pwbm": 717,
             "tax_foundation": 663,
         }
-        # 12,850 staged = claims + twin merges (2+48+18) + TPC drops.
-        assert sum(by_source.values()) + 2 + 48 + 18 + 468 + 48 == 12_850
+        # 12,937 staged (12,850 harvested - 48 defective T26-0009 rows
+        # + 135 re-parsed) = claims + twin merges (2+48+18) + the TPC
+        # benefit-family drop.
+        assert sum(by_source.values()) + 2 + 48 + 18 + 468 == 12_937
 
     def test_lanes_ingested_and_feed_synced(self, ingested):
         db, _, feed = ingested
