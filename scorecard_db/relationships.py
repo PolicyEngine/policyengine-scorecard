@@ -104,6 +104,11 @@ PERMANENT_HOLDOUT_METRICS = frozenset(
         Metric.POVERTY_RATE,
         Metric.POVERTY_RATE_CHANGE,
         Metric.POVERTY_COUNT_CHANGE,
+        # 2026-08-02 UK ingest: poverty headcounts (HBAI counts, JRF
+        # series) and persistent poverty are the same modeled-outcome
+        # family — the doctrine is metric-shaped, not country-shaped.
+        Metric.POVERTY_COUNT,
+        Metric.PERSISTENT_POVERTY_RATE,
     }
 )
 PERMANENT_HOLDOUT_BASIS = (

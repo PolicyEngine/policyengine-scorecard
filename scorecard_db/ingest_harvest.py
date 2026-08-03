@@ -21,6 +21,7 @@ from . import (
     ingest_tax_foundation,
     ingest_tpc,
 )
+from .baselines import register_baselines
 from .db import ScorecardDB
 from .harvest import REPO
 
@@ -101,6 +102,7 @@ def ingest(db_path: Path) -> dict:
     for name, adapter in ADAPTERS.items():
         stats[name] = adapter.ingest(db_path)
     db = ScorecardDB(db_path)
+    stats["baselines_registered"] = register_baselines(db)
     stats["lanes_synced"] = sync_lane_feed(
         db, REPO / "data" / "lanes.json", "2026-08-02"
     )

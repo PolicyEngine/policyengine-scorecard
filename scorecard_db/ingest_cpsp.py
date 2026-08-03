@@ -251,6 +251,9 @@ def ingest(db_path: Path) -> dict:
         erratum_claim(scores).claim_id(),
         "external_issue",
         ERRATUM_RATIONALE,
+        # Gated class (issue #9): the citable known issue is the source's
+        # own internal contradiction, documented in the vendored notes.
+        action_link="sources/harvest-2026-08-02/cpsp/NOTES.md#erratum",
     )
     db.set_lane(
         "cpsp-poverty",

@@ -70,6 +70,57 @@ class Metric(str, Enum):
     MAXIMUM_MONTHLY_BENEFIT = "maximum_monthly_benefit"
     AVERAGE_WEEKLY_BENEFIT = "average_weekly_benefit"
     FIRST_PAYMENT_COUNT = "first_payment_count"
+    # 2026-08-02 UK-harvest extensions (COLLATION UK worklist item 1).
+    # exchequer_impact is deliberately NOT revenue_change: HMT/OBR scorecard
+    # lines mix Tax and Spend heads (classification is by largest impact),
+    # so the metric asserts only "net impact on the public finances";
+    # conditions carry head / tax_head / spending_head verbatim.
+    EXCHEQUER_IMPACT = "exchequer_impact"
+    # DWP income-related-benefit take-up: the £ entitled but unclaimed
+    # (with bounds in conditions["bound"]).
+    UNCLAIMED_EXPENDITURE = "unclaimed_expenditure"
+    # Level (not change) families shared by OBR EFO receipts tables and
+    # UKMOD's validation block (their "tax_revenue" simulated receipts).
+    REVENUE_LEVEL = "revenue_level"
+    EXPENDITURE_LEVEL = "expenditure_level"
+    EXPENDITURE_CHANGE = "expenditure_change"
+    # Statutory/administrative parameter values by year (OBR EFO 3.19
+    # threshold walks, RF April-2026 uprating set) — pure parameter checks.
+    POLICY_PARAMETER_LEVEL = "policy_parameter_level"
+    BENEFIT_UPRATING = "benefit_uprating"  # annual uprating rate applied
+    TAXPAYER_COUNT = "taxpayer_count"
+    TAXPAYER_COUNT_CHANGE = "taxpayer_count_change"
+    # HMRC SPI percentile points: income level at percentile p
+    # (conditions: percentile, income_concept).
+    INCOME_PERCENTILE_POINT = "income_percentile_point"
+    AVERAGE_TAX_RATE = "average_tax_rate"
+    AVERAGE_TAX_AMOUNT = "average_tax_amount"
+    # Distribution levels (UKMOD 4.7, HMT annex 2.C). Median-vs-mean is
+    # baked into the metric (level statistics, unlike the avg_* change
+    # family); the income concept rides conditions["income_concept"].
+    MEDIAN_INCOME = "median_income"
+    MEAN_INCOME = "mean_income"
+    INCOME_SHARE = "income_share"
+    GINI_COEFFICIENT = "gini_coefficient"
+    GINI_COEFFICIENT_CHANGE = "gini_coefficient_change"
+    S80_S20_RATIO = "s80_s20_ratio"
+    S80_S20_RATIO_CHANGE = "s80_s20_ratio_change"
+    POVERTY_THRESHOLD = "poverty_threshold"
+    # JRF headline series PE cannot produce without longitudinal data;
+    # staged as claims, results stay not_computed until that capability
+    # exists (descriptive register: capability statement, not a defect).
+    PERSISTENT_POVERTY_RATE = "persistent_poverty_rate"
+    # Reform-distribution family (IFS options tables, RF decile blocks).
+    AVG_CHANGE_HOUSEHOLD_NET_INCOME = "avg_change_household_net_income"
+    SHARE_GAINING = "share_gaining"
+    SHARE_LOSING = "share_losing"
+    SHARE_OF_SPENDING_TO_GROUP = "share_of_spending_to_group"
+    COST_PER_CHILD_LIFTED_OUT_OF_POVERTY = (
+        "cost_per_child_lifted_out_of_poverty"
+    )
+    FAMILIES_AFFECTED_COUNT = "families_affected_count"
+    # RF Living Standards Outlook household income growth projections.
+    REAL_INCOME_GROWTH = "real_income_growth"
 
 
 class UnitConcept(str, Enum):
@@ -94,6 +145,27 @@ class UnitConcept(str, Enum):
     # pct_change_after_tax_income / share_with_tax_cut row to PERCENT;
     # SHARE stays the fraction convention for rates (poverty, take-up).
     PERCENT = "percent"
+    # 2026-08-02 UK-harvest extensions: GBP aggregates and the per-period /
+    # per-unit statistics the UK sources publish (MIS weekly budgets, RF
+    # weekly benefit rates, IFS per-year averages). The per-unit split is
+    # load-bearing for the same reason as USD_PER_TAX_UNIT: averages must
+    # never sum like aggregates, and the denominator population differs.
+    GBP = "gbp"
+    GBP_PER_WEEK = "gbp_per_week"
+    GBP_PER_MONTH = "gbp_per_month"
+    GBP_PER_YEAR = "gbp_per_year"
+    GBP_PER_HOUSEHOLD = "gbp_per_household"
+    GBP_PER_FAMILY = "gbp_per_family"
+    GBP_PER_PERSON = "gbp_per_person"
+    # Rate-change claims published in percentage points (IFS poverty-rate
+    # changes). Distinct from PERCENT (a level on the 0–100 scale) so a
+    # query cannot mistake a change for a level.
+    PERCENTAGE_POINTS = "percentage_points"
+    # Inequality statistics: S80/S20 quintile-share ratios, Gini on the
+    # 0–1 scale, and Gini differences in index points × 100 (UKMOD 4.7).
+    RATIO = "ratio"
+    INDEX_0_1 = "index_0_1"
+    INDEX_POINTS_0_100 = "index_points_0_100"
 
 
 # Standardized conditions vocabulary (COLLATION worklist item 4).
@@ -112,6 +184,29 @@ class UnitConcept(str, Enum):
 # window_kind       "total" | "annual_average" on period-range claims
 # month             "YYYY-MM" for monthly series
 # data_vintage      dataset base when it is not the obvious current one
+#
+# UK additions (2026-08-02 UK harvest; COLLATION UK worklist items 2-3):
+# fy                normalized fiscal-year label "2026-27" (Apr–Mar). The
+#                   integer period is ALWAYS the FY start year (pe-uk-data
+#                   convention) — adapters re-derive it from this label, so
+#                   end-year staging conventions cannot leak in.
+# basis             source's own designation: "outturn" | "forecast" |
+#                   "projected" | "provisional" | "unstated". Admin outturn
+#                   rows never reach external_scores (ledger routing rule).
+# income_concept    UK distribution rows: "BHC" | "AHC" (load-bearing on
+#                   every HBAI-family statistic), alongside the US values.
+# equivalisation    e.g. "modified_oecd" — load-bearing with income_concept.
+# poverty_measure   "relative" | "absolute" (+ poverty_line, e.g.
+#                   "60pct_median"; poverty_line_anchor for absolute lines)
+# fiscal_event      "autumn_budget_2024" | "budget_2025" | … — the event a
+#                   costing/measure belongs to
+# measure           verbatim measure title on scored fiscal-event lines
+#                   (mirrors the policy_ref slug, which hashes this title)
+# series            UKMOD validation-block column: "ukmod" |
+#                   "official_estimate" | "input_data" | "hbai"
+# edition           publication edition when two editions of the same
+#                   statistic are staged (HBAI FYE2025 vs admin-linked)
+# bound             "lower" | "central" | "upper" on estimate ranges
 STANDARD_CONDITIONS = frozenset(
     {
         "geography",
@@ -127,6 +222,16 @@ STANDARD_CONDITIONS = frozenset(
         "window_kind",
         "month",
         "data_vintage",
+        "fy",
+        "basis",
+        "equivalisation",
+        "poverty_measure",
+        "poverty_line",
+        "fiscal_event",
+        "measure",
+        "series",
+        "edition",
+        "bound",
     }
 )
 
@@ -153,15 +258,47 @@ class ComparisonStatus(str, Enum):
 
 
 class DiagnosisClass(str, Enum):
+    """Adjudication classes under the descriptive register (issue #9,
+    Max 2026-08-02): the Scorecard is descriptive by default. PE_GAP and
+    EXTERNAL_ISSUE are normative and therefore GATED — they require a
+    citable known issue in action_link (a GitHub issue, published erratum,
+    internal contradiction, or tracked correction); divergence alone never
+    qualifies. METHODOLOGICAL_DIFFERENCE is strictly descriptive: the
+    models differ because of documented choices on both sides, stated,
+    sourced, and left there — no convergence or defended-departure
+    framing in either direction."""
+
     PE_GAP = "pe_gap"
     EXTERNAL_ISSUE = "external_issue"
     CONCEPT_MISMATCH = "concept_mismatch"
+    METHODOLOGICAL_DIFFERENCE = "methodological_difference"
     VINTAGE = "vintage"
     UNDIAGNOSED = "undiagnosed"
 
 
+# Diagnosis classes that may only be assigned with a citable known issue.
+GATED_DIAGNOSIS_CLASSES = frozenset(
+    {DiagnosisClass.PE_GAP, DiagnosisClass.EXTERNAL_ISSUE}
+)
+
+
 def _canonical(obj: Any) -> str:
     return json.dumps(obj, sort_keys=True, separators=(",", ":"))
+
+
+# The null baseline descriptor: current law at the source's scoring date.
+CURRENT_LAW_DESCRIPTOR = {"policy": "current_law"}
+
+
+def baseline_key(descriptor: dict) -> str:
+    """Stable key over a baseline descriptor dict (issue #13). The same
+    descriptor shape ReformRef.baseline carries; {"policy": "current_law"}
+    keys the null baseline."""
+    if not (isinstance(descriptor, dict) and descriptor.get("policy")):
+        raise ValueError(
+            f"baseline descriptor needs a 'policy' slug: {descriptor!r}"
+        )
+    return hashlib.sha256(_canonical(descriptor).encode()).hexdigest()[:16]
 
 
 @dataclass(frozen=True)
@@ -242,6 +379,24 @@ class ReformRef:
                 }
             ).encode()
         ).hexdigest()[:16]
+
+    def baseline_descriptor(self) -> dict:
+        """The baseline world this reform is scored against, as a
+        descriptor dict. Absent baseline means current law — the JCT /
+        HMT-costing convention: scored against the law in force at
+        publication (the announcement vintage rides in conditions such as
+        fiscal_event / data_vintage, not in the baseline world)."""
+        return (
+            self.baseline
+            if self.baseline is not None
+            else CURRENT_LAW_DESCRIPTOR
+        )
+
+    def baseline_key(self) -> str:
+        """First-class baseline identity (issue #13): a stable hash of the
+        baseline descriptor, FK into the baselines registry. Additive
+        projection only — claim_id/key() hashing is unchanged."""
+        return baseline_key(self.baseline_descriptor())
 
     def to_json(self) -> str:
         return _canonical(
@@ -340,7 +495,14 @@ class ExternalScore:
 
 @dataclass
 class PEResult:
-    """PolicyEngine's computation for a claim (history preserved per run)."""
+    """PolicyEngine's computation for a claim (history preserved per run).
+
+    baseline_key records the baseline world the run ACTUALLY executed
+    (issue #13 point 5) — e.g. the two-child-limit runs execute a
+    pre_ab2025 reinstated counterfactual as their baseline, not current
+    law. None on legacy rows only; new ingests must pass it, and the
+    comparisons view refuses to render plain agreement when it differs
+    from the claim's baseline."""
 
     claim_id: str
     computed_value: Optional[float]
@@ -351,6 +513,7 @@ class PEResult:
     run_id: str = ""
     computed_at: str = ""  # ISO timestamp, caller-supplied
     annotations: list = field(default_factory=list)
+    baseline_key: Optional[str] = None  # baseline actually executed
 
     def __post_init__(self):
         self.status = ComparisonStatus(self.status)
