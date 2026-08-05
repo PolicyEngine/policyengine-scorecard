@@ -96,3 +96,44 @@ taxonomy and annotation ids); the `comparisons` view serves the latest per
 claim. Counterfactual worlds use the `policyengine_us_inputs` framework —
 input-override descriptors (forced take-up flags), not parametric reform
 paths, because no such parameters exist in the engine.
+
+## 2026-08-03 population: populace reform-validation registry
+
+Third population: the per-release external-checks registry previously
+rendered as calibration-diagnostics' "External checks" tab (being retired
+in favor of this scorecard). 205 claims + 675 per-release pe_results from
+five certified releases (f0af251 through Build O), vendored at
+sources/populace-reform-validation/raw/:
+
+```bash
+PYTHONPATH=. python -m scorecard_db.ingest_reform_validation data/scorecard.db
+```
+
+What it adds that the other populations don't: **regression history** —
+each artifact was computed at its release's exact engine pins
+(ENGINE_VERSIONS, with per-row overrides the artifacts document about
+themselves), so long-lived claims carry one pe_result per release — and
+exactly one: repeal constructions whose benchmark duplicates the direct
+level are dropped — and drift across releases is queryable. The OBBBA
+suite mints no claims of its own: its results attach to the harvested
+JCX-35-25 provision claims (canonical per issue #15), both the FY2026 and
+FY2027 ones, with the release's scoring mode (stacked_chained for f0af251,
+whose own totals chain; isolated for l0-refit; jcx_stacked from buildi on)
+in the pe_construction. Claim periods key the year the claim describes,
+parsed from each benchmark's window (fiscal-note FY2028 claims are 2028,
+SOI TY2023 is 2023, Census 3-year averages carry period_start/period_end);
+anything not identical to PE's single-calendar-year computation is
+status=constructed, and rows the artifacts flag as measuring a different
+concept (UT's claimed-vs-capped CTC) are concept_mismatch. All parsing
+and validation happens before any write, and the replacement (deletes,
+claims, results, lane) is a single transaction — a failed re-ingest, at
+any point, leaves the DB untouched. First rows on the reserved TAX_EXPENDITURE metric
+(JCX-48-24 / Treasury / the jct.tax_expenditures.* calibration targets,
+the latter consumed_as_target). Census state SPM rows land as held_out
+POVERTY_RATE claims per the poverty-holdout doctrine. Scored rows key off
+policy_ref descriptors ({"policy": <registry row id>}) until populace's
+payload embeds the executable reform dicts (populace #606). Every claim
+this ingest mints is marked publication.registry =
+"populace_reform_validation" — that marker is the idempotency contract
+(re-ingest deletes and recreates exactly these claims, never the harvest
+claims it attaches results to).
