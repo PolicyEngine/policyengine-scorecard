@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Comparison, LanesFeed, Row } from "./types";
+import type { Comparison, LanesFeed, PopulationsFeed, Row } from "./types";
 import { PROGRAM_LABELS } from "./types";
 import { bucketOf, type SpineBucket } from "./spine";
 import { CoverageSpine } from "./components/CoverageSpine";
@@ -8,10 +8,12 @@ import { DivergenceBoard } from "./components/DivergenceBoard";
 import { GapsView } from "./components/GapsView";
 import { AboutView } from "./components/AboutView";
 import { MissionControl } from "./components/MissionControl";
+import { ReformValidationView } from "./components/ReformValidationView";
 
 const TABS = [
   { id: "scorecard", label: "Scorecard" },
   { id: "divergences", label: "Divergences" },
+  { id: "validation", label: "Reform validation" },
   { id: "gaps", label: "Gaps" },
   { id: "about", label: "Method" },
 ] as const;
@@ -36,6 +38,7 @@ const DEFAULT_FILTERS: Filters = {
 export default function App() {
   const [data, setData] = useState<Comparison | null>(null);
   const [lanes, setLanes] = useState<LanesFeed | null>(null);
+  const [populations, setPopulations] = useState<PopulationsFeed | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<TabId>("scorecard");
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
@@ -52,6 +55,10 @@ export default function App() {
       .then((r) => (r.ok ? r.json() : null))
       .then(setLanes)
       .catch(() => setLanes(null));
+    fetch("./data/populations.json")
+      .then((r) => (r.ok ? r.json() : null))
+      .then(setPopulations)
+      .catch(() => setPopulations(null));
   }, []);
 
   const buckets = useMemo(() => {
@@ -63,8 +70,8 @@ export default function App() {
     return (
       <div className="mx-auto max-w-content p-8">
         <p className="text-destructive">
-          Could not load data/comparison.json ({error}). Run the pipeline,
-          then copy data into app/public/data/.
+          Could not load data/comparison.json ({error}). Run the pipeline, then
+          copy data into app/public/data/.
         </p>
       </div>
     );
@@ -90,8 +97,8 @@ export default function App() {
             {data.source_meta.fetched} · {data.source_meta.period}
           </span>
           <span>
-            policyengine · {b.runtime_dataset} @ {datasetId} ·{" "}
-            {b.model_package} {b.model_version} · annual 2024
+            policyengine · {b.runtime_dataset} @ {datasetId} · {b.model_package}{" "}
+            {b.model_version} · annual 2024
           </span>
           <span>built {data.built}</span>
         </div>
@@ -155,6 +162,15 @@ export default function App() {
         {tab === "divergences" && (
           <DivergenceBoard data={data} buckets={buckets} />
         )}
+        {tab === "validation" &&
+          (populations ? (
+            <ReformValidationView feed={populations} />
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              No populations feed — run scorecard_db.export_populations, then
+              copy data into app/public/data/.
+            </p>
+          ))}
         {tab === "gaps" && <GapsView data={data} />}
         {tab === "about" && <AboutView data={data} />}
       </main>
@@ -200,8 +216,8 @@ function Headline({
       <b className="text-foreground fig">
         {(counts.close ?? 0).toLocaleString()}
       </b>{" "}
-      land within tolerance. {PROGRAM_LABELS.liheap} and{" "}
-      {PROGRAM_LABELS.ccdf} are honest gaps. Click a segment to filter.
+      land within tolerance. {PROGRAM_LABELS.liheap} and {PROGRAM_LABELS.ccdf}{" "}
+      are honest gaps. Click a segment to filter.
     </p>
   );
 }

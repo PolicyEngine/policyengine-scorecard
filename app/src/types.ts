@@ -7,9 +7,7 @@ export type Status =
   | "suppressed";
 
 export type CalibrationRelationship =
-  | "consumed_as_target"
-  | "seed_source"
-  | "held_out";
+  "consumed_as_target" | "seed_source" | "held_out";
 
 export interface Lane {
   id: string;
@@ -122,3 +120,58 @@ export const STATUS_LABELS: Record<Status, string> = {
   not_computed: "Not yet computed",
   suppressed: "Suppressed by source",
 };
+
+/** One PE computation of a claim at a certified release (populations feed). */
+export interface ReleaseResult {
+  value: number | null;
+  status: Status;
+  engine_version: string;
+  data_bundle: string;
+  release: string;
+  construction: string;
+  computed_at: string;
+}
+
+/** A non-Urban claim from scorecard.db with its per-release history. */
+export interface PopulationRow {
+  claim_id: string;
+  source: string;
+  source_column: string;
+  name: string;
+  window: string;
+  publication_title: string;
+  url: string;
+  metric: string;
+  unit_concept: string;
+  value_kind: string;
+  period: number;
+  time_basis: string;
+  period_start: number | null;
+  period_end: number | null;
+  geography: string | null;
+  program: string | null;
+  conditions: Record<string, string>;
+  reform_framework: string | null;
+  reform_key: string;
+  external_value: number | null;
+  calibration_relationship: CalibrationRelationship;
+  latest: ReleaseResult & { ratio: number | null; delta: number | null };
+  results: ReleaseResult[];
+  diagnosis: {
+    class: string;
+    rationale: string;
+    action_link: string;
+  } | null;
+}
+
+export interface PopulationsFeed {
+  built: string;
+  note: string;
+  summary: {
+    claims: number;
+    multi_release_claims: number;
+    by_source: Record<string, number>;
+    by_latest_status: Record<string, number>;
+  };
+  rows: PopulationRow[];
+}
