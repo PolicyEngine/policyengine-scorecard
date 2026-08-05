@@ -40,14 +40,19 @@ export function ReformValidationView({ feed }: { feed: PopulationsFeed }) {
           {feed.summary.claims.toLocaleString()}
         </b>{" "}
         external claims — JCT scores, state fiscal notes, agency actuals, IRS
-        and Census references — each scored at every certified release's exact
-        engine pins.{" "}
+        and Census references — where each available result carries its
+        certified release's exact engine pins.{" "}
         <b className="fig text-foreground">
           {feed.summary.multi_release_claims.toLocaleString()}
         </b>{" "}
         carry results from more than one release, so drift across releases is
         queryable, and a scoring-construction change is labeled in the history
         rather than read as drift. Nothing here is a pass/fail grade.
+      </p>
+      <p className="mb-4 fig text-[11px] text-muted-foreground">
+        populations feed · exported from scorecard.db · built {feed.built} ·
+        per-release results carry their own engine + data-bundle provenance (the
+        page-top stamp describes the Urban comparison only)
       </p>
 
       <div className="mb-3 flex flex-wrap items-end gap-3">
@@ -116,9 +121,17 @@ export function ReformValidationView({ feed }: { feed: PopulationsFeed }) {
               <Fragment key={r.claim_id}>
                 <tr
                   className="cursor-pointer border-b border-border hover:bg-muted/40"
+                  tabIndex={0}
+                  aria-expanded={expanded === r.claim_id}
                   onClick={() =>
                     setExpanded(expanded === r.claim_id ? null : r.claim_id)
                   }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setExpanded(expanded === r.claim_id ? null : r.claim_id);
+                    }
+                  }}
                 >
                   <td className="max-w-md px-2 py-1.5">
                     <span className="line-clamp-2">

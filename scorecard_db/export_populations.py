@@ -73,7 +73,8 @@ def export(
            WHERE s.source != ?
              AND EXISTS (SELECT 1 FROM pe_results r
                          WHERE r.claim_id = s.claim_id)
-           ORDER BY s.source, s.metric, s.period, s.source_column""",
+           ORDER BY s.source, s.metric, s.period, s.source_column,
+                    s.claim_id""",
         (URBAN_SOURCE,),
     ).fetchall()
 

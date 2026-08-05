@@ -169,6 +169,11 @@ def test_integration_committed_db(tmp_path):
     ).fetchone()[0]
     db.close()
     assert stats["rows"] == expected == len(payload["rows"])
+    # The committed deployment artifact must match a fresh export (modulo
+    # the build date) — stale committed data can't pass CI.
+    committed = json.loads((REPO / "data" / "populations.json").read_text())
+    assert committed["rows"] == payload["rows"]
+    assert committed["summary"] == payload["summary"]
     # The reform-validation registry is in there with its release history.
     rv_multi = [r for r in payload["rows"] if len(r["results"]) > 1]
     assert payload["summary"]["multi_release_claims"] == len(rv_multi) > 0

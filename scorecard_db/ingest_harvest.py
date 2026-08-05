@@ -92,7 +92,7 @@ def sync_lane_feed(
     feed = json.loads(feed_path.read_text())
     by_id = {lane["id"]: lane for lane in feed["lanes"]}
     n = 0
-    for lane_id, meta in (lanes or LANE_FEED).items():
+    for lane_id, meta in (LANE_FEED if lanes is None else lanes).items():
         row = db.conn.execute(
             "SELECT stage, detail, updated_at FROM lanes WHERE lane = ?",
             (lane_id,),
