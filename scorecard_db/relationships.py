@@ -77,8 +77,7 @@ _MAP = {
     ),
     ("wic", None): (
         CR.HELD_OUT,
-        "§4: zero WIC calibration targets; §6: the near-match is "
-        "out-of-sample",
+        "§4: zero WIC calibration targets; §6: the near-match is out-of-sample",
     ),
     ("housing", None): (CR.HELD_OUT, "§4: zero housing targets"),
     ("liheap", None): (CR.HELD_OUT, "no PE national model consumes these"),

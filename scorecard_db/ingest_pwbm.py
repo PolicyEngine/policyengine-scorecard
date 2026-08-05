@@ -37,53 +37,113 @@ PRE_2025_TARIFFS = {"policy": "current_law_pre_2025_tariffs"}
 # into the reform descriptor (they define distinct worlds) and mirrored to
 # conditions["option"].
 REFORMS = {
-    "One Big Beautiful Bill Act (FY2025 reconciliation bill as signed"
-    " July 4, 2025)": ("obbba_enacted_pl119_21", None, None),
-    "One Big Beautiful Bill Act (House budget reconciliation proposals,"
-    " May 2025)": ("obbba_house_proposals_202505", None, None),
-    "One Big Beautiful Bill Act (House reconciliation bill, May 19 2025"
-    " version)": ("obbba_house_20250519", None, None),
-    "One Big Beautiful Bill Act (House-passed reconciliation bill,"
-    " May 22 2025)": ("obbba_house_passed_20250522", None, None),
-    "Eliminate income taxation of Social Security benefits":
-        ("ss_benefits_tax_elimination", None, None),
-    "Keep Your Pay Act (full package including top ordinary rate increase)":
-        ("kypa_full_package", None, None),
+    "One Big Beautiful Bill Act (FY2025 reconciliation bill as signed July 4, 2025)": (
+        "obbba_enacted_pl119_21",
+        None,
+        None,
+    ),
+    "One Big Beautiful Bill Act (House budget reconciliation proposals, May 2025)": (
+        "obbba_house_proposals_202505",
+        None,
+        None,
+    ),
+    "One Big Beautiful Bill Act (House reconciliation bill, May 19 2025 version)": (
+        "obbba_house_20250519",
+        None,
+        None,
+    ),
+    "One Big Beautiful Bill Act (House-passed reconciliation bill, May 22 2025)": (
+        "obbba_house_passed_20250522",
+        None,
+        None,
+    ),
+    "Eliminate income taxation of Social Security benefits": (
+        "ss_benefits_tax_elimination",
+        None,
+        None,
+    ),
+    "Keep Your Pay Act (full package including top ordinary rate increase)": (
+        "kypa_full_package",
+        None,
+        None,
+    ),
     "Keep Your Pay Act (standard deduction increase + CTC expansion + EITC"
     " expansion)": ("kypa_tax_provisions", None, None),
-    "Keep Your Pay Act (three tax-cut provisions, excluding top-rate"
-    " increase)": ("kypa_tax_provisions", None, None),
-    "Working Americans' Tax Cut Act (alternative maximum tax + millionaire"
-    " surtax)": ("watca", None, None),
-    "Section 199A QBI deduction reform options (against TCJA-extension"
-    " baseline)": ("qbi_199a_options", TCJA_EXTENSION, "reform_option"),
-    "Top ordinary rate increase options (against TCJA-extension baseline)":
-        ("top_rate_increase_options", TCJA_EXTENSION, "reform_option"),
-    "Limit corporate SALT deductions to $10,000 (against TCJA-extension"
-    " baseline)": ("corporate_salt_10k_cap", TCJA_EXTENSION,
-                   "tax_base_variant"),
-    "Raise stock buyback excise tax rate (against TCJA-extension baseline)":
-        ("buyback_excise_increase", TCJA_EXTENSION, "reform_option"),
+    "Keep Your Pay Act (three tax-cut provisions, excluding top-rate increase)": (
+        "kypa_tax_provisions",
+        None,
+        None,
+    ),
+    "Working Americans' Tax Cut Act (alternative maximum tax + millionaire surtax)": (
+        "watca",
+        None,
+        None,
+    ),
+    "Section 199A QBI deduction reform options (against TCJA-extension baseline)": (
+        "qbi_199a_options",
+        TCJA_EXTENSION,
+        "reform_option",
+    ),
+    "Top ordinary rate increase options (against TCJA-extension baseline)": (
+        "top_rate_increase_options",
+        TCJA_EXTENSION,
+        "reform_option",
+    ),
+    "Limit corporate SALT deductions to $10,000 (against TCJA-extension baseline)": (
+        "corporate_salt_10k_cap",
+        TCJA_EXTENSION,
+        "tax_base_variant",
+    ),
+    "Raise stock buyback excise tax rate (against TCJA-extension baseline)": (
+        "buyback_excise_increase",
+        TCJA_EXTENSION,
+        "reform_option",
+    ),
     "Remove limitation on repayment of excess premium tax credits (against"
-    " TCJA-extension baseline)":
-        ("ptc_repayment_limit_removal", TCJA_EXTENSION, None),
-    "All U.S. tariffs in effect as of June 10, 2025 (vs. pre-2025 tariff"
-    " policy)": ("tariffs_in_effect_20250610", PRE_2025_TARIFFS, None),
+    " TCJA-extension baseline)": ("ptc_repayment_limit_removal", TCJA_EXTENSION, None),
+    "All U.S. tariffs in effect as of June 10, 2025 (vs. pre-2025 tariff policy)": (
+        "tariffs_in_effect_20250610",
+        PRE_2025_TARIFFS,
+        None,
+    ),
 }
 
 _KNOWN_FIELDS = frozenset(
     {
-        "source", "source_model", "calibration_relationship", "publication",
-        "table_ref", "csv", "status", "unit_concept", "value_kind",
-        "period", "time_basis", "value", "conditions", "reform_hint",
-        "source_column", "unit_note", "metric", "proposed_metric",
+        "source",
+        "source_model",
+        "calibration_relationship",
+        "publication",
+        "table_ref",
+        "csv",
+        "status",
+        "unit_concept",
+        "value_kind",
+        "period",
+        "time_basis",
+        "value",
+        "conditions",
+        "reform_hint",
+        "source_column",
+        "unit_note",
+        "metric",
+        "proposed_metric",
     }
 )
 _KNOWN_CONDITIONS = frozenset(
     {
-        "scoring", "income_group", "income_concept", "provision",
-        "statistic", "baseline_policy", "reform_option", "package_variant",
-        "aggregation", "budget_window", "tax_base_variant", "revenue_type",
+        "scoring",
+        "income_group",
+        "income_concept",
+        "provision",
+        "statistic",
+        "baseline_policy",
+        "reform_option",
+        "package_variant",
+        "aggregation",
+        "budget_window",
+        "tax_base_variant",
+        "revenue_type",
         "policy_vintage",
     }
 )
@@ -160,9 +220,7 @@ def stage_scores() -> list[ExternalScore]:
         if metric is Metric.AVG_CHANGE_AFTER_TAX_INCOME_USD:
             expected = (
                 "after_tax_and_transfer_income"
-                if row["proposed_metric"].startswith(
-                    "avg_change_after_tax_transfer"
-                )
+                if row["proposed_metric"].startswith("avg_change_after_tax_transfer")
                 else "after_tax_income"
             )
             if staged_conds.get("income_concept") != expected:
@@ -173,8 +231,13 @@ def stage_scores() -> list[ExternalScore]:
 
         conditions = {"geography": "US"}
         for key in (
-            "scoring", "income_group", "income_concept", "provision",
-            "statistic", "revenue_type", "policy_vintage",
+            "scoring",
+            "income_group",
+            "income_concept",
+            "provision",
+            "statistic",
+            "revenue_type",
+            "policy_vintage",
         ):
             if key in staged_conds:
                 conditions[key] = staged_conds.pop(key)
@@ -193,14 +256,11 @@ def stage_scores() -> list[ExternalScore]:
             period_start, period_end = parse_window(window)
             if row["period"] != period_end:
                 raise ValueError(
-                    f"pwbm: window row period {row['period']} != end "
-                    f"{period_end}"
+                    f"pwbm: window row period {row['period']} != end {period_end}"
                 )
             conditions["window_kind"] = "total"
         if staged_conds:
-            raise ValueError(
-                f"pwbm: unconsumed conditions {sorted(staged_conds)}"
-            )
+            raise ValueError(f"pwbm: unconsumed conditions {sorted(staged_conds)}")
 
         publication = dict(row["publication"])
         publication["table"] = row["table_ref"]

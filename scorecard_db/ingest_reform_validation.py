@@ -118,8 +118,13 @@ ENGINE_VERSIONS = {
 # at pe-us 1.729 on the release H5".
 _L0 = "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701"
 _L0_OFFLINE_PROGRAM_LEVELS = (
-    "state_va_eitc_cli", "state_oh_eitc", "state_mo_wftc", "state_sc_eitc",
-    "state_co_fac", "state_id_ctc", "state_ut_ctc",
+    "state_va_eitc_cli",
+    "state_oh_eitc",
+    "state_mo_wftc",
+    "state_sc_eitc",
+    "state_co_fac",
+    "state_id_ctc",
+    "state_ut_ctc",
 )
 ENGINE_OVERRIDES = {
     _L0: {
@@ -144,9 +149,7 @@ ENGINE_OVERRIDES = {
 # (verified: its 17 income-tax rows share one 2,735.78B baseline; the
 # estate/gift row is a different tax head).
 OBBBA_SCORING_MODE = {
-    "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z": (
-        "stacked_chained"
-    ),
+    "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z": ("stacked_chained"),
     "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701": "isolated",
     "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z": "jcx_stacked",
     "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z": "jcx_stacked",
@@ -212,15 +215,63 @@ STATUS_OVERRIDES = {
 }
 
 _STATES = {
-    "al", "ak", "az", "ar", "ca", "co", "ct", "de", "dc", "fl", "ga", "hi",
-    "id", "il", "in", "ia", "ks", "ky", "la", "me", "md", "ma", "mi", "mn",
-    "ms", "mo", "mt", "ne", "nv", "nh", "nj", "nm", "ny", "nc", "nd", "oh",
-    "ok", "or", "pa", "ri", "sc", "sd", "tn", "tx", "ut", "vt", "va", "wa",
-    "wv", "wi", "wy",
+    "al",
+    "ak",
+    "az",
+    "ar",
+    "ca",
+    "co",
+    "ct",
+    "de",
+    "dc",
+    "fl",
+    "ga",
+    "hi",
+    "id",
+    "il",
+    "in",
+    "ia",
+    "ks",
+    "ky",
+    "la",
+    "me",
+    "md",
+    "ma",
+    "mi",
+    "mn",
+    "ms",
+    "mo",
+    "mt",
+    "ne",
+    "nv",
+    "nh",
+    "nj",
+    "nm",
+    "ny",
+    "nc",
+    "nd",
+    "oh",
+    "ok",
+    "or",
+    "pa",
+    "ri",
+    "sc",
+    "sd",
+    "tn",
+    "tx",
+    "ut",
+    "vt",
+    "va",
+    "wa",
+    "wv",
+    "wi",
+    "wy",
 }
 
 _SOI_TAXES = {
-    "income_tax", "alternative_minimum_tax", "net_investment_income_tax",
+    "income_tax",
+    "alternative_minimum_tax",
+    "net_investment_income_tax",
     "self_employment_tax",
 }
 
@@ -229,8 +280,11 @@ def _state_of(row: dict) -> str | None:
     """State code from the row's measure or id prefix, else None."""
     for token in (
         (row["populace"].get("measure") or "").split("_")[0],
-        row["id"].removeprefix("state_repeal_").removeprefix("state_")
-        .removeprefix("fed_eitc_").split("_")[0],
+        row["id"]
+        .removeprefix("state_repeal_")
+        .removeprefix("state_")
+        .removeprefix("fed_eitc_")
+        .split("_")[0],
         row["id"].rsplit("_", 1)[-1],
     ):
         if token in _STATES:
@@ -495,15 +549,19 @@ def _harvest_claim(db: ScorecardDB, provision: str, period: int) -> dict | None:
         (period, provision),
     ).fetchall()
     if len(rows) > 1:
-        raise ValueError(
-            f"ambiguous harvest claim for {provision!r} FY{period}"
-        )
+        raise ValueError(f"ambiguous harvest claim for {provision!r} FY{period}")
     return dict(rows[0]) if rows else None
 
 
 def _obbba_results(
-    db: ScorecardDB, row: dict, release_id: str, engine: str, computed_at: str,
-    claims: dict[str, ExternalScore], tallies: dict, validate: bool,
+    db: ScorecardDB,
+    row: dict,
+    release_id: str,
+    engine: str,
+    computed_at: str,
+    claims: dict[str, ExternalScore],
+    tallies: dict,
+    validate: bool,
 ) -> list[PEResult]:
     """Attach the registry's OBBBA computation to the canonical harvest
     claims — the FY2026 provision claim, and the FY2027 one when the
@@ -529,9 +587,7 @@ def _obbba_results(
             # against the latest artifact: its benchmarks carry the 7/06
             # transcription audit (e.g. mortgage FY2027 3,398M -> 3,110M),
             # while older artifacts keep their superseded columns.
-            if validate and abs(found["value"] - score) > max(
-                2e6, 1e-3 * abs(score)
-            ):
+            if validate and abs(found["value"] - score) > max(2e6, 1e-3 * abs(score)):
                 raise ValueError(
                     f"{row['id']} FY{fy}: registry benchmark {score:,.0f}"
                     f" != harvest claim value {found['value']:,.0f}"
@@ -580,9 +636,7 @@ def _obbba_results(
                 status=ComparisonStatus.CONSTRUCTED,
                 engine_version=engine,
                 data_bundle=release_id,
-                pe_construction=(
-                    f"reform_delta:{measure}:{mode}:cy2026_for_fy{fy}"
-                ),
+                pe_construction=(f"reform_delta:{measure}:{mode}:cy2026_for_fy{fy}"),
                 run_id=f"{RUN_PREFIX}{release_id}",
                 computed_at=computed_at,
             )
@@ -601,9 +655,7 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
         "obbba_attached_results": 0,
         "obbba_fallback_claims": 0,
     }
-    releases = sorted(
-        raw_dir.glob("*.json"), key=lambda p: _release_timestamp(p.stem)
-    )
+    releases = sorted(raw_dir.glob("*.json"), key=lambda p: _release_timestamp(p.stem))
     if not releases:
         raise SystemExit(f"no artifacts in {raw_dir}")
     for path in releases:
@@ -634,8 +686,14 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
             if row["category"] == "OBBBA":
                 results.extend(
                     _obbba_results(
-                        db, row, release_id, engine, computed_at, claims,
-                        tallies, validate=path == releases[-1],
+                        db,
+                        row,
+                        release_id,
+                        engine,
+                        computed_at,
+                        claims,
+                        tallies,
+                        validate=path == releases[-1],
                     )
                 )
                 continue

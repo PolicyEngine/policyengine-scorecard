@@ -116,17 +116,14 @@ def build_sim(run_name, flags_true):
         n = sim.populations[entity].count
         arr = np.ones(n, dtype=bool)
         monthly = str(getattr(vs[f], "definition_period", "")).lower() in (
-            "month", "monthly",
+            "month",
+            "monthly",
         )
-        periods = (
-            [f"{YEAR}-{m:02d}" for m in range(1, 13)] if monthly else [YEAR]
-        )
+        periods = [f"{YEAR}-{m:02d}" for m in range(1, 13)] if monthly else [YEAR]
         try:
             for p in periods:
                 sim.set_input(f, p, arr)
-            run_meta["flags_set_true"].append(
-                f + (" (12 months)" if monthly else "")
-            )
+            run_meta["flags_set_true"].append(f + (" (12 months)" if monthly else ""))
         except Exception as e:
             log(f"  set_input({f}) failed: {e}; trying eternity")
             try:
@@ -138,14 +135,13 @@ def build_sim(run_name, flags_true):
     for f in flags_true:
         if f in vs:
             try:
-                monthly = str(
-                    getattr(vs[f], "definition_period", "")
-                ).lower() in ("month", "monthly")
+                monthly = str(getattr(vs[f], "definition_period", "")).lower() in (
+                    "month",
+                    "monthly",
+                )
                 probe = f"{YEAR}-06" if monthly else YEAR
                 run_meta["flag_means_after"][f] = float(
-                    np.mean(
-                        np.array(sim.calculate(f, probe).values, dtype=float)
-                    )
+                    np.mean(np.array(sim.calculate(f, probe).values, dtype=float))
                 )
             except Exception:
                 pass
@@ -178,8 +174,7 @@ def analyze(run_name, flags_true):
 
     if run_name == "baseline":
         meta["bundle"] = {
-            k: str(v)
-            for k, v in getattr(sim, "policyengine_bundle", {}).items()
+            k: str(v) for k, v in getattr(sim, "policyengine_bundle", {}).items()
         }
 
     # --- shared person-level frames (numpy masks; MicroSeries for values) ---
@@ -234,9 +229,7 @@ def analyze(run_name, flags_true):
     dis_var = pick(vs, ["is_disabled"])
     if dis_var:
         try:
-            dis = np.array(
-                sim.calculate(dis_var, YEAR).values, dtype=bool
-            )
+            dis = np.array(sim.calculate(dis_var, YEAR).values, dtype=bool)
             record_var(vs, dis_var)
             demo_np["disability_yes"] = dis
             demo_np["disability_no"] = ~dis
@@ -251,15 +244,12 @@ def analyze(run_name, flags_true):
                 if m is None:
                     continue
                 base = m if base is None else (base & m)
-            emit(
-                run_name, program, metric, sub, "US", cut_sum(series, base)
-            )
+            emit(run_name, program, metric, sub, "US", cut_sum(series, base))
             for s in states:
                 sm = state_np[s] if base is None else (base & state_np[s])
                 emit(run_name, program, metric, sub, s, cut_sum(series, sm))
 
-    def person_program(program, elig, part, universe=None, bands=None,
-                       demo=True):
+    def person_program(program, elig, part, universe=None, bands=None, demo=True):
         subs = {"total": None}
         subs.update(bands if bands is not None else person_bands)
         if demo:
@@ -269,15 +259,16 @@ def analyze(run_name, flags_true):
         if part is not None:
             emit_cuts(program, "participant_count", part, subs, universe)
         if elig is not None and part is not None:
-            emit_cuts(
-                program, "elig_participant_count", part * elig, subs, universe
-            )
+            emit_cuts(program, "elig_participant_count", part * elig, subs, universe)
 
     # --- denominators ---
     emit_cuts("_persons", "count", ones_p, {"total": None, **person_bands})
     emit_cuts(
-        "_children_0thr4", "count", ones_p,
-        {"total": None, **wic_bands}, universe=(age < 5),
+        "_children_0thr4",
+        "count",
+        ones_p,
+        {"total": None, **wic_bands},
+        universe=(age < 5),
     )
     for entity, id_var, label in [
         ("household", "household_id", "_households"),
@@ -290,7 +281,11 @@ def analyze(run_name, flags_true):
             emit(run_name, label, "count", "total", "US", cut_sum(ones, None))
             for s in states:
                 emit(
-                    run_name, label, "count", "total", s,
+                    run_name,
+                    label,
+                    "count",
+                    "total",
+                    s,
                     cut_sum(ones, st == s),
                 )
         except Exception:
@@ -305,7 +300,11 @@ def analyze(run_name, flags_true):
         part = sim.calculate("snap", YEAR, map_to="person") > 0
         person_program("snap", elig, part)
         emit(
-            run_name, "snap", "benefit_dollars", "total", "US",
+            run_name,
+            "snap",
+            "benefit_dollars",
+            "total",
+            "US",
             float(sim.calculate("snap", YEAR).sum()),
         )
         log("snap done")
@@ -324,15 +323,21 @@ def analyze(run_name, flags_true):
             for k, v in person_bands.items()
             if k in ("age_18thr24", "age_25thr59", "age_60thr64", "age_65plus")
         }
-        person_program(
-            "ssi", elig_broad, part, universe=(age >= 18), bands=adult_bands
-        )
+        person_program("ssi", elig_broad, part, universe=(age >= 18), bands=adult_bands)
         emit(
-            run_name, "ssi", "participant_count_all_ages", "total", "US",
+            run_name,
+            "ssi",
+            "participant_count_all_ages",
+            "total",
+            "US",
             cut_sum(part, None),
         )
         emit(
-            run_name, "ssi", "benefit_dollars", "total", "US",
+            run_name,
+            "ssi",
+            "benefit_dollars",
+            "total",
+            "US",
             float(ssi_amt.sum()),
         )
         log("ssi done")
@@ -343,16 +348,15 @@ def analyze(run_name, flags_true):
     try:
         for v in ["tanf", "is_demographic_tanf_eligible"]:
             record_var(vs, v)
-        elig = (
-            sim.calculate(
-                "is_demographic_tanf_eligible", YEAR, map_to="person"
-            )
-            > 0
-        )
+        elig = sim.calculate("is_demographic_tanf_eligible", YEAR, map_to="person") > 0
         part = sim.calculate("tanf", YEAR, map_to="person") > 0
         person_program("tanf", elig, part)
         emit(
-            run_name, "tanf", "benefit_dollars", "total", "US",
+            run_name,
+            "tanf",
+            "benefit_dollars",
+            "total",
+            "US",
             float(sim.calculate("tanf", YEAR).sum()),
         )
         log("tanf done")
@@ -367,11 +371,18 @@ def analyze(run_name, flags_true):
         elig = sim.calculate("is_wic_eligible", YEAR) > 0
         part = wic_amt > 0
         person_program(
-            "wic", elig, part, universe=(age < 5),
+            "wic",
+            elig,
+            part,
+            universe=(age < 5),
             bands=wic_bands,
         )
         emit(
-            run_name, "wic", "benefit_dollars", "total", "US",
+            run_name,
+            "wic",
+            "benefit_dollars",
+            "total",
+            "US",
             float(wic_amt.sum()),
         )
         log("wic done")
@@ -387,31 +398,49 @@ def analyze(run_name, flags_true):
             amt = sim.calculate(var, YEAR)
             part = amt > 0
             emit(
-                run_name, prog, "participant_count", "total", "US",
+                run_name,
+                prog,
+                "participant_count",
+                "total",
+                "US",
                 cut_sum(part, None),
             )
             emit(
-                run_name, prog, "benefit_dollars", "total", "US",
+                run_name,
+                prog,
+                "benefit_dollars",
+                "total",
+                "US",
                 float(amt.sum()),
             )
             for s in states:
                 emit(
-                    run_name, prog, "participant_count", "total", s,
+                    run_name,
+                    prog,
+                    "participant_count",
+                    "total",
+                    s,
                     cut_sum(part, tu_state_np[s]),
                 )
-        cc_var = pick(
-            vs, ["eitc_child_count", "count_eitc_qualifying_children"]
-        )
+        cc_var = pick(vs, ["eitc_child_count", "count_eitc_qualifying_children"])
         if cc_var:
             record_var(vs, cc_var)
             cc = np.asarray(sim.calculate(cc_var, YEAR).values, dtype=float)
             eitc_part = sim.calculate("eitc", YEAR) > 0
             emit(
-                run_name, "eitc", "participant_count", "age_child", "US",
+                run_name,
+                "eitc",
+                "participant_count",
+                "age_child",
+                "US",
                 cut_sum(eitc_part, cc > 0),
             )
             emit(
-                run_name, "eitc", "participant_count", "age_nochild", "US",
+                run_name,
+                "eitc",
+                "participant_count",
+                "age_nochild",
+                "US",
                 cut_sum(eitc_part, cc == 0),
             )
         log("eitc/ctc done")
@@ -434,16 +463,28 @@ def analyze(run_name, flags_true):
             ("elig_participant_count", both),
         ]:
             emit(
-                run_name, "housing", metric, "total", "US",
+                run_name,
+                "housing",
+                metric,
+                "total",
+                "US",
                 cut_sum(series, None),
             )
             for s in states:
                 emit(
-                    run_name, "housing", metric, "total", s,
+                    run_name,
+                    "housing",
+                    metric,
+                    "total",
+                    s,
                     cut_sum(series, su_state_np[s]),
                 )
         emit(
-            run_name, "housing", "benefit_dollars", "total", "US",
+            run_name,
+            "housing",
+            "benefit_dollars",
+            "total",
+            "US",
             float(amt.sum()),
         )
         log("housing done")
@@ -457,21 +498,37 @@ def analyze(run_name, flags_true):
         poor = sim.calculate(pov_var, YEAR, map_to="person") > 0
         for sub, m in [("total", None), ("child", age < 18)]:
             emit(
-                run_name, "_poverty", "poor_count", sub, "US",
+                run_name,
+                "_poverty",
+                "poor_count",
+                sub,
+                "US",
                 cut_sum(poor, m),
             )
             emit(
-                run_name, "_poverty", "population", sub, "US",
+                run_name,
+                "_poverty",
+                "population",
+                sub,
+                "US",
                 cut_sum(ones_p, m),
             )
             for s in states:
                 sm = state_np[s] if m is None else (m & state_np[s])
                 emit(
-                    run_name, "_poverty", "poor_count", sub, s,
+                    run_name,
+                    "_poverty",
+                    "poor_count",
+                    sub,
+                    s,
                     cut_sum(poor, sm),
                 )
                 emit(
-                    run_name, "_poverty", "population", sub, s,
+                    run_name,
+                    "_poverty",
+                    "population",
+                    sub,
+                    s,
                     cut_sum(ones_p, sm),
                 )
         log(f"poverty done (var={pov_var})")

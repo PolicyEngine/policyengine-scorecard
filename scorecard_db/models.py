@@ -216,12 +216,9 @@ class ReformRef:
         if self.framework == "policy_ref":
             if self.rulespec_ref:
                 raise ValueError("policy_ref carries no rulespec_ref")
-            for name, desc in (("reform", self.reform),
-                               ("baseline", self.baseline)):
+            for name, desc in (("reform", self.reform), ("baseline", self.baseline)):
                 if name == "reform" and desc is None:
-                    raise ValueError(
-                        "policy_ref requires a reform descriptor dict"
-                    )
+                    raise ValueError("policy_ref requires a reform descriptor dict")
                 if desc is not None and not (
                     isinstance(desc, dict)
                     and isinstance(desc.get("policy"), str)
@@ -273,9 +270,7 @@ class ExternalScore:
     value: Optional[float]  # None => suppressed
     conditions: dict = field(default_factory=dict)
     reform: ReformRef = field(default_factory=ReformRef)
-    calibration_relationship: CalibrationRelationship = (
-        CalibrationRelationship.HELD_OUT
-    )
+    calibration_relationship: CalibrationRelationship = CalibrationRelationship.HELD_OUT
     source_model: Optional[str] = None  # attis, trim3, dynasim, taxcalc…
     ledger_fact: Optional[str] = None  # validation_comparator fact id
     source_column: Optional[str] = None  # the source's own name for it

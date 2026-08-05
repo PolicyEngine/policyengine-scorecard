@@ -69,10 +69,7 @@ def ingest(db_path: Path) -> dict:
                 "unit_concept": UNIT_FOR[(program, metric)],
             }
         )
-        rationale = (
-            f"[batch1 #{qid}, confidence {item['confidence']}] "
-            f"{item['title']}"
-        )
+        rationale = f"[batch1 #{qid}, confidence {item['confidence']}] {item['title']}"
         db.diagnose(
             probe.claim_id(),
             CLASS_MAP[item["classification"]],
@@ -93,7 +90,8 @@ def ingest(db_path: Path) -> dict:
             }
         )
     db.set_lane(
-        "diagnosis-batch-1", "computed",
+        "diagnosis-batch-1",
+        "computed",
         "10/10 adjudicated: 6 pe_gap, 3 concept_mismatch, 1 external issue; "
         "fix drafts in diagnosis/DIAGNOSES.md",
         "2026-08-01T23:59:00",
@@ -107,6 +105,8 @@ def ingest(db_path: Path) -> dict:
 if __name__ == "__main__":
     import sys
 
-    print(json.dumps(ingest(
-        Path(sys.argv[1] if len(sys.argv) > 1 else "data/scorecard.db")
-    )))
+    print(
+        json.dumps(
+            ingest(Path(sys.argv[1] if len(sys.argv) > 1 else "data/scorecard.db"))
+        )
+    )
