@@ -31,10 +31,7 @@ COMPARISON_DIR = Path.home() / "populace-sotsn-takeup" / "comparison"
 
 PUBLICATION = {
     "title": "State of the Safety Net data tool",
-    "url": (
-        "https://apps.urban.org/features/"
-        "state-of-the-safety-net-data-tool/"
-    ),
+    "url": ("https://apps.urban.org/features/state-of-the-safety-net-data-tool/"),
     "date": "2026-03-03",
     "vintage": "2023",
 }
@@ -51,10 +48,7 @@ FULLPART_REFORM = ReformRef(
 
 def solo_reform(program: str) -> ReformRef:
     """Single-program forced take-up world (input-override descriptor)."""
-    flag = (
-        "would_claim_wic" if program == "wic"
-        else f"takes_up_{program}_if_eligible"
-    )
+    flag = "would_claim_wic" if program == "wic" else f"takes_up_{program}_if_eligible"
     return ReformRef(
         framework="policyengine_us_inputs",
         reform={flag: True},
@@ -219,7 +213,8 @@ def ingest(db_path: Path, comparison_dir: Path = COMPARISON_DIR) -> dict:
     )
     n_results = db.add_results(results)
     db.set_lane(
-        "urban_sotsn/safety-net", "computed",
+        "urban_sotsn/safety-net",
+        "computed",
         f"{n_results} PE results over {n_scores} claims",
         meta["computed_at"],
     )

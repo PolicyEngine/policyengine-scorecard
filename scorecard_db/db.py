@@ -174,10 +174,7 @@ class ScorecardDB:
         query time, so it needs no rebuild.
         """
         cols = {
-            r["name"]
-            for r in self.conn.execute(
-                "PRAGMA table_info(external_scores)"
-            )
+            r["name"] for r in self.conn.execute("PRAGMA table_info(external_scores)")
         }
         with self.conn:
             for col in ("period_start", "period_end"):
@@ -251,13 +248,24 @@ class ScorecardDB:
         to (e.g. per-program take-up poverty attribution)."""
         prepared = [
             (
-                r["exhibit"], r["reform_key"], r["reform_json"], r["metric"],
-                r["unit_concept"], r["period"], r["time_basis"],
+                r["exhibit"],
+                r["reform_key"],
+                r["reform_json"],
+                r["metric"],
+                r["unit_concept"],
+                r["period"],
+                r["time_basis"],
                 json.dumps(r.get("conditions", {}), sort_keys=True),
-                r.get("geography"), r.get("program"), r["value"],
-                r.get("baseline_value"), r.get("delta"),
-                r["engine_version"], r["data_bundle"], r.get("run_id", ""),
-                r.get("computed_at", ""), r.get("note", ""),
+                r.get("geography"),
+                r.get("program"),
+                r["value"],
+                r.get("baseline_value"),
+                r.get("delta"),
+                r["engine_version"],
+                r["data_bundle"],
+                r.get("run_id", ""),
+                r.get("computed_at", ""),
+                r.get("note", ""),
             )
             for r in rows
         ]

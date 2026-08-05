@@ -34,6 +34,7 @@ python -m pytest tests/test_scorecard_db.py
 
 ```python
 from scorecard_db import ScorecardDB
+
 db = ScorecardDB("data/scorecard.db")
 db.comparisons(program="snap", geography="US", held_out_only=True)
 db.coverage()

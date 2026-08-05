@@ -64,13 +64,9 @@ def test_exact_row_accounting(summary_and_db):
     assert summary["claims_upserted"] == 205 + 36
     obbba_results = 180  # 90 scored rows x (FY2026 + FY2027)
     obbba_rows = obbba_results // 2
-    assert (
-        (summary["results"] - obbba_results)
-        + obbba_rows
-        + summary["superseded_repeal_constructions"]
-        + summary["skipped"]
-        == TOTAL_ROWS
-    )
+    assert (summary["results"] - obbba_results) + obbba_rows + summary[
+        "superseded_repeal_constructions"
+    ] + summary["skipped"] == TOTAL_ROWS
     assert TOTAL_ROWS == sum(
         len(json.loads(p.read_text())["reforms"]) for p in RAW.glob("*.json")
     )
@@ -92,9 +88,7 @@ def test_claim_periods_key_what_the_claim_describes(conn):
         "SELECT period, time_basis FROM external_scores"
         " WHERE source_column = 'state.ga.hb1001'"
     ).fetchall()
-    assert [(r["period"], r["time_basis"]) for r in ga] == [
-        (2028, "fiscal_year")
-    ]
+    assert [(r["period"], r["time_basis"]) for r in ga] == [(2028, "fiscal_year")]
     # IRS SOI actuals are TY2023 figures, not the 2024 simulation year.
     assert {
         r[0]
@@ -151,8 +145,13 @@ def test_l0_offline_rows_keep_their_own_engine_pin(conn):
     # Stated literally (not imported from the module under test): the
     # backfill note's "VA/OH/MO/SC EITC-family, CO FAC, ID/UT CTC".
     program_levels = {
-        "state_va_eitc_cli", "state_oh_eitc", "state_mo_wftc",
-        "state_sc_eitc", "state_co_fac", "state_id_ctc", "state_ut_ctc",
+        "state_va_eitc_cli",
+        "state_oh_eitc",
+        "state_mo_wftc",
+        "state_sc_eitc",
+        "state_co_fac",
+        "state_id_ctc",
+        "state_ut_ctc",
     }
     assert program_levels <= offline
     fed_eitc = {c for c in offline if c.startswith("fed_eitc_")}
@@ -232,14 +231,16 @@ def test_obbba_results_attach_to_harvest_claims(tmp_path):
         # f0af251's own totals chain (a stack of its own construction);
         # l0-refit scored in isolation; buildi onward stack per JCX.
         assert modes == [
-            "stacked_chained", "isolated", "jcx_stacked", "jcx_stacked",
+            "stacked_chained",
+            "isolated",
+            "jcx_stacked",
+            "jcx_stacked",
             "jcx_stacked",
         ]
         assert all(r[0].endswith(f"cy2026_for_fy{fy}") for r in rows)
     # No registry-minted SALT claim shadows the harvest ones.
     n = conn.execute(
-        "SELECT COUNT(*) FROM external_scores"
-        " WHERE source_column = 'obbba_salt_limit'"
+        "SELECT COUNT(*) FROM external_scores WHERE source_column = 'obbba_salt_limit'"
     ).fetchone()[0]
     assert n == 0
     conn.close()
@@ -281,9 +282,7 @@ def test_failed_ingest_leaves_db_untouched(tmp_path):
         (bad_raw / p.name).write_text(p.read_text())
     bad_path = bad_raw / f"{BUILDO}.json"
     artifact = json.loads(bad_path.read_text())
-    ga = next(
-        r for r in artifact["reforms"] if r["id"] == "state.ga.hb1001"
-    )
+    ga = next(r for r in artifact["reforms"] if r["id"] == "state.ga.hb1001")
     ga["jct"]["window"] = "not a window"
     bad_path.write_text(json.dumps(artifact))
 
@@ -299,9 +298,7 @@ def _assert_unchanged(path, first):
         "SELECT COUNT(*) FROM pe_results WHERE run_id LIKE ?",
         (f"{RUN_PREFIX}%",),
     ).fetchone()[0]
-    n_claims = conn.execute(
-        "SELECT COUNT(*) FROM external_scores"
-    ).fetchone()[0]
+    n_claims = conn.execute("SELECT COUNT(*) FROM external_scores").fetchone()[0]
     conn.close()
     assert n_results == first["results"]
     assert n_claims == first["claims_upserted"]
@@ -380,8 +377,7 @@ def test_ut_ctc_is_a_concept_flag(conn):
     ).fetchall()
     assert len(rows) == 4  # l0-refit + buildi/j/o
     assert all(
-        r["status"] == "concept_mismatch"
-        and r["bc"] == "amount_claimed_pre_offset"
+        r["status"] == "concept_mismatch" and r["bc"] == "amount_claimed_pre_offset"
         for r in rows
     )
 
@@ -472,9 +468,7 @@ def test_reingest_idempotent(summary_and_db):
     assert again == first
     conn = sqlite3.connect(path)
     n_results = conn.execute("SELECT COUNT(*) FROM pe_results").fetchone()[0]
-    n_claims = conn.execute(
-        "SELECT COUNT(*) FROM external_scores"
-    ).fetchone()[0]
+    n_claims = conn.execute("SELECT COUNT(*) FROM external_scores").fetchone()[0]
     conn.close()
     assert n_results == first["results"]
     assert n_claims == first["claims_upserted"]

@@ -50,10 +50,22 @@ METRICS = {
 
 _KNOWN_FIELDS = frozenset(
     {
-        "source", "unit_concept", "period", "time_basis", "value",
-        "value_kind", "conditions", "reform", "calibration_relationship",
-        "source_model", "source_column", "publication", "status", "metric",
-        "proposed_metric", "reform_hint",
+        "source",
+        "unit_concept",
+        "period",
+        "time_basis",
+        "value",
+        "value_kind",
+        "conditions",
+        "reform",
+        "calibration_relationship",
+        "source_model",
+        "source_column",
+        "publication",
+        "status",
+        "metric",
+        "proposed_metric",
+        "reform_hint",
     }
 )
 # Staged condition key -> DB condition key ("note" rows are identity-
@@ -97,9 +109,7 @@ def stage_scores() -> list[ExternalScore]:
                 raise ValueError(f"cbo: unexpected reform {row['reform']}")
             reform = BASELINE
 
-        conditions = {
-            _CONDITION_KEYS[k]: v for k, v in staged_conds.items()
-        }
+        conditions = {_CONDITION_KEYS[k]: v for k, v in staged_conds.items()}
         if row["publication"].get("workbook") == _COST_ESTIMATE_PDF:
             conditions["data_vintage"] = "january_2025_baseline"
 
@@ -133,8 +143,7 @@ def ingest(db_path: Path) -> dict:
     consumed = sum(
         1
         for s in scores
-        if s.calibration_relationship
-        is CalibrationRelationship.CONSUMED_AS_TARGET
+        if s.calibration_relationship is CalibrationRelationship.CONSUMED_AS_TARGET
     )
     db = ScorecardDB(db_path)
     n = db.upsert_scores(scores)

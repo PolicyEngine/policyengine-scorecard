@@ -38,10 +38,14 @@ BILL_VERSIONS = {
     "JCX-35-25": ("obbba_enacted_title_vii", None, "present_law"),
     "JCX-31-25": ("obbba_senate_managers_20250628", None, "present_law"),
     "JCX-30-25": (
-        "obbba_senate_managers_20250628", CURRENT_POLICY, "current_policy",
+        "obbba_senate_managers_20250628",
+        CURRENT_POLICY,
+        "current_policy",
     ),
     "JCX-29-25": (
-        "obbba_senate_finance_substitute", CURRENT_POLICY, "current_policy",
+        "obbba_senate_finance_substitute",
+        CURRENT_POLICY,
+        "current_policy",
     ),
     # Tax provisions of the House-passed bill — the tax-title slice of
     # the whole-bill world (obbba_house_passed_20250522) PWBM/BL score.
@@ -52,10 +56,23 @@ BILL_VERSIONS = {
 
 _KNOWN_FIELDS = frozenset(
     {
-        "source", "source_model", "proposed_metric", "unit_concept",
-        "value_kind", "period", "time_basis", "value", "value_verbatim",
-        "source_column", "row_kind", "effective_verbatim", "conditions",
-        "reform_hint", "publication", "calibration_relationship", "note",
+        "source",
+        "source_model",
+        "proposed_metric",
+        "unit_concept",
+        "value_kind",
+        "period",
+        "time_basis",
+        "value",
+        "value_verbatim",
+        "source_column",
+        "row_kind",
+        "effective_verbatim",
+        "conditions",
+        "reform_hint",
+        "publication",
+        "calibration_relationship",
+        "note",
     }
 )
 _KNOWN_CONDITIONS = frozenset(
@@ -105,8 +122,7 @@ def stage_scores() -> list[ExternalScore]:
             period_start, period_end = parse_window(staged_conds["fy_span"])
             if row["period"] != period_end:
                 raise ValueError(
-                    f"jct: span row period {row['period']} != window end "
-                    f"{period_end}"
+                    f"jct: span row period {row['period']} != window end {period_end}"
                 )
             conditions["window_kind"] = "total"
 

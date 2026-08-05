@@ -38,31 +38,43 @@ ADAPTERS = {
 # fields beyond stage/note/updated, which mirror the DB lane).
 LANE_FEED = {
     "jct-reform-scores": {
-        "source": "JCT", "area": "tax expenditures + revenue estimates",
+        "source": "JCT",
+        "area": "tax expenditures + revenue estimates",
         "mode": 2,
     },
     "tpc-distribution": {
-        "source": "TPC", "area": "distribution tables", "mode": 2,
+        "source": "TPC",
+        "area": "distribution tables",
+        "mode": 2,
     },
     "cbo-baseline": {
-        "source": "CBO", "area": "Feb-2026 baseline workbooks", "mode": 1,
+        "source": "CBO",
+        "area": "Feb-2026 baseline workbooks",
+        "mode": 1,
     },
     "cbo-cost-estimates": {
-        "source": "CBO", "area": "per-bill cost estimates", "mode": 2,
+        "source": "CBO",
+        "area": "per-bill cost estimates",
+        "mode": 2,
     },
     "pwbm-reform-scores": {
-        "source": "PWBM", "area": "reform scores + distributions", "mode": 2,
+        "source": "PWBM",
+        "area": "reform scores + distributions",
+        "mode": 2,
     },
     "tax-foundation-scores": {
-        "source": "Tax Foundation", "area": "revenue + tariff scores",
+        "source": "Tax Foundation",
+        "area": "revenue + tariff scores",
         "mode": 2,
     },
     "budget-lab-scores": {
-        "source": "Budget Lab", "area": "budget + distribution scores",
+        "source": "Budget Lab",
+        "area": "budget + distribution scores",
         "mode": 2,
     },
     "cpsp-poverty": {
-        "source": "Columbia CPSP", "area": "US poverty statistics",
+        "source": "Columbia CPSP",
+        "area": "US poverty statistics",
         "mode": 1,
     },
 }
