@@ -117,12 +117,16 @@ exactly one: repeal constructions whose benchmark duplicates the direct
 level are dropped — and drift across releases is queryable. The OBBBA
 suite mints no claims of its own: its results attach to the harvested
 JCX-35-25 provision claims (canonical per issue #15), both the FY2026 and
-FY2027 ones, with the release's scoring mode (isolated vs jcx_stacked) in
-the pe_construction. Claim periods key the year the claim describes,
+FY2027 ones, with the release's scoring mode (stacked_chained for f0af251,
+whose own totals chain; isolated for l0-refit; jcx_stacked from buildi on)
+in the pe_construction. Claim periods key the year the claim describes,
 parsed from each benchmark's window (fiscal-note FY2028 claims are 2028,
 SOI TY2023 is 2023, Census 3-year averages carry period_start/period_end);
 anything not identical to PE's single-calendar-year computation is
-status=constructed. First rows on the reserved TAX_EXPENDITURE metric
+status=constructed, and rows the artifacts flag as measuring a different
+concept (UT's claimed-vs-capped CTC) are concept_mismatch. All parsing
+and validation happens before any write, so a failed re-ingest leaves the
+DB untouched. First rows on the reserved TAX_EXPENDITURE metric
 (JCX-48-24 / Treasury / the jct.tax_expenditures.* calibration targets,
 the latter consumed_as_target). Census state SPM rows land as held_out
 POVERTY_RATE claims per the poverty-holdout doctrine. Scored rows key off

@@ -42,13 +42,14 @@ vs calendar-year PE liability, vintage-shifted level backtests, window
 averages — the result is status=constructed, never comparable.
 
 Engine pins are per release from each release_manifest.json, with per-row
-overrides where an artifact documents them: the l0-refit artifact's own
-backfill note states its State-reform rows were scored at policyengine-us
-1.729.0 while the release was built at 1.752.2. OBBBA scoring mode also
-differs by release (l0-refit and earlier scored provisions in isolation
-against pre-OBBBA law; buildi onward stack per JCX) and is recorded in the
-pe_construction so cross-release drift can't be confused with a
-construction change.
+overrides where an artifact documents them: the l0-refit backfill note
+covers 33 rows scored offline at policyengine-us 1.729.0 (8 State-reform
+rows, the 18-row federal-EITC-by-state suite, and 7 program levels from
+the populace#345 expansion) while the release was built at 1.752.2. OBBBA
+scoring mode also differs by release (f0af251 chained a stack of its own;
+l0-refit scored provisions in isolation against pre-OBBBA law; buildi
+onward stack per JCX) and is recorded in the pe_construction so
+cross-release drift can't be confused with a construction change.
 
 calibration_relationship: "JCT tax expenditure" rows are literally labeled
 "(calibration target)" in the artifact and IRS SOI totals are on the
@@ -68,9 +69,10 @@ conditions["baseline_policy"].
 Rows whose benchmark is null (score_type "none": unscoreable expenditures)
 are skipped and tallied. Re-ingest is idempotent: every claim this module
 creates is marked publication["registry"]="populace_reform_validation" and
-deleted up front (harvest claims we merely attach results to are never
-marked, so they survive), and this module's own pe_results (run_id prefix
-``populace-rv-``) are replaced wholesale.
+replaced wholesale, along with this module's own pe_results (run_id prefix
+``populace-rv-``); harvest claims we merely attach results to are never
+marked, so they survive. All parsing and validation happens before any
+write, so a fail-loud error leaves the DB untouched.
 """
 
 from __future__ import annotations
@@ -106,23 +108,43 @@ ENGINE_VERSIONS = {
     "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z": "1.764.6",
 }
 
-# Per-category pin overrides an artifact documents about itself. The
-# l0-refit backfill note: "State reform rows appended offline … by scoring
-# the released populace_us_2024.h5 at policyengine-us 1.729.0; the release
-# itself was built at 1.752.2".
+# Pin overrides an artifact documents about itself, keyed per category and
+# per row id. The l0-refit backfill note names three offline batches scored
+# at 1.729.0 on the released H5 (the release itself was built at 1.752.2):
+# "State reform rows appended offline … at policyengine-us 1.729.0", the
+# populace#345 expansion's "7 new program levels (VA/OH/MO/SC EITC-family,
+# CO FAC, ID/UT CTC) + 18-row federal EITC by state suite … scored locally
+# at pe-us 1.729 on the release H5".
+_L0 = "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701"
+_L0_OFFLINE_PROGRAM_LEVELS = (
+    "state_va_eitc_cli", "state_oh_eitc", "state_mo_wftc", "state_sc_eitc",
+    "state_co_fac", "state_id_ctc", "state_ut_ctc",
+)
 ENGINE_OVERRIDES = {
-    "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701": {
-        "State reform": "1.729.0",
+    _L0: {
+        "categories": {
+            "State reform": "1.729.0",
+            "Federal EITC by state": "1.729.0",
+        },
+        "ids": {i: "1.729.0" for i in _L0_OFFLINE_PROGRAM_LEVELS},
     },
 }
 
-# How each release scored the OBBBA provisions. The l0-refit note: "this
+# How each release scored the OBBBA provisions, recorded in
+# pe_construction so a scoring-mode change can't masquerade as
+# release-over-release drift. f0af251 is a STACK — its own totals chain
+# (each provision's baseline_total equals the previous row's reform_total,
+# in artifact order) — but not the buildi+ producer stack: it runs through
+# the pre-scope-fix exemption row and a separate senior-deduction link, so
+# it gets its own label. l0-refit's note speaks only for itself: "this
 # release's OBBBA effects were scored in isolation against pre-OBBBA law …
-# not stacked; the stacked producer applies from the next release" — which
-# also covers the earlier f0af251 artifact. Recorded in pe_construction so
-# a scoring-mode change can't masquerade as release-over-release drift.
+# not stacked; the stacked producer applies from the next release"
+# (verified: its 17 income-tax rows share one 2,735.78B baseline; the
+# estate/gift row is a different tax head).
 OBBBA_SCORING_MODE = {
-    "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z": "isolated",
+    "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z": (
+        "stacked_chained"
+    ),
     "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701": "isolated",
     "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z": "jcx_stacked",
     "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z": "jcx_stacked",
@@ -163,6 +185,28 @@ OBBBA_PROVISIONS = {
 # (the artifact's own entanglement note). These become their own claims.
 REPEAL_BUNDLES = {
     "state_repeal_il_eitc": "il_eitc+il_ctc",
+}
+
+# Descriptive conditions the artifacts state about their own benchmarks
+# (issue #9: descriptive, never normative). IL's bundle sums an IDOR
+# TY2023 EITC actual with the IL GOMB TY2024 CTC budget ESTIMATE ($50M);
+# KS HB2629's benchmark is "KDOR's single-tax-year liability simulation
+# (-$10.4M on TY2024 data)" for TY2026 policy; UT's benchmark counts
+# "amount CLAIMED (avg ~$1,007 = the per-child amount, i.e. pre-offset)"
+# while PE's ut_ctc is the nonrefundable, liability-capped credit.
+ROW_CONDITIONS = {
+    "state_repeal_il_eitc": {
+        "data_vintage": "ty2023_eitc_actual+ty2024_ctc_estimate",
+    },
+    "state.ks.hb2629": {"data_vintage": "ty2024_data"},
+    "state_ut_ctc": {"benchmark_concept": "amount_claimed_pre_offset"},
+}
+
+# Rows the artifact itself flags as measuring a different concept than the
+# PE variable (UT: "treat large errors as a concept flag first") — their
+# results are concept_mismatch, never comparable.
+STATUS_OVERRIDES = {
+    "state_ut_ctc": ComparisonStatus.CONCEPT_MISMATCH,
 }
 
 _STATES = {
@@ -352,6 +396,7 @@ def _map_row(row: dict) -> tuple[ExternalScore, str] | None:
     else:
         raise ValueError(f"unmapped category {cat!r} ({row['id']})")
 
+    conditions.update(ROW_CONDITIONS.get(row["id"], {}))
     relationship = "held_out"
     if cat in ("JCT tax expenditure", "IRS SOI actual"):
         relationship = "consumed_as_target"
@@ -411,9 +456,14 @@ def _status(row: dict, claim: ExternalScore, construction: str) -> ComparisonSta
     average, repeal-delta construction, or stated approximation is
     constructed, not comparable.
     """
+    if row["id"] in STATUS_OVERRIDES:
+        return STATUS_OVERRIDES[row["id"]]
     sim_period = row["populace"].get("period") or row["period"]
     if (
         row["jct"].get("score_type") in ("approximation", "tax_expenditure")
+        # MI HB4170's window is "annual (approximate)" with a fiscal_note
+        # score_type — the window's own hedge counts too.
+        or "approximate" in (row["jct"].get("window") or "")
         or construction.startswith("repeal_delta")
         or claim.time_basis == TimeBasis.FISCAL_YEAR
         or claim.period != int(sim_period)
@@ -515,8 +565,12 @@ def _obbba_results(
             )
             cid = claim.claim_id()
             if cid not in claims:
-                claims[cid] = claim
                 tallies["obbba_fallback_claims"] += 1
+            # Newest artifact wins: releases ingest oldest-first and early
+            # artifacts carry superseded benchmark columns (mortgage
+            # FY2027 3,398M pre-audit vs 3,110M). The value isn't part of
+            # claim_id, so overwriting keeps the id stable.
+            claims[cid] = claim
         results.append(
             PEResult(
                 claim_id=cid,
@@ -537,19 +591,6 @@ def _obbba_results(
 def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
     raw_dir = raw_dir or RAW
     db = ScorecardDB(db_path)
-    with db.conn:
-        # Idempotency: our results go first (some hang off harvest claims),
-        # then every claim we minted last time (marked in publication —
-        # never the harvest claims we only attach results to).
-        db.conn.execute(
-            "DELETE FROM pe_results WHERE run_id LIKE ?", (f"{RUN_PREFIX}%",)
-        )
-        db.conn.execute(
-            "DELETE FROM external_scores"
-            " WHERE json_extract(publication, '$.registry') = ?",
-            (REGISTRY_MARK,),
-        )
-
     claims: dict[str, ExternalScore] = {}
     results: list[PEResult] = []
     skipped: list[str] = []
@@ -583,7 +624,11 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
             if row["jct"].get("score") is None:
                 skipped.append(f"{release_id[:20]}…:{row['id']}")
                 continue
-            engine = overrides.get(row["category"], base_engine)
+            engine = (
+                overrides.get("ids", {}).get(row["id"])
+                or overrides.get("categories", {}).get(row["category"])
+                or base_engine
+            )
             if row["category"] == "OBBBA":
                 results.extend(
                     _obbba_results(
@@ -633,7 +678,29 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
         if key in seen:
             raise ValueError(f"duplicate result for claim in release: {key}")
         seen.add(key)
+    if tallies["obbba_attached_results"] and tallies["obbba_fallback_claims"]:
+        # A partial harvest would silently split provisions between
+        # canonical claims and minted fallbacks — refuse the mixed state.
+        raise ValueError(
+            f"partial JCX-35-25 harvest: "
+            f"{tallies['obbba_attached_results']} results attached but "
+            f"{tallies['obbba_fallback_claims']} fallback claims minted"
+        )
 
+    # All parsing and validation is done — only now touch the DB, so every
+    # fail-loud error above leaves it exactly as it was. Idempotency: our
+    # results go first (some hang off harvest claims), then every claim we
+    # minted last time (marked in publication — never the harvest claims
+    # we only attach results to).
+    with db.conn:
+        db.conn.execute(
+            "DELETE FROM pe_results WHERE run_id LIKE ?", (f"{RUN_PREFIX}%",)
+        )
+        db.conn.execute(
+            "DELETE FROM external_scores"
+            " WHERE json_extract(publication, '$.registry') = ?",
+            (REGISTRY_MARK,),
+        )
     n_claims = db.upsert_scores(claims.values())
     n_results = db.add_results(results)
     db.set_lane(

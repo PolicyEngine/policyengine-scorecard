@@ -10,6 +10,7 @@ import pytest
 
 from scorecard_db import ScorecardDB
 from scorecard_db.ingest_reform_validation import (
+    _L0_OFFLINE_PROGRAM_LEVELS,
     OBBBA_PROVISIONS,
     RAW,
     RUN_PREFIX,
@@ -125,64 +126,97 @@ def test_census_averages_carry_ranges(conn):
     assert tuple(single) == (2024, None)
 
 
-def test_l0_state_reform_rows_keep_their_own_engine_pin(conn):
-    # The l0-refit artifact documents its State-reform rows were scored at
-    # policyengine-us 1.729.0; everything else in that release at 1.752.2.
-    rows = conn.execute(
-        """SELECT s.source LIKE '%_fiscal_note' AS fiscal, r.engine_version,
-                  COUNT(*) AS n
-           FROM pe_results r JOIN external_scores s USING (claim_id)
-           WHERE r.data_bundle = ? GROUP BY 1, 2""",
-        (L0,),
-    ).fetchall()
-    assert {(bool(r["fiscal"]), r["engine_version"]): r["n"] for r in rows} == {
-        (True, "1.729.0"): 8,
-        (False, "1.752.2"): 119,
+def test_l0_offline_rows_keep_their_own_engine_pin(conn):
+    # The l0-refit backfill note documents 33 rows scored offline at
+    # policyengine-us 1.729.0 — 8 State-reform rows, the 18-row
+    # federal-EITC-by-state suite, and the populace#345 expansion's 7
+    # program levels; everything else in that release at 1.752.2.
+    by_engine = {
+        r[0]: r[1]
+        for r in conn.execute(
+            "SELECT engine_version, COUNT(*) FROM pe_results"
+            " WHERE data_bundle = ? GROUP BY 1",
+            (L0,),
+        )
     }
+    assert by_engine == {"1.729.0": 33, "1.752.2": 94}
+    offline = {
+        r[0]
+        for r in conn.execute(
+            """SELECT s.source_column FROM pe_results r
+               JOIN external_scores s USING (claim_id)
+               WHERE r.data_bundle = ? AND r.engine_version = '1.729.0'""",
+            (L0,),
+        )
+    }
+    assert set(_L0_OFFLINE_PROGRAM_LEVELS) <= offline
+    fed_eitc = {c for c in offline if c.startswith("fed_eitc_")}
+    fiscal = {c for c in offline if c.startswith("state.")}
+    assert len(fed_eitc) == 18
+    assert len(fiscal) == 8
+    assert offline == fed_eitc | fiscal | set(_L0_OFFLINE_PROGRAM_LEVELS)
+
+
+def _plant_harvest(path, rows):
+    """Insert JCX-35-25 harvest claims for the given scored OBBBA rows;
+    returns {(row_id, fy): claim_id}."""
+    db = ScorecardDB(path)
+    planted = {}
+    for r in rows:
+        for fy, value in (
+            (2026, r["jct"]["score"]),
+            (2027, r["jct"]["score_fy2027"]),
+        ):
+            claim = ExternalScore(
+                source="jct",
+                metric=Metric.REVENUE_CHANGE,
+                unit_concept=UnitConcept.USD,
+                period=fy,
+                time_basis=TimeBasis.FISCAL_YEAR,
+                value=float(value),
+                conditions={
+                    "bill_version": "JCX-35-25",
+                    "geography": "US",
+                    "provision": OBBBA_PROVISIONS[r["id"]],
+                },
+                reform=ReformRef(
+                    framework="policy_ref",
+                    reform={"policy": "obbba_enacted_title_vii"},
+                ),
+                publication={"title": "JCX-35-25"},
+                value_kind="usd",
+            )
+            planted[(r["id"], fy)] = claim.claim_id()
+            db.upsert_scores([claim])
+    db.close()
+    return planted
+
+
+def _scored_obbba(artifact):
+    return [
+        r
+        for r in artifact["reforms"]
+        if r["category"] == "OBBBA" and r["jct"].get("score") is not None
+    ]
 
 
 def test_obbba_results_attach_to_harvest_claims(tmp_path):
     # With the harvested JCX-35-25 claims present, the registry's OBBBA
     # computations attach to them (issue #15: harvest is canonical) — both
-    # fiscal years — and no duplicate jct claims are minted.
+    # fiscal years — and no jct claims are minted at all.
     path = tmp_path / "scorecard.db"
-    db = ScorecardDB(path)
     buildo = json.loads((RAW / f"{BUILDO}.json").read_text())
-    salt = next(r for r in buildo["reforms"] if r["id"] == "obbba_salt_limit")
-    harvest_ids = {}
-    for fy, value in (
-        (2026, salt["jct"]["score"]),
-        (2027, salt["jct"]["score_fy2027"]),
-    ):
-        claim = ExternalScore(
-            source="jct",
-            metric=Metric.REVENUE_CHANGE,
-            unit_concept=UnitConcept.USD,
-            period=fy,
-            time_basis=TimeBasis.FISCAL_YEAR,
-            value=float(value),
-            conditions={
-                "bill_version": "JCX-35-25",
-                "geography": "US",
-                "provision": OBBBA_PROVISIONS["obbba_salt_limit"],
-            },
-            reform=ReformRef(
-                framework="policy_ref",
-                reform={"policy": "obbba_enacted_title_vii"},
-            ),
-            publication={"title": "JCX-35-25"},
-            value_kind="usd",
-        )
-        harvest_ids[fy] = claim.claim_id()
-        db.upsert_scores([claim])
-    db.close()
+    planted = _plant_harvest(path, _scored_obbba(buildo))
+    assert len(planted) == 36  # 18 provisions x 2 fiscal years
 
     summary = ingest(path)
-    assert summary["obbba_attached_results"] == 10  # 5 releases x 2 FYs
-    assert summary["obbba_fallback_claims"] == 34  # the other 17 provisions
+    assert summary["obbba_attached_results"] == 180  # 90 scored rows x 2
+    assert summary["obbba_fallback_claims"] == 0
+    assert summary["claims_upserted"] == 205
 
     conn = sqlite3.connect(path)
-    for fy, cid in harvest_ids.items():
+    for fy in (2026, 2027):
+        cid = planted[("obbba_salt_limit", fy)]
         rows = conn.execute(
             "SELECT pe_construction FROM pe_results WHERE claim_id = ?"
             " ORDER BY computed_at",
@@ -190,8 +224,10 @@ def test_obbba_results_attach_to_harvest_claims(tmp_path):
         ).fetchall()
         assert len(rows) == 5
         modes = [r[0].split(":")[2] for r in rows]
+        # f0af251's own totals chain (a stack of its own construction);
+        # l0-refit scored in isolation; buildi onward stack per JCX.
         assert modes == [
-            "isolated", "isolated", "jcx_stacked", "jcx_stacked",
+            "stacked_chained", "isolated", "jcx_stacked", "jcx_stacked",
             "jcx_stacked",
         ]
         assert all(r[0].endswith(f"cy2026_for_fy{fy}") for r in rows)
@@ -202,6 +238,64 @@ def test_obbba_results_attach_to_harvest_claims(tmp_path):
     ).fetchone()[0]
     assert n == 0
     conn.close()
+
+
+def test_partial_harvest_refused(tmp_path):
+    # A harvest holding only some provisions would split OBBBA results
+    # between canonical claims and minted fallbacks — the ingest refuses
+    # the mixed state instead of silently producing it.
+    path = tmp_path / "scorecard.db"
+    buildo = json.loads((RAW / f"{BUILDO}.json").read_text())
+    salt = [r for r in _scored_obbba(buildo) if r["id"] == "obbba_salt_limit"]
+    _plant_harvest(path, salt)
+    with pytest.raises(ValueError, match="partial JCX-35-25 harvest"):
+        ingest(path)
+
+
+def test_fresh_db_fallback_uses_latest_benchmark(conn):
+    # Early artifacts carry superseded benchmark columns (the 7/06 audit:
+    # mortgage FY2027 3,398M -> 3,110M). Fallback claims — same claim_id
+    # across releases — must store the newest artifact's value.
+    value = conn.execute(
+        "SELECT value FROM external_scores"
+        " WHERE source_column = 'obbba_mortgage_interest_limit'"
+        " AND period = 2027"
+    ).fetchone()[0]
+    assert value == pytest.approx(3110000000.0)
+
+
+def test_failed_ingest_leaves_db_untouched(tmp_path):
+    # All parsing and validation happens before any write: an unparseable
+    # artifact aborts the run with the DB exactly as it was.
+    path = tmp_path / "scorecard.db"
+    first = ingest(path)
+
+    bad_raw = tmp_path / "raw"
+    bad_raw.mkdir()
+    for p in RAW.glob("*.json"):
+        (bad_raw / p.name).write_text(p.read_text())
+    bad_path = bad_raw / f"{BUILDO}.json"
+    artifact = json.loads(bad_path.read_text())
+    ga = next(
+        r for r in artifact["reforms"] if r["id"] == "state.ga.hb1001"
+    )
+    ga["jct"]["window"] = "not a window"
+    bad_path.write_text(json.dumps(artifact))
+
+    with pytest.raises(ValueError, match="cannot parse claim period"):
+        ingest(path, raw_dir=bad_raw)
+
+    conn = sqlite3.connect(path)
+    n_results = conn.execute(
+        "SELECT COUNT(*) FROM pe_results WHERE run_id LIKE ?",
+        (f"{RUN_PREFIX}%",),
+    ).fetchone()[0]
+    n_claims = conn.execute(
+        "SELECT COUNT(*) FROM external_scores"
+    ).fetchone()[0]
+    conn.close()
+    assert n_results == first["results"]
+    assert n_claims == first["claims_upserted"]
 
 
 def test_il_repeal_bundle_is_its_own_claim(conn):
@@ -228,6 +322,53 @@ def test_il_repeal_bundle_is_its_own_claim(conn):
         and r["pe_construction"].startswith("repeal_delta:")
         for r in rows
     )
+    # The bundle sums an IDOR TY2023 EITC actual with GOMB's TY2024 CTC
+    # budget estimate — the mixed vintage rides on the claim.
+    vintage = conn.execute(
+        "SELECT json_extract(conditions, '$.data_vintage')"
+        " FROM external_scores WHERE claim_id = ?",
+        (claims["il_eitc+il_ctc"]["claim_id"],),
+    ).fetchone()[0]
+    assert vintage == "ty2023_eitc_actual+ty2024_ctc_estimate"
+
+
+def test_ut_ctc_is_a_concept_flag(conn):
+    # UT Tax Commission counts amount CLAIMED (pre-offset); PE's ut_ctc is
+    # the nonrefundable liability-capped credit. The artifact: "treat
+    # large errors as a concept flag first."
+    rows = conn.execute(
+        """SELECT r.status,
+                  json_extract(s.conditions, '$.benchmark_concept') AS bc
+           FROM pe_results r JOIN external_scores s USING (claim_id)
+           WHERE s.source = 'ut_admin' AND s.program = 'ut_ctc'""",
+    ).fetchall()
+    assert len(rows) == 4  # l0-refit + buildi/j/o
+    assert all(
+        r["status"] == "concept_mismatch"
+        and r["bc"] == "amount_claimed_pre_offset"
+        for r in rows
+    )
+
+
+def test_approximate_windows_are_constructed(conn):
+    # MI HB4170's fiscal note hedges its own window ("annual
+    # (approximate)") — never comparable.
+    rows = conn.execute(
+        """SELECT r.status FROM pe_results r
+           JOIN external_scores s USING (claim_id)
+           WHERE s.source_column = 'state.mi.hb4170'""",
+    ).fetchall()
+    assert len(rows) == 4
+    assert all(r[0] == "constructed" for r in rows)
+
+
+def test_ks_hb2629_declares_its_data_vintage(conn):
+    # KDOR's benchmark simulates TY2026 policy on TY2024 data.
+    row = conn.execute(
+        "SELECT json_extract(conditions, '$.data_vintage')"
+        " FROM external_scores WHERE source_column = 'state.ks.hb2629'"
+    ).fetchone()
+    assert row[0] == "ty2024_data"
 
 
 def test_matching_repeal_constructions_superseded_by_levels(conn):
