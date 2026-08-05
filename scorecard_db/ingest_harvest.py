@@ -80,11 +80,19 @@ LANE_FEED = {
 }
 
 
-def sync_lane_feed(db: ScorecardDB, feed_path: Path, updated: str) -> int:
+def sync_lane_feed(
+    db: ScorecardDB,
+    feed_path: Path,
+    updated: str,
+    lanes: dict | None = None,
+) -> int:
+    """Merge DB lane rows into the committed feed. `lanes` maps lane id ->
+    display meta; defaults to this module's harvest registry (other
+    exporters pass their own — the merge only touches listed ids)."""
     feed = json.loads(feed_path.read_text())
     by_id = {lane["id"]: lane for lane in feed["lanes"]}
     n = 0
-    for lane_id, meta in LANE_FEED.items():
+    for lane_id, meta in (LANE_FEED if lanes is None else lanes).items():
         row = db.conn.execute(
             "SELECT stage, detail, updated_at FROM lanes WHERE lane = ?",
             (lane_id,),
