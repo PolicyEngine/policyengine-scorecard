@@ -10,7 +10,6 @@ import pytest
 
 from scorecard_db import ScorecardDB
 from scorecard_db.ingest_reform_validation import (
-    _L0_OFFLINE_PROGRAM_LEVELS,
     OBBBA_PROVISIONS,
     RAW,
     RUN_PREFIX,
@@ -149,12 +148,18 @@ def test_l0_offline_rows_keep_their_own_engine_pin(conn):
             (L0,),
         )
     }
-    assert set(_L0_OFFLINE_PROGRAM_LEVELS) <= offline
+    # Stated literally (not imported from the module under test): the
+    # backfill note's "VA/OH/MO/SC EITC-family, CO FAC, ID/UT CTC".
+    program_levels = {
+        "state_va_eitc_cli", "state_oh_eitc", "state_mo_wftc",
+        "state_sc_eitc", "state_co_fac", "state_id_ctc", "state_ut_ctc",
+    }
+    assert program_levels <= offline
     fed_eitc = {c for c in offline if c.startswith("fed_eitc_")}
     fiscal = {c for c in offline if c.startswith("state.")}
     assert len(fed_eitc) == 18
     assert len(fiscal) == 8
-    assert offline == fed_eitc | fiscal | set(_L0_OFFLINE_PROGRAM_LEVELS)
+    assert offline == fed_eitc | fiscal | program_levels
 
 
 def _plant_harvest(path, rows):
@@ -285,6 +290,10 @@ def test_failed_ingest_leaves_db_untouched(tmp_path):
     with pytest.raises(ValueError, match="cannot parse claim period"):
         ingest(path, raw_dir=bad_raw)
 
+    _assert_unchanged(path, first)
+
+
+def _assert_unchanged(path, first):
     conn = sqlite3.connect(path)
     n_results = conn.execute(
         "SELECT COUNT(*) FROM pe_results WHERE run_id LIKE ?",
@@ -296,6 +305,33 @@ def test_failed_ingest_leaves_db_untouched(tmp_path):
     conn.close()
     assert n_results == first["results"]
     assert n_claims == first["claims_upserted"]
+
+
+def test_write_phase_failure_rolls_back(tmp_path, monkeypatch):
+    # The replacement is one transaction: a failure MID-WRITE (after the
+    # deletes, during the result inserts) must roll everything back — not
+    # leave claims without results.
+    path = tmp_path / "scorecard.db"
+    first = ingest(path)
+
+    real = ScorecardDB.result_row
+    calls = {"n": 0}
+
+    def sabotaged(r):
+        row = real(r)
+        calls["n"] += 1
+        if calls["n"] == 300:  # deep in the batch
+            return row[:2] + ("bogus_status",) + row[3:]
+        return row
+
+    monkeypatch.setattr(ScorecardDB, "result_row", staticmethod(sabotaged))
+    with pytest.raises(sqlite3.IntegrityError):
+        ingest(path)
+    monkeypatch.undo()
+
+    _assert_unchanged(path, first)
+    # And the DB is still healthy: a clean re-ingest works.
+    assert ingest(path) == first
 
 
 def test_il_repeal_bundle_is_its_own_claim(conn):

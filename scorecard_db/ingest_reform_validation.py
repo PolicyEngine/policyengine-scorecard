@@ -72,7 +72,8 @@ creates is marked publication["registry"]="populace_reform_validation" and
 replaced wholesale, along with this module's own pe_results (run_id prefix
 ``populace-rv-``); harvest claims we merely attach results to are never
 marked, so they survive. All parsing and validation happens before any
-write, so a fail-loud error leaves the DB untouched.
+write, and the replacement is a single transaction, so a failure at any
+point — parse or write — leaves the DB untouched.
 """
 
 from __future__ import annotations
@@ -81,7 +82,7 @@ import json
 import re
 from pathlib import Path
 
-from .db import ScorecardDB
+from .db import LANE_SQL, RESULTS_SQL, SCORES_SQL, ScorecardDB
 from .models import (
     BASELINE,
     ComparisonStatus,
@@ -132,11 +133,12 @@ ENGINE_OVERRIDES = {
 
 # How each release scored the OBBBA provisions, recorded in
 # pe_construction so a scoring-mode change can't masquerade as
-# release-over-release drift. f0af251 is a STACK — its own totals chain
-# (each provision's baseline_total equals the previous row's reform_total,
-# in artifact order) — but not the buildi+ producer stack: it runs through
-# the pre-scope-fix exemption row and a separate senior-deduction link, so
-# it gets its own label. l0-refit's note speaks only for itself: "this
+# release-over-release drift. f0af251 is a STACK — within each measure
+# group, every provision's baseline_total equals the previous provision's
+# reform_total (the estate/gift row interleaves on its own tax head) —
+# but not the buildi+ producer stack: its chain runs through the
+# pre-scope-fix exemption row and a separate senior-deduction link, so it
+# gets its own label. l0-refit's note speaks only for itself: "this
 # release's OBBBA effects were scored in isolation against pre-OBBBA law …
 # not stacked; the stacked producer applies from the next release"
 # (verified: its 17 income-tax rows share one 2,735.78B baseline; the
@@ -687,11 +689,15 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
             f"{tallies['obbba_fallback_claims']} fallback claims minted"
         )
 
-    # All parsing and validation is done — only now touch the DB, so every
-    # fail-loud error above leaves it exactly as it was. Idempotency: our
-    # results go first (some hang off harvest claims), then every claim we
-    # minted last time (marked in publication — never the harvest claims
-    # we only attach results to).
+    # All parsing and validation is done — the replacement happens in ONE
+    # transaction (deletes, claims, results, lane), so any failure — above
+    # or mid-write — leaves the DB exactly as it was. Deletion scope: this
+    # module's own results, then every claim it minted last time (marked
+    # in publication — never the harvest claims it only attaches results
+    # to).
+    score_rows = [ScorecardDB.score_row(c) for c in claims.values()]
+    result_rows = [ScorecardDB.result_row(r) for r in results]
+    n_claims, n_results = len(score_rows), len(result_rows)
     with db.conn:
         db.conn.execute(
             "DELETE FROM pe_results WHERE run_id LIKE ?", (f"{RUN_PREFIX}%",)
@@ -701,17 +707,20 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
             " WHERE json_extract(publication, '$.registry') = ?",
             (REGISTRY_MARK,),
         )
-    n_claims = db.upsert_scores(claims.values())
-    n_results = db.add_results(results)
-    db.set_lane(
-        "populace-reform-validation",
-        "ingested",
-        f"{n_claims} claims, {n_results} per-release results "
-        f"({len(releases)} releases,"
-        f" {tallies['obbba_attached_results']} attached to harvest claims);"
-        f" {len(skipped)} unscoreable rows skipped",
-        "2026-08-04",
-    )
+        db.conn.executemany(SCORES_SQL, score_rows)
+        db.conn.executemany(RESULTS_SQL, result_rows)
+        db.conn.execute(
+            LANE_SQL,
+            (
+                "populace-reform-validation",
+                "ingested",
+                f"{n_claims} claims, {n_results} per-release results "
+                f"({len(releases)} releases,"
+                f" {tallies['obbba_attached_results']} attached to harvest"
+                f" claims); {len(skipped)} unscoreable rows skipped",
+                "2026-08-04",
+            ),
+        )
     cov = db.coverage()
     db.close()
     return {

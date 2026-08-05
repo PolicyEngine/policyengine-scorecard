@@ -125,8 +125,9 @@ SOI TY2023 is 2023, Census 3-year averages carry period_start/period_end);
 anything not identical to PE's single-calendar-year computation is
 status=constructed, and rows the artifacts flag as measuring a different
 concept (UT's claimed-vs-capped CTC) are concept_mismatch. All parsing
-and validation happens before any write, so a failed re-ingest leaves the
-DB untouched. First rows on the reserved TAX_EXPENDITURE metric
+and validation happens before any write, and the replacement (deletes,
+claims, results, lane) is a single transaction — a failed re-ingest, at
+any point, leaves the DB untouched. First rows on the reserved TAX_EXPENDITURE metric
 (JCX-48-24 / Treasury / the jct.tax_expenditures.* calibration targets,
 the latter consumed_as_target). Census state SPM rows land as held_out
 POVERTY_RATE claims per the poverty-holdout doctrine. Scored rows key off
