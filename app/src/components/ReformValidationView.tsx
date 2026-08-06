@@ -35,13 +35,14 @@ export function ReformValidationView({ feed }: { feed: PopulationsFeed }) {
   return (
     <div>
       <p className="mb-4 max-w-3xl text-sm leading-6 text-muted-foreground">
-        The populace reform-validation registry:{" "}
+        Reform scores and references beyond the Urban comparison:{" "}
         <b className="fig text-foreground">
           {feed.summary.claims.toLocaleString()}
         </b>{" "}
-        external claims — JCT scores, state fiscal notes, agency actuals, IRS
-        and Census references — where each available result carries its
-        certified release's exact engine pins.{" "}
+        external claims — the populace reform-validation registry (JCT scores,
+        state fiscal notes, agency actuals, IRS and Census references) plus the
+        compute campaign's TPC, CPSP, PWBM and CBO comparisons — where each
+        available result carries its certified release's exact engine pins.{" "}
         <b className="fig text-foreground">
           {feed.summary.multi_release_claims.toLocaleString()}
         </b>{" "}
@@ -284,6 +285,18 @@ const SOURCE_SPECIAL: Record<string, string> = {
   census: "Census",
   census_pep: "Census PEP",
   treasury: "Treasury",
+  tpc: "TPC",
+  pwbm: "PWBM",
+  cpsp: "Columbia CPSP",
+  budget_lab: "Budget Lab",
+  tax_foundation: "Tax Foundation",
+  obr: "OBR",
+  hmrc: "HMRC",
+  dwp: "DWP",
+  hmt: "HMT",
+  ifs: "IFS",
+  rf: "Resolution Foundation",
+  ukmod: "UKMOD",
 };
 
 function sourceLabel(s: string): string {

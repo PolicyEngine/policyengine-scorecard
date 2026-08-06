@@ -166,10 +166,11 @@ def export(
     payload = {
         "built": built or date.today().isoformat(),
         "note": (
-            "Non-Urban populations exported from scorecard.db; today this is"
-            " the populace reform-validation registry (issue #20). Statuses"
-            " and calibration relationships are verbatim; nothing here is a"
-            " pass/fail grade."
+            "Non-Urban populations exported from scorecard.db: the populace"
+            " reform-validation registry (issue #20) plus the compute"
+            " campaign's attached comparisons (TPC/CPSP/PWBM/CBO/JCT)."
+            " Statuses and calibration relationships are verbatim; nothing"
+            " here is a pass/fail grade."
         ),
         "summary": {
             "claims": len(rows),

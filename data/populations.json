@@ -1,18 +1,19 @@
 {
- "built": "2026-08-05",
- "note": "Non-Urban populations exported from scorecard.db; today this is the populace reform-validation registry (issue #20). Statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
+ "built": "2026-08-06",
+ "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (TPC/CPSP/PWBM/CBO/JCT). Statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
  "summary": {
-  "claims": 241,
+  "claims": 270,
   "multi_release_claims": 127,
   "by_source": {
    "az_admin": 1,
    "ca_admin": 2,
    "ca_fiscal_note": 1,
-   "cbo": 1,
+   "cbo": 10,
    "census": 104,
    "census_pep": 1,
    "co_admin": 3,
    "co_fiscal_note": 1,
+   "cpsp": 8,
    "ct_admin": 1,
    "ct_fiscal_note": 3,
    "dc_admin": 1,
@@ -49,8 +50,10 @@
    "ok_admin": 1,
    "ok_fiscal_note": 1,
    "or_admin": 2,
+   "pwbm": 2,
    "ri_admin": 1,
    "sc_admin": 1,
+   "tpc": 10,
    "treasury": 1,
    "ut_admin": 1,
    "va_admin": 1,
@@ -59,9 +62,9 @@
    "wi_admin": 1
   },
   "by_latest_status": {
-   "comparable": 35,
-   "concept_mismatch": 1,
-   "constructed": 205
+   "comparable": 39,
+   "concept_mismatch": 2,
+   "constructed": 229
   }
  },
  "rows": [
@@ -364,6 +367,460 @@
      "release": "buildo",
      "construction": "reform_delta:ca_income_tax",
      "computed_at": "2026-07-22T23:26:27"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "9412a33dffe76806b2f5",
+   "source": "cbo",
+   "source_column": "Average Monthly Benefit per Beneficiary (Dollars)",
+   "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "window": "",
+   "publication_title": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "url": "https://www.cbo.gov/system/files/2026-02/51313-2026-02-ssi.xlsx",
+   "metric": "average_monthly_benefit",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "ssi",
+   "conditions": {
+    "geography": "US",
+    "per": "beneficiary",
+    "program": "ssi"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 751.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 789.3138964940113,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "pass2 ssi dollars / year-grid part_pop / 12 (per annual-ever person-month) | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta); denominator concept differs -> ratio inherits caseload delta",
+    "computed_at": "2026-08-02T19:44:23.814590+00:00",
+    "ratio": 1.0510171724287767,
+    "delta": 38.31389649401126
+   },
+   "results": [
+    {
+     "value": 789.3138964940113,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "pass2 ssi dollars / year-grid part_pop / 12 (per annual-ever person-month) | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta); denominator concept differs -> ratio inherits caseload delta",
+     "computed_at": "2026-08-02T19:44:23.814590+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "ee5f9b6d36786a5acd03",
+   "source": "cbo",
+   "source_column": "Average Monthly Benefit per Participant (Dollars)",
+   "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "window": "",
+   "publication_title": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "url": "https://www.cbo.gov/system/files/2026-01/51312-2026-02-snap.xlsx",
+   "metric": "average_monthly_benefit",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "snap",
+   "conditions": {
+    "geography": "US",
+    "per": "participant",
+    "program": "snap"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 186.6,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 129.7045752084306,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "pass2 snap dollars / year-grid part_pop / 12 (per annual-ever person-month) | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta); denominator concept differs -> ratio inherits caseload delta",
+    "computed_at": "2026-08-02T19:44:23.814590+00:00",
+    "ratio": 0.695094186540357,
+    "delta": -56.89542479156938
+   },
+   "results": [
+    {
+     "value": 129.7045752084306,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "pass2 snap dollars / year-grid part_pop / 12 (per annual-ever person-month) | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta); denominator concept differs -> ratio inherits caseload delta",
+     "computed_at": "2026-08-02T19:44:23.814590+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "6e8f56211bba4272cc31",
+   "source": "cbo",
+   "source_column": "Earned income, child, and other tax credits",
+   "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "window": "",
+   "publication_title": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "url": "https://www.cbo.gov/system/files/2026-02/51118-2026-02-Budget-Projections.xlsx",
+   "metric": "benefit_cost",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "eitc_ctc_other_credits",
+   "conditions": {
+    "component": "outlays",
+    "geography": "US",
+    "program": "eitc_ctc_other_credits",
+    "timing": "payment_shift_adjusted",
+    "variant": "outlay_portion_of_refundable_credits"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 104514000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 109071629469.4516,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "eitc+refundable_ctc CY2026 (composite; CBO line includes 'other credits' \u2014 scope note) | CBO federal fiscal year vs PE calendar year (named delta); CBO composite line broader than EITC+ACTC (named scope delta)",
+    "computed_at": "2026-08-02T19:44:23.814590+00:00",
+    "ratio": 1.0436078369352584,
+    "delta": 4557629469.451599
+   },
+   "results": [
+    {
+     "value": 109071629469.4516,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "eitc+refundable_ctc CY2026 (composite; CBO line includes 'other credits' \u2014 scope note) | CBO federal fiscal year vs PE calendar year (named delta); CBO composite line broader than EITC+ACTC (named scope delta)",
+     "computed_at": "2026-08-02T19:44:23.814590+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "eb4cb3d5e81cdf1c63fb",
+   "source": "cbo",
+   "source_column": "Earned income, child, and other tax creditsd",
+   "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "window": "",
+   "publication_title": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "url": "https://www.cbo.gov/system/files/2026-02/51118-2026-02-Budget-Projections.xlsx",
+   "metric": "benefit_cost",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "eitc_ctc_other_credits",
+   "conditions": {
+    "component": "outlays",
+    "geography": "US",
+    "program": "eitc_ctc_other_credits",
+    "timing": "unadjusted",
+    "variant": "outlay_portion_of_refundable_credits"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 104514000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 109071629469.4516,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "eitc+refundable_ctc CY2026 (composite; CBO line includes 'other credits' \u2014 scope note) | CBO federal fiscal year vs PE calendar year (named delta); CBO composite line broader than EITC+ACTC (named scope delta)",
+    "computed_at": "2026-08-02T19:44:23.814590+00:00",
+    "ratio": 1.0436078369352584,
+    "delta": 4557629469.451599
+   },
+   "results": [
+    {
+     "value": 109071629469.4516,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "eitc+refundable_ctc CY2026 (composite; CBO line includes 'other credits' \u2014 scope note) | CBO federal fiscal year vs PE calendar year (named delta); CBO composite line broader than EITC+ACTC (named scope delta)",
+     "computed_at": "2026-08-02T19:44:23.814590+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "a44c8e195796cee4e5d7",
+   "source": "cbo",
+   "source_column": "Estimated Budget Authority",
+   "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "window": "",
+   "publication_title": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "url": "https://www.cbo.gov/system/files/2026-01/51312-2026-02-snap.xlsx",
+   "metric": "benefit_cost",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "snap",
+   "conditions": {
+    "budget_concept": "budget_authority",
+    "component": "total",
+    "geography": "US",
+    "program": "snap"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 98415000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 90927596849.523,
+    "status": "comparable",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "pass2 aggregate snap total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO outlays are cash FY; PE totals are accrual entitlement/benefit dollars (named delta)",
+    "computed_at": "2026-08-02T19:44:23.814590+00:00",
+    "ratio": 0.9239201021137327,
+    "delta": -7487403150.477005
+   },
+   "results": [
+    {
+     "value": 90927596849.523,
+     "status": "comparable",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "pass2 aggregate snap total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO outlays are cash FY; PE totals are accrual entitlement/benefit dollars (named delta)",
+     "computed_at": "2026-08-02T19:44:23.814590+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "2fce267a8ea74d79cdff",
+   "source": "cbo",
+   "source_column": "Estimated Outlays",
+   "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "window": "",
+   "publication_title": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "url": "https://www.cbo.gov/system/files/2026-02/51314-2026-02-tanf.xlsx",
+   "metric": "benefit_cost",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "tanf",
+   "conditions": {
+    "component": "total_outlays",
+    "funder": "federal",
+    "geography": "US",
+    "program": "tanf"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 16968000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 4936866453.148398,
+    "status": "concept_mismatch",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "pass2 aggregate tanf total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO outlays are cash FY; PE totals are accrual entitlement/benefit dollars (named delta); CBO TANF outlays = full block grant (incl. non-cash state uses); PE models cash assistance only (~quarter of block-grant spending) \u2014 named scope delta",
+    "computed_at": "2026-08-02T19:44:23.814590+00:00",
+    "ratio": 0.29095158257593107,
+    "delta": -12031133546.8516
+   },
+   "results": [
+    {
+     "value": 4936866453.148398,
+     "status": "concept_mismatch",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "pass2 aggregate tanf total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO outlays are cash FY; PE totals are accrual entitlement/benefit dollars (named delta); CBO TANF outlays = full block grant (incl. non-cash state uses); PE models cash assistance only (~quarter of block-grant spending) \u2014 named scope delta",
+     "computed_at": "2026-08-02T19:44:23.814590+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "ffc6d48f894e88134428",
+   "source": "cbo",
+   "source_column": "Total Outlays, Adjusted for Date of Payment Shiftb",
+   "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "window": "",
+   "publication_title": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "url": "https://www.cbo.gov/system/files/2026-02/51313-2026-02-ssi.xlsx",
+   "metric": "benefit_cost",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "ssi",
+   "conditions": {
+    "geography": "US",
+    "program": "ssi",
+    "timing": "payment_shift_adjusted"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 66500000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 57857268951.65666,
+    "status": "comparable",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "pass2 aggregate ssi total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO outlays are cash FY; PE totals are accrual entitlement/benefit dollars (named delta)",
+    "computed_at": "2026-08-02T19:44:23.814590+00:00",
+    "ratio": 0.8700341195737844,
+    "delta": -8642731048.343338
+   },
+   "results": [
+    {
+     "value": 57857268951.65666,
+     "status": "comparable",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "pass2 aggregate ssi total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO outlays are cash FY; PE totals are accrual entitlement/benefit dollars (named delta)",
+     "computed_at": "2026-08-02T19:44:23.814590+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "c7a6ced57044b52a7f91",
+   "source": "cbo",
+   "source_column": "Average Monthly Beneficiaries (Thousands of people)",
+   "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "window": "",
+   "publication_title": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "url": "https://www.cbo.gov/system/files/2026-02/51313-2026-02-ssi.xlsx",
+   "metric": "participant_count",
+   "unit_concept": "persons",
+   "value_kind": "count",
+   "period": 2026,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "ssi",
+   "conditions": {
+    "geography": "US",
+    "program": "ssi"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 7275000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 6108392.492163988,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "year-grid ssi part_pop US CY2026 | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta)",
+    "computed_at": "2026-08-02T19:44:23.814590+00:00",
+    "ratio": 0.8396415796788986,
+    "delta": -1166607.5078360122
+   },
+   "results": [
+    {
+     "value": 6108392.492163988,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "year-grid ssi part_pop US CY2026 | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta)",
+     "computed_at": "2026-08-02T19:44:23.814590+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "9be64cb6bef0d6d3da07",
+   "source": "cbo",
+   "source_column": "Average Monthly Participation (Millions of people)",
+   "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "window": "",
+   "publication_title": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
+   "url": "https://www.cbo.gov/system/files/2026-01/51312-2026-02-snap.xlsx",
+   "metric": "participant_count",
+   "unit_concept": "persons",
+   "value_kind": "count",
+   "period": 2026,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "snap",
+   "conditions": {
+    "geography": "US",
+    "program": "snap"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 39300000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 58419679.68580754,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "year-grid snap part_pop US CY2026 | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta)",
+    "computed_at": "2026-08-02T19:44:23.814590+00:00",
+    "ratio": 1.4865058444225838,
+    "delta": 19119679.68580754
+   },
+   "results": [
+    {
+     "value": 58419679.68580754,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "year-grid snap part_pop US CY2026 | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta)",
+     "computed_at": "2026-08-02T19:44:23.814590+00:00"
     }
    ],
    "diagnosis": null
@@ -5915,6 +6372,398 @@
    "diagnosis": null
   },
   {
+   "claim_id": "43bcf337ef7e636d639a",
+   "source": "cpsp",
+   "source_column": "Table 1 SPM Poverty Rate, AFA CTC",
+   "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "window": "",
+   "publication_title": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "url": "https://povertycenter.columbia.edu/what-could-2024-child-poverty-rates-have-looked-like",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2024,
+   "time_basis": "annual",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "geography": "US",
+    "subgroup": "children_under_6"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "357724d62cdc0a3c",
+   "external_value": 0.09300000000000001,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 0.11520327849739191,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "arpa u6 4197.04 / 6-17 3497.53; first-tier {'JOINT': 145730.6, 'SURVIVING_SPOUSE': 145730.6, 'SINGLE': 72865.3, 'SEPARATE': 72865.3, 'HEAD_OF_HOUSEHOLD': 109297.95}; qualifying age -> 18; fully refundable",
+    "computed_at": "2026-08-02T19:08:17.213636+00:00",
+    "ratio": 1.2387449300794828,
+    "delta": 0.0222032784973919
+   },
+   "results": [
+    {
+     "value": 0.11520327849739191,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "arpa u6 4197.04 / 6-17 3497.53; first-tier {'JOINT': 145730.6, 'SURVIVING_SPOUSE': 145730.6, 'SINGLE': 72865.3, 'SEPARATE': 72865.3, 'HEAD_OF_HOUSEHOLD': 109297.95}; qualifying age -> 18; fully refundable",
+     "computed_at": "2026-08-02T19:08:17.213636+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "6776df1ea796030cbdc6",
+   "source": "cpsp",
+   "source_column": "Table 1 SPM Poverty Rate, AFA CTC",
+   "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "window": "",
+   "publication_title": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "url": "https://povertycenter.columbia.edu/what-could-2024-child-poverty-rates-have-looked-like",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2024,
+   "time_basis": "annual",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "geography": "US",
+    "subgroup": "children_under_18"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "357724d62cdc0a3c",
+   "external_value": 0.08800000000000001,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 0.10654836093217117,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "arpa u6 4197.04 / 6-17 3497.53; first-tier {'JOINT': 145730.6, 'SURVIVING_SPOUSE': 145730.6, 'SINGLE': 72865.3, 'SEPARATE': 72865.3, 'HEAD_OF_HOUSEHOLD': 109297.95}; qualifying age -> 18; fully refundable",
+    "computed_at": "2026-08-02T19:08:17.213636+00:00",
+    "ratio": 1.2107768287746723,
+    "delta": 0.01854836093217116
+   },
+   "results": [
+    {
+     "value": 0.10654836093217117,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "arpa u6 4197.04 / 6-17 3497.53; first-tier {'JOINT': 145730.6, 'SURVIVING_SPOUSE': 145730.6, 'SINGLE': 72865.3, 'SEPARATE': 72865.3, 'HEAD_OF_HOUSEHOLD': 109297.95}; qualifying age -> 18; fully refundable",
+     "computed_at": "2026-08-02T19:08:17.213636+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "17357fa57e38729ecdcd",
+   "source": "cpsp",
+   "source_column": "Table 1 SPM Poverty Rate, No CTC",
+   "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "window": "",
+   "publication_title": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "url": "https://povertycenter.columbia.edu/what-could-2024-child-poverty-rates-have-looked-like",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2024,
+   "time_basis": "annual",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "geography": "US",
+    "subgroup": "children_under_18"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "34d094c41b87ef80",
+   "external_value": 0.166,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 0.2115468145577173,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "base[0].amount 2000 -> 0; adult_dependent 500 -> 0",
+    "computed_at": "2026-08-02T17:58:33.662382+00:00",
+    "ratio": 1.274378400950104,
+    "delta": 0.04554681455771728
+   },
+   "results": [
+    {
+     "value": 0.2115468145577173,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "base[0].amount 2000 -> 0; adult_dependent 500 -> 0",
+     "computed_at": "2026-08-02T17:58:33.662382+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "984ab8f1c0b001d4aa5c",
+   "source": "cpsp",
+   "source_column": "Table 1 SPM Poverty Rate, No CTC",
+   "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "window": "",
+   "publication_title": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "url": "https://povertycenter.columbia.edu/what-could-2024-child-poverty-rates-have-looked-like",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2024,
+   "time_basis": "annual",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "geography": "US",
+    "subgroup": "children_under_6"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "34d094c41b87ef80",
+   "external_value": 0.17800000000000002,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 0.22737614889930013,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "base[0].amount 2000 -> 0; adult_dependent 500 -> 0",
+    "computed_at": "2026-08-02T17:58:33.662382+00:00",
+    "ratio": 1.2773940949398883,
+    "delta": 0.049376148899300115
+   },
+   "results": [
+    {
+     "value": 0.22737614889930013,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "base[0].amount 2000 -> 0; adult_dependent 500 -> 0",
+     "computed_at": "2026-08-02T17:58:33.662382+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "1e71ccf56dcae8de7a23",
+   "source": "cpsp",
+   "source_column": "Table 1 SPM Poverty Rate, OBBBA CTC",
+   "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "window": "",
+   "publication_title": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "url": "https://povertycenter.columbia.edu/what-could-2024-child-poverty-rates-have-looked-like",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2024,
+   "time_basis": "annual",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "geography": "US",
+    "subgroup": "children_under_18"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "2dce2cb2ab296dee",
+   "external_value": 0.133,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 0.16740114539030831,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "base 2000 -> 2137.38; refundable cap 1700 -> 1651.61; phase-in threshold 2500 -> 2428.84; thresholds x0.97154",
+    "computed_at": "2026-08-02T18:04:44.216480+00:00",
+    "ratio": 1.2586552284985586,
+    "delta": 0.03440114539030831
+   },
+   "results": [
+    {
+     "value": 0.16740114539030831,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "base 2000 -> 2137.38; refundable cap 1700 -> 1651.61; phase-in threshold 2500 -> 2428.84; thresholds x0.97154",
+     "computed_at": "2026-08-02T18:04:44.216480+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "fd02127839e40294e7a5",
+   "source": "cpsp",
+   "source_column": "Table 1 SPM Poverty Rate, OBBBA CTC",
+   "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "window": "",
+   "publication_title": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "url": "https://povertycenter.columbia.edu/what-could-2024-child-poverty-rates-have-looked-like",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2024,
+   "time_basis": "annual",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "geography": "US",
+    "subgroup": "children_under_6"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "2dce2cb2ab296dee",
+   "external_value": 0.14400000000000002,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 0.1780928937346883,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "base 2000 -> 2137.38; refundable cap 1700 -> 1651.61; phase-in threshold 2500 -> 2428.84; thresholds x0.97154",
+    "computed_at": "2026-08-02T18:04:44.216480+00:00",
+    "ratio": 1.236756206490891,
+    "delta": 0.034092893734688295
+   },
+   "results": [
+    {
+     "value": 0.1780928937346883,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "base 2000 -> 2137.38; refundable cap 1700 -> 1651.61; phase-in threshold 2500 -> 2428.84; thresholds x0.97154",
+     "computed_at": "2026-08-02T18:04:44.216480+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "05e88b52036c2668389d",
+   "source": "cpsp",
+   "source_column": "Table 1 SPM Poverty Rate, TCJA CTC",
+   "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "window": "",
+   "publication_title": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "url": "https://povertycenter.columbia.edu/what-could-2024-child-poverty-rates-have-looked-like",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2024,
+   "time_basis": "annual",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "geography": "US",
+    "subgroup": "children_under_6"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "973b97c95c2fccf9",
+   "external_value": 0.145,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 0.17791888414943094,
+    "status": "comparable",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "",
+    "computed_at": "2026-08-02T19:36:06.431196+00:00",
+    "ratio": 1.2270267872374547,
+    "delta": 0.03291888414943095
+   },
+   "results": [
+    {
+     "value": 0.17791888414943094,
+     "status": "comparable",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "",
+     "computed_at": "2026-08-02T19:36:06.431196+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "e54aad0412968c828eba",
+   "source": "cpsp",
+   "source_column": "Table 1 SPM Poverty Rate, TCJA CTC",
+   "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "window": "",
+   "publication_title": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
+   "url": "https://povertycenter.columbia.edu/what-could-2024-child-poverty-rates-have-looked-like",
+   "metric": "poverty_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2024,
+   "time_basis": "annual",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "geography": "US",
+    "subgroup": "children_under_18"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "973b97c95c2fccf9",
+   "external_value": 0.133,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 0.1677105433364713,
+    "status": "comparable",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "",
+    "computed_at": "2026-08-02T19:36:06.431196+00:00",
+    "ratio": 1.260981528845649,
+    "delta": 0.034710543336471306
+   },
+   "results": [
+    {
+     "value": 0.1677105433364713,
+     "status": "comparable",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "",
+     "computed_at": "2026-08-02T19:36:06.431196+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
    "claim_id": "dbb34965f41514214b05",
    "source": "ct_admin",
    "source_column": "state_ct_eitc",
@@ -10143,15 +10992,15 @@
    "external_value": -48769000000.0,
    "calibration_relationship": "held_out",
    "latest": {
-    "value": -89064547927.9414,
+    "value": 91169531318.0,
     "status": "constructed",
     "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z",
-    "release": "buildo",
-    "construction": "reform_delta:income_tax:jcx_stacked:cy2026_for_fy2026",
-    "computed_at": "2026-07-22T23:26:27",
-    "ratio": 1.8262533151785234,
-    "delta": -40295547927.94141
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "gov.irs.credits.ctc.amount.base[0].amount: -> 1000; gov.irs.credits.ctc.amount.adult_dependent: -> 0; gov.irs.credits.ctc.refundable.individual_max: -> 1000; gov.irs.credits.ctc.refundable.phase_in.threshold: -> 3000; gov.irs.credits.ctc.phase_out.threshold.JOINT: -> 110000; gov.irs.credits.ctc.phase_out.threshold.SINGLE: -> 75000; gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD: -> 75000; gov.irs.credits.ctc.phase_out.threshold.SURVIVING_SPOUSE: -> 75000; gov.irs.credits.ctc.phase_out.threshold.SEPARATE: -> 55000 | RESOLVED AS BASELINE DEFINITION (Max 8/2, issue #13): JCT's provision-4 baseline = expiry world + provisions 1-3 (a constructible ReformRef), not an inherent convention gap. This run scores provision 4 LAST-IN-STACK (vs full current law) \u2014 a different, well-defined baseline. The 1.87 ratio vs JCT's stack position is dominated by interactions with the provisions that differ between the two baselines \u2014 chiefly personal exemptions (present on JCT's expiry side until provision 3 terminates them) and the expiry-side AMT/QBI/SALT rules shaping the liability that limits the nonrefundable CTC. UNBLOCK: build baseline_k ReformRefs from CBO Jan-2025 Tax Parameters expiry projections (source already cited in the contrib bracket yaml); registered in RUNNABILITY.md.",
+    "computed_at": "2026-08-03T00:56:11.444990+00:00",
+    "ratio": -1.869415639402079,
+    "delta": 139938531318.0
    },
    "results": [
     {
@@ -10198,6 +11047,15 @@
      "release": "buildo",
      "construction": "reform_delta:income_tax:jcx_stacked:cy2026_for_fy2026",
      "computed_at": "2026-07-22T23:26:27"
+    },
+    {
+     "value": 91169531318.0,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "gov.irs.credits.ctc.amount.base[0].amount: -> 1000; gov.irs.credits.ctc.amount.adult_dependent: -> 0; gov.irs.credits.ctc.refundable.individual_max: -> 1000; gov.irs.credits.ctc.refundable.phase_in.threshold: -> 3000; gov.irs.credits.ctc.phase_out.threshold.JOINT: -> 110000; gov.irs.credits.ctc.phase_out.threshold.SINGLE: -> 75000; gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD: -> 75000; gov.irs.credits.ctc.phase_out.threshold.SURVIVING_SPOUSE: -> 75000; gov.irs.credits.ctc.phase_out.threshold.SEPARATE: -> 55000 | RESOLVED AS BASELINE DEFINITION (Max 8/2, issue #13): JCT's provision-4 baseline = expiry world + provisions 1-3 (a constructible ReformRef), not an inherent convention gap. This run scores provision 4 LAST-IN-STACK (vs full current law) \u2014 a different, well-defined baseline. The 1.87 ratio vs JCT's stack position is dominated by interactions with the provisions that differ between the two baselines \u2014 chiefly personal exemptions (present on JCT's expiry side until provision 3 terminates them) and the expiry-side AMT/QBI/SALT rules shaping the liability that limits the nonrefundable CTC. UNBLOCK: build baseline_k ReformRefs from CBO Jan-2025 Tax Parameters expiry projections (source already cited in the contrib bracket yaml); registered in RUNNABILITY.md.",
+     "computed_at": "2026-08-03T00:56:11.444990+00:00"
     }
    ],
    "diagnosis": null
@@ -15232,6 +16090,106 @@
    "diagnosis": null
   },
   {
+   "claim_id": "f5d8c07a7503e0f13d55",
+   "source": "pwbm",
+   "source_column": "Ending taxation of Social Security benefits | 2025",
+   "name": "Ending taxation of Social Security benefits",
+   "window": "",
+   "publication_title": "Eliminating Income Taxes on Social Security Benefits",
+   "url": "https://budgetmodel.wharton.upenn.edu/p/2025-02-07-eliminating-income-taxes-on-social-security-benefits/",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2025,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "geography": "US",
+    "provision": "Ending taxation of Social Security benefits",
+    "scoring": "conventional"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "44526157240aef77",
+   "external_value": -60000000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": -102121875631.0,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "gov.irs.social_security.taxability.rate.base.excess: 0.5 -> 0; gov.irs.social_security.taxability.rate.base.benefit_cap: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.bracket: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.excess: 0.85 -> 0; gov.irs.social_security.taxability.rate.additional.benefit_cap: 0.85 -> 0",
+    "computed_at": "2026-08-02T19:21:19.569897+00:00",
+    "ratio": 1.7020312605166668,
+    "delta": -42121875631.0
+   },
+   "results": [
+    {
+     "value": -102121875631.0,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "gov.irs.social_security.taxability.rate.base.excess: 0.5 -> 0; gov.irs.social_security.taxability.rate.base.benefit_cap: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.bracket: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.excess: 0.85 -> 0; gov.irs.social_security.taxability.rate.additional.benefit_cap: 0.85 -> 0",
+     "computed_at": "2026-08-02T19:21:19.569897+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "813dcc8b880813c74c72",
+   "source": "pwbm",
+   "source_column": "Ending taxation of Social Security benefits | 2026",
+   "name": "Ending taxation of Social Security benefits",
+   "window": "",
+   "publication_title": "Eliminating Income Taxes on Social Security Benefits",
+   "url": "https://budgetmodel.wharton.upenn.edu/p/2025-02-07-eliminating-income-taxes-on-social-security-benefits/",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "geography": "US",
+    "provision": "Ending taxation of Social Security benefits",
+    "scoring": "conventional"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "44526157240aef77",
+   "external_value": -116000000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": -114046325481.0,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "gov.irs.social_security.taxability.rate.base.excess: 0.5 -> 0; gov.irs.social_security.taxability.rate.base.benefit_cap: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.bracket: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.excess: 0.85 -> 0; gov.irs.social_security.taxability.rate.additional.benefit_cap: 0.85 -> 0",
+    "computed_at": "2026-08-02T19:51:42.666209+00:00",
+    "ratio": 0.9831579782844827,
+    "delta": 1953674519.0
+   },
+   "results": [
+    {
+     "value": -114046325481.0,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "gov.irs.social_security.taxability.rate.base.excess: 0.5 -> 0; gov.irs.social_security.taxability.rate.base.benefit_cap: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.bracket: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.excess: 0.85 -> 0; gov.irs.social_security.taxability.rate.additional.benefit_cap: 0.85 -> 0",
+     "computed_at": "2026-08-02T19:51:42.666209+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
    "claim_id": "3f377de7e5d1a0b461ae",
    "source": "ri_admin",
    "source_column": "state_ri_eitc",
@@ -15379,6 +16337,514 @@
      "release": "buildo",
      "construction": "level:sc_eitc",
      "computed_at": "2026-07-22T23:26:27"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "26f4c8e3cd7a99a66a80",
+   "source": "tpc",
+   "source_column": "FY2026",
+   "name": "Increase top individual income tax rate to 39.6 percent for taxable income in excess of $1,720,000 for married couples filing jointly; $1,528,875 for singles; and $1,624,400 for heads of household, indexed for inflation after 2026.",
+   "window": "",
+   "publication_title": "T25-0209 \u2013 Options to Modify the CTC and Top Individual Income Tax Rate in the Draft Senate Reconciliation Bill, Impact on Federal Tax Revenue, FY2025-2034",
+   "url": "https://taxpolicycenter.org/model-estimates/T25-0209",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "baseline_policy": "current_law_plus_senate_obbba_title_vii",
+    "geography": "US",
+    "option": "Option 2",
+    "provision": "Increase top individual income tax rate to 39.6 percent for taxable income in excess of $1,720,000 for married couples filing jointly; $1,528,875 for singles; and $1,624,400 for heads of household, indexed for inflation after 2026."
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "d8ed9c7cd94f3219",
+   "external_value": 12200000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 3560167298.0,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "additional 39.6% bracket above {'JOINT': 1720000, 'SINGLE': 1528875, 'HEAD_OF_HOUSEHOLD': 1624400, 'SEPARATE': 860000.0, 'SURVIVING_SPOUSE': 1720000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+    "computed_at": "2026-08-02T18:09:43.741622+00:00",
+    "ratio": 0.29181699163934427,
+    "delta": -8639832702.0
+   },
+   "results": [
+    {
+     "value": 3560167298.0,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "additional 39.6% bracket above {'JOINT': 1720000, 'SINGLE': 1528875, 'HEAD_OF_HOUSEHOLD': 1624400, 'SEPARATE': 860000.0, 'SURVIVING_SPOUSE': 1720000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+     "computed_at": "2026-08-02T18:09:43.741622+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "4c5da78e09541a5bef54",
+   "source": "tpc",
+   "source_column": "FY2026",
+   "name": "Increase child tax credit (CTC) amount to $2,500, indexed for inflation after",
+   "window": "",
+   "publication_title": "T25-0209 \u2013 Options to Modify the CTC and Top Individual Income Tax Rate in the Draft Senate Reconciliation Bill, Impact on Federal Tax Revenue, FY2025-2034",
+   "url": "https://taxpolicycenter.org/model-estimates/T25-0209",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "baseline_policy": "current_law_plus_senate_obbba_title_vii",
+    "geography": "US",
+    "option": "Option 1",
+    "provision": "Increase child tax credit (CTC) amount to $2,500, indexed for inflation after"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "4e3544154f521079",
+   "external_value": -18500000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": -12413332840.0,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding)",
+    "computed_at": "2026-08-02T19:43:41.798101+00:00",
+    "ratio": 0.6709909643243244,
+    "delta": 6086667160.0
+   },
+   "results": [
+    {
+     "value": -12413332840.0,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding)",
+     "computed_at": "2026-08-02T19:43:41.798101+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "6d5669dbb6b63be76cb5",
+   "source": "tpc",
+   "source_column": "FY2026",
+   "name": "Total for both provisions",
+   "window": "",
+   "publication_title": "T25-0209 \u2013 Options to Modify the CTC and Top Individual Income Tax Rate in the Draft Senate Reconciliation Bill, Impact on Federal Tax Revenue, FY2025-2034",
+   "url": "https://taxpolicycenter.org/model-estimates/T25-0209",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "baseline_policy": "current_law_plus_senate_obbba_title_vii",
+    "geography": "US",
+    "option": "Option 2",
+    "provision": "Total for both provisions"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "d8ed9c7cd94f3219",
+   "external_value": -10600000000.000002,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": -11841396313.0,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; additional 39.6% bracket above {'JOINT': 1720000, 'SINGLE': 1528875, 'HEAD_OF_HOUSEHOLD': 1624400, 'SEPARATE': 860000.0, 'SURVIVING_SPOUSE': 1720000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+    "computed_at": "2026-08-02T18:23:24.922763+00:00",
+    "ratio": 1.1171128597169808,
+    "delta": -1241396312.999998
+   },
+   "results": [
+    {
+     "value": -11841396313.0,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; additional 39.6% bracket above {'JOINT': 1720000, 'SINGLE': 1528875, 'HEAD_OF_HOUSEHOLD': 1624400, 'SEPARATE': 860000.0, 'SURVIVING_SPOUSE': 1720000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+     "computed_at": "2026-08-02T18:23:24.922763+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "702aa1bacdc03305375f",
+   "source": "tpc",
+   "source_column": "FY2026",
+   "name": "Increase CTC amount to $2,500 and CTC maximum refundable amount to $2,000, both amounts indexed for inflation after",
+   "window": "",
+   "publication_title": "T25-0209 \u2013 Options to Modify the CTC and Top Individual Income Tax Rate in the Draft Senate Reconciliation Bill, Impact on Federal Tax Revenue, FY2025-2034",
+   "url": "https://taxpolicycenter.org/model-estimates/T25-0209",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "baseline_policy": "current_law_plus_senate_obbba_title_vii",
+    "geography": "US",
+    "option": "Option 2",
+    "provision": "Increase CTC amount to $2,500 and CTC maximum refundable amount to $2,000, both amounts indexed for inflation after"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "d8ed9c7cd94f3219",
+   "external_value": -22800000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": -15401563611.0,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000",
+    "computed_at": "2026-08-02T18:36:03.633487+00:00",
+    "ratio": 0.6755071759210526,
+    "delta": 7398436389.0
+   },
+   "results": [
+    {
+     "value": -15401563611.0,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000",
+     "computed_at": "2026-08-02T18:36:03.633487+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "7aec7e652c558f3d6390",
+   "source": "tpc",
+   "source_column": "FY2026",
+   "name": "Total for both provisions",
+   "window": "",
+   "publication_title": "T25-0209 \u2013 Options to Modify the CTC and Top Individual Income Tax Rate in the Draft Senate Reconciliation Bill, Impact on Federal Tax Revenue, FY2025-2034",
+   "url": "https://taxpolicycenter.org/model-estimates/T25-0209",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "baseline_policy": "current_law_plus_senate_obbba_title_vii",
+    "geography": "US",
+    "option": "Option 1",
+    "provision": "Total for both provisions"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "4e3544154f521079",
+   "external_value": -8100000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": -10520644600.0,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); additional 39.6% bracket above {'JOINT': 2120000, 'SINGLE': 1884425, 'HEAD_OF_HOUSEHOLD': 2002200, 'SEPARATE': 1060000.0, 'SURVIVING_SPOUSE': 2120000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+    "computed_at": "2026-08-02T19:03:50.001776+00:00",
+    "ratio": 1.298845012345679,
+    "delta": -2420644600.0
+   },
+   "results": [
+    {
+     "value": -10520644600.0,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); additional 39.6% bracket above {'JOINT': 2120000, 'SINGLE': 1884425, 'HEAD_OF_HOUSEHOLD': 2002200, 'SEPARATE': 1060000.0, 'SURVIVING_SPOUSE': 2120000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+     "computed_at": "2026-08-02T19:03:50.001776+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "9927a6ae54fbc3f4430d",
+   "source": "tpc",
+   "source_column": "FY2026",
+   "name": "American Family Act",
+   "window": "",
+   "publication_title": "T26-0029 \u2013 American Family Act, Impact on Tax Revenue, Fiscal Years 2026\u20132035",
+   "url": "https://taxpolicycenter.org/model-estimates/T26-0029",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "geography": "US",
+    "provision": "American Family Act"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "7cdae2d7e661cd09",
+   "external_value": -133908999999.99998,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": -132466602193.0,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "AFA-2025 statute: arpa 4320/3600, fully refundable, age<18, second-tier HoH 300k; newborn $2,400 payment omitted (named delta); mid-tier floor kept at OBBBA $2,200 (AFA-onto-current-law)",
+    "computed_at": "2026-08-02T18:17:00.163564+00:00",
+    "ratio": 0.9892285223024593,
+    "delta": 1442397806.9999847
+   },
+   "results": [
+    {
+     "value": -132466602193.0,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "AFA-2025 statute: arpa 4320/3600, fully refundable, age<18, second-tier HoH 300k; newborn $2,400 payment omitted (named delta); mid-tier floor kept at OBBBA $2,200 (AFA-onto-current-law)",
+     "computed_at": "2026-08-02T18:17:00.163564+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "af5bb0777fe2e6595dd9",
+   "source": "tpc",
+   "source_column": "FY2026",
+   "name": "Increase CTC amount to $2,500 and CTC maximum refundable amount to $2,000, both amounts indexed for inflation after 2025; and phase in CTC starting with the first dollar of earnings",
+   "window": "",
+   "publication_title": "T25-0209 \u2013 Options to Modify the CTC and Top Individual Income Tax Rate in the Draft Senate Reconciliation Bill, Impact on Federal Tax Revenue, FY2025-2034",
+   "url": "https://taxpolicycenter.org/model-estimates/T25-0209",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "baseline_policy": "current_law_plus_senate_obbba_title_vii",
+    "geography": "US",
+    "option": "Option 3",
+    "provision": "Increase CTC amount to $2,500 and CTC maximum refundable amount to $2,000, both amounts indexed for inflation after 2025; and phase in CTC starting with the first dollar of earnings"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "53fd3b7c7c065a56",
+   "external_value": -25200000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": -17771840580.0,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; phase-in from first dollar of earnings (threshold 2500 -> 0)",
+    "computed_at": "2026-08-02T19:56:36.792890+00:00",
+    "ratio": 0.7052317690476191,
+    "delta": 7428159420.0
+   },
+   "results": [
+    {
+     "value": -17771840580.0,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; phase-in from first dollar of earnings (threshold 2500 -> 0)",
+     "computed_at": "2026-08-02T19:56:36.792890+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "dc43aca51b7e85351e9b",
+   "source": "tpc",
+   "source_column": "FY2026",
+   "name": "Total for both provisions",
+   "window": "",
+   "publication_title": "T25-0209 \u2013 Options to Modify the CTC and Top Individual Income Tax Rate in the Draft Senate Reconciliation Bill, Impact on Federal Tax Revenue, FY2025-2034",
+   "url": "https://taxpolicycenter.org/model-estimates/T25-0209",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "baseline_policy": "current_law_plus_senate_obbba_title_vii",
+    "geography": "US",
+    "option": "Option 3",
+    "provision": "Total for both provisions"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "53fd3b7c7c065a56",
+   "external_value": -12100000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": -13358690967.0,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; phase-in from first dollar of earnings (threshold 2500 -> 0); additional 39.6% bracket above {'JOINT': 1562500, 'SINGLE': 1388875, 'HEAD_OF_HOUSEHOLD': 1475650, 'SEPARATE': 781250.0, 'SURVIVING_SPOUSE': 1562500} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+    "computed_at": "2026-08-02T19:08:40.026085+00:00",
+    "ratio": 1.1040240468595042,
+    "delta": -1258690967.0
+   },
+   "results": [
+    {
+     "value": -13358690967.0,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; phase-in from first dollar of earnings (threshold 2500 -> 0); additional 39.6% bracket above {'JOINT': 1562500, 'SINGLE': 1388875, 'HEAD_OF_HOUSEHOLD': 1475650, 'SEPARATE': 781250.0, 'SURVIVING_SPOUSE': 1562500} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+     "computed_at": "2026-08-02T19:08:40.026085+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "f367dc1654ae1c27d0c0",
+   "source": "tpc",
+   "source_column": "FY2026",
+   "name": "Increase top individual income tax rate to 39.6 percent for taxable income in excess of $2,120,000 for married couples filing jointly; $1,884,425 for singles; and $2,002,200 for heads of household, indexed for inflation after 2026.",
+   "window": "",
+   "publication_title": "T25-0209 \u2013 Options to Modify the CTC and Top Individual Income Tax Rate in the Draft Senate Reconciliation Bill, Impact on Federal Tax Revenue, FY2025-2034",
+   "url": "https://taxpolicycenter.org/model-estimates/T25-0209",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "baseline_policy": "current_law_plus_senate_obbba_title_vii",
+    "geography": "US",
+    "option": "Option 1",
+    "provision": "Increase top individual income tax rate to 39.6 percent for taxable income in excess of $2,120,000 for married couples filing jointly; $1,884,425 for singles; and $2,002,200 for heads of household, indexed for inflation after 2026."
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "4e3544154f521079",
+   "external_value": 10400000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 1892688240.0,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "additional 39.6% bracket above {'JOINT': 2120000, 'SINGLE': 1884425, 'HEAD_OF_HOUSEHOLD': 2002200, 'SEPARATE': 1060000.0, 'SURVIVING_SPOUSE': 2120000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+    "computed_at": "2026-08-02T19:40:19.766783+00:00",
+    "ratio": 0.18198925384615386,
+    "delta": -8507311760.0
+   },
+   "results": [
+    {
+     "value": 1892688240.0,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "additional 39.6% bracket above {'JOINT': 2120000, 'SINGLE': 1884425, 'HEAD_OF_HOUSEHOLD': 2002200, 'SEPARATE': 1060000.0, 'SURVIVING_SPOUSE': 2120000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+     "computed_at": "2026-08-02T19:40:19.766783+00:00"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "f73ae09a929372503419",
+   "source": "tpc",
+   "source_column": "FY2026",
+   "name": "Increase top individual income tax rate to 39.6 percent for taxable income in excess of $1,562,500 for married couples filing jointly; $1,388,875 for singles; and $1,475,650 for heads of household, indexed for inflation after 2026.",
+   "window": "",
+   "publication_title": "T25-0209 \u2013 Options to Modify the CTC and Top Individual Income Tax Rate in the Draft Senate Reconciliation Bill, Impact on Federal Tax Revenue, FY2025-2034",
+   "url": "https://taxpolicycenter.org/model-estimates/T25-0209",
+   "metric": "revenue_change",
+   "unit_concept": "usd",
+   "value_kind": "usd",
+   "period": 2026,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": null,
+   "conditions": {
+    "baseline_policy": "current_law_plus_senate_obbba_title_vii",
+    "geography": "US",
+    "option": "Option 3",
+    "provision": "Increase top individual income tax rate to 39.6 percent for taxable income in excess of $1,562,500 for married couples filing jointly; $1,388,875 for singles; and $1,475,650 for heads of household, indexed for inflation after 2026."
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "53fd3b7c7c065a56",
+   "external_value": 13100000000.0,
+   "calibration_relationship": "held_out",
+   "latest": {
+    "value": 4413149613.0,
+    "status": "constructed",
+    "engine_version": "1.764.6",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "release": "buildp",
+    "construction": "additional 39.6% bracket above {'JOINT': 1562500, 'SINGLE': 1388875, 'HEAD_OF_HOUSEHOLD': 1475650, 'SEPARATE': 781250.0, 'SURVIVING_SPOUSE': 1562500} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+    "computed_at": "2026-08-02T18:13:07.929713+00:00",
+    "ratio": 0.33688164984732827,
+    "delta": -8686850387.0
+   },
+   "results": [
+    {
+     "value": 4413149613.0,
+     "status": "constructed",
+     "engine_version": "1.764.6",
+     "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+     "release": "buildp",
+     "construction": "additional 39.6% bracket above {'JOINT': 1562500, 'SINGLE': 1388875, 'HEAD_OF_HOUSEHOLD': 1475650, 'SEPARATE': 781250.0, 'SURVIVING_SPOUSE': 1562500} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+     "computed_at": "2026-08-02T18:13:07.929713+00:00"
     }
    ],
    "diagnosis": null
