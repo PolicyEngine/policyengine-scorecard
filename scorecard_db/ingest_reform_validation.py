@@ -100,7 +100,11 @@ RUN_PREFIX = "populace-rv-"
 REGISTRY_MARK = "populace_reform_validation"
 
 # Exact engine pins per release (from each release_manifest.json on HF;
-# the artifact's PE values were computed at these versions).
+# the artifact's PE values were computed at these versions). These five are
+# the historical backfill; a genuinely new release arriving from the
+# automated backfill (tools/reform_validation/) carries its own pin in the
+# artifact's ``engine`` block, so it ingests without a code edit here — see
+# ``_base_engine``.
 ENGINE_VERSIONS = {
     "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z": "1.729.0",
     "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701": "1.752.2",
@@ -108,6 +112,35 @@ ENGINE_VERSIONS = {
     "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z": "1.764.6",
     "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z": "1.764.6",
 }
+
+# The OBBBA scoring mode for a release the historical table below doesn't
+# name. Every producer build since buildi scores JCX-stacked, and the
+# l0-refit note is explicit that "the stacked producer applies from the next
+# release", so any release newer than the backfilled five is jcx_stacked.
+DEFAULT_OBBBA_SCORING_MODE = "jcx_stacked"
+
+
+def _base_engine(release_id: str, artifact: dict) -> str:
+    """Resolve the release's policyengine-us pin.
+
+    The five backfilled releases are pinned in ENGINE_VERSIONS (authoritative,
+    including the l0-refit subtlety where the release was built at 1.752.2 but
+    named 1.729.0 rows offline — that lives in ENGINE_OVERRIDES). A new release
+    from the automated backfill self-describes: backfill.py stamps the
+    release_manifest's versions into the artifact's ``engine`` block, so no
+    hand-edit is needed to ingest it."""
+    pin = ENGINE_VERSIONS.get(release_id)
+    if pin is not None:
+        return pin
+    pin = (artifact.get("engine") or {}).get("policyengine_us")
+    if pin:
+        return str(pin)
+    raise SystemExit(
+        f"{release_id}: no engine pin — not in ENGINE_VERSIONS and the "
+        "artifact carries no engine.policyengine_us block. Re-run the "
+        "backfill (it stamps the pin) or add the release_manifest.json pin."
+    )
+
 
 # Pin overrides an artifact documents about itself, keyed per category and
 # per row id. The l0-refit backfill note names three offline batches scored
@@ -572,7 +605,7 @@ def _obbba_results(
     if provision is None:
         raise ValueError(f"OBBBA row {row['id']} missing from OBBBA_PROVISIONS")
     measure = row["populace"].get("measure") or ""
-    mode = OBBBA_SCORING_MODE[release_id]
+    mode = OBBBA_SCORING_MODE.get(release_id, DEFAULT_OBBBA_SCORING_MODE)
     pe_value = _pe_value(row, f"reform_delta:{measure}")
     results = []
     for fy, score in (
@@ -661,12 +694,7 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
     for path in releases:
         artifact = json.loads(path.read_text())
         release_id = artifact["release_id"]
-        base_engine = ENGINE_VERSIONS.get(release_id)
-        if base_engine is None:
-            raise SystemExit(
-                f"{release_id} missing from ENGINE_VERSIONS — add its "
-                "release_manifest.json pin"
-            )
+        base_engine = _base_engine(release_id, artifact)
         overrides = ENGINE_OVERRIDES.get(release_id, {})
         computed_at = _release_timestamp(release_id)
         actuals = {
