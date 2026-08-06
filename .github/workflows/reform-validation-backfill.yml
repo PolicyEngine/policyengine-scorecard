@@ -1,0 +1,166 @@
+name: Reform validation backfill
+
+# Per-release producer for the populace reform-validation registry, re-homed
+# from calibration-diagnostics #112 (Pavel's review carries over; scorecard
+# issue #15 call 3). The producer needs a full Microsimulation per batch plus
+# the populace/torch import stack, which no longer fits GitHub's 7GB
+# ubuntu-latest runner, so the simulation runs on Modal
+# (tools/reform_validation/modal_backfill_app.py, 64GB container). This
+# workflow is only the trigger/commit layer and every tick finishes in
+# seconds:
+#
+#   tick N:   a certified release has no raw/<id>.json AND the Volume has no
+#             artifact -> deploy + spawn the Modal run (fire-and-forget), exit.
+#   tick N+1: the artifact is on the Volume -> download it, land it under
+#             sources/populace-reform-validation/raw/, re-run the ingest to
+#             rebuild data/scorecard.db, and open a PR.
+#
+# Liveness (tools/reform_validation/spawn_or_wait.py): the spawner records the
+# Modal call id on the Volume next to the app's `started` marker, and each
+# tick checks that call's actual status — a failed or vanished run re-spawns
+# instead of waiting forever behind a stale marker (age fallback: 24h, past
+# the 8h function timeout). Re-spawns are cheap because the Modal workdir
+# checkpoints batch partials, so they resume rather than restart.
+#
+# The PR is opened for review, not auto-merged: a new release brings new
+# engine pins and can shift the exact-count ingest tests, so a human confirms
+# the DB delta before it lands. Flip to `gh pr merge --auto` if that review
+# step proves unnecessary.
+#
+# Requires repository secrets MODAL_TOKEN_ID / MODAL_TOKEN_SECRET for the
+# PolicyEngine Modal workspace.
+#
+# Run by hand for a specific release via the "Run workflow" button
+# (release_id input), or leave it to the schedule.
+
+on:
+  schedule:
+    - cron: "0 */6 * * *" # every 6 hours
+  workflow_dispatch:
+    inputs:
+      release_id:
+        description: "Release id to backfill (blank = current latest)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: reform-validation-backfill
+  cancel-in-progress: false
+
+env:
+  HF_BASE: https://huggingface.co/datasets/policyengine/populace-us/resolve/main
+  MODAL_VOLUME: scorecard-reform-validation
+  RAW_DIR: sources/populace-reform-validation/raw
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.r.outputs.release_id }}
+      should_run: ${{ steps.r.outputs.should_run }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: r
+        run: |
+          set -euo pipefail
+          RID="${{ github.event.inputs.release_id }}"
+          if [ -z "$RID" ]; then
+            RID=$(curl -sL "$HF_BASE/latest.json" \
+              | python3 -c "import sys,json;print(json.load(sys.stdin)['release_id'])")
+          fi
+          echo "release_id=$RID" >> "$GITHUB_OUTPUT"
+          if [ -f "$RAW_DIR/$RID.json" ]; then
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::$RID already ingested — nothing to do."
+          else
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::$RID needs a reform-validation backfill."
+          fi
+
+  backfill:
+    needs: resolve
+    if: needs.resolve.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      RID: ${{ needs.resolve.outputs.release_id }}
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+    steps:
+      - name: Checkout scorecard
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Modal client
+        run: |
+          set -euo pipefail
+          if [ -z "$MODAL_TOKEN_ID" ] || [ -z "$MODAL_TOKEN_SECRET" ]; then
+            echo "::error::MODAL_TOKEN_ID / MODAL_TOKEN_SECRET repository secrets are not set — the simulation runs on Modal and cannot proceed without them."
+            exit 1
+          fi
+          python -m pip install --quiet modal
+
+      - name: Harvest artifact or spawn Modal run
+        id: harvest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          SHA8=$(python3 -c "import hashlib;print(hashlib.sha256('$RID'.encode()).hexdigest()[:8])")
+          if modal volume get "$MODAL_VOLUME" "reform_validation_$RID.json" /tmp/rv.json --force; then
+            echo "::notice::Artifact found on the Volume — ingesting."
+            echo "have_artifact=true" >> "$GITHUB_OUTPUT"
+            # The artifact stays on the Volume as the done-signal until the
+            # PR merges; only the bulky workdir (H5 + partials) goes.
+            modal volume rm "$MODAL_VOLUME" "rv_$SHA8" -r || true
+            exit 0
+          fi
+          echo "have_artifact=false" >> "$GITHUB_OUTPUT"
+          DECISION=$(python3 tools/reform_validation/spawn_or_wait.py check "$RID")
+          if [ "$DECISION" = "WAIT" ]; then
+            echo "::notice::A Modal run for $RID is in flight — will harvest on a later tick."
+            exit 0
+          fi
+          PRODUCER_REF=$(gh api repos/PolicyEngine/populace/commits/main --jq .sha)
+          modal deploy tools/reform_validation/modal_backfill_app.py
+          python3 tools/reform_validation/spawn_or_wait.py spawn "$RID" "$PRODUCER_REF"
+          echo "::notice::Spawned Modal backfill for $RID at populace ${PRODUCER_REF:0:9} — a later tick harvests the artifact."
+
+      - name: Register release + rebuild DB
+        if: steps.harvest.outputs.have_artifact == 'true'
+        env:
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          python3 tools/reform_validation/register_release.py "$RID" /tmp/rv.json
+          python3 -m scorecard_db.ingest_reform_validation data/scorecard.db
+
+      - name: Verify ingest
+        if: steps.harvest.outputs.have_artifact == 'true'
+        run: |
+          set -euo pipefail
+          python3 -c "import sqlite3;n=sqlite3.connect('data/scorecard.db').execute(\"SELECT COUNT(*) FROM pe_results WHERE run_id LIKE 'populace-rv-%'\").fetchone()[0];print(f'{n} reform-validation results in the rebuilt DB');assert n>0"
+
+      - name: Open PR
+        if: steps.harvest.outputs.have_artifact == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          BR="reform-validation/$RID"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BR"
+          git add "$RAW_DIR/$RID.json" sources/populace-reform-validation/source.json data/scorecard.db
+          git commit -m "Ingest reform_validation for $RID"
+          git push -u origin "$BR"
+          gh pr create --base main --head "$BR" \
+            --title "Ingest reform_validation for $RID" \
+            --body "Automated backfill by \`.github/workflows/reform-validation-backfill.yml\`. The producer ran on Modal (\`tools/reform_validation/modal_backfill_app.py\`) against the released \`populace_us_2024.h5\` at the build's exact package versions (provenance in the artifact's \`_backfill_note\` and structured \`engine\` block); \`register_release.py\` landed it under \`$RAW_DIR/\` and \`scorecard_db.ingest_reform_validation\` rebuilt the reform-validation slice of \`data/scorecard.db\`. Opened for review rather than auto-merged: confirm the new engine pin and the exact-count ingest tests (\`tests/test_reform_validation_ingest.py\`) before merging."
