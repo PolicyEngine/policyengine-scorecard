@@ -35,13 +35,14 @@ export function ReformValidationView({ feed }: { feed: PopulationsFeed }) {
   return (
     <div>
       <p className="mb-4 max-w-3xl text-sm leading-6 text-muted-foreground">
-        The populace reform-validation registry:{" "}
+        Reform scores and references beyond the Urban comparison:{" "}
         <b className="fig text-foreground">
           {feed.summary.claims.toLocaleString()}
         </b>{" "}
-        external claims — JCT scores, state fiscal notes, agency actuals, IRS
-        and Census references — where each available result carries its
-        certified release's exact engine pins.{" "}
+        external claims — the populace reform-validation registry (JCT scores,
+        state fiscal notes, agency actuals, IRS and Census references) plus the
+        compute campaign's TPC, CPSP, PWBM and CBO comparisons — where each
+        available result carries its certified release's exact engine pins.{" "}
         <b className="fig text-foreground">
           {feed.summary.multi_release_claims.toLocaleString()}
         </b>{" "}
@@ -211,12 +212,26 @@ function RowDetail({ row }: { row: PopulationRow }) {
                       {ratioOf(res.value, row.external_value)}
                     </td>
                     <td className="py-1 fig text-muted-foreground">
-                      {res.construction}
+                      {res.construction || "—"}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            {row.results.some((res) => res.annotations.length > 0) && (
+              <ul className="mt-2 space-y-1 text-muted-foreground">
+                {row.results.flatMap((res) =>
+                  res.annotations.map((a, i) => (
+                    <li key={`${res.data_bundle}-${i}`}>
+                      <span className="mr-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide">
+                        {res.release}
+                      </span>
+                      {a}
+                    </li>
+                  )),
+                )}
+              </ul>
+            )}
             <p className="mt-2 text-muted-foreground">
               A construction change between releases (e.g. an OBBBA scoring
               mode) is part of the label above — compare values only within the
@@ -284,6 +299,18 @@ const SOURCE_SPECIAL: Record<string, string> = {
   census: "Census",
   census_pep: "Census PEP",
   treasury: "Treasury",
+  tpc: "TPC",
+  pwbm: "PWBM",
+  cpsp: "Columbia CPSP",
+  budget_lab: "Budget Lab",
+  tax_foundation: "Tax Foundation",
+  obr: "OBR",
+  hmrc: "HMRC",
+  dwp: "DWP",
+  hmt: "HMT",
+  ifs: "IFS",
+  rf: "Resolution Foundation",
+  ukmod: "UKMOD",
 };
 
 function sourceLabel(s: string): string {

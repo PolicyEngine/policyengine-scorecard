@@ -3,7 +3,7 @@
   "stage": "registered | cataloged | ingested | computed | diagnosing | published | regressed",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-08-05",
+ "updated": "2026-08-06",
  "lanes": [
   {
    "id": "urban-sotsn",

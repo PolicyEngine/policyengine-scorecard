@@ -92,10 +92,12 @@ def export(
                 "release": release_label(r["data_bundle"]),
                 "construction": r["pe_construction"],
                 "computed_at": r["computed_at"],
+                "annotations": json.loads(r["annotations"]),
             }
             for r in db.conn.execute(
                 """SELECT computed_value, status, engine_version,
-                          data_bundle, pe_construction, computed_at
+                          data_bundle, pe_construction, computed_at,
+                          annotations
                    FROM pe_results WHERE claim_id = ?
                    ORDER BY computed_at, id""",
                 (c["claim_id"],),
@@ -166,10 +168,11 @@ def export(
     payload = {
         "built": built or date.today().isoformat(),
         "note": (
-            "Non-Urban populations exported from scorecard.db; today this is"
-            " the populace reform-validation registry (issue #20). Statuses"
-            " and calibration relationships are verbatim; nothing here is a"
-            " pass/fail grade."
+            "Non-Urban populations exported from scorecard.db: the populace"
+            " reform-validation registry (issue #20) plus the compute"
+            " campaign's attached comparisons (TPC/CPSP/PWBM/CBO/JCT)."
+            " Statuses and calibration relationships are verbatim; nothing"
+            " here is a pass/fail grade."
         ),
         "summary": {
             "claims": len(rows),
