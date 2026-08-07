@@ -192,6 +192,47 @@ def test_metaless_exhibit_defers(db_copy, tmp_path):
     assert summary["exhibits"] == 3
     assert len(summary["exhibits_deferred"]) == 1
     assert "marginal increment" in summary["exhibits_deferred"][0]
+    conn = sqlite3.connect(db_copy)
+    n = conn.execute(
+        "SELECT COUNT(*) FROM pe_exhibits WHERE run_id LIKE 'campaign-%'"
+    ).fetchone()[0]
+    conn.close()
+    assert n == 3  # the stripped row's prior exhibit did not linger
+
+
+def test_exhibit_only_run_replaced_on_meta_loss(db_copy, tmp_path):
+    # A run_id carrying ONLY exhibits must still be a deletion key: if its
+    # row later loses exhibit_meta (deferred), the stale pe_exhibits row
+    # goes away rather than surviving an empty write set.
+    staged = tmp_path / "staged"
+    staged.mkdir()
+    src = next(
+        json.loads(line)
+        for line in (STAGED_US / "tpc_t25_0209_t26_0029.jsonl").read_text().splitlines()
+        if json.loads(line).get("exhibit")
+    )
+    src["run_id"] = "campaign-test-solo-exhibit"
+    solo = staged / "solo_exhibit.jsonl"
+    solo.write_text(json.dumps(src))
+
+    def count():
+        conn = sqlite3.connect(db_copy)
+        n = conn.execute(
+            "SELECT COUNT(*) FROM pe_exhibits"
+            " WHERE run_id = 'campaign-test-solo-exhibit'"
+        ).fetchone()[0]
+        conn.close()
+        return n
+
+    first = ingest(db_copy, staged_dir=staged)
+    assert first["exhibits"] == 1 and count() == 1
+
+    del src["exhibit_meta"]
+    solo.write_text(json.dumps(src))
+    second = ingest(db_copy, staged_dir=staged)
+    assert second["exhibits"] == 0
+    assert len(second["exhibits_deferred"]) == 1
+    assert count() == 0
 
 
 def test_reingest_spares_other_campaign_directories(db_copy):

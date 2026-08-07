@@ -137,10 +137,15 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
     deferred_exhibits: list[str] = []
     seen: set[tuple[str, str, str]] = set()
     families: dict[str, int] = {}
+    staged_run_ids: set[str] = set()
     for path in files:
         family = path.stem.split("_")[0]
         for line in path.read_text().splitlines():
             row = json.loads(line)
+            # Every staged row's run_id is a deletion key — including
+            # deferred exhibits, so a row that LOSES its exhibit_meta
+            # between runs can't leave its stale pe_exhibits row behind.
+            staged_run_ids.add(row["run_id"])
             if row.get("exhibit"):
                 meta = row.get("exhibit_meta")
                 if meta is None:
@@ -204,7 +209,7 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
     # campaign- prefix: other staged directories' results must survive.
     result_rows = [ScorecardDB.result_row(r) for r in results]
     exhibit_rows = [ScorecardDB.exhibit_row(e) for e in exhibits]
-    run_ids = sorted({r.run_id for r in results} | {e["run_id"] for e in exhibits})
+    run_ids = sorted(staged_run_ids)
     placeholders = ",".join("?" * len(run_ids))
     with db.conn:
         db.conn.execute(
