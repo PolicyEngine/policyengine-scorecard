@@ -53,7 +53,8 @@
    "Which ACF family or recipient series exactly matches Urban's numerator?",
    "How much of the DE/IN/TX collapse comes from enrollment/applicant branching versus asset, income, or vehicle inputs?",
    "Why does NY exceed Urban by 0.936M while many states undercount?"
-  ]
+  ],
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/643"
  },
  {
   "queue_id": 3,
@@ -138,7 +139,8 @@
    "How does ATTIS impute assets and disability adjudication from ACS, and does it include state-only supplements or essential persons?",
    "Which PE component causes the 60-64 collapse: latent disability, SGA, resources, countable income, or immigration?",
    "Would a federal-only same-concept ATTIS extract materially reduce the national gap?"
-  ]
+  ],
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/644"
  },
  {
   "queue_id": 6,
@@ -170,7 +172,8 @@
    "Can HUD Picture household counts be mapped to SPM units without synthetic identities, or should they remain validation-only?",
    "How much receipt-to-positive-HAP attrition does the certified release contain, and which HAP input causes it?",
    "How much of Urban's rate-implied 4.363M versus HUD's roughly 4.6M is period or universe rather than model error?"
-  ]
+  ],
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/645"
  },
  {
   "queue_id": 7,
@@ -224,7 +227,8 @@
    "How closely does ATTIS reproduce the official 2023 Census child SPM rate under the same population definition?",
    "Do the existing state child-SPM backtests show a systematic geography or household-composition pattern?"
   ],
-  "adjudication_note": "Adjudicator amendment (Max, 2026-08-02): (1) poverty metrics are PERMANENT calibration holdouts \u2014 never targets, not 'held out initially'; targets come from administrative systems only. (2) Deviations from official poverty statistics are never inherently problematic \u2014 populace corrects survey benefit underreporting (admin-calibrated benefit dollars exceed survey-reported amounts), so sitting below survey-based rates is the expected direction, all else equal. What flags THIS item is the anomaly: the child rate sits ABOVE Census while the total sits near it. Investigate composition; the deviation itself is not the defect and the official number is a comparator, not truth."
+  "adjudication_note": "Adjudicator amendment (Max, 2026-08-02): (1) poverty metrics are PERMANENT calibration holdouts \u2014 never targets, not 'held out initially'; targets come from administrative systems only. (2) Deviations from official poverty statistics are never inherently problematic \u2014 populace corrects survey benefit underreporting (admin-calibrated benefit dollars exceed survey-reported amounts), so sitting below survey-based rates is the expected direction, all else equal. What flags THIS item is the anomaly: the child rate sits ABOVE Census while the total sits near it. Investigate composition; the deviation itself is not the defect and the official number is a comparator, not truth.",
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/646"
  },
  {
   "queue_id": 9,
@@ -251,7 +255,8 @@
    "What are the post-calibration state eligible-unit weights?",
    "How does Urban's implied Alaska numerator of about 29.4k people reconcile with FY2023/FY2024 FNS household and person series?",
    "Why does saturation affect so many states despite an accurate national household target?"
-  ]
+  ],
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
  },
  {
   "queue_id": 10,
@@ -276,6 +281,7 @@
    "What causes the offsetting infant and age-1-4 eligibility errors?",
    "Does the populace#520 infant-geography caution explain state-level residuals?",
    "Can a validation holdout or rotation preserve this exhibit if WIC targets are added later?"
-  ]
+  ],
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/648"
  }
 ]
