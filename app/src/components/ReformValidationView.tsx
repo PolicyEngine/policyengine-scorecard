@@ -212,12 +212,26 @@ function RowDetail({ row }: { row: PopulationRow }) {
                       {ratioOf(res.value, row.external_value)}
                     </td>
                     <td className="py-1 fig text-muted-foreground">
-                      {res.construction}
+                      {res.construction || "—"}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            {row.results.some((res) => res.annotations.length > 0) && (
+              <ul className="mt-2 space-y-1 text-muted-foreground">
+                {row.results.flatMap((res) =>
+                  res.annotations.map((a, i) => (
+                    <li key={`${res.data_bundle}-${i}`}>
+                      <span className="mr-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide">
+                        {res.release}
+                      </span>
+                      {a}
+                    </li>
+                  )),
+                )}
+              </ul>
+            )}
             <p className="mt-2 text-muted-foreground">
               A construction change between releases (e.g. an OBBBA scoring
               mode) is part of the label above — compare values only within the

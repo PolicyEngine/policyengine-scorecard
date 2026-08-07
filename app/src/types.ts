@@ -130,6 +130,7 @@ export interface ReleaseResult {
   release: string;
   construction: string;
   computed_at: string;
+  annotations: string[];
 }
 
 /** A non-Urban claim from scorecard.db with its per-release history. */

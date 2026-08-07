@@ -28,9 +28,11 @@ lack the metric/period/reform identity pe_exhibits requires, so they are
 tallied and listed in the summary for the campaign to re-emit with
 ``exhibit_meta`` — never silently dropped, never guessed.
 
-Idempotent: this module's results are replaced wholesale by run_id prefix
-``campaign-``. It creates no claims, so nothing else is touched. All
-parsing and matching happens before the single write transaction.
+Idempotent: this module replaces exactly the run_ids present in the
+staged files it is ingesting — never a prefix sweep, so re-running the US
+directory can't erase results another campaign directory (UK) ingested
+under its own run_ids. It creates no claims, so nothing else is touched.
+All parsing and matching happens before the single write transaction.
 """
 
 from __future__ import annotations
@@ -43,7 +45,6 @@ from .models import ComparisonStatus, PEResult
 
 REPO = Path(__file__).resolve().parent.parent
 STAGED_US = REPO / "sources" / "campaign-20260802" / "us"
-RUN_PREFIX = "campaign-"
 
 # CPSP's CTC-brief scenario worlds live on the claim's policy_ref reform
 # (ingest_cpsp), not in conditions — descriptor policy_scenario -> policy.
@@ -162,10 +163,14 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
             )
 
     # All parsing and matching done — one transaction, commit or nothing.
+    # Deletion is scoped to the exact run_ids being re-ingested, never the
+    # campaign- prefix: other staged directories' results must survive.
     result_rows = [ScorecardDB.result_row(r) for r in results]
+    run_ids = sorted({r.run_id for r in results})
     with db.conn:
         db.conn.execute(
-            "DELETE FROM pe_results WHERE run_id LIKE ?", (f"{RUN_PREFIX}%",)
+            f"DELETE FROM pe_results WHERE run_id IN ({','.join('?' * len(run_ids))})",
+            run_ids,
         )
         db.conn.executemany(RESULTS_SQL, result_rows)
     db.close()

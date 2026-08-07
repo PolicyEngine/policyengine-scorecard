@@ -105,6 +105,37 @@ def test_full_attach_on_committed_db(db_copy):
             WHERE run_id = 'campaign-20260802-obbba')"""
     ).fetchone()[0]
     assert n == 6
+    # Sign convention: the claim scores the forward extension (negative);
+    # the campaign scored the expiry reversal and negated it (exact for
+    # the same static world pair). Ratio 1.87 = the known last-in-stack
+    # position story, and both sides must be revenue losses.
+    jct = conn.execute(
+        """SELECT r.computed_value, s.value, r.pe_construction
+           FROM pe_results r JOIN external_scores s USING (claim_id)
+           WHERE r.run_id = 'campaign-20260802-obbba'"""
+    ).fetchone()
+    assert jct["computed_value"] == pytest.approx(-91169531318.0)
+    assert jct["value"] < 0 and jct["computed_value"] < 0
+    assert jct["computed_value"] / jct["value"] == pytest.approx(1.87, abs=0.01)
+    assert jct["pe_construction"].startswith("scored as expiry reversal")
+    # CBO joins: every row names FY-vs-CY, so none is comparable; the
+    # SNAP total attaches the held-out budget-authority claim and says so.
+    statuses = {
+        r[0]
+        for r in conn.execute(
+            "SELECT DISTINCT status FROM pe_results"
+            " WHERE run_id = 'campaign-20260802-us-joins'"
+        )
+    }
+    assert statuses == {"constructed", "concept_mismatch"}
+    snap = conn.execute(
+        """SELECT r.pe_construction FROM pe_results r
+           JOIN external_scores s USING (claim_id)
+           WHERE r.run_id = 'campaign-20260802-us-joins'
+           AND s.metric = 'benefit_cost'
+           AND json_extract(s.conditions, '$.program') = 'snap'"""
+    ).fetchone()
+    assert "BUDGET AUTHORITY" in snap["pe_construction"]
     conn.close()
 
 
@@ -118,6 +149,35 @@ def test_reingest_idempotent(db_copy):
     ).fetchone()[0]
     conn.close()
     assert n == first["attached"]
+
+
+def test_reingest_spares_other_campaign_directories(db_copy):
+    # Deletion is scoped to the run_ids in THIS staged directory: results
+    # another campaign directory (e.g. the UK families) ingested under
+    # campaign-prefixed run_ids of their own must survive a US rerun.
+    ingest(db_copy)
+    conn = sqlite3.connect(db_copy)
+    any_claim = conn.execute("SELECT claim_id FROM external_scores LIMIT 1").fetchone()[
+        0
+    ]
+    conn.execute(
+        "INSERT INTO pe_results (claim_id, computed_value, status,"
+        " engine_version, data_bundle, pe_construction, run_id,"
+        " computed_at, annotations)"
+        " VALUES (?, 1.0, 'constructed', '2.89.2', 'populace-uk-test',"
+        " 'sentinel', 'campaign-20260802-ukfake', '2026-08-06', '[]')",
+        (any_claim,),
+    )
+    conn.commit()
+    conn.close()
+
+    ingest(db_copy)
+    conn = sqlite3.connect(db_copy)
+    survived = conn.execute(
+        "SELECT COUNT(*) FROM pe_results WHERE run_id = 'campaign-20260802-ukfake'"
+    ).fetchone()[0]
+    conn.close()
+    assert survived == 1
 
 
 def test_zero_match_aborts_with_nothing_written(db_copy, tmp_path):

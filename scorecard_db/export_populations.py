@@ -92,10 +92,12 @@ def export(
                 "release": release_label(r["data_bundle"]),
                 "construction": r["pe_construction"],
                 "computed_at": r["computed_at"],
+                "annotations": json.loads(r["annotations"]),
             }
             for r in db.conn.execute(
                 """SELECT computed_value, status, engine_version,
-                          data_bundle, pe_construction, computed_at
+                          data_bundle, pe_construction, computed_at,
+                          annotations
                    FROM pe_results WHERE claim_id = ?
                    ORDER BY computed_at, id""",
                 (c["claim_id"],),
