@@ -149,6 +149,13 @@ RESULTS_SQL = (
     " engine_version, data_bundle, pe_construction, run_id,"
     " computed_at, annotations) VALUES (?,?,?,?,?,?,?,?,?)"
 )
+EXHIBITS_SQL = (
+    "INSERT INTO pe_exhibits (exhibit, reform_key, reform_json,"
+    " metric, unit_concept, period, time_basis, conditions,"
+    " geography, program, value, baseline_value, delta,"
+    " engine_version, data_bundle, run_id, computed_at, note)"
+    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+)
 LANE_SQL = (
     "INSERT INTO lanes (lane, stage, detail, updated_at)"
     " VALUES (?,?,?,?) ON CONFLICT(lane) DO UPDATE SET"
@@ -243,41 +250,35 @@ class ScorecardDB:
             self.conn.executemany(RESULTS_SQL, rows)
         return len(rows)
 
+    @staticmethod
+    def exhibit_row(r: dict) -> tuple:
+        return (
+            r["exhibit"],
+            r["reform_key"],
+            r["reform_json"],
+            r["metric"],
+            r["unit_concept"],
+            r["period"],
+            r["time_basis"],
+            json.dumps(r.get("conditions", {}), sort_keys=True),
+            r.get("geography"),
+            r.get("program"),
+            r["value"],
+            r.get("baseline_value"),
+            r.get("delta"),
+            r["engine_version"],
+            r["data_bundle"],
+            r.get("run_id", ""),
+            r.get("computed_at", ""),
+            r.get("note", ""),
+        )
+
     def add_exhibits(self, rows: Iterable[dict]) -> int:
         """PE-only exhibits: computations with no external claim to attach
         to (e.g. per-program take-up poverty attribution)."""
-        prepared = [
-            (
-                r["exhibit"],
-                r["reform_key"],
-                r["reform_json"],
-                r["metric"],
-                r["unit_concept"],
-                r["period"],
-                r["time_basis"],
-                json.dumps(r.get("conditions", {}), sort_keys=True),
-                r.get("geography"),
-                r.get("program"),
-                r["value"],
-                r.get("baseline_value"),
-                r.get("delta"),
-                r["engine_version"],
-                r["data_bundle"],
-                r.get("run_id", ""),
-                r.get("computed_at", ""),
-                r.get("note", ""),
-            )
-            for r in rows
-        ]
+        prepared = [self.exhibit_row(r) for r in rows]
         with self.conn:
-            self.conn.executemany(
-                "INSERT INTO pe_exhibits (exhibit, reform_key, reform_json,"
-                " metric, unit_concept, period, time_basis, conditions,"
-                " geography, program, value, baseline_value, delta,"
-                " engine_version, data_bundle, run_id, computed_at, note)"
-                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                prepared,
-            )
+            self.conn.executemany(EXHIBITS_SQL, prepared)
         return len(prepared)
 
     def exhibits(self, exhibit: str) -> list[sqlite3.Row]:
