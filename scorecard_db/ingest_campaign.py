@@ -5,7 +5,9 @@ comparisons and staged them as per-family JSONL under
 ``sources/campaign-20260802/`` — each row carries full provenance
 (engine_version, the certified data_bundle actually executed, computed_at,
 run_id ``campaign-20260802-<family>``) and an ``external_claim_match``
-descriptor naming the harvested claim it compares against.
+descriptor naming the harvested claim it compares against — either a
+family-vocabulary descriptor (translated below) or, for claims already in
+the DB (the Urban subgroup joins), the claim_id directly.
 
 US families attach here. The UK families (free_joins, hmrc_reckoner_t2,
 obr_measures, uprating_april2026, two_child) are vendored alongside but
@@ -102,6 +104,24 @@ def _normalize(family: str, match: dict) -> tuple[dict, str | None]:
 
 
 def _find_claim(db: ScorecardDB, family: str, match: dict) -> str:
+    # Direct key: rows against claims already in the DB (the Urban
+    # subgroup joins) name the claim_id itself — no descriptor
+    # resolution, just a fail-loud existence check. The form is strict:
+    # a match carrying claim_id AND descriptor fields would let the two
+    # contradict silently, so it is rejected.
+    if "claim_id" in match:
+        if set(match) != {"claim_id"}:
+            raise ValueError(
+                f"{family}: claim_id-direct match must be exactly"
+                f" {{'claim_id'}}, got {sorted(match)}"
+            )
+        cid = match["claim_id"]
+        row = db.conn.execute(
+            "SELECT 1 FROM external_scores WHERE claim_id = ?", (cid,)
+        ).fetchone()
+        if row is None:
+            raise ValueError(f"{family}: claim_id {cid!r} not in the DB")
+        return cid
     cond, reform_policy = _normalize(family, match)
     q = (
         "SELECT claim_id FROM external_scores"

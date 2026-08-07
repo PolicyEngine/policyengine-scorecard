@@ -61,19 +61,40 @@ def test_normalizers():
 
 def test_full_attach_on_committed_db(db_copy):
     summary = ingest(db_copy)
-    assert summary["attached"] == 30
+    assert summary["attached"] == 108
     assert summary["families"] == {
         "cbo_free_joins": 9,
         "cpsp_ctc_2024": 8,
         "jct_obbba_provision4": 1,
         "pwbm_ss_elimination": 2,
         "tpc_t25_0209_t26_0029": 10,
+        "urban_subgroup_counts": 78,
     }
     assert summary["exhibits"] == 4
     assert summary["exhibits_deferred"] == []
 
     conn = sqlite3.connect(db_copy)
     conn.row_factory = sqlite3.Row
+    # The claim_id-direct rows attach to urban_sotsn claims only, with
+    # exact program x status allocation per the strictness convention
+    # (structural denominator gaps on tanf/ssi/housing are
+    # concept_mismatch; WIC carries only its u5-subset age bands until
+    # pass-2 v3's u5 restriction re-emits the other axes).
+    urb = conn.execute(
+        """SELECT s.program, r.status, COUNT(*) AS n,
+                  SUM(s.source = 'urban_sotsn') AS urban
+           FROM pe_results r JOIN external_scores s USING (claim_id)
+           WHERE r.run_id = 'campaign-20260802-subgroups'
+           GROUP BY 1, 2 ORDER BY 1"""
+    ).fetchall()
+    assert {(r["program"], r["status"]): r["n"] for r in urb} == {
+        ("housing", "concept_mismatch"): 21,
+        ("snap", "constructed"): 20,
+        ("ssi", "concept_mismatch"): 11,
+        ("tanf", "concept_mismatch"): 20,
+        ("wic", "constructed"): 6,
+    }
+    assert all(r["urban"] == r["n"] for r in urb)
     # Provenance verbatim from the staging: real engine + certified bundle.
     rows = conn.execute(
         "SELECT DISTINCT engine_version, data_bundle FROM pe_results"
@@ -262,6 +283,82 @@ def test_reingest_spares_other_campaign_directories(db_copy):
     ).fetchone()[0]
     conn.close()
     assert survived == 1
+
+
+def test_unknown_claim_id_aborts(db_copy, tmp_path):
+    staged = tmp_path / "staged"
+    staged.mkdir()
+    src = json.loads(
+        (STAGED_US / "urban_subgroup_counts.jsonl").read_text().splitlines()[0]
+    )
+    src["external_claim_match"] = {"claim_id": "deadbeef00000000dead"}
+    (staged / "urban_subgroup_counts.jsonl").write_text(json.dumps(src))
+    with pytest.raises(ValueError, match="not in the DB"):
+        ingest(db_copy, staged_dir=staged)
+
+
+# Exhaustive-partition axes in the Urban subgroup vocabulary: every
+# staged subgroup batch must have equal PE totals across whichever of
+# these it fully covers. This is the invariant that caught the WIC
+# wrong-universe rows (an all-ages race partition summing above the u5
+# age partition).
+PARTITION_AXES = {
+    "race": {
+        "race_white",
+        "race_black",
+        "race_hispanic",
+        "race_aapi",
+        "race_multi_other",
+    },
+    "disability": {"disability_yes", "disability_no"},
+    "earners": {"fam_earners_yes", "fam_earners_no"},
+    "citizenship": {"status_citizen", "status_noncitizen"},
+}
+
+
+def test_subgroup_partitions_agree(db_copy):
+    ingest(db_copy)
+    conn = sqlite3.connect(db_copy)
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute(
+        """SELECT s.program, s.metric,
+                  json_extract(s.conditions, '$.subgroup') AS subgroup,
+                  r.computed_value AS v
+           FROM pe_results r JOIN external_scores s USING (claim_id)
+           WHERE r.run_id = 'campaign-20260802-subgroups'"""
+    ).fetchall()
+    conn.close()
+    by_pm: dict[tuple, dict] = {}
+    for r in rows:
+        by_pm.setdefault((r["program"], r["metric"]), {})[r["subgroup"]] = r["v"]
+    checked = 0
+    for (program, metric), subs in by_pm.items():
+        sums = {
+            axis: sum(subs[s] for s in slugs)
+            for axis, slugs in PARTITION_AXES.items()
+            if slugs <= set(subs)
+        }
+        if len(sums) < 2:
+            continue
+        checked += 1
+        lo, hi = min(sums.values()), max(sums.values())
+        assert hi - lo <= 0.005 * hi, (
+            f"{program}/{metric}: partition sums disagree {sums}"
+        )
+    assert checked >= 2  # snap carries both metrics with full axes
+
+
+def test_mixed_match_form_rejected(db_copy, tmp_path):
+    # claim_id plus descriptor fields could contradict silently — refused.
+    staged = tmp_path / "staged"
+    staged.mkdir()
+    src = json.loads(
+        (STAGED_US / "urban_subgroup_counts.jsonl").read_text().splitlines()[0]
+    )
+    src["external_claim_match"]["metric"] = "eligible_count"
+    (staged / "urban_subgroup_counts.jsonl").write_text(json.dumps(src))
+    with pytest.raises(ValueError, match="must be exactly"):
+        ingest(db_copy, staged_dir=staged)
 
 
 def test_zero_match_aborts_with_nothing_written(db_copy, tmp_path):
