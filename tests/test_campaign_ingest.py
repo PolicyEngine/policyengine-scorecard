@@ -69,8 +69,8 @@ def test_full_attach_on_committed_db(db_copy):
         "pwbm_ss_elimination": 2,
         "tpc_t25_0209_t26_0029": 10,
     }
-    assert len(summary["exhibits_deferred"]) == 4
-    assert all("marginal increment" in e for e in summary["exhibits_deferred"])
+    assert summary["exhibits"] == 4
+    assert summary["exhibits_deferred"] == []
 
     conn = sqlite3.connect(db_copy)
     conn.row_factory = sqlite3.Row
@@ -136,6 +136,26 @@ def test_full_attach_on_committed_db(db_copy):
            AND json_extract(s.conditions, '$.program') = 'snap'"""
     ).fetchone()
     assert "BUDGET AUTHORITY" in snap["pe_construction"]
+    # The four TPC marginal-increment exhibits — the top-tail/cap-binding
+    # localization evidence — land in pe_exhibits with their pair context
+    # and the TPC twin in the note.
+    ex = conn.execute(
+        "SELECT reform_key, value, conditions, note FROM pe_exhibits"
+        " WHERE exhibit = 'campaign:tpc_t25_0209_t26_0029'"
+        " ORDER BY reform_key"
+    ).fetchall()
+    assert [r["reform_key"] for r in ex] == [
+        "tpc_t25_0209_ctc_opt2_minus_opt1",
+        "tpc_t25_0209_ctc_opt3_minus_opt2",
+        "tpc_t25_0209_toprate_opt2_minus_opt1",
+        "tpc_t25_0209_toprate_opt3_minus_opt2",
+    ]
+    top21 = next(
+        r for r in ex if r["reform_key"] == "tpc_t25_0209_toprate_opt2_minus_opt1"
+    )
+    assert top21["value"] == pytest.approx(1.67e9)
+    assert json.loads(top21["conditions"])["pair"] == "opt2-opt1 toprate"
+    assert "diagnosis carrier" in top21["note"]
     conn.close()
 
 
@@ -147,8 +167,31 @@ def test_reingest_idempotent(db_copy):
     n = conn.execute(
         "SELECT COUNT(*) FROM pe_results WHERE run_id LIKE 'campaign-%'"
     ).fetchone()[0]
+    n_ex = conn.execute(
+        "SELECT COUNT(*) FROM pe_exhibits WHERE run_id LIKE 'campaign-%'"
+    ).fetchone()[0]
     conn.close()
     assert n == first["attached"]
+    assert n_ex == first["exhibits"]
+
+
+def test_metaless_exhibit_defers(db_copy, tmp_path):
+    # A row marked exhibit without exhibit_meta is deferred and listed,
+    # never guessed into pe_exhibits.
+    staged = tmp_path / "staged"
+    staged.mkdir()
+    for p in STAGED_US.glob("*.jsonl"):
+        (staged / p.name).write_text(p.read_text())
+    tpc = staged / "tpc_t25_0209_t26_0029.jsonl"
+    rows = [json.loads(line) for line in tpc.read_text().splitlines()]
+    stripped = next(r for r in rows if r.get("exhibit"))
+    del stripped["exhibit_meta"]
+    tpc.write_text("\n".join(json.dumps(r) for r in rows))
+
+    summary = ingest(db_copy, staged_dir=staged)
+    assert summary["exhibits"] == 3
+    assert len(summary["exhibits_deferred"]) == 1
+    assert "marginal increment" in summary["exhibits_deferred"][0]
 
 
 def test_reingest_spares_other_campaign_directories(db_copy):

@@ -23,10 +23,13 @@ reform (CPSP's CTC worlds), a reform predicate joins the match. Exactly
 one claim must match; 0 or >1 aborts the run with nothing written.
 
 Exhibit rows (``exhibit: true`` — derived pair-differences with no single
-external claim, e.g. TPC marginal-band increments) are DEFERRED: they
-lack the metric/period/reform identity pe_exhibits requires, so they are
-tallied and listed in the summary for the campaign to re-emit with
-``exhibit_meta`` — never silently dropped, never guessed.
+external claim, e.g. TPC marginal-band increments) route to pe_exhibits
+when they carry ``exhibit_meta`` (the metric/period/reform identity the
+table requires; the campaign emits it via stage_emit.py). The four TPC
+increments are the top-tail/cap-binding localization evidence: band
+increments at 0.93-0.99 parity while levels diverge. A row WITHOUT
+exhibit_meta is deferred — tallied and listed in the summary for the
+campaign to re-emit, never silently dropped, never guessed.
 
 Idempotent: this module replaces exactly the run_ids present in the
 staged files it is ingesting — never a prefix sweep, so re-running the US
@@ -40,7 +43,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .db import RESULTS_SQL, ScorecardDB
+from .db import EXHIBITS_SQL, RESULTS_SQL, ScorecardDB
 from .models import ComparisonStatus, PEResult
 
 REPO = Path(__file__).resolve().parent.parent
@@ -130,6 +133,7 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
         raise SystemExit(f"no staged families in {staged_dir}")
 
     results: list[PEResult] = []
+    exhibits: list[dict] = []
     deferred_exhibits: list[str] = []
     seen: set[tuple[str, str, str]] = set()
     families: dict[str, int] = {}
@@ -138,8 +142,41 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
         for line in path.read_text().splitlines():
             row = json.loads(line)
             if row.get("exhibit"):
-                deferred_exhibits.append(
-                    f"{path.stem}: {row.get('pe_construction', '')[:60]}"
+                meta = row.get("exhibit_meta")
+                if meta is None:
+                    deferred_exhibits.append(
+                        f"{path.stem}: {row.get('pe_construction', '')[:60]}"
+                    )
+                    continue
+                # PE-only content (a derived pair-difference has no single
+                # external claim); the external twin stays in the note.
+                note = " | ".join(
+                    [meta["note"], row["pe_construction"]] + row.get("annotations", [])
+                )
+                exhibits.append(
+                    {
+                        "exhibit": f"campaign:{path.stem}",
+                        "reform_key": meta["reform_key"],
+                        "reform_json": json.dumps(
+                            {
+                                "framework": "policy_ref",
+                                "reform": {"policy": meta["reform_key"]},
+                            },
+                            sort_keys=True,
+                        ),
+                        "metric": meta["metric"],
+                        "unit_concept": meta["unit_concept"],
+                        "period": meta["period"],
+                        "time_basis": meta["time_basis"],
+                        "conditions": row.get("exhibit_context", {}),
+                        "geography": "US",
+                        "value": row["pe_value"],
+                        "engine_version": row["engine_version"],
+                        "data_bundle": row["data_bundle"],
+                        "run_id": row["run_id"],
+                        "computed_at": row["computed_at"],
+                        "note": note,
+                    }
                 )
                 continue
             cid = _find_claim(db, family, row["external_claim_match"])
@@ -166,16 +203,24 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
     # Deletion is scoped to the exact run_ids being re-ingested, never the
     # campaign- prefix: other staged directories' results must survive.
     result_rows = [ScorecardDB.result_row(r) for r in results]
-    run_ids = sorted({r.run_id for r in results})
+    exhibit_rows = [ScorecardDB.exhibit_row(e) for e in exhibits]
+    run_ids = sorted({r.run_id for r in results} | {e["run_id"] for e in exhibits})
+    placeholders = ",".join("?" * len(run_ids))
     with db.conn:
         db.conn.execute(
-            f"DELETE FROM pe_results WHERE run_id IN ({','.join('?' * len(run_ids))})",
+            f"DELETE FROM pe_results WHERE run_id IN ({placeholders})",
+            run_ids,
+        )
+        db.conn.execute(
+            f"DELETE FROM pe_exhibits WHERE run_id IN ({placeholders})",
             run_ids,
         )
         db.conn.executemany(RESULTS_SQL, result_rows)
+        db.conn.executemany(EXHIBITS_SQL, exhibit_rows)
     db.close()
     return {
         "attached": len(result_rows),
+        "exhibits": len(exhibit_rows),
         "families": families,
         "exhibits_deferred": deferred_exhibits,
     }
