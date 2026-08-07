@@ -299,9 +299,12 @@ def test_unknown_claim_id_aborts(db_copy, tmp_path):
 
 # Exhaustive-partition axes in the Urban subgroup vocabulary: every
 # staged subgroup batch must have equal PE totals across whichever of
-# these it fully covers. This is the invariant that caught the WIC
-# wrong-universe rows (an all-ages race partition summing above the u5
-# age partition).
+# these it fully covers. This is the invariant the WIC wrong-universe
+# rows violated — an ALL-AGES race partition summing 35% above the u5
+# AGE partition — so the age partitions themselves are axes here (the
+# coarse pair for the all-age programs, the u5 pair for WIC): a
+# demographic axis computed on the wrong universe disagrees with the
+# age axis and fails.
 PARTITION_AXES = {
     "race": {
         "race_white",
@@ -313,19 +316,21 @@ PARTITION_AXES = {
     "disability": {"disability_yes", "disability_no"},
     "earners": {"fam_earners_yes", "fam_earners_no"},
     "citizenship": {"status_citizen", "status_noncitizen"},
+    "age_coarse": {"age_0thr17", "age_18plus"},
+    "age_u5": {"age_0thr3", "age_4"},
 }
 
 
-def test_subgroup_partitions_agree(db_copy):
-    ingest(db_copy)
-    conn = sqlite3.connect(db_copy)
+def _assert_partitions_agree(db_path, run_id="campaign-20260802-subgroups"):
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     rows = conn.execute(
         """SELECT s.program, s.metric,
                   json_extract(s.conditions, '$.subgroup') AS subgroup,
                   r.computed_value AS v
            FROM pe_results r JOIN external_scores s USING (claim_id)
-           WHERE r.run_id = 'campaign-20260802-subgroups'"""
+           WHERE r.run_id = ?""",
+        (run_id,),
     ).fetchall()
     conn.close()
     by_pm: dict[tuple, dict] = {}
@@ -345,7 +350,48 @@ def test_subgroup_partitions_agree(db_copy):
         assert hi - lo <= 0.005 * hi, (
             f"{program}/{metric}: partition sums disagree {sums}"
         )
-    assert checked >= 2  # snap carries both metrics with full axes
+    return checked
+
+
+def test_subgroup_partitions_agree(db_copy):
+    ingest(db_copy)
+    # Several programs carry race + age_coarse (+ disability/earners/
+    # citizenship on snap); WIC's u5 age pair arms once its other axes
+    # return with v3.
+    assert _assert_partitions_agree(db_copy) >= 4
+
+
+def test_partition_check_catches_wrong_universe(db_copy, tmp_path):
+    # Reinjecting all-ages WIC race rows (the original defect: values
+    # summing to the 12.66M all-age total against u5 claims) must fail
+    # the invariant against the u5 age partition.
+    conn = sqlite3.connect(db_copy)
+    race_ids = [
+        r[0]
+        for r in conn.execute(
+            """SELECT claim_id FROM external_scores
+               WHERE source = 'urban_sotsn' AND program = 'wic'
+               AND metric = 'eligible_count'
+               AND json_extract(conditions, '$.subgroup') LIKE 'race_%'
+               AND json_extract(conditions, '$.geography') = 'US'"""
+        )
+    ]
+    conn.close()
+    assert len(race_ids) == 5
+    staged = tmp_path / "staged"
+    staged.mkdir()
+    lines = (STAGED_US / "urban_subgroup_counts.jsonl").read_text().splitlines()
+    template = json.loads(lines[0])
+    bad_rows = []
+    for cid, share in zip(race_ids, (0.4, 0.25, 0.2, 0.1, 0.05)):
+        row = dict(template)
+        row["external_claim_match"] = {"claim_id": cid}
+        row["pe_value"] = 12_655_357.569 * share  # the all-age total
+        bad_rows.append(json.dumps(row))
+    (staged / "urban_subgroup_counts.jsonl").write_text("\n".join(lines + bad_rows))
+    ingest(db_copy, staged_dir=staged)
+    with pytest.raises(AssertionError, match="partition sums disagree"):
+        _assert_partitions_agree(db_copy)
 
 
 def test_mixed_match_form_rejected(db_copy, tmp_path):
