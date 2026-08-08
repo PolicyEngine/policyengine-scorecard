@@ -1,0 +1,20 @@
+[
+  {
+    "id": "tpc-construct-fixed-2025-weights-ex-adcvd",
+    "applies": {"source": "tpc-tariffs"},
+    "text": "TPC's average STATUTORY tariff rate uses FIXED 2025 import-volume weights and EXCLUDES AD/CVD; MFN base rates sit inside the 'Other' type. Our current counterpart is the ex-post collections rate on contemporaneous weights, which includes AD/CVD collections and reflects import contraction; the constructs are not directly comparable. Same-construct replication (our rates x fixed 2025 weights, ex-AD/CVD) is the planned stage-1 counterpart and requires an AD/CVD exclusion list consistent with theirs.",
+    "basis": "TPC chart notes (aO4iG v44, MC81F v43), fetched 2026-08-08"
+  },
+  {
+    "id": "tpc-closed-source",
+    "applies": {"source": "tpc-tariffs"},
+    "text": "The TPC Tariff Rules Engine is closed source; construct fidelity is testable only against published chart granularity, and divergences stay author-attributed with our derivation recorded.",
+    "basis": "no public code or repository located, search 2026-08-08"
+  },
+  {
+    "id": "tpc-monthly-mean-of-daily",
+    "applies": {"source": "tpc-tariffs"},
+    "text": "TPC publishes daily chart data; scorecard rows are unweighted monthly means of daily values (n_days per row).",
+    "basis": "adapter.py"
+  }
+]
