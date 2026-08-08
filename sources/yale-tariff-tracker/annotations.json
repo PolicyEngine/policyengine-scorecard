@@ -1,0 +1,20 @@
+[
+  {
+    "id": "yale-construct-fixed-2024-weights",
+    "applies": {"source": "yale-tariff-tracker"},
+    "text": "Yale's weighted_etr is an EFFECTIVE statutory rate (post mutual-exclusion stacking and USMCA/FTA/exemption reductions) on FIXED 2024 consumption-import weights. Our current counterpart is the ex-post collections rate on CONTEMPORANEOUS weights; the constructs differ on both axes, and the fixed-vs-contemporaneous gap is mechanical (imports of high-tariff goods contract, so a fixed-base statutory rate sits above a contemporaneous collections rate). Same-construct replication (our rates x fixed 2024 weights) is the planned stage-1 counterpart.",
+    "basis": "tracker docs/methodology.md + docs/weights.md at 39d394d; construct research 2026-08-08"
+  },
+  {
+    "id": "yale-vintage-missing-brazil-301-338",
+    "applies": {"source": "yale-tariff-tracker"},
+    "text": "The 2026-06-09 published vintage (data through 2026 rev 10) predates the tracker's Brazil section-301 and section-338 encodings per its own deviations registry, so its series understates those components relative to instruments in force.",
+    "basis": "tracker deviations registry at the pinned vintage"
+  },
+  {
+    "id": "yale-monthly-mean-of-daily",
+    "applies": {"source": "yale-tariff-tracker"},
+    "text": "The tracker publishes daily; scorecard rows are unweighted monthly means of daily values (n_days per row).",
+    "basis": "adapter.py"
+  }
+]

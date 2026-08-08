@@ -44,6 +44,38 @@ Status taxonomy — honesty made structural:
 | `not_computed` | producible but not yet in the pipeline |
 | `suppressed` | the source suppressed the cell |
 
+
+## Instance 2: baseline moments — average tariff rates (Yale, TPC)
+
+The scorecard's second claim class, `baseline_moment`: current-law
+statistics published by external modelers, captured with the same
+honesty machinery as reform scores. First population: average US
+tariff rates —
+
+- **Yale Budget Lab tariff-rate-tracker** (`weighted_etr`): effective
+  statutory rates × fixed 2024 import weights, vintage pinned at the
+  2026-06-09 publication (commit 39d394d).
+- **TPC Tracking Trump Tariffs**: average statutory rate × fixed 2025
+  weights, ex-AD/CVD, Datawrapper datasets version-pinned (aO4iG v44,
+  MC81F v43 incl. by-authority types).
+- **Our side**: the ex-post collections rate (Σ calculated duty /
+  Σ customs value, monthly) from the Microcosm import-entry margins
+  (exact-reconciled; microcosm #620) — today a `concept_mismatch`
+  counterpart by design, with the fixed-base-vs-contemporaneous gap
+  annotated; same-construct replications (our rates under each
+  tracker's own definition) are the staged next counterparts, and
+  by-authority decomposition arrives with the full-schedule rate
+  generator (P5 charter).
+
+Pipeline (additive; does not touch the Instance-1 build):
+
+```bash
+python sources/yale-tariff-tracker/adapter.py
+python sources/tpc-tariffs/adapter.py
+python pipeline/compute_tariff_counterparts.py   # parquet if present, else the committed extract
+python pipeline/build_moments.py                 # -> app/public/data/moments.json
+```
+
 ## Reproducing
 
 Python side (requires the policyengine.py-managed environment; heavy —
