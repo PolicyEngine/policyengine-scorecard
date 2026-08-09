@@ -73,3 +73,18 @@ def test_moments_join_statuses_and_deltas():
     assert all(r["claim_class"] == "baseline_moment" for r in rows)
     annotation_ids = {a["id"] for a in payload["annotations"]}
     assert all(set(r["annotation_ids"]) <= annotation_ids for r in rows)
+
+
+def test_divergence_decomposition_annotation_present():
+    payload = load("app/public/data/moments.json")
+    ids = {a["id"] for a in payload["annotations"]}
+    assert "yale-tpc-divergence-decomposed" in ids
+    entry = next(
+        a for a in payload["annotations"] if a["id"] == "yale-tpc-divergence-decomposed"
+    )
+    # The quantification travels with the annotation.
+    assert "-1.34p" in entry["text"] and "0.08" in entry["text"]
+    # Both tariff sources carry it on their rows.
+    for source in ("yale-tariff-tracker", "tpc-tariffs"):
+        row = next(r for r in payload["rows"] if r["source"] == source)
+        assert "yale-tpc-divergence-decomposed" in row["annotation_ids"]
