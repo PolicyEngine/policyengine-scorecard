@@ -38,7 +38,14 @@ def _claim(source, column, value, **kw):
     )
 
 
-def _result(cid, value, bundle, at, status=ComparisonStatus.CONSTRUCTED):
+def _result(
+    cid,
+    value,
+    bundle,
+    at,
+    status=ComparisonStatus.CONSTRUCTED,
+    annotations=(),
+):
     return PEResult(
         claim_id=cid,
         computed_value=value,
@@ -48,6 +55,7 @@ def _result(cid, value, bundle, at, status=ComparisonStatus.CONSTRUCTED):
         pe_construction="reform_delta:test",
         run_id="test-run",
         computed_at=at,
+        annotations=list(annotations),
     )
 
 
@@ -62,7 +70,11 @@ def small_db(tmp_path):
     db.add_results(
         [
             _result(
-                multi.claim_id(), 1500.0, "populace-us-2024-buildo-x", "2026-07-22"
+                multi.claim_id(),
+                1500.0,
+                "populace-us-2024-buildo-x",
+                "2026-07-22",
+                annotations=["named axis: FY-vs-CY"],
             ),
             _result(
                 multi.claim_id(),
@@ -98,6 +110,9 @@ def test_export_shape_and_guards(tmp_path, small_db):
     assert m["latest"]["value"] == 1500.0
     assert m["latest"]["ratio"] == pytest.approx(0.75)
     assert m["latest"]["delta"] == pytest.approx(-500.0)
+    # Result annotations survive the export (the campaign's named axes).
+    assert m["latest"]["annotations"] == ["named axis: FY-vs-CY"]
+    assert m["results"][0]["annotations"] == []
     assert m["diagnosis"] == {
         "class": "vintage",
         "rationale": "test rationale",

@@ -74,7 +74,7 @@ def ingest(db_path: Path) -> dict:
             probe.claim_id(),
             CLASS_MAP[item["classification"]],
             rationale,
-            "diagnosis/DIAGNOSES.md",
+            item.get("action_link") or "diagnosis/DIAGNOSES.md",
         )
         app_rows.append(
             {
@@ -87,6 +87,7 @@ def ingest(db_path: Path) -> dict:
                 "confidence": item["confidence"],
                 "title": item["title"],
                 "fix_type": (item.get("fix_draft") or {}).get("type"),
+                "action_link": item.get("action_link"),
             }
         )
     db.set_lane(

@@ -1,0 +1,19 @@
+{
+  "id": "tpc-tariffs",
+  "name": "Tax Policy Center — Tracking Trump Tariffs (average statutory tariff rate)",
+  "organization": "Urban-Brookings Tax Policy Center",
+  "url": "https://taxpolicycenter.org/features/tracking-trump-tariffs",
+  "data_url": "Datawrapper chart datasets, version-pinned: aO4iG v44 (daily average statutory rate incl. All Goods), MC81F v43 (daily by authority type). Old version paths serve frozen vintages.",
+  "fetched": "2026-08-08",
+  "fetch_notes": "Values are PERCENT (9.34 = 9.34%); adapter converts to fractions. Latest publish event 2026-07-24 (the §122-expiry step); All Goods 9.34% from 2026-07-24 at v44.",
+  "claim_class": "baseline_moment",
+  "model": {
+    "name": "TPC Tariff Rules Engine v2.1",
+    "open_source": false,
+    "method": "Average STATUTORY tariff rate: sum of tariff rates on covered products from all countries on each day, weighted by FIXED 2025 import volumes; excludes AD/CVD; MFN base rates inside the 'Other' type. Closed source — agreement is testable only at published chart granularity (all-goods, by-type, by-country).",
+    "method_basis": "Chart notes on the Datawrapper datasets (TPC-authored) and the feature page methodology text, fetched 2026-08-08"
+  },
+  "period": "2024-10-01 onward daily (adapted here to monthly means)",
+  "geographies": "US total",
+  "diagnosis_upstream": "No public code or issue tracker; construct questions can only be resolved against published chart text. Divergences remain author-attributed with our derivation recorded."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "yale-tariff-tracker",
+  "name": "Yale Budget Lab — tariff-rate-tracker daily effective statutory rates",
+  "organization": "The Budget Lab at Yale",
+  "url": "https://github.com/Budget-Lab-Yale/tariff-rate-tracker",
+  "data_url": "release/data/daily_overall_2026-06-09.csv, recovered via `git show 39d394d` (the 2026-06-09 publication was untracked from the working tree 2026-07-21 as stale; 39d394d is the publish commit)",
+  "fetched": "2026-08-08",
+  "fetch_notes": "Rates are decimals (0.029 = 2.9%). Vintage covers data through 2026 revision 10 and, per the repo's own deviations registry at that vintage, does not yet include the Brazil §301 or §338 actions.",
+  "claim_class": "baseline_moment",
+  "model": {
+    "name": "tariff-rate-tracker (open source, MIT)",
+    "open_source": true,
+    "method": "Interval-encoded statutory-rate panel at HTS-10 × country parsed from USITC HTS revision archives plus curated policy parameters; daily overall series = stored total_rate (post mutual-exclusion stacking and USMCA/FTA/exemption reductions, i.e. an EFFECTIVE statutory rate) weighted by FIXED 2024 Census consumption-import values re-keyed to each revision's codes; weighted_etr = sum(rate x weight) / sum(all weights).",
+    "method_basis": "docs/methodology.md, docs/weights.md, src/pipeline/09_daily_series.R, src/io/build_import_weights.R at the pinned repo"
+  },
+  "period": "2025-01-01 .. 2026-06-09 daily (adapted here to monthly means)",
+  "geographies": "US total",
+  "diagnosis_upstream": "Construct questions go to the tracker repo's issues; our six standing filings (#23-#28) are tracked in the tariff campaign memory. Divergence claims follow the disposition standard: derivation-backed and author-attributed until maintainer-acknowledged."
+}
