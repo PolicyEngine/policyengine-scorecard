@@ -38,22 +38,16 @@ TRUMP_TARIFFS = "trump_tariffs_2025_2026"
 # obbba_house_passed_tax_provisions = JCX-26-25R's world) — not the
 # whole-bill worlds PWBM and Budget Lab score.
 REFORMS = {
-    "One Big Beautiful Bill Act (P.L. 119-21, enacted 2025-07-04)":
-        "obbba_enacted_title_vii",
-    "One Big Beautiful Bill Act (House-passed version, May 2025)":
-        "obbba_house_passed_tax_provisions",
-    "TCJA Permanence (making expiring TCJA provisions permanent)":
-        "tcja_permanence",
+    "One Big Beautiful Bill Act (P.L. 119-21, enacted 2025-07-04)": "obbba_enacted_title_vii",
+    "One Big Beautiful Bill Act (House-passed version, May 2025)": "obbba_house_passed_tax_provisions",
+    "TCJA Permanence (making expiring TCJA provisions permanent)": "tcja_permanence",
     "Combined TCJA Permanence": "tcja_permanence",
     "TCJA Individual Permanence": "tcja_permanence_individual",
     "TCJA Estate Tax Permanence": "tcja_permanence_estate",
     "TCJA Business Permanence": "tcja_permanence_business",
-    "10 percent universal tariff (US baseline, April 2025)":
-        "universal_tariff_10pct",
-    "15 percent universal tariff (US baseline, April 2025)":
-        "universal_tariff_15pct",
-    "20 percent universal tariff (US baseline, April 2025)":
-        "universal_tariff_20pct",
+    "10 percent universal tariff (US baseline, April 2025)": "universal_tariff_10pct",
+    "15 percent universal tariff (US baseline, April 2025)": "universal_tariff_15pct",
+    "20 percent universal tariff (US baseline, April 2025)": "universal_tariff_20pct",
     "2025-2026 Trump tariffs (All Tariffs)": TRUMP_TARIFFS,
 }
 # Tariff Tracker rows: one regime world; the component rides
@@ -62,16 +56,34 @@ _TRACKER_PREFIX = "2025-2026 Trump tariffs: "
 
 _KNOWN_FIELDS = frozenset(
     {
-        "source", "source_model", "proposed_metric", "proposed_unit",
-        "value", "value_verbatim", "period", "time_basis", "conditions",
-        "reform_hint", "source_column", "publication",
-        "calibration_relationship", "value_kind", "status", "note",
+        "source",
+        "source_model",
+        "proposed_metric",
+        "proposed_unit",
+        "value",
+        "value_verbatim",
+        "period",
+        "time_basis",
+        "conditions",
+        "reform_hint",
+        "source_column",
+        "publication",
+        "calibration_relationship",
+        "value_kind",
+        "status",
+        "note",
     }
 )
 _KNOWN_CONDITIONS = frozenset(
     {
-        "scoring", "tariff_policy", "income_group", "income_measure",
-        "window", "retaliation", "provision", "provision_section",
+        "scoring",
+        "tariff_policy",
+        "income_group",
+        "income_measure",
+        "window",
+        "retaliation",
+        "provision",
+        "provision_section",
     }
 )
 
@@ -91,9 +103,7 @@ def stage_scores() -> list[ExternalScore]:
         staged_conds = row["conditions"]
         unknown = set(staged_conds) - _KNOWN_CONDITIONS
         if unknown:
-            raise ValueError(
-                f"tax_foundation: unmapped conditions {sorted(unknown)}"
-            )
+            raise ValueError(f"tax_foundation: unmapped conditions {sorted(unknown)}")
         if row["calibration_relationship"] != "held_out":
             raise ValueError("tax_foundation: unexpected relationship")
 
@@ -103,24 +113,24 @@ def stage_scores() -> list[ExternalScore]:
             metric, unit = Metric.REVENUE_CHANGE, UnitConcept.USD
             value = billions(row["value"])
             value_kind = "usd"
-        elif (
-            metric_name == "pct_change_after_tax_income"
-            and unit_name == "percent"
-        ):
+        elif metric_name == "pct_change_after_tax_income" and unit_name == "percent":
             metric = Metric.PCT_CHANGE_AFTER_TAX_INCOME
             unit = UnitConcept.PERCENT
             value = row["value"]
             value_kind = "share"
         else:
             raise ValueError(
-                f"tax_foundation: unmapped metric/unit "
-                f"{metric_name}/{unit_name}"
+                f"tax_foundation: unmapped metric/unit {metric_name}/{unit_name}"
             )
 
         conditions = {"geography": "US"}
         for key in (
-            "scoring", "tariff_policy", "income_group", "retaliation",
-            "provision", "provision_section",
+            "scoring",
+            "tariff_policy",
+            "income_group",
+            "retaliation",
+            "provision",
+            "provision_section",
         ):
             if key in staged_conds:
                 conditions[key] = staged_conds[key]

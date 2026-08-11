@@ -108,16 +108,14 @@ class TestJCT:
             }
             for jcx in ("JCX-30-25", "JCX-31-25")
         }
-        (slug30, key30), = by_jcx["JCX-30-25"]
-        (slug31, key31), = by_jcx["JCX-31-25"]
+        ((slug30, key30),) = by_jcx["JCX-30-25"]
+        ((slug31, key31),) = by_jcx["JCX-31-25"]
         assert slug30 == slug31 == "obbba_senate_managers_20250628"
         assert key30 != key31
 
     def test_current_policy_baseline_is_reform_ref(self, jct):
         cp = [
-            s
-            for s in jct
-            if s.conditions["bill_version"] in ("JCX-29-25", "JCX-30-25")
+            s for s in jct if s.conditions["bill_version"] in ("JCX-29-25", "JCX-30-25")
         ]
         assert len(cp) == 2090
         assert all(
@@ -130,17 +128,13 @@ class TestJCT:
         windows = [s for s in jct if s.period_start is not None]
         assert len(windows) == 911
         assert all(s.period == s.period_end for s in windows)
-        assert all(
-            s.conditions["window_kind"] == "total" for s in windows
-        )
+        assert all(s.conditions["window_kind"] == "total" for s in windows)
 
 
 class TestTaxFoundation:
     def test_count_after_twin_merge(self, tf):
         assert len(tf) == 663
-        assert (
-            sum(1 for s in tf if "also_published" in s.publication) == 2
-        )
+        assert sum(1 for s in tf if "also_published" in s.publication) == 2
 
     def test_obbba_enacted_ten_year_totals(self, tf):
         totals = {
@@ -164,9 +158,7 @@ class TestTaxFoundation:
         assert salt["dynamic"] == pytest.approx(782.68e9)
 
     def test_pct_rows_are_percent_units(self, tf):
-        pct = [
-            s for s in tf if s.metric is Metric.PCT_CHANGE_AFTER_TAX_INCOME
-        ]
+        pct = [s for s in tf if s.metric is Metric.PCT_CHANGE_AFTER_TAX_INCOME]
         assert len(pct) == 174
         assert all(s.unit_concept is UnitConcept.PERCENT for s in pct)
 
@@ -187,23 +179,12 @@ class TestPWBM:
         assert totals["dynamic"] == pytest.approx(3_631e9)
 
     def test_tcja_extension_baseline_rows(self, pwbm):
-        vs_tcja = [
-            s
-            for s in pwbm
-            if s.reform.baseline == {"policy": "tcja_extension"}
-        ]
+        vs_tcja = [s for s in pwbm if s.reform.baseline == {"policy": "tcja_extension"}]
         assert len(vs_tcja) == 154
-        assert all(
-            s.conditions["baseline_policy"] == "tcja_extension"
-            for s in vs_tcja
-        )
+        assert all(s.conditions["baseline_policy"] == "tcja_extension" for s in vs_tcja)
 
     def test_fractions_normalized_to_percent(self, pwbm):
-        pct = [
-            s
-            for s in pwbm
-            if s.metric is Metric.PCT_CHANGE_AFTER_TAX_INCOME
-        ]
+        pct = [s for s in pwbm if s.metric is Metric.PCT_CHANGE_AFTER_TAX_INCOME]
         assert all(s.unit_concept is UnitConcept.PERCENT for s in pct)
         # First staged distribution row: -0.011 fraction -> -1.1 percent.
         q1 = [
@@ -227,9 +208,7 @@ class TestPWBM:
             )
         ]
         assert len(avg) == 108
-        assert all(
-            s.unit_concept is UnitConcept.USD_PER_HOUSEHOLD for s in avg
-        )
+        assert all(s.unit_concept is UnitConcept.USD_PER_HOUSEHOLD for s in avg)
 
 
 class TestTPC:
@@ -255,15 +234,15 @@ class TestTPC:
         opts = [
             s
             for s in scores
-            if s.reform.reform["policy"]
-            == "obbba_senate_ctc_top_rate_options"
+            if s.reform.reform["policy"] == "obbba_senate_ctc_top_rate_options"
         ]
         assert {s.reform.reform["option"] for s in opts} == {
-            "Option 1", "Option 2", "Option 3",
+            "Option 1",
+            "Option 2",
+            "Option 3",
         }
         assert all(
-            s.reform.baseline
-            == {"policy": "current_law_plus_senate_obbba_title_vii"}
+            s.reform.baseline == {"policy": "current_law_plus_senate_obbba_title_vii"}
             for s in opts
         )
 
@@ -271,17 +250,11 @@ class TestTPC:
         """The T26-0010 page says CTC options; the manifested workbook is
         the April-2026 tariff table. The registry follows the file."""
         scores, _ = tpc
-        rows = [
-            s
-            for s in scores
-            if s.publication["table_id"] == "T26-0010"
-        ]
+        rows = [s for s in scores if s.publication["table_id"] == "T26-0010"]
         assert len(rows) == 44
         assert all(
-            s.reform.reform["policy"]
-            == "trump_tariffs_announced_20250120_20260402"
-            and s.reform.baseline
-            == {"policy": "current_law_pre_2025_tariffs"}
+            s.reform.reform["policy"] == "trump_tariffs_announced_20250120_20260402"
+            and s.reform.baseline == {"policy": "current_law_pre_2025_tariffs"}
             for s in rows
         )
 
@@ -291,17 +264,16 @@ class TestTPC:
         all-tax-units sheet), one reform world (enacted Title VII vs the
         explicit pre-OBBBA baseline)."""
         scores, _ = tpc
-        rows = [
-            s for s in scores if s.publication["table_id"] == "T26-0009"
-        ]
+        rows = [s for s in scores if s.publication["table_id"] == "T26-0009"]
         assert len(rows) == 135
         by_subgroup = {}
         for s in rows:
-            by_subgroup.setdefault(
-                s.conditions.get("subgroup"), []
-            ).append(s)
+            by_subgroup.setdefault(s.conditions.get("subgroup"), []).append(s)
         assert set(by_subgroup) == {
-            None, "white_non_hispanic", "black_non_hispanic", "hispanic",
+            None,
+            "white_non_hispanic",
+            "black_non_hispanic",
+            "hispanic",
             "additional_races",
         }
         assert all(len(g) == 27 for g in by_subgroup.values())
@@ -309,8 +281,7 @@ class TestTPC:
             s.reform.reform == {"policy": "obbba_enacted_title_vii"}
             and s.reform.baseline == {"policy": "pre_obbba_law"}
             and s.conditions["baseline_policy"] == "pre_obbba_law"
-            and s.conditions["income_axis"]
-            == "Expanded Cash Income Percentile"
+            and s.conditions["income_axis"] == "Expanded Cash Income Percentile"
             and s.period == 2026
             for s in rows
         )
@@ -335,24 +306,22 @@ class TestTPC:
         assert val[(None, "All", pct)] == pytest.approx(2.8)  # All!K20
         assert val[(None, "All", cut)] == pytest.approx(85.0)  # All!C20
         assert val[(None, "All", avg)] == pytest.approx(-2860)  # All!O20
-        assert val[
-            (None, "Top Quintile", avg)
-        ] == pytest.approx(-12200)  # All!O19
-        assert val[
-            ("white_non_hispanic", "Top Quintile", avg)
-        ] == pytest.approx(-12710)  # White!O19
-        assert val[
-            ("black_non_hispanic", "Lowest Quintile", cut)
-        ] == pytest.approx(57.3)  # Black!C15
-        assert val[
-            ("black_non_hispanic", "Lowest Quintile", avg)
-        ] == pytest.approx(-160)  # Black!O15
-        assert val[
-            ("hispanic", "Top 5 Percent", pct)
-        ] == pytest.approx(4.0)  # Hispanic!K25
-        assert val[
-            ("additional_races", "All", pct)
-        ] == pytest.approx(2.9)  # Additional Races!K20
+        assert val[(None, "Top Quintile", avg)] == pytest.approx(-12200)  # All!O19
+        assert val[("white_non_hispanic", "Top Quintile", avg)] == pytest.approx(
+            -12710
+        )  # White!O19
+        assert val[("black_non_hispanic", "Lowest Quintile", cut)] == pytest.approx(
+            57.3
+        )  # Black!C15
+        assert val[("black_non_hispanic", "Lowest Quintile", avg)] == pytest.approx(
+            -160
+        )  # Black!O15
+        assert val[("hispanic", "Top 5 Percent", pct)] == pytest.approx(
+            4.0
+        )  # Hispanic!K25
+        assert val[("additional_races", "All", pct)] == pytest.approx(
+            2.9
+        )  # Additional Races!K20
 
     def test_t26_0009_pct_and_dollar_columns_separated(self, tpc):
         """The original staging leaked baseline-panel dollar cells into
@@ -361,9 +330,7 @@ class TestTPC:
         on the percent scale, dollar rows carry the per-tax-unit unit,
         and the baseline panel stays out entirely."""
         scores, _ = tpc
-        rows = [
-            s for s in scores if s.publication["table_id"] == "T26-0009"
-        ]
+        rows = [s for s in scores if s.publication["table_id"] == "T26-0009"]
         for s in rows:
             if s.metric is Metric.AVG_TAX_CHANGE_USD:
                 assert s.unit_concept is UnitConcept.USD_PER_TAX_UNIT
@@ -371,9 +338,7 @@ class TestTPC:
                 assert s.unit_concept is UnitConcept.PERCENT
                 assert -10 <= s.value <= 100
         assert 1020.0 not in {
-            s.value
-            for s in rows
-            if s.unit_concept is UnitConcept.PERCENT
+            s.value for s in rows if s.unit_concept is UnitConcept.PERCENT
         }
 
 
@@ -385,8 +350,7 @@ class TestCBO:
         consumed = [
             s
             for s in cbo
-            if s.calibration_relationship
-            is CalibrationRelationship.CONSUMED_AS_TARGET
+            if s.calibration_relationship is CalibrationRelationship.CONSUMED_AS_TARGET
         ]
         assert len(consumed) == 317
 
@@ -457,8 +421,7 @@ class TestCPSP:
         ]
         assert afa_vs_tcja
         assert all(
-            s.metric
-            in (Metric.POVERTY_RATE_CHANGE, Metric.POVERTY_COUNT_CHANGE)
+            s.metric in (Metric.POVERTY_RATE_CHANGE, Metric.POVERTY_COUNT_CHANGE)
             and s.conditions["baseline_policy"] == "tcja_ctc"
             for s in afa_vs_tcja
         )
@@ -472,8 +435,7 @@ class TestCPSP:
         ]
         assert len(tfp) == 463
         assert all(
-            s.conditions["data_vintage"]
-            == "TRIM3-adjusted CPS-ASEC pooled 2015-2019"
+            s.conditions["data_vintage"] == "TRIM3-adjusted CPS-ASEC pooled 2015-2019"
             for s in tfp
         )
 
@@ -511,30 +473,25 @@ class TestBudgetLab:
             in ("Total", "Title VII. Finance / Total")
         }
         assert totals["Total"] == pytest.approx(-3_062e9)
-        assert totals["Title VII. Finance / Total"] == pytest.approx(
-            -3_296e9
-        )
+        assert totals["Title VII. Finance / Total"] == pytest.approx(-3_296e9)
 
     def test_ctc_option_vs_option1_baseline(self, bl):
         rel = [
             s
             for s in bl
-            if s.reform.baseline
-            and s.reform.baseline.get("policy") == "bl_ctc_option"
+            if s.reform.baseline and s.reform.baseline.get("policy") == "bl_ctc_option"
         ]
         assert len(rel) == 15
-        assert all(
-            s.reform.baseline["option"] == "1. TCJA CTC" for s in rel
-        )
+        assert all(s.reform.baseline["option"] == "1. TCJA CTC" for s in rel)
 
     def test_label_only_decade_windows_stay_conditions(self, bl):
-        labels = [
-            s for s in bl if "period_window" in s.conditions
-        ]
+        labels = [s for s in bl if "period_window" in s.conditions]
         assert len(labels) == 6
         assert all(s.period_start is None for s in labels)
         assert {s.conditions["period_window"] for s in labels} == {
-            "Budget Window", "Second Decade", "Third Decade",
+            "Budget Window",
+            "Second Decade",
+            "Third Decade",
         }
 
 
@@ -546,9 +503,7 @@ class TestCrossSource:
         baseline, so it rides the same policy with a second key."""
         scores, _ = tpc
         jct_keys = {
-            s.reform.key()
-            for s in jct
-            if s.conditions["bill_version"] == "JCX-35-25"
+            s.reform.key() for s in jct if s.conditions["bill_version"] == "JCX-35-25"
         }
         tpc_by_baseline = {}
         for s in scores:
@@ -570,9 +525,7 @@ class TestCrossSource:
     def test_managers_amendment_key_shared_jct_tpc_bl(self, jct, tpc, bl):
         scores, _ = tpc
         jct31 = {
-            s.reform.key()
-            for s in jct
-            if s.conditions["bill_version"] == "JCX-31-25"
+            s.reform.key() for s in jct if s.conditions["bill_version"] == "JCX-31-25"
         }
         tpc_managers = {
             s.reform.key()
@@ -607,10 +560,7 @@ class TestFullIngest:
 
         tmp = tmp_path_factory.mktemp("harvest")
         db_path = tmp / "s.db"
-        stats = {
-            name: adapter.ingest(db_path)
-            for name, adapter in ADAPTERS.items()
-        }
+        stats = {name: adapter.ingest(db_path) for name, adapter in ADAPTERS.items()}
         feed_path = tmp / "lanes.json"
         shutil.copy(REPO / "data" / "lanes.json", feed_path)
         db = ScorecardDB(db_path)
@@ -624,8 +574,7 @@ class TestFullIngest:
         by_source = {
             r["source"]: r["n"]
             for r in db.conn.execute(
-                "SELECT source, COUNT(*) n FROM external_scores"
-                " GROUP BY source"
+                "SELECT source, COUNT(*) n FROM external_scores GROUP BY source"
             )
         }
         assert by_source == {
@@ -649,14 +598,17 @@ class TestFullIngest:
             for r in db.conn.execute("SELECT lane, stage FROM lanes")
         }
         expected = {
-            "jct-reform-scores", "tpc-distribution", "cbo-baseline",
-            "cbo-cost-estimates", "pwbm-reform-scores",
-            "tax-foundation-scores", "budget-lab-scores", "cpsp-poverty",
+            "jct-reform-scores",
+            "tpc-distribution",
+            "cbo-baseline",
+            "cbo-cost-estimates",
+            "pwbm-reform-scores",
+            "tax-foundation-scores",
+            "budget-lab-scores",
+            "cpsp-poverty",
         }
         assert {k for k, v in lanes.items() if v == "ingested"} == expected
-        feed_stages = {
-            lane["id"]: lane["stage"] for lane in feed["lanes"]
-        }
+        feed_stages = {lane["id"]: lane["stage"] for lane in feed["lanes"]}
         assert all(feed_stages[lane] == "ingested" for lane in expected)
 
     def test_erratum_diagnosis_seeded(self, ingested):
@@ -665,16 +617,14 @@ class TestFullIngest:
             "SELECT diagnosis_class, rationale FROM diagnoses"
         ).fetchall()
         assert any(
-            r["diagnosis_class"] == "external_issue"
-            and "16.6" in r["rationale"]
+            r["diagnosis_class"] == "external_issue" and "16.6" in r["rationale"]
             for r in rows
         )
 
     def test_reform_json_round_trips_from_db(self, ingested):
         db, _, _ = ingested
         row = db.conn.execute(
-            "SELECT reform_json FROM external_scores WHERE source='jct'"
-            " LIMIT 1"
+            "SELECT reform_json FROM external_scores WHERE source='jct' LIMIT 1"
         ).fetchone()
         ref = ReformRef.from_json(row["reform_json"])
         assert ref.framework == "policy_ref"
