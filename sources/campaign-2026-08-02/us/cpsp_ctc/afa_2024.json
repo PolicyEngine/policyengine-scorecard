@@ -1,0 +1,99 @@
+{
+ "scenario": "afa",
+ "year": 2024,
+ "cpsp_scenario_label": "AFA CTC",
+ "reform_hint": "AFA-2025 (H.R.2763) per CPSP 2024 brief: $4,320/$3,600 annual deflated x0.97153 to 2024$, fully refundable, 17-year-olds in, first tier 150k/112.5k and second tier 400k/300k(HoH) deflated, $2,000 floor deflated",
+ "pe_construction": [
+  "arpa u6 4197.04 / 6-17 3497.53",
+  "first-tier {'JOINT': 145730.6, 'SURVIVING_SPOUSE': 145730.6, 'SINGLE': 72865.3, 'SEPARATE': 72865.3, 'HEAD_OF_HOUSEHOLD': 109297.95}",
+  "qualifying age -> 18",
+  "fully refundable"
+ ],
+ "reform_json": "{\"gov.irs.credits.ctc.amount.arpa[0].amount\": {\"2024-01-01.2024-12-31\": 4197.04}, \"gov.irs.credits.ctc.amount.arpa[1].amount\": {\"2024-01-01.2024-12-31\": 3497.53}, \"gov.irs.credits.ctc.amount.base[1].threshold\": {\"2024-01-01.2024-12-31\": 18}, \"gov.irs.credits.ctc.phase_out.arpa.in_effect\": {\"2024-01-01.2024-12-31\": true}, \"gov.irs.credits.ctc.refundable.fully_refundable\": {\"2024-01-01.2024-12-31\": true}, \"gov.irs.credits.ctc.phase_out.arpa.threshold.JOINT\": {\"2024-01-01.2024-12-31\": 145730.6}, \"gov.irs.credits.ctc.phase_out.arpa.threshold.SURVIVING_SPOUSE\": {\"2024-01-01.2024-12-31\": 145730.6}, \"gov.irs.credits.ctc.phase_out.arpa.threshold.SINGLE\": {\"2024-01-01.2024-12-31\": 72865.3}, \"gov.irs.credits.ctc.phase_out.arpa.threshold.SEPARATE\": {\"2024-01-01.2024-12-31\": 72865.3}, \"gov.irs.credits.ctc.phase_out.arpa.threshold.HEAD_OF_HOUSEHOLD\": {\"2024-01-01.2024-12-31\": 109297.95}, \"gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD\": {\"2024-01-01.2024-12-31\": 291461.2}, \"gov.irs.credits.ctc.phase_out.threshold.JOINT\": {\"2024-01-01.2024-12-31\": 388614.93}, \"gov.irs.credits.ctc.phase_out.threshold.SURVIVING_SPOUSE\": {\"2024-01-01.2024-12-31\": 388614.93}, \"gov.irs.credits.ctc.phase_out.threshold.SINGLE\": {\"2024-01-01.2024-12-31\": 194307.47}, \"gov.irs.credits.ctc.phase_out.threshold.SEPARATE\": {\"2024-01-01.2024-12-31\": 194307.47}, \"gov.irs.credits.ctc.amount.base[0].amount\": {\"2024-01-01.2024-12-31\": 1943.07}}",
+ "takeup_basis": "100% credit take-up/filing: takes_up_eitc, would_file_taxes_voluntarily, would_file_if_eligible_for_refundable_credit forced True; benefit-side take-up left calibrated",
+ "assumptions": {
+  "cpi_u_annual": {
+   "2020": 258.811,
+   "2022": 292.655,
+   "2024": 313.689,
+   "2025": 322.879
+  },
+  "afa23_inflation_factor_2020_to_2022": 1.1307672394140897,
+  "deflator_2025_to_2024": 0.9715373251279892,
+  "cpi_2025_note": "CPSP's exact CPI vintage for 2025 unstated; annual avg assumed",
+  "named_construction_deltas": [
+   "AFA newborn initial payment omitted (PE lacks parameter): PE understates AFA generosity for infants (~$2.3k one-time)",
+   "birth-month proration omitted: PE gives full-year credit to age-0/turning children (overstates vs CPSP)",
+   "2024 AFA refundable-ODC modeled non-refundable in PE (18+ dependents only)",
+   "single/separate-filer thresholds where CPSP brief silent: ARPA/TCJA structure assumed",
+   "PE applies child-SSN requirement via imputed card type; Census/TAXSIM ASEC basis may not"
+  ]
+ },
+ "data_vintage_note": "PE: certified populace_us dataset uprated to sim year. CPSP: raw public-use CPS-ASEC 2025 (income year 2024); levels also differ via PE benefit-take-up calibration vs ASEC survey-reported transfers",
+ "bundle": {
+  "bundle_id": "us-5.0.1",
+  "country_id": "us",
+  "policyengine_version": "5.0.1",
+  "model_package": "policyengine-us",
+  "model_version": "1.764.6",
+  "data_package": "populace-data",
+  "data_version": "0.1.0",
+  "default_dataset": "populace_us_2024",
+  "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+  "data_build_model_version": "1.764.6",
+  "data_build_model_git_sha": "None",
+  "data_build_fingerprint": "None",
+  "compatibility_basis": "exact_build_model_version",
+  "certified_by": "None",
+  "runtime_dataset": "populace_us_2024",
+  "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+  "managed_by": "policyengine.py"
+ },
+ "metrics": {
+  "all": {
+   "population": 340077321.9414408,
+   "rate_50": 0.026771798510353752,
+   "count_50": 9104481.54095696,
+   "rate_100": 0.11139979254868117,
+   "count_100": 37884543.11478756,
+   "rate_150": 0.2726344814844238,
+   "count_150": 92716804.33211619,
+   "rate_200": 0.42144585825397135,
+   "count_200": 143324178.81832266
+  },
+  "u18": {
+   "population": 76683005.28060344,
+   "rate_50": 0.012542940562574031,
+   "count_50": 961830.3773941596,
+   "rate_100": 0.10654836093217117,
+   "count_100": 8170448.524001323,
+   "rate_150": 0.35490068937353625,
+   "count_150": 27214851.43732068,
+   "rate_200": 0.5512698127062661,
+   "count_200": 42273025.95879187
+  },
+  "u6": {
+   "population": 22697940.657062482,
+   "rate_50": 0.012571612266481532,
+   "count_50": 285349.7091881966,
+   "rate_100": 0.11520327849739191,
+   "count_100": 2614877.178832844,
+   "rate_150": 0.38571318969055646,
+   "count_150": 8754895.090242535,
+   "rate_200": 0.5860314324825843,
+   "count_200": 13301706.677663017
+  }
+ },
+ "aggregates_usd": {
+  "ctc": 258225118328.51355,
+  "ctc_value": 256012985393.95862,
+  "refundable_ctc": 250255721682.39594,
+  "non_refundable_ctc": 7969396646.117598,
+  "eitc": 70601054651.1914,
+  "income_tax": 2124400072610.9724,
+  "spm_unit_net_income": 13027237544368.295
+ }
+}

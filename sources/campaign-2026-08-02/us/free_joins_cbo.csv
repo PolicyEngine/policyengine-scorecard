@@ -1,0 +1,89 @@
+period,program,metric,cbo_value,pe_value,ratio,pe_construction,conventions,status,source_column
+2026,snap,benefit_cost,98415000000.0,90927596849.523,0.9239201021137327,pass2 aggregate snap total_usd CY2026,CBO federal fiscal year vs PE calendar year (named delta); CBO outlays are cash FY; PE totals are accrual entitlement/benefit dollars (named delta),computed,Estimated Budget Authority
+2026,snap,participant_count,39300000.0,58419679.68580754,1.4865058444225838,year-grid snap part_pop US CY2026,CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta),computed,Average Monthly Participation (Millions of people)
+2026,snap,average_monthly_benefit,186.6,129.7045752084306,0.695094186540357,pass2 snap dollars / year-grid part_pop / 12 (per annual-ever person-month),CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta); denominator concept differs -> ratio inherits caseload delta,computed,Average Monthly Benefit per Participant (Dollars)
+2026,ssi,benefit_cost,66500000000.0,57857268951.65666,0.8700341195737844,pass2 aggregate ssi total_usd CY2026,CBO federal fiscal year vs PE calendar year (named delta); CBO outlays are cash FY; PE totals are accrual entitlement/benefit dollars (named delta),computed,"Total Outlays, Adjusted for Date of Payment Shiftb"
+2026,ssi,benefit_cost,7600000000.0,,,,,skipped: SSI by-group row — subgroup-aware join pending (pass2 has disability axes; SSI aged/blind-disabled grouping needs dedicated masks),Aged
+2026,ssi,benefit_cost,46600000000.0,,,,,skipped: SSI by-group row — subgroup-aware join pending (pass2 has disability axes; SSI aged/blind-disabled grouping needs dedicated masks),Blind and disabled adults
+2026,ssi,benefit_cost,11500000000.0,,,,,skipped: SSI by-group row — subgroup-aware join pending (pass2 has disability axes; SSI aged/blind-disabled grouping needs dedicated masks),Blind and disabled children
+2026,ssi,participant_count,7275000.0,6108392.492163988,0.8396415796788986,year-grid ssi part_pop US CY2026,CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta),computed,Average Monthly Beneficiaries (Thousands of people)
+2026,ssi,average_monthly_benefit,751.0,789.3138964940113,1.0510171724287767,pass2 ssi dollars / year-grid part_pop / 12 (per annual-ever person-month),CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta); denominator concept differs -> ratio inherits caseload delta,computed,Average Monthly Benefit per Beneficiary (Dollars)
+2026,ssi,maximum_monthly_benefit,994.0,,,,,skipped: no defensible in-hand PE counterpart,"Maximum Monthly Benefit (Individual, by calendar year)"
+2025,medicaid,benefit_cost,668000000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Estimated Outlaysa
+2026,medicaid,benefit_cost,708000000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Estimated Outlaysa
+2025,medicaid,benefit_cost,125000000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Aged
+2026,medicaid,benefit_cost,135000000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Aged
+2025,medicaid,benefit_cost,191000000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Blind and Disabled
+2026,medicaid,benefit_cost,202000000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Blind and Disabled
+2025,medicaid,benefit_cost,85000000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Children
+2026,medicaid,benefit_cost,89000000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Children
+2025,medicaid,benefit_cost,83000000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Adults in Traditional Eligibility Categories
+2026,medicaid,benefit_cost,90000000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Adults in Traditional Eligibility Categories
+2025,medicaid,benefit_cost,144000000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Adults Made Eligible by the ACA
+2026,medicaid,benefit_cost,153000000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Adults Made Eligible by the ACA
+2025,medicaid,enrollment,8000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Aged
+2026,medicaid,enrollment,8000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Aged
+2025,medicaid,enrollment,9000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Blind and Disabled
+2026,medicaid,enrollment,9000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Blind and Disabled
+2025,medicaid,enrollment,31000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Children
+2026,medicaid,enrollment,31000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Children
+2025,medicaid,enrollment,17000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Adults in Traditional Eligibility Categories
+2026,medicaid,enrollment,17000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Adults in Traditional Eligibility Categories
+2025,medicaid,enrollment,17000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Adults Made Eligible by the ACA
+2026,medicaid,enrollment,17000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Adults Made Eligible by the ACA
+2025,medicaid,enrollment,98000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Total Enrolled Within a Fiscal Year
+2026,medicaid,enrollment,99000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Total Enrolled Within a Fiscal Year
+2026,chip,benefit_cost,25000000000.0,,,,,"skipped: program-aggregate only; also populace#593 (100% take-up, flag not stored)",Outlays
+2026,chip,enrollment,7000000.0,,,,,"skipped: program-aggregate only; also populace#593 (100% take-up, flag not stored)",Millions of children
+2026,chip,enrollment,7000000.0,,,,,"skipped: program-aggregate only; also populace#593 (100% take-up, flag not stored)",Total Enrollment
+2026,tanf,benefit_cost,16968000000.0,4936866453.148398,0.29095158257593107,pass2 aggregate tanf total_usd CY2026,CBO federal fiscal year vs PE calendar year (named delta); CBO outlays are cash FY; PE totals are accrual entitlement/benefit dollars (named delta); CBO TANF outlays = full block grant (incl. non-cash state uses); PE models cash assistance only (~quarter of block-grant spending) — named scope delta,computed,Estimated Outlays
+2026,unemployment_compensation,benefit_cost,43420000000.0,,,,,skipped: UI is a survey-reported income input in pe-us; no eligibility/caseload model,Regular Benefits
+2026,unemployment_compensation,first_payment_count,6000000.0,,,,,skipped: UI is a survey-reported income input in pe-us; no eligibility/caseload model,First Payments (Millions of people)
+2026,unemployment_compensation,average_weekly_benefit,471.0,,,,,skipped: UI is a survey-reported income input in pe-us; no eligibility/caseload model,Average Weekly Benefit (Dollars)
+2025,,revenue_change,452089000000.0,,,,,skipped: no defensible in-hand PE counterpart,Corporate income taxes
+2026,,revenue_change,403979000000.0,,,,,skipped: no defensible in-hand PE counterpart,Corporate income taxes
+2025,,revenue_change,194866000000.0,,,,,skipped: no defensible in-hand PE counterpart,Customs duties
+2026,,revenue_change,418388000000.0,,,,,skipped: no defensible in-hand PE counterpart,Customs duties
+2026,medicaid,benefit_cost,707865000000.0,,,,,skipped: enrollment/spending not in campaign outputs (takes_up_medicaid exists; addable pass2 v2),Medicaid
+2026,aca_premium_tax_credits_and_related,benefit_cost,112336000000.0,,,,,skipped: aca_ptc computable but not in campaign outputs (addable pass2 v2),Premium tax credits and related spendingc
+2026,chip,benefit_cost,25192000000.0,,,,,"skipped: program-aggregate only; also populace#593 (100% take-up, flag not stored)",Children's Health Insurance Program
+2026,eitc_ctc_other_credits,benefit_cost,104514000000.0,109071629469.4516,1.0436078369352584,eitc+refundable_ctc CY2026 (composite; CBO line includes 'other credits' — scope note),CBO federal fiscal year vs PE calendar year (named delta); CBO composite line broader than EITC+ACTC (named scope delta),computed,"Earned income, child, and other tax creditsd"
+2026,child_nutrition,benefit_cost,36523000000.0,,,,,skipped: school meals modeled partially; not in campaign outputs,Child nutrition
+2026,family_support_foster_care,benefit_cost,36776000000.0,,,,,skipped: no defensible in-hand PE counterpart,Family support and foster caree
+2026,eitc_ctc_other_credits,benefit_cost,104514000000.0,109071629469.4516,1.0436078369352584,eitc+refundable_ctc CY2026 (composite; CBO line includes 'other credits' — scope note),CBO federal fiscal year vs PE calendar year (named delta); CBO composite line broader than EITC+ACTC (named scope delta),computed,"Earned income, child, and other tax credits"
+2024,,deduction_aggregate,3107500000000.0,,,,,skipped: no defensible in-hand PE counterpart,Subtract standard deduction (non-itemizers only)
+2025,,deduction_aggregate,3212800000000.0,,,,,skipped: no defensible in-hand PE counterpart,Subtract standard deduction (non-itemizers only)
+2026,,deduction_aggregate,3293400000000.0,,,,,skipped: no defensible in-hand PE counterpart,Subtract standard deduction (non-itemizers only)
+2024,,deduction_aggregate,776600000000.0,,,,,skipped: no defensible in-hand PE counterpart,Subtract total itemized deductions (itemizers only) after limitsd
+2025,,deduction_aggregate,1091900000000.0001,,,,,skipped: no defensible in-hand PE counterpart,Subtract total itemized deductions (itemizers only) after limitsd
+2026,,deduction_aggregate,1144900000000.0,,,,,skipped: no defensible in-hand PE counterpart,Subtract total itemized deductions (itemizers only) after limitsd
+2024,,deduction_aggregate,267700000000.0,,,,,skipped: no defensible in-hand PE counterpart,Subtract qualified business income deduction
+2025,,deduction_aggregate,247700000000.0,,,,,skipped: no defensible in-hand PE counterpart,Subtract qualified business income deduction
+2026,,deduction_aggregate,264399999999.99997,,,,,skipped: no defensible in-hand PE counterpart,Subtract qualified business income deduction
+2024,,deduction_aggregate,0.0,,,,,skipped: no defensible in-hand PE counterpart,Subtract additional deductionse
+2025,,deduction_aggregate,416300000000.0,,,,,skipped: no defensible in-hand PE counterpart,Subtract additional deductionse
+2026,,deduction_aggregate,432400000000.0,,,,,skipped: no defensible in-hand PE counterpart,Subtract additional deductionse
+2024,,income_aggregate,13055179000000.0,,,,,skipped: no defensible in-hand PE counterpart,Taxable incomeg
+2025,,income_aggregate,13490710000000.0,,,,,skipped: no defensible in-hand PE counterpart,Taxable incomeg
+2026,,income_aggregate,14245168000000.0,,,,,skipped: no defensible in-hand PE counterpart,Taxable incomeg
+2024,,tax_liability,2504600000000.0,,,,,skipped: no defensible in-hand PE counterpart,Total income tax (including AMT) before credits
+2025,,tax_liability,2584700000000.0,,,,,skipped: no defensible in-hand PE counterpart,Total income tax (including AMT) before credits
+2026,,tax_liability,2754200000000.0,,,,,skipped: no defensible in-hand PE counterpart,Total income tax (including AMT) before credits
+2024,,tax_credits_applied,249300000000.0,,,,,skipped: no defensible in-hand PE counterpart,Total credits (refundable and nonrefundable) j
+2025,,tax_credits_applied,257500000000.0,,,,,skipped: no defensible in-hand PE counterpart,Total credits (refundable and nonrefundable) j
+2026,,tax_credits_applied,261500000000.0,,,,,skipped: no defensible in-hand PE counterpart,Total credits (refundable and nonrefundable) j
+2024,,tax_liability,2364000000000.0,,,,,skipped: no defensible in-hand PE counterpart,Income tax after creditsk
+2025,,tax_liability,2440200000000.0,,,,,skipped: no defensible in-hand PE counterpart,Income tax after creditsk
+2026,,tax_liability,2607800000000.0,,,,,skipped: no defensible in-hand PE counterpart,Income tax after creditsk
+2024,,tax_liability,44400000000.0,,,,,skipped: no defensible in-hand PE counterpart,Net investment income tax
+2025,,tax_liability,53400000000.0,,,,,skipped: no defensible in-hand PE counterpart,Net investment income tax
+2026,,tax_liability,57200000000.0,,,,,skipped: no defensible in-hand PE counterpart,Net investment income tax
+2024,,tax_liability,2408400000000.0,,,,,skipped: no defensible in-hand PE counterpart,Individual income tax liability
+2025,,tax_liability,2493700000000.0,,,,,skipped: no defensible in-hand PE counterpart,Individual income tax liability
+2026,,tax_liability,2665000000000.0,,,,,skipped: no defensible in-hand PE counterpart,Individual income tax liability
+2024,,return_count,167100000.0,,,,,skipped: no defensible in-hand PE counterpart,Number of returns (millions)l
+2025,,return_count,168000000.0,,,,,skipped: no defensible in-hand PE counterpart,Number of returns (millions)l
+2026,,return_count,169500000.0,,,,,skipped: no defensible in-hand PE counterpart,Number of returns (millions)l
+2024,,return_count,15600000.0,,,,,skipped: no defensible in-hand PE counterpart,Number with itemized deductions
+2025,,return_count,20900000.0,,,,,skipped: no defensible in-hand PE counterpart,Number with itemized deductions
+2026,,return_count,21900000.0,,,,,skipped: no defensible in-hand PE counterpart,Number with itemized deductions

@@ -1,0 +1,43 @@
+{
+ "key": "ss_notax",
+ "year": 2026,
+ "external_target": "PWBM 'Eliminate income taxation of Social Security benefits' conventional FY2025-34 (FY2025 -60B, FY2026 -116B); CY-liability vs FY-cash named",
+ "pe_construction": [
+  "gov.irs.social_security.taxability.rate.base.excess: 0.5 -> 0",
+  "gov.irs.social_security.taxability.rate.base.benefit_cap: 0.5 -> 0",
+  "gov.irs.social_security.taxability.rate.additional.bracket: 0.5 -> 0",
+  "gov.irs.social_security.taxability.rate.additional.excess: 0.85 -> 0",
+  "gov.irs.social_security.taxability.rate.additional.benefit_cap: 0.85 -> 0"
+ ],
+ "reform_json": "{\"gov.irs.social_security.taxability.rate.base.excess\": {\"2026-01-01.2026-12-31\": 0}, \"gov.irs.social_security.taxability.rate.base.benefit_cap\": {\"2026-01-01.2026-12-31\": 0}, \"gov.irs.social_security.taxability.rate.additional.bracket\": {\"2026-01-01.2026-12-31\": 0}, \"gov.irs.social_security.taxability.rate.additional.excess\": {\"2026-01-01.2026-12-31\": 0}, \"gov.irs.social_security.taxability.rate.additional.benefit_cap\": {\"2026-01-01.2026-12-31\": 0}}",
+ "baseline_for_delta": "results/us/tpc_ctc/baseline_2026.json (same bundle, no forced flags)",
+ "bundle": {
+  "bundle_id": "us-5.0.1",
+  "country_id": "us",
+  "policyengine_version": "5.0.1",
+  "model_package": "policyengine-us",
+  "model_version": "1.764.6",
+  "data_package": "populace-data",
+  "data_version": "0.1.0",
+  "default_dataset": "populace_us_2024",
+  "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+  "data_build_model_version": "1.764.6",
+  "data_build_model_git_sha": "None",
+  "data_build_fingerprint": "None",
+  "compatibility_basis": "exact_build_model_version",
+  "certified_by": "None",
+  "runtime_dataset": "populace_us_2024",
+  "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+  "managed_by": "policyengine.py"
+ },
+ "aggregates_usd": {
+  "income_tax": 2491639452564.1226,
+  "income_tax_before_refundable_credits": 2602277497082.1875,
+  "taxable_social_security": 0.0,
+  "social_security": 1705545725120.4775,
+  "household_net_income": 17650794570830.31
+ }
+}

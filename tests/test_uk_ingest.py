@@ -354,7 +354,10 @@ class TestHMRC:
         scores, _ = hmrc
         rr = [s for s in scores if s.source_model == "hmrc"]
         assert len(rr) == 225
-        slug = f"uk_hmrc_rr:{slugify('Change basic rate by 1p')}"
+        slug = (
+            "uk_hmrc_rr:income_tax_rates:"
+            f"{slugify('Change basic rate by 1p')}"
+        )
         basic = [
             s
             for s in rr

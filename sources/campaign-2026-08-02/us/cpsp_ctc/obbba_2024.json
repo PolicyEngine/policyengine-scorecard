@@ -1,0 +1,99 @@
+{
+ "scenario": "obbba",
+ "year": 2024,
+ "cpsp_scenario_label": "OBBBA CTC",
+ "reform_hint": "OBBBA CTC parameters (2025 statute) deflated to 2024 dollars per CPSP; parent-SSN restriction excluded (CPSP's stated basis; PE's adult_ssn_requirement_applies=false at 2024 anyway)",
+ "pe_construction": [
+  "base 2000 -> 2137.38",
+  "refundable cap 1700 -> 1651.61",
+  "phase-in threshold 2500 -> 2428.84",
+  "thresholds x0.97154"
+ ],
+ "reform_json": "{\"gov.irs.credits.ctc.amount.base[0].amount\": {\"2024-01-01.2024-12-31\": 2137.38}, \"gov.irs.credits.ctc.refundable.individual_max\": {\"2024-01-01.2024-12-31\": 1651.61}, \"gov.irs.credits.ctc.refundable.phase_in.threshold\": {\"2024-01-01.2024-12-31\": 2428.84}, \"gov.irs.credits.ctc.phase_out.threshold.JOINT\": {\"2024-01-01.2024-12-31\": 388614.93}, \"gov.irs.credits.ctc.phase_out.threshold.SURVIVING_SPOUSE\": {\"2024-01-01.2024-12-31\": 388614.93}, \"gov.irs.credits.ctc.phase_out.threshold.SINGLE\": {\"2024-01-01.2024-12-31\": 194307.47}, \"gov.irs.credits.ctc.phase_out.threshold.SEPARATE\": {\"2024-01-01.2024-12-31\": 194307.47}, \"gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD\": {\"2024-01-01.2024-12-31\": 194307.47}}",
+ "takeup_basis": "100% credit take-up/filing: takes_up_eitc, would_file_taxes_voluntarily, would_file_if_eligible_for_refundable_credit forced True; benefit-side take-up left calibrated",
+ "assumptions": {
+  "cpi_u_annual": {
+   "2020": 258.811,
+   "2022": 292.655,
+   "2024": 313.689,
+   "2025": 322.879
+  },
+  "afa23_inflation_factor_2020_to_2022": 1.1307672394140897,
+  "deflator_2025_to_2024": 0.9715373251279892,
+  "cpi_2025_note": "CPSP's exact CPI vintage for 2025 unstated; annual avg assumed",
+  "named_construction_deltas": [
+   "AFA newborn initial payment omitted (PE lacks parameter): PE understates AFA generosity for infants (~$2.3k one-time)",
+   "birth-month proration omitted: PE gives full-year credit to age-0/turning children (overstates vs CPSP)",
+   "2024 AFA refundable-ODC modeled non-refundable in PE (18+ dependents only)",
+   "single/separate-filer thresholds where CPSP brief silent: ARPA/TCJA structure assumed",
+   "PE applies child-SSN requirement via imputed card type; Census/TAXSIM ASEC basis may not"
+  ]
+ },
+ "data_vintage_note": "PE: certified populace_us dataset uprated to sim year. CPSP: raw public-use CPS-ASEC 2025 (income year 2024); levels also differ via PE benefit-take-up calibration vs ASEC survey-reported transfers",
+ "bundle": {
+  "bundle_id": "us-5.0.1",
+  "country_id": "us",
+  "policyengine_version": "5.0.1",
+  "model_package": "policyengine-us",
+  "model_version": "1.764.6",
+  "data_package": "populace-data",
+  "data_version": "0.1.0",
+  "default_dataset": "populace_us_2024",
+  "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+  "data_build_model_version": "1.764.6",
+  "data_build_model_git_sha": "None",
+  "data_build_fingerprint": "None",
+  "compatibility_basis": "exact_build_model_version",
+  "certified_by": "None",
+  "runtime_dataset": "populace_us_2024",
+  "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+  "managed_by": "policyengine.py"
+ },
+ "metrics": {
+  "all": {
+   "population": 340077321.9414408,
+   "rate_50": 0.03129767544073058,
+   "count_50": 10643629.64687606,
+   "rate_100": 0.13467726224666327,
+   "count_100": 45800682.67125036,
+   "rate_150": 0.29972014633707555,
+   "count_150": 101928024.6982094,
+   "rate_200": 0.432618836528447,
+   "count_200": 147123855.34801623
+  },
+  "u18": {
+   "population": 76683005.28060344,
+   "rate_50": 0.023035173308505408,
+   "count_50": 1766406.3164557356,
+   "rate_100": 0.16740114539030831,
+   "count_100": 12836822.915944077,
+   "rate_150": 0.42625804211237056,
+   "count_150": 32686747.694202594,
+   "rate_200": 0.5779523800305645,
+   "count_200": 44319125.4098211
+  },
+  "u6": {
+   "population": 22697940.657062482,
+   "rate_50": 0.023199986858509613,
+   "count_50": 526591.9249590806,
+   "rate_100": 0.1780928937346883,
+   "count_100": 4042341.93343449,
+   "rate_150": 0.46530235092305816,
+   "count_150": 10561405.148843236,
+   "rate_200": 0.6157536339580942,
+   "count_200": 13976339.442951396
+  }
+ },
+ "aggregates_usd": {
+  "ctc": 156787920264.8764,
+  "ctc_value": 132748546236.29306,
+  "refundable_ctc": 39132197509.957306,
+  "non_refundable_ctc": 117655722851.34741,
+  "eitc": 70601054651.1914,
+  "income_tax": 2247804282637.571,
+  "spm_unit_net_income": 12904163395202.836
+ }
+}

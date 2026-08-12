@@ -1,0 +1,79 @@
+{
+ "computed": 9,
+ "pending": 0,
+ "skipped": 79,
+ "computed_rows": [
+  {
+   "period": 2026,
+   "program": "snap",
+   "metric": "benefit_cost",
+   "cbo_value": 98415000000.0,
+   "pe_value": 90927596849.523,
+   "ratio": 0.9239201021137327
+  },
+  {
+   "period": 2026,
+   "program": "snap",
+   "metric": "participant_count",
+   "cbo_value": 39300000.0,
+   "pe_value": 58419679.68580754,
+   "ratio": 1.4865058444225838
+  },
+  {
+   "period": 2026,
+   "program": "snap",
+   "metric": "average_monthly_benefit",
+   "cbo_value": 186.6,
+   "pe_value": 129.7045752084306,
+   "ratio": 0.695094186540357
+  },
+  {
+   "period": 2026,
+   "program": "ssi",
+   "metric": "benefit_cost",
+   "cbo_value": 66500000000.0,
+   "pe_value": 57857268951.65666,
+   "ratio": 0.8700341195737844
+  },
+  {
+   "period": 2026,
+   "program": "ssi",
+   "metric": "participant_count",
+   "cbo_value": 7275000.0,
+   "pe_value": 6108392.492163988,
+   "ratio": 0.8396415796788986
+  },
+  {
+   "period": 2026,
+   "program": "ssi",
+   "metric": "average_monthly_benefit",
+   "cbo_value": 751.0,
+   "pe_value": 789.3138964940113,
+   "ratio": 1.0510171724287767
+  },
+  {
+   "period": 2026,
+   "program": "tanf",
+   "metric": "benefit_cost",
+   "cbo_value": 16968000000.0,
+   "pe_value": 4936866453.148398,
+   "ratio": 0.29095158257593107
+  },
+  {
+   "period": 2026,
+   "program": "eitc_ctc_other_credits",
+   "metric": "benefit_cost",
+   "cbo_value": 104514000000.0,
+   "pe_value": 109071629469.4516,
+   "ratio": 1.0436078369352584
+  },
+  {
+   "period": 2026,
+   "program": "eitc_ctc_other_credits",
+   "metric": "benefit_cost",
+   "cbo_value": 104514000000.0,
+   "pe_value": 109071629469.4516,
+   "ratio": 1.0436078369352584
+  }
+ ]
+}

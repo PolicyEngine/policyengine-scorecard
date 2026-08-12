@@ -1,0 +1,55 @@
+{
+ "key": "total_opt3",
+ "year": 2026,
+ "external_targets": {
+  "t25_0209": "CTC/top-rate/total legs, FY2025-34 (vs Senate Title VII baseline)",
+  "t26_0029": "AFA FY2026-35 vs current law (microdynamic)"
+ },
+ "pe_construction": [
+  "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding)",
+  "refundable max 1700 -> 2000",
+  "phase-in from first dollar of earnings (threshold 2500 -> 0)",
+  "additional 39.6% bracket above {'JOINT': 1562500, 'SINGLE': 1388875, 'HEAD_OF_HOUSEHOLD': 1475650, 'SEPARATE': 781250.0, 'SURVIVING_SPOUSE': 1562500} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)"
+ ],
+ "reform_json": "{\"gov.irs.credits.ctc.amount.base[0].amount\": {\"2026-01-01.2026-12-31\": 2500}, \"gov.irs.credits.ctc.refundable.individual_max\": {\"2026-01-01.2026-12-31\": 2000}, \"gov.irs.credits.ctc.refundable.phase_in.threshold\": {\"2026-01-01.2026-12-31\": 0}, \"gov.contrib.additional_tax_bracket.in_effect\": {\"2026-01-01.2026-12-31\": true}, \"gov.contrib.additional_tax_bracket.bracket.rates.1\": {\"2026-01-01.2026-12-31\": 0.1}, \"gov.contrib.additional_tax_bracket.bracket.rates.2\": {\"2026-01-01.2026-12-31\": 0.12}, \"gov.contrib.additional_tax_bracket.bracket.rates.3\": {\"2026-01-01.2026-12-31\": 0.22}, \"gov.contrib.additional_tax_bracket.bracket.rates.4\": {\"2026-01-01.2026-12-31\": 0.24}, \"gov.contrib.additional_tax_bracket.bracket.rates.5\": {\"2026-01-01.2026-12-31\": 0.32}, \"gov.contrib.additional_tax_bracket.bracket.rates.6\": {\"2026-01-01.2026-12-31\": 0.35}, \"gov.contrib.additional_tax_bracket.bracket.rates.7\": {\"2026-01-01.2026-12-31\": 0.37}, \"gov.contrib.additional_tax_bracket.bracket.rates.8\": {\"2026-01-01.2026-12-31\": 0.396}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.1.SINGLE\": {\"2026-01-01.2026-12-31\": 12400.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.1.JOINT\": {\"2026-01-01.2026-12-31\": 24800.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.1.SEPARATE\": {\"2026-01-01.2026-12-31\": 12400.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.1.HEAD_OF_HOUSEHOLD\": {\"2026-01-01.2026-12-31\": 17700.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.1.SURVIVING_SPOUSE\": {\"2026-01-01.2026-12-31\": 24800.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.2.SINGLE\": {\"2026-01-01.2026-12-31\": 50400.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.2.JOINT\": {\"2026-01-01.2026-12-31\": 100800.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.2.SEPARATE\": {\"2026-01-01.2026-12-31\": 50400.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.2.HEAD_OF_HOUSEHOLD\": {\"2026-01-01.2026-12-31\": 67450.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.2.SURVIVING_SPOUSE\": {\"2026-01-01.2026-12-31\": 100800.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.3.SINGLE\": {\"2026-01-01.2026-12-31\": 105700.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.3.JOINT\": {\"2026-01-01.2026-12-31\": 211400.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.3.SEPARATE\": {\"2026-01-01.2026-12-31\": 105700.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.3.HEAD_OF_HOUSEHOLD\": {\"2026-01-01.2026-12-31\": 105700.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.3.SURVIVING_SPOUSE\": {\"2026-01-01.2026-12-31\": 211400.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.4.SINGLE\": {\"2026-01-01.2026-12-31\": 201775.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.4.JOINT\": {\"2026-01-01.2026-12-31\": 403550.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.4.SEPARATE\": {\"2026-01-01.2026-12-31\": 201775.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.4.HEAD_OF_HOUSEHOLD\": {\"2026-01-01.2026-12-31\": 201750.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.4.SURVIVING_SPOUSE\": {\"2026-01-01.2026-12-31\": 403550.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.5.SINGLE\": {\"2026-01-01.2026-12-31\": 256225.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.5.JOINT\": {\"2026-01-01.2026-12-31\": 512450.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.5.SEPARATE\": {\"2026-01-01.2026-12-31\": 256225.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.5.HEAD_OF_HOUSEHOLD\": {\"2026-01-01.2026-12-31\": 256200.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.5.SURVIVING_SPOUSE\": {\"2026-01-01.2026-12-31\": 512450.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.6.SINGLE\": {\"2026-01-01.2026-12-31\": 640600.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.6.JOINT\": {\"2026-01-01.2026-12-31\": 768700.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.6.SEPARATE\": {\"2026-01-01.2026-12-31\": 384350.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.6.HEAD_OF_HOUSEHOLD\": {\"2026-01-01.2026-12-31\": 640600.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.6.SURVIVING_SPOUSE\": {\"2026-01-01.2026-12-31\": 768700.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.7.SINGLE\": {\"2026-01-01.2026-12-31\": 1388875.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.7.JOINT\": {\"2026-01-01.2026-12-31\": 1562500.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.7.SEPARATE\": {\"2026-01-01.2026-12-31\": 781250.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.7.HEAD_OF_HOUSEHOLD\": {\"2026-01-01.2026-12-31\": 1475650.0}, \"gov.contrib.additional_tax_bracket.bracket.thresholds.7.SURVIVING_SPOUSE\": {\"2026-01-01.2026-12-31\": 1562500.0}}",
+ "conventions": {
+  "period_basis": "PE calendar-year 2026 liability; TPC fiscal-year cash",
+  "baseline": "PE = enacted-OBBBA current law; T25-0209 scored vs Senate-draft Title VII (draft\u2248enacted for these provisions; named delta)",
+  "behavioral": "PE static; T26-0029 includes TPC microdynamic response (named axis); T25-0209 conventional",
+  "takeup": "no flags forced; PE calibrated filing/take-up (EITC unchanged so deltas take-up-clean)"
+ },
+ "bundle": {
+  "bundle_id": "us-5.0.1",
+  "country_id": "us",
+  "policyengine_version": "5.0.1",
+  "model_package": "policyengine-us",
+  "model_version": "1.764.6",
+  "data_package": "populace-data",
+  "data_version": "0.1.0",
+  "default_dataset": "populace_us_2024",
+  "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+  "data_build_model_version": "1.764.6",
+  "data_build_model_git_sha": "None",
+  "data_build_fingerprint": "None",
+  "compatibility_basis": "exact_build_model_version",
+  "certified_by": "None",
+  "runtime_dataset": "populace_us_2024",
+  "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+  "managed_by": "policyengine.py"
+ },
+ "aggregates_usd": {
+  "income_tax": 2592327087077.378,
+  "income_tax_before_refundable_credits": 2710934370753.2363,
+  "income_tax_refundable_credits": 118607283626.07555,
+  "ctc": 177489614847.13794,
+  "ctc_value": 151189716632.44223,
+  "refundable_ctc": 49569569239.93294,
+  "non_refundable_ctc": 127920045633.6927,
+  "eitc": 68438684290.59447,
+  "household_net_income": 17547656389250.92
+ },
+ "child_spm_poverty": {}
+}

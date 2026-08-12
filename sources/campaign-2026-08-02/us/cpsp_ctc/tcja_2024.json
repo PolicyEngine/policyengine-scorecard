@@ -1,0 +1,94 @@
+{
+ "scenario": "tcja",
+ "year": 2024,
+ "cpsp_scenario_label": "TCJA CTC",
+ "reform_hint": "TCJA CTC = current law at 2024",
+ "pe_construction": [],
+ "reform_json": "baseline (current law)",
+ "takeup_basis": "100% credit take-up/filing: takes_up_eitc, would_file_taxes_voluntarily, would_file_if_eligible_for_refundable_credit forced True; benefit-side take-up left calibrated",
+ "assumptions": {
+  "cpi_u_annual": {
+   "2020": 258.811,
+   "2022": 292.655,
+   "2024": 313.689,
+   "2025": 322.879
+  },
+  "afa23_inflation_factor_2020_to_2022": 1.1307672394140897,
+  "deflator_2025_to_2024": 0.9715373251279892,
+  "cpi_2025_note": "CPSP's exact CPI vintage for 2025 unstated; annual avg assumed",
+  "named_construction_deltas": [
+   "AFA newborn initial payment omitted (PE lacks parameter): PE understates AFA generosity for infants (~$2.3k one-time)",
+   "birth-month proration omitted: PE gives full-year credit to age-0/turning children (overstates vs CPSP)",
+   "2024 AFA refundable-ODC modeled non-refundable in PE (18+ dependents only)",
+   "single/separate-filer thresholds where CPSP brief silent: ARPA/TCJA structure assumed",
+   "PE applies child-SSN requirement via imputed card type; Census/TAXSIM ASEC basis may not"
+  ]
+ },
+ "data_vintage_note": "PE: certified populace_us dataset uprated to sim year. CPSP: raw public-use CPS-ASEC 2025 (income year 2024); levels also differ via PE benefit-take-up calibration vs ASEC survey-reported transfers",
+ "bundle": {
+  "bundle_id": "us-5.0.1",
+  "country_id": "us",
+  "policyengine_version": "5.0.1",
+  "model_package": "policyengine-us",
+  "model_version": "1.764.6",
+  "data_package": "populace-data",
+  "data_version": "0.1.0",
+  "default_dataset": "populace_us_2024",
+  "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+  "data_build_model_version": "1.764.6",
+  "data_build_model_git_sha": "None",
+  "data_build_fingerprint": "None",
+  "compatibility_basis": "exact_build_model_version",
+  "certified_by": "None",
+  "runtime_dataset": "populace_us_2024",
+  "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+  "managed_by": "policyengine.py"
+ },
+ "metrics": {
+  "all": {
+   "population": 340077321.9414408,
+   "rate_50": 0.03150605658518329,
+   "count_50": 10714495.348424628,
+   "rate_100": 0.13474832796617117,
+   "count_100": 45824850.510822445,
+   "rate_150": 0.3006174980634063,
+   "count_150": 102233193.67013949,
+   "rate_200": 0.43330162868095223,
+   "count_200": 147356057.47468284
+  },
+  "u18": {
+   "population": 76683005.28060344,
+   "rate_50": 0.023557494993698292,
+   "count_50": 1806459.512999555,
+   "rate_100": 0.1677105433364713,
+   "count_100": 12860548.4802835,
+   "rate_150": 0.4284356885634733,
+   "count_150": 32853736.168511793,
+   "rate_200": 0.5794508564361762,
+   "count_200": 44434033.08394548
+  },
+  "u6": {
+   "population": 22697940.657062482,
+   "rate_50": 0.024150372277012343,
+   "count_50": 548163.7167895931,
+   "rate_100": 0.17791888414943094,
+   "count_100": 4038392.274194558,
+   "rate_150": 0.46630512296521576,
+   "count_150": 10584166.00914869,
+   "rate_200": 0.618052242170527,
+   "count_200": 14028513.115751032
+  }
+ },
+ "aggregates_usd": {
+  "ctc": 147580086061.31052,
+  "ctc_value": 126843524236.19202,
+  "refundable_ctc": 37524750332.54706,
+  "non_refundable_ctc": 110055335781.09694,
+  "eitc": 70601054651.1914,
+  "income_tax": 2253699925359.5527,
+  "spm_unit_net_income": 12898272170825.33
+ }
+}

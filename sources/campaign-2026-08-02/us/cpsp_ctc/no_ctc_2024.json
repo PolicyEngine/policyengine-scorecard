@@ -1,0 +1,97 @@
+{
+ "scenario": "no_ctc",
+ "year": 2024,
+ "cpsp_scenario_label": "No CTC",
+ "reform_hint": "No CTC (credit incl. ODC zeroed)",
+ "pe_construction": [
+  "base[0].amount 2000 -> 0",
+  "adult_dependent 500 -> 0"
+ ],
+ "reform_json": "{\"gov.irs.credits.ctc.amount.base[0].amount\": {\"2024-01-01.2024-12-31\": 0}, \"gov.irs.credits.ctc.amount.adult_dependent\": {\"2024-01-01.2024-12-31\": 0}}",
+ "takeup_basis": "100% credit take-up/filing: takes_up_eitc, would_file_taxes_voluntarily, would_file_if_eligible_for_refundable_credit forced True; benefit-side take-up left calibrated",
+ "assumptions": {
+  "cpi_u_annual": {
+   "2020": 258.811,
+   "2022": 292.655,
+   "2024": 313.689,
+   "2025": 322.879
+  },
+  "afa23_inflation_factor_2020_to_2022": 1.1307672394140897,
+  "deflator_2025_to_2024": 0.9715373251279892,
+  "cpi_2025_note": "CPSP's exact CPI vintage for 2025 unstated; annual avg assumed",
+  "named_construction_deltas": [
+   "AFA newborn initial payment omitted (PE lacks parameter): PE understates AFA generosity for infants (~$2.3k one-time)",
+   "birth-month proration omitted: PE gives full-year credit to age-0/turning children (overstates vs CPSP)",
+   "2024 AFA refundable-ODC modeled non-refundable in PE (18+ dependents only)",
+   "single/separate-filer thresholds where CPSP brief silent: ARPA/TCJA structure assumed",
+   "PE applies child-SSN requirement via imputed card type; Census/TAXSIM ASEC basis may not"
+  ]
+ },
+ "data_vintage_note": "PE: certified populace_us dataset uprated to sim year. CPSP: raw public-use CPS-ASEC 2025 (income year 2024); levels also differ via PE benefit-take-up calibration vs ASEC survey-reported transfers",
+ "bundle": {
+  "bundle_id": "us-5.0.1",
+  "country_id": "us",
+  "policyengine_version": "5.0.1",
+  "model_package": "policyengine-us",
+  "model_version": "1.764.6",
+  "data_package": "populace-data",
+  "data_version": "0.1.0",
+  "default_dataset": "populace_us_2024",
+  "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+  "data_build_model_version": "1.764.6",
+  "data_build_model_git_sha": "None",
+  "data_build_fingerprint": "None",
+  "compatibility_basis": "exact_build_model_version",
+  "certified_by": "None",
+  "runtime_dataset": "populace_us_2024",
+  "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+  "managed_by": "policyengine.py"
+ },
+ "metrics": {
+  "all": {
+   "population": 340077321.9414408,
+   "rate_50": 0.03430160664919018,
+   "count_50": 11665198.527545316,
+   "rate_100": 0.15294423801106727,
+   "count_100": 52012866.86917807,
+   "rate_150": 0.31962256044985593,
+   "count_150": 108696384.38985328,
+   "rate_200": 0.4446502186245642,
+   "count_200": 151215455.55051798
+  },
+  "u18": {
+   "population": 76683005.28060344,
+   "rate_50": 0.030338990644993225,
+   "count_50": 2326484.979838194,
+   "rate_100": 0.2115468145577173,
+   "count_100": 16222045.49782427,
+   "rate_150": 0.47403832698649456,
+   "count_150": 36350683.53151378,
+   "rate_200": 0.6032298336466971,
+   "count_200": 46257476.51894721
+  },
+  "u6": {
+   "population": 22697940.657062482,
+   "rate_50": 0.030133293797889434,
+   "count_50": 683963.7144263233,
+   "rate_100": 0.22737614889930013,
+   "count_100": 5160970.334547717,
+   "rate_150": 0.5130594358680161,
+   "count_150": 11645392.628878184,
+   "rate_200": 0.6387083592320758,
+   "count_200": 14497364.435019404
+  }
+ },
+ "aggregates_usd": {
+  "ctc": 0.0,
+  "ctc_value": 0.0,
+  "refundable_ctc": 0.0,
+  "non_refundable_ctc": 0.0,
+  "eitc": 70601054651.1914,
+  "income_tax": 2380413061757.3076,
+  "spm_unit_net_income": 12771629744865.883
+ }
+}

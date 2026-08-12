@@ -142,7 +142,14 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
         if is_rr:
             if not row.get("reform_hint"):
                 raise ValueError("uk_hmrc: ready-reckoner row without hint")
-            reform = policy_ref(f"uk_hmrc_rr:{slugify(row['reform_hint'])}")
+            # The section is part of the world's identity: "Change
+            # standard rate by 1 percentage point" exists under both VAT
+            # and Insurance premium tax.
+            reform = policy_ref(
+                "uk_hmrc_rr:"
+                f"{slugify(conds_in['tax_section'], 30)}:"
+                f"{slugify(row['reform_hint'])}"
+            )
             conditions["measure"] = row["reform_hint"]
         else:
             if row.get("reform_hint"):
