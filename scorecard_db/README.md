@@ -26,10 +26,19 @@ can check, one SQLite file, reform-keyed.
 
 ## Use
 
+Full rebuild, in order (idempotent; urban/platform/solo read the
+machine-local ~/populace-sotsn-takeup/comparison interchange, everything
+else reads vendored sources/):
+
 ```bash
 PYTHONPATH=. python -m scorecard_db.ingest_urban data/scorecard.db
 PYTHONPATH=. python -m scorecard_db.ingest_platform data/scorecard.db
-python -m pytest tests/test_scorecard_db.py
+PYTHONPATH=. python -m scorecard_db.ingest_solo data/scorecard.db
+PYTHONPATH=. python -m scorecard_db.ingest_diagnoses data/scorecard.db
+PYTHONPATH=. python -m scorecard_db.ingest_harvest data/scorecard.db
+PYTHONPATH=. python -m scorecard_db.ingest_uk data/scorecard.db
+PYTHONPATH=. python -m scorecard_db.ingest_campaign data/scorecard.db
+python -m pytest tests/
 ```
 
 ```python
@@ -83,6 +92,63 @@ Schema decisions this population forced (COLLATION worklist):
   Same-statistic republication twins (68) are merged with
   rounding-consistency assertions; see
   sources/harvest-2026-08-02/VALIDATION.md for the artifact validation.
+
+## 2026-08-02 UK population + baselines registry
+
+Third population: the seven-source UK fleet — **31,762 claims**
+(OBR 25,425 · DWP 1,952 · HMT 1,368 · HMRC 987 · UKMOD 1,392 · JRF 300
+· IFS 268 · Resolution Foundation 70) from gzipped staging vendored at
+sources/harvest-uk-2026-08-02/. Run with:
+
+```bash
+PYTHONPATH=. python -m scorecard_db.ingest_uk data/scorecard.db
+```
+
+Full accounting against the 33,943 staged rows: 31,762 ingested +
+**2,090 admin outturns routed to the Ledger staging file**
+(data/ledger/uk_admin_outturns.jsonl — HMRC outturn/provisional 1,855,
+OBR EFO outturn columns 133, DWP BECL outturns 102; deterministic
+pre-agreed fact ids for the populace/Ledger lane. Routing rule, Max
+2026-08-02: admin facts → Ledger, model claims → Scorecard; a forecast
+is a model speaking and stays) + 89 deliberate drops tallied in lane
+notes (88 JRF MIS budget cells, 1 RF price-index row) + 2 JRF
+rounded/unrounded republication twins merged.
+
+Decisions this population forced:
+
+- **period = FY start year everywhere** (pe-uk-data convention),
+  re-derived from the verbatim fy label — the staging mixed start-year
+  (HMRC/OBR) and FYE end-year (DWP) ints and had a '1999/00'→1900
+  defect; conditions["fy"] carries the normalized "2026-27" label.
+- **Baselines registry (issue #13)**: `baselines` table + baseline_key
+  on external_scores/pe_results/pe_exhibits; the comparisons view
+  exposes both sides' labels and pe_status_effective — a result
+  computed against a different baseline world can never render as plain
+  agreement. IFS's Green-Budget options ride the registered
+  ifs_2cl_fp_removal_rolled_out world; HMT/OBR costings score against
+  current law at announcement (JCT parity — the event is a condition,
+  not a baseline world).
+- **Descriptive register (issue #9)**: diagnosis class
+  methodological_difference added; pe_gap/external_issue now REQUIRE a
+  citable action_link (db.diagnose raises otherwise).
+- **calibration_relationship from verified consumption**: exact
+  pe-uk-data target lines (targets/sources/obr.py receipts + Table 4.9
+  welfare; BECL expenditure for the five exact-line benefits; DWP UC
+  admin, PC take-up seed) read 2026-08-02; SPI-family projections are
+  seed_source via the shared SPI 2023-24 base; poverty_count and
+  persistent_poverty_rate joined the permanent-holdout set.
+- **Reconstructed identity axes** the staging dropped: OBR 4.9
+  welfare-cap sections, 4.11 parent lines, per-head measure component
+  runs, the Mar-2026/Nov-2025 EFO vintage split, IFS recipient groups.
+
+Fourth population: the **2026-08-02 campaign compute batch** — 177 PE
+results joined to existing claims (uk_reckoner 23 · uk_free_joins 25 ·
+uk_obr_measures 10 · uk_uprating 6 · tpc 14 · pwbm 2 · cpsp 8 ·
+jct_obbba 1 · cbo_free_joins 88) + 11 two-child-limit exhibits against
+the registered pre_ab2025 baseline, from run files vendored at
+sources/campaign-2026-08-02/. Every result records the baseline it
+actually executed; joins assert exactly-one-match. See
+scorecard_db/ingest_campaign.py's docstring for the join families.
 
 First population: Urban SotSN — 30,004 claims (24,717 published values).
 `calibration_relationship` is assigned per (program, metric) from the
