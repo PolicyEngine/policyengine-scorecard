@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Comparison, LanesFeed, PopulationsFeed, Row } from "./types";
-import { PROGRAM_LABELS } from "./types";
+import type {
+  Comparison,
+  Country,
+  LanesFeed,
+  PopulationsFeed,
+  Row,
+} from "./types";
+import { COUNTRY_LABELS, PROGRAM_LABELS, countryOf } from "./types";
 import { bucketOf, type SpineBucket } from "./spine";
 import { CoverageSpine } from "./components/CoverageSpine";
 import { ComparisonTable } from "./components/ComparisonTable";
@@ -20,14 +26,16 @@ const TABS = [
 type TabId = (typeof TABS)[number]["id"];
 
 export interface Filters {
+  country: Country;
   program: string;
   metric: string;
-  geography: string; // "US" | "states" | state code
+  geography: string; // country code (national) | "states" | state code
   subgroup: string; // "total" | "all" | slug
   bucket: SpineBucket | null;
 }
 
 const DEFAULT_FILTERS: Filters = {
+  country: "US",
   program: "all",
   metric: "all",
   geography: "US",
@@ -66,6 +74,16 @@ export default function App() {
     return new Map(data.rows.map((r) => [r, bucketOf(r)] as const));
   }, [data]);
 
+  // Country-scoped view of the comparison: rows without a country key are
+  // US-era exports (countryOf defaults them), so nothing is ever dropped.
+  const scoped = useMemo(() => {
+    if (!data) return null;
+    return {
+      ...data,
+      rows: data.rows.filter((r) => countryOf(r) === filters.country),
+    };
+  }, [data, filters.country]);
+
   if (error) {
     return (
       <div className="mx-auto max-w-content p-8">
@@ -76,7 +94,7 @@ export default function App() {
       </div>
     );
   }
-  if (!data) {
+  if (!data || !scoped) {
     return (
       <div className="mx-auto max-w-content p-8 text-muted-foreground">
         Loading comparison data…
@@ -105,28 +123,49 @@ export default function App() {
       </div>
 
       <header className="mx-auto max-w-content px-4 pt-8 pb-2">
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-          Model validation · instance 1
-        </p>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-xs font-semibold uppercase tracking-widest text-primary">
+            {filters.country === "US"
+              ? "Model validation · instance 1"
+              : "Model validation · UK lanes"}
+          </p>
+          <CountryToggle
+            country={filters.country}
+            onSelect={(country) =>
+              // Reset row filters on switch: geography codes, buckets and
+              // subgroups don't carry across countries.
+              setFilters({ ...DEFAULT_FILTERS, country, geography: country })
+            }
+          />
+        </div>
         <h1 className="mt-1 text-3xl font-bold tracking-tight">
           PolicyEngine scorecard{" "}
           <span className="font-normal text-muted-foreground">
-            vs Urban Institute's State of the Safety Net
+            {filters.country === "US"
+              ? "vs Urban Institute's State of the Safety Net"
+              : "vs DWP, HMRC, OBR and UKMOD"}
           </span>
         </h1>
-        <Headline data={data} buckets={buckets} />
+        <Headline
+          data={scoped}
+          buckets={buckets}
+          country={filters.country}
+          lanes={lanes}
+        />
       </header>
 
       <div className="mx-auto max-w-content px-4">
-        <CoverageSpine
-          rows={data.rows}
-          buckets={buckets}
-          active={filters.bucket}
-          onSelect={(bucket) => {
-            setFilters({ ...filters, bucket });
-            setTab("scorecard");
-          }}
-        />
+        {scoped.rows.length > 0 && (
+          <CoverageSpine
+            rows={scoped.rows}
+            buckets={buckets}
+            active={filters.bucket}
+            onSelect={(bucket) => {
+              setFilters({ ...filters, bucket });
+              setTab("scorecard");
+            }}
+          />
+        )}
         <MissionControl data={data} lanes={lanes} />
       </div>
 
@@ -151,17 +190,23 @@ export default function App() {
       </nav>
 
       <main className="mx-auto max-w-content px-4 py-6">
-        {tab === "scorecard" && (
-          <ComparisonTable
-            data={data}
-            buckets={buckets}
-            filters={filters}
-            setFilters={setFilters}
-          />
-        )}
-        {tab === "divergences" && (
-          <DivergenceBoard data={data} buckets={buckets} />
-        )}
+        {tab === "scorecard" &&
+          (scoped.rows.length > 0 ? (
+            <ComparisonTable
+              data={scoped}
+              buckets={buckets}
+              filters={filters}
+              setFilters={setFilters}
+            />
+          ) : (
+            <CountryEmptyState country={filters.country} lanes={lanes} />
+          ))}
+        {tab === "divergences" &&
+          (scoped.rows.length > 0 ? (
+            <DivergenceBoard data={scoped} buckets={buckets} />
+          ) : (
+            <CountryEmptyState country={filters.country} lanes={lanes} />
+          ))}
         {tab === "validation" &&
           (populations ? (
             <ReformValidationView feed={populations} />
@@ -171,7 +216,12 @@ export default function App() {
               copy data into app/public/data/.
             </p>
           ))}
-        {tab === "gaps" && <GapsView data={data} />}
+        {tab === "gaps" &&
+          (scoped.rows.length > 0 ? (
+            <GapsView data={scoped} />
+          ) : (
+            <CountryEmptyState country={filters.country} lanes={lanes} />
+          ))}
         {tab === "about" && <AboutView data={data} />}
       </main>
 
@@ -186,13 +236,105 @@ export default function App() {
   );
 }
 
+function CountryToggle({
+  country,
+  onSelect,
+}: {
+  country: Country;
+  onSelect: (c: Country) => void;
+}) {
+  return (
+    <div
+      className="inline-flex overflow-hidden rounded-md border border-border"
+      role="group"
+      aria-label="Country"
+    >
+      {(Object.keys(COUNTRY_LABELS) as Country[]).map((c) => (
+        <button
+          key={c}
+          onClick={() => onSelect(c)}
+          aria-pressed={country === c}
+          title={COUNTRY_LABELS[c]}
+          className={
+            "px-3 py-1 text-xs font-semibold " +
+            (country === c
+              ? "bg-primary text-primary-foreground"
+              : "bg-background text-muted-foreground hover:text-foreground")
+          }
+        >
+          {c}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * A country whose lanes are still mid-pipeline renders as a status panel,
+ * not a blank page (issue #42): the lanes and their stages stay visible,
+ * and rows will land under the same status taxonomy as the US instance.
+ */
+function CountryEmptyState({
+  country,
+  lanes,
+}: {
+  country: Country;
+  lanes: LanesFeed | null;
+}) {
+  const countryLanes = (lanes?.lanes ?? []).filter(
+    (l) => countryOf(l) === country,
+  );
+  return (
+    <div className="max-w-3xl">
+      <p className="text-sm leading-6 text-muted-foreground">
+        No {COUNTRY_LABELS[country]} rows in this view yet — the {country}{" "}
+        external lanes are mid-pipeline. Each lane below reports its stage from
+        data/lanes.json; as counterparts compute, rows appear here under the
+        same status taxonomy as the US instance, model gaps and concept
+        mismatches included.
+      </p>
+      <ul className="mt-3 space-y-1.5">
+        {countryLanes.map((l) => (
+          <li key={l.id} className="text-xs">
+            <b>{l.source}</b> · {l.area}
+            <span className="text-muted-foreground"> — {l.stage}</span>
+          </li>
+        ))}
+        {countryLanes.length === 0 && (
+          <li className="text-xs text-muted-foreground">
+            No lanes registered for this country — see data/lanes.json.
+          </li>
+        )}
+      </ul>
+    </div>
+  );
+}
+
 function Headline({
   data,
   buckets,
+  country,
+  lanes,
 }: {
   data: Comparison;
   buckets: Map<Row, SpineBucket>;
+  country: Country;
+  lanes: LanesFeed | null;
 }) {
+  if (data.rows.length === 0) {
+    const countryLanes = (lanes?.lanes ?? []).filter(
+      (l) => countryOf(l) === country,
+    );
+    return (
+      <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
+        No {country} comparison cells yet —{" "}
+        <b className="text-foreground fig">{countryLanes.length}</b> {country}{" "}
+        lanes ({countryLanes.map((l) => l.source).join(", ") || "none"}) are
+        registered in data/lanes.json and tracked on mission control below.
+        The country stays on the page while its pipeline runs.
+      </p>
+    );
+  }
   const counts: Record<string, number> = {};
   for (const r of data.rows) {
     const bucket = buckets.get(r)!;
@@ -207,7 +349,7 @@ function Headline({
   ).size;
   return (
     <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-      Urban publishes{" "}
+      {country === "US" ? "Urban publishes" : "UK sources publish"}{" "}
       <b className="text-foreground fig">{n.toLocaleString()}</b> unsuppressed
       cells across {programs} programs and the poverty counterfactual.
       PolicyEngine currently produces a counterpart for{" "}
@@ -216,8 +358,14 @@ function Headline({
       <b className="text-foreground fig">
         {(counts.close ?? 0).toLocaleString()}
       </b>{" "}
-      land within tolerance. {PROGRAM_LABELS.liheap} and {PROGRAM_LABELS.ccdf}{" "}
-      are honest gaps. Click a segment to filter.
+      land within tolerance.
+      {country === "US" && (
+        <>
+          {" "}
+          {PROGRAM_LABELS.liheap} and {PROGRAM_LABELS.ccdf} are honest gaps.
+        </>
+      )}{" "}
+      Click a segment to filter.
     </p>
   );
 }

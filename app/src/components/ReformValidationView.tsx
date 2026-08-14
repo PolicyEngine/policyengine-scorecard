@@ -1,6 +1,11 @@
 import { Fragment, useMemo, useState } from "react";
 import type { PopulationRow, PopulationsFeed } from "../types";
-import { RELATIONSHIP_LABELS, STATUS_LABELS } from "../types";
+import {
+  COUNTRY_LABELS,
+  RELATIONSHIP_LABELS,
+  STATUS_LABELS,
+  countryOf,
+} from "../types";
 
 /**
  * The reform-validation registry (issue #20): every non-Urban claim in
@@ -12,6 +17,7 @@ import { RELATIONSHIP_LABELS, STATUS_LABELS } from "../types";
 export function ReformValidationView({ feed }: { feed: PopulationsFeed }) {
   const [source, setSource] = useState("all");
   const [status, setStatus] = useState("all");
+  const [country, setCountry] = useState("all");
   const [releasesOnly, setReleasesOnly] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -19,16 +25,23 @@ export function ReformValidationView({ feed }: { feed: PopulationsFeed }) {
     () => Object.keys(feed.summary.by_source).sort(),
     [feed],
   );
+  // Countries present in the feed; rows without a country key are US-era
+  // exports. One country -> state the scope explicitly instead of filtering.
+  const countries = useMemo(
+    () => [...new Set(feed.rows.map(countryOf))].sort(),
+    [feed],
+  );
   const rows = useMemo(
     () =>
       feed.rows.filter((r) => {
+        if (country !== "all" && countryOf(r) !== country) return false;
         if (source !== "all" && r.source !== source) return false;
         if (status !== "all" && r.latest.status_effective !== status)
           return false;
         if (releasesOnly && r.results.length < 2) return false;
         return true;
       }),
-    [feed, source, status, releasesOnly],
+    [feed, country, source, status, releasesOnly],
   );
 
   const sel = "h-8 rounded-md border border-border bg-background px-2 text-sm";
@@ -55,9 +68,35 @@ export function ReformValidationView({ feed }: { feed: PopulationsFeed }) {
         populations feed · exported from scorecard.db · built {feed.built} ·
         per-release results carry their own engine + data-bundle provenance (the
         page-top stamp describes the Urban comparison only)
+        {countries.length === 1 && (
+          <>
+            {" "}
+            · scope: {COUNTRY_LABELS[countries[0]]} only — every claim in the
+            current registry is a {countries[0]} claim; a country filter
+            appears here once claims from another country land
+          </>
+        )}
       </p>
 
       <div className="mb-3 flex flex-wrap items-end gap-3">
+        {countries.length > 1 && (
+          <label className="text-xs text-muted-foreground">
+            Country
+            <br />
+            <select
+              className={sel}
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+            >
+              <option value="all">All countries</option>
+              {countries.map((c) => (
+                <option key={c} value={c}>
+                  {COUNTRY_LABELS[c]}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <label className="text-xs text-muted-foreground">
           Source
           <br />

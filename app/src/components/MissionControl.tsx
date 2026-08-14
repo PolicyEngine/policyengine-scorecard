@@ -1,6 +1,6 @@
 import { closeness, fmtDivergence } from "../format";
-import type { Comparison, LanesFeed } from "../types";
-import { METRIC_LABELS, PROGRAM_LABELS } from "../types";
+import type { Comparison, Lane, LanesFeed } from "../types";
+import { METRIC_LABELS, PROGRAM_LABELS, countryOf } from "../types";
 
 /**
  * The home view is mission control (issue #7): running lanes, the held-out
@@ -28,11 +28,15 @@ export function MissionControl({
   const backlog = (lanes?.lanes ?? []).filter(
     (l) => !l.running && l.stage === "registered",
   );
+  // Every UK lane with its stage — the UK is visible on mission control
+  // while its pipeline runs, not just once rows land (issue #42).
+  const ukLanes = (lanes?.lanes ?? []).filter((l) => countryOf(l) === "UK");
 
   const freshest = data.rows
     .filter(
       (r) =>
-        r.geography === "US" &&
+        // national row: geography code equals the row's country code
+        r.geography === countryOf(r) &&
         r.subgroup === "total" &&
         r.variant === null &&
         ["comparable", "constructed"].includes(r.status) &&
@@ -71,6 +75,7 @@ export function MissionControl({
               <span>
                 <b>{l.source}</b> · {l.area}
                 <span className="text-muted-foreground"> — {l.stage}</span>
+                <CountryChip lane={l} />
               </span>
             </li>
           ))}
@@ -80,6 +85,21 @@ export function MissionControl({
             </li>
           )}
         </ul>
+        {ukLanes.length > 0 && (
+          <>
+            <h3 className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              UK pipeline
+            </h3>
+            <ul className="mt-1 space-y-1">
+              {ukLanes.map((l) => (
+                <li key={l.id} className="text-xs">
+                  <b>{l.source}</b> · {l.area}
+                  <span className="text-muted-foreground"> — {l.stage}</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
         <p className="mt-2 text-[11px] text-muted-foreground">
           {backlog.length} registered lanes queued (US, UK, reform scores,
           household oracles) — see data/lanes.json.
@@ -110,5 +130,16 @@ export function MissionControl({
         </ul>
       </section>
     </div>
+  );
+}
+
+/** Non-US lanes carry a small country tag; US stays unlabeled (the default). */
+function CountryChip({ lane }: { lane: Lane }) {
+  const c = countryOf(lane);
+  if (c === "US") return null;
+  return (
+    <span className="ml-1.5 rounded-sm border border-border px-1 py-px text-[9px] uppercase tracking-wide text-muted-foreground">
+      {c}
+    </span>
   );
 }

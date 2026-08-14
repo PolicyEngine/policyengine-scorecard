@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { divergenceScore, fmtDivergence, fmtValue } from "../format";
 import type { Comparison, Row } from "../types";
-import { METRIC_LABELS, PROGRAM_LABELS } from "../types";
+import { METRIC_LABELS, PROGRAM_LABELS, countryOf } from "../types";
 import type { SpineBucket } from "../spine";
 import { AttributionPanel } from "./AttributionPanel";
 
@@ -30,8 +30,11 @@ export function DivergenceBoard({
       .sort((a, b) => divergenceScore(b) - divergenceScore(a));
   }, [data, buckets]);
 
-  const national = candidates.filter((r) => r.geography === "US");
-  const states = candidates.filter((r) => r.geography !== "US").slice(0, 30);
+  // A national row's geography code equals its country code ("US" | "UK").
+  const national = candidates.filter((r) => r.geography === countryOf(r));
+  const states = candidates
+    .filter((r) => r.geography !== countryOf(r))
+    .slice(0, 30);
 
   return (
     <div>
@@ -81,7 +84,7 @@ function DivergenceCard({ row, data }: { row: Row; data: Comparison }) {
         <span className="font-medium">
           {PROGRAM_LABELS[row.program] ?? row.program} ·{" "}
           {METRIC_LABELS[row.metric] ?? row.metric}
-          {row.geography !== "US" && (
+          {row.geography !== countryOf(row) && (
             <span className="fig text-muted-foreground">
               {" "}
               · {row.geography}
@@ -102,7 +105,8 @@ function DivergenceCard({ row, data }: { row: Row; data: Comparison }) {
         <span className="fig text-destructive">{fmtDivergence(row)}</span>
       </div>
       <p className="mt-1 fig text-sm text-muted-foreground">
-        Urban {fmtValue(row.external_value, row.metric)} · PolicyEngine{" "}
+        {countryOf(row) === "US" ? "Urban" : "External"}{" "}
+        {fmtValue(row.external_value, row.metric)} · PolicyEngine{" "}
         {fmtValue(row.pe_value, row.metric)}
       </p>
       {row.diagnosis && (
