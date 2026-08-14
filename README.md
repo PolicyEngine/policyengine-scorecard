@@ -87,6 +87,16 @@ simlock -- .venv-pe/bin/python pipeline/compute_counterparts.py
 python pipeline/build_comparison.py
 ```
 
+UK side (#40; adapters are stdlib-only except ukmod-stats, which needs
+pypdf; the compute stage needs the managed policyengine-uk environment
+and the certified populace-uk bundle):
+
+```bash
+python sources/dwp-takeup/adapter.py          # + hbai-poverty, hmrc-personal-tax,
+python sources/obr-welfare/adapter.py         #   ukmod-stats
+simlock -- .venv-pe/bin/python pipeline/compute_uk_counterparts.py
+```
+
 App:
 
 ```bash
