@@ -1,0 +1,32 @@
+{
+  "id": "hmrc-personal-tax",
+  "name": "HMRC — Income Tax liabilities statistics + tax ready reckoner",
+  "organization": "HM Revenue & Customs",
+  "country": "UK",
+  "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+  "data_urls": [
+    "https://assets.publishing.service.gov.uk/media/6a5a49b47eb057103bd946a4/Collated_Income_Tax_liabilities_statistics_tables_-_2.1_to_2.6.ods",
+    "https://assets.publishing.service.gov.uk/media/68552862b46781eacfd71d71/June_2025_TRR_ODS__1_.ods"
+  ],
+  "published": "liabilities tables 2026-07-15; ready reckoner June 2025 edition (2025-06-24 — still current: the scheduled July 2026 update was deferred by HMRC pending an assumptions review)",
+  "fetched": "2026-08-14",
+  "model": {
+    "name": "Survey of Personal Incomes (SPI) + HMRC Personal Tax Model",
+    "open_source": false,
+    "method": "Liabilities tables: individual-level Income Tax estimated on the SPI, a stratified sample of HMRC PAYE/Self Assessment/repayment administrative records; latest outturn year is SPI-based and later years are projections consistent with OBR economic assumptions. Ready reckoner: direct (static plus specified behavioural) effects of illustrative changes against the indexed baseline in HMRC's personal tax model, consistent with the OBR Spring Statement 2025 forecast, implemented April 2026.",
+    "method_basis": "Bulletin supporting documentation (liabilities); Direct effects of illustrative tax changes bulletin June 2025"
+  },
+  "baseline_key": {
+    "liabilities_tables": "SPI 2023-24 outturn; 2024-25 to 2026-27 projected on OBR-consistent assumptions (July 2026 edition)",
+    "ready_reckoner": "HMRC indexed baseline, OBR Spring Statement 2025 forecast, April 2026 implementation"
+  },
+  "period": "Table 2.1: 1990-91 to 2026-27; Table 2.5: 2023-24 to 2026-27; ready reckoner: 2026-27 to 2028-29",
+  "programs": [
+    "income_tax", "national_insurance", "child_benefit", "corporation_tax",
+    "capital_gains_tax", "inheritance_tax", "duties", "vehicle_excise_duty",
+    "air_passenger_duty", "vat", "insurance_premium_tax", "stamp_duty_land_tax"
+  ],
+  "geographies": "UK (tables 2.2 region/country breakdowns not yet emitted)",
+  "coverage_note": "This build emits Table 2.1 (payers by marginal rate/sex/age), Table 2.5 (counts and liabilities by income range x band), and the full ready reckoner. Tables 2.2/2.4/2.6 are vendored in the same raw file for follow-up.",
+  "diagnosis_upstream": "HMRC's personal tax model is closed-source; divergence diagnoses classified as external-model issues become a comparison memo, not an upstream PR."
+}

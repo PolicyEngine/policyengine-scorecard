@@ -160,10 +160,10 @@
    "source": "HMRC",
    "area": "UK personal tax statistics",
    "mode": 1,
-   "stage": "registered",
+   "stage": "ingested",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "#3"
+   "updated": "2026-08-14",
+   "note": "External side built (#36): 1,213 rows \u2014 Table 2.1 payers by marginal rate/sex/age 1990-91 to 2026-27, Table 2.5 counts+liabilities by income range x band, full June-2025 ready reckoner (12 tax heads, reform deltas w/ baseline_key); reckoner_t2 campaign counterparts attach via #33"
   },
   {
    "id": "obr-welfare",
