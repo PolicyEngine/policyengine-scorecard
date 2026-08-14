@@ -94,8 +94,12 @@ and the certified populace-uk bundle):
 ```bash
 python sources/dwp-takeup/adapter.py          # + hbai-poverty, hmrc-personal-tax,
 python sources/obr-welfare/adapter.py         #   ukmod-stats
-simlock -- .venv-pe/bin/python pipeline/compute_uk_counterparts.py
+simlock -- .venv-pe/bin/python pipeline/compute_uk_counterparts.py 2025
 ```
+
+The single positional argument is the policy year (default 2025); both the
+baseline and fullpart runs always execute, and the script aborts rather than
+writing output if the fullpart take-up overrides fail to move anything.
 
 App:
 
