@@ -28,10 +28,19 @@ official estimates — provenance is this report, not the primary source),
 skipped, not suppressed.
 
 Parsing: pypdf text extraction with an ordered row registry anchored on
-UKMOD variable names (bsauc_s, tin00_s, ...) and band labels; each row
-consumes exactly its expected number of numeric/missing tokens, and any
-anchor miss or token shortfall fails the run. Requires pypdf
-(pip install pypdf); everything else is stdlib.
+UKMOD variable names (bsauc_s, tin00_s, ...) and band labels. Anchors
+match WHOLE TOKENS, never substrings, and a numeric anchor must sit at
+the start of its line — the first build matched substrings of flattened
+text, so Table 4.7's bare '2' anchor matched the trailing digit of
+'1352' and shifted five quintile rows onto their neighbours' values.
+Values come from the anchor's own line, continuing onto later lines only
+while those hold nothing but values (Table 4.6 wraps two rows). Any
+anchor miss or token shortfall fails the run, and structural_invariants()
+checks the table identities that spot-checks cannot see.
+
+pypdf is imported lazily (see _pdf_reader) so the parsing helpers and the
+invariants stay importable — and CI-testable — without it; everything
+else is stdlib.
 
 Value semantics:
     - caseloads are THOUSANDS -> raw units (families unless noted:
