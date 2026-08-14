@@ -82,6 +82,14 @@ class Metric(str, Enum):
     GINI = "gini"
     INCOME_STATISTIC = "income_statistic"
     INCOME_SHARE = "income_share"
+    # UK UC-deductions harvest (#39/#21). cash_requirement_change is a
+    # PSNCR effect — a cash measure, deliberately distinct from
+    # revenue_change (PSNB): the FRR has no PSNB impact and the boundary
+    # must be unconfusable. gainer_count / average_annual_gain are the
+    # distributional-impact vocabulary of UK fiscal-event documents.
+    CASH_REQUIREMENT_CHANGE = "cash_requirement_change"
+    GAINER_COUNT = "gainer_count"
+    AVERAGE_ANNUAL_GAIN = "average_annual_gain"
 
 
 class UnitConcept(str, Enum):
