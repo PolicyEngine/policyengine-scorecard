@@ -13,6 +13,13 @@
       "basis": "Direct effects bulletin June 2025; scorecard issue #13"
     },
     {
+      "id": "reckoner-sign-convention",
+      "applies_to": {"program": null, "metrics": ["revenue_effect"]},
+      "severity": "definitional",
+      "text": "These values are NOT (reform − baseline). HMRC publishes them as magnitudes with the direction carried in the English label, so a cost and a yield can both be positive: 'Increase additional rate by 1p (yield)' is +£145m and 'Decrease additional rate by 1p (cost)' is +£175m in 2026-27. Every row therefore carries sign_convention='magnitude_with_direction_in_label' plus direction (cost | yield | stated_change) and change_direction (increase | decrease | unsigned), both read off the verbatim label. Comparison constraint: orient the PE counterpart using direction before differencing — a signed (reform − baseline) run returns −£175m for that cost row and reads as a 100% divergence, while an abs() comparison hides the error by matching everything. 'stated_change' means the label states no cost/yield direction; the figure is the effect of the change the label describes, and for the plain 'Change X by 1p' form it applies in either direction. Do not read an unmarked 'Increase …' as a yield — HMRC publishes several negative (e.g. 'Increase lower Capital Gains Tax rate by 10 percentage points' is −£130m in 2026-27, and two (Yield)-marked SDLT rows are negative too). Negatives are HMRC's own published signs and are carried through unflipped.",
+      "basis": "Direct effects bulletin June 2025, Tables 1-2 row labels; measured over data/externals/hmrc-personal-tax.json (225 revenue_effect rows, 28 negative)"
+    },
+    {
       "id": "reckoner-behavioural",
       "applies_to": {"program": null, "metrics": ["revenue_effect"]},
       "severity": "construction",

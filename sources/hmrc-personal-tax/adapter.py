@@ -32,6 +32,16 @@ Value semantics:
     - subgroups for ready-reckoner rows are the verbatim change
       descriptions (they are the claim identity, including (cost)/(yield)
       asymmetry)
+
+Sign convention on ready-reckoner rows (see classify_reckoner_label):
+    HMRC publishes these as magnitudes with the direction carried in the
+    English label, so a cost row and a yield row can BOTH be positive
+    ('Increase additional rate by 1p (yield)' +£145m and 'Decrease
+    additional rate by 1p (cost)' +£175m in 2026-27). They are NOT
+    (reform - baseline) deltas, and negatives that do appear are HMRC's own
+    published signs, not a normalisation. Every revenue_effect row therefore
+    carries sign_convention / direction / change_direction so a downstream
+    comparison can orient the sign without parsing English.
 """
 
 import json
@@ -96,6 +106,72 @@ RECKONER_PROGRAMS = {
 }
 
 
+SIGN_CONVENTION = "magnitude_with_direction_in_label"
+
+# Change verbs HMRC uses to open a ready-reckoner row, mapped to the direction
+# of the change itself as the label states it.
+CHANGE_VERBS = {
+    "Change": "unsigned",
+    "Increase": "increase",
+    "Raise": "increase",
+    "Decrease": "decrease",
+    "Cut": "decrease",
+}
+
+# Sections whose heading, not the row label, states the change. The rows under
+# them are bare commodity names ('Petrol', 'Landfill tax', ...).
+SECTIONS_STATING_THE_CHANGE = {"1% change in various duties"}
+
+DIRECTION_MARKER = re.compile(r"\((cost|yield)\)$", re.IGNORECASE)
+TRAILING_PAREN = re.compile(r"\([^()]*\)$")
+
+
+def classify_reckoner_label(label, section):
+    """Verbatim label text -> (direction, change_direction).
+
+    direction is the fiscal direction HMRC's figure describes:
+        'cost' / 'yield'  the label carries an explicit (cost)/(yield) marker,
+                          so the positive magnitude is a revenue loss / gain
+        'stated_change'   the label states no fiscal direction; the figure is
+                          the effect of the change the label describes
+
+    change_direction is the direction of the change itself, again read off the
+    label's own verb: 'increase', 'decrease', or 'unsigned' where the label says
+    only 'Change ...' (HMRC's figure applies in either direction) or names a
+    duty whose change lives in the section heading.
+
+    Both are derived ONLY from the label text. Nothing is inferred from the
+    value's sign or from what the parameter does: an unmarked 'Increase ...' row
+    is NOT assumed to be a yield, because HMRC publishes several of them
+    negative ('Increase lower Capital Gains Tax rate by 10 percentage points' is
+    -£130m in 2026-27, an increase that loses revenue). Unrecognised labels
+    raise rather than defaulting to a direction.
+    """
+    marker = DIRECTION_MARKER.search(label)
+    if marker:
+        direction = marker.group(1).lower()
+    else:
+        stray = TRAILING_PAREN.search(label)
+        if stray:
+            raise ValueError(
+                f"reckoner: unclassifiable direction marker {stray.group(0)!r} "
+                f"in label {label!r}"
+            )
+        direction = "stated_change"
+
+    head = label.split(" ", 1)[0]
+    if head in CHANGE_VERBS:
+        change_direction = CHANGE_VERBS[head]
+    elif section in SECTIONS_STATING_THE_CHANGE:
+        change_direction = "unsigned"
+    else:
+        raise ValueError(
+            f"reckoner: cannot classify the change stated by label {label!r} "
+            f"under section {section!r}"
+        )
+    return direction, change_direction
+
+
 def strip_notes(text):
     return re.sub(r"\s*\[note \d+\]", "", text).strip()
 
@@ -144,23 +220,25 @@ def emit(
     value,
     status,
     source_column,
+    extra=None,
 ):
-    rows.append(
-        {
-            "source": SOURCE_ID,
-            "country": "UK",
-            "program": program,
-            "metric": metric,
-            "subgroup": subgroup,
-            "variant": variant,
-            "geography": "UK",
-            "unit_concept": unit_concept,
-            "period": period,
-            "value": value,
-            "status": status,
-            "source_column": source_column,
-        }
-    )
+    row = {
+        "source": SOURCE_ID,
+        "country": "UK",
+        "program": program,
+        "metric": metric,
+        "subgroup": subgroup,
+        "variant": variant,
+        "geography": "UK",
+        "unit_concept": unit_concept,
+        "period": period,
+        "value": value,
+        "status": status,
+        "source_column": source_column,
+    }
+    if extra:
+        row.update(extra)
+    rows.append(row)
 
 
 def tax_year(label):
@@ -301,6 +379,7 @@ def parse_reckoner(out):
             raise ValueError(f"reckoner: unexpected column {label!r}")
         periods.append((i, f"{m.group(1)}-{m.group(2)[2:]}"))
     program = None
+    section = None
     for row in rows[3:]:
         if not row:
             continue
@@ -308,13 +387,16 @@ def parse_reckoner(out):
         if len(row) == 1:
             if first in RECKONER_PROGRAMS:
                 program = RECKONER_PROGRAMS[first]
+                section = first
             elif first.startswith(("For detailed methodology", "End of worksheet")):
                 program = None
+                section = None
             else:
                 raise ValueError(f"reckoner: unknown section {first!r}")
             continue
         if program is None:
             raise ValueError(f"reckoner: data row outside a section: {first!r}")
+        direction, change_direction = classify_reckoner_label(first, section)
         for i, period in periods:
             value, status = parse_number(row[i] if i < len(row) else "")
             if status in ("skipped", "unparsed"):
@@ -330,6 +412,11 @@ def parse_reckoner(out):
                 None if value is None else value * 1e6,
                 "suppressed" if value is None else "ok",
                 "reckoner",
+                extra={
+                    "sign_convention": SIGN_CONVENTION,
+                    "direction": direction,
+                    "change_direction": change_direction,
+                },
             )
 
 
@@ -420,6 +507,13 @@ def run():
         print(f"  {'OK ' if ok else 'FAIL'} {label}: {got}")
         failed = failed or not ok
     print(f"  suppressed cells: {sum(r['status'] == 'suppressed' for r in rows)}")
+    census = {}
+    for r in rows:
+        if r["metric"] == "revenue_effect":
+            key = (r["direction"], r["change_direction"])
+            census[key] = census.get(key, 0) + 1
+    for key in sorted(census):
+        print(f"  direction {key[0]} / {key[1]}: {census[key]}")
     if failed:
         raise SystemExit(1)
 
