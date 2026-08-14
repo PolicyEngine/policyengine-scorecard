@@ -1,0 +1,30 @@
+{
+  "id": "dwp-takeup",
+  "name": "DWP — Income-related benefits: estimates of take-up, FYE 2024",
+  "organization": "Department for Work and Pensions",
+  "country": "UK",
+  "url": "https://www.gov.uk/government/statistics/income-related-benefits-estimates-of-take-up-financial-year-ending-2024",
+  "data_urls": [
+    "https://assets.publishing.service.gov.uk/media/68ff856abcb10f6bf9bef927/pension_credit_tables_fye_2324.ods",
+    "https://assets.publishing.service.gov.uk/media/68ff8659d81972ecd2df5db4/housing_benefit_tables_fye_2324.ods"
+  ],
+  "published": "2025-10-30",
+  "fetched": "2026-08-14",
+  "model": {
+    "name": "Policy Simulation Model (PSM)",
+    "open_source": false,
+    "method": "Static microsimulation on the Family Resources Survey combined with DWP and Local Authority administrative data. Recipient caseloads come from admin data; entitled non-recipients are simulated from the FRS, with admin-data linkage identifying recipients in the survey. Caseload take-up = recipients / (recipients + entitled non-recipients); expenditure take-up analogous in amounts. Ranges are 95% confidence intervals (sampling error only).",
+    "method_basis": "Guidance sheet in the published ODS tables; background information and methodology page"
+  },
+  "period": "FYE 2010 and FYE 2013 to FYE 2024 (no FYE 2011/2012 by design; FYE 2021 suppressed for COVID data-quality reasons)",
+  "programs": [
+    "pension_credit",
+    "guarantee_credit",
+    "savings_credit_only",
+    "housing_benefit_pensioners"
+  ],
+  "geographies": "Great Britain only, private households; DWP publishes no subnational take-up breakdowns",
+  "coverage_note": "Working-age income-related benefit take-up is no longer published; since UC rollout the publication covers pension-age benefits (Pension Credit, Housing Benefit for pensioners) only. Savings Credit breakdowns end after FYE 2020 (population too small to estimate).",
+  "vintage_note": "FYE 2024 release introduces improved admin-data-to-FRS linking and calibration-based survey weighting for entitled non-recipient estimation; methodological refinements also apply from FYE 2017. Cross-year comparisons should be treated with caution across those breaks.",
+  "diagnosis_upstream": "PSM is closed-source; divergence diagnoses classified as external-model issues become a comparison memo, not an upstream PR."
+}
