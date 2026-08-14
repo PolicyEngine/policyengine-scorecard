@@ -1,0 +1,37 @@
+{
+  "id": "obr-welfare",
+  "name": "OBR — EFO March 2026 welfare-spending baseline (Table 4.9)",
+  "organization": "Office for Budget Responsibility",
+  "country": "UK",
+  "claim_class": "baseline_moment",
+  "url": "https://obr.uk/efo/economic-and-fiscal-outlook-march-2026/",
+  "data_urls": [
+    "https://obr.uk/download/march-2026-economic-and-fiscal-outlook-detailed-forecast-tables-expenditure/"
+  ],
+  "published": "2026-03-03",
+  "fetched": "2026-08-14",
+  "model": {
+    "name": "OBR welfare spending forecast",
+    "open_source": false,
+    "method": "Benefit-by-benefit expenditure forecast built on DWP/HMRC caseload and average-award models, OBR economic determinants (earnings, CPI for uprating, labour market), and announced policy ('post measures'). 2024-25 is outturn; 2025-26 to 2030-31 are the March 2026 forecast.",
+    "method_basis": "EFO March 2026 chapter 4; OBR welfare trends reports"
+  },
+  "baseline_key": "EFO March 2026 post-measures baseline (current law + announced policy as of 2026-03-03); each EFO round is a distinct baseline, not a revision",
+  "period": "Financial years 2024-25 (outturn) to 2030-31 (forecast)",
+  "programs": [
+    "total_welfare", "dwp_social_security", "universal_credit", "state_pension",
+    "dla_and_pip", "incapacity_benefits", "attendance_allowance",
+    "pension_credit", "carers_allowance", "housing_benefit_not_jsa",
+    "housing_benefit_on_jsa", "child_benefit", "personal_tax_credits",
+    "tax_free_childcare", "winter_fuel_payment", "jobseekers_allowance",
+    "income_support_non_incapacity", "statutory_maternity_pay",
+    "maternity_allowance", "bereavement_benefits", "industrial_injuries_benefits",
+    "christmas_bonus", "financial_assistance_scheme", "ni_social_security",
+    "paternity_pay", "other_dwp", "armed_forces_independence_payment",
+    "cold_weather_payments", "smi_loan_writeoffs", "tax_credits_transferred_debt",
+    "statutory_sick_pay"
+  ],
+  "geographies": "GB for DWP benefit lines, NI for Northern Ireland social security, UK for HMRC-administered lines and totals",
+  "coverage_note": "This build emits Table 4.9 (post-measures welfare spending by benefit, welfare-cap and outside-cap sections). Tables 4.10 (changes since November 2025) and 4.11 (health- and disability-related welfare) are vendored in the same workbook for follow-up. The Welfare trends report (June 2026) is a separate future artifact.",
+  "diagnosis_upstream": "OBR forecast models are closed; divergence diagnoses classified as external-model issues become a comparison memo, not an upstream PR."
+}
