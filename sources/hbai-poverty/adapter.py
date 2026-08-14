@@ -24,6 +24,13 @@ Value semantics:
     - 'Change' rows (year-on-year deltas with [ns] significance flags) are
       derived values and are skipped
     - regional periods like '94/95-96/97' are expanded to '1994/95-1996/97'
+
+Sheet-grammar traps (each cost real rows once; see check_completeness):
+    - column A is not a row-type signal: DWP parks the series-break
+      annotation next to live 2021/22 and 2022/23 data, so the year cell in
+      column B decides what is a data row
+    - one period header carries a stray internal space ('20/21- 22/23'),
+      so period labels are whitespace-squashed before matching
 """
 
 import json
@@ -101,6 +108,9 @@ REGIONS = {
 
 SUPPRESSED = {"[x]", "[u]", "[low]"}
 
+YEAR_RE = re.compile(r"^\d{4}/\d{2}$")
+SPAN_RE = re.compile(r"^\d{2}/\d{2}-\d{2}/\d{2}$")
+
 
 def metric_name(poverty_line, kind):
     return f"{poverty_line}_low_income_{kind}"
@@ -142,8 +152,20 @@ def parse_value(text, kind):
     return (v / 100 if kind == "rate" else v * 1_000_000), "ok"
 
 
+def squash_ws(text):
+    """Drop whitespace inside a period label.
+
+    DWP leaves a stray space in one pensioner-table period header
+    ('20/21- 22/23' in 6_10ts/6_11ts/6_15ts/6_16ts). These labels have no
+    legitimate internal whitespace, so squashing it is safe and keeps the
+    match strict about everything else.
+    """
+    return re.sub(r"\s+", "", text)
+
+
 def expand_span(span):
     """'94/95-96/97' -> '1994/95-1996/97' (century split at 94)."""
+    span = squash_ws(span)
 
     def expand_pair(pair):
         a, b = pair.split("/")
@@ -214,10 +236,14 @@ def parse_summary_sheet(sheet, rows, subgroup, unit_concept, kind, out):
             geography = "UK"
         elif first == "Change":
             continue
-        elif first:
-            continue  # prose/header rows
+        # Column A is NOT a reliable row-type signal: DWP puts series-break
+        # annotations ('Admin-linked benefits data from 2021/22', 'See Note 1')
+        # in column A alongside live 2021/22 and 2022/23 data. The year cell in
+        # column B is what distinguishes a data row -- prose and header rows
+        # never carry a bare YYYY/YY there, and the 'Change' row's column B is
+        # a span ('2023/24-2024/25'), excluded both by name above and by shape.
         year = row[1] if len(row) > 1 else ""
-        if not re.match(r"^\d{4}/\d{2}$", year):
+        if not YEAR_RE.match(year):
             continue
         if geography is None:
             raise ValueError(f"{sheet}: data row before FRS scope marker: {year}")
@@ -242,14 +268,12 @@ def parse_summary_sheet(sheet, rows, subgroup, unit_concept, kind, out):
 
 def parse_regional_sheet(sheet, rows, subgroup, unit_concept, line, kind, out):
     period_row = next(
-        r
-        for r in rows
-        if sum(bool(re.match(r"^\d{2}/\d{2}-\d{2}/\d{2}$", c)) for c in r) > 5
+        r for r in rows if sum(bool(SPAN_RE.match(squash_ws(c))) for c in r) > 5
     )
     periods = {
         i: expand_span(c)
         for i, c in enumerate(period_row)
-        if re.match(r"^\d{2}/\d{2}-\d{2}/\d{2}$", c)
+        if SPAN_RE.match(squash_ws(c))
     }
     variant = None
     for row in rows:
@@ -283,6 +307,80 @@ def parse_regional_sheet(sheet, rows, subgroup, unit_concept, line, kind, out):
             )
 
 
+def next_fiscal_year(year):
+    """'2002/03' -> '2003/04'."""
+    start = int(year[:4])
+    return f"{start + 1}/{(start + 2) % 100:02d}"
+
+
+def check_completeness(rows):
+    """Fail loud if any series lost rows.
+
+    The inline headline checks below only touch hand-picked cells, so they
+    cannot see a whole year or period column going missing (both of which
+    happened: a series-break annotation in column A dropped 2021/22-2022/23,
+    and a stray space in a period header dropped 20/21-22/23 from the
+    pensioner regional tables). These assertions are structural: they hold
+    for any future vintage and break the run rather than emit a gapped series.
+    """
+    single, regional = {}, {}
+    for r in rows:
+        key = (r["metric"], r["subgroup"], r["variant"])
+        if r["geography"] in ("GB", "UK"):
+            single.setdefault(key, {}).setdefault(r["geography"], set()).add(
+                r["period"]
+            )
+        else:
+            regional.setdefault(key, {}).setdefault(r["geography"], set()).add(
+                r["period"]
+            )
+
+    if not single or not regional:
+        raise ValueError("completeness: no rows emitted")
+
+    # 1. UK/GB single-year series: one unbroken fiscal-year run per series,
+    #    GB handing over to UK with no gap and no overlap.
+    spans = set()
+    for key, by_geo in sorted(single.items()):
+        if set(by_geo) != {"GB", "UK"}:
+            raise ValueError(f"completeness: {key} geographies {sorted(by_geo)}")
+        years = sorted(by_geo["GB"] | by_geo["UK"])
+        for prev, nxt in zip(years, years[1:]):
+            if next_fiscal_year(prev) != nxt:
+                raise ValueError(f"completeness: {key} gap {prev} -> {nxt}")
+        if max(by_geo["GB"]) >= min(by_geo["UK"]):
+            raise ValueError(f"completeness: {key} GB/UK scope overlap")
+        spans.add((years[0], years[-1], min(by_geo["UK"])))
+    if len(spans) != 1:
+        raise ValueError(f"completeness: single-year spans differ: {sorted(spans)}")
+
+    # 2. Regional tables: identical period sets across every age group,
+    #    geography and variant (this is exactly what the dropped period
+    #    column broke -- pensioners had 28 periods where children had 29).
+    period_sets = {
+        (key, geo): frozenset(periods)
+        for key, by_geo in regional.items()
+        for geo, periods in by_geo.items()
+    }
+    if len(set(period_sets.values())) != 1:
+        example = {}  # one representative table per distinct period set
+        for (key, geo), periods in sorted(period_sets.items()):
+            example.setdefault(periods, (key, geo, len(periods)))
+        raise ValueError(
+            "completeness: regional period sets differ: "
+            + "; ".join(f"{k}/{g}: {n} periods" for k, g, n in example.values())
+        )
+    for key, by_geo in sorted(regional.items()):
+        if set(by_geo) != REGIONS:
+            raise ValueError(
+                f"completeness: {key} missing geographies "
+                f"{sorted(REGIONS - set(by_geo))}"
+            )
+    for key in regional:
+        if (key[0], key[1], "bhc" if key[2] == "ahc" else "ahc") not in regional:
+            raise ValueError(f"completeness: {key} has no BHC/AHC counterpart")
+
+
 def run():
     rows = []
     sheets = read_sheets(HERE / "raw" / SUMMARY_FILE, SUMMARY_TABLES)
@@ -294,6 +392,8 @@ def run():
             parse_regional_sheet(
                 sheet, sheets[sheet], subgroup, unit_concept, line, kind, rows
             )
+
+    check_completeness(rows)
 
     out = OUT_DIR / f"{SOURCE_ID}.json"
     out.write_text(json.dumps(rows))
