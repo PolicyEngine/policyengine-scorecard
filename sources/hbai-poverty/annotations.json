@@ -1,0 +1,65 @@
+{
+  "_schema": {
+    "applies_to": "matcher on {program, metrics, subgroups}; null = any",
+    "severity": "period | definitional | construction | caution | gap",
+    "basis": "traceability: source Guidance/Notes sheets, the HBAI methodology report, a GitHub issue, or a measured diagnostic in this repo's data"
+  },
+  "annotations": [
+    {
+      "id": "holdout-doctrine",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "construction",
+      "text": "PolicyEngine UK's enhanced FRS is built from the same underlying survey HBAI is computed from, and its calibration targets include income and demographic aggregates that co-move with poverty rates. Before scoring, record per-cell whether pe-uk calibration consumes an HBAI-adjacent target; where it does not, treat HBAI as the UK analogue of the census-spm permanent-holdout doctrine — compare, never target, and expect construction-driven deviations.",
+      "basis": "scorecard issue #35; census-spm lane doctrine (2026-08-02); policyengine-uk calibration target registry"
+    },
+    {
+      "id": "survey-not-simulation",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "construction",
+      "text": "HBAI is measured survey income, not simulated entitlement: reported receipt (informed by admin data from 2021/22), reported housing costs, and survey equivalence scales. PE poverty rates are simulated tax/benefit outcomes on reweighted FRS microdata with calibrated take-up. Divergence decomposes into data (survey vs enhanced-FRS), income concept, and simulated-vs-reported receipt channels.",
+      "basis": "HBAI methodology report FYE 2025"
+    },
+    {
+      "id": "series-break-2122",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "caution",
+      "text": "There is a break in series from 2021/22: integrated survey and benefit admin data, and a change in the absolute-poverty base year. Pre- and post-break years are not directly comparable, and DWP flags the FYE 2021 (COVID) survey year separately. Score each year against this release's restated series.",
+      "basis": "Series-break note on every parsed sheet; Notes sheet"
+    },
+    {
+      "id": "geography-switch",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "definitional",
+      "text": "Summary rows are GB before 2002/03 and UK from 2002/03 (the FRS did not cover Northern Ireland earlier); the geography field tracks the switch, and early NI cells in regional tables are suppressed. A PE counterpart must match the geography field per row, not assume UK throughout.",
+      "basis": "FRS (GB)/FRS (UK) row markers in the summary tables"
+    },
+    {
+      "id": "regional-three-year-averages",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "period",
+      "text": "All region/country rows are 3-year rolling averages (periods like '2022/23-2024/25'); single-year regional estimates are not published due to sample size. A comparable PE counterpart averages three simulation years with matching uprating, not one year.",
+      "basis": "Region/Country (3 year average) table structure"
+    },
+    {
+      "id": "rounding-precision",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "caution",
+      "text": "Rates are published to whole percentage points (fractions here carry ±0.005 rounding) and counts to 0.1 million (±50,000). '[low]' cells (< 0.05 million) and '[u]' small-sample cells are suppressed. DWP marks most recent-year movements not statistically significant; deltas inside sampling error should not be scored as divergence.",
+      "basis": "Guidance sheet; uncertainty tables in the same publication"
+    },
+    {
+      "id": "equivalisation-income-concept",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "definitional",
+      "text": "Low income is 60% of median equivalised net disposable household income (OECD-companion scales; AHC deducts housing costs and uses the AHC equivalence variant). PE poverty output must use HBAI's household sharing unit, equivalence scales, and BHC/AHC definitions — not benefit-unit income or unequivalised measures. Absolute low income is anchored to the FYE 2011 median in real terms (rebased at the series break), not a fixed basket.",
+      "basis": "HBAI methodology report FYE 2025, income-measure definitions"
+    },
+    {
+      "id": "campaign-family-link",
+      "applies_to": {"program": null, "metrics": ["relative_low_income_count"], "subgroups": ["children"]},
+      "severity": "construction",
+      "text": "The vendored two_child campaign family scores child-poverty-count changes against Resolution Foundation claims derived from an HBAI-consistent poverty line; those PE runs used a fixed baseline relative-AHC line and an HBAI-dependent-child proxy. When those rows attach (#33), this source's children AHC series is the level benchmark the deltas ride on.",
+      "basis": "sources/campaign-20260802/uk/two_child.jsonl construction notes"
+    }
+  ]
+}

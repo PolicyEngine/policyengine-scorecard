@@ -150,10 +150,10 @@
    "source": "DWP HBAI",
    "area": "UK poverty rates",
    "mode": 1,
-   "stage": "registered",
+   "stage": "ingested",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "#3"
+   "updated": "2026-08-14",
+   "note": "External side built (#35): FYE 2025 vintage, 12,888 tidy rows \u2014 rel/abs low income x rate/count x BHC/AHC x 4 age groups, UK single-year + region/country 3-year averages; headline checks pass; PE counterparts pending #40"
   },
   {
    "id": "hmrc-personal-tax",
