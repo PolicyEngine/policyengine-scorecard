@@ -185,6 +185,37 @@ LEFT JOIN baselines bp ON bp.baseline_key = r.baseline_key;
 """
 
 
+SCORES_SQL = (
+    "INSERT OR REPLACE INTO external_scores"
+    " (claim_id, source, source_model, ledger_fact,"
+    " source_column, publication, reform_key, reform_json,"
+    " metric, unit_concept, period, time_basis, conditions,"
+    " geography, program, value, value_kind, status,"
+    " calibration_relationship, period_start, period_end, baseline_key)"
+    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+)
+RESULTS_SQL = (
+    "INSERT INTO pe_results (claim_id, computed_value, status,"
+    " engine_version, data_bundle, pe_construction, run_id,"
+    " computed_at, annotations, baseline_key)"
+    " VALUES (?,?,?,?,?,?,?,?,?,?)"
+)
+EXHIBITS_SQL = (
+    "INSERT INTO pe_exhibits (exhibit, reform_key, reform_json,"
+    " metric, unit_concept, period, time_basis, conditions,"
+    " geography, program, value, baseline_value, delta,"
+    " engine_version, data_bundle, run_id, computed_at, note,"
+    " baseline_key)"
+    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+)
+LANE_SQL = (
+    "INSERT INTO lanes (lane, stage, detail, updated_at)"
+    " VALUES (?,?,?,?) ON CONFLICT(lane) DO UPDATE SET"
+    " stage=excluded.stage, detail=excluded.detail,"
+    " updated_at=excluded.updated_at"
+)
+
+
 class ScorecardDB:
     def __init__(self, path: str | Path):
         self.path = Path(path)
@@ -204,11 +235,9 @@ class ScorecardDB:
         The comparisons view is dropped and recreated after migration so
         its definition always matches the code.
         """
+
         def cols(table):
-            return {
-                r["name"]
-                for r in self.conn.execute(f"PRAGMA table_info({table})")
-            }
+            return {r["name"] for r in self.conn.execute(f"PRAGMA table_info({table})")}
 
         with self.conn:
             score_cols = cols("external_scores")
@@ -227,8 +256,7 @@ class ScorecardDB:
                         f"ALTER TABLE {table} ADD COLUMN baseline_key TEXT"
                     )
             diag_sql = self.conn.execute(
-                "SELECT sql FROM sqlite_master"
-                " WHERE type='table' AND name='diagnoses'"
+                "SELECT sql FROM sqlite_master WHERE type='table' AND name='diagnoses'"
             ).fetchone()
             if diag_sql and "methodological_difference" not in diag_sql["sql"]:
                 self.conn.executescript(
@@ -256,101 +284,94 @@ class ScorecardDB:
         self.conn.close()
 
     # -- writes ---------------------------------------------------------
+    # Row preparers are exposed so ingests that need several writes in ONE
+    # transaction can executemany(SCORES_SQL / RESULTS_SQL, ...) inside a
+    # single `with db.conn:` block; the convenience methods below commit
+    # per call.
+    @staticmethod
+    def score_row(s: ExternalScore) -> tuple:
+        return (
+            s.claim_id(),
+            s.source,
+            s.source_model,
+            s.ledger_fact,
+            s.source_column,
+            json.dumps(s.publication, sort_keys=True),
+            s.reform.key(),
+            s.reform.to_json(),
+            s.metric.value,
+            s.unit_concept.value,
+            s.period,
+            s.time_basis.value,
+            json.dumps(s.conditions, sort_keys=True),
+            s.conditions.get("geography"),
+            s.conditions.get("program"),
+            s.value,
+            s.value_kind,
+            s.status,
+            s.calibration_relationship.value,
+            s.period_start,
+            s.period_end,
+            s.reform.baseline_key(),
+        )
+
+    @staticmethod
+    def result_row(r: PEResult) -> tuple:
+        return (
+            r.claim_id,
+            r.computed_value,
+            r.status.value,
+            r.engine_version,
+            r.data_bundle,
+            r.pe_construction,
+            r.run_id,
+            r.computed_at,
+            json.dumps(r.annotations),
+            r.baseline_key,
+        )
+
     def upsert_scores(self, scores: Iterable[ExternalScore]) -> int:
-        rows = []
-        for s in scores:
-            rows.append(
-                (
-                    s.claim_id(),
-                    s.source,
-                    s.source_model,
-                    s.ledger_fact,
-                    s.source_column,
-                    json.dumps(s.publication, sort_keys=True),
-                    s.reform.key(),
-                    s.reform.to_json(),
-                    s.metric.value,
-                    s.unit_concept.value,
-                    s.period,
-                    s.time_basis.value,
-                    json.dumps(s.conditions, sort_keys=True),
-                    s.conditions.get("geography"),
-                    s.conditions.get("program"),
-                    s.value,
-                    s.value_kind,
-                    s.status,
-                    s.calibration_relationship.value,
-                    s.period_start,
-                    s.period_end,
-                    s.reform.baseline_key(),
-                )
-            )
+        rows = [self.score_row(s) for s in scores]
         with self.conn:
-            self.conn.executemany(
-                "INSERT OR REPLACE INTO external_scores"
-                " (claim_id, source, source_model, ledger_fact,"
-                " source_column, publication, reform_key, reform_json,"
-                " metric, unit_concept, period, time_basis, conditions,"
-                " geography, program, value, value_kind, status,"
-                " calibration_relationship, period_start, period_end,"
-                " baseline_key)"
-                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                rows,
-            )
+            self.conn.executemany(SCORES_SQL, rows)
         return len(rows)
 
     def add_results(self, results: Iterable[PEResult]) -> int:
-        rows = [
-            (
-                r.claim_id,
-                r.computed_value,
-                r.status.value,
-                r.engine_version,
-                r.data_bundle,
-                r.pe_construction,
-                r.run_id,
-                r.computed_at,
-                json.dumps(r.annotations),
-                r.baseline_key,
-            )
-            for r in results
-        ]
+        rows = [self.result_row(r) for r in results]
         with self.conn:
-            self.conn.executemany(
-                "INSERT INTO pe_results (claim_id, computed_value, status,"
-                " engine_version, data_bundle, pe_construction, run_id,"
-                " computed_at, annotations, baseline_key)"
-                " VALUES (?,?,?,?,?,?,?,?,?,?)",
-                rows,
-            )
+            self.conn.executemany(RESULTS_SQL, rows)
         return len(rows)
+
+    @staticmethod
+    def exhibit_row(r: dict) -> tuple:
+        return (
+            r["exhibit"],
+            r["reform_key"],
+            r["reform_json"],
+            r["metric"],
+            r["unit_concept"],
+            r["period"],
+            r["time_basis"],
+            json.dumps(r.get("conditions", {}), sort_keys=True),
+            r.get("geography"),
+            r.get("program"),
+            r["value"],
+            r.get("baseline_value"),
+            r.get("delta"),
+            r["engine_version"],
+            r["data_bundle"],
+            r.get("run_id", ""),
+            r.get("computed_at", ""),
+            r.get("note", ""),
+            r.get("baseline_key"),
+        )
 
     def add_exhibits(self, rows: Iterable[dict]) -> int:
         """PE-only exhibits: computations with no external claim to attach
         to (e.g. per-program take-up poverty attribution)."""
-        prepared = [
-            (
-                r["exhibit"], r["reform_key"], r["reform_json"], r["metric"],
-                r["unit_concept"], r["period"], r["time_basis"],
-                json.dumps(r.get("conditions", {}), sort_keys=True),
-                r.get("geography"), r.get("program"), r["value"],
-                r.get("baseline_value"), r.get("delta"),
-                r["engine_version"], r["data_bundle"], r.get("run_id", ""),
-                r.get("computed_at", ""), r.get("note", ""),
-                r.get("baseline_key"),
-            )
-            for r in rows
-        ]
+        prepared = [self.exhibit_row(r) for r in rows]
         with self.conn:
-            self.conn.executemany(
-                "INSERT INTO pe_exhibits (exhibit, reform_key, reform_json,"
-                " metric, unit_concept, period, time_basis, conditions,"
-                " geography, program, value, baseline_value, delta,"
-                " engine_version, data_bundle, run_id, computed_at, note,"
-                " baseline_key)"
-                " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                prepared,
-            )
+            self.conn.executemany(EXHIBITS_SQL, prepared)
         return len(prepared)
 
     def exhibits(self, exhibit: str) -> list[sqlite3.Row]:
@@ -360,13 +381,7 @@ class ScorecardDB:
 
     def set_lane(self, lane: str, stage: str, detail: str = "", at: str = ""):
         with self.conn:
-            self.conn.execute(
-                "INSERT INTO lanes (lane, stage, detail, updated_at)"
-                " VALUES (?,?,?,?) ON CONFLICT(lane) DO UPDATE SET"
-                " stage=excluded.stage, detail=excluded.detail,"
-                " updated_at=excluded.updated_at",
-                (lane, stage, detail, at),
-            )
+            self.conn.execute(LANE_SQL, (lane, stage, detail, at))
 
     def register_baseline(
         self,
@@ -384,8 +399,7 @@ class ScorecardDB:
                 " label=excluded.label, description=excluded.description,"
                 " framework=excluded.framework, spec_json=excluded.spec_json,"
                 " provenance=excluded.provenance",
-                (baseline_key, label, description, framework, spec_json,
-                 provenance),
+                (baseline_key, label, description, framework, spec_json, provenance),
             )
 
     def unregistered_baselines(self) -> list[str]:

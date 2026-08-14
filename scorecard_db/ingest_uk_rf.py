@@ -49,11 +49,26 @@ from .uk import (
 
 _KNOWN_FIELDS = frozenset(
     {
-        "source", "metric", "proposed_metric", "unit_concept",
-        "proposed_unit", "value", "value_raw", "value_kind", "note",
-        "local_artifact", "attribution", "period", "time_basis", "conditions",
-        "reform_hint", "calibration_relationship", "source_model",
-        "source_column", "publication", "status",
+        "source",
+        "metric",
+        "proposed_metric",
+        "unit_concept",
+        "proposed_unit",
+        "value",
+        "value_raw",
+        "value_kind",
+        "note",
+        "local_artifact",
+        "attribution",
+        "period",
+        "time_basis",
+        "conditions",
+        "reform_hint",
+        "calibration_relationship",
+        "source_model",
+        "source_column",
+        "publication",
+        "status",
     }
 )
 
@@ -83,23 +98,35 @@ _CONDITION_KEYS = {
 _METRICS = {
     "poverty_rate": (Metric.POVERTY_RATE, UnitConcept.SHARE, False),
     "poverty_rate_change": (
-        Metric.POVERTY_RATE_CHANGE, UnitConcept.SHARE, False,
+        Metric.POVERTY_RATE_CHANGE,
+        UnitConcept.SHARE,
+        False,
     ),
     "poverty_count": (
-        Metric.POVERTY_COUNT, UnitConcept.CHILDREN_UNDER_18, False,
+        Metric.POVERTY_COUNT,
+        UnitConcept.CHILDREN_UNDER_18,
+        False,
     ),
     "poverty_count_change": (
-        Metric.POVERTY_COUNT_CHANGE, UnitConcept.CHILDREN_UNDER_18, False,
+        Metric.POVERTY_COUNT_CHANGE,
+        UnitConcept.CHILDREN_UNDER_18,
+        False,
     ),
     "revenue_change": (Metric.REVENUE_CHANGE, UnitConcept.GBP, False),
     "real_income_growth_pct": (
-        Metric.REAL_INCOME_GROWTH, UnitConcept.SHARE, False,
+        Metric.REAL_INCOME_GROWTH,
+        UnitConcept.SHARE,
+        False,
     ),
     "real_income_growth_pct_pa": (
-        Metric.REAL_INCOME_GROWTH, UnitConcept.SHARE, True,
+        Metric.REAL_INCOME_GROWTH,
+        UnitConcept.SHARE,
+        True,
     ),
     "benefit_uprating_pct": (
-        Metric.BENEFIT_UPRATING, UnitConcept.SHARE, False,
+        Metric.BENEFIT_UPRATING,
+        UnitConcept.SHARE,
+        False,
     ),
     "avg_income_change": (
         Metric.AVG_CHANGE_HOUSEHOLD_NET_INCOME,
@@ -117,21 +144,31 @@ _METRICS = {
         True,
     ),
     "reform_fiscal_cost": (
-        Metric.EXCHEQUER_IMPACT, UnitConcept.GBP, True,
+        Metric.EXCHEQUER_IMPACT,
+        UnitConcept.GBP,
+        True,
     ),
     "share_gaining": (Metric.SHARE_GAINING, UnitConcept.SHARE, False),
     "share_losing": (Metric.SHARE_LOSING, UnitConcept.SHARE, False),
     "benefiting_family_count": (
-        Metric.FAMILIES_AFFECTED_COUNT, UnitConcept.FAMILIES, True,
+        Metric.FAMILIES_AFFECTED_COUNT,
+        UnitConcept.FAMILIES,
+        True,
     ),
     "benefit_rate_weekly": (
-        Metric.POLICY_PARAMETER_LEVEL, UnitConcept.GBP_PER_WEEK, True,
+        Metric.POLICY_PARAMETER_LEVEL,
+        UnitConcept.GBP_PER_WEEK,
+        True,
     ),
     "benefit_rate_gap_weekly": (
-        Metric.POLICY_PARAMETER_LEVEL, UnitConcept.GBP_PER_WEEK, True,
+        Metric.POLICY_PARAMETER_LEVEL,
+        UnitConcept.GBP_PER_WEEK,
+        True,
     ),
     "real_value_change_pct": (
-        Metric.POLICY_PARAMETER_LEVEL, UnitConcept.SHARE, True,
+        Metric.POLICY_PARAMETER_LEVEL,
+        UnitConcept.SHARE,
+        True,
     ),
 }
 
@@ -224,9 +261,7 @@ def stage() -> tuple[list[ExternalScore], list[dict], int]:
 def ingest(db_path: Path) -> dict:
     scores, _, dropped = stage()
     reform_rows = sum(1 for s in scores if s.reform is not BASELINE)
-    uprating = sum(
-        1 for s in scores if s.metric is Metric.BENEFIT_UPRATING
-    )
+    uprating = sum(1 for s in scores if s.metric is Metric.BENEFIT_UPRATING)
     db = ScorecardDB(db_path)
     n = db.upsert_scores(scores)
     db.set_lane(

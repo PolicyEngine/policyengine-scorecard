@@ -49,10 +49,12 @@ _POVERTY_METRICS = {
     "poverty_rate": ("base", Metric.POVERTY_RATE),
     "poverty_rate_fullpart": ("fullpart", Metric.POVERTY_RATE),
     "poverty_rate_relative_change_fullpart": (
-        "fullpart", Metric.POVERTY_RATE_CHANGE,
+        "fullpart",
+        Metric.POVERTY_RATE_CHANGE,
     ),
     "poverty_count_change_fullpart": (
-        "fullpart", Metric.POVERTY_COUNT_CHANGE,
+        "fullpart",
+        Metric.POVERTY_COUNT_CHANGE,
     ),
 }
 _PROGRAM_METRICS = {
@@ -62,7 +64,10 @@ _PROGRAM_METRICS = {
     "participation_gap_count": Metric.PARTICIPATION_GAP_COUNT,
 }
 _POP_CONCEPTS = {
-    "persons", "adults_18plus", "children_0thr4", "children_under_13",
+    "persons",
+    "adults_18plus",
+    "children_0thr4",
+    "children_under_13",
     "children",
 }
 
@@ -123,17 +128,15 @@ def _probe(row) -> ExternalScore | None:
     )
 
 
-def ingest(db_path: Path, comparison_json: Path | None = None,
-           lanes_json: Path | None = None) -> dict:
+def ingest(
+    db_path: Path, comparison_json: Path | None = None, lanes_json: Path | None = None
+) -> dict:
     comparison_json = comparison_json or REPO / "data" / "comparison.json"
     lanes_json = lanes_json or REPO / "data" / "lanes.json"
     comp = json.loads(comparison_json.read_text())
     db = ScorecardDB(db_path)
 
-    known = {
-        r[0]
-        for r in db.conn.execute("SELECT claim_id FROM external_scores")
-    }
+    known = {r[0] for r in db.conn.execute("SELECT claim_id FROM external_scores")}
     bundle = comp.get("pe_bundle", {})
     results, unmatched, col_fixes = [], [], []
     for row in comp["rows"]:
@@ -144,8 +147,13 @@ def ingest(db_path: Path, comparison_json: Path | None = None,
         if cid not in known:
             if row.get("pe_value") is not None:
                 unmatched.append(
-                    (row["program"], row["metric"], row["geography"],
-                     row["subgroup"], row["variant"])
+                    (
+                        row["program"],
+                        row["metric"],
+                        row["geography"],
+                        row["subgroup"],
+                        row["variant"],
+                    )
                 )
             continue
         if row.get("source_column"):
@@ -185,7 +193,9 @@ def ingest(db_path: Path, comparison_json: Path | None = None,
         feed = json.loads(lanes_json.read_text())
         for lane in feed.get("lanes", []):
             db.set_lane(
-                lane["id"], lane["stage"], lane.get("note", ""),
+                lane["id"],
+                lane["stage"],
+                lane.get("note", ""),
                 lane.get("updated", ""),
             )
             n_lanes += 1

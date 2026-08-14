@@ -49,9 +49,19 @@ from .models import (
 )
 
 _STATE_DESIGNS = {
-    "California", "Colorado", "Illinois", "Maine", "Maryland",
-    "Massachusetts", "Minnesota", "New Jersey", "New Mexico", "New York",
-    "Oregon", "Vermont", "Washington DC",
+    "California",
+    "Colorado",
+    "Illinois",
+    "Maine",
+    "Maryland",
+    "Massachusetts",
+    "Minnesota",
+    "New Jersey",
+    "New Mexico",
+    "New York",
+    "Oregon",
+    "Vermont",
+    "Washington DC",
 }
 
 # Modeled CTC counterfactual worlds (100% take-up, no behavior).
@@ -90,7 +100,8 @@ def _scenario_world(scenario: str) -> tuple[dict | None, dict]:
         if state not in _STATE_DESIGNS:
             raise ValueError(f"cpsp: unknown state design {scenario!r}")
         return {
-            "policy": "state_refundable_ctc_design", "option": state,
+            "policy": "state_refundable_ctc_design",
+            "option": state,
         }, {}
     raise ValueError(f"cpsp: unmapped policy_scenario {scenario!r}")
 
@@ -115,17 +126,36 @@ METRICS = {
 
 _KNOWN_FIELDS = frozenset(
     {
-        "source", "metric", "proposed_metric", "unit_concept",
-        "proposed_unit_concept", "period", "time_basis", "value",
-        "conditions", "reform", "calibration_relationship", "source_model",
-        "source_column", "publication", "value_kind", "status",
+        "source",
+        "metric",
+        "proposed_metric",
+        "unit_concept",
+        "proposed_unit_concept",
+        "period",
+        "time_basis",
+        "value",
+        "conditions",
+        "reform",
+        "calibration_relationship",
+        "source_model",
+        "source_column",
+        "publication",
+        "value_kind",
+        "status",
     }
 )
 _KNOWN_CONDITIONS = frozenset(
     {
-        "geography", "subgroup", "policy_scenario", "comparison_scenario",
-        "change_type", "month", "data_vintage", "poverty_threshold",
-        "measure_variant", "caveat",
+        "geography",
+        "subgroup",
+        "policy_scenario",
+        "comparison_scenario",
+        "change_type",
+        "month",
+        "data_vintage",
+        "poverty_threshold",
+        "measure_variant",
+        "caveat",
     }
 )
 
@@ -154,16 +184,13 @@ def stage_scores() -> list[ExternalScore]:
         if metric in (Metric.POVERTY_RATE, Metric.POVERTY_RATE_CHANGE):
             unit = UnitConcept.SHARE
         else:
-            unit = UnitConcept(
-                row.get("unit_concept") or row["proposed_unit_concept"]
-            )
+            unit = UnitConcept(row.get("unit_concept") or row["proposed_unit_concept"])
 
-        reform_desc, extra = _scenario_world(
-            staged_conds.pop("policy_scenario")
-        )
+        reform_desc, extra = _scenario_world(staged_conds.pop("policy_scenario"))
         comparison = staged_conds.pop("comparison_scenario", None)
         is_change = metric in (
-            Metric.POVERTY_RATE_CHANGE, Metric.POVERTY_COUNT_CHANGE,
+            Metric.POVERTY_RATE_CHANGE,
+            Metric.POVERTY_COUNT_CHANGE,
         )
         if is_change != (comparison is not None):
             raise ValueError(
@@ -179,10 +206,9 @@ def stage_scores() -> list[ExternalScore]:
                 baseline=_comparison_world(comparison),
             )
         elif reform_desc is not None:
-            reform = policy_ref(**{
-                k if k != "policy" else "policy": v
-                for k, v in reform_desc.items()
-            })
+            reform = policy_ref(
+                **{k if k != "policy" else "policy": v for k, v in reform_desc.items()}
+            )
         else:
             reform = BASELINE
 
@@ -194,7 +220,10 @@ def stage_scores() -> list[ExternalScore]:
         if subgroup != "all":
             conditions["subgroup"] = subgroup
         for key in (
-            "change_type", "month", "data_vintage", "poverty_threshold",
+            "change_type",
+            "month",
+            "data_vintage",
+            "poverty_threshold",
             "measure_variant",
         ):
             if key in staged_conds:

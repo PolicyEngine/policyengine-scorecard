@@ -115,9 +115,7 @@ class Metric(str, Enum):
     SHARE_GAINING = "share_gaining"
     SHARE_LOSING = "share_losing"
     SHARE_OF_SPENDING_TO_GROUP = "share_of_spending_to_group"
-    COST_PER_CHILD_LIFTED_OUT_OF_POVERTY = (
-        "cost_per_child_lifted_out_of_poverty"
-    )
+    COST_PER_CHILD_LIFTED_OUT_OF_POVERTY = "cost_per_child_lifted_out_of_poverty"
     FAMILIES_AFFECTED_COUNT = "families_affected_count"
     # RF Living Standards Outlook household income growth projections.
     REAL_INCOME_GROWTH = "real_income_growth"
@@ -295,9 +293,7 @@ def baseline_key(descriptor: dict) -> str:
     descriptor shape ReformRef.baseline carries; {"policy": "current_law"}
     keys the null baseline."""
     if not (isinstance(descriptor, dict) and descriptor.get("policy")):
-        raise ValueError(
-            f"baseline descriptor needs a 'policy' slug: {descriptor!r}"
-        )
+        raise ValueError(f"baseline descriptor needs a 'policy' slug: {descriptor!r}")
     return hashlib.sha256(_canonical(descriptor).encode()).hexdigest()[:16]
 
 
@@ -353,12 +349,9 @@ class ReformRef:
         if self.framework == "policy_ref":
             if self.rulespec_ref:
                 raise ValueError("policy_ref carries no rulespec_ref")
-            for name, desc in (("reform", self.reform),
-                               ("baseline", self.baseline)):
+            for name, desc in (("reform", self.reform), ("baseline", self.baseline)):
                 if name == "reform" and desc is None:
-                    raise ValueError(
-                        "policy_ref requires a reform descriptor dict"
-                    )
+                    raise ValueError("policy_ref requires a reform descriptor dict")
                 if desc is not None and not (
                     isinstance(desc, dict)
                     and isinstance(desc.get("policy"), str)
@@ -386,11 +379,7 @@ class ReformRef:
         HMT-costing convention: scored against the law in force at
         publication (the announcement vintage rides in conditions such as
         fiscal_event / data_vintage, not in the baseline world)."""
-        return (
-            self.baseline
-            if self.baseline is not None
-            else CURRENT_LAW_DESCRIPTOR
-        )
+        return self.baseline if self.baseline is not None else CURRENT_LAW_DESCRIPTOR
 
     def baseline_key(self) -> str:
         """First-class baseline identity (issue #13): a stable hash of the
@@ -428,9 +417,7 @@ class ExternalScore:
     value: Optional[float]  # None => suppressed
     conditions: dict = field(default_factory=dict)
     reform: ReformRef = field(default_factory=ReformRef)
-    calibration_relationship: CalibrationRelationship = (
-        CalibrationRelationship.HELD_OUT
-    )
+    calibration_relationship: CalibrationRelationship = CalibrationRelationship.HELD_OUT
     source_model: Optional[str] = None  # attis, trim3, dynasim, taxcalc…
     ledger_fact: Optional[str] = None  # validation_comparator fact id
     source_column: Optional[str] = None  # the source's own name for it

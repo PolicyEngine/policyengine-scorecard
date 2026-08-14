@@ -50,11 +50,15 @@ ENACTED_VII = "obbba_enacted_title_vii"
 #              expected staged baseline_hint prefix)
 TABLES = {
     "T25-0209": (
-        "obbba_senate_ctc_top_rate_options", SENATE_VII, None,
+        "obbba_senate_ctc_top_rate_options",
+        SENATE_VII,
+        None,
         "Baseline: Current Law Plus Enactment",
     ),
     "T25-0215": (
-        "ctc_2500_max_refundable_2000_indexed", SENATE_VII, None,
+        "ctc_2500_max_refundable_2000_indexed",
+        SENATE_VII,
+        None,
         "Baseline: Current Law Plus Enactment",
     ),
     **{
@@ -62,54 +66,83 @@ TABLES = {
         for n in range(217, 227)
     },
     "T25-0227": (
-        MANAGERS, None, {"scope": "provisions_effective_2025"},
+        MANAGERS,
+        None,
+        {"scope": "provisions_effective_2025"},
         "Baseline: Current Law",
     ),
     "T25-0229": (ENACTED_VII, None, None, "Baseline: Current Law"),
     "T25-0236": (ENACTED_VII, None, None, "Baseline: Current Law"),
     "T25-0366": (
-        "trump_tariffs_announced_20250120_20251023", PRE_2025_TARIFFS,
-        None, "Baseline: Current Law with Pre-2025 Tariffs",
+        "trump_tariffs_announced_20250120_20251023",
+        PRE_2025_TARIFFS,
+        None,
+        "Baseline: Current Law with Pre-2025 Tariffs",
     ),
     "T26-0010": (
         # File-internal truth (see module docstring); page title is wrong.
-        "trump_tariffs_announced_20250120_20260402", PRE_2025_TARIFFS,
-        None, "Baseline: Current Law (assumed, not stated)",
+        "trump_tariffs_announced_20250120_20260402",
+        PRE_2025_TARIFFS,
+        None,
+        "Baseline: Current Law (assumed, not stated)",
     ),
     "T26-0014": ("family_first_act", None, None, "Baseline: Current Law"),
     "T26-0016": ("family_first_act", None, None, "Baseline: Current Law"),
     "T26-0022": ("wptra", None, None, "Baseline: Current Law"),
     "T26-0024": ("wptra", None, None, "Baseline: Current Law"),
     "T26-0027": (
-        "wptra_plus_min_eitc_under4", None, None, "Baseline: Current Law",
+        "wptra_plus_min_eitc_under4",
+        None,
+        None,
+        "Baseline: Current Law",
     ),
     "T26-0028": (
-        "wptra_plus_min_eitc_under4", None, None, "Baseline: Current Law",
+        "wptra_plus_min_eitc_under4",
+        None,
+        None,
+        "Baseline: Current Law",
     ),
     "T26-0029": (
-        "american_family_act_119th", None, None, "Baseline: Current Law",
+        "american_family_act_119th",
+        None,
+        None,
+        "Baseline: Current Law",
     ),
     "T26-0030": (
-        "american_family_act_119th", None, None, "Baseline: Current Law",
+        "american_family_act_119th",
+        None,
+        None,
+        "Baseline: Current Law",
     ),
     "T26-0031": (
-        "american_family_act_119th", None, None, "Baseline: Current Law",
+        "american_family_act_119th",
+        None,
+        None,
+        "Baseline: Current Law",
     ),
     "T26-0087": (
-        "obbba_extend_certain_provisions", None, None,
+        "obbba_extend_certain_provisions",
+        None,
+        None,
         "Baseline: Current Law",
     ),
     "T26-0112": (
         # Workbook states the baseline; staged hint said "assumed".
-        "trump_tariffs_announced_20250120_20260723", PRE_2025_TARIFFS,
-        None, "Baseline: Current Law (assumed, not stated)",
+        "trump_tariffs_announced_20250120_20260723",
+        PRE_2025_TARIFFS,
+        None,
+        "Baseline: Current Law (assumed, not stated)",
     ),
     "T26-0113": (
-        "trump_tariffs_announced_20250120_20260723", PRE_2025_TARIFFS,
-        None, "Baseline: Current Law (assumed, not stated)",
+        "trump_tariffs_announced_20250120_20260723",
+        PRE_2025_TARIFFS,
+        None,
+        "Baseline: Current Law (assumed, not stated)",
     ),
     "T26-0126": (
-        "obbba_extend_salt_limit_increase", None, None,
+        "obbba_extend_salt_limit_increase",
+        None,
+        None,
         "Baseline: Current Law",
     ),
 }
@@ -132,29 +165,55 @@ INCOME_AXES = {
     " Percentile, 2025": "Expanded Cash Income Percentile",
     "Distribution of Federal Tax Change by Expanded Cash Income"
     " Percentile,": "Expanded Cash Income Percentile",
-    "Expanded Cash Income Level (thousands of 2025 dollars)":
-        "Expanded Cash Income Level (thousands of 2025 dollars)",
+    "Expanded Cash Income Level (thousands of 2025 dollars)": "Expanded Cash Income Level (thousands of 2025 dollars)",
 }
 
 METRICS = {
-    ("revenue_change", "usd_billions"):
-        (Metric.REVENUE_CHANGE, UnitConcept.USD, 1e9, "usd"),
-    ("avg_tax_change_usd", "usd_per_tax_unit"):
-        (Metric.AVG_TAX_CHANGE_USD, UnitConcept.USD_PER_TAX_UNIT, 1, "usd"),
-    ("pct_change_after_tax_income", "percent"):
-        (Metric.PCT_CHANGE_AFTER_TAX_INCOME, UnitConcept.PERCENT, 1,
-         "share"),
-    ("share_with_tax_cut", "percent_of_tax_units"):
-        (Metric.SHARE_WITH_TAX_CUT, UnitConcept.PERCENT, 1, "share"),
+    ("revenue_change", "usd_billions"): (
+        Metric.REVENUE_CHANGE,
+        UnitConcept.USD,
+        1e9,
+        "usd",
+    ),
+    ("avg_tax_change_usd", "usd_per_tax_unit"): (
+        Metric.AVG_TAX_CHANGE_USD,
+        UnitConcept.USD_PER_TAX_UNIT,
+        1,
+        "usd",
+    ),
+    ("pct_change_after_tax_income", "percent"): (
+        Metric.PCT_CHANGE_AFTER_TAX_INCOME,
+        UnitConcept.PERCENT,
+        1,
+        "share",
+    ),
+    ("share_with_tax_cut", "percent_of_tax_units"): (
+        Metric.SHARE_WITH_TAX_CUT,
+        UnitConcept.PERCENT,
+        1,
+        "share",
+    ),
 }
 
 _KNOWN_FIELDS = frozenset(
     {
-        "proposed_metric", "proposed_unit", "value", "conditions",
-        "source_column", "value_unrounded", "period", "time_basis",
-        "source", "source_model", "table_id", "reform_hint",
-        "baseline_hint", "calibration_relationship", "publication",
-        "beyond_mission_vocab", "period_span",
+        "proposed_metric",
+        "proposed_unit",
+        "value",
+        "conditions",
+        "source_column",
+        "value_unrounded",
+        "period",
+        "time_basis",
+        "source",
+        "source_model",
+        "table_id",
+        "reform_hint",
+        "baseline_hint",
+        "calibration_relationship",
+        "publication",
+        "beyond_mission_vocab",
+        "period_span",
     }
 )
 _KNOWN_CONDITIONS = frozenset(
@@ -186,8 +245,7 @@ def stage_scores() -> tuple[list[ExternalScore], dict]:
         slug, baseline, detail, expected_hint = TABLES[table_id]
         if not row["baseline_hint"].startswith(expected_hint):
             raise ValueError(
-                f"tpc: {table_id} baseline_hint drifted: "
-                f"{row['baseline_hint']!r}"
+                f"tpc: {table_id} baseline_hint drifted: {row['baseline_hint']!r}"
             )
         detail = dict(detail or {})
         if "option" in staged_conds:
@@ -201,9 +259,7 @@ def stage_scores() -> tuple[list[ExternalScore], dict]:
         conditions = {"geography": "US"}
         if "income_group" in staged_conds:
             conditions["income_group"] = staged_conds["income_group"]
-            conditions["income_axis"] = INCOME_AXES[
-                staged_conds["income_axis"]
-            ]
+            conditions["income_axis"] = INCOME_AXES[staged_conds["income_axis"]]
         if "provision_row" in staged_conds:
             conditions["provision"] = staged_conds["provision_row"]
         if "option" in staged_conds:

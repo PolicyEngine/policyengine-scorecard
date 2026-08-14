@@ -99,10 +99,14 @@ class TestFiscalYears:
 
     def test_windows(self):
         assert parse_fy_window("2025-26 to 2029-30") == (
-            2025, 2029, "2025-26 to 2029-30",
+            2025,
+            2029,
+            "2025-26 to 2029-30",
         )
         assert parse_fy_window("2021/22-2023/24") == (
-            2021, 2023, "2021-22 to 2023-24",
+            2021,
+            2023,
+            "2021-22 to 2023-24",
         )
 
 
@@ -133,9 +137,7 @@ class TestFullAccounting:
 
     def test_ukmod_jrf(self, ukmod_jrf):
         scores, ledger, dropped_mis = ukmod_jrf
-        merged = sum(
-            1 for s in scores if "also_published" in s.publication
-        )
+        merged = sum(1 for s in scores if "also_published" in s.publication)
         assert dropped_mis == 88
         assert merged == 2
         assert len(scores) + dropped_mis + merged == 1782
@@ -157,7 +159,8 @@ class TestLedgerRouting:
         for scores, _ledger, *rest in (obr, dwp, hmrc):
             for s in scores:
                 assert s.conditions.get("basis") not in (
-                    "outturn", "provisional",
+                    "outturn",
+                    "provisional",
                 ), s.conditions
 
     def test_ledger_rows_carry_provenance_and_ids(self, hmrc):
@@ -166,7 +169,8 @@ class TestLedgerRouting:
             assert row["fact_id"].startswith("uk:uk_hmrc:")
             assert "routing rule" in row["routed_because"]
             assert row["staged"]["conditions"]["basis"] in (
-                "outturn", "provisional",
+                "outturn",
+                "provisional",
             )
 
     def test_survey_outcomes_stay_scorecard_side(self, dwp):
@@ -201,17 +205,13 @@ class TestOBR:
     def test_consumed_lines_match_pe_uk_data_exactly(self, obr):
         scores, _ = obr
         consumed = [
-            s
-            for s in scores
-            if s.calibration_relationship is CR.CONSUMED_AS_TARGET
+            s for s in scores if s.calibration_relationship is CR.CONSUMED_AS_TARGET
         ]
         # 25 line-families (12 receipts/CT/NICs heads incl. the 3.4/3.8
         # twins + 13 welfare (line, section) pairs) × 6 forecast years.
         assert len(consumed) == 150
         assert all(s.conditions["basis"] == "forecast" for s in consumed)
-        assert all(
-            "calibration_basis" in s.publication for s in consumed
-        )
+        assert all("calibration_basis" in s.publication for s in consumed)
         welfare = {
             (s.conditions["line_item"], s.conditions["section"])
             for s in consumed
@@ -223,11 +223,7 @@ class TestOBR:
 
     def test_measures_are_reform_worlds_with_verbatim_titles(self, obr):
         scores, _ = obr
-        measures = [
-            s
-            for s in scores
-            if s.source_model == "hmt_scorecard_obr_database"
-        ]
+        measures = [s for s in scores if s.source_model == "hmt_scorecard_obr_database"]
         assert len(measures) == 24304
         for s in measures[:50]:
             assert s.reform.framework == "policy_ref"
@@ -246,7 +242,9 @@ class TestOBR:
         ]
         assert len(pa95) == 3
         assert {s.conditions.get("component_seq") for s in pa95} == {
-            None, "2", "3",
+            None,
+            "2",
+            "3",
         }
         # Same measure world — the database's unit of identity is the
         # titled line; components are conditions axes.
@@ -255,10 +253,7 @@ class TestOBR:
     def test_efo_vintage_split(self, obr):
         scores, _ = obr
         efo = [s for s in scores if s.source_model == "obr_efo_forecast"]
-        vintages = {
-            (s.conditions["table"], s.conditions["data_vintage"])
-            for s in efo
-        }
+        vintages = {(s.conditions["table"], s.conditions["data_vintage"]) for s in efo}
         assert ("3.4", "march_2026_efo") in vintages
         assert ("4.9", "november_2025_efo") in vintages
         assert ("4.9", "march_2026_efo") not in vintages
@@ -280,9 +275,7 @@ class TestDWP:
             if s.source_model == "dwp_takeup_estimates"
             and s.conditions.get("program") == "pension_credit"
         ]
-        assert pc and all(
-            s.calibration_relationship is CR.SEED_SOURCE for s in pc
-        )
+        assert pc and all(s.calibration_relationship is CR.SEED_SOURCE for s in pc)
 
     def test_hb_takeup_held_out_comparator(self, dwp):
         scores, _ = dwp
@@ -292,17 +285,14 @@ class TestDWP:
             if s.source_model == "dwp_takeup_estimates"
             and s.conditions.get("program") == "housing_benefit"
         ]
-        assert hb and all(
-            s.calibration_relationship is CR.HELD_OUT for s in hb
-        )
+        assert hb and all(s.calibration_relationship is CR.HELD_OUT for s in hb)
 
     def test_becl_consumption_exact(self, dwp):
         scores, _ = dwp
         becl_cost = [
             s
             for s in scores
-            if s.source_model == "dwp_becl"
-            and s.metric is Metric.BENEFIT_COST
+            if s.source_model == "dwp_becl" and s.metric is Metric.BENEFIT_COST
         ]
         consumed = {
             s.conditions["program"]
@@ -310,8 +300,11 @@ class TestDWP:
             if s.calibration_relationship is CR.CONSUMED_AS_TARGET
         }
         assert consumed == {
-            "state_pension", "universal_credit", "pension_credit",
-            "attendance_allowance", "child_benefit",
+            "state_pension",
+            "universal_credit",
+            "pension_credit",
+            "attendance_allowance",
+            "child_benefit",
         }
         # Components of the consumed DLA+PIP aggregate stay held out,
         # and caseloads too (obr.py parses expenditure only).
@@ -319,32 +312,25 @@ class TestDWP:
             if s.conditions["program"] in ("dla", "pip"):
                 assert s.calibration_relationship is CR.HELD_OUT
         for s in scores:
-            if (
-                s.source_model == "dwp_becl"
-                and s.metric is Metric.CASELOAD
-            ):
+            if s.source_model == "dwp_becl" and s.metric is Metric.CASELOAD:
                 assert s.calibration_relationship is CR.HELD_OUT
 
     def test_uc_admin_consumed(self, dwp):
         scores, _ = dwp
         uc = [s for s in scores if s.source_model == "dwp_uc_admin"]
         assert len(uc) == 5
-        assert all(
-            s.calibration_relationship is CR.CONSUMED_AS_TARGET for s in uc
-        )
+        assert all(s.calibration_relationship is CR.CONSUMED_AS_TARGET for s in uc)
 
     def test_hbai_editions_and_permanent_holdout(self, dwp):
         scores, _ = dwp
         hbai = [s for s in scores if s.source_model == "dwp_hbai_frs"]
         assert {s.conditions["edition"] for s in hbai} == {
-            "fye_2025", "fye_2024",
+            "fye_2025",
+            "fye_2024",
         }
+        assert all(s.calibration_relationship is CR.HELD_OUT for s in hbai)
         assert all(
-            s.calibration_relationship is CR.HELD_OUT for s in hbai
-        )
-        assert all(
-            "income_concept" in s.conditions
-            and "poverty_measure" in s.conditions
+            "income_concept" in s.conditions and "poverty_measure" in s.conditions
             for s in hbai
         )
 
@@ -354,14 +340,9 @@ class TestHMRC:
         scores, _ = hmrc
         rr = [s for s in scores if s.source_model == "hmrc"]
         assert len(rr) == 225
-        slug = (
-            "uk_hmrc_rr:income_tax_rates:"
-            f"{slugify('Change basic rate by 1p')}"
-        )
+        slug = f"uk_hmrc_rr:income_tax_rates:{slugify('Change basic rate by 1p')}"
         basic = [
-            s
-            for s in rr
-            if s.reform.reform["policy"] == slug and s.period == 2026
+            s for s in rr if s.reform.reform["policy"] == slug and s.period == 2026
         ]
         assert len(basic) == 1
         assert basic[0].conditions["fy"] == "2026-27"
@@ -369,22 +350,18 @@ class TestHMRC:
     def test_spi_family_seeded(self, hmrc):
         scores, _ = hmrc
         spi = [s for s in scores if s.source_model == "hmrc_spi"]
-        seeded = [
-            s
-            for s in spi
-            if s.calibration_relationship is CR.SEED_SOURCE
-        ]
+        seeded = [s for s in spi if s.calibration_relationship is CR.SEED_SOURCE]
         consumed = [
-            s
-            for s in spi
-            if s.calibration_relationship is CR.CONSUMED_AS_TARGET
+            s for s in spi if s.calibration_relationship is CR.CONSUMED_AS_TARGET
         ]
         assert len(seeded) == 726
         assert len(consumed) == 36
         for s in consumed:
             assert s.metric is Metric.TAX_LIABILITY
             assert s.conditions["band"].lower() in (
-                "all", "total", "all taxpayers",
+                "all",
+                "total",
+                "all taxpayers",
             )
 
 
@@ -393,24 +370,14 @@ class TestHMT:
         scores, _ = hmt
         assert len(scores) == 1368
         assert sum(1 for s in scores if s.status == "suppressed") == 31
-        costings = [
-            s
-            for s in scores
-            if s.source_model == "hmt_costing_obr_certified"
-        ]
-        assert all(
-            s.metric is Metric.EXCHEQUER_IMPACT for s in costings
-        )
-        assert all(
-            s.reform.framework == "policy_ref" for s in costings
-        )
+        costings = [s for s in scores if s.source_model == "hmt_costing_obr_certified"]
+        assert all(s.metric is Metric.EXCHEQUER_IMPACT for s in costings)
+        assert all(s.reform.framework == "policy_ref" for s in costings)
 
     def test_da_income_concept_verbatim(self, hmt):
         scores, _ = hmt
         da = [
-            s
-            for s in scores
-            if s.source_model == "hmt_distributional_analysis_igotm"
+            s for s in scores if s.source_model == "hmt_distributional_analysis_igotm"
         ]
         assert len(da) == 150
         assert all("equivalisation" in s.conditions for s in da)
@@ -419,18 +386,11 @@ class TestHMT:
 class TestIFS:
     def test_steady_state_baseline_world(self, ifs):
         scores = ifs[0]
-        with_baseline = [
-            s for s in scores if s.reform.baseline is not None
-        ]
+        with_baseline = [s for s in scores if s.reform.baseline is not None]
         assert len(with_baseline) == 108
         for s in with_baseline:
-            assert s.reform.baseline == {
-                "policy": "ifs_2cl_fp_removal_rolled_out"
-            }
-            assert (
-                s.conditions["baseline_policy"]
-                == "ifs_2cl_fp_removal_rolled_out"
-            )
+            assert s.reform.baseline == {"policy": "ifs_2cl_fp_removal_rolled_out"}
+            assert s.conditions["baseline_policy"] == "ifs_2cl_fp_removal_rolled_out"
             assert s.conditions["horizon"] == "steady_state"
 
     def test_pentagon_leg_is_reform_keyed(self, ifs):
@@ -441,24 +401,19 @@ class TestIFS:
             if s.conditions.get("measure") == "Remove two-child limit"
             and s.metric is Metric.POVERTY_COUNT_CHANGE
         ]
-        children = [
-            s
-            for s in two_child
-            if s.unit_concept.value == "children_under_18"
-        ]
+        children = [s for s in two_child if s.unit_concept.value == "children_under_18"]
         assert [s.value for s in children] == [-540000.0]
 
 
 class TestUKMODJRF:
     def test_validation_series_axis(self, ukmod_jrf):
         scores, _, _ = ukmod_jrf
-        series = {
-            s.conditions.get("series")
-            for s in scores
-            if s.source == "ukmod"
-        }
+        series = {s.conditions.get("series") for s in scores if s.source == "ukmod"}
         assert {
-            "ukmod_simulated", "official_estimate", "input_data", "hbai",
+            "ukmod_simulated",
+            "official_estimate",
+            "input_data",
+            "hbai",
         } <= series
 
     def test_cempa_package_world(self, ukmod_jrf):
@@ -467,12 +422,12 @@ class TestUKMODJRF:
             s
             for s in scores
             if s.reform.framework == "policy_ref"
-            and s.reform.reform["policy"]
-            == "uk_autumn_budget_2025_package_cempa"
+            and s.reform.reform["policy"] == "uk_autumn_budget_2025_package_cempa"
         ]
         assert len(pkg) == 209
         assert {s.conditions["scenario"] for s in pkg} == {
-            "reform", "reform_minus_baseline",
+            "reform",
+            "reform_minus_baseline",
         }
 
     def test_persistent_poverty_windows(self, ukmod_jrf):
@@ -488,9 +443,7 @@ class TestUKMODJRF:
         assert not any(
             s.conditions.get("basis") for s in scores
         )  # weekly/annual lives in amount_basis, basis keeps UK meaning
-        assert any(
-            s.conditions.get("amount_basis") == "weekly" for s in scores
-        )
+        assert any(s.conditions.get("amount_basis") == "weekly" for s in scores)
 
 
 class TestRF:
@@ -501,9 +454,7 @@ class TestRF:
 
     def test_uprating_parameter_checks(self, rf):
         scores, _, _ = rf
-        uprating = [
-            s for s in scores if s.metric is Metric.BENEFIT_UPRATING
-        ]
+        uprating = [s for s in scores if s.metric is Metric.BENEFIT_UPRATING]
         assert len(uprating) == 11
         assert all("program" in s.conditions for s in uprating)
 

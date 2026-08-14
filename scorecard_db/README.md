@@ -36,13 +36,16 @@ PYTHONPATH=. python -m scorecard_db.ingest_platform data/scorecard.db
 PYTHONPATH=. python -m scorecard_db.ingest_solo data/scorecard.db
 PYTHONPATH=. python -m scorecard_db.ingest_diagnoses data/scorecard.db
 PYTHONPATH=. python -m scorecard_db.ingest_harvest data/scorecard.db
+PYTHONPATH=. python -m scorecard_db.ingest_reform_validation data/scorecard.db
 PYTHONPATH=. python -m scorecard_db.ingest_uk data/scorecard.db
 PYTHONPATH=. python -m scorecard_db.ingest_campaign data/scorecard.db
+PYTHONPATH=. python -m scorecard_db.ingest_campaign_uk data/scorecard.db
 python -m pytest tests/
 ```
 
 ```python
 from scorecard_db import ScorecardDB
+
 db = ScorecardDB("data/scorecard.db")
 db.comparisons(program="snap", geography="US", held_out_only=True)
 db.coverage()
@@ -95,7 +98,7 @@ Schema decisions this population forced (COLLATION worklist):
 
 ## 2026-08-02 UK population + baselines registry
 
-Third population: the seven-source UK fleet — **31,762 claims**
+Fourth population: the seven-source UK fleet — **31,762 claims**
 (OBR 25,425 · DWP 1,952 · HMT 1,368 · HMRC 987 · UKMOD 1,392 · JRF 300
 · IFS 268 · Resolution Foundation 70) from gzipped staging vendored at
 sources/harvest-uk-2026-08-02/. Run with:
@@ -141,14 +144,17 @@ Decisions this population forced:
   welfare-cap sections, 4.11 parent lines, per-head measure component
   runs, the Mar-2026/Nov-2025 EFO vintage split, IFS recipient groups.
 
-Fourth population: the **2026-08-02 campaign compute batch** — 177 PE
-results joined to existing claims (uk_reckoner 23 · uk_free_joins 25 ·
-uk_obr_measures 10 · uk_uprating 6 · tpc 14 · pwbm 2 · cpsp 8 ·
-jct_obbba 1 · cbo_free_joins 88) + 11 two-child-limit exhibits against
-the registered pre_ab2025 baseline, from run files vendored at
-sources/campaign-2026-08-02/. Every result records the baseline it
-actually executed; joins assert exactly-one-match. See
-scorecard_db/ingest_campaign.py's docstring for the join families.
+Fifth population: the **2026-08-02 campaign compute batch**, in two
+sibling modules over sources/campaign-20260802/. ingest_campaign
+attaches the day-1 US families from the campaign's staged descriptor
+JSONL (us/); ingest_campaign_uk lands the UK side from the vendored raw
+runs (uk_runs/) — 65 results (uk_reckoner 23 · uk_free_joins 23 ·
+uk_obr_measures 10 · uk_uprating 6 · two_child_pentagon 3) + 11
+two-child-limit exhibits against the registered pre_ab2025 baseline +
+8 CPSP register diagnoses. Every result records the baseline it
+actually executed (#13); joins assert exactly-one-match. See both
+modules' docstrings for the join families and why the staged UK
+descriptor files are superseded rather than attached.
 
 First population: Urban SotSN — 30,004 claims (24,717 published values).
 `calibration_relationship` is assigned per (program, metric) from the
@@ -162,3 +168,44 @@ taxonomy and annotation ids); the `comparisons` view serves the latest per
 claim. Counterfactual worlds use the `policyengine_us_inputs` framework —
 input-override descriptors (forced take-up flags), not parametric reform
 paths, because no such parameters exist in the engine.
+
+## 2026-08-03 population: populace reform-validation registry
+
+Third population: the per-release external-checks registry previously
+rendered as calibration-diagnostics' "External checks" tab (being retired
+in favor of this scorecard). 205 claims + 675 per-release pe_results from
+five certified releases (f0af251 through Build O), vendored at
+sources/populace-reform-validation/raw/:
+
+```bash
+PYTHONPATH=. python -m scorecard_db.ingest_reform_validation data/scorecard.db
+```
+
+What it adds that the other populations don't: **regression history** —
+each artifact was computed at its release's exact engine pins
+(ENGINE_VERSIONS, with per-row overrides the artifacts document about
+themselves), so long-lived claims carry one pe_result per release — and
+exactly one: repeal constructions whose benchmark duplicates the direct
+level are dropped — and drift across releases is queryable. The OBBBA
+suite mints no claims of its own: its results attach to the harvested
+JCX-35-25 provision claims (canonical per issue #15), both the FY2026 and
+FY2027 ones, with the release's scoring mode (stacked_chained for f0af251,
+whose own totals chain; isolated for l0-refit; jcx_stacked from buildi on)
+in the pe_construction. Claim periods key the year the claim describes,
+parsed from each benchmark's window (fiscal-note FY2028 claims are 2028,
+SOI TY2023 is 2023, Census 3-year averages carry period_start/period_end);
+anything not identical to PE's single-calendar-year computation is
+status=constructed, and rows the artifacts flag as measuring a different
+concept (UT's claimed-vs-capped CTC) are concept_mismatch. All parsing
+and validation happens before any write, and the replacement (deletes,
+claims, results, lane) is a single transaction — a failed re-ingest, at
+any point, leaves the DB untouched. First rows on the reserved TAX_EXPENDITURE metric
+(JCX-48-24 / Treasury / the jct.tax_expenditures.* calibration targets,
+the latter consumed_as_target). Census state SPM rows land as held_out
+POVERTY_RATE claims per the poverty-holdout doctrine. Scored rows key off
+policy_ref descriptors ({"policy": <registry row id>}) until populace's
+payload embeds the executable reform dicts (populace #606). Every claim
+this ingest mints is marked publication.registry =
+"populace_reform_validation" — that marker is the idempotency contract
+(re-ingest deletes and recreates exactly these claims, never the harvest
+claims it attaches results to).

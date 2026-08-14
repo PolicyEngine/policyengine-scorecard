@@ -90,8 +90,10 @@ def parse_fy_window(label: str) -> tuple[int, int, str]:
     last, _ = parse_fy(parts[1])
     if last <= first:
         raise ValueError(f"window end before start: {label!r}")
-    return first, last, f"{first}-{(first + 1) % 100:02d} to " + (
-        f"{last}-{(last + 1) % 100:02d}"
+    return (
+        first,
+        last,
+        f"{first}-{(first + 1) % 100:02d} to " + (f"{last}-{(last + 1) % 100:02d}"),
     )
 
 

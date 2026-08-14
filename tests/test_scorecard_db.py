@@ -67,9 +67,7 @@ class TestClaimId:
         assert score().claim_id() != score(period=2024).claim_id()
         assert (
             score().claim_id()
-            != score(
-                conditions={"geography": "CA", "program": "snap"}
-            ).claim_id()
+            != score(conditions={"geography": "CA", "program": "snap"}).claim_id()
         )
 
 
@@ -116,9 +114,7 @@ class TestDB:
 
     def test_upsert_idempotent(self, db):
         assert db.upsert_scores([score(), score(value=5.0)]) == 2
-        n = db.conn.execute(
-            "SELECT COUNT(*) c FROM external_scores"
-        ).fetchone()["c"]
+        n = db.conn.execute("SELECT COUNT(*) c FROM external_scores").fetchone()["c"]
         assert n == 1  # same claim_id -> replaced, not duplicated
 
     def test_latest_result_wins_in_view(self, db):
@@ -231,9 +227,7 @@ class TestUrbanIngest:
 
         keys = {
             r["reform_key"]
-            for r in db.conn.execute(
-                "SELECT DISTINCT reform_key FROM external_scores"
-            )
+            for r in db.conn.execute("SELECT DISTINCT reform_key FROM external_scores")
         }
         assert BASELINE.key() in keys
         assert len(keys) == 2  # baseline + fullpart
@@ -254,9 +248,7 @@ class TestEffectiveRelationship:
         from scorecard_db.models import CalibrationRelationship, Metric
         from scorecard_db.relationships import effective_relationship
 
-        rel, basis = effective_relationship(
-            "snap", Metric.PARTICIPATION_RATE
-        )
+        rel, basis = effective_relationship("snap", Metric.PARTICIPATION_RATE)
         assert rel is CalibrationRelationship.CONSUMED_AS_TARGET
         assert "FNS" in basis
 
@@ -271,9 +263,7 @@ class TestEffectiveRelationship:
         from scorecard_db.models import CalibrationRelationship, Metric
         from scorecard_db.relationships import effective_relationship
 
-        rel, basis = effective_relationship(
-            "tanf", Metric.PARTICIPATION_RATE
-        )
+        rel, basis = effective_relationship("tanf", Metric.PARTICIPATION_RATE)
         assert rel is CalibrationRelationship.SEED_SOURCE
         assert "ASPE" in basis
 
@@ -307,9 +297,9 @@ class TestInputOverrideFramework:
 
         assert FULLPART_REFORM.framework == "policyengine_us_inputs"
         # No fabricated parameter paths: descriptor keys are variables.
-        assert all(
-            "." not in k for k in FULLPART_REFORM.reform
-        ), "input-override descriptors must not look like parameter paths"
+        assert all("." not in k for k in FULLPART_REFORM.reform), (
+            "input-override descriptors must not look like parameter paths"
+        )
 
 
 class TestClaimIdBackCompat:
@@ -417,13 +407,10 @@ class TestMigration:
         conn.close()
         db = ScorecardDB(path)
         cols = {
-            r["name"]
-            for r in db.conn.execute("PRAGMA table_info(external_scores)")
+            r["name"] for r in db.conn.execute("PRAGMA table_info(external_scores)")
         }
         assert {"period_start", "period_end"} <= cols
-        db.upsert_scores(
-            [score(period=2034, period_start=2025, period_end=2034)]
-        )
+        db.upsert_scores([score(period=2034, period_start=2025, period_end=2034)])
         assert db.comparisons()[0]["period_start"] == 2025
         db.close()
 
@@ -440,7 +427,9 @@ class TestPlatformProbe:
             time_basis="average_month",
             value=0.575,
             conditions={
-                "geography": "US", "program": "snap", "rate_unit": "pop",
+                "geography": "US",
+                "program": "snap",
+                "rate_unit": "pop",
             },
         )
         base.update(kw)
@@ -450,8 +439,11 @@ class TestPlatformProbe:
         from scorecard_db.ingest_platform import _probe
 
         row = {
-            "program": "snap", "metric": "participation_rate",
-            "subgroup": "total", "variant": None, "geography": "US",
+            "program": "snap",
+            "metric": "participation_rate",
+            "subgroup": "total",
+            "variant": None,
+            "geography": "US",
             "unit_concept": "persons",
         }
         assert _probe(row).claim_id() == self._tidy_claim().claim_id()
@@ -460,13 +452,18 @@ class TestPlatformProbe:
         from scorecard_db.ingest_platform import _probe
 
         row = {
-            "program": "tanf", "metric": "participation_rate",
-            "subgroup": "total", "variant": "no_SSF", "geography": "US",
+            "program": "tanf",
+            "metric": "participation_rate",
+            "subgroup": "total",
+            "variant": "no_SSF",
+            "geography": "US",
             "unit_concept": "families",
         }
         claim = self._tidy_claim(
             conditions={
-                "geography": "US", "program": "tanf", "rate_unit": "units",
+                "geography": "US",
+                "program": "tanf",
+                "rate_unit": "units",
                 "subgroup": "total_no_SSF",
             },
         )
@@ -477,8 +474,11 @@ class TestPlatformProbe:
         from scorecard_db.ingest_urban import FULLPART_REFORM
 
         row = {
-            "program": "spm_poverty", "metric": "poverty_rate_fullpart",
-            "subgroup": "child", "variant": None, "geography": "AK",
+            "program": "spm_poverty",
+            "metric": "poverty_rate_fullpart",
+            "subgroup": "child",
+            "variant": None,
+            "geography": "AK",
             "unit_concept": "children",
         }
         claim = self._tidy_claim(
@@ -651,7 +651,9 @@ class TestDescriptiveRegister:
             with pytest.raises(ValueError, match="citable"):
                 db.diagnose(s.claim_id(), cls, "divergence looks big")
         db.diagnose(
-            s.claim_id(), "pe_gap", "EHS at engine-default take-up",
+            s.claim_id(),
+            "pe_gap",
+            "EHS at engine-default take-up",
             action_link="https://github.com/PolicyEngine/populace/issues/593",
         )
         db.close()
@@ -666,10 +668,7 @@ class TestDescriptiveRegister:
             "Populace calculates benefits and recalibrates where ASEC "
             "carries reported attributes.",
         )
-        assert (
-            db.comparisons()[0]["diagnosis_class"]
-            == "methodological_difference"
-        )
+        assert db.comparisons()[0]["diagnosis_class"] == "methodological_difference"
         db.close()
 
     def test_old_diagnoses_table_migrates_to_new_check(self, tmp_path):

@@ -48,36 +48,49 @@ ADAPTERS = {
 
 UK_LANE_FEED = {
     "obr-measures": {
-        "source": "OBR", "area": "policy measures database (1970→)",
+        "source": "OBR",
+        "area": "policy measures database (1970→)",
         "mode": 2,
     },
     "obr-welfare": {
-        "source": "OBR", "area": "welfare trends / EFO baselines", "mode": 1,
+        "source": "OBR",
+        "area": "welfare trends / EFO baselines",
+        "mode": 1,
     },
     "hmrc-personal-tax": {
-        "source": "HMRC", "area": "UK personal tax statistics", "mode": 1,
+        "source": "HMRC",
+        "area": "UK personal tax statistics",
+        "mode": 1,
     },
     "hbai-poverty": {
-        "source": "DWP HBAI", "area": "UK poverty rates", "mode": 1,
+        "source": "DWP HBAI",
+        "area": "UK poverty rates",
+        "mode": 1,
     },
     "dwp-takeup": {
-        "source": "DWP", "area": "UK income-related benefits take-up",
+        "source": "DWP",
+        "area": "UK income-related benefits take-up",
         "mode": 1,
     },
     "hmt-costings": {
-        "source": "HM Treasury", "area": "fiscal-event scorecards + DA",
+        "source": "HM Treasury",
+        "area": "fiscal-event scorecards + DA",
         "mode": 2,
     },
     "ukmod-stats": {
-        "source": "UKMOD", "area": "published statistics", "mode": 1,
+        "source": "UKMOD",
+        "area": "published statistics",
+        "mode": 1,
     },
     "ifs-taxben": {
-        "source": "IFS TAXBEN", "area": "poverty + benefit options",
+        "source": "IFS TAXBEN",
+        "area": "poverty + benefit options",
         "mode": 2,
     },
     "rf-outlook": {
         "source": "Resolution Foundation",
-        "area": "living standards outlook + Budget analysis", "mode": 2,
+        "area": "living standards outlook + Budget analysis",
+        "mode": 2,
     },
 }
 
@@ -97,8 +110,10 @@ def ingest(db_path: Path) -> dict:
     db = ScorecardDB(db_path)
     stats["baselines_registered"] = register_baselines(db)
     stats["lanes_synced"] = sync_lane_feed(
-        db, REPO / "data" / "lanes.json", "2026-08-02",
-        lane_feed=UK_LANE_FEED,
+        db,
+        REPO / "data" / "lanes.json",
+        "2026-08-02",
+        lanes=UK_LANE_FEED,
     )
     stats["coverage"] = db.coverage()
     stats["claims_by_source"] = {

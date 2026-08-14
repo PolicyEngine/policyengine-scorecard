@@ -77,8 +77,7 @@ _MAP = {
     ),
     ("wic", None): (
         CR.HELD_OUT,
-        "§4: zero WIC calibration targets; §6: the near-match is "
-        "out-of-sample",
+        "§4: zero WIC calibration targets; §6: the near-match is out-of-sample",
     ),
     ("housing", None): (CR.HELD_OUT, "§4: zero housing targets"),
     ("liheap", None): (CR.HELD_OUT, "no PE national model consumes these"),
@@ -88,17 +87,18 @@ _MAP = {
     ("fullpart", None): (CR.HELD_OUT, None),
 }
 
-# Doctrine (Max, 2026-08-02, refined same day): MODELED-OUTCOME statistics
-# are PERMANENT holdouts — never calibration targets, not "not yet
-# targeted". The test is outcome-vs-frame, not survey-vs-admin: poverty
-# rates and other outputs of the simulated tax/benefit system embed exactly
-# the survey defects populace corrects, so fitting them launders the error
-# back in and destroys the validation signal. Frame/structure margins
-# (population, demographics, geography — e.g. ACS aggregates by
-# congressional district) are legitimate targets from the best available
-# source, admin preferred where it covers the same cell. Release gates may
-# fail on held-out regressions (issue #1 point 3); fitting the statistic is
-# categorically different and prohibited.
+# Doctrine (Max, 2026-08-02, final formulation): we may not calibrate
+# against ANY tax-benefit quantity from a survey — reported or computed —
+# or anything derived from such. Four quadrants: admin tax-benefit
+# quantities = targets (SOI, FNS, SSA, ACF); raw survey quantities =
+# targets (ACS population/structure/income margins); survey tax-benefit
+# quantities (total SNAP from the CPS) and their derivatives (SPM/OPM
+# poverty above all; other models' survey-based estimates) = NEVER.
+# Populace replaces the survey's tax-benefit measurement with imputed,
+# computed, admin-calibrated values; fitting the survey-derived version
+# launders its error back in and destroys the validation signal. Release
+# gates may fail on held-out regressions (issue #1 point 3); fitting the
+# statistic is categorically different and prohibited.
 PERMANENT_HOLDOUT_METRICS = frozenset(
     {
         Metric.POVERTY_RATE,
@@ -112,11 +112,11 @@ PERMANENT_HOLDOUT_METRICS = frozenset(
     }
 )
 PERMANENT_HOLDOUT_BASIS = (
-    "PERMANENT holdout — modeled-outcome statistic (doctrine 2026-08-02): "
-    "poverty is an output of the simulated tax/benefit system, so fitting "
-    "it would launder survey error back in and destroy the validation "
-    "signal. Frame/structure margins (e.g. ACS population by geography) "
-    "remain legitimate targets; outcomes never are."
+    "PERMANENT holdout (doctrine 2026-08-02): no tax-benefit quantity from "
+    "a survey — reported or computed — nor anything derived from such may "
+    "be a calibration target; SPM poverty derives from survey tax-benefit "
+    "measurement. Admin tax-benefit quantities and raw survey margins "
+    "(ACS population/structure) remain legitimate targets."
 )
 
 

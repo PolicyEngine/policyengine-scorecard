@@ -42,12 +42,26 @@ from .uk import (
 
 _KNOWN_FIELDS = frozenset(
     {
-        "source", "metric", "proposed_metric", "unit_concept",
-        "proposed_unit", "value", "value_raw", "normalization",
-        "parse_confidence", "sign_convention", "geography_note",
-        "period", "time_basis", "conditions", "reform_hint",
-        "calibration_relationship", "source_model", "source_column",
-        "source_table", "publication",
+        "source",
+        "metric",
+        "proposed_metric",
+        "unit_concept",
+        "proposed_unit",
+        "value",
+        "value_raw",
+        "normalization",
+        "parse_confidence",
+        "sign_convention",
+        "geography_note",
+        "period",
+        "time_basis",
+        "conditions",
+        "reform_hint",
+        "calibration_relationship",
+        "source_model",
+        "source_column",
+        "source_table",
+        "publication",
     }
 )
 
@@ -78,33 +92,44 @@ _CONDITION_KEYS = {
     "attribution_note": None,
 }
 _PUBLICATION_NOTES = (
-    "method_note", "scope_note", "costing_basis", "row_source_note",
-    "uncertainty_verbatim", "attribution_note",
+    "method_note",
+    "scope_note",
+    "costing_basis",
+    "row_source_note",
+    "uncertainty_verbatim",
+    "attribution_note",
 )
 
 _METRICS = {
     "poverty_rate": (Metric.POVERTY_RATE, UnitConcept.SHARE),
     "poverty_rate_change": (
-        Metric.POVERTY_RATE_CHANGE, UnitConcept.PERCENTAGE_POINTS,
+        Metric.POVERTY_RATE_CHANGE,
+        UnitConcept.PERCENTAGE_POINTS,
     ),
     "revenue_change": (Metric.REVENUE_CHANGE, UnitConcept.GBP),
     "benefit_spending_change": (
-        Metric.EXPENDITURE_CHANGE, UnitConcept.GBP,
+        Metric.EXPENDITURE_CHANGE,
+        UnitConcept.GBP,
     ),
     "share_of_spending_to_group": (
-        Metric.SHARE_OF_SPENDING_TO_GROUP, UnitConcept.PERCENT,
+        Metric.SHARE_OF_SPENDING_TO_GROUP,
+        UnitConcept.PERCENT,
     ),
     "avg_change_household_net_income": (
-        Metric.AVG_CHANGE_HOUSEHOLD_NET_INCOME, UnitConcept.GBP_PER_YEAR,
+        Metric.AVG_CHANGE_HOUSEHOLD_NET_INCOME,
+        UnitConcept.GBP_PER_YEAR,
     ),
     "cost_per_child_lifted_out_of_poverty": (
-        Metric.COST_PER_CHILD_LIFTED_OUT_OF_POVERTY, UnitConcept.GBP,
+        Metric.COST_PER_CHILD_LIFTED_OUT_OF_POVERTY,
+        UnitConcept.GBP,
     ),
     "taxpayer_count_change": (
-        Metric.TAXPAYER_COUNT_CHANGE, UnitConcept.PERSONS,
+        Metric.TAXPAYER_COUNT_CHANGE,
+        UnitConcept.PERSONS,
     ),
     "families_affected_count": (
-        Metric.FAMILIES_AFFECTED_COUNT, UnitConcept.FAMILIES,
+        Metric.FAMILIES_AFFECTED_COUNT,
+        UnitConcept.FAMILIES,
     ),
 }
 _COUNT_UNITS = {
@@ -149,9 +174,7 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
         baseline_verbatim = conds_in.get("baseline")
         if baseline_verbatim is not None:
             if baseline_verbatim != _STEADY_STATE_VERBATIM:
-                raise ValueError(
-                    f"uk_ifs: unregistered baseline {baseline_verbatim!r}"
-                )
+                raise ValueError(f"uk_ifs: unregistered baseline {baseline_verbatim!r}")
             conditions["horizon"] = "steady_state"
 
         hint = row.get("reform_hint")
@@ -159,9 +182,7 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
             reform = ReformRef(
                 framework="policy_ref",
                 reform={"policy": f"uk_ifs:{slugify(hint)}"},
-                baseline=(
-                    STEADY_STATE_BASELINE if baseline_verbatim else None
-                ),
+                baseline=(STEADY_STATE_BASELINE if baseline_verbatim else None),
             )
             conditions["measure"] = hint
             conditions = with_baseline_condition(conditions, reform)
@@ -213,12 +234,20 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
                 source_column=row.get("source_column"),
                 publication=publication,
                 value_kind=(
-                    "gbp" if unit in (
-                        UnitConcept.GBP, UnitConcept.GBP_PER_YEAR,
-                    ) else "share" if unit in (
-                        UnitConcept.SHARE, UnitConcept.PERCENT,
+                    "gbp"
+                    if unit
+                    in (
+                        UnitConcept.GBP,
+                        UnitConcept.GBP_PER_YEAR,
+                    )
+                    else "share"
+                    if unit
+                    in (
+                        UnitConcept.SHARE,
+                        UnitConcept.PERCENT,
                         UnitConcept.PERCENTAGE_POINTS,
-                    ) else "count"
+                    )
+                    else "count"
                 ),
             )
         )

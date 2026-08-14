@@ -57,12 +57,28 @@ from .uk import (
 
 _KNOWN_FIELDS = frozenset(
     {
-        "source", "metric", "proposed_metric", "unit_concept",
-        "proposed_unit", "value", "value_raw", "value_kind",
-        "normalization", "parse_confidence", "period", "time_basis",
-        "conditions", "reform", "reform_hint", "calibration_relationship",
-        "source_model", "source_column", "source_table", "publication",
-        "status", "official_sources_note",
+        "source",
+        "metric",
+        "proposed_metric",
+        "unit_concept",
+        "proposed_unit",
+        "value",
+        "value_raw",
+        "value_kind",
+        "normalization",
+        "parse_confidence",
+        "period",
+        "time_basis",
+        "conditions",
+        "reform",
+        "reform_hint",
+        "calibration_relationship",
+        "source_model",
+        "source_column",
+        "source_table",
+        "publication",
+        "status",
+        "official_sources_note",
     }
 )
 
@@ -178,9 +194,7 @@ def stage() -> tuple[list[ExternalScore], list[dict], int]:
     for row in load_staged_uk("uk_ukmod_jrf"):
         unknown = set(row) - _KNOWN_FIELDS
         if unknown:
-            raise ValueError(
-                f"uk_ukmod_jrf: unhandled fields {sorted(unknown)}"
-            )
+            raise ValueError(f"uk_ukmod_jrf: unhandled fields {sorted(unknown)}")
         metric_name = row.get("metric") or row["proposed_metric"]
         if metric_name in DROPPED_METRICS:
             dropped += 1
@@ -188,9 +202,7 @@ def stage() -> tuple[list[ExternalScore], list[dict], int]:
         conds_in = dict(row["conditions"])
         unknown_c = set(conds_in) - set(_CONDITION_KEYS)
         if unknown_c:
-            raise ValueError(
-                f"uk_ukmod_jrf: unmapped conditions {sorted(unknown_c)}"
-            )
+            raise ValueError(f"uk_ukmod_jrf: unmapped conditions {sorted(unknown_c)}")
 
         geography, geo_note = normalize_geography_uk(conds_in.pop("geography"))
         conditions = {}
@@ -218,13 +230,9 @@ def stage() -> tuple[list[ExternalScore], list[dict], int]:
         scenario = conds_in.get("scenario")
         if row.get("reform") is not None:
             if row["reform"] != {"framework": "baseline"}:
-                raise ValueError(
-                    f"uk_ukmod_jrf: unexpected reform {row['reform']}"
-                )
+                raise ValueError(f"uk_ukmod_jrf: unexpected reform {row['reform']}")
             if scenario is not None:
-                raise ValueError(
-                    "uk_ukmod_jrf: baseline-reform row carries scenario"
-                )
+                raise ValueError("uk_ukmod_jrf: baseline-reform row carries scenario")
             reform = BASELINE
         else:
             # CeMPA WP 3/26 package block: scenario base/reform/change.
@@ -234,9 +242,7 @@ def stage() -> tuple[list[ExternalScore], list[dict], int]:
                 reform = AB2025_PACKAGE
                 conditions["measure"] = row["reform_hint"]
             else:
-                raise ValueError(
-                    f"uk_ukmod_jrf: reform-block scenario {scenario!r}"
-                )
+                raise ValueError(f"uk_ukmod_jrf: reform-block scenario {scenario!r}")
 
         metric = _METRICS[metric_name]
         unit = _unit_for(row, metric)
@@ -249,9 +255,7 @@ def stage() -> tuple[list[ExternalScore], list[dict], int]:
         if row.get("normalization"):
             publication["normalization"] = row["normalization"]
         if row.get("official_sources_note"):
-            publication["official_sources_note"] = row[
-                "official_sources_note"
-            ]
+            publication["official_sources_note"] = row["official_sources_note"]
         for k in _PUBLICATION_NOTES:
             if conds_in.get(k):
                 publication[k] = conds_in[k]
@@ -278,6 +282,7 @@ def stage() -> tuple[list[ExternalScore], list[dict], int]:
                 period_end=period_end,
             )
         )
+
     # JRF republishes the same statistic across workbook sheets (rounded
     # overview vs unrounded headline series): one claim, two artifacts —
     # keep the higher-precision cell, require rounding-consistency, and

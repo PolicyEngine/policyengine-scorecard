@@ -5,3 +5,6 @@ __pycache__/
 .DS_Store
 dist/
 pipeline/compute.log
+.vercel/
+.env.local
+diagnosis/*.err.log

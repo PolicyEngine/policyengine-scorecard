@@ -39,31 +39,43 @@ ADAPTERS = {
 # fields beyond stage/note/updated, which mirror the DB lane).
 LANE_FEED = {
     "jct-reform-scores": {
-        "source": "JCT", "area": "tax expenditures + revenue estimates",
+        "source": "JCT",
+        "area": "tax expenditures + revenue estimates",
         "mode": 2,
     },
     "tpc-distribution": {
-        "source": "TPC", "area": "distribution tables", "mode": 2,
+        "source": "TPC",
+        "area": "distribution tables",
+        "mode": 2,
     },
     "cbo-baseline": {
-        "source": "CBO", "area": "Feb-2026 baseline workbooks", "mode": 1,
+        "source": "CBO",
+        "area": "Feb-2026 baseline workbooks",
+        "mode": 1,
     },
     "cbo-cost-estimates": {
-        "source": "CBO", "area": "per-bill cost estimates", "mode": 2,
+        "source": "CBO",
+        "area": "per-bill cost estimates",
+        "mode": 2,
     },
     "pwbm-reform-scores": {
-        "source": "PWBM", "area": "reform scores + distributions", "mode": 2,
+        "source": "PWBM",
+        "area": "reform scores + distributions",
+        "mode": 2,
     },
     "tax-foundation-scores": {
-        "source": "Tax Foundation", "area": "revenue + tariff scores",
+        "source": "Tax Foundation",
+        "area": "revenue + tariff scores",
         "mode": 2,
     },
     "budget-lab-scores": {
-        "source": "Budget Lab", "area": "budget + distribution scores",
+        "source": "Budget Lab",
+        "area": "budget + distribution scores",
         "mode": 2,
     },
     "cpsp-poverty": {
-        "source": "Columbia CPSP", "area": "US poverty statistics",
+        "source": "Columbia CPSP",
+        "area": "US poverty statistics",
         "mode": 1,
     },
 }
@@ -73,12 +85,15 @@ def sync_lane_feed(
     db: ScorecardDB,
     feed_path: Path,
     updated: str,
-    lane_feed: dict | None = None,
+    lanes: dict | None = None,
 ) -> int:
+    """Merge DB lane rows into the committed feed. `lanes` maps lane id ->
+    display meta; defaults to this module's harvest registry (other
+    exporters pass their own — the merge only touches listed ids)."""
     feed = json.loads(feed_path.read_text())
     by_id = {lane["id"]: lane for lane in feed["lanes"]}
     n = 0
-    for lane_id, meta in (lane_feed or LANE_FEED).items():
+    for lane_id, meta in (LANE_FEED if lanes is None else lanes).items():
         row = db.conn.execute(
             "SELECT stage, detail, updated_at FROM lanes WHERE lane = ?",
             (lane_id,),

@@ -61,11 +61,24 @@ from .uk import (
 
 _KNOWN_FIELDS = frozenset(
     {
-        "source", "metric", "proposed_metric", "unit_concept",
-        "proposed_unit", "normalization", "period", "time_basis",
-        "conditions", "reform_hint", "calibration_relationship",
-        "source_model", "source_column", "source_table", "value",
-        "value_raw", "publication", "status",
+        "source",
+        "metric",
+        "proposed_metric",
+        "unit_concept",
+        "proposed_unit",
+        "normalization",
+        "period",
+        "time_basis",
+        "conditions",
+        "reform_hint",
+        "calibration_relationship",
+        "source_model",
+        "source_column",
+        "source_table",
+        "value",
+        "value_raw",
+        "publication",
+        "status",
     }
 )
 
@@ -113,10 +126,8 @@ _CONSUMED_RECEIPTS = {
     "Council tax": "obr council-tax lines (Table 4.1)",
     "Class 1 Employee NICs": "obr NICs class parse (Table 3.4)",
     "Class 1 Employer NICs": "obr NICs class parse (Table 3.4)",
-    "Class 4 and Class 2 Self employed NICs":
-        "obr NICs class parse (Table 3.4)",
-    "Class 2 and Class 4 Self employed NICs":
-        "obr NICs class parse (Table 3.4)",
+    "Class 4 and Class 2 Self employed NICs": "obr NICs class parse (Table 3.4)",
+    "Class 2 and Class 4 Self employed NICs": "obr NICs class parse (Table 3.4)",
 }
 _CONSUMED_WELFARE = {
     # (label after footnote-stripping, 4.9 section) -> target. pe-uk-data
@@ -131,16 +142,13 @@ _CONSUMED_WELFARE = {
     ("Attendance allowance", "welfare_cap"): "obr/attendance_allowance",
     ("Pension credit", "welfare_cap"): "obr/pension_credit",
     ("Carer's allowance", "welfare_cap"): "obr/carers_allowance",
-    ("Statutory maternity pay", "welfare_cap"):
-        "obr/statutory_maternity_pay",
+    ("Statutory maternity pay", "welfare_cap"): "obr/statutory_maternity_pay",
     ("Winter fuel payment", "welfare_cap"): "obr/winter_fuel_allowance",
     ("Universal credit", "welfare_cap"): "obr/universal_credit_in_cap",
     ("Child benefit", "welfare_cap"): "obr/child_benefit",
-    ("Universal credit", "outside_welfare_cap"):
-        "obr/universal_credit_outside_cap",
+    ("Universal credit", "outside_welfare_cap"): "obr/universal_credit_outside_cap",
     ("State pension", "outside_welfare_cap"): "obr/state_pension",
-    ("Jobseeker's allowance", "outside_welfare_cap"):
-        "obr/jobseekers_allowance",
+    ("Jobseeker's allowance", "outside_welfare_cap"): "obr/jobseekers_allowance",
 }
 _CONSUMED_BASIS = (
     "policyengine-uk-data targets/sources/obr.py parses this EFO series "
@@ -259,9 +267,7 @@ def _component_runs(rows: list[dict]) -> dict[int, int]:
             c.get("tax_head") or c.get("spending_head"),
         )
         start, _ = parse_fy(c["fy"])
-        new_run = key != prev_key or (
-            prev_start is not None and start <= prev_start
-        )
+        new_run = key != prev_key or (prev_start is not None and start <= prev_start)
         if new_run:
             runs_seen[key] = runs_seen.get(key, 0) + 1
         seq[i] = runs_seen[key]
@@ -290,7 +296,8 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
                 derived["parent_line"] = parents411[i]
             ledger.append(
                 ledger_row(
-                    "uk_obr", row,
+                    "uk_obr",
+                    row,
                     "OBR EFO outturn column — admin receipts/expenditure "
                     "fact (ledger routing rule, Max 2026-08-02)",
                     derived=derived or None,
@@ -336,9 +343,7 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
             if not hint:
                 raise ValueError("uk_obr: measures row without reform_hint")
             reform = policy_ref(
-                measure_slug(
-                    "uk_obr_measure", conds_in["fiscal_event"], hint
-                )
+                measure_slug("uk_obr_measure", conds_in["fiscal_event"], hint)
             )
             conditions["measure"] = hint
             if component[i] > 1:
@@ -347,21 +352,15 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
             # 3.17: latest re-estimates of previously announced personal
             # tax measures — reform worlds keyed by title at the EFO
             # re-estimate vintage.
-            reform = policy_ref(
-                measure_slug("uk_obr_measure", "efo_march_2026", hint)
-            )
+            reform = policy_ref(measure_slug("uk_obr_measure", "efo_march_2026", hint))
             conditions["measure"] = hint
         else:
             if hint:
-                raise ValueError(
-                    f"uk_obr: unexpected reform_hint on {metric_name} row"
-                )
+                raise ValueError(f"uk_obr: unexpected reform_hint on {metric_name} row")
             reform = BASELINE
 
         unit = (
-            UnitConcept.PERSONS
-            if metric is Metric.TAXPAYER_COUNT
-            else UnitConcept.GBP
+            UnitConcept.PERSONS if metric is Metric.TAXPAYER_COUNT else UnitConcept.GBP
         )
         target = _consumed_target(row, sections49.get(i))
         relationship = (
@@ -376,9 +375,7 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
             publication["calibration_basis"] = _CONSUMED_BASIS.format(
                 target=target,
                 vintage=(
-                    _WELFARE_VINTAGE_CAVEAT
-                    if conditions.get("table") == "4.9"
-                    else ""
+                    _WELFARE_VINTAGE_CAVEAT if conditions.get("table") == "4.9" else ""
                 ),
             )
 
@@ -405,14 +402,11 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
 
 def ingest(db_path: Path) -> dict:
     scores, ledger = stage()
-    measures = sum(
-        1 for s in scores if s.source_model == "hmt_scorecard_obr_database"
-    )
+    measures = sum(1 for s in scores if s.source_model == "hmt_scorecard_obr_database")
     consumed = sum(
         1
         for s in scores
-        if s.calibration_relationship
-        is CalibrationRelationship.CONSUMED_AS_TARGET
+        if s.calibration_relationship is CalibrationRelationship.CONSUMED_AS_TARGET
     )
     db = ScorecardDB(db_path)
     n = db.upsert_scores(scores)

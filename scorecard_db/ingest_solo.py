@@ -56,20 +56,16 @@ def _baseline_rates(path: Path) -> dict:
     for r in csv.DictReader(open(path)):
         if r["program"] != "base" or not r["pe_value"]:
             continue
-        metric = (
-            "child_pov_rate"
-            if r["metric"].endswith("_child")
-            else "pov_rate"
-        )
+        metric = "child_pov_rate" if r["metric"].endswith("_child") else "pov_rate"
         rates[(r["geography"], metric)] = float(r["pe_value"])
     return rates
 
 
 def ingest(db_path: Path, comparison_dir: Path = COMPARISON_DIR) -> dict:
     baseline = _baseline_rates(comparison_dir / "pe_baseline.csv")
-    bundle = json.loads(
-        (comparison_dir / "pe_baseline_meta.json").read_text()
-    )["bundle"]
+    bundle = json.loads((comparison_dir / "pe_baseline_meta.json").read_text())[
+        "bundle"
+    ]
 
     rows, us_deltas = [], {}
     for program in PROGRAMS:
@@ -80,7 +76,8 @@ def ingest(db_path: Path, comparison_dir: Path = COMPARISON_DIR) -> dict:
             geo = r["geography"]
             seen.add(geo)
             for metric_col, sub in (
-                ("pov_rate", "total"), ("child_pov_rate", "child"),
+                ("pov_rate", "total"),
+                ("child_pov_rate", "child"),
             ):
                 value = float(r[metric_col])
                 base = baseline.get((geo, metric_col))
@@ -125,8 +122,7 @@ def ingest(db_path: Path, comparison_dir: Path = COMPARISON_DIR) -> dict:
             got = us_deltas[(program, sub)] * 100
             if abs(got - want) > 0.005:
                 raise SystemExit(
-                    f"{program}/{sub}: US delta {got:.3f}pp != "
-                    f"documented {want}pp"
+                    f"{program}/{sub}: US delta {got:.3f}pp != documented {want}pp"
                 )
     solo_sum = sum(us_deltas[(p, "total")] for p in PROGRAMS) * 100
     if not -1.25 < solo_sum < -1.10:  # documented ≈ −1.18pp
@@ -134,12 +130,11 @@ def ingest(db_path: Path, comparison_dir: Path = COMPARISON_DIR) -> dict:
 
     db = ScorecardDB(db_path)
     with db.conn:
-        db.conn.execute(
-            "DELETE FROM pe_exhibits WHERE exhibit = ?", (EXHIBIT,)
-        )
+        db.conn.execute("DELETE FROM pe_exhibits WHERE exhibit = ?", (EXHIBIT,))
     n = db.add_exhibits(rows)
     db.set_lane(
-        "urban-sotsn-solo-attribution", "computed",
+        "urban-sotsn-solo-attribution",
+        "computed",
         f"{n} exhibit rows; housing is the lever (−0.65pp US, −1.38pp child)",
         "2026-08-01T20:20:00",
     )

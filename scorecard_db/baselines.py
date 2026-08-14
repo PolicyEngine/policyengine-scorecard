@@ -43,8 +43,7 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
     (
         {"policy": "tcja_extension"},
         "tcja_extension",
-        "TCJA individual provisions extended past their scheduled 2025 "
-        "sunset.",
+        "TCJA individual provisions extended past their scheduled 2025 sunset.",
         "policy_ref",
         "PWBM tables scored against a TCJA-extension baseline "
         "(sources/harvest-2026-08-02/pwbm NOTES: conditions."
@@ -75,8 +74,7 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "Counterfactual world with the Child Tax Credit removed (CPSP "
         "poverty counterfactual tables, 100% take-up, no behavior).",
         "policy_ref",
-        "CPSP CTC counterfactual tables 2023/2024 "
-        "(sources/harvest-2026-08-02/cpsp).",
+        "CPSP CTC counterfactual tables 2023/2024 (sources/harvest-2026-08-02/cpsp).",
     ),
     (
         {"policy": "tcja_ctc"},
@@ -109,6 +107,17 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "policy_ref",
         "Budget Lab 16-scenario CTC options workbook "
         "(sources/harvest-2026-08-02/budget_lab).",
+    ),
+    (
+        {"policy": "pre_obbba_current_law"},
+        "pre_obbba_current_law",
+        "US current law before OBBBA's enactment — the baseline of CBO's "
+        "December-2024 revenue-option scores.",
+        "policy_ref",
+        "populace reform-validation registry: federal.cbo_rates_plus_1pt "
+        "is scored against pre-OBBBA current law "
+        "(scorecard_db/ingest_reform_validation.py; CBO Options for "
+        "Reducing the Deficit, Dec 2024).",
     ),
     (
         {"policy": "ifs_2cl_fp_removal_rolled_out"},
@@ -158,9 +167,7 @@ def register_baselines(db: ScorecardDB) -> int:
                 " WHERE baseline_key = ? LIMIT 1",
                 (key,),
             ).fetchone()
-            described.append(
-                f"{key} (e.g. {sample['reform_json']})" if sample else key
-            )
+            described.append(f"{key} (e.g. {sample['reform_json']})" if sample else key)
         raise ValueError(
             "baseline_keys in data but not in the registry (add them to "
             f"scorecard_db/baselines.py deliberately): {described}"

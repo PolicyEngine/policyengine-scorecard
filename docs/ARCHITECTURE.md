@@ -82,17 +82,18 @@ Rules (binding):
 Two standing rulings (Max, 2026-08-02), enforced in
 `scorecard_db/relationships.py::never_calibrate`:
 
-1. **Modeled-outcome statistics — poverty rates above all — are permanent
-   calibration holdouts.** The test is outcome-vs-frame, not
-   survey-vs-admin: outputs of the simulated tax/benefit system embed the
-   survey defects populace corrects, so fitting them launders the error
-   back in and destroys the validation signal. Frame/structure margins
-   (population, demographics, geography — e.g. ACS aggregates by
-   congressional district) are legitimate targets from the best available
-   source, admin preferred for the same cell (CD income binds from SOI).
-   Release gates may fail a certification on a held-out regression
-   (doctrine point 3); fitting the statistic is categorically different
-   and prohibited.
+1. **No tax-benefit quantity from a survey — reported or computed — nor
+   anything derived from such may ever be a calibration target.** Four
+   quadrants: admin tax-benefit quantities = targets (SOI, FNS, SSA, ACF);
+   raw survey quantities = targets (ACS population, structure, income
+   margins; admin preferred for the same cell — CD income binds from SOI);
+   survey tax-benefit quantities (total SNAP from the CPS) and their
+   derivatives (SPM/OPM poverty above all; other models' survey-based
+   estimates) = never. Populace replaces the survey's tax-benefit
+   measurement — fitting the survey-derived version launders its error
+   back in and destroys the validation signal. Release gates may fail a
+   certification on a held-out regression (doctrine point 3); fitting the
+   statistic is categorically different and prohibited.
 2. **Deviations from official poverty metrics are never inherently
    problematic.** A model that corrects benefit underreporting should, all
    else equal, sit below survey-based rates; divergence is expected by

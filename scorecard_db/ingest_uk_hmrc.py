@@ -49,12 +49,27 @@ from .uk import (
 
 _KNOWN_FIELDS = frozenset(
     {
-        "source", "metric", "proposed_metric", "unit_concept",
-        "proposed_unit", "value", "value_raw", "value_kind", "period",
-        "time_basis", "conditions", "reform", "reform_hint",
-        "sign_convention", "unit_note", "row_note",
-        "calibration_relationship", "source_model", "source_column",
-        "publication", "status",
+        "source",
+        "metric",
+        "proposed_metric",
+        "unit_concept",
+        "proposed_unit",
+        "value",
+        "value_raw",
+        "value_kind",
+        "period",
+        "time_basis",
+        "conditions",
+        "reform",
+        "reform_hint",
+        "sign_convention",
+        "unit_note",
+        "row_note",
+        "calibration_relationship",
+        "source_model",
+        "source_column",
+        "publication",
+        "status",
     }
 )
 
@@ -107,7 +122,8 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
         if basis in ("outturn", "provisional"):
             ledger.append(
                 ledger_row(
-                    "uk_hmrc", row,
+                    "uk_hmrc",
+                    row,
                     f"HMRC {row['source_model']} {basis} statistics — "
                     "admin fact (ledger routing rule, Max 2026-08-02)",
                 )
@@ -121,15 +137,11 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
         conds_in = dict(row["conditions"])
         unknown_c = set(conds_in) - set(_CONDITION_KEYS)
         if unknown_c:
-            raise ValueError(
-                f"uk_hmrc: unmapped conditions {sorted(unknown_c)}"
-            )
+            raise ValueError(f"uk_hmrc: unmapped conditions {sorted(unknown_c)}")
         geography, geo_note = normalize_geography_uk(conds_in.pop("geography"))
         period, fy_norm = parse_fy(conds_in.pop("fy"))
         conditions = {
-            _CONDITION_KEYS[k]: v
-            for k, v in conds_in.items()
-            if v is not None
+            _CONDITION_KEYS[k]: v for k, v in conds_in.items() if v is not None
         }
         conditions["geography"] = geography
         if geo_note:
@@ -209,8 +221,7 @@ def ingest(db_path: Path) -> dict:
     consumed = sum(
         1
         for s in scores
-        if s.calibration_relationship
-        is CalibrationRelationship.CONSUMED_AS_TARGET
+        if s.calibration_relationship is CalibrationRelationship.CONSUMED_AS_TARGET
     )
     seeded = sum(
         1

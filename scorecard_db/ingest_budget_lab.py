@@ -55,37 +55,63 @@ TCJA_CTC = {"policy": "tcja_ctc"}
 
 _KNOWN_FIELDS = frozenset(
     {
-        "source", "source_model", "calibration_relationship",
-        "geography_note", "proposed_metric", "proposed_unit", "value",
-        "value_raw", "normalization", "period", "time_basis", "conditions",
-        "reform_hint", "source_column", "source_table", "publication",
-        "parse_confidence", "sign_convention", "period_note",
-        "period_window", "time_note", "concept_note",
+        "source",
+        "source_model",
+        "calibration_relationship",
+        "geography_note",
+        "proposed_metric",
+        "proposed_unit",
+        "value",
+        "value_raw",
+        "normalization",
+        "period",
+        "time_basis",
+        "conditions",
+        "reform_hint",
+        "source_column",
+        "source_table",
+        "publication",
+        "parse_confidence",
+        "sign_convention",
+        "period_note",
+        "period_window",
+        "time_note",
+        "concept_note",
     }
 )
 _KNOWN_CONDITIONS = frozenset(
     {
-        "geography", "estimate_type", "universe", "income_group",
-        "scenario", "provision", "period_window", "bill_version",
-        "income_measure", "provision_component", "reform_label", "baseline",
-        "bill_component", "age_group",
+        "geography",
+        "estimate_type",
+        "universe",
+        "income_group",
+        "scenario",
+        "provision",
+        "period_window",
+        "bill_version",
+        "income_measure",
+        "provision_component",
+        "reform_label",
+        "baseline",
+        "bill_component",
+        "age_group",
         "average_income_after_transfers_taxes_usd",
     }
 )
 
 _INCOME_MEASURES = {
     "AGI-based expanded income, after-tax-and-transfer": (
-        "agi_expanded_income", "after_tax_and_transfer_income",
+        "agi_expanded_income",
+        "after_tax_and_transfer_income",
     ),
     "AGI-based expanded income, after-tax": (
-        "agi_expanded_income", "after_tax_income",
+        "agi_expanded_income",
+        "after_tax_income",
     ),
     # The combined OBBBA+tariffs figure defines its own denominator; keep
     # the definition verbatim as the axis.
-    "household resources as % of current-law income after transfers and"
-    " taxes": (
-        "household resources as % of current-law income after transfers"
-        " and taxes",
+    "household resources as % of current-law income after transfers and taxes": (
+        "household resources as % of current-law income after transfers and taxes",
         "after_tax_and_transfer_income",
     ),
 }
@@ -110,11 +136,9 @@ def _reform(row) -> ReformRef:
         worlds = {
             "House-passed reconciliation bill (One Big Beautiful Bill Act),"
             " major spending and tax provisions": "obbba_house_passed_20250522",
-            "Senate reconciliation bill, major spending and tax provisions":
-                "obbba_senate_bill_20250628",
+            "Senate reconciliation bill, major spending and tax provisions": "obbba_senate_bill_20250628",
             "Amended Senate reconciliation bill (with Scott proposal), major"
-            " spending and tax provisions":
-                "obbba_senate_bill_20250628_plus_scott",
+            " spending and tax provisions": "obbba_senate_bill_20250628_plus_scott",
         }
         return policy_ref(worlds[hint])
 
@@ -123,34 +147,42 @@ def _reform(row) -> ReformRef:
             "Reconciliation bill tax provisions, variant: TCJA Extension:"
             " Total Impact": ("tcja_extension", None),
             "Reconciliation bill tax provisions, variant: House: Total": (
-                "obbba_house_passed_tax_provisions", None,
+                "obbba_house_passed_tax_provisions",
+                None,
             ),
             "Reconciliation bill tax provisions, variant: Senate: Total": (
-                "obbba_senate_managers_20250628", None,
+                "obbba_senate_managers_20250628",
+                None,
             ),
             "Reconciliation bill tax provisions, variant: House: Changes on"
             " Top of TCJA Extension": (
-                "obbba_house_tax_beyond_tcja", TCJA_EXTENSION,
+                "obbba_house_tax_beyond_tcja",
+                TCJA_EXTENSION,
             ),
             "House reconciliation bill: additional tax provisions relative"
             " to TCJA extension": (
-                "obbba_house_tax_beyond_tcja", TCJA_EXTENSION,
+                "obbba_house_tax_beyond_tcja",
+                TCJA_EXTENSION,
             ),
             "Reconciliation bill tax provisions, variant: House: Individual"
             " Tax Changes on Top of TCJA Extension": (
-                "obbba_house_individual_tax_beyond_tcja", TCJA_EXTENSION,
+                "obbba_house_individual_tax_beyond_tcja",
+                TCJA_EXTENSION,
             ),
             "Reconciliation bill tax provisions, variant: Senate: Changes"
             " on Top of TCJA Extension": (
-                "obbba_senate_tax_beyond_tcja", TCJA_EXTENSION,
+                "obbba_senate_tax_beyond_tcja",
+                TCJA_EXTENSION,
             ),
             "Senate reconciliation bill: additional tax provisions relative"
             " to TCJA extension": (
-                "obbba_senate_tax_beyond_tcja", TCJA_EXTENSION,
+                "obbba_senate_tax_beyond_tcja",
+                TCJA_EXTENSION,
             ),
             "Reconciliation bill tax provisions, variant: Senate:"
             " Individual Tax Changes on Top of TCJA Extension": (
-                "obbba_senate_individual_tax_beyond_tcja", TCJA_EXTENSION,
+                "obbba_senate_individual_tax_beyond_tcja",
+                TCJA_EXTENSION,
             ),
         }
         slug, baseline = worlds[hint]
@@ -168,9 +200,7 @@ def _reform(row) -> ReformRef:
             variant = "permanent"
         else:
             raise ValueError(f"budget_lab: unmapped cost hint {hint!r}")
-        if hint.startswith("Senate 2025 reconciliation bill") or (
-            "— Senate:" in hint
-        ):
+        if hint.startswith("Senate 2025 reconciliation bill") or ("— Senate:" in hint):
             slug = (
                 "obbba_enacted_pl119_21"
                 if variant == "as_passed"
@@ -226,10 +256,8 @@ def _reform(row) -> ReformRef:
 
     if title.startswith("Indexing Capital Gains to Inflation"):
         worlds = {
-            "Indexing capital gains basis to inflation — Prospective":
-                "capgains_basis_indexing_prospective",
-            "Indexing capital gains basis to inflation — Retrospective":
-                "capgains_basis_indexing_retrospective",
+            "Indexing capital gains basis to inflation — Prospective": "capgains_basis_indexing_prospective",
+            "Indexing capital gains basis to inflation — Retrospective": "capgains_basis_indexing_retrospective",
         }
         return policy_ref(worlds[hint])
 
@@ -243,9 +271,7 @@ def stage_scores() -> list[ExternalScore]:
         staged_conds = dict(row["conditions"])
         unknown = set(staged_conds) - _KNOWN_CONDITIONS
         if unknown:
-            raise ValueError(
-                f"budget_lab: unmapped conditions {sorted(unknown)}"
-            )
+            raise ValueError(f"budget_lab: unmapped conditions {sorted(unknown)}")
         if row["calibration_relationship"] != "held_out":
             raise ValueError("budget_lab: unexpected relationship")
         if row.get("period_window") != staged_conds.get("period_window"):
@@ -254,19 +280,16 @@ def stage_scores() -> list[ExternalScore]:
         metric_name = row["proposed_metric"]
         if metric_name == "revenue_change":
             if row["proposed_unit"] != "usd_billions":
-                raise ValueError(
-                    f"budget_lab: unexpected unit {row['proposed_unit']}"
-                )
+                raise ValueError(f"budget_lab: unexpected unit {row['proposed_unit']}")
             metric, unit = Metric.REVENUE_CHANGE, UnitConcept.USD
             value, value_kind = billions(row["value"]), "usd"
             window_kind = "total"
         elif metric_name == "pct_change_after_tax_income":
             if row["proposed_unit"] != "percent":
-                raise ValueError(
-                    f"budget_lab: unexpected unit {row['proposed_unit']}"
-                )
+                raise ValueError(f"budget_lab: unexpected unit {row['proposed_unit']}")
             metric, unit = (
-                Metric.PCT_CHANGE_AFTER_TAX_INCOME, UnitConcept.PERCENT,
+                Metric.PCT_CHANGE_AFTER_TAX_INCOME,
+                UnitConcept.PERCENT,
             )
             value, value_kind = row["value"], "share"
             window_kind = "annual_average"
@@ -279,18 +302,20 @@ def stage_scores() -> list[ExternalScore]:
         if staged_conds.pop("geography") != "us":
             raise ValueError("budget_lab: unexpected geography")
         for key in (
-            "income_group", "universe", "provision", "provision_component",
-            "bill_component", "bill_version", "age_group",
+            "income_group",
+            "universe",
+            "provision",
+            "provision_component",
+            "bill_component",
+            "bill_version",
+            "age_group",
         ):
             if key in staged_conds:
                 conditions[key] = staged_conds.pop(key)
         # Table 2b decomposes the FINANCE title; its "Total" is the Title
         # VII total (-3,296B), not the whole-bill total (-3,062B) — scope
         # its components so the two never share a claim.
-        if (
-            row["source_table"].startswith("T2b")
-            and "bill_component" in conditions
-        ):
+        if row["source_table"].startswith("T2b") and "bill_component" in conditions:
             conditions["bill_component"] = (
                 f"Title VII. Finance / {conditions['bill_component']}"
             )
@@ -302,9 +327,7 @@ def stage_scores() -> list[ExternalScore]:
         ):
             staged_conds.pop("scenario", None)
         if "income_measure" in staged_conds:
-            axis, concept = _INCOME_MEASURES[
-                staged_conds.pop("income_measure")
-            ]
+            axis, concept = _INCOME_MEASURES[staged_conds.pop("income_measure")]
             conditions["income_axis"] = axis
             conditions["income_concept"] = concept
         if "scenario" in staged_conds:
@@ -336,26 +359,25 @@ def stage_scores() -> list[ExternalScore]:
                 conditions["window_kind"] = "total"
             else:
                 if period not in (period_start, period_end):
-                    raise ValueError(
-                        f"budget_lab: period {period} outside {window}"
-                    )
+                    raise ValueError(f"budget_lab: period {period} outside {window}")
                 period = period_end
                 conditions["window_kind"] = window_kind
 
         publication = dict(row["publication"])
         for key in (
-            "source_table", "normalization", "sign_convention",
-            "period_note", "time_note", "concept_note", "parse_confidence",
+            "source_table",
+            "normalization",
+            "sign_convention",
+            "period_note",
+            "time_note",
+            "concept_note",
+            "parse_confidence",
         ):
             if row.get(key):
                 publication[key] = row[key]
-        avg_income = staged_conds.pop(
-            "average_income_after_transfers_taxes_usd", None
-        )
+        avg_income = staged_conds.pop("average_income_after_transfers_taxes_usd", None)
         if avg_income is not None:
-            publication["average_income_after_transfers_taxes_usd"] = (
-                avg_income
-            )
+            publication["average_income_after_transfers_taxes_usd"] = avg_income
         if staged_conds:
             raise ValueError(
                 f"budget_lab: unconsumed conditions {sorted(staged_conds)}"

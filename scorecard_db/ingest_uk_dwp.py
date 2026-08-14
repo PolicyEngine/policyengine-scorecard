@@ -55,12 +55,29 @@ from .uk import (
 
 _KNOWN_FIELDS = frozenset(
     {
-        "source", "metric", "proposed_metric", "unit_concept",
-        "proposed_unit", "value", "value_raw", "value_kind", "conversion",
-        "period", "time_basis", "conditions", "reform",
-        "calibration_relationship", "calibration_note", "series_note",
-        "time_note", "geography_note", "unit_note",
-        "source_model", "source_column", "publication", "status",
+        "source",
+        "metric",
+        "proposed_metric",
+        "unit_concept",
+        "proposed_unit",
+        "value",
+        "value_raw",
+        "value_kind",
+        "conversion",
+        "period",
+        "time_basis",
+        "conditions",
+        "reform",
+        "calibration_relationship",
+        "calibration_note",
+        "series_note",
+        "time_note",
+        "geography_note",
+        "unit_note",
+        "source_model",
+        "source_column",
+        "publication",
+        "status",
     }
 )
 
@@ -145,13 +162,11 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
         if row["reform"] != {"framework": "baseline"}:
             raise ValueError(f"uk_dwp: unexpected reform {row['reform']}")
         conds_in = dict(row["conditions"])
-        if (
-            row["source_model"] == "dwp_becl"
-            and conds_in.get("basis") == "outturn"
-        ):
+        if row["source_model"] == "dwp_becl" and conds_in.get("basis") == "outturn":
             ledger.append(
                 ledger_row(
-                    "uk_dwp", row,
+                    "uk_dwp",
+                    row,
                     "DWP BECL outturn — admin expenditure/caseload fact "
                     "(ledger routing rule, Max 2026-08-02)",
                 )
@@ -185,7 +200,8 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
         elif row.get("unit_concept"):
             unit = _UNITS[row["unit_concept"]]
         elif (row.get("proposed_unit") or row.get("value_kind")) in (
-            "gbp", "currency_gbp",
+            "gbp",
+            "currency_gbp",
         ):
             unit = UnitConcept.GBP
         else:
@@ -212,15 +228,11 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
             program = conditions.get("program")
             if metric is Metric.BENEFIT_COST and program in _BECL_CONSUMED:
                 relationship = CalibrationRelationship.CONSUMED_AS_TARGET
-                publication["calibration_basis"] = (
-                    _BECL_CONSUMED_BASIS.format(
-                        target=_BECL_CONSUMED[program]
-                    )
+                publication["calibration_basis"] = _BECL_CONSUMED_BASIS.format(
+                    target=_BECL_CONSUMED[program]
                 )
             elif metric is Metric.BENEFIT_COST and program in ("dla", "pip"):
-                publication["calibration_basis"] = (
-                    _BECL_COMPONENT_HELDOUT_NOTE
-                )
+                publication["calibration_basis"] = _BECL_COMPONENT_HELDOUT_NOTE
             elif metric is Metric.CASELOAD:
                 publication["calibration_basis"] = _BECL_CASELOAD_NOTE
         elif row["source_model"] == "dwp_uc_admin":
@@ -259,8 +271,7 @@ def ingest(db_path: Path) -> dict:
     consumed = sum(
         1
         for s in scores
-        if s.calibration_relationship
-        is CalibrationRelationship.CONSUMED_AS_TARGET
+        if s.calibration_relationship is CalibrationRelationship.CONSUMED_AS_TARGET
     )
     seeded = sum(
         1

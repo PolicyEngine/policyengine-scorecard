@@ -41,11 +41,27 @@ from .uk import (
 
 _KNOWN_FIELDS = frozenset(
     {
-        "source", "proposed_metric", "proposed_unit", "value", "value_raw",
-        "conversion", "metric_note", "parse_confidence", "sign_note",
-        "period", "time_basis", "conditions", "reform", "reform_hint",
-        "calibration_relationship", "source_model", "source_column",
-        "source_table", "publication", "status", "name_note",
+        "source",
+        "proposed_metric",
+        "proposed_unit",
+        "value",
+        "value_raw",
+        "conversion",
+        "metric_note",
+        "parse_confidence",
+        "sign_note",
+        "period",
+        "time_basis",
+        "conditions",
+        "reform",
+        "reform_hint",
+        "calibration_relationship",
+        "source_model",
+        "source_column",
+        "source_table",
+        "publication",
+        "status",
+        "name_note",
         "suppression_note",
     }
 )
@@ -91,9 +107,7 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
         geography, geo_note = normalize_geography_uk(conds_in.pop("geography"))
         period, fy_norm = parse_fy(conds_in.pop("fiscal_year"))
         conditions = {
-            _CONDITION_KEYS[k]: v
-            for k, v in conds_in.items()
-            if v is not None
+            _CONDITION_KEYS[k]: v for k, v in conds_in.items() if v is not None
         }
         conditions["geography"] = geography
         if geo_note:
@@ -108,9 +122,7 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
                 raise ValueError("uk_hmt: costing row without reform_hint")
             if "reform" in row:
                 raise ValueError("uk_hmt: costing row carries reform field")
-            reform = policy_ref(
-                measure_slug("uk_hmt", conds_in["fiscal_event"], hint)
-            )
+            reform = policy_ref(measure_slug("uk_hmt", conds_in["fiscal_event"], hint))
             conditions["measure"] = hint
             unit = UnitConcept.GBP
             value_kind = "gbp"
@@ -126,8 +138,7 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
         publication = dict(row["publication"])
         if row.get("source_table"):
             publication.setdefault("table", row["source_table"])
-        for note in ("sign_note", "metric_note", "name_note",
-                     "suppression_note"):
+        for note in ("sign_note", "metric_note", "name_note", "suppression_note"):
             if row.get(note):
                 publication[note] = row[note]
 
@@ -156,9 +167,7 @@ def stage() -> tuple[list[ExternalScore], list[dict]]:
 
 def ingest(db_path: Path) -> dict:
     scores, ledger = stage()
-    costings = sum(
-        1 for s in scores if s.source_model == "hmt_costing_obr_certified"
-    )
+    costings = sum(1 for s in scores if s.source_model == "hmt_costing_obr_certified")
     suppressed = sum(1 for s in scores if s.status == "suppressed")
     db = ScorecardDB(db_path)
     n = db.upsert_scores(scores)
