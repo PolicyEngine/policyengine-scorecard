@@ -56,7 +56,9 @@ from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "data" / "pe"
 OUT.mkdir(parents=True, exist_ok=True)
-YEAR = int(sys.argv[2]) if len(sys.argv) > 2 else 2025
+# Overridden from argv in main() — module import stays side-effect-free
+# so the registries are testable without the engine.
+YEAR = 2025
 
 t0 = time.time()
 
@@ -331,6 +333,10 @@ def compute_run(run_name, fullpart):
 
 
 def main():
+    global YEAR
+    if len(sys.argv) > 2:
+        YEAR = int(sys.argv[2])
+        meta["year"] = YEAR
     for run_name, fullpart in (("baseline", False), ("fullpart", True)):
         compute_run(run_name, fullpart)
     (OUT / "pe_uk_metrics.json").write_text(json.dumps(rows))
