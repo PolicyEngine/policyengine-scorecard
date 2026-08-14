@@ -46,10 +46,16 @@ import json
 import re
 from pathlib import Path
 
-try:
-    from pypdf import PdfReader
-except ImportError as e:
-    raise SystemExit("this adapter needs pypdf: pip install pypdf") from e
+
+def _pdf_reader():
+    """Imported lazily so the parsing helpers and structural_invariants()
+    stay importable (and CI-testable) without pypdf installed."""
+    try:
+        from pypdf import PdfReader
+    except ImportError as e:  # pragma: no cover - environment-dependent
+        raise SystemExit("this adapter needs pypdf: pip install pypdf") from e
+    return PdfReader
+
 
 HERE = Path(__file__).resolve().parent
 OUT_DIR = HERE.parent.parent / "data" / "externals"
@@ -143,36 +149,81 @@ def page_text(reader, indices):
     return "\n".join(reader.pages[i].extract_text() or "" for i in indices)
 
 
+def tokenize(text):
+    """[(token, line_index, is_line_start)] over the extracted page text.
+
+    Tokens, not characters, are the matching unit. Substring matching on
+    flattened text is what made a bare '2' anchor match the trailing digit
+    of '1352' in Table 4.7, shifting five quintile rows onto their
+    neighbours' values; whole-token equality cannot do that.
+    """
+    out = []
+    for line_no, line in enumerate(text.split("\n")):
+        for i, tok in enumerate(line.split()):
+            out.append((tok, line_no, i == 0))
+    return out
+
+
+def _match_anchor(stream, start, anchor_tokens, numeric_anchor):
+    """First index >= start where anchor_tokens match consecutively."""
+    n = len(anchor_tokens)
+    for i in range(start, len(stream) - n + 1):
+        if [t for t, _, _ in stream[i : i + n]] != anchor_tokens:
+            continue
+        # A numeric label ('2', '3', '4' — the quintile rows) is only a row
+        # label at the start of its line; anywhere else it is a data value.
+        if numeric_anchor and not stream[i][2]:
+            continue
+        return i
+    return -1
+
+
 def parse_rows(text, registry, n_values):
-    """Walk the registry in order, reading n_values tokens after each anchor."""
-    pos = 0
+    """Walk the registry in order, reading n_values values after each anchor.
+
+    A row's values are taken from the anchor's OWN line, and continue onto
+    following lines only while the anchor line has not yet supplied enough
+    (Table 4.6 wraps the two benefit-cap rows) and each continuation line
+    holds nothing but values. That bound is what stops a row from running
+    on into the next labelled row.
+    """
+    lines = text.split("\n")
+    pure_value_line = [
+        bool(line.split()) and all(TOKEN.match(t) for t in line.split())
+        for line in lines
+    ]
+    stream = tokenize(text)
+    cursor = 0
     out = []
     for anchor, program, subgroup, unit_concept, band in registry:
-        anchor_flat = anchor.replace("\n", "")
-        # search on a whitespace-normalized shadow so wrapped anchors match
-        flat = re.sub(r"\s+", " ", text)
-        m = re.search(re.escape(re.sub(r"\s+", " ", anchor_flat)), flat[pos:])
-        if not m:
+        anchor_tokens = anchor.split()
+        numeric_anchor = all(TOKEN.match(t) for t in anchor_tokens)
+        i = _match_anchor(stream, cursor, anchor_tokens, numeric_anchor)
+        if i < 0:
             raise ValueError(f"anchor not found: {anchor!r}")
-        start = pos + m.end()
+        start = i + len(anchor_tokens)
+        # values start on the LAST anchor token's line: wrapped anchors
+        # ("bmascmt01_s,\nbmascmt_s") put the label and the data on
+        # different lines
+        anchor_line = stream[start - 1][1]
+        want = n_values + 1 if band else n_values
         tokens = []
-        for tok in flat[start:].split():
-            if TOKEN.match(tok):
-                tokens.append(tok)
-            elif tokens:
+        for tok, line_no, _ in stream[start:]:
+            if len(tokens) >= want:
                 break
-            elif band and tok == "-":
-                continue
-            else:
+            if line_no != anchor_line and not pure_value_line[line_no]:
                 break
-        if band and tokens and len(tokens) == n_values + 1:
+            if not TOKEN.match(tok):
+                break
+            tokens.append(tok)
+        if band and len(tokens) == n_values + 1:
             tokens = tokens[1:]  # leading variable-column placeholder
         if len(tokens) < n_values:
             raise ValueError(
                 f"{anchor!r}: expected {n_values} tokens, got {len(tokens)}: {tokens}"
             )
         out.append((program, subgroup, unit_concept, tokens[:n_values]))
-        pos = start
+        cursor = start
     return out
 
 
@@ -198,10 +249,12 @@ def emit(
 
 
 def emit_instrument_table(text, registry, metric, scale, rows, table_id):
+    absent = 0
     for program, subgroup, unit_concept, tokens in parse_rows(text, registry, 16):
         for k, tok in enumerate(tokens):
             if tok in ("-", "na"):
-                continue  # absent claim, not suppression
+                absent += 1  # claim not published, not a suppressed value
+                continue
             variant = "ukmod" if k < 8 else "official_as_cited"
             period = YEARS[k % 8]
             emit(
@@ -210,11 +263,14 @@ def emit_instrument_table(text, registry, metric, scale, rows, table_id):
                 metric,
                 subgroup,
                 variant,
-                unit_concept,
+                # the caseload registry supplies the counting unit; money
+                # rows are GBP whatever their instrument counts
+                "gbp_nominal" if metric == "expenditure" else unit_concept,
                 period,
                 float(tok) * scale,
                 f"{table_id}:{program}/{subgroup}",
             )
+    return absent
 
 
 DISTRIBUTION_ROWS = [
@@ -285,17 +341,80 @@ def emit_reference_table(text, registry, program, rows, table_id):
             )
 
 
+QUINTILES = ("q1", "q2", "q3", "q4", "q5")
+
+
+def structural_invariants(rows):
+    """[(label, ok)] — table-level identities the source guarantees.
+
+    Shared with tests/test_ukmod_adapter.py so CI enforces them too (CI
+    runs pytest, never sources/).
+    """
+    index = {}
+    for r in rows:
+        index[(r["metric"], r["subgroup"], r["variant"], r["period"])] = r["value"]
+    variants = ("ukmod", "input_data", "hbai")
+    out = []
+
+    for variant in variants:
+        periods = sorted(
+            {
+                p
+                for (m, _, v, p) in index
+                if m == "quintile_income_share" and v == variant
+            }
+        )
+        for period in periods:
+            shares = [
+                index[("quintile_income_share", q, variant, period)] for q in QUINTILES
+            ]
+            # published as whole percents; five roundings bound the error
+            out.append(
+                (
+                    f"{variant} {period} quintile shares sum to 1",
+                    abs(sum(shares) - 1.0) <= 0.025,
+                )
+            )
+            medians = [
+                index[("quintile_median_income", q, variant, period)] for q in QUINTILES
+            ]
+            out.append(
+                (
+                    f"{variant} {period} quintile medians increase q1<..<q5",
+                    all(a < b for a, b in zip(medians, medians[1:])),
+                )
+            )
+            # the middle quintile's median IS the population median
+            out.append(
+                (
+                    f"{variant} {period} q3 median == overall median",
+                    abs(medians[2] - index[("median_income", "total", variant, period)])
+                    <= 1,  # the report rounds the two rows independently
+                )
+            )
+            out.append(
+                (
+                    f"{variant} {period} median <= mean (right-skewed incomes)",
+                    index[("median_income", "total", variant, period)]
+                    <= index[("mean_income", "total", variant, period)],
+                )
+            )
+    return out
+
+
 def run():
-    reader = PdfReader(HERE / "raw" / RAW_FILE)
+    reader = _pdf_reader()(HERE / "raw" / RAW_FILE)
     rows = []
 
     text = page_text(reader, range(89, 92))
     text = text[text.find("Table 4.5") :]
-    emit_instrument_table(text, INSTRUMENT_ROWS, "caseload", 1000, rows, "4.5")
+    absent = emit_instrument_table(text, INSTRUMENT_ROWS, "caseload", 1000, rows, "4.5")
 
     text = page_text(reader, range(92, 95))
     text = text[text.find("Table 4.6") :]
-    emit_instrument_table(text, EXPENDITURE_ROWS, "expenditure", 1e6, rows, "4.6")
+    absent += emit_instrument_table(
+        text, EXPENDITURE_ROWS, "expenditure", 1e6, rows, "4.6"
+    )
 
     text = page_text(reader, [98])
     text = text[text.find("Table 4.7") :]
@@ -419,6 +538,16 @@ def run():
         ok = got is not None and abs(got - want) < 1e-9
         print(f"  {'OK ' if ok else 'FAIL'} {label}: {got}")
         failed = failed or not ok
+
+    # --- structural invariants -----------------------------------------
+    # Spot-checks on hand-picked cells cannot see a whole row shifted onto
+    # its neighbour's values: the first build of this adapter passed all 12
+    # checks above while five quintile rows of Table 4.7 were wrong. These
+    # invariants are what catch that class of defect.
+    for label, ok in structural_invariants(rows):
+        print(f"  {'OK ' if ok else 'FAIL'} invariant: {label}")
+        failed = failed or not ok
+    print(f"  absent (unpublished) cells skipped: {absent}")
     if failed:
         raise SystemExit(1)
 

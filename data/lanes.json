@@ -183,7 +183,7 @@
    "stage": "ingested",
    "running": false,
    "updated": "2026-08-14",
-   "note": "External side built (#38): Country Report 2023-2030 (B2026.01) validation tables 4.5-4.8 \u2014 1,131 rows, caseloads+expenditure for 30 instruments x 2023-2030 with official-as-cited columns, income distribution + poverty triangle (ukmod/input_data/hbai variants); 12 report-pinned checks pass"
+   "note": "External side built (#38): Country Report 2023-2030 (B2026.01) validation tables 4.5-4.8 \u2014 1,131 rows, caseloads+expenditure for 30 instruments x 2023-2030 with official-as-cited columns, income distribution + poverty triangle (ukmod/input_data/hbai variants); 12 report-pinned checks + 40 structural invariants pass (quintile-row parse defect fixed)"
   },
   {
    "id": "jct-reform-scores",
