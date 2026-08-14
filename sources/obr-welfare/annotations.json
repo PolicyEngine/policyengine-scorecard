@@ -53,6 +53,13 @@
       "severity": "definitional",
       "text": "Figures are National Accounts expenditure (AME), including payments to people abroad and fraud/error, on an accrual basis. PE simulated entitlement on resident households will structurally undershoot benefits with large non-resident caseloads (state pension) or overshoot where take-up is below PE's calibrated rates. Decompose before diagnosing.",
       "basis": "EFO expenditure methodology"
+    },
+    {
+      "id": "nested-hierarchy-double-count",
+      "applies_to": {"program": null, "metrics": ["welfare_spending"]},
+      "severity": "construction",
+      "text": "Table 4.9 is NESTED, and rows carry that structure in 'aggregate_level' ('component' | 'subtotal' | 'total') and 'parent'. 'dwp_social_security' is not a program: it is the SUM of the components naming it as parent, and 'other_dwp' in the welfare-cap section is a further subtotal inside it. Any aggregation must filter to aggregate_level == 'component' (or add subtotals only). Summing every non-total row of the in-cap section for 2025-26 gives £319.85bn against the published cap total of £169.13bn — a 1.89x double-count. A PE counterpart mapping must not attach a PE program to a subtotal row.",
+      "basis": "Table 4.9 'of which:' markers and cell indentation; components verified to reproduce each published parent to float64 exactness in all seven years by sources/obr-welfare/adapter.py"
     }
   ]
 }
