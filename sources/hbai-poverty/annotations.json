@@ -9,7 +9,7 @@
       "id": "holdout-doctrine",
       "applies_to": {"program": null, "metrics": null},
       "severity": "construction",
-      "text": "PolicyEngine UK's enhanced FRS is built from the same underlying survey HBAI is computed from, and its calibration targets include income and demographic aggregates that co-move with poverty rates. Before scoring, record per-cell whether pe-uk calibration consumes an HBAI-adjacent target; where it does not, treat HBAI as the UK analogue of the census-spm permanent-holdout doctrine — compare, never target, and expect construction-driven deviations.",
+      "text": "HBAI is categorically held out — the UK analogue of the census-spm permanent-holdout doctrine: survey-derived poverty statistics are never calibration targets, so every cell scores calibration_relationship=held_out. PolicyEngine UK's enhanced FRS is built from the same underlying survey, and its calibration targets include income and demographic aggregates that co-move with poverty rates; that adjacency is a construction fact to record on comparisons (expect co-movement-driven deviations), never grounds to reclassify a cell as consumed_as_target.",
       "basis": "scorecard issue #35; census-spm lane doctrine (2026-08-02); policyengine-uk calibration target registry"
     },
     {

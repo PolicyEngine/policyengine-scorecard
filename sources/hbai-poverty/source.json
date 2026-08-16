@@ -19,7 +19,7 @@
   },
   "period": "Single years FYE 1995 to FYE 2025 (UK from 2002/03, GB before); region/country tables are 3-year rolling averages",
   "programs": ["hbai_low_income"],
-  "geographies": "UK + GB (pre-2002/03) + 12 English regions/countries (England, 9 English regions, Wales, Scotland, Northern Ireland); 3-year averages only below UK level",
+  "geographies": "UK + GB (pre-2002/03) + 13 regions/countries (England, 9 English regions, Wales, Scotland, Northern Ireland); 3-year averages only below UK level",
   "vintage_note": "Series break at 2021/22: integrated survey and benefit admin data, and a change in the absolute-poverty base year. FYE 2021 survey year is affected by COVID field-work disruption. Always score against this release's restatement of earlier years, not earlier releases.",
   "diagnosis_upstream": "HBAI is a survey statistic, not a simulation; divergence diagnoses classify against FRS/PE-data differences (enhanced FRS reweighting, imputation) rather than a policy engine."
 }
