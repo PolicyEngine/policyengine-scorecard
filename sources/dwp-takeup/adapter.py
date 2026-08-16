@@ -51,6 +51,40 @@ FILES = {
     "housing_benefit_tables_fye_2324.ods": r"^HB\d+$",
 }
 
+# Exact shape contract for the FYE 2024 publication (2025-10-30). A
+# republished workbook that drops a sheet, renames an FYE label (which the
+# parser would otherwise classify as prose), or adds a period must fail
+# here — never silently shrink the extract.
+EXPECTED_SHEETS = {
+    "PC1",
+    "PC2",
+    "PC3",
+    "PC4",
+    "PC5",
+    "PC6",
+    "PC7",
+    "PC8",
+    "PC9",
+    "PC10",
+    "HB1",
+    "HB2",
+}
+EXPECTED_SHEET_ROWS = {
+    "PC1": 273,
+    "PC2": 390,
+    "PC3": 364,
+    "PC4": 520,
+    "PC5": 364,
+    "PC6": 520,
+    "PC7": 273,
+    "PC8": 390,
+    "PC9": 273,
+    "PC10": 390,
+    "HB1": 91,
+    "HB2": 130,
+}
+EXPECTED_TOTAL_ROWS = 3094  # after exact-duplicate collapse
+
 # Column-group label -> (program, subgroup). Family-type/age groups keep the
 # sheet's program (resolved from the table title) and set only the subgroup.
 GROUPS = {
@@ -235,10 +269,27 @@ def parse_sheet(sheet, rows):
 
 def run():
     rows = []
+    seen_sheets = set()
+    per_sheet: dict[str, int] = {}
     for fname, sheet_pat in FILES.items():
         for sheet, raw_rows in sheet_rows(HERE / "raw" / fname):
             if re.match(sheet_pat, sheet):
-                rows.extend(parse_sheet(sheet, raw_rows))
+                seen_sheets.add(sheet)
+                parsed = parse_sheet(sheet, raw_rows)
+                per_sheet[sheet] = len(parsed)
+                rows.extend(parsed)
+    if seen_sheets != EXPECTED_SHEETS:
+        raise SystemExit(
+            f"sheet contract broken: missing {EXPECTED_SHEETS - seen_sheets},"
+            f" unexpected {seen_sheets - EXPECTED_SHEETS}"
+        )
+    if per_sheet != EXPECTED_SHEET_ROWS:
+        drift = {
+            s: (per_sheet.get(s), EXPECTED_SHEET_ROWS.get(s))
+            for s in seen_sheets | set(EXPECTED_SHEET_ROWS)
+            if per_sheet.get(s) != EXPECTED_SHEET_ROWS.get(s)
+        }
+        raise SystemExit(f"per-sheet row contract broken (got, want): {drift}")
 
     # The GC column of PC1/PC2 and the All column of PC5-PC10 (and the PC
     # overall column vs PC3/PC4/PC7/PC8 All) state the same cells twice;
@@ -256,6 +307,10 @@ def run():
             continue
         deduped[key] = r
     rows = list(deduped.values())
+    if len(rows) != EXPECTED_TOTAL_ROWS:
+        raise SystemExit(
+            f"total row contract broken: {len(rows)} != {EXPECTED_TOTAL_ROWS}"
+        )
 
     out = OUT_DIR / f"{SOURCE_ID}.json"
     out.write_text(json.dumps(rows))

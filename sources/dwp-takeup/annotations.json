@@ -44,7 +44,7 @@
       "id": "methodology-breaks",
       "applies_to": {"program": null, "metrics": null},
       "severity": "caution",
-      "text": "Methodological refinements apply from FYE 2017, and the FYE 2024 release adds improved admin-data linking plus calibration-based survey weighting. FYE 2021 is suppressed entirely (COVID). Time-series comparisons across these breaks are not like-for-like; score against the FYE 2024 vintage of each year's estimate, not earlier releases.",
+      "text": "Methodological refinements apply from FYE 2017, and the FYE 2024 release adds improved admin-data linking plus calibration-based survey weighting. FYE 2021's modeled estimates (take-up rates, entitled non-recipients, unclaimed amounts) are suppressed (COVID FRS fieldwork); its administrative cells (recipient counts, amounts claimed) are published. Time-series comparisons across these breaks are not like-for-like; score against the FYE 2024 vintage of each year's estimate, not earlier releases.",
       "basis": "Notes sheet (notes 7, 11); publication methodology-changes section"
     },
     {
