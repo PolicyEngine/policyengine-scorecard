@@ -1,0 +1,65 @@
+{
+  "_schema": {
+    "applies_to": "matcher on {program, metrics, subgroups}; null = any",
+    "severity": "period | definitional | construction | caution | gap",
+    "basis": "traceability: EFO March 2026 documentation, a GitHub issue, or a measured diagnostic in this repo's data"
+  },
+  "annotations": [
+    {
+      "id": "consumed-as-target-boundary",
+      "applies_to": {"program": null, "metrics": ["welfare_spending"]},
+      "severity": "construction",
+      "text": "policyengine-uk calibrates program totals to official spending statistics that are themselves inputs to (or outputs of) the OBR forecast round — where a pe-uk calibration target derives from the same DWP/HMRC outturns or EFO lines, the comparison is consumed_as_target, not held-out validation. Classify per benefit before scoring; the 2024-25 outturn column is the highest-risk year for this. Same boundary rule as the CBO-baseline lane's pre-verified rows.",
+      "basis": "cbo-baseline lane note (317 consumed_as_target); policyengine-uk calibration target registry; scorecard issue #37"
+    },
+    {
+      "id": "baseline-vintage",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "definitional",
+      "text": "These are post-measures March 2026 EFO figures: current law plus policy announced by 2026-03-03, on the OBR's March 2026 economy forecast. A PE counterpart must state its own baseline vintage; comparing against a PE run with later policy (or different uprating assumptions) conflates baseline and model differences. Each EFO round is a distinct baseline_key — never treat a newer EFO as a revision of this one.",
+      "basis": "EFO March 2026; #21 baseline_key lesson; scorecard issue #13"
+    },
+    {
+      "id": "outturn-vs-forecast",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "period",
+      "text": "2024-25 is outturn (administrative data); 2025-26 to 2030-31 are forecast. Score outturn comparisons as model-vs-admin and forecast comparisons as forecast-vs-forecast — they are different claim types with different expected error.",
+      "basis": "Table 4.9 header (Outturn / Forecast)"
+    },
+    {
+      "id": "cap-split-uc",
+      "applies_to": {"program": "universal_credit", "metrics": null},
+      "severity": "definitional",
+      "text": "Universal credit appears in both the welfare-cap and outside-cap sections: the cap excludes spending associated with the jobseeking conditionality group. A PE UC aggregate is the SUM of the two variants; comparing PE UC spending against either variant alone understates. The same applies to DWP social security subtotals.",
+      "basis": "Welfare cap definition (Charter for Budget Responsibility); Table 4.9 structure"
+    },
+    {
+      "id": "geography-administration",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "definitional",
+      "text": "DWP benefit lines are Great Britain; Northern Ireland's mirror social security is the aggregate 'ni_social_security' rows; HMRC-administered lines (child benefit, tax credits, tax-free childcare, statutory payments) are UK-wide. A UK-wide PE aggregate for a DWP benefit must add the NI share or restrict the simulation to GB.",
+      "basis": "EFO expenditure documentation; welfare cap coverage"
+    },
+    {
+      "id": "incapacity-uc-health-split",
+      "applies_to": {"program": "incapacity_benefits", "metrics": null},
+      "severity": "definitional",
+      "text": "The incapacity-benefits line excludes the UC health element (footnote 2): legacy ESA/IB/SDA plus the incapacity part of income support only. PE health-related spending built on UC must not be compared to this line; Table 4.11 (health- and disability-related welfare) is the right future counterpart for the combined concept.",
+      "basis": "Table 4.9 footnote 2"
+    },
+    {
+      "id": "accrual-spend-concept",
+      "applies_to": {"program": null, "metrics": ["welfare_spending"]},
+      "severity": "definitional",
+      "text": "Figures are National Accounts expenditure (AME), including payments to people abroad and fraud/error, on an accrual basis. PE simulated entitlement on resident households will structurally undershoot benefits with large non-resident caseloads (state pension) or overshoot where take-up is below PE's calibrated rates. Decompose before diagnosing.",
+      "basis": "EFO expenditure methodology"
+    },
+    {
+      "id": "nested-hierarchy-double-count",
+      "applies_to": {"program": null, "metrics": ["welfare_spending"]},
+      "severity": "construction",
+      "text": "Table 4.9 is NESTED, and rows carry that structure in 'aggregate_level' ('component' | 'subtotal' | 'total') and 'parent'. 'dwp_social_security' is not a program: it is the SUM of the components naming it as parent, and 'other_dwp' in the welfare-cap section is a further subtotal inside it. Any aggregation must filter to aggregate_level == 'component' (or add subtotals only). Summing every non-total row of the in-cap section for 2025-26 gives £319.85bn against the published cap total of £169.13bn — a 1.89x double-count. A PE counterpart mapping must not attach a PE program to a subtotal row.",
+      "basis": "Table 4.9 'of which:' markers and cell indentation; components verified to reproduce each published parent to float64 exactness in all seven years by sources/obr-welfare/adapter.py"
+    }
+  ]
+}

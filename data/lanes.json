@@ -170,10 +170,10 @@
    "source": "OBR",
    "area": "welfare trends / EFO baselines",
    "mode": 1,
-   "stage": "registered",
+   "stage": "ingested",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "#3"
+   "updated": "2026-08-14",
+   "note": "External side built (#37): March 2026 EFO Table 4.9 baseline_moment claims \u2014 259 rows, 31 benefit lines x 2024-25 outturn + forecast to 2030-31, welfare-cap split as variant, cap+outside=total identity checked; obr_measures campaign counterparts attach via #33"
   },
   {
    "id": "ukmod-stats",
