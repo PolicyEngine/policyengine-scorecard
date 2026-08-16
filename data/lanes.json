@@ -3,7 +3,7 @@
   "stage": "registered | cataloged | ingested | computed | diagnosing | published | regressed",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-08-06",
+ "updated": "2026-08-14",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -140,10 +140,10 @@
    "source": "DWP",
    "area": "UK income-related benefits take-up",
    "mode": 1,
-   "stage": "registered",
+   "stage": "ingested",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "Canonical UK take-up publication (#3)"
+   "updated": "2026-08-14",
+   "note": "External side built (#34): FYE 2024 vintage, 3,094 tidy rows across PC/GC/SC-only/HB-pensioners \u00d7 caseload+expenditure, headline checks pass; PE counterparts pending the UK compute pipeline (#40)"
   },
   {
    "id": "hbai-poverty",

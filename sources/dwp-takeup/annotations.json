@@ -1,0 +1,72 @@
+{
+  "_schema": {
+    "applies_to": "matcher on {program, metrics, subgroups}; null = any",
+    "severity": "period | definitional | construction | caution | gap",
+    "basis": "traceability: source Guidance/Notes sheets, the publication's background information and methodology, a GitHub issue, or a measured diagnostic in this repo's data"
+  },
+  "annotations": [
+    {
+      "id": "calibration-boundary",
+      "applies_to": {"program": null, "metrics": ["caseload_takeup_rate", "expenditure_takeup_rate"]},
+      "severity": "construction",
+      "text": "policyengine-uk's benefit take-up rate parameters cite this DWP publication as their source. Where a PE UK take-up parameter is set from these tables, the comparison is consumed_as_target (agreement partly by construction), not held-out validation. Classify per parameter before scoring; the boundary rule is the same one applied to DWP deductions outturns in issue #21.",
+      "basis": "policyengine-uk parameter provenance (gov.dwp take-up parameters); scorecard issue #34 hygiene note"
+    },
+    {
+      "id": "geography-gb",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "definitional",
+      "text": "DWP estimates cover Great Britain private households only. PolicyEngine UK simulates the United Kingdom (including Northern Ireland, where equivalent benefits are administered by DfC); a comparable PE counterpart must restrict to GB or annotate the NI wedge.",
+      "basis": "Guidance sheet, Coverage section"
+    },
+    {
+      "id": "benefit-unit-concept",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "definitional",
+      "text": "DWP 'families' are benefit units: a single adult or couple plus dependent children. This matches PolicyEngine UK's benunit entity; counts here are benefit units, not people or households.",
+      "basis": "Guidance sheet, Definitions section"
+    },
+    {
+      "id": "caseload-averaging",
+      "applies_to": {"program": null, "metrics": ["recipients_count", "entitled_nonrecipients_count", "caseload_takeup_rate"]},
+      "severity": "period",
+      "text": "DWP caseloads are averaged over the financial year, and take-up compares recipients with those who would receive if everyone claimed for the full period of entitlement. A PE annual-snapshot count is not the same time concept; part-year entitlement drives a wedge.",
+      "basis": "Guidance sheet, Definitions section"
+    },
+    {
+      "id": "entitlement-simulated-denominator",
+      "applies_to": {"program": null, "metrics": ["caseload_takeup_rate", "expenditure_takeup_rate", "entitled_nonrecipients_count", "amount_unclaimed"]},
+      "severity": "construction",
+      "text": "The entitled non-recipient denominator is simulated by DWP's closed-source PSM on FRS data; the recipient numerator is administrative. Divergence in take-up rates can come from either PE-vs-PSM entitlement simulation or the admin caseload, and the two channels should be decomposed before diagnosis.",
+      "basis": "Guidance sheet, Source section"
+    },
+    {
+      "id": "methodology-breaks",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "caution",
+      "text": "Methodological refinements apply from FYE 2017, and the FYE 2024 release adds improved admin-data linking plus calibration-based survey weighting. FYE 2021's modeled estimates (take-up rates, entitled non-recipients, unclaimed amounts) are suppressed (COVID FRS fieldwork); its administrative cells (recipient counts, amounts claimed) are published. Time-series comparisons across these breaks are not like-for-like; score against the FYE 2024 vintage of each year's estimate, not earlier releases.",
+      "basis": "Notes sheet (notes 7, 11); publication methodology-changes section"
+    },
+    {
+      "id": "rounding",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "caution",
+      "text": "Caseloads are rounded to the nearest 10,000, amounts claimed/unclaimed to the nearest £10 million, weekly amounts to the nearest pound, and take-up percentages to the nearest whole point (emitted here as fractions, so precision is ±0.005). Ranges are 95% confidence intervals under a no-non-sampling-error assumption; DWP asks that ranges, not point estimates, be quoted.",
+      "basis": "Guidance sheet, Rounding and Accuracy section"
+    },
+    {
+      "id": "spa-couples-rule",
+      "applies_to": {"program": null, "metrics": null, "subgroups": ["couples"]},
+      "severity": "definitional",
+      "text": "From May 2019 both partners in a couple must have reached State Pension age to claim pension-age income-related benefits; mixed-age couples route to UC. Couples rows include one-partner-over-SPa couples until FYE 2019 and both-over-SPa couples from FYE 2020. A PE counterpart must apply the same mixed-age-couple rule per year.",
+      "basis": "Notes sheet (note 3); Guidance sheet"
+    },
+    {
+      "id": "hb-pensioners-scope",
+      "applies_to": {"program": "housing_benefit_pensioners", "metrics": null},
+      "severity": "definitional",
+      "text": "Housing Benefit rows cover pensioner claims only (legacy HB, which persists for pension-age claimants after working-age migration to UC housing element). The PE counterpart is housing_benefit restricted to pension-age benefit units, not all HB and not UC housing support.",
+      "basis": "Table titles HB1/HB2; publication scope"
+    }
+  ]
+}
