@@ -242,7 +242,8 @@ def validate_artifact_trace(
     if pe_value is None:
         if staged_row.get("artifact") is not None:
             raise ComparisonError(
-                f"{staged_row['measure_key']}: null PE value unexpectedly names an artifact"
+                f"{staged_row['measure_key']}: null PE value unexpectedly "
+                "names an artifact"
             )
         return None
     if not _is_number(pe_value) or not math.isfinite(pe_value):
@@ -287,7 +288,8 @@ def validate_artifact_trace(
     ]
     if len(hits) != 1:
         raise ComparisonError(
-            f"{path}: {len(hits)} artifact heads match the frozen OBR claim; expected one"
+            f"{path}: {len(hits)} artifact heads match the frozen OBR claim; "
+            "expected one"
         )
     head = hits[0]
     snapshot = head["external_claim"]
@@ -615,7 +617,10 @@ def render_markdown(rows: list[dict[str, Any]]) -> str:
             "remaining difference unexplained."
         ),
         "",
-        "| Measure | FY | Head / scope | OBR (£bn) | PE (£bn) | PE / OBR | Ratio bin | Status | Annotations |",
+        (
+            "| Measure | FY | Head / scope | OBR (£bn) | PE (£bn) | PE / OBR "
+            "| Ratio bin | Status | Annotations |"
+        ),
         "|---|---:|---|---:|---:|---:|---|---|---|",
     ]
     for row in rows:
@@ -640,8 +645,14 @@ def render_markdown(rows: list[dict[str, Any]]) -> str:
             "Ratio-bin boundaries",
             "",
             "- `opposite_sign`: the signed PE/OBR ratio is negative.",
-            "- Same-sign numeric bins: below 0.5; 0.5–0.8; 0.8–1.25; 1.25–2; at least 2.",
-            "- `pe_zero`, `obr_zero`, `both_zero`, and `not_available` describe zero or absent values directly.",
+            (
+                "- Same-sign numeric bins: below 0.5; 0.5–0.8; 0.8–1.25; "
+                "1.25–2; at least 2."
+            ),
+            (
+                "- `pe_zero`, `obr_zero`, `both_zero`, and `not_available` "
+                "describe zero or absent values directly."
+            ),
             "",
         ]
     )

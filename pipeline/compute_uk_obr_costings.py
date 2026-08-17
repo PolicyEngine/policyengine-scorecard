@@ -1279,7 +1279,10 @@ def annotations_for(
     notes = [
         source_facts_annotation(claim),
         construction,
-        f"Head mapping: {head['obr_head']} = {variables}; positive gain to the Exchequer = {sign}.",
+        (
+            f"Head mapping: {head['obr_head']} = {variables}; "
+            f"positive gain to the Exchequer = {sign}."
+        ),
     ]
     year_computability, override_note = effective_computability(measure, year)
     if year_computability == "partial":
@@ -1493,14 +1496,25 @@ def stage_not_computed_rows(
                     **claim_source_facts(claim),
                     "annotations": [
                         source_facts_annotation(claim),
-                        "No PE value: this registry entry is not expressible as a supported plain parameter reform.",
                         (
-                            "PE: no microsimulation constructed; the registry construction is a reversal on the certified world."
+                            "No PE value: this registry entry is not "
+                            "expressible as a supported plain parameter reform."
+                        ),
+                        (
+                            "PE: no microsimulation constructed; the registry "
+                            "construction is a reversal on the certified world."
                             if measure["construction"] == "reversal_on_certified_world"
-                            else "PE: no microsimulation constructed; the registry construction is a forward change from the certified baseline."
+                            else (
+                                "PE: no microsimulation constructed; the "
+                                "registry construction is a forward change "
+                                "from the certified baseline."
+                            )
                         ),
                         f"PE calendar year {year} would proxy OBR FY {fy_label(year)}.",
-                        f"Head mapping unavailable for {head}; no aggregate is substituted.",
+                        (
+                            f"Head mapping unavailable for {head}; "
+                            "no aggregate is substituted."
+                        ),
                     ],
                     "external_claim_match": external_claim_match(claim),
                 }
@@ -1533,7 +1547,8 @@ PA_SMOKE_MEASURE = {
     "unmapped_obr_heads": [],
     "notes": (
         "Requested smoke diagnostic only: a £500 PA increase in calendar 2026. "
-        "It is not staged as an OBR comparison and is not the full Table 3.19 counterfactual."
+        "It is not staged as an OBR comparison and is not the full Table 3.19 "
+        "counterfactual."
     ),
 }
 
@@ -2068,7 +2083,8 @@ def main(argv: list[str] | None = None) -> int:
             "performance": baseline["performance"],
         }
         print(
-            f"[{year}] baseline done in {baseline['performance']['wall_seconds']:.1f}s; "
+            f"[{year}] baseline done in "
+            f"{baseline['performance']['wall_seconds']:.1f}s; "
             f"peak RSS {baseline['performance']['peak_rss_bytes'] / 2**30:.2f} GiB",
             flush=True,
         )
