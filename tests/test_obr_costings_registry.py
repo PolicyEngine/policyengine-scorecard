@@ -466,7 +466,8 @@ def test_run_managed_simulation_rejects_dataset_mutation_during_calculate(
     message = str(exc_info.value)
     assert "immediately after aggregate reads" in message
     assert f"expected {expected_sha256}" in message
-    assert f"actual {mutated_sha256}" in message
+    assert f"before {expected_sha256}" in message
+    assert f"after {mutated_sha256}" in message
     assert not artifact_path.exists()
 
 

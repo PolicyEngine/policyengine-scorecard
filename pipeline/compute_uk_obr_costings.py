@@ -505,15 +505,21 @@ def verify_runtime_dataset_sha256(
     expected_sha256: str,
     *,
     phase: str,
+    before_sha256: str | None = None,
 ) -> str:
     """Hash the exact managed-data file and reject non-certified bytes."""
 
     actual_sha256 = sha256_file(runtime_dataset_source)
     if actual_sha256 != expected_sha256:
+        observed = (
+            f"before {before_sha256}; after {actual_sha256}"
+            if before_sha256 is not None
+            else f"actual {actual_sha256}"
+        )
         raise RuntimeError(
             f"runtime dataset SHA-256 {phase} differs from the certified "
             f"release manifest: {runtime_dataset_source}; "
-            f"expected {expected_sha256}; actual {actual_sha256}"
+            f"expected {expected_sha256}; {observed}"
         )
     return actual_sha256
 
@@ -752,6 +758,7 @@ def run_managed_simulation(
                 runtime_dataset_source,
                 expected_dataset_sha256,
                 phase="immediately after aggregate reads",
+                before_sha256=dataset_sha256_before,
             )
             metadata = variable_metadata(sim.tax_benefit_system, variables)
             wall_seconds = time.perf_counter() - started
