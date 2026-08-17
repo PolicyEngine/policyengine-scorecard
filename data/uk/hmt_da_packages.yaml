@@ -1,0 +1,180 @@
+schema_version: 1
+benchmark_class: different_model
+lane: hmt_distributional_analysis
+registry_rule: >-
+  One entry per fiscal-event edition of HM Treasury's "Impact on households"
+  distributional analysis. An entry records the package the edition scores
+  (composition semantics, verbatim measure titles from the publication's
+  in-scope list), the published counterfactual and income concept, and an
+  honest computability triage per component. It never invents reform
+  parameter dicts: PE-expressible components reference measure families for
+  the obr_measure_reforms.yaml registry (data/uk/, #54) to carry the
+  executable spec, so one measure has one executable home.
+value_availability_rule: >-
+  HMT publishes decile impacts as unlabeled chart bars in a PDF (see
+  sources/hmt-distributional/raw/README.md). Entries therefore carry chart
+  inventory, not values; external value claims enter only if HMT releases
+  data tables or a documented chart digitization lands with per-bar
+  provenance. Nothing downstream may treat this registry as a value source.
+
+packages:
+  - package_key: budget_2025__impact_on_households
+    fiscal_event: Budget 2025
+    published: 2025-11-26
+    document: sources/hmt-distributional/raw/Impact_on_households.pdf
+    sha256: 9f7e68f3e44349c8a6a4a89b9e1427cc23f1691771902b154ef67cadd33480ea
+    horizon: "2028-29"
+    counterfactual: >-
+      No policy changes over the relevant period: cumulative impact of
+      decisions announced from Autumn Budget 2024 onwards, including Spring
+      Statement 2025, Spending Review 2025 and Budget 2025 (para 1.1, 1.6).
+    income_concept: equivalised net household income, before housing costs
+    ranking: income deciles of the household distribution in 2028-29
+    charts:
+      - figure: "1.A"
+        metric: pct_net_income_change
+        split: [tax, welfare, benefits_in_kind_public_services, overall]
+      - figure: "1.B"
+        metric: cash_change_gbp_per_year
+        split: [tax, welfare, benefits_in_kind_public_services, overall]
+      - figure: "1.C"
+        metric: overall_level_pct_net_income
+        split: [tax, welfare, benefits_in_kind_public_services, overall]
+    published_exclusions:
+      # para 1.2-1.3 and 2.3: axes to name before any engine defect is
+      # inferred from a divergence.
+      - business taxes (incl. employer NICs incidence)
+      - regulation (incl. National Living Wage)
+      - government borrowing
+      - non-UK residents
+      - behavioural impacts of most measures
+      - fraud/error/compliance effects (full compliance assumed)
+      - devolved administrations' own decisions
+      - measures without a direct impact in 2028-29
+      - supply-side growth policies' indirect effects
+    components:
+      # Verbatim Budget 2025 measure titles from the in-scope list
+      # (para 1.4, pp. 7-9), triaged for PE-UK expressibility. "partial"
+      # names what is missing; measure_family points at the executable
+      # registry lane where one exists or should exist.
+      - title: "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031"
+        channel: tax
+        computability: expressible
+        measure_family: pa_and_hrt_freezes
+      - title: "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026"
+        channel: tax
+        computability: expressible
+        measure_family: dividend_rates
+      - title: "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at £5000 from April 2026 to April 2031"
+        channel: tax
+        computability: partial
+        missing: starting-rate-limit interaction modeled; savings-rate uplift expressible; ISA composition shifts (behavioural) out of scope by construction
+        measure_family: savings_rates
+      - title: "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027"
+        channel: tax
+        computability: partial
+        missing: separate property-income rate schedule not in the pe-uk parameter tree
+      - title: "Universal Credit Child Element: Remove the two child limit from 1 April 2026, taking 450,000 children out of poverty"
+        channel: welfare
+        computability: expressible
+        measure_family: uc_child_element_remove_two_child_limit
+      - title: "Winter Fuel Payment: Target to pensioners with taxable income below or equal to £35,000 from Winter 2025"
+        channel: welfare
+        computability: partial
+        missing: income-targeted clawback mechanism vs pe-uk winter fuel modeling to be verified
+      - title: "Universal Credit: Changes to the standard allowance and health element to protect existing claimants and new health element claimants who meet the Severe Conditions Criteria from April 2026"
+        channel: welfare
+        computability: partial
+        missing: existing-claimant protection requires claim-history state the certified bundle does not carry
+      - title: "Personal Independence Payment: Not proceeding with Spring Statement 2025 reforms to eligibility"
+        channel: welfare
+        computability: partial
+        missing: scored relative to a counterfactual containing the abandoned reform; needs the announcement-baseline leg (#13)
+      - title: "Child Benefit: Exempt 16–19-year-olds with an illness or disability from the 12-hour weekly rule and equalise the treatment of non-standard educational settings from 1 September 2025"
+        channel: welfare
+        computability: not_expressible
+        why: eligibility-administration detail below the resolution of the survey data
+      - title: "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026"
+        channel: welfare
+        computability: not_expressible
+        why: operational-delivery measure, no parametric representation
+      - title: "Housing Benefit and Pension Credit Administration: Bring together the administration of pensioner Housing Benefit and Pension Credit from Autumn 2026"
+        channel: welfare
+        computability: not_expressible
+        why: administrative consolidation, no parametric representation
+      - title: "Renewables Obligation: Fund 75% of the domestic share of the Renewables Obligation via the Exchequer over the Spending Review period"
+        channel: welfare
+        computability: not_expressible
+        why: bill-reduction incidence via energy levies, outside the tax-benefit parameter tree (HMT itself books it under "Welfare (including Renewables Obligation)")
+      - title: "Fuel Duty: Cancel uprating for 2026-27; extend the 5p cut in rates to 31 August 2026, then increase by 1p from 1 September 2026, 2p from 1 December 2026, and 2p from 1 March 2027"
+        channel: tax
+        computability: partial
+        missing: consumption incidence requires expenditure imputation; pe-uk carries fuel duty via consumption module only
+      - title: "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over £2m in England from 1 April 2028"
+        channel: tax
+        computability: partial
+        missing: property-value distribution above £2m not resolved in the certified bundle
+      - title: "Student Loans: Freeze Plan 2 repayment threshold for 3 years from 6 April 2027"
+        channel: tax
+        computability: partial
+        missing: student loan repayments modeled; plan-type composition to be verified
+      - title: "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026"
+        channel: tax
+        computability: not_expressible
+        why: scheme-specific indirect tax incidence
+      - title: "Supporting Savers: Make the Help to Save scheme permanent and maintain total ISA annual subscription limit at £20,000 with cash limit reduced to £12,000 for under-65s from April 2027"
+        channel: tax
+        computability: not_expressible
+        why: savings-vehicle composition response, no first-order tax-benefit delta on the survey data
+      - title: "Higher Education Maintenance Grant Offer: Targeted means-tested maintenance grants for students from low-income households studying courses aligned with our missions and Industrial Strategy"
+        channel: welfare
+        computability: not_expressible
+        why: course-aligned eligibility below survey resolution
+      - title: "Rail Fares: Freeze rail fares in England for one year from 1 March 2026"
+        channel: benefits_in_kind_public_services
+        computability: not_expressible
+        why: public-services benefits-in-kind allocation, outside PE scope
+      - title: "Health and Social Care: Freeze NHS prescription charges in England for one year from 1 April 2026"
+        channel: benefits_in_kind_public_services
+        computability: not_expressible
+        why: public-services benefits-in-kind allocation, outside PE scope
+      - title: "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support"
+        channel: benefits_in_kind_public_services
+        computability: not_expressible
+        why: public-services spending allocation, outside PE scope
+      - title: "RDEL: Go further on efficiencies and savings"
+        channel: benefits_in_kind_public_services
+        computability: not_expressible
+        why: public-services spending allocation, outside PE scope
+      - title: "Tour Operators' Margin Scheme: Exclude Private Hire Vehicle Services from the scope of the scheme from 2 January 2026"
+        channel: tax
+        computability: not_expressible
+        why: indirect tax incidence on a service niche
+      - title: "Low Value Imports: Reform the customs treatment of low value imports from March 2029"
+        channel: tax
+        computability: not_expressible
+        why: customs incidence, outside the tax-benefit parameter tree
+      - title: "Non-reimbursed Homeworking Expenses: Remove the tax relief available from 6 April 2026"
+        channel: tax
+        computability: partial
+        missing: homeworking-relief claimant identification not in the survey data
+      - title: "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028"
+        channel: tax
+        computability: not_expressible
+        why: mileage-based duty, no vehicle-use data on the bundle
+      - title: "Support for British automotive industry: Provide additional Electric Car Grant funding & extend to 2029-30"
+        channel: benefits_in_kind_public_services
+        computability: not_expressible
+        why: grant scheme outside the tax-benefit parameter tree
+      - title: "Support for British automotive industry: Increase the Expensive Car Supplement threshold for zero emission vehicles to £50,000, from 1 April 2026"
+        channel: tax
+        computability: not_expressible
+        why: vehicle excise composition, no vehicle data on the bundle
+      - title: "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and benefit in kind easement"
+        channel: tax
+        computability: not_expressible
+        why: benefit-in-kind niche without company-car composition data
+      - title: "Council Tax Precepts: £5 flexibility for fire authorities between 2026-27 & 2028-29"
+        channel: tax
+        computability: not_expressible
+        why: local-authority precept decisions, not a parametric national change
