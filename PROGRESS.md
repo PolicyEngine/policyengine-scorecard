@@ -61,6 +61,15 @@ remains intentionally unrun.
 - Restaging refreshed the 12 non-diagnostic artifacts' matched claim snapshots
   with harvested `source_model` and current registry notes. Legacy dataset hash
   fields remain absent; no hash was invented and no simulation ran.
+- Fixed finding 6 with validated `computability_overrides` keyed by proxy year.
+  The four registry entries containing a dividend reform path are `partial` in
+  2024 and 2025 with the required policyengine-uk#1822 note; their base status
+  applies again from 2026, so the committed smoke artifacts are unaffected.
+- The engine-sensitive test reads the installed main/dividend higher and
+  additional thresholds. On pe-uk 2.89.2 it observes 37,700/125,140 versus
+  37,500/150,000 in 2024–2025, equality from 2026, and requires override years
+  to equal that lag set exactly. A future engine correction therefore makes
+  the stale override test fail until the registry is updated.
 - Started Follow-up 1 from clean branch `obr-costings-mode2` at `b6442fe` and
   read this progress record plus both compute/comparison modules end to end.
 - Confirmed the orientation defect is confined to artifact/staging derivation:
@@ -172,7 +181,6 @@ remains intentionally unrun.
 
 ## Next
 
-- Add and validate the per-year dividend-threshold computability overrides.
 - Restage without simulations, regenerate comparisons, run focused and full
   tests, then write the final report.
 
@@ -298,6 +306,10 @@ Maximum sampled process RSS was 32.888 GiB.
   through 2030 but resumes uprating other equivalent NI thresholds earlier.
   The combined AB2025 threshold extension is therefore marked partial rather
   than assuming a policy world the loaded parameter schedules do not contain.
+- PE-UK 2.89.2 keeps dividend higher/additional band thresholds at
+  £37,500/£150,000 in 2024–2025 while the main bands are £37,700/£125,140. The
+  four dividend-path entries carry year-specific `partial` overrides for those
+  two years only; policyengine-uk#1822 tracks the lag.
 - The exact pre-policy salary-sacrifice cap is infinity, which cannot be stored
   in standards-compliant JSON. The partial reversal uses a finite `1e100` cap
   and zeroes the fixed 0.16% broad-base haircut; installed formulas show this

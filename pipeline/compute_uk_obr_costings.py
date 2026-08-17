@@ -273,6 +273,17 @@ def _validate_date_range(value: str, context: str) -> None:
         raise RegistryError(f"{context}: reversed date range {value!r}")
 
 
+def effective_computability(
+    measure: dict[str, Any], year: int
+) -> tuple[str, str | None]:
+    """Return the registry status and note effective for one proxy year."""
+
+    override = measure.get("computability_overrides", {}).get(year)
+    if override is None:
+        return measure["computability"], None
+    return override["computability"], override["note"]
+
+
 def validate_registry(
     spec: dict[str, Any],
     *,
@@ -302,6 +313,34 @@ def validate_registry(
         keys.add(key)
         if measure["computability"] not in COMPUTABILITY:
             raise RegistryError(f"{key}: invalid computability")
+        overrides = measure.get("computability_overrides", {})
+        if not isinstance(overrides, dict):
+            raise RegistryError(f"{key}: computability_overrides must be a mapping")
+        for override_year, override in overrides.items():
+            if (
+                isinstance(override_year, bool)
+                or not isinstance(override_year, int)
+                or not YEAR_MIN <= override_year <= YEAR_MAX
+            ):
+                raise RegistryError(
+                    f"{key}: invalid computability override year {override_year!r}"
+                )
+            if not isinstance(override, dict) or set(override) != {
+                "computability",
+                "note",
+            }:
+                raise RegistryError(
+                    f"{key} {override_year}: override must contain exactly "
+                    "computability and note"
+                )
+            if override["computability"] not in COMPUTABILITY:
+                raise RegistryError(
+                    f"{key} {override_year}: invalid override computability"
+                )
+            if not isinstance(override["note"], str) or not override["note"].strip():
+                raise RegistryError(
+                    f"{key} {override_year}: override note must be non-empty"
+                )
         if measure["construction"] not in CONSTRUCTIONS:
             raise RegistryError(f"{key}: invalid construction")
         if not isinstance(measure["start_fy"], int):
@@ -963,13 +1002,23 @@ def rederive_artifact_orientation(
 ) -> dict[str, Any]:
     """Validate and rederive one artifact from its persisted raw aggregates."""
 
+    year = artifact.get("year")
+    if not isinstance(year, int) or not YEAR_MIN <= year <= YEAR_MAX:
+        raise ArtifactRestageError(f"{path}: invalid artifact year {year!r}")
+    year_computability, override_note = effective_computability(measure, year)
+    expected_override = (
+        {"computability": year_computability, "note": override_note}
+        if override_note is not None
+        else None
+    )
     expected_identity = {
         "measure_key": measure["measure_key"],
         "fiscal_event": measure["fiscal_event"],
         "obr_description": measure["obr_description"],
         "source_table": measure["source_table"],
         "construction": measure["construction"],
-        "computability": measure["computability"],
+        "computability": year_computability,
+        "computability_override": expected_override,
         "reform": measure["pe_reform"],
         "benchmark_class": "different_model",
     }
@@ -987,9 +1036,6 @@ def rederive_artifact_orientation(
             f"{path}: unsupported artifact schema {artifact.get('schema_version')!r}"
         )
     validate_artifact_dataset_hash_fields(artifact, path=path)
-    year = artifact.get("year")
-    if not isinstance(year, int) or not YEAR_MIN <= year <= YEAR_MAX:
-        raise ArtifactRestageError(f"{path}: invalid artifact year {year!r}")
     raw_aggregates = artifact.get("raw_aggregates")
     if not isinstance(raw_aggregates, dict):
         raise ArtifactRestageError(f"{path}: raw_aggregates must be a mapping")
@@ -1146,7 +1192,13 @@ def annotations_for(
         construction,
         f"Head mapping: {head['obr_head']} = {variables}; positive gain to the Exchequer = {sign}.",
     ]
-    if measure["computability"] == "partial":
+    year_computability, override_note = effective_computability(measure, year)
+    if year_computability == "partial":
+        override_annotation = (
+            f" Per-year computability override: {override_note}."
+            if override_note is not None
+            else ""
+        )
         notes.append(
             "Partial construction: "
             + measure["notes"]
@@ -1157,6 +1209,7 @@ def annotations_for(
                 if measure.get("unmapped_obr_heads")
                 else ""
             )
+            + override_annotation
         )
     return notes
 
@@ -1226,6 +1279,7 @@ def build_artifact(
                 ),
             }
         )
+    year_computability, override_note = effective_computability(measure, year)
     artifact = {
         "schema_version": 1,
         "measure_key": measure["measure_key"],
@@ -1244,7 +1298,7 @@ def build_artifact(
         },
         "reform": measure["pe_reform"],
         "construction": measure["construction"],
-        "computability": measure["computability"],
+        "computability": year_computability,
         "benchmark_class": "different_model",
         "run_id": run_id,
         "raw_aggregates": {
@@ -1264,6 +1318,11 @@ def build_artifact(
     artifact.update(
         simulation_dataset_hash_fields(baseline, reform, run_id=run_id)
     )
+    if override_note is not None:
+        artifact["computability_override"] = {
+            "computability": year_computability,
+            "note": override_note,
+        }
     return artifact
 
 

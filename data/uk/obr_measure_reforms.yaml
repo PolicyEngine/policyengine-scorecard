@@ -37,6 +37,13 @@ measures:
     external_metric: revenue_change
     start_fy: 2022
     computability: expressible
+    computability_overrides:
+      2024:
+        computability: partial
+        note: "pe-uk 2.89.2 dividend band thresholds lag the main bands until 2026-04-06 (policyengine-uk#1822); dividend leg not assumption-matched for these years"
+      2025:
+        computability: partial
+        note: "pe-uk 2.89.2 dividend band thresholds lag the main bands until 2026-04-06 (policyengine-uk#1822); dividend leg not assumption-matched for these years"
     construction: reversal_on_certified_world
     pe_reform:
       gov.hmrc.income_tax.allowances.personal_allowance.amount:
@@ -83,6 +90,13 @@ measures:
     external_metric: revenue_change
     start_fy: 2023
     computability: expressible
+    computability_overrides:
+      2024:
+        computability: partial
+        note: "pe-uk 2.89.2 dividend band thresholds lag the main bands until 2026-04-06 (policyengine-uk#1822); dividend leg not assumption-matched for these years"
+      2025:
+        computability: partial
+        note: "pe-uk 2.89.2 dividend band thresholds lag the main bands until 2026-04-06 (policyengine-uk#1822); dividend leg not assumption-matched for these years"
     construction: reversal_on_certified_world
     pe_reform:
       gov.hmrc.income_tax.rates.uk[2].threshold:
@@ -574,6 +588,13 @@ measures:
     external_metric: revenue_change
     start_fy: 2025
     computability: partial
+    computability_overrides:
+      2024:
+        computability: partial
+        note: "pe-uk 2.89.2 dividend band thresholds lag the main bands until 2026-04-06 (policyengine-uk#1822); dividend leg not assumption-matched for these years"
+      2025:
+        computability: partial
+        note: "pe-uk 2.89.2 dividend band thresholds lag the main bands until 2026-04-06 (policyengine-uk#1822); dividend leg not assumption-matched for these years"
     construction: reversal_on_certified_world
     pe_reform:
       gov.hmrc.income_tax.rates.dividends[0].rate:
@@ -760,6 +781,13 @@ measures:
     external_metric: revenue_change
     start_fy: 2025
     computability: partial
+    computability_overrides:
+      2024:
+        computability: partial
+        note: "pe-uk 2.89.2 dividend band thresholds lag the main bands until 2026-04-06 (policyengine-uk#1822); dividend leg not assumption-matched for these years"
+      2025:
+        computability: partial
+        note: "pe-uk 2.89.2 dividend band thresholds lag the main bands until 2026-04-06 (policyengine-uk#1822); dividend leg not assumption-matched for these years"
     construction: reversal_on_certified_world
     pe_reform:
       gov.hmrc.income_tax.allowances.personal_allowance.amount:

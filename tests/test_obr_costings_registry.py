@@ -58,6 +58,11 @@ STAGED_REQUIRED_FIELDS = {
     "basis",
     "behavioural_adjustment",
 }
+DIVIDEND_LAG_NOTE = (
+    "pe-uk 2.89.2 dividend band thresholds lag the main bands until "
+    "2026-04-06 (policyengine-uk#1822); dividend leg not assumption-matched "
+    "for these years"
+)
 
 
 @pytest.fixture()
@@ -171,6 +176,7 @@ def test_committed_registry_schema_and_counts():
         measure["construction"] == "forward_from_baseline"
         for measure in spec["measures"]
     ) == 1
+    assert sum(bool(measure.get("computability_overrides")) for measure in spec["measures"]) == 4
 
 
 def test_registry_rejects_duplicate_keys_and_non_finite_reform_values():
@@ -187,6 +193,129 @@ def test_registry_rejects_duplicate_keys_and_non_finite_reform_values():
     first_schedule[first_period] = float("nan")
     with pytest.raises(compute.RegistryError, match="must be finite"):
         compute.validate_registry(non_finite)
+
+    invalid_override = copy.deepcopy(spec)
+    invalid_override["measures"][0]["computability_overrides"] = {
+        True: {"computability": "partial", "note": "invalid boolean year"}
+    }
+    with pytest.raises(compute.RegistryError, match="invalid computability override year"):
+        compute.validate_registry(invalid_override)
+
+    incomplete_override = copy.deepcopy(spec)
+    incomplete_override["measures"][0]["computability_overrides"] = {
+        2024: {"computability": "partial"}
+    }
+    with pytest.raises(compute.RegistryError, match="must contain exactly"):
+        compute.validate_registry(incomplete_override)
+
+
+def test_dividend_lag_overrides_match_installed_engine_dates():
+    if importlib.util.find_spec("policyengine_uk") is None:
+        pytest.skip("policyengine-uk is not installed")
+    try:
+        from policyengine_uk import CountryTaxBenefitSystem
+    except ImportError as exc:
+        pytest.skip(f"policyengine-uk cannot be imported: {exc}")
+
+    system = CountryTaxBenefitSystem()
+    rates = system.parameters.gov.hmrc.income_tax.rates
+    installed = {
+        year: (
+            rates.uk[1].threshold(f"{year}-01-01"),
+            rates.uk[2].threshold(f"{year}-01-01"),
+            rates.dividends[1].threshold(f"{year}-01-01"),
+            rates.dividends[2].threshold(f"{year}-01-01"),
+        )
+        for year in range(compute.YEAR_MIN, compute.YEAR_MAX + 1)
+    }
+    lagging_years = {
+        year
+        for year, (main_higher, main_additional, dividend_higher, dividend_additional) in installed.items()
+        if (dividend_higher, dividend_additional)
+        != (main_higher, main_additional)
+    }
+
+    assert compute.package_version("policyengine-uk") == "2.89.2"
+    assert installed[2024] == (37_700, 125_140, 37_500, 150_000)
+    assert installed[2025] == (37_700, 125_140, 37_500, 150_000)
+    assert installed[2026] == (37_700, 125_140, 37_700, 125_140)
+    assert lagging_years == {2024, 2025}
+
+    measures = compute.load_registry(REGISTRY)["measures"]
+    affected = {
+        measure["measure_key"]
+        for measure in measures
+        if any(
+            path.startswith("gov.hmrc.income_tax.rates.dividends")
+            for path in (measure["pe_reform"] or {})
+        )
+    }
+    assert affected == {
+        "efo_march_2026__pa_and_hrt_freezes",
+        "efo_march_2026__additional_rate_threshold_reduction",
+        "autumn_budget_2025__dividend_income_rate_increase",
+        "autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension",
+    }
+    for measure in measures:
+        overrides = measure.get("computability_overrides", {})
+        if measure["measure_key"] in affected:
+            assert set(overrides) == lagging_years
+            assert all(
+                override
+                == {"computability": "partial", "note": DIVIDEND_LAG_NOTE}
+                for override in overrides.values()
+            )
+            for year in range(compute.YEAR_MIN, compute.YEAR_MAX + 1):
+                status, note = compute.effective_computability(measure, year)
+                if year in lagging_years:
+                    assert (status, note) == ("partial", DIVIDEND_LAG_NOTE)
+                else:
+                    assert status == measure["computability"]
+                    assert note is None
+        else:
+            assert overrides == {}
+
+
+def test_dividend_lag_override_is_effective_only_for_affected_artifact_years(
+    tmp_path,
+):
+    measures = {
+        measure["measure_key"]: measure
+        for measure in compute.load_registry(REGISTRY)["measures"]
+    }
+    measure = measures["efo_march_2026__pa_and_hrt_freezes"]
+    claims = compute.load_claims(VENDORED_CLAIMS)
+    bundle = {"certified_data_build_id": "synthetic-certified-build"}
+
+    artifacts = {}
+    for year in (2024, 2026):
+        artifacts[year] = compute.build_artifact(
+            measure=measure,
+            year=year,
+            baseline=synthetic_run(bundle, 100.0),
+            reform=synthetic_run(bundle, 125.0),
+            output_path=tmp_path / f"pa_hrt_{year}.json",
+            computed_at="2026-08-16T12:00:00+00:00",
+            run_id="campaign-20260816-obr-costings",
+            claims=claims,
+        )
+
+    assert artifacts[2024]["computability"] == "partial"
+    assert artifacts[2024]["computability_override"] == {
+        "computability": "partial",
+        "note": DIVIDEND_LAG_NOTE,
+    }
+    annotations_2024 = compute.stage_artifact_rows(artifacts[2024], measure)[0][
+        "annotations"
+    ]
+    assert any(DIVIDEND_LAG_NOTE in annotation for annotation in annotations_2024)
+
+    assert artifacts[2026]["computability"] == "expressible"
+    assert "computability_override" not in artifacts[2026]
+    annotations_2026 = compute.stage_artifact_rows(artifacts[2026], measure)[0][
+        "annotations"
+    ]
+    assert all(DIVIDEND_LAG_NOTE not in annotation for annotation in annotations_2026)
 
 
 def test_every_registry_parameter_and_variable_resolves_in_installed_engine():

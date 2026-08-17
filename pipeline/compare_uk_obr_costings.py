@@ -355,6 +355,15 @@ def _deduplicate_annotations(annotations: Iterable[str]) -> list[str]:
     return output
 
 
+def _effective_computability(measure: dict[str, Any], year: int) -> str:
+    override = measure.get("computability_overrides", {}).get(year)
+    return (
+        override["computability"]
+        if isinstance(override, dict)
+        else measure["computability"]
+    )
+
+
 def build_head_row(
     staged_row: dict[str, Any],
     claim: dict[str, Any],
@@ -470,7 +479,7 @@ def derive_mapped_head_totals(
             "Registry construction: " + measure["notes"],
         ]
         unmapped = measure.get("unmapped_obr_heads", [])
-        if unmapped or measure.get("computability") == "partial":
+        if unmapped or _effective_computability(measure, year) == "partial":
             detail = (
                 " Unmapped OBR heads: " + ", ".join(unmapped) + "." if unmapped else ""
             )
