@@ -121,11 +121,11 @@ def test_committed_registry_schema_and_counts():
     assert spec["schema_version"] == 1
     assert spec["benchmark_class"] == "different_model"
     assert summary == {
-        "measures": 20,
+        "measures": 26,
         "computability": {
-            "expressible": 8,
-            "not_expressible": 4,
-            "partial": 8,
+            "expressible": 3,
+            "not_expressible": 5,
+            "partial": 18,
         },
         "source_head_years": 0,
     }
@@ -169,7 +169,7 @@ def test_every_registry_parameter_and_variable_resolves_in_installed_engine():
     summary = compute.validate_registry(
         compute.load_registry(REGISTRY), tax_benefit_system=system
     )
-    assert summary["measures"] == 20
+    assert summary["measures"] == 26
 
 
 def test_nics_head_is_exact_required_class_1_employee_employer_plus_class_4():
@@ -332,6 +332,48 @@ def test_default_measure_selection_retains_null_reforms():
 
     assert selected == measures
     assert any(measure["pe_reform"] is None for measure in selected)
+
+
+def test_pre_effective_source_rows_are_not_suppressed(
+    synthetic_measure, synthetic_claim
+):
+    measure = copy.deepcopy(synthetic_measure)
+    measure["computability"] = "not_expressible"
+    measure["pe_reform"] = None
+    measure["heads"] = []
+    measure["unmapped_obr_heads"] = ["Income tax"]
+    measure["start_fy"] = 2026
+    claim = copy.deepcopy(synthetic_claim)
+    claim["period"] = 2025
+    claim["conditions"]["fy"] = "2025-26"
+
+    rows = compute.stage_not_computed_rows(
+        measure=measure,
+        years=[2025],
+        claims=[claim],
+        run_id="campaign-20260816-obr-costings",
+        computed_at="2026-08-16T12:00:00+00:00",
+        release_bundle={"certified_data_build_id": "synthetic-certified-build"},
+    )
+
+    assert len(rows) == 1
+    assert rows[0]["external_claim_match"]["period"] == 2025
+    assert rows[0]["status"] == "not_computed"
+
+
+def test_hicbc_maps_fixed_claiming_child_benefit_spending_head():
+    measures = {
+        measure["measure_key"]: measure
+        for measure in compute.load_registry(REGISTRY)["measures"]
+    }
+    hicbc = measures["spring_budget_2024__hicbc_threshold_and_taper"]
+    welfare_head = next(
+        head for head in hicbc["heads"] if head["obr_head"] == "Welfare inside cap"
+    )
+
+    assert welfare_head["pe_variables"] == ["child_benefit"]
+    assert welfare_head["channel"] == "spending"
+    assert "claiming response is invented" in hicbc["notes"]
 
 
 def test_bundle_mismatches_abort_before_artifact_staging(tmp_path, synthetic_measure):

@@ -291,11 +291,11 @@ def validate_registry(
                     raise RegistryError(f"{key}: invalid reform schedule for {path!r}")
                 for period, value in schedule.items():
                     _validate_date_range(str(period), f"{key} {path}")
-                    if not isinstance(value, (int, float)) or isinstance(value, bool):
+                    if not isinstance(value, (bool, int, float)):
                         raise RegistryError(
-                            f"{key} {path}: non-numeric value {value!r}"
+                            f"{key} {path}: unsupported parameter value {value!r}"
                         )
-                    if not math.isfinite(float(value)):
+                    if not isinstance(value, bool) and not math.isfinite(float(value)):
                         raise RegistryError(
                             f"{key} {path}: reform values must be finite"
                         )
@@ -858,8 +858,8 @@ def stage_not_computed_rows(
 
     rows: list[dict[str, Any]] = []
     for year in years:
-        if year < measure["start_fy"]:
-            continue
+        # The harvested scorecard window, not direct-policy start_fy, controls
+        # visibility. Pre-effective zero and anticipatory OBR rows are evidence.
         hits = _source_candidates(claims, measure, year)
         for claim in hits:
             condition = claim["conditions"]
@@ -1028,8 +1028,10 @@ def main(argv: list[str] | None = None) -> int:
     for year in years:
         active: list[dict[str, Any]] = []
         for measure in selected:
-            if measure["pe_reform"] is None or year < measure["start_fy"]:
+            if measure["pe_reform"] is None:
                 continue
+            # Reform schedules can start after this year; PE then returns a
+            # zero delta. Keep that counterpart when the OBR has a source row.
             mapped_claims = [
                 resolve_claim(claims, measure, head, year) for head in measure["heads"]
             ]

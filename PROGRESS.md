@@ -4,11 +4,10 @@ Updated: 2026-08-16
 
 ## State
 
-In progress. The 20-measure registry and the offline compute/staging pipeline
-are built. Registry paths, aggregate variables, and harvested row identities
-validate without constructing a managed simulation. The comparison renderer,
-bounded smoke run remains; the descriptive comparison renderer and focused
-offline test module are in place.
+In progress. The 26-measure registry, offline compute/staging pipeline,
+descriptive comparison renderer, and focused test module are built. Registry
+paths, aggregate variables, and harvested row identities validate without
+constructing a managed simulation. The bounded smoke run remains.
 
 ## Done
 
@@ -33,7 +32,7 @@ offline test module are in place.
 - Verified the core PolicyEngine UK parameter paths and aggregate-variable
   entities against the installed 2.89.2 system rather than inferring names.
 - Built `data/uk/obr_measure_reforms.yaml` with eight Table 3.17 components and
-  twelve named PMD measures. Every non-null reform path resolves through
+  eighteen named PMD measures. Every non-null reform path resolves through
   `CountryTaxBenefitSystem().parameters`, every mapped variable exists, and
   every mapped head resolves to exactly one harvested row per available FY
   once verbatim measure identity is included.
@@ -47,20 +46,28 @@ offline test module are in place.
   SHA-256 against the release manifest before constructing any simulation.
   The verified build id is
   `populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z`.
-- Ran `--dry-run --limit 2 --years 2026` with a pre-existing
-  `HF_HUB_OFFLINE=0`; the program overrode it to offline, validated all 20
-  entries and 162 mapped head-years, constructed no managed simulation, and
-  wrote no output. A separate local-only cache preflight verified SHA-256
+- Ran `--dry-run --limit 3 --years 2026` after the final registry audit; it
+  validated all 26 entries and 215 mapped head-years, constructed no managed
+  simulation, and wrote no output. An earlier run with a pre-existing
+  `HF_HUB_OFFLINE=0` confirmed the program overrides it to offline. A separate
+  local-only cache preflight verified SHA-256
   `f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833`
   in 0.524 seconds.
+- Expanded the AB2025 scope after a second code/harvest audit: dividend,
+  property, and savings rates; the salary-sacrifice cap; Winter Fuel Payment;
+  and the non-expressible UC standard/health protection now sit alongside the
+  threshold and two-child measures. The audit also made PMD pre-effective rows
+  visible, added HICBC's fixed-claiming child-benefit spending counterpart, and
+  tightened partial classifications for broad welfare/head scope.
 - Added focused tests for registry schema/counts, installed-engine path and
   variable resolution, the exact NICs aggregate, tax/spending signs, forced
   offline mode, exact source conditions and artifact provenance, ambiguous
   source resolution, finite JSON, null-reform selection, bundle identity, and
   an output-free offline CLI dry run. Comparison tests also cover every ratio
   boundary, artifact-backed source resolution, and explicit mapped-head-only
-  totals. All 24 cases pass in the certified venv; the only warning is an
-  upstream Pydantic deprecation from policyengine-uk.
+  totals. All 26 focused cases and all 193 repository tests pass in the
+  certified venv; the only warning is an upstream Pydantic deprecation from
+  policyengine-uk.
 - Built `pipeline/compare_uk_obr_costings.py`. It produces head-level CSV and
   Markdown rows with signed PE/OBR ratios, descriptive bins, and named model,
   adjustment, baseline, timing, and head-scope axes; any remainder is labelled
@@ -75,10 +82,10 @@ offline test module are in place.
 
 ## Registry counts
 
-- `expressible`: 8
-- `partial`: 8
-- `not_expressible`: 4
-- Total: 20
+- `expressible`: 3
+- `partial`: 18
+- `not_expressible`: 5
+- Total: 26
 
 ## Smoke results
 
@@ -101,9 +108,9 @@ Not yet run.
   `metric` field. This lane treats `exchequer_impact` as the adopted staging
   vocabulary summarized by the brief and preserves the raw condition keys.
 - “AB2025 measures” is not a unique harvest subset (39 descriptions touch an
-  income-tax, NICs, or welfare head). The registry scope will use the three
-  measures unambiguously named by the brief: personal/equivalent-NI threshold
-  extension, employer secondary-threshold extension, and two-child removal.
+  income-tax, NICs, or welfare head). The registry covers the named threshold
+  and two-child items plus six additional measures whose relevant mechanics
+  were directly checked. It is not asserted to exhaust all 39 descriptions.
 - The Table 3.17 PA/HRT reversal uses published Table 3.19 indexed levels.
   The requested £12,570→£13,070 PA smoke value is a separate engine-path
   diagnostic, not the full OBR counterfactual, and will be reported as such.
@@ -114,3 +121,11 @@ Not yet run.
   through 2030 but resumes uprating other equivalent NI thresholds earlier.
   The combined AB2025 threshold extension is therefore marked partial rather
   than assuming a policy world the loaded parameter schedules do not contain.
+- The exact pre-policy salary-sacrifice cap is infinity, which cannot be stored
+  in standards-compliant JSON. The partial reversal uses a finite `1e100` cap
+  and zeroes the fixed 0.16% broad-base haircut; installed formulas show this
+  is uncapped for modeled contributions, but it is not claimed as a literal
+  infinity-valued reform.
+- The HICBC welfare counterpart uses gross `child_benefit` with fixed
+  `would_claim_child_benefit`; its static delta should be zero. The OBR welfare
+  head includes claiming effects, so the absent PE claiming response is named.

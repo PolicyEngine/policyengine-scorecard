@@ -1,6 +1,10 @@
 schema_version: 1
 benchmark_class: different_model
 calendar_year_proxy: "PolicyEngine calendar year Y proxies OBR FY Y-(Y+1)."
+start_fy_rule: >-
+  Earliest fiscal-start year carried by the harvested costing for the measure.
+  Dated reform schedules determine when PE mechanics activate; the pipeline
+  does not discard pre-effective zero or anticipatory OBR rows.
 measure_key_rule: >-
   Normalized fiscal event plus a filesystem-safe, sometimes shortened slug of
   the verbatim OBR description; obr_description always retains the verbatim
@@ -102,7 +106,7 @@ measures:
     source_table: "3.17: 3.17"
     external_metric: revenue_change
     start_fy: 2022
-    computability: expressible
+    computability: partial
     construction: reversal_on_certified_world
     pe_reform:
       gov.hmrc.national_insurance.class_1.thresholds.primary_threshold:
@@ -126,7 +130,10 @@ measures:
       Reverses to Table 3.19's published indexed annual primary-threshold path,
       divided by 52 because the installed PE parameter is weekly. Employer
       and Class 4 aggregates remain in the required broad NICs head even when
-      their direct deltas are zero.
+      their direct deltas are zero. The certified PT starts uprating in 2028,
+      so the published Table 3.19 counterfactual can fall below that baseline
+      in outer years; those construction-direction changes are retained and
+      annotated rather than treated as an assumption-matched reversal.
 
   - measure_key: efo_march_2026__class_2_nics_threshold_rise
     fiscal_event: EFO March 2026 re-estimate
@@ -243,7 +250,7 @@ measures:
     obr_description: Autumn Budget 2024 employer NICs rise
     source_table: "3.17: 3.17"
     external_metric: revenue_change
-    start_fy: 2025
+    start_fy: 2024
     computability: partial
     construction: reversal_on_certified_world
     pe_reform:
@@ -271,7 +278,7 @@ measures:
     source_table: Tax Measures (Policy measures database)
     external_metric: revenue_change
     start_fy: 2023
-    computability: expressible
+    computability: partial
     construction: reversal_on_certified_world
     pe_reform:
       gov.hmrc.national_insurance.class_1.rates.employee.main:
@@ -302,7 +309,8 @@ measures:
     notes: >-
       The Class 1 rate lever is direct. PE static head mappings do not model
       the OBR's corporation-tax, capital-gains-tax, departmental-spending, or
-      Scottish block-grant channels.
+      Scottish block-grant channels. Welfare inside cap is represented only
+      by universal_credit, not the full OBR welfare-head scope.
 
   - measure_key: autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p
     fiscal_event: Autumn Statement 2023
@@ -310,7 +318,7 @@ measures:
     source_table: Tax Measures (Policy measures database)
     external_metric: revenue_change
     start_fy: 2024
-    computability: expressible
+    computability: partial
     construction: reversal_on_certified_world
     pe_reform:
       gov.hmrc.national_insurance.class_4.rates.main:
@@ -338,7 +346,9 @@ measures:
       - Capital gains tax
       - PSCE in RDEL
       - Scottish BGA (current)
-    notes: "Direct Class 4 rate reversal; non-microsimulation OBR heads remain unmapped."
+    notes: >-
+      Direct Class 4 rate reversal. Welfare inside cap is represented only by
+      universal_credit, and non-microsimulation OBR heads remain unmapped.
 
   - measure_key: autumn_statement_2023__class_2_self_employed_nics_liability_abolition
     fiscal_event: Autumn Statement 2023
@@ -369,7 +379,7 @@ measures:
     source_table: Tax Measures (Policy measures database)
     external_metric: revenue_change
     start_fy: 2024
-    computability: expressible
+    computability: partial
     construction: reversal_on_certified_world
     pe_reform:
       gov.hmrc.national_insurance.class_1.rates.employee.main:
@@ -396,7 +406,11 @@ measures:
       - Corporation tax (onshore)
       - PSCE in RDEL
       - Scottish BGA (current)
-    notes: "Direct Class 1 rate reversal; PE calendar 2024 proxies FY 2024-25."
+    notes: >-
+      Direct Class 1 rate reversal; PE calendar 2024 proxies FY 2024-25.
+      Welfare inside cap is represented only by universal_credit, not the full
+      OBR welfare-head scope, and the named non-microsimulation heads are
+      omitted.
 
   - measure_key: spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp
     fiscal_event: Spring Budget 2024
@@ -404,7 +418,7 @@ measures:
     source_table: Tax Measures (Policy measures database)
     external_metric: revenue_change
     start_fy: 2024
-    computability: expressible
+    computability: partial
     construction: reversal_on_certified_world
     pe_reform:
       gov.hmrc.national_insurance.class_4.rates.main:
@@ -431,7 +445,11 @@ measures:
       - Corporation tax (onshore)
       - PSCE in RDEL
       - Scottish BGA (current)
-    notes: "Direct Class 4 rate reversal; PE calendar 2024 proxies FY 2024-25."
+    notes: >-
+      Direct Class 4 rate reversal; PE calendar 2024 proxies FY 2024-25.
+      Welfare inside cap is represented only by universal_credit, not the full
+      OBR welfare-head scope, and the named non-microsimulation heads are
+      omitted.
 
   - measure_key: spring_budget_2024__hicbc_threshold_and_taper
     fiscal_event: Spring Budget 2024
@@ -451,18 +469,26 @@ measures:
         condition_key: tax_head
         pe_variables: [income_tax]
         channel: tax
-    unmapped_obr_heads: [Welfare inside cap]
+      - obr_head: Welfare inside cap
+        condition_key: spending_head
+        source_table: Spending Measures (Policy measures database)
+        external_metric: exchequer_impact
+        pe_variables: [child_benefit]
+        channel: spending
+    unmapped_obr_heads: []
     notes: >-
       The HICBC tax-charge formula and thresholds are direct. The OBR also
-      reports a welfare-spending head; PE's static child-benefit amount does
-      not change under this parameter reform, so that head is not fabricated.
+      reports a welfare-spending head associated with reform-induced claiming.
+      PE's gross child_benefit is the corresponding spending aggregate, but
+      would_claim_child_benefit is fixed in this static run, so its computed
+      delta is expected to be zero; no claiming response is invented.
 
   - measure_key: autumn_budget_2024__employer_nics_package
     fiscal_event: Autumn Budget 2024
     obr_description: "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to £5,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to £10,500, remove the £100,000 Employment Allowance eligibility threshold"
     source_table: Tax Measures (Policy measures database)
     external_metric: revenue_change
-    start_fy: 2025
+    start_fy: 2024
     computability: partial
     construction: reversal_on_certified_world
     pe_reform:
@@ -496,7 +522,7 @@ measures:
     obr_description: "Abolition of non-domicile tax status and introduction of a residence-based regime: remove the 50% discount on foreign income in 2025/26; apply inheritance tax; set Capital Gains Tax rebasing date at 5 April 2017; and extend the Temporary Repatriation Facility from two to three years"
     source_table: Tax Measures (Policy measures database)
     external_metric: revenue_change
-    start_fy: 2025
+    start_fy: 2024
     computability: not_expressible
     construction: reversal_on_certified_world
     pe_reform: null
@@ -518,7 +544,7 @@ measures:
     obr_description: Increased collection of tax due supported by investment in 5,000 additional HMRC compliance staff
     source_table: Tax Measures (Policy measures database)
     external_metric: revenue_change
-    start_fy: 2025
+    start_fy: 2024
     computability: not_expressible
     construction: forward_from_baseline
     pe_reform: null
@@ -535,12 +561,198 @@ measures:
       - Scottish BGA (current)
     notes: "Compliance staffing and collection yield are not microsimulation parameters."
 
+  - measure_key: autumn_budget_2025__dividend_income_rate_increase
+    fiscal_event: Autumn Budget 2025
+    obr_description: "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026"
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2025
+    computability: partial
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.income_tax.rates.dividends[0].rate:
+        "2026-01-01.2030-12-31": 0.0875
+      gov.hmrc.income_tax.rates.dividends[1].rate:
+        "2026-01-01.2030-12-31": 0.3375
+    heads:
+      - obr_head: Income tax
+        condition_key: tax_head
+        pe_variables: [income_tax]
+        channel: tax
+      - obr_head: NICs
+        condition_key: tax_head
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+    unmapped_obr_heads:
+      - Corporation tax (onshore)
+      - Capital gains tax
+      - PSCE in RDEL
+      - Scottish BGA (current)
+    notes: >-
+      Reverses the certified ordinary/basic and upper/higher dividend rates to
+      8.75% and 33.75%; the additional rate was not changed by this measure.
+      PE maps Income Tax directly and retains the required broad NICs aggregate,
+      but OBR cross-tax, departmental-spending, block-grant, and behavioural
+      channels are outside this static construction.
+
+  - measure_key: autumn_budget_2025__property_income_separate_rates
+    fiscal_event: Autumn Budget 2025
+    obr_description: "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027"
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2025
+    computability: partial
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.income_tax.rates.property.basic:
+        "2027-01-01.2030-12-31": 0.20
+      gov.hmrc.income_tax.rates.property.higher:
+        "2027-01-01.2030-12-31": 0.40
+      gov.hmrc.income_tax.rates.property.additional:
+        "2027-01-01.2030-12-31": 0.45
+    heads:
+      - obr_head: Income tax
+        condition_key: tax_head
+        pe_variables: [income_tax]
+        channel: tax
+    unmapped_obr_heads:
+      - Corporation tax (onshore)
+      - Capital gains tax
+      - Inheritance tax
+      - Stamp duty
+      - Scottish BGA (current)
+    notes: >-
+      Reverses the three certified property-income rates to 20%, 40%, and 45%.
+      PE maps the direct Income Tax liability; the OBR also allocates effects
+      to taxes and the Scottish block grant that this construction does not
+      model.
+
+  - measure_key: autumn_budget_2025__savings_income_rates_and_starter_limit
+    fiscal_event: Autumn Budget 2025
+    obr_description: "Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027 and maintain the Starting Rate of Savings limit at £5000 from April 2026 to April 2031"
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2025
+    computability: partial
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.income_tax.rates.savings.basic:
+        "2027-01-01.2030-12-31": 0.20
+      gov.hmrc.income_tax.rates.savings.higher:
+        "2027-01-01.2030-12-31": 0.40
+      gov.hmrc.income_tax.rates.savings.additional:
+        "2027-01-01.2030-12-31": 0.45
+    heads:
+      - obr_head: Income tax
+        condition_key: tax_head
+        pe_variables: [income_tax]
+        channel: tax
+    unmapped_obr_heads: []
+    notes: >-
+      Reverses the three certified savings-income rates to 20%, 40%, and 45%.
+      The same OBR measure freezes the Starting Rate for Savings limit at
+      £5,000, but PE's parameter is constant at £5,000 since 2010 and carries
+      no no-measure uprating path; that component is omitted.
+
+  - measure_key: autumn_budget_2025__salary_sacrifice_pension_nics_cap
+    fiscal_event: Autumn Budget 2025
+    obr_description: "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to £2,000 per year from 6 April 2029 "
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2025
+    computability: partial
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.national_insurance.salary_sacrifice_pension_cap:
+        "2029-01-01.2030-12-31": 1.0e+100
+      gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate:
+        "2029-01-01.2030-12-31": 0.0
+    heads:
+      - obr_head: Income tax
+        condition_key: tax_head
+        pe_variables: [income_tax]
+        channel: tax
+      - obr_head: NICs
+        condition_key: tax_head
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+    unmapped_obr_heads:
+      - Corporation tax (onshore)
+      - PSCE in RDEL
+      - Scottish BGA (current)
+    notes: >-
+      PE's exact pre-policy cap is infinity, which standard JSON cannot retain
+      in the required run artifact. This construction uses a finite 1e100 cap,
+      above any modeled contribution, and sets the model's fixed 0.16%
+      broad-base pay-haircut response to zero; code inspection verifies that
+      this leaves salary sacrifice uncapped on the modeled data. The certified
+      formula otherwise embeds that behavioural incidence assumption, and the
+      OBR scores small pre-2029 effects that the direct PE lever cannot produce.
+
+  - measure_key: autumn_budget_2025__winter_fuel_payment_income_test
+    fiscal_event: Autumn Budget 2025
+    obr_description: "Winter Fuel Payment: Target to pensioners with taxable income below or equal to £35,000 from Winter 2025"
+    source_table: Spending Measures (Policy measures database)
+    external_metric: exchequer_impact
+    start_fy: 2025
+    computability: partial
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income:
+        "2025-01-01.2030-12-31": 0
+      gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income:
+        "2025-01-01.2030-12-31": false
+    heads:
+      - obr_head: Income tax
+        condition_key: tax_head
+        source_table: Tax Measures (Policy measures database)
+        external_metric: revenue_change
+        pe_variables: [income_tax]
+        channel: tax
+      - obr_head: Welfare inside cap
+        condition_key: spending_head
+        pe_variables: [winter_fuel_allowance]
+        channel: spending
+    unmapped_obr_heads: [Scottish BGA (current)]
+    notes: >-
+      Turns off the certified £35,000 England-and-Wales income passport while
+      retaining the 2024 means-tested-benefit requirement. PE computes gross
+      winter_fuel_allowance spending and Income Tax (expected to have no direct
+      WFP recovery change); its formula uses income below £35,000 rather than
+      the OBR description's below-or-equal wording and returns zero in Scotland.
+
+  - measure_key: autumn_budget_2025__uc_standard_and_health_protections
+    fiscal_event: Autumn Budget 2025
+    obr_description: "Universal Credit: Changes to the standard allowance and health element to protect existing claimants and new health element claimants who meet the Severe Conditions Criteria from April 2026"
+    source_table: Spending Measures (Policy measures database)
+    external_metric: exchequer_impact
+    start_fy: 2025
+    computability: not_expressible
+    construction: reversal_on_certified_world
+    pe_reform: null
+    heads: []
+    unmapped_obr_heads:
+      - Welfare inside cap
+      - Welfare outside cap
+    notes: >-
+      PE's scenario layer randomly labels post-2025 claimants using hard-coded
+      shares, does not test a Severe Conditions Criteria variable, and does not
+      expose the full protection as a plain parameter dictionary. The available
+      rebalancing uplift parameter is not referenced by a formula. No scalar
+      proxy or inside/outside-cap allocation is assumed.
+
   - measure_key: autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension
     fiscal_event: Autumn Budget 2025
     obr_description: "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031"
     source_table: Tax Measures (Policy measures database)
     external_metric: revenue_change
-    start_fy: 2028
+    start_fy: 2025
     computability: partial
     construction: reversal_on_certified_world
     pe_reform:
@@ -591,7 +803,7 @@ measures:
     obr_description: "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031"
     source_table: Tax Measures (Policy measures database)
     external_metric: revenue_change
-    start_fy: 2028
+    start_fy: 2025
     computability: partial
     construction: reversal_on_certified_world
     pe_reform:
@@ -625,7 +837,7 @@ measures:
     obr_description: "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty"
     source_table: Spending Measures (Policy measures database)
     external_metric: exchequer_impact
-    start_fy: 2026
+    start_fy: 2025
     computability: partial
     construction: reversal_on_certified_world
     pe_reform:
