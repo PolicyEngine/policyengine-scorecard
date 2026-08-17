@@ -16,8 +16,8 @@ import json
 import os
 import subprocess
 import sys
-from types import SimpleNamespace
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import yaml
@@ -56,6 +56,7 @@ DIVIDEND_LAG_NOTE = (
     "2026-04-06 (policyengine-uk#1822); dividend leg not assumption-matched "
     "for these years"
 )
+SYNTHETIC_DATASET_SHA256 = "a" * 64
 
 
 @pytest.fixture()
@@ -118,8 +119,12 @@ def synthetic_claim(synthetic_measure):
 
 
 def synthetic_run(bundle: dict[str, object], income_tax: float) -> dict[str, object]:
+    runtime_bundle = dict(bundle)
+    expected_sha256 = runtime_bundle.setdefault(
+        "certified_data_artifact_sha256", SYNTHETIC_DATASET_SHA256
+    )
     return {
-        "policyengine_bundle": bundle,
+        "policyengine_bundle": runtime_bundle,
         "aggregates_gbp": {"income_tax": income_tax},
         "variable_metadata": {
             "income_tax": {
@@ -133,6 +138,8 @@ def synthetic_run(bundle: dict[str, object], income_tax: float) -> dict[str, obj
             "wall_seconds": 0.01,
             "peak_rss_bytes": 1,
         },
+        "dataset_sha256_before": expected_sha256,
+        "dataset_sha256_after": expected_sha256,
     }
 
 
@@ -541,8 +548,12 @@ def test_new_artifact_records_hashes_for_baseline_and_reform(
     }
 
 
-def test_only_predating_artifacts_may_omit_dataset_hash_fields(
-    tmp_path, synthetic_measure
+@pytest.mark.parametrize(
+    "run_id",
+    ["campaign-20260816-obr-costings", "campaign-20260817-obr-costings"],
+)
+def test_only_allowlisted_legacy_artifacts_may_omit_dataset_hash_fields(
+    tmp_path, synthetic_measure, run_id
 ):
     bundle = {"certified_data_build_id": "synthetic-certified-build"}
     artifact = compute.build_artifact(
@@ -552,17 +563,20 @@ def test_only_predating_artifacts_may_omit_dataset_hash_fields(
         reform=synthetic_run(bundle, 125.0),
         output_path=tmp_path / "synthetic_2026.json",
         computed_at="2026-08-16T12:00:00+00:00",
-        run_id="campaign-20260816-obr-costings",
+        run_id=run_id,
         claims=None,
     )
+    artifact.pop("dataset_sha256_before")
+    artifact.pop("dataset_sha256_after")
     compute.validate_artifact_dataset_hash_fields(
-        artifact, path=tmp_path / "synthetic_2026.json"
+        artifact,
+        path=tmp_path / "synthetic_2026.json",
+        allow_missing=True,
     )
 
-    artifact["run_id"] = "campaign-20260817-obr-costings"
     with pytest.raises(
         compute.ArtifactRestageError,
-        match="does not predate dataset hash fields",
+        match="legacy_artifacts_without_dataset_hashes",
     ):
         compute.validate_artifact_dataset_hash_fields(
             artifact, path=tmp_path / "synthetic_2026.json"
@@ -636,9 +650,13 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
 
     saved = json.loads(output_path.read_text())
     assert saved["data_bundle"] == bundle["certified_data_build_id"]
+    expected_bundle = {
+        **bundle,
+        "certified_data_artifact_sha256": SYNTHETIC_DATASET_SHA256,
+    }
     assert saved["policyengine_bundles"] == {
-        "baseline": bundle,
-        "reform": bundle,
+        "baseline": expected_bundle,
+        "reform": expected_bundle,
     }
     assert saved["reform"] == synthetic_measure["pe_reform"]
     assert saved["raw_aggregates"] == {
@@ -665,6 +683,9 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
     assert len(rows) == manifest["staged_rows"] == 20
     assert manifest["run_id"] == "campaign-20260816-obr-costings"
     assert len(manifest["artifacts"]) == 13
+    assert manifest["legacy_artifacts_without_dataset_hashes"] == manifest[
+        "artifacts"
+    ]
     assert all(row["status"] == "constructed" for row in rows)
 
     traced_artifacts = set()
@@ -684,9 +705,13 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
         artifact = json.loads(artifact_path.read_text())
         traced_artifacts.add(row["artifact"])
 
-        assert compute.run_id_predates_dataset_hash_fields(artifact["run_id"])
         assert "dataset_sha256_before" not in artifact
         assert "dataset_sha256_after" not in artifact
+        compute.validate_artifact_dataset_hash_fields(
+            artifact,
+            path=artifact_path,
+            allow_missing=True,
+        )
 
         assert artifact["artifact"] == row["artifact"]
         assert artifact["data_bundle"] == row["data_bundle"]
@@ -741,9 +766,19 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
             / "diagnostic__personal_allowance_plus_500_2026.json"
         ).read_text()
     )
-    assert compute.run_id_predates_dataset_hash_fields(diagnostic["run_id"])
     assert "dataset_sha256_before" not in diagnostic
     assert "dataset_sha256_after" not in diagnostic
+    compute.validate_artifact_dataset_hash_fields(
+        diagnostic,
+        path=(
+            ROOT
+            / "results"
+            / "uk"
+            / "obr_costings"
+            / "diagnostic__personal_allowance_plus_500_2026.json"
+        ),
+        allow_missing=True,
+    )
     assert diagnostic["diagnostic_only"] is True
     diagnostic_head = diagnostic["heads"][0]
     assert (
@@ -1027,6 +1062,8 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         claims=[synthetic_claim],
     )
     artifact["diagnostic_only"] = False
+    artifact.pop("dataset_sha256_before")
+    artifact.pop("dataset_sha256_after")
     artifact["heads"][0].pop("reversal_delta_exchequer_gain")
     artifact["heads"][0]["pe_value"] = 25.0
     compute.write_json(artifact_path, artifact)
@@ -1036,6 +1073,7 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         "registry": str(registry_path),
         "claims": str(claims_path),
         "artifacts": [str(artifact_path)],
+        "legacy_artifacts_without_dataset_hashes": [str(artifact_path)],
         "selected_measures": [synthetic_measure["measure_key"]],
         "staged_output": str(staged_path),
         "staged_rows": 1,
@@ -1097,6 +1135,14 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     }
     assert compute.main(arguments) == 0
     assert {path: path.read_bytes() for path in first_outputs} == first_outputs
+
+    manifest["legacy_artifacts_without_dataset_hashes"] = []
+    compute.write_json(manifest_path, manifest)
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="legacy_artifacts_without_dataset_hashes",
+    ):
+        compute.main(arguments)
 
 
 @pytest.mark.parametrize(

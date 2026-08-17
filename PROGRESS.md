@@ -27,6 +27,12 @@ be constructed during this follow-up.
   errors name expected and actual hashes
   (`pipeline/compute_uk_obr_costings.py:503`,
   `tests/test_obr_costings_registry.py:426`).
+- Fixed round-2 finding 6: new artifacts always require dataset hashes, while
+  restage admits missing hashes only for the 13 exact paths recorded in
+  `legacy_artifacts_without_dataset_hashes`; old-looking caller run ids grant
+  no exception (`pipeline/compute_uk_obr_costings.py:803`,
+  `results/uk/obr_costings/RUN_MANIFEST.json:17`,
+  `tests/test_obr_costings_registry.py:555`).
 - Read this progress record and the clean-context review before inspecting or
   changing the implementation.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at

@@ -67,8 +67,6 @@ NI_HEAD_VARIABLES = [
     "ni_class_4",
 ]
 RUN_ID_DATE = datetime.now().astimezone().strftime("%Y%m%d")
-DATASET_HASH_FIELDS_INTRODUCED = "20260817"
-RUN_ID = re.compile(r"^campaign-(\d{8})-obr-costings$")
 
 
 class RegistryError(ValueError):
@@ -524,13 +522,6 @@ def verify_runtime_dataset_sha256(
     return actual_sha256
 
 
-def run_id_predates_dataset_hash_fields(run_id: Any) -> bool:
-    """Identify artifacts created before per-simulation hashes were emitted."""
-
-    match = RUN_ID.fullmatch(run_id) if isinstance(run_id, str) else None
-    return match is not None and match.group(1) < DATASET_HASH_FIELDS_INTRODUCED
-
-
 def ensure_writable_local_mirror(
     cached_path: Path, relative_artifact_path: str, expected_sha256: str
 ) -> tuple[Path, bool]:
@@ -815,7 +806,7 @@ def simulation_dataset_hash_fields(
     *,
     run_id: str,
 ) -> dict[str, dict[str, str]]:
-    """Build per-simulation artifact hashes, allowing only dated legacy runs."""
+    """Build mandatory per-simulation dataset hashes for a new artifact."""
 
     field_names = ("dataset_sha256_before", "dataset_sha256_after")
     present = {
@@ -823,8 +814,6 @@ def simulation_dataset_hash_fields(
         for role, simulation in (("baseline", baseline), ("reform", reform))
     }
     if not any(value for role in present.values() for value in role.values()):
-        if run_id_predates_dataset_hash_fields(run_id):
-            return {}
         raise RuntimeError(
             f"{run_id}: per-simulation dataset SHA-256 fields are required"
         )
@@ -860,20 +849,26 @@ def simulation_dataset_hash_fields(
 
 
 def validate_artifact_dataset_hash_fields(
-    artifact: dict[str, Any], *, path: Path
+    artifact: dict[str, Any], *, path: Path, allow_missing: bool = False
 ) -> None:
-    """Validate hash-bearing artifacts and narrowly admit dated predecessors."""
+    """Validate hashes or admit an explicitly inventoried legacy artifact."""
 
     field_names = ("dataset_sha256_before", "dataset_sha256_after")
     present = [name in artifact for name in field_names]
     if not any(present):
-        if run_id_predates_dataset_hash_fields(artifact.get("run_id")):
+        if allow_missing:
             return
         raise ArtifactRestageError(
-            f"{path}: artifact run does not predate dataset hash fields"
+            f"{path}: missing dataset hash fields and is not listed in "
+            "legacy_artifacts_without_dataset_hashes"
         )
     if not all(present):
         raise ArtifactRestageError(f"{path}: dataset hash fields are incomplete")
+    if allow_missing:
+        raise ArtifactRestageError(
+            f"{path}: listed in legacy_artifacts_without_dataset_hashes but "
+            "contains dataset hash fields"
+        )
     bundles = artifact.get("policyengine_bundles")
     if not isinstance(bundles, dict):
         raise ArtifactRestageError(f"{path}: policyengine_bundles must be a mapping")
@@ -1001,6 +996,7 @@ def rederive_artifact_orientation(
     *,
     path: Path,
     claims: list[dict[str, Any]] | None = None,
+    allow_missing_dataset_hashes: bool = False,
 ) -> dict[str, Any]:
     """Validate and rederive one artifact from its persisted raw aggregates."""
 
@@ -1037,7 +1033,11 @@ def rederive_artifact_orientation(
         raise ArtifactRestageError(
             f"{path}: unsupported artifact schema {artifact.get('schema_version')!r}"
         )
-    validate_artifact_dataset_hash_fields(artifact, path=path)
+    validate_artifact_dataset_hash_fields(
+        artifact,
+        path=path,
+        allow_missing=allow_missing_dataset_hashes,
+    )
     raw_aggregates = artifact.get("raw_aggregates")
     if not isinstance(raw_aggregates, dict):
         raise ArtifactRestageError(f"{path}: raw_aggregates must be a mapping")
@@ -1484,6 +1484,35 @@ def restage_existing_run(
         raise ArtifactRestageError(
             f"{manifest_path}: artifact paths resolve to duplicate files"
         )
+    legacy_references = manifest.get(
+        "legacy_artifacts_without_dataset_hashes", []
+    )
+    if (
+        not isinstance(legacy_references, list)
+        or not all(
+            isinstance(reference, str) and reference
+            for reference in legacy_references
+        )
+        or len(set(legacy_references)) != len(legacy_references)
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy_artifacts_without_dataset_hashes must "
+            "be a list of unique non-empty paths"
+        )
+    unknown_legacy = set(legacy_references) - set(references)
+    if unknown_legacy:
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy artifact paths are absent from the "
+            f"artifact inventory: {sorted(unknown_legacy)}"
+        )
+    resolved_legacy_paths = {
+        resolve_recorded_path(reference, artifact_root).resolve()
+        for reference in legacy_references
+    }
+    if len(resolved_legacy_paths) != len(legacy_references):
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy artifact paths resolve to duplicate files"
+        )
 
     registry_path = resolve_recorded_path(manifest.get("registry"), artifact_root)
     claims_path = resolve_recorded_path(manifest.get("claims"), artifact_root)
@@ -1533,6 +1562,9 @@ def restage_existing_run(
             measure,
             path=path,
             claims=None if diagnostic_only else claims,
+            allow_missing_dataset_hashes=(
+                path.resolve() in resolved_legacy_paths
+            ),
         )
         replacements.append((path, refreshed))
         if not diagnostic_only:
@@ -1710,6 +1742,7 @@ def main(argv: list[str] | None = None) -> int:
         "pa_smoke_probe": args.pa_smoke_probe,
         "certified_cache_preflight": cache_preflight,
         "artifacts": [],
+        "legacy_artifacts_without_dataset_hashes": [],
         "baseline_by_year": {},
         "skipped": [],
     }
