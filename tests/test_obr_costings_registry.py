@@ -8,6 +8,7 @@ against synthetic source rows.
 
 from __future__ import annotations
 
+import builtins
 import copy
 import csv
 import hashlib
@@ -1040,6 +1041,228 @@ def _copy_committed_replay_fixture(tmp_path):
     }
 
 
+def test_standalone_renderer_recomputes_coordinated_staged_and_head_mutation(
+    tmp_path,
+):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    reference = (
+        "results/uk/obr_costings/"
+        "efo_march_2026__pa_and_hrt_freezes_2026.json"
+    )
+    artifact_path = replay["copied_paths"][reference]
+    artifact = json.loads(artifact_path.read_text())
+    head = next(head for head in artifact["heads"] if head["obr_head"] == "Income tax")
+    recomputed = compare.recompute_artifact_head_pe_value(
+        artifact,
+        head,
+        reference=reference,
+    )
+    assert recomputed == 47_680_889_965.43103
+    head["pe_value"] = 99_000_000_000
+    compute.write_json(artifact_path, artifact)
+
+    staged_path = replay["copied_paths"][manifest["staged_output"]]
+    staged_rows = compute.load_claims(staged_path)
+    hits = [
+        row
+        for row in staged_rows
+        if row.get("artifact") == reference
+        and row["external_claim_match"]["period"] == 2026
+    ]
+    assert len(hits) == 1
+    hits[0]["pe_value"] = 99_000_000_000
+    compute.write_jsonl(staged_path, staged_rows)
+    manifest["artifact_sha256"][reference] = compute.sha256_file(artifact_path)
+    compute.write_json(replay["manifest_path"], manifest)
+    output_dir = tmp_path / "coordinated-render"
+
+    with pytest.raises(compare.ComparisonError) as exc_info:
+        compare.main(
+            [
+                "--manifest",
+                str(replay["manifest_path"]),
+                "--artifact-root",
+                str(replay["artifact_root"]),
+                "--output-dir",
+                str(output_dir),
+            ]
+        )
+    message = str(exc_info.value)
+    assert "Income tax" in message
+    assert f"recomputed pe_value {recomputed!r}" in message
+    assert not (output_dir / "COMPARISON.csv").exists()
+    assert not (output_dir / "COMPARISON.md").exists()
+
+
+def test_standalone_renderer_rejects_fabricated_variable_at_sha_gate(
+    tmp_path,
+    monkeypatch,
+):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    reference = (
+        "results/uk/obr_costings/"
+        "efo_march_2026__pa_and_hrt_freezes_2026.json"
+    )
+    artifact_path = replay["copied_paths"][reference]
+    artifact = json.loads(artifact_path.read_text())
+    artifact["heads"][0]["pe_variables"] = ["fabricated_variable"]
+    compute.write_json(artifact_path, artifact)
+    manifest["artifacts"] = [
+        item for item in manifest["artifacts"] if item != reference
+    ] + [reference]
+    assert manifest["artifacts"][-1] == reference
+    compute.write_json(replay["manifest_path"], manifest)
+    expected_sha256 = manifest["artifact_sha256"][reference]
+    actual_sha256 = compute.sha256_file(artifact_path)
+    original_object_parser = compare._parse_json_object
+
+    def forbid_verified_input_parse(*args, **kwargs):
+        raise AssertionError("SHA-mismatched input reached parsing")
+
+    def allow_manifest_parse(payload, *, path, label):
+        if label == "run artifact":
+            raise AssertionError("SHA-mismatched artifact reached parsing")
+        return original_object_parser(payload, path=path, label=label)
+
+    monkeypatch.setattr(compare, "_parse_registry", forbid_verified_input_parse)
+    monkeypatch.setattr(compare, "_parse_jsonl", forbid_verified_input_parse)
+    monkeypatch.setattr(compare, "_parse_json_object", allow_manifest_parse)
+    monkeypatch.setattr(compare, "atomic_write_text", forbid_verified_input_parse)
+    output_dir = tmp_path / "fabricated-render"
+
+    with pytest.raises(compare.ComparisonError, match="artifact SHA-256") as exc_info:
+        compare.main(
+            [
+                "--manifest",
+                str(replay["manifest_path"]),
+                "--artifact-root",
+                str(replay["artifact_root"]),
+                "--output-dir",
+                str(output_dir),
+            ]
+        )
+    message = str(exc_info.value)
+    assert str(artifact_path) in message
+    assert f"expected {expected_sha256}" in message
+    assert f"actual {actual_sha256}" in message
+    assert not output_dir.exists()
+
+
+@pytest.mark.parametrize(
+    ("manifest_field", "digest_field"),
+    [("registry", "registry_sha256"), ("claims", "claims_sha256")],
+)
+def test_standalone_renderer_sha_gates_source_inputs_before_parse(
+    tmp_path,
+    monkeypatch,
+    manifest_field,
+    digest_field,
+):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    input_path = replay["copied_paths"][manifest[manifest_field]]
+    input_path.write_bytes(input_path.read_bytes() + b"\n")
+    expected_sha256 = manifest[digest_field]
+    actual_sha256 = compute.sha256_file(input_path)
+    original_object_parser = compare._parse_json_object
+
+    def forbid_verified_input_parse(*args, **kwargs):
+        raise AssertionError("SHA-mismatched source input reached parsing")
+
+    def allow_manifest_parse(payload, *, path, label):
+        if label == "run artifact":
+            raise AssertionError("artifact parsed before complete SHA gate")
+        return original_object_parser(payload, path=path, label=label)
+
+    monkeypatch.setattr(compare, "_parse_registry", forbid_verified_input_parse)
+    monkeypatch.setattr(compare, "_parse_jsonl", forbid_verified_input_parse)
+    monkeypatch.setattr(compare, "_parse_json_object", allow_manifest_parse)
+    monkeypatch.setattr(compare, "atomic_write_text", forbid_verified_input_parse)
+
+    with pytest.raises(compare.ComparisonError, match="SHA-256") as exc_info:
+        compare.main(
+            [
+                "--manifest",
+                str(replay["manifest_path"]),
+                "--artifact-root",
+                str(replay["artifact_root"]),
+                "--output-dir",
+                str(tmp_path / "source-gate-render"),
+            ]
+        )
+    message = str(exc_info.value)
+    assert str(input_path) in message
+    assert f"expected {expected_sha256}" in message
+    assert f"actual {actual_sha256}" in message
+
+
+def test_standalone_renderer_cli_requires_run_manifest(capsys):
+    with pytest.raises(SystemExit) as exc_info:
+        compare.main([])
+    assert exc_info.value.code == 2
+    assert "--manifest" in capsys.readouterr().err
+
+
+def test_standalone_renderer_replays_verified_manifest_byte_exactly(tmp_path):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    output_dir = tmp_path / "standalone-render"
+
+    assert (
+        compare.main(
+            [
+                "--manifest",
+                str(replay["manifest_path"]),
+                "--artifact-root",
+                str(replay["artifact_root"]),
+                "--output-dir",
+                str(output_dir),
+            ]
+        )
+        == 0
+    )
+    csv_reference = "results/uk/obr_costings/COMPARISON.csv"
+    markdown_reference = "results/uk/obr_costings/COMPARISON.md"
+    with (output_dir / "COMPARISON.csv").open(newline="") as source:
+        assert len(list(csv.DictReader(source))) == 26
+    assert (output_dir / "COMPARISON.csv").read_bytes() == replay["tracked_bytes"][
+        csv_reference
+    ]
+    assert (output_dir / "COMPARISON.md").read_bytes() == replay["tracked_bytes"][
+        markdown_reference
+    ]
+
+
+def test_standalone_renderer_requires_every_artifact_head_to_be_staged(tmp_path):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    staged_path = replay["copied_paths"][manifest["staged_output"]]
+    staged_rows = compute.load_claims(staged_path)
+    removed = staged_rows.pop(0)
+    assert removed["pe_value"] is not None
+    compute.write_jsonl(staged_path, staged_rows)
+    manifest["staged_rows"] = len(staged_rows)
+    compute.write_json(replay["manifest_path"], manifest)
+    output_dir = tmp_path / "incomplete-render"
+
+    with pytest.raises(
+        compare.ComparisonError,
+        match="staged/artifact head inventory differs",
+    ):
+        compare.main(
+            [
+                "--manifest",
+                str(replay["manifest_path"]),
+                "--artifact-root",
+                str(replay["artifact_root"]),
+                "--output-dir",
+                str(output_dir),
+            ]
+        )
+    assert not output_dir.exists()
+
+
 def test_committed_legacy_artifacts_use_manifest_ordinals_and_stay_byte_exact(
     tmp_path,
     monkeypatch,
@@ -1152,56 +1375,88 @@ def test_restage_rejects_coordinated_artifact_mutation_before_any_writer(
     } == expected_bytes
 
 
-def test_restage_rechecks_each_artifact_at_its_writer_boundary(
+def test_restage_never_reopens_artifacts_after_verified_parse(
     tmp_path,
     monkeypatch,
 ):
     replay = _copy_committed_replay_fixture(tmp_path)
     manifest = json.loads(replay["manifest_path"].read_text())
-    first_reference, second_reference = manifest["artifacts"][:2]
-    first_path = replay["copied_paths"][first_reference]
-    second_path = replay["copied_paths"][second_reference]
-    expected_sha256 = manifest["artifact_sha256"][first_reference]
+    artifact_paths = {
+        replay["copied_paths"][reference].resolve()
+        for reference in manifest["artifacts"]
+    }
     original_verifier = compute.verified_artifact_payload
+    original_postwrite_verifier = compute.verify_written_artifacts
+    original_read_bytes = Path.read_bytes
+    original_read_text = Path.read_text
+    original_open = Path.open
+    original_builtin_open = builtins.open
     verification_counts = Counter()
-    mutated = False
+    guard_armed = False
 
-    def mutate_first_during_second_prewrite_check(path, expected):
-        nonlocal mutated
+    def track_initial_verification(path, expected):
+        nonlocal guard_armed
         verification_counts[path] += 1
-        if path == second_path and verification_counts[path] == 2:
-            first_path.write_bytes(first_path.read_bytes() + b"\n")
-            mutated = True
-        return original_verifier(path, expected)
+        payload = original_verifier(path, expected)
+        if sum(verification_counts.values()) == len(artifact_paths):
+            guard_armed = True
+        return payload
 
-    def forbidden(*args, **kwargs):
-        raise AssertionError("inter-check artifact mutation reached a writer")
+    def guard(path):
+        if guard_armed and path.resolve() in artifact_paths:
+            raise AssertionError(f"restage reopened verified artifact {path}")
+
+    def guarded_read_bytes(path, *args, **kwargs):
+        guard(path)
+        return original_read_bytes(path, *args, **kwargs)
+
+    def guarded_read_text(path, *args, **kwargs):
+        guard(path)
+        return original_read_text(path, *args, **kwargs)
+
+    def guarded_open(path, *args, **kwargs):
+        guard(path)
+        return original_open(path, *args, **kwargs)
+
+    def guarded_builtin_open(file, *args, **kwargs):
+        if isinstance(file, (str, os.PathLike)):
+            guard(Path(file))
+        return original_builtin_open(file, *args, **kwargs)
+
+    def allow_required_postwrite_verification(artifacts):
+        nonlocal guard_armed
+        guard_armed = False
+        original_postwrite_verifier(artifacts)
+        guard_armed = True
 
     monkeypatch.setattr(
         compute,
         "verified_artifact_payload",
-        mutate_first_during_second_prewrite_check,
+        track_initial_verification,
     )
-    monkeypatch.setattr(compute, "write_json", forbidden)
-    monkeypatch.setattr(compute, "write_jsonl", forbidden)
-    monkeypatch.setattr(compare, "write_comparison_outputs_from_rows", forbidden)
-    with pytest.raises(
-        compute.ArtifactRestageError,
-        match="artifact SHA-256 differs from RUN_MANIFEST",
-    ) as exc_info:
-        compute.restage_existing_run(
-            manifest_path=replay["manifest_path"],
-            output_dir=replay["output_dir"],
-            artifact_root=replay["artifact_root"],
-        )
-    actual_sha256 = compute.sha256_file(first_path)
-    message = str(exc_info.value)
-    assert mutated
-    assert verification_counts[first_path] == 3
-    assert str(first_path) in message
-    assert f"expected {expected_sha256}" in message
-    assert f"actual {actual_sha256}" in message
-    assert "re-run" in message
+    monkeypatch.setattr(
+        compute,
+        "verify_written_artifacts",
+        allow_required_postwrite_verification,
+    )
+    monkeypatch.setattr(Path, "read_bytes", guarded_read_bytes)
+    monkeypatch.setattr(Path, "read_text", guarded_read_text)
+    monkeypatch.setattr(Path, "open", guarded_open)
+    monkeypatch.setattr(builtins, "open", guarded_builtin_open)
+
+    summary = compute.restage_existing_run(
+        manifest_path=replay["manifest_path"],
+        output_dir=replay["output_dir"],
+        artifact_root=replay["artifact_root"],
+    )
+    guard_armed = False
+    assert summary["artifacts"] == len(artifact_paths)
+    assert set(verification_counts) == artifact_paths
+    assert set(verification_counts.values()) == {1}
+    assert {
+        reference: path.read_bytes()
+        for reference, path in replay["copied_paths"].items()
+    } == replay["tracked_bytes"]
 
 
 def test_restage_rejects_artifact_missing_from_sha_map(tmp_path, monkeypatch):
@@ -1815,6 +2070,81 @@ def test_restage_rejects_no_stage_manifest_before_path_resolution(tmp_path):
     assert manifest_path.read_bytes() == original_manifest
 
 
+@pytest.mark.parametrize(
+    ("arguments", "rejected_flag"),
+    [
+        (
+            ["--restage", "--registry", str(compute.DEFAULT_REGISTRY)],
+            "--registry",
+        ),
+        (["--restage", "--claims", str(compute.DEFAULT_CLAIMS)], "--claims"),
+        (
+            [
+                "--restage",
+                "--staged-output",
+                str(compute.DEFAULT_STAGED_OUTPUT),
+            ],
+            "--staged-output",
+        ),
+        (
+            [
+                "--restage",
+                "--run-id",
+                f"campaign-{compute.RUN_ID_DATE}-obr-costings",
+            ],
+            "--run-id",
+        ),
+        (["--manifest", "RUN_MANIFEST.json"], "--manifest"),
+        (["--artifact-root", str(compute.ROOT)], "--artifact-root"),
+    ],
+)
+def test_cli_rejects_explicit_options_ignored_by_selected_mode(
+    monkeypatch,
+    capsys,
+    arguments,
+    rejected_flag,
+):
+    def forbidden(*args, **kwargs):
+        raise AssertionError("ignored mode option reached mode work")
+
+    monkeypatch.setattr(compute, "configure_offline", forbidden)
+    monkeypatch.setattr(compute, "restage_existing_run", forbidden)
+    with pytest.raises(SystemExit) as exc_info:
+        compute.main(arguments)
+    assert exc_info.value.code == 2
+    error = capsys.readouterr().err
+    assert rejected_flag in error
+    assert "cannot be combined" in error
+
+
+def test_cli_help_documents_normal_and_restage_options(capsys):
+    with pytest.raises(SystemExit) as exc_info:
+        compute.main(["--help"])
+    assert exc_info.value.code == 0
+    help_text = capsys.readouterr().out
+    assert "normal compute mode options:" in help_text
+    assert "restage mode options:" in help_text
+    normal_help = help_text.split("normal compute mode options:", 1)[1].split(
+        "restage mode options:", 1
+    )[0]
+    restage_help = help_text.split("restage mode options:", 1)[1]
+    for flag in (
+        "--registry",
+        "--claims",
+        "--staged-output",
+        "--measures",
+        "--years",
+        "--limit",
+        "--dry-run",
+        "--no-stage",
+        "--pa-smoke-probe",
+        "--run-id",
+    ):
+        assert flag in normal_help
+    assert "--manifest" in restage_help
+    assert "--artifact-root" in restage_help
+
+
 def test_no_stage_producer_records_explicit_non_replayable_manifest(
     tmp_path,
     monkeypatch,
@@ -1911,6 +2241,192 @@ def test_no_stage_producer_records_explicit_non_replayable_manifest(
         )
 
 
+def _configure_synthetic_normal_main(
+    tmp_path,
+    monkeypatch,
+    synthetic_measure,
+    synthetic_claim,
+):
+    registry_path = tmp_path / "registry.yaml"
+    claims_path = tmp_path / "claims.jsonl"
+    output_dir = tmp_path / "artifacts"
+    staged_path = tmp_path / "staged.jsonl"
+    registry_path.write_text(
+        yaml.safe_dump(
+            {
+                "schema_version": 1,
+                "benchmark_class": "different_model",
+                "measures": [synthetic_measure],
+            },
+            sort_keys=False,
+        )
+    )
+    claims_path.write_text(json.dumps(synthetic_claim, allow_nan=False) + "\n")
+    release_bundle = {
+        "certified_data_build_id": "synthetic-certified-build",
+        "certified_data_artifact_sha256": SYNTHETIC_DATASET_SHA256,
+    }
+
+    def relative_to_test_root(path, *, role):
+        return str(Path(path).resolve().relative_to(tmp_path.resolve()))
+
+    def fake_simulation(*, reform, **kwargs):
+        value = 100.0 if reform is None else 125.0
+        return synthetic_run(release_bundle, value)
+
+    monkeypatch.setattr(
+        compute,
+        "recorded_repo_relative_path",
+        relative_to_test_root,
+    )
+    monkeypatch.setattr(
+        compute,
+        "relative_to_root",
+        lambda path: str(Path(path).resolve().relative_to(tmp_path.resolve())),
+    )
+    monkeypatch.setattr(compute, "run_managed_simulation", fake_simulation)
+    monkeypatch.setattr(
+        compute,
+        "preflight_certified_dataset",
+        lambda: {
+            "release_bundle": release_bundle,
+            "runtime_dataset_source": str(tmp_path / "unused-dataset.h5"),
+            "hash_seconds": 0.0,
+        },
+    )
+    arguments = [
+        "--registry",
+        str(registry_path),
+        "--claims",
+        str(claims_path),
+        "--output-dir",
+        str(output_dir),
+        "--staged-output",
+        str(staged_path),
+        "--years",
+        "2026",
+    ]
+    return {
+        "arguments": arguments,
+        "artifact_path": compute.artifact_path(
+            output_dir,
+            synthetic_measure["measure_key"],
+            2026,
+        ),
+        "claims_path": claims_path,
+        "manifest_path": output_dir / "RUN_MANIFEST.json",
+        "output_dir": output_dir,
+        "registry_path": registry_path,
+        "staged_path": staged_path,
+    }
+
+
+def test_normal_aborts_if_written_artifact_differs_from_intended_bytes(
+    tmp_path,
+    monkeypatch,
+    synthetic_measure,
+    synthetic_claim,
+):
+    run = _configure_synthetic_normal_main(
+        tmp_path,
+        monkeypatch,
+        synthetic_measure,
+        synthetic_claim,
+    )
+    compute.write_json(
+        run["manifest_path"],
+        {"schema_version": 1, "completed_at": "older complete run"},
+    )
+    assert run["manifest_path"].exists()
+    original_writer = compute.write_artifact_payload
+    mutated = False
+
+    def mutate_after_write(path, payload):
+        nonlocal mutated
+        original_writer(path, payload)
+        if path == run["artifact_path"]:
+            path.write_bytes(path.read_bytes() + b"\n")
+            mutated = True
+
+    monkeypatch.setattr(compute, "write_artifact_payload", mutate_after_write)
+    with pytest.raises(
+        compute.ArtifactWriteError,
+        match="differs from intended canonical bytes",
+    ):
+        compute.main(run["arguments"])
+
+    assert mutated
+    assert run["artifact_path"].exists()
+    assert not run["manifest_path"].exists()
+    assert not run["staged_path"].exists()
+    assert not (run["output_dir"] / "COMPARISON.csv").exists()
+    assert not (run["output_dir"] / "COMPARISON.md").exists()
+
+
+def test_normal_staging_and_comparison_never_reopen_verified_artifacts(
+    tmp_path,
+    monkeypatch,
+    synthetic_measure,
+    synthetic_claim,
+):
+    run = _configure_synthetic_normal_main(
+        tmp_path,
+        monkeypatch,
+        synthetic_measure,
+        synthetic_claim,
+    )
+    artifact_path = run["artifact_path"].resolve()
+    original_verifier = compute.verify_written_artifacts
+    original_read_bytes = Path.read_bytes
+    original_read_text = Path.read_text
+    original_open = Path.open
+    original_builtin_open = builtins.open
+    guard_armed = False
+
+    def verify_then_arm(artifacts):
+        nonlocal guard_armed
+        original_verifier(artifacts)
+        guard_armed = True
+
+    def guard(path):
+        if guard_armed and path.resolve() == artifact_path:
+            raise AssertionError(f"consumer reopened verified artifact {path}")
+
+    def guarded_read_bytes(path, *args, **kwargs):
+        guard(path)
+        return original_read_bytes(path, *args, **kwargs)
+
+    def guarded_read_text(path, *args, **kwargs):
+        guard(path)
+        return original_read_text(path, *args, **kwargs)
+
+    def guarded_open(path, *args, **kwargs):
+        guard(path)
+        return original_open(path, *args, **kwargs)
+
+    def guarded_builtin_open(file, *args, **kwargs):
+        if isinstance(file, (str, os.PathLike)):
+            guard(Path(file))
+        return original_builtin_open(file, *args, **kwargs)
+
+    monkeypatch.setattr(compute, "verify_written_artifacts", verify_then_arm)
+    monkeypatch.setattr(Path, "read_bytes", guarded_read_bytes)
+    monkeypatch.setattr(Path, "read_text", guarded_read_text)
+    monkeypatch.setattr(Path, "open", guarded_open)
+    monkeypatch.setattr(builtins, "open", guarded_builtin_open)
+
+    assert compute.main(run["arguments"]) == 0
+    guard_armed = False
+    manifest = json.loads(run["manifest_path"].read_text())
+    reference = manifest["artifacts"][0]
+    assert manifest["artifact_sha256"][reference] == compute.sha256_file(
+        run["artifact_path"]
+    )
+    assert run["staged_path"].is_file()
+    assert (run["output_dir"] / "COMPARISON.csv").is_file()
+    assert (run["output_dir"] / "COMPARISON.md").is_file()
+
+
 def _write_synthetic_replay(
     tmp_path,
     synthetic_measure,
@@ -1958,8 +2474,8 @@ def _write_synthetic_replay(
         staged_rows=staged_rows,
         claims=[synthetic_claim],
         registry={synthetic_measure["measure_key"]: synthetic_measure},
+        artifacts_by_reference={artifact_reference: artifact},
         output_dir=output_dir,
-        artifact_root=tmp_path,
     )
     manifest = {
         "schema_version": 1,
@@ -2003,6 +2519,78 @@ def _write_synthetic_replay(
         "registry_path": registry_path,
         "registry_sha256": registry_sha256,
     }
+
+
+def test_restage_rejects_postwrite_mutation_before_comparison(
+    tmp_path,
+    monkeypatch,
+    synthetic_measure,
+    synthetic_claim,
+):
+    replay = _write_synthetic_replay(
+        tmp_path,
+        synthetic_measure,
+        synthetic_claim,
+    )
+    original_writer = compute.write_artifact_payload
+    comparison_called = False
+    staged_write_called = False
+    downstream_paths = [
+        replay["output_dir"] / "COMPARISON.csv",
+        replay["output_dir"] / "COMPARISON.md",
+        next(
+            path
+            for path in replay["output_paths"]
+            if path.name == "staged.jsonl"
+        ),
+    ]
+    original_downstream = {
+        path: path.read_bytes() for path in downstream_paths
+    }
+
+    def mutate_after_write(path, payload):
+        original_writer(path, payload)
+        if path == replay["artifact_path"]:
+            artifact = json.loads(path.read_text())
+            artifact["heads"][0]["pe_variables"] = ["fabricated_variable"]
+            compute.write_json(path, artifact)
+
+    def forbid_comparison(*args, **kwargs):
+        nonlocal comparison_called
+        comparison_called = True
+        raise AssertionError("postwrite mutation reached comparison")
+
+    def forbid_staged_write(*args, **kwargs):
+        nonlocal staged_write_called
+        staged_write_called = True
+        raise AssertionError("postwrite mutation reached staged output")
+
+    monkeypatch.setattr(compute, "write_artifact_payload", mutate_after_write)
+    monkeypatch.setattr(compute, "write_jsonl", forbid_staged_write)
+    monkeypatch.setattr(
+        compare,
+        "write_comparison_outputs_from_rows",
+        forbid_comparison,
+    )
+    with pytest.raises(
+        compute.ArtifactWriteError,
+        match="differs from intended canonical bytes",
+    ):
+        compute.restage_existing_run(
+            manifest_path=replay["manifest_path"],
+            output_dir=replay["output_dir"],
+            artifact_root=replay["artifact_root"],
+        )
+
+    assert not comparison_called
+    assert not staged_write_called
+    assert not replay["manifest_path"].exists()
+    assert json.loads(replay["artifact_path"].read_text())["heads"][0][
+        "pe_variables"
+    ] == ["fabricated_variable"]
+    assert {
+        path: path.read_bytes() for path in downstream_paths
+    } == original_downstream
 
 
 def test_restage_rederives_existing_artifacts_without_any_simulation(
@@ -2291,7 +2879,7 @@ def test_restage_rechecks_registry_sha_immediately_before_writes(
     } == original_outputs
 
 
-def test_restage_rechecks_artifact_sha_immediately_before_writes(
+def test_restage_overwrites_postparse_disk_mutation_from_verified_memory(
     tmp_path,
     monkeypatch,
     synthetic_measure,
@@ -2302,13 +2890,9 @@ def test_restage_rechecks_artifact_sha_immediately_before_writes(
         synthetic_measure,
         synthetic_claim,
     )
-    manifest = json.loads(replay["manifest_path"].read_text())
-    artifact_reference = manifest["artifacts"][0]
-    expected_sha256 = manifest["artifact_sha256"][artifact_reference]
-    unchanged_paths = [
-        path for path in replay["output_paths"] if path != replay["artifact_path"]
-    ]
-    original_outputs = {path: path.read_bytes() for path in unchanged_paths}
+    original_outputs = {
+        path: path.read_bytes() for path in replay["output_paths"]
+    }
     original_rederive = compute.rederive_artifact_orientation
     mutated = False
 
@@ -2321,34 +2905,21 @@ def test_restage_rechecks_artifact_sha_immediately_before_writes(
             mutated = True
         return artifact
 
-    def forbidden(*args, **kwargs):
-        raise AssertionError("artifact TOCTOU mutation reached an output writer")
-
     monkeypatch.setattr(
         compute,
         "rederive_artifact_orientation",
         mutate_artifact_during_replay,
     )
-    monkeypatch.setattr(compute, "write_json", forbidden)
-    monkeypatch.setattr(compute, "write_jsonl", forbidden)
-    monkeypatch.setattr(compare, "write_comparison_outputs_from_rows", forbidden)
-    with pytest.raises(
-        compute.ArtifactRestageError,
-        match="artifact SHA-256 differs from RUN_MANIFEST",
-    ) as exc_info:
-        compute.restage_existing_run(
-            manifest_path=replay["manifest_path"],
-            output_dir=replay["output_dir"],
-            artifact_root=replay["artifact_root"],
-        )
-    actual_sha256 = compute.sha256_file(replay["artifact_path"])
-    message = str(exc_info.value)
+    summary = compute.restage_existing_run(
+        manifest_path=replay["manifest_path"],
+        output_dir=replay["output_dir"],
+        artifact_root=replay["artifact_root"],
+    )
     assert mutated
-    assert str(replay["artifact_path"]) in message
-    assert f"expected {expected_sha256}" in message
-    assert f"actual {actual_sha256}" in message
-    assert "re-run" in message
-    assert {path: path.read_bytes() for path in unchanged_paths} == original_outputs
+    assert summary["artifacts"] == 1
+    assert {
+        path: path.read_bytes() for path in replay["output_paths"]
+    } == original_outputs
 
 
 @pytest.mark.parametrize(
@@ -2658,6 +3229,7 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
 
     artifact_paths = []
     artifact_references = []
+    artifacts_by_reference = {}
     for measure in measures:
         if measure["pe_reform"] is None:
             continue
@@ -2688,16 +3260,17 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
         compute.write_json(output_path, artifact)
         artifact_paths.append(output_path)
         artifact_references.append(artifact_reference)
+        artifacts_by_reference[artifact_reference] = artifact
         expected_rows.extend(compute.stage_artifact_rows(artifact, measure))
 
     assert len(artifact_references) == 21
     compute.write_jsonl(staged_path, expected_rows)
-    compare.write_comparison_outputs(
-        registry_path=registry_path,
-        claims_path=claims_path,
-        staged_path=staged_path,
+    compare.write_comparison_outputs_from_rows(
+        staged_rows=expected_rows,
+        claims=claims,
+        registry={measure["measure_key"]: measure for measure in measures},
+        artifacts_by_reference=artifacts_by_reference,
         output_dir=output_dir,
-        artifact_root=tmp_path,
     )
     manifest = {
         "schema_version": 1,
@@ -2870,7 +3443,15 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
     assert f"actual {drifted_sha256}" in message
     assert "new run" in message
     assert "re-run" in message
-    assert {path: path.read_bytes() for path in output_paths} == first_outputs
+    assert not manifest_path.exists()
+    unchanged_after_output_start = [
+        path for path in output_paths if path != manifest_path
+    ]
+    assert {
+        path: path.read_bytes() for path in unchanged_after_output_start
+    } == {
+        path: first_outputs[path] for path in unchanged_after_output_start
+    }
 
 
 @pytest.mark.parametrize(
@@ -2909,8 +3490,10 @@ def test_comparison_resolves_measure_identity_and_traces_artifact(
         claims_sha256=SYNTHETIC_CLAIMS_SHA256,
         registry_sha256=SYNTHETIC_REGISTRY_SHA256,
     )
+    artifact["diagnostic_only"] = False
     compute.write_json(artifact_path, artifact)
     staged = compute.stage_artifact_rows(artifact, synthetic_measure)[0]
+    artifact_reference = staged["artifact"]
     descriptor_twin = copy.deepcopy(synthetic_claim)
     descriptor_twin["reform_hint"] = "Another measure with the same descriptor"
 
@@ -2918,6 +3501,7 @@ def test_comparison_resolves_measure_identity_and_traces_artifact(
         [staged],
         [descriptor_twin, synthetic_claim],
         {synthetic_measure["measure_key"]: synthetic_measure},
+        artifacts_by_reference={artifact_reference: artifact},
     )
 
     assert len(rows) == 1
@@ -2948,16 +3532,18 @@ def test_comparison_resolves_measure_identity_and_traces_artifact(
             [staged],
             [synthetic_claim],
             {synthetic_measure["measure_key"]: synthetic_measure},
+            artifacts_by_reference={artifact_reference: source_model_drift},
         )
     compute.write_json(artifact_path, artifact)
 
     literal_staged = copy.deepcopy(staged)
     literal_staged["pe_value"] = 25.0
-    with pytest.raises(compare.ComparisonError, match="staged and artifact PE"):
+    with pytest.raises(compare.ComparisonError, match="must equal recomputed"):
         compare.build_comparison_rows(
             [literal_staged],
             [synthetic_claim],
             {synthetic_measure["measure_key"]: synthetic_measure},
+            artifacts_by_reference={artifact_reference: artifact},
         )
     assert any("remaining_difference=unexplained" in x for x in rows[0]["annotations"])
 

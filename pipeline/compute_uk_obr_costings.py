@@ -2718,14 +2718,6 @@ def restage_existing_run(
             expected=recorded_claims_sha256,
             actual=prewrite_claims_sha256,
         )
-    for reference, path in zip(references, resolved_references):
-        verified_artifact_payload(path, recorded_artifact_sha256[reference])
-    for reference, resolved_path in zip(references, resolved_references):
-        verified_artifact_payload(
-            resolved_path,
-            recorded_artifact_sha256[reference],
-        )
-
     if intended_artifact_sha256 != recorded_artifact_sha256:
         raise ArtifactRestageError(
             f"{manifest_path}: canonical replay artifact digests differ from "
@@ -2757,6 +2749,22 @@ def restage_existing_run(
         if not diagnostic_only:
             staged_rows.extend(stage_artifact_rows(artifact, measure))
 
+    poststage_registry_sha256 = sha256_file(registry_path)
+    if poststage_registry_sha256 != recorded_registry_sha256:
+        raise registry_provenance_error(
+            registry_path,
+            subject="registry SHA-256",
+            expected=recorded_registry_sha256,
+            actual=poststage_registry_sha256,
+        )
+    poststage_claims_sha256 = sha256_file(claims_path)
+    if poststage_claims_sha256 != recorded_claims_sha256:
+        raise claims_provenance_error(
+            claims_path,
+            subject="claims SHA-256",
+            expected=recorded_claims_sha256,
+            actual=poststage_claims_sha256,
+        )
     expected_staged_rows = manifest.get("staged_rows")
     if expected_staged_rows != len(staged_rows):
         raise ArtifactRestageError(
@@ -2780,6 +2788,22 @@ def restage_existing_run(
         },
         output_dir=output_dir,
     )
+    final_registry_sha256 = sha256_file(registry_path)
+    if final_registry_sha256 != recorded_registry_sha256:
+        raise registry_provenance_error(
+            registry_path,
+            subject="registry SHA-256",
+            expected=recorded_registry_sha256,
+            actual=final_registry_sha256,
+        )
+    final_claims_sha256 = sha256_file(claims_path)
+    if final_claims_sha256 != recorded_claims_sha256:
+        raise claims_provenance_error(
+            claims_path,
+            subject="claims SHA-256",
+            expected=recorded_claims_sha256,
+            actual=final_claims_sha256,
+        )
     atomic_write_bytes(manifest_path, manifest_payload)
     return {
         "artifacts": len(replacements),

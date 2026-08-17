@@ -24,7 +24,8 @@ import math
 import re
 import stat
 import tempfile
-from collections import defaultdict
+import unicodedata
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
@@ -198,6 +199,103 @@ def _validate_sha256(value: Any, *, field: str, manifest_path: Path) -> str:
     return value
 
 
+def validate_comparison_path_plan(
+    *,
+    manifest: Mapping[str, Any],
+    manifest_path: Path,
+    artifact_root: Path,
+    output_dir: Path,
+) -> None:
+    """Reject input aliases and comparison outputs that overwrite run inputs."""
+
+    artifact_root = artifact_root.resolve()
+    manifest_path = manifest_path.resolve()
+    artifact_dir = manifest_path.parent
+    file_roles = [
+        ("manifest", manifest_path),
+        (
+            "registry",
+            _resolve_recorded_path(
+                manifest.get("registry"),
+                artifact_root=artifact_root,
+                role="registry",
+            ),
+        ),
+        (
+            "claims",
+            _resolve_recorded_path(
+                manifest.get("claims"),
+                artifact_root=artifact_root,
+                role="claims",
+            ),
+        ),
+        (
+            "staged_output",
+            _resolve_recorded_path(
+                manifest.get("staged_output"),
+                artifact_root=artifact_root,
+                role="staged_output",
+            ),
+        ),
+    ]
+    references = manifest.get("artifacts")
+    if not isinstance(references, list):
+        raise ComparisonError(f"{manifest_path}: artifacts must be a list")
+    for index, reference in enumerate(references):
+        path = _resolve_recorded_path(
+            reference,
+            artifact_root=artifact_root,
+            role=f"artifact {index}",
+        )
+        try:
+            path.relative_to(artifact_dir)
+        except ValueError as exc:
+            raise ComparisonError(
+                f"artifact {reference!r} escapes manifest directory {artifact_dir}"
+            ) from exc
+        file_roles.append((f"artifact {index}", path))
+
+    output_dir = output_dir.resolve()
+    file_roles.extend(
+        [
+            ("comparison CSV", output_dir / "COMPARISON.csv"),
+            ("comparison Markdown", output_dir / "COMPARISON.md"),
+        ]
+    )
+    seen_paths: dict[Path, str] = {}
+    seen_normalized: dict[str, tuple[str, Path]] = {}
+    seen_inodes: dict[tuple[int, int], tuple[str, Path]] = {}
+    for role, path in file_roles:
+        previous_role = seen_paths.get(path)
+        if previous_role is not None:
+            raise ComparisonError(
+                f"path collision: {previous_role} and {role} resolve to {path}"
+            )
+        seen_paths[path] = role
+        normalized = unicodedata.normalize("NFC", str(path)).casefold()
+        previous_normalized = seen_normalized.get(normalized)
+        if previous_normalized is not None:
+            previous_role, previous_path = previous_normalized
+            raise ComparisonError(
+                f"path collision: {previous_role} {previous_path} and "
+                f"{role} {path} have the same normalized path"
+            )
+        seen_normalized[normalized] = (role, path)
+        try:
+            result = path.stat()
+        except OSError:
+            continue
+        inode = (result.st_dev, result.st_ino)
+        previous_inode = seen_inodes.get(inode)
+        if previous_inode is not None:
+            previous_role, previous_path = previous_inode
+            raise ComparisonError(
+                f"path collision: {previous_role} {previous_path} and "
+                f"{role} {path} identify the same file"
+            )
+        seen_inodes[inode] = (role, path)
+
+
 def _verify_payload(
     payload: bytes,
     *,
@@ -348,12 +446,28 @@ def load_verified_comparison_inputs(
         )
         for reference in references
     }
+    run_id = manifest.get("run_id")
+    if not isinstance(run_id, str) or not run_id:
+        raise ComparisonError(f"{manifest_path}: run_id must be non-empty text")
+    for reference, artifact in artifacts.items():
+        if artifact.get("run_id") != run_id:
+            raise ComparisonError(f"{reference}: run_id differs from RUN_MANIFEST")
     staged_rows = _parse_jsonl(
         _read_bytes(staged_path, "staged results"),
         path=staged_path,
     )
     if not staged_rows:
         raise ComparisonError(f"staged results are empty: {staged_path}")
+    staged_count = manifest.get("staged_rows")
+    if (
+        isinstance(staged_count, bool)
+        or not isinstance(staged_count, int)
+        or staged_count != len(staged_rows)
+    ):
+        raise ComparisonError(
+            f"{manifest_path}: staged_rows records {staged_count!r}; "
+            f"loaded {len(staged_rows)}"
+        )
     return manifest, staged_rows, claims, registry, artifacts
 
 
@@ -547,6 +661,10 @@ def validate_artifact_heads(
     """Validate every inventory head before any comparison output is rendered."""
 
     for reference, artifact in artifacts_by_reference.items():
+        if artifact.get("artifact") != reference:
+            raise ComparisonError(
+                f"{reference}: artifact self-reference differs from inventory"
+            )
         heads = artifact.get("heads")
         if not isinstance(heads, list) or not all(
             isinstance(head, dict) for head in heads
@@ -594,6 +712,54 @@ def validate_artifact_heads(
                     f"{reference}: {name}: stored pe_value {stored!r} differs "
                     f"from recomputed pe_value {recomputed!r}"
                 )
+
+
+def _staged_snapshot_identity(staged_row: Mapping[str, Any]) -> tuple[Any, ...] | None:
+    match = staged_row.get("external_claim_match")
+    if not isinstance(match, dict):
+        return None
+    return (
+        match.get("source"),
+        match.get("source_table"),
+        match.get("reform_hint"),
+        staged_row.get("source_model"),
+        match.get("metric"),
+        match.get("period"),
+        _canonical(match.get("conditions")),
+    )
+
+
+def validate_staged_artifact_completeness(
+    staged_rows: Iterable[dict[str, Any]],
+    artifacts_by_reference: Mapping[str, dict[str, Any]],
+) -> None:
+    """Require one staged row per source-backed non-diagnostic artifact head."""
+
+    expected: Counter[tuple[str, tuple[Any, ...]]] = Counter()
+    for reference, artifact in artifacts_by_reference.items():
+        if artifact.get("diagnostic_only") is True:
+            continue
+        for head in artifact["heads"]:
+            snapshot = head.get("external_claim")
+            if isinstance(snapshot, dict):
+                expected[(reference, _snapshot_identity(snapshot))] += 1
+
+    actual: Counter[tuple[str, tuple[Any, ...]]] = Counter()
+    for staged_row in staged_rows:
+        if staged_row.get("pe_value") is None:
+            continue
+        reference = staged_row.get("artifact")
+        identity = _staged_snapshot_identity(staged_row)
+        if isinstance(reference, str) and identity is not None:
+            actual[(reference, identity)] += 1
+
+    if actual != expected:
+        missing = sum((expected - actual).values())
+        extra = sum((actual - expected).values())
+        raise ComparisonError(
+            "staged/artifact head inventory differs: "
+            f"{missing} missing staged rows; {extra} extra staged rows"
+        )
 
 
 def _snapshot_identity(snapshot: dict[str, Any]) -> tuple[Any, ...]:
@@ -963,6 +1129,7 @@ def build_comparison_rows(
             raise ComparisonError(f"duplicate staged comparison identity: {identity}")
         seen.add(identity)
         rows.append(build_head_row(staged_row, claim, measure, artifact_head))
+    validate_staged_artifact_completeness(staged_rows, artifacts_by_reference)
     rows.extend(derive_mapped_head_totals(rows, registry))
     row_kind_order = {"head": 0, "total": 0, "mapped_head_total": 1}
     return sorted(
@@ -1119,16 +1286,25 @@ def write_comparison_outputs(
 ) -> list[dict[str, Any]]:
     """Load one manifest-bound run and write deterministic comparison outputs."""
 
-    _, staged_rows, claims, registry, artifacts = load_verified_comparison_inputs(
+    manifest, staged_rows, claims, registry, artifacts = (
+        load_verified_comparison_inputs(
+            manifest_path=manifest_path,
+            artifact_root=artifact_root,
+        )
+    )
+    resolved_output_dir = output_dir or manifest_path.resolve().parent
+    validate_comparison_path_plan(
+        manifest=manifest,
         manifest_path=manifest_path,
         artifact_root=artifact_root,
+        output_dir=resolved_output_dir,
     )
     return write_comparison_outputs_from_rows(
         staged_rows=staged_rows,
         claims=claims,
         registry=registry,
         artifacts_by_reference=artifacts,
-        output_dir=output_dir or manifest_path.resolve().parent,
+        output_dir=resolved_output_dir,
     )
 
 

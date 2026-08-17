@@ -21,6 +21,10 @@ remain bound until the manifest is written last.
 - Both modes now derive staged rows and render comparison outputs from an exact
   reference-to-object map containing those retained artifacts. The comparison
   core has no artifact path or disk fallback.
+- Restage reads each artifact exactly once for its initial SHA gate and parse;
+  it performs no prewrite reread. A later disk mutation is overwritten by the
+  retained verified object, and the only subsequent read is the required
+  complete verification of the newly written intended bytes.
 - Normal compute now renders comparison outputs before its complete manifest.
   Both modes remove the prior complete manifest immediately before output
   mutation and publish it only after artifacts, staging, and comparison finish;
@@ -31,12 +35,24 @@ remain bound until the manifest is written last.
 - Added renderer validation that recomputes every head from top-level raw
   baseline/reform aggregates, channel sign, and construction orientation, then
   requires both stored and staged PE values to equal that recomputed value.
+- Standalone rendering now also checks recorded staged-row count, artifact
+  self-references and run IDs, and an exact one-to-one inventory between all
+  source-backed non-diagnostic artifact heads and staged rows. Input/output
+  path aliases and artifacts outside the manifest directory are rejected.
 - Split compute CLI help into shared, normal-compute, and restage option groups.
   Explicit normal-only registry, claims, staged-output, and run-id options now
   fail in restage, while explicit manifest and artifact-root options fail in
   normal mode, including when the caller supplies the documented default.
 - A committed-fixture restage passes with all artifacts, staging, comparison,
   and the non-canonical historical manifest byte-identical.
+- Added discriminating production-path regressions for normal post-write
+  mutation with a stale manifest, normal and restage reopen guards, standalone
+  £99bn raw recomputation, registry/claims/artifact SHA-before-parse gates,
+  standalone success and staged completeness, restage post-write mutation
+  before staging/comparison, and all six ignored mode options plus CLI help.
+- Independent boundary, renderer, and test audits found and closed the last
+  two gaps: redundant restage artifact rereads and missing staged-head
+  completeness. The focused OBR suite now passes all 138 tests.
 - Mapped the round-6 windows end to end. Normal compute writes each artifact,
   stages its live object, discards it, and only later hashes a disk reread;
   restage verifies before parsing but rewrites without a post-write sweep; and
