@@ -14,6 +14,20 @@ remain bound until the manifest is written last.
 
 ## Done
 
+- Mapped the round-6 windows end to end. Normal compute writes each artifact,
+  stages its live object, discards it, and only later hashes a disk reread;
+  restage verifies before parsing but rewrites without a post-write sweep; and
+  comparison's nominally in-memory API reopens an artifact once per staged row.
+- Confirmed normal compute currently renders no comparison at all, so the new
+  boundary must add that production step before manifest publication.
+- Chose one retained artifact record per output: canonical UTF-8 bytes and the
+  digest are derived from the final in-memory object, all bytes are atomically
+  written, every path is checked in one complete sweep, and only then may
+  staging and comparison consume those same retained objects. The complete
+  manifest is invalidated before output mutation and written last.
+- Read the GitNexus debugging workflow. Its graph tools are not exposed in this
+  session, so the producer/consumer call chains were confirmed directly from
+  source and tests.
 - Started Follow-up 7 by reading the complete round-6 review before inspecting
   or changing implementation code.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -375,8 +389,6 @@ remain bound until the manifest is written last.
 
 ## Next
 
-- Map normal compute, restage, comparison rendering, CLI validation, and the
-  production-path test hooks.
 - Implement the shared in-memory integrity boundary and standalone renderer
   validation, then add every requested adversarial regression.
 - Run exact dry-run, no-simulation restage byte-identity, focused tests, and the
