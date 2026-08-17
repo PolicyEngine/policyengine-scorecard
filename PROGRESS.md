@@ -4,13 +4,13 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 7 is in progress on branch `obr-costings-mode2` from
-`37a4278e1e373a919d8be3634667cdb00962efcf`. Round 6 found that normal compute
-could hash different bytes from those it staged, standalone comparison skipped
-the manifest boundary, and restage reopened artifacts after verification. The
-implementation is being changed to one canonical in-memory artifact boundary
-whose intended bytes, digests, writes, verification, staging, and comparison
-remain bound until the manifest is written last.
+Follow-up 7 is complete on branch `obr-costings-mode2` from
+`37a4278e1e373a919d8be3634667cdb00962efcf`. Normal compute and restage now use
+one canonical in-memory artifact boundary: final objects are serialized and
+hashed, those exact bytes are atomically written and completely verified, and
+staging plus comparison consume the retained objects without reopening. The
+complete manifest is published last. Exact dry-run, byte-identical no-sim
+restage, focused, and full-suite verification all pass.
 
 ## Done
 
@@ -53,6 +53,19 @@ remain bound until the manifest is written last.
 - Independent boundary, renderer, and test audits found and closed the last
   two gaps: redundant restage artifact rereads and missing staged-head
   completeness. The focused OBR suite now passes all 138 tests.
+- Exact default `--dry-run` validates all 26 measures and 215 source head-years
+  across 2024–2030 and reports that no managed microsimulation was constructed.
+- Exact direct `--restage` replays 13 artifacts including one diagnostic, 20
+  staged rows, and 26 comparison rows with zero managed simulations. All 13
+  artifacts, staged JSONL, comparison CSV/Markdown, and the manifest are
+  byte-identical across the run; the 17-file inventory is unchanged.
+- Final manifest, staged, CSV, and Markdown SHA-256 values remain `0bec6cd3`,
+  `45faa64a`, `3f8fe4c1`, and `8c291b6b`, respectively. The manifest changed in
+  no field, and every recorded intended artifact digest matches its bytes.
+- Final verification passes all 138 focused OBR tests and all 305 repository
+  tests. The sole warning is the upstream PolicyEngine-UK Pydantic deprecation.
+  Python compilation, hand-format line checks for changed Python files, and
+  `git diff --check` pass; Ruff was not run as instructed.
 - Mapped the round-6 windows end to end. Normal compute writes each artifact,
   stages its live object, discards it, and only later hashes a disk reread;
   restage verifies before parsing but rewrites without a post-write sweep; and
@@ -428,10 +441,8 @@ remain bound until the manifest is written last.
 
 ## Next
 
-- Implement the shared in-memory integrity boundary and standalone renderer
-  validation, then add every requested adversarial regression.
-- Run exact dry-run, no-simulation restage byte-identity, focused tests, and the
-  full suite; record counts and final hashes here.
+- No in-scope implementation or verification remains. Hand off the committed
+  branch and external Follow-up 7 report for review; do not push from this lane.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
