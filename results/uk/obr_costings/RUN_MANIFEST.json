@@ -103,6 +103,7 @@
   "claims": "sources/harvest-20260802/uk_obr/obr_costings_claims.jsonl",
   "claims_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
   "completed_at": "2026-08-17T03:40:32.997396+00:00",
+  "engine_version": "2.89.2",
   "pa_smoke_probe": true,
   "registry": "data/uk/obr_measure_reforms.yaml",
   "run_id": "campaign-20260816-obr-costings",

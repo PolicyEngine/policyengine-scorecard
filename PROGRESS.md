@@ -55,6 +55,12 @@ be constructed during this follow-up.
   slice, and 11 incorrect entries are corrected
   (`data/uk/obr_measure_reforms.yaml:4`,
   `pipeline/compute_uk_obr_costings.py:372`).
+- Fixed round-2 finding 4: restage reconstructs selected null-reform rows from
+  persisted run facts, permits empty artifact inventories, and validates exact
+  source-backed `(measure, year)` coverage; the all-26 round-trip proves 21
+  artifact-backed and 5 reconstructed measure keys twice byte-identically
+  (`pipeline/compute_uk_obr_costings.py:1695`,
+  `tests/test_obr_costings_registry.py:1435`).
 - Read this progress record and the clean-context review before inspecting or
   changing the implementation.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at

@@ -152,6 +152,23 @@ def synthetic_run(bundle: dict[str, object], income_tax: float) -> dict[str, obj
     }
 
 
+def synthetic_run_for_variables(
+    bundle: dict[str, object], variables: list[str], value: float
+) -> dict[str, object]:
+    run = synthetic_run(bundle, value)
+    run["aggregates_gbp"] = {name: value for name in variables}
+    run["variable_metadata"] = {
+        name: {
+            "label": name,
+            "entity": "synthetic",
+            "definition_period": "year",
+            "unit": "currency-GBP",
+        }
+        for name in variables
+    }
+    return run
+
+
 def test_committed_registry_schema_and_counts():
     spec = compute.load_registry(REGISTRY)
     summary = compute.validate_registry(spec)
@@ -1010,6 +1027,7 @@ def test_pre_effective_source_rows_are_not_suppressed(
         run_id="campaign-20260816-obr-costings",
         computed_at="2026-08-16T12:00:00+00:00",
         release_bundle={"certified_data_build_id": "synthetic-certified-build"},
+        engine_version="2.89.2-test",
     )
 
     assert len(rows) == 1
@@ -1210,12 +1228,19 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     manifest = {
         "schema_version": 1,
         "run_id": artifact["run_id"],
+        "started_at": "2026-08-16T12:00:00+00:00",
+        "engine_version": artifact["engine_version"],
         "registry": str(registry_path),
         "claims": "claims.jsonl",
         "claims_sha256": claims_sha256,
         "artifacts": [str(artifact_path)],
         "legacy_artifacts_without_dataset_hashes": [str(artifact_path)],
         "selected_measures": [synthetic_measure["measure_key"]],
+        "years": [2026],
+        "pa_smoke_probe": False,
+        "certified_cache_preflight": {
+            "release_bundle": artifact["policyengine_bundles"]["baseline"]
+        },
         "staged_output": str(staged_path),
         "staged_rows": 1,
     }
@@ -1350,12 +1375,19 @@ def test_restage_rejects_vendored_source_model_drift_without_writes(
     manifest = {
         "schema_version": 1,
         "run_id": artifact["run_id"],
+        "started_at": artifact["computed_at"],
+        "engine_version": artifact["engine_version"],
         "registry": str(REGISTRY),
         "claims": "claims.jsonl",
         "claims_sha256": compute.sha256_file(VENDORED_CLAIMS),
         "artifacts": ["artifact.json"],
         "legacy_artifacts_without_dataset_hashes": ["artifact.json"],
         "selected_measures": [measure_key],
+        "years": [2026],
+        "pa_smoke_probe": False,
+        "certified_cache_preflight": {
+            "release_bundle": artifact["policyengine_bundles"]["baseline"]
+        },
         "staged_output": "staged.jsonl",
         "staged_rows": 1,
     }
@@ -1399,6 +1431,150 @@ def test_restage_rejects_vendored_source_model_drift_without_writes(
     assert "2026 Income tax source_model" in captured.err
     assert {path: path.read_bytes() for path in original_outputs} == original_outputs
 
+
+def test_full_selection_restage_reconstructs_five_null_reforms(
+    tmp_path, monkeypatch
+):
+    spec = compute.load_registry(REGISTRY)
+    measures = spec["measures"]
+    claims_path = tmp_path / "claims.jsonl"
+    claims_path.write_bytes(VENDORED_CLAIMS.read_bytes())
+    claims, claims_sha256 = compute.load_claims_with_sha256(claims_path)
+    artifacts_dir = tmp_path / "artifacts"
+    staged_path = tmp_path / "staged.jsonl"
+    output_dir = tmp_path / "comparison"
+    manifest_path = tmp_path / "RUN_MANIFEST.json"
+    started_at = "2026-08-17T12:00:00+00:00"
+    engine_version = compute.package_version("policyengine-uk")
+    bundle = {
+        "certified_data_build_id": "synthetic-certified-build",
+        "certified_data_artifact_sha256": SYNTHETIC_DATASET_SHA256,
+    }
+
+    expected_rows = []
+    for measure in measures:
+        if measure["pe_reform"] is None:
+            expected_rows.extend(
+                compute.stage_not_computed_rows(
+                    measure=measure,
+                    years=[2026],
+                    claims=claims,
+                    run_id="campaign-20260817-obr-costings",
+                    computed_at=started_at,
+                    release_bundle=bundle,
+                    engine_version=engine_version,
+                )
+            )
+
+    artifact_references = []
+    for measure in measures:
+        if measure["pe_reform"] is None:
+            continue
+        mapped_claims = [
+            compute.resolve_claim(claims, measure, head, 2026)
+            for head in measure["heads"]
+        ]
+        assert any(claim is not None for claim in mapped_claims)
+        variables = sorted(
+            {
+                variable
+                for head in measure["heads"]
+                for variable in head["pe_variables"]
+            }
+        )
+        output_path = artifacts_dir / f"{measure['measure_key']}_2026.json"
+        artifact = compute.build_artifact(
+            measure=measure,
+            year=2026,
+            baseline=synthetic_run_for_variables(bundle, variables, 100.0),
+            reform=synthetic_run_for_variables(bundle, variables, 125.0),
+            output_path=output_path,
+            computed_at=started_at,
+            run_id="campaign-20260817-obr-costings",
+            claims=claims,
+            claims_sha256=claims_sha256,
+        )
+        artifact["diagnostic_only"] = False
+        compute.write_json(output_path, artifact)
+        artifact_references.append(str(output_path))
+        expected_rows.extend(compute.stage_artifact_rows(artifact, measure))
+
+    assert len(artifact_references) == 21
+    compute.write_jsonl(staged_path, expected_rows)
+    compare.write_comparison_outputs(
+        registry_path=REGISTRY,
+        claims_path=claims_path,
+        staged_path=staged_path,
+        output_dir=output_dir,
+        artifact_root=tmp_path,
+    )
+    manifest = {
+        "schema_version": 1,
+        "run_id": "campaign-20260817-obr-costings",
+        "started_at": started_at,
+        "engine_version": engine_version,
+        "registry": str(REGISTRY),
+        "claims": "claims.jsonl",
+        "claims_sha256": claims_sha256,
+        "years": [2026],
+        "selected_measures": [measure["measure_key"] for measure in measures],
+        "pa_smoke_probe": False,
+        "certified_cache_preflight": {"release_bundle": bundle},
+        "artifacts": artifact_references,
+        "legacy_artifacts_without_dataset_hashes": [],
+        "staged_output": str(staged_path),
+        "staged_rows": len(expected_rows),
+    }
+    compute.write_json(manifest_path, manifest)
+    output_paths = [
+        *(Path(reference) for reference in artifact_references),
+        staged_path,
+        output_dir / "COMPARISON.csv",
+        output_dir / "COMPARISON.md",
+        manifest_path,
+    ]
+    first_outputs = {path: path.read_bytes() for path in output_paths}
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("restage reached simulation or certified-cache setup")
+
+    monkeypatch.setattr(compute, "configure_offline", forbidden)
+    monkeypatch.setattr(compute, "preflight_certified_dataset", forbidden)
+    monkeypatch.setattr(compute, "run_managed_simulation", forbidden)
+
+    summary = compute.restage_existing_run(
+        manifest_path=manifest_path,
+        output_dir=output_dir,
+        artifact_root=tmp_path,
+    )
+    assert summary["artifacts"] == 21
+    assert summary["diagnostic_artifacts"] == 0
+    assert summary["staged_rows"] == len(expected_rows)
+    replayed_rows = compute.load_claims(staged_path)
+    constructed_keys = {
+        row["measure_key"]
+        for row in replayed_rows
+        if row["status"] == "constructed"
+    }
+    not_computed_keys = {
+        row["measure_key"]
+        for row in replayed_rows
+        if row["status"] == "not_computed"
+    }
+    assert len(constructed_keys) == 21
+    assert len(not_computed_keys) == 5
+    assert constructed_keys | not_computed_keys == {
+        measure["measure_key"] for measure in measures
+    }
+    assert {path: path.read_bytes() for path in output_paths} == first_outputs
+
+    second_summary = compute.restage_existing_run(
+        manifest_path=manifest_path,
+        output_dir=output_dir,
+        artifact_root=tmp_path,
+    )
+    assert second_summary == summary
+    assert {path: path.read_bytes() for path in output_paths} == first_outputs
 
 @pytest.mark.parametrize(
     ("obr_value", "pe_value", "ratio", "ratio_bin"),

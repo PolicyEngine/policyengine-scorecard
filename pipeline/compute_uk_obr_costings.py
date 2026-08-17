@@ -1462,6 +1462,7 @@ def stage_not_computed_rows(
     run_id: str,
     computed_at: str,
     release_bundle: dict[str, Any],
+    engine_version: str,
 ) -> list[dict[str, Any]]:
     """Keep explicitly selected null-reform measures visible."""
 
@@ -1482,7 +1483,7 @@ def stage_not_computed_rows(
                     "source_table": claim["source_table"],
                     "benchmark_class": "different_model",
                     "row_kind": "total" if head == "Total" else "head",
-                    "engine_version": package_version("policyengine-uk"),
+                    "engine_version": engine_version,
                     "data_bundle": data_bundle_id(release_bundle),
                     "pe_value": None,
                     "status": "not_computed",
@@ -1558,11 +1559,10 @@ def restage_existing_run(
     references = manifest.get("artifacts")
     if (
         not isinstance(references, list)
-        or not references
         or not all(isinstance(reference, str) and reference for reference in references)
     ):
         raise ArtifactRestageError(
-            f"{manifest_path}: artifacts must be a non-empty list of paths"
+            f"{manifest_path}: artifacts must be a list of paths"
         )
     if len(set(references)) != len(references):
         raise ArtifactRestageError(f"{manifest_path}: duplicate artifact paths")
@@ -1633,9 +1633,92 @@ def restage_existing_run(
     validate_registry(spec, claims=claims)
     registry = {measure["measure_key"]: measure for measure in spec["measures"]}
 
-    replacements: list[tuple[Path, dict[str, Any]]] = []
+    selected = manifest.get("selected_measures")
+    if (
+        not isinstance(selected, list)
+        or not selected
+        or not all(isinstance(key, str) for key in selected)
+        or len(set(selected)) != len(selected)
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: selected_measures must be unique measure keys"
+        )
+    unknown_selected = set(selected) - set(registry)
+    if unknown_selected:
+        raise ArtifactRestageError(
+            f"{manifest_path}: selected measures are absent from registry: "
+            f"{sorted(unknown_selected)}"
+        )
+    selected_measures = [registry[key] for key in selected]
+    years = manifest.get("years")
+    if (
+        not isinstance(years, list)
+        or not years
+        or any(
+            isinstance(year, bool)
+            or not isinstance(year, int)
+            or not YEAR_MIN <= year <= YEAR_MAX
+            for year in years
+        )
+        or years != sorted(set(years))
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: years must be unique sorted proxy years"
+        )
+    run_started_at = manifest.get("started_at")
+    if not isinstance(run_started_at, str) or not run_started_at:
+        raise ArtifactRestageError(
+            f"{manifest_path}: started_at must be non-empty text"
+        )
+    engine_version = manifest.get("engine_version")
+    if not isinstance(engine_version, str) or not engine_version:
+        raise ArtifactRestageError(
+            f"{manifest_path}: engine_version must be non-empty text"
+        )
+    cache_preflight = manifest.get("certified_cache_preflight")
+    release_bundle = (
+        cache_preflight.get("release_bundle")
+        if isinstance(cache_preflight, dict)
+        else None
+    )
+    if not isinstance(release_bundle, dict):
+        raise ArtifactRestageError(
+            f"{manifest_path}: certified release bundle is missing"
+        )
+    try:
+        data_bundle_id(release_bundle)
+    except RuntimeError as exc:
+        raise ArtifactRestageError(
+            f"{manifest_path}: invalid certified release bundle: {exc}"
+        ) from exc
+
+    expected_regular_pairs: set[tuple[str, int]] = set()
     staged_rows: list[dict[str, Any]] = []
-    regular_measure_keys: set[str] = set()
+    for measure in selected_measures:
+        if measure["pe_reform"] is None:
+            staged_rows.extend(
+                stage_not_computed_rows(
+                    measure=measure,
+                    years=years,
+                    claims=claims,
+                    run_id=run_id,
+                    computed_at=run_started_at,
+                    release_bundle=release_bundle,
+                    engine_version=engine_version,
+                )
+            )
+            continue
+        for year in years:
+            mapped_claims = [
+                resolve_claim(claims, measure, head, year)
+                for head in measure["heads"]
+            ]
+            if any(claim is not None for claim in mapped_claims):
+                expected_regular_pairs.add((measure["measure_key"], year))
+
+    replacements: list[tuple[Path, dict[str, Any]]] = []
+    regular_artifact_pairs: set[tuple[str, int]] = set()
+    diagnostic_artifact_pairs: set[tuple[str, int]] = set()
     diagnostic_artifacts = 0
     claim_differences: list[dict[str, Any]] = []
     for reference in references:
@@ -1658,13 +1741,24 @@ def restage_existing_run(
                 )
             measure = PA_SMOKE_MEASURE
             diagnostic_artifacts += 1
+            diagnostic_pair = (key, artifact.get("year"))
+            if diagnostic_pair in diagnostic_artifact_pairs:
+                raise ArtifactRestageError(
+                    f"{path}: duplicate diagnostic artifact {diagnostic_pair}"
+                )
+            diagnostic_artifact_pairs.add(diagnostic_pair)
         elif diagnostic_only is False:
             if key not in registry:
                 raise ArtifactRestageError(
                     f"{path}: measure_key {key!r} is absent from registry"
                 )
             measure = registry[key]
-            regular_measure_keys.add(key)
+            regular_pair = (key, artifact.get("year"))
+            if regular_pair in regular_artifact_pairs:
+                raise ArtifactRestageError(
+                    f"{path}: duplicate regular artifact {regular_pair}"
+                )
+            regular_artifact_pairs.add(regular_pair)
         else:
             raise ArtifactRestageError(
                 f"{path}: diagnostic_only must be an explicit boolean"
@@ -1705,16 +1799,23 @@ def restage_existing_run(
             f"recorded {recorded_claims_sha256}; "
             f"current {current_claims_sha256}"
         )
-
-    selected = manifest.get("selected_measures")
-    if (
-        not isinstance(selected, list)
-        or not all(isinstance(key, str) for key in selected)
-        or len(set(selected)) != len(selected)
-        or set(selected) != regular_measure_keys
-    ):
+    if regular_artifact_pairs != expected_regular_pairs:
         raise ArtifactRestageError(
-            f"{manifest_path}: selected measures differ from artifact inventory"
+            f"{manifest_path}: regular artifact inventory differs from selected "
+            f"source-backed measure-years: actual "
+            f"{sorted(regular_artifact_pairs)}, expected "
+            f"{sorted(expected_regular_pairs)}"
+        )
+    expected_diagnostic_pairs = (
+        {(PA_SMOKE_MEASURE["measure_key"], 2026)}
+        if manifest.get("pa_smoke_probe") is True and 2026 in years
+        else set()
+    )
+    if diagnostic_artifact_pairs != expected_diagnostic_pairs:
+        raise ArtifactRestageError(
+            f"{manifest_path}: diagnostic artifact inventory differs: actual "
+            f"{sorted(diagnostic_artifact_pairs)}, expected "
+            f"{sorted(expected_diagnostic_pairs)}"
         )
     expected_staged_rows = manifest.get("staged_rows")
     if expected_staged_rows != len(staged_rows):
@@ -1885,10 +1986,13 @@ def main(argv: list[str] | None = None) -> int:
         flush=True,
     )
     staged_rows: list[dict[str, Any]] = []
+    started_at = utc_now()
+    engine_version = package_version("policyengine-uk")
     manifest: dict[str, Any] = {
         "schema_version": 1,
         "run_id": args.run_id,
-        "started_at": utc_now(),
+        "started_at": started_at,
+        "engine_version": engine_version,
         "registry": relative_to_root(args.registry),
         "claims": claims_reference,
         "claims_sha256": claims_sha256,
@@ -1910,8 +2014,9 @@ def main(argv: list[str] | None = None) -> int:
                     years=years,
                     claims=claims,
                     run_id=args.run_id,
-                    computed_at=utc_now(),
+                    computed_at=started_at,
                     release_bundle=release_bundle,
+                    engine_version=engine_version,
                 )
             )
 
