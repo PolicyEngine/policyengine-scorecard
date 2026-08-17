@@ -4,14 +4,21 @@ Updated: 2026-08-16
 
 ## State
 
-Complete locally for the requested bounded lane build and smoke run. The
-26-measure registry, offline compute/staging pipeline, descriptive comparison
-renderer, committed certified run artifacts, and tests are in place. The smoke
-sample ran six measures for two years plus the requested PA diagnostic. The
-full 26-measure population was intentionally not run.
+Follow-up 1 is in progress locally at the staging layer. The existing 13
+certified run artifacts will be restaged without constructing a simulation so
+that reversal constructions retain their literal reversal delta for traceability
+but expose a measure-oriented `pe_value`. The full 26-measure population remains
+intentionally unrun.
 
 ## Done
 
+- Started Follow-up 1 from clean branch `obr-costings-mode2` at `b6442fe` and
+  read this progress record plus both compute/comparison modules end to end.
+- Confirmed the orientation defect is confined to artifact/staging derivation:
+  raw aggregates are intact, but the exchequer-gain reversal delta is currently
+  stored and compared as `pe_value` without the measure-facing sign flip.
+- Confirmed GitNexus graph tools remain unavailable in this checkout and traced
+  the staging-to-artifact comparison invariant directly in source.
 - Confirmed the worktree was clean and based on `fd817b9`.
 - Read the local lane brief and recorded its descriptive-comparison doctrine,
   certified-artifact traceability requirement, and offline-only constraint.
@@ -98,12 +105,12 @@ full 26-measure population was intentionally not run.
 
 ## Next
 
-- Fable can review the registry constructions and run the full selected
-  population after the review gate.
-- A separately owned UK ingestor still needs an OBR-aware claim attachment
-  seam before these staged rows can enter the campaign database.
-- If private issue/PR text becomes available, reconcile #54, #55, and #48
-  against the brief used here before merge.
+- Add one construction/channel orientation function and tests, retaining the
+  raw aggregates and literal exchequer-gain reversal delta in every artifact.
+- Add an artifact-only `--restage` path, restage the existing 13 artifacts, and
+  re-render the comparison without constructing any simulation.
+- Run focused and full tests, replace the smoke table with measure-oriented
+  results, and commit each coherent checkpoint locally without pushing.
 
 ## Registry counts
 
