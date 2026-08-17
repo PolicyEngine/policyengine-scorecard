@@ -4,11 +4,11 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 5 implementation is complete on branch `obr-costings-mode2` from
-`22718bfb1e257b51f294eec1d33a6ac83f2049e3`. Restage is now bound to the
-recorded registry and claims bytes and reconstructs output from frozen inputs.
-Exact dry-run, restage byte-identity, and full-suite verification remain; no
-managed simulation will be constructed.
+Follow-up 5 is complete on branch `obr-costings-mode2` from
+`22718bfb1e257b51f294eec1d33a6ac83f2049e3`. Restage is bound to the recorded
+registry and claims bytes and reconstructs output from frozen inputs. Exact
+dry-run, restage byte-identity, focused, and full-suite verification all pass;
+no managed simulation was constructed.
 
 ## Done
 
@@ -50,6 +50,17 @@ managed simulation will be constructed.
   output permissions.
 - All 115 focused OBR tests pass after implementation. The sole warning is the
   upstream PolicyEngine-UK Pydantic deprecation.
+- Exact default `--dry-run` validates 26 measures and 215 source head-years
+  across 2024–2030 and reports no managed microsimulation constructed.
+- Exact `--restage` replays 13 allowlisted artifacts including one diagnostic,
+  20 staged rows, and 26 comparison rows with zero managed simulations. All 13
+  artifact files, the manifest, staged JSONL, comparison CSV, and comparison
+  Markdown retain byte-identical content and unchanged file modes.
+- Final staged/CSV/Markdown SHA-256 values remain `45faa64a`, `3f8fe4c1`, and
+  `8c291b6b`; the migrated manifest SHA-256 is `37c8145b`.
+- Final verification passes all 115 focused OBR tests and all 282 repository
+  tests. The sole warning is the upstream PolicyEngine-UK Pydantic deprecation.
+- Two independent read-only audits found no remaining fail-open replay bypass.
 - Started Follow-up 4 by reading the complete round-3 review before inspecting
   or changing implementation code.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -316,10 +327,8 @@ managed simulation will be constructed.
 
 ## Next
 
-- Run the exact 26-measure dry-run and 13-artifact restage with byte-identity
-  and zero-simulation checks.
-- Run the full suite, record final counts and hashes here, and write the
-  Follow-up 5 report outside the repository.
+- No in-scope implementation or verification remains. Hand off the committed
+  branch and the Follow-up 5 report for review; do not push from this lane.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
