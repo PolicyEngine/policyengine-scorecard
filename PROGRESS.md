@@ -4,16 +4,21 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 7 is complete on branch `obr-costings-mode2` from
-`37a4278e1e373a919d8be3634667cdb00962efcf`. Normal compute and restage now use
-one canonical in-memory artifact boundary: final objects are serialized and
-hashed, those exact bytes are atomically written and completely verified, and
-staging plus comparison consume the retained objects without reopening. The
-complete manifest is published last. Exact dry-run, byte-identical no-sim
-restage, focused, and full-suite verification all pass.
+Follow-up 8 is in progress on branch `obr-costings-mode2` from
+`8a5d4d0ce84fc49f0404042da3bee2a135afd046`. Round 7 found that the staged
+JSONL remains the final unsigned replay input, restage has a narrow
+post-verification window before manifest restoration, and two compute-side
+helpers plus generic writer parameterization are dead. The staged payload will
+join the canonical in-memory publication boundary, and standalone rendering
+will both SHA-gate it and rederive its descriptive fields from verified
+artifacts and claims.
 
 ## Done
 
+- Started Follow-up 8 by reading the complete round-7 review before inspecting
+  or changing implementation code.
+- Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
+  `8a5d4d0ce84fc49f0404042da3bee2a135afd046`.
 - Implemented the shared run boundary. Normal compute and restage retain every
   final artifact object, serialize it once to canonical UTF-8 JSON bytes, hash
   those bytes in memory, atomically write the same payloads, and verify the
@@ -441,8 +446,13 @@ restage, focused, and full-suite verification all pass.
 
 ## Next
 
-- No in-scope implementation or verification remains. Hand off the committed
-  branch and external Follow-up 7 report for review; do not push from this lane.
+- Bind canonical staged bytes and their SHA-256 into normal/restage publication
+  and standalone loading, then rederive every output-driving staged descriptor
+  field from verified artifacts and claims.
+- Repeat the complete artifact-digest sweep at the final restage publication
+  boundary and remove the dead compute helpers/generic writer parameter.
+- Run the exact 26-measure dry-run, byte-identical no-simulation restage,
+  focused tests, and full suite; record counts and final hashes here.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
