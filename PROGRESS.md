@@ -37,6 +37,30 @@ publication/restoration.
   change; the sole warning is the known upstream PolicyEngine-UK Pydantic
   deprecation. Python compilation, the hand-enforced 88-column check, and
   `git diff --check` pass.
+- Comparison CSV and Markdown are now rendered once to canonical UTF-8 bytes,
+  hashed in memory, atomically published as those exact bytes, and read-back
+  verified individually and as a complete pair. Normal compute records both
+  hashes and repeats the pair verification immediately before manifest
+  publication; restage does the same immediately before restoration.
+- Standalone rendering treats `RUN_MANIFEST.json` as read-only: it requires
+  both comparison digests, rejects fresh-render drift, refuses to overwrite an
+  existing mismatched output, and verifies fresh writes. Production regressions
+  cover fabricated CSV status text from a mutating writer in standalone and
+  normal paths plus a post-publication restage mutation before restoration.
+- Restage accepts only an all-or-none legacy comparison-digest pair. Its first
+  replay adds the two absent digests while preserving parsed manifest key order;
+  later replays require both intended bytes to match the recorded commitment.
+  Targeted normal, restage, full-selection, mutation, and mode-preservation
+  cases pass; the committed fixture still awaits the requested real restage
+  migration.
+
+### Superseded checkpoint history
+
+The bullets below record earlier follow-up checkpoints. Their acceptance
+claims, counts, hashes, and manifest-change descriptions are historical, not
+current; the Follow-up 9 State and Done entries above supersede their former
+boundary claims.
+
 - Final acceptance passed offline with the specified interpreter. The exact
   default dry run validated 26 measures and 215 source head-years across
   2024–2030 and reported zero managed simulations.
@@ -515,12 +539,11 @@ publication/restoration.
 
 ## Next
 
-- Render canonical comparison bytes in memory, manifest-bind both digests, and
-  verify their on-disk bytes before normal publication, restage restoration,
-  or standalone success.
-- Add the four requested production-path adversarial probes, migrate the
-  committed manifest, and run dry-run, no-simulation restage, focused tests,
-  full tests, and final hygiene checks without Ruff.
+- Run the exact dry-run and no-simulation restage, confirm that only the two
+  comparison digest fields enter the committed manifest and all artifacts,
+  staged rows, CSV, and Markdown retain identical bytes, then commit migration.
+- Run the focused and full suites plus final hygiene checks without Ruff, then
+  complete the progress record and external report.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys

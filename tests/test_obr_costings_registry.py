@@ -903,6 +903,12 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
         == compute.sha256_file(SMOKE_STAGED)
         == "45faa64afbfba976083d528a081646200e40c6932f19d07602fcb38cb741b6af"
     )
+    assert manifest["comparison_csv_sha256"] == compute.sha256_file(
+        SMOKE_COMPARISON
+    )
+    assert manifest["comparison_md_sha256"] == compute.sha256_file(
+        SMOKE_COMPARISON.with_suffix(".md")
+    )
     assert len(manifest["artifacts"]) == 13
     assert manifest["legacy_artifacts_without_dataset_hashes"] == manifest["artifacts"]
     assert all(row["status"] == "constructed" for row in rows)
@@ -1046,6 +1052,36 @@ def _copy_committed_replay_fixture(tmp_path):
     }
 
 
+def _resign_staged_and_comparison_attack(replay, manifest, staged_rows):
+    """Sign the exact malicious render so only the selection gate can stop it."""
+
+    staged_path = replay["copied_paths"][manifest["staged_output"]]
+    compute.write_jsonl(staged_path, staged_rows)
+    manifest["staged_rows"] = len(staged_rows)
+    manifest["staged_sha256"] = compute.sha256_file(staged_path)
+    claims = compute.load_claims(replay["copied_paths"][manifest["claims"]])
+    measures = compute.load_registry(
+        replay["copied_paths"][manifest["registry"]]
+    )["measures"]
+    registry = {measure["measure_key"]: measure for measure in measures}
+    artifacts = {
+        reference: json.loads(replay["copied_paths"][reference].read_text())
+        for reference in manifest["artifacts"]
+    }
+    attack_rows = compare.build_comparison_rows(
+        staged_rows,
+        claims,
+        registry,
+        artifacts_by_reference=artifacts,
+    )
+    csv_payload = compare.render_csv(attack_rows).encode("utf-8")
+    markdown_payload = compare.render_markdown(attack_rows).encode("utf-8")
+    manifest["comparison_csv_sha256"] = hashlib.sha256(csv_payload).hexdigest()
+    manifest["comparison_md_sha256"] = hashlib.sha256(markdown_payload).hexdigest()
+    compute.write_json(replay["manifest_path"], manifest)
+    return attack_rows
+
+
 def test_standalone_renderer_recomputes_coordinated_staged_and_head_mutation(
     tmp_path,
 ):
@@ -1133,7 +1169,7 @@ def test_standalone_renderer_rejects_unsigned_employer_nic_source_table_flip(
     monkeypatch.setattr(compare, "_parse_registry", forbid_verified_input_parse)
     monkeypatch.setattr(compare, "_parse_jsonl", forbid_verified_input_parse)
     monkeypatch.setattr(compare, "_parse_json_object", allow_manifest_parse)
-    monkeypatch.setattr(compare, "atomic_write_text", forbid_verified_input_parse)
+    monkeypatch.setattr(compare, "atomic_write_bytes", forbid_verified_input_parse)
     output_dir = tmp_path / "unsigned-staged-render"
 
     with pytest.raises(
@@ -1265,7 +1301,7 @@ def test_standalone_renderer_rejects_fabricated_variable_at_sha_gate(
     monkeypatch.setattr(compare, "_parse_registry", forbid_verified_input_parse)
     monkeypatch.setattr(compare, "_parse_jsonl", forbid_verified_input_parse)
     monkeypatch.setattr(compare, "_parse_json_object", allow_manifest_parse)
-    monkeypatch.setattr(compare, "atomic_write_text", forbid_verified_input_parse)
+    monkeypatch.setattr(compare, "atomic_write_bytes", forbid_verified_input_parse)
     output_dir = tmp_path / "fabricated-render"
 
     with pytest.raises(compare.ComparisonError, match="artifact SHA-256") as exc_info:
@@ -1315,7 +1351,7 @@ def test_standalone_renderer_sha_gates_source_inputs_before_parse(
     monkeypatch.setattr(compare, "_parse_registry", forbid_verified_input_parse)
     monkeypatch.setattr(compare, "_parse_jsonl", forbid_verified_input_parse)
     monkeypatch.setattr(compare, "_parse_json_object", allow_manifest_parse)
-    monkeypatch.setattr(compare, "atomic_write_text", forbid_verified_input_parse)
+    monkeypatch.setattr(compare, "atomic_write_bytes", forbid_verified_input_parse)
 
     with pytest.raises(compare.ComparisonError, match="SHA-256") as exc_info:
         compare.main(
@@ -1344,6 +1380,7 @@ def test_standalone_renderer_cli_requires_run_manifest(capsys):
 def test_standalone_renderer_replays_verified_manifest_byte_exactly(tmp_path):
     replay = _copy_committed_replay_fixture(tmp_path)
     output_dir = tmp_path / "standalone-render"
+    original_manifest = replay["manifest_path"].read_bytes()
 
     assert (
         compare.main(
@@ -1368,6 +1405,88 @@ def test_standalone_renderer_replays_verified_manifest_byte_exactly(tmp_path):
     assert (output_dir / "COMPARISON.md").read_bytes() == replay["tracked_bytes"][
         markdown_reference
     ]
+    assert replay["manifest_path"].read_bytes() == original_manifest
+
+
+@pytest.mark.parametrize("drift_kind", ["rendered", "existing"])
+def test_standalone_renderer_refuses_comparison_digest_drift(
+    tmp_path,
+    drift_kind,
+):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    output_dir = tmp_path / f"{drift_kind}-comparison-drift"
+    csv_path = output_dir / "COMPARISON.csv"
+    if drift_kind == "rendered":
+        manifest["comparison_csv_sha256"] = "0" * 64
+        compute.write_json(replay["manifest_path"], manifest)
+        match = "freshly rendered COMPARISON.csv SHA-256 differs"
+    else:
+        output_dir.mkdir()
+        csv_path.write_bytes(b"FABRICATED EXISTING CSV\n")
+        match = "existing comparison output SHA-256 differs"
+    manifest_before = replay["manifest_path"].read_bytes()
+
+    with pytest.raises(compare.ComparisonError, match=match):
+        compare.main(
+            [
+                "--manifest",
+                str(replay["manifest_path"]),
+                "--artifact-root",
+                str(replay["artifact_root"]),
+                "--output-dir",
+                str(output_dir),
+            ]
+        )
+    assert replay["manifest_path"].read_bytes() == manifest_before
+    if drift_kind == "existing":
+        assert csv_path.read_bytes() == b"FABRICATED EXISTING CSV\n"
+    else:
+        assert not csv_path.exists()
+    assert not (output_dir / "COMPARISON.md").exists()
+
+
+def test_standalone_renderer_verifies_mutating_fake_writer(tmp_path, monkeypatch):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    manifest_before = replay["manifest_path"].read_bytes()
+    output_dir = tmp_path / "mutating-writer-render"
+    csv_path = output_dir / "COMPARISON.csv"
+    original_writer = compare.atomic_write_bytes
+    mutated = False
+
+    def mutate_csv_status(path, payload):
+        nonlocal mutated
+        original_writer(path, payload)
+        if path.name == "COMPARISON.csv":
+            written = path.read_bytes()
+            assert b",constructed," in written
+            path.write_bytes(
+                written.replace(b",constructed,", b",FABRICATED WIN,", 1)
+            )
+            mutated = True
+
+    monkeypatch.setattr(compare, "atomic_write_bytes", mutate_csv_status)
+    with pytest.raises(compare.ComparisonError) as exc_info:
+        compare.main(
+            [
+                "--manifest",
+                str(replay["manifest_path"]),
+                "--artifact-root",
+                str(replay["artifact_root"]),
+                "--output-dir",
+                str(output_dir),
+            ]
+        )
+    actual_sha256 = compute.sha256_file(csv_path)
+    message = str(exc_info.value)
+    assert mutated
+    assert str(csv_path) in message
+    assert manifest["comparison_csv_sha256"] in message
+    assert actual_sha256 in message
+    assert "FABRICATED WIN" in csv_path.read_text()
+    assert not (output_dir / "COMPARISON.md").exists()
+    assert replay["manifest_path"].read_bytes() == manifest_before
 
 
 def test_standalone_renderer_requires_every_artifact_head_to_be_staged(tmp_path):
@@ -1421,10 +1540,12 @@ def test_standalone_renderer_binds_missing_pa_row_to_manifest_selection(tmp_path
             and row["external_claim_match"]["period"] == 2026
         )
     ]
-    compute.write_jsonl(staged_path, staged_rows)
-    manifest["staged_rows"] = len(staged_rows)
-    manifest["staged_sha256"] = compute.sha256_file(staged_path)
-    compute.write_json(replay["manifest_path"], manifest)
+    attack_rows = _resign_staged_and_comparison_attack(
+        replay,
+        manifest,
+        staged_rows,
+    )
+    assert len(attack_rows) == 25
     output_dir = tmp_path / "missing-pa-render"
 
     with pytest.raises(compare.ComparisonError) as exc_info:
@@ -1469,10 +1590,12 @@ def test_standalone_renderer_rejects_valid_unselected_class_2_row(tmp_path):
     staged_path = replay["copied_paths"][manifest["staged_output"]]
     staged_rows = compute.load_claims(staged_path)
     staged_rows.extend(rows)
-    compute.write_jsonl(staged_path, staged_rows)
-    manifest["staged_rows"] = len(staged_rows)
-    manifest["staged_sha256"] = compute.sha256_file(staged_path)
-    compute.write_json(replay["manifest_path"], manifest)
+    attack_rows = _resign_staged_and_comparison_attack(
+        replay,
+        manifest,
+        staged_rows,
+    )
+    assert len(attack_rows) == 27
     output_dir = tmp_path / "unselected-class-2-render"
 
     with pytest.raises(compare.ComparisonError) as exc_info:
@@ -1519,10 +1642,15 @@ def test_standalone_renderer_binds_missing_employer_nics_head(tmp_path):
             == "Income tax"
         )
     ]
-    compute.write_jsonl(staged_path, staged_rows)
-    manifest["staged_rows"] = len(staged_rows)
-    manifest["staged_sha256"] = compute.sha256_file(staged_path)
-    compute.write_json(replay["manifest_path"], manifest)
+    attack_rows = _resign_staged_and_comparison_attack(
+        replay,
+        manifest,
+        staged_rows,
+    )
+    assert len(attack_rows) == 24
+    assert sum(
+        row["row_kind"] == "mapped_head_total" for row in attack_rows
+    ) == 5
     output_dir = tmp_path / "missing-employer-nics-head-render"
 
     with pytest.raises(compare.ComparisonError) as exc_info:
@@ -1633,7 +1761,7 @@ def test_restage_rejects_coordinated_artifact_mutation_before_any_writer(
     monkeypatch.setattr(compute, "parse_json_object_payload", forbid_artifact_parse)
     monkeypatch.setattr(compute, "write_json", forbidden)
     monkeypatch.setattr(compute, "write_jsonl", forbidden)
-    monkeypatch.setattr(compare, "write_comparison_outputs_from_rows", forbidden)
+    monkeypatch.setattr(compare, "publish_comparison_outputs", forbidden)
     with pytest.raises(
         compute.ArtifactRestageError,
         match="artifact SHA-256 differs from RUN_MANIFEST",
@@ -1751,7 +1879,7 @@ def test_restage_rejects_artifact_missing_from_sha_map(tmp_path, monkeypatch):
 
     monkeypatch.setattr(compute, "write_json", forbidden)
     monkeypatch.setattr(compute, "write_jsonl", forbidden)
-    monkeypatch.setattr(compare, "write_comparison_outputs_from_rows", forbidden)
+    monkeypatch.setattr(compare, "publish_comparison_outputs", forbidden)
     with pytest.raises(
         compute.ArtifactRestageError,
         match="artifact_sha256 is missing entries",
@@ -1780,7 +1908,7 @@ def test_restage_rejects_sha_map_entry_without_inventory_artifact(
 
     monkeypatch.setattr(compute, "write_json", forbidden)
     monkeypatch.setattr(compute, "write_jsonl", forbidden)
-    monkeypatch.setattr(compare, "write_comparison_outputs_from_rows", forbidden)
+    monkeypatch.setattr(compare, "publish_comparison_outputs", forbidden)
     with pytest.raises(
         compute.ArtifactRestageError,
         match="artifact_sha256 entries have no artifact files",
@@ -1809,7 +1937,7 @@ def test_restage_rejects_sha_map_entry_whose_artifact_file_is_missing(
 
     monkeypatch.setattr(compute, "write_json", forbidden)
     monkeypatch.setattr(compute, "write_jsonl", forbidden)
-    monkeypatch.setattr(compare, "write_comparison_outputs_from_rows", forbidden)
+    monkeypatch.setattr(compare, "publish_comparison_outputs", forbidden)
     with pytest.raises(
         compute.ArtifactRestageError,
         match="artifact SHA-256 differs from RUN_MANIFEST",
@@ -1955,9 +2083,9 @@ def test_comparison_atomic_writer_preserves_existing_output_mode(tmp_path):
     output_path.write_text("before")
     output_path.chmod(0o640)
 
-    compare.atomic_write_text(output_path, "after")
+    compare.atomic_write_bytes(output_path, b"after")
 
-    assert output_path.read_text() == "after"
+    assert output_path.read_bytes() == b"after"
     assert output_path.stat().st_mode & 0o777 == 0o640
 
 
@@ -2506,6 +2634,8 @@ def test_no_stage_producer_records_explicit_non_replayable_manifest(
     assert "staged_output" not in manifest
     assert "staged_rows" not in manifest
     assert "staged_sha256" not in manifest
+    assert "comparison_csv_sha256" not in manifest
+    assert "comparison_md_sha256" not in manifest
     assert not staged_path.exists()
     with pytest.raises(
         compute.ArtifactRestageError,
@@ -2677,6 +2807,46 @@ def test_normal_aborts_if_written_staged_output_differs_from_intended_bytes(
     assert not (run["output_dir"] / "COMPARISON.md").exists()
 
 
+def test_normal_aborts_if_written_comparison_differs_before_manifest(
+    tmp_path,
+    monkeypatch,
+    synthetic_measure,
+    synthetic_claim,
+):
+    pytest.importorskip("policyengine_uk")
+    run = _configure_synthetic_normal_main(
+        tmp_path,
+        monkeypatch,
+        synthetic_measure,
+        synthetic_claim,
+    )
+    original_writer = compare.atomic_write_bytes
+    csv_path = run["output_dir"] / "COMPARISON.csv"
+    mutated = False
+
+    def mutate_after_write(path, payload):
+        nonlocal mutated
+        original_writer(path, payload)
+        if path == csv_path:
+            written = path.read_bytes()
+            assert b",constructed," in written
+            path.write_bytes(
+                written.replace(b",constructed,", b",FABRICATED WIN,", 1)
+            )
+            mutated = True
+
+    monkeypatch.setattr(compare, "atomic_write_bytes", mutate_after_write)
+    with pytest.raises(compare.ComparisonError) as exc_info:
+        compute.main(run["arguments"])
+    message = str(exc_info.value)
+    assert mutated
+    assert str(csv_path) in message
+    assert compute.sha256_file(csv_path) in message
+    assert "expected SHA-256" in message
+    assert not run["manifest_path"].exists()
+    assert not (run["output_dir"] / "COMPARISON.md").exists()
+
+
 def test_normal_staging_and_comparison_never_reopen_verified_artifacts(
     tmp_path,
     monkeypatch,
@@ -2741,6 +2911,12 @@ def test_normal_staging_and_comparison_never_reopen_verified_artifacts(
     assert manifest["staged_sha256"] == compute.sha256_file(run["staged_path"])
     assert (run["output_dir"] / "COMPARISON.csv").is_file()
     assert (run["output_dir"] / "COMPARISON.md").is_file()
+    assert manifest["comparison_csv_sha256"] == compute.sha256_file(
+        run["output_dir"] / "COMPARISON.csv"
+    )
+    assert manifest["comparison_md_sha256"] == compute.sha256_file(
+        run["output_dir"] / "COMPARISON.md"
+    )
 
 
 def _write_synthetic_replay(
@@ -2881,7 +3057,7 @@ def test_restage_rejects_postwrite_mutation_before_comparison(
     monkeypatch.setattr(compute, "write_jsonl", forbid_staged_write)
     monkeypatch.setattr(
         compare,
-        "write_comparison_outputs_from_rows",
+        "publish_comparison_outputs",
         forbid_comparison,
     )
     with pytest.raises(
@@ -2931,7 +3107,7 @@ def test_restage_rejects_staged_postwrite_mutation_before_comparison(
     monkeypatch.setattr(compute, "atomic_write_bytes", mutate_after_write)
     monkeypatch.setattr(
         compare,
-        "write_comparison_outputs_from_rows",
+        "publish_comparison_outputs",
         forbid_comparison,
     )
     with pytest.raises(
@@ -2960,7 +3136,7 @@ def test_restage_rejects_artifact_mutation_at_final_publication_sweep(
         synthetic_measure,
         synthetic_claim,
     )
-    original_comparison = compare.write_comparison_outputs_from_rows
+    original_comparison = compare.publish_comparison_outputs
     comparison_completed = False
 
     def mutate_after_comparison(*args, **kwargs):
@@ -2974,7 +3150,7 @@ def test_restage_rejects_artifact_mutation_at_final_publication_sweep(
 
     monkeypatch.setattr(
         compare,
-        "write_comparison_outputs_from_rows",
+        "publish_comparison_outputs",
         mutate_after_comparison,
     )
     with pytest.raises(
@@ -2988,6 +3164,50 @@ def test_restage_rejects_artifact_mutation_at_final_publication_sweep(
         )
 
     assert comparison_completed
+    assert not replay["manifest_path"].exists()
+
+
+def test_restage_rejects_comparison_mutation_before_manifest_restoration(
+    tmp_path,
+    monkeypatch,
+    synthetic_measure,
+    synthetic_claim,
+):
+    replay = _write_synthetic_replay(
+        tmp_path,
+        synthetic_measure,
+        synthetic_claim,
+    )
+    original_publish = compare.publish_comparison_outputs
+    csv_path = replay["output_dir"] / "COMPARISON.csv"
+    mutated = False
+
+    def mutate_after_publish(*args, **kwargs):
+        nonlocal mutated
+        original_publish(*args, **kwargs)
+        payload = csv_path.read_bytes()
+        assert b",constructed," in payload
+        csv_path.write_bytes(
+            payload.replace(b",constructed,", b",FABRICATED WIN,", 1)
+        )
+        mutated = True
+
+    monkeypatch.setattr(
+        compare,
+        "publish_comparison_outputs",
+        mutate_after_publish,
+    )
+    with pytest.raises(compare.ComparisonError) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=replay["manifest_path"],
+            output_dir=replay["output_dir"],
+            artifact_root=replay["artifact_root"],
+        )
+    message = str(exc_info.value)
+    assert mutated
+    assert str(csv_path) in message
+    assert replay["manifest"]["comparison_csv_sha256"] in message
+    assert compute.sha256_file(csv_path) in message
     assert not replay["manifest_path"].exists()
 
 
@@ -3113,7 +3333,21 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     markdown = (output_dir / "COMPARISON.md").read_text()
     assert "announced-measure orientation" in markdown
     assert "reversals are not re-oriented" not in markdown
-    assert manifest_path.read_bytes() == original_manifest
+    assert manifest_path.read_bytes() != original_manifest
+    migrated_manifest = json.loads(manifest_path.read_text())
+    assert set(migrated_manifest) - set(manifest) == {
+        "comparison_csv_sha256",
+        "comparison_md_sha256",
+    }
+    assert {
+        key: migrated_manifest[key] for key in manifest
+    } == manifest
+    assert migrated_manifest["comparison_csv_sha256"] == compute.sha256_file(
+        output_dir / "COMPARISON.csv"
+    )
+    assert migrated_manifest["comparison_md_sha256"] == compute.sha256_file(
+        output_dir / "COMPARISON.md"
+    )
 
     first_outputs = {
         path: path.read_bytes()

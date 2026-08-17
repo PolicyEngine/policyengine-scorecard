@@ -1250,6 +1250,12 @@ def canonical_json_bytes(value: Any) -> bytes:
     )
 
 
+def retained_manifest_bytes(value: Any) -> bytes:
+    """Serialize a parsed manifest while retaining its existing key order."""
+
+    return (json.dumps(value, indent=2, allow_nan=False) + "\n").encode("utf-8")
+
+
 def canonical_jsonl_bytes(rows: Iterable[dict[str, Any]]) -> bytes:
     return "".join(
         json.dumps(row, sort_keys=True, allow_nan=False) + "\n" for row in rows
@@ -2762,6 +2768,24 @@ def restage_existing_run(
             f"actual {intended_staged_sha256}"
         )
 
+    if __package__:
+        from pipeline import compare_uk_obr_costings as comparison
+    else:
+        import compare_uk_obr_costings as comparison
+
+    prepared_comparison = comparison.prepare_comparison_outputs(
+        manifest=manifest,
+        staged_rows=staged_rows,
+        claims=claims,
+        registry=replay_registry,
+        artifacts_by_reference={
+            reference: artifact
+            for reference, _, artifact, _, _, _, _ in prepared_artifacts
+        },
+    )
+    comparison.bind_comparison_output_digests(manifest, prepared_comparison)
+    updated_manifest_payload = retained_manifest_bytes(manifest)
+
     manifest_path.unlink(missing_ok=True)
     for _, path, _, _, _, payload, _ in prepared_artifacts:
         write_artifact_payload(path, payload)
@@ -2771,20 +2795,8 @@ def restage_existing_run(
     atomic_write_bytes(staged_path, staged_payload)
     verify_written_staged_output(staged_path, intended_staged_sha256)
 
-    if __package__:
-        from pipeline import compare_uk_obr_costings as comparison
-    else:
-        import compare_uk_obr_costings as comparison
-
-    comparison_rows = comparison.write_comparison_outputs_from_rows(
-        manifest=manifest,
-        staged_rows=staged_rows,
-        claims=claims,
-        registry=replay_registry,
-        artifacts_by_reference={
-            reference: artifact
-            for reference, _, artifact, _, _, _, _ in prepared_artifacts
-        },
+    comparison.publish_comparison_outputs(
+        prepared_comparison,
         output_dir=output_dir,
     )
     final_registry_sha256 = sha256_file(registry_path)
@@ -2807,12 +2819,16 @@ def restage_existing_run(
     verify_written_artifacts(
         (path, digest) for _, path, _, _, _, _, digest in prepared_artifacts
     )
-    atomic_write_bytes(manifest_path, manifest_payload)
+    comparison.verify_comparison_outputs(
+        output_dir,
+        prepared_comparison.sha256,
+    )
+    atomic_write_bytes(manifest_path, updated_manifest_payload)
     return {
         "artifacts": len(replacements),
         "diagnostic_artifacts": diagnostic_artifacts,
         "staged_rows": len(staged_rows),
-        "comparison_rows": len(comparison_rows),
+        "comparison_rows": len(prepared_comparison.rows),
         "staged_output": staged_path,
     }
 
@@ -3283,6 +3299,14 @@ def main(argv: list[str] | None = None) -> int:
             output_dir=args.output_dir,
         )
     manifest["completed_at"] = utc_now()
+    if not args.no_stage:
+        comparison.verify_comparison_outputs(
+            args.output_dir,
+            {
+                field: manifest[field]
+                for field, _ in comparison.COMPARISON_OUTPUTS
+            },
+        )
     write_json(manifest_output_path, manifest)
     print(
         f"wrote {len(manifest['artifacts'])} artifacts"

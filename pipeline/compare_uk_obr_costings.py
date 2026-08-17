@@ -27,7 +27,7 @@ import tempfile
 import unicodedata
 from collections import Counter, defaultdict
 from pathlib import Path
-from typing import Any, Iterable, Mapping
+from typing import Any, Iterable, Mapping, NamedTuple
 
 import yaml
 
@@ -85,10 +85,22 @@ CSV_FIELDS = [
     "artifact",
     "annotations",
 ]
+COMPARISON_OUTPUTS = (
+    ("comparison_csv_sha256", "COMPARISON.csv"),
+    ("comparison_md_sha256", "COMPARISON.md"),
+)
 
 
 class ComparisonError(ValueError):
     """A staged row cannot be tied unambiguously to its source or artifact."""
+
+
+class PreparedComparisonOutputs(NamedTuple):
+    """Canonical comparison rows, bytes, and their in-memory digests."""
+
+    rows: list[dict[str, Any]]
+    payloads: dict[str, bytes]
+    sha256: dict[str, str]
 
 
 def _read_bytes(path: Path, label: str) -> bytes:
@@ -1917,20 +1929,20 @@ def render_markdown(rows: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def atomic_write_text(path: Path, text: str) -> None:
+def atomic_write_bytes(path: Path, payload: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     destination_mode = stat.S_IMODE(path.stat().st_mode) if path.exists() else 0o644
     temporary: Path | None = None
     try:
         with tempfile.NamedTemporaryFile(
-            mode="w",
+            mode="wb",
             dir=path.parent,
             prefix=f".{path.name}.",
             suffix=".tmp",
             delete=False,
         ) as destination:
             temporary = Path(destination.name)
-            destination.write(text)
+            destination.write(payload)
         assert temporary is not None
         temporary.chmod(destination_mode)
         temporary.replace(path)
@@ -1939,16 +1951,15 @@ def atomic_write_text(path: Path, text: str) -> None:
             temporary.unlink(missing_ok=True)
 
 
-def write_comparison_outputs_from_rows(
+def prepare_comparison_outputs(
     *,
     manifest: Mapping[str, Any],
     staged_rows: list[dict[str, Any]],
     claims: list[dict[str, Any]],
     registry: dict[str, dict[str, Any]],
     artifacts_by_reference: Mapping[str, dict[str, Any]],
-    output_dir: Path = DEFAULT_OUTPUT_DIR,
-) -> list[dict[str, Any]]:
-    """Write deterministic outputs from already-validated in-memory inputs."""
+) -> PreparedComparisonOutputs:
+    """Render canonical UTF-8 bytes from already-verified in-memory inputs."""
 
     if not staged_rows:
         raise ComparisonError("staged results are empty")
@@ -1971,9 +1982,174 @@ def write_comparison_outputs_from_rows(
             "rendered comparison row inventory differs from RUN_MANIFEST "
             "selection: " + _inventory_difference(expected_output, actual_output)
         )
-    atomic_write_text(output_dir / "COMPARISON.csv", render_csv(rows))
-    atomic_write_text(output_dir / "COMPARISON.md", render_markdown(rows))
-    return rows
+    payloads = {
+        "comparison_csv_sha256": render_csv(rows).encode("utf-8"),
+        "comparison_md_sha256": render_markdown(rows).encode("utf-8"),
+    }
+    digests = {
+        field: hashlib.sha256(payloads[field]).hexdigest()
+        for field, _ in COMPARISON_OUTPUTS
+    }
+    return PreparedComparisonOutputs(rows, payloads, digests)
+
+
+def _comparison_manifest_digests(
+    manifest: Mapping[str, Any],
+    *,
+    require: bool,
+) -> dict[str, str] | None:
+    present = [field in manifest for field, _ in COMPARISON_OUTPUTS]
+    if not any(present):
+        if require:
+            fields = [field for field, _ in COMPARISON_OUTPUTS]
+            raise ComparisonError(
+                "RUN_MANIFEST is missing comparison output digests: "
+                f"{fields}"
+            )
+        return None
+    if not all(present):
+        missing = [
+            field
+            for (field, _), is_present in zip(COMPARISON_OUTPUTS, present)
+            if not is_present
+        ]
+        raise ComparisonError(
+            "RUN_MANIFEST comparison output digests must be an all-or-none "
+            f"pair; missing {missing}"
+        )
+    digests: dict[str, str] = {}
+    for field, _ in COMPARISON_OUTPUTS:
+        value = manifest[field]
+        if not isinstance(value, str) or re.fullmatch(r"[0-9a-f]{64}", value) is None:
+            raise ComparisonError(
+                f"RUN_MANIFEST {field} must be a lowercase SHA-256"
+            )
+        digests[field] = value
+    return digests
+
+
+def bind_comparison_output_digests(
+    manifest: dict[str, Any],
+    prepared: PreparedComparisonOutputs,
+) -> None:
+    """Record new comparison digests or require the recorded pair to agree."""
+
+    recorded = _comparison_manifest_digests(manifest, require=False)
+    if recorded is None:
+        manifest.update(prepared.sha256)
+        return
+    for field, filename in COMPARISON_OUTPUTS:
+        if recorded[field] != prepared.sha256[field]:
+            raise ComparisonError(
+                f"freshly rendered {filename} SHA-256 differs from "
+                f"RUN_MANIFEST; expected {recorded[field]}; "
+                f"actual {prepared.sha256[field]}"
+            )
+
+
+def _verify_comparison_output(
+    path: Path,
+    expected_sha256: str,
+    *,
+    state: str,
+) -> None:
+    try:
+        payload = path.read_bytes()
+    except OSError as exc:
+        actual_sha256 = (
+            "<missing>" if isinstance(exc, FileNotFoundError) else "<unavailable>"
+        )
+        raise ComparisonError(
+            f"{path}: {state} comparison output differs from intended canonical "
+            f"bytes; expected SHA-256 {expected_sha256}; "
+            f"actual {actual_sha256}"
+        ) from exc
+    actual_sha256 = hashlib.sha256(payload).hexdigest()
+    if actual_sha256 != expected_sha256:
+        raise ComparisonError(
+            f"{path}: {state} comparison output differs from intended canonical "
+            f"bytes; expected SHA-256 {expected_sha256}; "
+            f"actual {actual_sha256}"
+        )
+
+
+def verify_comparison_outputs(
+    output_dir: Path,
+    digests: Mapping[str, str],
+) -> None:
+    """Read back and SHA-verify the complete comparison output pair."""
+
+    for field, filename in COMPARISON_OUTPUTS:
+        _verify_comparison_output(
+            output_dir / filename,
+            digests[field],
+            state="written",
+        )
+
+
+def publish_comparison_outputs(
+    prepared: PreparedComparisonOutputs,
+    *,
+    output_dir: Path,
+) -> None:
+    """Atomically write intended bytes and verify each file and the full pair."""
+
+    for field, filename in COMPARISON_OUTPUTS:
+        path = output_dir / filename
+        atomic_write_bytes(path, prepared.payloads[field])
+        _verify_comparison_output(
+            path,
+            prepared.sha256[field],
+            state="written",
+        )
+    verify_comparison_outputs(output_dir, prepared.sha256)
+
+
+def _refuse_drifted_existing_outputs(
+    output_dir: Path,
+    digests: Mapping[str, str],
+) -> None:
+    for field, filename in COMPARISON_OUTPUTS:
+        path = output_dir / filename
+        try:
+            payload = path.read_bytes()
+        except FileNotFoundError:
+            continue
+        except OSError as exc:
+            raise ComparisonError(
+                f"cannot verify existing comparison output {path}: {exc}; "
+                "refusing to overwrite"
+            ) from exc
+        actual_sha256 = hashlib.sha256(payload).hexdigest()
+        if actual_sha256 != digests[field]:
+            raise ComparisonError(
+                f"{path}: existing comparison output SHA-256 differs from "
+                f"RUN_MANIFEST; expected {digests[field]}; "
+                f"actual {actual_sha256}; refusing to overwrite"
+            )
+
+
+def write_comparison_outputs_from_rows(
+    *,
+    manifest: dict[str, Any],
+    staged_rows: list[dict[str, Any]],
+    claims: list[dict[str, Any]],
+    registry: dict[str, dict[str, Any]],
+    artifacts_by_reference: Mapping[str, dict[str, Any]],
+    output_dir: Path = DEFAULT_OUTPUT_DIR,
+) -> list[dict[str, Any]]:
+    """Bind, publish, and verify outputs from verified in-memory inputs."""
+
+    prepared = prepare_comparison_outputs(
+        manifest=manifest,
+        staged_rows=staged_rows,
+        claims=claims,
+        registry=registry,
+        artifacts_by_reference=artifacts_by_reference,
+    )
+    bind_comparison_output_digests(manifest, prepared)
+    publish_comparison_outputs(prepared, output_dir=output_dir)
+    return prepared.rows
 
 
 def write_comparison_outputs(
@@ -1997,14 +2173,25 @@ def write_comparison_outputs(
         artifact_root=artifact_root,
         output_dir=resolved_output_dir,
     )
-    return write_comparison_outputs_from_rows(
+    prepared = prepare_comparison_outputs(
         manifest=manifest,
         staged_rows=staged_rows,
         claims=claims,
         registry=registry,
         artifacts_by_reference=artifacts,
-        output_dir=resolved_output_dir,
     )
+    recorded = _comparison_manifest_digests(manifest, require=True)
+    assert recorded is not None
+    for field, filename in COMPARISON_OUTPUTS:
+        if prepared.sha256[field] != recorded[field]:
+            raise ComparisonError(
+                f"freshly rendered {filename} SHA-256 differs from "
+                f"RUN_MANIFEST; expected {recorded[field]}; "
+                f"actual {prepared.sha256[field]}; refusing to write"
+            )
+    _refuse_drifted_existing_outputs(resolved_output_dir, recorded)
+    publish_comparison_outputs(prepared, output_dir=resolved_output_dir)
+    return prepared.rows
 
 
 def main(argv: list[str] | None = None) -> int:
