@@ -293,8 +293,7 @@ def resolve_frozen_claim(
     descriptor_text = ", ".join(_named_descriptor_fields(descriptor))
     if not hits:
         raise ArtifactRestageError(
-            "frozen claim not found in current claims; "
-            f"descriptor: {descriptor_text}"
+            f"frozen claim not found in current claims; descriptor: {descriptor_text}"
         )
     if len(hits) > 1:
         raise ArtifactRestageError(

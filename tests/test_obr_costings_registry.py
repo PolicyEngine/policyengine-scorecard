@@ -274,12 +274,8 @@ def test_registry_rejects_duplicate_keys_and_non_finite_reform_values():
         compute.validate_registry(incomplete_override)
 
 
-DIVIDEND_HIGHER_THRESHOLD = (
-    "gov.hmrc.income_tax.rates.dividends[1].threshold"
-)
-DIVIDEND_ADDITIONAL_THRESHOLD = (
-    "gov.hmrc.income_tax.rates.dividends[2].threshold"
-)
+DIVIDEND_HIGHER_THRESHOLD = "gov.hmrc.income_tax.rates.dividends[1].threshold"
+DIVIDEND_ADDITIONAL_THRESHOLD = "gov.hmrc.income_tax.rates.dividends[2].threshold"
 
 
 def _installed_dividend_threshold_values(rates):
@@ -434,9 +430,10 @@ def test_dividend_lag_reports_one_caught_up_path_override_as_unnecessary():
     measures = compute.load_registry(REGISTRY)["measures"]
     expectations = _dividend_path_lag_expectations(measures, installed)
 
-    assert expectations[
-        ("efo_march_2026__pa_and_hrt_freezes", DIVIDEND_HIGHER_THRESHOLD)
-    ] == set()
+    assert (
+        expectations[("efo_march_2026__pa_and_hrt_freezes", DIVIDEND_HIGHER_THRESHOLD)]
+        == set()
+    )
     assert expectations[
         (
             "efo_march_2026__additional_rate_threshold_reduction",
@@ -1762,8 +1759,7 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
     null_measure = next(
         measure
         for measure in measures
-        if measure["measure_key"]
-        == "autumn_budget_2024__hmrc_5000_compliance_staff"
+        if measure["measure_key"] == "autumn_budget_2024__hmrc_5000_compliance_staff"
     )
     null_claim = next(
         claim
@@ -1783,9 +1779,7 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
                 raw_lines[index] = json.dumps(claim)
                 break
         else:
-            raise AssertionError(
-                "null-reform source claim was not found in the slice"
-            )
+            raise AssertionError("null-reform source claim was not found in the slice")
         claims_path.write_text("\n".join(raw_lines) + "\n")
         return compute.sha256_file(claims_path)
 
