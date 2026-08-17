@@ -2857,8 +2857,16 @@ def test_normal_staging_and_comparison_never_reopen_verified_artifacts(
     guard_armed = False
 
     def verify_then_arm(artifacts):
+        # Hash-only verification sweeps (including the final pre-manifest
+        # sweep) may re-read artifact bytes; consumers may not. Disarm for
+        # the duration of verification, then (re)arm.
         nonlocal guard_armed
-        original_verifier(artifacts)
+        was_armed = guard_armed
+        guard_armed = False
+        try:
+            original_verifier(artifacts)
+        finally:
+            guard_armed = was_armed
         guard_armed = True
 
     def guard(path):

@@ -3299,7 +3299,29 @@ def main(argv: list[str] | None = None) -> int:
             output_dir=args.output_dir,
         )
     manifest["completed_at"] = utc_now()
+    # Final all-input digest sweep, mirroring restage: nothing is published
+    # unless every bound input still matches its recorded digest.
+    final_registry_sha256 = sha256_file(Path(args.registry))
+    if final_registry_sha256 != registry_sha256:
+        raise registry_provenance_error(
+            Path(args.registry),
+            subject="registry SHA-256",
+            expected=registry_sha256,
+            actual=final_registry_sha256,
+        )
+    final_claims_sha256 = sha256_file(Path(args.claims))
+    if final_claims_sha256 != claims_sha256:
+        raise claims_provenance_error(
+            Path(args.claims),
+            subject="claims SHA-256",
+            expected=claims_sha256,
+            actual=final_claims_sha256,
+        )
+    verify_written_artifacts(
+        (path, digest) for _, path, _, _, _, _, digest in prepared_artifacts
+    )
     if not args.no_stage:
+        verify_written_staged_output(args.staged_output, staged_sha256)
         comparison.verify_comparison_outputs(
             args.output_dir,
             {field: manifest[field] for field, _ in comparison.COMPARISON_OUTPUTS},
