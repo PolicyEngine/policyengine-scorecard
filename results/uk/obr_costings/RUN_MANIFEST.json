@@ -1,4 +1,19 @@
 {
+  "artifact_sha256": {
+    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2026.json": "da9e834c2d804f37570b8e706228602c438f7b3a80c7fd92bad34cef16afd4e8",
+    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2027.json": "62393002f44620ee262721c58a54336560e11985aa72ad85ca25ccb99cd2cdb5",
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2026.json": "b4ce510b94b5def9bcceb8ee51665e41f29406821ece3f49978830ad17ad6a66",
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2027.json": "1e410f077ecec3cc14804e20e6d7840efdf4bf5476df0dac6307d7380ee7096b",
+    "results/uk/obr_costings/diagnostic__personal_allowance_plus_500_2026.json": "434410641e859dd2274e3e7885597a11e3b0d16ac0e784121f93f2a15c4bb3c6",
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2026.json": "582cc3560965fb4191a6294acfdd023549ddddf242a108c5a9af64d165499144",
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2027.json": "632994b1c8e459cc2f4a0fca12ac829683445f2f5e3b2367327eda8a4d1d486f",
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json": "a97aa125d2581581ed95d5acb8aa0cb5ecc850bc675959d557b58fc6fd7da3e1",
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2027.json": "3e0d1f215002200fd39db45c192bafc770680c7d0b22d791c3725fb518d40c8e",
+    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2026.json": "cf54a43f2a0cb7ba3387514cec361148a66da11ac0fc2be128ed2b4f3f94ab8e",
+    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2027.json": "7430b76c2615b4d2f4ab42ce0c8673857a357071896d3450f0efe8bdd32633cc",
+    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2026.json": "09dc31157507c47d16cdcc82717ae6ef2b89c4063c2bdad51ce31c322659b34e",
+    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2027.json": "8998a77546ab0329616b62f26ec70c4a5d06b60ae3a66da9e35fb5b30b355a68"
+  },
   "artifactless_frozen_registry": {},
   "artifacts": [
     "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json",

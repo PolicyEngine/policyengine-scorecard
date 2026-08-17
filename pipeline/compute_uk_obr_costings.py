@@ -116,6 +116,19 @@ def registry_provenance_error(
     )
 
 
+def artifact_provenance_error(
+    path: Path,
+    *,
+    expected: str,
+    actual: str,
+) -> ArtifactRestageError:
+    return ArtifactRestageError(
+        f"{path}: artifact SHA-256 differs from RUN_MANIFEST; "
+        f"expected {expected}; actual {actual}; artifact provenance changed, "
+        "so this is a new run; re-run the compute pipeline instead of restaging"
+    )
+
+
 def configure_offline() -> None:
     """Make a cache miss fail rather than trigger a network request."""
 
@@ -1242,12 +1255,49 @@ def write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> None:
 
 def load_json_object(path: Path, label: str) -> dict[str, Any]:
     try:
-        value = json.loads(path.read_text())
-    except (OSError, json.JSONDecodeError) as exc:
+        payload = path.read_bytes()
+    except OSError as exc:
+        raise ArtifactRestageError(f"cannot read {label} {path}: {exc}") from exc
+    return parse_json_object_payload(payload, path=path, label=label)
+
+
+def parse_json_object_payload(
+    payload: bytes,
+    *,
+    path: Path,
+    label: str,
+) -> dict[str, Any]:
+    """Parse an already-read JSON payload without reopening its path."""
+
+    try:
+        value = json.loads(payload)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ArtifactRestageError(f"cannot read {label} {path}: {exc}") from exc
     if not isinstance(value, dict):
         raise ArtifactRestageError(f"{label} {path}: expected a JSON object")
     return value
+
+
+def verified_artifact_payload(path: Path, expected_sha256: str) -> bytes:
+    """Read and SHA-check exact artifact bytes before they are trusted."""
+
+    try:
+        payload = path.read_bytes()
+    except OSError as exc:
+        actual = "<missing>" if isinstance(exc, FileNotFoundError) else "<unavailable>"
+        raise artifact_provenance_error(
+            path,
+            expected=expected_sha256,
+            actual=actual,
+        ) from exc
+    actual_sha256 = hashlib.sha256(payload).hexdigest()
+    if actual_sha256 != expected_sha256:
+        raise artifact_provenance_error(
+            path,
+            expected=expected_sha256,
+            actual=actual_sha256,
+        )
+    return payload
 
 
 def _contained_path(path: Path, *, role: str, root: Path) -> Path:
@@ -1456,6 +1506,61 @@ def build_restage_path_plan(
         "comparison_csv": comparison_csv,
         "comparison_markdown": comparison_markdown,
     }
+
+
+def validate_artifact_sha256_manifest(
+    manifest: dict[str, Any],
+    *,
+    references: list[str],
+    resolved_references: list[Path],
+    manifest_path: Path,
+    artifact_root: Path,
+) -> dict[str, str]:
+    """Validate the canonical, complete artifact path-to-SHA binding."""
+
+    canonical_references = []
+    for index, (reference, path) in enumerate(
+        zip(references, resolved_references)
+    ):
+        canonical = path.relative_to(artifact_root).as_posix()
+        if reference != canonical:
+            raise ArtifactRestageError(
+                f"{manifest_path}: artifacts[{index}] must be a canonical "
+                f"repo-relative path; recorded {reference!r}; canonical "
+                f"{canonical!r}"
+            )
+        canonical_references.append(canonical)
+
+    recorded = manifest.get("artifact_sha256")
+    if not isinstance(recorded, dict):
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifact_sha256 must be a path-to-SHA mapping"
+        )
+    expected_keys = set(canonical_references)
+    recorded_keys = set(recorded)
+    missing = sorted(expected_keys - recorded_keys)
+    if missing:
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifact_sha256 is missing entries for "
+            f"artifacts {missing}"
+        )
+    extra = sorted(recorded_keys - expected_keys)
+    if extra:
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifact_sha256 entries have no artifact "
+            f"files in the manifest inventory: {extra}"
+        )
+    for reference in canonical_references:
+        digest = recorded[reference]
+        if (
+            not isinstance(digest, str)
+            or re.fullmatch(r"[0-9a-f]{64}", digest) is None
+        ):
+            raise ArtifactRestageError(
+                f"{manifest_path}: artifact_sha256[{reference!r}] must be a "
+                "lowercase SHA-256"
+            )
+    return {reference: recorded[reference] for reference in canonical_references}
 
 
 def measure_head_identity(
@@ -2192,7 +2297,15 @@ def restage_existing_run(
         output_dir=output_dir,
         artifact_root=artifact_root,
     )
+    references = manifest["artifacts"]
     resolved_references = path_plan["artifacts"]
+    recorded_artifact_sha256 = validate_artifact_sha256_manifest(
+        manifest,
+        references=references,
+        resolved_references=resolved_references,
+        manifest_path=manifest_path,
+        artifact_root=artifact_root,
+    )
     resolved_legacy_paths = path_plan["legacy_artifacts"]
     registry_path = path_plan["registry"]
     claims_path = path_plan["claims"]
@@ -2294,7 +2407,6 @@ def restage_existing_run(
             f"{manifest_path}: invalid certified release bundle: {exc}"
         ) from exc
 
-    references = manifest["artifacts"]
     legacy_references = manifest.get("legacy_artifacts_without_dataset_hashes", [])
     legacy_claim_ordinals = validate_legacy_claim_ordinal_manifest(
         manifest,
@@ -2316,7 +2428,15 @@ def restage_existing_run(
     diagnostic_artifact_pairs: set[tuple[str, int]] = set()
     diagnostic_artifacts = 0
     for reference, path in zip(references, resolved_references):
-        artifact = load_json_object(path, "run artifact")
+        artifact_payload = verified_artifact_payload(
+            path,
+            recorded_artifact_sha256[reference],
+        )
+        artifact = parse_json_object_payload(
+            artifact_payload,
+            path=path,
+            label="run artifact",
+        )
         self_reference = artifact.get("artifact")
         self_path = resolve_recorded_path(
             self_reference,
@@ -2529,9 +2649,20 @@ def restage_existing_run(
             expected=recorded_claims_sha256,
             actual=prewrite_claims_sha256,
         )
+    for reference, path in zip(references, resolved_references):
+        verified_artifact_payload(path, recorded_artifact_sha256[reference])
 
-    for path, artifact in replacements:
-        write_json(path, artifact)
+    for reference, resolved_path, (replacement_path, artifact) in zip(
+        references,
+        resolved_references,
+        replacements,
+    ):
+        assert resolved_path == replacement_path
+        verified_artifact_payload(
+            resolved_path,
+            recorded_artifact_sha256[reference],
+        )
+        write_json(replacement_path, artifact)
     write_jsonl(staged_path, staged_rows)
 
     if __package__:
@@ -2753,6 +2884,7 @@ def main(argv: list[str] | None = None) -> int:
         "pa_smoke_probe": args.pa_smoke_probe,
         "certified_cache_preflight": cache_preflight,
         "artifacts": [],
+        "artifact_sha256": {},
         "legacy_artifacts_without_dataset_hashes": [],
         "artifactless_frozen_registry": {},
         "baseline_by_year": {},
@@ -2761,6 +2893,7 @@ def main(argv: list[str] | None = None) -> int:
     }
 
     artifact_measure_keys: set[str] = set()
+    written_artifact_paths: dict[str, Path] = {}
     for measure in selected:
         if measure["pe_reform"] is None:
             staged_rows.extend(
@@ -2875,12 +3008,12 @@ def main(argv: list[str] | None = None) -> int:
             )
             artifact["diagnostic_only"] = measure is PA_SMOKE_MEASURE
             write_json(out_path, artifact)
-            manifest["artifacts"].append(
-                recorded_repo_relative_path(
-                    out_path,
-                    role="artifact output",
-                )
+            artifact_reference = recorded_repo_relative_path(
+                out_path,
+                role="artifact output",
             )
+            manifest["artifacts"].append(artifact_reference)
+            written_artifact_paths[artifact_reference] = out_path
             values = ", ".join(
                 f"{head['obr_head']}={head['pe_value'] / 1e9:+.3f}bn"
                 for head in artifact["heads"]
@@ -2910,6 +3043,10 @@ def main(argv: list[str] | None = None) -> int:
         assert staged_reference is not None
         manifest["staged_output"] = staged_reference
         manifest["staged_rows"] = len(staged_rows)
+    manifest["artifact_sha256"] = {
+        reference: sha256_file(written_artifact_paths[reference])
+        for reference in manifest["artifacts"]
+    }
     manifest["completed_at"] = utc_now()
     write_json(manifest_output_path, manifest)
     print(

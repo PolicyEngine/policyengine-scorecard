@@ -4,11 +4,11 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 6 is in progress on branch `obr-costings-mode2` from
-`b01bd5828a1b7e5d4b8a77803cfb97eeb5b796ad`. Round 5 found that restage binds
-registry and claims bytes but does not yet bind artifact bytes, and that its
-byte-identity test writes the tracked replay fixture. No managed simulation
-will be constructed during this follow-up.
+Follow-up 6 implementation is complete on branch `obr-costings-mode2` from
+`b01bd5828a1b7e5d4b8a77803cfb97eeb5b796ad`. Every artifact is now SHA-bound
+before parsing and at the write boundary, and the committed replay test runs
+only against a complete temporary copy. Final CLI and full-suite verification
+remain; no real managed simulation has been constructed.
 
 ## Done
 
@@ -16,6 +16,25 @@ will be constructed during this follow-up.
   or changing implementation code.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
   `b01bd5828a1b7e5d4b8a77803cfb97eeb5b796ad`.
+- Added a canonical, exact-key `artifact_sha256` map to every run manifest.
+  Normal execution hashes final on-disk artifact bytes at run end; the
+  committed manifest now records all 13 legacy artifacts without changing any
+  artifact byte.
+- Restage SHA-checks the exact payload used for artifact JSON parsing, repeats
+  a complete pre-write sweep, and rechecks each artifact immediately at its
+  replacement boundary. Errors name the artifact, expected and actual digest,
+  and direct the operator to compute a new run.
+- Added production-path coverage for a fully reconciled £1 billion PA/HRT
+  aggregate/head mutation, a missing map entry, an extra map entry, a missing
+  artifact file, mutation during replay, and mutation between checks of two
+  different artifacts. Every failure occurs before an output writer is
+  reached.
+- The committed legacy replay test copies its manifest, registry, claims
+  slice, 13 artifacts, staged JSONL, and both comparison outputs beneath
+  `tmp_path`; restage touches only those copies and compares every resulting
+  byte to its tracked original.
+- All 121 focused OBR tests pass after the implementation. The sole warning is
+  the upstream PolicyEngine-UK Pydantic deprecation.
 - Started Follow-up 5 by reading the complete round-4 review before inspecting
   or changing implementation code.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -64,10 +83,10 @@ will be constructed during this follow-up.
   `8c291b6b`; the migrated manifest SHA-256 is `37c8145b`.
 - Final verification passes all 115 focused OBR tests and all 282 repository
   tests. The sole warning is the upstream PolicyEngine-UK Pydantic deprecation.
-- At the end of Follow-up 5, replay bound dataset bytes before and after each
-  managed simulation, registry bytes, and claims-slice bytes; manifest path
-  containment and canonical role-collision rejection were also enforced.
-  Round 5 identified artifact bytes as the remaining unbound input.
+- Replay now binds dataset bytes before and after each managed simulation,
+  registry bytes, claims-slice bytes, and every artifact's exact bytes;
+  manifest path containment and canonical role-collision rejection are also
+  enforced.
 - Started Follow-up 4 by reading the complete round-3 review before inspecting
   or changing implementation code.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -334,13 +353,9 @@ will be constructed during this follow-up.
 
 ## Next
 
-- Bind every recorded artifact path to its exact SHA-256, verify each artifact
-  before parsing and immediately before any write, and reject incomplete maps.
-- Move the complete replay fixture under `tmp_path` in tests and add
-  production-path coordinated-mutation and missing-file/map-entry coverage.
 - Run the exact 26-measure dry run, no-simulation restage with byte-identity
-  checks, focused and full suites; commit each coherent step and report without
-  pushing.
+  checks, and full suite; record final counts and hashes, commit, and report
+  without pushing.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys

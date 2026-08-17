@@ -1006,14 +1006,51 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
     ) == (421.9)
 
 
+def _copy_committed_replay_fixture(tmp_path):
+    manifest = json.loads(SMOKE_MANIFEST.read_text())
+    manifest_reference = SMOKE_MANIFEST.relative_to(ROOT).as_posix()
+    output_reference = Path(manifest_reference).parent
+    references = [
+        manifest_reference,
+        manifest["registry"],
+        manifest["claims"],
+        *manifest["artifacts"],
+        manifest["staged_output"],
+        (output_reference / "COMPARISON.csv").as_posix(),
+        (output_reference / "COMPARISON.md").as_posix(),
+    ]
+    assert len(references) == len(set(references))
+
+    copied_paths = {}
+    tracked_bytes = {}
+    for reference in references:
+        source = ROOT / reference
+        destination = tmp_path / reference
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        payload = source.read_bytes()
+        destination.write_bytes(payload)
+        copied_paths[reference] = destination
+        tracked_bytes[reference] = payload
+    return {
+        "artifact_root": tmp_path,
+        "copied_paths": copied_paths,
+        "manifest_path": copied_paths[manifest_reference],
+        "output_dir": tmp_path / output_reference,
+        "tracked_bytes": tracked_bytes,
+    }
+
+
 def test_committed_legacy_artifacts_use_manifest_ordinals_and_stay_byte_exact(
+    tmp_path,
     monkeypatch,
 ):
-    manifest = json.loads(SMOKE_MANIFEST.read_text())
-    claims = compute.load_claims(VENDORED_CLAIMS)
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    claims = compute.load_claims(replay["copied_paths"][manifest["claims"]])
     legacy_references = manifest["legacy_artifacts_without_dataset_hashes"]
     ordinal_map = manifest["legacy_claim_ordinals"]
     assert legacy_references == manifest["artifacts"]
+    assert set(manifest["artifact_sha256"]) == set(manifest["artifacts"])
     assert set(ordinal_map) == set(legacy_references)
     assert manifest["legacy_claim_ordinal_derivation"] == (
         compute.LEGACY_CLAIM_ORDINAL_DERIVATION
@@ -1021,10 +1058,9 @@ def test_committed_legacy_artifacts_use_manifest_ordinals_and_stay_byte_exact(
     assert manifest["registry_sha256"] == compute.sha256_file(REGISTRY)
     assert manifest["claims_sha256"] == compute.sha256_file(VENDORED_CLAIMS)
 
-    artifact_paths = []
     for reference in legacy_references:
-        path = ROOT / reference
-        artifact_paths.append(path)
+        path = replay["copied_paths"][reference]
+        assert manifest["artifact_sha256"][reference] == compute.sha256_file(path)
         artifact = json.loads(path.read_text())
         assert "registry_sha256" not in artifact
         assert "frozen_registry" not in artifact
@@ -1041,15 +1077,6 @@ def test_committed_legacy_artifacts_use_manifest_ordinals_and_stay_byte_exact(
             )
         assert ordinal_map[reference] == derived_ordinals
 
-    replay_outputs = [
-        *artifact_paths,
-        SMOKE_STAGED,
-        SMOKE_COMPARISON,
-        SMOKE_COMPARISON.with_name("COMPARISON.md"),
-        SMOKE_MANIFEST,
-    ]
-    original_bytes = {path: path.read_bytes() for path in replay_outputs}
-
     def forbidden(*args, **kwargs):
         raise AssertionError("legacy restage reached a simulation entry point")
 
@@ -1057,14 +1084,216 @@ def test_committed_legacy_artifacts_use_manifest_ordinals_and_stay_byte_exact(
     monkeypatch.setattr(compute, "preflight_certified_dataset", forbidden)
     monkeypatch.setattr(compute, "run_managed_simulation", forbidden)
     summary = compute.restage_existing_run(
-        manifest_path=SMOKE_MANIFEST,
-        output_dir=SMOKE_MANIFEST.parent,
-        artifact_root=ROOT,
+        manifest_path=replay["manifest_path"],
+        output_dir=replay["output_dir"],
+        artifact_root=replay["artifact_root"],
     )
     assert summary["artifacts"] == 13
     assert summary["staged_rows"] == 20
     assert summary["comparison_rows"] == 26
-    assert {path: path.read_bytes() for path in replay_outputs} == original_bytes
+    assert {
+        reference: path.read_bytes()
+        for reference, path in replay["copied_paths"].items()
+    } == replay["tracked_bytes"]
+
+
+def test_restage_rejects_coordinated_artifact_mutation_before_any_writer(
+    tmp_path,
+    monkeypatch,
+):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    reference = (
+        "results/uk/obr_costings/"
+        "efo_march_2026__pa_and_hrt_freezes_2026.json"
+    )
+    artifact_path = replay["copied_paths"][reference]
+    artifact = json.loads(artifact_path.read_text())
+    mutation_gbp = 1_000_000_000
+    artifact["raw_aggregates"]["reform_gbp"]["income_tax"] += mutation_gbp
+    head = artifact["heads"][0]
+    head["reform_aggregates_gbp"]["income_tax"] += mutation_gbp
+    head["raw_reform_minus_baseline_gbp"] += mutation_gbp
+    head["reversal_delta_exchequer_gain"] += mutation_gbp
+    head["pe_value"] -= mutation_gbp
+    compute.write_json(artifact_path, artifact)
+    actual_sha256 = compute.sha256_file(artifact_path)
+    expected_sha256 = manifest["artifact_sha256"][reference]
+    expected_bytes = dict(replay["tracked_bytes"])
+    expected_bytes[reference] = artifact_path.read_bytes()
+    original_parser = compute.parse_json_object_payload
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("artifact mutation reached an output writer")
+
+    def forbid_artifact_parse(payload, *, path, label):
+        if label == "run artifact":
+            raise AssertionError("mutated artifact reached JSON parsing")
+        return original_parser(payload, path=path, label=label)
+
+    monkeypatch.setattr(compute, "parse_json_object_payload", forbid_artifact_parse)
+    monkeypatch.setattr(compute, "write_json", forbidden)
+    monkeypatch.setattr(compute, "write_jsonl", forbidden)
+    monkeypatch.setattr(compare, "write_comparison_outputs_from_rows", forbidden)
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="artifact SHA-256 differs from RUN_MANIFEST",
+    ) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=replay["manifest_path"],
+            output_dir=replay["output_dir"],
+            artifact_root=replay["artifact_root"],
+        )
+    message = str(exc_info.value)
+    assert str(artifact_path) in message
+    assert f"expected {expected_sha256}" in message
+    assert f"actual {actual_sha256}" in message
+    assert "new run" in message
+    assert "re-run" in message
+    assert {
+        recorded: path.read_bytes()
+        for recorded, path in replay["copied_paths"].items()
+    } == expected_bytes
+
+
+def test_restage_rechecks_each_artifact_at_its_writer_boundary(
+    tmp_path,
+    monkeypatch,
+):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    first_reference, second_reference = manifest["artifacts"][:2]
+    first_path = replay["copied_paths"][first_reference]
+    second_path = replay["copied_paths"][second_reference]
+    expected_sha256 = manifest["artifact_sha256"][first_reference]
+    original_verifier = compute.verified_artifact_payload
+    verification_counts = Counter()
+    mutated = False
+
+    def mutate_first_during_second_prewrite_check(path, expected):
+        nonlocal mutated
+        verification_counts[path] += 1
+        if path == second_path and verification_counts[path] == 2:
+            first_path.write_bytes(first_path.read_bytes() + b"\n")
+            mutated = True
+        return original_verifier(path, expected)
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("inter-check artifact mutation reached a writer")
+
+    monkeypatch.setattr(
+        compute,
+        "verified_artifact_payload",
+        mutate_first_during_second_prewrite_check,
+    )
+    monkeypatch.setattr(compute, "write_json", forbidden)
+    monkeypatch.setattr(compute, "write_jsonl", forbidden)
+    monkeypatch.setattr(compare, "write_comparison_outputs_from_rows", forbidden)
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="artifact SHA-256 differs from RUN_MANIFEST",
+    ) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=replay["manifest_path"],
+            output_dir=replay["output_dir"],
+            artifact_root=replay["artifact_root"],
+        )
+    actual_sha256 = compute.sha256_file(first_path)
+    message = str(exc_info.value)
+    assert mutated
+    assert verification_counts[first_path] == 3
+    assert str(first_path) in message
+    assert f"expected {expected_sha256}" in message
+    assert f"actual {actual_sha256}" in message
+    assert "re-run" in message
+
+
+def test_restage_rejects_artifact_missing_from_sha_map(tmp_path, monkeypatch):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    reference = manifest["artifacts"][0]
+    assert replay["copied_paths"][reference].is_file()
+    manifest["artifact_sha256"].pop(reference)
+    compute.write_json(replay["manifest_path"], manifest)
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("incomplete artifact map reached an output writer")
+
+    monkeypatch.setattr(compute, "write_json", forbidden)
+    monkeypatch.setattr(compute, "write_jsonl", forbidden)
+    monkeypatch.setattr(compare, "write_comparison_outputs_from_rows", forbidden)
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="artifact_sha256 is missing entries",
+    ) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=replay["manifest_path"],
+            output_dir=replay["output_dir"],
+            artifact_root=replay["artifact_root"],
+        )
+    assert reference in str(exc_info.value)
+
+
+def test_restage_rejects_sha_map_entry_without_inventory_artifact(
+    tmp_path,
+    monkeypatch,
+):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    reference = "results/uk/obr_costings/missing-artifact.json"
+    manifest["artifact_sha256"][reference] = "a" * 64
+    assert not (tmp_path / reference).exists()
+    compute.write_json(replay["manifest_path"], manifest)
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("extra artifact map entry reached an output writer")
+
+    monkeypatch.setattr(compute, "write_json", forbidden)
+    monkeypatch.setattr(compute, "write_jsonl", forbidden)
+    monkeypatch.setattr(compare, "write_comparison_outputs_from_rows", forbidden)
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="artifact_sha256 entries have no artifact files",
+    ) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=replay["manifest_path"],
+            output_dir=replay["output_dir"],
+            artifact_root=replay["artifact_root"],
+        )
+    assert reference in str(exc_info.value)
+
+
+def test_restage_rejects_sha_map_entry_whose_artifact_file_is_missing(
+    tmp_path,
+    monkeypatch,
+):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    reference = manifest["artifacts"][0]
+    artifact_path = replay["copied_paths"][reference]
+    expected_sha256 = manifest["artifact_sha256"][reference]
+    artifact_path.unlink()
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("missing artifact reached an output writer")
+
+    monkeypatch.setattr(compute, "write_json", forbidden)
+    monkeypatch.setattr(compute, "write_jsonl", forbidden)
+    monkeypatch.setattr(compare, "write_comparison_outputs_from_rows", forbidden)
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="artifact SHA-256 differs from RUN_MANIFEST",
+    ) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=replay["manifest_path"],
+            output_dir=replay["output_dir"],
+            artifact_root=replay["artifact_root"],
+        )
+    message = str(exc_info.value)
+    assert str(artifact_path) in message
+    assert f"expected {expected_sha256}" in message
+    assert "actual <missing>" in message
+    assert "re-run" in message
 
 
 def _descriptor_hits(
@@ -1596,9 +1825,6 @@ def test_no_stage_producer_records_explicit_non_replayable_manifest(
     synthetic_measure,
     synthetic_claim,
 ):
-    null_measure = copy.deepcopy(synthetic_measure)
-    null_measure["computability"] = "not_expressible"
-    null_measure["pe_reform"] = None
     registry_path = tmp_path / "registry.yaml"
     claims_path = tmp_path / "claims.jsonl"
     output_dir = tmp_path / "artifacts"
@@ -1608,7 +1834,7 @@ def test_no_stage_producer_records_explicit_non_replayable_manifest(
             {
                 "schema_version": 1,
                 "benchmark_class": "different_model",
-                "measures": [null_measure],
+                "measures": [synthetic_measure],
             },
             sort_keys=False,
         )
@@ -1618,23 +1844,31 @@ def test_no_stage_producer_records_explicit_non_replayable_manifest(
     def relative_to_test_root(path, *, role):
         return str(Path(path).resolve().relative_to(tmp_path.resolve()))
 
-    def forbidden_simulation(*args, **kwargs):
-        raise AssertionError("--no-stage producer constructed a simulation")
+    release_bundle = {
+        "certified_data_build_id": "synthetic-certified-build",
+        "certified_data_artifact_sha256": SYNTHETIC_DATASET_SHA256,
+    }
+
+    def fake_simulation(*, reform, **kwargs):
+        value = 100.0 if reform is None else 125.0
+        return synthetic_run(release_bundle, value)
 
     monkeypatch.setattr(
         compute,
         "recorded_repo_relative_path",
         relative_to_test_root,
     )
-    monkeypatch.setattr(compute, "run_managed_simulation", forbidden_simulation)
+    monkeypatch.setattr(
+        compute,
+        "relative_to_root",
+        lambda path: str(Path(path).resolve().relative_to(tmp_path.resolve())),
+    )
+    monkeypatch.setattr(compute, "run_managed_simulation", fake_simulation)
     monkeypatch.setattr(
         compute,
         "preflight_certified_dataset",
         lambda: {
-            "release_bundle": {
-                "certified_data_build_id": "synthetic-certified-build",
-                "certified_data_artifact_sha256": SYNTHETIC_DATASET_SHA256,
-            },
+            "release_bundle": release_bundle,
             "runtime_dataset_source": str(tmp_path / "unused-dataset.h5"),
             "hash_seconds": 0.0,
         },
@@ -1661,8 +1895,11 @@ def test_no_stage_producer_records_explicit_non_replayable_manifest(
     manifest = json.loads((output_dir / "RUN_MANIFEST.json").read_text())
     assert manifest["staged"] is False
     assert manifest["registry_sha256"] == compute.sha256_file(registry_path)
-    assert manifest["artifactless_frozen_registry"] == {
-        null_measure["measure_key"]: compute.frozen_registry_measure(null_measure)
+    assert manifest["artifactless_frozen_registry"] == {}
+    artifact_reference = manifest["artifacts"][0]
+    artifact_path = tmp_path / artifact_reference
+    assert manifest["artifact_sha256"] == {
+        artifact_reference: compute.sha256_file(artifact_path)
     }
     assert "staged_output" not in manifest
     assert "staged_rows" not in manifest
@@ -1739,6 +1976,9 @@ def _write_synthetic_replay(
         "claims": "claims.jsonl",
         "claims_sha256": claims_sha256,
         "artifacts": [artifact_reference],
+        "artifact_sha256": {
+            artifact_reference: compute.sha256_file(artifact_path)
+        },
         "legacy_artifacts_without_dataset_hashes": [],
         "artifactless_frozen_registry": {},
         "selected_measures": [synthetic_measure["measure_key"]],
@@ -1815,8 +2055,6 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     artifact.pop("frozen_registry")
     artifact["heads"][0]["external_claim"].pop("claims_slice_sha256")
     artifact["heads"][0]["external_claim"].pop("claim_ordinal")
-    artifact["heads"][0].pop("reversal_delta_exchequer_gain")
-    artifact["heads"][0]["pe_value"] = 25.0
     compute.write_json(artifact_path, artifact)
     manifest = {
         "schema_version": 1,
@@ -1829,6 +2067,9 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         "claims": "claims.jsonl",
         "claims_sha256": claims_sha256,
         "artifacts": [artifact_reference],
+        "artifact_sha256": {
+            artifact_reference: compute.sha256_file(artifact_path)
+        },
         "legacy_artifacts_without_dataset_hashes": [artifact_reference],
         "legacy_claim_ordinal_derivation": (compute.LEGACY_CLAIM_ORDINAL_DERIVATION),
         "legacy_claim_ordinals": {artifact_reference: {"0": 0}},
@@ -1844,6 +2085,7 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     }
     compute.write_json(manifest_path, manifest)
     original_manifest = manifest_path.read_bytes()
+    original_artifact = artifact_path.read_bytes()
     original_raw = copy.deepcopy(artifact["raw_aggregates"])
     original_claim = copy.deepcopy(artifact["heads"][0]["external_claim"])
 
@@ -1874,6 +2116,7 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     assert refreshed["heads"][0]["raw_reform_minus_baseline_gbp"] == 25.0
     assert refreshed["heads"][0]["reversal_delta_exchequer_gain"] == 25.0
     assert refreshed["heads"][0]["pe_value"] == -25.0
+    assert artifact_path.read_bytes() == original_artifact
     staged = [json.loads(line) for line in staged_path.read_text().splitlines()]
     assert len(staged) == 1
     assert staged[0]["pe_value"] == -25.0
@@ -1919,6 +2162,11 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     mismatched_artifact = json.loads(artifact_path.read_text())
     mismatched_artifact["claims_sha256"] = mismatched_claims_sha256
     compute.write_json(artifact_path, mismatched_artifact)
+    mismatch_manifest = copy.deepcopy(manifest)
+    mismatch_manifest["artifact_sha256"][artifact_reference] = (
+        compute.sha256_file(artifact_path)
+    )
+    compute.write_json(manifest_path, mismatch_manifest)
     mismatch_outputs = {
         path: path.read_bytes()
         for path in (
@@ -2051,6 +2299,68 @@ def test_restage_rechecks_registry_sha_immediately_before_writes(
     } == original_outputs
 
 
+def test_restage_rechecks_artifact_sha_immediately_before_writes(
+    tmp_path,
+    monkeypatch,
+    synthetic_measure,
+    synthetic_claim,
+):
+    replay = _write_synthetic_replay(
+        tmp_path,
+        synthetic_measure,
+        synthetic_claim,
+    )
+    manifest = json.loads(replay["manifest_path"].read_text())
+    artifact_reference = manifest["artifacts"][0]
+    expected_sha256 = manifest["artifact_sha256"][artifact_reference]
+    unchanged_paths = [
+        path
+        for path in replay["output_paths"]
+        if path != replay["artifact_path"]
+    ]
+    original_outputs = {path: path.read_bytes() for path in unchanged_paths}
+    original_rederive = compute.rederive_artifact_orientation
+    mutated = False
+
+    def mutate_artifact_during_replay(*args, **kwargs):
+        nonlocal mutated
+        artifact = original_rederive(*args, **kwargs)
+        if not mutated:
+            payload = replay["artifact_path"].read_bytes()
+            replay["artifact_path"].write_bytes(payload + b"\n")
+            mutated = True
+        return artifact
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("artifact TOCTOU mutation reached an output writer")
+
+    monkeypatch.setattr(
+        compute,
+        "rederive_artifact_orientation",
+        mutate_artifact_during_replay,
+    )
+    monkeypatch.setattr(compute, "write_json", forbidden)
+    monkeypatch.setattr(compute, "write_jsonl", forbidden)
+    monkeypatch.setattr(compare, "write_comparison_outputs_from_rows", forbidden)
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="artifact SHA-256 differs from RUN_MANIFEST",
+    ) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=replay["manifest_path"],
+            output_dir=replay["output_dir"],
+            artifact_root=replay["artifact_root"],
+        )
+    actual_sha256 = compute.sha256_file(replay["artifact_path"])
+    message = str(exc_info.value)
+    assert mutated
+    assert str(replay["artifact_path"]) in message
+    assert f"expected {expected_sha256}" in message
+    assert f"actual {actual_sha256}" in message
+    assert "re-run" in message
+    assert {path: path.read_bytes() for path in unchanged_paths} == original_outputs
+
+
 @pytest.mark.parametrize(
     ("missing_field", "message_fragment"),
     [
@@ -2073,6 +2383,12 @@ def test_nonlegacy_artifact_must_carry_frozen_registry_replay_fields(
     artifact = json.loads(replay["artifact_path"].read_text())
     artifact.pop(missing_field)
     compute.write_json(replay["artifact_path"], artifact)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    artifact_reference = manifest["artifacts"][0]
+    manifest["artifact_sha256"][artifact_reference] = compute.sha256_file(
+        replay["artifact_path"]
+    )
+    compute.write_json(replay["manifest_path"], manifest)
     original_outputs = {path: path.read_bytes() for path in replay["output_paths"]}
 
     with pytest.raises(
@@ -2408,6 +2724,10 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
         "pa_smoke_probe": False,
         "certified_cache_preflight": {"release_bundle": bundle},
         "artifacts": artifact_references,
+        "artifact_sha256": {
+            reference: compute.sha256_file(path)
+            for reference, path in zip(artifact_references, artifact_paths)
+        },
         "legacy_artifacts_without_dataset_hashes": [],
         "artifactless_frozen_registry": {
             measure["measure_key"]: compute.frozen_registry_measure(measure)
