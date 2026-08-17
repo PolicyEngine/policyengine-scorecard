@@ -37,11 +37,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_REGISTRY = ROOT / "data" / "uk" / "obr_measure_reforms.yaml"
 DEFAULT_CLAIMS = (
-    ROOT
-    / "sources"
-    / "harvest-20260802"
-    / "uk_obr"
-    / "obr_costings_claims.jsonl"
+    ROOT / "sources" / "harvest-20260802" / "uk_obr" / "obr_costings_claims.jsonl"
 )
 DEFAULT_OUTPUT_DIR = ROOT / "results" / "uk" / "obr_costings"
 DEFAULT_STAGED_OUTPUT = ROOT / "results" / "uk" / "staged" / "obr_costings.jsonl"
@@ -310,9 +306,7 @@ def frozen_claim_differences(
     return [
         {
             "field": field,
-            "artifact": (
-                "<missing>" if artifact_value is _MISSING else artifact_value
-            ),
+            "artifact": ("<missing>" if artifact_value is _MISSING else artifact_value),
             "claims": "<missing>" if claims_value is _MISSING else claims_value,
         }
     ]
@@ -405,9 +399,7 @@ def validate_registry(
                 claim
                 for claim in claims
                 if isinstance(claim.get("period"), int)
-                and _source_candidates(
-                    [claim], measure, claim["period"]
-                )
+                and _source_candidates([claim], measure, claim["period"])
             ]
             nonzero_years = [
                 claim["period"]
@@ -417,9 +409,7 @@ def validate_registry(
                 and claim["value"] != 0
             ]
             if not nonzero_years:
-                raise RegistryError(
-                    f"{key}: no nonzero harvested costing for start_fy"
-                )
+                raise RegistryError(f"{key}: no nonzero harvested costing for start_fy")
             expected_start_fy = min(nonzero_years)
             if measure["start_fy"] != expected_start_fy:
                 raise RegistryError(
@@ -1572,9 +1562,8 @@ def restage_existing_run(
     if not isinstance(run_id, str) or not run_id:
         raise ArtifactRestageError(f"{manifest_path}: run_id must be non-empty text")
     references = manifest.get("artifacts")
-    if (
-        not isinstance(references, list)
-        or not all(isinstance(reference, str) and reference for reference in references)
+    if not isinstance(references, list) or not all(
+        isinstance(reference, str) and reference for reference in references
     ):
         raise ArtifactRestageError(
             f"{manifest_path}: artifacts must be a list of paths"
@@ -1589,14 +1578,11 @@ def restage_existing_run(
         raise ArtifactRestageError(
             f"{manifest_path}: artifact paths resolve to duplicate files"
         )
-    legacy_references = manifest.get(
-        "legacy_artifacts_without_dataset_hashes", []
-    )
+    legacy_references = manifest.get("legacy_artifacts_without_dataset_hashes", [])
     if (
         not isinstance(legacy_references, list)
         or not all(
-            isinstance(reference, str) and reference
-            for reference in legacy_references
+            isinstance(reference, str) and reference for reference in legacy_references
         )
         or len(set(legacy_references)) != len(legacy_references)
     ):
@@ -1628,9 +1614,10 @@ def restage_existing_run(
     claims_path = resolve_recorded_path(claims_reference, artifact_root)
     staged_path = resolve_recorded_path(manifest.get("staged_output"), artifact_root)
     recorded_claims_sha256 = manifest.get("claims_sha256")
-    if not isinstance(recorded_claims_sha256, str) or re.fullmatch(
-        r"[0-9a-f]{64}", recorded_claims_sha256
-    ) is None:
+    if (
+        not isinstance(recorded_claims_sha256, str)
+        or re.fullmatch(r"[0-9a-f]{64}", recorded_claims_sha256) is None
+    ):
         raise ArtifactRestageError(
             f"{manifest_path}: claims_sha256 must be a lowercase SHA-256"
         )
@@ -1725,8 +1712,7 @@ def restage_existing_run(
             continue
         for year in years:
             mapped_claims = [
-                resolve_claim(claims, measure, head, year)
-                for head in measure["heads"]
+                resolve_claim(claims, measure, head, year) for head in measure["heads"]
             ]
             if any(claim is not None for claim in mapped_claims):
                 expected_regular_pairs.add((measure["measure_key"], year))
@@ -1785,9 +1771,7 @@ def restage_existing_run(
             claims=None if diagnostic_only else claims,
             expected_claims_sha256=recorded_claims_sha256,
             claim_differences=claim_differences,
-            allow_missing_dataset_hashes=(
-                path.resolve() in resolved_legacy_paths
-            ),
+            allow_missing_dataset_hashes=(path.resolve() in resolved_legacy_paths),
         )
         replacements.append((path, refreshed))
         if not diagnostic_only:
@@ -1805,9 +1789,7 @@ def restage_existing_run(
             details.append(detail)
             if claims_sha_drift and allow_claims_drift:
                 print(f"claims drift field: {detail}", file=sys.stderr, flush=True)
-        raise ArtifactRestageError(
-            "frozen/claims fields differ: " + "; ".join(details)
-        )
+        raise ArtifactRestageError("frozen/claims fields differ: " + "; ".join(details))
     if claims_sha_drift and not allow_claims_drift:
         raise ArtifactRestageError(
             f"{claims_path}: claims SHA-256 differs from RUN_MANIFEST; "

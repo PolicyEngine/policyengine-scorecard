@@ -316,9 +316,7 @@ def test_dividend_lag_overrides_match_installed_engine_dates():
                 first_year = int(match.group(1))
                 final_year = int(match.group(4))
                 years.update(
-                    year
-                    for year in lagging_years
-                    if first_year <= year <= final_year
+                    year for year in lagging_years if first_year <= year <= final_year
                 )
         if years:
             affected_years[measure["measure_key"]] = years
@@ -765,9 +763,7 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
     )
     assert manifest["claims_sha256"] == compute.sha256_file(VENDORED_CLAIMS)
     assert len(manifest["artifacts"]) == 13
-    assert manifest["legacy_artifacts_without_dataset_hashes"] == manifest[
-        "artifacts"
-    ]
+    assert manifest["legacy_artifacts_without_dataset_hashes"] == manifest["artifacts"]
     assert all(row["status"] == "constructed" for row in rows)
 
     traced_artifacts = set()
@@ -1330,9 +1326,7 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         compute.main(arguments)
 
 
-def test_restage_rejects_vendored_source_model_drift_without_writes(
-    tmp_path, capsys
-):
+def test_restage_rejects_vendored_source_model_drift_without_writes(tmp_path, capsys):
     measure_key = "efo_march_2026__pa_and_hrt_freezes"
     claims_path = tmp_path / "claims.jsonl"
     claims_path.write_bytes(VENDORED_CLAIMS.read_bytes())
@@ -1352,11 +1346,7 @@ def test_restage_rejects_vendored_source_model_drift_without_writes(
     claims_path.write_text("\n".join(raw_lines) + "\n")
 
     source_artifact_path = (
-        ROOT
-        / "results"
-        / "uk"
-        / "obr_costings"
-        / f"{measure_key}_2026.json"
+        ROOT / "results" / "uk" / "obr_costings" / f"{measure_key}_2026.json"
     )
     artifact_path = tmp_path / "artifact.json"
     artifact = json.loads(source_artifact_path.read_text())
@@ -1432,9 +1422,7 @@ def test_restage_rejects_vendored_source_model_drift_without_writes(
     assert {path: path.read_bytes() for path in original_outputs} == original_outputs
 
 
-def test_full_selection_restage_reconstructs_five_null_reforms(
-    tmp_path, monkeypatch
-):
+def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeypatch):
     spec = compute.load_registry(REGISTRY)
     measures = spec["measures"]
     claims_path = tmp_path / "claims.jsonl"
@@ -1476,11 +1464,7 @@ def test_full_selection_restage_reconstructs_five_null_reforms(
         ]
         assert any(claim is not None for claim in mapped_claims)
         variables = sorted(
-            {
-                variable
-                for head in measure["heads"]
-                for variable in head["pe_variables"]
-            }
+            {variable for head in measure["heads"] for variable in head["pe_variables"]}
         )
         output_path = artifacts_dir / f"{measure['measure_key']}_2026.json"
         artifact = compute.build_artifact(
@@ -1552,14 +1536,10 @@ def test_full_selection_restage_reconstructs_five_null_reforms(
     assert summary["staged_rows"] == len(expected_rows)
     replayed_rows = compute.load_claims(staged_path)
     constructed_keys = {
-        row["measure_key"]
-        for row in replayed_rows
-        if row["status"] == "constructed"
+        row["measure_key"] for row in replayed_rows if row["status"] == "constructed"
     }
     not_computed_keys = {
-        row["measure_key"]
-        for row in replayed_rows
-        if row["status"] == "not_computed"
+        row["measure_key"] for row in replayed_rows if row["status"] == "not_computed"
     }
     assert len(constructed_keys) == 21
     assert len(not_computed_keys) == 5
@@ -1575,6 +1555,7 @@ def test_full_selection_restage_reconstructs_five_null_reforms(
     )
     assert second_summary == summary
     assert {path: path.read_bytes() for path in output_paths} == first_outputs
+
 
 @pytest.mark.parametrize(
     ("obr_value", "pe_value", "ratio", "ratio_bin"),
