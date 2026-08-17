@@ -24,6 +24,10 @@ from pipeline import compute_uk_obr_costings as compute
 
 ROOT = Path(__file__).resolve().parent.parent
 REGISTRY = ROOT / "data" / "uk" / "obr_measure_reforms.yaml"
+SMOKE_STAGED = ROOT / "results" / "uk" / "staged" / "obr_costings.jsonl"
+SMOKE_MANIFEST = (
+    ROOT / "results" / "uk" / "obr_costings" / "RUN_MANIFEST.json"
+)
 STAGED_REQUIRED_FIELDS = {
     "external_claim_match",
     "engine_version",
@@ -292,6 +296,73 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
         == synthetic_claim["conditions"]
     )
     assert saved["heads"][0]["raw_reform_minus_baseline_gbp"] == 25.0
+
+
+def test_committed_smoke_rows_trace_to_certified_artifacts():
+    rows = [json.loads(line) for line in SMOKE_STAGED.read_text().splitlines()]
+    manifest = json.loads(SMOKE_MANIFEST.read_text())
+
+    assert len(rows) == manifest["staged_rows"] == 20
+    assert manifest["run_id"] == "campaign-20260816-obr-costings"
+    assert len(manifest["artifacts"]) == 13
+    assert all(row["status"] == "constructed" for row in rows)
+
+    traced_artifacts = set()
+    for row in rows:
+        assert STAGED_REQUIRED_FIELDS <= set(row)
+        assert set(row["external_claim_match"]) == {
+            "source",
+            "metric",
+            "period",
+            "conditions",
+        }
+        assert row["benchmark_class"] == "different_model"
+
+        artifact_path = ROOT / row["artifact"]
+        artifact = json.loads(artifact_path.read_text())
+        traced_artifacts.add(row["artifact"])
+
+        assert artifact["artifact"] == row["artifact"]
+        assert artifact["data_bundle"] == row["data_bundle"]
+        assert artifact["engine_version"] == row["engine_version"]
+        assert artifact["run_id"] == row["run_id"]
+        assert artifact["measure_key"] == row["measure_key"]
+        assert artifact["year"] == row["external_claim_match"]["period"]
+        assert artifact["diagnostic_only"] is False
+
+        matching_heads = []
+        for head in artifact["heads"]:
+            claim = head["external_claim"]
+            descriptor = {
+                "source": claim["source"],
+                "metric": claim["metric"],
+                "period": claim["period"],
+                "conditions": claim["conditions"],
+            }
+            if descriptor == row["external_claim_match"]:
+                matching_heads.append(head)
+
+        assert len(matching_heads) == 1
+        assert matching_heads[0]["pe_value"] == row["pe_value"]
+        assert matching_heads[0]["pe_variables"]
+
+    # Six measures across two years are staged. The thirteenth manifest
+    # artifact is the separately requested PA +GBP 500 diagnostic.
+    assert len(traced_artifacts) == 12
+    diagnostic = json.loads(
+        (
+            ROOT
+            / "results"
+            / "uk"
+            / "obr_costings"
+            / "diagnostic__personal_allowance_plus_500_2026.json"
+        ).read_text()
+    )
+    assert diagnostic["diagnostic_only"] is True
+    assert round(diagnostic["heads"][0]["pe_value"] / 1e9, 2) == -4.48
+    assert round(diagnostic["raw_aggregates"]["baseline_gbp"]["income_tax"] / 1e9, 1) == (
+        421.9
+    )
 
 
 def test_resolver_rejects_ambiguous_and_missing_mapped_heads(

@@ -1,0 +1,154 @@
+{
+  "artifact": "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2026.json",
+  "benchmark_class": "different_model",
+  "calendar_year_proxy": "PE calendar year 2026 proxies FY 2026-27.",
+  "computability": "expressible",
+  "computed_at": "2026-08-17T03:29:35.618243+00:00",
+  "construction": "reversal_on_certified_world",
+  "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "diagnostic_only": false,
+  "engine_version": "2.89.2",
+  "fiscal_event": "EFO March 2026 re-estimate",
+  "fy": "2026-27",
+  "heads": [
+    {
+      "baseline_aggregates_gbp": {
+        "income_tax": 421891913533.19946
+      },
+      "channel": "tax",
+      "condition_key": null,
+      "external_claim": {
+        "conditions": {
+          "basis": "unstated",
+          "fy": "2026-27",
+          "geography": "UK",
+          "line_item": "Additional rate threshold: reduction",
+          "note": "latest re-estimated yield of previously announced personal tax measures"
+        },
+        "metric": "revenue_change",
+        "normalization": "GBP billion x 1e9 -> GBP",
+        "period": 2026,
+        "reform_hint": "Additional rate threshold: reduction",
+        "source": "obr",
+        "source_metric_field": "metric",
+        "source_table": "3.17: 3.17",
+        "time_basis": "fiscal_year",
+        "unit": "gbp",
+        "value_gbp": 940000000.0,
+        "value_raw": 0.94
+      },
+      "external_metric": "revenue_change",
+      "obr_head": "Income tax",
+      "pe_value": -1839668561.8461914,
+      "pe_variables": [
+        "income_tax"
+      ],
+      "raw_reform_minus_baseline_gbp": -1839668561.8461914,
+      "reform_aggregates_gbp": {
+        "income_tax": 420052244971.3533
+      },
+      "sign_convention": "positive_gain_to_exchequer",
+      "source_table": "3.17: 3.17"
+    }
+  ],
+  "measure_key": "efo_march_2026__additional_rate_threshold_reduction",
+  "notes": "Reverses \u00a3125,140 to the previous \u00a3150,000 threshold. Both the main and dividend threshold paths are set because PE-UK 2.89.2 stores them separately.",
+  "obr_description": "Additional rate threshold: reduction",
+  "performance": {
+    "baseline": {
+      "cleanup_seconds": 0.49896574998274446,
+      "end_rss_bytes": 21935964160,
+      "peak_rss_bytes": 21935964160,
+      "rss_after_gc_bytes": 1431846912,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 474726400,
+      "wall_seconds": 31.40236329199979
+    },
+    "reform": {
+      "cleanup_seconds": 0.8198697500047274,
+      "end_rss_bytes": 27613003776,
+      "peak_rss_bytes": 27613003776,
+      "rss_after_gc_bytes": 1568178176,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 1570668544,
+      "wall_seconds": 54.370941833010875
+    }
+  },
+  "policyengine_bundles": {
+    "baseline": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    },
+    "reform": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    }
+  },
+  "policyengine_version": "5.0.2",
+  "raw_aggregates": {
+    "baseline_gbp": {
+      "income_tax": 421891913533.19946
+    },
+    "reform_gbp": {
+      "income_tax": 420052244971.3533
+    }
+  },
+  "reform": {
+    "gov.hmrc.income_tax.rates.dividends[2].threshold": {
+      "2024-01-01.2030-12-31": 150000
+    },
+    "gov.hmrc.income_tax.rates.uk[2].threshold": {
+      "2024-01-01.2030-12-31": 150000
+    }
+  },
+  "run_id": "campaign-20260816-obr-costings",
+  "schema_version": 1,
+  "source_table": "3.17: 3.17",
+  "variable_metadata": {
+    "income_tax": {
+      "definition_period": "year",
+      "entity": "person",
+      "label": "Income Tax",
+      "unit": "currency-GBP"
+    }
+  },
+  "year": 2026
+}

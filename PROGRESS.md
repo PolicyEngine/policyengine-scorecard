@@ -4,10 +4,11 @@ Updated: 2026-08-16
 
 ## State
 
-In progress. The 26-measure registry, offline compute/staging pipeline,
-descriptive comparison renderer, and focused test module are built. Registry
-paths, aggregate variables, and harvested row identities validate without
-constructing a managed simulation. The bounded smoke run remains.
+Complete locally for the requested bounded lane build and smoke run. The
+26-measure registry, offline compute/staging pipeline, descriptive comparison
+renderer, committed certified run artifacts, and tests are in place. The smoke
+sample ran six measures for two years plus the requested PA diagnostic. The
+full 26-measure population was intentionally not run.
 
 ## Done
 
@@ -71,20 +72,38 @@ constructing a managed simulation. The bounded smoke run remains.
   source resolution, finite JSON, null-reform selection, bundle identity, and
   an output-free offline CLI dry run. Comparison tests also cover every ratio
   boundary, artifact-backed source resolution, and explicit mapped-head-only
-  totals. All 26 focused cases and all 193 repository tests pass in the
-  certified venv; the only warning is an upstream Pydantic deprecation from
-  policyengine-uk.
+  totals.
 - Built `pipeline/compare_uk_obr_costings.py`. It produces head-level CSV and
   Markdown rows with signed PE/OBR ratios, descriptive bins, and named model,
   adjustment, baseline, timing, and head-scope axes; any remainder is labelled
   `unexplained`. For PMD measures with at least two computed mapped heads, it
   adds a comparison-only mapped-head sum that is explicitly not an external
   TOTAL claim. No score-like summary statistic is produced.
+- Ran the requested smoke sample offline against certified build
+  `populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z` (PolicyEngine 5.0.2,
+  PolicyEngine UK 2.89.2, bundle `uk-5.0.2`). The run produced 13 per-run JSON
+  artifacts (12 staged measure-years plus one diagnostic), 20 staged head/total
+  rows, and 26 comparison rows including six comparison-only mapped-head
+  totals.
+- Traced all 20 non-null staged PE values to exactly one head in exactly one
+  saved artifact and to the artifact's frozen source snapshot. The committed
+  test also checks the full bundle id, engine version, run id, measure, year,
+  raw aggregates, and diagnostic separation.
+- Re-ran the comparison renderer from the staged file and source harvest. It
+  wrote `results/uk/obr_costings/COMPARISON.csv` and `COMPARISON.md`; the
+  artifact/source trace audit completed successfully.
+- All 27 focused cases and all 194 repository tests pass in the certified
+  venv. The sole warning is an upstream Pydantic deprecation emitted by
+  policyengine-uk.
 
 ## Next
 
-- Run only the requested bounded offline smoke sample, then record measured
-  wall time, peak memory, results, uncertainties, and unverified items here.
+- Fable can review the registry constructions and run the full selected
+  population after the review gate.
+- A separately owned UK ingestor still needs an OBR-aware claim attachment
+  seam before these staged rows can enter the campaign database.
+- If private issue/PR text becomes available, reconcile #54, #55, and #48
+  against the brief used here before merge.
 
 ## Registry counts
 
@@ -95,7 +114,80 @@ constructing a managed simulation. The bounded smoke run remains.
 
 ## Smoke results
 
-Not yet run.
+Command (the managed calls were serial, with one baseline retained only as
+aggregates per year):
+
+```text
+/Users/maxghenis/scorecard-lanes/.venv-obr/bin/python \
+  pipeline/compute_uk_obr_costings.py \
+  --measures efo_march_2026__pa_and_hrt_freezes \
+  efo_march_2026__additional_rate_threshold_reduction \
+  spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp \
+  spring_budget_2024__hicbc_threshold_and_taper \
+  autumn_budget_2024__employer_nics_package \
+  autumn_budget_2025__uc_child_element_remove_two_child_limit \
+  --years 2026 2027 --limit 6 --pa-smoke-probe
+```
+
+The values below are GBP billions in the harvested
+`positive_gain_to_exchequer` convention. “Mapped total” sums only the OBR heads
+listed in the annotation; it is not an OBR TOTAL claim. Every row has
+`benchmark_class = different_model`, uses PE calendar year Y as the proxy for
+FY Y-(Y+1), compares static PE with behavioural-adjusted OBR, and retains the
+literal certified-world reversal direction. The remainder after those named
+axes is `unexplained`.
+
+| Measure | FY | Scope | OBR £bn | PE £bn | PE/OBR | Bin | Measure-specific annotation |
+|---|---:|---|---:|---:|---:|---|---|
+| PA and HRT freezes | 2026-27 | OBR total | +34.010 | -47.681 | -1.402 | opposite_sign | Table 3.17 bundled line; published indexed PA/HRT reversal |
+| PA and HRT freezes | 2027-28 | OBR total | +38.475 | -53.452 | -1.389 | opposite_sign | Table 3.17 bundled line; published indexed PA/HRT reversal |
+| Additional-rate threshold reduction | 2026-27 | OBR total | +0.940 | -1.840 | -1.957 | opposite_sign | Table 3.17 threshold reversal |
+| Additional-rate threshold reduction | 2027-28 | OBR total | +0.970 | -1.933 | -1.993 | opposite_sign | Table 3.17 threshold reversal |
+| SB2024 Class 1 employee NICs cut | 2026-27 | Mapped total | -9.129 | +11.965 | -1.311 | opposite_sign | Income tax + NICs + welfare-inside-cap only; partial head scope |
+| SB2024 Class 1 employee NICs cut | 2027-28 | Mapped total | -9.244 | +12.247 | -1.325 | opposite_sign | Income tax + NICs + welfare-inside-cap only; partial head scope |
+| SB2024 HICBC threshold/taper | 2026-27 | Mapped total | -0.641 | +1.721 | -2.684 | opposite_sign | Income tax + welfare-inside-cap; fixed PE claiming makes child-benefit delta zero |
+| SB2024 HICBC threshold/taper | 2027-28 | Mapped total | -0.647 | +1.844 | -2.850 | opposite_sign | Income tax + welfare-inside-cap; fixed PE claiming makes child-benefit delta zero |
+| AB2024 employer NICs package | 2026-27 | Mapped total | +23.610 | -16.247 | -0.688 | opposite_sign | Income tax + NICs only; no Employment Allowance/firm mechanics; other OBR heads excluded |
+| AB2024 employer NICs package | 2027-28 | Mapped total | +24.027 | -16.422 | -0.683 | opposite_sign | Income tax + NICs only; no Employment Allowance/firm mechanics; other OBR heads excluded |
+| AB2025 remove UC two-child limit | 2026-27 | Welfare inside cap | -1.887 | +1.104 | -0.585 | opposite_sign | UC inside-cap aggregate only; outside-cap OBR head excluded |
+| AB2025 remove UC two-child limit | 2027-28 | Welfare inside cap | -2.101 | +1.182 | -0.563 | opposite_sign | UC inside-cap aggregate only; outside-cap OBR head excluded |
+
+All twelve ratios are in the descriptive `opposite_sign` bin because these
+rows retain reversal-minus-certified-baseline while the OBR rows describe the
+announced measure. They were not reoriented; this is the named construction
+axis, not a score.
+
+The separate diagnostic changed the 2026 personal allowance from £12,570 to
+£13,070. Baseline income tax was £421.891913bn and the static income-tax delta
+was exactly -£4,475,428,181.94, or -£4.48bn rounded as required. This diagnostic
+has its own artifact and is not staged against an OBR claim.
+
+### Smoke performance
+
+The end-to-end run took 798.504 seconds (13m 18.5s). The fifteen managed sims
+accounted for 783.002 seconds: two reused baselines, twelve measure-year
+reforms, and one diagnostic. Peak memory is sampled process RSS, not an
+incremental allocation. Cleanup and `gc.collect()` ran after every reform.
+
+| Simulation | Year | Wall seconds | Peak RSS GiB |
+|---|---:|---:|---:|
+| Baseline | 2026 | 31.402 | 20.429 |
+| Baseline | 2027 | 30.783 | 20.778 |
+| PA and HRT freezes | 2026 | 53.083 | 31.756 |
+| Additional-rate threshold reduction | 2026 | 54.371 | 25.717 |
+| SB2024 Class 1 employee NICs cut | 2026 | 60.772 | 23.472 |
+| SB2024 HICBC threshold/taper | 2026 | 66.139 | 19.039 |
+| AB2024 employer NICs package | 2026 | 56.375 | 26.893 |
+| AB2025 remove UC two-child limit | 2026 | 59.976 | 26.318 |
+| PA +£500 diagnostic | 2026 | 54.618 | 29.788 |
+| PA and HRT freezes | 2027 | 55.165 | 27.529 |
+| Additional-rate threshold reduction | 2027 | 49.910 | 31.891 |
+| SB2024 Class 1 employee NICs cut | 2027 | 51.499 | 32.823 |
+| SB2024 HICBC threshold/taper | 2027 | 51.385 | 31.905 |
+| AB2024 employer NICs package | 2027 | 53.868 | 27.373 |
+| AB2025 remove UC two-child limit | 2027 | 53.656 | 32.888 |
+
+Maximum sampled process RSS was 32.888 GiB.
 
 ## Uncertainties and offline limitations
 
@@ -135,3 +227,16 @@ Not yet run.
 - The HICBC welfare counterpart uses gross `child_benefit` with fixed
   `would_claim_child_benefit`; its static delta should be zero. The OBR welfare
   head includes claiming effects, so the absent PE claiming response is named.
+- Only the requested six-measure/two-year sample ran. No PE value is claimed
+  for the other registry entries, and the full population remains unverified.
+- PMD includes allocations in years that precede the modeled policy-effective
+  date for some descriptions. The pipeline preserves those source rows rather
+  than suppressing them; why each OBR allocation appears there is unexplained.
+- The smoke differences beyond the named model, behavioural/static,
+  construction-direction, timing, and head-scope axes are unexplained. No
+  causal explanation is inferred from ratio magnitude.
+- The first smoke attempt wrote no run artifact and stopped before simulation
+  when PyTables found the certified HF-cache file read-only. The successful
+  run used a SHA-verified, ignored writable mirror of those same cached bytes;
+  no download was attempted. Portability of that mirror path outside this
+  checkout was not tested.

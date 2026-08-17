@@ -1,0 +1,132 @@
+{
+  "artifact": "results/uk/obr_costings/diagnostic__personal_allowance_plus_500_2026.json",
+  "benchmark_class": "different_model",
+  "calendar_year_proxy": "PE calendar year 2026 proxies FY 2026-27.",
+  "computability": "expressible",
+  "computed_at": "2026-08-17T03:34:39.733227+00:00",
+  "construction": "forward_from_baseline",
+  "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "diagnostic_only": true,
+  "engine_version": "2.89.2",
+  "fiscal_event": "Engine-path diagnostic",
+  "fy": "2026-27",
+  "heads": [
+    {
+      "baseline_aggregates_gbp": {
+        "income_tax": 421891913533.19946
+      },
+      "channel": "tax",
+      "condition_key": null,
+      "external_claim": null,
+      "external_metric": "revenue_change",
+      "obr_head": "Income tax",
+      "pe_value": -4475428181.941223,
+      "pe_variables": [
+        "income_tax"
+      ],
+      "raw_reform_minus_baseline_gbp": -4475428181.941223,
+      "reform_aggregates_gbp": {
+        "income_tax": 417416485351.25824
+      },
+      "sign_convention": "positive_gain_to_exchequer",
+      "source_table": "Not an OBR claim"
+    }
+  ],
+  "measure_key": "diagnostic__personal_allowance_plus_500",
+  "notes": "Requested smoke diagnostic only: a \u00a3500 PA increase in calendar 2026. It is not staged as an OBR comparison and is not the full Table 3.19 counterfactual.",
+  "obr_description": "Personal allowance \u00a312,570 to \u00a313,070 diagnostic",
+  "performance": {
+    "baseline": {
+      "cleanup_seconds": 0.49896574998274446,
+      "end_rss_bytes": 21935964160,
+      "peak_rss_bytes": 21935964160,
+      "rss_after_gc_bytes": 1431846912,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 474726400,
+      "wall_seconds": 31.40236329199979
+    },
+    "reform": {
+      "cleanup_seconds": 0.9001721249660477,
+      "end_rss_bytes": 31851446272,
+      "peak_rss_bytes": 31984926720,
+      "rss_after_gc_bytes": 1789116416,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 1591672832,
+      "wall_seconds": 54.61776916595409
+    }
+  },
+  "policyengine_bundles": {
+    "baseline": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    },
+    "reform": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    }
+  },
+  "policyengine_version": "5.0.2",
+  "raw_aggregates": {
+    "baseline_gbp": {
+      "income_tax": 421891913533.19946
+    },
+    "reform_gbp": {
+      "income_tax": 417416485351.25824
+    }
+  },
+  "reform": {
+    "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+      "2026-01-01.2026-12-31": 13070
+    }
+  },
+  "run_id": "campaign-20260816-obr-costings",
+  "schema_version": 1,
+  "source_table": "Not an OBR claim",
+  "variable_metadata": {
+    "income_tax": {
+      "definition_period": "year",
+      "entity": "person",
+      "label": "Income Tax",
+      "unit": "currency-GBP"
+    }
+  },
+  "year": 2026
+}

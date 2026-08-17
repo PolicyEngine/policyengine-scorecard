@@ -1,0 +1,110 @@
+{
+  "artifacts": [
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json",
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2026.json",
+    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2026.json",
+    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2026.json",
+    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2026.json",
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2026.json",
+    "results/uk/obr_costings/diagnostic__personal_allowance_plus_500_2026.json",
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2027.json",
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2027.json",
+    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2027.json",
+    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2027.json",
+    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2027.json",
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2027.json"
+  ],
+  "baseline_by_year": {
+    "2026": {
+      "aggregates_gbp": {
+        "child_benefit": 17434702263.490685,
+        "income_tax": 421891913533.19946,
+        "ni_class_1_employee": 57077663137.03293,
+        "ni_class_1_employer": 185481157065.2179,
+        "ni_class_4": 4372643327.084593,
+        "universal_credit": 39887838277.66961
+      },
+      "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "performance": {
+        "cleanup_seconds": 0.49896574998274446,
+        "end_rss_bytes": 21935964160,
+        "peak_rss_bytes": 21935964160,
+        "rss_after_gc_bytes": 1431846912,
+        "rss_after_gc_method": "psutil_process_rss",
+        "rss_method": "psutil_process_rss",
+        "start_rss_bytes": 474726400,
+        "wall_seconds": 31.40236329199979
+      }
+    },
+    "2027": {
+      "aggregates_gbp": {
+        "child_benefit": 17901653521.40091,
+        "income_tax": 443671961318.895,
+        "ni_class_1_employee": 58663620767.67447,
+        "ni_class_1_employer": 191108230450.7594,
+        "ni_class_4": 3775642037.858,
+        "universal_credit": 40661555824.15493
+      },
+      "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "performance": {
+        "cleanup_seconds": 0.4939094170113094,
+        "end_rss_bytes": 22310191104,
+        "peak_rss_bytes": 22310191104,
+        "rss_after_gc_bytes": 1830535168,
+        "rss_after_gc_method": "psutil_process_rss",
+        "rss_method": "psutil_process_rss",
+        "start_rss_bytes": 1788067840,
+        "wall_seconds": 30.782723625015933
+      }
+    }
+  },
+  "certified_cache_preflight": {
+    "cached_file": "populace_uk_2023.h5",
+    "dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "hash_seconds": 1.0075166249880567,
+    "local_files_only": true,
+    "managed_local_mirror": "data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+    "managed_local_mirror_created": false,
+    "release_bundle": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2"
+    },
+    "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+  },
+  "claims": "/Users/maxghenis/scorecard-harvest/uk_obr/claims_staged.jsonl",
+  "completed_at": "2026-08-17T03:40:32.997396+00:00",
+  "pa_smoke_probe": true,
+  "registry": "data/uk/obr_measure_reforms.yaml",
+  "run_id": "campaign-20260816-obr-costings",
+  "schema_version": 1,
+  "selected_measures": [
+    "efo_march_2026__pa_and_hrt_freezes",
+    "efo_march_2026__additional_rate_threshold_reduction",
+    "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "spring_budget_2024__hicbc_threshold_and_taper",
+    "autumn_budget_2024__employer_nics_package",
+    "autumn_budget_2025__uc_child_element_remove_two_child_limit"
+  ],
+  "skipped": [],
+  "staged_output": "results/uk/staged/obr_costings.jsonl",
+  "staged_rows": 20,
+  "started_at": "2026-08-17T03:27:14.492984+00:00",
+  "years": [
+    2026,
+    2027
+  ]
+}
