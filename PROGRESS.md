@@ -7,7 +7,8 @@ Updated: 2026-08-16
 In progress. The external harvest, campaign precedent, ingest contract,
 architecture, and existing comparison seam have been read. Engine and harvest
 research is complete enough to build the registry without guessing parameter
-paths or OBR row identities.
+paths or OBR row identities. The first 20-measure registry is built and
+validated against the installed engine and harvested row identities.
 
 ## Done
 
@@ -31,6 +32,11 @@ paths or OBR row identities.
   standalone descriptive comparison renderer.
 - Verified the core PolicyEngine UK parameter paths and aggregate-variable
   entities against the installed 2.89.2 system rather than inferring names.
+- Built `data/uk/obr_measure_reforms.yaml` with eight Table 3.17 components and
+  twelve named PMD measures. Every non-null reform path resolves through
+  `CountryTaxBenefitSystem().parameters`, every mapped variable exists, and
+  every mapped head resolves to exactly one harvested row per available FY
+  once verbatim measure identity is included.
 
 ## Next
 
@@ -41,7 +47,10 @@ paths or OBR row identities.
 
 ## Registry counts
 
-Not yet built.
+- `expressible`: 8
+- `partial`: 8
+- `not_expressible`: 4
+- Total: 20
 
 ## Smoke results
 
@@ -67,3 +76,13 @@ Not yet run.
   income-tax, NICs, or welfare head). The registry scope will use the three
   measures unambiguously named by the brief: personal/equivalent-NI threshold
   extension, employer secondary-threshold extension, and two-child removal.
+- The Table 3.17 PA/HRT reversal uses published Table 3.19 indexed levels.
+  The requested £12,570→£13,070 PA smoke value is a separate engine-path
+  diagnostic, not the full OBR counterfactual, and will be reported as such.
+- PE-UK has no Employment Allowance or firm entity, so both AB2024 employer-NI
+  entries omit the allowance increase and eligibility-test removal and are
+  marked partial.
+- The certified bundle freezes PA/HRT and the employer secondary threshold
+  through 2030 but resumes uprating other equivalent NI thresholds earlier.
+  The combined AB2025 threshold extension is therefore marked partial rather
+  than assuming a policy world the loaded parameter schedules do not contain.

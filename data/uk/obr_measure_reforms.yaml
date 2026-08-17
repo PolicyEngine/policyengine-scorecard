@@ -1,0 +1,643 @@
+schema_version: 1
+benchmark_class: different_model
+calendar_year_proxy: "PolicyEngine calendar year Y proxies OBR FY Y-(Y+1)."
+measure_key_rule: >-
+  Normalized fiscal event plus a filesystem-safe, sometimes shortened slug of
+  the verbatim OBR description; obr_description always retains the verbatim
+  source text.
+head_definitions:
+  income_tax:
+    pe_variables: [income_tax]
+    channel: tax
+    notes: "Gain to the Exchequer is the policy-oriented change in Income Tax."
+  national_insurance:
+    pe_variables:
+      - ni_class_1_employee
+      - ni_class_1_employer
+      - ni_class_4
+    channel: tax
+    notes: >-
+      OBR NICs counterpart required by the lane brief: Class 1 employee plus
+      Class 1 employer plus Class 4. national_insurance is not used because it
+      excludes employer NICs and includes Class 2 and Class 3.
+  welfare_inside_cap_uc:
+    pe_variables: [universal_credit]
+    channel: spending
+    notes: "Gain to the Exchequer is the negative of the UC spending change."
+
+measures:
+  - measure_key: efo_march_2026__pa_and_hrt_freezes
+    fiscal_event: EFO March 2026 re-estimate
+    obr_description: PA and HRT freezes
+    source_table: "3.17: 3.17"
+    external_metric: revenue_change
+    start_fy: 2022
+    computability: expressible
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.income_tax.allowances.personal_allowance.amount:
+        "2024-01-01.2024-12-31": 15220
+        "2025-01-01.2025-12-31": 15480
+        "2026-01-01.2026-12-31": 16070
+        "2027-01-01.2027-12-31": 16410
+        "2028-01-01.2028-12-31": 16750
+        "2029-01-01.2029-12-31": 17090
+        "2030-01-01.2030-12-31": 17440
+      gov.hmrc.income_tax.rates.uk[1].threshold:
+        "2024-01-01.2024-12-31": 45800
+        "2025-01-01.2025-12-31": 46600
+        "2026-01-01.2026-12-31": 48400
+        "2027-01-01.2027-12-31": 49500
+        "2028-01-01.2028-12-31": 50500
+        "2029-01-01.2029-12-31": 51600
+        "2030-01-01.2030-12-31": 52700
+      gov.hmrc.income_tax.rates.dividends[1].threshold:
+        "2024-01-01.2024-12-31": 45800
+        "2025-01-01.2025-12-31": 46600
+        "2026-01-01.2026-12-31": 48400
+        "2027-01-01.2027-12-31": 49500
+        "2028-01-01.2028-12-31": 50500
+        "2029-01-01.2029-12-31": 51600
+        "2030-01-01.2030-12-31": 52700
+    heads:
+      - obr_head: Income tax
+        condition_key: null
+        pe_variables: [income_tax]
+        channel: tax
+    unmapped_obr_heads: []
+    notes: >-
+      Reverses the certified freezes using Table 3.19's published
+      with-indexation PA and gross HRT path. The PE HRT parameter is a taxable
+      band width, so each value is published gross HRT minus published PA.
+      The Table 3.17 line bundles several announcement events; no single event
+      decomposition is asserted.
+
+  - measure_key: efo_march_2026__additional_rate_threshold_reduction
+    fiscal_event: EFO March 2026 re-estimate
+    obr_description: "Additional rate threshold: reduction"
+    source_table: "3.17: 3.17"
+    external_metric: revenue_change
+    start_fy: 2023
+    computability: expressible
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.income_tax.rates.uk[2].threshold:
+        "2024-01-01.2030-12-31": 150000
+      gov.hmrc.income_tax.rates.dividends[2].threshold:
+        "2024-01-01.2030-12-31": 150000
+    heads:
+      - obr_head: Income tax
+        condition_key: null
+        pe_variables: [income_tax]
+        channel: tax
+    unmapped_obr_heads: []
+    notes: >-
+      Reverses £125,140 to the previous £150,000 threshold. Both the main and
+      dividend threshold paths are set because PE-UK 2.89.2 stores them
+      separately.
+
+  - measure_key: efo_march_2026__nics_rise_in_primary_threshold
+    fiscal_event: EFO March 2026 re-estimate
+    obr_description: "NICs: rise in primary threshold"
+    source_table: "3.17: 3.17"
+    external_metric: revenue_change
+    start_fy: 2022
+    computability: expressible
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.national_insurance.class_1.thresholds.primary_threshold:
+        "2024-01-01.2024-12-31": 223
+        "2025-01-01.2025-12-31": 227
+        "2026-01-01.2026-12-31": 236
+        "2027-01-01.2027-12-31": 241
+        "2028-01-01.2028-12-31": 246
+        "2029-01-01.2029-12-31": 251
+        "2030-01-01.2030-12-31": 256
+    heads:
+      - obr_head: NICs
+        condition_key: null
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+    unmapped_obr_heads: []
+    notes: >-
+      Reverses to Table 3.19's published indexed annual primary-threshold path,
+      divided by 52 because the installed PE parameter is weekly. Employer
+      and Class 4 aggregates remain in the required broad NICs head even when
+      their direct deltas are zero.
+
+  - measure_key: efo_march_2026__class_2_nics_threshold_rise
+    fiscal_event: EFO March 2026 re-estimate
+    obr_description: "Class 2 NICs: threshold rise"
+    source_table: "3.17: 3.17"
+    external_metric: revenue_change
+    start_fy: 2022
+    computability: not_expressible
+    construction: reversal_on_certified_world
+    pe_reform: null
+    heads: []
+    unmapped_obr_heads: [NICs]
+    notes: >-
+      The Class 2 parameters exist, but PE-UK does not retain the required
+      indexed counterfactual path for this 3.17 re-estimate. Class 2 is also
+      outside the lane brief's prescribed broad NICs aggregate. No mechanics
+      are invented.
+
+  - measure_key: efo_march_2026__class_1_nics_threshold_freezes
+    fiscal_event: EFO March 2026 re-estimate
+    obr_description: "Class 1 NICs: threshold freezes"
+    source_table: "3.17: 3.17"
+    external_metric: revenue_change
+    start_fy: 2023
+    computability: partial
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit:
+        "2024-01-01.2024-12-31": 1173.4615384615
+        "2025-01-01.2025-12-31": 1193.8461538462
+        "2026-01-01.2026-12-31": 1239.8076923077
+        "2027-01-01.2027-12-31": 1267.5
+        "2028-01-01.2028-12-31": 1293.2692307692
+        "2029-01-01.2029-12-31": 1320.9615384615
+        "2030-01-01.2030-12-31": 1348.8461538462
+      gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit:
+        "2024-01-01.2024-12-31": 61020
+        "2025-01-01.2025-12-31": 62080
+        "2026-01-01.2026-12-31": 64470
+        "2027-01-01.2027-12-31": 65910
+        "2028-01-01.2028-12-31": 67250
+        "2029-01-01.2029-12-31": 68690
+        "2030-01-01.2030-12-31": 70140
+    heads:
+      - obr_head: NICs
+        condition_key: null
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+    unmapped_obr_heads: []
+    notes: >-
+      Uses Table 3.19's indexed UEL/UPL path (UEL divided by 52). The 3.17
+      plural line does not disclose a secondary-threshold counterfactual, so
+      that component is missing and the construction is partial.
+
+  - measure_key: efo_march_2026__autumn_statement_2023_nics_reduction
+    fiscal_event: EFO March 2026 re-estimate
+    obr_description: Autumn Statement 2023 NICs reduction
+    source_table: "3.17: 3.17"
+    external_metric: revenue_change
+    start_fy: 2023
+    computability: partial
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.national_insurance.class_1.rates.employee.main:
+        "2024-01-01.2030-12-31": 0.10
+      gov.hmrc.national_insurance.class_4.rates.main:
+        "2024-01-01.2030-12-31": 0.07
+    heads:
+      - obr_head: NICs
+        condition_key: null
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+    unmapped_obr_heads: []
+    notes: >-
+      Reverses the Class 1 2p and Class 4 1p legs while retaining the later
+      Spring Budget 2024 cuts. The Table 3.17 aggregate also includes Class 2
+      abolition; that leg is omitted because its counterfactual is not stored
+      and Class 2 is outside the prescribed NICs head.
+
+  - measure_key: efo_march_2026__spring_budget_2024_nics_reduction
+    fiscal_event: EFO March 2026 re-estimate
+    obr_description: Spring Budget 2024 NICs reduction
+    source_table: "3.17: 3.17"
+    external_metric: revenue_change
+    start_fy: 2024
+    computability: expressible
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.national_insurance.class_1.rates.employee.main:
+        "2024-01-01.2030-12-31": 0.10
+      gov.hmrc.national_insurance.class_4.rates.main:
+        "2024-01-01.2030-12-31": 0.08
+    heads:
+      - obr_head: NICs
+        condition_key: null
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+    unmapped_obr_heads: []
+    notes: >-
+      Reverses the two 2 percentage-point rate legs represented by the 3.17
+      line. PE annual processing samples the April rates for calendar 2024.
+
+  - measure_key: efo_march_2026__autumn_budget_2024_employer_nics_rise
+    fiscal_event: EFO March 2026 re-estimate
+    obr_description: Autumn Budget 2024 employer NICs rise
+    source_table: "3.17: 3.17"
+    external_metric: revenue_change
+    start_fy: 2025
+    computability: partial
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.national_insurance.class_1.rates.employer:
+        "2025-01-01.2030-12-31": 0.138
+      gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold:
+        "2025-01-01.2030-12-31": 175
+    heads:
+      - obr_head: NICs
+        condition_key: null
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+    unmapped_obr_heads: []
+    notes: >-
+      Reverses the employer rate and weekly secondary threshold. PE-UK lacks
+      Employment Allowance and firm-level eligibility mechanics, which are
+      part of the OBR package, so this is partial.
+
+  - measure_key: autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p
+    fiscal_event: Autumn Statement 2023
+    obr_description: "National Insurance contributions (NICs): 2p cut to the main rate of Class 1 employee NICs from January 2024"
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2023
+    computability: expressible
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.national_insurance.class_1.rates.employee.main:
+        "2024-01-01.2030-12-31": 0.10
+    heads:
+      - obr_head: Income tax
+        condition_key: tax_head
+        pe_variables: [income_tax]
+        channel: tax
+      - obr_head: NICs
+        condition_key: tax_head
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+      - obr_head: Welfare inside cap
+        condition_key: spending_head
+        source_table: Spending Measures (Policy measures database)
+        external_metric: exchequer_impact
+        pe_variables: [universal_credit]
+        channel: spending
+    unmapped_obr_heads:
+      - Corporation tax (onshore)
+      - Capital gains tax
+      - PSCE in RDEL
+      - Scottish BGA (current)
+    notes: >-
+      The Class 1 rate lever is direct. PE static head mappings do not model
+      the OBR's corporation-tax, capital-gains-tax, departmental-spending, or
+      Scottish block-grant channels.
+
+  - measure_key: autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p
+    fiscal_event: Autumn Statement 2023
+    obr_description: "National Insurance contributions (NICs): 1p cut to the main rate of Class 4 self-employed NICs from April 2024"
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2024
+    computability: expressible
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.national_insurance.class_4.rates.main:
+        "2024-01-01.2030-12-31": 0.07
+    heads:
+      - obr_head: Income tax
+        condition_key: tax_head
+        pe_variables: [income_tax]
+        channel: tax
+      - obr_head: NICs
+        condition_key: tax_head
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+      - obr_head: Welfare inside cap
+        condition_key: spending_head
+        source_table: Spending Measures (Policy measures database)
+        external_metric: exchequer_impact
+        pe_variables: [universal_credit]
+        channel: spending
+    unmapped_obr_heads:
+      - Corporation tax (onshore)
+      - Capital gains tax
+      - PSCE in RDEL
+      - Scottish BGA (current)
+    notes: "Direct Class 4 rate reversal; non-microsimulation OBR heads remain unmapped."
+
+  - measure_key: autumn_statement_2023__class_2_self_employed_nics_liability_abolition
+    fiscal_event: Autumn Statement 2023
+    obr_description: "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024"
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2024
+    computability: not_expressible
+    construction: reversal_on_certified_world
+    pe_reform: null
+    heads: []
+    unmapped_obr_heads:
+      - Income tax
+      - NICs
+      - Corporation tax (onshore)
+      - Capital gains tax
+      - Welfare inside cap
+      - PSCE in RDEL
+      - Scottish BGA (current)
+    notes: >-
+      PE's Class 2 flat-rate path records zero after abolition but does not
+      store an indexed 2024+ counterfactual, and Class 2 is outside the lane's
+      prescribed NICs aggregate. No reversal value is guessed.
+
+  - measure_key: spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp
+    fiscal_event: Spring Budget 2024
+    obr_description: "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 1 employee NICs from 6 April 2024"
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2024
+    computability: expressible
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.national_insurance.class_1.rates.employee.main:
+        "2024-01-01.2030-12-31": 0.10
+    heads:
+      - obr_head: Income tax
+        condition_key: tax_head
+        pe_variables: [income_tax]
+        channel: tax
+      - obr_head: NICs
+        condition_key: tax_head
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+      - obr_head: Welfare inside cap
+        condition_key: spending_head
+        source_table: Spending Measures (Policy measures database)
+        external_metric: exchequer_impact
+        pe_variables: [universal_credit]
+        channel: spending
+    unmapped_obr_heads:
+      - Corporation tax (onshore)
+      - PSCE in RDEL
+      - Scottish BGA (current)
+    notes: "Direct Class 1 rate reversal; PE calendar 2024 proxies FY 2024-25."
+
+  - measure_key: spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp
+    fiscal_event: Spring Budget 2024
+    obr_description: "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024"
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2024
+    computability: expressible
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.national_insurance.class_4.rates.main:
+        "2024-01-01.2030-12-31": 0.08
+    heads:
+      - obr_head: Income tax
+        condition_key: tax_head
+        pe_variables: [income_tax]
+        channel: tax
+      - obr_head: NICs
+        condition_key: tax_head
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+      - obr_head: Welfare inside cap
+        condition_key: spending_head
+        source_table: Spending Measures (Policy measures database)
+        external_metric: exchequer_impact
+        pe_variables: [universal_credit]
+        channel: spending
+    unmapped_obr_heads:
+      - Corporation tax (onshore)
+      - PSCE in RDEL
+      - Scottish BGA (current)
+    notes: "Direct Class 4 rate reversal; PE calendar 2024 proxies FY 2024-25."
+
+  - measure_key: spring_budget_2024__hicbc_threshold_and_taper
+    fiscal_event: Spring Budget 2024
+    obr_description: "High Income Child Benefit Charge: increase income threshold to £60,000 and taper range to £60,000 to £80,000 from 6 April 2024"
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2024
+    computability: partial
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.income_tax.charges.CB_HITC.phase_out_start:
+        "2024-01-01.2030-12-31": 50000
+      gov.hmrc.income_tax.charges.CB_HITC.phase_out_end:
+        "2024-01-01.2030-12-31": 60000
+    heads:
+      - obr_head: Income tax
+        condition_key: tax_head
+        pe_variables: [income_tax]
+        channel: tax
+    unmapped_obr_heads: [Welfare inside cap]
+    notes: >-
+      The HICBC tax-charge formula and thresholds are direct. The OBR also
+      reports a welfare-spending head; PE's static child-benefit amount does
+      not change under this parameter reform, so that head is not fabricated.
+
+  - measure_key: autumn_budget_2024__employer_nics_package
+    fiscal_event: Autumn Budget 2024
+    obr_description: "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to £5,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to £10,500, remove the £100,000 Employment Allowance eligibility threshold"
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2025
+    computability: partial
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.national_insurance.class_1.rates.employer:
+        "2025-01-01.2030-12-31": 0.138
+      gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold:
+        "2025-01-01.2030-12-31": 175
+    heads:
+      - obr_head: Income tax
+        condition_key: tax_head
+        pe_variables: [income_tax]
+        channel: tax
+      - obr_head: NICs
+        condition_key: tax_head
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+    unmapped_obr_heads:
+      - Corporation tax (onshore)
+      - PSCE in RDEL
+      - Scottish BGA (current)
+    notes: >-
+      PE represents the employer rate and weekly secondary threshold (£96 × 52
+      = £4,992 in the installed model). It has no Employment Allowance or firm
+      entity, so the allowance increase and £100,000 test removal are missing.
+
+  - measure_key: autumn_budget_2024__non_dom_residence_based_regime
+    fiscal_event: Autumn Budget 2024
+    obr_description: "Abolition of non-domicile tax status and introduction of a residence-based regime: remove the 50% discount on foreign income in 2025/26; apply inheritance tax; set Capital Gains Tax rebasing date at 5 April 2017; and extend the Temporary Repatriation Facility from two to three years"
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2025
+    computability: not_expressible
+    construction: reversal_on_certified_world
+    pe_reform: null
+    heads: []
+    unmapped_obr_heads:
+      - Income tax
+      - NICs
+      - Capital gains tax
+      - Inheritance tax
+      - PSCE in RDEL
+      - Scottish BGA (current)
+    notes: >-
+      The residence history, foreign-income discount, CGT rebasing, IHT, and
+      Temporary Repatriation Facility package is not a plain PE-UK parameter
+      reform in this version.
+
+  - measure_key: autumn_budget_2024__hmrc_5000_compliance_staff
+    fiscal_event: Autumn Budget 2024
+    obr_description: Increased collection of tax due supported by investment in 5,000 additional HMRC compliance staff
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2025
+    computability: not_expressible
+    construction: forward_from_baseline
+    pe_reform: null
+    heads: []
+    unmapped_obr_heads:
+      - Income tax
+      - NICs
+      - Corporation tax (onshore)
+      - Customs duty
+      - Tobacco duty
+      - Alcohol duty
+      - VAT
+      - PSCE in RDEL
+      - Scottish BGA (current)
+    notes: "Compliance staffing and collection yield are not microsimulation parameters."
+
+  - measure_key: autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension
+    fiscal_event: Autumn Budget 2025
+    obr_description: "Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a further three years until April 2031"
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2028
+    computability: partial
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.income_tax.allowances.personal_allowance.amount:
+        "2028-01-01.2028-12-31": 12821.388032703
+        "2029-01-01.2029-12-31": 13077.7873710267
+        "2030-01-01.2030-12-31": 13339.3476061836
+      gov.hmrc.income_tax.rates.uk[1].threshold:
+        "2028-01-01.2028-12-31": 38453.940508488
+        "2029-01-01.2029-12-31": 39222.9827084964
+        "2030-01-01.2030-12-31": 40007.3554135334
+      gov.hmrc.income_tax.rates.dividends[1].threshold:
+        "2028-01-01.2028-12-31": 38453.940508488
+        "2029-01-01.2029-12-31": 39222.9827084964
+        "2030-01-01.2030-12-31": 40007.3554135334
+    heads:
+      - obr_head: Income tax
+        condition_key: tax_head
+        pe_variables: [income_tax]
+        channel: tax
+      - obr_head: NICs
+        condition_key: tax_head
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+      - obr_head: Welfare inside cap
+        condition_key: spending_head
+        source_table: Spending Measures (Policy measures database)
+        external_metric: exchequer_impact
+        pe_variables: [universal_credit]
+        channel: spending
+    unmapped_obr_heads:
+      - Capital gains tax
+      - Corporation tax (onshore)
+      - PSCE in RDEL
+      - Scottish BGA (current)
+    notes: >-
+      Reverses the PA/main/dividend HRT extension using the installed
+      parameters' documented CPI uprating indices. The certified bundle
+      already resumes uprating PT/UEL from 2028 and Class 4 limits from 2027,
+      so it does not consistently encode the equivalent-NI freeze; this
+      construction is partial and makes no NI threshold override.
+
+  - measure_key: autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension
+    fiscal_event: Autumn Budget 2025
+    obr_description: "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031"
+    source_table: Tax Measures (Policy measures database)
+    external_metric: revenue_change
+    start_fy: 2028
+    computability: partial
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold:
+        "2028-01-01.2028-12-31": 97.9199086029823
+        "2029-01-01.2029-12-31": 99.8780897071249
+        "2030-01-01.2030-12-31": 101.875685775149
+    heads:
+      - obr_head: Income tax
+        condition_key: tax_head
+        pe_variables: [income_tax]
+        channel: tax
+      - obr_head: NICs
+        condition_key: tax_head
+        pe_variables:
+          - ni_class_1_employee
+          - ni_class_1_employer
+          - ni_class_4
+        channel: tax
+    unmapped_obr_heads:
+      - Corporation tax (onshore)
+      - PSCE in RDEL
+      - Scottish BGA (current)
+    notes: >-
+      Counterfactual weekly values apply the installed parameter's documented
+      OBR-CPI uprating to £96 from 2028. OBR announcement-baseline rounding and
+      non-microsimulation heads are not assumption-matched, so this is partial.
+
+  - measure_key: autumn_budget_2025__uc_child_element_remove_two_child_limit
+    fiscal_event: Autumn Budget 2025
+    obr_description: "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty"
+    source_table: Spending Measures (Policy measures database)
+    external_metric: exchequer_impact
+    start_fy: 2026
+    computability: partial
+    construction: reversal_on_certified_world
+    pe_reform:
+      gov.dwp.universal_credit.elements.child.limit.child_count:
+        "2026-01-01.2030-12-31": 2
+    heads:
+      - obr_head: Welfare inside cap
+        condition_key: spending_head
+        pe_variables: [universal_credit]
+        channel: spending
+    unmapped_obr_heads: [Welfare outside cap]
+    notes: >-
+      Reverses the UC child-element limit from infinity to two. The OBR also
+      reports a Welfare outside cap row, but the harvest does not identify its
+      program composition; CTC or devolved-offset mechanics are not assumed.
