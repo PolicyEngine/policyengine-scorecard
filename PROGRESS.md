@@ -46,6 +46,12 @@ constructing a managed simulation. The bounded smoke run remains.
   SHA-256 against the release manifest before constructing any simulation.
   The verified build id is
   `populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z`.
+- The first smoke invocation stopped before constructing a simulation because
+  PyTables requests read/write access while the sandbox exposes the certified
+  HF cache read-only. No run artifact was written. The pipeline now copies the
+  same SHA-256-verified bytes to an ignored workspace-local mirror, verifies
+  that copy again, and points the managed API's supported local-mirror resolver
+  at it; the certified manifest URI and bundle identity remain unchanged.
 - Ran `--dry-run --limit 3 --years 2026` after the final registry audit; it
   validated all 26 entries and 215 mapped head-years, constructed no managed
   simulation, and wrote no output. An earlier run with a pre-existing

@@ -38,6 +38,7 @@ DEFAULT_REGISTRY = ROOT / "data" / "uk" / "obr_measure_reforms.yaml"
 DEFAULT_CLAIMS = Path.home() / "scorecard-harvest" / "uk_obr" / "claims_staged.jsonl"
 DEFAULT_OUTPUT_DIR = ROOT / "results" / "uk" / "obr_costings"
 DEFAULT_STAGED_OUTPUT = ROOT / "results" / "uk" / "staged" / "obr_costings.jsonl"
+LOCAL_DATA_MIRROR_ROOT = ROOT / "data" / "uk" / "policyengine-local"
 YEAR_MIN = 2024
 YEAR_MAX = 2030
 COMPUTABILITY = {"expressible", "partial", "not_expressible"}
@@ -82,6 +83,7 @@ def configure_offline() -> None:
     os.environ["TRANSFORMERS_OFFLINE"] = "1"
     os.environ["HF_DATASETS_OFFLINE"] = "1"
     os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
+    os.environ["POLICYENGINE_UK_DATA_REPO"] = str(LOCAL_DATA_MIRROR_ROOT)
 
 
 def package_version(name: str) -> str:
@@ -424,6 +426,49 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def ensure_writable_local_mirror(
+    cached_path: Path, relative_artifact_path: str, expected_sha256: str
+) -> tuple[Path, bool]:
+    """Copy certified bytes into the workspace for PyTables' read/write open."""
+
+    mirror_path = (
+        LOCAL_DATA_MIRROR_ROOT
+        / "policyengine_uk_data"
+        / "storage"
+        / relative_artifact_path
+    )
+    created = False
+    if not mirror_path.exists():
+        mirror_path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = mirror_path.with_name(mirror_path.name + ".tmp")
+        if temporary.exists():
+            temporary.unlink()
+        try:
+            with cached_path.open("rb") as source, temporary.open("wb") as target:
+                for chunk in iter(lambda: source.read(8 * 1024 * 1024), b""):
+                    target.write(chunk)
+            if sha256_file(temporary) != expected_sha256:
+                raise RuntimeError("workspace mirror copy failed SHA-256 verification")
+            temporary.replace(mirror_path)
+            created = True
+        finally:
+            if temporary.exists():
+                temporary.unlink()
+    if sha256_file(mirror_path) != expected_sha256:
+        raise RuntimeError(
+            "workspace UK data mirror differs from the certified artifact; "
+            "refusing to overwrite it"
+        )
+    try:
+        with mirror_path.open("r+b"):
+            pass
+    except OSError as exc:
+        raise RuntimeError(
+            f"workspace UK data mirror is not writable: {mirror_path}"
+        ) from exc
+    return mirror_path, created
+
+
 def preflight_certified_dataset() -> dict[str, Any]:
     """Prove that the bundled dataset is cached and matches its manifest hash."""
 
@@ -458,11 +503,14 @@ def preflight_certified_dataset() -> dict[str, Any]:
         ) from exc
     started = time.perf_counter()
     actual_sha256 = sha256_file(cached_path)
-    hash_seconds = time.perf_counter() - started
     if actual_sha256 != expected_sha256:
         raise RuntimeError(
             "cached UK artifact SHA-256 differs from the certified release manifest"
         )
+    mirror_path, mirror_created = ensure_writable_local_mirror(
+        cached_path, reference.path, expected_sha256
+    )
+    hash_seconds = time.perf_counter() - started
     return {
         "release_bundle": bundle,
         "dataset_uri": dataset_uri,
@@ -470,6 +518,8 @@ def preflight_certified_dataset() -> dict[str, Any]:
         "sha256": actual_sha256,
         "hash_seconds": hash_seconds,
         "local_files_only": True,
+        "managed_local_mirror": relative_to_root(mirror_path),
+        "managed_local_mirror_created": mirror_created,
     }
 
 

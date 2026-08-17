@@ -218,6 +218,9 @@ def test_configure_offline_overrides_network_enabled_environment(monkeypatch):
     compute.configure_offline()
 
     assert {key: os.environ[key] for key in keys} == {key: "1" for key in keys}
+    assert os.environ["POLICYENGINE_UK_DATA_REPO"] == str(
+        compute.LOCAL_DATA_MIRROR_ROOT
+    )
 
 
 def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
