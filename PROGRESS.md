@@ -4,13 +4,20 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 4 is complete locally on branch `obr-costings-mode2`. All round-3
-findings and the final independent-audit issue are fixed and committed. Exact
-verification passes after the audit hardening; no managed simulation was
-constructed.
+Follow-up 5 is in progress on branch `obr-costings-mode2` from
+`22718bfb1e257b51f294eec1d33a6ac83f2049e3`. The round-4 review has been read
+in full. Work is now tracing and hardening restage as a byte-bound replay; no
+managed simulation will be constructed.
 
 ## Done
 
+- Started Follow-up 5 by reading the complete round-4 review before inspecting
+  or changing implementation code.
+- Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
+  `22718bfb1e257b51f294eec1d33a6ac83f2049e3`.
+- Read the GitNexus debugging workflow. Its graph tools are not exposed in this
+  session, so source, manifest, artifact, and test paths will be traced
+  directly.
 - Started Follow-up 4 by reading the complete round-3 review before inspecting
   or changing implementation code.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -277,7 +284,14 @@ constructed.
 
 ## Next
 
-- No in-scope Follow-up 4 work remains.
+- Bind manifests and artifacts to registry bytes and freeze every
+  output-driving registry field, retaining the exact legacy-artifact path.
+- Canonicalize and collision-check every restage path role before parsing or
+  writing, reject all absolute recorded paths, and mark `--no-stage` runs as
+  explicitly non-replayable.
+- Add ordinal claim identity and mutation-specific frozen-field diagnostics,
+  run exact dry-run/restage byte-identity checks without simulations, then run
+  focused and full suites.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
