@@ -4,14 +4,23 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 2 is complete locally on branch `obr-costings-mode2`. All six
-clean-context review findings are fixed and committed. The final `--restage`
-read the existing 13 artifacts, regenerated 20 staged and 26 comparison rows,
-and reported zero managed simulations. The full 26-measure population remains
-intentionally unrun.
+Follow-up 3 is in progress locally on branch `obr-costings-mode2`. The round-2
+review identified four major and four minor findings. The checkout started
+clean at `52c9f952f6ca87263d81e69bbaa3ef21310628fb`; no managed simulation will
+be constructed during this follow-up.
 
 ## Done
 
+- Started Follow-up 3 by reading this progress record and the complete round-2
+  review before inspecting or changing the implementation.
+- Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
+  `52c9f952f6ca87263d81e69bbaa3ef21310628fb`.
+- Confirmed GitNexus graph tools are still not exposed in this checkout, so
+  the eight findings will be traced directly through source, registry data,
+  artifacts, and tests.
+- Fixed round-2 finding 7 in this register: the Follow-up 2 report was removed
+  from the branch in `8c1d858` and kept outside the repository; it is not a
+  committed current-tree file.
 - Read this progress record and the clean-context review before inspecting or
   changing the implementation.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -189,7 +198,8 @@ intentionally unrun.
 
 ## Next
 
-- Clean-context review can now re-check the six resolved findings.
+- Fix and test all remaining round-2 findings, preserving the frozen numerical
+  results while adding only the required claims-slice provenance fields.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
   before these rows are attached to the campaign database.
 - Remove the 2024–2025 dividend overrides when an installed PE-UK release fixes
@@ -344,7 +354,6 @@ Maximum sampled process RSS was 32.888 GiB.
   run used a SHA-verified, ignored writable mirror of those same cached bytes;
   no download was attempted. Portability of that mirror path outside this
   checkout was not tested.
-- The designated parent output file is outside the sandbox's writable roots;
-  copying the final report there failed with `Operation not permitted`. The
-  identical report is committed as `obr-costings-followup-2-report.md` inside
-  this repository.
+- The Follow-up 2 report was kept outside this repository after the designated
+  parent output path proved unwritable; commit `8c1d858` removed the temporary
+  in-repository copy.
