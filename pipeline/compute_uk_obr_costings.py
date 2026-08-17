@@ -1519,9 +1519,7 @@ def validate_artifact_sha256_manifest(
     """Validate the canonical, complete artifact path-to-SHA binding."""
 
     canonical_references = []
-    for index, (reference, path) in enumerate(
-        zip(references, resolved_references)
-    ):
+    for index, (reference, path) in enumerate(zip(references, resolved_references)):
         canonical = path.relative_to(artifact_root).as_posix()
         if reference != canonical:
             raise ArtifactRestageError(
@@ -1552,10 +1550,7 @@ def validate_artifact_sha256_manifest(
         )
     for reference in canonical_references:
         digest = recorded[reference]
-        if (
-            not isinstance(digest, str)
-            or re.fullmatch(r"[0-9a-f]{64}", digest) is None
-        ):
+        if not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None:
             raise ArtifactRestageError(
                 f"{manifest_path}: artifact_sha256[{reference!r}] must be a "
                 "lowercase SHA-256"

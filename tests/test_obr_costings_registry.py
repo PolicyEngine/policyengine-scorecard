@@ -1103,10 +1103,7 @@ def test_restage_rejects_coordinated_artifact_mutation_before_any_writer(
 ):
     replay = _copy_committed_replay_fixture(tmp_path)
     manifest = json.loads(replay["manifest_path"].read_text())
-    reference = (
-        "results/uk/obr_costings/"
-        "efo_march_2026__pa_and_hrt_freezes_2026.json"
-    )
+    reference = "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json"
     artifact_path = replay["copied_paths"][reference]
     artifact = json.loads(artifact_path.read_text())
     mutation_gbp = 1_000_000_000
@@ -1151,8 +1148,7 @@ def test_restage_rejects_coordinated_artifact_mutation_before_any_writer(
     assert "new run" in message
     assert "re-run" in message
     assert {
-        recorded: path.read_bytes()
-        for recorded, path in replay["copied_paths"].items()
+        recorded: path.read_bytes() for recorded, path in replay["copied_paths"].items()
     } == expected_bytes
 
 
@@ -1976,9 +1972,7 @@ def _write_synthetic_replay(
         "claims": "claims.jsonl",
         "claims_sha256": claims_sha256,
         "artifacts": [artifact_reference],
-        "artifact_sha256": {
-            artifact_reference: compute.sha256_file(artifact_path)
-        },
+        "artifact_sha256": {artifact_reference: compute.sha256_file(artifact_path)},
         "legacy_artifacts_without_dataset_hashes": [],
         "artifactless_frozen_registry": {},
         "selected_measures": [synthetic_measure["measure_key"]],
@@ -2067,9 +2061,7 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         "claims": "claims.jsonl",
         "claims_sha256": claims_sha256,
         "artifacts": [artifact_reference],
-        "artifact_sha256": {
-            artifact_reference: compute.sha256_file(artifact_path)
-        },
+        "artifact_sha256": {artifact_reference: compute.sha256_file(artifact_path)},
         "legacy_artifacts_without_dataset_hashes": [artifact_reference],
         "legacy_claim_ordinal_derivation": (compute.LEGACY_CLAIM_ORDINAL_DERIVATION),
         "legacy_claim_ordinals": {artifact_reference: {"0": 0}},
@@ -2163,8 +2155,8 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     mismatched_artifact["claims_sha256"] = mismatched_claims_sha256
     compute.write_json(artifact_path, mismatched_artifact)
     mismatch_manifest = copy.deepcopy(manifest)
-    mismatch_manifest["artifact_sha256"][artifact_reference] = (
-        compute.sha256_file(artifact_path)
+    mismatch_manifest["artifact_sha256"][artifact_reference] = compute.sha256_file(
+        artifact_path
     )
     compute.write_json(manifest_path, mismatch_manifest)
     mismatch_outputs = {
@@ -2314,9 +2306,7 @@ def test_restage_rechecks_artifact_sha_immediately_before_writes(
     artifact_reference = manifest["artifacts"][0]
     expected_sha256 = manifest["artifact_sha256"][artifact_reference]
     unchanged_paths = [
-        path
-        for path in replay["output_paths"]
-        if path != replay["artifact_path"]
+        path for path in replay["output_paths"] if path != replay["artifact_path"]
     ]
     original_outputs = {path: path.read_bytes() for path in unchanged_paths}
     original_rederive = compute.rederive_artifact_orientation
