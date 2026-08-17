@@ -4,9 +4,10 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 5 is in progress on branch `obr-costings-mode2` from
-`22718bfb1e257b51f294eec1d33a6ac83f2049e3`. The round-4 review has been read
-in full. Work is now tracing and hardening restage as a byte-bound replay; no
+Follow-up 5 implementation is complete on branch `obr-costings-mode2` from
+`22718bfb1e257b51f294eec1d33a6ac83f2049e3`. Restage is now bound to the
+recorded registry and claims bytes and reconstructs output from frozen inputs.
+Exact dry-run, restage byte-identity, and full-suite verification remain; no
 managed simulation will be constructed.
 
 ## Done
@@ -27,6 +28,27 @@ managed simulation will be constructed.
   run. The committed replay manifest now records `staged: true`.
 - Path/containment/no-stage verification passes 12 targeted replay cases, and
   Python compilation plus `git diff --check` pass.
+- Fixed round-4 finding 3: manifests and every new artifact record the registry
+  SHA-256; restage verifies it before YAML parsing and immediately before any
+  write. New artifacts freeze complete output-driving registry entries, and
+  artifactless measures freeze them in the manifest. Staging and comparison
+  consume those frozen copies rather than the parsed live registry.
+- Migrated the exact 13-artifact legacy allowlist without changing any artifact
+  bytes. The SHA-verified live registry is its frozen source; the diagnostic,
+  which is not a registry measure and produces no staged row, is reconstructed
+  from its own saved artifact. The manifest records each one-time six-key claim
+  ordinal derivation and the registry SHA.
+- Fixed round-4 finding 1: every new frozen claim records the claims-slice SHA,
+  physical-line ordinal, and six-key descriptor. Restage resolves by ordinal
+  and recursively reports every mismatch as exact `field`, `frozen`, and
+  `current` values; all 35 frozen source-field mutations are asserted
+  individually, with separate malformed/out-of-range identity coverage.
+- Registry note and fabricated-unmapped-head adversaries stop at the SHA gate
+  before parsing or output, and an injected mid-replay mutation stops at the
+  pre-write gate. Atomic writers clean temporary files and preserve existing
+  output permissions.
+- All 111 focused OBR tests pass after implementation. The sole warning is the
+  upstream PolicyEngine-UK Pydantic deprecation.
 - Started Follow-up 4 by reading the complete round-3 review before inspecting
   or changing implementation code.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -293,11 +315,10 @@ managed simulation will be constructed.
 
 ## Next
 
-- Bind manifests and artifacts to registry bytes and freeze every
-  output-driving registry field, retaining the exact legacy-artifact path.
-- Add ordinal claim identity and mutation-specific frozen-field diagnostics,
-  run exact dry-run/restage byte-identity checks without simulations, then run
-  focused and full suites.
+- Commit the registry/ordinal replay binding, then run the exact 26-measure
+  dry-run and 13-artifact restage with byte-identity and zero-simulation checks.
+- Run the full suite, record final counts and hashes here, and write the
+  Follow-up 5 report outside the repository.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys

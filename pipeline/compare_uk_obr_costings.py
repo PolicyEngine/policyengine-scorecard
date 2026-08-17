@@ -18,6 +18,7 @@ import csv
 import io
 import json
 import math
+import stat
 import tempfile
 from collections import defaultdict
 from pathlib import Path
@@ -361,7 +362,8 @@ def _deduplicate_annotations(annotations: Iterable[str]) -> list[str]:
 
 
 def _effective_computability(measure: dict[str, Any], year: int) -> str:
-    override = measure.get("computability_overrides", {}).get(year)
+    overrides = measure.get("computability_overrides", {})
+    override = overrides.get(year, overrides.get(str(year)))
     return (
         override["computability"]
         if isinstance(override, dict)
@@ -658,20 +660,24 @@ def render_markdown(rows: list[dict[str, Any]]) -> str:
 
 def atomic_write_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile(
-        mode="w",
-        dir=path.parent,
-        prefix=f".{path.name}.",
-        suffix=".tmp",
-        delete=False,
-    ) as destination:
-        destination.write(text)
-        temporary = Path(destination.name)
+    destination_mode = stat.S_IMODE(path.stat().st_mode) if path.exists() else 0o644
+    temporary: Path | None = None
     try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as destination:
+            temporary = Path(destination.name)
+            destination.write(text)
+        assert temporary is not None
+        temporary.chmod(destination_mode)
         temporary.replace(path)
-    except BaseException:
-        temporary.unlink(missing_ok=True)
-        raise
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
 
 def write_comparison_outputs_from_rows(

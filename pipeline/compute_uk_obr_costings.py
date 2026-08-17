@@ -23,10 +23,12 @@ import json
 import math
 import os
 import re
+import stat
 import sys
 import tempfile
 import threading
 import time
+import unicodedata
 from collections import Counter
 from datetime import datetime, timezone
 from importlib.metadata import PackageNotFoundError, version
@@ -71,6 +73,9 @@ NI_HEAD_VARIABLES = [
     "ni_class_4",
 ]
 RUN_ID_DATE = datetime.now().astimezone().strftime("%Y%m%d")
+LEGACY_CLAIM_ORDINAL_DERIVATION = (
+    "six_key_descriptor_after_claims_sha256_verification"
+)
 
 
 class RegistryError(ValueError):
@@ -95,6 +100,20 @@ def claims_provenance_error(
     return ArtifactRestageError(
         f"{path}: {subject} differs from RUN_MANIFEST; "
         f"expected {expected}; actual {actual}; claims provenance changed, "
+        "so this is a new run; re-run the compute pipeline instead of restaging"
+    )
+
+
+def registry_provenance_error(
+    path: Path,
+    *,
+    subject: str,
+    expected: Any,
+    actual: Any,
+) -> ArtifactRestageError:
+    return ArtifactRestageError(
+        f"{path}: {subject} differs from RUN_MANIFEST; "
+        f"expected {expected}; actual {actual}; registry provenance changed, "
         "so this is a new run; re-run the compute pipeline instead of restaging"
     )
 
@@ -124,11 +143,36 @@ def fy_label(year: int) -> str:
     return f"{year}-{str(year + 1)[-2:]}"
 
 
-def load_registry(path: Path = DEFAULT_REGISTRY) -> dict[str, Any]:
-    spec = yaml.safe_load(path.read_text())
+def parse_registry_payload(payload: bytes, path: Path) -> dict[str, Any]:
+    """Parse registry bytes that have already passed any required hash gate."""
+
+    spec = yaml.safe_load(payload)
     if not isinstance(spec, dict) or not isinstance(spec.get("measures"), list):
         raise RegistryError(f"{path}: expected a mapping with a measures list")
     return spec
+
+
+def load_registry_with_sha256(
+    path: Path = DEFAULT_REGISTRY,
+) -> tuple[dict[str, Any], str]:
+    """Hash registry bytes before parsing the same payload."""
+
+    payload = path.read_bytes()
+    digest = hashlib.sha256(payload).hexdigest()
+    return parse_registry_payload(payload, path), digest
+
+
+def load_registry(path: Path = DEFAULT_REGISTRY) -> dict[str, Any]:
+    spec, _ = load_registry_with_sha256(path)
+    return spec
+
+
+def frozen_registry_measure(measure: dict[str, Any]) -> dict[str, Any]:
+    """Return a canonical JSON-safe copy of one complete registry measure."""
+
+    snapshot = copy.deepcopy(measure)
+    snapshot.setdefault("computability_overrides", {})
+    return json.loads(json.dumps(snapshot, sort_keys=True, allow_nan=False))
 
 
 def load_claims(path: Path = DEFAULT_CLAIMS) -> list[dict[str, Any]]:
@@ -151,7 +195,10 @@ def parse_claims_payload(payload: bytes, path: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for line_number, line in enumerate(payload.decode().splitlines(), 1):
         if not line.strip():
-            continue
+            raise ValueError(
+                f"{path}:{line_number}: blank lines are incompatible with "
+                "physical-line claim ordinals"
+            )
         try:
             row = json.loads(line)
         except json.JSONDecodeError as exc:
@@ -272,15 +319,15 @@ def _named_descriptor_fields(value: Any, field: str = "") -> list[str]:
     return [f"{field}={value!r}"]
 
 
-def resolve_frozen_claim(
+def derive_legacy_claim_ordinal(
     claims: Iterable[dict[str, Any]], snapshot: dict[str, Any]
-) -> dict[str, Any]:
-    """Locate a current row only by an artifact's frozen descriptor."""
+) -> int:
+    """Derive a legacy ordinal once from its frozen six-key descriptor."""
 
     descriptor = frozen_claim_descriptor(snapshot)
     hits = [
-        claim
-        for claim in claims
+        (ordinal, claim)
+        for ordinal, claim in enumerate(claims)
         if {
             "source": claim.get("source"),
             "metric": claim_metric(claim),
@@ -301,7 +348,50 @@ def resolve_frozen_claim(
             f"frozen claim ambiguous in current claims ({len(hits)} matches); "
             f"descriptor: {descriptor_text}"
         )
-    return hits[0]
+    return hits[0][0]
+
+
+def claim_ordinal_for(
+    claims: Iterable[dict[str, Any]], matched_claim: dict[str, Any]
+) -> int:
+    """Return the physical-line ordinal for a claim returned from this slice."""
+
+    for ordinal, claim in enumerate(claims):
+        if claim is matched_claim:
+            return ordinal
+    raise RuntimeError("matched claim is not a row from the supplied claims slice")
+
+
+def resolve_frozen_claim(
+    claims: list[dict[str, Any]],
+    snapshot: dict[str, Any],
+    *,
+    expected_claims_sha256: str,
+    legacy_ordinal: int | None = None,
+) -> tuple[dict[str, Any], int]:
+    """Resolve a frozen claim by its stable ordinal after the SHA gate."""
+
+    if legacy_ordinal is None:
+        snapshot_sha256 = snapshot.get("claims_slice_sha256")
+        if snapshot_sha256 != expected_claims_sha256:
+            raise ArtifactRestageError(
+                "frozen claim claims_slice_sha256 differs from the verified "
+                f"slice: expected {expected_claims_sha256!r}; "
+                f"actual {snapshot_sha256!r}"
+            )
+        ordinal = snapshot.get("claim_ordinal")
+    else:
+        ordinal = legacy_ordinal
+    if isinstance(ordinal, bool) or not isinstance(ordinal, int):
+        raise ArtifactRestageError(
+            f"frozen claim claim_ordinal must be an integer; actual {ordinal!r}"
+        )
+    if ordinal < 0 or ordinal >= len(claims):
+        raise ArtifactRestageError(
+            f"frozen claim claim_ordinal {ordinal} is out of range for "
+            f"{len(claims)} claims rows"
+        )
+    return claims[ordinal], ordinal
 
 
 def claim_source_facts(claim: dict[str, Any]) -> dict[str, str]:
@@ -329,11 +419,20 @@ def source_facts_annotation(claim: dict[str, Any]) -> str:
     )
 
 
-def source_claim_snapshot(claim: dict[str, Any]) -> dict[str, Any]:
+def source_claim_snapshot(
+    claim: dict[str, Any],
+    *,
+    claims_slice_sha256: str | None = None,
+    claim_ordinal: int | None = None,
+) -> dict[str, Any]:
     """Freeze every harvested source fact used by an artifact."""
 
+    if (claims_slice_sha256 is None) != (claim_ordinal is None):
+        raise ValueError(
+            "claims_slice_sha256 and claim_ordinal must be supplied together"
+        )
     metric_field = "metric" if claim.get("metric") is not None else "proposed_metric"
-    return {
+    snapshot = {
         "source": claim["source"],
         "source_table": claim["source_table"],
         "reform_hint": claim["reform_hint"],
@@ -352,6 +451,10 @@ def source_claim_snapshot(claim: dict[str, Any]) -> dict[str, Any]:
         "status": claim.get("status"),
         "calibration_relationship": claim.get("calibration_relationship"),
     }
+    if claims_slice_sha256 is not None:
+        snapshot["claims_slice_sha256"] = claims_slice_sha256
+        snapshot["claim_ordinal"] = claim_ordinal
+    return snapshot
 
 
 _MISSING = object()
@@ -382,10 +485,17 @@ def frozen_claim_differences(
     return [
         {
             "field": field,
-            "artifact": ("<missing>" if artifact_value is _MISSING else artifact_value),
-            "claims": "<missing>" if claims_value is _MISSING else claims_value,
+            "frozen": ("<missing>" if artifact_value is _MISSING else artifact_value),
+            "current": "<missing>" if claims_value is _MISSING else claims_value,
         }
     ]
+
+
+def format_frozen_claim_difference(difference: dict[str, Any]) -> str:
+    return (
+        f"field={difference['field']} frozen={difference['frozen']!r} "
+        f"current={difference['current']!r}"
+    )
 
 
 def _validate_date_range(value: str, context: str) -> None:
@@ -403,7 +513,8 @@ def effective_computability(
 ) -> tuple[str, str | None]:
     """Return the registry status and note effective for one proxy year."""
 
-    override = measure.get("computability_overrides", {}).get(year)
+    overrides = measure.get("computability_overrides", {})
+    override = overrides.get(year, overrides.get(str(year)))
     if override is None:
         return measure["computability"], None
     return override["computability"], override["note"]
@@ -1098,20 +1209,24 @@ def recorded_repo_relative_path(path: Path, *, role: str, root: Path = ROOT) -> 
 
 def atomic_write_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile(
-        mode="w",
-        dir=path.parent,
-        prefix=f".{path.name}.",
-        suffix=".tmp",
-        delete=False,
-    ) as destination:
-        destination.write(text)
-        temporary = Path(destination.name)
+    destination_mode = stat.S_IMODE(path.stat().st_mode) if path.exists() else 0o644
+    temporary: Path | None = None
     try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as destination:
+            temporary = Path(destination.name)
+            destination.write(text)
+        assert temporary is not None
+        temporary.chmod(destination_mode)
         temporary.replace(path)
-    except BaseException:
-        temporary.unlink(missing_ok=True)
-        raise
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
 
 def write_json(path: Path, value: Any) -> None:
@@ -1181,11 +1296,35 @@ def _validate_restage_path_collisions(
     directory_roles: list[tuple[str, Path]],
 ) -> None:
     seen_files: dict[Path, str] = {}
+    seen_inodes: dict[tuple[int, int], tuple[str, Path]] = {}
+    seen_normalized: dict[str, tuple[str, Path]] = {}
     for role, path in file_roles:
         previous_role = seen_files.get(path)
         if previous_role is not None:
             _raise_path_collision(previous_role, role, path)
         seen_files[path] = role
+        normalized = unicodedata.normalize("NFC", str(path)).casefold()
+        previous_normalized = seen_normalized.get(normalized)
+        if previous_normalized is not None:
+            previous_role, previous_path = previous_normalized
+            raise ArtifactRestageError(
+                f"path collision: {previous_role} {previous_path} and "
+                f"{role} {path} have the same normalized path"
+            )
+        seen_normalized[normalized] = (role, path)
+        try:
+            stat_result = path.stat()
+        except OSError:
+            continue
+        inode = (stat_result.st_dev, stat_result.st_ino)
+        previous_inode = seen_inodes.get(inode)
+        if previous_inode is not None:
+            previous_role, previous_path = previous_inode
+            raise ArtifactRestageError(
+                f"path collision: {previous_role} {previous_path} and "
+                f"{role} {path} identify the same file"
+            )
+        seen_inodes[inode] = (role, path)
 
     # The artifact and comparison directories normally coincide. Directory-to-
     # directory equality is therefore intentional, but no file role may resolve
@@ -1194,6 +1333,25 @@ def _validate_restage_path_collisions(
         file_role = seen_files.get(directory_path)
         if file_role is not None:
             _raise_path_collision(file_role, directory_role, directory_path)
+        normalized = unicodedata.normalize("NFC", str(directory_path)).casefold()
+        normalized_file = seen_normalized.get(normalized)
+        if normalized_file is not None:
+            file_role, file_path = normalized_file
+            raise ArtifactRestageError(
+                f"path collision: {file_role} {file_path} and "
+                f"{directory_role} {directory_path} have the same normalized path"
+            )
+        try:
+            stat_result = directory_path.stat()
+        except OSError:
+            continue
+        inode_file = seen_inodes.get((stat_result.st_dev, stat_result.st_ino))
+        if inode_file is not None:
+            file_role, file_path = inode_file
+            raise ArtifactRestageError(
+                f"path collision: {file_role} {file_path} and "
+                f"{directory_role} {directory_path} identify the same file"
+            )
 
 
 def build_restage_path_plan(
@@ -1329,10 +1487,41 @@ def rederive_artifact_orientation(
     path: Path,
     claims: list[dict[str, Any]] | None = None,
     expected_claims_sha256: str,
+    expected_registry_sha256: str,
     claim_differences: list[dict[str, Any]] | None = None,
     allow_missing_dataset_hashes: bool = False,
+    allow_missing_replay_fields: bool = False,
+    legacy_claim_ordinals: dict[str, int] | None = None,
 ) -> dict[str, Any]:
     """Validate and rederive one artifact from its persisted raw aggregates."""
+
+    if allow_missing_replay_fields:
+        if "registry_sha256" in artifact or "frozen_registry" in artifact:
+            raise ArtifactRestageError(
+                f"{path}: allowlisted legacy artifact must not carry partial "
+                "registry replay fields"
+            )
+        if not isinstance(legacy_claim_ordinals, dict):
+            raise ArtifactRestageError(
+                f"{path}: allowlisted legacy artifact has no manifest claim ordinals"
+            )
+    else:
+        artifact_registry_sha256 = artifact.get("registry_sha256")
+        if artifact_registry_sha256 != expected_registry_sha256:
+            raise registry_provenance_error(
+                path,
+                subject="artifact registry_sha256",
+                expected=expected_registry_sha256,
+                actual=artifact_registry_sha256,
+            )
+        if artifact.get("frozen_registry") != frozen_registry_measure(measure):
+            raise ArtifactRestageError(
+                f"{path}: frozen_registry differs from the replay measure"
+            )
+        if legacy_claim_ordinals is not None:
+            raise ArtifactRestageError(
+                f"{path}: nonlegacy artifact unexpectedly has legacy claim ordinals"
+            )
 
     year = artifact.get("year")
     if not isinstance(year, int) or not YEAR_MIN <= year <= YEAR_MAX:
@@ -1394,12 +1583,25 @@ def rederive_artifact_orientation(
         isinstance(head, dict) for head in artifact_heads
     ):
         raise ArtifactRestageError(f"{path}: heads must be a list of mappings")
-    by_identity: dict[tuple[Any, ...], dict[str, Any]] = {}
-    for result in artifact_heads:
+    if allow_missing_replay_fields:
+        assert legacy_claim_ordinals is not None
+        expected_ordinal_keys = {
+            str(index)
+            for index, result in enumerate(artifact_heads)
+            if isinstance(result.get("external_claim"), dict)
+        }
+        if set(legacy_claim_ordinals) != expected_ordinal_keys:
+            raise ArtifactRestageError(
+                f"{path}: manifest legacy claim ordinal heads differ: "
+                f"actual {sorted(legacy_claim_ordinals)}, "
+                f"expected {sorted(expected_ordinal_keys)}"
+            )
+    by_identity: dict[tuple[Any, ...], tuple[int, dict[str, Any]]] = {}
+    for head_index, result in enumerate(artifact_heads):
         identity = artifact_head_identity(result)
         if identity in by_identity:
             raise ArtifactRestageError(f"{path}: duplicate artifact head {identity}")
-        by_identity[identity] = result
+        by_identity[identity] = (head_index, result)
     expected_identities = {
         measure_head_identity(measure, head) for head in measure["heads"]
     }
@@ -1410,7 +1612,7 @@ def rederive_artifact_orientation(
 
     for head in measure["heads"]:
         identity = measure_head_identity(measure, head)
-        result = by_identity[identity]
+        head_index, result = by_identity[identity]
         variables = head["pe_variables"]
         if result.get("pe_variables") != variables:
             raise ArtifactRestageError(
@@ -1477,8 +1679,29 @@ def rederive_artifact_orientation(
                 raise ArtifactRestageError(
                     f"{path}: {head['obr_head']} has no frozen source claim"
                 )
-            matched_claim = resolve_frozen_claim(claims, recorded_snapshot)
-            refreshed_snapshot = source_claim_snapshot(matched_claim)
+            legacy_ordinal = None
+            if allow_missing_replay_fields:
+                assert legacy_claim_ordinals is not None
+                legacy_ordinal = legacy_claim_ordinals.get(str(head_index))
+                if legacy_ordinal is None:
+                    raise ArtifactRestageError(
+                        f"{path}: head {head_index} has no recorded legacy "
+                        "claim_ordinal"
+                    )
+            matched_claim, claim_ordinal = resolve_frozen_claim(
+                claims,
+                recorded_snapshot,
+                expected_claims_sha256=expected_claims_sha256,
+                legacy_ordinal=legacy_ordinal,
+            )
+            if allow_missing_replay_fields:
+                refreshed_snapshot = source_claim_snapshot(matched_claim)
+            else:
+                refreshed_snapshot = source_claim_snapshot(
+                    matched_claim,
+                    claims_slice_sha256=expected_claims_sha256,
+                    claim_ordinal=claim_ordinal,
+                )
             differences = [
                 {
                     "artifact_path": str(path),
@@ -1494,7 +1717,11 @@ def rederive_artifact_orientation(
             if differences:
                 if claim_differences is None:
                     raise ArtifactRestageError(
-                        f"{path}: frozen/claims fields differ: {differences}"
+                        f"{path}: frozen/claims fields differ: "
+                        + "; ".join(
+                            format_frozen_claim_difference(difference)
+                            for difference in differences
+                        )
                     )
                 claim_differences.extend(differences)
             else:
@@ -1570,6 +1797,7 @@ def build_artifact(
     run_id: str,
     claims: list[dict[str, Any]] | None,
     claims_sha256: str,
+    registry_sha256: str,
 ) -> dict[str, Any]:
     baseline_bundle = baseline["policyengine_bundle"]
     reform_bundle = reform["policyengine_bundle"]
@@ -1595,6 +1823,14 @@ def build_artifact(
         matched_claim = (
             resolve_claim(claims, measure, head, year) if claims is not None else None
         )
+        frozen_claim = None
+        if matched_claim is not None:
+            assert claims is not None
+            frozen_claim = source_claim_snapshot(
+                matched_claim,
+                claims_slice_sha256=claims_sha256,
+                claim_ordinal=claim_ordinal_for(claims, matched_claim),
+            )
         construction_delta_field = (
             "reversal_delta_exchequer_gain"
             if measure["construction"] == "reversal_on_certified_world"
@@ -1618,11 +1854,7 @@ def build_artifact(
                 construction_delta_field: literal_delta,
                 "pe_value": pe_value,
                 "sign_convention": "positive_gain_to_exchequer",
-                "external_claim": (
-                    source_claim_snapshot(matched_claim)
-                    if matched_claim is not None
-                    else None
-                ),
+                "external_claim": frozen_claim,
             }
         )
     year_computability, override_note = effective_computability(measure, year)
@@ -1648,6 +1880,8 @@ def build_artifact(
         "benchmark_class": "different_model",
         "run_id": run_id,
         "claims_sha256": claims_sha256,
+        "registry_sha256": registry_sha256,
+        "frozen_registry": frozen_registry_measure(measure),
         "raw_aggregates": {
             "baseline_gbp": baseline["aggregates_gbp"],
             "reform_gbp": reform["aggregates_gbp"],
@@ -1806,6 +2040,117 @@ PA_SMOKE_MEASURE = {
 }
 
 
+def legacy_diagnostic_measure(
+    artifact: dict[str, Any], *, path: Path
+) -> dict[str, Any]:
+    """Recover the legacy diagnostic definition only from its saved artifact."""
+
+    artifact_heads = artifact.get("heads")
+    if not isinstance(artifact_heads, list) or not artifact_heads:
+        raise ArtifactRestageError(f"{path}: legacy diagnostic has no saved heads")
+    heads: list[dict[str, Any]] = []
+    for index, result in enumerate(artifact_heads):
+        if not isinstance(result, dict):
+            raise ArtifactRestageError(
+                f"{path}: legacy diagnostic head {index} is not a mapping"
+            )
+        heads.append(
+            {
+                "obr_head": result.get("obr_head"),
+                "condition_key": result.get("condition_key"),
+                "source_table": result.get("source_table"),
+                "external_metric": result.get("external_metric"),
+                "pe_variables": copy.deepcopy(result.get("pe_variables")),
+                "channel": result.get("channel"),
+            }
+        )
+    measure = {
+        "measure_key": artifact.get("measure_key"),
+        "fiscal_event": artifact.get("fiscal_event"),
+        "obr_description": artifact.get("obr_description"),
+        "source_table": artifact.get("source_table"),
+        "external_metric": heads[0]["external_metric"],
+        "start_fy": artifact.get("year"),
+        "computability": artifact.get("computability"),
+        "computability_overrides": {},
+        "construction": artifact.get("construction"),
+        "pe_reform": copy.deepcopy(artifact.get("reform")),
+        "heads": heads,
+        "unmapped_obr_heads": [],
+        "notes": artifact.get("notes"),
+    }
+    return frozen_registry_measure(measure)
+
+
+def validated_frozen_registry_measure(
+    snapshot: Any,
+    live_measure: dict[str, Any],
+    *,
+    path: Path,
+) -> dict[str, Any]:
+    """Validate a saved snapshot, then return that snapshot as replay input."""
+
+    if not isinstance(snapshot, dict):
+        raise ArtifactRestageError(f"{path}: frozen_registry must be a mapping")
+    expected = frozen_registry_measure(live_measure)
+    if snapshot != expected:
+        raise ArtifactRestageError(
+            f"{path}: frozen_registry differs from the SHA-verified registry"
+        )
+    return copy.deepcopy(snapshot)
+
+
+def validate_legacy_claim_ordinal_manifest(
+    manifest: dict[str, Any],
+    *,
+    legacy_references: list[str],
+    manifest_path: Path,
+) -> dict[str, dict[str, int]]:
+    """Validate the one-time ordinal migration for exact allowlisted artifacts."""
+
+    ordinal_map = manifest.get("legacy_claim_ordinals", {})
+    if not isinstance(ordinal_map, dict):
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy_claim_ordinals must be a mapping"
+        )
+    if not legacy_references:
+        if ordinal_map:
+            raise ArtifactRestageError(
+                f"{manifest_path}: legacy claim ordinals exist without "
+                "allowlisted artifacts"
+            )
+        return {}
+    if manifest.get("legacy_claim_ordinal_derivation") != (
+        LEGACY_CLAIM_ORDINAL_DERIVATION
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy claim ordinal derivation was not recorded"
+        )
+    if set(ordinal_map) != set(legacy_references):
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy_claim_ordinals keys must equal the exact "
+            "legacy artifact allowlist"
+        )
+    validated: dict[str, dict[str, int]] = {}
+    for reference, head_ordinals in ordinal_map.items():
+        if not isinstance(head_ordinals, dict):
+            raise ArtifactRestageError(
+                f"{manifest_path}: legacy ordinals for {reference} must be a mapping"
+            )
+        if any(
+            not isinstance(index, str)
+            or not index.isdigit()
+            or isinstance(ordinal, bool)
+            or not isinstance(ordinal, int)
+            for index, ordinal in head_ordinals.items()
+        ):
+            raise ArtifactRestageError(
+                f"{manifest_path}: invalid legacy claim ordinal for {reference}"
+            )
+        validated[reference] = dict(head_ordinals)
+    return validated
+
+
 def restage_existing_run(
     *,
     manifest_path: Path,
@@ -1854,6 +2199,14 @@ def restage_existing_run(
     registry_path = path_plan["registry"]
     claims_path = path_plan["claims"]
     staged_path = path_plan["staged_output"]
+    recorded_registry_sha256 = manifest.get("registry_sha256")
+    if (
+        not isinstance(recorded_registry_sha256, str)
+        or re.fullmatch(r"[0-9a-f]{64}", recorded_registry_sha256) is None
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: registry_sha256 must be a lowercase SHA-256"
+        )
     recorded_claims_sha256 = manifest.get("claims_sha256")
     if (
         not isinstance(recorded_claims_sha256, str)
@@ -1861,6 +2214,15 @@ def restage_existing_run(
     ):
         raise ArtifactRestageError(
             f"{manifest_path}: claims_sha256 must be a lowercase SHA-256"
+        )
+    registry_payload = registry_path.read_bytes()
+    current_registry_sha256 = hashlib.sha256(registry_payload).hexdigest()
+    if current_registry_sha256 != recorded_registry_sha256:
+        raise registry_provenance_error(
+            registry_path,
+            subject="registry SHA-256",
+            expected=recorded_registry_sha256,
+            actual=current_registry_sha256,
         )
     claims_payload = claims_path.read_bytes()
     current_claims_sha256 = hashlib.sha256(claims_payload).hexdigest()
@@ -1871,10 +2233,12 @@ def restage_existing_run(
             expected=recorded_claims_sha256,
             actual=current_claims_sha256,
         )
+    spec = parse_registry_payload(registry_payload, registry_path)
     claims = parse_claims_payload(claims_payload, claims_path)
-    spec = load_registry(registry_path)
     validate_registry(spec, claims=claims)
-    registry = {measure["measure_key"]: measure for measure in spec["measures"]}
+    live_registry = {
+        measure["measure_key"]: measure for measure in spec["measures"]
+    }
 
     selected = manifest.get("selected_measures")
     if (
@@ -1886,13 +2250,12 @@ def restage_existing_run(
         raise ArtifactRestageError(
             f"{manifest_path}: selected_measures must be unique measure keys"
         )
-    unknown_selected = set(selected) - set(registry)
+    unknown_selected = set(selected) - set(live_registry)
     if unknown_selected:
         raise ArtifactRestageError(
             f"{manifest_path}: selected measures are absent from registry: "
             f"{sorted(unknown_selected)}"
         )
-    selected_measures = [registry[key] for key in selected]
     years = manifest.get("years")
     if (
         not isinstance(years, list)
@@ -1935,6 +2298,142 @@ def restage_existing_run(
             f"{manifest_path}: invalid certified release bundle: {exc}"
         ) from exc
 
+    references = manifest["artifacts"]
+    legacy_references = manifest.get("legacy_artifacts_without_dataset_hashes", [])
+    legacy_claim_ordinals = validate_legacy_claim_ordinal_manifest(
+        manifest,
+        legacy_references=legacy_references,
+        manifest_path=manifest_path,
+    )
+    artifact_records: list[
+        tuple[
+            str,
+            Path,
+            dict[str, Any],
+            dict[str, Any],
+            bool,
+            dict[str, int] | None,
+        ]
+    ] = []
+    replay_registry: dict[str, dict[str, Any]] = {}
+    regular_artifact_pairs: set[tuple[str, int]] = set()
+    diagnostic_artifact_pairs: set[tuple[str, int]] = set()
+    diagnostic_artifacts = 0
+    for reference, path in zip(references, resolved_references):
+        artifact = load_json_object(path, "run artifact")
+        self_reference = artifact.get("artifact")
+        self_path = resolve_recorded_path(
+            self_reference,
+            artifact_root,
+            role=f"artifact self-reference in {path}",
+        )
+        if self_path != path:
+            raise ArtifactRestageError(
+                f"{path}: self-reference {self_reference!r} points elsewhere"
+            )
+        if artifact.get("run_id") != run_id:
+            raise ArtifactRestageError(f"{path}: run_id differs from manifest")
+        key = artifact.get("measure_key")
+        diagnostic_only = artifact.get("diagnostic_only")
+        is_legacy = path in resolved_legacy_paths
+        if diagnostic_only is True:
+            if key != PA_SMOKE_MEASURE["measure_key"]:
+                raise ArtifactRestageError(
+                    f"{path}: unsupported diagnostic measure {key!r}"
+                )
+            if is_legacy:
+                measure = legacy_diagnostic_measure(artifact, path=path)
+            else:
+                if artifact.get("registry_sha256") != recorded_registry_sha256:
+                    raise registry_provenance_error(
+                        path,
+                        subject="artifact registry_sha256",
+                        expected=recorded_registry_sha256,
+                        actual=artifact.get("registry_sha256"),
+                    )
+                snapshot = artifact.get("frozen_registry")
+                if not isinstance(snapshot, dict):
+                    raise ArtifactRestageError(
+                        f"{path}: frozen_registry must be a mapping"
+                    )
+                measure = copy.deepcopy(snapshot)
+            diagnostic_artifacts += 1
+            diagnostic_pair = (key, artifact.get("year"))
+            if diagnostic_pair in diagnostic_artifact_pairs:
+                raise ArtifactRestageError(
+                    f"{path}: duplicate diagnostic artifact {diagnostic_pair}"
+                )
+            diagnostic_artifact_pairs.add(diagnostic_pair)
+        elif diagnostic_only is False:
+            if key not in live_registry:
+                raise ArtifactRestageError(
+                    f"{path}: measure_key {key!r} is absent from registry"
+                )
+            if is_legacy:
+                # Exact allowlisted artifacts predate replay snapshots. Only
+                # after the registry SHA gate, freeze the verified live entry
+                # as their explicit legacy surrogate without modifying bytes.
+                measure = frozen_registry_measure(live_registry[key])
+            else:
+                if artifact.get("registry_sha256") != recorded_registry_sha256:
+                    raise registry_provenance_error(
+                        path,
+                        subject="artifact registry_sha256",
+                        expected=recorded_registry_sha256,
+                        actual=artifact.get("registry_sha256"),
+                    )
+                measure = validated_frozen_registry_measure(
+                    artifact.get("frozen_registry"),
+                    live_registry[key],
+                    path=path,
+                )
+            regular_pair = (key, artifact.get("year"))
+            if regular_pair in regular_artifact_pairs:
+                raise ArtifactRestageError(
+                    f"{path}: duplicate regular artifact {regular_pair}"
+                )
+            regular_artifact_pairs.add(regular_pair)
+            previous_measure = replay_registry.get(key)
+            if previous_measure is not None and previous_measure != measure:
+                raise ArtifactRestageError(
+                    f"{path}: frozen_registry differs across measure artifacts"
+                )
+            replay_registry[key] = measure
+        else:
+            raise ArtifactRestageError(
+                f"{path}: diagnostic_only must be an explicit boolean"
+            )
+        artifact_records.append(
+            (
+                reference,
+                path,
+                artifact,
+                measure,
+                diagnostic_only,
+                legacy_claim_ordinals.get(reference) if is_legacy else None,
+            )
+        )
+
+    artifactless_registry = manifest.get("artifactless_frozen_registry")
+    if not isinstance(artifactless_registry, dict):
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifactless_frozen_registry must be a mapping"
+        )
+    expected_artifactless = set(selected) - set(replay_registry)
+    if set(artifactless_registry) != expected_artifactless:
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifactless_frozen_registry keys differ: "
+            f"actual {sorted(artifactless_registry)}, "
+            f"expected {sorted(expected_artifactless)}"
+        )
+    for key, snapshot in artifactless_registry.items():
+        replay_registry[key] = validated_frozen_registry_measure(
+            snapshot,
+            live_registry[key],
+            path=manifest_path,
+        )
+    selected_measures = [replay_registry[key] for key in selected]
+
     expected_regular_pairs: set[tuple[str, int]] = set()
     staged_rows: list[dict[str, Any]] = []
     for measure in selected_measures:
@@ -1959,78 +2458,40 @@ def restage_existing_run(
                 expected_regular_pairs.add((measure["measure_key"], year))
 
     replacements: list[tuple[Path, dict[str, Any]]] = []
-    regular_artifact_pairs: set[tuple[str, int]] = set()
-    diagnostic_artifact_pairs: set[tuple[str, int]] = set()
-    diagnostic_artifacts = 0
     claim_differences: list[dict[str, Any]] = []
-    for path in resolved_references:
-        artifact = load_json_object(path, "run artifact")
-        self_reference = artifact.get("artifact")
-        self_path = resolve_recorded_path(
-            self_reference,
-            artifact_root,
-            role=f"artifact self-reference in {path}",
-        )
-        if self_path != path:
-            raise ArtifactRestageError(
-                f"{path}: self-reference {self_reference!r} points elsewhere"
-            )
-        if artifact.get("run_id") != run_id:
-            raise ArtifactRestageError(f"{path}: run_id differs from manifest")
-        key = artifact.get("measure_key")
-        diagnostic_only = artifact.get("diagnostic_only")
-        if diagnostic_only is True:
-            if key != PA_SMOKE_MEASURE["measure_key"]:
-                raise ArtifactRestageError(
-                    f"{path}: unsupported diagnostic measure {key!r}"
-                )
-            measure = PA_SMOKE_MEASURE
-            diagnostic_artifacts += 1
-            diagnostic_pair = (key, artifact.get("year"))
-            if diagnostic_pair in diagnostic_artifact_pairs:
-                raise ArtifactRestageError(
-                    f"{path}: duplicate diagnostic artifact {diagnostic_pair}"
-                )
-            diagnostic_artifact_pairs.add(diagnostic_pair)
-        elif diagnostic_only is False:
-            if key not in registry:
-                raise ArtifactRestageError(
-                    f"{path}: measure_key {key!r} is absent from registry"
-                )
-            measure = registry[key]
-            regular_pair = (key, artifact.get("year"))
-            if regular_pair in regular_artifact_pairs:
-                raise ArtifactRestageError(
-                    f"{path}: duplicate regular artifact {regular_pair}"
-                )
-            regular_artifact_pairs.add(regular_pair)
-        else:
-            raise ArtifactRestageError(
-                f"{path}: diagnostic_only must be an explicit boolean"
-            )
+    for (
+        _reference,
+        path,
+        artifact,
+        measure,
+        diagnostic_only,
+        legacy_ordinals,
+    ) in artifact_records:
+        is_legacy = path in resolved_legacy_paths
         refreshed = rederive_artifact_orientation(
             artifact,
             measure,
             path=path,
             claims=None if diagnostic_only else claims,
             expected_claims_sha256=recorded_claims_sha256,
+            expected_registry_sha256=recorded_registry_sha256,
             claim_differences=claim_differences,
-            allow_missing_dataset_hashes=(path in resolved_legacy_paths),
+            allow_missing_dataset_hashes=is_legacy,
+            allow_missing_replay_fields=is_legacy,
+            legacy_claim_ordinals=legacy_ordinals,
         )
         replacements.append((path, refreshed))
         if not diagnostic_only:
             staged_rows.extend(stage_artifact_rows(refreshed, measure))
 
     if claim_differences:
-        details = []
+        details: list[str] = []
         for difference in claim_differences:
-            detail = (
+            details.append(
                 f"{difference['measure_key']} {difference['year']} "
-                f"{difference['obr_head']} {difference['field']}: "
-                f"artifact={difference['artifact']!r}, "
-                f"claims={difference['claims']!r}"
+                f"{difference['obr_head']} "
+                + format_frozen_claim_difference(difference)
             )
-            details.append(detail)
         raise ArtifactRestageError("frozen/claims fields differ: " + "; ".join(details))
     if regular_artifact_pairs != expected_regular_pairs:
         raise ArtifactRestageError(
@@ -2056,6 +2517,14 @@ def restage_existing_run(
             f"{manifest_path}: artifact-only restage produced {len(staged_rows)} "
             f"rows; manifest records {expected_staged_rows!r}"
         )
+    prewrite_registry_sha256 = sha256_file(registry_path)
+    if prewrite_registry_sha256 != recorded_registry_sha256:
+        raise registry_provenance_error(
+            registry_path,
+            subject="registry SHA-256",
+            expected=recorded_registry_sha256,
+            actual=prewrite_registry_sha256,
+        )
     prewrite_claims_sha256 = sha256_file(claims_path)
     if prewrite_claims_sha256 != recorded_claims_sha256:
         raise claims_provenance_error(
@@ -2077,7 +2546,7 @@ def restage_existing_run(
     comparison_rows = comparison.write_comparison_outputs_from_rows(
         staged_rows=staged_rows,
         claims=claims,
-        registry=registry,
+        registry=replay_registry,
         output_dir=output_dir,
         artifact_root=artifact_root,
     )
@@ -2163,7 +2632,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     configure_offline()
-    spec = load_registry(args.registry)
+    spec, registry_sha256 = load_registry_with_sha256(args.registry)
     claims, claims_sha256 = load_claims_with_sha256(args.claims)
     try:
         from policyengine_uk import CountryTaxBenefitSystem
@@ -2280,6 +2749,7 @@ def main(argv: list[str] | None = None) -> int:
         "started_at": started_at,
         "engine_version": engine_version,
         "registry": registry_reference,
+        "registry_sha256": registry_sha256,
         "claims": claims_reference,
         "claims_sha256": claims_sha256,
         "years": years,
@@ -2288,11 +2758,13 @@ def main(argv: list[str] | None = None) -> int:
         "certified_cache_preflight": cache_preflight,
         "artifacts": [],
         "legacy_artifacts_without_dataset_hashes": [],
+        "artifactless_frozen_registry": {},
         "baseline_by_year": {},
         "skipped": [],
         "staged": not args.no_stage,
     }
 
+    artifact_measure_keys: set[str] = set()
     for measure in selected:
         if measure["pe_reform"] is None:
             staged_rows.extend(
@@ -2403,6 +2875,7 @@ def main(argv: list[str] | None = None) -> int:
                 run_id=args.run_id,
                 claims=None if measure is PA_SMOKE_MEASURE else claims,
                 claims_sha256=claims_sha256,
+                registry_sha256=registry_sha256,
             )
             artifact["diagnostic_only"] = measure is PA_SMOKE_MEASURE
             write_json(out_path, artifact)
@@ -2424,12 +2897,18 @@ def main(argv: list[str] | None = None) -> int:
                 flush=True,
             )
             if measure is not PA_SMOKE_MEASURE:
+                artifact_measure_keys.add(measure["measure_key"])
                 staged_rows.extend(stage_artifact_rows(artifact, measure))
             del reform, artifact, narrowed_baseline
             gc.collect()
         del baseline
         gc.collect()
 
+    manifest["artifactless_frozen_registry"] = {
+        measure["measure_key"]: frozen_registry_measure(measure)
+        for measure in selected
+        if measure["measure_key"] not in artifact_measure_keys
+    }
     if not args.no_stage:
         write_jsonl(args.staged_output, staged_rows)
         assert staged_reference is not None

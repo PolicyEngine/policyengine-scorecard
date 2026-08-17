@@ -1,4 +1,5 @@
 {
+  "artifactless_frozen_registry": {},
   "artifacts": [
     "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json",
     "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2026.json",
@@ -29,6 +30,54 @@
     "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2027.json",
     "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2027.json"
   ],
+  "legacy_claim_ordinal_derivation": "six_key_descriptor_after_claims_sha256_verification",
+  "legacy_claim_ordinals": {
+    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2026.json": {
+      "0": 182,
+      "1": 188
+    },
+    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2027.json": {
+      "0": 183,
+      "1": 189
+    },
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2026.json": {
+      "0": 457
+    },
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2027.json": {
+      "0": 458
+    },
+    "results/uk/obr_costings/diagnostic__personal_allowance_plus_500_2026.json": {},
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2026.json": {
+      "0": 565
+    },
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2027.json": {
+      "0": 566
+    },
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json": {
+      "0": 556
+    },
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2027.json": {
+      "0": 557
+    },
+    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2026.json": {
+      "0": 75,
+      "1": 81,
+      "2": 381
+    },
+    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2027.json": {
+      "0": 76,
+      "1": 82,
+      "2": 382
+    },
+    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2026.json": {
+      "0": 111,
+      "1": 417
+    },
+    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2027.json": {
+      "0": 112,
+      "1": 418
+    }
+  },
   "baseline_by_year": {
     "2026": {
       "aggregates_gbp": {
@@ -106,6 +155,7 @@
   "engine_version": "2.89.2",
   "pa_smoke_probe": true,
   "registry": "data/uk/obr_measure_reforms.yaml",
+  "registry_sha256": "84492e131a3227ccbe164cbe075cc6126e4fd8645e0dc3b2ed8a951a2648214c",
   "run_id": "campaign-20260816-obr-costings",
   "schema_version": 1,
   "selected_measures": [

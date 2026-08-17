@@ -59,6 +59,7 @@ DIVIDEND_LAG_NOTE = (
 )
 SYNTHETIC_DATASET_SHA256 = "a" * 64
 SYNTHETIC_CLAIMS_SHA256 = "b" * 64
+SYNTHETIC_REGISTRY_SHA256 = "d" * 64
 
 
 @pytest.fixture()
@@ -469,6 +470,7 @@ def test_dividend_lag_override_is_effective_only_for_affected_artifact_years(
             run_id="campaign-20260816-obr-costings",
             claims=claims,
             claims_sha256=compute.sha256_file(VENDORED_CLAIMS),
+            registry_sha256=compute.sha256_file(REGISTRY),
         )
 
     assert artifacts[2024]["computability"] == "partial"
@@ -692,6 +694,7 @@ def test_new_artifact_records_hashes_for_baseline_and_reform(
         run_id="campaign-20260817-obr-costings",
         claims=None,
         claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+        registry_sha256=SYNTHETIC_REGISTRY_SHA256,
     )
 
     assert artifact["dataset_sha256_before"] == {
@@ -722,6 +725,7 @@ def test_only_allowlisted_legacy_artifacts_may_omit_dataset_hash_fields(
         run_id=run_id,
         claims=None,
         claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+        registry_sha256=SYNTHETIC_REGISTRY_SHA256,
     )
     artifact.pop("dataset_sha256_before")
     artifact.pop("dataset_sha256_after")
@@ -758,6 +762,7 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
         run_id="campaign-20260816-obr-costings",
         claims=[synthetic_claim],
         claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+        registry_sha256=SYNTHETIC_REGISTRY_SHA256,
     )
     compute.write_json(output_path, artifact)
     rows = compute.stage_artifact_rows(artifact, synthetic_measure)
@@ -809,6 +814,10 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
     saved = json.loads(output_path.read_text())
     assert saved["data_bundle"] == bundle["certified_data_build_id"]
     assert saved["claims_sha256"] == SYNTHETIC_CLAIMS_SHA256
+    assert saved["registry_sha256"] == SYNTHETIC_REGISTRY_SHA256
+    assert saved["frozen_registry"] == compute.frozen_registry_measure(
+        synthetic_measure
+    )
     expected_bundle = {
         **bundle,
         "certified_data_artifact_sha256": SYNTHETIC_DATASET_SHA256,
@@ -848,7 +857,14 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
         "source_column",
         "status",
         "calibration_relationship",
+        "claims_slice_sha256",
+        "claim_ordinal",
     }
+    assert saved["heads"][0]["external_claim"]["claim_ordinal"] == 0
+    assert (
+        saved["heads"][0]["external_claim"]["claims_slice_sha256"]
+        == SYNTHETIC_CLAIMS_SHA256
+    )
     assert saved["heads"][0]["raw_reform_minus_baseline_gbp"] == 25.0
     assert saved["heads"][0]["reversal_delta_exchequer_gain"] == 25.0
     assert saved["heads"][0]["pe_value"] == -25.0
@@ -972,6 +988,66 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
     assert round(
         diagnostic["raw_aggregates"]["baseline_gbp"]["income_tax"] / 1e9, 1
     ) == (421.9)
+
+
+def test_committed_legacy_artifacts_use_manifest_ordinals_and_stay_byte_exact(
+    monkeypatch,
+):
+    manifest = json.loads(SMOKE_MANIFEST.read_text())
+    claims = compute.load_claims(VENDORED_CLAIMS)
+    legacy_references = manifest["legacy_artifacts_without_dataset_hashes"]
+    ordinal_map = manifest["legacy_claim_ordinals"]
+    assert legacy_references == manifest["artifacts"]
+    assert set(ordinal_map) == set(legacy_references)
+    assert manifest["legacy_claim_ordinal_derivation"] == (
+        compute.LEGACY_CLAIM_ORDINAL_DERIVATION
+    )
+    assert manifest["registry_sha256"] == compute.sha256_file(REGISTRY)
+
+    artifact_paths = []
+    for reference in legacy_references:
+        path = ROOT / reference
+        artifact_paths.append(path)
+        artifact = json.loads(path.read_text())
+        assert "registry_sha256" not in artifact
+        assert "frozen_registry" not in artifact
+        derived_ordinals = {}
+        for index, head in enumerate(artifact["heads"]):
+            snapshot = head.get("external_claim")
+            if not isinstance(snapshot, dict):
+                continue
+            assert "claims_slice_sha256" not in snapshot
+            assert "claim_ordinal" not in snapshot
+            derived_ordinals[str(index)] = compute.derive_legacy_claim_ordinal(
+                claims,
+                snapshot,
+            )
+        assert ordinal_map[reference] == derived_ordinals
+
+    replay_outputs = [
+        *artifact_paths,
+        SMOKE_STAGED,
+        SMOKE_COMPARISON,
+        SMOKE_COMPARISON.with_name("COMPARISON.md"),
+        SMOKE_MANIFEST,
+    ]
+    original_bytes = {path: path.read_bytes() for path in replay_outputs}
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("legacy restage reached a simulation entry point")
+
+    monkeypatch.setattr(compute, "configure_offline", forbidden)
+    monkeypatch.setattr(compute, "preflight_certified_dataset", forbidden)
+    monkeypatch.setattr(compute, "run_managed_simulation", forbidden)
+    summary = compute.restage_existing_run(
+        manifest_path=SMOKE_MANIFEST,
+        output_dir=SMOKE_MANIFEST.parent,
+        artifact_root=ROOT,
+    )
+    assert summary["artifacts"] == 13
+    assert summary["staged_rows"] == 20
+    assert summary["comparison_rows"] == 26
+    assert {path: path.read_bytes() for path in replay_outputs} == original_bytes
 
 
 def _descriptor_hits(
@@ -1098,6 +1174,21 @@ def test_json_writers_reject_non_finite_values(tmp_path):
     assert not jsonl_path.exists()
 
 
+@pytest.mark.parametrize(
+    "writer",
+    [compute.atomic_write_text, compare.atomic_write_text],
+)
+def test_atomic_writers_preserve_existing_output_mode(tmp_path, writer):
+    output_path = tmp_path / "output.txt"
+    output_path.write_text("before")
+    output_path.chmod(0o640)
+
+    writer(output_path, "after")
+
+    assert output_path.read_text() == "after"
+    assert output_path.stat().st_mode & 0o777 == 0o640
+
+
 def test_default_measure_selection_retains_null_reforms():
     measures = compute.load_registry(REGISTRY)["measures"]
     selected = compute.select_measures(measures, requested=None, limit=None)
@@ -1176,6 +1267,7 @@ def test_bundle_mismatches_abort_before_artifact_staging(tmp_path, synthetic_mea
             run_id="campaign-20260816-obr-costings",
             claims=None,
             claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+            registry_sha256=SYNTHETIC_REGISTRY_SHA256,
         )
     assert not (tmp_path / "must-not-exist.json").exists()
 
@@ -1326,8 +1418,10 @@ def test_restage_rejects_claims_path_that_escapes_artifact_root(tmp_path):
     ("aliased_role", "staged_reference"),
     [
         ("claims", "claims.jsonl"),
+        ("claims", "CLAIMS.JSONL"),
         ("registry", "registry.yaml"),
         ("manifest", "RUN_MANIFEST.json"),
+        ("comparison CSV", "comparison/comparison.csv"),
     ],
 )
 def test_restage_rejects_staged_output_path_aliases_before_input_parse(
@@ -1440,6 +1534,183 @@ def test_restage_rejects_no_stage_manifest_before_path_resolution(tmp_path):
     assert manifest_path.read_bytes() == original_manifest
 
 
+def test_no_stage_producer_records_explicit_non_replayable_manifest(
+    tmp_path,
+    monkeypatch,
+    synthetic_measure,
+    synthetic_claim,
+):
+    null_measure = copy.deepcopy(synthetic_measure)
+    null_measure["computability"] = "not_expressible"
+    null_measure["pe_reform"] = None
+    registry_path = tmp_path / "registry.yaml"
+    claims_path = tmp_path / "claims.jsonl"
+    output_dir = tmp_path / "artifacts"
+    staged_path = tmp_path / "staged.jsonl"
+    registry_path.write_text(
+        yaml.safe_dump(
+            {
+                "schema_version": 1,
+                "benchmark_class": "different_model",
+                "measures": [null_measure],
+            },
+            sort_keys=False,
+        )
+    )
+    claims_path.write_text(json.dumps(synthetic_claim, allow_nan=False) + "\n")
+
+    def relative_to_test_root(path, *, role):
+        return str(Path(path).resolve().relative_to(tmp_path.resolve()))
+
+    def forbidden_simulation(*args, **kwargs):
+        raise AssertionError("--no-stage producer constructed a simulation")
+
+    monkeypatch.setattr(
+        compute,
+        "recorded_repo_relative_path",
+        relative_to_test_root,
+    )
+    monkeypatch.setattr(compute, "run_managed_simulation", forbidden_simulation)
+    monkeypatch.setattr(
+        compute,
+        "preflight_certified_dataset",
+        lambda: {
+            "release_bundle": {
+                "certified_data_build_id": "synthetic-certified-build",
+                "certified_data_artifact_sha256": SYNTHETIC_DATASET_SHA256,
+            },
+            "runtime_dataset_source": str(tmp_path / "unused-dataset.h5"),
+            "hash_seconds": 0.0,
+        },
+    )
+
+    assert (
+        compute.main(
+            [
+                "--registry",
+                str(registry_path),
+                "--claims",
+                str(claims_path),
+                "--output-dir",
+                str(output_dir),
+                "--staged-output",
+                str(staged_path),
+                "--years",
+                "2026",
+                "--no-stage",
+            ]
+        )
+        == 0
+    )
+    manifest = json.loads((output_dir / "RUN_MANIFEST.json").read_text())
+    assert manifest["staged"] is False
+    assert "staged_output" not in manifest
+    assert "staged_rows" not in manifest
+    assert not staged_path.exists()
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="non-replayable: run recorded with --no-stage",
+    ):
+        compute.restage_existing_run(
+            manifest_path=output_dir / "RUN_MANIFEST.json",
+            output_dir=output_dir,
+            artifact_root=tmp_path,
+        )
+
+
+def _write_synthetic_replay(
+    tmp_path,
+    synthetic_measure,
+    synthetic_claim,
+):
+    registry_path = tmp_path / "registry.yaml"
+    claims_path = tmp_path / "claims.jsonl"
+    output_dir = tmp_path / "artifacts"
+    staged_path = tmp_path / "staged.jsonl"
+    manifest_path = output_dir / "RUN_MANIFEST.json"
+    artifact_path = output_dir / "synthetic_2026.json"
+    registry_path.write_text(
+        yaml.safe_dump(
+            {
+                "schema_version": 1,
+                "benchmark_class": "different_model",
+                "measures": [synthetic_measure],
+            },
+            sort_keys=False,
+        )
+    )
+    claims_path.write_text(json.dumps(synthetic_claim, allow_nan=False) + "\n")
+    claims_sha256 = compute.sha256_file(claims_path)
+    registry_sha256 = compute.sha256_file(registry_path)
+    bundle = {"certified_data_build_id": "synthetic-certified-build"}
+    artifact = compute.build_artifact(
+        measure=synthetic_measure,
+        year=2026,
+        baseline=synthetic_run(bundle, 100.0),
+        reform=synthetic_run(bundle, 125.0),
+        output_path=artifact_path,
+        computed_at="2026-08-17T12:00:00+00:00",
+        run_id="campaign-20260817-obr-costings",
+        claims=[synthetic_claim],
+        claims_sha256=claims_sha256,
+        registry_sha256=registry_sha256,
+    )
+    artifact_reference = "artifacts/synthetic_2026.json"
+    artifact["artifact"] = artifact_reference
+    artifact["diagnostic_only"] = False
+    compute.write_json(artifact_path, artifact)
+    staged_rows = compute.stage_artifact_rows(artifact, synthetic_measure)
+    compute.write_jsonl(staged_path, staged_rows)
+    compare.write_comparison_outputs_from_rows(
+        staged_rows=staged_rows,
+        claims=[synthetic_claim],
+        registry={synthetic_measure["measure_key"]: synthetic_measure},
+        output_dir=output_dir,
+        artifact_root=tmp_path,
+    )
+    manifest = {
+        "schema_version": 1,
+        "staged": True,
+        "run_id": artifact["run_id"],
+        "started_at": "2026-08-17T12:00:00+00:00",
+        "engine_version": artifact["engine_version"],
+        "registry": "registry.yaml",
+        "registry_sha256": registry_sha256,
+        "claims": "claims.jsonl",
+        "claims_sha256": claims_sha256,
+        "artifacts": [artifact_reference],
+        "legacy_artifacts_without_dataset_hashes": [],
+        "artifactless_frozen_registry": {},
+        "selected_measures": [synthetic_measure["measure_key"]],
+        "years": [2026],
+        "pa_smoke_probe": False,
+        "certified_cache_preflight": {
+            "release_bundle": artifact["policyengine_bundles"]["baseline"]
+        },
+        "staged_output": "staged.jsonl",
+        "staged_rows": 1,
+    }
+    compute.write_json(manifest_path, manifest)
+    output_paths = (
+        artifact_path,
+        staged_path,
+        output_dir / "COMPARISON.csv",
+        output_dir / "COMPARISON.md",
+        manifest_path,
+    )
+    return {
+        "artifact_path": artifact_path,
+        "artifact_root": tmp_path,
+        "claims_path": claims_path,
+        "manifest": manifest,
+        "manifest_path": manifest_path,
+        "output_dir": output_dir,
+        "output_paths": output_paths,
+        "registry_path": registry_path,
+        "registry_sha256": registry_sha256,
+    }
+
+
 def test_restage_rederives_existing_artifacts_without_any_simulation(
     tmp_path, monkeypatch, synthetic_measure, synthetic_claim
 ):
@@ -1461,6 +1732,7 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     )
     claims_path.write_text(json.dumps(synthetic_claim, allow_nan=False) + "\n")
     claims_sha256 = compute.sha256_file(claims_path)
+    registry_sha256 = compute.sha256_file(registry_path)
     bundle = {"certified_data_build_id": "synthetic-certified-build"}
     artifact = compute.build_artifact(
         measure=synthetic_measure,
@@ -1472,12 +1744,17 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         run_id="campaign-20260816-obr-costings",
         claims=[synthetic_claim],
         claims_sha256=claims_sha256,
+        registry_sha256=registry_sha256,
     )
     artifact["diagnostic_only"] = False
     artifact_reference = "artifacts/synthetic_2026.json"
     artifact["artifact"] = artifact_reference
     artifact.pop("dataset_sha256_before")
     artifact.pop("dataset_sha256_after")
+    artifact.pop("registry_sha256")
+    artifact.pop("frozen_registry")
+    artifact["heads"][0]["external_claim"].pop("claims_slice_sha256")
+    artifact["heads"][0]["external_claim"].pop("claim_ordinal")
     artifact["heads"][0].pop("reversal_delta_exchequer_gain")
     artifact["heads"][0]["pe_value"] = 25.0
     compute.write_json(artifact_path, artifact)
@@ -1488,10 +1765,16 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         "started_at": "2026-08-16T12:00:00+00:00",
         "engine_version": artifact["engine_version"],
         "registry": "registry.yaml",
+        "registry_sha256": registry_sha256,
         "claims": "claims.jsonl",
         "claims_sha256": claims_sha256,
         "artifacts": [artifact_reference],
         "legacy_artifacts_without_dataset_hashes": [artifact_reference],
+        "legacy_claim_ordinal_derivation": (
+            compute.LEGACY_CLAIM_ORDINAL_DERIVATION
+        ),
+        "legacy_claim_ordinals": {artifact_reference: {"0": 0}},
+        "artifactless_frozen_registry": {},
         "selected_measures": [synthetic_measure["measure_key"]],
         "years": [2026],
         "pa_smoke_probe": False,
@@ -1602,12 +1885,156 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     artifact_path.write_bytes(first_outputs[artifact_path])
 
     manifest["legacy_artifacts_without_dataset_hashes"] = []
+    manifest["legacy_claim_ordinals"] = {}
+    manifest.pop("legacy_claim_ordinal_derivation")
     compute.write_json(manifest_path, manifest)
     with pytest.raises(
         compute.ArtifactRestageError,
-        match="legacy_artifacts_without_dataset_hashes",
+        match="artifact registry_sha256 differs from RUN_MANIFEST",
     ):
         compute.main(arguments)
+
+
+@pytest.mark.parametrize("registry_mutation", ["notes", "unmapped_obr_heads"])
+def test_restage_rejects_registry_drift_at_sha_gate_before_parse_or_output(
+    tmp_path,
+    monkeypatch,
+    synthetic_measure,
+    synthetic_claim,
+    registry_mutation,
+):
+    replay = _write_synthetic_replay(
+        tmp_path,
+        synthetic_measure,
+        synthetic_claim,
+    )
+    original_outputs = {
+        path: path.read_bytes() for path in replay["output_paths"]
+    }
+    registry = yaml.safe_load(replay["registry_path"].read_text())
+    measure = registry["measures"][0]
+    if registry_mutation == "notes":
+        measure["notes"] = "mutated registry note"
+    else:
+        measure["unmapped_obr_heads"].append("Fabricated unmapped head")
+    replay["registry_path"].write_text(yaml.safe_dump(registry, sort_keys=False))
+    actual_sha256 = compute.sha256_file(replay["registry_path"])
+
+    def forbidden_parse(*args, **kwargs):
+        raise AssertionError("registry SHA gate was bypassed before parsing")
+
+    monkeypatch.setattr(compute, "parse_registry_payload", forbidden_parse)
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="registry SHA-256 differs from RUN_MANIFEST",
+    ) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=replay["manifest_path"],
+            output_dir=replay["output_dir"],
+            artifact_root=replay["artifact_root"],
+        )
+    message = str(exc_info.value)
+    assert f"expected {replay['registry_sha256']}" in message
+    assert f"actual {actual_sha256}" in message
+    assert "new run" in message
+    assert "re-run" in message
+    assert {
+        path: path.read_bytes() for path in replay["output_paths"]
+    } == original_outputs
+
+
+def test_restage_rechecks_registry_sha_immediately_before_writes(
+    tmp_path,
+    monkeypatch,
+    synthetic_measure,
+    synthetic_claim,
+):
+    replay = _write_synthetic_replay(
+        tmp_path,
+        synthetic_measure,
+        synthetic_claim,
+    )
+    original_outputs = {
+        path: path.read_bytes() for path in replay["output_paths"]
+    }
+    original_rederive = compute.rederive_artifact_orientation
+    mutated = False
+
+    def mutate_registry_during_replay(*args, **kwargs):
+        nonlocal mutated
+        artifact = original_rederive(*args, **kwargs)
+        if not mutated:
+            registry = yaml.safe_load(replay["registry_path"].read_text())
+            registry["measures"][0]["notes"] = "TOCTOU registry mutation"
+            replay["registry_path"].write_text(
+                yaml.safe_dump(registry, sort_keys=False)
+            )
+            mutated = True
+        return artifact
+
+    monkeypatch.setattr(
+        compute,
+        "rederive_artifact_orientation",
+        mutate_registry_during_replay,
+    )
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="registry SHA-256 differs from RUN_MANIFEST",
+    ) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=replay["manifest_path"],
+            output_dir=replay["output_dir"],
+            artifact_root=replay["artifact_root"],
+        )
+    actual_sha256 = compute.sha256_file(replay["registry_path"])
+    message = str(exc_info.value)
+    assert mutated
+    assert f"expected {replay['registry_sha256']}" in message
+    assert f"actual {actual_sha256}" in message
+    assert "re-run" in message
+    assert {
+        path: path.read_bytes() for path in replay["output_paths"]
+    } == original_outputs
+
+
+@pytest.mark.parametrize(
+    ("missing_field", "message_fragment"),
+    [
+        ("registry_sha256", "artifact registry_sha256 differs"),
+        ("frozen_registry", "frozen_registry must be a mapping"),
+    ],
+)
+def test_nonlegacy_artifact_must_carry_frozen_registry_replay_fields(
+    tmp_path,
+    synthetic_measure,
+    synthetic_claim,
+    missing_field,
+    message_fragment,
+):
+    replay = _write_synthetic_replay(
+        tmp_path,
+        synthetic_measure,
+        synthetic_claim,
+    )
+    artifact = json.loads(replay["artifact_path"].read_text())
+    artifact.pop(missing_field)
+    compute.write_json(replay["artifact_path"], artifact)
+    original_outputs = {
+        path: path.read_bytes() for path in replay["output_paths"]
+    }
+
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match=message_fragment,
+    ):
+        compute.restage_existing_run(
+            manifest_path=replay["manifest_path"],
+            output_dir=replay["output_dir"],
+            artifact_root=replay["artifact_root"],
+        )
+    assert {
+        path: path.read_bytes() for path in replay["output_paths"]
+    } == original_outputs
 
 
 def _mutate_frozen_claim_field(claim, claim_field):
@@ -1623,6 +2050,12 @@ def _mutate_frozen_claim_field(claim, claim_field):
         container[keys[-1]] = original + 1
     else:
         container[keys[-1]] = f"changed {original}"
+
+
+def _nested_value(value, field):
+    for key in field.split("."):
+        value = value[key]
+    return value
 
 
 @pytest.mark.parametrize(
@@ -1683,9 +2116,18 @@ def test_rederive_rejects_every_frozen_claim_field_drift(
         run_id="campaign-20260817-obr-costings",
         claims=[synthetic_claim],
         claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+        registry_sha256=SYNTHETIC_REGISTRY_SHA256,
     )
+    frozen_snapshot = artifact["heads"][0]["external_claim"]
     current_claim = copy.deepcopy(synthetic_claim)
     _mutate_frozen_claim_field(current_claim, claim_field)
+    current_snapshot = compute.source_claim_snapshot(
+        current_claim,
+        claims_slice_sha256=SYNTHETIC_CLAIMS_SHA256,
+        claim_ordinal=0,
+    )
+    frozen_value = _nested_value(frozen_snapshot, reported_field)
+    current_value = _nested_value(current_snapshot, reported_field)
 
     with pytest.raises(compute.ArtifactRestageError) as exc_info:
         compute.rederive_artifact_orientation(
@@ -1694,23 +2136,17 @@ def test_rederive_rejects_every_frozen_claim_field_drift(
             path=tmp_path / "artifact.json",
             claims=[current_claim],
             expected_claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+            expected_registry_sha256=SYNTHETIC_REGISTRY_SHA256,
         )
     message = str(exc_info.value)
-    assert reported_field in message
-    if reported_field in {
-        "source",
-        "metric",
-        "period",
-        "source_table",
-        "reform_hint",
-    } or reported_field.startswith("conditions."):
-        assert "frozen claim not found in current claims" in message
-        assert "descriptor:" in message
-    else:
-        assert "frozen/claims fields differ" in message
+    assert "frozen/claims fields differ" in message
+    assert (
+        f"field={reported_field} frozen={frozen_value!r} "
+        f"current={current_value!r}"
+    ) in message
 
 
-def test_rederive_rejects_ambiguous_frozen_claim_descriptor(
+def test_rederive_rejects_out_of_range_frozen_claim_ordinal(
     tmp_path, synthetic_measure, synthetic_claim
 ):
     bundle = {"certified_data_build_id": "synthetic-certified-build"}
@@ -1724,23 +2160,109 @@ def test_rederive_rejects_ambiguous_frozen_claim_descriptor(
         run_id="campaign-20260817-obr-costings",
         claims=[synthetic_claim],
         claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+        registry_sha256=SYNTHETIC_REGISTRY_SHA256,
     )
+    artifact["heads"][0]["external_claim"]["claim_ordinal"] = 2
 
     with pytest.raises(
         compute.ArtifactRestageError,
-        match="frozen claim ambiguous in current claims",
+        match="claim_ordinal 2 is out of range for 1 claims rows",
     ) as exc_info:
         compute.rederive_artifact_orientation(
             artifact,
             synthetic_measure,
             path=tmp_path / "artifact.json",
-            claims=[synthetic_claim, copy.deepcopy(synthetic_claim)],
+            claims=[synthetic_claim],
             expected_claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+            expected_registry_sha256=SYNTHETIC_REGISTRY_SHA256,
         )
     message = str(exc_info.value)
-    assert "descriptor:" in message
-    assert "conditions.tax_head" in message
-    assert "2 matches" in message
+    assert "claim_ordinal 2" in message
+    assert "1 claims rows" in message
+
+
+@pytest.mark.parametrize(
+    ("identity_mutation", "message_fragment"),
+    [
+        ("missing_slice_sha", "claims_slice_sha256 differs"),
+        ("boolean_ordinal", "claim_ordinal must be an integer"),
+    ],
+)
+def test_nonlegacy_frozen_claim_requires_slice_hash_and_integer_ordinal(
+    tmp_path,
+    synthetic_measure,
+    synthetic_claim,
+    identity_mutation,
+    message_fragment,
+):
+    bundle = {"certified_data_build_id": "synthetic-certified-build"}
+    artifact = compute.build_artifact(
+        measure=synthetic_measure,
+        year=2026,
+        baseline=synthetic_run(bundle, 100.0),
+        reform=synthetic_run(bundle, 125.0),
+        output_path=tmp_path / "artifact.json",
+        computed_at="2026-08-17T12:00:00+00:00",
+        run_id="campaign-20260817-obr-costings",
+        claims=[synthetic_claim],
+        claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+        registry_sha256=SYNTHETIC_REGISTRY_SHA256,
+    )
+    snapshot = artifact["heads"][0]["external_claim"]
+    if identity_mutation == "missing_slice_sha":
+        snapshot.pop("claims_slice_sha256")
+    else:
+        snapshot["claim_ordinal"] = True
+
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match=message_fragment,
+    ):
+        compute.rederive_artifact_orientation(
+            artifact,
+            synthetic_measure,
+            path=tmp_path / "artifact.json",
+            claims=[synthetic_claim],
+            expected_claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+            expected_registry_sha256=SYNTHETIC_REGISTRY_SHA256,
+        )
+
+
+def test_wrong_in_range_claim_ordinal_reports_descriptor_values(
+    tmp_path,
+    synthetic_measure,
+    synthetic_claim,
+):
+    bundle = {"certified_data_build_id": "synthetic-certified-build"}
+    artifact = compute.build_artifact(
+        measure=synthetic_measure,
+        year=2026,
+        baseline=synthetic_run(bundle, 100.0),
+        reform=synthetic_run(bundle, 125.0),
+        output_path=tmp_path / "artifact.json",
+        computed_at="2026-08-17T12:00:00+00:00",
+        run_id="campaign-20260817-obr-costings",
+        claims=[synthetic_claim],
+        claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+        registry_sha256=SYNTHETIC_REGISTRY_SHA256,
+    )
+    artifact["heads"][0]["external_claim"]["claim_ordinal"] = 1
+    wrong_claim = copy.deepcopy(synthetic_claim)
+    wrong_claim["conditions"]["tax_head"] = "Corporation tax"
+
+    with pytest.raises(compute.ArtifactRestageError) as exc_info:
+        compute.rederive_artifact_orientation(
+            artifact,
+            synthetic_measure,
+            path=tmp_path / "artifact.json",
+            claims=[synthetic_claim, wrong_claim],
+            expected_claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+            expected_registry_sha256=SYNTHETIC_REGISTRY_SHA256,
+        )
+    assert (
+        "field=conditions.tax_head frozen='Income tax' "
+        "current='Corporation tax'"
+    ) in str(exc_info.value)
 
 
 def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeypatch):
@@ -1751,6 +2273,7 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
     claims_path = tmp_path / "claims.jsonl"
     claims_path.write_bytes(VENDORED_CLAIMS.read_bytes())
     claims, claims_sha256 = compute.load_claims_with_sha256(claims_path)
+    registry_sha256 = compute.sha256_file(registry_path)
     artifacts_dir = tmp_path / "artifacts"
     staged_path = tmp_path / "staged.jsonl"
     output_dir = tmp_path / "comparison"
@@ -1801,6 +2324,7 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
             run_id="campaign-20260817-obr-costings",
             claims=claims,
             claims_sha256=claims_sha256,
+            registry_sha256=registry_sha256,
         )
         artifact["diagnostic_only"] = False
         artifact_reference = str(output_path.relative_to(tmp_path))
@@ -1826,6 +2350,7 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
         "started_at": started_at,
         "engine_version": engine_version,
         "registry": "registry.yaml",
+        "registry_sha256": registry_sha256,
         "claims": "claims.jsonl",
         "claims_sha256": claims_sha256,
         "years": [2026],
@@ -1834,6 +2359,11 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
         "certified_cache_preflight": {"release_bundle": bundle},
         "artifacts": artifact_references,
         "legacy_artifacts_without_dataset_hashes": [],
+        "artifactless_frozen_registry": {
+            measure["measure_key"]: compute.frozen_registry_measure(measure)
+            for measure in measures
+            if measure["pe_reform"] is None
+        },
         "staged_output": "staged.jsonl",
         "staged_rows": len(expected_rows),
     }
@@ -1848,6 +2378,17 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
     first_outputs = {path: path.read_bytes() for path in output_paths}
 
     original_stage_not_computed_rows = compute.stage_not_computed_rows
+    live_measure_ids = {id(measure) for measure in measures}
+    frozen_artifactless_keys = set()
+
+    def verify_artifactless_frozen_measure(*args, **kwargs):
+        measure = kwargs["measure"]
+        assert id(measure) not in live_measure_ids
+        assert measure == manifest["artifactless_frozen_registry"][
+            measure["measure_key"]
+        ]
+        frozen_artifactless_keys.add(measure["measure_key"])
+        return original_stage_not_computed_rows(*args, **kwargs)
 
     def forbidden(*args, **kwargs):
         raise AssertionError("restage reached simulation or certified-cache setup")
@@ -1855,6 +2396,11 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
     monkeypatch.setattr(compute, "configure_offline", forbidden)
     monkeypatch.setattr(compute, "preflight_certified_dataset", forbidden)
     monkeypatch.setattr(compute, "run_managed_simulation", forbidden)
+    monkeypatch.setattr(
+        compute,
+        "stage_not_computed_rows",
+        verify_artifactless_frozen_measure,
+    )
 
     summary = compute.restage_existing_run(
         manifest_path=manifest_path,
@@ -1873,6 +2419,7 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
     }
     assert len(constructed_keys) == 21
     assert len(not_computed_keys) == 5
+    assert frozen_artifactless_keys == not_computed_keys
     assert constructed_keys | not_computed_keys == {
         measure["measure_key"] for measure in measures
     }
@@ -2000,6 +2547,7 @@ def test_comparison_resolves_measure_identity_and_traces_artifact(
         run_id="campaign-20260816-obr-costings",
         claims=[synthetic_claim],
         claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+        registry_sha256=SYNTHETIC_REGISTRY_SHA256,
     )
     compute.write_json(artifact_path, artifact)
     staged = compute.stage_artifact_rows(artifact, synthetic_measure)[0]
