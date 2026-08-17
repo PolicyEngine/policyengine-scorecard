@@ -18,11 +18,16 @@ from pipeline.compute_uk_counterparts import (
     BENEFIT_LINES,
     CANDIDATES,
     FULLPART_OVERRIDES,
+    HMRC_BAND_CUTS,
+    PENSION_AGE_HB_LINE,
+    TAKEUP_COMPONENT_PROGRAMS,
+    TAKEUP_VALIDATED_PROGRAMS,
     emit,
     emit_population_denominator,
     meta,
     parse_year,
     pe_gap,
+    restricted_mask,
     rows,
     weighted_population,
 )
@@ -47,10 +52,54 @@ def test_module_imports_without_engine():
 
 
 def test_benefit_lines_reference_known_concepts():
-    for program, concept, entity, geo in BENEFIT_LINES:
+    for program, concept, entity, geo in BENEFIT_LINES + [PENSION_AGE_HB_LINE]:
         assert concept in CANDIDATES, f"{program}: unknown concept {concept}"
         assert entity in ("person", "benunit", "household")
         assert geo in ("UK", "GB", "NI")
+
+
+def test_entity_levels_match_the_engine():
+    """ESA/JSA are benefit-unit variables and winter fuel is
+    household-level; mapping them lower projects awards onto every
+    member and overcounts recipients."""
+    levels = {program: entity for program, _, entity, _ in BENEFIT_LINES}
+    assert levels["esa_income"] == "benunit"
+    assert levels["jsa"] == "benunit"
+    assert levels["winter_fuel_allowance"] == "household"
+
+
+def test_fullpart_overrides_use_the_engine_takeup_vocabulary():
+    """The engine's take-up inputs are would_claim_* plus the global
+    claims_all_entitled_benefits switch (the set the compute campaign's
+    fulltakeup runs used successfully) — not guessed takes_up_* names,
+    which would make the first managed run die on its own abort."""
+    assert set(FULLPART_OVERRIDES) == {
+        "would_claim_pc",
+        "would_claim_housing_benefit",
+        "would_claim_uc",
+        "would_claim_child_benefit",
+        "claims_all_entitled_benefits",
+    }
+    assert all(v is True for v in FULLPART_OVERRIDES.values())
+
+
+def test_hmrc_band_cuts_match_external_subgroup_vocabulary():
+    """sources/hmrc-personal-tax/adapter.py emits taxpayer_count under
+    basic_rate/higher_rate/additional_rate; the PE side must cut on the
+    same ids, each through a declared boolean band concept."""
+    assert [s for s, _ in HMRC_BAND_CUTS] == [
+        "basic_rate",
+        "higher_rate",
+        "additional_rate",
+    ]
+    for _, concept in HMRC_BAND_CUTS:
+        assert concept in CANDIDATES
+
+
+def test_takeup_validated_programs_are_emitted_programs():
+    emitted = {program for program, _, _, _ in BENEFIT_LINES} | {PENSION_AGE_HB_LINE[0]}
+    for program in TAKEUP_VALIDATED_PROGRAMS + TAKEUP_COMPONENT_PROGRAMS:
+        assert program in emitted, f"{program}: validated but never emitted"
 
 
 def test_candidate_lists_are_nonempty_and_unique():
@@ -89,7 +138,13 @@ def test_boolean_concepts_list_no_amount_variables():
     higher_rate_earned_income_tax is pounds charged at the higher rate,
     not "is a higher-rate taxpayer"."""
     boolean_prefixes = ("is_", "in_", "pays_", "would_", "takes_up_")
-    for concept in ("pays_higher_rate", "is_child", "is_SP_age"):
+    for concept in (
+        "pays_basic_rate",
+        "pays_higher_rate",
+        "pays_additional_rate",
+        "is_child",
+        "is_SP_age",
+    ):
         for name in CANDIDATES[concept]:
             assert name.lower().startswith(boolean_prefixes), (
                 f"{concept}: candidate {name} does not read as a boolean flag; "
@@ -120,30 +175,53 @@ def test_main_reads_the_year_from_index_1_not_2():
 # --- poverty denominator ---------------------------------------------------
 
 
-class _FakeMicroSeries:
-    """Stand-in for a weighted microdf MicroSeries."""
+def _fake_microseries(weighted_count):
+    """Type-identity stand-in for microdf.generic.MicroSeries.
 
-    def __init__(self, weights, weighted_count):
-        self.weights = weights
-        self._weighted_count = weighted_count
-
-    def count(self):
-        return self._weighted_count
+    The module identifies a MicroSeries by TYPE (name + defining
+    module), never by reading its weight array — microdf itself is not
+    installed in CI, so the fallback identity path is what these tests
+    exercise."""
+    cls = type("MicroSeries", (), {"count": lambda self: weighted_count})
+    cls.__module__ = "microdf.generic"
+    return cls()
 
 
 def test_weighted_population_returns_weighted_count():
-    assert weighted_population(_FakeMicroSeries([1, 2], 67_000_000.0)) == 67_000_000.0
+    assert weighted_population(_fake_microseries(67_000_000.0)) == 67_000_000.0
+
+
+def _impostor_microseries():
+    """Right class name, wrong module: not a microdf type."""
+    cls = type("MicroSeries", (), {"count": lambda self: 100_000})
+    cls.__module__ = "pandas.core.series"
+    return cls()
 
 
 @pytest.mark.parametrize(
     "unweighted",
     [
         [0, 1, 1],  # plain list
-        _FakeMicroSeries(None, 100_000),  # MicroSeries-shaped but unweighted
+        _impostor_microseries(),  # MicroSeries-named but not microdf's
     ],
 )
-def test_weighted_population_refuses_unweighted_objects(unweighted):
+def test_weighted_population_refuses_non_microseries_objects(unweighted):
     assert weighted_population(unweighted) is None
+
+
+def test_weighted_population_never_touches_weight_arrays():
+    """The module contract forbids touching weight arrays; the check is
+    type identity + MicroSeries.count() (the weighted count), never a
+    .weights read. Checked on the AST so docstrings don't count."""
+    src = inspect.getsource(uk.weighted_population) + inspect.getsource(
+        uk._is_microseries
+    )
+    accessed = {
+        node.attr
+        for node in ast.walk(ast.parse(src))
+        if isinstance(node, ast.Attribute)
+    }
+    assert "weights" not in accessed
 
 
 class _UnweightedPandasLike:
@@ -171,12 +249,43 @@ def test_population_denominator_never_emits_unweighted_count_as_ok():
 def test_population_denominator_emits_weighted_count_as_ok():
     before = len(rows)
     out = emit_population_denominator(
-        "baseline", "bhc", _FakeMicroSeries([1.0], 67_000_000.0)
+        "baseline", "bhc", _fake_microseries(67_000_000.0)
     )
     assert out == 67_000_000.0
     assert rows[before]["status"] == "ok"
     assert rows[before]["value"] == 67_000_000.0
+    assert rows[before]["subgroup"] == "total"
     del rows[before:]
+
+
+def test_population_denominator_carries_its_subgroup():
+    """Each numerator cut gets a matching denominator row: the subgroup
+    lands on the denominator so a children's rate divides by children."""
+    before = len(rows)
+    emit_population_denominator(
+        "baseline", "ahc", _fake_microseries(12_000_000.0), "children"
+    )
+    assert rows[before]["subgroup"] == "children"
+    assert rows[before]["metric"] == "population_ahc"
+    del rows[before:]
+
+
+# --- geography restriction refusal -----------------------------------------
+
+
+def test_restricted_mask_refuses_unanchored_restrictions():
+    """A GB/NI line whose entity has no country anchor must go pe_gap —
+    an unrestricted total is never emitted under a restricted label."""
+    masks = {"person": {"UK": [True], "GB": [True], "NI": [False]}}
+    _, honoured = restricted_mask(masks, "benunit", "GB")
+    assert not honoured
+    _, honoured = restricted_mask(masks, "person", "GB")
+    assert honoured
+
+
+def test_restricted_mask_treats_uk_as_unrestricted():
+    _, honoured = restricted_mask({}, "household", "UK")
+    assert honoured
 
 
 # --- fullpart verification -------------------------------------------------
@@ -198,7 +307,7 @@ def _row(run, program, metric, value, status="ok"):
 def test_identical_fullpart_is_a_hard_failure():
     base = [_row("baseline", "pension_credit", "recipient_count", 1_320_000.0)]
     same = [_row("fullpart", "pension_credit", "recipient_count", 1_320_000.0)]
-    with pytest.raises(RuntimeError, match="byte-identical"):
+    with pytest.raises(RuntimeError, match="pension_credit"):
         uk.assert_fullpart_moved(base, same)
 
 
@@ -209,11 +318,58 @@ def test_nothing_comparable_is_a_hard_failure():
         uk.assert_fullpart_moved(base, full)
 
 
-def test_moved_fullpart_passes_and_is_logged_in_meta():
+def test_one_benefit_moving_does_not_bless_another():
+    """The silent-100%-take-up failure class: UC moved but PC did not.
+    A global any-value-moved check passes this; the per-benefit contract
+    must fail it, naming the stuck benefit."""
+    base = [
+        _row("baseline", "universal_credit", "recipient_count", 5_000_000.0),
+        _row("baseline", "pension_credit", "recipient_count", 1_320_000.0),
+    ]
+    full = [
+        _row("fullpart", "universal_credit", "recipient_count", 6_400_000.0),
+        _row("fullpart", "pension_credit", "recipient_count", 1_320_000.0),
+    ]
+    with pytest.raises(RuntimeError, match="pension_credit"):
+        uk.assert_fullpart_moved(base, full)
+
+
+def test_stuck_component_warns_but_does_not_fail():
+    """savings_credit is closed to new claims: a forced-on PC can move
+    the aggregate while the component stays put — warn-only."""
+    base = [
+        _row("baseline", "pension_credit", "recipient_count", 1_320_000.0),
+        _row("baseline", "savings_credit", "recipient_count", 120_000.0),
+        _row("baseline", "universal_credit", "recipient_count", 5_000_000.0),
+        _row("baseline", "housing_benefit", "recipient_count", 2_000_000.0),
+        _row("baseline", "child_benefit", "recipient_count", 7_000_000.0),
+        _row("baseline", "housing_benefit_pensioners", "recipient_count", 1_100_000.0),
+    ]
+    full = [
+        _row("fullpart", "pension_credit", "recipient_count", 2_100_000.0),
+        _row("fullpart", "savings_credit", "recipient_count", 120_000.0),
+        _row("fullpart", "universal_credit", "recipient_count", 6_400_000.0),
+        _row("fullpart", "housing_benefit", "recipient_count", 2_600_000.0),
+        _row("fullpart", "child_benefit", "recipient_count", 7_300_000.0),
+        _row("fullpart", "housing_benefit_pensioners", "recipient_count", 1_400_000.0),
+    ]
+    uk.assert_fullpart_moved(base, full)
+    assert meta["fullpart_moved"]["by_program"]["savings_credit"] == {
+        "compared": 1,
+        "moved": 0,
+    }
+
+
+def test_moved_fullpart_passes_and_is_logged_per_program():
     base = [_row("baseline", "pension_credit", "recipient_count", 1_320_000.0)]
     full = [_row("fullpart", "pension_credit", "recipient_count", 2_100_000.0)]
     uk.assert_fullpart_moved(base, full)
-    assert meta["fullpart_moved"] == {"compared": 1, "moved": 1}
+    assert meta["fullpart_moved"]["compared"] == 1
+    assert meta["fullpart_moved"]["moved"] == 1
+    assert meta["fullpart_moved"]["by_program"]["pension_credit"] == {
+        "compared": 1,
+        "moved": 1,
+    }
 
 
 # --- period handling -------------------------------------------------------

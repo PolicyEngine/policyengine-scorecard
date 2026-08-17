@@ -27,22 +27,41 @@ The fullpart run sets its input overrides BEFORE any calculate on that
 sim, at each flag's own definition period (monthly flags get all twelve
 months, with an eternity fallback), and then verifies the override took:
 post-set means are recorded in pe_uk_meta.json, and the run aborts if no
-override applied, if no applied override reads back as on, or if the
-resulting series are identical to baseline. A silently no-op fullpart run
-would make every DWP take-up denominator the baseline caseload while
-still reading ``status: "ok"``, so it is a hard failure, not a warning.
+override applied, if no applied override reads back as on, or if any
+take-up-validated benefit's sensitive series are identical to baseline.
+The movement check is PER BENEFIT — universal credit moving must never
+bless an unchanged pension credit caseload, because each benefit's
+fullpart series is its own DWP take-up denominator; one benefit's silent
+no-op is the silent-100%-take-up failure class regardless of what the
+others did. So it is a per-benefit hard failure, not a warning.
 
 Counterpart coverage maps to the ingested UK external lanes:
-  - dwp_takeup:  pension credit / guarantee credit / HB (pension-age)
-                 benefit-unit caseloads + GBP totals, baseline and
-                 fullpart, GB-restricted
+  - dwp_takeup:  pension credit / guarantee credit / savings credit
+                 benefit-unit caseloads + GBP totals, and pension-age
+                 housing benefit as its own program
+                 (housing_benefit_pensioners, the DWP external program
+                 id) — never the unrestricted HB total under that label;
+                 baseline and fullpart, GB-restricted
   - dwp_hbai:    persons below 60% median BHC/AHC, relative, by age
-                 group and country/region (single policy year; the
-                 3-year-average construction is downstream)
-  - uk_hmrc:     taxpayer counts by marginal band + income tax
-                 liability aggregates
+                 group, each numerator with its own matching population
+                 denominator (total, children, pensioners) so every
+                 published cut has a rate derivation (single policy
+                 year; the 3-year-average construction is downstream)
+  - uk_hmrc:     taxpayer counts + income tax liability, total and by
+                 marginal band (basic/higher/additional — the external
+                 adapter's subgroup vocabulary); a band that cannot be
+                 resolved emits pe_gap, never an all-taxpayer aggregate
+                 under a band label
   - obr:         GBP expenditure per modeled benefit line
   - ukmod:       caseloads + expenditure for the shared instruments
+
+Geography: country is a household-level enum, and household-enum
+projection to group entities crashes in core, so masks are built from
+the person-level projection and anchored to each group entity via its
+first person member — the same rule compute_counterparts.py uses for US
+states. A geography-restricted line whose entity has no country anchor
+emits pe_gap: an unrestricted total is never emitted under a GB/NI
+label.
 
 Variable-name drift is expected across engine versions, so every
 concept resolves through CANDIDATES (first existing variable wins,
@@ -61,12 +80,13 @@ bundle. Still unverified until that first real run, and knowingly so:
 (a) the engine entry point — ``pe.uk.managed_microsimulation()`` mirrors
 the documented US surface but has not been called against an installed
 policyengine.py; (b) which CANDIDATES names actually exist in
-policyengine-uk, and so how many concepts land as ``pe_gap``; (c)
-whether the FULLPART_OVERRIDES input variables exist at all — UK take-up
-is parameter/seed-driven, so if they do not, the fullpart run will abort
-loudly and the take-up lane needs a parametric reform instead of an
-input override. Everything below the engine boundary (registries, row
-shapes, argv parsing, the denominator path) is covered by
+policyengine-uk, and so how many concepts land as ``pe_gap``. The
+FULLPART_OVERRIDES names are no longer in that list: they are the
+``would_claim_*`` / ``claims_all_entitled_benefits`` inputs the compute
+campaign's fulltakeup runs used successfully against this engine.
+Everything below the engine boundary (registries, row shapes, argv
+parsing, the denominator path, the geography-restriction refusal, the
+per-benefit movement contract) is covered by
 tests/test_uk_pipeline_registry.py.
 """
 
@@ -118,13 +138,19 @@ CANDIDATES = {
     "is_SP_age": ["is_SP_age", "is_state_pension_age", "is_pension_age"],
     "country": ["country"],
     "region": ["region", "ons_region"],
-    # uk_hmrc counterparts
+    # uk_hmrc counterparts. Every concept declared here is emitted (as a
+    # value or a pe_gap) — no declared-but-unused advertisement. Band
+    # cuts are boolean marginal-band flags matching the external
+    # adapter's subgroup vocabulary (basic/higher/additional); a GBP
+    # amount like higher_rate_earned_income_tax is a different concept
+    # and is banned as a candidate.
     "income_tax": ["income_tax"],
-    "total_income": ["total_income"],
-    # boolean "is a higher-rate taxpayer" only; higher_rate_earned_income_tax
-    # is a GBP amount, a different concept, so it is not a candidate here.
+    "pays_basic_rate": ["pays_basic_rate_tax", "is_basic_rate_taxpayer"],
     "pays_higher_rate": ["pays_higher_rate_tax", "is_higher_rate_taxpayer"],
-    "marginal_tax_rate_band": ["tax_band", "marginal_tax_rate_band"],
+    "pays_additional_rate": [
+        "pays_additional_rate_tax",
+        "is_additional_rate_taxpayer",
+    ],
     # obr / ukmod counterparts (household or benunit GBP aggregates)
     "universal_credit": ["universal_credit"],
     "child_benefit": ["child_benefit"],
@@ -143,22 +169,28 @@ CANDIDATES = {
     "employer_ni": ["employer_ni", "ni_employer"],
 }
 
-# Take-up controls: PE UK take-up is parameter/seed-driven; forcing full
-# participation is an input-variable override run (the
-# policyengine_uk_inputs framework in the DB's ReformRef vocabulary).
-# Whether these input variables exist in policyengine-uk at all is
-# UNVERIFIED (see module docstring); build_sim aborts loudly rather than
-# emitting a fullpart series identical to baseline if they do not.
+# Take-up controls: forcing full participation is an input-variable
+# override run (the policyengine_uk_inputs framework in the DB's
+# ReformRef vocabulary). These are the engine's actual take-up inputs —
+# the set the compute campaign's fulltakeup runs used successfully
+# (would_claim_* per benefit plus the global claims_all_entitled_benefits
+# switch), not guessed takes_up_* names. build_sim still aborts loudly
+# rather than emitting a fullpart series identical to baseline if none
+# applies, and assert_fullpart_moved enforces movement per benefit.
 FULLPART_OVERRIDES = {
-    # input flag candidates -> forced value
-    "takes_up_pension_credit": True,
-    "takes_up_housing_benefit": True,
-    "takes_up_universal_credit": True,
-    "takes_up_child_benefit": True,
-    "takes_up_council_tax_reduction": True,
+    # engine input flag -> forced value
+    "would_claim_pc": True,
+    "would_claim_housing_benefit": True,
+    "would_claim_uc": True,
+    "would_claim_child_benefit": True,
+    "claims_all_entitled_benefits": True,
 }
 
 # (program, concept, entity_kind, geography restriction)
+# Entity levels follow the engine's own variable entities: ESA/JSA are
+# benefit-unit variables and winter fuel is household-level — mapping
+# them to a lower entity projects awards onto every member and
+# overcounts recipients.
 BENEFIT_LINES = [
     ("pension_credit", "pension_credit", "benunit", "GB"),
     ("guarantee_credit", "guarantee_credit", "benunit", "GB"),
@@ -171,14 +203,45 @@ BENEFIT_LINES = [
     ("pip", "pip", "person", "GB"),
     ("attendance_allowance", "attendance_allowance", "person", "GB"),
     ("carers_allowance", "carers_allowance", "person", "GB"),
-    ("esa_income", "esa_income", "person", "GB"),
-    ("jsa", "jsa", "person", "GB"),
-    ("winter_fuel_allowance", "winter_fuel_allowance", "benunit", "GB"),
+    ("esa_income", "esa_income", "benunit", "GB"),
+    ("jsa", "jsa", "benunit", "GB"),
+    ("winter_fuel_allowance", "winter_fuel_allowance", "household", "GB"),
     ("council_tax_reduction", "council_tax_benefit", "benunit", "GB"),
+]
+
+# DWP take-up advertises pension-age housing benefit under its own
+# external program id (housing_benefit_pensioners, per
+# sources/dwp-takeup/adapter.py TITLE_PROGRAMS) — a pension-age benunit
+# cut of HB, emitted alongside (never instead of) the unrestricted
+# housing_benefit total that serves the obr/ukmod expenditure lanes.
+PENSION_AGE_HB_LINE = ("housing_benefit_pensioners", "housing_benefit", "benunit", "GB")
+
+# HMRC marginal-band cuts: external subgroup id -> boolean band concept
+# (sources/hmrc-personal-tax/adapter.py subgroup vocabulary).
+HMRC_BAND_CUTS = [
+    ("basic_rate", "pays_basic_rate"),
+    ("higher_rate", "pays_higher_rate"),
+    ("additional_rate", "pays_additional_rate"),
 ]
 
 # Metrics whose fullpart values must move when take-up is forced on.
 TAKEUP_SENSITIVE_METRICS = ("recipient_count", "benefit_spending")
+
+# Per-benefit movement contract (see assert_fullpart_moved): each of
+# these programs feeds DWP take-up denominators through its own override
+# flag, so each must move on its own — one benefit moving must never
+# bless another's unchanged caseload.
+TAKEUP_VALIDATED_PROGRAMS = (
+    "pension_credit",
+    "housing_benefit",
+    "housing_benefit_pensioners",
+    "universal_credit",
+    "child_benefit",
+)
+# Pension credit components: expected to move with would_claim_pc but
+# warn-only — savings credit is closed to new claims, so a forced-on PC
+# can move the aggregate while a component split stays put.
+TAKEUP_COMPONENT_PROGRAMS = ("guarantee_credit", "savings_credit")
 
 rows = []
 meta = {
@@ -252,44 +315,75 @@ def periods_for(variable, year):
     return [year], "year"
 
 
+def _is_microseries(series):
+    """True only for a genuine microdf MicroSeries, identified by TYPE.
+
+    Never by reading its weight array — the module contract forbids
+    touching weight arrays, and .weights access was exactly how the old
+    check violated it. When microdf is not importable (CI), an object
+    cannot be a real MicroSeries, so identity falls back to the type's
+    own name and defining module.
+    """
+    try:
+        from microdf import MicroSeries  # type: ignore
+    except ImportError:
+        cls = type(series)
+        return (
+            cls.__name__ == "MicroSeries" and cls.__module__.split(".")[0] == "microdf"
+        )
+    return isinstance(series, MicroSeries)
+
+
 def weighted_population(series):
     """Weighted record count of a MicroSeries, or None.
 
-    microdf's MicroSeries.count() returns the sum of weights. A plain
-    pandas Series / ndarray also answers to len() and sometimes count(),
-    but those are UNWEIGHTED record counts (~10^5 for a UK survey) and
-    must never be emitted as a population denominator. Returning None
-    forces the caller onto the pe_gap path.
+    MicroSeries.count() IS the weighted count (microdf sums weights). A
+    plain pandas Series / ndarray also answers len()/count(), but those
+    are UNWEIGHTED record counts (~10^5 for a UK survey) and must never
+    be emitted as a population denominator. Returning None forces the
+    caller onto the pe_gap path.
     """
-    if getattr(series, "weights", None) is None:
+    if not _is_microseries(series):
         return None
-    counter = getattr(series, "count", None)
-    if not callable(counter):
-        return None
-    return float(counter())
+    return float(series.count())
 
 
-def emit_population_denominator(run_name, hc, series):
+def emit_population_denominator(run_name, hc, series, subgroup="total"):
     """Population denominator for the HBAI rate derivation, or a pe_gap.
 
-    Never emits an unweighted count under status "ok"."""
+    Emitted per subgroup so every published numerator cut (total,
+    children, pensioners) has its matching denominator. Never emits an
+    unweighted count under status "ok"."""
     n = weighted_population(series)
     if n is None:
         log(
-            f"  WARNING: no weighted count for population_{hc} "
+            f"  WARNING: no weighted count for population_{hc}/{subgroup} "
             f"({type(series).__name__} is not a weighted MicroSeries) -> pe_gap"
         )
         pe_gap(
             run_name,
             "hbai_low_income",
             f"population_{hc}",
-            "total",
+            subgroup,
             "UK",
             "weighted_population",
         )
         return None
-    emit(run_name, "hbai_low_income", f"population_{hc}", "total", "UK", n)
+    emit(run_name, "hbai_low_income", f"population_{hc}", subgroup, "UK", n)
     return n
+
+
+def restricted_mask(masks, entity, geo):
+    """(mask, honoured) for a geography restriction at an entity level.
+
+    UK is unrestricted: no mask is fine. GB/NI are restrictions: if the
+    entity has no country anchor, the restriction cannot be honoured and
+    the caller must emit pe_gap — an unrestricted total must never go
+    out under a GB/NI label."""
+    mask = masks.get(entity, {}).get(geo)
+    if geo == "UK":
+        return mask, True
+    return mask, mask is not None
 
 
 def build_sim(fullpart, year=None):
@@ -311,8 +405,20 @@ def build_sim(fullpart, year=None):
 
     sim = pe.uk.managed_microsimulation()
     run_name = "fullpart" if fullpart else "baseline"
+    # Provenance: sim.policyengine_bundle is the managed-run bundle
+    # record (US precedent: compute_counterparts.py reads exactly this);
+    # data_bundle/dataset are fallbacks only, and which path served is
+    # recorded so a fallback never masquerades as the bundle record.
+    bundle = getattr(sim, "policyengine_bundle", None)
+    if bundle:
+        bundle_info = {k: str(v) for k, v in dict(bundle).items()}
+        bundle_source = "policyengine_bundle"
+    else:
+        bundle_info = getattr(sim, "data_bundle", None) or getattr(sim, "dataset", None)
+        bundle_source = "data_bundle/dataset fallback"
     run_meta = {
-        "bundle": getattr(sim, "data_bundle", None) or getattr(sim, "dataset", None),
+        "bundle": bundle_info,
+        "bundle_source": bundle_source,
         "year": year,
     }
     meta["runs"][run_name] = run_meta
@@ -390,17 +496,57 @@ def build_sim(fullpart, year=None):
     return sim
 
 
+def first_person_anchor(sim, entity, person_values):
+    """Value of each group-entity row via its first person member.
+
+    Household-enum projection to group entities crashes in core, so
+    group-entity categorical/boolean cuts anchor on the first member —
+    the same rule compute_counterparts.py's first_person_anchor_state
+    uses for US states."""
+    import numpy as np
+    import pandas as pd
+
+    pop = sim.populations[entity]
+    row_of_person = np.asarray(pop.members_entity_id)
+    first = pd.Series(person_values).groupby(pd.Series(row_of_person)).first()
+    return first.reindex(np.arange(pop.count)).to_numpy()
+
+
 def geo_masks(sim, vs):
-    """Country masks at each entity level via map_to; GB = not NI."""
+    """Country masks per entity level, from the person-level projection.
+
+    country is a household-level enum: the person level takes the
+    downward projection (map_to="person"), and group entities anchor on
+    their first person member via first_person_anchor — never a direct
+    map_to onto a group entity, which crashes (or corrupts) on enums.
+    An entity whose anchor fails is simply absent from the result, and
+    restricted_mask() then forces its GB/NI lines to pe_gap — failure
+    here must never become an unrestricted total under a GB label.
+    GB = not NI."""
+    import numpy as np
+
     name = resolve(vs, "country")
     masks = {}
     if name is None:
+        log("  WARNING: no country variable; all GB/NI-restricted lines go pe_gap")
         return masks
+    c = sim.calculate(name, YEAR, map_to="person")
+    person_country = np.asarray(getattr(c, "values", c)).astype(str)
     for entity in ("person", "benunit", "household"):
-        c = sim.calculate(name, YEAR, map_to=entity)
-        arr = getattr(c, "values", c)
+        try:
+            arr = (
+                person_country
+                if entity == "person"
+                else first_person_anchor(sim, entity, person_country).astype(str)
+            )
+        except Exception as e:
+            log(
+                f"  WARNING: no {entity}-level country anchor ({e}); "
+                f"GB/NI-restricted {entity} lines go pe_gap"
+            )
+            continue
         masks[entity] = {
-            "UK": arr == arr,  # all-true
+            "UK": np.ones(len(arr), dtype=bool),
             "GB": arr != "NORTHERN_IRELAND",
             "NI": arr == "NORTHERN_IRELAND",
         }
@@ -408,12 +554,18 @@ def geo_masks(sim, vs):
 
 
 def assert_fullpart_moved(baseline_rows, fullpart_rows):
-    """Fail loudly if forcing take-up on changed nothing.
+    """Fail loudly, PER BENEFIT, if forcing take-up on changed nothing.
 
     Every DWP take-up counterpart divides recipients by the fullpart
-    entitled caseload; if fullpart == baseline the denominator is the
-    baseline caseload and every take-up rate silently comes out at 100%
-    while every row still reads status "ok".
+    entitled caseload; if a benefit's fullpart == baseline, that
+    benefit's denominator is the baseline caseload and its take-up rate
+    silently comes out at 100% while every row still reads status "ok".
+    A global any-value-moved check cannot catch this: universal credit
+    moving must not bless an unchanged pension credit caseload. So each
+    TAKEUP_VALIDATED_PROGRAMS entry with comparable rows must move on
+    its own; a validated program with nothing comparable (all pe_gap)
+    is warned — its denominators are already pe_gap downstream.
+    TAKEUP_COMPONENT_PROGRAMS are warn-only (see registry comment).
     """
 
     def key(r):
@@ -424,44 +576,83 @@ def assert_fullpart_moved(baseline_rows, fullpart_rows):
         for r in baseline_rows
         if r["status"] == "ok" and r["metric"] in TAKEUP_SENSITIVE_METRICS
     }
-    compared = moved = 0
+    by_program = {}
     for r in fullpart_rows:
         if r["status"] != "ok" or r["metric"] not in TAKEUP_SENSITIVE_METRICS:
             continue
         if key(r) not in base:
             continue
-        compared += 1
+        stats = by_program.setdefault(r["program"], {"compared": 0, "moved": 0})
+        stats["compared"] += 1
         if r["value"] != base[key(r)]:
-            moved += 1
-    meta["fullpart_moved"] = {"compared": compared, "moved": moved}
+            stats["moved"] += 1
+    compared = sum(s["compared"] for s in by_program.values())
+    moved = sum(s["moved"] for s in by_program.values())
+    meta["fullpart_moved"] = {
+        "compared": compared,
+        "moved": moved,
+        "by_program": by_program,
+    }
     log(f"fullpart vs baseline: {moved}/{compared} take-up-sensitive values moved")
-    if compared and not moved:
-        raise RuntimeError(
-            f"fullpart is byte-identical to baseline across all {compared} "
-            "take-up-sensitive values: the overrides applied and read back on, "
-            "but changed no benefit. Every DWP take-up denominator would be the "
-            "baseline caseload. Do not publish this run."
-        )
+    for program, stats in sorted(by_program.items()):
+        log(f"  {program}: {stats['moved']}/{stats['compared']} moved")
     if not compared:
         raise RuntimeError(
             "no take-up-sensitive values were comparable between baseline and "
             "fullpart (all pe_gap?) — nothing verifies the fullpart run."
         )
+    stuck = [
+        p
+        for p in TAKEUP_VALIDATED_PROGRAMS
+        if by_program.get(p, {}).get("compared", 0)
+        and not by_program[p].get("moved", 0)
+    ]
+    if stuck:
+        raise RuntimeError(
+            f"fullpart is identical to baseline for {stuck}: the overrides "
+            "applied and read back on, but these benefits did not change. "
+            "Their DWP take-up denominators would silently be the baseline "
+            "caseload (a 100% take-up rate). Do not publish this run."
+        )
+    for p in TAKEUP_VALIDATED_PROGRAMS:
+        if not by_program.get(p, {}).get("compared", 0):
+            log(
+                f"  WARNING: {p} had no comparable take-up-sensitive values "
+                "(pe_gap?) — its take-up denominators are unverified"
+            )
+    for p in TAKEUP_COMPONENT_PROGRAMS:
+        stats = by_program.get(p, {})
+        if stats.get("compared", 0) and not stats.get("moved", 0):
+            log(
+                f"  WARNING: component {p} did not move under forced take-up "
+                "(closed-to-new-claims components can legitimately hold still)"
+            )
 
 
 def compute_run(run_name, fullpart):
+    import numpy as np
+
     log(f"building {run_name} sim")
     sim = build_sim(fullpart)
     vs = sim.tax_benefit_system.variables
     masks = geo_masks(sim, vs)
 
-    def weighted(concept, entity, geo, kind, program, metric, subgroup="total"):
+    def weighted(
+        concept, entity, geo, kind, program, metric, subgroup="total", extra_mask=None
+    ):
         name = resolve(vs, concept)
         if name is None:
             pe_gap(run_name, program, metric, subgroup, geo, concept)
             return
+        mask, honoured = restricted_mask(masks, entity, geo)
+        if not honoured:
+            # the geography restriction cannot be applied at this entity
+            # level — pe_gap, never an unrestricted total under a GB label
+            pe_gap(run_name, program, metric, subgroup, geo, f"country_anchor_{entity}")
+            return
         series = sim.calculate(name, YEAR, map_to=entity)
-        mask = masks.get(entity, {}).get(geo)
+        if extra_mask is not None:
+            mask = extra_mask if mask is None else (mask & extra_mask)
         if mask is not None:
             series = series[mask]
         if kind == "sum":
@@ -471,14 +662,66 @@ def compute_run(run_name, fullpart):
         else:
             raise ValueError(kind)
 
+    def person_bool(concept):
+        """Person-level numpy bool array for a flag concept, or None."""
+        name = resolve(vs, concept)
+        if name is None:
+            return None
+        m = sim.calculate(name, YEAR, map_to="person")
+        return np.asarray(getattr(m, "values", m)).astype(bool)
+
     # benefit caseloads + expenditure (dwp_takeup / obr / ukmod)
     for program, concept, entity, geo in BENEFIT_LINES:
         weighted(concept, entity, geo, "count_positive", program, "recipient_count")
         weighted(concept, entity, geo, "sum", program, "benefit_spending")
 
-    # hbai poverty counterparts: persons in relative poverty, BHC and AHC,
-    # by age group and by country (region cuts follow once the base
-    # concept is validated against HBAI's published UK rows)
+    # dwp_takeup's HB program is pension-age only (working-age HB has
+    # migrated to UC): emit it under the external program id with a
+    # pension-age benunit cut anchored on the first (head) person's
+    # SP-age flag — the same anchor rule the geography masks use. If the
+    # flag or the anchor is unavailable, the cut goes pe_gap; the
+    # unrestricted housing_benefit line above never stands in for it.
+    program, concept, entity, geo = PENSION_AGE_HB_LINE
+    sp_age = person_bool("is_SP_age")
+    if sp_age is None:
+        for metric in ("recipient_count", "benefit_spending"):
+            pe_gap(run_name, program, metric, "total", geo, "is_SP_age")
+    else:
+        try:
+            pension_age_bu = first_person_anchor(sim, entity, sp_age).astype(bool)
+        except Exception as e:
+            log(f"  WARNING: no {entity}-level SP-age anchor ({e}); {program} pe_gap")
+            pension_age_bu = None
+        if pension_age_bu is None:
+            for metric in ("recipient_count", "benefit_spending"):
+                pe_gap(
+                    run_name, program, metric, "total", geo, f"sp_age_anchor_{entity}"
+                )
+        else:
+            weighted(
+                concept,
+                entity,
+                geo,
+                "count_positive",
+                program,
+                "recipient_count",
+                extra_mask=pension_age_bu,
+            )
+            weighted(
+                concept,
+                entity,
+                geo,
+                "sum",
+                program,
+                "benefit_spending",
+                extra_mask=pension_age_bu,
+            )
+
+    # hbai poverty counterparts: persons in relative poverty, BHC and
+    # AHC, by age group — every numerator cut paired with its own
+    # population denominator so each published rate has a derivation
+    # (region cuts follow once the base concept is validated against
+    # HBAI's published UK rows)
     for hc, concept in (
         ("bhc", "in_relative_poverty_bhc"),
         ("ahc", "in_relative_poverty_ahc"),
@@ -503,12 +746,13 @@ def compute_run(run_name, fullpart):
             "UK",
             in_pov.sum(),
         )
+        emit_population_denominator(run_name, hc, in_pov)
         for subgroup, mask_concept in (
             ("children", "is_child"),
             ("pensioners", "is_SP_age"),
         ):
-            mname = resolve(vs, mask_concept)
-            if mname is None:
+            arr = person_bool(mask_concept)
+            if arr is None:
                 pe_gap(
                     run_name,
                     "hbai_low_income",
@@ -517,9 +761,16 @@ def compute_run(run_name, fullpart):
                     "UK",
                     mask_concept,
                 )
+                # without the cut there is no subgroup denominator either
+                pe_gap(
+                    run_name,
+                    "hbai_low_income",
+                    f"population_{hc}",
+                    subgroup,
+                    "UK",
+                    mask_concept,
+                )
                 continue
-            m = sim.calculate(mname, YEAR, map_to="person")
-            arr = getattr(m, "values", m).astype(bool)
             emit(
                 run_name,
                 "hbai_low_income",
@@ -528,15 +779,46 @@ def compute_run(run_name, fullpart):
                 "UK",
                 in_pov[arr].sum(),
             )
-        # population denominator for downstream rate derivation —
-        # weighted or pe_gap, never an unweighted record count
-        emit_population_denominator(run_name, hc, in_pov)
+            # matching subgroup denominator: weighted count of everyone
+            # in the subgroup (the indexed series keeps its weights)
+            emit_population_denominator(run_name, hc, in_pov[arr], subgroup)
 
-    # uk_hmrc counterparts: taxpayer counts + liability aggregate
+    # uk_hmrc counterparts: taxpayer counts + liability, total and by
+    # marginal band (the external adapter's subgroup vocabulary). A band
+    # whose flag concept is unresolvable emits pe_gap for both metrics —
+    # never an all-taxpayer aggregate under a band label.
     weighted(
         "income_tax", "person", "UK", "count_positive", "income_tax", "taxpayer_count"
     )
     weighted("income_tax", "person", "UK", "sum", "income_tax", "tax_liability")
+    for band_subgroup, band_concept in HMRC_BAND_CUTS:
+        band = person_bool(band_concept)
+        if band is None:
+            for metric in ("taxpayer_count", "tax_liability"):
+                pe_gap(
+                    run_name, "income_tax", metric, band_subgroup, "UK", band_concept
+                )
+            continue
+        weighted(
+            "income_tax",
+            "person",
+            "UK",
+            "count_positive",
+            "income_tax",
+            "taxpayer_count",
+            subgroup=band_subgroup,
+            extra_mask=band,
+        )
+        weighted(
+            "income_tax",
+            "person",
+            "UK",
+            "sum",
+            "income_tax",
+            "tax_liability",
+            subgroup=band_subgroup,
+            extra_mask=band,
+        )
     weighted(
         "national_insurance",
         "person",
