@@ -4,10 +4,10 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 4 is complete locally on branch `obr-costings-mode2`. All four
-round-3 findings are fixed and committed. Exact dry-run, artifact-only restage,
-focused-suite, full-suite, byte-identity, and hygiene checks pass; no managed
-simulation was constructed.
+Follow-up 4 final verification is being repeated on branch
+`obr-costings-mode2`. An independent audit found and fixed a claims-file
+time-of-check/time-of-use gap after the first complete test pass. No managed
+simulation has been constructed.
 
 ## Done
 
@@ -41,6 +41,12 @@ simulation was constructed.
   `8c291b6b`, respectively.
 - Final verification passes all 88 focused OBR tests and all 255 repository
   tests. The sole warning is the upstream PolicyEngine-UK Pydantic deprecation.
+- A final independent audit found that comparison rendering reopened the claims
+  path after its SHA gate. Restage now rechecks the SHA before any output write
+  and renders comparison rows only from the verified in-memory claims.
+- Artifact claims-hash mismatches now name expected and actual hashes and
+  instruct a new compute run. Three targeted restage/comparison tests pass,
+  including a mutation injected during artifactless-row reconstruction.
 - Started Follow-up 3 by reading this progress record and the complete round-2
   review before inspecting or changing the implementation.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -268,7 +274,8 @@ simulation was constructed.
 
 ## Next
 
-- No in-scope Follow-up 4 work remains.
+- Repeat exact dry-run/restage byte checks and focused/full suites after the
+  independent-audit hardening, then finalize the external report.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys

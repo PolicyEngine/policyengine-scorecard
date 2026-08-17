@@ -662,6 +662,29 @@ def atomic_write_text(path: Path, text: str) -> None:
     temporary.replace(path)
 
 
+def write_comparison_outputs_from_rows(
+    *,
+    staged_rows: list[dict[str, Any]],
+    claims: list[dict[str, Any]],
+    registry: dict[str, dict[str, Any]],
+    output_dir: Path = DEFAULT_OUTPUT_DIR,
+    artifact_root: Path = ROOT,
+) -> list[dict[str, Any]]:
+    """Write deterministic outputs from already-validated in-memory inputs."""
+
+    if not staged_rows:
+        raise ComparisonError("staged results are empty")
+    rows = build_comparison_rows(
+        staged_rows,
+        claims,
+        registry,
+        artifact_root=artifact_root,
+    )
+    atomic_write_text(output_dir / "COMPARISON.csv", render_csv(rows))
+    atomic_write_text(output_dir / "COMPARISON.md", render_markdown(rows))
+    return rows
+
+
 def write_comparison_outputs(
     *,
     registry_path: Path = DEFAULT_REGISTRY,
@@ -677,15 +700,13 @@ def write_comparison_outputs(
     staged_rows = load_jsonl(staged_path)
     if not staged_rows:
         raise ComparisonError(f"staged results are empty: {staged_path}")
-    rows = build_comparison_rows(
-        staged_rows,
-        load_jsonl(claims_path),
-        load_registry(registry_path),
+    return write_comparison_outputs_from_rows(
+        staged_rows=staged_rows,
+        claims=load_jsonl(claims_path),
+        registry=load_registry(registry_path),
+        output_dir=output_dir,
         artifact_root=artifact_root,
     )
-    atomic_write_text(output_dir / "COMPARISON.csv", render_csv(rows))
-    atomic_write_text(output_dir / "COMPARISON.md", render_markdown(rows))
-    return rows
 
 
 def main(argv: list[str] | None = None) -> int:

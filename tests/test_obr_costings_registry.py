@@ -1454,6 +1454,33 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     assert {path: path.read_bytes() for path in first_outputs} == first_outputs
 
     claims_path.write_text(json.dumps(synthetic_claim, allow_nan=False) + "\n")
+    mismatched_claims_sha256 = "c" * 64
+    mismatched_artifact = json.loads(artifact_path.read_text())
+    mismatched_artifact["claims_sha256"] = mismatched_claims_sha256
+    compute.write_json(artifact_path, mismatched_artifact)
+    mismatch_outputs = {
+        path: path.read_bytes()
+        for path in (
+            artifact_path,
+            staged_path,
+            output_dir / "COMPARISON.csv",
+            output_dir / "COMPARISON.md",
+            manifest_path,
+        )
+    }
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="artifact claims_sha256 differs from RUN_MANIFEST",
+    ) as exc_info:
+        compute.main(arguments)
+    message = str(exc_info.value)
+    assert f"expected {claims_sha256}" in message
+    assert f"actual {mismatched_claims_sha256}" in message
+    assert "new run" in message
+    assert "re-run" in message
+    assert {path: path.read_bytes() for path in mismatch_outputs} == mismatch_outputs
+    artifact_path.write_bytes(first_outputs[artifact_path])
+
     manifest["legacy_artifacts_without_dataset_hashes"] = []
     compute.write_json(manifest_path, manifest)
     with pytest.raises(
@@ -1693,6 +1720,8 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
     ]
     first_outputs = {path: path.read_bytes() for path in output_paths}
 
+    original_stage_not_computed_rows = compute.stage_not_computed_rows
+
     def forbidden(*args, **kwargs):
         raise AssertionError("restage reached simulation or certified-cache setup")
 
@@ -1744,17 +1773,23 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
     assert null_measure["pe_reform"] is None
     assert null_measure["measure_key"] in not_computed_keys
     assert null_claim["value"] == pytest.approx(138_872_923.1165392)
-    raw_lines = claims_path.read_text().splitlines()
-    for index, raw_line in enumerate(raw_lines):
-        claim = json.loads(raw_line)
-        if claim == null_claim:
-            claim["value"] += 123_456_789
-            raw_lines[index] = json.dumps(claim)
-            break
-    else:
-        raise AssertionError("null-reform source claim was not found in the slice")
-    claims_path.write_text("\n".join(raw_lines) + "\n")
-    drifted_sha256 = compute.sha256_file(claims_path)
+
+    def mutate_null_claim_value():
+        raw_lines = claims_path.read_text().splitlines()
+        for index, raw_line in enumerate(raw_lines):
+            claim = json.loads(raw_line)
+            if claim == null_claim:
+                claim["value"] += 123_456_789
+                raw_lines[index] = json.dumps(claim)
+                break
+        else:
+            raise AssertionError(
+                "null-reform source claim was not found in the slice"
+            )
+        claims_path.write_text("\n".join(raw_lines) + "\n")
+        return compute.sha256_file(claims_path)
+
+    drifted_sha256 = mutate_null_claim_value()
     monkeypatch.setattr(compute, "stage_not_computed_rows", forbidden)
 
     with pytest.raises(
@@ -1770,6 +1805,40 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
     assert f"expected {claims_sha256}" in message
     assert f"actual {drifted_sha256}" in message
     assert "new run" in message
+    assert "re-run" in message
+    assert {path: path.read_bytes() for path in output_paths} == first_outputs
+
+    claims_path.write_bytes(VENDORED_CLAIMS.read_bytes())
+    mutated_during_reconstruction = False
+
+    def mutate_during_reconstruction(*args, **kwargs):
+        nonlocal mutated_during_reconstruction
+        rows = original_stage_not_computed_rows(*args, **kwargs)
+        if not mutated_during_reconstruction:
+            assert mutate_null_claim_value() == drifted_sha256
+            mutated_during_reconstruction = True
+        return rows
+
+    monkeypatch.setattr(
+        compute,
+        "stage_not_computed_rows",
+        mutate_during_reconstruction,
+    )
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="claims SHA-256 differs from RUN_MANIFEST",
+    ) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=manifest_path,
+            output_dir=output_dir,
+            artifact_root=tmp_path,
+        )
+    message = str(exc_info.value)
+    assert mutated_during_reconstruction
+    assert f"expected {claims_sha256}" in message
+    assert f"actual {drifted_sha256}" in message
+    assert "new run" in message
+    assert "re-run" in message
     assert {path: path.read_bytes() for path in output_paths} == first_outputs
 
 

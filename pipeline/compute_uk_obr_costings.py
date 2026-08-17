@@ -84,6 +84,20 @@ class ArtifactRestageError(ValueError):
     """An existing run artifact cannot be safely restaged from raw aggregates."""
 
 
+def claims_provenance_error(
+    path: Path,
+    *,
+    subject: str,
+    expected: Any,
+    actual: Any,
+) -> ArtifactRestageError:
+    return ArtifactRestageError(
+        f"{path}: {subject} differs from RUN_MANIFEST; "
+        f"expected {expected}; actual {actual}; claims provenance changed, "
+        "so this is a new run; re-run the compute pipeline instead of restaging"
+    )
+
+
 def configure_offline() -> None:
     """Make a cache miss fail rather than trigger a network request."""
 
@@ -1181,10 +1195,11 @@ def rederive_artifact_orientation(
             f"{path}: unsupported artifact schema {artifact.get('schema_version')!r}"
         )
     if artifact.get("claims_sha256") != expected_claims_sha256:
-        raise ArtifactRestageError(
-            f"{path}: artifact claims_sha256 "
-            f"{artifact.get('claims_sha256')!r} differs from manifest "
-            f"{expected_claims_sha256}"
+        raise claims_provenance_error(
+            path,
+            subject="artifact claims_sha256",
+            expected=expected_claims_sha256,
+            actual=artifact.get("claims_sha256"),
         )
     validate_artifact_dataset_hash_fields(
         artifact,
@@ -1698,11 +1713,11 @@ def restage_existing_run(
     claims_payload = claims_path.read_bytes()
     current_claims_sha256 = hashlib.sha256(claims_payload).hexdigest()
     if current_claims_sha256 != recorded_claims_sha256:
-        raise ArtifactRestageError(
-            f"{claims_path}: claims SHA-256 differs from RUN_MANIFEST; "
-            f"expected {recorded_claims_sha256}; "
-            f"actual {current_claims_sha256}; changed external input requires "
-            "a new run, so re-run the compute pipeline instead of restaging"
+        raise claims_provenance_error(
+            claims_path,
+            subject="claims SHA-256",
+            expected=recorded_claims_sha256,
+            actual=current_claims_sha256,
         )
     claims = parse_claims_payload(claims_payload, claims_path)
     spec = load_registry(registry_path)
@@ -1886,6 +1901,14 @@ def restage_existing_run(
             f"{manifest_path}: artifact-only restage produced {len(staged_rows)} "
             f"rows; manifest records {expected_staged_rows!r}"
         )
+    prewrite_claims_sha256 = sha256_file(claims_path)
+    if prewrite_claims_sha256 != recorded_claims_sha256:
+        raise claims_provenance_error(
+            claims_path,
+            subject="claims SHA-256",
+            expected=recorded_claims_sha256,
+            actual=prewrite_claims_sha256,
+        )
 
     for path, artifact in replacements:
         write_json(path, artifact)
@@ -1896,10 +1919,10 @@ def restage_existing_run(
     else:
         import compare_uk_obr_costings as comparison
 
-    comparison_rows = comparison.write_comparison_outputs(
-        registry_path=registry_path,
-        claims_path=claims_path,
-        staged_path=staged_path,
+    comparison_rows = comparison.write_comparison_outputs_from_rows(
+        staged_rows=staged_rows,
+        claims=claims,
+        registry=registry,
         output_dir=output_dir,
         artifact_root=artifact_root,
     )
