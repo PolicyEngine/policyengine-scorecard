@@ -1,0 +1,56 @@
+{
+ "schema": "sources/ukmod-cases/SCHEMA.md (calculator set, #63)",
+ "description": "Official-calculator starter set (#63): the battery cases to enter into production calculators, each into at least two so three-way splits (PE vs UKMOD vs calculators) are adjudicable. A work list for manual, terms-compliant readings - never results; readings land as CaseResult rows with the reading date in oracle_version and the archived page cited in annotations.",
+ "entries": [
+  {
+   "case_id": "uk-hicbc-partial-taper",
+   "oracles": ["govuk_hicbc_calculator", "govuk_income_tax_estimator"],
+   "notes": "gov.uk Child Benefit tax calculator states the charge at the GBP 70,000 taper midpoint; the income-tax estimator cross-checks the liability it rides on."
+  },
+  {
+   "case_id": "uk-hicbc-full-clawback-80k",
+   "oracles": ["govuk_hicbc_calculator", "govuk_income_tax_estimator"],
+   "notes": "Top-of-taper boundary: the calculator must report a charge equal to the full one-child Child Benefit."
+  },
+  {
+   "case_id": "uk-ni-thresholds-salary-sacrifice",
+   "oracles": ["govuk_income_tax_estimator", "policy_in_practice_boc"],
+   "notes": "PT/UEL edges and salary sacrifice; the estimator handles the tax/NI side, the BOC confirms sacrifice reduces NI-able pay."
+  },
+  {
+   "case_id": "uk-pa-taper-110k",
+   "oracles": ["govuk_income_tax_estimator", "entitledto"],
+   "notes": "GBP 100k allowance taper; entitledto's tax module is the second reading."
+  },
+  {
+   "case_id": "uk-additional-rate-boundary-125140",
+   "oracles": ["govuk_income_tax_estimator", "entitledto"],
+   "notes": "Zero-allowance / additional-rate double boundary; a one-pound error in either rule is a discrete miss."
+  },
+  {
+   "case_id": "uk-psa-savings-income",
+   "oracles": ["govuk_income_tax_estimator", "entitledto"],
+   "notes": "PSA ordering (1,000 at 0%, 500 at 20%); expected extra liability exactly GBP 100."
+  },
+  {
+   "case_id": "uk-uc-taper-part-time-earner",
+   "oracles": ["policy_in_practice_boc", "entitledto", "turn2us"],
+   "notes": "UC 55% taper and work allowance - the production calculators' home ground; three readings because taper-base construction (net of tax/NI) is a known divergence spot."
+  },
+  {
+   "case_id": "uk-benefit-cap-london",
+   "oracles": ["policy_in_practice_boc", "entitledto"],
+   "notes": "Greater London couple cap tier; the #21/#52 UC-deductions family depends on this machinery."
+  },
+  {
+   "case_id": "uk-uc-two-child-limit-multiple-birth",
+   "oracles": ["policy_in_practice_boc", "entitledto", "turn2us"],
+   "notes": "The 2025 multiple-birth exemption case from #49: an independent expected-value source for the abolition-boundary pair."
+  },
+  {
+   "case_id": "uk-uc-two-child-limit-abolished",
+   "oracles": ["policy_in_practice_boc", "entitledto", "turn2us"],
+   "notes": "The 2026 post-abolition counterpart; calculators updated for AB2025 must show three child elements."
+  }
+ ]
+}

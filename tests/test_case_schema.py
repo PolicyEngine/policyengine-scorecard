@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from scorecard_db.case_diffs import (
+    CALCULATOR_ORACLES,
     SCHEMA_VERSION,
     DEFAULT_TOLERANCES,
     CaseResult,
@@ -17,6 +18,7 @@ from scorecard_db.case_diffs import (
     VariableClass,
     classify,
     load_battery,
+    load_calculator_set,
 )
 
 BATTERY = Path(__file__).parent.parent / "sources/ukmod-cases/battery/cases.json"
@@ -43,7 +45,7 @@ def case_kwargs(**kw):
 class TestBattery:
     def test_loads_and_validates(self):
         cases = load_battery(BATTERY)
-        assert 12 <= len(cases) <= 16
+        assert 15 <= len(cases) <= 20
         assert all(isinstance(c, CaseSpec) for c in cases)
 
     def test_unique_ids(self):
@@ -419,3 +421,128 @@ class TestClassifyToResultSeam:
     def test_variable_class_is_a_closed_vocabulary(self):
         with pytest.raises(ValueError):
             self.wired(100.0, 100.0, vclass="percentage")
+
+class TestCalculatorOracles:
+    """#63: calculator oracles join the closed set with a stricter
+    provenance contract (reading date in oracle_version) and a >= 2-
+    calculator starter work list."""
+
+    def result_kwargs(self, **kw):
+        base = dict(
+            case_id="uk-hicbc-partial-taper",
+            variable="income_tax",
+            pe_value=13432.0,
+            oracle_value=13432.0,
+            oracle="govuk_income_tax_estimator",
+            engine_version="policyengine-uk 2.0.0",
+            oracle_version="gov.uk estimate-income-tax, read 2026-08-17",
+            computed_at="2026-08-17T12:00:00Z",
+            classification="match_exact",
+            abs_diff=0.0,
+        )
+        base.update(kw)
+        return base
+
+    def test_calculator_oracle_ids_registered(self):
+        assert CALCULATOR_ORACLES == {
+            Oracle.GOVUK_INCOME_TAX_ESTIMATOR,
+            Oracle.GOVUK_HICBC_CALCULATOR,
+            Oracle.POLICY_IN_PRACTICE_BOC,
+            Oracle.ENTITLEDTO,
+            Oracle.TURN2US,
+        }
+        # model oracles keep release-string versioning
+        assert Oracle.UKMOD not in CALCULATOR_ORACLES
+
+    def test_calculator_row_with_dated_version_validates(self):
+        r = CaseResult(**self.result_kwargs())
+        assert r.oracle is Oracle.GOVUK_INCOME_TAX_ESTIMATOR
+
+    def test_calculator_row_without_reading_date_rejected(self):
+        with pytest.raises(ValueError, match="reading date"):
+            CaseResult(**self.result_kwargs(oracle_version="gov.uk estimator"))
+
+    def test_oracle_version_never_empty(self):
+        with pytest.raises(ValueError, match="oracle_version"):
+            CaseResult(**self.result_kwargs(oracle_version="  "))
+        with pytest.raises(ValueError, match="oracle_version"):
+            CaseResult(**self.result_kwargs(oracle="ukmod", oracle_version=""))
+
+    def test_model_oracle_needs_no_date(self):
+        r = CaseResult(
+            **self.result_kwargs(oracle="ukmod", oracle_version="UKMOD B2026.08")
+        )
+        assert r.oracle is Oracle.UKMOD
+
+
+class TestCalculatorSet:
+    SET_PATH = (
+        Path(__file__).parent.parent / "sources/ukmod-cases/battery/calculator_set.json"
+    )
+
+    def test_loads_against_battery(self):
+        cases = load_battery(BATTERY)
+        entries = load_calculator_set(self.SET_PATH, cases)
+        assert len(entries) == 10
+        for e in entries:
+            assert len(e["oracles"]) >= 2
+
+    def test_two_child_pair_gets_calculator_readings(self):
+        entries = load_calculator_set(self.SET_PATH, load_battery(BATTERY))
+        ids = {e["case_id"] for e in entries}
+        assert "uk-uc-two-child-limit-multiple-birth" in ids
+        assert "uk-uc-two-child-limit-abolished" in ids
+
+    def test_unknown_case_rejected(self, tmp_path):
+        bad = tmp_path / "set.json"
+        bad.write_text(
+            json.dumps(
+                {
+                    "entries": [
+                        {
+                            "case_id": "uk-nope",
+                            "oracles": ["entitledto", "turn2us"],
+                            "notes": "x",
+                        }
+                    ]
+                }
+            )
+        )
+        with pytest.raises(ValueError, match="unknown case"):
+            load_calculator_set(bad, load_battery(BATTERY))
+
+    def test_single_oracle_rejected(self, tmp_path):
+        bad = tmp_path / "set.json"
+        bad.write_text(
+            json.dumps(
+                {
+                    "entries": [
+                        {
+                            "case_id": "uk-benefit-cap-london",
+                            "oracles": ["entitledto"],
+                            "notes": "x",
+                        }
+                    ]
+                }
+            )
+        )
+        with pytest.raises(ValueError, match=">= 2"):
+            load_calculator_set(bad, load_battery(BATTERY))
+
+    def test_model_oracle_in_set_rejected(self, tmp_path):
+        bad = tmp_path / "set.json"
+        bad.write_text(
+            json.dumps(
+                {
+                    "entries": [
+                        {
+                            "case_id": "uk-benefit-cap-london",
+                            "oracles": ["ukmod", "entitledto"],
+                            "notes": "x",
+                        }
+                    ]
+                }
+            )
+        )
+        with pytest.raises(ValueError, match="not a calculator oracle"):
+            load_calculator_set(bad, load_battery(BATTERY))

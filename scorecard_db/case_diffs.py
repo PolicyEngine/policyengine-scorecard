@@ -38,6 +38,42 @@ SCHEMA_VERSION = 1
 class Oracle(str, Enum):
     UKMOD = "ukmod"
     TAXSIM = "taxsim"
+    # Official-calculator oracles (#63): gov.uk estimators and production
+    # benefit calculators, read manually or via terms-compliant access.
+    GOVUK_INCOME_TAX_ESTIMATOR = "govuk_income_tax_estimator"
+    GOVUK_HICBC_CALCULATOR = "govuk_hicbc_calculator"
+    POLICY_IN_PRACTICE_BOC = "policy_in_practice_boc"
+    ENTITLEDTO = "entitledto"
+    TURN2US = "turn2us"
+
+
+# Calculator oracles are live services with no release versioning, so a
+# result's oracle_version must carry the READING DATE (YYYY-MM-DD) and the
+# reading itself must be archived (screenshot / saved page) per SCHEMA.md.
+# Model oracles (UKMOD, TAXSIM) keep their release-string versioning.
+CALCULATOR_ORACLES = frozenset(
+    {
+        Oracle.GOVUK_INCOME_TAX_ESTIMATOR,
+        Oracle.GOVUK_HICBC_CALCULATOR,
+        Oracle.POLICY_IN_PRACTICE_BOC,
+        Oracle.ENTITLEDTO,
+        Oracle.TURN2US,
+    }
+)
+
+
+def _contains_iso_date(s: str) -> bool:
+    for i in range(len(s) - 9):
+        chunk = s[i : i + 10]
+        if (
+            chunk[4] == "-"
+            and chunk[7] == "-"
+            and chunk[:4].isdigit()
+            and chunk[5:7].isdigit()
+            and chunk[8:10].isdigit()
+        ):
+            return True
+    return False
 
 
 class VariableClass(str, Enum):
@@ -269,6 +305,16 @@ class CaseResult:
             )
         if not self.case_id or not self.variable:
             raise ValueError("case_id and variable are required")
+        if not isinstance(self.oracle_version, str) or not self.oracle_version.strip():
+            raise ValueError("oracle_version is required (release string or date)")
+        if self.oracle in CALCULATOR_ORACLES and not _contains_iso_date(
+            self.oracle_version
+        ):
+            raise ValueError(
+                f"{self.oracle.value} is a live calculator: oracle_version must "
+                "carry the reading date (YYYY-MM-DD), and the reading must be "
+                "archived per SCHEMA.md"
+            )
         if not isinstance(self.annotations, list) or not all(
             isinstance(a, str) and a.strip() for a in self.annotations
         ):
@@ -443,3 +489,50 @@ def load_battery(path) -> list[CaseSpec]:
     if dupes:
         raise ValueError(f"duplicate case_ids: {dupes}")
     return cases
+
+
+CALCULATOR_SET_KEYS = frozenset({"schema", "description", "entries"})
+CALCULATOR_ENTRY_KEYS = frozenset({"case_id", "oracles", "notes"})
+
+
+def load_calculator_set(path, battery_cases) -> list[dict]:
+    """Load the calculator starter set (#63); every defect raises.
+
+    Each entry names a battery case and the >= 2 calculator oracles it is
+    to be entered into — a work list for manual readings, never results.
+    """
+    raw = json.loads(Path(path).read_text())
+    if not isinstance(raw, dict):
+        raise ValueError("calculator set must be a JSON object")
+    unknown = set(raw) - CALCULATOR_SET_KEYS
+    if unknown:
+        raise ValueError(f"calculator set has unknown keys: {sorted(unknown)}")
+    entries = raw.get("entries")
+    if not isinstance(entries, list) or not entries:
+        raise ValueError("calculator set entries must be a non-empty list")
+    known_ids = {c.case_id for c in battery_cases}
+    seen: list[str] = []
+    for entry in entries:
+        if not isinstance(entry, dict) or set(entry) - CALCULATOR_ENTRY_KEYS:
+            raise ValueError(f"bad calculator entry keys: {entry!r}")
+        case_id = entry.get("case_id")
+        if case_id not in known_ids:
+            raise ValueError(f"calculator entry references unknown case {case_id!r}")
+        oracles = entry.get("oracles")
+        if not isinstance(oracles, list) or len(oracles) < 2:
+            raise ValueError(
+                f"case {case_id!r} needs >= 2 calculator oracles (adjudication "
+                "is the point of the lane)"
+            )
+        for o in oracles:
+            if Oracle(o) not in CALCULATOR_ORACLES:
+                raise ValueError(f"case {case_id!r}: {o!r} is not a calculator oracle")
+        if len(set(oracles)) != len(oracles):
+            raise ValueError(f"case {case_id!r} lists a duplicate oracle")
+        if not isinstance(entry.get("notes"), str) or not entry["notes"].strip():
+            raise ValueError(f"case {case_id!r} needs non-empty notes")
+        seen.append(case_id)
+    dupes = sorted({i for i in seen if seen.count(i) > 1})
+    if dupes:
+        raise ValueError(f"duplicate calculator entries: {dupes}")
+    return entries

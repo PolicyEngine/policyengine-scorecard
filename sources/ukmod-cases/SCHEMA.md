@@ -137,7 +137,10 @@ as `pe_results`).
   `child_benefit`, `pension_credit`, …). The connector's mapping table
   pairs it with the oracle's variable (UKMOD `bsauc_s`, etc.) and records
   any construction (e.g. summing UKMOD monthly output × 12).
-- `oracle` — closed set `{"ukmod", "taxsim"}`; grows with #5.
+- `oracle` — closed set: the model oracles `ukmod` and `taxsim`, plus the
+  official-calculator oracles (#63) `govuk_income_tax_estimator`,
+  `govuk_hicbc_calculator`, `policy_in_practice_boc`, `entitledto`,
+  `turn2us`; grows with #5.
 - `pe_value` / `oracle_value` — annual amounts (booleans as 0/1). `null`
   means that side cannot produce the variable: `pe_value: null` ⇒
   `pe_gap`; `oracle_value: null` ⇒ `policy_scope_mismatch` (the oracle
@@ -199,6 +202,24 @@ rows raise without the `tolerance` they were judged against.
 The tolerance table is data (`DEFAULT_TOLERANCES`), passed to `classify`
 explicitly; a variable class missing from the table raises rather than
 guessing.
+
+## Official-calculator oracles (#63)
+
+Calculator oracles are live services (gov.uk estimators; production benefit
+calculators), not versioned model releases, so their result rows carry a
+stricter provenance contract, enforced at validation:
+
+- `oracle_version` **must contain the reading date** (`YYYY-MM-DD`) — a
+  calculator answer is only meaningful with the date it was read.
+- Every reading must be **archived** (screenshot or saved page) and the
+  archive cited in `annotations` when the row is adjudicated. Readings are
+  entered manually or via documented, terms-compliant access — one case at
+  a time; these are oracle *readings*, never a harvest or a scrape.
+- The starter work list lives in `battery/calculator_set.json`
+  (`load_calculator_set`): each entry names a battery case and the ≥ 2
+  calculators it is to be entered into, so a PE-vs-UKMOD disagreement
+  always has an adjudicating third reading. Entries are inputs only —
+  results arrive as ordinary `CaseResult` rows.
 
 ## What this lane still needs (out of scope here)
 
