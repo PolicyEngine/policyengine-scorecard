@@ -4,11 +4,11 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 2 is in progress from clean branch `obr-costings-mode2` at requested
-HEAD `7222976`. The six clean-context review findings are being fixed offline.
-The existing 13 certified run artifacts will only be read through `--restage`;
-no managed simulation will be constructed and the full 26-measure population
-remains intentionally unrun.
+Follow-up 2 is complete locally on branch `obr-costings-mode2`. All six
+clean-context review findings are fixed and committed. The final `--restage`
+read the existing 13 artifacts, regenerated 20 staged and 26 comparison rows,
+and reported zero managed simulations. The full 26-measure population remains
+intentionally unrun.
 
 ## Done
 
@@ -19,8 +19,8 @@ remains intentionally unrun.
 - Confirmed GitNexus graph tools are not exposed in this checkout, so the six
   findings are being traced directly through source, registry data, artifacts,
   and tests.
-- Removed the aggregate sign-concordance register headline; the progress record
-  retains only row-level values and descriptive bins.
+- Fixed finding 5 by removing the aggregate sign-concordance register headline;
+  the progress record and tests retain row-level values and descriptive bins.
 - Fixed finding 1 for all future managed runs: the exact resolved
   `runtime_dataset_source` is SHA-256 checked against the release manifest
   immediately before each simulation is constructed and immediately after its
@@ -70,6 +70,14 @@ remains intentionally unrun.
   37,500/150,000 in 2024–2025, equality from 2026, and requires override years
   to equal that lag set exactly. A future engine correction therefore makes
   the stale override test fail until the registry is updated.
+- Ran the final artifact-only `--restage`: 13 existing artifacts (one
+  diagnostic), 20 staged rows, 26 comparison rows, and zero managed
+  simulations. A clean worktree afterward confirms byte-idempotent outputs.
+- Independently compared all 26 pre/post comparison row identities, OBR/PE
+  values, signed ratios, and bins; they are unchanged. Only descriptors,
+  sourced axes, and annotations changed.
+- Final verification passes: 44 focused OBR cases and all 211 repository tests.
+  The only warning is the upstream PolicyEngine-UK Pydantic deprecation.
 - Started Follow-up 1 from clean branch `obr-costings-mode2` at `b6442fe` and
   read this progress record plus both compute/comparison modules end to end.
 - Confirmed the orientation defect is confined to artifact/staging derivation:
@@ -181,8 +189,13 @@ remains intentionally unrun.
 
 ## Next
 
-- Restage without simulations, regenerate comparisons, run focused and full
-  tests, then write the final report.
+- Clean-context review can now re-check the six resolved findings.
+- The future UK ingestor in #33/#48 must add the two new descriptor match keys
+  before these rows are attached to the campaign database.
+- Remove the 2024–2025 dividend overrides when an installed PE-UK release fixes
+  policyengine-uk#1822; the version/date-sensitive test will flag that change.
+- Run the full selected population only after the review gate; it remains
+  outside this no-simulation follow-up.
 
 ## Registry counts
 
