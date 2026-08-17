@@ -7,7 +7,8 @@ Updated: 2026-08-16
 In progress. The 20-measure registry and the offline compute/staging pipeline
 are built. Registry paths, aggregate variables, and harvested row identities
 validate without constructing a managed simulation. The comparison renderer,
-tests, and bounded smoke run remain.
+comparison renderer and bounded smoke run remain; the focused offline test
+module is in place.
 
 ## Done
 
@@ -52,10 +53,16 @@ tests, and bounded smoke run remain.
   wrote no output. A separate local-only cache preflight verified SHA-256
   `f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833`
   in 0.524 seconds.
+- Added 12 focused tests for registry schema/counts, installed-engine path and
+  variable resolution, the exact NICs aggregate, tax/spending signs, forced
+  offline mode, exact source conditions and artifact provenance, ambiguous
+  source resolution, finite JSON, null-reform selection, bundle identity, and
+  an output-free offline CLI dry run. All 12 pass in the certified venv; the
+  only warning is an upstream Pydantic deprecation from policyengine-uk.
 
 ## Next
 
-- Build the comparison renderer and tests in coherent committed steps.
+- Build the comparison renderer.
 - Run only the requested bounded offline smoke sample, then record measured
   wall time, peak memory, results, uncertainties, and unverified items here.
 
