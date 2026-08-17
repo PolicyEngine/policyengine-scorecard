@@ -141,3 +141,16 @@ this ingest mints is marked publication.registry =
 "populace_reform_validation" — that marker is the idempotency contract
 (re-ingest deletes and recreates exactly these claims, never the harvest
 claims it attaches results to).
+
+Country dimension (#62): the ingest is parameterised, not forked —
+`ingest(..., country="US")` is the default; every minted claim carries
+`publication.country` (claim ids are unchanged: publication is outside the
+claim-id hash). The `COUNTRIES` map declares the UK lane (raw_uk/ dir,
+`populace-uk-rv-` run prefix, `populace_uk_reform_validation` registry
+mark, GBP claims) with a deliberately **empty** release map: the first
+`reform_validation.json` a managed populace-uk run produces adds its
+release_manifest.json pin there. Non-US artifacts use the country-neutral
+categories `Reform` / `Program actual` with an explicit `jct.publisher`
+(the US category→publisher inference never runs for them). Replacement
+scope is per country — run prefixes are disjoint by test, so one country's
+wholesale replace cannot delete another's rows.

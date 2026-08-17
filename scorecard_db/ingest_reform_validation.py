@@ -66,6 +66,23 @@ payload extension (see the integration issue). The CBO rate-option claim is
 scored against a pre-OBBBA baseline and says so in ReformRef.baseline +
 conditions["baseline_policy"].
 
+Country dimension (#62): the ingest is parameterised by country, not
+forked. Per-country config (raw dir, run-id prefix, registry mark, lane
+name, engine-pin map, claim currency) lives in the ``COUNTRIES`` map;
+``ingest(..., country="US")`` is the default and produces exactly the rows
+it always has, plus ``publication["country"]`` (claim ids are unchanged —
+publication is not part of the claim-id hash). The UK entry declares the
+structure with an EMPTY release map: the first ``reform_validation.json``
+from a managed populace-uk run adds its release_manifest.json pin there,
+and nothing UK is invented before that. The country-generalised artifact
+contract: same JSON shape (``release_id`` + ``reforms`` rows); non-US
+artifacts use the country-neutral categories ``Reform`` (a scored reform
+delta) and ``Program actual`` (a benefit-cost level), each carrying an
+explicit ``jct.publisher`` (the US category->publisher inference is US
+vocabulary and never runs for them); values are in the country's currency
+unit concept. Replacement scope is per country — prefixes are chosen so
+one country's wholesale replace can never delete another's rows.
+
 Rows whose benchmark is null (score_type "none": unscoreable expenditures)
 are skipped and tallied. Re-ingest is idempotent: every claim this module
 creates is marked publication["registry"]="populace_reform_validation" and
@@ -136,15 +153,42 @@ def _obbba_baseline_key(mode: str, provision_id: str) -> str:
     return baseline_key(stack_baseline_descriptor(mode, provision_id))
 
 
-# Exact engine pins per release (from each release_manifest.json on HF;
-# the artifact's PE values were computed at these versions).
-ENGINE_VERSIONS = {
-    "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z": "1.729.0",
-    "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701": "1.752.2",
-    "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z": "1.764.6",
-    "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z": "1.764.6",
-    "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z": "1.764.6",
+# Per-country ingest configuration (#62). run_prefix values must never be
+# prefixes of each other: the wholesale replace deletes LIKE '<prefix>%',
+# so an overlapping prefix would let one country's ingest delete
+# another's results. engine_versions holds the exact pins per release
+# (from each release_manifest.json on HF; the artifact's PE values were
+# computed at these versions). The UK map is deliberately EMPTY — it is
+# populated by the first reform_validation.json a managed populace-uk run
+# produces, never invented here; until then a UK ingest fails loudly at
+# "no artifacts".
+COUNTRIES = {
+    "US": {
+        "raw_dir": RAW,
+        "run_prefix": RUN_PREFIX,
+        "registry_mark": REGISTRY_MARK,
+        "lane": "populace-reform-validation",
+        "currency": "usd",
+        "engine_versions": {
+            "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z": "1.729.0",
+            "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701": "1.752.2",
+            "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z": "1.764.6",
+            "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z": "1.764.6",
+            "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z": "1.764.6",
+        },
+    },
+    "UK": {
+        "raw_dir": REPO / "sources" / "populace-reform-validation" / "raw_uk",
+        "run_prefix": "populace-uk-rv-",
+        "registry_mark": "populace_uk_reform_validation",
+        "lane": "populace-uk-reform-validation",
+        "currency": "gbp",
+        "engine_versions": {},
+    },
 }
+
+# US alias kept for the module's own US-specific tables below.
+ENGINE_VERSIONS = COUNTRIES["US"]["engine_versions"]
 
 # Pin overrides an artifact documents about itself, keyed per category and
 # per row id. The l0-refit backfill note names three offline batches scored
@@ -332,6 +376,15 @@ def _state_of(row: dict) -> str | None:
 def _publisher(row: dict) -> str:
     src = row["jct"].get("source") or ""
     cat = row["category"]
+    # Country-neutral categories carry their publisher explicitly — the
+    # inference below is US vocabulary and never runs for them.
+    if cat in ("Reform", "Program actual"):
+        publisher = row["jct"].get("publisher")
+        if not publisher:
+            raise ValueError(
+                f"{row['id']}: neutral category {cat!r} needs jct.publisher"
+            )
+        return publisher
     if cat in ("IRS SOI actual",):
         return "irs_soi"
     if cat == "Federal EITC by state":
@@ -403,11 +456,18 @@ def _parse_window(
     raise ValueError(f"cannot parse claim period from window {window!r}")
 
 
-def _map_row(row: dict) -> tuple[ExternalScore, str] | None:
+def _map_row(
+    row: dict,
+    currency: UnitConcept = UnitConcept.USD,
+    default_geo: str = "US",
+    registry_mark: str = REGISTRY_MARK,
+) -> tuple[ExternalScore, str] | None:
     """(claim, pe_construction) for one artifact row; None -> skip.
 
     OBBBA and matching-benchmark "State program" repeal rows never reach
     here — ingest() routes them (harvest attachment / drop) first.
+    currency/default_geo come from the country config; the US categories
+    keep their historical USD/US literals untouched.
     """
     value = row["jct"].get("score")
     if value is None:
@@ -425,7 +485,22 @@ def _map_row(row: dict) -> tuple[ExternalScore, str] | None:
     reform: ReformRef = BASELINE
     construction = f"level:{measure}"
 
-    if cat in ("Federal reform", "State reform", "Mechanical check"):
+    if cat == "Reform":
+        # Country-neutral scored reform delta (the non-US artifact
+        # contract; see module docstring).
+        metric, uc, kind = Metric.REVENUE_CHANGE, currency, currency.value
+        reform = ReformRef(
+            framework="policy_ref",
+            reform={"policy": row["id"], "registry": registry_mark},
+        )
+        conditions["geography"] = default_geo
+        construction = f"reform_delta:{measure}"
+    elif cat == "Program actual":
+        # Country-neutral benefit-cost level.
+        metric, uc, kind = Metric.BENEFIT_COST, currency, currency.value
+        conditions["geography"] = default_geo
+        conditions["program"] = measure or row["id"]
+    elif cat in ("Federal reform", "State reform", "Mechanical check"):
         metric, uc, kind = Metric.REVENUE_CHANGE, UnitConcept.USD, "usd"
         if cat == "Mechanical check":
             metric = Metric.BENEFIT_COST
@@ -514,7 +589,7 @@ def _map_row(row: dict) -> tuple[ExternalScore, str] | None:
                 "score_type": row["jct"].get("score_type") or "",
                 "window": window or "",
                 "name": row.get("name") or "",
-                "registry": REGISTRY_MARK,
+                "registry": registry_mark,
             },
             value_kind=kind,
         ),
@@ -687,8 +762,15 @@ def _obbba_results(
     return results
 
 
-def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
-    raw_dir = raw_dir or RAW
+def ingest(db_path: Path, raw_dir: Path | None = None, country: str = "US") -> dict:
+    if country not in COUNTRIES:
+        raise ValueError(f"unknown country {country!r}; known: {sorted(COUNTRIES)}")
+    cfg = COUNTRIES[country]
+    raw_dir = raw_dir or cfg["raw_dir"]
+    engine_versions = cfg["engine_versions"]
+    run_prefix = cfg["run_prefix"]
+    registry_mark = cfg["registry_mark"]
+    currency = UnitConcept(cfg["currency"])
     db = ScorecardDB(db_path)
     claims: dict[str, ExternalScore] = {}
     results: list[PEResult] = []
@@ -704,7 +786,7 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
     for path in releases:
         artifact = json.loads(path.read_text())
         release_id = artifact["release_id"]
-        base_engine = ENGINE_VERSIONS.get(release_id)
+        base_engine = engine_versions.get(release_id)
         if base_engine is None:
             raise SystemExit(
                 f"{release_id} missing from ENGINE_VERSIONS — add its "
@@ -759,7 +841,7 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
                         )
                     tallies["superseded_repeal_constructions"] += 1
                     continue
-            mapped = _map_row(row)
+            mapped = _map_row(row, currency, country, registry_mark)
             if mapped is None:
                 skipped.append(f"{release_id[:20]}…:{row['id']}")
                 continue
@@ -774,7 +856,7 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
                     engine_version=engine,
                     data_bundle=release_id,
                     pe_construction=construction,
-                    run_id=f"{RUN_PREFIX}{release_id}",
+                    run_id=f"{run_prefix}{release_id}",
                     computed_at=computed_at,
                     baseline_key=_CURRENT_LAW_KEY,
                 )
@@ -801,24 +883,28 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
     # module's own results, then every claim it minted last time (marked
     # in publication — never the harvest claims it only attaches results
     # to).
+    # Country rides in publication (not conditions), so claim ids are
+    # exactly what they were before the country dimension existed.
+    for c in claims.values():
+        c.publication["country"] = country
     score_rows = [ScorecardDB.score_row(c) for c in claims.values()]
     result_rows = [ScorecardDB.result_row(r) for r in results]
     n_claims, n_results = len(score_rows), len(result_rows)
     with db.conn:
         db.conn.execute(
-            "DELETE FROM pe_results WHERE run_id LIKE ?", (f"{RUN_PREFIX}%",)
+            "DELETE FROM pe_results WHERE run_id LIKE ?", (f"{run_prefix}%",)
         )
         db.conn.execute(
             "DELETE FROM external_scores"
             " WHERE json_extract(publication, '$.registry') = ?",
-            (REGISTRY_MARK,),
+            (registry_mark,),
         )
         db.conn.executemany(SCORES_SQL, score_rows)
         db.conn.executemany(RESULTS_SQL, result_rows)
         db.conn.execute(
             LANE_SQL,
             (
-                "populace-reform-validation",
+                cfg["lane"],
                 "ingested",
                 f"{n_claims} claims, {n_results} per-release results "
                 f"({len(releases)} releases,"

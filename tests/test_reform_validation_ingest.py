@@ -552,3 +552,130 @@ def test_chain_ordinals_are_raw_and_stacked_only(summary_and_db):
     ).fetchone()[0]
     conn.close()
     assert stray == 0
+# --- country dimension (#62) ------------------------------------------------
+
+
+def test_us_rows_carry_country_and_nothing_else_changed(conn):
+    countries = conn.execute(
+        "SELECT DISTINCT json_extract(publication, '$.country') FROM external_scores"
+    ).fetchall()
+    assert [tuple(r) for r in countries] == [("US",)]
+    # claim ids exclude publication, so the country stamp cannot have
+    # moved any id: the module's own run prefix is untouched too.
+    prefixes = conn.execute(
+        "SELECT DISTINCT substr(run_id, 1, 12) FROM pe_results"
+    ).fetchall()
+    assert [tuple(r) for r in prefixes] == [("populace-rv-",)]
+
+
+def test_unknown_country_raises(tmp_path):
+    with pytest.raises(ValueError, match="unknown country"):
+        ingest(tmp_path / "db.sqlite", country="XX")
+
+
+def test_uk_release_map_declared_empty():
+    from scorecard_db.ingest_reform_validation import COUNTRIES
+
+    assert COUNTRIES["UK"]["engine_versions"] == {}
+    # replacement scopes must be disjoint: neither run prefix may be a
+    # prefix of the other, or one country's wholesale replace deletes
+    # the other's results.
+    us, uk = COUNTRIES["US"]["run_prefix"], COUNTRIES["UK"]["run_prefix"]
+    assert not uk.startswith(us) and not us.startswith(uk)
+    assert COUNTRIES["UK"]["registry_mark"] != COUNTRIES["US"]["registry_mark"]
+
+
+# Synthetic UK artifact: TEST FIXTURE ONLY — no real populace-uk release
+# has produced a reform_validation.json yet, so this release id exists
+# nowhere but here, and its engine pin is injected via monkeypatch rather
+# than the module's (deliberately empty) UK release map.
+_UK_RELEASE = "populace-uk-2023-testfixture-20260101T000000Z"
+_UK_ARTIFACT = {
+    "release_id": _UK_RELEASE,
+    "reforms": [
+        {
+            "id": "uk_basic_rate_plus_1p",
+            "name": "Basic rate +1p",
+            "category": "Reform",
+            "period": 2026,
+            "jct": {
+                "score": 8_100_000_000.0,
+                "source": "HMRC ready reckoner (test fixture)",
+                "source_url": "",
+                "score_type": "fiscal_note",
+                "window": "2026",
+                "publisher": "hmrc",
+            },
+            "populace": {
+                "measure": "income_tax",
+                "budget_effect": 7_900_000_000.0,
+                "period": 2026,
+            },
+        },
+        {
+            "id": "uk_pension_credit_level",
+            "name": "Pension credit expenditure",
+            "category": "Program actual",
+            "period": 2024,
+            "jct": {
+                "score": 5_600_000_000.0,
+                "source": "DWP benefit expenditure tables (test fixture)",
+                "source_url": "",
+                "score_type": "actual",
+                "window": "2024",
+                "publisher": "dwp",
+            },
+            "populace": {
+                "measure": "pension_credit",
+                "baseline_total": 5_400_000_000.0,
+                "period": 2024,
+            },
+        },
+    ],
+}
+
+
+def test_uk_fixture_ingests_with_country_uk(tmp_path, monkeypatch):
+    import scorecard_db.ingest_reform_validation as rv
+
+    raw = tmp_path / "raw_uk"
+    raw.mkdir()
+    (raw / f"{_UK_RELEASE}.json").write_text(json.dumps(_UK_ARTIFACT))
+    monkeypatch.setitem(
+        rv.COUNTRIES["UK"], "engine_versions", {_UK_RELEASE: "2.89.2-test"}
+    )
+    summary = ingest(tmp_path / "db.sqlite", raw_dir=raw, country="UK")
+    assert summary["releases"] == 1
+    assert summary["results"] == 2
+    conn = sqlite3.connect(tmp_path / "db.sqlite")
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute(
+        "SELECT source, unit_concept, value_kind,"
+        " json_extract(publication, '$.country') AS country,"
+        " json_extract(conditions, '$.geography') AS geo"
+        " FROM external_scores ORDER BY source"
+    ).fetchall()
+    assert [tuple(r) for r in rows] == [
+        ("dwp", "gbp", "gbp", "UK", "UK"),
+        ("hmrc", "gbp", "gbp", "UK", "UK"),
+    ]
+    run_ids = {r[0] for r in conn.execute("SELECT DISTINCT run_id FROM pe_results")}
+    conn.close()
+    assert run_ids == {f"populace-uk-rv-{_UK_RELEASE}"}
+
+
+def test_neutral_category_requires_explicit_publisher(tmp_path, monkeypatch):
+    import copy
+
+    import scorecard_db.ingest_reform_validation as rv
+
+    art = copy.deepcopy(_UK_ARTIFACT)
+    del art["reforms"][0]["jct"]["publisher"]
+    raw = tmp_path / "raw_uk"
+    raw.mkdir()
+    (raw / f"{_UK_RELEASE}.json").write_text(json.dumps(art))
+    monkeypatch.setitem(
+        rv.COUNTRIES["UK"], "engine_versions", {_UK_RELEASE: "2.89.2-test"}
+    )
+    with pytest.raises(ValueError, match="needs jct.publisher"):
+        ingest(tmp_path / "db.sqlite", raw_dir=raw, country="UK")
