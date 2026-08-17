@@ -4,11 +4,12 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 6 implementation is complete on branch `obr-costings-mode2` from
-`b01bd5828a1b7e5d4b8a77803cfb97eeb5b796ad`. Every artifact is now SHA-bound
-before parsing and at the write boundary, and the committed replay test runs
-only against a complete temporary copy. Final CLI and full-suite verification
-remain; no real managed simulation has been constructed.
+Follow-up 6 is complete on branch `obr-costings-mode2` from
+`b01bd5828a1b7e5d4b8a77803cfb97eeb5b796ad`. Every artifact is SHA-bound before
+parsing and at the write boundary, and the committed replay test runs only
+against a complete temporary copy. Exact dry-run, restage byte-identity,
+focused, and full-suite verification all pass; no real managed simulation was
+constructed.
 
 ## Done
 
@@ -35,6 +36,22 @@ remain; no real managed simulation has been constructed.
   byte to its tracked original.
 - All 121 focused OBR tests pass after the implementation. The sole warning is
   the upstream PolicyEngine-UK Pydantic deprecation.
+- An independent ordering audit found that an earlier artifact could change
+  while a later artifact was being checked in the common pre-write sweep.
+  Restage now retains that complete sweep and rechecks each artifact at its own
+  writer boundary; a 13-artifact inter-check mutation regression passes, and
+  the follow-up audit reports no blocker.
+- Exact default `--dry-run` validates 26 measures and 215 source head-years
+  across 2024–2030 and reports no managed microsimulation constructed.
+- Exact `--restage` replays 13 artifacts including one diagnostic, 20 staged
+  rows, and 26 comparison rows with zero managed simulations. The manifest,
+  all 13 artifacts, staged JSONL, comparison CSV, and comparison Markdown are
+  byte-identical before and after the run.
+- Final manifest, staged, CSV, and Markdown SHA-256 values are `0bec6cd3`,
+  `45faa64a`, `3f8fe4c1`, and `8c291b6b`, respectively. All 13 recorded
+  artifact digests match their unchanged bytes.
+- Final verification passes all 121 focused OBR tests and all 288 repository
+  tests. The sole warning is the upstream PolicyEngine-UK Pydantic deprecation.
 - Started Follow-up 5 by reading the complete round-4 review before inspecting
   or changing implementation code.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -353,9 +370,8 @@ remain; no real managed simulation has been constructed.
 
 ## Next
 
-- Run the exact 26-measure dry run, no-simulation restage with byte-identity
-  checks, and full suite; record final counts and hashes, commit, and report
-  without pushing.
+- No in-scope implementation or verification remains. Hand off the committed
+  branch and Follow-up 6 report for review; do not push from this lane.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
