@@ -16,6 +16,7 @@ import json
 import os
 import subprocess
 import sys
+from types import SimpleNamespace
 from pathlib import Path
 
 import pytest
@@ -420,6 +421,88 @@ def test_runtime_dataset_mutation_between_before_and_after_aborts(tmp_path):
             expected_sha256,
             phase="immediately after aggregate reads",
         )
+
+
+def test_run_managed_simulation_rejects_dataset_mutation_during_calculate(
+    tmp_path, monkeypatch
+):
+    runtime_dataset_source = tmp_path / "fake-certified-dataset.h5"
+    runtime_dataset_source.write_bytes(b"certified bytes")
+    expected_sha256 = compute.sha256_file(runtime_dataset_source)
+    mutated_bytes = b"certified bytes!"
+    mutated_sha256 = hashlib.sha256(mutated_bytes).hexdigest()
+    artifact_path = tmp_path / "must-not-exist.json"
+
+    class FakeCalculated:
+        def sum(self):
+            return 1.0
+
+    class FakeSimulation:
+        policyengine_bundle = {
+            "certified_data_build_id": "synthetic-certified-build",
+            "runtime_dataset_source": str(runtime_dataset_source),
+        }
+        tax_benefit_system = SimpleNamespace(variables={"income_tax": object()})
+
+        def calculate(self, name, period):
+            assert (name, period) == ("income_tax", "2026")
+            runtime_dataset_source.write_bytes(mutated_bytes)
+            return FakeCalculated()
+
+    fake_policyengine = SimpleNamespace(
+        uk=SimpleNamespace(managed_microsimulation=lambda **kwargs: FakeSimulation())
+    )
+    monkeypatch.setitem(sys.modules, "policyengine", fake_policyengine)
+
+    with pytest.raises(RuntimeError) as exc_info:
+        compute.run_managed_simulation(
+            year=2026,
+            variables=["income_tax"],
+            reform={"synthetic.path": {"2026-01-01.2026-12-31": 1}},
+            runtime_dataset_source=runtime_dataset_source,
+            expected_dataset_sha256=expected_sha256,
+        )
+
+    message = str(exc_info.value)
+    assert "immediately after aggregate reads" in message
+    assert f"expected {expected_sha256}" in message
+    assert f"actual {mutated_sha256}" in message
+    assert not artifact_path.exists()
+
+
+def test_run_managed_simulation_checks_dataset_before_construction(
+    tmp_path, monkeypatch
+):
+    runtime_dataset_source = tmp_path / "already-drifted-dataset.h5"
+    runtime_dataset_source.write_bytes(b"drifted bytes")
+    actual_sha256 = compute.sha256_file(runtime_dataset_source)
+    expected_sha256 = hashlib.sha256(b"certified bytes").hexdigest()
+    constructed = False
+
+    def construct_simulation(**kwargs):
+        nonlocal constructed
+        constructed = True
+        raise AssertionError("managed simulation was constructed")
+
+    fake_policyengine = SimpleNamespace(
+        uk=SimpleNamespace(managed_microsimulation=construct_simulation)
+    )
+    monkeypatch.setitem(sys.modules, "policyengine", fake_policyengine)
+
+    with pytest.raises(RuntimeError) as exc_info:
+        compute.run_managed_simulation(
+            year=2026,
+            variables=["income_tax"],
+            reform=None,
+            runtime_dataset_source=runtime_dataset_source,
+            expected_dataset_sha256=expected_sha256,
+        )
+
+    message = str(exc_info.value)
+    assert "immediately before simulation construction" in message
+    assert f"expected {expected_sha256}" in message
+    assert f"actual {actual_sha256}" in message
+    assert constructed is False
 
 
 def test_new_artifact_records_hashes_for_baseline_and_reform(

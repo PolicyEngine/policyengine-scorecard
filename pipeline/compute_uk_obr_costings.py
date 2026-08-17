@@ -512,7 +512,8 @@ def verify_runtime_dataset_sha256(
     if actual_sha256 != expected_sha256:
         raise RuntimeError(
             f"runtime dataset SHA-256 {phase} differs from the certified "
-            f"release manifest: {runtime_dataset_source}"
+            f"release manifest: {runtime_dataset_source}; "
+            f"expected {expected_sha256}; actual {actual_sha256}"
         )
     return actual_sha256
 

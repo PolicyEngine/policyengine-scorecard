@@ -21,6 +21,12 @@ be constructed during this follow-up.
 - Fixed round-2 finding 7 in this register: the Follow-up 2 report was removed
   from the branch in `8c1d858` and kept outside the repository; it is not a
   committed current-tree file.
+- Fixed round-2 finding 1: production-path tests now prove
+  `run_managed_simulation` rejects a dataset mutated during `calculate`, writes
+  no artifact, and aborts an already-mismatched file before construction; SHA
+  errors name expected and actual hashes
+  (`pipeline/compute_uk_obr_costings.py:503`,
+  `tests/test_obr_costings_registry.py:426`).
 - Read this progress record and the clean-context review before inspecting or
   changing the implementation.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
