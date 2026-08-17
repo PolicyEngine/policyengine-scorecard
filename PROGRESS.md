@@ -21,6 +21,17 @@ remains intentionally unrun.
   and tests.
 - Removed the aggregate sign-concordance register headline; the progress record
   retains only row-level values and descriptive bins.
+- Fixed finding 1 for all future managed runs: the exact resolved
+  `runtime_dataset_source` is SHA-256 checked against the release manifest
+  immediately before each simulation is constructed and immediately after its
+  aggregates are read. The simulation-reported path must also equal the path
+  that was hashed, and any mismatch aborts before artifact emission.
+- New artifacts record `dataset_sha256_before` and `dataset_sha256_after` for
+  both baseline and reform simulations beside their bundle identities. The 13
+  committed artifacts retain no invented hashes during `--restage`; their
+  absence is accepted only because run id `campaign-20260816-obr-costings`
+  predates the field's 2026-08-17 introduction. A fake-file mutation test
+  exercises the before/after rejection.
 - Started Follow-up 1 from clean branch `obr-costings-mode2` at `b6442fe` and
   read this progress record plus both compute/comparison modules end to end.
 - Confirmed the orientation defect is confined to artifact/staging derivation:
@@ -135,8 +146,6 @@ remains intentionally unrun.
 
 ## Next
 
-- Bind every future managed simulation to before/after hashes of the exact
-  runtime dataset bytes, while preserving the legacy 13 artifacts on restage.
 - Vendor the 215 exact matched harvest rows, make staged descriptors unique,
   and test both vendored and optional full-harvest joins.
 - Replace unsupported row mechanisms with harvested/code-backed axes, correct

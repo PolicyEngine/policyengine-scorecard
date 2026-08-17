@@ -250,6 +250,90 @@ def test_configure_offline_overrides_network_enabled_environment(monkeypatch):
     )
 
 
+def test_runtime_dataset_mutation_between_before_and_after_aborts(tmp_path):
+    runtime_dataset_source = tmp_path / "fake-certified-dataset.h5"
+    runtime_dataset_source.write_bytes(b"certified bytes")
+    expected_sha256 = compute.sha256_file(runtime_dataset_source)
+
+    before = compute.verify_runtime_dataset_sha256(
+        runtime_dataset_source,
+        expected_sha256,
+        phase="immediately before simulation construction",
+    )
+    runtime_dataset_source.write_bytes(b"mutated bytes")
+
+    assert before == expected_sha256
+    with pytest.raises(RuntimeError, match="immediately after aggregate reads"):
+        compute.verify_runtime_dataset_sha256(
+            runtime_dataset_source,
+            expected_sha256,
+            phase="immediately after aggregate reads",
+        )
+
+
+def test_new_artifact_records_hashes_for_baseline_and_reform(
+    tmp_path, synthetic_measure
+):
+    expected_sha256 = "a" * 64
+    bundle = {
+        "certified_data_build_id": "synthetic-certified-build",
+        "certified_data_artifact_sha256": expected_sha256,
+    }
+    baseline = synthetic_run(bundle, 100.0)
+    reform = synthetic_run(bundle, 125.0)
+    for simulation in (baseline, reform):
+        simulation["dataset_sha256_before"] = expected_sha256
+        simulation["dataset_sha256_after"] = expected_sha256
+
+    artifact = compute.build_artifact(
+        measure=synthetic_measure,
+        year=2026,
+        baseline=baseline,
+        reform=reform,
+        output_path=tmp_path / "synthetic_2026.json",
+        computed_at="2026-08-17T12:00:00+00:00",
+        run_id="campaign-20260817-obr-costings",
+        claims=None,
+    )
+
+    assert artifact["dataset_sha256_before"] == {
+        "baseline": expected_sha256,
+        "reform": expected_sha256,
+    }
+    assert artifact["dataset_sha256_after"] == {
+        "baseline": expected_sha256,
+        "reform": expected_sha256,
+    }
+
+
+def test_only_predating_artifacts_may_omit_dataset_hash_fields(
+    tmp_path, synthetic_measure
+):
+    bundle = {"certified_data_build_id": "synthetic-certified-build"}
+    artifact = compute.build_artifact(
+        measure=synthetic_measure,
+        year=2026,
+        baseline=synthetic_run(bundle, 100.0),
+        reform=synthetic_run(bundle, 125.0),
+        output_path=tmp_path / "synthetic_2026.json",
+        computed_at="2026-08-16T12:00:00+00:00",
+        run_id="campaign-20260816-obr-costings",
+        claims=None,
+    )
+    compute.validate_artifact_dataset_hash_fields(
+        artifact, path=tmp_path / "synthetic_2026.json"
+    )
+
+    artifact["run_id"] = "campaign-20260817-obr-costings"
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="does not predate dataset hash fields",
+    ):
+        compute.validate_artifact_dataset_hash_fields(
+            artifact, path=tmp_path / "synthetic_2026.json"
+        )
+
+
 def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
     tmp_path, synthetic_measure, synthetic_claim
 ):
@@ -348,6 +432,10 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
         artifact = json.loads(artifact_path.read_text())
         traced_artifacts.add(row["artifact"])
 
+        assert compute.run_id_predates_dataset_hash_fields(artifact["run_id"])
+        assert "dataset_sha256_before" not in artifact
+        assert "dataset_sha256_after" not in artifact
+
         assert artifact["artifact"] == row["artifact"]
         assert artifact["data_bundle"] == row["data_bundle"]
         assert artifact["engine_version"] == row["engine_version"]
@@ -399,6 +487,9 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
             / "diagnostic__personal_allowance_plus_500_2026.json"
         ).read_text()
     )
+    assert compute.run_id_predates_dataset_hash_fields(diagnostic["run_id"])
+    assert "dataset_sha256_before" not in diagnostic
+    assert "dataset_sha256_after" not in diagnostic
     assert diagnostic["diagnostic_only"] is True
     diagnostic_head = diagnostic["heads"][0]
     assert diagnostic_head["forward_delta_exchequer_gain"] == (
@@ -660,6 +751,8 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     assert compute.main(arguments) == 0
 
     refreshed = json.loads(artifact_path.read_text())
+    assert "dataset_sha256_before" not in refreshed
+    assert "dataset_sha256_after" not in refreshed
     assert refreshed["raw_aggregates"] == original_raw
     assert refreshed["computed_at"] == artifact["computed_at"]
     assert refreshed["heads"][0]["external_claim"] == original_claim

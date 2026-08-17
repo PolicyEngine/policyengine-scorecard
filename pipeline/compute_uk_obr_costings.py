@@ -66,6 +66,8 @@ NI_HEAD_VARIABLES = [
     "ni_class_4",
 ]
 RUN_ID_DATE = datetime.now().astimezone().strftime("%Y%m%d")
+DATASET_HASH_FIELDS_INTRODUCED = "20260817"
+RUN_ID = re.compile(r"^campaign-(\d{8})-obr-costings$")
 
 
 class RegistryError(ValueError):
@@ -430,6 +432,30 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def verify_runtime_dataset_sha256(
+    runtime_dataset_source: Path,
+    expected_sha256: str,
+    *,
+    phase: str,
+) -> str:
+    """Hash the exact managed-data file and reject non-certified bytes."""
+
+    actual_sha256 = sha256_file(runtime_dataset_source)
+    if actual_sha256 != expected_sha256:
+        raise RuntimeError(
+            f"runtime dataset SHA-256 {phase} differs from the certified "
+            f"release manifest: {runtime_dataset_source}"
+        )
+    return actual_sha256
+
+
+def run_id_predates_dataset_hash_fields(run_id: Any) -> bool:
+    """Identify artifacts created before per-simulation hashes were emitted."""
+
+    match = RUN_ID.fullmatch(run_id) if isinstance(run_id, str) else None
+    return match is not None and match.group(1) < DATASET_HASH_FIELDS_INTRODUCED
+
+
 def ensure_writable_local_mirror(
     cached_path: Path, relative_artifact_path: str, expected_sha256: str
 ) -> tuple[Path, bool]:
@@ -524,6 +550,7 @@ def preflight_certified_dataset() -> dict[str, Any]:
         "local_files_only": True,
         "managed_local_mirror": relative_to_root(mirror_path),
         "managed_local_mirror_created": mirror_created,
+        "runtime_dataset_source": str(mirror_path.resolve()),
     }
 
 
@@ -602,6 +629,8 @@ def run_managed_simulation(
     year: int,
     variables: list[str],
     reform: dict[str, Any] | None,
+    runtime_dataset_source: Path,
+    expected_dataset_sha256: str,
 ) -> dict[str, Any]:
     """Run, aggregate, delete, and collect exactly one managed sim."""
 
@@ -612,6 +641,11 @@ def run_managed_simulation(
     sim = None
     try:
         with PeakRSSSampler() as memory:
+            dataset_sha256_before = verify_runtime_dataset_sha256(
+                runtime_dataset_source,
+                expected_dataset_sha256,
+                phase="immediately before simulation construction",
+            )
             sim = (
                 pe.uk.managed_microsimulation()
                 if reform is None
@@ -621,6 +655,14 @@ def run_managed_simulation(
             if not bundle.get("certified_data_build_id"):
                 raise RuntimeError(
                     "managed sim did not expose a certified data build id"
+                )
+            reported_source = bundle.get("runtime_dataset_source")
+            if not isinstance(reported_source, str) or (
+                Path(reported_source).resolve() != runtime_dataset_source.resolve()
+            ):
+                raise RuntimeError(
+                    "managed sim runtime_dataset_source differs from the exact "
+                    f"file hashed before construction: {reported_source!r}"
                 )
             missing = [
                 name
@@ -637,6 +679,11 @@ def run_managed_simulation(
                 if not math.isfinite(aggregate):
                     raise RuntimeError(f"{name} {year}: non-finite aggregate")
                 aggregates[name] = aggregate
+            dataset_sha256_after = verify_runtime_dataset_sha256(
+                runtime_dataset_source,
+                expected_dataset_sha256,
+                phase="immediately after aggregate reads",
+            )
             metadata = variable_metadata(sim.tax_benefit_system, variables)
             wall_seconds = time.perf_counter() - started
     except BaseException:
@@ -659,6 +706,8 @@ def run_managed_simulation(
         "aggregates_gbp": aggregates,
         "variable_metadata": metadata,
         "policyengine_bundle": bundle,
+        "dataset_sha256_before": dataset_sha256_before,
+        "dataset_sha256_after": dataset_sha256_after,
         "performance": performance,
     }
 
@@ -682,6 +731,97 @@ def data_bundle_id(policyengine_bundle: dict[str, Any]) -> str:
     if not isinstance(value, str) or not value:
         raise RuntimeError("policyengine_bundle.certified_data_build_id is missing")
     return value
+
+
+def simulation_dataset_hash_fields(
+    baseline: dict[str, Any],
+    reform: dict[str, Any],
+    *,
+    run_id: str,
+) -> dict[str, dict[str, str]]:
+    """Build per-simulation artifact hashes, allowing only dated legacy runs."""
+
+    field_names = ("dataset_sha256_before", "dataset_sha256_after")
+    present = {
+        role: {name: name in simulation for name in field_names}
+        for role, simulation in (("baseline", baseline), ("reform", reform))
+    }
+    if not any(value for role in present.values() for value in role.values()):
+        if run_id_predates_dataset_hash_fields(run_id):
+            return {}
+        raise RuntimeError(
+            f"{run_id}: per-simulation dataset SHA-256 fields are required"
+        )
+    if not all(value for role in present.values() for value in role.values()):
+        raise RuntimeError(
+            f"{run_id}: per-simulation dataset SHA-256 fields are incomplete"
+        )
+
+    expected = baseline["policyengine_bundle"].get(
+        "certified_data_artifact_sha256"
+    )
+    if (
+        not isinstance(expected, str)
+        or not expected
+        or reform["policyengine_bundle"].get("certified_data_artifact_sha256")
+        != expected
+    ):
+        raise RuntimeError(
+            f"{run_id}: managed simulations lack one certified artifact SHA-256"
+        )
+    fields = {
+        name: {
+            "baseline": baseline[name],
+            "reform": reform[name],
+        }
+        for name in field_names
+    }
+    if any(
+        value != expected
+        for values in fields.values()
+        for value in values.values()
+    ):
+        raise RuntimeError(
+            f"{run_id}: per-simulation dataset SHA-256 differs from bundle identity"
+        )
+    return fields
+
+
+def validate_artifact_dataset_hash_fields(
+    artifact: dict[str, Any], *, path: Path
+) -> None:
+    """Validate hash-bearing artifacts and narrowly admit dated predecessors."""
+
+    field_names = ("dataset_sha256_before", "dataset_sha256_after")
+    present = [name in artifact for name in field_names]
+    if not any(present):
+        if run_id_predates_dataset_hash_fields(artifact.get("run_id")):
+            return
+        raise ArtifactRestageError(
+            f"{path}: artifact run does not predate dataset hash fields"
+        )
+    if not all(present):
+        raise ArtifactRestageError(f"{path}: dataset hash fields are incomplete")
+    bundles = artifact.get("policyengine_bundles")
+    if not isinstance(bundles, dict):
+        raise ArtifactRestageError(f"{path}: policyengine_bundles must be a mapping")
+    for name in field_names:
+        values = artifact[name]
+        if not isinstance(values, dict) or set(values) != {"baseline", "reform"}:
+            raise ArtifactRestageError(
+                f"{path}: {name} must map baseline and reform"
+            )
+        for role in ("baseline", "reform"):
+            bundle = bundles.get(role)
+            expected = (
+                bundle.get("certified_data_artifact_sha256")
+                if isinstance(bundle, dict)
+                else None
+            )
+            if not isinstance(expected, str) or values[role] != expected:
+                raise ArtifactRestageError(
+                    f"{path}: {role} {name} differs from bundle identity"
+                )
 
 
 def reform_minus_baseline(
@@ -816,6 +956,7 @@ def rederive_artifact_orientation(
         raise ArtifactRestageError(
             f"{path}: unsupported artifact schema {artifact.get('schema_version')!r}"
         )
+    validate_artifact_dataset_hash_fields(artifact, path=path)
     year = artifact.get("year")
     if not isinstance(year, int) or not YEAR_MIN <= year <= YEAR_MAX:
         raise ArtifactRestageError(f"{path}: invalid artifact year {year!r}")
@@ -1016,7 +1157,7 @@ def build_artifact(
                 ),
             }
         )
-    return {
+    artifact = {
         "schema_version": 1,
         "measure_key": measure["measure_key"],
         "fiscal_event": measure["fiscal_event"],
@@ -1051,6 +1192,10 @@ def build_artifact(
         "artifact": relative_to_root(output_path),
         "notes": measure["notes"],
     }
+    artifact.update(
+        simulation_dataset_hash_fields(baseline, reform, run_id=run_id)
+    )
+    return artifact
 
 
 def stage_artifact_rows(
@@ -1414,6 +1559,8 @@ def main(argv: list[str] | None = None) -> int:
 
     cache_preflight = preflight_certified_dataset()
     release_bundle = cache_preflight["release_bundle"]
+    runtime_dataset_source = Path(cache_preflight["runtime_dataset_source"])
+    expected_dataset_sha256 = release_bundle["certified_data_artifact_sha256"]
     print(
         "certified cache preflight: "
         f"{data_bundle_id(release_bundle)}; SHA-256 verified in "
@@ -1481,10 +1628,18 @@ def main(argv: list[str] | None = None) -> int:
             }
         )
         print(f"[{year}] baseline: {', '.join(variables)}", flush=True)
-        baseline = run_managed_simulation(year=year, variables=variables, reform=None)
+        baseline = run_managed_simulation(
+            year=year,
+            variables=variables,
+            reform=None,
+            runtime_dataset_source=runtime_dataset_source,
+            expected_dataset_sha256=expected_dataset_sha256,
+        )
         assert_managed_bundle(baseline["policyengine_bundle"], release_bundle)
         manifest["baseline_by_year"][str(year)] = {
             "data_bundle": data_bundle_id(baseline["policyengine_bundle"]),
+            "dataset_sha256_before": baseline["dataset_sha256_before"],
+            "dataset_sha256_after": baseline["dataset_sha256_after"],
             "aggregates_gbp": baseline["aggregates_gbp"],
             "performance": baseline["performance"],
         }
@@ -1508,6 +1663,8 @@ def main(argv: list[str] | None = None) -> int:
                 year=year,
                 variables=measure_variables,
                 reform=measure["pe_reform"],
+                runtime_dataset_source=runtime_dataset_source,
+                expected_dataset_sha256=expected_dataset_sha256,
             )
             assert_managed_bundle(reform["policyengine_bundle"], release_bundle)
             # The baseline was aggregated over a superset; narrow it only in
