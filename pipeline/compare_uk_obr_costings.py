@@ -3,8 +3,10 @@
 
 The harvested OBR descriptor carries the verbatim measure description and
 source table needed to resolve every row exactly once. Every staged PE value is
-then checked against the frozen source-claim snapshot and PE value in its saved
-run artifact.
+then checked against the frozen source-claim snapshot and a PE value recomputed
+from the raw aggregates in its saved run artifact. The standalone command
+accepts only a run manifest: it SHA-verifies the registry, claims slice, and
+complete artifact inventory before parsing any of them.
 
 The output retains source head rows.  For PMD measures with at least two mapped
 heads, it also shows a comparison-only sum of those mapped heads.  That sum is
@@ -15,14 +17,16 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import io
 import json
 import math
+import re
 import stat
 import tempfile
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Mapping
 
 import yaml
 
@@ -33,6 +37,7 @@ DEFAULT_CLAIMS = (
 )
 DEFAULT_STAGED = ROOT / "results" / "uk" / "staged" / "obr_costings.jsonl"
 DEFAULT_OUTPUT_DIR = ROOT / "results" / "uk" / "obr_costings"
+DEFAULT_MANIFEST = DEFAULT_OUTPUT_DIR / "RUN_MANIFEST.json"
 PMD_TABLES = {
     "Tax Measures (Policy measures database)",
     "Spending Measures (Policy measures database)",
@@ -85,9 +90,35 @@ class ComparisonError(ValueError):
     """A staged row cannot be tied unambiguously to its source or artifact."""
 
 
-def load_jsonl(path: Path) -> list[dict[str, Any]]:
+def _read_bytes(path: Path, label: str) -> bytes:
+    try:
+        return path.read_bytes()
+    except OSError as exc:
+        raise ComparisonError(f"cannot read {label} {path}: {exc}") from exc
+
+
+def _parse_json_object(
+    payload: bytes,
+    *,
+    path: Path,
+    label: str,
+) -> dict[str, Any]:
+    try:
+        value = json.loads(payload)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ComparisonError(f"cannot parse {label} {path}: {exc}") from exc
+    if not isinstance(value, dict):
+        raise ComparisonError(f"{label} {path}: expected a JSON object")
+    return value
+
+
+def _parse_jsonl(payload: bytes, *, path: Path) -> list[dict[str, Any]]:
+    try:
+        lines = payload.decode("utf-8").splitlines()
+    except UnicodeDecodeError as exc:
+        raise ComparisonError(f"cannot parse JSONL {path}: {exc}") from exc
     rows: list[dict[str, Any]] = []
-    for line_number, line in enumerate(path.read_text().splitlines(), 1):
+    for line_number, line in enumerate(lines, 1):
         if not line.strip():
             continue
         try:
@@ -100,8 +131,19 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
     return rows
 
 
-def load_registry(path: Path) -> dict[str, dict[str, Any]]:
-    spec = yaml.safe_load(path.read_text())
+def load_jsonl(path: Path) -> list[dict[str, Any]]:
+    return _parse_jsonl(_read_bytes(path, "JSONL"), path=path)
+
+
+def _parse_registry(
+    payload: bytes,
+    *,
+    path: Path,
+) -> dict[str, dict[str, Any]]:
+    try:
+        spec = yaml.safe_load(payload)
+    except yaml.YAMLError as exc:
+        raise ComparisonError(f"cannot parse registry {path}: {exc}") from exc
     if not isinstance(spec, dict) or not isinstance(spec.get("measures"), list):
         raise ComparisonError(f"{path}: expected a mapping with a measures list")
     measures: dict[str, dict[str, Any]] = {}
@@ -115,6 +157,204 @@ def load_registry(path: Path) -> dict[str, dict[str, Any]]:
             raise ComparisonError(f"{path}: duplicate measure_key {key!r}")
         measures[key] = measure
     return measures
+
+
+def load_registry(path: Path) -> dict[str, dict[str, Any]]:
+    return _parse_registry(_read_bytes(path, "registry"), path=path)
+
+
+def _resolve_recorded_path(
+    reference: Any,
+    *,
+    artifact_root: Path,
+    role: str,
+) -> Path:
+    if not isinstance(reference, str) or not reference:
+        raise ComparisonError(f"{role} must be a non-empty recorded path")
+    relative = Path(reference)
+    if relative.is_absolute():
+        raise ComparisonError(f"{role} must be relative to the artifact root")
+    root = artifact_root.resolve()
+    path = (root / relative).resolve()
+    try:
+        canonical = path.relative_to(root).as_posix()
+    except ValueError as exc:
+        raise ComparisonError(
+            f"{role} {reference!r} escapes artifact root {root}"
+        ) from exc
+    if reference != canonical:
+        raise ComparisonError(
+            f"{role} must be canonical; recorded {reference!r}, "
+            f"canonical {canonical!r}"
+        )
+    return path
+
+
+def _validate_sha256(value: Any, *, field: str, manifest_path: Path) -> str:
+    if not isinstance(value, str) or re.fullmatch(r"[0-9a-f]{64}", value) is None:
+        raise ComparisonError(
+            f"{manifest_path}: {field} must be a lowercase SHA-256"
+        )
+    return value
+
+
+def _verify_payload(
+    payload: bytes,
+    *,
+    path: Path,
+    expected_sha256: str,
+    role: str,
+) -> None:
+    actual_sha256 = hashlib.sha256(payload).hexdigest()
+    if actual_sha256 != expected_sha256:
+        raise ComparisonError(
+            f"{path}: {role} SHA-256 differs from RUN_MANIFEST; "
+            f"expected {expected_sha256}; actual {actual_sha256}"
+        )
+
+
+def load_verified_comparison_inputs(
+    *,
+    manifest_path: Path,
+    artifact_root: Path = ROOT,
+) -> tuple[
+    dict[str, Any],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    dict[str, dict[str, Any]],
+    dict[str, dict[str, Any]],
+]:
+    """SHA-gate all manifest inputs, then parse each retained payload once."""
+
+    artifact_root = artifact_root.resolve()
+    manifest_path = manifest_path.resolve()
+    try:
+        manifest_path.relative_to(artifact_root)
+    except ValueError as exc:
+        raise ComparisonError(
+            f"manifest {manifest_path} escapes artifact root {artifact_root}"
+        ) from exc
+    manifest = _parse_json_object(
+        _read_bytes(manifest_path, "run manifest"),
+        path=manifest_path,
+        label="run manifest",
+    )
+    if manifest.get("schema_version") != 1:
+        raise ComparisonError(
+            f"{manifest_path}: unsupported manifest schema "
+            f"{manifest.get('schema_version')!r}"
+        )
+    if manifest.get("staged") is not True:
+        raise ComparisonError(
+            f"{manifest_path}: comparison requires a manifest with staged=true"
+        )
+
+    registry_path = _resolve_recorded_path(
+        manifest.get("registry"),
+        artifact_root=artifact_root,
+        role="registry",
+    )
+    claims_path = _resolve_recorded_path(
+        manifest.get("claims"),
+        artifact_root=artifact_root,
+        role="claims",
+    )
+    staged_path = _resolve_recorded_path(
+        manifest.get("staged_output"),
+        artifact_root=artifact_root,
+        role="staged_output",
+    )
+    registry_sha256 = _validate_sha256(
+        manifest.get("registry_sha256"),
+        field="registry_sha256",
+        manifest_path=manifest_path,
+    )
+    claims_sha256 = _validate_sha256(
+        manifest.get("claims_sha256"),
+        field="claims_sha256",
+        manifest_path=manifest_path,
+    )
+    references = manifest.get("artifacts")
+    if (
+        not isinstance(references, list)
+        or not all(isinstance(reference, str) for reference in references)
+        or len(references) != len(set(references))
+    ):
+        raise ComparisonError(
+            f"{manifest_path}: artifacts must be unique recorded paths"
+        )
+    artifact_paths = {
+        reference: _resolve_recorded_path(
+            reference,
+            artifact_root=artifact_root,
+            role=f"artifact {index}",
+        )
+        for index, reference in enumerate(references)
+    }
+    recorded_artifact_sha256 = manifest.get("artifact_sha256")
+    if not isinstance(recorded_artifact_sha256, dict):
+        raise ComparisonError(
+            f"{manifest_path}: artifact_sha256 must be a path-to-SHA mapping"
+        )
+    if set(recorded_artifact_sha256) != set(references):
+        missing = sorted(set(references) - set(recorded_artifact_sha256))
+        extra = sorted(set(recorded_artifact_sha256) - set(references))
+        raise ComparisonError(
+            f"{manifest_path}: artifact_sha256 inventory differs; "
+            f"missing {missing}; extra {extra}"
+        )
+    artifact_digests = {
+        reference: _validate_sha256(
+            recorded_artifact_sha256[reference],
+            field=f"artifact_sha256[{reference!r}]",
+            manifest_path=manifest_path,
+        )
+        for reference in references
+    }
+
+    registry_payload = _read_bytes(registry_path, "registry")
+    claims_payload = _read_bytes(claims_path, "claims slice")
+    artifact_payloads = {
+        reference: _read_bytes(path, "run artifact")
+        for reference, path in artifact_paths.items()
+    }
+    _verify_payload(
+        registry_payload,
+        path=registry_path,
+        expected_sha256=registry_sha256,
+        role="registry",
+    )
+    _verify_payload(
+        claims_payload,
+        path=claims_path,
+        expected_sha256=claims_sha256,
+        role="claims slice",
+    )
+    for reference in references:
+        _verify_payload(
+            artifact_payloads[reference],
+            path=artifact_paths[reference],
+            expected_sha256=artifact_digests[reference],
+            role="artifact",
+        )
+
+    registry = _parse_registry(registry_payload, path=registry_path)
+    claims = _parse_jsonl(claims_payload, path=claims_path)
+    artifacts = {
+        reference: _parse_json_object(
+            artifact_payloads[reference],
+            path=artifact_paths[reference],
+            label="run artifact",
+        )
+        for reference in references
+    }
+    staged_rows = _parse_jsonl(
+        _read_bytes(staged_path, "staged results"),
+        path=staged_path,
+    )
+    if not staged_rows:
+        raise ComparisonError(f"staged results are empty: {staged_path}")
+    return manifest, staged_rows, claims, registry, artifacts
 
 
 def claim_metric(claim: dict[str, Any]) -> str | None:
@@ -202,9 +442,158 @@ def resolve_external_claim(
     return claim
 
 
-def _artifact_file(reference: str, artifact_root: Path) -> Path:
-    path = Path(reference)
-    return path if path.is_absolute() else artifact_root / path
+def _head_name(head: Mapping[str, Any]) -> str:
+    value = head.get("obr_head")
+    return value if isinstance(value, str) and value else "<unnamed head>"
+
+
+def _finite_number(value: Any, *, context: str) -> float | int:
+    if not _is_number(value) or not math.isfinite(value):
+        raise ComparisonError(f"{context}: expected a finite number")
+    return value
+
+
+def recompute_artifact_head_pe_value(
+    artifact: Mapping[str, Any],
+    head: Mapping[str, Any],
+    *,
+    reference: str,
+) -> float:
+    """Recompute one head solely from top-level raw aggregates and signs."""
+
+    name = _head_name(head)
+    raw_aggregates = artifact.get("raw_aggregates")
+    if not isinstance(raw_aggregates, dict):
+        raise ComparisonError(f"{reference}: {name}: raw_aggregates is not a mapping")
+    baseline = raw_aggregates.get("baseline_gbp")
+    reform = raw_aggregates.get("reform_gbp")
+    if not isinstance(baseline, dict) or not isinstance(reform, dict):
+        raise ComparisonError(
+            f"{reference}: {name}: raw baseline/reform aggregates are not mappings"
+        )
+    variables = head.get("pe_variables")
+    if (
+        not isinstance(variables, list)
+        or not variables
+        or not all(isinstance(variable, str) and variable for variable in variables)
+    ):
+        raise ComparisonError(f"{reference}: {name}: invalid pe_variables")
+    try:
+        raw_delta = sum(
+            _finite_number(
+                reform[variable],
+                context=f"{reference}: {name}: reform {variable}",
+            )
+            - _finite_number(
+                baseline[variable],
+                context=f"{reference}: {name}: baseline {variable}",
+            )
+            for variable in variables
+        )
+    except KeyError as exc:
+        raise ComparisonError(
+            f"{reference}: {name}: missing raw aggregate {exc.args[0]!r}"
+        ) from exc
+
+    channel = head.get("channel")
+    if channel == "tax":
+        exchequer_delta = raw_delta
+    elif channel == "spending":
+        exchequer_delta = -raw_delta
+    else:
+        raise ComparisonError(f"{reference}: {name}: invalid channel {channel!r}")
+    construction = artifact.get("construction")
+    if construction == "reversal_on_certified_world":
+        return -exchequer_delta
+    if construction == "forward_from_baseline":
+        return exchequer_delta
+    raise ComparisonError(
+        f"{reference}: {name}: invalid construction {construction!r}"
+    )
+
+
+def _expected_registry_head(
+    measure: Mapping[str, Any],
+    artifact_head: Mapping[str, Any],
+    *,
+    reference: str,
+) -> Mapping[str, Any]:
+    heads = measure.get("heads")
+    if not isinstance(heads, list):
+        raise ComparisonError(f"{reference}: registry heads are not a list")
+    hits = [
+        head
+        for head in heads
+        if isinstance(head, dict)
+        and head.get("obr_head") == artifact_head.get("obr_head")
+        and head.get("condition_key") == artifact_head.get("condition_key")
+        and head.get("source_table", measure.get("source_table"))
+        == artifact_head.get("source_table")
+        and head.get("external_metric", measure.get("external_metric"))
+        == artifact_head.get("external_metric")
+    ]
+    if len(hits) != 1:
+        raise ComparisonError(
+            f"{reference}: {_head_name(artifact_head)}: {len(hits)} registry "
+            "heads match; expected one"
+        )
+    return hits[0]
+
+
+def validate_artifact_heads(
+    artifacts_by_reference: Mapping[str, dict[str, Any]],
+    registry: Mapping[str, dict[str, Any]],
+) -> None:
+    """Validate every inventory head before any comparison output is rendered."""
+
+    for reference, artifact in artifacts_by_reference.items():
+        heads = artifact.get("heads")
+        if not isinstance(heads, list) or not all(
+            isinstance(head, dict) for head in heads
+        ):
+            raise ComparisonError(f"{reference}: heads must be a list of mappings")
+        diagnostic_only = artifact.get("diagnostic_only")
+        measure = None
+        if diagnostic_only is False:
+            key = artifact.get("measure_key")
+            measure = registry.get(key) if isinstance(key, str) else None
+            if measure is None:
+                raise ComparisonError(
+                    f"{reference}: measure_key {key!r} is absent from registry"
+                )
+            if artifact.get("construction") != measure.get("construction"):
+                raise ComparisonError(
+                    f"{reference}: construction differs from registry"
+                )
+        elif diagnostic_only is not True:
+            raise ComparisonError(
+                f"{reference}: diagnostic_only must be an explicit boolean"
+            )
+
+        for head in heads:
+            name = _head_name(head)
+            if measure is not None:
+                expected = _expected_registry_head(
+                    measure,
+                    head,
+                    reference=reference,
+                )
+                for field in ("pe_variables", "channel"):
+                    if head.get(field) != expected.get(field):
+                        raise ComparisonError(
+                            f"{reference}: {name}: {field} differs from registry"
+                        )
+            recomputed = recompute_artifact_head_pe_value(
+                artifact,
+                head,
+                reference=reference,
+            )
+            stored = head.get("pe_value")
+            if stored != recomputed:
+                raise ComparisonError(
+                    f"{reference}: {name}: stored pe_value {stored!r} differs "
+                    f"from recomputed pe_value {recomputed!r}"
+                )
 
 
 def _snapshot_identity(snapshot: dict[str, Any]) -> tuple[Any, ...]:
@@ -232,9 +621,11 @@ def _claim_identity(claim: dict[str, Any]) -> tuple[Any, ...]:
 
 
 def validate_artifact_trace(
-    staged_row: dict[str, Any], claim: dict[str, Any], artifact_root: Path = ROOT
+    staged_row: dict[str, Any],
+    claim: dict[str, Any],
+    artifacts_by_reference: Mapping[str, dict[str, Any]],
 ) -> dict[str, Any] | None:
-    """Validate a PE value and frozen claim against its referenced run artifact."""
+    """Validate a staged PE value against its retained run artifact object."""
 
     pe_value = staged_row["pe_value"]
     if pe_value is None:
@@ -251,11 +642,12 @@ def validate_artifact_trace(
         raise ComparisonError(
             f"{staged_row['measure_key']}: every PE value must name a run artifact"
         )
-    path = _artifact_file(reference, artifact_root)
-    try:
-        artifact = json.loads(path.read_text())
-    except (OSError, json.JSONDecodeError) as exc:
-        raise ComparisonError(f"cannot read artifact {path}: {exc}") from exc
+    artifact = artifacts_by_reference.get(reference)
+    if artifact is None:
+        raise ComparisonError(
+            f"{staged_row['measure_key']}: artifact {reference!r} is absent "
+            "from the verified manifest inventory"
+        )
     match = staged_row["external_claim_match"]
     expected = {
         "measure_key": staged_row["measure_key"],
@@ -273,7 +665,7 @@ def validate_artifact_trace(
     }
     if differences:
         raise ComparisonError(
-            f"{path}: staged/artifact identity differs: {differences}"
+            f"{reference}: staged/artifact identity differs: {differences}"
         )
 
     claim_identity = _claim_identity(claim)
@@ -286,17 +678,28 @@ def validate_artifact_trace(
     ]
     if len(hits) != 1:
         raise ComparisonError(
-            f"{path}: {len(hits)} artifact heads match the frozen OBR claim; "
+            f"{reference}: {len(hits)} artifact heads match the frozen OBR claim; "
             "expected one"
         )
     head = hits[0]
     snapshot = head["external_claim"]
     if snapshot.get("value_gbp") != claim["value"]:
-        raise ComparisonError(f"{path}: frozen and harvested OBR values differ")
+        raise ComparisonError(f"{reference}: frozen and harvested OBR values differ")
     if snapshot.get("unit") != "gbp":
-        raise ComparisonError(f"{path}: frozen OBR value is not normalized to gbp")
-    if head.get("pe_value") != pe_value:
-        raise ComparisonError(f"{path}: staged and artifact PE values differ")
+        raise ComparisonError(
+            f"{reference}: frozen OBR value is not normalized to gbp"
+        )
+    recomputed = recompute_artifact_head_pe_value(
+        artifact,
+        head,
+        reference=reference,
+    )
+    if head.get("pe_value") != recomputed or pe_value != recomputed:
+        raise ComparisonError(
+            f"{reference}: {_head_name(head)}: staged pe_value {pe_value!r} and "
+            f"stored pe_value {head.get('pe_value')!r} must equal recomputed "
+            f"pe_value {recomputed!r}"
+        )
     return head
 
 
@@ -526,10 +929,11 @@ def build_comparison_rows(
     claims: list[dict[str, Any]],
     registry: dict[str, dict[str, Any]],
     *,
-    artifact_root: Path = ROOT,
+    artifacts_by_reference: Mapping[str, dict[str, Any]],
 ) -> list[dict[str, Any]]:
     """Resolve, trace, and assemble head and mapped-head-total rows."""
 
+    validate_artifact_heads(artifacts_by_reference, registry)
     rows: list[dict[str, Any]] = []
     seen: set[tuple[str, str, int, str]] = set()
     for staged_row in staged_rows:
@@ -544,7 +948,11 @@ def build_comparison_rows(
         ):
             raise ComparisonError(f"{key}: annotations must be a list of strings")
         claim = resolve_external_claim(staged_row, claims)
-        artifact_head = validate_artifact_trace(staged_row, claim, artifact_root)
+        artifact_head = validate_artifact_trace(
+            staged_row,
+            claim,
+            artifacts_by_reference,
+        )
         identity = (
             key,
             staged_row["source_table"],
@@ -685,8 +1093,8 @@ def write_comparison_outputs_from_rows(
     staged_rows: list[dict[str, Any]],
     claims: list[dict[str, Any]],
     registry: dict[str, dict[str, Any]],
+    artifacts_by_reference: Mapping[str, dict[str, Any]],
     output_dir: Path = DEFAULT_OUTPUT_DIR,
-    artifact_root: Path = ROOT,
 ) -> list[dict[str, Any]]:
     """Write deterministic outputs from already-validated in-memory inputs."""
 
@@ -696,7 +1104,7 @@ def write_comparison_outputs_from_rows(
         staged_rows,
         claims,
         registry,
-        artifact_root=artifact_root,
+        artifacts_by_reference=artifacts_by_reference,
     )
     atomic_write_text(output_dir / "COMPARISON.csv", render_csv(rows))
     atomic_write_text(output_dir / "COMPARISON.md", render_markdown(rows))
@@ -705,34 +1113,41 @@ def write_comparison_outputs_from_rows(
 
 def write_comparison_outputs(
     *,
-    registry_path: Path = DEFAULT_REGISTRY,
-    claims_path: Path = DEFAULT_CLAIMS,
-    staged_path: Path = DEFAULT_STAGED,
-    output_dir: Path = DEFAULT_OUTPUT_DIR,
+    manifest_path: Path,
+    output_dir: Path | None = None,
     artifact_root: Path = ROOT,
 ) -> list[dict[str, Any]]:
-    """Validate inputs and write both deterministic comparison renderings."""
+    """Load one manifest-bound run and write deterministic comparison outputs."""
 
-    if not staged_path.exists():
-        raise ComparisonError(f"staged results do not exist: {staged_path}")
-    staged_rows = load_jsonl(staged_path)
-    if not staged_rows:
-        raise ComparisonError(f"staged results are empty: {staged_path}")
+    _, staged_rows, claims, registry, artifacts = load_verified_comparison_inputs(
+        manifest_path=manifest_path,
+        artifact_root=artifact_root,
+    )
     return write_comparison_outputs_from_rows(
         staged_rows=staged_rows,
-        claims=load_jsonl(claims_path),
-        registry=load_registry(registry_path),
-        output_dir=output_dir,
-        artifact_root=artifact_root,
+        claims=claims,
+        registry=registry,
+        artifacts_by_reference=artifacts,
+        output_dir=output_dir or manifest_path.resolve().parent,
     )
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
-    parser.add_argument("--claims", type=Path, default=DEFAULT_CLAIMS)
-    parser.add_argument("--staged", type=Path, default=DEFAULT_STAGED)
-    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
+    parser.add_argument(
+        "--manifest",
+        type=Path,
+        required=True,
+        help=(
+            "Required RUN_MANIFEST; supplies the SHA-bound registry, claims, "
+            "staged results, and complete artifact inventory"
+        ),
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        help="Comparison destination (default: RUN_MANIFEST directory)",
+    )
     parser.add_argument(
         "--artifact-root",
         type=Path,
@@ -742,14 +1157,13 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     rows = write_comparison_outputs(
-        registry_path=args.registry,
-        claims_path=args.claims,
-        staged_path=args.staged,
+        manifest_path=args.manifest,
         output_dir=args.output_dir,
         artifact_root=args.artifact_root,
     )
-    csv_path = args.output_dir / "COMPARISON.csv"
-    markdown_path = args.output_dir / "COMPARISON.md"
+    output_dir = args.output_dir or args.manifest.resolve().parent
+    csv_path = output_dir / "COMPARISON.csv"
+    markdown_path = output_dir / "COMPARISON.md"
     totals = sum(row["row_kind"] == "mapped_head_total" for row in rows)
     print(
         f"wrote {len(rows)} descriptive rows ({totals} mapped-head totals) to "

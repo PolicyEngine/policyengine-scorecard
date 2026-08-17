@@ -14,6 +14,25 @@ remain bound until the manifest is written last.
 
 ## Done
 
+- Implemented the shared run boundary. Normal compute and restage retain every
+  final artifact object, serialize it once to canonical UTF-8 JSON bytes, hash
+  those bytes in memory, atomically write the same payloads, and verify the
+  complete write set against the intended digests before staging begins.
+- Both modes now derive staged rows and render comparison outputs from an exact
+  reference-to-object map containing those retained artifacts. The comparison
+  core has no artifact path or disk fallback.
+- Normal compute now renders comparison outputs before its complete manifest.
+  Both modes remove the prior complete manifest immediately before output
+  mutation and publish it only after artifacts, staging, and comparison finish;
+  restage rewrites the exact verified input manifest bytes last.
+- Added standalone manifest loading that resolves the manifest inventory,
+  retains raw registry/claims/artifact payloads, SHA-checks all of them before
+  parsing any, and passes the parsed artifact objects into the path-free core.
+- Added renderer validation that recomputes every head from top-level raw
+  baseline/reform aggregates, channel sign, and construction orientation, then
+  requires both stored and staged PE values to equal that recomputed value.
+- A committed-fixture restage passes with all artifacts, staging, comparison,
+  and the non-canonical historical manifest byte-identical.
 - Mapped the round-6 windows end to end. Normal compute writes each artifact,
   stages its live object, discards it, and only later hashes a disk reread;
   restage verifies before parsing but rewrites without a post-write sweep; and

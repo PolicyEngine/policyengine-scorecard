@@ -88,6 +88,10 @@ class ArtifactRestageError(ValueError):
     """An existing run artifact cannot be safely restaged from raw aggregates."""
 
 
+class ArtifactWriteError(RuntimeError):
+    """Written artifact bytes differ from the canonical in-memory payload."""
+
+
 def claims_provenance_error(
     path: Path,
     *,
@@ -1240,17 +1244,76 @@ def atomic_write_text(path: Path, text: str) -> None:
             temporary.unlink(missing_ok=True)
 
 
+def atomic_write_bytes(path: Path, payload: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    destination_mode = stat.S_IMODE(path.stat().st_mode) if path.exists() else 0o644
+    temporary: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="wb",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as destination:
+            temporary = Path(destination.name)
+            destination.write(payload)
+        assert temporary is not None
+        temporary.chmod(destination_mode)
+        temporary.replace(path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
+def canonical_json_bytes(value: Any) -> bytes:
+    return (
+        json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n"
+    ).encode("utf-8")
+
+
+def canonical_jsonl_bytes(rows: Iterable[dict[str, Any]]) -> bytes:
+    return "".join(
+        json.dumps(row, sort_keys=True, allow_nan=False) + "\n" for row in rows
+    ).encode("utf-8")
+
+
 def write_json(path: Path, value: Any) -> None:
-    atomic_write_text(
-        path, json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n"
-    )
+    atomic_write_bytes(path, canonical_json_bytes(value))
 
 
 def write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> None:
-    text = "".join(
-        json.dumps(row, sort_keys=True, allow_nan=False) + "\n" for row in rows
-    )
-    atomic_write_text(path, text)
+    atomic_write_bytes(path, canonical_jsonl_bytes(rows))
+
+
+def write_artifact_payload(path: Path, payload: bytes) -> None:
+    """Atomically publish artifact bytes already serialized and hashed in memory."""
+
+    atomic_write_bytes(path, payload)
+
+
+def verify_written_artifacts(
+    artifacts: Iterable[tuple[Path, str]],
+) -> None:
+    """Verify a complete write set against its intended in-memory digests."""
+
+    for path, expected_sha256 in artifacts:
+        try:
+            payload = path.read_bytes()
+        except OSError as exc:
+            actual_sha256 = (
+                "<missing>" if isinstance(exc, FileNotFoundError) else "<unavailable>"
+            )
+            raise ArtifactWriteError(
+                f"{path}: written artifact differs from intended canonical bytes; "
+                f"expected SHA-256 {expected_sha256}; actual {actual_sha256}"
+            ) from exc
+        actual_sha256 = hashlib.sha256(payload).hexdigest()
+        if actual_sha256 != expected_sha256:
+            raise ArtifactWriteError(
+                f"{path}: written artifact differs from intended canonical bytes; "
+                f"expected SHA-256 {expected_sha256}; actual {actual_sha256}"
+            )
 
 
 def load_json_object(path: Path, label: str) -> dict[str, Any]:
@@ -2268,7 +2331,17 @@ def restage_existing_run(
         role="comparison output directory",
         root=artifact_root,
     )
-    manifest = load_json_object(manifest_path, "run manifest")
+    try:
+        manifest_payload = manifest_path.read_bytes()
+    except OSError as exc:
+        raise ArtifactRestageError(
+            f"cannot read run manifest {manifest_path}: {exc}"
+        ) from exc
+    manifest = parse_json_object_payload(
+        manifest_payload,
+        path=manifest_path,
+        label="run manifest",
+    )
     if manifest.get("schema_version") != 1:
         raise ArtifactRestageError(
             f"{manifest_path}: unsupported manifest schema "
@@ -2546,20 +2619,8 @@ def restage_existing_run(
     selected_measures = [replay_registry[key] for key in selected]
 
     expected_regular_pairs: set[tuple[str, int]] = set()
-    staged_rows: list[dict[str, Any]] = []
     for measure in selected_measures:
         if measure["pe_reform"] is None:
-            staged_rows.extend(
-                stage_not_computed_rows(
-                    measure=measure,
-                    years=years,
-                    claims=claims,
-                    run_id=run_id,
-                    computed_at=run_started_at,
-                    release_bundle=release_bundle,
-                    engine_version=engine_version,
-                )
-            )
             continue
         for year in years:
             mapped_claims = [
@@ -2568,10 +2629,12 @@ def restage_existing_run(
             if any(claim is not None for claim in mapped_claims):
                 expected_regular_pairs.add((measure["measure_key"], year))
 
-    replacements: list[tuple[Path, dict[str, Any]]] = []
+    replacements: list[
+        tuple[str, Path, dict[str, Any], dict[str, Any], bool]
+    ] = []
     claim_differences: list[dict[str, Any]] = []
     for (
-        _reference,
+        reference,
         path,
         artifact,
         measure,
@@ -2591,9 +2654,9 @@ def restage_existing_run(
             allow_missing_replay_fields=is_legacy,
             legacy_claim_ordinals=legacy_ordinals,
         )
-        replacements.append((path, refreshed))
-        if not diagnostic_only:
-            staged_rows.extend(stage_artifact_rows(refreshed, measure))
+        replacements.append(
+            (reference, path, refreshed, measure, diagnostic_only)
+        )
 
     if claim_differences:
         details: list[str] = []
@@ -2622,11 +2685,22 @@ def restage_existing_run(
             f"{sorted(diagnostic_artifact_pairs)}, expected "
             f"{sorted(expected_diagnostic_pairs)}"
         )
-    expected_staged_rows = manifest.get("staged_rows")
-    if expected_staged_rows != len(staged_rows):
-        raise ArtifactRestageError(
-            f"{manifest_path}: artifact-only restage produced {len(staged_rows)} "
-            f"rows; manifest records {expected_staged_rows!r}"
+    prepared_artifacts = []
+    intended_artifact_sha256: dict[str, str] = {}
+    for reference, path, artifact, measure, diagnostic_only in replacements:
+        payload = canonical_json_bytes(artifact)
+        digest = hashlib.sha256(payload).hexdigest()
+        intended_artifact_sha256[reference] = digest
+        prepared_artifacts.append(
+            (
+                reference,
+                path,
+                artifact,
+                measure,
+                diagnostic_only,
+                payload,
+                digest,
+            )
         )
     prewrite_registry_sha256 = sha256_file(registry_path)
     if prewrite_registry_sha256 != recorded_registry_sha256:
@@ -2646,18 +2720,49 @@ def restage_existing_run(
         )
     for reference, path in zip(references, resolved_references):
         verified_artifact_payload(path, recorded_artifact_sha256[reference])
-
-    for reference, resolved_path, (replacement_path, artifact) in zip(
-        references,
-        resolved_references,
-        replacements,
-    ):
-        assert resolved_path == replacement_path
+    for reference, resolved_path in zip(references, resolved_references):
         verified_artifact_payload(
             resolved_path,
             recorded_artifact_sha256[reference],
         )
-        write_json(replacement_path, artifact)
+
+    if intended_artifact_sha256 != recorded_artifact_sha256:
+        raise ArtifactRestageError(
+            f"{manifest_path}: canonical replay artifact digests differ from "
+            "the manifest inventory"
+        )
+    manifest_path.unlink(missing_ok=True)
+    for _, path, _, _, _, payload, _ in prepared_artifacts:
+        write_artifact_payload(path, payload)
+    verify_written_artifacts(
+        (path, digest)
+        for _, path, _, _, _, _, digest in prepared_artifacts
+    )
+
+    staged_rows: list[dict[str, Any]] = []
+    for measure in selected_measures:
+        if measure["pe_reform"] is None:
+            staged_rows.extend(
+                stage_not_computed_rows(
+                    measure=measure,
+                    years=years,
+                    claims=claims,
+                    run_id=run_id,
+                    computed_at=run_started_at,
+                    release_bundle=release_bundle,
+                    engine_version=engine_version,
+                )
+            )
+    for _, _, artifact, measure, diagnostic_only, _, _ in prepared_artifacts:
+        if not diagnostic_only:
+            staged_rows.extend(stage_artifact_rows(artifact, measure))
+
+    expected_staged_rows = manifest.get("staged_rows")
+    if expected_staged_rows != len(staged_rows):
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifact-only restage produced {len(staged_rows)} "
+            f"rows; manifest records {expected_staged_rows!r}"
+        )
     write_jsonl(staged_path, staged_rows)
 
     if __package__:
@@ -2669,9 +2774,13 @@ def restage_existing_run(
         staged_rows=staged_rows,
         claims=claims,
         registry=replay_registry,
+        artifacts_by_reference={
+            reference: artifact
+            for reference, _, artifact, _, _, _, _ in prepared_artifacts
+        },
         output_dir=output_dir,
-        artifact_root=artifact_root,
     )
+    atomic_write_bytes(manifest_path, manifest_payload)
     return {
         "artifacts": len(replacements),
         "diagnostic_artifacts": diagnostic_artifacts,
@@ -2846,7 +2955,13 @@ def main(argv: list[str] | None = None) -> int:
         ],
     ]
     if not args.no_stage:
-        normal_file_roles.append(("staged_output", args.staged_output))
+        normal_file_roles.extend(
+            [
+                ("staged_output", args.staged_output),
+                ("comparison CSV", args.output_dir / "COMPARISON.csv"),
+                ("comparison Markdown", args.output_dir / "COMPARISON.md"),
+            ]
+        )
     _validate_restage_path_collisions(
         file_roles=normal_file_roles,
         directory_roles=[("artifact directory", args.output_dir)],
@@ -2862,7 +2977,6 @@ def main(argv: list[str] | None = None) -> int:
         f"{cache_preflight['hash_seconds']:.1f}s",
         flush=True,
     )
-    staged_rows: list[dict[str, Any]] = []
     started_at = utc_now()
     engine_version = package_version("policyengine-uk")
     manifest: dict[str, Any] = {
@@ -2888,20 +3002,9 @@ def main(argv: list[str] | None = None) -> int:
     }
 
     artifact_measure_keys: set[str] = set()
-    written_artifact_paths: dict[str, Path] = {}
-    for measure in selected:
-        if measure["pe_reform"] is None:
-            staged_rows.extend(
-                stage_not_computed_rows(
-                    measure=measure,
-                    years=years,
-                    claims=claims,
-                    run_id=args.run_id,
-                    computed_at=started_at,
-                    release_bundle=release_bundle,
-                    engine_version=engine_version,
-                )
-            )
+    artifact_records: list[
+        tuple[str, Path, dict[str, Any], dict[str, Any], bool]
+    ] = []
 
     for year in years:
         active: list[dict[str, Any]] = []
@@ -2988,6 +3091,10 @@ def main(argv: list[str] | None = None) -> int:
                 },
             }
             out_path = artifact_path(args.output_dir, measure["measure_key"], year)
+            artifact_reference = recorded_repo_relative_path(
+                out_path,
+                role="artifact output",
+            )
             computed_at = utc_now()
             artifact = build_artifact(
                 measure=measure,
@@ -3001,14 +3108,18 @@ def main(argv: list[str] | None = None) -> int:
                 claims_sha256=claims_sha256,
                 registry_sha256=registry_sha256,
             )
-            artifact["diagnostic_only"] = measure is PA_SMOKE_MEASURE
-            write_json(out_path, artifact)
-            artifact_reference = recorded_repo_relative_path(
-                out_path,
-                role="artifact output",
+            diagnostic_only = measure is PA_SMOKE_MEASURE
+            artifact["diagnostic_only"] = diagnostic_only
+            artifact["artifact"] = artifact_reference
+            artifact_records.append(
+                (
+                    artifact_reference,
+                    out_path,
+                    artifact,
+                    measure,
+                    diagnostic_only,
+                )
             )
-            manifest["artifacts"].append(artifact_reference)
-            written_artifact_paths[artifact_reference] = out_path
             values = ", ".join(
                 f"{head['obr_head']}={head['pe_value'] / 1e9:+.3f}bn"
                 for head in artifact["heads"]
@@ -3020,10 +3131,9 @@ def main(argv: list[str] | None = None) -> int:
                 f"{values}",
                 flush=True,
             )
-            if measure is not PA_SMOKE_MEASURE:
+            if not diagnostic_only:
                 artifact_measure_keys.add(measure["measure_key"])
-                staged_rows.extend(stage_artifact_rows(artifact, measure))
-            del reform, artifact, narrowed_baseline
+            del reform, narrowed_baseline
             gc.collect()
         del baseline
         gc.collect()
@@ -3033,15 +3143,76 @@ def main(argv: list[str] | None = None) -> int:
         for measure in selected
         if measure["measure_key"] not in artifact_measure_keys
     }
+
+    prepared_artifacts = []
+    intended_artifact_sha256: dict[str, str] = {}
+    for reference, path, artifact, measure, diagnostic_only in artifact_records:
+        payload = canonical_json_bytes(artifact)
+        digest = hashlib.sha256(payload).hexdigest()
+        intended_artifact_sha256[reference] = digest
+        prepared_artifacts.append(
+            (
+                reference,
+                path,
+                artifact,
+                measure,
+                diagnostic_only,
+                payload,
+                digest,
+            )
+        )
+    manifest["artifacts"] = [
+        reference for reference, _, _, _, _, _, _ in prepared_artifacts
+    ]
+    manifest["artifact_sha256"] = intended_artifact_sha256
+
+    manifest_output_path.unlink(missing_ok=True)
+    for _, path, _, _, _, payload, _ in prepared_artifacts:
+        write_artifact_payload(path, payload)
+    verify_written_artifacts(
+        (path, digest)
+        for _, path, _, _, _, _, digest in prepared_artifacts
+    )
+
+    staged_rows: list[dict[str, Any]] = []
+    for measure in selected:
+        if measure["pe_reform"] is None:
+            staged_rows.extend(
+                stage_not_computed_rows(
+                    measure=measure,
+                    years=years,
+                    claims=claims,
+                    run_id=args.run_id,
+                    computed_at=started_at,
+                    release_bundle=release_bundle,
+                    engine_version=engine_version,
+                )
+            )
+    for _, _, artifact, measure, diagnostic_only, _, _ in prepared_artifacts:
+        if not diagnostic_only:
+            staged_rows.extend(stage_artifact_rows(artifact, measure))
+
     if not args.no_stage:
         write_jsonl(args.staged_output, staged_rows)
         assert staged_reference is not None
         manifest["staged_output"] = staged_reference
         manifest["staged_rows"] = len(staged_rows)
-    manifest["artifact_sha256"] = {
-        reference: sha256_file(written_artifact_paths[reference])
-        for reference in manifest["artifacts"]
-    }
+
+        if __package__:
+            from pipeline import compare_uk_obr_costings as comparison
+        else:
+            import compare_uk_obr_costings as comparison
+
+        comparison.write_comparison_outputs_from_rows(
+            staged_rows=staged_rows,
+            claims=claims,
+            registry={measure["measure_key"]: measure for measure in selected},
+            artifacts_by_reference={
+                reference: artifact
+                for reference, _, artifact, _, _, _, _ in prepared_artifacts
+            },
+            output_dir=args.output_dir,
+        )
     manifest["completed_at"] = utc_now()
     write_json(manifest_output_path, manifest)
     print(
