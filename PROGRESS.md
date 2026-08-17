@@ -4,10 +4,10 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 4 is in progress locally on branch `obr-costings-mode2`. Round-3
-findings 1 through 4 are fixed. Claim-provenance, dividend, and path-containment
-regressions pass; final verification remains. No managed simulation will be
-constructed.
+Follow-up 4 is complete locally on branch `obr-costings-mode2`. All four
+round-3 findings are fixed and committed. Exact dry-run, artifact-only restage,
+focused-suite, full-suite, byte-identity, and hygiene checks pass; no managed
+simulation was constructed.
 
 ## Done
 
@@ -32,6 +32,15 @@ constructed.
 - Fixed round-3 finding 4: every relative recorded path is resolved and must
   remain beneath the artifact root; an existing outside claims file reached
   through `..` is rejected. All three restage tests pass.
+- Exact default `--dry-run` validated 26 measures and 215 source head-years and
+  reported that no managed microsimulation was constructed.
+- Exact `--restage` read 13 artifacts including one diagnostic, wrote 20 staged
+  and 26 comparison rows, and reported zero managed simulations.
+- Staged JSONL, comparison CSV, and comparison Markdown SHA-256 values were
+  byte-identical before and after restage: `45faa64a`, `3f8fe4c1`, and
+  `8c291b6b`, respectively.
+- Final verification passes all 88 focused OBR tests and all 255 repository
+  tests. The sole warning is the upstream PolicyEngine-UK Pydantic deprecation.
 - Started Follow-up 3 by reading this progress record and the complete round-2
   review before inspecting or changing the implementation.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -62,8 +71,8 @@ constructed.
   `results/uk/obr_costings/RUN_MANIFEST.json:103`).
 - Fixed round-2 finding 2: every artifact now carries the claims SHA and a
   complete 17-field frozen source snapshot; restage recursively rejects every
-  differing dotted field without replacement, and the drift escape hatch logs
-  byte hashes and all fact differences before any write
+  differing dotted field without replacement. Follow-up 4 then made the
+  claims-file hash immutable during every restage
   (`pipeline/compute_uk_obr_costings.py:260`,
   `pipeline/compare_uk_obr_costings.py:212`,
   `tests/test_obr_costings_registry.py:1333`).
@@ -259,8 +268,7 @@ constructed.
 
 ## Next
 
-- Run the exact dry run, artifact-only restage with byte checks, focused tests,
-  and the full suite; then write the uncommitted final report output.
+- No in-scope Follow-up 4 work remains.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
