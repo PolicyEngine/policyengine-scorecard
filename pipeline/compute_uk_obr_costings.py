@@ -2802,6 +2802,10 @@ def restage_existing_run(
             expected=recorded_claims_sha256,
             actual=final_claims_sha256,
         )
+    verify_written_staged_output(staged_path, intended_staged_sha256)
+    verify_written_artifacts(
+        (path, digest) for _, path, _, _, _, _, digest in prepared_artifacts
+    )
     atomic_write_bytes(manifest_path, manifest_payload)
     return {
         "artifacts": len(replacements),

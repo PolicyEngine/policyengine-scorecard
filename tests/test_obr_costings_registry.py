@@ -2808,6 +2808,48 @@ def test_restage_rejects_staged_postwrite_mutation_before_comparison(
     assert (replay["output_dir"] / "COMPARISON.csv").read_bytes() == original_comparison
 
 
+def test_restage_rejects_artifact_mutation_at_final_publication_sweep(
+    tmp_path,
+    monkeypatch,
+    synthetic_measure,
+    synthetic_claim,
+):
+    replay = _write_synthetic_replay(
+        tmp_path,
+        synthetic_measure,
+        synthetic_claim,
+    )
+    original_comparison = compare.write_comparison_outputs_from_rows
+    comparison_completed = False
+
+    def mutate_after_comparison(*args, **kwargs):
+        nonlocal comparison_completed
+        rows = original_comparison(*args, **kwargs)
+        replay["artifact_path"].write_bytes(
+            replay["artifact_path"].read_bytes() + b"\n"
+        )
+        comparison_completed = True
+        return rows
+
+    monkeypatch.setattr(
+        compare,
+        "write_comparison_outputs_from_rows",
+        mutate_after_comparison,
+    )
+    with pytest.raises(
+        compute.ArtifactWriteError,
+        match="written artifact differs from intended canonical bytes",
+    ):
+        compute.restage_existing_run(
+            manifest_path=replay["manifest_path"],
+            output_dir=replay["output_dir"],
+            artifact_root=replay["artifact_root"],
+        )
+
+    assert comparison_completed
+    assert not replay["manifest_path"].exists()
+
+
 def test_restage_rederives_existing_artifacts_without_any_simulation(
     tmp_path, monkeypatch, synthetic_measure, synthetic_claim
 ):

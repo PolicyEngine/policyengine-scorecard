@@ -15,6 +15,11 @@ artifacts and claims.
 
 ## Done
 
+- Closed the final restage publication window: after comparison and final
+  registry/claims checks, restage re-verifies the staged payload and repeats
+  the complete artifact-digest sweep, with the artifact sweep immediately
+  preceding manifest restoration. A comparison-hook mutation now proves the
+  stale manifest remains absent when that last sweep fails.
 - Bound staged JSONL to the run manifest in both normal compute and restage.
   Rows are canonically serialized once in memory, the retained bytes are
   hashed as `staged_sha256`, those exact bytes are atomically written, and the
@@ -464,8 +469,6 @@ artifacts and claims.
 
 ## Next
 
-- Repeat the complete artifact-digest sweep at the final restage publication
-  boundary and add a mutation-at-comparison regression for that last gate.
 - Run the exact 26-measure dry-run, byte-identical no-simulation restage,
   focused tests, and full suite; record counts and final hashes here.
 
