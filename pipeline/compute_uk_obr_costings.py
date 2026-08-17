@@ -24,6 +24,7 @@ import math
 import os
 import re
 import sys
+import tempfile
 import threading
 import time
 from collections import Counter
@@ -1081,11 +1082,36 @@ def relative_to_root(path: Path) -> str:
         return str(path.resolve())
 
 
+def recorded_repo_relative_path(path: Path, *, role: str, root: Path = ROOT) -> str:
+    """Return a canonical relative path or reject a non-replayable location."""
+
+    resolved_root = root.resolve()
+    resolved_path = path.resolve()
+    try:
+        return str(resolved_path.relative_to(resolved_root))
+    except ValueError as exc:
+        raise RegistryError(
+            f"{role} {resolved_path} must be contained beneath repository root "
+            f"{resolved_root}"
+        ) from exc
+
+
 def atomic_write_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(path.name + ".tmp")
-    temporary.write_text(text)
-    temporary.replace(path)
+    with tempfile.NamedTemporaryFile(
+        mode="w",
+        dir=path.parent,
+        prefix=f".{path.name}.",
+        suffix=".tmp",
+        delete=False,
+    ) as destination:
+        destination.write(text)
+        temporary = Path(destination.name)
+    try:
+        temporary.replace(path)
+    except BaseException:
+        temporary.unlink(missing_ok=True)
+        raise
 
 
 def write_json(path: Path, value: Any) -> None:
@@ -1111,21 +1137,169 @@ def load_json_object(path: Path, label: str) -> dict[str, Any]:
     return value
 
 
-def resolve_recorded_path(reference: str, root: Path = ROOT) -> Path:
-    if not isinstance(reference, str) or not reference:
-        raise ArtifactRestageError("recorded path must be non-empty text")
-    path = Path(reference)
-    if path.is_absolute():
-        return path
+def _contained_path(path: Path, *, role: str, root: Path) -> Path:
     resolved_root = root.resolve()
-    resolved_path = (resolved_root / path).resolve()
+    resolved_path = path.resolve()
     try:
         resolved_path.relative_to(resolved_root)
     except ValueError as exc:
         raise ArtifactRestageError(
-            f"recorded path {reference!r} escapes artifact root {resolved_root}"
+            f"{role} {path!s} escapes artifact root {resolved_root}"
         ) from exc
     return resolved_path
+
+
+def resolve_recorded_path(
+    reference: str,
+    root: Path = ROOT,
+    *,
+    role: str = "recorded path",
+) -> Path:
+    if not isinstance(reference, str) or not reference:
+        raise ArtifactRestageError(f"{role} must be a non-empty recorded path")
+    path = Path(reference)
+    if path.is_absolute():
+        raise ArtifactRestageError(
+            f"{role} must be repo-relative; recorded absolute path {reference!r}"
+        )
+    return _contained_path(root / path, role=role, root=root)
+
+
+def _raise_path_collision(
+    first_role: str,
+    second_role: str,
+    path: Path,
+) -> None:
+    raise ArtifactRestageError(
+        f"path collision: {first_role} and {second_role} both resolve to {path}"
+    )
+
+
+def _validate_restage_path_collisions(
+    *,
+    file_roles: list[tuple[str, Path]],
+    directory_roles: list[tuple[str, Path]],
+) -> None:
+    seen_files: dict[Path, str] = {}
+    for role, path in file_roles:
+        previous_role = seen_files.get(path)
+        if previous_role is not None:
+            _raise_path_collision(previous_role, role, path)
+        seen_files[path] = role
+
+    # The artifact and comparison directories normally coincide. Directory-to-
+    # directory equality is therefore intentional, but no file role may resolve
+    # to a path that is also being treated as a directory.
+    for directory_role, directory_path in directory_roles:
+        file_role = seen_files.get(directory_path)
+        if file_role is not None:
+            _raise_path_collision(file_role, directory_role, directory_path)
+
+
+def build_restage_path_plan(
+    manifest: dict[str, Any],
+    *,
+    manifest_path: Path,
+    output_dir: Path,
+    artifact_root: Path,
+) -> dict[str, Any]:
+    """Resolve and collision-check every replay path before input parsing."""
+
+    references = manifest.get("artifacts")
+    if not isinstance(references, list) or not all(
+        isinstance(reference, str) and reference for reference in references
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifacts must be a list of paths"
+        )
+    legacy_references = manifest.get("legacy_artifacts_without_dataset_hashes", [])
+    if not isinstance(legacy_references, list) or not all(
+        isinstance(reference, str) and reference for reference in legacy_references
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy_artifacts_without_dataset_hashes must "
+            "be a list of paths"
+        )
+
+    artifact_dir = manifest_path.parent.resolve()
+    resolved_references = [
+        resolve_recorded_path(
+            reference,
+            artifact_root,
+            role=f"artifacts[{index}]",
+        )
+        for index, reference in enumerate(references)
+    ]
+    for index, path in enumerate(resolved_references):
+        _contained_path(path, role=f"artifacts[{index}]", root=artifact_dir)
+
+    resolved_legacy = [
+        resolve_recorded_path(
+            reference,
+            artifact_root,
+            role=f"legacy_artifacts_without_dataset_hashes[{index}]",
+        )
+        for index, reference in enumerate(legacy_references)
+    ]
+    if len(set(resolved_legacy)) != len(resolved_legacy):
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy artifact paths resolve to duplicate files"
+        )
+    unknown_legacy = set(resolved_legacy) - set(resolved_references)
+    if unknown_legacy:
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy artifact paths are absent from the "
+            f"artifact inventory: {sorted(str(path) for path in unknown_legacy)}"
+        )
+
+    registry_path = resolve_recorded_path(
+        manifest.get("registry"), artifact_root, role="registry"
+    )
+    claims_path = resolve_recorded_path(
+        manifest.get("claims"), artifact_root, role="claims"
+    )
+    staged_path = resolve_recorded_path(
+        manifest.get("staged_output"), artifact_root, role="staged_output"
+    )
+    comparison_csv = _contained_path(
+        output_dir / "COMPARISON.csv",
+        role="comparison CSV",
+        root=artifact_root,
+    )
+    comparison_markdown = _contained_path(
+        output_dir / "COMPARISON.md",
+        role="comparison Markdown",
+        root=artifact_root,
+    )
+
+    _validate_restage_path_collisions(
+        file_roles=[
+            ("manifest", manifest_path),
+            ("registry", registry_path),
+            ("claims", claims_path),
+            *[
+                (f"artifacts[{index}]", path)
+                for index, path in enumerate(resolved_references)
+            ],
+            ("staged_output", staged_path),
+            ("comparison CSV", comparison_csv),
+            ("comparison Markdown", comparison_markdown),
+        ],
+        directory_roles=[
+            ("artifact directory", artifact_dir),
+            ("comparison output directory", output_dir),
+        ],
+    )
+    return {
+        "artifact_dir": artifact_dir,
+        "artifacts": resolved_references,
+        "legacy_artifacts": set(resolved_legacy),
+        "registry": registry_path,
+        "claims": claims_path,
+        "staged_output": staged_path,
+        "comparison_csv": comparison_csv,
+        "comparison_markdown": comparison_markdown,
+    }
 
 
 def measure_head_identity(
@@ -1640,67 +1814,46 @@ def restage_existing_run(
 ) -> dict[str, Any]:
     """Restage a manifest inventory using artifacts only; construct no sim."""
 
+    artifact_root = artifact_root.resolve()
+    manifest_path = _contained_path(
+        manifest_path,
+        role="manifest",
+        root=artifact_root,
+    )
+    output_dir = _contained_path(
+        output_dir,
+        role="comparison output directory",
+        root=artifact_root,
+    )
     manifest = load_json_object(manifest_path, "run manifest")
     if manifest.get("schema_version") != 1:
         raise ArtifactRestageError(
             f"{manifest_path}: unsupported manifest schema "
             f"{manifest.get('schema_version')!r}"
         )
+    staged = manifest.get("staged")
+    if staged is False:
+        raise ArtifactRestageError(
+            f"{manifest_path}: non-replayable: run recorded with --no-stage"
+        )
+    if staged is not True:
+        raise ArtifactRestageError(
+            f"{manifest_path}: staged must be an explicit boolean"
+        )
     run_id = manifest.get("run_id")
     if not isinstance(run_id, str) or not run_id:
         raise ArtifactRestageError(f"{manifest_path}: run_id must be non-empty text")
-    references = manifest.get("artifacts")
-    if not isinstance(references, list) or not all(
-        isinstance(reference, str) and reference for reference in references
-    ):
-        raise ArtifactRestageError(
-            f"{manifest_path}: artifacts must be a list of paths"
-        )
-    if len(set(references)) != len(references):
-        raise ArtifactRestageError(f"{manifest_path}: duplicate artifact paths")
-    resolved_references = [
-        resolve_recorded_path(reference, artifact_root).resolve()
-        for reference in references
-    ]
-    if len(set(resolved_references)) != len(resolved_references):
-        raise ArtifactRestageError(
-            f"{manifest_path}: artifact paths resolve to duplicate files"
-        )
-    legacy_references = manifest.get("legacy_artifacts_without_dataset_hashes", [])
-    if (
-        not isinstance(legacy_references, list)
-        or not all(
-            isinstance(reference, str) and reference for reference in legacy_references
-        )
-        or len(set(legacy_references)) != len(legacy_references)
-    ):
-        raise ArtifactRestageError(
-            f"{manifest_path}: legacy_artifacts_without_dataset_hashes must "
-            "be a list of unique non-empty paths"
-        )
-    unknown_legacy = set(legacy_references) - set(references)
-    if unknown_legacy:
-        raise ArtifactRestageError(
-            f"{manifest_path}: legacy artifact paths are absent from the "
-            f"artifact inventory: {sorted(unknown_legacy)}"
-        )
-    resolved_legacy_paths = {
-        resolve_recorded_path(reference, artifact_root).resolve()
-        for reference in legacy_references
-    }
-    if len(resolved_legacy_paths) != len(legacy_references):
-        raise ArtifactRestageError(
-            f"{manifest_path}: legacy artifact paths resolve to duplicate files"
-        )
-
-    registry_path = resolve_recorded_path(manifest.get("registry"), artifact_root)
-    claims_reference = manifest.get("claims")
-    if not isinstance(claims_reference, str) or Path(claims_reference).is_absolute():
-        raise ArtifactRestageError(
-            f"{manifest_path}: claims must be a repo-relative path"
-        )
-    claims_path = resolve_recorded_path(claims_reference, artifact_root)
-    staged_path = resolve_recorded_path(manifest.get("staged_output"), artifact_root)
+    path_plan = build_restage_path_plan(
+        manifest,
+        manifest_path=manifest_path,
+        output_dir=output_dir,
+        artifact_root=artifact_root,
+    )
+    resolved_references = path_plan["artifacts"]
+    resolved_legacy_paths = path_plan["legacy_artifacts"]
+    registry_path = path_plan["registry"]
+    claims_path = path_plan["claims"]
+    staged_path = path_plan["staged_output"]
     recorded_claims_sha256 = manifest.get("claims_sha256")
     if (
         not isinstance(recorded_claims_sha256, str)
@@ -1810,12 +1963,15 @@ def restage_existing_run(
     diagnostic_artifact_pairs: set[tuple[str, int]] = set()
     diagnostic_artifacts = 0
     claim_differences: list[dict[str, Any]] = []
-    for reference in references:
-        path = resolve_recorded_path(reference, artifact_root)
+    for path in resolved_references:
         artifact = load_json_object(path, "run artifact")
         self_reference = artifact.get("artifact")
-        self_path = resolve_recorded_path(self_reference, artifact_root)
-        if self_path.resolve() != path.resolve():
+        self_path = resolve_recorded_path(
+            self_reference,
+            artifact_root,
+            role=f"artifact self-reference in {path}",
+        )
+        if self_path != path:
             raise ArtifactRestageError(
                 f"{path}: self-reference {self_reference!r} points elsewhere"
             )
@@ -1859,7 +2015,7 @@ def restage_existing_run(
             claims=None if diagnostic_only else claims,
             expected_claims_sha256=recorded_claims_sha256,
             claim_differences=claim_differences,
-            allow_missing_dataset_hashes=(path.resolve() in resolved_legacy_paths),
+            allow_missing_dataset_hashes=(path in resolved_legacy_paths),
         )
         replacements.append((path, refreshed))
         if not diagnostic_only:
@@ -2042,11 +2198,68 @@ def main(argv: list[str] | None = None) -> int:
         print("dry-run complete: no managed microsimulation constructed", flush=True)
         return 0
 
-    claims_reference = relative_to_root(args.claims)
-    if Path(claims_reference).is_absolute():
-        raise RegistryError(
-            "--claims must be inside the repository for a replayable manifest"
+    registry_reference = recorded_repo_relative_path(
+        args.registry,
+        role="--registry",
+    )
+    claims_reference = recorded_repo_relative_path(
+        args.claims,
+        role="--claims",
+    )
+    recorded_repo_relative_path(
+        args.output_dir,
+        role="--output-dir",
+    )
+    args.registry = args.registry.resolve()
+    args.claims = args.claims.resolve()
+    args.output_dir = args.output_dir.resolve()
+    manifest_output_path = args.output_dir / "RUN_MANIFEST.json"
+    recorded_repo_relative_path(
+        manifest_output_path,
+        role="run manifest",
+    )
+    staged_reference = None
+    if not args.no_stage:
+        staged_reference = recorded_repo_relative_path(
+            args.staged_output,
+            role="--staged-output",
         )
+        args.staged_output = args.staged_output.resolve()
+
+    candidate_artifact_paths = [
+        artifact_path(args.output_dir, measure["measure_key"], year).resolve()
+        for measure in selected
+        if measure["pe_reform"] is not None
+        for year in years
+    ]
+    if args.pa_smoke_probe and 2026 in years:
+        candidate_artifact_paths.append(
+            artifact_path(
+                args.output_dir,
+                PA_SMOKE_MEASURE["measure_key"],
+                2026,
+            ).resolve()
+        )
+    for index, path in enumerate(candidate_artifact_paths):
+        recorded_repo_relative_path(
+            path,
+            role=f"artifact output[{index}]",
+        )
+    normal_file_roles = [
+        ("manifest", manifest_output_path.resolve()),
+        ("registry", args.registry),
+        ("claims", args.claims),
+        *[
+            (f"artifacts[{index}]", path)
+            for index, path in enumerate(candidate_artifact_paths)
+        ],
+    ]
+    if not args.no_stage:
+        normal_file_roles.append(("staged_output", args.staged_output))
+    _validate_restage_path_collisions(
+        file_roles=normal_file_roles,
+        directory_roles=[("artifact directory", args.output_dir)],
+    )
 
     cache_preflight = preflight_certified_dataset()
     release_bundle = cache_preflight["release_bundle"]
@@ -2066,7 +2279,7 @@ def main(argv: list[str] | None = None) -> int:
         "run_id": args.run_id,
         "started_at": started_at,
         "engine_version": engine_version,
-        "registry": relative_to_root(args.registry),
+        "registry": registry_reference,
         "claims": claims_reference,
         "claims_sha256": claims_sha256,
         "years": years,
@@ -2077,6 +2290,7 @@ def main(argv: list[str] | None = None) -> int:
         "legacy_artifacts_without_dataset_hashes": [],
         "baseline_by_year": {},
         "skipped": [],
+        "staged": not args.no_stage,
     }
 
     for measure in selected:
@@ -2192,7 +2406,12 @@ def main(argv: list[str] | None = None) -> int:
             )
             artifact["diagnostic_only"] = measure is PA_SMOKE_MEASURE
             write_json(out_path, artifact)
-            manifest["artifacts"].append(relative_to_root(out_path))
+            manifest["artifacts"].append(
+                recorded_repo_relative_path(
+                    out_path,
+                    role="artifact output",
+                )
+            )
             values = ", ".join(
                 f"{head['obr_head']}={head['pe_value'] / 1e9:+.3f}bn"
                 for head in artifact["heads"]
@@ -2213,10 +2432,11 @@ def main(argv: list[str] | None = None) -> int:
 
     if not args.no_stage:
         write_jsonl(args.staged_output, staged_rows)
-        manifest["staged_output"] = relative_to_root(args.staged_output)
+        assert staged_reference is not None
+        manifest["staged_output"] = staged_reference
         manifest["staged_rows"] = len(staged_rows)
     manifest["completed_at"] = utc_now()
-    write_json(args.output_dir / "RUN_MANIFEST.json", manifest)
+    write_json(manifest_output_path, manifest)
     print(
         f"wrote {len(manifest['artifacts'])} artifacts"
         + (f" and {len(staged_rows)} staged rows" if not args.no_stage else ""),

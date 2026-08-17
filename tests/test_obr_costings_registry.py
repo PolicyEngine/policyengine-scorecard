@@ -859,6 +859,7 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
     manifest = json.loads(SMOKE_MANIFEST.read_text())
 
     assert len(rows) == manifest["staged_rows"] == 20
+    assert manifest["staged"] is True
     assert manifest["run_id"] == "campaign-20260816-obr-costings"
     assert manifest["claims"] == (
         "sources/harvest-20260802/uk_obr/obr_costings_claims.jsonl"
@@ -1295,8 +1296,9 @@ def test_restage_rejects_claims_path_that_escapes_artifact_root(tmp_path):
         manifest_path,
         {
             "schema_version": 1,
+            "staged": True,
             "run_id": "campaign-20260817-obr-costings",
-            "registry": str(REGISTRY),
+            "registry": "registry.yaml",
             "claims": "../outside/claims.jsonl",
             "claims_sha256": compute.sha256_file(escaped_claims),
             "artifacts": [],
@@ -1318,6 +1320,124 @@ def test_restage_rejects_claims_path_that_escapes_artifact_root(tmp_path):
     assert "../outside/claims.jsonl" in message
     assert str(artifact_root.resolve()) in message
     assert escaped_claims.exists()
+
+
+@pytest.mark.parametrize(
+    ("aliased_role", "staged_reference"),
+    [
+        ("claims", "claims.jsonl"),
+        ("registry", "registry.yaml"),
+        ("manifest", "RUN_MANIFEST.json"),
+    ],
+)
+def test_restage_rejects_staged_output_path_aliases_before_input_parse(
+    tmp_path,
+    aliased_role,
+    staged_reference,
+):
+    artifact_root = tmp_path / "run"
+    manifest_path = artifact_root / "RUN_MANIFEST.json"
+    compute.write_json(
+        manifest_path,
+        {
+            "schema_version": 1,
+            "staged": True,
+            "run_id": "campaign-20260817-obr-costings",
+            "registry": "registry.yaml",
+            "claims": "claims.jsonl",
+            "artifacts": [],
+            "legacy_artifacts_without_dataset_hashes": [],
+            "staged_output": staged_reference,
+        },
+    )
+    original_manifest = manifest_path.read_bytes()
+
+    with pytest.raises(compute.ArtifactRestageError) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=manifest_path,
+            output_dir=artifact_root / "comparison",
+            artifact_root=artifact_root,
+        )
+    message = str(exc_info.value)
+    assert "path collision" in message
+    assert "staged_output" in message
+    assert aliased_role in message
+    assert manifest_path.read_bytes() == original_manifest
+
+
+@pytest.mark.parametrize(
+    "role",
+    [
+        "registry",
+        "claims",
+        "artifacts[0]",
+        "legacy_artifacts_without_dataset_hashes[0]",
+        "staged_output",
+    ],
+)
+def test_restage_rejects_absolute_recorded_paths_for_every_role(tmp_path, role):
+    artifact_root = tmp_path / "run"
+    manifest_path = artifact_root / "RUN_MANIFEST.json"
+    manifest = {
+        "schema_version": 1,
+        "staged": True,
+        "run_id": "campaign-20260817-obr-costings",
+        "registry": "registry.yaml",
+        "claims": "claims.jsonl",
+        "artifacts": [],
+        "legacy_artifacts_without_dataset_hashes": [],
+        "staged_output": "staged.jsonl",
+    }
+    if role == "registry":
+        manifest["registry"] = str(artifact_root / "registry.yaml")
+    elif role == "claims":
+        manifest["claims"] = str(artifact_root / "claims.jsonl")
+    elif role == "artifacts[0]":
+        manifest["artifacts"] = [str(artifact_root / "artifact.json")]
+    elif role == "legacy_artifacts_without_dataset_hashes[0]":
+        manifest["artifacts"] = ["artifact.json"]
+        manifest["legacy_artifacts_without_dataset_hashes"] = [
+            str(artifact_root / "artifact.json")
+        ]
+    elif role == "staged_output":
+        manifest["staged_output"] = str(artifact_root / "staged.jsonl")
+    else:
+        raise AssertionError(f"unhandled role {role}")
+    compute.write_json(manifest_path, manifest)
+
+    with pytest.raises(compute.ArtifactRestageError) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=manifest_path,
+            output_dir=artifact_root / "comparison",
+            artifact_root=artifact_root,
+        )
+    message = str(exc_info.value)
+    assert role in message
+    assert "must be repo-relative" in message
+
+
+def test_restage_rejects_no_stage_manifest_before_path_resolution(tmp_path):
+    artifact_root = tmp_path / "run"
+    manifest_path = artifact_root / "RUN_MANIFEST.json"
+    compute.write_json(
+        manifest_path,
+        {
+            "schema_version": 1,
+            "staged": False,
+        },
+    )
+    original_manifest = manifest_path.read_bytes()
+
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="non-replayable: run recorded with --no-stage",
+    ):
+        compute.restage_existing_run(
+            manifest_path=manifest_path,
+            output_dir=artifact_root,
+            artifact_root=artifact_root,
+        )
+    assert manifest_path.read_bytes() == original_manifest
 
 
 def test_restage_rederives_existing_artifacts_without_any_simulation(
@@ -1354,6 +1474,8 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         claims_sha256=claims_sha256,
     )
     artifact["diagnostic_only"] = False
+    artifact_reference = "artifacts/synthetic_2026.json"
+    artifact["artifact"] = artifact_reference
     artifact.pop("dataset_sha256_before")
     artifact.pop("dataset_sha256_after")
     artifact["heads"][0].pop("reversal_delta_exchequer_gain")
@@ -1361,21 +1483,22 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     compute.write_json(artifact_path, artifact)
     manifest = {
         "schema_version": 1,
+        "staged": True,
         "run_id": artifact["run_id"],
         "started_at": "2026-08-16T12:00:00+00:00",
         "engine_version": artifact["engine_version"],
-        "registry": str(registry_path),
+        "registry": "registry.yaml",
         "claims": "claims.jsonl",
         "claims_sha256": claims_sha256,
-        "artifacts": [str(artifact_path)],
-        "legacy_artifacts_without_dataset_hashes": [str(artifact_path)],
+        "artifacts": [artifact_reference],
+        "legacy_artifacts_without_dataset_hashes": [artifact_reference],
         "selected_measures": [synthetic_measure["measure_key"]],
         "years": [2026],
         "pa_smoke_probe": False,
         "certified_cache_preflight": {
             "release_bundle": artifact["policyengine_bundles"]["baseline"]
         },
-        "staged_output": str(staged_path),
+        "staged_output": "staged.jsonl",
         "staged_rows": 1,
     }
     compute.write_json(manifest_path, manifest)
@@ -1621,7 +1744,9 @@ def test_rederive_rejects_ambiguous_frozen_claim_descriptor(
 
 
 def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeypatch):
-    spec = compute.load_registry(REGISTRY)
+    registry_path = tmp_path / "registry.yaml"
+    registry_path.write_bytes(REGISTRY.read_bytes())
+    spec = compute.load_registry(registry_path)
     measures = spec["measures"]
     claims_path = tmp_path / "claims.jsonl"
     claims_path.write_bytes(VENDORED_CLAIMS.read_bytes())
@@ -1652,6 +1777,7 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
                 )
             )
 
+    artifact_paths = []
     artifact_references = []
     for measure in measures:
         if measure["pe_reform"] is None:
@@ -1677,14 +1803,17 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
             claims_sha256=claims_sha256,
         )
         artifact["diagnostic_only"] = False
+        artifact_reference = str(output_path.relative_to(tmp_path))
+        artifact["artifact"] = artifact_reference
         compute.write_json(output_path, artifact)
-        artifact_references.append(str(output_path))
+        artifact_paths.append(output_path)
+        artifact_references.append(artifact_reference)
         expected_rows.extend(compute.stage_artifact_rows(artifact, measure))
 
     assert len(artifact_references) == 21
     compute.write_jsonl(staged_path, expected_rows)
     compare.write_comparison_outputs(
-        registry_path=REGISTRY,
+        registry_path=registry_path,
         claims_path=claims_path,
         staged_path=staged_path,
         output_dir=output_dir,
@@ -1692,10 +1821,11 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
     )
     manifest = {
         "schema_version": 1,
+        "staged": True,
         "run_id": "campaign-20260817-obr-costings",
         "started_at": started_at,
         "engine_version": engine_version,
-        "registry": str(REGISTRY),
+        "registry": "registry.yaml",
         "claims": "claims.jsonl",
         "claims_sha256": claims_sha256,
         "years": [2026],
@@ -1704,12 +1834,12 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
         "certified_cache_preflight": {"release_bundle": bundle},
         "artifacts": artifact_references,
         "legacy_artifacts_without_dataset_hashes": [],
-        "staged_output": str(staged_path),
+        "staged_output": "staged.jsonl",
         "staged_rows": len(expected_rows),
     }
     compute.write_json(manifest_path, manifest)
     output_paths = [
-        *(Path(reference) for reference in artifact_references),
+        *artifact_paths,
         staged_path,
         output_dir / "COMPARISON.csv",
         output_dir / "COMPARISON.md",

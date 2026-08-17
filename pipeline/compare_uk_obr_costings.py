@@ -18,6 +18,7 @@ import csv
 import io
 import json
 import math
+import tempfile
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable
@@ -657,9 +658,20 @@ def render_markdown(rows: list[dict[str, Any]]) -> str:
 
 def atomic_write_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(path.name + ".tmp")
-    temporary.write_text(text)
-    temporary.replace(path)
+    with tempfile.NamedTemporaryFile(
+        mode="w",
+        dir=path.parent,
+        prefix=f".{path.name}.",
+        suffix=".tmp",
+        delete=False,
+    ) as destination:
+        destination.write(text)
+        temporary = Path(destination.name)
+    try:
+        temporary.replace(path)
+    except BaseException:
+        temporary.unlink(missing_ok=True)
+        raise
 
 
 def write_comparison_outputs_from_rows(

@@ -18,6 +18,15 @@ managed simulation will be constructed.
 - Read the GitNexus debugging workflow. Its graph tools are not exposed in this
   session, so source, manifest, artifact, and test paths will be traced
   directly.
+- Fixed round-4 findings 2 and 4: restage resolves every manifest, registry,
+  claims, artifact-directory, artifact, staged, and comparison path before
+  referenced-input parsing; rejects absolute recorded paths, containment
+  escapes, and canonical role collisions; and uses exclusive temporary writes.
+- Fixed round-4 finding 5: manifests record an explicit `staged` boolean and
+  restage rejects `staged: false` immediately as a non-replayable `--no-stage`
+  run. The committed replay manifest now records `staged: true`.
+- Path/containment/no-stage verification passes 12 targeted replay cases, and
+  Python compilation plus `git diff --check` pass.
 - Started Follow-up 4 by reading the complete round-3 review before inspecting
   or changing implementation code.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -286,9 +295,6 @@ managed simulation will be constructed.
 
 - Bind manifests and artifacts to registry bytes and freeze every
   output-driving registry field, retaining the exact legacy-artifact path.
-- Canonicalize and collision-check every restage path role before parsing or
-  writing, reject all absolute recorded paths, and mark `--no-stage` runs as
-  explicitly non-replayable.
 - Add ordinal claim identity and mutation-specific frozen-field diagnostics,
   run exact dry-run/restage byte-identity checks without simulations, then run
   focused and full suites.
