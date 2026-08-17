@@ -2792,43 +2792,62 @@ def restage_existing_run(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
-    parser.add_argument("--claims", type=Path, default=DEFAULT_CLAIMS)
-    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
-    parser.add_argument("--staged-output", type=Path, default=DEFAULT_STAGED_OUTPUT)
-    parser.add_argument("--measures", nargs="*", help="Exact keys; commas accepted")
-    parser.add_argument(
-        "--years", nargs="*", help="Calendar proxy years; commas accepted"
-    )
-    parser.add_argument("--limit", type=int, help="Maximum selected measures")
-    parser.add_argument(
-        "--dry-run", action="store_true", help="Validate only; construct no sim"
-    )
-    parser.add_argument(
+    shared = parser.add_argument_group("shared mode options")
+    shared.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
+    shared.add_argument(
         "--restage",
         action="store_true",
-        help="Rebuild artifacts, staging, and comparison from the run manifest",
+        help="Select manifest replay mode; otherwise run normal compute mode",
     )
-    parser.add_argument(
-        "--manifest",
+
+    normal = parser.add_argument_group("normal compute mode options")
+    normal.add_argument(
+        "--registry",
         type=Path,
-        help="Existing run manifest (default: OUTPUT_DIR/RUN_MANIFEST.json)",
+        help=f"Registry path (normal default: {DEFAULT_REGISTRY})",
     )
-    parser.add_argument(
-        "--artifact-root",
+    normal.add_argument(
+        "--claims",
         type=Path,
-        default=ROOT,
-        help="Base for paths recorded relative to the repository root",
+        help=f"Claims slice (normal default: {DEFAULT_CLAIMS})",
     )
-    parser.add_argument(
+    normal.add_argument(
+        "--staged-output",
+        type=Path,
+        help=f"Staged JSONL (normal default: {DEFAULT_STAGED_OUTPUT})",
+    )
+    normal.add_argument("--measures", nargs="*", help="Exact keys; commas accepted")
+    normal.add_argument(
+        "--years", nargs="*", help="Calendar proxy years; commas accepted"
+    )
+    normal.add_argument("--limit", type=int, help="Maximum selected measures")
+    normal.add_argument(
+        "--dry-run", action="store_true", help="Validate only; construct no sim"
+    )
+    normal.add_argument(
         "--no-stage", action="store_true", help="Write artifacts but no JSONL"
     )
-    parser.add_argument(
+    normal.add_argument(
         "--pa-smoke-probe",
         action="store_true",
         help="Also run the non-OBR £12,570→£13,070 2026 diagnostic",
     )
-    parser.add_argument("--run-id", default=f"campaign-{RUN_ID_DATE}-obr-costings")
+    normal.add_argument(
+        "--run-id",
+        help=f"Run identifier (normal default: campaign-{RUN_ID_DATE}-obr-costings)",
+    )
+
+    restage = parser.add_argument_group("restage mode options")
+    restage.add_argument(
+        "--manifest",
+        type=Path,
+        help="Existing run manifest (default: OUTPUT_DIR/RUN_MANIFEST.json)",
+    )
+    restage.add_argument(
+        "--artifact-root",
+        type=Path,
+        help=f"Base for recorded paths (restage default: {ROOT})",
+    )
     args = parser.parse_args(argv)
 
     if args.restage:
@@ -2841,6 +2860,10 @@ def main(argv: list[str] | None = None) -> int:
                 ("--dry-run", args.dry_run),
                 ("--no-stage", args.no_stage),
                 ("--pa-smoke-probe", args.pa_smoke_probe),
+                ("--registry", args.registry is not None),
+                ("--claims", args.claims is not None),
+                ("--staged-output", args.staged_output is not None),
+                ("--run-id", args.run_id is not None),
             )
             if enabled
         ]
@@ -2850,7 +2873,7 @@ def main(argv: list[str] | None = None) -> int:
         summary = restage_existing_run(
             manifest_path=manifest_path,
             output_dir=args.output_dir,
-            artifact_root=args.artifact_root,
+            artifact_root=args.artifact_root or ROOT,
         )
         print(
             f"restaged {summary['artifacts']} existing artifacts "
@@ -2861,6 +2884,23 @@ def main(argv: list[str] | None = None) -> int:
             flush=True,
         )
         return 0
+
+    incompatible = [
+        flag
+        for flag, enabled in (
+            ("--manifest", args.manifest is not None),
+            ("--artifact-root", args.artifact_root is not None),
+        )
+        if enabled
+    ]
+    if incompatible:
+        parser.error(
+            "normal compute mode cannot be combined with " + ", ".join(incompatible)
+        )
+    args.registry = args.registry or DEFAULT_REGISTRY
+    args.claims = args.claims or DEFAULT_CLAIMS
+    args.staged_output = args.staged_output or DEFAULT_STAGED_OUTPUT
+    args.run_id = args.run_id or f"campaign-{RUN_ID_DATE}-obr-costings"
 
     configure_offline()
     spec, registry_sha256 = load_registry_with_sha256(args.registry)

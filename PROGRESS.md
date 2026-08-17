@@ -31,6 +31,10 @@ remain bound until the manifest is written last.
 - Added renderer validation that recomputes every head from top-level raw
   baseline/reform aggregates, channel sign, and construction orientation, then
   requires both stored and staged PE values to equal that recomputed value.
+- Split compute CLI help into shared, normal-compute, and restage option groups.
+  Explicit normal-only registry, claims, staged-output, and run-id options now
+  fail in restage, while explicit manifest and artifact-root options fail in
+  normal mode, including when the caller supplies the documented default.
 - A committed-fixture restage passes with all artifacts, staging, comparison,
   and the non-canonical historical manifest byte-identical.
 - Mapped the round-6 windows end to end. Normal compute writes each artifact,
