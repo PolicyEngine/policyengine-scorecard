@@ -64,7 +64,7 @@ NI_HEAD_VARIABLES = [
     "ni_class_1_employer",
     "ni_class_4",
 ]
-RUN_ID_DATE = datetime.now(timezone.utc).strftime("%Y%m%d")
+RUN_ID_DATE = datetime.now().astimezone().strftime("%Y%m%d")
 
 
 class RegistryError(ValueError):
