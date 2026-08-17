@@ -101,7 +101,10 @@ def synthetic_claim(synthetic_measure):
         "tax_head": "Income tax",
         "basis": "nominal",
         "costing_phase": "final",
+        "impact_channel": "tax",
+        "line_item": synthetic_measure["obr_description"],
         "sign_convention": "positive_gain_to_exchequer",
+        "spending_head": "None",
         "note": "retain verbatim",
     }
     return {
@@ -120,6 +123,13 @@ def synthetic_claim(synthetic_measure):
         "publication": {
             "publisher": "Synthetic OBR publisher",
             "title": "Synthetic costing publication",
+            "publication_url": "https://example.test/publication",
+            "sign_convention": "positive_gain_to_exchequer",
+            "url": "https://example.test/workbook.xlsx",
+            "units_note": "GBP",
+            "vintage": "Synthetic 2026 vintage",
+            "wayback": "https://web.archive.test/workbook.xlsx",
+            "workbook": "workbook.xlsx",
         },
         "source_column": "2026-27",
         "status": "ok",
@@ -1183,7 +1193,7 @@ def test_default_dry_run_uses_complete_vendored_slice(tmp_path):
 
 
 def test_restage_rederives_existing_artifacts_without_any_simulation(
-    tmp_path, monkeypatch, capsys, synthetic_measure, synthetic_claim
+    tmp_path, monkeypatch, synthetic_measure, synthetic_claim
 ):
     registry_path = tmp_path / "registry.yaml"
     claims_path = tmp_path / "claims.jsonl"
@@ -1305,18 +1315,14 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         match="claims SHA-256 differs from RUN_MANIFEST",
     ) as exc_info:
         compute.main(arguments)
-    assert claims_sha256 in str(exc_info.value)
-    assert drifted_sha256 in str(exc_info.value)
+    message = str(exc_info.value)
+    assert f"expected {claims_sha256}" in message
+    assert f"actual {drifted_sha256}" in message
+    assert "new run" in message
+    assert "re-run" in message
     assert {path: path.read_bytes() for path in first_outputs} == first_outputs
 
-    assert compute.main(arguments + ["--allow-claims-drift"]) == 0
-    captured = capsys.readouterr()
-    assert "allowed claims-file SHA-256 drift" in captured.err
-    assert claims_sha256 in captured.err
-    assert drifted_sha256 in captured.err
-    assert "claims drift field" not in captured.err
-    assert {path: path.read_bytes() for path in first_outputs} == first_outputs
-
+    claims_path.write_text(json.dumps(synthetic_claim, allow_nan=False) + "\n")
     manifest["legacy_artifacts_without_dataset_hashes"] = []
     compute.write_json(manifest_path, manifest)
     with pytest.raises(
@@ -1326,100 +1332,137 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         compute.main(arguments)
 
 
-def test_restage_rejects_vendored_source_model_drift_without_writes(tmp_path, capsys):
-    measure_key = "efo_march_2026__pa_and_hrt_freezes"
-    claims_path = tmp_path / "claims.jsonl"
-    claims_path.write_bytes(VENDORED_CLAIMS.read_bytes())
-    raw_lines = claims_path.read_text().splitlines()
-    changed = False
-    for index, raw_line in enumerate(raw_lines):
-        claim = json.loads(raw_line)
-        if claim.get("reform_hint") == "PA and HRT freezes" and (
-            claim.get("period") == 2026
-        ):
-            assert claim["source_model"] == "obr_efo_forecast"
-            claim["source_model"] = "silently_changed_model"
-            raw_lines[index] = json.dumps(claim, sort_keys=True)
-            changed = True
-            break
-    assert changed
-    claims_path.write_text("\n".join(raw_lines) + "\n")
+def _mutate_frozen_claim_field(claim, claim_field):
+    if claim_field == "source_metric_field":
+        claim["proposed_metric"] = claim.pop("metric")
+        return
+    keys = claim_field.split(".")
+    container = claim
+    for key in keys[:-1]:
+        container = container[key]
+    original = container[keys[-1]]
+    if isinstance(original, (int, float)) and not isinstance(original, bool):
+        container[keys[-1]] = original + 1
+    else:
+        container[keys[-1]] = f"changed {original}"
 
-    source_artifact_path = (
-        ROOT / "results" / "uk" / "obr_costings" / f"{measure_key}_2026.json"
+
+@pytest.mark.parametrize(
+    ("claim_field", "reported_field"),
+    [
+        ("source", "source"),
+        ("source_table", "source_table"),
+        ("reform_hint", "reform_hint"),
+        ("source_model", "source_model"),
+        ("metric", "metric"),
+        ("source_metric_field", "source_metric_field"),
+        ("period", "period"),
+        ("value", "value_gbp"),
+        ("value_raw", "value_raw"),
+        ("normalization", "normalization"),
+        ("proposed_unit", "unit"),
+        ("time_basis", "time_basis"),
+        ("source_column", "source_column"),
+        ("status", "status"),
+        ("calibration_relationship", "calibration_relationship"),
+        ("conditions.basis", "conditions.basis"),
+        ("conditions.costing_phase", "conditions.costing_phase"),
+        ("conditions.fiscal_event", "conditions.fiscal_event"),
+        ("conditions.fy", "conditions.fy"),
+        ("conditions.geography", "conditions.geography"),
+        ("conditions.impact_channel", "conditions.impact_channel"),
+        ("conditions.line_item", "conditions.line_item"),
+        ("conditions.note", "conditions.note"),
+        ("conditions.sign_convention", "conditions.sign_convention"),
+        ("conditions.spending_head", "conditions.spending_head"),
+        ("conditions.tax_head", "conditions.tax_head"),
+        ("publication.publication_url", "publication.publication_url"),
+        ("publication.publisher", "publication.publisher"),
+        ("publication.sign_convention", "publication.sign_convention"),
+        ("publication.title", "publication.title"),
+        ("publication.units_note", "publication.units_note"),
+        ("publication.url", "publication.url"),
+        ("publication.vintage", "publication.vintage"),
+        ("publication.wayback", "publication.wayback"),
+        ("publication.workbook", "publication.workbook"),
+    ],
+)
+def test_rederive_rejects_every_frozen_claim_field_drift(
+    tmp_path,
+    synthetic_measure,
+    synthetic_claim,
+    claim_field,
+    reported_field,
+):
+    bundle = {"certified_data_build_id": "synthetic-certified-build"}
+    artifact = compute.build_artifact(
+        measure=synthetic_measure,
+        year=2026,
+        baseline=synthetic_run(bundle, 100.0),
+        reform=synthetic_run(bundle, 125.0),
+        output_path=tmp_path / "artifact.json",
+        computed_at="2026-08-17T12:00:00+00:00",
+        run_id="campaign-20260817-obr-costings",
+        claims=[synthetic_claim],
+        claims_sha256=SYNTHETIC_CLAIMS_SHA256,
     )
-    artifact_path = tmp_path / "artifact.json"
-    artifact = json.loads(source_artifact_path.read_text())
-    artifact["artifact"] = "artifact.json"
-    compute.write_json(artifact_path, artifact)
-
-    staged_path = tmp_path / "staged.jsonl"
-    staged_path.write_text("unchanged staged sentinel\n")
-    output_dir = tmp_path / "comparison"
-    output_dir.mkdir()
-    csv_path = output_dir / "COMPARISON.csv"
-    markdown_path = output_dir / "COMPARISON.md"
-    csv_path.write_text("unchanged csv sentinel\n")
-    markdown_path.write_text("unchanged markdown sentinel\n")
-    manifest_path = tmp_path / "RUN_MANIFEST.json"
-    manifest = {
-        "schema_version": 1,
-        "run_id": artifact["run_id"],
-        "started_at": artifact["computed_at"],
-        "engine_version": artifact["engine_version"],
-        "registry": str(REGISTRY),
-        "claims": "claims.jsonl",
-        "claims_sha256": compute.sha256_file(VENDORED_CLAIMS),
-        "artifacts": ["artifact.json"],
-        "legacy_artifacts_without_dataset_hashes": ["artifact.json"],
-        "selected_measures": [measure_key],
-        "years": [2026],
-        "pa_smoke_probe": False,
-        "certified_cache_preflight": {
-            "release_bundle": artifact["policyengine_bundles"]["baseline"]
-        },
-        "staged_output": "staged.jsonl",
-        "staged_rows": 1,
-    }
-    compute.write_json(manifest_path, manifest)
-    original_outputs = {
-        path: path.read_bytes()
-        for path in (
-            artifact_path,
-            staged_path,
-            csv_path,
-            markdown_path,
-            manifest_path,
-        )
-    }
+    current_claim = copy.deepcopy(synthetic_claim)
+    _mutate_frozen_claim_field(current_claim, claim_field)
 
     with pytest.raises(compute.ArtifactRestageError) as exc_info:
-        compute.restage_existing_run(
-            manifest_path=manifest_path,
-            output_dir=output_dir,
-            artifact_root=tmp_path,
+        compute.rederive_artifact_orientation(
+            artifact,
+            synthetic_measure,
+            path=tmp_path / "artifact.json",
+            claims=[current_claim],
+            expected_claims_sha256=SYNTHETIC_CLAIMS_SHA256,
         )
     message = str(exc_info.value)
-    assert measure_key in message
-    assert "2026 Income tax source_model" in message
-    assert "obr_efo_forecast" in message
-    assert "silently_changed_model" in message
-    assert {path: path.read_bytes() for path in original_outputs} == original_outputs
+    assert reported_field in message
+    if reported_field in {
+        "source",
+        "metric",
+        "period",
+        "source_table",
+        "reform_hint",
+    } or reported_field.startswith("conditions."):
+        assert "frozen claim not found in current claims" in message
+        assert "descriptor:" in message
+    else:
+        assert "frozen/claims fields differ" in message
 
-    capsys.readouterr()
-    with pytest.raises(compute.ArtifactRestageError):
-        compute.restage_existing_run(
-            manifest_path=manifest_path,
-            output_dir=output_dir,
-            artifact_root=tmp_path,
-            allow_claims_drift=True,
+
+def test_rederive_rejects_ambiguous_frozen_claim_descriptor(
+    tmp_path, synthetic_measure, synthetic_claim
+):
+    bundle = {"certified_data_build_id": "synthetic-certified-build"}
+    artifact = compute.build_artifact(
+        measure=synthetic_measure,
+        year=2026,
+        baseline=synthetic_run(bundle, 100.0),
+        reform=synthetic_run(bundle, 125.0),
+        output_path=tmp_path / "artifact.json",
+        computed_at="2026-08-17T12:00:00+00:00",
+        run_id="campaign-20260817-obr-costings",
+        claims=[synthetic_claim],
+        claims_sha256=SYNTHETIC_CLAIMS_SHA256,
+    )
+
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="frozen claim ambiguous in current claims",
+    ) as exc_info:
+        compute.rederive_artifact_orientation(
+            artifact,
+            synthetic_measure,
+            path=tmp_path / "artifact.json",
+            claims=[synthetic_claim, copy.deepcopy(synthetic_claim)],
+            expected_claims_sha256=SYNTHETIC_CLAIMS_SHA256,
         )
-    captured = capsys.readouterr()
-    assert "allowed claims-file SHA-256 drift" in captured.err
-    assert "claims drift field" in captured.err
-    assert measure_key in captured.err
-    assert "2026 Income tax source_model" in captured.err
-    assert {path: path.read_bytes() for path in original_outputs} == original_outputs
+    message = str(exc_info.value)
+    assert "descriptor:" in message
+    assert "conditions.tax_head" in message
+    assert "2 matches" in message
 
 
 def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeypatch):
@@ -1554,6 +1597,48 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
         artifact_root=tmp_path,
     )
     assert second_summary == summary
+    assert {path: path.read_bytes() for path in output_paths} == first_outputs
+
+    null_measure = next(
+        measure
+        for measure in measures
+        if measure["measure_key"]
+        == "autumn_budget_2024__hmrc_5000_compliance_staff"
+    )
+    null_claim = next(
+        claim
+        for claim in compute._source_candidates(claims, null_measure, 2026)
+        if claim["conditions"].get("tax_head") == "Income tax"
+    )
+    assert null_measure["pe_reform"] is None
+    assert null_measure["measure_key"] in not_computed_keys
+    assert null_claim["value"] == pytest.approx(138_872_923.1165392)
+    raw_lines = claims_path.read_text().splitlines()
+    for index, raw_line in enumerate(raw_lines):
+        claim = json.loads(raw_line)
+        if claim == null_claim:
+            claim["value"] += 123_456_789
+            raw_lines[index] = json.dumps(claim)
+            break
+    else:
+        raise AssertionError("null-reform source claim was not found in the slice")
+    claims_path.write_text("\n".join(raw_lines) + "\n")
+    drifted_sha256 = compute.sha256_file(claims_path)
+    monkeypatch.setattr(compute, "stage_not_computed_rows", forbidden)
+
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="claims SHA-256 differs from RUN_MANIFEST",
+    ) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=manifest_path,
+            output_dir=output_dir,
+            artifact_root=tmp_path,
+        )
+    message = str(exc_info.value)
+    assert f"expected {claims_sha256}" in message
+    assert f"actual {drifted_sha256}" in message
+    assert "new run" in message
     assert {path: path.read_bytes() for path in output_paths} == first_outputs
 
 

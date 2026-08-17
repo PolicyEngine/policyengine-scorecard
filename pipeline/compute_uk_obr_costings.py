@@ -127,6 +127,12 @@ def load_claims_with_sha256(
     """Parse and hash the same claims bytes."""
 
     payload = path.read_bytes()
+    return parse_claims_payload(payload, path), hashlib.sha256(payload).hexdigest()
+
+
+def parse_claims_payload(payload: bytes, path: Path) -> list[dict[str, Any]]:
+    """Parse already-read claims bytes without reopening the input."""
+
     rows: list[dict[str, Any]] = []
     for line_number, line in enumerate(payload.decode().splitlines(), 1):
         if not line.strip():
@@ -136,7 +142,7 @@ def load_claims_with_sha256(
         except json.JSONDecodeError as exc:
             raise ValueError(f"{path}:{line_number}: {exc}") from exc
         rows.append(row)
-    return rows, hashlib.sha256(payload).hexdigest()
+    return rows
 
 
 def claim_metric(claim: dict[str, Any]) -> str | None:
@@ -226,6 +232,62 @@ def external_claim_match(claim: dict[str, Any]) -> dict[str, Any]:
         "reform_hint": claim["reform_hint"],
         "conditions": claim["conditions"],
     }
+
+
+def frozen_claim_descriptor(snapshot: dict[str, Any]) -> dict[str, Any]:
+    """Return the six-key identity persisted in a frozen claim snapshot."""
+
+    return {
+        "source": snapshot.get("source"),
+        "metric": snapshot.get("metric"),
+        "period": snapshot.get("period"),
+        "source_table": snapshot.get("source_table"),
+        "reform_hint": snapshot.get("reform_hint"),
+        "conditions": snapshot.get("conditions"),
+    }
+
+
+def _named_descriptor_fields(value: Any, field: str = "") -> list[str]:
+    if isinstance(value, dict):
+        fields: list[str] = []
+        for key in sorted(value):
+            nested_field = f"{field}.{key}" if field else key
+            fields.extend(_named_descriptor_fields(value[key], nested_field))
+        return fields
+    return [f"{field}={value!r}"]
+
+
+def resolve_frozen_claim(
+    claims: Iterable[dict[str, Any]], snapshot: dict[str, Any]
+) -> dict[str, Any]:
+    """Locate a current row only by an artifact's frozen descriptor."""
+
+    descriptor = frozen_claim_descriptor(snapshot)
+    hits = [
+        claim
+        for claim in claims
+        if {
+            "source": claim.get("source"),
+            "metric": claim_metric(claim),
+            "period": claim.get("period"),
+            "source_table": claim.get("source_table"),
+            "reform_hint": claim.get("reform_hint"),
+            "conditions": claim.get("conditions"),
+        }
+        == descriptor
+    ]
+    descriptor_text = ", ".join(_named_descriptor_fields(descriptor))
+    if not hits:
+        raise ArtifactRestageError(
+            "frozen claim not found in current claims; "
+            f"descriptor: {descriptor_text}"
+        )
+    if len(hits) > 1:
+        raise ArtifactRestageError(
+            f"frozen claim ambiguous in current claims ({len(hits)} matches); "
+            f"descriptor: {descriptor_text}"
+        )
+    return hits[0]
 
 
 def claim_source_facts(claim: dict[str, Any]) -> dict[str, str]:
@@ -1212,17 +1274,13 @@ def rederive_artifact_orientation(
         result[delta_field] = literal_delta
         result["pe_value"] = pe_value
         if claims is not None:
-            matched_claim = resolve_claim(claims, measure, head, year)
-            if matched_claim is None:
-                raise ArtifactRestageError(
-                    f"{path}: mapped head has no harvest row for {year}"
-                )
-            refreshed_snapshot = source_claim_snapshot(matched_claim)
             recorded_snapshot = result.get("external_claim")
             if not isinstance(recorded_snapshot, dict):
                 raise ArtifactRestageError(
                     f"{path}: {head['obr_head']} has no frozen source claim"
                 )
+            matched_claim = resolve_frozen_claim(claims, recorded_snapshot)
+            refreshed_snapshot = source_claim_snapshot(matched_claim)
             differences = [
                 {
                     "artifact_path": str(path),
@@ -1241,6 +1299,13 @@ def rederive_artifact_orientation(
                         f"{path}: frozen/claims fields differ: {differences}"
                     )
                 claim_differences.extend(differences)
+            else:
+                registry_claim = resolve_claim(claims, measure, head, year)
+                if registry_claim is not matched_claim:
+                    raise ArtifactRestageError(
+                        f"{path}: {head['obr_head']} frozen claim descriptor "
+                        "does not identify the registry-mapped current claim"
+                    )
     artifact["notes"] = measure["notes"]
     return artifact
 
@@ -1548,7 +1613,6 @@ def restage_existing_run(
     manifest_path: Path,
     output_dir: Path,
     artifact_root: Path = ROOT,
-    allow_claims_drift: bool = False,
 ) -> dict[str, Any]:
     """Restage a manifest inventory using artifacts only; construct no sim."""
 
@@ -1621,17 +1685,17 @@ def restage_existing_run(
         raise ArtifactRestageError(
             f"{manifest_path}: claims_sha256 must be a lowercase SHA-256"
         )
-    spec = load_registry(registry_path)
-    claims, current_claims_sha256 = load_claims_with_sha256(claims_path)
-    claims_sha_drift = current_claims_sha256 != recorded_claims_sha256
-    if claims_sha_drift and allow_claims_drift:
-        print(
-            "allowed claims-file SHA-256 drift: "
-            f"recorded {recorded_claims_sha256}; "
-            f"current {current_claims_sha256}",
-            file=sys.stderr,
-            flush=True,
+    claims_payload = claims_path.read_bytes()
+    current_claims_sha256 = hashlib.sha256(claims_payload).hexdigest()
+    if current_claims_sha256 != recorded_claims_sha256:
+        raise ArtifactRestageError(
+            f"{claims_path}: claims SHA-256 differs from RUN_MANIFEST; "
+            f"expected {recorded_claims_sha256}; "
+            f"actual {current_claims_sha256}; changed external input requires "
+            "a new run, so re-run the compute pipeline instead of restaging"
         )
+    claims = parse_claims_payload(claims_payload, claims_path)
+    spec = load_registry(registry_path)
     validate_registry(spec, claims=claims)
     registry = {measure["measure_key"]: measure for measure in spec["measures"]}
 
@@ -1787,15 +1851,7 @@ def restage_existing_run(
                 f"claims={difference['claims']!r}"
             )
             details.append(detail)
-            if claims_sha_drift and allow_claims_drift:
-                print(f"claims drift field: {detail}", file=sys.stderr, flush=True)
         raise ArtifactRestageError("frozen/claims fields differ: " + "; ".join(details))
-    if claims_sha_drift and not allow_claims_drift:
-        raise ArtifactRestageError(
-            f"{claims_path}: claims SHA-256 differs from RUN_MANIFEST; "
-            f"recorded {recorded_claims_sha256}; "
-            f"current {current_claims_sha256}"
-        )
     if regular_artifact_pairs != expected_regular_pairs:
         raise ArtifactRestageError(
             f"{manifest_path}: regular artifact inventory differs from selected "
@@ -1866,14 +1922,6 @@ def main(argv: list[str] | None = None) -> int:
         help="Rebuild artifacts, staging, and comparison from the run manifest",
     )
     parser.add_argument(
-        "--allow-claims-drift",
-        action="store_true",
-        help=(
-            "Permit claims-file byte drift during restage only when every "
-            "frozen referenced fact is unchanged"
-        ),
-    )
-    parser.add_argument(
         "--manifest",
         type=Path,
         help="Existing run manifest (default: OUTPUT_DIR/RUN_MANIFEST.json)",
@@ -1915,7 +1963,6 @@ def main(argv: list[str] | None = None) -> int:
             manifest_path=manifest_path,
             output_dir=args.output_dir,
             artifact_root=args.artifact_root,
-            allow_claims_drift=args.allow_claims_drift,
         )
         print(
             f"restaged {summary['artifacts']} existing artifacts "
@@ -1926,9 +1973,6 @@ def main(argv: list[str] | None = None) -> int:
             flush=True,
         )
         return 0
-
-    if args.allow_claims_drift:
-        parser.error("--allow-claims-drift requires --restage")
 
     configure_offline()
     spec = load_registry(args.registry)
