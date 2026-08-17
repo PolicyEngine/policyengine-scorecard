@@ -58,6 +58,7 @@ DIVIDEND_LAG_NOTE = (
     "for these years"
 )
 SYNTHETIC_DATASET_SHA256 = "a" * 64
+SYNTHETIC_CLAIMS_SHA256 = "b" * 64
 
 
 @pytest.fixture()
@@ -116,6 +117,13 @@ def synthetic_claim(synthetic_measure):
         "normalization": "synthetic GBP fixture",
         "proposed_unit": "gbp",
         "time_basis": "fy",
+        "publication": {
+            "publisher": "Synthetic OBR publisher",
+            "title": "Synthetic costing publication",
+        },
+        "source_column": "2026-27",
+        "status": "ok",
+        "calibration_relationship": "held_out",
     }
 
 
@@ -343,6 +351,7 @@ def test_dividend_lag_override_is_effective_only_for_affected_artifact_years(
             computed_at="2026-08-16T12:00:00+00:00",
             run_id="campaign-20260816-obr-costings",
             claims=claims,
+            claims_sha256=compute.sha256_file(VENDORED_CLAIMS),
         )
 
     assert artifacts[2024]["computability"] == "partial"
@@ -565,6 +574,7 @@ def test_new_artifact_records_hashes_for_baseline_and_reform(
         computed_at="2026-08-17T12:00:00+00:00",
         run_id="campaign-20260817-obr-costings",
         claims=None,
+        claims_sha256=SYNTHETIC_CLAIMS_SHA256,
     )
 
     assert artifact["dataset_sha256_before"] == {
@@ -594,6 +604,7 @@ def test_only_allowlisted_legacy_artifacts_may_omit_dataset_hash_fields(
         computed_at="2026-08-16T12:00:00+00:00",
         run_id=run_id,
         claims=None,
+        claims_sha256=SYNTHETIC_CLAIMS_SHA256,
     )
     artifact.pop("dataset_sha256_before")
     artifact.pop("dataset_sha256_after")
@@ -629,6 +640,7 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
         computed_at="2026-08-16T12:00:00+00:00",
         run_id="campaign-20260816-obr-costings",
         claims=[synthetic_claim],
+        claims_sha256=SYNTHETIC_CLAIMS_SHA256,
     )
     compute.write_json(output_path, artifact)
     rows = compute.stage_artifact_rows(artifact, synthetic_measure)
@@ -679,6 +691,7 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
 
     saved = json.loads(output_path.read_text())
     assert saved["data_bundle"] == bundle["certified_data_build_id"]
+    assert saved["claims_sha256"] == SYNTHETIC_CLAIMS_SHA256
     expected_bundle = {
         **bundle,
         "certified_data_artifact_sha256": SYNTHETIC_DATASET_SHA256,
@@ -700,6 +713,25 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
         saved["heads"][0]["external_claim"]["source_model"]
         == synthetic_claim["source_model"]
     )
+    assert set(saved["heads"][0]["external_claim"]) == {
+        "source",
+        "source_table",
+        "reform_hint",
+        "source_model",
+        "metric",
+        "source_metric_field",
+        "period",
+        "conditions",
+        "value_gbp",
+        "value_raw",
+        "normalization",
+        "unit",
+        "time_basis",
+        "publication",
+        "source_column",
+        "status",
+        "calibration_relationship",
+    }
     assert saved["heads"][0]["raw_reform_minus_baseline_gbp"] == 25.0
     assert saved["heads"][0]["reversal_delta_exchequer_gain"] == 25.0
     assert saved["heads"][0]["pe_value"] == -25.0
@@ -711,6 +743,10 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
 
     assert len(rows) == manifest["staged_rows"] == 20
     assert manifest["run_id"] == "campaign-20260816-obr-costings"
+    assert manifest["claims"] == (
+        "sources/harvest-20260802/uk_obr/obr_costings_claims.jsonl"
+    )
+    assert manifest["claims_sha256"] == compute.sha256_file(VENDORED_CLAIMS)
     assert len(manifest["artifacts"]) == 13
     assert manifest["legacy_artifacts_without_dataset_hashes"] == manifest[
         "artifacts"
@@ -743,6 +779,7 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
         )
 
         assert artifact["artifact"] == row["artifact"]
+        assert artifact["claims_sha256"] == manifest["claims_sha256"]
         assert artifact["data_bundle"] == row["data_bundle"]
         assert artifact["engine_version"] == row["engine_version"]
         assert artifact["run_id"] == row["run_id"]
@@ -809,6 +846,7 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
         allow_missing=True,
     )
     assert diagnostic["diagnostic_only"] is True
+    assert diagnostic["claims_sha256"] == manifest["claims_sha256"]
     diagnostic_head = diagnostic["heads"][0]
     assert (
         diagnostic_head["forward_delta_exchequer_gain"] == (diagnostic_head["pe_value"])
@@ -1020,6 +1058,7 @@ def test_bundle_mismatches_abort_before_artifact_staging(tmp_path, synthetic_mea
             computed_at="2026-08-16T12:00:00+00:00",
             run_id="campaign-20260816-obr-costings",
             claims=None,
+            claims_sha256=SYNTHETIC_CLAIMS_SHA256,
         )
     assert not (tmp_path / "must-not-exist.json").exists()
 
@@ -1130,7 +1169,7 @@ def test_default_dry_run_uses_complete_vendored_slice(tmp_path):
 
 
 def test_restage_rederives_existing_artifacts_without_any_simulation(
-    tmp_path, monkeypatch, synthetic_measure, synthetic_claim
+    tmp_path, monkeypatch, capsys, synthetic_measure, synthetic_claim
 ):
     registry_path = tmp_path / "registry.yaml"
     claims_path = tmp_path / "claims.jsonl"
@@ -1149,6 +1188,7 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         )
     )
     claims_path.write_text(json.dumps(synthetic_claim, allow_nan=False) + "\n")
+    claims_sha256 = compute.sha256_file(claims_path)
     bundle = {"certified_data_build_id": "synthetic-certified-build"}
     artifact = compute.build_artifact(
         measure=synthetic_measure,
@@ -1159,6 +1199,7 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         computed_at="2026-08-16T12:00:00+00:00",
         run_id="campaign-20260816-obr-costings",
         claims=[synthetic_claim],
+        claims_sha256=claims_sha256,
     )
     artifact["diagnostic_only"] = False
     artifact.pop("dataset_sha256_before")
@@ -1170,7 +1211,8 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         "schema_version": 1,
         "run_id": artifact["run_id"],
         "registry": str(registry_path),
-        "claims": str(claims_path),
+        "claims": "claims.jsonl",
+        "claims_sha256": claims_sha256,
         "artifacts": [str(artifact_path)],
         "legacy_artifacts_without_dataset_hashes": [str(artifact_path)],
         "selected_measures": [synthetic_measure["measure_key"]],
@@ -1235,6 +1277,25 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
     assert compute.main(arguments) == 0
     assert {path: path.read_bytes() for path in first_outputs} == first_outputs
 
+    claims_path.write_text(claims_path.read_text() + "\n")
+    drifted_sha256 = compute.sha256_file(claims_path)
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="claims SHA-256 differs from RUN_MANIFEST",
+    ) as exc_info:
+        compute.main(arguments)
+    assert claims_sha256 in str(exc_info.value)
+    assert drifted_sha256 in str(exc_info.value)
+    assert {path: path.read_bytes() for path in first_outputs} == first_outputs
+
+    assert compute.main(arguments + ["--allow-claims-drift"]) == 0
+    captured = capsys.readouterr()
+    assert "allowed claims-file SHA-256 drift" in captured.err
+    assert claims_sha256 in captured.err
+    assert drifted_sha256 in captured.err
+    assert "claims drift field" not in captured.err
+    assert {path: path.read_bytes() for path in first_outputs} == first_outputs
+
     manifest["legacy_artifacts_without_dataset_hashes"] = []
     compute.write_json(manifest_path, manifest)
     with pytest.raises(
@@ -1242,6 +1303,101 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         match="legacy_artifacts_without_dataset_hashes",
     ):
         compute.main(arguments)
+
+
+def test_restage_rejects_vendored_source_model_drift_without_writes(
+    tmp_path, capsys
+):
+    measure_key = "efo_march_2026__pa_and_hrt_freezes"
+    claims_path = tmp_path / "claims.jsonl"
+    claims_path.write_bytes(VENDORED_CLAIMS.read_bytes())
+    raw_lines = claims_path.read_text().splitlines()
+    changed = False
+    for index, raw_line in enumerate(raw_lines):
+        claim = json.loads(raw_line)
+        if claim.get("reform_hint") == "PA and HRT freezes" and (
+            claim.get("period") == 2026
+        ):
+            assert claim["source_model"] == "obr_efo_forecast"
+            claim["source_model"] = "silently_changed_model"
+            raw_lines[index] = json.dumps(claim, sort_keys=True)
+            changed = True
+            break
+    assert changed
+    claims_path.write_text("\n".join(raw_lines) + "\n")
+
+    source_artifact_path = (
+        ROOT
+        / "results"
+        / "uk"
+        / "obr_costings"
+        / f"{measure_key}_2026.json"
+    )
+    artifact_path = tmp_path / "artifact.json"
+    artifact = json.loads(source_artifact_path.read_text())
+    artifact["artifact"] = "artifact.json"
+    compute.write_json(artifact_path, artifact)
+
+    staged_path = tmp_path / "staged.jsonl"
+    staged_path.write_text("unchanged staged sentinel\n")
+    output_dir = tmp_path / "comparison"
+    output_dir.mkdir()
+    csv_path = output_dir / "COMPARISON.csv"
+    markdown_path = output_dir / "COMPARISON.md"
+    csv_path.write_text("unchanged csv sentinel\n")
+    markdown_path.write_text("unchanged markdown sentinel\n")
+    manifest_path = tmp_path / "RUN_MANIFEST.json"
+    manifest = {
+        "schema_version": 1,
+        "run_id": artifact["run_id"],
+        "registry": str(REGISTRY),
+        "claims": "claims.jsonl",
+        "claims_sha256": compute.sha256_file(VENDORED_CLAIMS),
+        "artifacts": ["artifact.json"],
+        "legacy_artifacts_without_dataset_hashes": ["artifact.json"],
+        "selected_measures": [measure_key],
+        "staged_output": "staged.jsonl",
+        "staged_rows": 1,
+    }
+    compute.write_json(manifest_path, manifest)
+    original_outputs = {
+        path: path.read_bytes()
+        for path in (
+            artifact_path,
+            staged_path,
+            csv_path,
+            markdown_path,
+            manifest_path,
+        )
+    }
+
+    with pytest.raises(compute.ArtifactRestageError) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=manifest_path,
+            output_dir=output_dir,
+            artifact_root=tmp_path,
+        )
+    message = str(exc_info.value)
+    assert measure_key in message
+    assert "2026 Income tax source_model" in message
+    assert "obr_efo_forecast" in message
+    assert "silently_changed_model" in message
+    assert {path: path.read_bytes() for path in original_outputs} == original_outputs
+
+    capsys.readouterr()
+    with pytest.raises(compute.ArtifactRestageError):
+        compute.restage_existing_run(
+            manifest_path=manifest_path,
+            output_dir=output_dir,
+            artifact_root=tmp_path,
+            allow_claims_drift=True,
+        )
+    captured = capsys.readouterr()
+    assert "allowed claims-file SHA-256 drift" in captured.err
+    assert "claims drift field" in captured.err
+    assert measure_key in captured.err
+    assert "2026 Income tax source_model" in captured.err
+    assert {path: path.read_bytes() for path in original_outputs} == original_outputs
 
 
 @pytest.mark.parametrize(
@@ -1277,6 +1433,7 @@ def test_comparison_resolves_measure_identity_and_traces_artifact(
         computed_at="2026-08-16T12:00:00+00:00",
         run_id="campaign-20260816-obr-costings",
         claims=[synthetic_claim],
+        claims_sha256=SYNTHETIC_CLAIMS_SHA256,
     )
     compute.write_json(artifact_path, artifact)
     staged = compute.stage_artifact_rows(artifact, synthetic_measure)[0]
@@ -1306,6 +1463,19 @@ def test_comparison_resolves_measure_identity_and_traces_artifact(
         and "remaining_difference=unexplained" in x
         for x in rows[0]["annotations"]
     )
+
+    source_model_drift = copy.deepcopy(artifact)
+    source_model_drift["heads"][0]["external_claim"]["source_model"] = (
+        "different_source_model"
+    )
+    compute.write_json(artifact_path, source_model_drift)
+    with pytest.raises(compare.ComparisonError, match="0 artifact heads"):
+        compare.build_comparison_rows(
+            [staged],
+            [synthetic_claim],
+            {synthetic_measure["measure_key"]: synthetic_measure},
+        )
+    compute.write_json(artifact_path, artifact)
 
     literal_staged = copy.deepcopy(staged)
     literal_staged["pe_value"] = 25.0

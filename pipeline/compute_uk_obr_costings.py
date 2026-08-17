@@ -16,6 +16,7 @@ different world.
 from __future__ import annotations
 
 import argparse
+import copy
 import gc
 import hashlib
 import json
@@ -120,8 +121,18 @@ def load_registry(path: Path = DEFAULT_REGISTRY) -> dict[str, Any]:
 
 
 def load_claims(path: Path = DEFAULT_CLAIMS) -> list[dict[str, Any]]:
+    rows, _ = load_claims_with_sha256(path)
+    return rows
+
+
+def load_claims_with_sha256(
+    path: Path = DEFAULT_CLAIMS,
+) -> tuple[list[dict[str, Any]], str]:
+    """Parse and hash the same claims bytes."""
+
+    payload = path.read_bytes()
     rows: list[dict[str, Any]] = []
-    for line_number, line in enumerate(path.read_text().splitlines(), 1):
+    for line_number, line in enumerate(payload.decode().splitlines(), 1):
         if not line.strip():
             continue
         try:
@@ -129,7 +140,7 @@ def load_claims(path: Path = DEFAULT_CLAIMS) -> list[dict[str, Any]]:
         except json.JSONDecodeError as exc:
             raise ValueError(f"{path}:{line_number}: {exc}") from exc
         rows.append(row)
-    return rows
+    return rows, hashlib.sha256(payload).hexdigest()
 
 
 def claim_metric(claim: dict[str, Any]) -> str | None:
@@ -247,7 +258,7 @@ def source_facts_annotation(claim: dict[str, Any]) -> str:
 
 
 def source_claim_snapshot(claim: dict[str, Any]) -> dict[str, Any]:
-    """Freeze the source identity and normalized value used by an artifact."""
+    """Freeze every harvested source fact used by an artifact."""
 
     metric_field = "metric" if claim.get("metric") is not None else "proposed_metric"
     return {
@@ -258,13 +269,53 @@ def source_claim_snapshot(claim: dict[str, Any]) -> dict[str, Any]:
         "metric": claim_metric(claim),
         "source_metric_field": metric_field,
         "period": claim["period"],
-        "conditions": claim["conditions"],
+        "conditions": copy.deepcopy(claim["conditions"]),
         "value_gbp": claim["value"],
         "value_raw": claim.get("value_raw"),
         "normalization": claim.get("normalization"),
         "unit": claim.get("proposed_unit"),
         "time_basis": claim.get("time_basis"),
+        "publication": copy.deepcopy(claim.get("publication")),
+        "source_column": claim.get("source_column"),
+        "status": claim.get("status"),
+        "calibration_relationship": claim.get("calibration_relationship"),
     }
+
+
+_MISSING = object()
+
+
+def frozen_claim_differences(
+    artifact_value: Any,
+    claims_value: Any,
+    *,
+    field: str = "",
+) -> list[dict[str, Any]]:
+    """Return every recursively differing frozen-claim field."""
+
+    if isinstance(artifact_value, dict) and isinstance(claims_value, dict):
+        differences: list[dict[str, Any]] = []
+        for key in sorted(set(artifact_value) | set(claims_value)):
+            nested_field = f"{field}.{key}" if field else key
+            differences.extend(
+                frozen_claim_differences(
+                    artifact_value.get(key, _MISSING),
+                    claims_value.get(key, _MISSING),
+                    field=nested_field,
+                )
+            )
+        return differences
+    if artifact_value == claims_value:
+        return []
+    return [
+        {
+            "field": field,
+            "artifact": (
+                "<missing>" if artifact_value is _MISSING else artifact_value
+            ),
+            "claims": "<missing>" if claims_value is _MISSING else claims_value,
+        }
+    ]
 
 
 def _validate_date_range(value: str, context: str) -> None:
@@ -1028,6 +1079,8 @@ def rederive_artifact_orientation(
     *,
     path: Path,
     claims: list[dict[str, Any]] | None = None,
+    expected_claims_sha256: str,
+    claim_differences: list[dict[str, Any]] | None = None,
     allow_missing_dataset_hashes: bool = False,
 ) -> dict[str, Any]:
     """Validate and rederive one artifact from its persisted raw aggregates."""
@@ -1064,6 +1117,12 @@ def rederive_artifact_orientation(
     if artifact.get("schema_version") != 1:
         raise ArtifactRestageError(
             f"{path}: unsupported artifact schema {artifact.get('schema_version')!r}"
+        )
+    if artifact.get("claims_sha256") != expected_claims_sha256:
+        raise ArtifactRestageError(
+            f"{path}: artifact claims_sha256 "
+            f"{artifact.get('claims_sha256')!r} differs from manifest "
+            f"{expected_claims_sha256}"
         )
     validate_artifact_dataset_hash_fields(
         artifact,
@@ -1174,28 +1233,24 @@ def rederive_artifact_orientation(
                 raise ArtifactRestageError(
                     f"{path}: {head['obr_head']} has no frozen source claim"
                 )
-            stable_fields = {
-                "source",
-                "source_table",
-                "reform_hint",
-                "metric",
-                "period",
-                "conditions",
-                "value_gbp",
-            }
-            differences = {
-                key: {
-                    "artifact": recorded_snapshot.get(key),
-                    "harvest": refreshed_snapshot.get(key),
+            differences = [
+                {
+                    "artifact_path": str(path),
+                    "measure_key": measure["measure_key"],
+                    "year": year,
+                    "obr_head": head["obr_head"],
+                    **difference,
                 }
-                for key in stable_fields
-                if recorded_snapshot.get(key) != refreshed_snapshot.get(key)
-            }
-            if differences:
-                raise ArtifactRestageError(
-                    f"{path}: frozen/harvest claim differs: {differences}"
+                for difference in frozen_claim_differences(
+                    recorded_snapshot, refreshed_snapshot
                 )
-            result["external_claim"] = refreshed_snapshot
+            ]
+            if differences:
+                if claim_differences is None:
+                    raise ArtifactRestageError(
+                        f"{path}: frozen/claims fields differ: {differences}"
+                    )
+                claim_differences.extend(differences)
     artifact["notes"] = measure["notes"]
     return artifact
 
@@ -1258,6 +1313,7 @@ def build_artifact(
     computed_at: str,
     run_id: str,
     claims: list[dict[str, Any]] | None,
+    claims_sha256: str,
 ) -> dict[str, Any]:
     baseline_bundle = baseline["policyengine_bundle"]
     reform_bundle = reform["policyengine_bundle"]
@@ -1335,6 +1391,7 @@ def build_artifact(
         "computability": year_computability,
         "benchmark_class": "different_model",
         "run_id": run_id,
+        "claims_sha256": claims_sha256,
         "raw_aggregates": {
             "baseline_gbp": baseline["aggregates_gbp"],
             "reform_gbp": reform["aggregates_gbp"],
@@ -1485,6 +1542,7 @@ def restage_existing_run(
     manifest_path: Path,
     output_dir: Path,
     artifact_root: Path = ROOT,
+    allow_claims_drift: bool = False,
 ) -> dict[str, Any]:
     """Restage a manifest inventory using artifacts only; construct no sim."""
 
@@ -1547,10 +1605,31 @@ def restage_existing_run(
         )
 
     registry_path = resolve_recorded_path(manifest.get("registry"), artifact_root)
-    claims_path = resolve_recorded_path(manifest.get("claims"), artifact_root)
+    claims_reference = manifest.get("claims")
+    if not isinstance(claims_reference, str) or Path(claims_reference).is_absolute():
+        raise ArtifactRestageError(
+            f"{manifest_path}: claims must be a repo-relative path"
+        )
+    claims_path = resolve_recorded_path(claims_reference, artifact_root)
     staged_path = resolve_recorded_path(manifest.get("staged_output"), artifact_root)
+    recorded_claims_sha256 = manifest.get("claims_sha256")
+    if not isinstance(recorded_claims_sha256, str) or re.fullmatch(
+        r"[0-9a-f]{64}", recorded_claims_sha256
+    ) is None:
+        raise ArtifactRestageError(
+            f"{manifest_path}: claims_sha256 must be a lowercase SHA-256"
+        )
     spec = load_registry(registry_path)
-    claims = load_claims(claims_path)
+    claims, current_claims_sha256 = load_claims_with_sha256(claims_path)
+    claims_sha_drift = current_claims_sha256 != recorded_claims_sha256
+    if claims_sha_drift and allow_claims_drift:
+        print(
+            "allowed claims-file SHA-256 drift: "
+            f"recorded {recorded_claims_sha256}; "
+            f"current {current_claims_sha256}",
+            file=sys.stderr,
+            flush=True,
+        )
     validate_registry(spec, claims=claims)
     registry = {measure["measure_key"]: measure for measure in spec["measures"]}
 
@@ -1558,6 +1637,7 @@ def restage_existing_run(
     staged_rows: list[dict[str, Any]] = []
     regular_measure_keys: set[str] = set()
     diagnostic_artifacts = 0
+    claim_differences: list[dict[str, Any]] = []
     for reference in references:
         path = resolve_recorded_path(reference, artifact_root)
         artifact = load_json_object(path, "run artifact")
@@ -1594,6 +1674,8 @@ def restage_existing_run(
             measure,
             path=path,
             claims=None if diagnostic_only else claims,
+            expected_claims_sha256=recorded_claims_sha256,
+            claim_differences=claim_differences,
             allow_missing_dataset_hashes=(
                 path.resolve() in resolved_legacy_paths
             ),
@@ -1601,6 +1683,28 @@ def restage_existing_run(
         replacements.append((path, refreshed))
         if not diagnostic_only:
             staged_rows.extend(stage_artifact_rows(refreshed, measure))
+
+    if claim_differences:
+        details = []
+        for difference in claim_differences:
+            detail = (
+                f"{difference['measure_key']} {difference['year']} "
+                f"{difference['obr_head']} {difference['field']}: "
+                f"artifact={difference['artifact']!r}, "
+                f"claims={difference['claims']!r}"
+            )
+            details.append(detail)
+            if claims_sha_drift and allow_claims_drift:
+                print(f"claims drift field: {detail}", file=sys.stderr, flush=True)
+        raise ArtifactRestageError(
+            "frozen/claims fields differ: " + "; ".join(details)
+        )
+    if claims_sha_drift and not allow_claims_drift:
+        raise ArtifactRestageError(
+            f"{claims_path}: claims SHA-256 differs from RUN_MANIFEST; "
+            f"recorded {recorded_claims_sha256}; "
+            f"current {current_claims_sha256}"
+        )
 
     selected = manifest.get("selected_measures")
     if (
@@ -1664,6 +1768,14 @@ def main(argv: list[str] | None = None) -> int:
         help="Rebuild artifacts, staging, and comparison from the run manifest",
     )
     parser.add_argument(
+        "--allow-claims-drift",
+        action="store_true",
+        help=(
+            "Permit claims-file byte drift during restage only when every "
+            "frozen referenced fact is unchanged"
+        ),
+    )
+    parser.add_argument(
         "--manifest",
         type=Path,
         help="Existing run manifest (default: OUTPUT_DIR/RUN_MANIFEST.json)",
@@ -1705,6 +1817,7 @@ def main(argv: list[str] | None = None) -> int:
             manifest_path=manifest_path,
             output_dir=args.output_dir,
             artifact_root=args.artifact_root,
+            allow_claims_drift=args.allow_claims_drift,
         )
         print(
             f"restaged {summary['artifacts']} existing artifacts "
@@ -1716,9 +1829,12 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 0
 
+    if args.allow_claims_drift:
+        parser.error("--allow-claims-drift requires --restage")
+
     configure_offline()
     spec = load_registry(args.registry)
-    claims = load_claims(args.claims)
+    claims, claims_sha256 = load_claims_with_sha256(args.claims)
     try:
         from policyengine_uk import CountryTaxBenefitSystem
     except ImportError as exc:
@@ -1752,6 +1868,12 @@ def main(argv: list[str] | None = None) -> int:
         print("dry-run complete: no managed microsimulation constructed", flush=True)
         return 0
 
+    claims_reference = relative_to_root(args.claims)
+    if Path(claims_reference).is_absolute():
+        raise RegistryError(
+            "--claims must be inside the repository for a replayable manifest"
+        )
+
     cache_preflight = preflight_certified_dataset()
     release_bundle = cache_preflight["release_bundle"]
     runtime_dataset_source = Path(cache_preflight["runtime_dataset_source"])
@@ -1768,7 +1890,8 @@ def main(argv: list[str] | None = None) -> int:
         "run_id": args.run_id,
         "started_at": utc_now(),
         "registry": relative_to_root(args.registry),
-        "claims": str(args.claims.resolve()),
+        "claims": claims_reference,
+        "claims_sha256": claims_sha256,
         "years": years,
         "selected_measures": [m["measure_key"] for m in selected],
         "pa_smoke_probe": args.pa_smoke_probe,
@@ -1886,6 +2009,7 @@ def main(argv: list[str] | None = None) -> int:
                 computed_at=computed_at,
                 run_id=args.run_id,
                 claims=None if measure is PA_SMOKE_MEASURE else claims,
+                claims_sha256=claims_sha256,
             )
             artifact["diagnostic_only"] = measure is PA_SMOKE_MEASURE
             write_json(out_path, artifact)

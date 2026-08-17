@@ -33,11 +33,19 @@ be constructed during this follow-up.
   no exception (`pipeline/compute_uk_obr_costings.py:803`,
   `results/uk/obr_costings/RUN_MANIFEST.json:17`,
   `tests/test_obr_costings_registry.py:555`).
-- Completed the source-input portion of round-2 finding 3: the default claims
-  input is the repo-vendored, byte-identical 621-row operational slice covering
-  every registry measure and source period; default all-26 `--dry-run` passes
-  without outputs (`pipeline/compute_uk_obr_costings.py:38`,
-  `tests/test_obr_costings_registry.py:853`).
+- Fixed round-2 finding 3: the default claims input is the repo-vendored,
+  byte-identical 621-row operational slice covering every registry measure and
+  source period; default all-26 `--dry-run` passes, and the manifest records
+  only its repo-relative path and SHA-256
+  (`pipeline/compute_uk_obr_costings.py:38`,
+  `results/uk/obr_costings/RUN_MANIFEST.json:103`).
+- Fixed round-2 finding 2: every artifact now carries the claims SHA and a
+  complete 17-field frozen source snapshot; restage recursively rejects every
+  differing dotted field without replacement, and the drift escape hatch logs
+  byte hashes and all fact differences before any write
+  (`pipeline/compute_uk_obr_costings.py:260`,
+  `pipeline/compare_uk_obr_costings.py:212`,
+  `tests/test_obr_costings_registry.py:1308`).
 - Fixed round-2 finding 5: dividend-lag overrides now apply only to threshold
   paths whose schedules overlap the installed 2024–2025 lag, leaving the two
   genuinely affected measures (`data/uk/obr_measure_reforms.yaml:585`,
