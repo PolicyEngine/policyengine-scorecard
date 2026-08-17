@@ -4,17 +4,34 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 8 is in progress on branch `obr-costings-mode2` from
-`8a5d4d0ce84fc49f0404042da3bee2a135afd046`. Round 7 found that the staged
-JSONL remains the final unsigned replay input, restage has a narrow
-post-verification window before manifest restoration, and two compute-side
-helpers plus generic writer parameterization are dead. The staged payload will
-join the canonical in-memory publication boundary, and standalone rendering
-will both SHA-gate it and rederive its descriptive fields from verified
-artifacts and claims.
+Follow-up 8 is complete on branch `obr-costings-mode2` from
+`8a5d4d0ce84fc49f0404042da3bee2a135afd046`. Normal compute and restage now
+retain canonical staged bytes, hash and atomically publish those exact bytes,
+and verify them before publishing the manifest. Standalone rendering completes
+the registry, claims, staged, and full artifact SHA gates before parsing, then
+rederives all output-driving staged descriptions from verified objects. The
+final restage artifact sweep immediately precedes manifest restoration. Every
+input and output in the replay chain is SHA-bound; staged descriptive fields
+are rederived from verified objects.
 
 ## Done
 
+- Final acceptance passed offline with the specified interpreter. The exact
+  default dry run validated 26 measures and 215 source head-years across
+  2024–2030 and reported zero managed simulations.
+- Direct `--restage` reconstructed 13 artifacts including one diagnostic, 20
+  staged rows, and 26 comparison rows with zero managed simulations. All 17
+  published files retained an identical inventory and byte content. Relative
+  to `8a5d4d0`, every artifact, staged JSONL, CSV, and Markdown byte is
+  unchanged; the manifest changes only by `staged_sha256`.
+- Final hashes are manifest `f13ab9a3`, staged `45faa64a`, CSV `3f8fe4c1`, and
+  Markdown `8c291b6b`. The focused OBR suite passes all 145 tests and the full
+  repository suite passes all 312 tests; the sole warning is the known
+  upstream PolicyEngine-UK Pydantic deprecation.
+- Python compilation, the hand-enforced 88-column check for all changed Python
+  files, and `git diff --check` pass. Ruff was not run as instructed. Two
+  independent final audits found no remaining in-scope publication or renderer
+  bypass after the artifactless-row association fix.
 - Closed the final restage publication window: after comparison and final
   registry/claims checks, restage re-verifies the staged payload and repeats
   the complete artifact-digest sweep, with the artifact sweep immediately
@@ -473,8 +490,8 @@ artifacts and claims.
 
 ## Next
 
-- Run the exact 26-measure dry-run, byte-identical no-simulation restage,
-  focused tests, and full suite; record counts and final hashes here.
+- No in-scope implementation or verification remains. Hand off the committed
+  branch and external Follow-up 8 report for review; do not push from this lane.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
