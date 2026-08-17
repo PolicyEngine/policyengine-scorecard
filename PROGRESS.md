@@ -4,15 +4,15 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 9 is in progress on branch `obr-costings-mode2` from
-`4f6a1532e915d382f6e92f1451f819331ecd2694`. The round-8 review confirmed the
-registry, claims, staged payload, and artifact boundaries, but found that
-renderer completeness was still self-referential and that comparison outputs
-were not SHA-bound. The earlier statement that every replay-chain output was
-SHA-bound was therefore an overclaim. This follow-up will bind the exact
-rendered row inventory to the manifest's verified selection and years, then
-hash and verify canonical comparison bytes before success or manifest
-publication/restoration.
+Follow-up 9 is complete on branch `obr-costings-mode2` from
+`4f6a1532e915d382f6e92f1451f819331ecd2694`. Standalone and in-run comparison
+now derive the exact expected source, artifact-head, diagnostic, and mapped-total
+inventory from the manifest's selected measures, years, verified claims, and
+verified frozen registry before requiring a named row bijection. The registry,
+claims, artifacts, staged JSONL, comparison CSV, and comparison Markdown are
+all digest-bound at their publication/replay boundaries; both comparison files
+are verified after writing and again before normal manifest publication or
+restage restoration.
 
 ## Done
 
@@ -51,8 +51,7 @@ publication/restoration.
   replay adds the two absent digests while preserving parsed manifest key order;
   later replays require both intended bytes to match the recorded commitment.
   Targeted normal, restage, full-selection, mutation, and mode-preservation
-  cases pass; the committed fixture still awaits the requested real restage
-  migration.
+  cases pass; the committed fixture migration is recorded below.
 - The exact default Follow-up 9 `--dry-run` passes offline with the specified
   interpreter: 26 selected measures, 215 verified source head-years across
   2024–2030, and no managed microsimulation constructed.
@@ -63,6 +62,18 @@ publication/restoration.
 - All 13 artifact SHA-256 values remained unchanged. Staged JSONL remained
   `45faa64a`; comparison CSV remained `3f8fe4c1`; comparison Markdown remained
   `8c291b6b`. The migrated manifest is `003ea676`.
+- A second exact production `--restage` is byte-idempotent at manifest
+  `003ea676`, staged `45faa64a`, CSV `3f8fe4c1`, and Markdown `8c291b6b`, again
+  reporting zero managed simulations and leaving the worktree clean.
+- Final verification passes all 153 focused OBR tests and all 320 repository
+  tests. The sole warning is the known upstream PolicyEngine-UK Pydantic
+  deprecation. Python compilation, the hand-enforced 88-column check for every
+  changed Python file, range `git diff --check`, digest/file equality, and the
+  clean-worktree check pass; Ruff was not run as instructed.
+- Two implementation/test audits found no signing, ordering, completeness, or
+  production-probe blocker. Their only optional coverage nits were symmetric
+  Markdown writer mutation and explicit swapped-digest cases; the shared
+  field-to-file loop covers both files.
 
 ### Superseded checkpoint history
 
@@ -549,8 +560,9 @@ boundary claims.
 
 ## Next
 
-- Run the focused and full suites plus final hygiene checks without Ruff, then
-  complete the progress record and external report.
+- No in-scope implementation or verification remains. Write the designated
+  external Follow-up 9 report, hand off the committed branch, and do not push
+  from this lane.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
