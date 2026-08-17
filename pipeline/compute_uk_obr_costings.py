@@ -73,9 +73,7 @@ NI_HEAD_VARIABLES = [
     "ni_class_4",
 ]
 RUN_ID_DATE = datetime.now().astimezone().strftime("%Y%m%d")
-LEGACY_CLAIM_ORDINAL_DERIVATION = (
-    "six_key_descriptor_after_claims_sha256_verification"
-)
+LEGACY_CLAIM_ORDINAL_DERIVATION = "six_key_descriptor_after_claims_sha256_verification"
 
 
 class RegistryError(ValueError):
@@ -2236,9 +2234,7 @@ def restage_existing_run(
     spec = parse_registry_payload(registry_payload, registry_path)
     claims = parse_claims_payload(claims_payload, claims_path)
     validate_registry(spec, claims=claims)
-    live_registry = {
-        measure["measure_key"]: measure for measure in spec["measures"]
-    }
+    live_registry = {measure["measure_key"]: measure for measure in spec["measures"]}
 
     selected = manifest.get("selected_measures")
     if (

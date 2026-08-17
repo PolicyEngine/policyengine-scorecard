@@ -1830,9 +1830,7 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         "claims_sha256": claims_sha256,
         "artifacts": [artifact_reference],
         "legacy_artifacts_without_dataset_hashes": [artifact_reference],
-        "legacy_claim_ordinal_derivation": (
-            compute.LEGACY_CLAIM_ORDINAL_DERIVATION
-        ),
+        "legacy_claim_ordinal_derivation": (compute.LEGACY_CLAIM_ORDINAL_DERIVATION),
         "legacy_claim_ordinals": {artifact_reference: {"0": 0}},
         "artifactless_frozen_registry": {},
         "selected_measures": [synthetic_measure["measure_key"]],
@@ -1968,9 +1966,7 @@ def test_restage_rejects_registry_drift_at_sha_gate_before_parse_or_output(
         synthetic_measure,
         synthetic_claim,
     )
-    original_outputs = {
-        path: path.read_bytes() for path in replay["output_paths"]
-    }
+    original_outputs = {path: path.read_bytes() for path in replay["output_paths"]}
     registry = yaml.safe_load(replay["registry_path"].read_text())
     measure = registry["measures"][0]
     if registry_mutation == "notes":
@@ -2014,9 +2010,7 @@ def test_restage_rechecks_registry_sha_immediately_before_writes(
         synthetic_measure,
         synthetic_claim,
     )
-    original_outputs = {
-        path: path.read_bytes() for path in replay["output_paths"]
-    }
+    original_outputs = {path: path.read_bytes() for path in replay["output_paths"]}
     original_rederive = compute.rederive_artifact_orientation
     mutated = False
 
@@ -2079,9 +2073,7 @@ def test_nonlegacy_artifact_must_carry_frozen_registry_replay_fields(
     artifact = json.loads(replay["artifact_path"].read_text())
     artifact.pop(missing_field)
     compute.write_json(replay["artifact_path"], artifact)
-    original_outputs = {
-        path: path.read_bytes() for path in replay["output_paths"]
-    }
+    original_outputs = {path: path.read_bytes() for path in replay["output_paths"]}
 
     with pytest.raises(
         compute.ArtifactRestageError,
@@ -2201,8 +2193,7 @@ def test_rederive_rejects_every_frozen_claim_field_drift(
     message = str(exc_info.value)
     assert "frozen/claims fields differ" in message
     assert (
-        f"field={reported_field} frozen={frozen_value!r} "
-        f"current={current_value!r}"
+        f"field={reported_field} frozen={frozen_value!r} current={current_value!r}"
     ) in message
 
 
@@ -2320,8 +2311,7 @@ def test_wrong_in_range_claim_ordinal_reports_descriptor_values(
             expected_registry_sha256=SYNTHETIC_REGISTRY_SHA256,
         )
     assert (
-        "field=conditions.tax_head frozen='Income tax' "
-        "current='Corporation tax'"
+        "field=conditions.tax_head frozen='Income tax' current='Corporation tax'"
     ) in str(exc_info.value)
 
 
@@ -2444,9 +2434,9 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
     def verify_artifactless_frozen_measure(*args, **kwargs):
         measure = kwargs["measure"]
         assert id(measure) not in live_measure_ids
-        assert measure == manifest["artifactless_frozen_registry"][
-            measure["measure_key"]
-        ]
+        assert (
+            measure == manifest["artifactless_frozen_registry"][measure["measure_key"]]
+        )
         frozen_artifactless_keys.add(measure["measure_key"])
         return original_stage_not_computed_rows(*args, **kwargs)
 
