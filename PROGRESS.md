@@ -7,8 +7,8 @@ Updated: 2026-08-16
 In progress. The 20-measure registry and the offline compute/staging pipeline
 are built. Registry paths, aggregate variables, and harvested row identities
 validate without constructing a managed simulation. The comparison renderer,
-comparison renderer and bounded smoke run remain; the focused offline test
-module is in place.
+bounded smoke run remains; the descriptive comparison renderer and focused
+offline test module are in place.
 
 ## Done
 
@@ -53,16 +53,23 @@ module is in place.
   wrote no output. A separate local-only cache preflight verified SHA-256
   `f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833`
   in 0.524 seconds.
-- Added 12 focused tests for registry schema/counts, installed-engine path and
+- Added focused tests for registry schema/counts, installed-engine path and
   variable resolution, the exact NICs aggregate, tax/spending signs, forced
   offline mode, exact source conditions and artifact provenance, ambiguous
   source resolution, finite JSON, null-reform selection, bundle identity, and
-  an output-free offline CLI dry run. All 12 pass in the certified venv; the
-  only warning is an upstream Pydantic deprecation from policyengine-uk.
+  an output-free offline CLI dry run. Comparison tests also cover every ratio
+  boundary, artifact-backed source resolution, and explicit mapped-head-only
+  totals. All 24 cases pass in the certified venv; the only warning is an
+  upstream Pydantic deprecation from policyengine-uk.
+- Built `pipeline/compare_uk_obr_costings.py`. It produces head-level CSV and
+  Markdown rows with signed PE/OBR ratios, descriptive bins, and named model,
+  adjustment, baseline, timing, and head-scope axes; any remainder is labelled
+  `unexplained`. For PMD measures with at least two computed mapped heads, it
+  adds a comparison-only mapped-head sum that is explicitly not an external
+  TOTAL claim. No score-like summary statistic is produced.
 
 ## Next
 
-- Build the comparison renderer.
 - Run only the requested bounded offline smoke sample, then record measured
   wall time, peak memory, results, uncertainties, and unverified items here.
 

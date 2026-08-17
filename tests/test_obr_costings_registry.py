@@ -18,6 +18,7 @@ from pathlib import Path
 import pytest
 import yaml
 
+from pipeline import compare_uk_obr_costings as compare
 from pipeline import compute_uk_obr_costings as compute
 
 
@@ -426,3 +427,110 @@ def test_dry_run_is_offline_and_writes_no_simulation_outputs(
     )
     assert not output_dir.exists()
     assert not staged_path.exists()
+
+
+@pytest.mark.parametrize(
+    ("obr_value", "pe_value", "ratio", "ratio_bin"),
+    [
+        (None, 1.0, None, "not_available"),
+        (0.0, 0.0, None, "both_zero"),
+        (0.0, 1.0, None, "obr_zero"),
+        (2.0, 0.0, 0.0, "pe_zero"),
+        (2.0, -1.0, -0.5, "opposite_sign"),
+        (2.0, 0.99, 0.495, "same_sign_ratio_below_0.5"),
+        (2.0, 1.0, 0.5, "same_sign_ratio_0.5_to_0.8"),
+        (2.0, 1.6, 0.8, "same_sign_ratio_0.8_to_1.25"),
+        (2.0, 2.5, 1.25, "same_sign_ratio_1.25_to_2"),
+        (2.0, 4.0, 2.0, "same_sign_ratio_at_least_2"),
+    ],
+)
+def test_descriptive_ratio_bins(obr_value, pe_value, ratio, ratio_bin):
+    assert compare.ratio_and_bin(obr_value, pe_value) == (ratio, ratio_bin)
+
+
+def test_comparison_resolves_measure_identity_and_traces_artifact(
+    tmp_path, synthetic_measure, synthetic_claim
+):
+    bundle = {"certified_data_build_id": "synthetic-certified-build"}
+    artifact_path = tmp_path / "synthetic_2026.json"
+    artifact = compute.build_artifact(
+        measure=synthetic_measure,
+        year=2026,
+        baseline=synthetic_run(bundle, 100.0),
+        reform=synthetic_run(bundle, 125.0),
+        output_path=artifact_path,
+        computed_at="2026-08-16T12:00:00+00:00",
+        run_id="campaign-20260816-obr-costings",
+        claims=[synthetic_claim],
+    )
+    compute.write_json(artifact_path, artifact)
+    staged = compute.stage_artifact_rows(artifact, synthetic_measure)[0]
+    descriptor_twin = copy.deepcopy(synthetic_claim)
+    descriptor_twin["reform_hint"] = "Another measure with the same descriptor"
+
+    rows = compare.build_comparison_rows(
+        [staged],
+        [descriptor_twin, synthetic_claim],
+        {synthetic_measure["measure_key"]: synthetic_measure},
+    )
+
+    assert len(rows) == 1
+    assert rows[0]["obr_value_gbp"] == synthetic_claim["value"]
+    assert rows[0]["pe_value_gbp"] == 25.0
+    assert rows[0]["benchmark_class"] == "different_model"
+    assert rows[0]["ratio_bin"] == "same_sign_ratio_0.5_to_0.8"
+    assert any("remaining_difference=unexplained" in x for x in rows[0]["annotations"])
+
+
+def test_comparison_total_is_explicitly_mapped_head_only(synthetic_measure):
+    synthetic_measure = copy.deepcopy(synthetic_measure)
+    synthetic_measure["computability"] = "partial"
+    synthetic_measure["unmapped_obr_heads"] = ["Corporation tax (onshore)"]
+    common = {
+        "measure_key": synthetic_measure["measure_key"],
+        "obr_description": synthetic_measure["obr_description"],
+        "fiscal_event": synthetic_measure["fiscal_event"],
+        "year": 2026,
+        "fy": "2026-27",
+        "row_kind": "head",
+        "status": "constructed",
+        "benchmark_class": "different_model",
+        "construction": "reversal_on_certified_world",
+        "artifact": "synthetic.json",
+        "annotations": [],
+    }
+    head_rows = [
+        {
+            **common,
+            "head": "Income tax",
+            "obr_value_gbp": 100.0,
+            "pe_value_gbp": 75.0,
+            "pe_to_obr_ratio": 0.75,
+            "ratio_bin": "same_sign_ratio_0.5_to_0.8",
+            "source_table": "Tax Measures (Policy measures database)",
+            "external_metric": "revenue_change",
+        },
+        {
+            **common,
+            "head": "Welfare inside cap",
+            "obr_value_gbp": -40.0,
+            "pe_value_gbp": -30.0,
+            "pe_to_obr_ratio": 0.75,
+            "ratio_bin": "same_sign_ratio_0.5_to_0.8",
+            "source_table": "Spending Measures (Policy measures database)",
+            "external_metric": "exchequer_impact",
+        },
+    ]
+
+    totals = compare.derive_mapped_head_totals(
+        head_rows, {synthetic_measure["measure_key"]: synthetic_measure}
+    )
+
+    assert len(totals) == 1
+    assert totals[0]["row_kind"] == "mapped_head_total"
+    assert totals[0]["obr_value_gbp"] == 60.0
+    assert totals[0]["pe_value_gbp"] == 45.0
+    assert any(
+        "not attached to an external TOTAL claim" in x for x in totals[0]["annotations"]
+    )
+    assert any("Partial scope" in x for x in totals[0]["annotations"])
