@@ -818,6 +818,22 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
     assert saved["frozen_registry"] == compute.frozen_registry_measure(
         synthetic_measure
     )
+    frozen_registry = saved["frozen_registry"]
+    for field in (
+        "notes",
+        "unmapped_obr_heads",
+        "computability",
+        "computability_overrides",
+        "heads",
+        "construction",
+        "pe_reform",
+    ):
+        expected = (
+            synthetic_measure.get(field, {})
+            if field == "computability_overrides"
+            else synthetic_measure[field]
+        )
+        assert frozen_registry[field] == expected
     expected_bundle = {
         **bundle,
         "certified_data_artifact_sha256": SYNTHETIC_DATASET_SHA256,
@@ -1003,6 +1019,7 @@ def test_committed_legacy_artifacts_use_manifest_ordinals_and_stay_byte_exact(
         compute.LEGACY_CLAIM_ORDINAL_DERIVATION
     )
     assert manifest["registry_sha256"] == compute.sha256_file(REGISTRY)
+    assert manifest["claims_sha256"] == compute.sha256_file(VENDORED_CLAIMS)
 
     artifact_paths = []
     for reference in legacy_references:
@@ -1415,19 +1432,23 @@ def test_restage_rejects_claims_path_that_escapes_artifact_root(tmp_path):
 
 
 @pytest.mark.parametrize(
-    ("aliased_role", "staged_reference"),
+    ("aliased_role", "staged_reference", "artifacts"),
     [
-        ("claims", "claims.jsonl"),
-        ("claims", "CLAIMS.JSONL"),
-        ("registry", "registry.yaml"),
-        ("manifest", "RUN_MANIFEST.json"),
-        ("comparison CSV", "comparison/comparison.csv"),
+        ("claims", "claims.jsonl", []),
+        ("claims", "CLAIMS.JSONL", []),
+        ("registry", "registry.yaml", []),
+        ("manifest", "RUN_MANIFEST.json", []),
+        ("artifacts[0]", "artifact.json", ["artifact.json"]),
+        ("artifact directory", ".", []),
+        ("comparison CSV", "comparison/comparison.csv", []),
+        ("comparison Markdown", "comparison/comparison.md", []),
     ],
 )
 def test_restage_rejects_staged_output_path_aliases_before_input_parse(
     tmp_path,
     aliased_role,
     staged_reference,
+    artifacts,
 ):
     artifact_root = tmp_path / "run"
     manifest_path = artifact_root / "RUN_MANIFEST.json"
@@ -1439,7 +1460,7 @@ def test_restage_rejects_staged_output_path_aliases_before_input_parse(
             "run_id": "campaign-20260817-obr-costings",
             "registry": "registry.yaml",
             "claims": "claims.jsonl",
-            "artifacts": [],
+            "artifacts": artifacts,
             "legacy_artifacts_without_dataset_hashes": [],
             "staged_output": staged_reference,
         },
@@ -1457,6 +1478,41 @@ def test_restage_rejects_staged_output_path_aliases_before_input_parse(
     assert "staged_output" in message
     assert aliased_role in message
     assert manifest_path.read_bytes() == original_manifest
+
+
+def test_restage_rejects_existing_hardlink_alias_before_input_parse(tmp_path):
+    artifact_root = tmp_path / "run"
+    artifact_root.mkdir()
+    claims_path = artifact_root / "claims.jsonl"
+    claims_path.write_text("not parsed\n")
+    staged_path = artifact_root / "staged.jsonl"
+    os.link(claims_path, staged_path)
+    manifest_path = artifact_root / "RUN_MANIFEST.json"
+    compute.write_json(
+        manifest_path,
+        {
+            "schema_version": 1,
+            "staged": True,
+            "run_id": "campaign-20260817-obr-costings",
+            "registry": "registry.yaml",
+            "claims": "claims.jsonl",
+            "artifacts": [],
+            "legacy_artifacts_without_dataset_hashes": [],
+            "staged_output": "staged.jsonl",
+        },
+    )
+
+    with pytest.raises(compute.ArtifactRestageError) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=manifest_path,
+            output_dir=artifact_root / "comparison",
+            artifact_root=artifact_root,
+        )
+    message = str(exc_info.value)
+    assert "path collision" in message
+    assert "claims" in message
+    assert "staged_output" in message
+    assert "identify the same file" in message
 
 
 @pytest.mark.parametrize(
@@ -1604,6 +1660,10 @@ def test_no_stage_producer_records_explicit_non_replayable_manifest(
     )
     manifest = json.loads((output_dir / "RUN_MANIFEST.json").read_text())
     assert manifest["staged"] is False
+    assert manifest["registry_sha256"] == compute.sha256_file(registry_path)
+    assert manifest["artifactless_frozen_registry"] == {
+        null_measure["measure_key"]: compute.frozen_registry_measure(null_measure)
+    }
     assert "staged_output" not in manifest
     assert "staged_rows" not in manifest
     assert not staged_path.exists()

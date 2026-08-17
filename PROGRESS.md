@@ -26,8 +26,9 @@ managed simulation will be constructed.
 - Fixed round-4 finding 5: manifests record an explicit `staged` boolean and
   restage rejects `staged: false` immediately as a non-replayable `--no-stage`
   run. The committed replay manifest now records `staged: true`.
-- Path/containment/no-stage verification passes 12 targeted replay cases, and
-  Python compilation plus `git diff --check` pass.
+- Targeted path/containment/no-stage replay cases pass, including canonical,
+  case-folded, hardlink, file/directory, and output/input collisions. Python
+  compilation plus `git diff --check` pass.
 - Fixed round-4 finding 3: manifests and every new artifact record the registry
   SHA-256; restage verifies it before YAML parsing and immediately before any
   write. New artifacts freeze complete output-driving registry entries, and
@@ -47,7 +48,7 @@ managed simulation will be constructed.
   before parsing or output, and an injected mid-replay mutation stops at the
   pre-write gate. Atomic writers clean temporary files and preserve existing
   output permissions.
-- All 111 focused OBR tests pass after implementation. The sole warning is the
+- All 115 focused OBR tests pass after implementation. The sole warning is the
   upstream PolicyEngine-UK Pydantic deprecation.
 - Started Follow-up 4 by reading the complete round-3 review before inspecting
   or changing implementation code.
@@ -315,8 +316,8 @@ managed simulation will be constructed.
 
 ## Next
 
-- Commit the registry/ordinal replay binding, then run the exact 26-measure
-  dry-run and 13-artifact restage with byte-identity and zero-simulation checks.
+- Run the exact 26-measure dry-run and 13-artifact restage with byte-identity
+  and zero-simulation checks.
 - Run the full suite, record final counts and hashes here, and write the
   Follow-up 5 report outside the repository.
 
