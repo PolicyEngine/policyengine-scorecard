@@ -3302,10 +3302,7 @@ def main(argv: list[str] | None = None) -> int:
     if not args.no_stage:
         comparison.verify_comparison_outputs(
             args.output_dir,
-            {
-                field: manifest[field]
-                for field, _ in comparison.COMPARISON_OUTPUTS
-            },
+            {field: manifest[field] for field, _ in comparison.COMPARISON_OUTPUTS},
         )
     write_json(manifest_output_path, manifest)
     print(

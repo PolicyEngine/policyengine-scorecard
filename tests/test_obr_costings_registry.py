@@ -903,9 +903,7 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
         == compute.sha256_file(SMOKE_STAGED)
         == "45faa64afbfba976083d528a081646200e40c6932f19d07602fcb38cb741b6af"
     )
-    assert manifest["comparison_csv_sha256"] == compute.sha256_file(
-        SMOKE_COMPARISON
-    )
+    assert manifest["comparison_csv_sha256"] == compute.sha256_file(SMOKE_COMPARISON)
     assert manifest["comparison_md_sha256"] == compute.sha256_file(
         SMOKE_COMPARISON.with_suffix(".md")
     )
@@ -1060,9 +1058,9 @@ def _resign_staged_and_comparison_attack(replay, manifest, staged_rows):
     manifest["staged_rows"] = len(staged_rows)
     manifest["staged_sha256"] = compute.sha256_file(staged_path)
     claims = compute.load_claims(replay["copied_paths"][manifest["claims"]])
-    measures = compute.load_registry(
-        replay["copied_paths"][manifest["registry"]]
-    )["measures"]
+    measures = compute.load_registry(replay["copied_paths"][manifest["registry"]])[
+        "measures"
+    ]
     registry = {measure["measure_key"]: measure for measure in measures}
     artifacts = {
         reference: json.loads(replay["copied_paths"][reference].read_text())
@@ -1461,9 +1459,7 @@ def test_standalone_renderer_verifies_mutating_fake_writer(tmp_path, monkeypatch
         if path.name == "COMPARISON.csv":
             written = path.read_bytes()
             assert b",constructed," in written
-            path.write_bytes(
-                written.replace(b",constructed,", b",FABRICATED WIN,", 1)
-            )
+            path.write_bytes(written.replace(b",constructed,", b",FABRICATED WIN,", 1))
             mutated = True
 
     monkeypatch.setattr(compare, "atomic_write_bytes", mutate_csv_status)
@@ -1522,10 +1518,7 @@ def test_standalone_renderer_requires_every_artifact_head_to_be_staged(tmp_path)
 def test_standalone_renderer_binds_missing_pa_row_to_manifest_selection(tmp_path):
     replay = _copy_committed_replay_fixture(tmp_path)
     manifest = json.loads(replay["manifest_path"].read_text())
-    reference = (
-        "results/uk/obr_costings/"
-        "efo_march_2026__pa_and_hrt_freezes_2026.json"
-    )
+    reference = "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json"
     manifest["artifacts"].remove(reference)
     manifest["artifact_sha256"].pop(reference)
     manifest["legacy_artifacts_without_dataset_hashes"].remove(reference)
@@ -1568,9 +1561,9 @@ def test_standalone_renderer_binds_missing_pa_row_to_manifest_selection(tmp_path
 def test_standalone_renderer_rejects_valid_unselected_class_2_row(tmp_path):
     replay = _copy_committed_replay_fixture(tmp_path)
     manifest = json.loads(replay["manifest_path"].read_text())
-    registry = compute.load_registry(
-        replay["copied_paths"][manifest["registry"]]
-    )["measures"]
+    registry = compute.load_registry(replay["copied_paths"][manifest["registry"]])[
+        "measures"
+    ]
     measure = next(
         item
         for item in registry
@@ -1619,8 +1612,7 @@ def test_standalone_renderer_binds_missing_employer_nics_head(tmp_path):
     replay = _copy_committed_replay_fixture(tmp_path)
     manifest = json.loads(replay["manifest_path"].read_text())
     reference = (
-        "results/uk/obr_costings/"
-        "autumn_budget_2024__employer_nics_package_2026.json"
+        "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2026.json"
     )
     artifact_path = replay["copied_paths"][reference]
     artifact = json.loads(artifact_path.read_text())
@@ -1648,9 +1640,7 @@ def test_standalone_renderer_binds_missing_employer_nics_head(tmp_path):
         staged_rows,
     )
     assert len(attack_rows) == 24
-    assert sum(
-        row["row_kind"] == "mapped_head_total" for row in attack_rows
-    ) == 5
+    assert sum(row["row_kind"] == "mapped_head_total" for row in attack_rows) == 5
     output_dir = tmp_path / "missing-employer-nics-head-render"
 
     with pytest.raises(compare.ComparisonError) as exc_info:
@@ -2830,9 +2820,7 @@ def test_normal_aborts_if_written_comparison_differs_before_manifest(
         if path == csv_path:
             written = path.read_bytes()
             assert b",constructed," in written
-            path.write_bytes(
-                written.replace(b",constructed,", b",FABRICATED WIN,", 1)
-            )
+            path.write_bytes(written.replace(b",constructed,", b",FABRICATED WIN,", 1))
             mutated = True
 
     monkeypatch.setattr(compare, "atomic_write_bytes", mutate_after_write)
@@ -3187,9 +3175,7 @@ def test_restage_rejects_comparison_mutation_before_manifest_restoration(
         original_publish(*args, **kwargs)
         payload = csv_path.read_bytes()
         assert b",constructed," in payload
-        csv_path.write_bytes(
-            payload.replace(b",constructed,", b",FABRICATED WIN,", 1)
-        )
+        csv_path.write_bytes(payload.replace(b",constructed,", b",FABRICATED WIN,", 1))
         mutated = True
 
     monkeypatch.setattr(
@@ -3339,9 +3325,7 @@ def test_restage_rederives_existing_artifacts_without_any_simulation(
         "comparison_csv_sha256",
         "comparison_md_sha256",
     }
-    assert {
-        key: migrated_manifest[key] for key in manifest
-    } == manifest
+    assert {key: migrated_manifest[key] for key in manifest} == manifest
     assert migrated_manifest["comparison_csv_sha256"] == compute.sha256_file(
         output_dir / "COMPARISON.csv"
     )

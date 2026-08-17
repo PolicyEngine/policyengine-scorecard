@@ -674,12 +674,10 @@ def _inventory_difference(
     actual: Counter[tuple[Any, ...]],
 ) -> str:
     missing = [
-        _format_inventory_key(key)
-        for key in sorted((expected - actual).elements())
+        _format_inventory_key(key) for key in sorted((expected - actual).elements())
     ]
     extra = [
-        _format_inventory_key(key)
-        for key in sorted((actual - expected).elements())
+        _format_inventory_key(key) for key in sorted((actual - expected).elements())
     ]
     return f"missing {missing}; extra {extra}"
 
@@ -719,8 +717,10 @@ def _validate_frozen_registry_commitment(
     for reference, artifact in artifacts_by_reference.items():
         key = artifact.get("measure_key")
         year = artifact.get("year")
-        if not isinstance(key, str) or isinstance(year, bool) or not isinstance(
-            year, int
+        if (
+            not isinstance(key, str)
+            or isinstance(year, bool)
+            or not isinstance(year, int)
         ):
             raise ComparisonError(f"{reference}: invalid artifact measure/year")
         pair = (key, year)
@@ -739,8 +739,7 @@ def _validate_frozen_registry_commitment(
             )
         if pair in actual_regular:
             raise ComparisonError(
-                f"{reference}: duplicate regular artifact "
-                f"{_artifact_pair_name(pair)}"
+                f"{reference}: duplicate regular artifact {_artifact_pair_name(pair)}"
             )
         actual_regular[pair] = reference
 
@@ -761,8 +760,7 @@ def _validate_frozen_registry_commitment(
 
     expected_diagnostics = (
         {("diagnostic__personal_allowance_plus_500", 2026)}
-        if manifest.get("pa_smoke_probe") is True
-        and 2026 in manifest.get("years", [])
+        if manifest.get("pa_smoke_probe") is True and 2026 in manifest.get("years", [])
         else set()
     )
     if manifest.get("pa_smoke_probe") not in (True, False):
@@ -844,16 +842,14 @@ def _validate_frozen_registry_commitment(
         if reference not in legacy_set:
             if artifact.get("registry_sha256") != registry_sha256:
                 raise ComparisonError(
-                    f"{reference}: artifact registry_sha256 differs from "
-                    "RUN_MANIFEST"
+                    f"{reference}: artifact registry_sha256 differs from RUN_MANIFEST"
                 )
             snapshot = artifact.get("frozen_registry")
             if not isinstance(snapshot, dict) or _normalized_registry_measure(
                 snapshot
             ) != _normalized_registry_measure(measure):
                 raise ComparisonError(
-                    f"{reference}: frozen_registry differs from the verified "
-                    "registry"
+                    f"{reference}: frozen_registry differs from the verified registry"
                 )
 
         expected_heads = Counter(
@@ -916,9 +912,7 @@ def expected_manifest_row_inventory(
                         or "Total"
                     )
                     row_kind = "total" if head == "Total" else "head"
-                    expected_staged[
-                        _staged_inventory_key(key, row_kind, claim)
-                    ] += 1
+                    expected_staged[_staged_inventory_key(key, row_kind, claim)] += 1
                 continue
             found_claim = False
             for head in heads:
@@ -2003,8 +1997,7 @@ def _comparison_manifest_digests(
         if require:
             fields = [field for field, _ in COMPARISON_OUTPUTS]
             raise ComparisonError(
-                "RUN_MANIFEST is missing comparison output digests: "
-                f"{fields}"
+                f"RUN_MANIFEST is missing comparison output digests: {fields}"
             )
         return None
     if not all(present):
@@ -2021,9 +2014,7 @@ def _comparison_manifest_digests(
     for field, _ in COMPARISON_OUTPUTS:
         value = manifest[field]
         if not isinstance(value, str) or re.fullmatch(r"[0-9a-f]{64}", value) is None:
-            raise ComparisonError(
-                f"RUN_MANIFEST {field} must be a lowercase SHA-256"
-            )
+            raise ComparisonError(f"RUN_MANIFEST {field} must be a lowercase SHA-256")
         digests[field] = value
     return digests
 
