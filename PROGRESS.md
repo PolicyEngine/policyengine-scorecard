@@ -4,21 +4,42 @@ Updated: 2026-08-16
 
 ## State
 
-Follow-up 1 is in progress locally at the staging layer. The existing 13
-certified run artifacts will be restaged without constructing a simulation so
-that reversal constructions retain their literal reversal delta for traceability
-but expose a measure-oriented `pe_value`. The full 26-measure population remains
-intentionally unrun.
+Follow-up 1 is complete locally. The existing 13 certified run artifacts were
+restaged without constructing a simulation. Reversal constructions retain the
+literal reversal delta for traceability and expose an announced-measure-oriented
+`pe_value`; the 20 staged rows and 26 comparison rows were re-rendered. The full
+26-measure population remains intentionally unrun.
 
 ## Done
 
 - Started Follow-up 1 from clean branch `obr-costings-mode2` at `b6442fe` and
   read this progress record plus both compute/comparison modules end to end.
 - Confirmed the orientation defect is confined to artifact/staging derivation:
-  raw aggregates are intact, but the exchequer-gain reversal delta is currently
+  raw aggregates were intact, but the exchequer-gain reversal delta had been
   stored and compared as `pe_value` without the measure-facing sign flip.
 - Confirmed GitNexus graph tools remain unavailable in this checkout and traced
   the staging-to-artifact comparison invariant directly in source.
+- Centralized the staging identity in `orient_exchequer_effect`: tax uses
+  `G = +(reform - baseline)`, spending uses `G = -(reform - baseline)`, and
+  `pe_value` is `-G` for a certified-world reversal or `+G` for a forward
+  construction. Unit tests cover both constructions and both channels.
+- Preserved every artifact's raw baseline/reform aggregates and raw aggregate
+  delta. Reversal heads now record `reversal_delta_exchequer_gain`; the forward
+  diagnostic records `forward_delta_exchequer_gain`; artifact and staged
+  `pe_value` are measure-oriented.
+- Added `--restage`, which reads only the manifest-listed artifacts, validates
+  their registry/run/head/raw-aggregate identities, re-derives all values, and
+  writes staging and comparison outputs before any PolicyEngine import, cache
+  preflight, or simulation path. The synthetic test proves a second restage is
+  byte-for-byte idempotent.
+- Ran `--restage` twice against the 13 existing artifacts. Each invocation
+  produced 20 staged and 26 comparison rows and reported zero managed
+  simulations; the second invocation left an identical diff hash.
+- Replaced the false literal-direction annotation with: “Reversal leg on the
+  certified world, re-oriented to the announced measure: measure Δ =
+  −(reversal − baseline).” Static/behavioural, certified-world/announcement-
+  baseline, calendar-year/fiscal-year, head-scope, and unexplained-remainder
+  axes remain explicit.
 - Confirmed the worktree was clean and based on `fd817b9`.
 - Read the local lane brief and recorded its descriptive-comparison doctrine,
   certified-artifact traceability requirement, and offline-only constraint.
@@ -99,18 +120,18 @@ intentionally unrun.
 - Re-ran the comparison renderer from the staged file and source harvest. It
   wrote `results/uk/obr_costings/COMPARISON.csv` and `COMPARISON.md`; the
   artifact/source trace audit completed successfully.
-- All 27 focused cases and all 194 repository tests pass in the certified
+- All 33 focused cases and all 200 repository tests pass in the certified
   venv. The sole warning is an upstream Pydantic deprecation emitted by
   policyengine-uk.
 
 ## Next
 
-- Add one construction/channel orientation function and tests, retaining the
-  raw aggregates and literal exchequer-gain reversal delta in every artifact.
-- Add an artifact-only `--restage` path, restage the existing 13 artifacts, and
-  re-render the comparison without constructing any simulation.
-- Run focused and full tests, replace the smoke table with measure-oriented
-  results, and commit each coherent checkpoint locally without pushing.
+- Fable can review the registry constructions and run the full selected
+  population after the review gate.
+- A separately owned UK ingestor still needs an OBR-aware claim attachment
+  seam before these staged rows can enter the campaign database.
+- If private issue/PR text becomes available, reconcile #54, #55, and #48
+  against the brief used here before merge.
 
 ## Registry counts
 
@@ -121,8 +142,8 @@ intentionally unrun.
 
 ## Smoke results
 
-Command (the managed calls were serial, with one baseline retained only as
-aggregates per year):
+Original certified run command (not rerun for Follow-up 1; the managed calls
+were serial, with one baseline retained only as aggregates per year):
 
 ```text
 /Users/maxghenis/scorecard-lanes/.venv-obr/bin/python \
@@ -136,33 +157,43 @@ aggregates per year):
   --years 2026 2027 --limit 6 --pa-smoke-probe
 ```
 
+Follow-up 1 restage command:
+
+```text
+/Users/maxghenis/scorecard-lanes/.venv-obr/bin/python \
+  pipeline/compute_uk_obr_costings.py --restage
+```
+
+It read the 13 existing per-run artifacts, staged 20 rows, rendered 26
+comparison rows, and constructed zero managed simulations.
+
 The values below are GBP billions in the harvested
 `positive_gain_to_exchequer` convention. “Mapped total” sums only the OBR heads
 listed in the annotation; it is not an OBR TOTAL claim. Every row has
 `benchmark_class = different_model`, uses PE calendar year Y as the proxy for
-FY Y-(Y+1), compares static PE with behavioural-adjusted OBR, and retains the
-literal certified-world reversal direction. The remainder after those named
-axes is `unexplained`.
+FY Y-(Y+1), and compares static PE with behavioural-adjusted OBR. Each reversal
+leg on the certified world is re-oriented to the announced measure using
+`measure Δ = −(reversal − baseline)`. The certified-world versus announcement-
+baseline axis, head scope, and unexplained remainder remain explicit.
 
 | Measure | FY | Scope | OBR £bn | PE £bn | PE/OBR | Bin | Measure-specific annotation |
 |---|---:|---|---:|---:|---:|---|---|
-| PA and HRT freezes | 2026-27 | OBR total | +34.010 | -47.681 | -1.402 | opposite_sign | Table 3.17 bundled line; published indexed PA/HRT reversal |
-| PA and HRT freezes | 2027-28 | OBR total | +38.475 | -53.452 | -1.389 | opposite_sign | Table 3.17 bundled line; published indexed PA/HRT reversal |
-| Additional-rate threshold reduction | 2026-27 | OBR total | +0.940 | -1.840 | -1.957 | opposite_sign | Table 3.17 threshold reversal |
-| Additional-rate threshold reduction | 2027-28 | OBR total | +0.970 | -1.933 | -1.993 | opposite_sign | Table 3.17 threshold reversal |
-| SB2024 Class 1 employee NICs cut | 2026-27 | Mapped total | -9.129 | +11.965 | -1.311 | opposite_sign | Income tax + NICs + welfare-inside-cap only; partial head scope |
-| SB2024 Class 1 employee NICs cut | 2027-28 | Mapped total | -9.244 | +12.247 | -1.325 | opposite_sign | Income tax + NICs + welfare-inside-cap only; partial head scope |
-| SB2024 HICBC threshold/taper | 2026-27 | Mapped total | -0.641 | +1.721 | -2.684 | opposite_sign | Income tax + welfare-inside-cap; fixed PE claiming makes child-benefit delta zero |
-| SB2024 HICBC threshold/taper | 2027-28 | Mapped total | -0.647 | +1.844 | -2.850 | opposite_sign | Income tax + welfare-inside-cap; fixed PE claiming makes child-benefit delta zero |
-| AB2024 employer NICs package | 2026-27 | Mapped total | +23.610 | -16.247 | -0.688 | opposite_sign | Income tax + NICs only; no Employment Allowance/firm mechanics; other OBR heads excluded |
-| AB2024 employer NICs package | 2027-28 | Mapped total | +24.027 | -16.422 | -0.683 | opposite_sign | Income tax + NICs only; no Employment Allowance/firm mechanics; other OBR heads excluded |
-| AB2025 remove UC two-child limit | 2026-27 | Welfare inside cap | -1.887 | +1.104 | -0.585 | opposite_sign | UC inside-cap aggregate only; outside-cap OBR head excluded |
-| AB2025 remove UC two-child limit | 2027-28 | Welfare inside cap | -2.101 | +1.182 | -0.563 | opposite_sign | UC inside-cap aggregate only; outside-cap OBR head excluded |
+| PA and HRT freezes | 2026-27 | OBR total | +34.010 | +47.681 | 1.402 | same_sign_ratio_1.25_to_2 | Table 3.17 bundled line; published indexed PA/HRT reversal |
+| PA and HRT freezes | 2027-28 | OBR total | +38.475 | +53.452 | 1.389 | same_sign_ratio_1.25_to_2 | Table 3.17 bundled line; published indexed PA/HRT reversal |
+| Additional-rate threshold reduction | 2026-27 | OBR total | +0.940 | +1.840 | 1.957 | same_sign_ratio_1.25_to_2 | Table 3.17 threshold reversal |
+| Additional-rate threshold reduction | 2027-28 | OBR total | +0.970 | +1.933 | 1.993 | same_sign_ratio_1.25_to_2 | Table 3.17 threshold reversal |
+| SB2024 Class 1 employee NICs cut | 2026-27 | Mapped total | -9.129 | -11.965 | 1.311 | same_sign_ratio_1.25_to_2 | Income tax + NICs + welfare-inside-cap only; partial head scope |
+| SB2024 Class 1 employee NICs cut | 2027-28 | Mapped total | -9.244 | -12.247 | 1.325 | same_sign_ratio_1.25_to_2 | Income tax + NICs + welfare-inside-cap only; partial head scope |
+| SB2024 HICBC threshold/taper | 2026-27 | Mapped total | -0.641 | -1.721 | 2.684 | same_sign_ratio_at_least_2 | Income tax + welfare-inside-cap; fixed PE claiming makes child-benefit delta zero |
+| SB2024 HICBC threshold/taper | 2027-28 | Mapped total | -0.647 | -1.844 | 2.850 | same_sign_ratio_at_least_2 | Income tax + welfare-inside-cap; fixed PE claiming makes child-benefit delta zero |
+| AB2024 employer NICs package | 2026-27 | Mapped total | +23.610 | +16.247 | 0.688 | same_sign_ratio_0.5_to_0.8 | Income tax + NICs only; no Employment Allowance/firm mechanics; other OBR heads excluded |
+| AB2024 employer NICs package | 2027-28 | Mapped total | +24.027 | +16.422 | 0.683 | same_sign_ratio_0.5_to_0.8 | Income tax + NICs only; no Employment Allowance/firm mechanics; other OBR heads excluded |
+| AB2025 remove UC two-child limit | 2026-27 | Welfare inside cap | -1.887 | -1.104 | 0.585 | same_sign_ratio_0.5_to_0.8 | UC inside-cap aggregate only; outside-cap OBR head excluded |
+| AB2025 remove UC two-child limit | 2027-28 | Welfare inside cap | -2.101 | -1.182 | 0.563 | same_sign_ratio_0.5_to_0.8 | UC inside-cap aggregate only; outside-cap OBR head excluded |
 
-All twelve ratios are in the descriptive `opposite_sign` bin because these
-rows retain reversal-minus-certified-baseline while the OBR rows describe the
-announced measure. They were not reoriented; this is the named construction
-axis, not a score.
+All twelve smoke summaries are now in same-sign bins. Across all 26 comparison
+rows, none is `opposite_sign`; four zero-effect source heads remain honestly
+classified as `pe_zero`.
 
 The separate diagnostic changed the 2026 personal allowance from £12,570 to
 £13,070. Baseline income tax was £421.891913bn and the static income-tax delta
@@ -171,10 +202,12 @@ has its own artifact and is not staged against an OBR claim.
 
 ### Smoke performance
 
-The end-to-end run took 798.504 seconds (13m 18.5s). The fifteen managed sims
-accounted for 783.002 seconds: two reused baselines, twelve measure-year
-reforms, and one diagnostic. Peak memory is sampled process RSS, not an
-incremental allocation. Cleanup and `gc.collect()` ran after every reform.
+Follow-up 1 restaging took 1.5 seconds and constructed no simulation. The
+unchanged original end-to-end run took 798.504 seconds (13m 18.5s). Its fifteen
+managed sims accounted for 783.002 seconds: two reused baselines, twelve
+measure-year reforms, and one diagnostic. Peak memory is sampled process RSS,
+not an incremental allocation. Cleanup and `gc.collect()` ran after every
+reform.
 
 | Simulation | Year | Wall seconds | Peak RSS GiB |
 |---|---:|---:|---:|
@@ -240,8 +273,8 @@ Maximum sampled process RSS was 32.888 GiB.
   date for some descriptions. The pipeline preserves those source rows rather
   than suppressing them; why each OBR allocation appears there is unexplained.
 - The smoke differences beyond the named model, behavioural/static,
-  construction-direction, timing, and head-scope axes are unexplained. No
-  causal explanation is inferred from ratio magnitude.
+  certified-world/announcement-baseline, timing, and head-scope axes are
+  unexplained. No causal explanation is inferred from ratio magnitude.
 - The first smoke attempt wrote no run artifact and stopped before simulation
   when PyTables found the certified HF-cache file read-only. The successful
   run used a SHA-verified, ignored writable mirror of those same cached bytes;
