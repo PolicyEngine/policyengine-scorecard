@@ -2140,12 +2140,12 @@ def test_cli_help_documents_normal_and_restage_options(capsys):
 
 
 def test_no_stage_producer_records_explicit_non_replayable_manifest(
-    pytest.importorskip("policyengine_uk")
     tmp_path,
     monkeypatch,
     synthetic_measure,
     synthetic_claim,
 ):
+    pytest.importorskip("policyengine_uk")
     registry_path = tmp_path / "registry.yaml"
     claims_path = tmp_path / "claims.jsonl"
     output_dir = tmp_path / "artifacts"
@@ -2317,12 +2317,12 @@ def _configure_synthetic_normal_main(
 
 
 def test_normal_aborts_if_written_artifact_differs_from_intended_bytes(
-    pytest.importorskip("policyengine_uk")
     tmp_path,
     monkeypatch,
     synthetic_measure,
     synthetic_claim,
 ):
+    pytest.importorskip("policyengine_uk")
     run = _configure_synthetic_normal_main(
         tmp_path,
         monkeypatch,
@@ -2360,12 +2360,12 @@ def test_normal_aborts_if_written_artifact_differs_from_intended_bytes(
 
 
 def test_normal_staging_and_comparison_never_reopen_verified_artifacts(
-    pytest.importorskip("policyengine_uk")
     tmp_path,
     monkeypatch,
     synthetic_measure,
     synthetic_claim,
 ):
+    pytest.importorskip("policyengine_uk")
     run = _configure_synthetic_normal_main(
         tmp_path,
         monkeypatch,
