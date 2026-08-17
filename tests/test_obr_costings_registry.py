@@ -3710,6 +3710,55 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
     assert {path: path.read_bytes() for path in output_paths} == first_outputs
 
 
+def test_comparison_rejects_null_row_retargeted_to_another_measure_claim():
+    measures = compute.load_registry(REGISTRY)["measures"]
+    registry = {measure["measure_key"]: measure for measure in measures}
+    claims = compute.load_claims(VENDORED_CLAIMS)
+    target = registry["efo_march_2026__class_2_nics_threshold_rise"]
+    foreign = registry[
+        "autumn_statement_2023__class_2_self_employed_nics_liability_abolition"
+    ]
+    bundle = {
+        "certified_data_build_id": "synthetic-certified-build",
+        "certified_data_artifact_sha256": SYNTHETIC_DATASET_SHA256,
+    }
+
+    def stage(measure):
+        rows = compute.stage_not_computed_rows(
+            measure=measure,
+            years=[2026],
+            claims=claims,
+            run_id="campaign-20260817-obr-costings",
+            computed_at="2026-08-17T12:00:00+00:00",
+            release_bundle=bundle,
+            engine_version="synthetic-engine",
+        )
+        assert rows
+        return rows[0]
+
+    retargeted = stage(target)
+    foreign_row = stage(foreign)
+    for field in (
+        "source_table",
+        "row_kind",
+        "status",
+        "annotations",
+        "external_claim_match",
+        "source_model",
+        "basis",
+        "behavioural_adjustment",
+    ):
+        retargeted[field] = copy.deepcopy(foreign_row[field])
+
+    with pytest.raises(compare.ComparisonError, match="external_claim_match"):
+        compare.build_comparison_rows(
+            [retargeted],
+            claims,
+            registry,
+            artifacts_by_reference={},
+        )
+
+
 @pytest.mark.parametrize(
     ("obr_value", "pe_value", "ratio", "ratio_bin"),
     [

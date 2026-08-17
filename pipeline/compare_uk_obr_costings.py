@@ -1055,6 +1055,36 @@ def _not_computed_annotations(
     ]
 
 
+def _validate_not_computed_claim_association(
+    *,
+    staged_row: Mapping[str, Any],
+    measure: Mapping[str, Any],
+    claim: Mapping[str, Any],
+) -> None:
+    if measure.get("pe_reform") is not None:
+        raise ComparisonError(
+            f"{staged_row.get('measure_key')}: status differs from the verified "
+            "registry; not_computed requires a null pe_reform"
+        )
+    conditions = claim.get("conditions")
+    belongs_to_measure = (
+        claim.get("source") == "obr"
+        and claim.get("reform_hint") == measure.get("obr_description")
+        and (
+            claim.get("source_table") == "3.17: 3.17"
+            or (
+                isinstance(conditions, dict)
+                and conditions.get("fiscal_event") == measure.get("fiscal_event")
+            )
+        )
+    )
+    if not belongs_to_measure:
+        raise ComparisonError(
+            f"{staged_row.get('measure_key')}: external_claim_match differs from "
+            "the verified registry measure and claims"
+        )
+
+
 def validate_staged_descriptive_fields(
     staged_row: Mapping[str, Any],
     claim: Mapping[str, Any],
@@ -1065,6 +1095,11 @@ def validate_staged_descriptive_fields(
     """Re-derive output-driving staged text from verified claims and artifacts."""
 
     if artifact_head is None:
+        _validate_not_computed_claim_association(
+            staged_row=staged_row,
+            measure=measure,
+            claim=claim,
+        )
         conditions = claim.get("conditions", {})
         head = conditions.get("tax_head") or conditions.get("spending_head") or "Total"
         expected = {

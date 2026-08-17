@@ -33,6 +33,10 @@ artifacts and claims.
   differing field, including the reviewer's combined fabricated-description
   probe; the unsigned employer-NIC source-table flip fails at the staged SHA
   gate before parsing or output.
+- A final independent audit found and closed the artifactless variant: a
+  re-signed null row can no longer retarget its descriptor to another measure's
+  valid claim. Null rows now require a verified null reform and independently
+  enforce the producer's measure-to-claim association before rendering.
 - Migrated the committed manifest with the existing staged file's SHA-256,
   `45faa64afbfba976083d528a081646200e40c6932f19d07602fcb38cb741b6af`,
   without changing any staged byte. Added normal/restage post-write mutation
