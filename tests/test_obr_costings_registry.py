@@ -1385,7 +1385,7 @@ def test_standalone_renderer_requires_every_artifact_head_to_be_staged(tmp_path)
 
     with pytest.raises(
         compare.ComparisonError,
-        match="staged/artifact head inventory differs",
+        match="comparison source-row inventory differs",
     ):
         compare.main(
             [
@@ -1397,6 +1397,148 @@ def test_standalone_renderer_requires_every_artifact_head_to_be_staged(tmp_path)
                 str(output_dir),
             ]
         )
+    assert not output_dir.exists()
+
+
+def test_standalone_renderer_binds_missing_pa_row_to_manifest_selection(tmp_path):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    reference = (
+        "results/uk/obr_costings/"
+        "efo_march_2026__pa_and_hrt_freezes_2026.json"
+    )
+    manifest["artifacts"].remove(reference)
+    manifest["artifact_sha256"].pop(reference)
+    manifest["legacy_artifacts_without_dataset_hashes"].remove(reference)
+    manifest["legacy_claim_ordinals"].pop(reference)
+    staged_path = replay["copied_paths"][manifest["staged_output"]]
+    staged_rows = compute.load_claims(staged_path)
+    staged_rows = [
+        row
+        for row in staged_rows
+        if not (
+            row.get("artifact") == reference
+            and row["external_claim_match"]["period"] == 2026
+        )
+    ]
+    compute.write_jsonl(staged_path, staged_rows)
+    manifest["staged_rows"] = len(staged_rows)
+    manifest["staged_sha256"] = compute.sha256_file(staged_path)
+    compute.write_json(replay["manifest_path"], manifest)
+    output_dir = tmp_path / "missing-pa-render"
+
+    with pytest.raises(compare.ComparisonError) as exc_info:
+        compare.main(
+            [
+                "--manifest",
+                str(replay["manifest_path"]),
+                "--artifact-root",
+                str(replay["artifact_root"]),
+                "--output-dir",
+                str(output_dir),
+            ]
+        )
+    message = str(exc_info.value)
+    assert "missing" in message
+    assert "efo_march_2026__pa_and_hrt_freezes 2026 total Total" in message
+    assert not output_dir.exists()
+
+
+def test_standalone_renderer_rejects_valid_unselected_class_2_row(tmp_path):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    registry = compute.load_registry(
+        replay["copied_paths"][manifest["registry"]]
+    )["measures"]
+    measure = next(
+        item
+        for item in registry
+        if item["measure_key"] == "efo_march_2026__class_2_nics_threshold_rise"
+    )
+    claims = compute.load_claims(replay["copied_paths"][manifest["claims"]])
+    rows = compute.stage_not_computed_rows(
+        measure=measure,
+        years=[2026],
+        claims=claims,
+        run_id=manifest["run_id"],
+        computed_at=manifest["started_at"],
+        release_bundle=manifest["certified_cache_preflight"]["release_bundle"],
+        engine_version=manifest["engine_version"],
+    )
+    assert len(rows) == 1
+    staged_path = replay["copied_paths"][manifest["staged_output"]]
+    staged_rows = compute.load_claims(staged_path)
+    staged_rows.extend(rows)
+    compute.write_jsonl(staged_path, staged_rows)
+    manifest["staged_rows"] = len(staged_rows)
+    manifest["staged_sha256"] = compute.sha256_file(staged_path)
+    compute.write_json(replay["manifest_path"], manifest)
+    output_dir = tmp_path / "unselected-class-2-render"
+
+    with pytest.raises(compare.ComparisonError) as exc_info:
+        compare.main(
+            [
+                "--manifest",
+                str(replay["manifest_path"]),
+                "--artifact-root",
+                str(replay["artifact_root"]),
+                "--output-dir",
+                str(output_dir),
+            ]
+        )
+    message = str(exc_info.value)
+    assert "extra" in message
+    assert "efo_march_2026__class_2_nics_threshold_rise 2026 total Total" in message
+    assert not output_dir.exists()
+
+
+def test_standalone_renderer_binds_missing_employer_nics_head(tmp_path):
+    replay = _copy_committed_replay_fixture(tmp_path)
+    manifest = json.loads(replay["manifest_path"].read_text())
+    reference = (
+        "results/uk/obr_costings/"
+        "autumn_budget_2024__employer_nics_package_2026.json"
+    )
+    artifact_path = replay["copied_paths"][reference]
+    artifact = json.loads(artifact_path.read_text())
+    artifact["heads"] = [
+        head for head in artifact["heads"] if head["obr_head"] != "Income tax"
+    ]
+    assert len(artifact["heads"]) == 1
+    compute.write_json(artifact_path, artifact)
+    manifest["artifact_sha256"][reference] = compute.sha256_file(artifact_path)
+    manifest["legacy_claim_ordinals"][reference] = {"0": 188}
+    staged_path = replay["copied_paths"][manifest["staged_output"]]
+    staged_rows = compute.load_claims(staged_path)
+    staged_rows = [
+        row
+        for row in staged_rows
+        if not (
+            row.get("artifact") == reference
+            and row["external_claim_match"]["conditions"].get("tax_head")
+            == "Income tax"
+        )
+    ]
+    compute.write_jsonl(staged_path, staged_rows)
+    manifest["staged_rows"] = len(staged_rows)
+    manifest["staged_sha256"] = compute.sha256_file(staged_path)
+    compute.write_json(replay["manifest_path"], manifest)
+    output_dir = tmp_path / "missing-employer-nics-head-render"
+
+    with pytest.raises(compare.ComparisonError) as exc_info:
+        compare.main(
+            [
+                "--manifest",
+                str(replay["manifest_path"]),
+                "--artifact-root",
+                str(replay["artifact_root"]),
+                "--output-dir",
+                str(output_dir),
+            ]
+        )
+    message = str(exc_info.value)
+    assert "missing" in message
+    assert "autumn_budget_2024__employer_nics_package 2026 head Income tax" in message
     assert not output_dir.exists()
 
 
@@ -2644,13 +2786,6 @@ def _write_synthetic_replay(
     compute.write_json(artifact_path, artifact)
     staged_rows = compute.stage_artifact_rows(artifact, synthetic_measure)
     compute.write_jsonl(staged_path, staged_rows)
-    compare.write_comparison_outputs_from_rows(
-        staged_rows=staged_rows,
-        claims=[synthetic_claim],
-        registry={synthetic_measure["measure_key"]: synthetic_measure},
-        artifacts_by_reference={artifact_reference: artifact},
-        output_dir=output_dir,
-    )
     manifest = {
         "schema_version": 1,
         "staged": True,
@@ -2675,6 +2810,14 @@ def _write_synthetic_replay(
         "staged_rows": 1,
         "staged_sha256": compute.sha256_file(staged_path),
     }
+    compare.write_comparison_outputs_from_rows(
+        manifest=manifest,
+        staged_rows=staged_rows,
+        claims=[synthetic_claim],
+        registry={synthetic_measure["measure_key"]: synthetic_measure},
+        artifacts_by_reference={artifact_reference: artifact},
+        output_dir=output_dir,
+    )
     compute.write_json(manifest_path, manifest)
     output_paths = (
         artifact_path,
@@ -3525,13 +3668,6 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
 
     assert len(artifact_references) == 21
     compute.write_jsonl(staged_path, expected_rows)
-    compare.write_comparison_outputs_from_rows(
-        staged_rows=expected_rows,
-        claims=claims,
-        registry={measure["measure_key"]: measure for measure in measures},
-        artifacts_by_reference=artifacts_by_reference,
-        output_dir=output_dir,
-    )
     manifest = {
         "schema_version": 1,
         "staged": True,
@@ -3561,6 +3697,14 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
         "staged_rows": len(expected_rows),
         "staged_sha256": compute.sha256_file(staged_path),
     }
+    compare.write_comparison_outputs_from_rows(
+        manifest=manifest,
+        staged_rows=expected_rows,
+        claims=claims,
+        registry={measure["measure_key"]: measure for measure in measures},
+        artifacts_by_reference=artifacts_by_reference,
+        output_dir=output_dir,
+    )
     compute.write_json(manifest_path, manifest)
     output_paths = [
         *artifact_paths,

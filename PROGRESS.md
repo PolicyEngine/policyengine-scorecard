@@ -24,6 +24,19 @@ publication/restoration.
   replaced but neither manifest-bound nor read-back verified, and standalone
   completeness did not yet derive its expected rows from the manifest's
   declared measure/year selection.
+- Bound comparison completeness to `selected_measures`, `years`, verified
+  registry snapshots, claims, artifactless snapshots, and the diagnostic rule.
+  The shared production writer now derives every expected source row, regular
+  artifact pair and head, diagnostic artifact, and mapped-head total before
+  requiring exact `Counter` bijections with staged and final rendered rows.
+- Added production `compare.main` regressions for the reviewer's three attacks.
+  Removing PA/HRT 2026, appending an otherwise valid unselected Class-2 row,
+  and removing the employer-NICs 2026 Income-tax head each abort before output
+  while naming the missing or extra measure, year, row kind, and head.
+- The interim focused OBR suite passes all 148 tests after the completeness
+  change; the sole warning is the known upstream PolicyEngine-UK Pydantic
+  deprecation. Python compilation, the hand-enforced 88-column check, and
+  `git diff --check` pass.
 - Final acceptance passed offline with the specified interpreter. The exact
   default dry run validated 26 measures and 215 source head-years across
   2024–2030 and reported zero managed simulations.
@@ -502,9 +515,6 @@ publication/restoration.
 
 ## Next
 
-- Reconstruct the exact expected head, mapped-total, diagnostic, and
-  artifactless row inventory from SHA-verified manifest inputs and reject every
-  missing or extra rendered row by name.
 - Render canonical comparison bytes in memory, manifest-bind both digests, and
   verify their on-disk bytes before normal publication, restage restoration,
   or standalone success.

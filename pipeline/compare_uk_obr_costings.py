@@ -483,6 +483,482 @@ def claim_metric(claim: dict[str, Any]) -> str | None:
     return claim.get("metric") or claim.get("proposed_metric")
 
 
+StagedInventoryKey = tuple[str, int, str, str, str, str, str]
+OutputInventoryKey = tuple[str, int, str, str, str, str]
+ArtifactPair = tuple[str, int]
+
+
+def _normalized_registry_measure(measure: Mapping[str, Any]) -> dict[str, Any]:
+    """Return the canonical registry shape frozen by new run artifacts."""
+
+    normalized = json.loads(json.dumps(measure, sort_keys=True, allow_nan=False))
+    normalized.setdefault("computability_overrides", {})
+    return normalized
+
+
+def _manifest_selection(
+    manifest: Mapping[str, Any],
+    registry: Mapping[str, dict[str, Any]],
+) -> tuple[list[str], list[int], dict[str, dict[str, Any]]]:
+    selected = manifest.get("selected_measures")
+    if (
+        not isinstance(selected, list)
+        or not selected
+        or not all(isinstance(key, str) and key for key in selected)
+        or len(selected) != len(set(selected))
+    ):
+        raise ComparisonError(
+            "RUN_MANIFEST selected_measures must be unique non-empty keys"
+        )
+    missing = sorted(set(selected) - set(registry))
+    if missing:
+        raise ComparisonError(
+            "RUN_MANIFEST selected measures are absent from the verified "
+            f"registry: {missing}"
+        )
+    years = manifest.get("years")
+    if (
+        not isinstance(years, list)
+        or not years
+        or any(isinstance(year, bool) or not isinstance(year, int) for year in years)
+        or years != sorted(set(years))
+    ):
+        raise ComparisonError("RUN_MANIFEST years must be unique sorted integers")
+    return selected, years, {key: registry[key] for key in selected}
+
+
+def _registry_source_candidates(
+    claims: Iterable[dict[str, Any]],
+    measure: Mapping[str, Any],
+    year: int,
+    *,
+    head: Mapping[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    table = None
+    metric = None
+    if head is not None:
+        table = head.get("source_table", measure.get("source_table"))
+        metric = head.get("external_metric", measure.get("external_metric"))
+    hits: list[dict[str, Any]] = []
+    for claim in claims:
+        if claim.get("source") != "obr" or claim.get("period") != year:
+            continue
+        if claim.get("reform_hint") != measure.get("obr_description"):
+            continue
+        if table is not None and claim.get("source_table") != table:
+            continue
+        if metric is not None and claim_metric(claim) != metric:
+            continue
+        conditions = claim.get("conditions")
+        if not isinstance(conditions, dict):
+            continue
+        if claim.get("source_table") != "3.17: 3.17":
+            if conditions.get("fiscal_event") != measure.get("fiscal_event"):
+                continue
+        if head is not None and head.get("condition_key") is not None:
+            if conditions.get(head["condition_key"]) != head.get("obr_head"):
+                continue
+        hits.append(claim)
+    return hits
+
+
+def _resolve_registry_claim(
+    claims: Iterable[dict[str, Any]],
+    measure: Mapping[str, Any],
+    head: Mapping[str, Any],
+    year: int,
+) -> dict[str, Any] | None:
+    hits = _registry_source_candidates(claims, measure, year, head=head)
+    if len(hits) == 1:
+        return hits[0]
+    label = f"{measure.get('measure_key')} {year} {head.get('obr_head')}"
+    if len(hits) > 1:
+        raise ComparisonError(
+            f"{label}: {len(hits)} verified source rows match; expected one"
+        )
+    if _registry_source_candidates(claims, measure, year):
+        raise ComparisonError(
+            f"{label}: measure exists in the verified source window but the "
+            "declared registry head has no match"
+        )
+    return None
+
+
+def _claim_head(claim: Mapping[str, Any], row_kind: str) -> str:
+    if row_kind == "total":
+        return "Total"
+    conditions = claim.get("conditions")
+    if not isinstance(conditions, dict):
+        return "Unspecified head"
+    return (
+        conditions.get("tax_head")
+        or conditions.get("spending_head")
+        or "Unspecified head"
+    )
+
+
+def _staged_inventory_key(
+    measure_key: str,
+    row_kind: str,
+    claim: Mapping[str, Any],
+) -> StagedInventoryKey:
+    year = claim.get("period")
+    if isinstance(year, bool) or not isinstance(year, int):
+        raise ComparisonError(
+            f"{measure_key}: comparison row has invalid period {year!r}"
+        )
+    return (
+        measure_key,
+        year,
+        row_kind,
+        _claim_head(claim, row_kind),
+        str(claim.get("source_table")),
+        str(claim_metric(dict(claim))),
+        _canonical(claim.get("conditions")),
+    )
+
+
+def _staged_row_inventory_key(row: Mapping[str, Any]) -> StagedInventoryKey:
+    measure_key = row.get("measure_key")
+    match = row.get("external_claim_match")
+    if not isinstance(measure_key, str) or not isinstance(match, dict):
+        raise ComparisonError(
+            f"invalid staged inventory row for measure {measure_key!r}"
+        )
+    claim = {
+        "period": match.get("period"),
+        "source_table": match.get("source_table"),
+        "metric": match.get("metric"),
+        "conditions": match.get("conditions"),
+    }
+    return _staged_inventory_key(measure_key, str(row.get("row_kind")), claim)
+
+
+def _output_inventory_key(row: Mapping[str, Any]) -> OutputInventoryKey:
+    return (
+        str(row.get("measure_key")),
+        int(row.get("year")),
+        str(row.get("row_kind")),
+        str(row.get("head")),
+        str(row.get("source_table")),
+        str(row.get("external_metric")),
+    )
+
+
+def _output_key_from_staged(key: StagedInventoryKey) -> OutputInventoryKey:
+    return key[:6]
+
+
+def _format_inventory_key(key: tuple[Any, ...]) -> str:
+    measure_key, year, row_kind, head, source_table, metric = key[:6]
+    return (
+        f"{measure_key} {year} {row_kind} {head} (row_kind={row_kind}) "
+        f"[{source_table}; {metric}]"
+    )
+
+
+def _inventory_difference(
+    expected: Counter[tuple[Any, ...]],
+    actual: Counter[tuple[Any, ...]],
+) -> str:
+    missing = [
+        _format_inventory_key(key)
+        for key in sorted((expected - actual).elements())
+    ]
+    extra = [
+        _format_inventory_key(key)
+        for key in sorted((actual - expected).elements())
+    ]
+    return f"missing {missing}; extra {extra}"
+
+
+def _artifact_pair_name(pair: ArtifactPair) -> str:
+    return f"{pair[0]} {pair[1]}"
+
+
+def _validate_frozen_registry_commitment(
+    *,
+    manifest: Mapping[str, Any],
+    selected_registry: Mapping[str, dict[str, Any]],
+    artifacts_by_reference: Mapping[str, dict[str, Any]],
+    expected_regular_pairs: set[ArtifactPair],
+) -> None:
+    manifest_references = manifest.get("artifacts")
+    if not isinstance(manifest_references, list) or set(manifest_references) != set(
+        artifacts_by_reference
+    ):
+        raise ComparisonError(
+            "verified artifact objects differ from RUN_MANIFEST inventory"
+        )
+    references = set(artifacts_by_reference)
+    legacy = manifest.get("legacy_artifacts_without_dataset_hashes", [])
+    if (
+        not isinstance(legacy, list)
+        or not all(isinstance(reference, str) for reference in legacy)
+        or len(legacy) != len(set(legacy))
+        or not set(legacy) <= references
+    ):
+        raise ComparisonError(
+            "RUN_MANIFEST legacy artifact inventory must be a unique subset"
+        )
+    legacy_set = set(legacy)
+    actual_regular: dict[ArtifactPair, str] = {}
+    actual_diagnostics: set[ArtifactPair] = set()
+    for reference, artifact in artifacts_by_reference.items():
+        key = artifact.get("measure_key")
+        year = artifact.get("year")
+        if not isinstance(key, str) or isinstance(year, bool) or not isinstance(
+            year, int
+        ):
+            raise ComparisonError(f"{reference}: invalid artifact measure/year")
+        pair = (key, year)
+        diagnostic_only = artifact.get("diagnostic_only")
+        if diagnostic_only is True:
+            if pair in actual_diagnostics:
+                raise ComparisonError(
+                    f"{reference}: duplicate diagnostic artifact "
+                    f"{_artifact_pair_name(pair)}"
+                )
+            actual_diagnostics.add(pair)
+            continue
+        if diagnostic_only is not False:
+            raise ComparisonError(
+                f"{reference}: diagnostic_only must be an explicit boolean"
+            )
+        if pair in actual_regular:
+            raise ComparisonError(
+                f"{reference}: duplicate regular artifact "
+                f"{_artifact_pair_name(pair)}"
+            )
+        actual_regular[pair] = reference
+
+    actual_regular_pairs = set(actual_regular)
+    if actual_regular_pairs != expected_regular_pairs:
+        missing = [
+            _artifact_pair_name(pair)
+            for pair in sorted(expected_regular_pairs - actual_regular_pairs)
+        ]
+        extra = [
+            _artifact_pair_name(pair)
+            for pair in sorted(actual_regular_pairs - expected_regular_pairs)
+        ]
+        raise ComparisonError(
+            "regular artifact inventory differs from the manifest selection: "
+            f"missing {missing}; extra {extra}"
+        )
+
+    expected_diagnostics = (
+        {("diagnostic__personal_allowance_plus_500", 2026)}
+        if manifest.get("pa_smoke_probe") is True
+        and 2026 in manifest.get("years", [])
+        else set()
+    )
+    if manifest.get("pa_smoke_probe") not in (True, False):
+        raise ComparisonError("RUN_MANIFEST pa_smoke_probe must be boolean")
+    if actual_diagnostics != expected_diagnostics:
+        missing = [
+            _artifact_pair_name(pair)
+            for pair in sorted(expected_diagnostics - actual_diagnostics)
+        ]
+        extra = [
+            _artifact_pair_name(pair)
+            for pair in sorted(actual_diagnostics - expected_diagnostics)
+        ]
+        raise ComparisonError(
+            "diagnostic artifact inventory differs from RUN_MANIFEST rules: "
+            f"missing {missing}; extra {extra}"
+        )
+    expected_diagnostic_reform = {
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+            "2026-01-01.2026-12-31": 13070
+        }
+    }
+    for reference, artifact in artifacts_by_reference.items():
+        if artifact.get("diagnostic_only") is not True:
+            continue
+        heads = artifact.get("heads")
+        valid_head = (
+            isinstance(heads, list)
+            and len(heads) == 1
+            and isinstance(heads[0], dict)
+            and heads[0].get("obr_head") == "Income tax"
+            and heads[0].get("condition_key") is None
+            and heads[0].get("source_table") == "Not an OBR claim"
+            and heads[0].get("external_metric") == "revenue_change"
+            and heads[0].get("pe_variables") == ["income_tax"]
+            and heads[0].get("channel") == "tax"
+            and heads[0].get("external_claim") is None
+        )
+        if (
+            artifact.get("obr_description")
+            != "Personal allowance £12,570 to £13,070 diagnostic"
+            or artifact.get("construction") != "forward_from_baseline"
+            or artifact.get("reform") != expected_diagnostic_reform
+            or not valid_head
+        ):
+            raise ComparisonError(
+                f"{reference}: diagnostic definition differs from "
+                "RUN_MANIFEST pa_smoke_probe rules"
+            )
+
+    expected_artifactless = set(selected_registry) - {
+        key for key, _ in expected_regular_pairs
+    }
+    artifactless = manifest.get("artifactless_frozen_registry")
+    if not isinstance(artifactless, dict):
+        raise ComparisonError(
+            "RUN_MANIFEST artifactless_frozen_registry must be a mapping"
+        )
+    if set(artifactless) != expected_artifactless:
+        missing = sorted(expected_artifactless - set(artifactless))
+        extra = sorted(set(artifactless) - expected_artifactless)
+        raise ComparisonError(
+            "artifactless frozen registry differs from manifest selection: "
+            f"missing {missing}; extra {extra}"
+        )
+    for key in sorted(expected_artifactless):
+        if _normalized_registry_measure(artifactless[key]) != (
+            _normalized_registry_measure(selected_registry[key])
+        ):
+            raise ComparisonError(
+                f"{key}: artifactless frozen registry differs from the "
+                "verified registry"
+            )
+
+    registry_sha256 = manifest.get("registry_sha256")
+    for pair, reference in actual_regular.items():
+        artifact = artifacts_by_reference[reference]
+        measure = selected_registry[pair[0]]
+        if reference not in legacy_set:
+            if artifact.get("registry_sha256") != registry_sha256:
+                raise ComparisonError(
+                    f"{reference}: artifact registry_sha256 differs from "
+                    "RUN_MANIFEST"
+                )
+            snapshot = artifact.get("frozen_registry")
+            if not isinstance(snapshot, dict) or _normalized_registry_measure(
+                snapshot
+            ) != _normalized_registry_measure(measure):
+                raise ComparisonError(
+                    f"{reference}: frozen_registry differs from the verified "
+                    "registry"
+                )
+
+        expected_heads = Counter(
+            (
+                head.get("obr_head"),
+                head.get("condition_key"),
+                head.get("source_table", measure.get("source_table")),
+                head.get("external_metric", measure.get("external_metric")),
+            )
+            for head in measure.get("heads", [])
+            if isinstance(head, dict)
+        )
+        actual_heads = Counter(
+            (
+                head.get("obr_head"),
+                head.get("condition_key"),
+                head.get("source_table"),
+                head.get("external_metric"),
+            )
+            for head in artifact.get("heads", [])
+            if isinstance(head, dict)
+        )
+        if actual_heads != expected_heads:
+            missing_heads = sorted((expected_heads - actual_heads).elements())
+            extra_heads = sorted((actual_heads - expected_heads).elements())
+            raise ComparisonError(
+                f"{reference}: artifact head inventory differs from frozen_registry; "
+                f"missing {missing_heads}; extra {extra_heads}"
+            )
+
+
+def expected_manifest_row_inventory(
+    *,
+    manifest: Mapping[str, Any],
+    staged_rows: Iterable[dict[str, Any]],
+    claims: list[dict[str, Any]],
+    registry: Mapping[str, dict[str, Any]],
+    artifacts_by_reference: Mapping[str, dict[str, Any]],
+) -> tuple[dict[str, dict[str, Any]], Counter[OutputInventoryKey]]:
+    """Rebuild the exact selected row inventory from verified commitments."""
+
+    _, years, selected_registry = _manifest_selection(manifest, registry)
+    expected_staged: Counter[StagedInventoryKey] = Counter()
+    computed_head_keys: list[StagedInventoryKey] = []
+    expected_regular_pairs: set[ArtifactPair] = set()
+    for measure in selected_registry.values():
+        key = measure["measure_key"]
+        heads = measure.get("heads")
+        if not isinstance(heads, list) or not all(
+            isinstance(head, dict) for head in heads
+        ):
+            raise ComparisonError(f"{key}: verified registry heads are invalid")
+        for year in years:
+            if measure.get("pe_reform") is None:
+                for claim in _registry_source_candidates(claims, measure, year):
+                    conditions = claim.get("conditions", {})
+                    head = (
+                        conditions.get("tax_head")
+                        or conditions.get("spending_head")
+                        or "Total"
+                    )
+                    row_kind = "total" if head == "Total" else "head"
+                    expected_staged[
+                        _staged_inventory_key(key, row_kind, claim)
+                    ] += 1
+                continue
+            found_claim = False
+            for head in heads:
+                claim = _resolve_registry_claim(claims, measure, head, year)
+                if claim is None:
+                    continue
+                found_claim = True
+                row_kind = "total" if head.get("condition_key") is None else "head"
+                inventory_key = _staged_inventory_key(key, row_kind, claim)
+                expected_staged[inventory_key] += 1
+                computed_head_keys.append(inventory_key)
+            if found_claim:
+                expected_regular_pairs.add((key, year))
+
+    actual_staged = Counter(_staged_row_inventory_key(row) for row in staged_rows)
+    if actual_staged != expected_staged:
+        raise ComparisonError(
+            "comparison source-row inventory differs from RUN_MANIFEST selection: "
+            + _inventory_difference(expected_staged, actual_staged)
+        )
+
+    _validate_frozen_registry_commitment(
+        manifest=manifest,
+        selected_registry=selected_registry,
+        artifacts_by_reference=artifacts_by_reference,
+        expected_regular_pairs=expected_regular_pairs,
+    )
+
+    expected_output: Counter[OutputInventoryKey] = Counter()
+    for key, count in expected_staged.items():
+        expected_output[_output_key_from_staged(key)] += count
+    mapped_groups: dict[ArtifactPair, list[OutputInventoryKey]] = defaultdict(list)
+    for key in computed_head_keys:
+        output_key = _output_key_from_staged(key)
+        if output_key[2] == "head" and output_key[4] in PMD_TABLES:
+            mapped_groups[(output_key[0], output_key[1])].append(output_key)
+    for (measure_key, year), keys in mapped_groups.items():
+        if len(keys) < 2:
+            continue
+        expected_output[
+            (
+                measure_key,
+                year,
+                "mapped_head_total",
+                "Mapped-head total",
+                " + ".join(sorted({key[4] for key in keys})),
+                " + ".join(sorted({key[5] for key in keys})),
+            )
+        ] += 1
+    return selected_registry, expected_output
+
+
 def _canonical(value: Any) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"))
 
@@ -1465,6 +1941,7 @@ def atomic_write_text(path: Path, text: str) -> None:
 
 def write_comparison_outputs_from_rows(
     *,
+    manifest: Mapping[str, Any],
     staged_rows: list[dict[str, Any]],
     claims: list[dict[str, Any]],
     registry: dict[str, dict[str, Any]],
@@ -1475,12 +1952,25 @@ def write_comparison_outputs_from_rows(
 
     if not staged_rows:
         raise ComparisonError("staged results are empty")
+    selected_registry, expected_output = expected_manifest_row_inventory(
+        manifest=manifest,
+        staged_rows=staged_rows,
+        claims=claims,
+        registry=registry,
+        artifacts_by_reference=artifacts_by_reference,
+    )
     rows = build_comparison_rows(
         staged_rows,
         claims,
-        registry,
+        selected_registry,
         artifacts_by_reference=artifacts_by_reference,
     )
+    actual_output = Counter(_output_inventory_key(row) for row in rows)
+    if actual_output != expected_output:
+        raise ComparisonError(
+            "rendered comparison row inventory differs from RUN_MANIFEST "
+            "selection: " + _inventory_difference(expected_output, actual_output)
+        )
     atomic_write_text(output_dir / "COMPARISON.csv", render_csv(rows))
     atomic_write_text(output_dir / "COMPARISON.md", render_markdown(rows))
     return rows
@@ -1508,6 +1998,7 @@ def write_comparison_outputs(
         output_dir=resolved_output_dir,
     )
     return write_comparison_outputs_from_rows(
+        manifest=manifest,
         staged_rows=staged_rows,
         claims=claims,
         registry=registry,

@@ -2777,6 +2777,7 @@ def restage_existing_run(
         import compare_uk_obr_costings as comparison
 
     comparison_rows = comparison.write_comparison_outputs_from_rows(
+        manifest=manifest,
         staged_rows=staged_rows,
         claims=claims,
         registry=replay_registry,
@@ -3271,6 +3272,7 @@ def main(argv: list[str] | None = None) -> int:
             import compare_uk_obr_costings as comparison
 
         comparison.write_comparison_outputs_from_rows(
+            manifest=manifest,
             staged_rows=staged_rows,
             claims=claims,
             registry={measure["measure_key"]: measure for measure in selected},
