@@ -62,6 +62,16 @@ CLASSIFIER_EMITTED = frozenset(
     }
 )
 
+# Adjudicated-only outcomes: a row may carry one of these only with a
+# traceable writeup in ``annotations`` (SCHEMA.md — "misses stay visible
+# until someone explains them").
+ADJUDICATED_ONLY = frozenset(
+    {
+        DiffClassification.ORACLE_DIFFERENCE,
+        DiffClassification.ROUNDING,
+    }
+)
+
 # Currency tolerance: benefit rules are stated weekly to the penny and
 # comparisons are annual, so 52 x GBP/USD 0.01. Booleans agree or they
 # don't. Wider slack is never a tolerance bump — a documented oracle
@@ -146,6 +156,14 @@ def _validate_household(household: dict) -> None:
     for unit in units:
         if not isinstance(unit, dict) or set(unit) != {"adults", "children"}:
             raise ValueError("each benefit unit needs exactly adults + children lists")
+        for role in ("adults", "children"):
+            members = unit[role]
+            if not isinstance(members, list) or not all(
+                isinstance(m, str) and m for m in members
+            ):
+                raise ValueError(
+                    f"benefit unit {role} must be a list of person ids, got {members!r}"
+                )
         if not unit["adults"]:
             raise ValueError("each benefit unit needs at least one adult")
         assigned.extend(unit["adults"])
@@ -194,8 +212,10 @@ class CaseSpec:
             or not 1990 <= self.policy_year <= 2100
         ):
             raise ValueError(f"implausible policy_year: {self.policy_year!r}")
-        if not self.expected_focus or not all(
-            isinstance(v, str) and v for v in self.expected_focus
+        if (
+            not isinstance(self.expected_focus, list)
+            or not self.expected_focus
+            or not all(isinstance(v, str) and v for v in self.expected_focus)
         ):
             raise ValueError("expected_focus must be a non-empty list of variables")
         _validate_household(self.household)
@@ -215,6 +235,7 @@ class CaseResult:
     computed_at: str  # ISO timestamp, caller-supplied
     classification: DiffClassification
     abs_diff: Optional[float] = None
+    tolerance: Optional[float] = None
     annotations: list = field(default_factory=list)
 
     def __post_init__(self):
@@ -222,6 +243,10 @@ class CaseResult:
         self.classification = DiffClassification(self.classification)
         if not self.case_id or not self.variable:
             raise ValueError("case_id and variable are required")
+        if not isinstance(self.annotations, list) or not all(
+            isinstance(a, str) and a.strip() for a in self.annotations
+        ):
+            raise ValueError("annotations must be a list of non-empty strings")
         both_numeric = self.pe_value is not None and self.oracle_value is not None
         if both_numeric:
             expected = abs(self.pe_value - self.oracle_value)
@@ -246,6 +271,30 @@ class CaseResult:
             not both_numeric or self.abs_diff != 0.0
         ):
             raise ValueError("match_exact requires identical numeric values")
+        if self.classification == DiffClassification.MATCH_WITHIN_TOLERANCE:
+            if (
+                isinstance(self.tolerance, bool)
+                or not isinstance(self.tolerance, (int, float))
+                or self.tolerance <= 0
+            ):
+                raise ValueError(
+                    "match_within_tolerance requires the numeric tolerance "
+                    "the row was judged against (tolerance > 0)"
+                )
+            if not both_numeric or not 0 < self.abs_diff <= self.tolerance:
+                raise ValueError(
+                    "match_within_tolerance requires 0 < abs_diff <= tolerance "
+                    f"(abs_diff={self.abs_diff}, tolerance={self.tolerance})"
+                )
+        elif self.tolerance is not None:
+            raise ValueError(
+                "tolerance is recorded only on match_within_tolerance rows"
+            )
+        if self.classification in ADJUDICATED_ONLY and not self.annotations:
+            raise ValueError(
+                f"{self.classification.value} is an adjudicated outcome and "
+                "requires a writeup in annotations (SCHEMA.md)"
+            )
 
 
 def classify(

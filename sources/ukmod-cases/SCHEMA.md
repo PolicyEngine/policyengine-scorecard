@@ -125,6 +125,7 @@ as `pe_results`).
   "oracle_version": "UKMOD B2026.08 / EUROMOD I7.0+",
   "computed_at": "2026-08-14T12:00:00Z",
   "abs_diff": 0.04,
+  "tolerance": 0.52,
   "classification": "match_within_tolerance"
 }
 ```
@@ -143,6 +144,14 @@ as `pe_results`).
 - `abs_diff` — `|pe_value − oracle_value|` when both sides are numeric,
   else `null`. Stored, not derived at read time, so the miss table is
   self-contained.
+- `tolerance` — required on (and only on) `match_within_tolerance` rows:
+  the numeric tolerance the row was judged against, satisfying
+  `0 < abs_diff ≤ tolerance`. Stored so a tolerance-table change can never
+  silently re-bless old rows.
+- `annotations` — a list of non-empty strings. Required (non-empty) on the
+  adjudicated-only classifications `oracle_difference` and `rounding`: the
+  traceable writeup naming the oracle defect / documented rounding rule.
+  A row claiming either without a writeup fails validation.
 
 ## Classification (closed set — fail loud)
 
@@ -162,7 +171,10 @@ or `unclassified`. Every `unclassified` row is a work item: adjudication —
 the diagnosis stage, human-or-agent, with a traceable writeup — moves it to
 `pe_gap`, `oracle_difference`, `policy_scope_mismatch`, or `rounding`.
 Nothing defaults to a flattering bucket; misses stay visible, exactly as in
-modes 1–2. Unknown classification strings raise.
+modes 1–2. Unknown classification strings raise. The writeup requirement is
+enforced at validation: `oracle_difference` and `rounding` rows raise
+without a non-empty `annotations` writeup, and `match_within_tolerance`
+rows raise without the `tolerance` they were judged against.
 
 ## Tolerances (per variable class)
 

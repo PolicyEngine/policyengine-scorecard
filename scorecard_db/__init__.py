@@ -1,4 +1,5 @@
 from .case_diffs import (
+    ADJUDICATED_ONLY,
     DEFAULT_TOLERANCES,
     CaseResult,
     CaseSpec,
@@ -26,6 +27,7 @@ from .models import (
 )
 
 __all__ = [
+    "ADJUDICATED_ONLY",
     "BASELINE",
     "CURRENT_LAW_DESCRIPTOR",
     "DEFAULT_TOLERANCES",

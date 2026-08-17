@@ -43,16 +43,39 @@
    "rationale": "UC child elements (two children, both post-April-2017 so no protected rate) plus the private-rent housing element via LHA (2-bed rate, Yorkshire BRMA) and Child Benefit for two. Rent GBP 180/week = 9,360/year, below the LHA cap in most Yorkshire BRMAs so the LHA-vs-actual-rent minimum is exercised without binding."
   },
   {
-   "case_id": "uk-uc-two-child-limit-protected-eldest",
-   "description": "Workless couple, three children, eldest born pre-April-2017",
-   "policy_year": 2026,
+   "case_id": "uk-uc-two-child-limit-multiple-birth",
+   "description": "Workless couple, three children incl. twins, limit in force (2025)",
+   "policy_year": 2025,
    "country": "UK",
    "household": {
     "people": {
      "adult_1": {"age": 36},
      "adult_2": {"age": 34},
-     "child_1": {"age": 9, "date_of_birth": "2016-06-01"},
-     "child_2": {"age": 7, "date_of_birth": "2019-03-01"},
+     "child_1": {"age": 6, "date_of_birth": "2018-06-01"},
+     "child_2": {"age": 2, "date_of_birth": "2022-09-01"},
+     "child_3": {"age": 2, "date_of_birth": "2022-09-01"}
+    },
+    "benefit_units": [
+     {"adults": ["adult_1", "adult_2"], "children": ["child_1", "child_2", "child_3"]}
+    ],
+    "region": "WEST_MIDLANDS",
+    "tenure": "rented_social",
+    "rent": 8320
+   },
+   "expected_focus": ["universal_credit", "child_benefit"],
+   "rationale": "Two-child limit with the multiple-birth exception, pinned to policy year 2025 because the limit was abolished from 6 April 2026 (AB2025) and only a pre-abolition year can exercise it. All three children are post-April-2017, so the limit binds on ordinal position alone: child_1 takes the first element, child_2 (first of the twins) the second, and child_3 - the second child of the multiple birth - is exempt and takes a third element the limit would otherwise deny. The exemption sits on a third-or-later child, so it strictly changes the entitlement (3 elements vs 2). Also pins that Child Benefit ignores the limit (paid for all three). Shared DOBs are explicit because the exception keys off the birth event."
+  },
+  {
+   "case_id": "uk-uc-two-child-limit-abolished",
+   "description": "Same three-child family evaluated post-abolition (2026)",
+   "policy_year": 2026,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {"age": 37},
+     "adult_2": {"age": 35},
+     "child_1": {"age": 7, "date_of_birth": "2018-06-01"},
+     "child_2": {"age": 3, "date_of_birth": "2022-09-01"},
      "child_3": {"age": 3, "date_of_birth": "2022-09-01"}
     },
     "benefit_units": [
@@ -63,7 +86,7 @@
     "rent": 8320
    },
    "expected_focus": ["universal_credit", "child_benefit"],
-   "rationale": "Two-child limit binding with the pre-April-2017 protection: child_1 (born 2016-06-01) is exempt from the limit, child_2 takes the second element, child_3 gets none. Also pins that Child Benefit is unaffected by the limit (paid for all three). DOBs are explicit because the exemption keys off date of birth, not age."
+   "rationale": "The abolition counterpart to uk-uc-two-child-limit-multiple-birth: the same family one year on, in the first year the two-child limit no longer exists (removed from 6 April 2026, AB2025). All three post-April-2017 children take child elements with no exception needed; an engine still applying the limit under-pays exactly one element. Paired with the 2025 case, the year-on-year delta isolates the abolition itself."
   },
   {
    "case_id": "uk-benefit-cap-london",

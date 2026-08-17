@@ -54,8 +54,33 @@ class TestBattery:
         for c in load_battery(BATTERY):
             assert c.country == "UK"
             assert c.case_id.startswith("uk-")
-            assert c.policy_year == 2026
+            # 2025 is deliberate: the two-child limit ended 6 April 2026,
+            # so only a pre-abolition year can exercise its exemptions.
+            assert c.policy_year in (2025, 2026)
             assert c.rationale  # every case explains itself
+
+    def test_two_child_limit_pair(self):
+        # The exemption case must sit in a year the limit exists, and its
+        # abolition counterpart in the first year it does not.
+        by_id = {c.case_id: c for c in load_battery(BATTERY)}
+        binding = by_id["uk-uc-two-child-limit-multiple-birth"]
+        abolished = by_id["uk-uc-two-child-limit-abolished"]
+        assert binding.policy_year == 2025
+        assert abolished.policy_year == 2026
+        for case in (binding, abolished):
+            children = case.household["benefit_units"][0]["children"]
+            assert len(children) == 3
+            # Every child post-April-2017, so no pre-2017 protection can
+            # stand in for the exemption / abolition under test.
+            for child in children:
+                dob = case.household["people"][child]["date_of_birth"]
+                assert dob > "2017-04-06"
+        # The multiple birth spans a third-or-later child: shared DOBs on
+        # the 2nd and 3rd children, so the exception changes entitlement.
+        people = binding.household["people"]
+        assert (
+            people["child_2"]["date_of_birth"] == (people["child_3"]["date_of_birth"])
+        )
 
     def test_battery_is_inputs_only(self):
         # No case embeds expected output values (SCHEMA.md doctrine).
@@ -138,6 +163,22 @@ class TestCaseSpec:
         with pytest.raises(ValueError, match="expected_focus"):
             CaseSpec(**case_kwargs(expected_focus=[]))
 
+    def test_string_focus_rejected(self):
+        # A bare string iterates as characters; the schema demands a list.
+        with pytest.raises(ValueError, match="expected_focus"):
+            CaseSpec(**case_kwargs(expected_focus="universal_credit"))
+
+    def test_string_unit_members_rejected(self):
+        kw = case_kwargs()
+        kw["household"]["benefit_units"] = [{"adults": "adult_1", "children": []}]
+        with pytest.raises(ValueError, match="list of person ids"):
+            CaseSpec(**kw)
+        kw["household"]["benefit_units"] = [
+            {"adults": ["adult_1"], "children": "child_1"}
+        ]
+        with pytest.raises(ValueError, match="list of person ids"):
+            CaseSpec(**kw)
+
 
 class TestClassify:
     def test_exact(self):
@@ -197,6 +238,7 @@ class TestCaseResult:
             computed_at="2026-08-14T12:00:00Z",
             classification="match_within_tolerance",
             abs_diff=0.04,
+            tolerance=0.52,
         )
         base.update(kw)
         return base
@@ -222,7 +264,9 @@ class TestCaseResult:
         with pytest.raises(ValueError, match="pe_gap"):
             CaseResult(**self.result_kwargs(pe_value=None, abs_diff=None))
         r = CaseResult(
-            **self.result_kwargs(pe_value=None, abs_diff=None, classification="pe_gap")
+            **self.result_kwargs(
+                pe_value=None, abs_diff=None, tolerance=None, classification="pe_gap"
+            )
         )
         assert r.classification is DiffClassification.PE_GAP
 
@@ -233,3 +277,47 @@ class TestCaseResult:
     def test_match_exact_requires_identity(self):
         with pytest.raises(ValueError, match="match_exact"):
             CaseResult(**self.result_kwargs(classification="match_exact"))
+
+    def test_within_tolerance_requires_tolerance(self):
+        # An empty-annotation, no-tolerance row must not validate.
+        with pytest.raises(ValueError, match="tolerance"):
+            CaseResult(**self.result_kwargs(tolerance=None))
+
+    def test_within_tolerance_bounds_enforced(self):
+        with pytest.raises(ValueError, match="abs_diff <= tolerance"):
+            CaseResult(**self.result_kwargs(oracle_value=4797.48, abs_diff=1.0))
+        with pytest.raises(ValueError, match="tolerance > 0"):
+            CaseResult(**self.result_kwargs(tolerance=0.0))
+        with pytest.raises(ValueError, match="abs_diff <= tolerance"):
+            # A zero diff is match_exact, never match_within_tolerance.
+            CaseResult(**self.result_kwargs(oracle_value=4796.48, abs_diff=0.0))
+
+    def test_tolerance_only_on_within_tolerance_rows(self):
+        with pytest.raises(ValueError, match="only on match_within_tolerance"):
+            CaseResult(
+                **self.result_kwargs(
+                    pe_value=None, abs_diff=None, classification="pe_gap"
+                )
+            )
+
+    def test_adjudicated_classes_require_writeup(self):
+        for cls in ("oracle_difference", "rounding"):
+            with pytest.raises(ValueError, match="adjudicated"):
+                CaseResult(**self.result_kwargs(classification=cls, tolerance=None))
+            r = CaseResult(
+                **self.result_kwargs(
+                    classification=cls,
+                    tolerance=None,
+                    annotations=[
+                        "UKMOD rounds monthly amounts to the penny; "
+                        "x12 explains the 0.04 (writeup ref)"
+                    ],
+                )
+            )
+            assert r.classification is DiffClassification(cls)
+
+    def test_annotations_must_be_nonempty_strings(self):
+        with pytest.raises(ValueError, match="annotations"):
+            CaseResult(**self.result_kwargs(annotations="a writeup"))
+        with pytest.raises(ValueError, match="annotations"):
+            CaseResult(**self.result_kwargs(annotations=[""]))
