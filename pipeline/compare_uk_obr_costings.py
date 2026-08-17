@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Write descriptive OBR/PE-UK costing counterparts from staged results.
 
-The harvested OBR descriptor is not unique by itself for Policy Measures
-Database rows.  Resolution therefore also requires the staged verbatim measure
-description and source table.  Every staged PE value is then checked against
-the frozen source-claim snapshot and PE value in its saved run artifact.
+The harvested OBR descriptor carries the verbatim measure description and
+source table needed to resolve every row exactly once. Every staged PE value is
+then checked against the frozen source-claim snapshot and PE value in its saved
+run artifact.
 
 The output retains source head rows.  For PMD measures with at least two mapped
 heads, it also shows a comparison-only sum of those mapped heads.  That sum is
@@ -124,7 +124,7 @@ def _is_number(value: Any) -> bool:
 def resolve_external_claim(
     staged_row: dict[str, Any], claims: Iterable[dict[str, Any]]
 ) -> dict[str, Any]:
-    """Resolve using descriptor plus verbatim measure identity and source table."""
+    """Resolve one source row using only the staged match descriptor."""
 
     missing = REQUIRED_STAGED_FIELDS - set(staged_row)
     if missing:
@@ -140,7 +140,14 @@ def resolve_external_claim(
         raise ComparisonError(
             f"{staged_row['measure_key']}: external_claim_match must be a mapping"
         )
-    expected_match_fields = {"source", "metric", "period", "conditions"}
+    expected_match_fields = {
+        "source",
+        "metric",
+        "period",
+        "source_table",
+        "reform_hint",
+        "conditions",
+    }
     if set(match) != expected_match_fields:
         raise ComparisonError(
             f"{staged_row['measure_key']}: external_claim_match fields are "
@@ -153,14 +160,14 @@ def resolve_external_claim(
         if claim.get("source") == match["source"]
         and claim_metric(claim) == match["metric"]
         and claim.get("period") == match["period"]
+        and claim.get("source_table") == match["source_table"]
+        and claim.get("reform_hint") == match["reform_hint"]
         and _canonical(claim.get("conditions")) == conditions_key
-        and claim.get("source_table") == staged_row["source_table"]
-        and claim.get("reform_hint") == staged_row["obr_description"]
     ]
     if len(hits) != 1:
         raise ComparisonError(
             f"{staged_row['measure_key']} {match['period']}: {len(hits)} OBR rows "
-            "match descriptor + verbatim measure + source table; expected one"
+            "match external_claim_match; expected one"
         )
     claim = hits[0]
     if claim.get("proposed_unit") != "gbp":

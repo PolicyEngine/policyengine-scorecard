@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import copy
 import csv
+import hashlib
 import importlib.util
 import json
 import os
@@ -32,6 +33,16 @@ SMOKE_MANIFEST = (
 )
 SMOKE_COMPARISON = (
     ROOT / "results" / "uk" / "obr_costings" / "COMPARISON.csv"
+)
+VENDORED_CLAIMS = (
+    ROOT
+    / "sources"
+    / "harvest-20260802"
+    / "uk_obr"
+    / "obr_costings_claims.jsonl"
+)
+FULL_HARVEST_CLAIMS = (
+    Path.home() / "scorecard-harvest" / "uk_obr" / "claims_staged.jsonl"
 )
 STAGED_REQUIRED_FIELDS = {
     "external_claim_match",
@@ -362,6 +373,8 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
         "source": synthetic_claim["source"],
         "metric": synthetic_claim["metric"],
         "period": synthetic_claim["period"],
+        "source_table": synthetic_claim["source_table"],
+        "reform_hint": synthetic_claim["reform_hint"],
         "conditions": synthetic_claim["conditions"],
     }
     assert row["external_claim_match"]["conditions"] == synthetic_claim["conditions"]
@@ -369,6 +382,8 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
         "source",
         "metric",
         "period",
+        "source_table",
+        "reform_hint",
         "conditions",
     }
     assert row["benchmark_class"] == "different_model"
@@ -424,6 +439,8 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
             "source",
             "metric",
             "period",
+            "source_table",
+            "reform_hint",
             "conditions",
         }
         assert row["benchmark_class"] == "different_model"
@@ -451,6 +468,8 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
                 "source": claim["source"],
                 "metric": claim["metric"],
                 "period": claim["period"],
+                "source_table": claim["source_table"],
+                "reform_hint": claim["reform_hint"],
                 "conditions": claim["conditions"],
             }
             if descriptor == row["external_claim_match"]:
@@ -500,6 +519,65 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
     assert round(diagnostic["raw_aggregates"]["baseline_gbp"]["income_tax"] / 1e9, 1) == (
         421.9
     )
+
+
+def _descriptor_hits(
+    descriptor: dict[str, object], claims: list[dict[str, object]]
+) -> list[dict[str, object]]:
+    return [
+        claim
+        for claim in claims
+        if compute.external_claim_match(claim) == descriptor
+    ]
+
+
+def test_every_staged_descriptor_matches_one_vendored_claim():
+    staged_rows = [json.loads(line) for line in SMOKE_STAGED.read_text().splitlines()]
+    vendored_claims = compute.load_claims(VENDORED_CLAIMS)
+
+    assert len(vendored_claims) == 215
+    for row in staged_rows:
+        assert len(_descriptor_hits(row["external_claim_match"], vendored_claims)) == 1
+
+
+def test_vendored_claims_are_exact_registry_mapped_population():
+    spec = compute.load_registry(REGISTRY)
+    vendored_claims = compute.load_claims(VENDORED_CLAIMS)
+    selected: list[dict[str, object]] = []
+    for measure in spec["measures"]:
+        for head in measure["heads"]:
+            for year in range(compute.YEAR_MIN, compute.YEAR_MAX + 1):
+                claim = compute.resolve_claim(vendored_claims, measure, head, year)
+                if claim is not None:
+                    selected.append(claim)
+
+    assert len(selected) == len({id(claim) for claim in selected}) == 215
+    assert {id(claim) for claim in selected} == {
+        id(claim) for claim in vendored_claims
+    }
+    assert hashlib.sha256(VENDORED_CLAIMS.read_bytes()).hexdigest() == (
+        "99b8748ccd318a0d0cee0ddbbade757526d186099e15f6ca5a8e4b8d6c2dcca9"
+    )
+
+
+@pytest.mark.skipif(
+    not FULL_HARVEST_CLAIMS.exists(),
+    reason="full ~/scorecard-harvest OBR claims file is unavailable",
+)
+def test_every_staged_descriptor_matches_one_full_harvest_claim():
+    staged_rows = [json.loads(line) for line in SMOKE_STAGED.read_text().splitlines()]
+    full_claims = compute.load_claims(FULL_HARVEST_CLAIMS)
+
+    for row in staged_rows:
+        assert len(_descriptor_hits(row["external_claim_match"], full_claims)) == 1
+
+    full_bytes = FULL_HARVEST_CLAIMS.read_bytes()
+    assert hashlib.sha256(full_bytes).hexdigest() == (
+        "46117d14c4de7ac10cbc9bc09acef6c5b5060db1605e02334d4a827cf420a3bd"
+    )
+    full_lines = full_bytes.splitlines(keepends=True)
+    for vendored_line in VENDORED_CLAIMS.read_bytes().splitlines(keepends=True):
+        assert full_lines.count(vendored_line) == 1
 
 
 def test_resolver_rejects_ambiguous_and_missing_mapped_heads(

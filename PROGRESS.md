@@ -32,6 +32,18 @@ remains intentionally unrun.
   absence is accepted only because run id `campaign-20260816-obr-costings`
   predates the field's 2026-08-17 introduction. A fake-file mutation test
   exercises the before/after rejection.
+- Fixed finding 2 by extending every staged `external_claim_match` to the
+  complete six-key identity: `source`, adopted `metric`, `period`, verbatim
+  `source_table`, verbatim `reform_hint`, and the full `conditions` mapping.
+  The comparison resolver now uses only those descriptor keys.
+- Vendored the exact 215 original harvest lines selected by every mapped
+  registry head-year in `sources/harvest-20260802/uk_obr/`, preserving source
+  order and bytes. Tests prove the vendored set is exactly the registry-mapped
+  population, every staged descriptor has one vendored match, and—when the
+  sibling harvest is present—one full-harvest match with byte-identical rows.
+- The future UK ingestor work in #33/#48 must accept `source_table` and
+  `reform_hint` as supported match keys. This lane does not modify
+  `scorecard_db/`.
 - Started Follow-up 1 from clean branch `obr-costings-mode2` at `b6442fe` and
   read this progress record plus both compute/comparison modules end to end.
 - Confirmed the orientation defect is confined to artifact/staging derivation:
@@ -146,8 +158,6 @@ remains intentionally unrun.
 
 ## Next
 
-- Vendor the 215 exact matched harvest rows, make staged descriptors unique,
-  and test both vendored and optional full-harvest joins.
 - Replace unsupported row mechanisms with harvested/code-backed axes, correct
   the provisional HICBC welfare mapping, and add the employer-NIC incidence
   mechanism from installed source.
@@ -255,11 +265,11 @@ Maximum sampled process RSS was 32.888 GiB.
 - Table 3.17 rows do not carry `fiscal_event`, `tax_head`, `costing_phase`, or
   `sign_convention`; their actual conditions are `geography`, `fy`, `basis`,
   `line_item`, and `note`. Staging must preserve that exact source shape.
-- PMD `source + metric + period + conditions` is not unique because the
-  verbatim measure description is top-level `reform_hint`. The prescribed
-  descriptor will be emitted, but this lane's exact resolver must additionally
-  require `obr_description == reform_hint` and `source_table`. Claim-ID or
-  reform-aware UK attachment remains work for the future UK ingestor.
+- PMD `source + metric + period + conditions` alone is not unique. Staged
+  descriptors now also carry the harvested `source_table` and verbatim
+  `reform_hint`; this six-key identity resolves each mapped row exactly once.
+  The future UK ingestor in #33/#48 must support those two match keys before
+  campaign-database attachment.
 - PMD spending rows currently carry `proposed_metric: exchequer_impact`, not a
   `metric` field. This lane treats `exchequer_impact` as the adopted staging
   vocabulary summarized by the brief and preserves the raw condition keys.

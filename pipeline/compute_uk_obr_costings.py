@@ -210,6 +210,8 @@ def external_claim_match(claim: dict[str, Any]) -> dict[str, Any]:
         "source": claim["source"],
         "metric": claim_metric(claim),
         "period": claim["period"],
+        "source_table": claim["source_table"],
+        "reform_hint": claim["reform_hint"],
         "conditions": claim["conditions"],
     }
 
