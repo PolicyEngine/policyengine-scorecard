@@ -4,14 +4,18 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 5 is complete on branch `obr-costings-mode2` from
-`22718bfb1e257b51f294eec1d33a6ac83f2049e3`. Restage is bound to the recorded
-registry and claims bytes and reconstructs output from frozen inputs. Exact
-dry-run, restage byte-identity, focused, and full-suite verification all pass;
-no managed simulation was constructed.
+Follow-up 6 is in progress on branch `obr-costings-mode2` from
+`b01bd5828a1b7e5d4b8a77803cfb97eeb5b796ad`. Round 5 found that restage binds
+registry and claims bytes but does not yet bind artifact bytes, and that its
+byte-identity test writes the tracked replay fixture. No managed simulation
+will be constructed during this follow-up.
 
 ## Done
 
+- Started Follow-up 6 by reading the complete round-5 review before inspecting
+  or changing implementation code.
+- Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
+  `b01bd5828a1b7e5d4b8a77803cfb97eeb5b796ad`.
 - Started Follow-up 5 by reading the complete round-4 review before inspecting
   or changing implementation code.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -60,7 +64,10 @@ no managed simulation was constructed.
   `8c291b6b`; the migrated manifest SHA-256 is `37c8145b`.
 - Final verification passes all 115 focused OBR tests and all 282 repository
   tests. The sole warning is the upstream PolicyEngine-UK Pydantic deprecation.
-- Two independent read-only audits found no remaining fail-open replay bypass.
+- At the end of Follow-up 5, replay bound dataset bytes before and after each
+  managed simulation, registry bytes, and claims-slice bytes; manifest path
+  containment and canonical role-collision rejection were also enforced.
+  Round 5 identified artifact bytes as the remaining unbound input.
 - Started Follow-up 4 by reading the complete round-3 review before inspecting
   or changing implementation code.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -327,8 +334,13 @@ no managed simulation was constructed.
 
 ## Next
 
-- No in-scope implementation or verification remains. Hand off the committed
-  branch and the Follow-up 5 report for review; do not push from this lane.
+- Bind every recorded artifact path to its exact SHA-256, verify each artifact
+  before parsing and immediately before any write, and reject incomplete maps.
+- Move the complete replay fixture under `tmp_path` in tests and add
+  production-path coordinated-mutation and missing-file/map-entry coverage.
+- Run the exact 26-measure dry run, no-simulation restage with byte-identity
+  checks, focused and full suites; commit each coherent step and report without
+  pushing.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
