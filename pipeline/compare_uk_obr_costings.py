@@ -185,17 +185,14 @@ def _resolve_recorded_path(
         ) from exc
     if reference != canonical:
         raise ComparisonError(
-            f"{role} must be canonical; recorded {reference!r}, "
-            f"canonical {canonical!r}"
+            f"{role} must be canonical; recorded {reference!r}, canonical {canonical!r}"
         )
     return path
 
 
 def _validate_sha256(value: Any, *, field: str, manifest_path: Path) -> str:
     if not isinstance(value, str) or re.fullmatch(r"[0-9a-f]{64}", value) is None:
-        raise ComparisonError(
-            f"{manifest_path}: {field} must be a lowercase SHA-256"
-        )
+        raise ComparisonError(f"{manifest_path}: {field} must be a lowercase SHA-256")
     return value
 
 
@@ -621,9 +618,7 @@ def recompute_artifact_head_pe_value(
         return -exchequer_delta
     if construction == "forward_from_baseline":
         return exchequer_delta
-    raise ComparisonError(
-        f"{reference}: {name}: invalid construction {construction!r}"
-    )
+    raise ComparisonError(f"{reference}: {name}: invalid construction {construction!r}")
 
 
 def _expected_registry_head(
@@ -852,9 +847,7 @@ def validate_artifact_trace(
     if snapshot.get("value_gbp") != claim["value"]:
         raise ComparisonError(f"{reference}: frozen and harvested OBR values differ")
     if snapshot.get("unit") != "gbp":
-        raise ComparisonError(
-            f"{reference}: frozen OBR value is not normalized to gbp"
-        )
+        raise ComparisonError(f"{reference}: frozen OBR value is not normalized to gbp")
     recomputed = recompute_artifact_head_pe_value(
         artifact,
         head,

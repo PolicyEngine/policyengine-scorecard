@@ -1046,10 +1046,7 @@ def test_standalone_renderer_recomputes_coordinated_staged_and_head_mutation(
 ):
     replay = _copy_committed_replay_fixture(tmp_path)
     manifest = json.loads(replay["manifest_path"].read_text())
-    reference = (
-        "results/uk/obr_costings/"
-        "efo_march_2026__pa_and_hrt_freezes_2026.json"
-    )
+    reference = "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json"
     artifact_path = replay["copied_paths"][reference]
     artifact = json.loads(artifact_path.read_text())
     head = next(head for head in artifact["heads"] if head["obr_head"] == "Income tax")
@@ -1101,10 +1098,7 @@ def test_standalone_renderer_rejects_fabricated_variable_at_sha_gate(
 ):
     replay = _copy_committed_replay_fixture(tmp_path)
     manifest = json.loads(replay["manifest_path"].read_text())
-    reference = (
-        "results/uk/obr_costings/"
-        "efo_march_2026__pa_and_hrt_freezes_2026.json"
-    )
+    reference = "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json"
     artifact_path = replay["copied_paths"][reference]
     artifact = json.loads(artifact_path.read_text())
     artifact["heads"][0]["pe_variables"] = ["fabricated_variable"]
@@ -2538,15 +2532,9 @@ def test_restage_rejects_postwrite_mutation_before_comparison(
     downstream_paths = [
         replay["output_dir"] / "COMPARISON.csv",
         replay["output_dir"] / "COMPARISON.md",
-        next(
-            path
-            for path in replay["output_paths"]
-            if path.name == "staged.jsonl"
-        ),
+        next(path for path in replay["output_paths"] if path.name == "staged.jsonl"),
     ]
-    original_downstream = {
-        path: path.read_bytes() for path in downstream_paths
-    }
+    original_downstream = {path: path.read_bytes() for path in downstream_paths}
 
     def mutate_after_write(path, payload):
         original_writer(path, payload)
@@ -2588,9 +2576,7 @@ def test_restage_rejects_postwrite_mutation_before_comparison(
     assert json.loads(replay["artifact_path"].read_text())["heads"][0][
         "pe_variables"
     ] == ["fabricated_variable"]
-    assert {
-        path: path.read_bytes() for path in downstream_paths
-    } == original_downstream
+    assert {path: path.read_bytes() for path in downstream_paths} == original_downstream
 
 
 def test_restage_rederives_existing_artifacts_without_any_simulation(
@@ -2890,9 +2876,7 @@ def test_restage_overwrites_postparse_disk_mutation_from_verified_memory(
         synthetic_measure,
         synthetic_claim,
     )
-    original_outputs = {
-        path: path.read_bytes() for path in replay["output_paths"]
-    }
+    original_outputs = {path: path.read_bytes() for path in replay["output_paths"]}
     original_rederive = compute.rederive_artifact_orientation
     mutated = False
 
@@ -3447,9 +3431,7 @@ def test_full_selection_restage_reconstructs_five_null_reforms(tmp_path, monkeyp
     unchanged_after_output_start = [
         path for path in output_paths if path != manifest_path
     ]
-    assert {
-        path: path.read_bytes() for path in unchanged_after_output_start
-    } == {
+    assert {path: path.read_bytes() for path in unchanged_after_output_start} == {
         path: first_outputs[path] for path in unchanged_after_output_start
     }
 

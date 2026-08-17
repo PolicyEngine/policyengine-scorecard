@@ -1267,9 +1267,9 @@ def atomic_write_bytes(path: Path, payload: bytes) -> None:
 
 
 def canonical_json_bytes(value: Any) -> bytes:
-    return (
-        json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n"
-    ).encode("utf-8")
+    return (json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n").encode(
+        "utf-8"
+    )
 
 
 def canonical_jsonl_bytes(rows: Iterable[dict[str, Any]]) -> bytes:
@@ -2629,9 +2629,7 @@ def restage_existing_run(
             if any(claim is not None for claim in mapped_claims):
                 expected_regular_pairs.add((measure["measure_key"], year))
 
-    replacements: list[
-        tuple[str, Path, dict[str, Any], dict[str, Any], bool]
-    ] = []
+    replacements: list[tuple[str, Path, dict[str, Any], dict[str, Any], bool]] = []
     claim_differences: list[dict[str, Any]] = []
     for (
         reference,
@@ -2654,9 +2652,7 @@ def restage_existing_run(
             allow_missing_replay_fields=is_legacy,
             legacy_claim_ordinals=legacy_ordinals,
         )
-        replacements.append(
-            (reference, path, refreshed, measure, diagnostic_only)
-        )
+        replacements.append((reference, path, refreshed, measure, diagnostic_only))
 
     if claim_differences:
         details: list[str] = []
@@ -2727,8 +2723,7 @@ def restage_existing_run(
     for _, path, _, _, _, payload, _ in prepared_artifacts:
         write_artifact_payload(path, payload)
     verify_written_artifacts(
-        (path, digest)
-        for _, path, _, _, _, _, digest in prepared_artifacts
+        (path, digest) for _, path, _, _, _, _, digest in prepared_artifacts
     )
 
     staged_rows: list[dict[str, Any]] = []
@@ -3066,9 +3061,7 @@ def main(argv: list[str] | None = None) -> int:
     }
 
     artifact_measure_keys: set[str] = set()
-    artifact_records: list[
-        tuple[str, Path, dict[str, Any], dict[str, Any], bool]
-    ] = []
+    artifact_records: list[tuple[str, Path, dict[str, Any], dict[str, Any], bool]] = []
 
     for year in years:
         active: list[dict[str, Any]] = []
@@ -3234,8 +3227,7 @@ def main(argv: list[str] | None = None) -> int:
     for _, path, _, _, _, payload, _ in prepared_artifacts:
         write_artifact_payload(path, payload)
     verify_written_artifacts(
-        (path, digest)
-        for _, path, _, _, _, _, digest in prepared_artifacts
+        (path, digest) for _, path, _, _, _, _, digest in prepared_artifacts
     )
 
     staged_rows: list[dict[str, Any]] = []
