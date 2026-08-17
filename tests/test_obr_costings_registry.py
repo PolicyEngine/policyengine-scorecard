@@ -30,6 +30,9 @@ SMOKE_STAGED = ROOT / "results" / "uk" / "staged" / "obr_costings.jsonl"
 SMOKE_MANIFEST = (
     ROOT / "results" / "uk" / "obr_costings" / "RUN_MANIFEST.json"
 )
+SMOKE_COMPARISON = (
+    ROOT / "results" / "uk" / "obr_costings" / "COMPARISON.csv"
+)
 STAGED_REQUIRED_FIELDS = {
     "external_claim_match",
     "engine_version",
@@ -145,6 +148,14 @@ def test_committed_registry_schema_and_counts():
         for measure in spec["measures"]
         if measure["computability"] != "not_expressible"
     )
+    assert sum(
+        measure["construction"] == "reversal_on_certified_world"
+        for measure in spec["measures"]
+    ) == 25
+    assert sum(
+        measure["construction"] == "forward_from_baseline"
+        for measure in spec["measures"]
+    ) == 1
 
 
 def test_registry_rejects_duplicate_keys_and_non_finite_reform_values():
@@ -358,8 +369,23 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
                 matching_heads.append(head)
 
         assert len(matching_heads) == 1
-        assert matching_heads[0]["pe_value"] == row["pe_value"]
-        assert matching_heads[0]["pe_variables"]
+        artifact_head = matching_heads[0]
+        assert artifact_head["pe_variables"]
+        raw_delta = compute.reform_minus_baseline(
+            artifact["raw_aggregates"]["baseline_gbp"],
+            artifact["raw_aggregates"]["reform_gbp"],
+            artifact_head["pe_variables"],
+        )
+        literal_delta, measure_value = compute.orient_exchequer_effect(
+            raw_delta,
+            artifact_head["channel"],
+            artifact["construction"],
+        )
+        assert artifact_head["raw_reform_minus_baseline_gbp"] == raw_delta
+        assert artifact_head["reversal_delta_exchequer_gain"] == literal_delta
+        assert artifact_head["pe_value"] == row["pe_value"] == measure_value
+        assert measure_value == -literal_delta
+        assert "forward_delta_exchequer_gain" not in artifact_head
 
     # Six measures across two years are staged. The thirteenth manifest
     # artifact is the separately requested PA +GBP 500 diagnostic.
@@ -374,6 +400,11 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
         ).read_text()
     )
     assert diagnostic["diagnostic_only"] is True
+    diagnostic_head = diagnostic["heads"][0]
+    assert diagnostic_head["forward_delta_exchequer_gain"] == (
+        diagnostic_head["pe_value"]
+    )
+    assert "reversal_delta_exchequer_gain" not in diagnostic_head
     assert round(diagnostic["heads"][0]["pe_value"] / 1e9, 2) == -4.48
     assert round(diagnostic["raw_aggregates"]["baseline_gbp"]["income_tax"] / 1e9, 1) == (
         421.9
@@ -712,6 +743,27 @@ def test_comparison_resolves_measure_identity_and_traces_artifact(
     assert rows[0]["pe_value_gbp"] == -25.0
     assert rows[0]["benchmark_class"] == "different_model"
     assert rows[0]["ratio_bin"] == "same_sign_ratio_0.5_to_0.8"
+    assert any(
+        "measure Δ = −(reversal − baseline)" in x
+        for x in rows[0]["annotations"]
+    )
+    assert any(
+        "adjustment=PE static vs OBR behavioural-adjusted" in x
+        and "baseline=certified-world reversal vs OBR announcement baseline" in x
+        and "timing=PE calendar year proxies OBR FY" in x
+        and "head_scope=" in x
+        and "remaining_difference=unexplained" in x
+        for x in rows[0]["annotations"]
+    )
+
+    literal_staged = copy.deepcopy(staged)
+    literal_staged["pe_value"] = 25.0
+    with pytest.raises(compare.ComparisonError, match="staged and artifact PE"):
+        compare.build_comparison_rows(
+            [literal_staged],
+            [synthetic_claim],
+            {synthetic_measure["measure_key"]: synthetic_measure},
+        )
     assert any("remaining_difference=unexplained" in x for x in rows[0]["annotations"])
 
 
@@ -766,4 +818,56 @@ def test_comparison_total_is_explicitly_mapped_head_only(synthetic_measure):
     assert any(
         "not attached to an external TOTAL claim" in x for x in totals[0]["annotations"]
     )
+    assert any(
+        "measure Δ = −(reversal − baseline)" in x
+        for x in totals[0]["annotations"]
+    )
+    assert any(
+        "adjustment=PE static vs OBR behavioural-adjusted" in x
+        and "baseline=certified-world reversal vs OBR announcement baseline" in x
+        and "timing=PE calendar year proxies OBR FY" in x
+        and "head_scope=mapped PMD heads only" in x
+        and "remaining_difference=unexplained" in x
+        for x in totals[0]["annotations"]
+    )
     assert any("Partial scope" in x for x in totals[0]["annotations"])
+
+
+def test_committed_smoke_comparison_is_measure_oriented():
+    with SMOKE_COMPARISON.open(newline="") as source:
+        rows = list(csv.DictReader(source))
+
+    assert len(rows) == 26
+    assert sum(row["row_kind"] == "mapped_head_total" for row in rows) == 6
+    assert all(row["ratio_bin"] != "opposite_sign" for row in rows)
+    assert sum(row["ratio_bin"] == "pe_zero" for row in rows) == 4
+    expected_summary_bins = {
+        "efo_march_2026__pa_and_hrt_freezes": "same_sign_ratio_1.25_to_2",
+        "efo_march_2026__additional_rate_threshold_reduction": (
+            "same_sign_ratio_1.25_to_2"
+        ),
+        "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp": (
+            "same_sign_ratio_1.25_to_2"
+        ),
+        "spring_budget_2024__hicbc_threshold_and_taper": (
+            "same_sign_ratio_at_least_2"
+        ),
+        "autumn_budget_2024__employer_nics_package": (
+            "same_sign_ratio_0.5_to_0.8"
+        ),
+        "autumn_budget_2025__uc_child_element_remove_two_child_limit": (
+            "same_sign_ratio_0.5_to_0.8"
+        ),
+    }
+    summary_rows = [
+        row
+        for row in rows
+        if row["row_kind"] in {"total", "mapped_head_total"}
+        or row["measure_key"]
+        == "autumn_budget_2025__uc_child_element_remove_two_child_limit"
+    ]
+    assert len(summary_rows) == 12
+    assert all(
+        row["ratio_bin"] == expected_summary_bins[row["measure_key"]]
+        for row in summary_rows
+    )
