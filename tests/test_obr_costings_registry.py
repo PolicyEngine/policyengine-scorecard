@@ -1287,6 +1287,42 @@ def test_default_dry_run_uses_complete_vendored_slice(tmp_path):
     assert not staged_path.exists()
 
 
+def test_restage_rejects_claims_path_that_escapes_artifact_root(tmp_path):
+    artifact_root = tmp_path / "run"
+    outside_dir = tmp_path / "outside"
+    outside_dir.mkdir()
+    escaped_claims = outside_dir / "claims.jsonl"
+    escaped_claims.write_text("{}\n")
+    manifest_path = artifact_root / "RUN_MANIFEST.json"
+    compute.write_json(
+        manifest_path,
+        {
+            "schema_version": 1,
+            "run_id": "campaign-20260817-obr-costings",
+            "registry": str(REGISTRY),
+            "claims": "../outside/claims.jsonl",
+            "claims_sha256": compute.sha256_file(escaped_claims),
+            "artifacts": [],
+            "legacy_artifacts_without_dataset_hashes": [],
+            "staged_output": "staged.jsonl",
+        },
+    )
+
+    with pytest.raises(
+        compute.ArtifactRestageError,
+        match="escapes artifact root",
+    ) as exc_info:
+        compute.restage_existing_run(
+            manifest_path=manifest_path,
+            output_dir=artifact_root,
+            artifact_root=artifact_root,
+        )
+    message = str(exc_info.value)
+    assert "../outside/claims.jsonl" in message
+    assert str(artifact_root.resolve()) in message
+    assert escaped_claims.exists()
+
+
 def test_restage_rederives_existing_artifacts_without_any_simulation(
     tmp_path, monkeypatch, synthetic_measure, synthetic_claim
 ):

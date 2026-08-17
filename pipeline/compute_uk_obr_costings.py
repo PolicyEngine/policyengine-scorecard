@@ -1102,7 +1102,17 @@ def resolve_recorded_path(reference: str, root: Path = ROOT) -> Path:
     if not isinstance(reference, str) or not reference:
         raise ArtifactRestageError("recorded path must be non-empty text")
     path = Path(reference)
-    return path if path.is_absolute() else root / path
+    if path.is_absolute():
+        return path
+    resolved_root = root.resolve()
+    resolved_path = (resolved_root / path).resolve()
+    try:
+        resolved_path.relative_to(resolved_root)
+    except ValueError as exc:
+        raise ArtifactRestageError(
+            f"recorded path {reference!r} escapes artifact root {resolved_root}"
+        ) from exc
+    return resolved_path
 
 
 def measure_head_identity(

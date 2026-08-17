@@ -5,8 +5,8 @@ Updated: 2026-08-17
 ## State
 
 Follow-up 4 is in progress locally on branch `obr-costings-mode2`. Round-3
-findings 1 through 3 are fixed. Claim-provenance and dividend regressions pass;
-finding 4 and final verification remain. No managed simulation will be
+findings 1 through 4 are fixed. Claim-provenance, dividend, and path-containment
+regressions pass; final verification remains. No managed simulation will be
 constructed.
 
 ## Done
@@ -29,6 +29,9 @@ constructed.
 - Fixed round-3 finding 3: lag years are derived independently for each
   dividend/main threshold pair, and a one-path catch-up fake reports only that
   path's 2024–2025 overrides as unnecessary. All three dividend tests pass.
+- Fixed round-3 finding 4: every relative recorded path is resolved and must
+  remain beneath the artifact root; an existing outside claims file reached
+  through `..` is rejected. All three restage tests pass.
 - Started Follow-up 3 by reading this progress record and the complete round-2
   review before inspecting or changing the implementation.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -256,7 +259,6 @@ constructed.
 
 ## Next
 
-- Reject manifest paths whose resolved targets escape the artifact root.
 - Run the exact dry run, artifact-only restage with byte checks, focused tests,
   and the full suite; then write the uncommitted final report output.
 
