@@ -100,7 +100,12 @@ def _release_id() -> str:
 
 def _paths():
     wd = _workdir()
-    return wd, wd / "populace_us_2024.h5", wd / "calibration_diagnostics.json", wd / "partials"
+    return (
+        wd,
+        wd / "populace_us_2024.h5",
+        wd / "calibration_diagnostics.json",
+        wd / "partials",
+    )
 
 
 # --------------------------------------------------------------------------- #
@@ -206,6 +211,10 @@ def run_batch(name, subset, levels_slice):
         baseline_levels=levels,
         release_id=_release_id(),
     )
+    # Stamp the producer revision this partial was scored under, so merge()
+    # can refuse a workdir whose partials span a populace update (a resume
+    # that crossed a main bump would otherwise merge two revisions silently).
+    payload["_producer_commit"] = os.environ.get("RV_PRODUCER_COMMIT", "unknown")
     part.write_text(json.dumps(payload, indent=1, allow_nan=False))
     print(f"[done] {name}: {len(payload['reforms'])} rows", flush=True)
     del payload
@@ -240,11 +249,14 @@ def merge(manifest: dict, producer_commit: str, h5_sha: str) -> Path:
 
     wd, _, _, part_dir = _paths()
     names = [n for n, _, _ in _batches(_load_specs())]
-    seen, rows, header = set(), [], None
+    seen, rows, header, commits = set(), [], None, set()
     for name in names:
         p = json.loads((part_dir / f"{name}.json").read_text())
+        commits.add(p.get("_producer_commit", "unknown"))
         if header is None:
-            header = {k: v for k, v in p.items() if k != "reforms"}
+            header = {
+                k: v for k, v in p.items() if k not in ("reforms", "_producer_commit")
+            }
         for r in p["reforms"]:
             rid = r.get("id")
             if rid is not None and rid in seen:
@@ -252,6 +264,19 @@ def merge(manifest: dict, producer_commit: str, h5_sha: str) -> Path:
             if rid is not None:
                 seen.add(rid)
             rows.append(r)
+    # A workdir's partials must all come from ONE producer revision. A
+    # re-spawn that crossed a populace main bump would resume in the same
+    # release-keyed workdir and merge partials scored at two revisions while
+    # labelling the artifact with one — refuse it (issue #53 re-gate blocker
+    # 4; the primary guard is ref-pinning in spawn_or_wait/the app, this is
+    # the belt-and-suspenders assertion).
+    real_commits = {c for c in commits if c not in (None, "unknown")}
+    if len(real_commits) > 1:
+        raise SystemExit(
+            f"partials span multiple producer revisions {sorted(real_commits)} "
+            "— a resume crossed a populace update. Wipe the workdir and re-run "
+            "at a single ref."
+        )
     header["reforms"] = rows
     header["_backfill_note"] = _backfill_note(manifest, producer_commit, h5_sha)
     # Structured engine pin (scorecard ingest reads this to resolve a new
@@ -262,6 +287,22 @@ def merge(manifest: dict, producer_commit: str, h5_sha: str) -> Path:
     header["engine"] = {
         "policyengine_us": b["built_with_model_package"]["version"],
         "policyengine_core": b["built_with_core_package"]["version"],
+    }
+    # Explicit, validated scoring mode (ingest fails loudly if absent, never
+    # defaults — issue #53 re-gate blocker 5). backfill.py always drives the
+    # producer with OBBBA scored jointly in one JCX-stacked batch.
+    header["obbba_scoring_mode"] = "jcx_stacked"
+    # Provenance attestation binding the compute inputs (issue #53 re-gate
+    # blocker 6). The Modal app augments this with modal_* execution fields;
+    # the workflow records the scorecard commit + artifact sha256 on the PR.
+    header["_attestation"] = {
+        "release_id": _release_id(),
+        "producer_commit": producer_commit,
+        "policyengine_us": b["built_with_model_package"]["version"],
+        "policyengine_core": b["built_with_core_package"]["version"],
+        "h5_sha256": h5_sha,
+        "n_rows": len(rows),
+        "batches": names,
     }
     out = wd / "reform_validation.json"
     write_reform_validation(header, out)
@@ -305,7 +346,12 @@ def orchestrate(release_id: str, producer_commit: str) -> Path:
             print(f"=== batch {name} attempt {attempt} ===", flush=True)
             subprocess.run(
                 [sys.executable, __file__, "--workdir", str(wd), "--only", name],
-                env={**os.environ, "RV_WORKDIR": str(wd), "RV_RELEASE_ID": release_id},
+                env={
+                    **os.environ,
+                    "RV_WORKDIR": str(wd),
+                    "RV_RELEASE_ID": release_id,
+                    "RV_PRODUCER_COMMIT": producer_commit,
+                },
             )
             _cleanup_temp()
             if not part.exists():
@@ -321,14 +367,18 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--release-id", default="")
     ap.add_argument("--workdir", default=os.environ.get("RV_WORKDIR", "."))
-    ap.add_argument("--producer-commit", default=os.environ.get("RV_PRODUCER_COMMIT", "unknown"))
+    ap.add_argument(
+        "--producer-commit", default=os.environ.get("RV_PRODUCER_COMMIT", "unknown")
+    )
     ap.add_argument("--only")
     ap.add_argument("--merge", action="store_true")
     ap.add_argument("--plan", action="store_true")
     args = ap.parse_args()
 
     os.environ["RV_WORKDIR"] = str(Path(args.workdir).resolve())
-    release_id = args.release_id or os.environ.get("RV_RELEASE_ID") or latest_release_id()
+    release_id = (
+        args.release_id or os.environ.get("RV_RELEASE_ID") or latest_release_id()
+    )
     os.environ["RV_RELEASE_ID"] = release_id
 
     if args.plan:

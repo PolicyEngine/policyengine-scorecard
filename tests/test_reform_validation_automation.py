@@ -14,6 +14,7 @@ from scorecard_db.ingest_reform_validation import (
     ENGINE_VERSIONS,
     RAW,
     RUN_PREFIX,
+    _non_rv_fingerprint,
     ingest,
 )
 
@@ -36,6 +37,9 @@ def _new_release_artifact() -> dict:
         "policyengine_us": "1.799.9",
         "policyengine_core": "3.0.0",
     }
+    # backfill.py stamps the scoring mode explicitly; the ingest fails loudly
+    # without it (no silent default).
+    artifact["obbba_scoring_mode"] = "jcx_stacked"
     return artifact
 
 
@@ -143,3 +147,69 @@ def test_new_release_without_engine_block_fails_loudly(tmp_path):
     (raw_dir / f"{NEW_RELEASE}.json").write_text(json.dumps(artifact))
     with pytest.raises(SystemExit, match="no engine pin"):
         ingest(tmp_path / "scorecard.db", raw_dir=raw_dir)
+
+
+def test_new_release_without_scoring_mode_fails_loudly(tmp_path):
+    # A release the OBBBA_SCORING_MODE table doesn't name, with OBBBA rows but
+    # no explicit mode, must fail loudly rather than default (re-gate blocker
+    # 5) — a silent wrong mode reads as release-over-release drift.
+    artifact = _new_release_artifact()
+    del artifact["obbba_scoring_mode"]
+    assert any(r["category"] == "OBBBA" for r in artifact["reforms"])
+    raw_dir = tmp_path / "raw"
+    raw_dir.mkdir()
+    (raw_dir / f"{NEW_RELEASE}.json").write_text(json.dumps(artifact))
+    with pytest.raises(SystemExit, match="OBBBA scoring mode"):
+        ingest(tmp_path / "scorecard.db", raw_dir=raw_dir)
+
+
+# --------------------------------------------------------------------------- #
+# Non-RV table invariant (re-gate blocker 6)
+# --------------------------------------------------------------------------- #
+def _fresh_db(tmp_path):
+    raw_dir = tmp_path / "raw"
+    raw_dir.mkdir()
+    (raw_dir / f"{NEW_RELEASE}.json").write_text(json.dumps(_new_release_artifact()))
+    db_path = tmp_path / "scorecard.db"
+    ingest(db_path, raw_dir=raw_dir)
+    return db_path, raw_dir
+
+
+def test_non_rv_fingerprint_ignores_rv_but_catches_others(tmp_path):
+    db_path, _ = _fresh_db(tmp_path)
+    conn = sqlite3.connect(db_path)
+    base = _non_rv_fingerprint(conn)
+    # Mutating the RV lane must NOT move the fingerprint (it's the ingest's
+    # own row).
+    conn.execute(
+        "UPDATE lanes SET detail = 'touched' WHERE lane = 'populace-reform-validation'"
+    )
+    conn.commit()
+    assert _non_rv_fingerprint(conn) == base
+    # Inserting an unrelated (harvest-style) lane MUST move it.
+    conn.execute(
+        "INSERT INTO lanes (lane, stage, detail, updated_at)"
+        " VALUES ('harvest-x', 'ingested', 'seed', '2026-01-01')"
+    )
+    conn.commit()
+    assert _non_rv_fingerprint(conn) != base
+    conn.close()
+
+
+def test_reingest_preserves_non_rv_rows(tmp_path):
+    # A row this ingest must never touch (a foreign lane) survives a rebuild,
+    # and the rebuild completes (the invariant assertion passes).
+    db_path, raw_dir = _fresh_db(tmp_path)
+    conn = sqlite3.connect(db_path)
+    conn.execute(
+        "INSERT INTO lanes (lane, stage, detail, updated_at)"
+        " VALUES ('harvest-x', 'ingested', 'seed', '2026-01-01')"
+    )
+    conn.commit()
+    conn.close()
+    ingest(db_path, raw_dir=raw_dir)  # rebuild
+    conn = sqlite3.connect(db_path)
+    assert conn.execute(
+        "SELECT stage FROM lanes WHERE lane = 'harvest-x'"
+    ).fetchone() == ("ingested",)
+    conn.close()

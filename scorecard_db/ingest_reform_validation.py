@@ -150,11 +150,31 @@ ENGINE_VERSIONS = {
     "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z": "1.764.6",
 }
 
-# The OBBBA scoring mode for a release the historical table below doesn't
-# name. Every producer build since buildi scores JCX-stacked, and the
-# l0-refit note is explicit that "the stacked producer applies from the next
-# release", so any release newer than the backfilled five is jcx_stacked.
-DEFAULT_OBBBA_SCORING_MODE = "jcx_stacked"
+# The closed vocabulary of OBBBA scoring modes. A release the historical
+# OBBBA_SCORING_MODE table below doesn't name must SAY how it scored OBBBA
+# in the artifact (backfill.py stamps ``obbba_scoring_mode``); we never
+# guess a default, because a silent wrong mode reads as release-over-release
+# drift. ``_obbba_scoring_mode`` resolves and validates against this set.
+VALID_OBBBA_SCORING_MODES = frozenset({"stacked_chained", "isolated", "jcx_stacked"})
+
+
+def _obbba_scoring_mode(release_id: str, artifact: dict) -> str:
+    """Resolve the release's OBBBA scoring mode, failing loudly.
+
+    The five backfilled releases are pinned in OBBBA_SCORING_MODE
+    (authoritative). Any other release must carry an explicit, valid
+    ``obbba_scoring_mode`` in its artifact — the current producer stamps
+    ``jcx_stacked`` (backfill.py), but we validate rather than assume, so a
+    producer that changes its stacking can't slip through as drift."""
+    mode = OBBBA_SCORING_MODE.get(release_id) or artifact.get("obbba_scoring_mode")
+    if mode not in VALID_OBBBA_SCORING_MODES:
+        raise SystemExit(
+            f"{release_id}: OBBBA scoring mode {mode!r} is missing or not in "
+            f"{sorted(VALID_OBBBA_SCORING_MODES)} — the artifact must carry a "
+            "valid `obbba_scoring_mode` (backfill.py stamps it) or the release "
+            "must be added to OBBBA_SCORING_MODE. Refusing to guess a default."
+        )
+    return mode
 
 
 def _base_engine(release_id: str, artifact: dict) -> str:
@@ -631,6 +651,7 @@ def _obbba_results(
     computed_at: str,
     claims: dict[str, ExternalScore],
     tallies: dict,
+    mode: str,
     validate: bool,
     position: int,
 ) -> list[PEResult]:
@@ -638,12 +659,12 @@ def _obbba_results(
     claims — the FY2026 provision claim, and the FY2027 one when the
     registry carries that benchmark. Same PE value both times (calendar-2026
     liability), so both are constructed comparisons; the construction names
-    the release's scoring mode and the CY-for-FY approximation."""
+    the release's scoring ``mode`` (resolved+validated by the caller) and the
+    CY-for-FY approximation."""
     provision = OBBBA_PROVISIONS.get(row["id"])
     if provision is None:
         raise ValueError(f"OBBBA row {row['id']} missing from OBBBA_PROVISIONS")
     measure = row["populace"].get("measure") or ""
-    mode = OBBBA_SCORING_MODE.get(release_id, DEFAULT_OBBBA_SCORING_MODE)
     pe_value = _pe_value(row, f"reform_delta:{measure}")
     results = []
     for fy, score in (
@@ -720,6 +741,47 @@ def _obbba_results(
     return results
 
 
+def _non_rv_fingerprint(conn) -> str:
+    """Order-independent hash over every row this ingest must NOT touch.
+
+    The rebuild is scoped to the reform-validation slice: it deletes its own
+    results (``run_id LIKE 'populace-rv-%'``) and the registry-marked
+    external_scores, re-inserts them, and upserts the one
+    ``populace-reform-validation`` lane. Everything else — the harvest and
+    Urban claims, their results, exhibits, diagnoses, other lanes — must be
+    byte-identical before and after. Fingerprinting the complement and
+    asserting it is unchanged turns "some rows exist" into a real invariant:
+    a bug that dropped or rewrote a non-RV row fails the ingest loudly."""
+    import hashlib
+
+    filters = {
+        "pe_results": ("run_id NOT LIKE ?", (f"{RUN_PREFIX}%",)),
+        "external_scores": (
+            "COALESCE(json_extract(publication, '$.registry'), '') != ?",
+            (REGISTRY_MARK,),
+        ),
+        "lanes": ("lane != ?", ("populace-reform-validation",)),
+    }
+    tables = [
+        r[0]
+        for r in conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' "
+            "AND name NOT LIKE 'sqlite_%' ORDER BY name"
+        )
+    ]
+    acc = 0
+    for t in tables:
+        if t in filters:
+            where, params = filters[t]
+            cur = conn.execute(f'SELECT * FROM "{t}" WHERE {where}', params)
+        else:
+            cur = conn.execute(f'SELECT * FROM "{t}"')
+        for row in cur:
+            digest = hashlib.sha256(repr((t, tuple(row))).encode()).digest()
+            acc ^= int.from_bytes(digest, "big")  # XOR: order-independent
+    return f"{acc:064x}"
+
+
 def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
     raw_dir = raw_dir or RAW
     db = ScorecardDB(db_path)
@@ -740,6 +802,14 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
         base_engine = _base_engine(release_id, artifact)
         overrides = ENGINE_OVERRIDES.get(release_id, {})
         computed_at = _release_timestamp(release_id)
+        # Resolve+validate the OBBBA scoring mode once per release, and only
+        # when the release actually has OBBBA rows — fails loudly on a
+        # missing/unknown mode rather than defaulting.
+        obbba_mode = (
+            _obbba_scoring_mode(release_id, artifact)
+            if any(r["category"] == "OBBBA" for r in artifact["reforms"])
+            else None
+        )
         actuals = {
             r["id"]: r["jct"].get("score")
             for r in artifact["reforms"]
@@ -767,6 +837,7 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
                         computed_at,
                         claims,
                         tallies,
+                        mode=obbba_mode,
                         validate=path == releases[-1],
                         position=obbba_position,
                     )
@@ -832,6 +903,9 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
     score_rows = [ScorecardDB.score_row(c) for c in claims.values()]
     result_rows = [ScorecardDB.result_row(r) for r in results]
     n_claims, n_results = len(score_rows), len(result_rows)
+    # Snapshot the non-RV data so we can prove the rebuild touched only the
+    # reform-validation slice (issue #53 re-gate blocker 6).
+    pre_fingerprint = _non_rv_fingerprint(db.conn)
     with db.conn:
         db.conn.execute(
             "DELETE FROM pe_results WHERE run_id LIKE ?", (f"{RUN_PREFIX}%",)
@@ -854,6 +928,14 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
                 f" claims); {len(skipped)} unscoreable rows skipped",
                 "2026-08-04",
             ),
+        )
+    post_fingerprint = _non_rv_fingerprint(db.conn)
+    if post_fingerprint != pre_fingerprint:
+        raise SystemExit(
+            "reform-validation ingest changed non-RV data — the rebuild must "
+            "only touch its own results, registry-marked claims, and the "
+            "populace-reform-validation lane (fingerprint "
+            f"{pre_fingerprint[:12]} -> {post_fingerprint[:12]})."
         )
     cov = db.coverage()
     db.close()

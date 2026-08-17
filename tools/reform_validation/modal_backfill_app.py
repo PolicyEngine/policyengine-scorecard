@@ -69,9 +69,7 @@ image = (
         "requests",
     )
     .pip_install("torch", index_url="https://download.pytorch.org/whl/cpu")
-    .add_local_file(
-        str(Path(__file__).parent / "backfill.py"), "/root/backfill.py"
-    )
+    .add_local_file(str(Path(__file__).parent / "backfill.py"), "/root/backfill.py")
 )
 
 PRODUCER_PACKAGES = (
@@ -83,7 +81,9 @@ PRODUCER_PACKAGES = (
 )
 
 
-@app.function(image=image, timeout=8 * 3600, memory=65536, cpu=8.0, volumes={"/vol": volume})
+@app.function(
+    image=image, timeout=8 * 3600, memory=65536, cpu=8.0, volumes={"/vol": volume}
+)
 def backfill(release_id: str, producer_ref: str = "main") -> str:
     """Produce reform_validation.json for ``release_id`` on the Volume.
 
@@ -122,17 +122,25 @@ def backfill(release_id: str, producer_ref: str = "main") -> str:
     peus = build["built_with_model_package"]["version"]
     pecore = build["built_with_core_package"]["version"]
     subprocess.run(
-        ["pip", "install", "--quiet", f"policyengine-us=={peus}", f"policyengine-core=={pecore}"],
+        [
+            "pip",
+            "install",
+            "--quiet",
+            f"policyengine-us=={peus}",
+            f"policyengine-core=={pecore}",
+        ],
         check=True,
     )
-    print(f"engines installed: policyengine-us {peus} / policyengine-core {pecore}", flush=True)
+    print(
+        f"engines installed: policyengine-us {peus} / policyengine-core {pecore}",
+        flush=True,
+    )
 
     workdir = f"/vol/rv_{hashlib.sha256(release_id.encode()).hexdigest()[:8]}"
     os.makedirs(workdir, exist_ok=True)
     with open(f"{workdir}/started", "w") as f:
         f.write(
-            f"{release_id}\nproducer {producer_commit}\n"
-            f"started_at {int(time.time())}\n"
+            f"{release_id}\nproducer {producer_commit}\nstarted_at {int(time.time())}\n"
         )
     volume.commit()
 
@@ -144,20 +152,49 @@ def backfill(release_id: str, producer_ref: str = "main") -> str:
     }
     proc = subprocess.run(
         [
-            "python", "/root/backfill.py",
-            "--release-id", release_id,
-            "--workdir", workdir,
-            "--producer-commit", producer_commit,
+            "python",
+            "/root/backfill.py",
+            "--release-id",
+            release_id,
+            "--workdir",
+            workdir,
+            "--producer-commit",
+            producer_commit,
         ],
         env=env,
     )
     volume.commit()  # keep partials even on failure so a re-spawn resumes
     proc.check_returncode()
 
-    out = Path(workdir, "reform_validation.json").read_text()
-    n_rows = len(json.loads(out)["reforms"])
+    artifact = json.loads(Path(workdir, "reform_validation.json").read_text())
+    n_rows = len(artifact["reforms"])
+    # Bind the compute environment into the attestation backfill.py started
+    # (blocker 6): which Modal app/call/image and producer ref actually
+    # produced this artifact. Defensive getattr — the call-id accessor has
+    # moved across Modal client versions.
+    call_id = ""
+    for getter in ("current_function_call_id", "current_call_id"):
+        fn = getattr(modal, getter, None)
+        if callable(fn):
+            try:
+                call_id = fn() or ""
+            except Exception:
+                call_id = ""
+            break
+    att = artifact.setdefault("_attestation", {})
+    att.update(
+        {
+            "modal_app": APP_NAME,
+            "modal_call_id": call_id or os.environ.get("MODAL_TASK_ID", ""),
+            "modal_image_id": os.environ.get("MODAL_IMAGE_ID", ""),
+            "producer_ref": producer_ref,
+        }
+    )
     with open(f"/vol/reform_validation_{release_id}.json", "w") as f:
-        f.write(out)
+        json.dump(artifact, f, indent=1)
     volume.commit()
-    print(f"published {n_rows} rows for {release_id} (producer {producer_commit})", flush=True)
+    print(
+        f"published {n_rows} rows for {release_id} (producer {producer_commit})",
+        flush=True,
+    )
     return f"{n_rows} rows"
