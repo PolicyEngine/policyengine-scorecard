@@ -4,10 +4,10 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 4 final verification is being repeated on branch
-`obr-costings-mode2`. An independent audit found and fixed a claims-file
-time-of-check/time-of-use gap after the first complete test pass. No managed
-simulation has been constructed.
+Follow-up 4 is complete locally on branch `obr-costings-mode2`. All round-3
+findings and the final independent-audit issue are fixed and committed. Exact
+verification passes after the audit hardening; no managed simulation was
+constructed.
 
 ## Done
 
@@ -47,6 +47,9 @@ simulation has been constructed.
 - Artifact claims-hash mismatches now name expected and actual hashes and
   instruct a new compute run. Three targeted restage/comparison tests pass,
   including a mutation injected during artifactless-row reconstruction.
+- Post-audit verification repeated the exact 26-measure dry run, 13-artifact
+  restage, three byte-identity checks, 88 focused tests, and 255 full-suite
+  tests with the same results and sole upstream warning.
 - Started Follow-up 3 by reading this progress record and the complete round-2
   review before inspecting or changing the implementation.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -274,8 +277,7 @@ simulation has been constructed.
 
 ## Next
 
-- Repeat exact dry-run/restage byte checks and focused/full suites after the
-  independent-audit hardening, then finalize the external report.
+- No in-scope Follow-up 4 work remains.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
