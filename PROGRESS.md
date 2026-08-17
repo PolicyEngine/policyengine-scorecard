@@ -74,6 +74,11 @@ restage restoration.
   production-probe blocker. Their only optional coverage nits were symmetric
   Markdown writer mutation and explicit swapped-digest cases; the shared
   field-to-file loop covers both files.
+- The designated external Follow-up 9 report file remains empty because the
+  sandbox rejected writing outside the workspace. No report or scratch file
+  was added to the repository; the final response carries the complete report
+  content. Populating the parent-path file requires workspace-write access to
+  that exact external path.
 
 ### Superseded checkpoint history
 
@@ -560,9 +565,9 @@ boundary claims.
 
 ## Next
 
-- No in-scope implementation or verification remains. Write the designated
-  external Follow-up 9 report, hand off the committed branch, and do not push
-  from this lane.
+- No in-scope implementation or verification remains. Hand off the committed
+  branch and final-response report without pushing; copying that report into
+  the designated external file requires the unavailable parent-path grant.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
