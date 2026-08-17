@@ -5,9 +5,9 @@ Updated: 2026-08-17
 ## State
 
 Follow-up 4 is in progress locally on branch `obr-costings-mode2`. Round-3
-findings 1 and 2 are fixed with 38 targeted claim-provenance regressions
-passing. Findings 3 and 4 and final verification remain; no managed simulation
-will be constructed.
+findings 1 through 3 are fixed. Claim-provenance and dividend regressions pass;
+finding 4 and final verification remain. No managed simulation will be
+constructed.
 
 ## Done
 
@@ -26,6 +26,9 @@ will be constructed.
   frozen six-key descriptor first, distinguishes missing from ambiguous rows,
   recursively names all drift, and tests all 35 observed frozen leaf fields.
 - Claim-provenance regressions pass: 38 passed, 48 deselected.
+- Fixed round-3 finding 3: lag years are derived independently for each
+  dividend/main threshold pair, and a one-path catch-up fake reports only that
+  path's 2024–2025 overrides as unnecessary. All three dividend tests pass.
 - Started Follow-up 3 by reading this progress record and the complete round-2
   review before inspecting or changing the implementation.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -253,8 +256,6 @@ will be constructed.
 
 ## Next
 
-- Make dividend-lag expectations path-specific and prove one corrected path
-  exposes an unnecessary override.
 - Reject manifest paths whose resolved targets escape the artifact root.
 - Run the exact dry run, artifact-only restage with byte checks, focused tests,
   and the full suite; then write the uncommitted final report output.

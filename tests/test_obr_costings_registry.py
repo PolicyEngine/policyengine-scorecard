@@ -274,7 +274,96 @@ def test_registry_rejects_duplicate_keys_and_non_finite_reform_values():
         compute.validate_registry(incomplete_override)
 
 
-def test_dividend_lag_overrides_match_installed_engine_dates():
+DIVIDEND_HIGHER_THRESHOLD = (
+    "gov.hmrc.income_tax.rates.dividends[1].threshold"
+)
+DIVIDEND_ADDITIONAL_THRESHOLD = (
+    "gov.hmrc.income_tax.rates.dividends[2].threshold"
+)
+
+
+def _installed_dividend_threshold_values(rates):
+    years = range(compute.YEAR_MIN, compute.YEAR_MAX + 1)
+    return {
+        DIVIDEND_HIGHER_THRESHOLD: {
+            year: (
+                rates.uk[1].threshold(f"{year}-01-01"),
+                rates.dividends[1].threshold(f"{year}-01-01"),
+            )
+            for year in years
+        },
+        DIVIDEND_ADDITIONAL_THRESHOLD: {
+            year: (
+                rates.uk[2].threshold(f"{year}-01-01"),
+                rates.dividends[2].threshold(f"{year}-01-01"),
+            )
+            for year in years
+        },
+    }
+
+
+def _dividend_path_lag_expectations(measures, installed):
+    expectations = {}
+    for measure in measures:
+        for path, schedule in (measure["pe_reform"] or {}).items():
+            if path not in installed:
+                continue
+            scheduled_years = set()
+            for date_range in schedule:
+                match = compute.DATE_RANGE.fullmatch(str(date_range))
+                assert match is not None
+                first_year = int(match.group(1))
+                final_year = int(match.group(4))
+                scheduled_years.update(range(first_year, final_year + 1))
+            expectations[(measure["measure_key"], path)] = {
+                year
+                for year, (main_value, dividend_value) in installed[path].items()
+                if year in scheduled_years and dividend_value != main_value
+            }
+    return expectations
+
+
+def _dividend_lag_override_findings(measures, expectations):
+    findings = []
+    expected_override = {
+        "computability": "partial",
+        "note": DIVIDEND_LAG_NOTE,
+    }
+    for measure in measures:
+        measure_key = measure["measure_key"]
+        path_expectations = {
+            path: years
+            for (key, path), years in expectations.items()
+            if key == measure_key
+        }
+        expected_years = set().union(*path_expectations.values())
+        overrides = measure.get("computability_overrides", {})
+        invalid_years = sorted(
+            year
+            for year, override in overrides.items()
+            if override != expected_override
+        )
+        if invalid_years:
+            findings.append(f"{measure_key}: invalid overrides {invalid_years}")
+        actual_years = set(overrides)
+        missing = sorted(expected_years - actual_years)
+        if missing:
+            paths = sorted(
+                path
+                for path, years in path_expectations.items()
+                if years.intersection(missing)
+            )
+            findings.append(f"{measure_key} {', '.join(paths)}: missing {missing}")
+        unnecessary = sorted(actual_years - expected_years)
+        if unnecessary:
+            paths = sorted(path_expectations) or ["no dividend threshold path"]
+            findings.append(
+                f"{measure_key} {', '.join(paths)}: unnecessary {unnecessary}"
+            )
+    return findings
+
+
+def test_dividend_lag_overrides_match_installed_engine_dates_per_path():
     if importlib.util.find_spec("policyengine_uk") is None:
         pytest.skip("policyengine-uk is not installed")
     try:
@@ -284,74 +373,80 @@ def test_dividend_lag_overrides_match_installed_engine_dates():
 
     system = CountryTaxBenefitSystem()
     rates = system.parameters.gov.hmrc.income_tax.rates
-    installed = {
-        year: (
-            rates.uk[1].threshold(f"{year}-01-01"),
-            rates.uk[2].threshold(f"{year}-01-01"),
-            rates.dividends[1].threshold(f"{year}-01-01"),
-            rates.dividends[2].threshold(f"{year}-01-01"),
-        )
-        for year in range(compute.YEAR_MIN, compute.YEAR_MAX + 1)
-    }
-    lagging_years = {
-        year
-        for year, (
-            main_higher,
-            main_additional,
-            dividend_higher,
-            dividend_additional,
-        ) in installed.items()
-        if (dividend_higher, dividend_additional) != (main_higher, main_additional)
-    }
+    installed = _installed_dividend_threshold_values(rates)
+    measures = compute.load_registry(REGISTRY)["measures"]
+    expectations = _dividend_path_lag_expectations(measures, installed)
 
     assert compute.package_version("policyengine-uk") == "2.89.2"
-    assert installed[2024] == (37_700, 125_140, 37_500, 150_000)
-    assert installed[2025] == (37_700, 125_140, 37_500, 150_000)
-    assert installed[2026] == (37_700, 125_140, 37_700, 125_140)
-    assert lagging_years == {2024, 2025}
-
-    measures = compute.load_registry(REGISTRY)["measures"]
-    affected_years = {}
-    for measure in measures:
-        years = set()
-        for path, schedule in (measure["pe_reform"] or {}).items():
-            if not (
-                path.startswith("gov.hmrc.income_tax.rates.dividends")
-                and path.endswith(".threshold")
-            ):
-                continue
-            for date_range in schedule:
-                match = compute.DATE_RANGE.fullmatch(str(date_range))
-                assert match is not None
-                first_year = int(match.group(1))
-                final_year = int(match.group(4))
-                years.update(
-                    year for year in lagging_years if first_year <= year <= final_year
-                )
-        if years:
-            affected_years[measure["measure_key"]] = years
-    assert affected_years == {
-        "efo_march_2026__pa_and_hrt_freezes": {2024, 2025},
-        "efo_march_2026__additional_rate_threshold_reduction": {2024, 2025},
+    assert installed[DIVIDEND_HIGHER_THRESHOLD][2024] == (37_700, 37_500)
+    assert installed[DIVIDEND_HIGHER_THRESHOLD][2025] == (37_700, 37_500)
+    assert installed[DIVIDEND_HIGHER_THRESHOLD][2026] == (37_700, 37_700)
+    assert installed[DIVIDEND_ADDITIONAL_THRESHOLD][2024] == (125_140, 150_000)
+    assert installed[DIVIDEND_ADDITIONAL_THRESHOLD][2025] == (125_140, 150_000)
+    assert installed[DIVIDEND_ADDITIONAL_THRESHOLD][2026] == (125_140, 125_140)
+    assert expectations == {
+        (
+            "efo_march_2026__pa_and_hrt_freezes",
+            DIVIDEND_HIGHER_THRESHOLD,
+        ): {2024, 2025},
+        (
+            "efo_march_2026__additional_rate_threshold_reduction",
+            DIVIDEND_ADDITIONAL_THRESHOLD,
+        ): {2024, 2025},
+        (
+            "autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension",
+            DIVIDEND_HIGHER_THRESHOLD,
+        ): set(),
     }
+    assert _dividend_lag_override_findings(measures, expectations) == []
+
     for measure in measures:
-        overrides = measure.get("computability_overrides", {})
-        expected_years = affected_years.get(measure["measure_key"], set())
-        if expected_years:
-            assert set(overrides) == expected_years
-            assert all(
-                override == {"computability": "partial", "note": DIVIDEND_LAG_NOTE}
-                for override in overrides.values()
+        expected_years = set().union(
+            *(
+                years
+                for (key, _), years in expectations.items()
+                if key == measure["measure_key"]
             )
-            for year in range(compute.YEAR_MIN, compute.YEAR_MAX + 1):
-                status, note = compute.effective_computability(measure, year)
-                if year in expected_years:
-                    assert (status, note) == ("partial", DIVIDEND_LAG_NOTE)
-                else:
-                    assert status == measure["computability"]
-                    assert note is None
-        else:
-            assert overrides == {}
+        )
+        for year in range(compute.YEAR_MIN, compute.YEAR_MAX + 1):
+            status, note = compute.effective_computability(measure, year)
+            if year in expected_years:
+                assert (status, note) == ("partial", DIVIDEND_LAG_NOTE)
+            else:
+                assert status == measure["computability"]
+                assert note is None
+
+
+def test_dividend_lag_reports_one_caught_up_path_override_as_unnecessary():
+    installed = {
+        DIVIDEND_HIGHER_THRESHOLD: {
+            year: (37_700, 37_500 if year in {2024, 2025} else 37_700)
+            for year in range(compute.YEAR_MIN, compute.YEAR_MAX + 1)
+        },
+        DIVIDEND_ADDITIONAL_THRESHOLD: {
+            year: (125_140, 150_000 if year in {2024, 2025} else 125_140)
+            for year in range(compute.YEAR_MIN, compute.YEAR_MAX + 1)
+        },
+    }
+    for year in (2024, 2025):
+        main_value, _ = installed[DIVIDEND_HIGHER_THRESHOLD][year]
+        installed[DIVIDEND_HIGHER_THRESHOLD][year] = (main_value, main_value)
+    measures = compute.load_registry(REGISTRY)["measures"]
+    expectations = _dividend_path_lag_expectations(measures, installed)
+
+    assert expectations[
+        ("efo_march_2026__pa_and_hrt_freezes", DIVIDEND_HIGHER_THRESHOLD)
+    ] == set()
+    assert expectations[
+        (
+            "efo_march_2026__additional_rate_threshold_reduction",
+            DIVIDEND_ADDITIONAL_THRESHOLD,
+        )
+    ] == {2024, 2025}
+    assert _dividend_lag_override_findings(measures, expectations) == [
+        "efo_march_2026__pa_and_hrt_freezes "
+        f"{DIVIDEND_HIGHER_THRESHOLD}: unnecessary [2024, 2025]"
+    ]
 
 
 def test_dividend_lag_override_is_effective_only_for_affected_artifact_years(
