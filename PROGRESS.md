@@ -32,6 +32,10 @@ are rederived from verified objects.
   files, and `git diff --check` pass. Ruff was not run as instructed. Two
   independent final audits found no remaining in-scope publication or renderer
   bypass after the artifactless-row association fix.
+- The designated external Follow-up 8 report file remains empty because the
+  sandbox rejected writing outside this workspace. The final response carries
+  the complete report content; populating the parent-path file requires that
+  path to be granted workspace-write access.
 - Closed the final restage publication window: after comparison and final
   registry/claims checks, restage re-verifies the staged payload and repeats
   the complete artifact-digest sweep, with the artifact sweep immediately
@@ -491,7 +495,7 @@ are rederived from verified objects.
 ## Next
 
 - No in-scope implementation or verification remains. Hand off the committed
-  branch and external Follow-up 8 report for review; do not push from this lane.
+  branch and final-response report for review; do not push from this lane.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
