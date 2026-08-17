@@ -4,18 +4,26 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 8 is complete on branch `obr-costings-mode2` from
-`8a5d4d0ce84fc49f0404042da3bee2a135afd046`. Normal compute and restage now
-retain canonical staged bytes, hash and atomically publish those exact bytes,
-and verify them before publishing the manifest. Standalone rendering completes
-the registry, claims, staged, and full artifact SHA gates before parsing, then
-rederives all output-driving staged descriptions from verified objects. The
-final restage artifact sweep immediately precedes manifest restoration. Every
-input and output in the replay chain is SHA-bound; staged descriptive fields
-are rederived from verified objects.
+Follow-up 9 is in progress on branch `obr-costings-mode2` from
+`4f6a1532e915d382f6e92f1451f819331ecd2694`. The round-8 review confirmed the
+registry, claims, staged payload, and artifact boundaries, but found that
+renderer completeness was still self-referential and that comparison outputs
+were not SHA-bound. The earlier statement that every replay-chain output was
+SHA-bound was therefore an overclaim. This follow-up will bind the exact
+rendered row inventory to the manifest's verified selection and years, then
+hash and verify canonical comparison bytes before success or manifest
+publication/restoration.
 
 ## Done
 
+- Started Follow-up 9 by reading the complete round-8 review before inspecting
+  or changing implementation code.
+- Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
+  `4f6a1532e915d382f6e92f1451f819331ecd2694`.
+- Corrected the progress boundary: comparison CSV and Markdown were atomically
+  replaced but neither manifest-bound nor read-back verified, and standalone
+  completeness did not yet derive its expected rows from the manifest's
+  declared measure/year selection.
 - Final acceptance passed offline with the specified interpreter. The exact
   default dry run validated 26 measures and 215 source head-years across
   2024–2030 and reported zero managed simulations.
@@ -494,8 +502,15 @@ are rederived from verified objects.
 
 ## Next
 
-- No in-scope implementation or verification remains. Hand off the committed
-  branch and final-response report for review; do not push from this lane.
+- Reconstruct the exact expected head, mapped-total, diagnostic, and
+  artifactless row inventory from SHA-verified manifest inputs and reject every
+  missing or extra rendered row by name.
+- Render canonical comparison bytes in memory, manifest-bind both digests, and
+  verify their on-disk bytes before normal publication, restage restoration,
+  or standalone success.
+- Add the four requested production-path adversarial probes, migrate the
+  committed manifest, and run dry-run, no-simulation restage, focused tests,
+  full tests, and final hygiene checks without Ruff.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
