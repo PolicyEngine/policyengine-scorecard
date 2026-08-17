@@ -53,6 +53,9 @@ publication/restoration.
   Targeted normal, restage, full-selection, mutation, and mode-preservation
   cases pass; the committed fixture still awaits the requested real restage
   migration.
+- The exact default Follow-up 9 `--dry-run` passes offline with the specified
+  interpreter: 26 selected measures, 215 verified source head-years across
+  2024–2030, and no managed microsimulation constructed.
 
 ### Superseded checkpoint history
 
@@ -539,9 +542,9 @@ boundary claims.
 
 ## Next
 
-- Run the exact dry-run and no-simulation restage, confirm that only the two
-  comparison digest fields enter the committed manifest and all artifacts,
-  staged rows, CSV, and Markdown retain identical bytes, then commit migration.
+- Run the exact no-simulation restage, confirm that only the two comparison
+  digest fields enter the committed manifest and all artifacts, staged rows,
+  CSV, and Markdown retain identical bytes, then commit migration.
 - Run the focused and full suites plus final hygiene checks without Ruff, then
   complete the progress record and external report.
 
