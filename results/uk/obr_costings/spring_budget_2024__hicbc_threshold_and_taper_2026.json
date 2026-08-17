@@ -41,7 +41,7 @@
       },
       "external_metric": "revenue_change",
       "obr_head": "Income tax",
-      "pe_value": 1720629444.0709229,
+      "pe_value": -1720629444.0709229,
       "pe_variables": [
         "income_tax"
       ],
@@ -49,6 +49,7 @@
       "reform_aggregates_gbp": {
         "income_tax": 423612542977.2704
       },
+      "reversal_delta_exchequer_gain": 1720629444.0709229,
       "sign_convention": "positive_gain_to_exchequer",
       "source_table": "Tax Measures (Policy measures database)"
     },
@@ -83,7 +84,7 @@
       },
       "external_metric": "exchequer_impact",
       "obr_head": "Welfare inside cap",
-      "pe_value": -0.0,
+      "pe_value": 0.0,
       "pe_variables": [
         "child_benefit"
       ],
@@ -91,6 +92,7 @@
       "reform_aggregates_gbp": {
         "child_benefit": 17434702263.490685
       },
+      "reversal_delta_exchequer_gain": -0.0,
       "sign_convention": "positive_gain_to_exchequer",
       "source_table": "Spending Measures (Policy measures database)"
     }

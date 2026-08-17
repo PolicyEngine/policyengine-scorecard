@@ -41,7 +41,7 @@
       },
       "external_metric": "revenue_change",
       "obr_head": "Income tax",
-      "pe_value": 0.0,
+      "pe_value": -0.0,
       "pe_variables": [
         "income_tax"
       ],
@@ -49,6 +49,7 @@
       "reform_aggregates_gbp": {
         "income_tax": 443671961318.895
       },
+      "reversal_delta_exchequer_gain": 0.0,
       "sign_convention": "positive_gain_to_exchequer",
       "source_table": "Tax Measures (Policy measures database)"
     },
@@ -84,7 +85,7 @@
       },
       "external_metric": "revenue_change",
       "obr_head": "NICs",
-      "pe_value": 12356159334.317142,
+      "pe_value": -12356159334.317142,
       "pe_variables": [
         "ni_class_1_employee",
         "ni_class_1_employer",
@@ -96,6 +97,7 @@
         "ni_class_1_employer": 191108230450.7594,
         "ni_class_4": 3772261071.912478
       },
+      "reversal_delta_exchequer_gain": 12356159334.317142,
       "sign_convention": "positive_gain_to_exchequer",
       "source_table": "Tax Measures (Policy measures database)"
     },
@@ -130,7 +132,7 @@
       },
       "external_metric": "exchequer_impact",
       "obr_head": "Welfare inside cap",
-      "pe_value": -109333370.59695435,
+      "pe_value": 109333370.59695435,
       "pe_variables": [
         "universal_credit"
       ],
@@ -138,6 +140,7 @@
       "reform_aggregates_gbp": {
         "universal_credit": 40770889194.751884
       },
+      "reversal_delta_exchequer_gain": -109333370.59695435,
       "sign_convention": "positive_gain_to_exchequer",
       "source_table": "Spending Measures (Policy measures database)"
     }

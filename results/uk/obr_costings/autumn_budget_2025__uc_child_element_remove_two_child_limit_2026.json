@@ -42,7 +42,7 @@
       },
       "external_metric": "exchequer_impact",
       "obr_head": "Welfare inside cap",
-      "pe_value": 1104248292.8024673,
+      "pe_value": -1104248292.8024673,
       "pe_variables": [
         "universal_credit"
       ],
@@ -50,6 +50,7 @@
       "reform_aggregates_gbp": {
         "universal_credit": 38783589984.86714
       },
+      "reversal_delta_exchequer_gain": 1104248292.8024673,
       "sign_convention": "positive_gain_to_exchequer",
       "source_table": "Spending Measures (Policy measures database)"
     }

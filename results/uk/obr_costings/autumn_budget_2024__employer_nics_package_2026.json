@@ -41,7 +41,7 @@
       },
       "external_metric": "revenue_change",
       "obr_head": "Income tax",
-      "pe_value": 8507737534.679443,
+      "pe_value": -8507737534.679443,
       "pe_variables": [
         "income_tax"
       ],
@@ -49,6 +49,7 @@
       "reform_aggregates_gbp": {
         "income_tax": 430399651067.8789
       },
+      "reversal_delta_exchequer_gain": 8507737534.679443,
       "sign_convention": "positive_gain_to_exchequer",
       "source_table": "Tax Measures (Policy measures database)"
     },
@@ -84,7 +85,7 @@
       },
       "external_metric": "revenue_change",
       "obr_head": "NICs",
-      "pe_value": -24754424875.897583,
+      "pe_value": 24754424875.897583,
       "pe_variables": [
         "ni_class_1_employee",
         "ni_class_1_employer",
@@ -96,6 +97,7 @@
         "ni_class_1_employer": 159467146858.90506,
         "ni_class_4": 4371728669.112595
       },
+      "reversal_delta_exchequer_gain": -24754424875.897583,
       "sign_convention": "positive_gain_to_exchequer",
       "source_table": "Tax Measures (Policy measures database)"
     }

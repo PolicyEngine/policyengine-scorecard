@@ -39,7 +39,7 @@
       },
       "external_metric": "revenue_change",
       "obr_head": "Income tax",
-      "pe_value": -1933485650.3049316,
+      "pe_value": 1933485650.3049316,
       "pe_variables": [
         "income_tax"
       ],
@@ -47,6 +47,7 @@
       "reform_aggregates_gbp": {
         "income_tax": 441738475668.5901
       },
+      "reversal_delta_exchequer_gain": -1933485650.3049316,
       "sign_convention": "positive_gain_to_exchequer",
       "source_table": "3.17: 3.17"
     }
