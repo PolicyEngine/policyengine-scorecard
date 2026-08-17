@@ -15,6 +15,24 @@ artifacts and claims.
 
 ## Done
 
+- Bound staged JSONL to the run manifest in both normal compute and restage.
+  Rows are canonically serialized once in memory, the retained bytes are
+  hashed as `staged_sha256`, those exact bytes are atomically written, and the
+  disk payload is verified before comparison or manifest publication.
+- Standalone rendering now reads staged bytes with registry, claims, and every
+  artifact; it completes all SHA gates before parsing any verified input and
+  parses the retained staged payload without reopening its path.
+- The comparison core rederives `row_kind`, `status`, `source_table`,
+  `annotations`, and `external_claim_match` from verified claims, artifact
+  heads, and registry entries. Re-signed field mutations fail naming every
+  differing field, including the reviewer's combined fabricated-description
+  probe; the unsigned employer-NIC source-table flip fails at the staged SHA
+  gate before parsing or output.
+- Migrated the committed manifest with the existing staged file's SHA-256,
+  `45faa64afbfba976083d528a081646200e40c6932f19d07602fcb38cb741b6af`,
+  without changing any staged byte. Added normal/restage post-write mutation
+  regressions, updated every replay fixture, and removed the dead compute text
+  loader/writer helpers plus their obsolete generic writer test parameter.
 - Started Follow-up 8 by reading the complete round-7 review before inspecting
   or changing implementation code.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -446,11 +464,8 @@ artifacts and claims.
 
 ## Next
 
-- Bind canonical staged bytes and their SHA-256 into normal/restage publication
-  and standalone loading, then rederive every output-driving staged descriptor
-  field from verified artifacts and claims.
 - Repeat the complete artifact-digest sweep at the final restage publication
-  boundary and remove the dead compute helpers/generic writer parameter.
+  boundary and add a mutation-at-comparison regression for that last gate.
 - Run the exact 26-measure dry-run, byte-identical no-simulation restage,
   focused tests, and full suite; record counts and final hashes here.
 

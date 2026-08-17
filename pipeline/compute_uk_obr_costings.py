@@ -1222,28 +1222,6 @@ def recorded_repo_relative_path(path: Path, *, role: str, root: Path = ROOT) -> 
         ) from exc
 
 
-def atomic_write_text(path: Path, text: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    destination_mode = stat.S_IMODE(path.stat().st_mode) if path.exists() else 0o644
-    temporary: Path | None = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            mode="w",
-            dir=path.parent,
-            prefix=f".{path.name}.",
-            suffix=".tmp",
-            delete=False,
-        ) as destination:
-            temporary = Path(destination.name)
-            destination.write(text)
-        assert temporary is not None
-        temporary.chmod(destination_mode)
-        temporary.replace(path)
-    finally:
-        if temporary is not None:
-            temporary.unlink(missing_ok=True)
-
-
 def atomic_write_bytes(path: Path, payload: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     destination_mode = stat.S_IMODE(path.stat().st_mode) if path.exists() else 0o644
@@ -1292,36 +1270,43 @@ def write_artifact_payload(path: Path, payload: bytes) -> None:
     atomic_write_bytes(path, payload)
 
 
-def verify_written_artifacts(
-    artifacts: Iterable[tuple[Path, str]],
+def _verify_written_payload(
+    path: Path,
+    expected_sha256: str,
+    *,
+    role: str,
 ) -> None:
-    """Verify a complete write set against its intended in-memory digests."""
-
-    for path, expected_sha256 in artifacts:
-        try:
-            payload = path.read_bytes()
-        except OSError as exc:
-            actual_sha256 = (
-                "<missing>" if isinstance(exc, FileNotFoundError) else "<unavailable>"
-            )
-            raise ArtifactWriteError(
-                f"{path}: written artifact differs from intended canonical bytes; "
-                f"expected SHA-256 {expected_sha256}; actual {actual_sha256}"
-            ) from exc
-        actual_sha256 = hashlib.sha256(payload).hexdigest()
-        if actual_sha256 != expected_sha256:
-            raise ArtifactWriteError(
-                f"{path}: written artifact differs from intended canonical bytes; "
-                f"expected SHA-256 {expected_sha256}; actual {actual_sha256}"
-            )
-
-
-def load_json_object(path: Path, label: str) -> dict[str, Any]:
     try:
         payload = path.read_bytes()
     except OSError as exc:
-        raise ArtifactRestageError(f"cannot read {label} {path}: {exc}") from exc
-    return parse_json_object_payload(payload, path=path, label=label)
+        actual_sha256 = (
+            "<missing>" if isinstance(exc, FileNotFoundError) else "<unavailable>"
+        )
+        raise ArtifactWriteError(
+            f"{path}: written {role} differs from intended canonical bytes; "
+            f"expected SHA-256 {expected_sha256}; actual {actual_sha256}"
+        ) from exc
+    actual_sha256 = hashlib.sha256(payload).hexdigest()
+    if actual_sha256 != expected_sha256:
+        raise ArtifactWriteError(
+            f"{path}: written {role} differs from intended canonical bytes; "
+            f"expected SHA-256 {expected_sha256}; actual {actual_sha256}"
+        )
+
+
+def verify_written_artifacts(
+    artifacts: Iterable[tuple[Path, str]],
+) -> None:
+    """Verify a complete artifact set against its intended in-memory digests."""
+
+    for path, expected_sha256 in artifacts:
+        _verify_written_payload(path, expected_sha256, role="artifact")
+
+
+def verify_written_staged_output(path: Path, expected_sha256: str) -> None:
+    """Verify staged bytes against the digest derived before publication."""
+
+    _verify_written_payload(path, expected_sha256, role="staged output")
 
 
 def parse_json_object_payload(
@@ -2394,6 +2379,14 @@ def restage_existing_run(
         raise ArtifactRestageError(
             f"{manifest_path}: claims_sha256 must be a lowercase SHA-256"
         )
+    recorded_staged_sha256 = manifest.get("staged_sha256")
+    if (
+        not isinstance(recorded_staged_sha256, str)
+        or re.fullmatch(r"[0-9a-f]{64}", recorded_staged_sha256) is None
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: staged_sha256 must be a lowercase SHA-256"
+        )
     registry_payload = registry_path.read_bytes()
     current_registry_sha256 = hashlib.sha256(registry_payload).hexdigest()
     if current_registry_sha256 != recorded_registry_sha256:
@@ -2719,12 +2712,6 @@ def restage_existing_run(
             f"{manifest_path}: canonical replay artifact digests differ from "
             "the manifest inventory"
         )
-    manifest_path.unlink(missing_ok=True)
-    for _, path, _, _, _, payload, _ in prepared_artifacts:
-        write_artifact_payload(path, payload)
-    verify_written_artifacts(
-        (path, digest) for _, path, _, _, _, _, digest in prepared_artifacts
-    )
 
     staged_rows: list[dict[str, Any]] = []
     for measure in selected_measures:
@@ -2766,7 +2753,23 @@ def restage_existing_run(
             f"{manifest_path}: artifact-only restage produced {len(staged_rows)} "
             f"rows; manifest records {expected_staged_rows!r}"
         )
-    write_jsonl(staged_path, staged_rows)
+    staged_payload = canonical_jsonl_bytes(staged_rows)
+    intended_staged_sha256 = hashlib.sha256(staged_payload).hexdigest()
+    if intended_staged_sha256 != recorded_staged_sha256:
+        raise ArtifactRestageError(
+            f"{manifest_path}: staged_sha256 differs from canonical artifact-only "
+            f"restage; expected {recorded_staged_sha256}; "
+            f"actual {intended_staged_sha256}"
+        )
+
+    manifest_path.unlink(missing_ok=True)
+    for _, path, _, _, _, payload, _ in prepared_artifacts:
+        write_artifact_payload(path, payload)
+    verify_written_artifacts(
+        (path, digest) for _, path, _, _, _, _, digest in prepared_artifacts
+    )
+    atomic_write_bytes(staged_path, staged_payload)
+    verify_written_staged_output(staged_path, intended_staged_sha256)
 
     if __package__:
         from pipeline import compare_uk_obr_costings as comparison
@@ -3249,10 +3252,14 @@ def main(argv: list[str] | None = None) -> int:
             staged_rows.extend(stage_artifact_rows(artifact, measure))
 
     if not args.no_stage:
-        write_jsonl(args.staged_output, staged_rows)
         assert staged_reference is not None
+        staged_payload = canonical_jsonl_bytes(staged_rows)
+        staged_sha256 = hashlib.sha256(staged_payload).hexdigest()
         manifest["staged_output"] = staged_reference
         manifest["staged_rows"] = len(staged_rows)
+        manifest["staged_sha256"] = staged_sha256
+        atomic_write_bytes(args.staged_output, staged_payload)
+        verify_written_staged_output(args.staged_output, staged_sha256)
 
         if __package__:
             from pipeline import compare_uk_obr_costings as comparison

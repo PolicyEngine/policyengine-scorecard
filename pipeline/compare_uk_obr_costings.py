@@ -6,7 +6,7 @@ source table needed to resolve every row exactly once. Every staged PE value is
 then checked against the frozen source-claim snapshot and a PE value recomputed
 from the raw aggregates in its saved run artifact. The standalone command
 accepts only a run manifest: it SHA-verifies the registry, claims slice, and
-complete artifact inventory before parsing any of them.
+complete artifact inventory plus staged JSONL before parsing any of them.
 
 The output retains source head rows.  For PMD measures with at least two mapped
 heads, it also shows a comparison-only sum of those mapped heads.  That sum is
@@ -369,6 +369,11 @@ def load_verified_comparison_inputs(
         field="claims_sha256",
         manifest_path=manifest_path,
     )
+    staged_sha256 = _validate_sha256(
+        manifest.get("staged_sha256"),
+        field="staged_sha256",
+        manifest_path=manifest_path,
+    )
     references = manifest.get("artifacts")
     if (
         not isinstance(references, list)
@@ -409,6 +414,7 @@ def load_verified_comparison_inputs(
 
     registry_payload = _read_bytes(registry_path, "registry")
     claims_payload = _read_bytes(claims_path, "claims slice")
+    staged_payload = _read_bytes(staged_path, "staged results")
     artifact_payloads = {
         reference: _read_bytes(path, "run artifact")
         for reference, path in artifact_paths.items()
@@ -424,6 +430,12 @@ def load_verified_comparison_inputs(
         path=claims_path,
         expected_sha256=claims_sha256,
         role="claims slice",
+    )
+    _verify_payload(
+        staged_payload,
+        path=staged_path,
+        expected_sha256=staged_sha256,
+        role="staged results",
     )
     for reference in references:
         _verify_payload(
@@ -449,10 +461,7 @@ def load_verified_comparison_inputs(
     for reference, artifact in artifacts.items():
         if artifact.get("run_id") != run_id:
             raise ComparisonError(f"{reference}: run_id differs from RUN_MANIFEST")
-    staged_rows = _parse_jsonl(
-        _read_bytes(staged_path, "staged results"),
-        path=staged_path,
-    )
+    staged_rows = _parse_jsonl(staged_payload, path=staged_path)
     if not staged_rows:
         raise ComparisonError(f"staged results are empty: {staged_path}")
     staged_count = manifest.get("staged_rows")
@@ -839,7 +848,8 @@ def validate_artifact_trace(
     ]
     if len(hits) != 1:
         raise ComparisonError(
-            f"{reference}: {len(hits)} artifact heads match the frozen OBR claim; "
+            f"{reference}: external_claim_match differs from verified artifact "
+            f"heads: {len(hits)} artifact heads match the frozen OBR claim; "
             "expected one"
         )
     head = hits[0]
@@ -931,6 +941,170 @@ def _effective_computability(measure: dict[str, Any], year: int) -> str:
         if isinstance(override, dict)
         else measure["computability"]
     )
+
+
+def _effective_computability_details(
+    measure: Mapping[str, Any], year: int
+) -> tuple[Any, Any]:
+    overrides = measure.get("computability_overrides", {})
+    override = (
+        overrides.get(year, overrides.get(str(year)))
+        if isinstance(overrides, dict)
+        else None
+    )
+    if isinstance(override, dict):
+        return override.get("computability"), override.get("note")
+    return measure.get("computability"), None
+
+
+def _claim_descriptor(claim: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "source": claim.get("source"),
+        "metric": claim_metric(dict(claim)),
+        "period": claim.get("period"),
+        "source_table": claim.get("source_table"),
+        "reform_hint": claim.get("reform_hint"),
+        "conditions": claim.get("conditions"),
+    }
+
+
+def _source_facts_annotation(claim: Mapping[str, Any]) -> str:
+    return (
+        "OBR source facts: "
+        f"source_model={claim.get('source_model')}; "
+        f"basis={claim.get('conditions', {}).get('basis')}; "
+        "behavioural_adjustment=unstated in harvest."
+    )
+
+
+def _constructed_annotations(
+    *,
+    measure: Mapping[str, Any],
+    artifact: Mapping[str, Any],
+    artifact_head: Mapping[str, Any],
+    claim: Mapping[str, Any],
+) -> list[str]:
+    year = artifact.get("year")
+    variables = " + ".join(artifact_head["pe_variables"])
+    sign = "+Δtax" if artifact_head.get("channel") == "tax" else "−Δspending"
+    construction = (
+        "PE: static microsimulation on the certified world; reversal re-oriented "
+        "to the announced measure; "
+        f"PE calendar year {year} proxies FY "
+        f"{year}-{str(year + 1)[-2:]}. "
+        "measure Δ = −(reversal − baseline)."
+        if artifact.get("construction") == "reversal_on_certified_world"
+        else (
+            "PE: static microsimulation on the certified world; forward change "
+            f"from the certified baseline; PE calendar year {year} proxies FY "
+            f"{year}-{str(year + 1)[-2:]}. "
+            "measure Δ = +(reform − baseline)."
+        )
+    )
+    annotations = [
+        _source_facts_annotation(claim),
+        construction,
+        (
+            f"Head mapping: {artifact_head.get('obr_head')} = {variables}; "
+            f"positive gain to the Exchequer = {sign}."
+        ),
+    ]
+    computability, override_note = _effective_computability_details(measure, year)
+    if computability == "partial":
+        override_annotation = (
+            f" Per-year computability override: {override_note}."
+            if override_note is not None
+            else ""
+        )
+        unmapped = measure.get("unmapped_obr_heads", [])
+        annotations.append(
+            "Partial construction: "
+            + str(measure.get("notes"))
+            + (" Unmapped OBR heads: " + ", ".join(unmapped) + "." if unmapped else "")
+            + override_annotation
+        )
+    return annotations
+
+
+def _not_computed_annotations(
+    *,
+    measure: Mapping[str, Any],
+    claim: Mapping[str, Any],
+) -> list[str]:
+    year = claim.get("period")
+    conditions = claim.get("conditions", {})
+    head = conditions.get("tax_head") or conditions.get("spending_head") or "Total"
+    no_simulation = (
+        "PE: no microsimulation constructed; the registry construction is a "
+        "reversal on the certified world."
+        if measure.get("construction") == "reversal_on_certified_world"
+        else (
+            "PE: no microsimulation constructed; the registry construction is a "
+            "forward change from the certified baseline."
+        )
+    )
+    return [
+        _source_facts_annotation(claim),
+        (
+            "No PE value: this registry entry is not expressible as a supported "
+            "plain parameter reform."
+        ),
+        no_simulation,
+        f"PE calendar year {year} would proxy OBR FY {year}-{str(year + 1)[-2:]}.",
+        f"Head mapping unavailable for {head}; no aggregate is substituted.",
+    ]
+
+
+def validate_staged_descriptive_fields(
+    staged_row: Mapping[str, Any],
+    claim: Mapping[str, Any],
+    measure: Mapping[str, Any],
+    artifact_head: Mapping[str, Any] | None,
+    artifacts_by_reference: Mapping[str, dict[str, Any]],
+) -> None:
+    """Re-derive output-driving staged text from verified claims and artifacts."""
+
+    if artifact_head is None:
+        conditions = claim.get("conditions", {})
+        head = conditions.get("tax_head") or conditions.get("spending_head") or "Total"
+        expected = {
+            "row_kind": "total" if head == "Total" else "head",
+            "status": "not_computed",
+            "source_table": claim.get("source_table"),
+            "annotations": _not_computed_annotations(measure=measure, claim=claim),
+            "external_claim_match": _claim_descriptor(claim),
+        }
+    else:
+        reference = staged_row.get("artifact")
+        artifact = artifacts_by_reference.get(reference)
+        if artifact is None:
+            raise ComparisonError(
+                f"{staged_row.get('measure_key')}: verified artifact {reference!r} "
+                "is unavailable for staged-field validation"
+            )
+        expected = {
+            "row_kind": (
+                "total" if artifact_head.get("condition_key") is None else "head"
+            ),
+            "status": "constructed",
+            "source_table": artifact_head.get("source_table"),
+            "annotations": _constructed_annotations(
+                measure=measure,
+                artifact=artifact,
+                artifact_head=artifact_head,
+                claim=claim,
+            ),
+            "external_claim_match": _claim_descriptor(claim),
+        }
+    differences = [
+        field for field, value in expected.items() if staged_row.get(field) != value
+    ]
+    if differences:
+        raise ComparisonError(
+            f"{staged_row.get('measure_key')} {claim.get('period')}: staged fields "
+            "differ from verified artifact/claim inputs: "
+            + ", ".join(differences)
+        )
 
 
 def build_head_row(
@@ -1110,6 +1284,13 @@ def build_comparison_rows(
         artifact_head = validate_artifact_trace(
             staged_row,
             claim,
+            artifacts_by_reference,
+        )
+        validate_staged_descriptive_fields(
+            staged_row,
+            claim,
+            measure,
+            artifact_head,
             artifacts_by_reference,
         )
         identity = (
