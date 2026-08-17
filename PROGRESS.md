@@ -4,10 +4,10 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 3 is in progress locally on branch `obr-costings-mode2`. The round-2
-review identified four major and four minor findings. The checkout started
-clean at `52c9f952f6ca87263d81e69bbaa3ef21310628fb`; no managed simulation will
-be constructed during this follow-up.
+Follow-up 3 is complete locally on branch `obr-costings-mode2`. All four major
+and four minor round-2 findings are fixed and committed. Exact default
+`--dry-run` and artifact-only `--restage` verification passed without
+constructing a managed simulation.
 
 ## Done
 
@@ -20,19 +20,19 @@ be constructed during this follow-up.
   artifacts, and tests.
 - Fixed round-2 finding 7 in this register: the Follow-up 2 report was removed
   from the branch in `8c1d858` and kept outside the repository; it is not a
-  committed current-tree file.
+  committed current-tree file (`PROGRESS.md:396`).
 - Fixed round-2 finding 1: production-path tests now prove
   `run_managed_simulation` rejects a dataset mutated during `calculate`, writes
   no artifact, and aborts an already-mismatched file before construction; SHA
   errors name expected and actual hashes
-  (`pipeline/compute_uk_obr_costings.py:503`,
-  `tests/test_obr_costings_registry.py:426`).
+  (`pipeline/compute_uk_obr_costings.py:584`,
+  `tests/test_obr_costings_registry.py:488`).
 - Fixed round-2 finding 6: new artifacts always require dataset hashes, while
   restage admits missing hashes only for the 13 exact paths recorded in
   `legacy_artifacts_without_dataset_hashes`; old-looking caller run ids grant
-  no exception (`pipeline/compute_uk_obr_costings.py:803`,
+  no exception (`pipeline/compute_uk_obr_costings.py:886`,
   `results/uk/obr_costings/RUN_MANIFEST.json:17`,
-  `tests/test_obr_costings_registry.py:555`).
+  `tests/test_obr_costings_registry.py:611`).
 - Fixed round-2 finding 3: the default claims input is the repo-vendored,
   byte-identical 621-row operational slice covering every registry measure and
   source period; default all-26 `--dry-run` passes, and the manifest records
@@ -45,22 +45,29 @@ be constructed during this follow-up.
   byte hashes and all fact differences before any write
   (`pipeline/compute_uk_obr_costings.py:260`,
   `pipeline/compare_uk_obr_costings.py:212`,
-  `tests/test_obr_costings_registry.py:1308`).
+  `tests/test_obr_costings_registry.py:1333`).
 - Fixed round-2 finding 5: dividend-lag overrides now apply only to threshold
   paths whose schedules overlap the installed 2024–2025 lag, leaving the two
   genuinely affected measures (`data/uk/obr_measure_reforms.yaml:585`,
-  `tests/test_obr_costings_registry.py:242`).
+  `tests/test_obr_costings_registry.py:267`).
 - Fixed round-2 finding 8: `start_fy` now means the first nonzero harvested
   costing year, all 26 values are validated against the complete vendored
   slice, and 11 incorrect entries are corrected
   (`data/uk/obr_measure_reforms.yaml:4`,
-  `pipeline/compute_uk_obr_costings.py:372`).
+  `pipeline/compute_uk_obr_costings.py:423`).
 - Fixed round-2 finding 4: restage reconstructs selected null-reform rows from
   persisted run facts, permits empty artifact inventories, and validates exact
   source-backed `(measure, year)` coverage; the all-26 round-trip proves 21
   artifact-backed and 5 reconstructed measure keys twice byte-identically
-  (`pipeline/compute_uk_obr_costings.py:1695`,
+  (`pipeline/compute_uk_obr_costings.py:1710`,
   `tests/test_obr_costings_registry.py:1435`).
+- Final exact default `--dry-run` validated all 26 measures and 215 mapped
+  head-years from the 621-row vendor; final `--restage` read 13 artifacts,
+  wrote 20 staged and 26 comparison rows, and reported zero managed sims.
+- The staged JSONL, comparison CSV, and comparison Markdown are byte-identical
+  to their `52c9f95` versions; only required artifact/manifest provenance
+  metadata changed. Final verification passes 51 focused OBR tests and all
+  218 repository tests, with only the upstream PolicyEngine-UK Pydantic warning.
 - Read this progress record and the clean-context review before inspecting or
   changing the implementation.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -75,21 +82,16 @@ be constructed during this follow-up.
   immediately before each simulation is constructed and immediately after its
   aggregates are read. The simulation-reported path must also equal the path
   that was hashed, and any mismatch aborts before artifact emission.
-- New artifacts record `dataset_sha256_before` and `dataset_sha256_after` for
-  both baseline and reform simulations beside their bundle identities. The 13
-  committed artifacts retain no invented hashes during `--restage`; their
-  absence is accepted only because run id `campaign-20260816-obr-costings`
-  predates the field's 2026-08-17 introduction. A fake-file mutation test
-  exercises the before/after rejection.
+- Follow-up 2 introduced `dataset_sha256_before` and
+  `dataset_sha256_after` for new simulations. Follow-up 3 replaced its former
+  run-id date exception with the exact 13-path manifest allowlist.
 - Fixed finding 2 by extending every staged `external_claim_match` to the
   complete six-key identity: `source`, adopted `metric`, `period`, verbatim
   `source_table`, verbatim `reform_hint`, and the full `conditions` mapping.
   The comparison resolver now uses only those descriptor keys.
-- Vendored the exact 215 original harvest lines selected by every mapped
-  registry head-year in `sources/harvest-20260802/uk_obr/`, preserving source
-  order and bytes. Tests prove the vendored set is exactly the registry-mapped
-  population, every staged descriptor has one vendored match, and—when the
-  sibling harvest is present—one full-harvest match with byte-identical rows.
+- Follow-up 2 first vendored the 215 mapped head-year lines. Follow-up 3
+  expanded that predecessor into the complete 621-row registry-measure slice,
+  preserving source order and exact source bytes.
 - The future UK ingestor work in #33/#48 must accept `source_table` and
   `reform_hint` as supported match keys. This lane does not modify
   `scorecard_db/`.
@@ -110,10 +112,8 @@ be constructed during this follow-up.
 - Restaging refreshed the 12 non-diagnostic artifacts' matched claim snapshots
   with harvested `source_model` and current registry notes. Legacy dataset hash
   fields remain absent; no hash was invented and no simulation ran.
-- Fixed finding 6 with validated `computability_overrides` keyed by proxy year.
-  The four registry entries containing a dividend reform path are `partial` in
-  2024 and 2025 with the required policyengine-uk#1822 note; their base status
-  applies again from 2026, so the committed smoke artifacts are unaffected.
+- Follow-up 2 added year-keyed dividend `computability_overrides`; Follow-up 3
+  narrowed them to the two threshold schedules that actually overlap 2024–25.
 - The engine-sensitive test reads the installed main/dividend higher and
   additional thresholds. On pe-uk 2.89.2 it observes 37,700/125,140 versus
   37,500/150,000 in 2024–2025, equality from 2026, and requires override years
@@ -125,8 +125,8 @@ be constructed during this follow-up.
 - Independently compared all 26 pre/post comparison row identities, OBR/PE
   values, signed ratios, and bins; they are unchanged. Only descriptors,
   sourced axes, and annotations changed.
-- Final verification passes: 44 focused OBR cases and all 211 repository tests.
-  The only warning is the upstream PolicyEngine-UK Pydantic deprecation.
+- Follow-up 2 verification passed 44 focused OBR cases and all 211 repository
+  tests. Its only warning was the upstream PolicyEngine-UK Pydantic deprecation.
 - Started Follow-up 1 from clean branch `obr-costings-mode2` at `b6442fe` and
   read this progress record plus both compute/comparison modules end to end.
 - Confirmed the orientation defect is confined to artifact/staging derivation:
@@ -238,8 +238,7 @@ be constructed during this follow-up.
 
 ## Next
 
-- Fix and test all remaining round-2 findings, preserving the frozen numerical
-  results while adding only the required claims-slice provenance fields.
+- Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
   before these rows are attached to the campaign database.
 - Remove the 2024–2025 dividend overrides when an installed PE-UK release fixes
@@ -371,8 +370,8 @@ Maximum sampled process RSS was 32.888 GiB.
   than assuming a policy world the loaded parameter schedules do not contain.
 - PE-UK 2.89.2 keeps dividend higher/additional band thresholds at
   £37,500/£150,000 in 2024–2025 while the main bands are £37,700/£125,140. The
-  four dividend-path entries carry year-specific `partial` overrides for those
-  two years only; policyengine-uk#1822 tracks the lag.
+  two registry reforms whose dividend-threshold schedules overlap those years
+  carry year-specific `partial` overrides; policyengine-uk#1822 tracks the lag.
 - The exact pre-policy salary-sacrifice cap is infinity, which cannot be stored
   in standards-compliant JSON. The partial reversal uses a finite `1e100` cap
   and zeroes the fixed 0.16% broad-base haircut; installed formulas show this
