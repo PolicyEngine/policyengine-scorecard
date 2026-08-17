@@ -7,9 +7,10 @@ entries reverse a policy already present in that certified world. Artifacts
 retain both raw aggregates and the literal reversal delta, while ``pe_value``
 is oriented to the announced measure so it is directly comparable with OBR.
 
-No managed microsimulation is constructed by ``--dry-run``. Normal execution
-forces Hugging Face offline mode before importing PolicyEngine, so a missing
-certified artifact fails instead of downloading a different world.
+No managed microsimulation is constructed by ``--dry-run`` or ``--restage``.
+Normal execution forces Hugging Face offline mode before importing
+PolicyEngine, so a missing certified artifact fails instead of downloading a
+different world.
 """
 
 from __future__ import annotations
@@ -73,6 +74,10 @@ class RegistryError(ValueError):
 
 class ClaimMatchError(ValueError):
     """A registry measure/head did not resolve to exactly one source row."""
+
+
+class ArtifactRestageError(ValueError):
+    """An existing run artifact cannot be safely restaged from raw aggregates."""
 
 
 def configure_offline() -> None:
@@ -743,6 +748,172 @@ def write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> None:
     atomic_write_text(path, text)
 
 
+def load_json_object(path: Path, label: str) -> dict[str, Any]:
+    try:
+        value = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ArtifactRestageError(f"cannot read {label} {path}: {exc}") from exc
+    if not isinstance(value, dict):
+        raise ArtifactRestageError(f"{label} {path}: expected a JSON object")
+    return value
+
+
+def resolve_recorded_path(reference: str, root: Path = ROOT) -> Path:
+    if not isinstance(reference, str) or not reference:
+        raise ArtifactRestageError("recorded path must be non-empty text")
+    path = Path(reference)
+    return path if path.is_absolute() else root / path
+
+
+def measure_head_identity(
+    measure: dict[str, Any], head: dict[str, Any]
+) -> tuple[str, str | None, str, str]:
+    return (
+        head["obr_head"],
+        head["condition_key"],
+        head_source_table(measure, head),
+        head_external_metric(measure, head),
+    )
+
+
+def artifact_head_identity(head: dict[str, Any]) -> tuple[Any, ...]:
+    return (
+        head.get("obr_head"),
+        head.get("condition_key"),
+        head.get("source_table"),
+        head.get("external_metric"),
+    )
+
+
+def rederive_artifact_orientation(
+    artifact: dict[str, Any],
+    measure: dict[str, Any],
+    *,
+    path: Path,
+) -> dict[str, Any]:
+    """Validate and rederive one artifact from its persisted raw aggregates."""
+
+    expected_identity = {
+        "measure_key": measure["measure_key"],
+        "fiscal_event": measure["fiscal_event"],
+        "obr_description": measure["obr_description"],
+        "source_table": measure["source_table"],
+        "construction": measure["construction"],
+        "computability": measure["computability"],
+        "reform": measure["pe_reform"],
+        "benchmark_class": "different_model",
+    }
+    differences = {
+        key: {"artifact": artifact.get(key), "registry": expected}
+        for key, expected in expected_identity.items()
+        if artifact.get(key) != expected
+    }
+    if differences:
+        raise ArtifactRestageError(
+            f"{path}: artifact/registry identity differs: {differences}"
+        )
+    if artifact.get("schema_version") != 1:
+        raise ArtifactRestageError(
+            f"{path}: unsupported artifact schema {artifact.get('schema_version')!r}"
+        )
+    year = artifact.get("year")
+    if not isinstance(year, int) or not YEAR_MIN <= year <= YEAR_MAX:
+        raise ArtifactRestageError(f"{path}: invalid artifact year {year!r}")
+    raw_aggregates = artifact.get("raw_aggregates")
+    if not isinstance(raw_aggregates, dict):
+        raise ArtifactRestageError(f"{path}: raw_aggregates must be a mapping")
+    baseline = raw_aggregates.get("baseline_gbp")
+    reform = raw_aggregates.get("reform_gbp")
+    if not isinstance(baseline, dict) or not isinstance(reform, dict):
+        raise ArtifactRestageError(
+            f"{path}: raw baseline/reform aggregates must be mappings"
+        )
+
+    artifact_heads = artifact.get("heads")
+    if not isinstance(artifact_heads, list) or not all(
+        isinstance(head, dict) for head in artifact_heads
+    ):
+        raise ArtifactRestageError(f"{path}: heads must be a list of mappings")
+    by_identity: dict[tuple[Any, ...], dict[str, Any]] = {}
+    for result in artifact_heads:
+        identity = artifact_head_identity(result)
+        if identity in by_identity:
+            raise ArtifactRestageError(f"{path}: duplicate artifact head {identity}")
+        by_identity[identity] = result
+    expected_identities = {
+        measure_head_identity(measure, head) for head in measure["heads"]
+    }
+    if set(by_identity) != expected_identities:
+        raise ArtifactRestageError(
+            f"{path}: artifact and registry head identities differ"
+        )
+
+    for head in measure["heads"]:
+        identity = measure_head_identity(measure, head)
+        result = by_identity[identity]
+        variables = head["pe_variables"]
+        if result.get("pe_variables") != variables:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} PE variables differ from registry"
+            )
+        if result.get("channel") != head["channel"]:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} channel differs from registry"
+            )
+        try:
+            baseline_head = {name: baseline[name] for name in variables}
+            reform_head = {name: reform[name] for name in variables}
+        except KeyError as exc:
+            raise ArtifactRestageError(
+                f"{path}: missing raw aggregate {exc.args[0]!r}"
+            ) from exc
+        if result.get("baseline_aggregates_gbp") != baseline_head:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} baseline aggregates differ"
+            )
+        if result.get("reform_aggregates_gbp") != reform_head:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} reform aggregates differ"
+            )
+        raw_delta = reform_minus_baseline(baseline, reform, variables)
+        if result.get("raw_reform_minus_baseline_gbp") != raw_delta:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} raw delta does not reconcile"
+            )
+        literal_delta, pe_value = orient_exchequer_effect(
+            raw_delta, head["channel"], measure["construction"]
+        )
+        delta_field = (
+            "reversal_delta_exchequer_gain"
+            if measure["construction"] == "reversal_on_certified_world"
+            else "forward_delta_exchequer_gain"
+        )
+        other_delta_field = (
+            "forward_delta_exchequer_gain"
+            if delta_field == "reversal_delta_exchequer_gain"
+            else "reversal_delta_exchequer_gain"
+        )
+        if other_delta_field in result:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} has the wrong construction delta field"
+            )
+        if delta_field in result:
+            if (
+                result[delta_field] != literal_delta
+                or result.get("pe_value") != pe_value
+            ):
+                raise ArtifactRestageError(
+                    f"{path}: {head['obr_head']} oriented values do not reconcile"
+                )
+        elif result.get("pe_value") != literal_delta:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} legacy PE value is not the literal delta"
+            )
+        result[delta_field] = literal_delta
+        result["pe_value"] = pe_value
+    return artifact
+
+
 def annotations_for(
     measure: dict[str, Any],
     head: dict[str, Any],
@@ -888,10 +1059,10 @@ def stage_artifact_rows(
 ) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     artifact_heads = {
-        (head["obr_head"], head["condition_key"]): head for head in artifact["heads"]
+        artifact_head_identity(head): head for head in artifact["heads"]
     }
     for head in measure["heads"]:
-        result = artifact_heads[(head["obr_head"], head["condition_key"])]
+        result = artifact_heads[measure_head_identity(measure, head)]
         claim = result["external_claim"]
         if claim is None:
             continue
@@ -1004,6 +1175,133 @@ PA_SMOKE_MEASURE = {
 }
 
 
+def restage_existing_run(
+    *,
+    manifest_path: Path,
+    output_dir: Path,
+    artifact_root: Path = ROOT,
+) -> dict[str, Any]:
+    """Restage a manifest inventory using artifacts only; construct no sim."""
+
+    manifest = load_json_object(manifest_path, "run manifest")
+    if manifest.get("schema_version") != 1:
+        raise ArtifactRestageError(
+            f"{manifest_path}: unsupported manifest schema "
+            f"{manifest.get('schema_version')!r}"
+        )
+    run_id = manifest.get("run_id")
+    if not isinstance(run_id, str) or not run_id:
+        raise ArtifactRestageError(f"{manifest_path}: run_id must be non-empty text")
+    references = manifest.get("artifacts")
+    if not isinstance(references, list) or not references or not all(
+        isinstance(reference, str) and reference for reference in references
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifacts must be a non-empty list of paths"
+        )
+    if len(set(references)) != len(references):
+        raise ArtifactRestageError(f"{manifest_path}: duplicate artifact paths")
+    resolved_references = [
+        resolve_recorded_path(reference, artifact_root).resolve()
+        for reference in references
+    ]
+    if len(set(resolved_references)) != len(resolved_references):
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifact paths resolve to duplicate files"
+        )
+
+    registry_path = resolve_recorded_path(manifest.get("registry"), artifact_root)
+    claims_path = resolve_recorded_path(manifest.get("claims"), artifact_root)
+    staged_path = resolve_recorded_path(
+        manifest.get("staged_output"), artifact_root
+    )
+    spec = load_registry(registry_path)
+    claims = load_claims(claims_path)
+    validate_registry(spec, claims=claims)
+    registry = {measure["measure_key"]: measure for measure in spec["measures"]}
+
+    replacements: list[tuple[Path, dict[str, Any]]] = []
+    staged_rows: list[dict[str, Any]] = []
+    regular_measure_keys: set[str] = set()
+    diagnostic_artifacts = 0
+    for reference in references:
+        path = resolve_recorded_path(reference, artifact_root)
+        artifact = load_json_object(path, "run artifact")
+        self_reference = artifact.get("artifact")
+        self_path = resolve_recorded_path(self_reference, artifact_root)
+        if self_path.resolve() != path.resolve():
+            raise ArtifactRestageError(
+                f"{path}: self-reference {self_reference!r} points elsewhere"
+            )
+        if artifact.get("run_id") != run_id:
+            raise ArtifactRestageError(f"{path}: run_id differs from manifest")
+        key = artifact.get("measure_key")
+        diagnostic_only = artifact.get("diagnostic_only")
+        if diagnostic_only is True:
+            if key != PA_SMOKE_MEASURE["measure_key"]:
+                raise ArtifactRestageError(
+                    f"{path}: unsupported diagnostic measure {key!r}"
+                )
+            measure = PA_SMOKE_MEASURE
+            diagnostic_artifacts += 1
+        elif diagnostic_only is False:
+            if key not in registry:
+                raise ArtifactRestageError(
+                    f"{path}: measure_key {key!r} is absent from registry"
+                )
+            measure = registry[key]
+            regular_measure_keys.add(key)
+        else:
+            raise ArtifactRestageError(
+                f"{path}: diagnostic_only must be an explicit boolean"
+            )
+        refreshed = rederive_artifact_orientation(artifact, measure, path=path)
+        replacements.append((path, refreshed))
+        if not diagnostic_only:
+            staged_rows.extend(stage_artifact_rows(refreshed, measure))
+
+    selected = manifest.get("selected_measures")
+    if (
+        not isinstance(selected, list)
+        or not all(isinstance(key, str) for key in selected)
+        or len(set(selected)) != len(selected)
+        or set(selected) != regular_measure_keys
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: selected measures differ from artifact inventory"
+        )
+    expected_staged_rows = manifest.get("staged_rows")
+    if expected_staged_rows != len(staged_rows):
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifact-only restage produced {len(staged_rows)} "
+            f"rows; manifest records {expected_staged_rows!r}"
+        )
+
+    for path, artifact in replacements:
+        write_json(path, artifact)
+    write_jsonl(staged_path, staged_rows)
+
+    if __package__:
+        from pipeline import compare_uk_obr_costings as comparison
+    else:
+        import compare_uk_obr_costings as comparison
+
+    comparison_rows = comparison.write_comparison_outputs(
+        registry_path=registry_path,
+        claims_path=claims_path,
+        staged_path=staged_path,
+        output_dir=output_dir,
+        artifact_root=artifact_root,
+    )
+    return {
+        "artifacts": len(replacements),
+        "diagnostic_artifacts": diagnostic_artifacts,
+        "staged_rows": len(staged_rows),
+        "comparison_rows": len(comparison_rows),
+        "staged_output": staged_path,
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
@@ -1019,6 +1317,22 @@ def main(argv: list[str] | None = None) -> int:
         "--dry-run", action="store_true", help="Validate only; construct no sim"
     )
     parser.add_argument(
+        "--restage",
+        action="store_true",
+        help="Rebuild artifacts, staging, and comparison from the run manifest",
+    )
+    parser.add_argument(
+        "--manifest",
+        type=Path,
+        help="Existing run manifest (default: OUTPUT_DIR/RUN_MANIFEST.json)",
+    )
+    parser.add_argument(
+        "--artifact-root",
+        type=Path,
+        default=ROOT,
+        help="Base for paths recorded relative to the repository root",
+    )
+    parser.add_argument(
         "--no-stage", action="store_true", help="Write artifacts but no JSONL"
     )
     parser.add_argument(
@@ -1028,6 +1342,39 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--run-id", default=f"campaign-{RUN_ID_DATE}-obr-costings")
     args = parser.parse_args(argv)
+
+    if args.restage:
+        incompatible = [
+            flag
+            for flag, enabled in (
+                ("--measures", args.measures is not None),
+                ("--years", args.years is not None),
+                ("--limit", args.limit is not None),
+                ("--dry-run", args.dry_run),
+                ("--no-stage", args.no_stage),
+                ("--pa-smoke-probe", args.pa_smoke_probe),
+            )
+            if enabled
+        ]
+        if incompatible:
+            parser.error(
+                "--restage cannot be combined with " + ", ".join(incompatible)
+            )
+        manifest_path = args.manifest or args.output_dir / "RUN_MANIFEST.json"
+        summary = restage_existing_run(
+            manifest_path=manifest_path,
+            output_dir=args.output_dir,
+            artifact_root=args.artifact_root,
+        )
+        print(
+            f"restaged {summary['artifacts']} existing artifacts "
+            f"({summary['diagnostic_artifacts']} diagnostic), "
+            f"{summary['staged_rows']} staged rows, and "
+            f"{summary['comparison_rows']} comparison rows; "
+            "managed simulations constructed: 0",
+            flush=True,
+        )
+        return 0
 
     configure_offline()
     spec = load_registry(args.registry)

@@ -603,6 +603,32 @@ def atomic_write_text(path: Path, text: str) -> None:
     temporary.replace(path)
 
 
+def write_comparison_outputs(
+    *,
+    registry_path: Path = DEFAULT_REGISTRY,
+    claims_path: Path = DEFAULT_CLAIMS,
+    staged_path: Path = DEFAULT_STAGED,
+    output_dir: Path = DEFAULT_OUTPUT_DIR,
+    artifact_root: Path = ROOT,
+) -> list[dict[str, Any]]:
+    """Validate inputs and write both deterministic comparison renderings."""
+
+    if not staged_path.exists():
+        raise ComparisonError(f"staged results do not exist: {staged_path}")
+    staged_rows = load_jsonl(staged_path)
+    if not staged_rows:
+        raise ComparisonError(f"staged results are empty: {staged_path}")
+    rows = build_comparison_rows(
+        staged_rows,
+        load_jsonl(claims_path),
+        load_registry(registry_path),
+        artifact_root=artifact_root,
+    )
+    atomic_write_text(output_dir / "COMPARISON.csv", render_csv(rows))
+    atomic_write_text(output_dir / "COMPARISON.md", render_markdown(rows))
+    return rows
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
@@ -617,21 +643,15 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    if not args.staged.exists():
-        raise SystemExit(f"staged results do not exist: {args.staged}")
-    staged_rows = load_jsonl(args.staged)
-    if not staged_rows:
-        raise SystemExit(f"staged results are empty: {args.staged}")
-    rows = build_comparison_rows(
-        staged_rows,
-        load_jsonl(args.claims),
-        load_registry(args.registry),
+    rows = write_comparison_outputs(
+        registry_path=args.registry,
+        claims_path=args.claims,
+        staged_path=args.staged,
+        output_dir=args.output_dir,
         artifact_root=args.artifact_root,
     )
     csv_path = args.output_dir / "COMPARISON.csv"
     markdown_path = args.output_dir / "COMPARISON.md"
-    atomic_write_text(csv_path, render_csv(rows))
-    atomic_write_text(markdown_path, render_markdown(rows))
     totals = sum(row["row_kind"] == "mapped_head_total" for row in rows)
     print(
         f"wrote {len(rows)} descriptive rows ({totals} mapped-head totals) to "

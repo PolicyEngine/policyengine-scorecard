@@ -1,13 +1,15 @@
 """Offline contracts for the OBR costing registry and compute pipeline.
 
-These tests deliberately stop before ``managed_microsimulation``.  Engine
+These tests deliberately stop before ``managed_microsimulation``. Engine
 validation instantiates only PolicyEngine-UK's parameter/variable system, and
-the command-line test exercises ``--dry-run`` against synthetic source rows.
+the command-line tests exercise ``--dry-run`` and artifact-only ``--restage``
+against synthetic source rows.
 """
 
 from __future__ import annotations
 
 import copy
+import csv
 import importlib.util
 import json
 import os
@@ -556,6 +558,108 @@ def test_dry_run_is_offline_and_writes_no_simulation_outputs(
     )
     assert not output_dir.exists()
     assert not staged_path.exists()
+
+
+def test_restage_rederives_existing_artifacts_without_any_simulation(
+    tmp_path, monkeypatch, synthetic_measure, synthetic_claim
+):
+    registry_path = tmp_path / "registry.yaml"
+    claims_path = tmp_path / "claims.jsonl"
+    output_dir = tmp_path / "artifacts"
+    staged_path = tmp_path / "staged.jsonl"
+    manifest_path = output_dir / "RUN_MANIFEST.json"
+    artifact_path = output_dir / "synthetic_2026.json"
+    registry_path.write_text(
+        yaml.safe_dump(
+            {
+                "schema_version": 1,
+                "benchmark_class": "different_model",
+                "measures": [synthetic_measure],
+            },
+            sort_keys=False,
+        )
+    )
+    claims_path.write_text(json.dumps(synthetic_claim, allow_nan=False) + "\n")
+    bundle = {"certified_data_build_id": "synthetic-certified-build"}
+    artifact = compute.build_artifact(
+        measure=synthetic_measure,
+        year=2026,
+        baseline=synthetic_run(bundle, 100.0),
+        reform=synthetic_run(bundle, 125.0),
+        output_path=artifact_path,
+        computed_at="2026-08-16T12:00:00+00:00",
+        run_id="campaign-20260816-obr-costings",
+        claims=[synthetic_claim],
+    )
+    artifact["diagnostic_only"] = False
+    artifact["heads"][0].pop("reversal_delta_exchequer_gain")
+    artifact["heads"][0]["pe_value"] = 25.0
+    compute.write_json(artifact_path, artifact)
+    manifest = {
+        "schema_version": 1,
+        "run_id": artifact["run_id"],
+        "registry": str(registry_path),
+        "claims": str(claims_path),
+        "artifacts": [str(artifact_path)],
+        "selected_measures": [synthetic_measure["measure_key"]],
+        "staged_output": str(staged_path),
+        "staged_rows": 1,
+    }
+    compute.write_json(manifest_path, manifest)
+    original_manifest = manifest_path.read_bytes()
+    original_raw = copy.deepcopy(artifact["raw_aggregates"])
+    original_claim = copy.deepcopy(artifact["heads"][0]["external_claim"])
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("restage reached simulation or certified-cache setup")
+
+    monkeypatch.setattr(compute, "configure_offline", forbidden)
+    monkeypatch.setattr(compute, "preflight_certified_dataset", forbidden)
+    monkeypatch.setattr(compute, "run_managed_simulation", forbidden)
+
+    arguments = [
+        "--restage",
+        "--manifest",
+        str(manifest_path),
+        "--output-dir",
+        str(output_dir),
+        "--artifact-root",
+        str(tmp_path),
+    ]
+    assert compute.main(arguments) == 0
+
+    refreshed = json.loads(artifact_path.read_text())
+    assert refreshed["raw_aggregates"] == original_raw
+    assert refreshed["computed_at"] == artifact["computed_at"]
+    assert refreshed["heads"][0]["external_claim"] == original_claim
+    assert refreshed["heads"][0]["raw_reform_minus_baseline_gbp"] == 25.0
+    assert refreshed["heads"][0]["reversal_delta_exchequer_gain"] == 25.0
+    assert refreshed["heads"][0]["pe_value"] == -25.0
+    staged = [json.loads(line) for line in staged_path.read_text().splitlines()]
+    assert len(staged) == 1
+    assert staged[0]["pe_value"] == -25.0
+    with (output_dir / "COMPARISON.csv").open(newline="") as source:
+        comparison_rows = list(csv.DictReader(source))
+    assert len(comparison_rows) == 1
+    assert float(comparison_rows[0]["pe_value_gbp"]) == -25.0
+    assert comparison_rows[0]["ratio_bin"] == "same_sign_ratio_0.5_to_0.8"
+    markdown = (output_dir / "COMPARISON.md").read_text()
+    assert "announced-measure orientation" in markdown
+    assert "reversals are not re-oriented" not in markdown
+    assert manifest_path.read_bytes() == original_manifest
+
+    first_outputs = {
+        path: path.read_bytes()
+        for path in (
+            artifact_path,
+            staged_path,
+            output_dir / "COMPARISON.csv",
+            output_dir / "COMPARISON.md",
+            manifest_path,
+        )
+    }
+    assert compute.main(arguments) == 0
+    assert {path: path.read_bytes() for path in first_outputs} == first_outputs
 
 
 @pytest.mark.parametrize(
