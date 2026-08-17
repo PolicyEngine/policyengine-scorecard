@@ -412,6 +412,15 @@ def derive_mapped_head_totals(
             + ", ".join(heads)
             + "; it is not attached to an external TOTAL claim.",
             (
+                "Reversal leg on the certified world, re-oriented to the "
+                "announced measure: measure Δ = −(reversal − baseline)."
+                if measure["construction"] == "reversal_on_certified_world"
+                else (
+                    "Forward leg from the certified baseline: "
+                    "measure Δ = +(reform − baseline)."
+                )
+            ),
+            (
                 "Named comparison axes: model=different_model (OBR HMT/HMRC "
                 "costing models vs PE-UK); adjustment=PE static vs OBR "
                 "behavioural-adjusted; baseline="
@@ -541,9 +550,10 @@ def render_markdown(rows: list[dict[str, Any]]) -> str:
         "",
         (
             "Values are GBP billions under the harvested OBR "
-            "`positive_gain_to_exchequer` orientation. `PE / OBR` retains the "
-            "staged construction direction; certified-world reversals are not "
-            "re-oriented here. `benchmark_class` is `different_model`."
+            "`positive_gain_to_exchequer` orientation. `PE / OBR` uses the "
+            "announced-measure orientation: certified-world reversal legs are "
+            "sign-flipped, while forward changes retain their sign. "
+            "`benchmark_class` is `different_model`."
         ),
         "",
         (

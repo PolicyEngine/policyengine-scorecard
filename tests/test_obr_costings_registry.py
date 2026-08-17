@@ -91,8 +91,8 @@ def synthetic_claim(synthetic_measure):
         "metric": "revenue_change",
         "period": 2026,
         "conditions": conditions,
-        "value": 40.0,
-        "value_raw": "£0.00000004bn",
+        "value": -40.0,
+        "value_raw": "-£0.00000004bn",
         "normalization": "synthetic GBP fixture",
         "proposed_unit": "gbp",
         "time_basis": "fy",
@@ -193,20 +193,30 @@ def test_nics_head_is_exact_required_class_1_employee_employer_plus_class_4():
     assert all("national_insurance" not in head["pe_variables"] for head in nics_heads)
 
 
-def test_tax_and_spending_sign_mapping_from_synthetic_aggregates():
-    baseline = {"income_tax": 100.0, "universal_credit": 60.0}
-    reform = {"income_tax": 125.0, "universal_credit": 72.0}
+@pytest.mark.parametrize(
+    ("construction", "channel", "raw_delta", "literal_delta", "pe_value"),
+    [
+        ("reversal_on_certified_world", "tax", 25.0, 25.0, -25.0),
+        ("reversal_on_certified_world", "spending", 12.0, -12.0, 12.0),
+        ("forward_from_baseline", "tax", 25.0, 25.0, 25.0),
+        ("forward_from_baseline", "spending", 12.0, -12.0, -12.0),
+    ],
+)
+def test_measure_orientation_for_both_constructions_and_channels(
+    construction, channel, raw_delta, literal_delta, pe_value
+):
+    assert compute.orient_exchequer_effect(
+        raw_delta, channel, construction
+    ) == (literal_delta, pe_value)
 
-    tax_delta = compute.reform_minus_baseline(baseline, reform, ["income_tax"])
-    spending_delta = compute.reform_minus_baseline(
-        baseline, reform, ["universal_credit"]
-    )
-    assert tax_delta == 25.0
-    assert compute.to_exchequer_gain(tax_delta, "tax") == 25.0
-    assert spending_delta == 12.0
-    assert compute.to_exchequer_gain(spending_delta, "spending") == -12.0
+
+def test_measure_orientation_rejects_unknown_channel_and_construction():
     with pytest.raises(ValueError, match="unknown channel"):
-        compute.to_exchequer_gain(1.0, "borrowing")
+        compute.orient_exchequer_effect(
+            1.0, "borrowing", "reversal_on_certified_world"
+        )
+    with pytest.raises(ValueError, match="unknown construction"):
+        compute.orient_exchequer_effect(1.0, "tax", "backward_from_baseline")
 
 
 def test_configure_offline_overrides_network_enabled_environment(monkeypatch):
@@ -266,7 +276,7 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
     }
     assert row["benchmark_class"] == "different_model"
     assert row["status"] == "constructed"
-    assert row["pe_value"] == 25.0
+    assert row["pe_value"] == -25.0
     assert row["engine_version"] == artifact["engine_version"]
     assert row["data_bundle"] == artifact["data_bundle"]
     assert row["run_id"] == artifact["run_id"]
@@ -275,7 +285,8 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
     assert any("static microsimulation" in note for note in row["annotations"])
     assert any("behavioural-adjusted" in note for note in row["annotations"])
     assert any(
-        "not the OBR announcement baseline" in note for note in row["annotations"]
+        "measure Δ = −(reversal − baseline)" in note
+        for note in row["annotations"]
     )
     assert any("calendar year 2026" in note for note in row["annotations"])
     assert any("Head mapping" in note for note in row["annotations"])
@@ -296,6 +307,8 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
         == synthetic_claim["conditions"]
     )
     assert saved["heads"][0]["raw_reform_minus_baseline_gbp"] == 25.0
+    assert saved["heads"][0]["reversal_delta_exchequer_gain"] == 25.0
+    assert saved["heads"][0]["pe_value"] == -25.0
 
 
 def test_committed_smoke_rows_trace_to_certified_artifacts():
@@ -592,7 +605,7 @@ def test_comparison_resolves_measure_identity_and_traces_artifact(
 
     assert len(rows) == 1
     assert rows[0]["obr_value_gbp"] == synthetic_claim["value"]
-    assert rows[0]["pe_value_gbp"] == 25.0
+    assert rows[0]["pe_value_gbp"] == -25.0
     assert rows[0]["benchmark_class"] == "different_model"
     assert rows[0]["ratio_bin"] == "same_sign_ratio_0.5_to_0.8"
     assert any("remaining_difference=unexplained" in x for x in rows[0]["annotations"])

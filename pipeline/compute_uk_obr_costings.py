@@ -3,10 +3,9 @@
 
 The managed PolicyEngine baseline is the certified world served by
 ``policyengine.py``. Registry reforms are plain parameter dictionaries. Most
-entries reverse a policy already present in that certified world; their staged
-``pe_value`` deliberately remains the literal reform-minus-baseline delta, as
-required by the lane contract. Artifacts retain both raw aggregates so the
-construction can always be re-oriented downstream without rerunning a sim.
+entries reverse a policy already present in that certified world. Artifacts
+retain both raw aggregates and the literal reversal delta, while ``pe_value``
+is oriented to the announced measure so it is directly comparable with OBR.
 
 No managed microsimulation is constructed by ``--dry-run``. Normal execution
 forces Hugging Face offline mode before importing PolicyEngine, so a missing
@@ -686,14 +685,31 @@ def reform_minus_baseline(
     return sum(reform[name] - baseline[name] for name in variables)
 
 
-def to_exchequer_gain(raw_aggregate_delta: float, channel: str) -> float:
-    """Map an aggregate delta to OBR's positive-gain-to-Exchequer sign."""
+def orient_exchequer_effect(
+    raw_reform_minus_baseline: float,
+    channel: str,
+    construction: str,
+) -> tuple[float, float]:
+    """Return ``(literal_delta, pe_value)`` in exchequer-gain sign.
+
+    Let ``G = +(reform - baseline)`` for tax and
+    ``G = -(reform - baseline)`` for spending. The staging identity is
+    ``pe_value = -G`` for ``reversal_on_certified_world`` (the announced
+    measure is the reversal's undoing), and ``pe_value = +G`` for
+    ``forward_from_baseline``.
+    """
 
     if channel == "tax":
-        return raw_aggregate_delta
-    if channel == "spending":
-        return -raw_aggregate_delta
-    raise ValueError(f"unknown channel {channel!r}")
+        literal_delta = raw_reform_minus_baseline
+    elif channel == "spending":
+        literal_delta = -raw_reform_minus_baseline
+    else:
+        raise ValueError(f"unknown channel {channel!r}")
+    if construction == "reversal_on_certified_world":
+        return literal_delta, -literal_delta
+    if construction == "forward_from_baseline":
+        return literal_delta, literal_delta
+    raise ValueError(f"unknown construction {construction!r}")
 
 
 def artifact_path(output_dir: Path, measure_key: str, year: int) -> Path:
@@ -735,10 +751,13 @@ def annotations_for(
     variables = " + ".join(head["pe_variables"])
     sign = "+Δtax" if head["channel"] == "tax" else "−Δspending"
     construction = (
-        "Certified-world reversal, not the OBR announcement baseline; the staged "
-        "delta remains literal reversal-minus-certified-baseline."
+        "Reversal leg on the certified world, re-oriented to the announced "
+        "measure: measure Δ = −(reversal − baseline)."
         if measure["construction"] == "reversal_on_certified_world"
-        else "Forward parameter change from the certified baseline."
+        else (
+            "Forward leg from the certified baseline: "
+            "measure Δ = +(reform − baseline)."
+        )
     )
     notes = [
         "PE-UK static microsimulation; the OBR published costing is behavioural-adjusted.",
@@ -785,14 +804,21 @@ def build_artifact(
         raw_delta = reform_minus_baseline(
             baseline["aggregates_gbp"], reform["aggregates_gbp"], variables
         )
-        pe_value = to_exchequer_gain(raw_delta, head["channel"])
-        if not math.isfinite(pe_value):
+        literal_delta, pe_value = orient_exchequer_effect(
+            raw_delta, head["channel"], measure["construction"]
+        )
+        if not math.isfinite(literal_delta) or not math.isfinite(pe_value):
             raise RuntimeError(
                 f"{measure['measure_key']} {year} {head['obr_head']}: "
                 "non-finite PE value"
             )
         matched_claim = (
             resolve_claim(claims, measure, head, year) if claims is not None else None
+        )
+        construction_delta_field = (
+            "reversal_delta_exchequer_gain"
+            if measure["construction"] == "reversal_on_certified_world"
+            else "forward_delta_exchequer_gain"
         )
         heads.append(
             {
@@ -809,6 +835,7 @@ def build_artifact(
                     name: reform["aggregates_gbp"][name] for name in variables
                 },
                 "raw_reform_minus_baseline_gbp": raw_delta,
+                construction_delta_field: literal_delta,
                 "pe_value": pe_value,
                 "sign_convention": "positive_gain_to_exchequer",
                 "external_claim": (
