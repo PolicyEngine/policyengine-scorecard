@@ -54,6 +54,9 @@ STAGED_REQUIRED_FIELDS = {
     "computed_at",
     "run_id",
     "annotations",
+    "source_model",
+    "basis",
+    "behavioural_adjustment",
 }
 
 
@@ -102,6 +105,7 @@ def synthetic_claim(synthetic_measure):
     }
     return {
         "source": "obr",
+        "source_model": "synthetic_source_model",
         "source_table": synthetic_measure["source_table"],
         "reform_hint": synthetic_measure["obr_description"],
         "metric": "revenue_change",
@@ -387,6 +391,9 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
         "conditions",
     }
     assert row["benchmark_class"] == "different_model"
+    assert row["source_model"] == synthetic_claim["source_model"]
+    assert row["basis"] == synthetic_claim["conditions"]["basis"]
+    assert row["behavioural_adjustment"] == "unstated in harvest"
     assert row["status"] == "constructed"
     assert row["pe_value"] == -25.0
     assert row["engine_version"] == artifact["engine_version"]
@@ -395,7 +402,12 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
     assert row["artifact"] == artifact["artifact"] == str(output_path.resolve())
     assert artifact["artifact"] in row["pe_construction"]
     assert any("static microsimulation" in note for note in row["annotations"])
-    assert any("behavioural-adjusted" in note for note in row["annotations"])
+    assert any(
+        "source_model=synthetic_source_model" in note
+        and "basis=nominal" in note
+        and "behavioural_adjustment=unstated in harvest" in note
+        for note in row["annotations"]
+    )
     assert any(
         "measure Δ = −(reversal − baseline)" in note
         for note in row["annotations"]
@@ -417,6 +429,10 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
     assert (
         saved["heads"][0]["external_claim"]["conditions"]
         == synthetic_claim["conditions"]
+    )
+    assert (
+        saved["heads"][0]["external_claim"]["source_model"]
+        == synthetic_claim["source_model"]
     )
     assert saved["heads"][0]["raw_reform_minus_baseline_gbp"] == 25.0
     assert saved["heads"][0]["reversal_delta_exchequer_gain"] == 25.0
@@ -650,7 +666,7 @@ def test_pre_effective_source_rows_are_not_suppressed(
     assert rows[0]["status"] == "not_computed"
 
 
-def test_hicbc_maps_fixed_claiming_child_benefit_spending_head():
+def test_hicbc_uses_provisional_fixed_claiming_child_benefit_mapping():
     measures = {
         measure["measure_key"]: measure
         for measure in compute.load_registry(REGISTRY)["measures"]
@@ -662,7 +678,11 @@ def test_hicbc_maps_fixed_claiming_child_benefit_spending_head():
 
     assert welfare_head["pe_variables"] == ["child_benefit"]
     assert welfare_head["channel"] == "spending"
-    assert "claiming response is invented" in hicbc["notes"]
+    assert "PROVISIONAL PE head mapping" in hicbc["notes"]
+    assert "identifies neither the programme nor a mechanism" in hicbc["notes"]
+    assert "would_claim_child_benefit is fixed" in hicbc["notes"]
+    assert "child_benefit delta is zero" in hicbc["notes"]
+    assert "reform-induced claiming" not in hicbc["notes"]
 
 
 def test_bundle_mismatches_abort_before_artifact_staging(tmp_path, synthetic_measure):
@@ -913,15 +933,16 @@ def test_comparison_resolves_measure_identity_and_traces_artifact(
     assert rows[0]["obr_value_gbp"] == synthetic_claim["value"]
     assert rows[0]["pe_value_gbp"] == -25.0
     assert rows[0]["benchmark_class"] == "different_model"
+    assert rows[0]["source_model"] == "synthetic_source_model"
+    assert rows[0]["basis"] == "nominal"
+    assert rows[0]["behavioural_adjustment"] == "unstated in harvest"
     assert rows[0]["ratio_bin"] == "same_sign_ratio_0.5_to_0.8"
     assert any(
         "measure Δ = −(reversal − baseline)" in x
         for x in rows[0]["annotations"]
     )
     assert any(
-        "adjustment=PE static vs OBR behavioural-adjusted" in x
-        and "baseline=certified-world reversal vs OBR announcement baseline" in x
-        and "timing=PE calendar year proxies OBR FY" in x
+        "benchmark_class=different_model" in x
         and "head_scope=" in x
         and "remaining_difference=unexplained" in x
         for x in rows[0]["annotations"]
@@ -954,6 +975,9 @@ def test_comparison_total_is_explicitly_mapped_head_only(synthetic_measure):
         "construction": "reversal_on_certified_world",
         "artifact": "synthetic.json",
         "annotations": [],
+        "source_model": "synthetic_source_model",
+        "basis": "nominal",
+        "behavioural_adjustment": "unstated in harvest",
     }
     head_rows = [
         {
@@ -986,6 +1010,9 @@ def test_comparison_total_is_explicitly_mapped_head_only(synthetic_measure):
     assert totals[0]["row_kind"] == "mapped_head_total"
     assert totals[0]["obr_value_gbp"] == 60.0
     assert totals[0]["pe_value_gbp"] == 45.0
+    assert totals[0]["source_model"] == "synthetic_source_model"
+    assert totals[0]["basis"] == "nominal"
+    assert totals[0]["behavioural_adjustment"] == "unstated in harvest"
     assert any(
         "not attached to an external TOTAL claim" in x for x in totals[0]["annotations"]
     )
@@ -994,9 +1021,7 @@ def test_comparison_total_is_explicitly_mapped_head_only(synthetic_measure):
         for x in totals[0]["annotations"]
     )
     assert any(
-        "adjustment=PE static vs OBR behavioural-adjusted" in x
-        and "baseline=certified-world reversal vs OBR announcement baseline" in x
-        and "timing=PE calendar year proxies OBR FY" in x
+        "benchmark_class=different_model" in x
         and "head_scope=mapped PMD heads only" in x
         and "remaining_difference=unexplained" in x
         for x in totals[0]["annotations"]
@@ -1010,8 +1035,32 @@ def test_committed_smoke_comparison_is_measure_oriented():
 
     assert len(rows) == 26
     assert sum(row["row_kind"] == "mapped_head_total" for row in rows) == 6
-    assert all(row["ratio_bin"] != "opposite_sign" for row in rows)
-    assert sum(row["ratio_bin"] == "pe_zero" for row in rows) == 4
+    assert {
+        (row["measure_key"], row["year"], row["head"])
+        for row in rows
+        if row["ratio_bin"] == "pe_zero"
+    } == {
+        (
+            "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+            "2026",
+            "Income tax",
+        ),
+        (
+            "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+            "2027",
+            "Income tax",
+        ),
+        (
+            "spring_budget_2024__hicbc_threshold_and_taper",
+            "2026",
+            "Welfare inside cap",
+        ),
+        (
+            "spring_budget_2024__hicbc_threshold_and_taper",
+            "2027",
+            "Welfare inside cap",
+        ),
+    }
     expected_summary_bins = {
         "efo_march_2026__pa_and_hrt_freezes": "same_sign_ratio_1.25_to_2",
         "efo_march_2026__additional_rate_threshold_reduction": (
@@ -1042,3 +1091,85 @@ def test_committed_smoke_comparison_is_measure_oriented():
         row["ratio_bin"] == expected_summary_bins[row["measure_key"]]
         for row in summary_rows
     )
+
+
+def test_committed_rows_use_only_harvested_source_axes():
+    staged_rows = [json.loads(line) for line in SMOKE_STAGED.read_text().splitlines()]
+    with SMOKE_COMPARISON.open(newline="") as source:
+        comparison_rows = list(csv.DictReader(source))
+
+    forbidden = (
+        "OBR behavioural-adjusted",
+        "HMT/HMRC costing models",
+        "announcement baseline",
+        "reform-induced claiming",
+    )
+    for row in [*staged_rows, *comparison_rows]:
+        expected_source_model = (
+            "obr_efo_forecast"
+            if row["source_table"] == "3.17: 3.17"
+            else "hmt_scorecard_obr_database"
+        )
+        expected_basis = (
+            "unstated"
+            if row["source_table"] == "3.17: 3.17"
+            else "forecast"
+        )
+        assert row["source_model"] == expected_source_model
+        assert row["basis"] == expected_basis
+        assert row["behavioural_adjustment"] == "unstated in harvest"
+        annotations = (
+            " ".join(row["annotations"])
+            if isinstance(row["annotations"], list)
+            else row["annotations"]
+        )
+        assert "PE: static microsimulation on the certified world" in annotations
+        assert not any(text in annotations for text in forbidden)
+
+
+def test_employer_nics_income_tax_row_cites_incidence_mechanism():
+    with SMOKE_COMPARISON.open(newline="") as source:
+        rows = list(csv.DictReader(source))
+    income_tax_rows = [
+        row
+        for row in rows
+        if row["measure_key"] == "autumn_budget_2024__employer_nics_package"
+        and row["row_kind"] == "head"
+        and row["head"] == "Income tax"
+    ]
+
+    assert len(income_tax_rows) == 2
+    for row in income_tax_rows:
+        assert float(row["pe_value_gbp"]) != 0
+        assert (
+            "policyengine_uk/parameters/gov/contrib/policyengine/"
+            "employer_ni/employee_incidence.yaml" in row["annotations"]
+        )
+        assert (
+            "policyengine_uk/variables/contrib/policyengine/employer_ni/"
+            "employer_ni_fixed_employer_cost_change.py" in row["annotations"]
+        )
+        assert "holding employer cost fixed" in row["annotations"]
+        assert "why the PE Income-tax head is non-zero" in row["annotations"]
+
+
+def test_hicbc_welfare_rows_and_artifacts_keep_mapping_provisional():
+    staged_rows = [json.loads(line) for line in SMOKE_STAGED.read_text().splitlines()]
+    welfare_rows = [
+        row
+        for row in staged_rows
+        if row["measure_key"] == "spring_budget_2024__hicbc_threshold_and_taper"
+        and row["external_claim_match"]["conditions"].get("spending_head")
+        == "Welfare inside cap"
+    ]
+
+    assert len(welfare_rows) == 2
+    for row in welfare_rows:
+        annotations = " ".join(row["annotations"])
+        assert "PROVISIONAL PE head mapping" in annotations
+        assert "identifies neither the programme nor a mechanism" in annotations
+        assert "would_claim_child_benefit is fixed" in annotations
+        assert "child_benefit delta is zero" in annotations
+        artifact = json.loads((ROOT / row["artifact"]).read_text())
+        assert "PROVISIONAL PE head mapping" in artifact["notes"]
+        assert "reform-induced claiming" not in artifact["notes"]

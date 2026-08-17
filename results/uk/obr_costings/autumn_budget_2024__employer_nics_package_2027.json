@@ -33,6 +33,7 @@
         "reform_hint": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
         "source": "obr",
         "source_metric_field": "metric",
+        "source_model": "hmt_scorecard_obr_database",
         "source_table": "Tax Measures (Policy measures database)",
         "time_basis": "fiscal_year",
         "unit": "gbp",
@@ -77,6 +78,7 @@
         "reform_hint": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
         "source": "obr",
         "source_metric_field": "metric",
+        "source_model": "hmt_scorecard_obr_database",
         "source_table": "Tax Measures (Policy measures database)",
         "time_basis": "fiscal_year",
         "unit": "gbp",
@@ -103,7 +105,7 @@
     }
   ],
   "measure_key": "autumn_budget_2024__employer_nics_package",
-  "notes": "PE represents the employer rate and weekly secondary threshold (\u00a396 \u00d7 52 = \u00a34,992 in the installed model). It has no Employment Allowance or firm entity, so the allowance increase and \u00a3100,000 test removal are missing.",
+  "notes": "PE represents the employer rate and weekly secondary threshold (\u00a396 \u00d7 52 = \u00a34,992 in the installed model). It has no Employment Allowance or firm entity, so the allowance increase and \u00a3100,000 test removal are missing. policyengine_uk/parameters/gov/contrib/policyengine/employer_ni/employee_incidence.yaml sets gov.contrib.policyengine.employer_ni.employee_incidence to 1, and policyengine_uk/variables/contrib/policyengine/employer_ni/employer_ni_fixed_employer_cost_change.py adjusts wages holding employer cost fixed. The resulting wage change moves employee-side Income Tax and NICs, which is why the PE Income-tax head is non-zero.",
   "obr_description": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
   "performance": {
     "baseline": {

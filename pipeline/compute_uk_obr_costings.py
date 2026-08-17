@@ -44,6 +44,7 @@ YEAR_MAX = 2030
 COMPUTABILITY = {"expressible", "partial", "not_expressible"}
 CONSTRUCTIONS = {"reversal_on_certified_world", "forward_from_baseline"}
 STAGED_STATUSES = {"comparable", "constructed", "concept_mismatch", "not_computed"}
+BEHAVIOURAL_ADJUSTMENT = "unstated in harvest"
 REQUIRED_MEASURE_FIELDS = {
     "measure_key",
     "fiscal_event",
@@ -216,6 +217,31 @@ def external_claim_match(claim: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def claim_source_facts(claim: dict[str, Any]) -> dict[str, str]:
+    """Return only provenance/adjustment facts actually carried by the harvest."""
+
+    source_model = claim.get("source_model")
+    basis = claim.get("conditions", {}).get("basis")
+    if not isinstance(source_model, str) or not source_model:
+        raise ClaimMatchError("matched harvest row has no source_model")
+    if not isinstance(basis, str) or not basis:
+        raise ClaimMatchError("matched harvest row has no conditions.basis")
+    return {
+        "source_model": source_model,
+        "basis": basis,
+        "behavioural_adjustment": BEHAVIOURAL_ADJUSTMENT,
+    }
+
+
+def source_facts_annotation(claim: dict[str, Any]) -> str:
+    facts = claim_source_facts(claim)
+    return (
+        "OBR source facts: "
+        f"source_model={facts['source_model']}; basis={facts['basis']}; "
+        f"behavioural_adjustment={facts['behavioural_adjustment']}."
+    )
+
+
 def source_claim_snapshot(claim: dict[str, Any]) -> dict[str, Any]:
     """Freeze the source identity and normalized value used by an artifact."""
 
@@ -224,6 +250,7 @@ def source_claim_snapshot(claim: dict[str, Any]) -> dict[str, Any]:
         "source": claim["source"],
         "source_table": claim["source_table"],
         "reform_hint": claim["reform_hint"],
+        "source_model": claim["source_model"],
         "metric": claim_metric(claim),
         "source_metric_field": metric_field,
         "period": claim["period"],
@@ -932,6 +959,7 @@ def rederive_artifact_orientation(
     measure: dict[str, Any],
     *,
     path: Path,
+    claims: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Validate and rederive one artifact from its persisted raw aggregates."""
 
@@ -1054,6 +1082,41 @@ def rederive_artifact_orientation(
             )
         result[delta_field] = literal_delta
         result["pe_value"] = pe_value
+        if claims is not None:
+            matched_claim = resolve_claim(claims, measure, head, year)
+            if matched_claim is None:
+                raise ArtifactRestageError(
+                    f"{path}: mapped head has no harvest row for {year}"
+                )
+            refreshed_snapshot = source_claim_snapshot(matched_claim)
+            recorded_snapshot = result.get("external_claim")
+            if not isinstance(recorded_snapshot, dict):
+                raise ArtifactRestageError(
+                    f"{path}: {head['obr_head']} has no frozen source claim"
+                )
+            stable_fields = {
+                "source",
+                "source_table",
+                "reform_hint",
+                "metric",
+                "period",
+                "conditions",
+                "value_gbp",
+            }
+            differences = {
+                key: {
+                    "artifact": recorded_snapshot.get(key),
+                    "harvest": refreshed_snapshot.get(key),
+                }
+                for key in stable_fields
+                if recorded_snapshot.get(key) != refreshed_snapshot.get(key)
+            }
+            if differences:
+                raise ArtifactRestageError(
+                    f"{path}: frozen/harvest claim differs: {differences}"
+                )
+            result["external_claim"] = refreshed_snapshot
+    artifact["notes"] = measure["notes"]
     return artifact
 
 
@@ -1061,22 +1124,26 @@ def annotations_for(
     measure: dict[str, Any],
     head: dict[str, Any],
     year: int,
+    claim: dict[str, Any],
 ) -> list[str]:
     variables = " + ".join(head["pe_variables"])
     sign = "+Δtax" if head["channel"] == "tax" else "−Δspending"
     construction = (
-        "Reversal leg on the certified world, re-oriented to the announced "
-        "measure: measure Δ = −(reversal − baseline)."
+        "PE: static microsimulation on the certified world; reversal re-oriented "
+        "to the announced measure; "
+        f"PE calendar year {year} proxies FY {fy_label(year)}. "
+        "measure Δ = −(reversal − baseline)."
         if measure["construction"] == "reversal_on_certified_world"
         else (
-            "Forward leg from the certified baseline: "
+            "PE: static microsimulation on the certified world; forward change "
+            f"from the certified baseline; PE calendar year {year} proxies FY "
+            f"{fy_label(year)}. "
             "measure Δ = +(reform − baseline)."
         )
     )
     notes = [
-        "PE-UK static microsimulation; the OBR published costing is behavioural-adjusted.",
+        source_facts_annotation(claim),
         construction,
-        f"PE calendar year {year} proxies OBR FY {fy_label(year)}.",
         f"Head mapping: {head['obr_head']} = {variables}; positive gain to the Exchequer = {sign}.",
     ]
     if measure["computability"] == "partial":
@@ -1231,7 +1298,10 @@ def stage_artifact_rows(
             "computed_at": artifact["computed_at"],
             "run_id": artifact["run_id"],
             "artifact": artifact_ref,
-            "annotations": annotations_for(measure, head, artifact["year"]),
+            **claim_source_facts(claim),
+            "annotations": annotations_for(
+                measure, head, artifact["year"], claim
+            ),
             "external_claim_match": external_claim_match(claim),
         }
         if row["status"] not in STAGED_STATUSES:
@@ -1275,13 +1345,14 @@ def stage_not_computed_rows(
                     "pe_construction": measure["notes"],
                     "computed_at": computed_at,
                     "run_id": run_id,
+                    **claim_source_facts(claim),
                     "annotations": [
+                        source_facts_annotation(claim),
                         "No PE value: this registry entry is not expressible as a supported plain parameter reform.",
-                        "PE-UK would be static; the OBR published costing is behavioural-adjusted.",
                         (
-                            "Registry construction is a certified-world reversal, not the OBR announcement baseline."
+                            "PE: no microsimulation constructed; the registry construction is a reversal on the certified world."
                             if measure["construction"] == "reversal_on_certified_world"
-                            else "Registry construction would be a forward change from the certified baseline."
+                            else "PE: no microsimulation constructed; the registry construction is a forward change from the certified baseline."
                         ),
                         f"PE calendar year {year} would proxy OBR FY {fy_label(year)}.",
                         f"Head mapping unavailable for {head}; no aggregate is substituted.",
@@ -1402,7 +1473,12 @@ def restage_existing_run(
             raise ArtifactRestageError(
                 f"{path}: diagnostic_only must be an explicit boolean"
             )
-        refreshed = rederive_artifact_orientation(artifact, measure, path=path)
+        refreshed = rederive_artifact_orientation(
+            artifact,
+            measure,
+            path=path,
+            claims=None if diagnostic_only else claims,
+        )
         replacements.append((path, refreshed))
         if not diagnostic_only:
             staged_rows.extend(stage_artifact_rows(refreshed, measure))

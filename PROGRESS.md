@@ -44,6 +44,23 @@ remains intentionally unrun.
 - The future UK ingestor work in #33/#48 must accept `source_table` and
   `reform_hint` as supported match keys. This lane does not modify
   `scorecard_db/`.
+- Fixed finding 3 by replacing blanket OBR mechanism labels with row-level
+  harvested facts: verbatim `source_model`, verbatim `basis`, and
+  `behavioural_adjustment = unstated in harvest`. PE annotations retain only
+  code-backed construction, timing, head-scope, and unexplained-remainder
+  statements.
+- Documented the employer-NIC incidence mechanism from installed code:
+  `employee_incidence` is 1 and
+  `employer_ni_fixed_employer_cost_change` adjusts wages while employer cost is
+  fixed. The affected rows cite both package-relative source paths and explain
+  the non-zero PE Income-tax head.
+- Fixed finding 4 by marking `child_benefit` as a PROVISIONAL PE mapping for
+  the harvested “Welfare inside cap” head. The row is explicit that the harvest
+  identifies neither a programme nor mechanism, while fixed PE
+  `would_claim_child_benefit` makes the static PE delta zero.
+- Restaging refreshed the 12 non-diagnostic artifacts' matched claim snapshots
+  with harvested `source_model` and current registry notes. Legacy dataset hash
+  fields remain absent; no hash was invented and no simulation ran.
 - Started Follow-up 1 from clean branch `obr-costings-mode2` at `b6442fe` and
   read this progress record plus both compute/comparison modules end to end.
 - Confirmed the orientation defect is confined to artifact/staging derivation:
@@ -67,11 +84,8 @@ remains intentionally unrun.
 - Ran `--restage` twice against the 13 existing artifacts. Each invocation
   produced 20 staged and 26 comparison rows and reported zero managed
   simulations; the second invocation left an identical diff hash.
-- Replaced the false literal-direction annotation with: “Reversal leg on the
-  certified world, re-oriented to the announced measure: measure Δ =
-  −(reversal − baseline).” Static/behavioural, certified-world/announcement-
-  baseline, calendar-year/fiscal-year, head-scope, and unexplained-remainder
-  axes remain explicit.
+- Replaced the false literal-direction annotation with the code-backed reversal
+  identity: `measure Δ = −(reversal − baseline)`.
 - Confirmed the worktree was clean and based on `fd817b9`.
 - Read the local lane brief and recorded its descriptive-comparison doctrine,
   certified-artifact traceability requirement, and offline-only constraint.
@@ -158,9 +172,6 @@ remains intentionally unrun.
 
 ## Next
 
-- Replace unsupported row mechanisms with harvested/code-backed axes, correct
-  the provisional HICBC welfare mapping, and add the employer-NIC incidence
-  mechanism from installed source.
 - Add and validate the per-year dividend-threshold computability overrides.
 - Restage without simulations, regenerate comparisons, run focused and full
   tests, then write the final report.
@@ -205,23 +216,23 @@ listed in the annotation; it is not an OBR TOTAL claim. Every row has
 `benchmark_class = different_model`, uses PE calendar year Y as the proxy for
 FY Y-(Y+1). Each reversal leg on the certified world is re-oriented to the
 announced measure using
-`measure Δ = −(reversal − baseline)`. The certified-world versus announcement-
-baseline axis, head scope, and unexplained remainder remain explicit.
+`measure Δ = −(reversal − baseline)`. Harvested source model, basis, unstated
+behavioural adjustment, head scope, and unexplained remainder remain explicit.
 
-| Measure | FY | Scope | OBR £bn | PE £bn | PE/OBR | Bin | Measure-specific annotation |
-|---|---:|---|---:|---:|---:|---|---|
-| PA and HRT freezes | 2026-27 | OBR total | +34.010 | +47.681 | 1.402 | same_sign_ratio_1.25_to_2 | Table 3.17 bundled line; published indexed PA/HRT reversal |
-| PA and HRT freezes | 2027-28 | OBR total | +38.475 | +53.452 | 1.389 | same_sign_ratio_1.25_to_2 | Table 3.17 bundled line; published indexed PA/HRT reversal |
-| Additional-rate threshold reduction | 2026-27 | OBR total | +0.940 | +1.840 | 1.957 | same_sign_ratio_1.25_to_2 | Table 3.17 threshold reversal |
-| Additional-rate threshold reduction | 2027-28 | OBR total | +0.970 | +1.933 | 1.993 | same_sign_ratio_1.25_to_2 | Table 3.17 threshold reversal |
-| SB2024 Class 1 employee NICs cut | 2026-27 | Mapped total | -9.129 | -11.965 | 1.311 | same_sign_ratio_1.25_to_2 | Income tax + NICs + welfare-inside-cap only; partial head scope |
-| SB2024 Class 1 employee NICs cut | 2027-28 | Mapped total | -9.244 | -12.247 | 1.325 | same_sign_ratio_1.25_to_2 | Income tax + NICs + welfare-inside-cap only; partial head scope |
-| SB2024 HICBC threshold/taper | 2026-27 | Mapped total | -0.641 | -1.721 | 2.684 | same_sign_ratio_at_least_2 | Income tax + welfare-inside-cap; fixed PE claiming makes child-benefit delta zero |
-| SB2024 HICBC threshold/taper | 2027-28 | Mapped total | -0.647 | -1.844 | 2.850 | same_sign_ratio_at_least_2 | Income tax + welfare-inside-cap; fixed PE claiming makes child-benefit delta zero |
-| AB2024 employer NICs package | 2026-27 | Mapped total | +23.610 | +16.247 | 0.688 | same_sign_ratio_0.5_to_0.8 | Income tax + NICs only; no Employment Allowance/firm mechanics; other OBR heads excluded |
-| AB2024 employer NICs package | 2027-28 | Mapped total | +24.027 | +16.422 | 0.683 | same_sign_ratio_0.5_to_0.8 | Income tax + NICs only; no Employment Allowance/firm mechanics; other OBR heads excluded |
-| AB2025 remove UC two-child limit | 2026-27 | Welfare inside cap | -1.887 | -1.104 | 0.585 | same_sign_ratio_0.5_to_0.8 | UC inside-cap aggregate only; outside-cap OBR head excluded |
-| AB2025 remove UC two-child limit | 2027-28 | Welfare inside cap | -2.101 | -1.182 | 0.563 | same_sign_ratio_0.5_to_0.8 | UC inside-cap aggregate only; outside-cap OBR head excluded |
+| Measure | FY | Scope | OBR £bn | PE £bn | PE/OBR | Bin | OBR source_model / basis / behavioural_adjustment | Measure-specific annotation |
+|---|---:|---|---:|---:|---:|---|---|---|
+| PA and HRT freezes | 2026-27 | OBR total | +34.010 | +47.681 | 1.402 | same_sign_ratio_1.25_to_2 | obr_efo_forecast / unstated / unstated in harvest | Table 3.17 bundled line; published indexed PA/HRT reversal |
+| PA and HRT freezes | 2027-28 | OBR total | +38.475 | +53.452 | 1.389 | same_sign_ratio_1.25_to_2 | obr_efo_forecast / unstated / unstated in harvest | Table 3.17 bundled line; published indexed PA/HRT reversal |
+| Additional-rate threshold reduction | 2026-27 | OBR total | +0.940 | +1.840 | 1.957 | same_sign_ratio_1.25_to_2 | obr_efo_forecast / unstated / unstated in harvest | Table 3.17 threshold reversal |
+| Additional-rate threshold reduction | 2027-28 | OBR total | +0.970 | +1.933 | 1.993 | same_sign_ratio_1.25_to_2 | obr_efo_forecast / unstated / unstated in harvest | Table 3.17 threshold reversal |
+| SB2024 Class 1 employee NICs cut | 2026-27 | Mapped total | -9.129 | -11.965 | 1.311 | same_sign_ratio_1.25_to_2 | hmt_scorecard_obr_database / forecast / unstated in harvest | Income tax + NICs + welfare-inside-cap only; partial head scope |
+| SB2024 Class 1 employee NICs cut | 2027-28 | Mapped total | -9.244 | -12.247 | 1.325 | same_sign_ratio_1.25_to_2 | hmt_scorecard_obr_database / forecast / unstated in harvest | Income tax + NICs + welfare-inside-cap only; partial head scope |
+| SB2024 HICBC threshold/taper | 2026-27 | Mapped total | -0.641 | -1.721 | 2.684 | same_sign_ratio_at_least_2 | hmt_scorecard_obr_database / forecast / unstated in harvest | PROVISIONAL child_benefit mapping; harvest names no programme/mechanism; fixed PE claiming makes its delta zero |
+| SB2024 HICBC threshold/taper | 2027-28 | Mapped total | -0.647 | -1.844 | 2.850 | same_sign_ratio_at_least_2 | hmt_scorecard_obr_database / forecast / unstated in harvest | PROVISIONAL child_benefit mapping; harvest names no programme/mechanism; fixed PE claiming makes its delta zero |
+| AB2024 employer NICs package | 2026-27 | Mapped total | +23.610 | +16.247 | 0.688 | same_sign_ratio_0.5_to_0.8 | hmt_scorecard_obr_database / forecast / unstated in harvest | Income tax + NICs only; employee incidence 1 and fixed-employer-cost wage adjustment; other heads excluded |
+| AB2024 employer NICs package | 2027-28 | Mapped total | +24.027 | +16.422 | 0.683 | same_sign_ratio_0.5_to_0.8 | hmt_scorecard_obr_database / forecast / unstated in harvest | Income tax + NICs only; employee incidence 1 and fixed-employer-cost wage adjustment; other heads excluded |
+| AB2025 remove UC two-child limit | 2026-27 | Welfare inside cap | -1.887 | -1.104 | 0.585 | same_sign_ratio_0.5_to_0.8 | hmt_scorecard_obr_database / forecast / unstated in harvest | UC inside-cap aggregate only; outside-cap OBR head excluded |
+| AB2025 remove UC two-child limit | 2027-28 | Welfare inside cap | -2.101 | -1.182 | 0.563 | same_sign_ratio_0.5_to_0.8 | hmt_scorecard_obr_database / forecast / unstated in harvest | UC inside-cap aggregate only; outside-cap OBR head excluded |
 
 The separate diagnostic changed the 2026 personal allowance from £12,570 to
 £13,070. Baseline income tax was £421.891913bn and the static income-tax delta
@@ -292,17 +303,17 @@ Maximum sampled process RSS was 32.888 GiB.
   and zeroes the fixed 0.16% broad-base haircut; installed formulas show this
   is uncapped for modeled contributions, but it is not claimed as a literal
   infinity-valued reform.
-- The HICBC welfare counterpart uses gross `child_benefit` with fixed
-  `would_claim_child_benefit`; its static delta should be zero. The OBR welfare
-  head includes claiming effects, so the absent PE claiming response is named.
+- `child_benefit` is only a PROVISIONAL PE mapping for HICBC's harvested
+  “Welfare inside cap” head; the harvest identifies neither a programme nor a
+  mechanism. Fixed `would_claim_child_benefit` makes the PE static delta zero.
 - Only the requested six-measure/two-year sample ran. No PE value is claimed
   for the other registry entries, and the full population remains unverified.
 - PMD includes allocations in years that precede the modeled policy-effective
   date for some descriptions. The pipeline preserves those source rows rather
   than suppressing them; why each OBR allocation appears there is unexplained.
-- The smoke differences beyond the named model, behavioural/static,
-  certified-world/announcement-baseline, timing, and head-scope axes are
-  unexplained. No causal explanation is inferred from ratio magnitude.
+- The smoke differences beyond harvested source model/basis, PE construction,
+  timing, and head scope are unexplained. No causal explanation is inferred
+  from ratio magnitude.
 - The first smoke attempt wrote no run artifact and stopped before simulation
   when PyTables found the certified HF-cache file read-only. The successful
   run used a SHA-verified, ignored writable mirror of those same cached bytes;

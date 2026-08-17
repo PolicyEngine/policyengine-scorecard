@@ -31,6 +31,7 @@
         "reform_hint": "Additional rate threshold: reduction",
         "source": "obr",
         "source_metric_field": "metric",
+        "source_model": "obr_efo_forecast",
         "source_table": "3.17: 3.17",
         "time_basis": "fiscal_year",
         "unit": "gbp",

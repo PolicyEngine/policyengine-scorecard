@@ -33,6 +33,7 @@
         "reform_hint": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
         "source": "obr",
         "source_metric_field": "metric",
+        "source_model": "hmt_scorecard_obr_database",
         "source_table": "Tax Measures (Policy measures database)",
         "time_basis": "fiscal_year",
         "unit": "gbp",
@@ -76,6 +77,7 @@
         "reform_hint": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
         "source": "obr",
         "source_metric_field": "proposed_metric",
+        "source_model": "hmt_scorecard_obr_database",
         "source_table": "Spending Measures (Policy measures database)",
         "time_basis": "fiscal_year",
         "unit": "gbp",
@@ -98,7 +100,7 @@
     }
   ],
   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
-  "notes": "The HICBC tax-charge formula and thresholds are direct. The OBR also reports a welfare-spending head associated with reform-induced claiming. PE's gross child_benefit is the corresponding spending aggregate, but would_claim_child_benefit is fixed in this static run, so its computed delta is expected to be zero; no claiming response is invented.",
+  "notes": "The HICBC tax-charge formula and thresholds are direct. child_benefit is a PROVISIONAL PE head mapping for the OBR \"Welfare inside cap\" head. The matched harvest row identifies neither the programme nor a mechanism. PE's would_claim_child_benefit is fixed in this static run, so the PE child_benefit delta is zero.",
   "obr_description": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
   "performance": {
     "baseline": {

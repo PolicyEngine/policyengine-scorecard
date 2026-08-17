@@ -477,11 +477,11 @@ measures:
         channel: spending
     unmapped_obr_heads: []
     notes: >-
-      The HICBC tax-charge formula and thresholds are direct. The OBR also
-      reports a welfare-spending head associated with reform-induced claiming.
-      PE's gross child_benefit is the corresponding spending aggregate, but
-      would_claim_child_benefit is fixed in this static run, so its computed
-      delta is expected to be zero; no claiming response is invented.
+      The HICBC tax-charge formula and thresholds are direct. child_benefit is
+      a PROVISIONAL PE head mapping for the OBR "Welfare inside cap" head. The
+      matched harvest row identifies neither the programme nor a mechanism.
+      PE's would_claim_child_benefit is fixed in this static run, so the PE
+      child_benefit delta is zero.
 
   - measure_key: autumn_budget_2024__employer_nics_package
     fiscal_event: Autumn Budget 2024
@@ -516,6 +516,12 @@ measures:
       PE represents the employer rate and weekly secondary threshold (£96 × 52
       = £4,992 in the installed model). It has no Employment Allowance or firm
       entity, so the allowance increase and £100,000 test removal are missing.
+      policyengine_uk/parameters/gov/contrib/policyengine/employer_ni/employee_incidence.yaml
+      sets gov.contrib.policyengine.employer_ni.employee_incidence to 1, and
+      policyengine_uk/variables/contrib/policyengine/employer_ni/employer_ni_fixed_employer_cost_change.py
+      adjusts wages holding employer cost fixed. The resulting wage change
+      moves employee-side Income Tax and NICs, which is why the PE Income-tax
+      head is non-zero.
 
   - measure_key: autumn_budget_2024__non_dom_residence_based_regime
     fiscal_event: Autumn Budget 2024
@@ -595,8 +601,8 @@ measures:
       Reverses the certified ordinary/basic and upper/higher dividend rates to
       8.75% and 33.75%; the additional rate was not changed by this measure.
       PE maps Income Tax directly and retains the required broad NICs aggregate,
-      but OBR cross-tax, departmental-spending, block-grant, and behavioural
-      channels are outside this static construction.
+      but cross-tax, departmental-spending, and block-grant heads are outside
+      this static construction.
 
   - measure_key: autumn_budget_2025__property_income_separate_rates
     fiscal_event: Autumn Budget 2025
@@ -829,7 +835,7 @@ measures:
       - Scottish BGA (current)
     notes: >-
       Counterfactual weekly values apply the installed parameter's documented
-      OBR-CPI uprating to £96 from 2028. OBR announcement-baseline rounding and
+      OBR-CPI uprating to £96 from 2028. Exact source rounding and
       non-microsimulation heads are not assumption-matched, so this is partial.
 
   - measure_key: autumn_budget_2025__uc_child_element_remove_two_child_limit

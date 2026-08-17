@@ -48,6 +48,9 @@ REQUIRED_STAGED_FIELDS = {
     "run_id",
     "annotations",
     "external_claim_match",
+    "source_model",
+    "basis",
+    "behavioural_adjustment",
 }
 CSV_FIELDS = [
     "measure_key",
@@ -65,6 +68,9 @@ CSV_FIELDS = [
     "benchmark_class",
     "source_table",
     "external_metric",
+    "source_model",
+    "basis",
+    "behavioural_adjustment",
     "construction",
     "artifact",
     "annotations",
@@ -170,6 +176,19 @@ def resolve_external_claim(
             "match external_claim_match; expected one"
         )
     claim = hits[0]
+    expected_source_facts = {
+        "source_model": claim.get("source_model"),
+        "basis": claim.get("conditions", {}).get("basis"),
+        "behavioural_adjustment": "unstated in harvest",
+    }
+    staged_source_facts = {
+        key: staged_row.get(key) for key in expected_source_facts
+    }
+    if staged_source_facts != expected_source_facts:
+        raise ComparisonError(
+            f"{staged_row['measure_key']} {match['period']}: staged source facts "
+            "differ from the matched harvest row"
+        )
     if claim.get("proposed_unit") != "gbp":
         raise ComparisonError(
             f"{staged_row['measure_key']} {match['period']}: expected normalized gbp"
@@ -315,24 +334,13 @@ def _head_label(staged_row: dict[str, Any], claim: dict[str, Any]) -> str:
     )
 
 
-def _axis_annotation(
-    measure: dict[str, Any], staged_row: dict[str, Any], head: str
-) -> str:
-    construction = measure.get("construction", "unspecified")
-    if construction == "reversal_on_certified_world":
-        baseline_axis = "certified-world reversal vs OBR announcement baseline"
-    elif construction == "forward_from_baseline":
-        baseline_axis = "forward change from certified baseline vs OBR baseline"
-    else:
-        baseline_axis = f"baseline construction={construction}"
+def _axis_annotation(staged_row: dict[str, Any], head: str) -> str:
     if staged_row["row_kind"] == "total":
         head_axis = "published Table 3.17 measure total vs mapped PE aggregate"
     else:
         head_axis = f"single mapped source head ({head})"
     return (
-        "Named comparison axes: model=different_model (OBR HMT/HMRC costing "
-        "models vs PE-UK); adjustment=PE static vs OBR behavioural-adjusted; "
-        f"baseline={baseline_axis}; timing=PE calendar year proxies OBR FY; "
+        "Comparison scope: benchmark_class=different_model; "
         f"head_scope={head_axis}; remaining_difference=unexplained."
     )
 
@@ -360,7 +368,7 @@ def build_head_row(
     annotations = _deduplicate_annotations(
         [
             *staged_row["annotations"],
-            _axis_annotation(measure, staged_row, head),
+            _axis_annotation(staged_row, head),
         ]
     )
     if artifact_head is not None and staged_row["row_kind"] == "total":
@@ -387,6 +395,9 @@ def build_head_row(
         "benchmark_class": staged_row["benchmark_class"],
         "source_table": staged_row["source_table"],
         "external_metric": staged_row["external_claim_match"]["metric"],
+        "source_model": claim["source_model"],
+        "basis": claim["conditions"]["basis"],
+        "behavioural_adjustment": "unstated in harvest",
         "construction": measure["construction"],
         "artifact": staged_row.get("artifact", ""),
         "annotations": annotations,
@@ -414,31 +425,49 @@ def derive_mapped_head_totals(
         ratio, ratio_bin = ratio_and_bin(obr_value, pe_value)
         source_tables = sorted({row["source_table"] for row in rows})
         metrics = sorted({row["external_metric"] for row in rows})
+        source_models = {row["source_model"] for row in rows}
+        bases = {row["basis"] for row in rows}
+        behavioural_adjustments = {
+            row["behavioural_adjustment"] for row in rows
+        }
+        if (
+            len(source_models) != 1
+            or len(bases) != 1
+            or behavioural_adjustments != {"unstated in harvest"}
+        ):
+            raise ComparisonError(
+                f"{measure_key} {year}: mapped heads have inconsistent source facts"
+            )
+        source_model = next(iter(source_models))
+        basis = next(iter(bases))
         annotations = [
             "Derived mapped-head total for this comparison only: sums "
             + ", ".join(heads)
             + "; it is not attached to an external TOTAL claim.",
             (
-                "Reversal leg on the certified world, re-oriented to the "
-                "announced measure: measure Δ = −(reversal − baseline)."
+                "OBR source facts represented by the mapped heads: "
+                f"source_model={source_model}; basis={basis}; "
+                "behavioural_adjustment=unstated in harvest."
+            ),
+            (
+                "PE: static microsimulation on the certified world; reversal "
+                "re-oriented to the announced measure; "
+                f"PE calendar year {year} proxies FY {rows[0]['fy']}. "
+                "measure Δ = −(reversal − baseline)."
                 if measure["construction"] == "reversal_on_certified_world"
                 else (
-                    "Forward leg from the certified baseline: "
+                    "PE: static microsimulation on the certified world; forward "
+                    "change from the certified baseline; "
+                    f"PE calendar year {year} proxies FY {rows[0]['fy']}. "
                     "measure Δ = +(reform − baseline)."
                 )
             ),
             (
-                "Named comparison axes: model=different_model (OBR HMT/HMRC "
-                "costing models vs PE-UK); adjustment=PE static vs OBR "
-                "behavioural-adjusted; baseline="
-                + (
-                    "certified-world reversal vs OBR announcement baseline"
-                    if measure["construction"] == "reversal_on_certified_world"
-                    else "forward change from certified baseline vs OBR baseline"
-                )
-                + "; timing=PE calendar year proxies OBR FY; head_scope=mapped "
-                "PMD heads only; remaining_difference=unexplained."
+                "Comparison scope: benchmark_class=different_model; "
+                "head_scope=mapped PMD heads only; "
+                "remaining_difference=unexplained."
             ),
+            "Registry construction: " + measure["notes"],
         ]
         unmapped = measure.get("unmapped_obr_heads", [])
         if unmapped or measure.get("computability") == "partial":
@@ -465,6 +494,9 @@ def derive_mapped_head_totals(
                 "benchmark_class": "different_model",
                 "source_table": " + ".join(source_tables),
                 "external_metric": " + ".join(metrics),
+                "source_model": source_model,
+                "basis": basis,
+                "behavioural_adjustment": "unstated in harvest",
                 "construction": measure["construction"],
                 "artifact": " + ".join(
                     sorted({row["artifact"] for row in rows if row["artifact"]})

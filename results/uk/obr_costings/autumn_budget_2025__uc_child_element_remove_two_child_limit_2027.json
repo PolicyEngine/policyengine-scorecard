@@ -34,6 +34,7 @@
         "reform_hint": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
         "source": "obr",
         "source_metric_field": "proposed_metric",
+        "source_model": "hmt_scorecard_obr_database",
         "source_table": "Spending Measures (Policy measures database)",
         "time_basis": "fiscal_year",
         "unit": "gbp",
