@@ -825,9 +825,7 @@ def simulation_dataset_hash_fields(
             f"{run_id}: per-simulation dataset SHA-256 fields are incomplete"
         )
 
-    expected = baseline["policyengine_bundle"].get(
-        "certified_data_artifact_sha256"
-    )
+    expected = baseline["policyengine_bundle"].get("certified_data_artifact_sha256")
     if (
         not isinstance(expected, str)
         or not expected
@@ -845,9 +843,7 @@ def simulation_dataset_hash_fields(
         for name in field_names
     }
     if any(
-        value != expected
-        for values in fields.values()
-        for value in values.values()
+        value != expected for values in fields.values() for value in values.values()
     ):
         raise RuntimeError(
             f"{run_id}: per-simulation dataset SHA-256 differs from bundle identity"
@@ -876,9 +872,7 @@ def validate_artifact_dataset_hash_fields(
     for name in field_names:
         values = artifact[name]
         if not isinstance(values, dict) or set(values) != {"baseline", "reform"}:
-            raise ArtifactRestageError(
-                f"{path}: {name} must map baseline and reform"
-            )
+            raise ArtifactRestageError(f"{path}: {name} must map baseline and reform")
         for role in ("baseline", "reform"):
             bundle = bundles.get(role)
             expected = (
@@ -1315,9 +1309,7 @@ def build_artifact(
         "artifact": relative_to_root(output_path),
         "notes": measure["notes"],
     }
-    artifact.update(
-        simulation_dataset_hash_fields(baseline, reform, run_id=run_id)
-    )
+    artifact.update(simulation_dataset_hash_fields(baseline, reform, run_id=run_id))
     if override_note is not None:
         artifact["computability_override"] = {
             "computability": year_computability,
@@ -1331,9 +1323,7 @@ def stage_artifact_rows(
     measure: dict[str, Any],
 ) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    artifact_heads = {
-        artifact_head_identity(head): head for head in artifact["heads"]
-    }
+    artifact_heads = {artifact_head_identity(head): head for head in artifact["heads"]}
     for head in measure["heads"]:
         result = artifact_heads[measure_head_identity(measure, head)]
         claim = result["external_claim"]
@@ -1358,9 +1348,7 @@ def stage_artifact_rows(
             "run_id": artifact["run_id"],
             "artifact": artifact_ref,
             **claim_source_facts(claim),
-            "annotations": annotations_for(
-                measure, head, artifact["year"], claim
-            ),
+            "annotations": annotations_for(measure, head, artifact["year"], claim),
             "external_claim_match": external_claim_match(claim),
         }
         if row["status"] not in STAGED_STATUSES:
@@ -1470,8 +1458,10 @@ def restage_existing_run(
     if not isinstance(run_id, str) or not run_id:
         raise ArtifactRestageError(f"{manifest_path}: run_id must be non-empty text")
     references = manifest.get("artifacts")
-    if not isinstance(references, list) or not references or not all(
-        isinstance(reference, str) and reference for reference in references
+    if (
+        not isinstance(references, list)
+        or not references
+        or not all(isinstance(reference, str) and reference for reference in references)
     ):
         raise ArtifactRestageError(
             f"{manifest_path}: artifacts must be a non-empty list of paths"
@@ -1489,9 +1479,7 @@ def restage_existing_run(
 
     registry_path = resolve_recorded_path(manifest.get("registry"), artifact_root)
     claims_path = resolve_recorded_path(manifest.get("claims"), artifact_root)
-    staged_path = resolve_recorded_path(
-        manifest.get("staged_output"), artifact_root
-    )
+    staged_path = resolve_recorded_path(manifest.get("staged_output"), artifact_root)
     spec = load_registry(registry_path)
     claims = load_claims(claims_path)
     validate_registry(spec, claims=claims)
@@ -1639,9 +1627,7 @@ def main(argv: list[str] | None = None) -> int:
             if enabled
         ]
         if incompatible:
-            parser.error(
-                "--restage cannot be combined with " + ", ".join(incompatible)
-            )
+            parser.error("--restage cannot be combined with " + ", ".join(incompatible))
         manifest_path = args.manifest or args.output_dir / "RUN_MANIFEST.json"
         summary = restage_existing_run(
             manifest_path=manifest_path,

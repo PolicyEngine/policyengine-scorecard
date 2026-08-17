@@ -28,18 +28,10 @@ from pipeline import compute_uk_obr_costings as compute
 ROOT = Path(__file__).resolve().parent.parent
 REGISTRY = ROOT / "data" / "uk" / "obr_measure_reforms.yaml"
 SMOKE_STAGED = ROOT / "results" / "uk" / "staged" / "obr_costings.jsonl"
-SMOKE_MANIFEST = (
-    ROOT / "results" / "uk" / "obr_costings" / "RUN_MANIFEST.json"
-)
-SMOKE_COMPARISON = (
-    ROOT / "results" / "uk" / "obr_costings" / "COMPARISON.csv"
-)
+SMOKE_MANIFEST = ROOT / "results" / "uk" / "obr_costings" / "RUN_MANIFEST.json"
+SMOKE_COMPARISON = ROOT / "results" / "uk" / "obr_costings" / "COMPARISON.csv"
 VENDORED_CLAIMS = (
-    ROOT
-    / "sources"
-    / "harvest-20260802"
-    / "uk_obr"
-    / "obr_costings_claims.jsonl"
+    ROOT / "sources" / "harvest-20260802" / "uk_obr" / "obr_costings_claims.jsonl"
 )
 FULL_HARVEST_CLAIMS = (
     Path.home() / "scorecard-harvest" / "uk_obr" / "claims_staged.jsonl"
@@ -168,15 +160,26 @@ def test_committed_registry_schema_and_counts():
         for measure in spec["measures"]
         if measure["computability"] != "not_expressible"
     )
-    assert sum(
-        measure["construction"] == "reversal_on_certified_world"
-        for measure in spec["measures"]
-    ) == 25
-    assert sum(
-        measure["construction"] == "forward_from_baseline"
-        for measure in spec["measures"]
-    ) == 1
-    assert sum(bool(measure.get("computability_overrides")) for measure in spec["measures"]) == 4
+    assert (
+        sum(
+            measure["construction"] == "reversal_on_certified_world"
+            for measure in spec["measures"]
+        )
+        == 25
+    )
+    assert (
+        sum(
+            measure["construction"] == "forward_from_baseline"
+            for measure in spec["measures"]
+        )
+        == 1
+    )
+    assert (
+        sum(
+            bool(measure.get("computability_overrides")) for measure in spec["measures"]
+        )
+        == 4
+    )
 
 
 def test_registry_rejects_duplicate_keys_and_non_finite_reform_values():
@@ -198,7 +201,9 @@ def test_registry_rejects_duplicate_keys_and_non_finite_reform_values():
     invalid_override["measures"][0]["computability_overrides"] = {
         True: {"computability": "partial", "note": "invalid boolean year"}
     }
-    with pytest.raises(compute.RegistryError, match="invalid computability override year"):
+    with pytest.raises(
+        compute.RegistryError, match="invalid computability override year"
+    ):
         compute.validate_registry(invalid_override)
 
     incomplete_override = copy.deepcopy(spec)
@@ -230,9 +235,13 @@ def test_dividend_lag_overrides_match_installed_engine_dates():
     }
     lagging_years = {
         year
-        for year, (main_higher, main_additional, dividend_higher, dividend_additional) in installed.items()
-        if (dividend_higher, dividend_additional)
-        != (main_higher, main_additional)
+        for year, (
+            main_higher,
+            main_additional,
+            dividend_higher,
+            dividend_additional,
+        ) in installed.items()
+        if (dividend_higher, dividend_additional) != (main_higher, main_additional)
     }
 
     assert compute.package_version("policyengine-uk") == "2.89.2"
@@ -261,8 +270,7 @@ def test_dividend_lag_overrides_match_installed_engine_dates():
         if measure["measure_key"] in affected:
             assert set(overrides) == lagging_years
             assert all(
-                override
-                == {"computability": "partial", "note": DIVIDEND_LAG_NOTE}
+                override == {"computability": "partial", "note": DIVIDEND_LAG_NOTE}
                 for override in overrides.values()
             )
             for year in range(compute.YEAR_MIN, compute.YEAR_MAX + 1):
@@ -362,16 +370,15 @@ def test_nics_head_is_exact_required_class_1_employee_employer_plus_class_4():
 def test_measure_orientation_for_both_constructions_and_channels(
     construction, channel, raw_delta, literal_delta, pe_value
 ):
-    assert compute.orient_exchequer_effect(
-        raw_delta, channel, construction
-    ) == (literal_delta, pe_value)
+    assert compute.orient_exchequer_effect(raw_delta, channel, construction) == (
+        literal_delta,
+        pe_value,
+    )
 
 
 def test_measure_orientation_rejects_unknown_channel_and_construction():
     with pytest.raises(ValueError, match="unknown channel"):
-        compute.orient_exchequer_effect(
-            1.0, "borrowing", "reversal_on_certified_world"
-        )
+        compute.orient_exchequer_effect(1.0, "borrowing", "reversal_on_certified_world")
     with pytest.raises(ValueError, match="unknown construction"):
         compute.orient_exchequer_effect(1.0, "tax", "backward_from_baseline")
 
@@ -538,8 +545,7 @@ def test_artifact_and_staged_row_preserve_claim_and_run_provenance(
         for note in row["annotations"]
     )
     assert any(
-        "measure Δ = −(reversal − baseline)" in note
-        for note in row["annotations"]
+        "measure Δ = −(reversal − baseline)" in note for note in row["annotations"]
     )
     assert any("calendar year 2026" in note for note in row["annotations"])
     assert any("Head mapping" in note for note in row["annotations"])
@@ -656,23 +662,21 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
     assert "dataset_sha256_after" not in diagnostic
     assert diagnostic["diagnostic_only"] is True
     diagnostic_head = diagnostic["heads"][0]
-    assert diagnostic_head["forward_delta_exchequer_gain"] == (
-        diagnostic_head["pe_value"]
+    assert (
+        diagnostic_head["forward_delta_exchequer_gain"] == (diagnostic_head["pe_value"])
     )
     assert "reversal_delta_exchequer_gain" not in diagnostic_head
     assert round(diagnostic["heads"][0]["pe_value"] / 1e9, 2) == -4.48
-    assert round(diagnostic["raw_aggregates"]["baseline_gbp"]["income_tax"] / 1e9, 1) == (
-        421.9
-    )
+    assert round(
+        diagnostic["raw_aggregates"]["baseline_gbp"]["income_tax"] / 1e9, 1
+    ) == (421.9)
 
 
 def _descriptor_hits(
     descriptor: dict[str, object], claims: list[dict[str, object]]
 ) -> list[dict[str, object]]:
     return [
-        claim
-        for claim in claims
-        if compute.external_claim_match(claim) == descriptor
+        claim for claim in claims if compute.external_claim_match(claim) == descriptor
     ]
 
 
@@ -697,9 +701,7 @@ def test_vendored_claims_are_exact_registry_mapped_population():
                     selected.append(claim)
 
     assert len(selected) == len({id(claim) for claim in selected}) == 215
-    assert {id(claim) for claim in selected} == {
-        id(claim) for claim in vendored_claims
-    }
+    assert {id(claim) for claim in selected} == {id(claim) for claim in vendored_claims}
     assert hashlib.sha256(VENDORED_CLAIMS.read_bytes()).hexdigest() == (
         "99b8748ccd318a0d0cee0ddbbade757526d186099e15f6ca5a8e4b8d6c2dcca9"
     )
@@ -1067,8 +1069,7 @@ def test_comparison_resolves_measure_identity_and_traces_artifact(
     assert rows[0]["behavioural_adjustment"] == "unstated in harvest"
     assert rows[0]["ratio_bin"] == "same_sign_ratio_0.5_to_0.8"
     assert any(
-        "measure Δ = −(reversal − baseline)" in x
-        for x in rows[0]["annotations"]
+        "measure Δ = −(reversal − baseline)" in x for x in rows[0]["annotations"]
     )
     assert any(
         "benchmark_class=different_model" in x
@@ -1146,8 +1147,7 @@ def test_comparison_total_is_explicitly_mapped_head_only(synthetic_measure):
         "not attached to an external TOTAL claim" in x for x in totals[0]["annotations"]
     )
     assert any(
-        "measure Δ = −(reversal − baseline)" in x
-        for x in totals[0]["annotations"]
+        "measure Δ = −(reversal − baseline)" in x for x in totals[0]["annotations"]
     )
     assert any(
         "benchmark_class=different_model" in x
@@ -1198,12 +1198,8 @@ def test_committed_smoke_comparison_is_measure_oriented():
         "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp": (
             "same_sign_ratio_1.25_to_2"
         ),
-        "spring_budget_2024__hicbc_threshold_and_taper": (
-            "same_sign_ratio_at_least_2"
-        ),
-        "autumn_budget_2024__employer_nics_package": (
-            "same_sign_ratio_0.5_to_0.8"
-        ),
+        "spring_budget_2024__hicbc_threshold_and_taper": ("same_sign_ratio_at_least_2"),
+        "autumn_budget_2024__employer_nics_package": ("same_sign_ratio_0.5_to_0.8"),
         "autumn_budget_2025__uc_child_element_remove_two_child_limit": (
             "same_sign_ratio_0.5_to_0.8"
         ),
@@ -1240,9 +1236,7 @@ def test_committed_rows_use_only_harvested_source_axes():
             else "hmt_scorecard_obr_database"
         )
         expected_basis = (
-            "unstated"
-            if row["source_table"] == "3.17: 3.17"
-            else "forecast"
+            "unstated" if row["source_table"] == "3.17: 3.17" else "forecast"
         )
         assert row["source_model"] == expected_source_model
         assert row["basis"] == expected_basis

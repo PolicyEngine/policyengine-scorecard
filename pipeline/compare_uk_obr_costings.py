@@ -181,9 +181,7 @@ def resolve_external_claim(
         "basis": claim.get("conditions", {}).get("basis"),
         "behavioural_adjustment": "unstated in harvest",
     }
-    staged_source_facts = {
-        key: staged_row.get(key) for key in expected_source_facts
-    }
+    staged_source_facts = {key: staged_row.get(key) for key in expected_source_facts}
     if staged_source_facts != expected_source_facts:
         raise ComparisonError(
             f"{staged_row['measure_key']} {match['period']}: staged source facts "
@@ -436,9 +434,7 @@ def derive_mapped_head_totals(
         metrics = sorted({row["external_metric"] for row in rows})
         source_models = {row["source_model"] for row in rows}
         bases = {row["basis"] for row in rows}
-        behavioural_adjustments = {
-            row["behavioural_adjustment"] for row in rows
-        }
+        behavioural_adjustments = {row["behavioural_adjustment"] for row in rows}
         if (
             len(source_models) != 1
             or len(bases) != 1
