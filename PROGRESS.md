@@ -4,13 +4,18 @@ Updated: 2026-08-17
 
 ## State
 
-Follow-up 3 is complete locally on branch `obr-costings-mode2`. All four major
-and four minor round-2 findings are fixed and committed. Exact default
-`--dry-run` and artifact-only `--restage` verification passed without
-constructing a managed simulation.
+Follow-up 4 is in progress locally on branch `obr-costings-mode2`. The round-3
+review has been read in full. Work starts from the clean requested commit
+`59fa323`; no managed simulation will be constructed.
 
 ## Done
 
+- Started Follow-up 4 by reading the complete round-3 review before inspecting
+  or changing implementation code.
+- Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
+  `59fa323309abb827aba1afa8da737aed51b85694`.
+- Read the GitNexus debugging and CLI workflows. The repository has no local
+  GitNexus index, so an offline index refresh is the next diagnostic step.
 - Started Follow-up 3 by reading this progress record and the complete round-2
   review before inspecting or changing the implementation.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
@@ -237,6 +242,16 @@ constructing a managed simulation.
   policyengine-uk.
 
 ## Next
+
+- Remove `--allow-claims-drift` and make claims SHA provenance unconditionally
+  fail closed, including an artifactless-row SHA-gate regression test.
+- Resolve current rows by each artifact's frozen six-key descriptor before
+  recursively naming drift across every frozen field.
+- Make dividend-lag expectations path-specific and prove one corrected path
+  exposes an unnecessary override.
+- Reject manifest paths whose resolved targets escape the artifact root.
+- Run the exact dry run, artifact-only restage with byte checks, focused tests,
+  and the full suite; then write the uncommitted final report output.
 
 - Clean-context review can now re-check all eight resolved round-2 findings.
 - The future UK ingestor in #33/#48 must add the two new descriptor match keys
