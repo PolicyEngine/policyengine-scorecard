@@ -33,6 +33,20 @@ be constructed during this follow-up.
   no exception (`pipeline/compute_uk_obr_costings.py:803`,
   `results/uk/obr_costings/RUN_MANIFEST.json:17`,
   `tests/test_obr_costings_registry.py:555`).
+- Completed the source-input portion of round-2 finding 3: the default claims
+  input is the repo-vendored, byte-identical 621-row operational slice covering
+  every registry measure and source period; default all-26 `--dry-run` passes
+  without outputs (`pipeline/compute_uk_obr_costings.py:38`,
+  `tests/test_obr_costings_registry.py:853`).
+- Fixed round-2 finding 5: dividend-lag overrides now apply only to threshold
+  paths whose schedules overlap the installed 2024–2025 lag, leaving the two
+  genuinely affected measures (`data/uk/obr_measure_reforms.yaml:585`,
+  `tests/test_obr_costings_registry.py:242`).
+- Fixed round-2 finding 8: `start_fy` now means the first nonzero harvested
+  costing year, all 26 values are validated against the complete vendored
+  slice, and 11 incorrect entries are corrected
+  (`data/uk/obr_measure_reforms.yaml:4`,
+  `pipeline/compute_uk_obr_costings.py:372`).
 - Read this progress record and the clean-context review before inspecting or
   changing the implementation.
 - Verified the checkout was clean, on `obr-costings-mode2`, and exactly at

@@ -35,7 +35,13 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_REGISTRY = ROOT / "data" / "uk" / "obr_measure_reforms.yaml"
-DEFAULT_CLAIMS = Path.home() / "scorecard-harvest" / "uk_obr" / "claims_staged.jsonl"
+DEFAULT_CLAIMS = (
+    ROOT
+    / "sources"
+    / "harvest-20260802"
+    / "uk_obr"
+    / "obr_costings_claims.jsonl"
+)
 DEFAULT_OUTPUT_DIR = ROOT / "results" / "uk" / "obr_costings"
 DEFAULT_STAGED_OUTPUT = ROOT / "results" / "uk" / "staged" / "obr_costings.jsonl"
 LOCAL_DATA_MIRROR_ROOT = ROOT / "data" / "uk" / "policyengine-local"
@@ -343,6 +349,32 @@ def validate_registry(
             raise RegistryError(f"{key}: invalid construction")
         if not isinstance(measure["start_fy"], int):
             raise RegistryError(f"{key}: start_fy must be an integer")
+        if claims is not None:
+            measure_claims = [
+                claim
+                for claim in claims
+                if isinstance(claim.get("period"), int)
+                and _source_candidates(
+                    [claim], measure, claim["period"]
+                )
+            ]
+            nonzero_years = [
+                claim["period"]
+                for claim in measure_claims
+                if isinstance(claim.get("value"), (int, float))
+                and not isinstance(claim["value"], bool)
+                and claim["value"] != 0
+            ]
+            if not nonzero_years:
+                raise RegistryError(
+                    f"{key}: no nonzero harvested costing for start_fy"
+                )
+            expected_start_fy = min(nonzero_years)
+            if measure["start_fy"] != expected_start_fy:
+                raise RegistryError(
+                    f"{key}: start_fy {measure['start_fy']} differs from first "
+                    f"nonzero harvested costing {expected_start_fy}"
+                )
         if not isinstance(measure["notes"], str) or not measure["notes"].strip():
             raise RegistryError(f"{key}: notes must be non-empty")
         if not isinstance(measure["heads"], list):

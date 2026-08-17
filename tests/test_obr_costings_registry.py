@@ -16,6 +16,7 @@ import json
 import os
 import subprocess
 import sys
+from collections import Counter
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -186,8 +187,24 @@ def test_committed_registry_schema_and_counts():
         sum(
             bool(measure.get("computability_overrides")) for measure in spec["measures"]
         )
-        == 4
+        == 2
     )
+
+
+def test_registry_start_fy_matches_first_nonzero_vendored_costing():
+    spec = compute.load_registry(REGISTRY)
+    claims = compute.load_claims(VENDORED_CLAIMS)
+
+    summary = compute.validate_registry(spec, claims=claims)
+
+    assert summary["source_head_years"] == 215
+    changed = copy.deepcopy(spec)
+    changed["measures"][0]["start_fy"] += 1
+    with pytest.raises(
+        compute.RegistryError,
+        match="first nonzero harvested costing",
+    ):
+        compute.validate_registry(changed, claims=claims)
 
 
 def test_registry_rejects_duplicate_keys_and_non_finite_reform_values():
@@ -259,31 +276,43 @@ def test_dividend_lag_overrides_match_installed_engine_dates():
     assert lagging_years == {2024, 2025}
 
     measures = compute.load_registry(REGISTRY)["measures"]
-    affected = {
-        measure["measure_key"]
-        for measure in measures
-        if any(
-            path.startswith("gov.hmrc.income_tax.rates.dividends")
-            for path in (measure["pe_reform"] or {})
-        )
-    }
-    assert affected == {
-        "efo_march_2026__pa_and_hrt_freezes",
-        "efo_march_2026__additional_rate_threshold_reduction",
-        "autumn_budget_2025__dividend_income_rate_increase",
-        "autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension",
+    affected_years = {}
+    for measure in measures:
+        years = set()
+        for path, schedule in (measure["pe_reform"] or {}).items():
+            if not (
+                path.startswith("gov.hmrc.income_tax.rates.dividends")
+                and path.endswith(".threshold")
+            ):
+                continue
+            for date_range in schedule:
+                match = compute.DATE_RANGE.fullmatch(str(date_range))
+                assert match is not None
+                first_year = int(match.group(1))
+                final_year = int(match.group(4))
+                years.update(
+                    year
+                    for year in lagging_years
+                    if first_year <= year <= final_year
+                )
+        if years:
+            affected_years[measure["measure_key"]] = years
+    assert affected_years == {
+        "efo_march_2026__pa_and_hrt_freezes": {2024, 2025},
+        "efo_march_2026__additional_rate_threshold_reduction": {2024, 2025},
     }
     for measure in measures:
         overrides = measure.get("computability_overrides", {})
-        if measure["measure_key"] in affected:
-            assert set(overrides) == lagging_years
+        expected_years = affected_years.get(measure["measure_key"], set())
+        if expected_years:
+            assert set(overrides) == expected_years
             assert all(
                 override == {"computability": "partial", "note": DIVIDEND_LAG_NOTE}
                 for override in overrides.values()
             )
             for year in range(compute.YEAR_MIN, compute.YEAR_MAX + 1):
                 status, note = compute.effective_computability(measure, year)
-                if year in lagging_years:
+                if year in expected_years:
                     assert (status, note) == ("partial", DIVIDEND_LAG_NOTE)
                 else:
                     assert status == measure["computability"]
@@ -803,26 +832,53 @@ def test_every_staged_descriptor_matches_one_vendored_claim():
     staged_rows = [json.loads(line) for line in SMOKE_STAGED.read_text().splitlines()]
     vendored_claims = compute.load_claims(VENDORED_CLAIMS)
 
-    assert len(vendored_claims) == 215
+    assert len(vendored_claims) == 621
     for row in staged_rows:
         assert len(_descriptor_hits(row["external_claim_match"], vendored_claims)) == 1
 
 
-def test_vendored_claims_are_exact_registry_mapped_population():
+def _matching_registry_measure_keys(
+    claim: dict[str, object], measures: list[dict[str, object]]
+) -> list[str]:
+    period = claim.get("period")
+    if not isinstance(period, int):
+        return []
+    return [
+        measure["measure_key"]
+        for measure in measures
+        if compute._source_candidates([claim], measure, period)
+    ]
+
+
+def test_vendored_claims_are_complete_registry_measure_population():
     spec = compute.load_registry(REGISTRY)
     vendored_claims = compute.load_claims(VENDORED_CLAIMS)
-    selected: list[dict[str, object]] = []
+    mapped: list[dict[str, object]] = []
     for measure in spec["measures"]:
         for head in measure["heads"]:
             for year in range(compute.YEAR_MIN, compute.YEAR_MAX + 1):
                 claim = compute.resolve_claim(vendored_claims, measure, head, year)
                 if claim is not None:
-                    selected.append(claim)
+                    mapped.append(claim)
 
-    assert len(selected) == len({id(claim) for claim in selected}) == 215
-    assert {id(claim) for claim in selected} == {id(claim) for claim in vendored_claims}
+    assert len(mapped) == len({id(claim) for claim in mapped}) == 215
+    assert all(
+        len(_matching_registry_measure_keys(claim, spec["measures"])) == 1
+        for claim in vendored_claims
+    )
+    assert Counter(claim["period"] for claim in vendored_claims) == {
+        2022: 5,
+        2023: 43,
+        2024: 63,
+        2025: 100,
+        2026: 100,
+        2027: 100,
+        2028: 100,
+        2029: 65,
+        2030: 45,
+    }
     assert hashlib.sha256(VENDORED_CLAIMS.read_bytes()).hexdigest() == (
-        "99b8748ccd318a0d0cee0ddbbade757526d186099e15f6ca5a8e4b8d6c2dcca9"
+        "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f"
     )
 
 
@@ -844,6 +900,13 @@ def test_every_staged_descriptor_matches_one_full_harvest_claim():
     full_lines = full_bytes.splitlines(keepends=True)
     for vendored_line in VENDORED_CLAIMS.read_bytes().splitlines(keepends=True):
         assert full_lines.count(vendored_line) == 1
+    measures = compute.load_registry(REGISTRY)["measures"]
+    expected_lines = []
+    for raw_line in full_lines:
+        claim = json.loads(raw_line)
+        if _matching_registry_measure_keys(claim, measures):
+            expected_lines.append(raw_line)
+    assert b"".join(expected_lines) == VENDORED_CLAIMS.read_bytes()
 
 
 def test_resolver_rejects_ambiguous_and_missing_mapped_heads(
@@ -1026,6 +1089,42 @@ def test_dry_run_is_offline_and_writes_no_simulation_outputs(
     assert "dry-run complete: no managed microsimulation constructed" in (
         completed.stdout
     )
+    assert not output_dir.exists()
+    assert not staged_path.exists()
+
+
+def test_default_dry_run_uses_complete_vendored_slice(tmp_path):
+    if importlib.util.find_spec("policyengine_uk") is None:
+        pytest.skip("policyengine-uk is not installed")
+
+    output_dir = tmp_path / "artifacts"
+    staged_path = tmp_path / "staged.jsonl"
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(compute.__file__),
+            "--output-dir",
+            str(output_dir),
+            "--staged-output",
+            str(staged_path),
+            "--dry-run",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        timeout=60,
+        check=False,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    payload, end = json.JSONDecoder().raw_decode(completed.stdout)
+    assert completed.stdout[end:].strip() == (
+        "dry-run complete: no managed microsimulation constructed"
+    )
+    assert payload["validation"]["measures"] == 26
+    assert payload["validation"]["source_head_years"] == 215
+    assert len(payload["selected_measures"]) == 26
+    assert compute.DEFAULT_CLAIMS == compare.DEFAULT_CLAIMS == VENDORED_CLAIMS
     assert not output_dir.exists()
     assert not staged_path.exists()
 

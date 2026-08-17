@@ -26,7 +26,13 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_REGISTRY = ROOT / "data" / "uk" / "obr_measure_reforms.yaml"
-DEFAULT_CLAIMS = Path.home() / "scorecard-harvest" / "uk_obr" / "claims_staged.jsonl"
+DEFAULT_CLAIMS = (
+    ROOT
+    / "sources"
+    / "harvest-20260802"
+    / "uk_obr"
+    / "obr_costings_claims.jsonl"
+)
 DEFAULT_STAGED = ROOT / "results" / "uk" / "staged" / "obr_costings.jsonl"
 DEFAULT_OUTPUT_DIR = ROOT / "results" / "uk" / "obr_costings"
 PMD_TABLES = {
