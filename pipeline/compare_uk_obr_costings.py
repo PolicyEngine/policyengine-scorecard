@@ -1137,8 +1137,7 @@ def validate_staged_descriptive_fields(
     if differences:
         raise ComparisonError(
             f"{staged_row.get('measure_key')} {claim.get('period')}: staged fields "
-            "differ from verified artifact/claim inputs: "
-            + ", ".join(differences)
+            "differ from verified artifact/claim inputs: " + ", ".join(differences)
         )
 
 

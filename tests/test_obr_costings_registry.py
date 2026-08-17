@@ -1111,8 +1111,7 @@ def test_standalone_renderer_rejects_unsigned_employer_nic_source_table_flip(
         for row in staged_rows
         if row["measure_key"] == "autumn_budget_2024__employer_nics_package"
         and row["external_claim_match"]["period"] == 2026
-        and row["external_claim_match"]["conditions"].get("tax_head")
-        == "Income tax"
+        and row["external_claim_match"]["conditions"].get("tax_head") == "Income tax"
     ]
     assert len(hits) == 1
     assert hits[0]["source_table"] == "Tax Measures (Policy measures database)"
@@ -1168,8 +1167,7 @@ def test_standalone_renderer_rederives_fabricated_staged_descriptions(tmp_path):
         for row in staged_rows
         if row["measure_key"] == "autumn_budget_2024__employer_nics_package"
         and row["external_claim_match"]["period"] == 2026
-        and row["external_claim_match"]["conditions"].get("tax_head")
-        == "Income tax"
+        and row["external_claim_match"]["conditions"].get("tax_head") == "Income tax"
     )
     hit["annotations"].append("FABRICATED MECHANISM ANNOTATION")
     hit["status"] = "FABRICATED WIN"
