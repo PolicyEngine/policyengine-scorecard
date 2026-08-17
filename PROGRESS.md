@@ -1,17 +1,26 @@
 # OBR costings lane progress
 
-Updated: 2026-08-16
+Updated: 2026-08-17
 
 ## State
 
-Follow-up 1 is complete locally. The existing 13 certified run artifacts were
-restaged without constructing a simulation. Reversal constructions retain the
-literal reversal delta for traceability and expose an announced-measure-oriented
-`pe_value`; the 20 staged rows and 26 comparison rows were re-rendered. The full
-26-measure population remains intentionally unrun.
+Follow-up 2 is in progress from clean branch `obr-costings-mode2` at requested
+HEAD `7222976`. The six clean-context review findings are being fixed offline.
+The existing 13 certified run artifacts will only be read through `--restage`;
+no managed simulation will be constructed and the full 26-measure population
+remains intentionally unrun.
 
 ## Done
 
+- Read this progress record and the clean-context review before inspecting or
+  changing the implementation.
+- Verified the checkout was clean, on `obr-costings-mode2`, and exactly at
+  `7222976e2cb38c8318f0ca085026bcf319d986f2`.
+- Confirmed GitNexus graph tools are not exposed in this checkout, so the six
+  findings are being traced directly through source, registry data, artifacts,
+  and tests.
+- Removed the aggregate sign-concordance register headline; the progress record
+  retains only row-level values and descriptive bins.
 - Started Follow-up 1 from clean branch `obr-costings-mode2` at `b6442fe` and
   read this progress record plus both compute/comparison modules end to end.
 - Confirmed the orientation defect is confined to artifact/staging derivation:
@@ -126,12 +135,16 @@ literal reversal delta for traceability and expose an announced-measure-oriented
 
 ## Next
 
-- Fable can review the registry constructions and run the full selected
-  population after the review gate.
-- A separately owned UK ingestor still needs an OBR-aware claim attachment
-  seam before these staged rows can enter the campaign database.
-- If private issue/PR text becomes available, reconcile #54, #55, and #48
-  against the brief used here before merge.
+- Bind every future managed simulation to before/after hashes of the exact
+  runtime dataset bytes, while preserving the legacy 13 artifacts on restage.
+- Vendor the 215 exact matched harvest rows, make staged descriptors unique,
+  and test both vendored and optional full-harvest joins.
+- Replace unsupported row mechanisms with harvested/code-backed axes, correct
+  the provisional HICBC welfare mapping, and add the employer-NIC incidence
+  mechanism from installed source.
+- Add and validate the per-year dividend-threshold computability overrides.
+- Restage without simulations, regenerate comparisons, run focused and full
+  tests, then write the final report.
 
 ## Registry counts
 
@@ -171,8 +184,8 @@ The values below are GBP billions in the harvested
 `positive_gain_to_exchequer` convention. “Mapped total” sums only the OBR heads
 listed in the annotation; it is not an OBR TOTAL claim. Every row has
 `benchmark_class = different_model`, uses PE calendar year Y as the proxy for
-FY Y-(Y+1), and compares static PE with behavioural-adjusted OBR. Each reversal
-leg on the certified world is re-oriented to the announced measure using
+FY Y-(Y+1). Each reversal leg on the certified world is re-oriented to the
+announced measure using
 `measure Δ = −(reversal − baseline)`. The certified-world versus announcement-
 baseline axis, head scope, and unexplained remainder remain explicit.
 
@@ -190,10 +203,6 @@ baseline axis, head scope, and unexplained remainder remain explicit.
 | AB2024 employer NICs package | 2027-28 | Mapped total | +24.027 | +16.422 | 0.683 | same_sign_ratio_0.5_to_0.8 | Income tax + NICs only; no Employment Allowance/firm mechanics; other OBR heads excluded |
 | AB2025 remove UC two-child limit | 2026-27 | Welfare inside cap | -1.887 | -1.104 | 0.585 | same_sign_ratio_0.5_to_0.8 | UC inside-cap aggregate only; outside-cap OBR head excluded |
 | AB2025 remove UC two-child limit | 2027-28 | Welfare inside cap | -2.101 | -1.182 | 0.563 | same_sign_ratio_0.5_to_0.8 | UC inside-cap aggregate only; outside-cap OBR head excluded |
-
-All twelve smoke summaries are now in same-sign bins. Across all 26 comparison
-rows, none is `opposite_sign`; four zero-effect source heads remain honestly
-classified as `pe_zero`.
 
 The separate diagnostic changed the 2026 personal allowance from £12,570 to
 £13,070. Baseline income tax was £421.891913bn and the static income-tax delta
