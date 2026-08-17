@@ -56,6 +56,13 @@ publication/restoration.
 - The exact default Follow-up 9 `--dry-run` passes offline with the specified
   interpreter: 26 selected measures, 215 verified source head-years across
   2024–2030, and no managed microsimulation constructed.
+- The exact direct Follow-up 9 `--restage` reconstructed 13 artifacts including
+  one diagnostic, 20 staged rows, and 26 comparison rows with zero managed
+  simulations. Git records only `RUN_MANIFEST.json`, whose 25 keys became 27
+  by adding exactly `comparison_csv_sha256` and `comparison_md_sha256`.
+- All 13 artifact SHA-256 values remained unchanged. Staged JSONL remained
+  `45faa64a`; comparison CSV remained `3f8fe4c1`; comparison Markdown remained
+  `8c291b6b`. The migrated manifest is `003ea676`.
 
 ### Superseded checkpoint history
 
@@ -542,9 +549,6 @@ boundary claims.
 
 ## Next
 
-- Run the exact no-simulation restage, confirm that only the two comparison
-  digest fields enter the committed manifest and all artifacts, staged rows,
-  CSV, and Markdown retain identical bytes, then commit migration.
 - Run the focused and full suites plus final hygiene checks without Ruff, then
   complete the progress record and external report.
 
