@@ -4,11 +4,10 @@ Updated: 2026-08-16
 
 ## State
 
-In progress. The external harvest, campaign precedent, ingest contract,
-architecture, and existing comparison seam have been read. Engine and harvest
-research is complete enough to build the registry without guessing parameter
-paths or OBR row identities. The first 20-measure registry is built and
-validated against the installed engine and harvested row identities.
+In progress. The 20-measure registry and the offline compute/staging pipeline
+are built. Registry paths, aggregate variables, and harvested row identities
+validate without constructing a managed simulation. The comparison renderer,
+tests, and bounded smoke run remain.
 
 ## Done
 
@@ -37,11 +36,26 @@ validated against the installed engine and harvested row identities.
   `CountryTaxBenefitSystem().parameters`, every mapped variable exists, and
   every mapped head resolves to exactly one harvested row per available FY
   once verbatim measure identity is included.
+- Built `pipeline/compute_uk_obr_costings.py`. It runs year-major, retains only
+  aggregate floats between simulations, uses the required plain reform dict,
+  records complete baseline/reform bundle metadata and raw aggregates, and
+  freezes the exact matched OBR identity/value into every run artifact before
+  deriving staged rows.
+- Hardened the certified path: normal execution assigns all HF offline flags,
+  requires a local-only cache hit, and verifies the cached 1.2 GB artifact's
+  SHA-256 against the release manifest before constructing any simulation.
+  The verified build id is
+  `populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z`.
+- Ran `--dry-run --limit 2 --years 2026` with a pre-existing
+  `HF_HUB_OFFLINE=0`; the program overrode it to offline, validated all 20
+  entries and 162 mapped head-years, constructed no managed simulation, and
+  wrote no output. A separate local-only cache preflight verified SHA-256
+  `f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833`
+  in 0.524 seconds.
 
 ## Next
 
-- Build and validate the measure registry, then the compute/staging pipeline,
-  comparison renderer, and tests in coherent committed steps.
+- Build the comparison renderer and tests in coherent committed steps.
 - Run only the requested bounded offline smoke sample, then record measured
   wall time, peak memory, results, uncertainties, and unverified items here.
 
