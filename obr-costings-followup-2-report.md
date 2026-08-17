@@ -57,3 +57,9 @@ its optional exactly-one-match and byte-identity test ran rather than skipping.
 GitNexus graph resources and private issue/PR bodies were unavailable; source,
 installed package files, committed harvest data, and offline tests supplied all
 evidence needed for the six fixes.
+
+The designated parent output path
+`/Users/maxghenis/scorecard-lanes/obr-costings-followup-2-report.md` is outside
+the sandbox's writable roots; copying this report there was rejected with
+`Operation not permitted`. This identical report is therefore committed inside
+the repository as `obr-costings-followup-2-report.md`.

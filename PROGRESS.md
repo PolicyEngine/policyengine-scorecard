@@ -344,3 +344,7 @@ Maximum sampled process RSS was 32.888 GiB.
   run used a SHA-verified, ignored writable mirror of those same cached bytes;
   no download was attempted. Portability of that mirror path outside this
   checkout was not tested.
+- The designated parent output file is outside the sandbox's writable roots;
+  copying the final report there failed with `Operation not permitted`. The
+  identical report is committed as `obr-costings-followup-2-report.md` inside
+  this repository.
