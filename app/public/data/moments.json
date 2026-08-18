@@ -245,6 +245,15 @@
    "basis": "PROVENANCE.md construct difference 5"
   },
   {
+   "id": "kff-medicaid-reported-denominator-sanity",
+   "applies": {
+    "source": "kff-remaining-uninsured",
+    "period": "2024"
+   },
+   "text": "Denominator context measured on the certified artifact: the reported-uninsured construct counts 80.9M people under 65 (of 278.9M), versus roughly 27M ACS-reported nonelderly uninsured in 2024. The dominant driver is the artifact's reported Medicaid-at-interview input, which sums to 24.6M people under 65 against roughly 60M survey-reported Medicaid, while employer coverage (146.9M) and Marketplace (21.4M) inputs sit near survey levels; modeled enrollment is separately CMS-calibrated and does not backfill the reported flag. The reported-uninsured share is therefore not a survey-faithful uninsured measure on this artifact; the modeled-uninsured variant and the eligible-and-not-enrolled counts are the informative PolicyEngine rows for this join, pending an artifact-side review of thinned reported-coverage inputs.",
+   "basis": "Main-session review probe of certified Build P person inputs, 2026-08-18"
+  },
+  {
    "id": "kff-medicaid-rendered-column-caution",
    "applies": {
     "source": "kff-remaining-uninsured",
@@ -16080,6 +16089,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -16192,6 +16202,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -16304,6 +16315,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -16416,6 +16428,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -16528,6 +16541,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -16640,6 +16654,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -16752,6 +16767,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -16864,6 +16880,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -16976,6 +16993,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -17088,6 +17106,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -17200,6 +17219,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -17312,6 +17332,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -17424,6 +17445,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -17536,6 +17558,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -17648,6 +17671,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -17760,6 +17784,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -17872,6 +17897,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -17984,6 +18010,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -18096,6 +18123,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -18208,6 +18236,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -18320,6 +18349,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -18432,6 +18462,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -18544,6 +18575,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -18656,6 +18688,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -18768,6 +18801,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -18880,6 +18914,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -18992,6 +19027,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -19104,6 +19140,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -19216,6 +19253,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -19328,6 +19366,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -19440,6 +19479,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -19552,6 +19592,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -19664,6 +19705,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -19776,6 +19818,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -19888,6 +19931,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -20000,6 +20044,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -20112,6 +20157,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -20224,6 +20270,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -20336,6 +20383,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -20448,6 +20496,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -20560,6 +20609,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -20672,6 +20722,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -20784,6 +20835,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -20896,6 +20948,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -21008,6 +21061,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -21120,6 +21174,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -21232,6 +21287,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -21344,6 +21400,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -21456,6 +21513,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -21568,6 +21626,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -21680,6 +21739,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
@@ -21792,6 +21852,7 @@
     "kff-medicaid-coverage-measurement",
     "kff-medicaid-data-and-imputations",
     "kff-medicaid-rules-vintage",
+    "kff-medicaid-reported-denominator-sanity",
     "kff-medicaid-rendered-column-caution"
    ],
    "engine_version": "1.764.6",
