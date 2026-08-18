@@ -1,9 +1,9 @@
 """Aggregate-output coverage for the KFF Medicaid campaign lane."""
 
+import csv
 import json
 import sqlite3
 
-import pandas as pd
 import pytest
 
 from pipeline.build_kff_medicaid_outputs import REFORM_REF, RUN_ID, aggregate
@@ -16,28 +16,37 @@ DATA_BUNDLE = "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z
 BUNDLE_ID = "us-5.0.2"
 
 
+def _write_csv(path, columns):
+    rows = [
+        dict(zip(columns, values, strict=True))
+        for values in zip(*columns.values(), strict=True)
+    ]
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(columns))
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def _write_extracts(tmp_path, *, sample: bool = True):
-    baseline = pd.DataFrame(
-        {
-            "person_id": [1, 2, 3, 4, 5, 6],
-            "state": ["CA", "CA", "CA", "TX", "TX", "TX"],
-            "age": [30, 10, 70, 40, 17, 25],
-            "person_weight": [2.0, 3.0, 5.0, 7.0, 11.0, 13.0],
-            "is_medicaid_eligible": [True, True, True, True, False, True],
-            "medicaid_enrolled": [True, False, False, False, False, True],
-            "medicaid": [1_000.0, 0.0, 0.0, 0.0, 0.0, 2_000.0],
-            "medicaid_slcsp_state_denominator": [10.0] * 3 + [20.0] * 3,
-            "reported_uninsured": [False, True, False, False, True, True],
-            "modeled_uninsured": [False, True, False, False, True, False],
-        }
-    )
-    reform = baseline.copy()
+    baseline = {
+        "person_id": [1, 2, 3, 4, 5, 6],
+        "state": ["CA", "CA", "CA", "TX", "TX", "TX"],
+        "age": [30, 10, 70, 40, 17, 25],
+        "person_weight": [2.0, 3.0, 5.0, 7.0, 11.0, 13.0],
+        "is_medicaid_eligible": [True, True, True, True, False, True],
+        "medicaid_enrolled": [True, False, False, False, False, True],
+        "medicaid": [1_000.0, 0.0, 0.0, 0.0, 0.0, 2_000.0],
+        "medicaid_slcsp_state_denominator": [10.0] * 3 + [20.0] * 3,
+        "reported_uninsured": [False, True, False, False, True, True],
+        "modeled_uninsured": [False, True, False, False, True, False],
+    }
+    reform = dict(baseline)
     reform["medicaid_enrolled"] = [True, True, True, True, False, True]
     reform["medicaid"] = [1_100.0, 1_200.0, 1_300.0, 1_400.0, 0.0, 2_100.0]
     baseline_path = tmp_path / "baseline.csv"
     reform_path = tmp_path / "reform.csv"
-    baseline.to_csv(baseline_path, index=False)
-    reform.to_csv(reform_path, index=False)
+    _write_csv(baseline_path, baseline)
+    _write_csv(reform_path, reform)
 
     bundle = {
         "model_version": ENGINE,
@@ -146,7 +155,10 @@ def test_builder_emits_and_ingests_complete_reform_shape(tmp_path):
         "kff_medicaid_moments_2024.csv",
         "kff_medicaid_takeup_2024.csv",
     ):
-        assert pd.read_csv(diagnostics / filename)["sample"].all()
+        with (diagnostics / filename).open(newline="") as handle:
+            diagnostic_rows = list(csv.DictReader(handle))
+        assert diagnostic_rows
+        assert all(row["sample"] == "True" for row in diagnostic_rows)
 
     db_path = tmp_path / "scorecard.db"
     first = ingest(db_path, staged_dir=staged.parent)

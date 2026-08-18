@@ -1,14 +1,19 @@
-"""Aggregate Medicaid baseline/reform extracts into scorecard staging files."""
+"""Aggregate Medicaid baseline/reform extracts into scorecard staging files.
+
+Standard-library only, like the other pipeline modules: CI runs the test
+suite without pandas, so extracts are read as typed columns and masks are
+plain boolean lists.
+"""
 
 from __future__ import annotations
 
 import argparse
+import csv
+import gzip
 import json
+import math
 from datetime import datetime, timezone
 from pathlib import Path
-
-import numpy as np
-import pandas as pd
 
 YEAR = 2024
 RUN_ID = "campaign-2026-08-18-kff-medicaid"
@@ -20,21 +25,83 @@ REFORM_REF = {
     "framework": "policyengine_us_inputs",
     "reform": {"takes_up_medicaid_if_eligible": True},
 }
+BOOL_COLUMNS = (
+    "is_medicaid_eligible",
+    "medicaid_enrolled",
+    "reported_uninsured",
+    "modeled_uninsured",
+)
+FLOAT_COLUMNS = ("age", "person_weight", "medicaid", DENOMINATOR)
 
 
 def load_meta(path: Path) -> dict:
     return json.loads(Path(f"{path}.meta.json").read_text())
 
 
-def weighted_count(frame: pd.DataFrame, mask: np.ndarray) -> float:
-    return float(frame.loc[mask, "person_weight"].sum())
+def _parse_bool(text: str) -> bool:
+    if text in ("True", "true", "1"):
+        return True
+    if text in ("False", "false", "0"):
+        return False
+    raise ValueError(f"not a boolean: {text!r}")
 
 
-def weighted_dollars(frame: pd.DataFrame, mask: np.ndarray | None = None) -> float:
+def _parse_float(text: str) -> float:
+    return math.nan if text == "" else float(text)
+
+
+def load_extract(path: Path) -> dict[str, list]:
+    opener = gzip.open if path.suffix == ".gz" else open
+    with opener(path, "rt", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = reader.fieldnames or []
+        columns: dict[str, list] = {name: [] for name in fieldnames}
+        for row in reader:
+            for name in fieldnames:
+                columns[name].append(row[name])
+    for name in BOOL_COLUMNS:
+        columns[name] = [_parse_bool(text) for text in columns[name]]
+    for name in FLOAT_COLUMNS:
+        columns[name] = [_parse_float(text) for text in columns[name]]
+    return columns
+
+
+def _close(actual: float, expected: float) -> bool:
+    if math.isnan(actual) and math.isnan(expected):
+        return True
+    return abs(actual - expected) <= 1e-8 + 1e-5 * abs(expected)
+
+
+def _and(*masks: list[bool]) -> list[bool]:
+    return [all(values) for values in zip(*masks)]
+
+
+def _not(mask: list[bool]) -> list[bool]:
+    return [not value for value in mask]
+
+
+def weighted_count(columns: dict[str, list], mask: list[bool]) -> float:
+    return float(
+        sum(
+            weight
+            for weight, selected in zip(columns["person_weight"], mask)
+            if selected
+        )
+    )
+
+
+def weighted_dollars(columns: dict[str, list], mask: list[bool] | None = None) -> float:
     if mask is None:
-        mask = np.ones(len(frame), dtype=bool)
-    selected = frame.loc[mask]
-    return float((selected["person_weight"] * selected["medicaid"]).sum())
+        mask = [True] * len(columns["person_weight"])
+    return float(
+        sum(
+            weight * dollars
+            for weight, dollars, selected in zip(
+                columns["person_weight"], columns["medicaid"], mask
+            )
+            if selected
+        )
+    )
 
 
 def aggregate(
@@ -45,39 +112,38 @@ def aggregate(
     campaign_path: Path,
     full: bool,
 ) -> dict:
-    baseline = pd.read_csv(baseline_path)
-    reform = pd.read_csv(reform_path)
+    baseline = load_extract(baseline_path)
+    reform = load_extract(reform_path)
     baseline_meta = load_meta(baseline_path)
     reform_meta = load_meta(reform_path)
-    if len(baseline) != len(reform):
+    people = len(baseline["person_weight"])
+    if people != len(reform["person_weight"]):
         raise ValueError("baseline and reform row counts differ")
-    if not np.array_equal(baseline["person_id"], reform["person_id"]):
+    if baseline["person_id"] != reform["person_id"]:
         raise ValueError("baseline and reform people differ")
-    if not np.array_equal(baseline["state"], reform["state"]):
+    if baseline["state"] != reform["state"]:
         raise ValueError("baseline and reform states differ")
-    if not np.allclose(baseline["person_weight"], reform["person_weight"]):
+    if not all(map(_close, baseline["person_weight"], reform["person_weight"])):
         raise ValueError("baseline and reform weights differ")
-    if not np.array_equal(
-        baseline["is_medicaid_eligible"], reform["is_medicaid_eligible"]
-    ):
+    if baseline["is_medicaid_eligible"] != reform["is_medicaid_eligible"]:
         raise ValueError("eligibility changed under the take-up input")
-    if not np.array_equal(baseline["reported_uninsured"], reform["reported_uninsured"]):
+    if baseline["reported_uninsured"] != reform["reported_uninsured"]:
         raise ValueError("reported coverage changed under the take-up input")
-    if not np.allclose(baseline[DENOMINATOR], reform[DENOMINATOR], equal_nan=True):
+    if not all(map(_close, baseline[DENOMINATOR], reform[DENOMINATOR])):
         raise ValueError("reform did not retain the baseline Medicaid denominator")
-    eligible = baseline["is_medicaid_eligible"].to_numpy(dtype=bool)
-    enrolled = baseline["medicaid_enrolled"].to_numpy(dtype=bool)
-    reform_enrolled = reform["medicaid_enrolled"].to_numpy(dtype=bool)
-    if not np.array_equal(reform_enrolled, eligible):
+    eligible = baseline["is_medicaid_eligible"]
+    enrolled = baseline["medicaid_enrolled"]
+    reform_enrolled = reform["medicaid_enrolled"]
+    if reform_enrolled != eligible:
         raise AssertionError("reform enrollment is not identical to eligibility")
-    if np.any(enrolled & ~reform_enrolled):
+    if any(_and(enrolled, _not(reform_enrolled))):
         raise AssertionError("the reform removes baseline enrollees")
-    marginal = reform_enrolled & ~enrolled
-    reported = baseline["reported_uninsured"].to_numpy(dtype=bool)
-    modeled = baseline["modeled_uninsured"].to_numpy(dtype=bool)
-    under65 = baseline["age"].to_numpy() < 65
-    child = baseline["age"].to_numpy() < 19
-    adult = under65 & ~child
+    marginal = _and(reform_enrolled, _not(enrolled))
+    reported = baseline["reported_uninsured"]
+    modeled = baseline["modeled_uninsured"]
+    under65 = [age < 65 for age in baseline["age"]]
+    child = [age < 19 for age in baseline["age"]]
+    adult = _and(under65, _not(child))
     states = sorted(set(baseline["state"]))
     geographies = ["US", *states]
     expansion_states = set(states) - NON_EXPANSION_2024
@@ -158,13 +224,13 @@ def aggregate(
     )
     for geography in geographies:
         geo_mask = (
-            np.ones(len(baseline), dtype=bool)
+            [True] * people
             if geography == "US"
-            else baseline["state"].to_numpy() == geography
+            else [state == geography for state in baseline["state"]]
         )
         for coverage_variant, variant, uninsured in variants:
-            universe = geo_mask & under65 & uninsured
-            numerator_mask = universe & eligible
+            universe = _and(geo_mask, under65, uninsured)
+            numerator_mask = _and(universe, eligible)
             denominator = weighted_count(baseline, universe)
             numerator = weighted_count(baseline, numerator_mask)
             share = 100 * numerator / denominator if denominator else None
@@ -210,12 +276,14 @@ def aggregate(
     subgroup_masks = {
         "adults": adult,
         "children": child,
-        "expansion_states": under65
-        & baseline["state"].isin(expansion_states).to_numpy(),
+        "expansion_states": _and(
+            under65,
+            [state in expansion_states for state in baseline["state"]],
+        ),
     }
     for coverage_variant, variant, uninsured in variants:
         for subgroup, subgroup_mask in subgroup_masks.items():
-            mask = subgroup_mask & uninsured & eligible
+            mask = _and(subgroup_mask, uninsured, eligible)
             value = weighted_count(baseline, mask)
             counterpart_rows.append(
                 {
@@ -276,19 +344,21 @@ def aggregate(
     )
     for geography in geographies:
         geo_mask = (
-            np.ones(len(baseline), dtype=bool)
+            [True] * people
             if geography == "US"
-            else baseline["state"].to_numpy() == geography
+            else [state == geography for state in baseline["state"]]
         )
-        base_eligible = weighted_count(baseline, geo_mask & eligible)
-        base_enrolled = weighted_count(baseline, geo_mask & enrolled)
-        reform_enrollment = weighted_count(baseline, geo_mask & reform_enrolled)
-        delta_enrollment = weighted_count(baseline, geo_mask & marginal)
+        base_eligible = weighted_count(baseline, _and(geo_mask, eligible))
+        base_enrolled = weighted_count(baseline, _and(geo_mask, enrolled))
+        reform_enrollment = weighted_count(baseline, _and(geo_mask, reform_enrolled))
+        delta_enrollment = weighted_count(baseline, _and(geo_mask, marginal))
         baseline_spending = weighted_dollars(baseline, geo_mask)
         reform_spending = weighted_dollars(reform, geo_mask)
         delta_spending = reform_spending - baseline_spending
-        bridge_reported = weighted_count(baseline, geo_mask & marginal & reported)
-        bridge_other = weighted_count(baseline, geo_mask & marginal & ~reported)
+        bridge_reported = weighted_count(baseline, _and(geo_mask, marginal, reported))
+        bridge_other = weighted_count(
+            baseline, _and(geo_mask, marginal, _not(reported))
+        )
         if abs(delta_enrollment - bridge_reported - bridge_other) > 1e-6 * max(
             delta_enrollment, 1
         ):
@@ -415,12 +485,14 @@ def aggregate(
             )
 
     diagnostics_dir.mkdir(parents=True, exist_ok=True)
-    pd.DataFrame(moment_diagnostics).to_csv(
-        diagnostics_dir / "kff_medicaid_moments_2024.csv", index=False
-    )
-    pd.DataFrame(takeup_rows).to_csv(
-        diagnostics_dir / "kff_medicaid_takeup_2024.csv", index=False
-    )
+    for filename, rows in (
+        ("kff_medicaid_moments_2024.csv", moment_diagnostics),
+        ("kff_medicaid_takeup_2024.csv", takeup_rows),
+    ):
+        with (diagnostics_dir / filename).open("w", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+            writer.writeheader()
+            writer.writerows(rows)
     counterpart_path.parent.mkdir(parents=True, exist_ok=True)
     counterpart_payload = {
         "provenance": {
@@ -440,9 +512,11 @@ def aggregate(
     campaign_path.write_text(
         "".join(json.dumps(row, sort_keys=True) + "\n" for row in campaign_rows)
     )
+    baseline_dollars = weighted_dollars(baseline)
+    reform_dollars = weighted_dollars(reform)
     summary = {
         "sample": baseline_sample,
-        "people": len(baseline),
+        "people": people,
         "engine_version": engine_version,
         "data_bundle": data_bundle,
         "bundle_id": bundle_id,
@@ -450,11 +524,13 @@ def aggregate(
         "enrolled": national_enrolled,
         "delta_enrollment": national_delta,
         "identity_gap": identity_gap,
-        "baseline_medicaid_usd": weighted_dollars(baseline),
-        "reform_medicaid_usd": weighted_dollars(reform),
-        "delta_medicaid_usd": weighted_dollars(reform) - weighted_dollars(baseline),
-        "bridge_reported_uninsured": weighted_count(baseline, marginal & reported),
-        "bridge_other_coverage": weighted_count(baseline, marginal & ~reported),
+        "baseline_medicaid_usd": baseline_dollars,
+        "reform_medicaid_usd": reform_dollars,
+        "delta_medicaid_usd": reform_dollars - baseline_dollars,
+        "bridge_reported_uninsured": weighted_count(baseline, _and(marginal, reported)),
+        "bridge_other_coverage": weighted_count(
+            baseline, _and(marginal, _not(reported))
+        ),
         "counterpart_rows": len(counterpart_rows),
         "campaign_rows": len(campaign_rows),
     }
