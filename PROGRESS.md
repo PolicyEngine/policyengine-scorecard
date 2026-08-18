@@ -11,6 +11,7 @@ In progress. The KFF source population is adapted into 57 truthful-vintage momen
 - Created the implementation and validation plan.
 - Read the complete KFF provenance and staged table, plus the existing moments and campaign contracts.
 - Added the KFF source registry, descriptive construct annotations, and adapter: 52 state-indicator percentage rows (US + 50 states + DC) and five 2022 flagship-brief rows. The selected rendered column has no NSD cells; the adapter retains any NSD selected cell as an explicitly suppressed row.
+- Extended campaign ingest with a strict `policyengine_us_inputs` ReformRef exhibit route, preserving state geography, baseline values, deltas, and canonical reform identity. Focused plus existing campaign/database tests pass (62 tests).
 
 ## Next
 
