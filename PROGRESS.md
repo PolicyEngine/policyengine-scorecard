@@ -23,8 +23,8 @@ In progress. Full certified 2024 baseline and take-up-reform extracts have been 
 - Built 214 PE moment counterparts, 208 campaign rows, and US/state diagnostic CSVs. The 2024 reported-uninsured counterpart is 34.921M eligible among 80.932M uninsured (43.15%); the modeled-uninsured alternative is 2.785M among 48.796M (5.71%).
 - Added strict sample/full provenance gates and explicit bridge-scope annotations to the aggregate builder. The real builder-to-JSONL-to-database test covers reform identity, state shape, identities, provenance, and idempotency.
 - Ingested the full staging file into `data/scorecard.db` offline: 208 exhibits, 52 geographies, no deferred rows, all under canonical ReformRef key `849973669b6526d6`. A second temporary-database ingest returned the same 208-row result.
+- Extended the additive moments pipeline for multiple counterpart payloads, deterministic primary/alternative variants, null-safe suppression, period-specific annotations, and dated reference counterparts. The regenerated 603-row payload contains 52 KFF `concept_mismatch` rows for 2024 and five truthful `not_computed` 2022 rows with separately dated 2024 PE references.
 
 ## Next
 
-- Review and commit the moments-builder changes and regenerated `moments.json`.
 - Run the complete offline test, formatting, and application-data checks; write the uncommitted PR body and final report with the three largest state differences and exact commit list.

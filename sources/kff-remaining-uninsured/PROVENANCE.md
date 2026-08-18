@@ -30,7 +30,7 @@ eligibility simulation). Two populations, different vintages:
   (per the page's methods notes). Post-unwinding on both sides of any join with
   populace_us_2024.
 - **Raw extraction**: `raw/state_indicator_2024acs_2025levels.md`.
-- **⚠️ Column-label caution**: the extraction labeled the first column
+- **Column-label caution**: the extraction labeled the first column
   "Medicaid/Other Public (%)" — verify category semantics against KFF's own
   column headers before finalizing claim metric names (KFF's category set for
   this indicator historically: Medicaid eligible / Tax-credit eligible /
