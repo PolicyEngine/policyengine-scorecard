@@ -1,0 +1,44 @@
+[
+ {
+  "id": "kff-medicaid-pathway-breadth",
+  "applies": {"source": "kff-remaining-uninsured"},
+  "text": "KFF applies MAGI pathways only. PolicyEngine's is_medicaid_eligible also includes SSI-linked, medically needy, and optional senior or disabled categories, so the PolicyEngine eligibility construct is broader while KFF's pathway scope is narrower.",
+  "basis": "PROVENANCE.md construct difference 1"
+ },
+ {
+  "id": "kff-medicaid-chip-scope",
+  "applies": {"source": "kff-remaining-uninsured"},
+  "text": "KFF includes Medicaid and CHIP for children. The PolicyEngine counterpart is Medicaid-only because the certified artifact deliberately does not assign standalone CHIP take-up; KFF therefore includes a child coverage pathway absent from the PolicyEngine counterpart, while PolicyEngine isolates Medicaid.",
+  "basis": "PROVENANCE.md construct difference 2; Microcosm concept split tracked in microcosm#321"
+ },
+ {
+  "id": "kff-medicaid-coverage-measurement",
+  "applies": {"source": "kff-remaining-uninsured"},
+  "text": "KFF's reported-uninsured population retains survey Medicaid underreporting because no correction is stated. PolicyEngine's primary counterpart also starts from reported at-interview coverage, while its modeled-uninsured alternative additionally removes medicaid_enrolled people added by the CMS-calibrated anchor-and-fill process; KFF retains those reported-uninsured people and the alternative does not.",
+  "basis": "PROVENANCE.md construct difference 3"
+ },
+ {
+  "id": "kff-medicaid-data-and-imputations",
+  "applies": {"source": "kff-remaining-uninsured"},
+  "text": "KFF uses ACS records, a regression-and-Pew immigration imputation with five implicates, and imputed ESI offers. PolicyEngine uses CPS-ASEC-based Populace records, Microcosm's CPS-and-Pew immigration assignment, and reported at-interview employer coverage; the certified artifact lacks years_since_us_entry, so PolicyEngine's five-year-bar leg uses that variable's default and is not fully equivalent to KFF's status netting.",
+  "basis": "PROVENANCE.md construct difference 4 and certified-artifact mechanics in the lane brief"
+ },
+ {
+  "id": "kff-medicaid-rules-vintage",
+  "applies": {"source": "kff-remaining-uninsured"},
+  "text": "KFF applies the eligibility-level vintage named on each source row (2025 levels for the 2024 state indicator; 2023 levels for the 2022 brief). PolicyEngine applies 2024 law to the single-period 2024 artifact; every joined row therefore carries a named rules-vintage difference in both directions.",
+  "basis": "KFF methods notes and certified-artifact period constraint"
+ },
+ {
+  "id": "kff-medicaid-brief-vintage",
+  "applies": {"source": "kff-remaining-uninsured", "period": "2022"},
+  "text": "The flagship brief describes 2022 ACS data under 2023 eligibility levels, before the unwinding was complete. The certified PolicyEngine artifact describes 2024 only, so the 2022 claim is not computed on its own period; the joined row shows the separately dated 2024 counterpart as context.",
+  "basis": "PROVENANCE.md construct difference 5"
+ },
+ {
+  "id": "kff-medicaid-rendered-column-caution",
+  "applies": {"source": "kff-remaining-uninsured", "period": "2024"},
+  "text": "The staged rendered table labels the selected column Medicaid/Other Public. Its values are preserved, but KFF's downloadable CSV headers still require an offline re-check before the label can be narrowed further.",
+  "basis": "PROVENANCE.md column-label caution"
+ }
+]
