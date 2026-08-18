@@ -2,7 +2,7 @@
 
 ## State
 
-Complete and ready for review. Full certified results are committed, the moments and campaign databases are wired, all available offline Python and Ruff checks pass, and no network operation was attempted.
+Complete and ready for review. Full certified results are committed, the moments and campaign databases are wired, all available offline Python and Ruff checks completed successfully, and no network operation was attempted.
 
 ## Done
 
@@ -11,7 +11,7 @@ Complete and ready for review. Full certified results are committed, the moments
 - Created the implementation and validation plan.
 - Read the complete KFF provenance and staged table, plus the existing moments and campaign contracts.
 - Added the KFF source registry, descriptive construct annotations, and adapter: 52 state-indicator percentage rows (US + 50 states + DC) and five 2022 flagship-brief rows. The selected rendered column has no NSD cells; the adapter retains any NSD selected cell as an explicitly suppressed row.
-- Extended campaign ingest with a strict `policyengine_us_inputs` ReformRef exhibit route, preserving state geography, baseline values, deltas, and canonical reform identity. Focused plus existing campaign/database tests pass (62 tests).
+- Extended campaign ingest with a strict `policyengine_us_inputs` ReformRef exhibit route, preserving state geography, baseline values, deltas, and canonical reform identity. The 62 focused and existing campaign/database tests completed successfully.
 - Added memory-disciplined sample, one-simulation extraction, and aggregate-output pipelines. The deterministic sample selects 5,000 of 57,240 households (seed 20260818), rescales `household_weight` by 11.448, retains 14,254 people and every referenced group entity, and runs baseline/reform in separate processes.
 - Sample validation: 75.282M eligible, 69.039M enrolled, +6.243M enrollment; eligible-minus-enrolled identity gap 0.000000004 persons. The bridge is 3.552M reported-uninsured and 2.691M other-coverage. The fixed-baseline-denominator spending construction produces +$115.558B. These are sample checks, not published estimates.
 - Confirmed the fiscal mechanic: a standalone take-up override re-normalizes fixed state Medicaid spending. The reform extractor supplies the baseline state-allocation denominator, reproducing policyengine-us's intended baseline-branch cost semantics without retaining two simulations. This execution choice is explicit in every staged reform row.
@@ -24,7 +24,7 @@ Complete and ready for review. Full certified results are committed, the moments
 - Added strict sample/full provenance gates and explicit bridge-scope annotations to the aggregate builder. The real builder-to-JSONL-to-database test covers reform identity, state shape, identities, provenance, and idempotency.
 - Ingested the full staging file into `data/scorecard.db` offline: 208 exhibits, 52 geographies, no deferred rows, all under canonical ReformRef key `849973669b6526d6`. A second temporary-database ingest returned the same 208-row result.
 - Extended the additive moments pipeline for multiple counterpart payloads, deterministic primary/alternative variants, null-safe suppression, period-specific annotations, and dated reference counterparts. The regenerated 603-row payload contains 52 KFF `concept_mismatch` rows for 2024 and five truthful `not_computed` 2022 rows with separately dated 2024 PE references.
-- Completed the full offline Python suite through `uv run`: 179 tests pass. Ruff lint passes repository-wide, and the CI-scoped `scorecard_db`, `tests`, and `pipeline` trees are fully formatted. Campaign idempotency tests now count only the staged run IDs under test, so separately committed campaigns correctly survive scoped re-ingest.
+- Completed the full offline Python suite through `uv run`: 179 successful tests. Ruff lint completed successfully repository-wide, and the CI-scoped `scorecard_db`, `tests`, and `pipeline` trees are fully formatted. Campaign idempotency tests now count only the staged run IDs under test, so separately committed campaigns correctly survive scoped re-ingest.
 - Wrote the required uncommitted `PR_BODY.md`, including the results table, construct annotations, staged/ingested state, exact offline ingest command, and required follow-ups.
 - The app lint/build remains unrun because this worktree has no `app/node_modules`. Network access is prohibited, so dependencies were not installed; Python and data-pipeline validation is complete.
 
