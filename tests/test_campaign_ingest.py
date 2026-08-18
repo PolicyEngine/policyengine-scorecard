@@ -20,6 +20,30 @@ def db_copy(tmp_path):
     return path
 
 
+def _staged_run_ids(staged_dir):
+    return sorted(
+        {
+            json.loads(line)["run_id"]
+            for path in staged_dir.glob("*.jsonl")
+            for line in path.read_text().splitlines()
+        }
+    )
+
+
+def _campaign_counts(conn, staged_dir):
+    run_ids = _staged_run_ids(staged_dir)
+    placeholders = ",".join("?" for _ in run_ids)
+    results = conn.execute(
+        f"SELECT COUNT(*) FROM pe_results WHERE run_id IN ({placeholders})",
+        run_ids,
+    ).fetchone()[0]
+    exhibits = conn.execute(
+        f"SELECT COUNT(*) FROM pe_exhibits WHERE run_id IN ({placeholders})",
+        run_ids,
+    ).fetchone()[0]
+    return results, exhibits
+
+
 def test_normalizers():
     cond, reform = _normalize(
         "cpsp",
@@ -185,12 +209,7 @@ def test_reingest_idempotent(db_copy):
     again = ingest(db_copy)
     assert again == first
     conn = sqlite3.connect(db_copy)
-    n = conn.execute(
-        "SELECT COUNT(*) FROM pe_results WHERE run_id LIKE 'campaign-%'"
-    ).fetchone()[0]
-    n_ex = conn.execute(
-        "SELECT COUNT(*) FROM pe_exhibits WHERE run_id LIKE 'campaign-%'"
-    ).fetchone()[0]
+    n, n_ex = _campaign_counts(conn, STAGED_US)
     conn.close()
     assert n == first["attached"]
     assert n_ex == first["exhibits"]
@@ -214,9 +233,7 @@ def test_metaless_exhibit_defers(db_copy, tmp_path):
     assert len(summary["exhibits_deferred"]) == 1
     assert "marginal increment" in summary["exhibits_deferred"][0]
     conn = sqlite3.connect(db_copy)
-    n = conn.execute(
-        "SELECT COUNT(*) FROM pe_exhibits WHERE run_id LIKE 'campaign-%'"
-    ).fetchone()[0]
+    _, n = _campaign_counts(conn, staged)
     conn.close()
     assert n == 3  # the stripped row's prior exhibit did not linger
 
