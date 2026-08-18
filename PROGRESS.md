@@ -2,7 +2,7 @@
 
 ## State
 
-In progress. The KFF source population and campaign schema are implemented, and the full baseline/reform computation path has been validated on the required deterministic 5,000-household sample. Network access remains prohibited for this lane.
+In progress. Full certified 2024 baseline and take-up-reform extracts have been computed in separate processes, passed the national anchors and identities, and have been aggregated into diagnostics, moments counterparts, and campaign staging. Network access remains prohibited for this lane.
 
 ## Done
 
@@ -16,8 +16,14 @@ In progress. The KFF source population and campaign schema are implemented, and 
 - Sample validation: 75.282M eligible, 69.039M enrolled, +6.243M enrollment; eligible-minus-enrolled identity gap 0.000000004 persons. The bridge is 3.552M reported-uninsured and 2.691M other-coverage. The fixed-baseline-denominator spending construction produces +$115.558B. These are sample checks, not published estimates.
 - Confirmed the fiscal mechanic: a standalone take-up override re-normalizes fixed state Medicaid spending. The reform extractor supplies the baseline state-allocation denominator, reproducing policyengine-us's intended baseline-branch cost semantics without retaining two simulations. This execution choice is explicit in every staged reform row.
 - Confirmed installed policyengine-us 1.764.6 has no module `__version__` attribute; the pipeline uses `importlib.metadata.version("policyengine-us")`, asserts it equals `sim.policyengine_bundle["model_version"]`, and records bundle `us-5.0.2` plus the full certified Build P id.
+- Added a bounded-memory eligibility execution: each configured native Medicaid category pathway is materialized separately and its dependency cache is cleared before the final native `is_medicaid_eligible` formula runs. On the required sample, all 14,254 person rows are exactly identical to the ordinary native calculation across every extracted column.
+- Completed the full certified baseline: 77.325M eligible, 72.336M enrolled, and $880.019B in Medicaid spending. Both population anchors differ from the lane anchors by less than 0.1%.
+- Completed the separate full reform process with the annual take-up input forced true. Policy-invariant baseline eligibility and the baseline state-allocation denominator are supplied from the baseline extract; enrollment and Medicaid spending are recomputed independently.
+- Full reform results: +4.989M enrollment and +$71.527B Medicaid spending. The marginal-enrollment bridge is 2.792M reported-uninsured and 2.196M other-coverage; the enrollment and bridge identities hold to floating-point precision.
+- Built 214 PE moment counterparts, 208 campaign rows, and US/state diagnostic CSVs. The 2024 reported-uninsured counterpart is 34.921M eligible among 80.932M uninsured (43.15%); the modeled-uninsured alternative is 2.785M among 48.796M (5.71%).
 
 ## Next
 
-- Extend the moments builder for multiple PE payloads, deterministic primary/alternative variants, truthful-period references, row metadata, and null-safe suppression handling; add tests.
-- Run full-file baseline and reform passes separately, stage aggregate diagnostics/results, wire moments, and run offline checks.
+- Review and commit the aggregate-output and moments-builder changes, including sample/full provenance gates and their tests.
+- Validate campaign ingest against a temporary database, decide whether the repository database can be updated cleanly offline, and document the ready-to-run command.
+- Run the complete offline test, formatting, and application-data checks; write the uncommitted PR body and final report with the three largest state differences and exact commit list.
