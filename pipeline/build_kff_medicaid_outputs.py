@@ -92,6 +92,32 @@ def aggregate(
         reform_meta["bundle_id"],
     ):
         raise ValueError("baseline and reform provenance differs")
+    for label, metadata in (("baseline", baseline_meta), ("reform", reform_meta)):
+        bundle = metadata.get("policyengine_bundle")
+        if not isinstance(bundle, dict):
+            raise ValueError(f"{label} policyengine_bundle is missing")
+        top_level = (
+            metadata["engine_version"],
+            metadata["data_bundle"],
+            metadata["bundle_id"],
+        )
+        nested = (
+            bundle.get("model_version"),
+            bundle.get("certified_data_build_id"),
+            bundle.get("bundle_id"),
+        )
+        if nested != top_level:
+            raise ValueError(f"{label} policyengine_bundle identifiers differ")
+    baseline_sample = baseline_meta.get("sample")
+    reform_sample = reform_meta.get("sample")
+    if not isinstance(baseline_sample, bool) or not isinstance(reform_sample, bool):
+        raise ValueError("baseline and reform sample provenance must be boolean")
+    if baseline_sample != reform_sample:
+        raise ValueError("baseline and reform sample provenance differs")
+    if full and baseline_sample:
+        raise ValueError("--full cannot be used with validation-sample extracts")
+    if not full and not baseline_sample:
+        raise ValueError("full-file extracts require --full and its anchor gates")
 
     national_eligible = weighted_count(baseline, eligible)
     national_enrolled = weighted_count(baseline, enrolled)
@@ -116,6 +142,7 @@ def aggregate(
         "engine_version": engine_version,
         "data_bundle": data_bundle,
         "bundle_id": bundle_id,
+        "sample": baseline_sample,
         "computed_at": computed_at,
         "benchmark_class": "different_model",
         "calibration_relationship": "held_out",
@@ -152,6 +179,7 @@ def aggregate(
                     "engine_version": engine_version,
                     "data_bundle": data_bundle,
                     "bundle_id": bundle_id,
+                    "sample": baseline_sample,
                     "rules_vintage": "PolicyEngine 2024 law",
                     "computed_at": computed_at,
                 }
@@ -225,6 +253,27 @@ def aggregate(
         "Reform Medicaid spending holds the baseline state-allocation denominator "
         "fixed, matching policyengine-us's baseline-branch reform semantics."
     )
+    run_scope_note = (
+        "This is a deterministic validation-sample result and is not publishable."
+        if baseline_sample
+        else "This is a full-file computation on the certified Build P artifact."
+    )
+    kff_bridge_note = (
+        "The reform and bridge cover all ages and every PolicyEngine Medicaid "
+        "eligibility pathway. KFF covers nonelderly people under MAGI Medicaid "
+        "and CHIP, so KFF is narrower by age and Medicaid pathway but includes "
+        "a child CHIP pathway absent from this PolicyEngine construction."
+    )
+    calibration_fill_note = (
+        "Baseline anchor-and-fill Medicaid enrollees are not marginal under the "
+        "reform even when they report no coverage at interview; KFF retains such "
+        "reported-uninsured survey underreporters, so marginal_reported_uninsured "
+        "is narrower than KFF's eligible-and-reported-uninsured construct."
+    )
+    rules_note = (
+        "PolicyEngine applies 2024 law to 2024 Populace. KFF applies 2025 levels "
+        "to the 2024 state indicator and 2023 levels to the 2022 flagship brief."
+    )
     for geography in geographies:
         geo_mask = (
             np.ones(len(baseline), dtype=bool)
@@ -264,6 +313,7 @@ def aggregate(
                 "engine_version": engine_version,
                 "data_bundle": data_bundle,
                 "bundle_id": bundle_id,
+                "sample": baseline_sample,
                 "computed_at": computed_at,
                 "cost_construction": denominator_note,
             }
@@ -319,6 +369,10 @@ def aggregate(
                 "Take-up is forced with the annual takes_up_medicaid_if_eligible input.",
                 "Enrollment is point-in-time; Medicaid spending is annual.",
                 denominator_note,
+                run_scope_note,
+                kff_bridge_note,
+                calibration_fill_note,
+                rules_note,
                 (
                     "reported_uninsured means none of the nine reported coverage flags "
                     "and not modeled medicare_enrolled; other coverage is its complement"
@@ -329,6 +383,7 @@ def aggregate(
                     "engine_version": engine_version,
                     "data_bundle": data_bundle,
                     "bundle_id": bundle_id,
+                    "sample": baseline_sample,
                     "policyengine_bundle": reform_meta["policyengine_bundle"],
                     "pe_value": value,
                     "baseline_value": baseline_value,
@@ -386,7 +441,7 @@ def aggregate(
         "".join(json.dumps(row, sort_keys=True) + "\n" for row in campaign_rows)
     )
     summary = {
-        "sample": not full,
+        "sample": baseline_sample,
         "people": len(baseline),
         "engine_version": engine_version,
         "data_bundle": data_bundle,

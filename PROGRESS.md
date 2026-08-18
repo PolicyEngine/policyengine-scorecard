@@ -21,9 +21,10 @@ In progress. Full certified 2024 baseline and take-up-reform extracts have been 
 - Completed the separate full reform process with the annual take-up input forced true. Policy-invariant baseline eligibility and the baseline state-allocation denominator are supplied from the baseline extract; enrollment and Medicaid spending are recomputed independently.
 - Full reform results: +4.989M enrollment and +$71.527B Medicaid spending. The marginal-enrollment bridge is 2.792M reported-uninsured and 2.196M other-coverage; the enrollment and bridge identities hold to floating-point precision.
 - Built 214 PE moment counterparts, 208 campaign rows, and US/state diagnostic CSVs. The 2024 reported-uninsured counterpart is 34.921M eligible among 80.932M uninsured (43.15%); the modeled-uninsured alternative is 2.785M among 48.796M (5.71%).
+- Added strict sample/full provenance gates and explicit bridge-scope annotations to the aggregate builder. The real builder-to-JSONL-to-database test covers reform identity, state shape, identities, provenance, and idempotency.
+- Ingested the full staging file into `data/scorecard.db` offline: 208 exhibits, 52 geographies, no deferred rows, all under canonical ReformRef key `849973669b6526d6`. A second temporary-database ingest returned the same 208-row result.
 
 ## Next
 
-- Review and commit the aggregate-output and moments-builder changes, including sample/full provenance gates and their tests.
-- Validate campaign ingest against a temporary database, decide whether the repository database can be updated cleanly offline, and document the ready-to-run command.
+- Review and commit the moments-builder changes and regenerated `moments.json`.
 - Run the complete offline test, formatting, and application-data checks; write the uncommitted PR body and final report with the three largest state differences and exact commit list.
