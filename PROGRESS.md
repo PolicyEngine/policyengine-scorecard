@@ -2,7 +2,7 @@
 
 ## State
 
-In progress. Full certified 2024 baseline and take-up-reform extracts have been computed in separate processes, passed the national anchors and identities, and have been aggregated into diagnostics, moments counterparts, and campaign staging. Network access remains prohibited for this lane.
+Complete and ready for review. Full certified results are committed, the moments and campaign databases are wired, all available offline Python and Ruff checks pass, and no network operation was attempted.
 
 ## Done
 
@@ -25,7 +25,10 @@ In progress. Full certified 2024 baseline and take-up-reform extracts have been 
 - Ingested the full staging file into `data/scorecard.db` offline: 208 exhibits, 52 geographies, no deferred rows, all under canonical ReformRef key `849973669b6526d6`. A second temporary-database ingest returned the same 208-row result.
 - Extended the additive moments pipeline for multiple counterpart payloads, deterministic primary/alternative variants, null-safe suppression, period-specific annotations, and dated reference counterparts. The regenerated 603-row payload contains 52 KFF `concept_mismatch` rows for 2024 and five truthful `not_computed` 2022 rows with separately dated 2024 PE references.
 - Completed the full offline Python suite through `uv run`: 179 tests pass. Ruff lint passes repository-wide, and the CI-scoped `scorecard_db`, `tests`, and `pipeline` trees are fully formatted. Campaign idempotency tests now count only the staged run IDs under test, so separately committed campaigns correctly survive scoped re-ingest.
+- Wrote the required uncommitted `PR_BODY.md`, including the results table, construct annotations, staged/ingested state, exact offline ingest command, and required follow-ups.
+- The app lint/build remains unrun because this worktree has no `app/node_modules`. Network access is prohibited, so dependencies were not installed; Python and data-pipeline validation is complete.
 
 ## Next
 
-- Run the application lint/build checks; write the uncommitted PR body and final report with the three largest state differences and exact commit list.
+- Main session: review the committed diff and uncommitted `PR_BODY.md`/`FINAL_REPORT.md`, then push and open the PR if approved.
+- Run the app lint/build in an environment with the frozen Bun dependencies already installed or with authorized network access.
