@@ -65,7 +65,7 @@ TITLE_BLOCK = {
     "A4": "Tax Provisions in Title VII of H.R.1",
     "A5": "Baseline: Law Prior to the 2025 Budget Reconciliation Act",
     "A6": "Distribution of Federal Tax Change by Expanded Cash Income"
-          " Percentile, 2026 ¹",
+    " Percentile, 2026 ¹",
 }
 
 # Tax-change panel header anchors (identical on all five sheets).
@@ -104,16 +104,21 @@ DATA_ROWS = {
 # harvest's lowercased "main / sub / sub" header style)
 COLUMNS = {
     "C": (
-        "share_with_tax_cut", "percent_of_tax_units", False,
-        "tax units with tax increase or cut 4 / with tax cut /"
-        " pct of tax units",
+        "share_with_tax_cut",
+        "percent_of_tax_units",
+        False,
+        "tax units with tax increase or cut 4 / with tax cut / pct of tax units",
     ),
     "K": (
-        "pct_change_after_tax_income", "percent", False,
+        "pct_change_after_tax_income",
+        "percent",
+        False,
         "percent change in after-tax income 5",
     ),
     "O": (
-        "avg_tax_change_usd", "usd_per_tax_unit", True,
+        "avg_tax_change_usd",
+        "usd_per_tax_unit",
+        True,
         "average federal tax change ($)",
     ),
 }
@@ -130,18 +135,14 @@ def manifest_entry() -> dict:
 def check_anchor(ws, coord: str, expected: str) -> None:
     got = ws[coord].value
     if got != expected:
-        raise ValueError(
-            f"{ws.title}!{coord}: expected {expected!r}, found {got!r}"
-        )
+        raise ValueError(f"{ws.title}!{coord}: expected {expected!r}, found {got!r}")
 
 
 def parse(workbook: Path) -> list[dict]:
     manifest = manifest_entry()
     sha = hashlib.sha256(workbook.read_bytes()).hexdigest()
     if sha != manifest["sha256"]:
-        raise ValueError(
-            f"workbook sha256 {sha} != manifested {manifest['sha256']}"
-        )
+        raise ValueError(f"workbook sha256 {sha} != manifested {manifest['sha256']}")
 
     wb = openpyxl.load_workbook(workbook, data_only=True)
     if wb.sheetnames != list(SHEETS):
@@ -203,8 +204,7 @@ def parse(workbook: Path) -> list[dict]:
                             "title": manifest["title"],
                             "url": manifest["url"],
                             "date": manifest["date"],
-                            "vintage":
-                                "TPC model estimates T-series (PRELIMINARY)",
+                            "vintage": "TPC model estimates T-series (PRELIMINARY)",
                             "file": manifest["local_path"],
                             "sha256": manifest["sha256"],
                             "sheet": sheet,
@@ -255,8 +255,7 @@ def verify(staged_path: Path, workbook: Path) -> int:
         cell_value = wb[pub["sheet"]][pub["cell"]].value
         if float(cell_value) != row["value"]:
             raise ValueError(
-                f"{pub['sheet']}!{pub['cell']} = {cell_value},"
-                f" staged {row['value']}"
+                f"{pub['sheet']}!{pub['cell']} = {cell_value}, staged {row['value']}"
             )
         if row["proposed_unit"] in ("percent", "percent_of_tax_units"):
             if not -10 <= row["value"] <= 100:
@@ -280,8 +279,7 @@ def verify(staged_path: Path, workbook: Path) -> int:
     }
     if seen != expected:
         raise ValueError(
-            f"coverage mismatch: missing {expected - seen},"
-            f" extra {seen - expected}"
+            f"coverage mismatch: missing {expected - seen}, extra {seen - expected}"
         )
     return len(staged)
 
