@@ -386,15 +386,19 @@ def restricted_mask(masks, entity, geo):
     return mask, mask is not None
 
 
-def build_sim(fullpart, year=None):
+def build_sim(fullpart):
     """Managed sim on the certified populace-uk bundle.
 
     For the fullpart run, every override is set BEFORE any calculate on
     this sim (a calculate first would cache baseline take-up and the
     override would silently do nothing), then read back to confirm it
     took effect.
+
+    Reads the module-global YEAR (set once by main() from argv), like
+    every sim.calculate in this file — a year parameter here was
+    half-wired (callers never passed it), so it is gone rather than a
+    silent divergence trap.
     """
-    year = YEAR if year is None else year
     # UNVERIFIED against an installed engine: mirrors the documented
     # binding surface used by compute_counterparts.py
     # (pe.us.managed_microsimulation()) and docs/ARCHITECTURE.md. If the
@@ -410,20 +414,27 @@ def build_sim(fullpart, year=None):
     # data_bundle/dataset are fallbacks only, and which path served is
     # recorded so a fallback never masquerades as the bundle record.
     bundle = getattr(sim, "policyengine_bundle", None)
-    if bundle:
-        bundle_info = {k: str(v) for k, v in dict(bundle).items()}
+    if hasattr(bundle, "items"):
+        bundle_info = {k: str(v) for k, v in bundle.items()}
         bundle_source = "policyengine_bundle"
+    elif bundle:
+        # a non-mapping bundle record still beats the fallback, but it is
+        # stringified rather than crashed on
+        bundle_info = str(bundle)
+        bundle_source = "policyengine_bundle (non-mapping, stringified)"
     else:
         bundle_info = getattr(sim, "data_bundle", None) or getattr(sim, "dataset", None)
         bundle_source = "data_bundle/dataset fallback"
     run_meta = {
         "bundle": bundle_info,
         "bundle_source": bundle_source,
-        "year": year,
+        "year": YEAR,
     }
     meta["runs"][run_name] = run_meta
     if not fullpart:
         return sim
+
+    import numpy as np
 
     vs = sim.tax_benefit_system.variables
     run_meta.update({"flags_set_true": [], "flags_missing": [], "flags_failed": []})
@@ -434,8 +445,11 @@ def build_sim(fullpart, year=None):
             continue
         entity = vs[flag].entity.key
         n = sim.populations[entity].count  # entity population, NOT a calculate()
-        arr = [value] * n
-        periods, label = periods_for(vs[flag], year)
+        # ndarray, not a Python list: set_input on some core versions
+        # expects an ndarray and a list may coerce oddly or fail silently
+        # (US parity: np.ones(n, dtype=bool) in compute_counterparts.py)
+        arr = np.full(n, value, dtype=bool)
+        periods, label = periods_for(vs[flag], YEAR)
         try:
             for p in periods:
                 sim.set_input(flag, p, arr)
@@ -466,7 +480,7 @@ def build_sim(fullpart, year=None):
     # Verify the toggle took: read each applied flag back at its own period.
     run_meta["flag_means_after"] = {}
     for flag in meta["fullpart_overrides_applied"]:
-        periods, _ = periods_for(vs[flag], year)
+        periods, _ = periods_for(vs[flag], YEAR)
         try:
             probe = periods[len(periods) // 2]
             got = sim.calculate(flag, probe)

@@ -172,6 +172,21 @@ def test_main_reads_the_year_from_index_1_not_2():
     assert "parse_year(sys.argv)" in inspect.getsource(uk.main)
 
 
+def test_build_sim_has_no_half_wired_year_param():
+    """build_sim reads the module-global YEAR like every sim.calculate;
+    a year parameter that callers never pass is a silent divergence
+    trap, so it must not exist."""
+    assert list(inspect.signature(uk.build_sim).parameters) == ["fullpart"]
+
+
+def test_fullpart_override_is_an_ndarray_not_a_list():
+    """set_input on some core versions expects an ndarray; a Python
+    list may coerce oddly or fail silently (US parity: np.ones)."""
+    src = inspect.getsource(uk.build_sim)
+    assert "[value] * n" not in src
+    assert "np.full(n, value, dtype=bool)" in src
+
+
 # --- poverty denominator ---------------------------------------------------
 
 
