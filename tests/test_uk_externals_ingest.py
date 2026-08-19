@@ -54,24 +54,24 @@ def test_dwp_mapping_and_drops(monkeypatch):
         _row(metric="caseload_takeup_rate", variant="range_high", value=0.64),
     ]
     monkeypatch.setattr("scorecard_db.ingest_uk_externals._load", lambda name: rows)
-    scores, drops = stage_dwp_takeup()
+    scores, ledger, drops = stage_dwp_takeup()
     assert drops == {"range_variants": 2}
-    assert len(scores) == 2
-    count, rate = scores
-    assert count.metric is Metric.PARTICIPANT_COUNT
-    assert count.unit_concept is UnitConcept.BENEFIT_UNITS
-    assert count.period == 2024
-    assert count.conditions["fy"] == "2023-24"
-    assert count.conditions["country"] == "UK"
-    # the recipient count is the DWP admin caseload PE UK calibrates to
-    assert count.calibration_relationship is (
-        CalibrationRelationship.CONSUMED_AS_TARGET
-    )
-    # take-up rates are consumed_as_target: pe-uk take-up parameters cite
-    # the same publication
+    # The recipient count is a published ADMIN cell: it routes to Ledger
+    # (boundary rule 2026-08-02), never to a claim.
+    assert len(scores) == 1 and len(ledger) == 1
+    (rate,), (admin,) = scores, ledger
+    assert admin["metric"] == "recipients_count"
+    assert admin["fy"] == "2023-24"
+    assert admin["fact_id"].startswith("uk-admin-")
+    assert admin["routing"].startswith("ledger")
+    # PC take-up rate: the engine PARAMETER cites the FYE-2020 edition of
+    # this series -> seed_source, never consumed (evidence in
+    # relationships.py, read 2026-08-19).
     assert rate.metric is Metric.PARTICIPATION_RATE
+    assert rate.period == 2024
+    assert rate.conditions["fy"] == "2023-24"
     assert rate.conditions["basis"] == "caseload"
-    assert rate.calibration_relationship is (CalibrationRelationship.CONSUMED_AS_TARGET)
+    assert rate.calibration_relationship is (CalibrationRelationship.SEED_SOURCE)
 
 
 def test_dwp_unknown_variant_raises(monkeypatch):
@@ -103,7 +103,7 @@ def test_hmrc_reckoner_rows_are_reform_claims(monkeypatch):
         ),
     ]
     monkeypatch.setattr("scorecard_db.ingest_uk_externals._load", lambda name: rows)
-    scores, _ = stage_hmrc()
+    scores, _, _ = stage_hmrc()
     reckoner, level = scores
     assert reckoner.metric is Metric.REVENUE_CHANGE
     assert reckoner.reform.framework == "policy_ref"
@@ -139,7 +139,7 @@ def test_reckoner_slug_separates_tax_heads(monkeypatch):
         for program, value in (("vat", 9.2e9), ("insurance_premium_tax", 6.4e8))
     ]
     monkeypatch.setattr("scorecard_db.ingest_uk_externals._load", lambda name: rows)
-    scores, _ = stage_hmrc()
+    scores, _, _ = stage_hmrc()
     vat, ipt = scores
     assert vat.reform.reform["policy"] != ipt.reform.reform["policy"]
     assert vat.reform.key() != ipt.reform.key()
@@ -151,22 +151,66 @@ def test_calibration_comes_from_the_registry(monkeypatch):
     from scorecard_db.models import CalibrationRelationship as CR
     from scorecard_db.relationships import uk_relationship
 
-    assert uk_relationship("dwp_takeup", Metric.PARTICIPATION_RATE)[0] is (
-        CR.CONSUMED_AS_TARGET
+    # PC family: engine parameter cites an OLDER edition -> seed_source
+    assert (
+        uk_relationship(
+            "dwp_takeup",
+            Metric.PARTICIPATION_RATE,
+            program="pension_credit",
+            kind="takeup_rate",
+        )[0]
+        is CR.SEED_SOURCE
     )
-    # entitled non-recipients are an algebraic derivative of a consumed
-    # rate (takeup = R/(R+ENR)) — "nor anything derived from such"
-    assert uk_relationship("dwp_takeup", Metric.PARTICIPATION_GAP_COUNT)[0] is (
-        CR.CONSUMED_AS_TARGET
+    assert (
+        uk_relationship(
+            "dwp_takeup",
+            Metric.PARTICIPATION_GAP_COUNT,
+            program="guarantee_credit",
+            kind="modeled_estimate",
+        )[0]
+        is CR.SEED_SOURCE
     )
-    assert uk_relationship("dwp_takeup", Metric.UNCLAIMED_BENEFIT_AMOUNT)[0] is (
-        CR.CONSUMED_AS_TARGET
+    # HB: engine sets take-up = 1 by stated design -> held_out
+    assert (
+        uk_relationship(
+            "dwp_takeup",
+            Metric.PARTICIPATION_RATE,
+            program="housing_benefit_pensioners",
+            kind="takeup_rate",
+        )[0]
+        is CR.HELD_OUT
     )
-    # OBR consumption turns on the year, not the metric
-    assert uk_relationship("obr", Metric.BENEFIT_COST, "outturn")[0] is (
-        CR.CONSUMED_AS_TARGET
+    # OBR: consumption is per LINE (pe-uk-data@dd68c73's 12 named rows);
+    # outturn cells must never reach relationship assignment at all.
+    assert (
+        uk_relationship(
+            "obr", Metric.BENEFIT_COST, program="pension_credit", kind="forecast"
+        )[0]
+        is CR.CONSUMED_AS_TARGET
     )
-    assert uk_relationship("obr", Metric.BENEFIT_COST, "forecast")[0] is CR.HELD_OUT
+    assert (
+        uk_relationship(
+            "obr", Metric.BENEFIT_COST, program="christmas_bonus", kind="forecast"
+        )[0]
+        is CR.HELD_OUT
+    )
+    with pytest.raises(ValueError, match="route to Ledger"):
+        uk_relationship(
+            "obr", Metric.BENEFIT_COST, program="pension_credit", kind="outturn"
+        )
+    # HMRC: shared SPI base -> seed_source for levels; reckoner held out
+    assert (
+        uk_relationship(
+            "uk_hmrc", Metric.TAX_LIABILITY, program="income_tax", kind="liabilities"
+        )[0]
+        is CR.SEED_SOURCE
+    )
+    assert (
+        uk_relationship(
+            "uk_hmrc", Metric.REVENUE_CHANGE, program="vat", kind="reckoner"
+        )[0]
+        is CR.HELD_OUT
+    )
     assert uk_relationship("ukmod", Metric.CASELOAD)[0] is CR.HELD_OUT
     with pytest.raises(ValueError, match="no UK calibration relationship"):
         uk_relationship("some_new_source", Metric.CASELOAD)
@@ -217,7 +261,7 @@ def test_ukmod_primary_variant_only(monkeypatch):
         ),
     ]
     monkeypatch.setattr("scorecard_db.ingest_uk_externals._load", lambda name: rows)
-    scores, drops = stage_ukmod()
+    scores, _, drops = stage_ukmod()
     assert drops == {"non_primary_variants": 1}
     caseload, poverty = scores
     assert caseload.metric is Metric.CASELOAD
@@ -229,7 +273,7 @@ def test_ukmod_primary_variant_only(monkeypatch):
         "country": "UK",
         "geography": "UK",
         "subgroup": "children",
-        "poverty_line": "60",
+        "poverty_line": "relative_60_median",
         "housing_costs": "bhc",
     }
 
@@ -237,7 +281,14 @@ def test_ukmod_primary_variant_only(monkeypatch):
 def test_ukmod_unknown_metric_raises(monkeypatch):
     monkeypatch.setattr(
         "scorecard_db.ingest_uk_externals._load",
-        lambda name: [_row(metric="mystery", variant="ukmod", period="2025")],
+        lambda name: [
+            _row(
+                metric="mystery",
+                variant="ukmod",
+                geography="UK",
+                period="2025",
+            )
+        ],
     )
     with pytest.raises(ValueError, match="unknown metric"):
         stage_ukmod()
@@ -263,8 +314,21 @@ def test_full_ingest_round_trip(tmp_path):
     from scorecard_db.ingest_uk_externals import ingest
 
     summary = ingest(tmp_path / "t.db")
-    assert set(summary["claims"]) == set(STAGERS)
-    assert all(n > 0 for n in summary["claims"].values())
+    # Exact accounting (adjudication blocker 7 — a drifted adapter
+    # regeneration must fail, never pass a >0 check): 16,175 claims +
+    # 749 Ledger facts + 1,829 deliberate drops = every adapter row.
+    assert summary["claims"] == {
+        "dwp_takeup": 1092,
+        "dwp_hbai": 13056,
+        "uk_hmrc": 1047,
+        "obr": 222,
+        "ukmod": 758,
+    }
+    assert summary["ledger"] == {"dwp_takeup": 546, "uk_hmrc": 166, "obr": 37}
+    assert summary["drops"] == {
+        "dwp_takeup": {"range_variants": 1456},
+        "ukmod": {"non_primary_variants": 373},
+    }
     db = ScorecardDB(tmp_path / "t.db")
     # exactly-one-match works for a reckoner claim keyed by option + fy —
     # the join the campaign's hmrc_reckoner_t2 family needs once its
@@ -291,6 +355,33 @@ def test_full_ingest_round_trip(tmp_path):
         " AND calibration_relationship != 'held_out'"
     ).fetchone()[0]
     assert consumed_poverty == 0
+    # Relationship distribution pinned per source — the doctrine-true
+    # shape, from the consumption surfaces read at the certified pins.
+    rel = {
+        (r[0], r[1]): r[2]
+        for r in db.conn.execute(
+            "SELECT source, calibration_relationship, COUNT(*)"
+            " FROM external_scores GROUP BY 1, 2"
+        )
+    }
+    assert rel == {
+        ("dwp_hbai", "held_out"): 13056,
+        ("dwp_takeup", "held_out"): 78,
+        ("dwp_takeup", "seed_source"): 1014,
+        ("obr", "consumed_as_target"): 78,
+        ("obr", "held_out"): 144,
+        ("uk_hmrc", "held_out"): 225,
+        ("uk_hmrc", "seed_source"): 822,
+        ("ukmod", "held_out"): 758,
+    }
+    # No admin outturn ever reaches claims.
+    assert (
+        db.conn.execute(
+            "SELECT COUNT(*) FROM external_scores"
+            " WHERE json_extract(conditions, '$.basis') = 'outturn'"
+        ).fetchone()[0]
+        == 0
+    )
     db.close()
 
 
@@ -318,16 +409,17 @@ def test_obr_hierarchy_lands_in_conditions(monkeypatch):
     from scorecard_db.ingest_uk_externals import stage_obr
 
     rows = [
-        _obr_row(),
+        _obr_row(period="2025-26"),
         _obr_row(
             program="total_welfare",
             aggregate_level="total",
             parent=None,
+            period="2025-26",
             value=310_000_000_000.0,
         ),
     ]
     monkeypatch.setattr("scorecard_db.ingest_uk_externals._load", lambda name: rows)
-    scores, _ = stage_obr()
+    scores, _, _ = stage_obr()
     leaf, total = scores
     assert leaf.conditions["aggregate_level"] == "component"
     assert leaf.conditions["parent"] == "dwp_social_security"
@@ -355,3 +447,172 @@ def test_load_gate_rejects_unhandled_adapter_fields(tmp_path, monkeypatch):
     monkeypatch.setattr(mod, "EXTERNALS", tmp_path)
     with pytest.raises(ValueError, match="unhandled staged fields.*surprise_column"):
         mod._load("obr-welfare")
+
+
+# --- closed identity registry (uk_aliases) --------------------------------
+
+
+def test_alias_registry_is_closed():
+    from scorecard_db.uk_aliases import canon
+
+    with pytest.raises(ValueError, match="unregistered program"):
+        canon("ukmod", "program", "brand_new_benefit")
+    with pytest.raises(ValueError, match="unregistered poverty_line"):
+        canon("ukmod", "poverty_line", "40")
+
+
+def test_cross_source_poverty_triangle():
+    # HBAI-relative and UKMOD-60 canonicalize to the SAME world by
+    # deliberate construction; HBAI-absolute and UKMOD-50/70 never join
+    # either of them.
+    from scorecard_db.uk_aliases import canon
+
+    hbai_rel = canon("dwp_hbai", "poverty_line", "relative")
+    ukmod_60 = canon("ukmod", "poverty_line", "60")
+    assert hbai_rel == ukmod_60 == "relative_60_median"
+    assert canon("dwp_hbai", "poverty_line", "absolute") not in (
+        hbai_rel,
+        canon("ukmod", "poverty_line", "50"),
+        canon("ukmod", "poverty_line", "70"),
+    )
+    for src_, basis in (("dwp_hbai", "bhc"), ("ukmod", "bhc")):
+        assert canon(src_, "housing_costs", basis) == "bhc"
+
+
+def test_winter_fuel_alias_and_distinct_pairs():
+    from scorecard_db.uk_aliases import DISTINCT, canon
+
+    # same benefit, two official names -> one canonical program
+    assert canon("ukmod", "program", "winter_fuel_allowance") == (
+        canon("obr", "program", "winter_fuel_payment")
+    )
+    # near-neighbours recorded DISTINCT must canonicalize apart
+    assert ("dwp_takeup:housing_benefit_pensioners", "ukmod:housing_benefit") in (
+        DISTINCT
+    )
+    assert canon("dwp_takeup", "program", "housing_benefit_pensioners") != (
+        canon("ukmod", "program", "housing_benefit")
+    )
+    assert canon("dwp_takeup", "unit", "benefit_units") != canon(
+        "ukmod", "unit", "families"
+    )
+
+
+# --- Ledger routing --------------------------------------------------------
+
+
+def test_obr_outturn_routes_to_ledger_with_consuming_pin(monkeypatch):
+    from scorecard_db.ingest_uk_externals import stage_obr
+
+    rows = [
+        _obr_row(period="2024-25"),  # outturn column
+        _obr_row(period="2024-25", program="christmas_bonus", parent=None),
+        _obr_row(period="2025-26"),  # forecast
+    ]
+    monkeypatch.setattr("scorecard_db.ingest_uk_externals._load", lambda name: rows)
+    scores, ledger, _ = stage_obr()
+    assert len(scores) == 1 and len(ledger) == 2
+    by_prog = {r["program"]: r for r in ledger}
+    # pension_credit is a consumed 4.9 line -> the pin is named
+    assert "pe-uk-data@dd68c73" in by_prog["pension_credit"]["consumed_by"]
+    # christmas_bonus is not consumed -> no pin, still Ledger (outturn)
+    assert by_prog["christmas_bonus"]["consumed_by"] is None
+    assert scores[0].conditions["basis"] == "forecast"
+
+
+def test_hmrc_outturn_routes_to_ledger(monkeypatch):
+    from scorecard_db.ingest_uk_externals import stage_hmrc
+
+    rows = [
+        _row(
+            program="income_tax",
+            metric="taxpayer_count",
+            subgroup="total",
+            geography="UK",
+            unit_concept="individuals",
+            period="2023-24",  # SPI outturn year
+            value=34_500_000.0,
+        ),
+        _row(
+            program="income_tax",
+            metric="taxpayer_count",
+            subgroup="total",
+            geography="UK",
+            unit_concept="individuals",
+            period="2025-26",  # projection
+            value=35_100_000.0,
+        ),
+    ]
+    monkeypatch.setattr("scorecard_db.ingest_uk_externals._load", lambda name: rows)
+    scores, ledger, _ = stage_hmrc()
+    assert len(scores) == 1 and len(ledger) == 1
+    assert ledger[0]["fy"] == "2023-24"
+    assert "SPI" in ledger[0]["consumed_by"]
+    assert scores[0].conditions["fy"] == "2025-26"
+
+
+def test_ledger_facts_are_deterministic(monkeypatch):
+    from scorecard_db.ingest_uk_externals import stage_obr
+
+    rows = [_obr_row(period="2024-25")]
+    monkeypatch.setattr("scorecard_db.ingest_uk_externals._load", lambda name: rows)
+    _, first, _ = stage_obr()
+    _, again, _ = stage_obr()
+    assert first == again
+    assert first[0]["fact_id"] == again[0]["fact_id"]
+
+
+# --- atomicity + accounting ------------------------------------------------
+
+
+@pytest.mark.skipif(
+    not externals_present, reason="UK adapter outputs not present (PRs #43-#47)"
+)
+def test_write_phase_failure_rolls_back(tmp_path, monkeypatch):
+    import sqlite3
+
+    from scorecard_db.ingest_uk_externals import ingest
+
+    first = ingest(tmp_path / "t.db")
+
+    real = ScorecardDB.score_row
+    calls = {"n": 0}
+
+    def sabotaged(s):
+        row = real(s)
+        calls["n"] += 1
+        if calls["n"] == 5000:
+            return row[:17] + ("bogus_status",) + row[18:]
+        return row
+
+    monkeypatch.setattr(ScorecardDB, "score_row", staticmethod(sabotaged))
+    with pytest.raises(sqlite3.IntegrityError):
+        ingest(tmp_path / "t.db")
+    monkeypatch.undo()
+
+    db = ScorecardDB(tmp_path / "t.db")
+    counts = {
+        r[0]: r[1]
+        for r in db.conn.execute(
+            "SELECT source, COUNT(*) FROM external_scores GROUP BY 1"
+        )
+    }
+    db.close()
+    assert counts == first["claims"]
+
+
+@pytest.mark.skipif(
+    not externals_present, reason="UK adapter outputs not present (PRs #43-#47)"
+)
+def test_accounting_drift_fails_loudly(monkeypatch):
+    from scorecard_db import ingest_uk_externals as mod
+
+    real = mod.stage_ukmod
+
+    def drifted():
+        scores, ledger, drops = real()
+        return scores[:-1], ledger, drops  # one row short
+
+    monkeypatch.setitem(mod.STAGERS, "ukmod", drifted)
+    with pytest.raises(ValueError, match="claim accounting drifted"):
+        mod.stage_all()

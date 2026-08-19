@@ -139,6 +139,21 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "scorecard_db/ingest_reform_validation.py.",
     ),
     (
+        {"policy": "hmrc_indexed_baseline_spring_2025"},
+        "hmrc_indexed_baseline_spring_2025",
+        "HMRC's indexed baseline for the June-2025 tax ready reckoner: "
+        "the personal-tax-model counterfactual consistent with the OBR "
+        "Spring Statement 2025 forecast, with the illustrative change "
+        "implemented April 2026. A PE counterpart must run the same "
+        "nominal change against a matching indexed baseline and state it "
+        "explicitly (issue #13).",
+        "policy_ref",
+        "sources/hmrc-personal-tax/source.json (baselines.ready_reckoner, "
+        "method) and annotations.json reckoner-baseline note; descriptor "
+        "set in scorecard_db/ingest_uk_externals.py "
+        "(_RECKONER_BASELINE).",
+    ),
+    (
         {"policy": "pre_obbba_law"},
         "pre_obbba_law",
         "TPC T26-0009's stated counterfactual: 'Law Prior to the 2025 "

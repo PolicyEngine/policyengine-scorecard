@@ -114,6 +114,12 @@ class UnitConcept(str, Enum):
     GBP = "gbp"
     BENEFIT_UNITS = "benefit_units"
     CHILDREN = "children"
+    # Per-period GBP amounts and index statistics are their own unit
+    # concepts (adjudication blocker: a weekly amount labeled bare GBP and
+    # a Gini labeled SHARE both misstate what the number is).
+    GBP_PER_WEEK = "gbp_per_week"
+    GBP_PER_MONTH = "gbp_per_month"
+    INDEX_0_1 = "index_0_1"
 
 
 # Standardized conditions vocabulary (COLLATION worklist item 4).

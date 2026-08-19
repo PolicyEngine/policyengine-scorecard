@@ -149,20 +149,22 @@ def effective_relationship(program, metric):
 # (targets/sources/obr.py::_parse_welfare row labels; March-2026 EFO,
 # forecast columns FY2024-25..2030-31 — the FY2024-25 OUTTURN column is
 # also read there, but outturn cells route to Ledger, never to claims).
+# Stated in the ADAPTER's program vocabulary; the pe-uk-data label each
+# maps to is quoted (targets/sources/obr.py benefit_rows, verbatim).
 OBR_CONSUMED_WELFARE_PROGRAMS = frozenset(
     {
-        "housing_benefit",
-        "pip",
-        "esa",  # "Incapacity benefits" row
-        "attendance_allowance",
-        "pension_credit",
-        "carers_allowance",
-        "statutory_maternity_pay",
-        "winter_fuel_allowance",
-        "universal_credit",  # in-cap + outside-cap rows
-        "child_benefit",
-        "state_pension",
-        "jobseekers_allowance",
+        "housing_benefit_not_jsa",  # "Housing benefit (not on JSA)"
+        "dla_and_pip",  # "Disability living allowance and personal indep…"
+        "incapacity_benefits",  # "Incapacity benefits"
+        "attendance_allowance",  # "Attendance allowance"
+        "pension_credit",  # "Pension credit"
+        "carers_allowance",  # "Carer's allowance"
+        "statutory_maternity_pay",  # "Statutory maternity pay"
+        "winter_fuel_payment",  # "Winter fuel payment"
+        "universal_credit",  # "Universal credit" (in-cap + outside-cap)
+        "child_benefit",  # "Child benefit"
+        "state_pension",  # "State pension"
+        "jobseekers_allowance",  # "Jobseeker's allowance"
     }
 )
 _OBR_CONSUMED = (
@@ -257,17 +259,14 @@ def uk_relationship(source, metric, program=None, kind=None):
                 )
             return _PC_TAKEUP_SEED
         raise ValueError(
-            f"dwp_takeup program {program!r} needs a deliberate "
-            "relationship assignment"
+            f"dwp_takeup program {program!r} needs a deliberate relationship assignment"
         )
     if source == "uk_hmrc":
         if kind == "reckoner":
             return _HMRC_RECKONER_HELD
         if kind == "liabilities":
             return _HMRC_SPI_SEED
-        raise ValueError(
-            f"uk_hmrc kind {kind!r} needs a deliberate assignment"
-        )
+        raise ValueError(f"uk_hmrc kind {kind!r} needs a deliberate assignment")
     if source == "obr":
         if kind == "outturn":
             raise ValueError(
