@@ -221,6 +221,7 @@ def export(
                     "source": "Populace releases",
                     "area": "reform-validation registry (per-release)",
                     "mode": 2,
+                    "country": "US",
                 },
             },
         )

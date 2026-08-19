@@ -203,7 +203,7 @@ export default function App() {
           ))}
         {tab === "divergences" &&
           (scoped.rows.length > 0 ? (
-            <DivergenceBoard data={scoped} buckets={buckets} />
+            <DivergenceBoard data={scoped} buckets={buckets} country={filters.country} />
           ) : (
             <CountryEmptyState country={filters.country} lanes={lanes} />
           ))}

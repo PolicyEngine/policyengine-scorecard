@@ -611,6 +611,34 @@ class TestFullIngest:
         feed_stages = {lane["id"]: lane["stage"] for lane in feed["lanes"]}
         assert all(feed_stages[lane] == "ingested" for lane in expected)
 
+    def test_lane_feed_entries_all_carry_country(self):
+        from scorecard_db.ingest_harvest import LANE_FEED
+
+        # countryOf() in the app defaults a missing country to US, so a
+        # country-less appended entry would silently file under US.
+        assert all("country" in meta for meta in LANE_FEED.values())
+
+    def test_appending_a_countryless_lane_raises(self, ingested, tmp_path):
+        import json
+
+        from scorecard_db.ingest_harvest import sync_lane_feed
+
+        db, _, feed = ingested
+        # feed without the lane -> sync takes the append path
+        stripped = {
+            "updated": feed["updated"],
+            "lanes": [x for x in feed["lanes"] if x["id"] != "jct-reform-scores"],
+        }
+        feed_path = tmp_path / "lanes.json"
+        feed_path.write_text(json.dumps(stripped))
+        with pytest.raises(ValueError, match="no 'country'"):
+            sync_lane_feed(
+                db,
+                feed_path,
+                "2026-08-19",
+                lanes={"jct-reform-scores": {"source": "JCT", "mode": 2}},
+            )
+
     def test_erratum_diagnosis_seeded(self, ingested):
         db, _, _ = ingested
         rows = db.conn.execute(

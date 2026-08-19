@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { divergenceScore, fmtDivergence, fmtValue } from "../format";
-import type { Comparison, Row } from "../types";
+import type { Comparison, Country, Row } from "../types";
 import { METRIC_LABELS, PROGRAM_LABELS, countryOf } from "../types";
 import type { SpineBucket } from "../spine";
 import { AttributionPanel } from "./AttributionPanel";
@@ -13,9 +13,11 @@ import { AttributionPanel } from "./AttributionPanel";
 export function DivergenceBoard({
   data,
   buckets,
+  country,
 }: {
   data: Comparison;
   buckets: Map<Row, SpineBucket>;
+  country: Country;
 }) {
   const candidates = useMemo(() => {
     const ok = new Set(["moderate", "far"]);
@@ -72,7 +74,7 @@ export function DivergenceBoard({
         </ol>
       </section>
     </div>
-    <AttributionPanel />
+    <AttributionPanel country={country} />
     </div>
   );
 }

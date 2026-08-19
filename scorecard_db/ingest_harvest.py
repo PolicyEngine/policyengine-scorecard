@@ -36,47 +36,57 @@ ADAPTERS = {
 }
 
 # Lane feed metadata for the lanes each adapter writes (id -> feed entry
-# fields beyond stage/note/updated, which mirror the DB lane).
+# fields beyond stage/note/updated, which mirror the DB lane). Every entry
+# carries an explicit country: appended feed entries must never rely on the
+# app's missing-country-means-US default (sync_lane_feed enforces this).
 LANE_FEED = {
     "jct-reform-scores": {
         "source": "JCT",
         "area": "tax expenditures + revenue estimates",
         "mode": 2,
+        "country": "US",
     },
     "tpc-distribution": {
         "source": "TPC",
         "area": "distribution tables",
         "mode": 2,
+        "country": "US",
     },
     "cbo-baseline": {
         "source": "CBO",
         "area": "Feb-2026 baseline workbooks",
         "mode": 1,
+        "country": "US",
     },
     "cbo-cost-estimates": {
         "source": "CBO",
         "area": "per-bill cost estimates",
         "mode": 2,
+        "country": "US",
     },
     "pwbm-reform-scores": {
         "source": "PWBM",
         "area": "reform scores + distributions",
         "mode": 2,
+        "country": "US",
     },
     "tax-foundation-scores": {
         "source": "Tax Foundation",
         "area": "revenue + tariff scores",
         "mode": 2,
+        "country": "US",
     },
     "budget-lab-scores": {
         "source": "Budget Lab",
         "area": "budget + distribution scores",
         "mode": 2,
+        "country": "US",
     },
     "cpsp-poverty": {
         "source": "Columbia CPSP",
         "area": "US poverty statistics",
         "mode": 1,
+        "country": "US",
     },
 }
 
@@ -102,6 +112,15 @@ def sync_lane_feed(
             raise ValueError(f"lane {lane_id} missing from DB after ingest")
         entry = by_id.get(lane_id)
         if entry is None:
+            # A newly appended entry must state its country explicitly:
+            # the app's countryOf() defaults a missing key to "US", so a
+            # country-less append would silently file a UK lane under US.
+            if "country" not in meta:
+                raise ValueError(
+                    f"lane {lane_id}: feed meta has no 'country' — appended "
+                    "lane entries must carry it explicitly (missing country "
+                    "renders as US in the app)"
+                )
             entry = {"id": lane_id, **meta}
             feed["lanes"].append(entry)
             by_id[lane_id] = entry
