@@ -114,9 +114,11 @@ _ISOLATED_KEY = baseline_key({"policy": "pre_obbba_expiry_2026"})
 # Stacked runs execute a DISTINCT world per (chain, provision): current
 # law plus the provisions above this one in that chain. Two chains exist
 # — f0af251's own (through the pre-scope-fix exemption row and a separate
-# senior-deduction link) and the buildi+ JCX producer's — so each scored
-# provision keys its own registered world, and the construction string
-# carries the chain position.
+# UNSCORED senior-deduction link, which still feeds later baselines) and
+# the buildi+ JCX producer's. Each provision keys its own registered
+# world; stacked constructions carry the RAW chain ordinal (chain_posNN
+# counts unscored links too), and isolated runs carry no position — their
+# baseline is the shared expiry world.
 _STACK_CHAIN = {"stacked_chained": "f0af251", "jcx_stacked": "jcx_producer"}
 
 
@@ -674,7 +676,8 @@ def _obbba_results(
                 data_bundle=release_id,
                 pe_construction=(
                     f"reform_delta:{measure}:{mode}"
-                    f":stack_pos{position:02d}:cy2026_for_fy{fy}"
+                    + (f":chain_pos{position:02d}" if mode != "isolated" else "")
+                    + f":cy2026_for_fy{fy}"
                 ),
                 run_id=f"{RUN_PREFIX}{release_id}",
                 computed_at=computed_at,
@@ -714,8 +717,10 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
             for r in artifact["reforms"]
             if r["category"] == "State program actual"
         }
-        obbba_position = 0
+        obbba_position = 0  # raw chain ordinal: counts unscored links too
         for row in artifact["reforms"]:
+            if row["category"] == "OBBBA":
+                obbba_position += 1
             if row["jct"].get("score") is None:
                 skipped.append(f"{release_id[:20]}…:{row['id']}")
                 continue
@@ -725,7 +730,6 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
                 or base_engine
             )
             if row["category"] == "OBBBA":
-                obbba_position += 1
                 results.extend(
                     _obbba_results(
                         db,

@@ -475,10 +475,10 @@ def test_reingest_idempotent(summary_and_db):
 
 
 def test_results_carry_executed_baselines_per_mode(summary_and_db):
-    # Level/reform/repeal rows executed current law; OBBBA rows carry the
-    # release's scoring-mode world (isolated -> pre_obbba_expiry_2026;
-    # stacked modes -> the position-varying jcx_stack_position family).
-    # NULL provenance on a clean ingest is a defect.
+    # Level/reform/repeal rows executed current law; isolated OBBBA
+    # rows the shared pre_obbba_expiry_2026 world; stacked OBBBA rows
+    # one registered world per (chain, provision). NULL provenance on
+    # a clean ingest is a defect.
     _, path = summary_and_db
     import sqlite3
 

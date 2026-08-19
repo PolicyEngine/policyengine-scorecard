@@ -813,3 +813,39 @@ class TestBaselineMigrationHardening:
         conn.close()
         with pytest.raises(ValueError):
             ScorecardDB(p)
+
+
+class TestRegistryConvergence:
+    def test_disavowed_unreferenced_row_pruned(self, tmp_path):
+        from scorecard_db.baselines import register_baselines
+        from scorecard_db.models import baseline_key
+
+        db = ScorecardDB(tmp_path / "t.db")
+        db.register_baseline(
+            baseline_key({"policy": "stale_world"}),
+            "stale_world",
+            description="no longer defined",
+        )
+        register_baselines(db)
+        assert (
+            db.conn.execute(
+                "SELECT COUNT(*) FROM baselines WHERE label='stale_world'"
+            ).fetchone()[0]
+            == 0
+        )
+        db.close()
+
+    def test_disavowed_referenced_row_refuses(self, tmp_path):
+        from scorecard_db.baselines import register_baselines
+        from scorecard_db.models import baseline_key
+
+        db = ScorecardDB(tmp_path / "t.db")
+        stale = baseline_key({"policy": "stale_world"})
+        db.register_baseline(stale, "stale_world", description="x")
+        s = score()
+        db.upsert_scores([s])
+        db.conn.execute("UPDATE external_scores SET baseline_key = ?", (stale,))
+        db.conn.commit()
+        with pytest.raises(ValueError, match="re-key the data"):
+            register_baselines(db)
+        db.close()

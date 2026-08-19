@@ -191,6 +191,32 @@ def register_baselines(db: ScorecardDB) -> int:
             spec_json=None,
             provenance=provenance,
         )
+    # Convergence: a row this module no longer defines is pruned — but
+    # never while data still references it (that would silently orphan
+    # provenance; the disavowal must first re-key the data).
+    defined = {baseline_key(d) for d, *_ in BASELINES}
+    for row in db.conn.execute("SELECT baseline_key, label FROM baselines").fetchall():
+        if row["baseline_key"] in defined:
+            continue
+        referenced = db.conn.execute(
+            "SELECT COUNT(*) FROM ("
+            "  SELECT baseline_key FROM external_scores"
+            "  UNION ALL SELECT baseline_key FROM pe_results"
+            "  UNION ALL SELECT baseline_key FROM pe_exhibits)"
+            " WHERE baseline_key = ?",
+            (row["baseline_key"],),
+        ).fetchone()[0]
+        if referenced:
+            raise ValueError(
+                f"registry row {row['label']!r} is no longer defined but "
+                f"{referenced} data rows still reference it — re-key the "
+                "data before disavowing the world"
+            )
+        with db.conn:
+            db.conn.execute(
+                "DELETE FROM baselines WHERE baseline_key = ?",
+                (row["baseline_key"],),
+            )
     missing = db.unregistered_baselines()
     if missing:
         described = []
