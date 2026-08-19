@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import gc
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from importlib.metadata import version
@@ -19,6 +20,11 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+try:
+    from pipeline.build_kff_medicaid_outputs import require_certified_provenance
+except ImportError:  # executed as a script from inside pipeline/
+    from build_kff_medicaid_outputs import require_certified_provenance
 
 YEAR = 2024
 TAKEUP = "takes_up_medicaid_if_eligible"
@@ -179,6 +185,25 @@ def run(
             allow_unmanaged=True,
         )
     bundle = serializable(dict(sim.policyengine_bundle))
+    engine_version = getattr(policyengine_us, "__version__", None) or version(
+        "policyengine-us"
+    )
+    # Validate provenance BEFORE any computation or output write, so a
+    # rejected rerun can never replace an existing certified CSV.
+    if bundle.get("model_version") != engine_version:
+        raise AssertionError(
+            f"engine {engine_version} != bundle model {bundle.get('model_version')}"
+        )
+    if dataset is None:
+        if bundle.get("default_dataset_uri") != EXPECTED_DATASET_URI:
+            raise AssertionError("managed dataset URI differs from certified pin")
+        if bundle.get("certified_data_build_id") != EXPECTED_BUILD:
+            raise AssertionError("managed data build differs from certified pin")
+        require_certified_provenance(
+            engine_version,
+            bundle.get("bundle_id"),
+            bundle.get("certified_data_build_id"),
+        )
     released_dataset_bytes = release_loaded_dataset_frames(sim)
     log(
         f"managed simulation ready; released {released_dataset_bytes / 1e9:.2f} GB "
@@ -348,21 +373,8 @@ def run(
         }
     )
     output.parent.mkdir(parents=True, exist_ok=True)
-    frame.to_csv(output, index=False, compression="gzip")
-    log(f"wrote {len(frame)} person rows to {output}")
-
-    engine_version = getattr(policyengine_us, "__version__", None) or version(
-        "policyengine-us"
-    )
-    if bundle.get("model_version") != engine_version:
-        raise AssertionError(
-            f"engine {engine_version} != bundle model {bundle.get('model_version')}"
-        )
-    if dataset is None:
-        if bundle.get("default_dataset_uri") != EXPECTED_DATASET_URI:
-            raise AssertionError("managed dataset URI differs from certified pin")
-        if bundle.get("certified_data_build_id") != EXPECTED_BUILD:
-            raise AssertionError("managed data build differs from certified pin")
+    csv_tmp = output.with_name(output.name + ".tmp")
+    frame.to_csv(csv_tmp, index=False, compression="gzip")
 
     calculated = (
         "person_id",
@@ -423,7 +435,15 @@ def run(
         ),
         "variables": {name: variable_metadata(sim, name) for name in calculated},
     }
-    Path(f"{output}.meta.json").write_text(json.dumps(metadata, indent=2) + "\n")
+    # Publish the CSV and its metadata sidecar together at the end, via
+    # temp-and-rename, so no earlier failure can leave a fresh CSV beside a
+    # stale certified sidecar. (A hard crash between the two renames is the
+    # remaining narrow window.)
+    meta_tmp = Path(f"{output}.meta.json.tmp")
+    meta_tmp.write_text(json.dumps(metadata, indent=2) + "\n")
+    os.replace(csv_tmp, output)
+    os.replace(meta_tmp, Path(f"{output}.meta.json"))
+    log(f"wrote {len(frame)} person rows to {output}")
     print(
         json.dumps(
             {key: metadata[key] for key in metadata if key != "variables"}, indent=2

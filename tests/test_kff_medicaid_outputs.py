@@ -27,12 +27,20 @@ def _write_csv(path, columns):
         writer.writerows(rows)
 
 
-def _write_extracts(tmp_path, *, sample: bool = True):
+def _write_extracts(
+    tmp_path,
+    *,
+    sample: bool = True,
+    weights: list | None = None,
+    engine: str = ENGINE,
+    data_bundle: str = DATA_BUNDLE,
+    bundle_id: str = BUNDLE_ID,
+):
     baseline = {
         "person_id": [1, 2, 3, 4, 5, 6],
         "state": ["CA", "CA", "CA", "TX", "TX", "TX"],
         "age": [30, 10, 70, 40, 17, 25],
-        "person_weight": [2.0, 3.0, 5.0, 7.0, 11.0, 13.0],
+        "person_weight": weights or [2.0, 3.0, 5.0, 7.0, 11.0, 13.0],
         "is_medicaid_eligible": [True, True, True, True, False, True],
         "medicaid_enrolled": [True, False, False, False, False, True],
         "medicaid": [1_000.0, 0.0, 0.0, 0.0, 0.0, 2_000.0],
@@ -49,15 +57,15 @@ def _write_extracts(tmp_path, *, sample: bool = True):
     _write_csv(reform_path, reform)
 
     bundle = {
-        "model_version": ENGINE,
-        "certified_data_build_id": DATA_BUNDLE,
-        "bundle_id": BUNDLE_ID,
+        "model_version": engine,
+        "certified_data_build_id": data_bundle,
+        "bundle_id": bundle_id,
     }
     common = {
         "sample": sample,
-        "engine_version": ENGINE,
-        "data_bundle": DATA_BUNDLE,
-        "bundle_id": BUNDLE_ID,
+        "engine_version": engine,
+        "data_bundle": data_bundle,
+        "bundle_id": bundle_id,
         "policyengine_bundle": bundle,
         "coverage_inputs": ["has_esi"],
         "medicare_handling": "medicare_enrolled modeled proxy",
@@ -199,3 +207,61 @@ def test_builder_requires_sample_full_provenance_agreement(
     baseline, reform = _write_extracts(tmp_path, sample=sample)
     with pytest.raises(ValueError, match=message):
         _aggregate(tmp_path, baseline, reform, full=full)
+
+
+def _blank_cell(path, column, row_index=1):
+    lines = path.read_text().splitlines()
+    header = lines[0].split(",")
+    cells = lines[row_index].split(",")
+    cells[header.index(column)] = ""
+    lines[row_index] = ",".join(cells)
+    path.write_text("\n".join(lines) + "\n")
+
+
+def test_blank_required_numeric_cell_is_rejected(tmp_path):
+    baseline, reform = _write_extracts(tmp_path)
+    _blank_cell(baseline, "person_weight")
+    with pytest.raises(ValueError, match="person_weight"):
+        _aggregate(tmp_path, baseline, reform)
+
+
+def test_blank_denominator_cell_is_allowed(tmp_path):
+    baseline, reform = _write_extracts(tmp_path)
+    for path in (baseline, reform):
+        _blank_cell(path, "medicaid_slcsp_state_denominator")
+    summary, staged, _, _ = _aggregate(tmp_path, baseline, reform)
+    assert summary["campaign_rows"] == 12
+    for line in staged.read_text().splitlines():
+        json.loads(line)
+
+
+# Anchor-passing full-file weights: eligible sums to 77.325M, enrolled to
+# 72.300M, both within the 2% anchor gates.
+FULL_WEIGHTS = [
+    40_000_000.0,
+    2_000_000.0,
+    1_500_000.0,
+    1_525_000.0,
+    1_000_000.0,
+    32_300_000.0,
+]
+
+
+def test_full_path_passes_anchors_with_certified_provenance(tmp_path):
+    baseline, reform = _write_extracts(tmp_path, sample=False, weights=FULL_WEIGHTS)
+    summary, staged, _, _ = _aggregate(tmp_path, baseline, reform, full=True)
+    assert summary["sample"] is False
+    assert summary["eligible"] == pytest.approx(77_325_000.0)
+    assert summary["enrolled"] == pytest.approx(72_300_000.0)
+    assert summary["delta_enrollment"] == pytest.approx(5_025_000.0)
+    rows = [json.loads(line) for line in staged.read_text().splitlines()]
+    assert len(rows) == 12
+    assert all(row["sample"] is False for row in rows)
+
+
+def test_full_path_rejects_self_consistent_wrong_provenance(tmp_path):
+    baseline, reform = _write_extracts(
+        tmp_path, sample=False, weights=FULL_WEIGHTS, engine="1.999.0"
+    )
+    with pytest.raises(ValueError, match="certified pin"):
+        _aggregate(tmp_path, baseline, reform, full=True)

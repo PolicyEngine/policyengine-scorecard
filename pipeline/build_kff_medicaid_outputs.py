@@ -31,11 +31,38 @@ BOOL_COLUMNS = (
     "reported_uninsured",
     "modeled_uninsured",
 )
-FLOAT_COLUMNS = ("age", "person_weight", "medicaid", DENOMINATOR)
+FINITE_FLOAT_COLUMNS = ("age", "person_weight", "medicaid")
+NAN_ALLOWED_FLOAT_COLUMNS = (DENOMINATOR,)
+CERTIFIED_PROVENANCE = {
+    "engine_version": "1.764.6",
+    "bundle_id": "us-5.0.2",
+    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+}
 
 
 def load_meta(path: Path) -> dict:
     return json.loads(Path(f"{path}.meta.json").read_text())
+
+
+def require_certified_provenance(
+    engine_version: str, bundle_id: str, data_bundle: str
+) -> None:
+    """Hard-pin full-file provenance to the certified triple.
+
+    Self-reported sidecar provenance is not trusted on the full path: a
+    wrong-but-self-consistent triple must fail. Update CERTIFIED_PROVENANCE
+    deliberately when re-running on a newer certified bundle.
+    """
+    actual = {
+        "engine_version": engine_version,
+        "bundle_id": bundle_id,
+        "data_bundle": data_bundle,
+    }
+    if actual != CERTIFIED_PROVENANCE:
+        raise ValueError(
+            f"full-file provenance {actual} does not match the certified pin "
+            f"{CERTIFIED_PROVENANCE}"
+        )
 
 
 def _parse_bool(text: str) -> bool:
@@ -46,8 +73,17 @@ def _parse_bool(text: str) -> bool:
     raise ValueError(f"not a boolean: {text!r}")
 
 
-def _parse_float(text: str) -> float:
+def _parse_lenient_float(text: str) -> float:
     return math.nan if text == "" else float(text)
+
+
+def _parse_finite_float(text: str, column: str) -> float:
+    if text == "":
+        raise ValueError(f"blank value in required numeric column {column}")
+    value = float(text)
+    if not math.isfinite(value):
+        raise ValueError(f"non-finite value {text!r} in column {column}")
+    return value
 
 
 def load_extract(path: Path) -> dict[str, list]:
@@ -61,8 +97,10 @@ def load_extract(path: Path) -> dict[str, list]:
                 columns[name].append(row[name])
     for name in BOOL_COLUMNS:
         columns[name] = [_parse_bool(text) for text in columns[name]]
-    for name in FLOAT_COLUMNS:
-        columns[name] = [_parse_float(text) for text in columns[name]]
+    for name in FINITE_FLOAT_COLUMNS:
+        columns[name] = [_parse_finite_float(text, name) for text in columns[name]]
+    for name in NAN_ALLOWED_FLOAT_COLUMNS:
+        columns[name] = [_parse_lenient_float(text) for text in columns[name]]
     return columns
 
 
@@ -184,12 +222,14 @@ def aggregate(
         raise ValueError("--full cannot be used with validation-sample extracts")
     if not full and not baseline_sample:
         raise ValueError("full-file extracts require --full and its anchor gates")
+    if full:
+        require_certified_provenance(engine_version, bundle_id, data_bundle)
 
     national_eligible = weighted_count(baseline, eligible)
     national_enrolled = weighted_count(baseline, enrolled)
     national_delta = weighted_count(baseline, marginal)
     identity_gap = national_delta - (national_eligible - national_enrolled)
-    if abs(identity_gap) > 1e-6 * max(national_delta, 1):
+    if not abs(identity_gap) <= 1e-6 * max(national_delta, 1):
         raise AssertionError(f"enrollment identity gap {identity_gap}")
     if full:
         anchors = {
@@ -198,7 +238,7 @@ def aggregate(
         }
         for name, (actual, expected) in anchors.items():
             relative_error = abs(actual / expected - 1)
-            if relative_error > 0.02:
+            if not relative_error <= 0.02:
                 raise SystemExit(
                     f"STOP: {name} anchor {actual:,.0f} differs from "
                     f"{expected:,.0f} by {relative_error:.2%}"
@@ -359,7 +399,7 @@ def aggregate(
         bridge_other = weighted_count(
             baseline, _and(geo_mask, marginal, _not(reported))
         )
-        if abs(delta_enrollment - bridge_reported - bridge_other) > 1e-6 * max(
+        if not abs(delta_enrollment - bridge_reported - bridge_other) <= 1e-6 * max(
             delta_enrollment, 1
         ):
             raise AssertionError(f"bridge identity differs in {geography}")
@@ -507,10 +547,15 @@ def aggregate(
         },
         "rows": counterpart_rows,
     }
-    counterpart_path.write_text(json.dumps(counterpart_payload, indent=1) + "\n")
+    counterpart_path.write_text(
+        json.dumps(counterpart_payload, indent=1, allow_nan=False) + "\n"
+    )
     campaign_path.parent.mkdir(parents=True, exist_ok=True)
     campaign_path.write_text(
-        "".join(json.dumps(row, sort_keys=True) + "\n" for row in campaign_rows)
+        "".join(
+            json.dumps(row, sort_keys=True, allow_nan=False) + "\n"
+            for row in campaign_rows
+        )
     )
     baseline_dollars = weighted_dollars(baseline)
     reform_dollars = weighted_dollars(reform)
@@ -534,7 +579,7 @@ def aggregate(
         "counterpart_rows": len(counterpart_rows),
         "campaign_rows": len(campaign_rows),
     }
-    print(json.dumps(summary, indent=2))
+    print(json.dumps(summary, indent=2, allow_nan=False))
     return summary
 
 
