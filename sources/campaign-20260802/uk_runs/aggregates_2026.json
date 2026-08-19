@@ -1,0 +1,200 @@
+{
+ "year": 2026,
+ "concept_notes": {
+  "period_basis": "PE calendar-year 2026; OBR/HMRC/DWP fiscal-year Apr-Mar (named delta)",
+  "receipts_vs_liability": "PE totals are accrual liabilities/entitlements; OBR receipts are cash (named delta)",
+  "caseload_concept": "annual-ever units with amount>0; DWP BECL caseloads are FY-average point-in-time (named delta, pre-adjudicated in staging)"
+ },
+ "bundle": {
+  "bundle_id": "uk-5.0.1",
+  "country_id": "uk",
+  "policyengine_version": "5.0.1",
+  "model_package": "policyengine-uk",
+  "model_version": "2.89.2",
+  "data_package": "populace-data",
+  "data_version": "0.1.0",
+  "default_dataset": "populace_uk_2023",
+  "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+  "data_build_model_version": "2.89.2",
+  "data_build_model_git_sha": "None",
+  "data_build_fingerprint": "None",
+  "compatibility_basis": "exact_build_model_version",
+  "certified_by": "None",
+  "runtime_dataset": "populace_uk_2023",
+  "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-uk-private/snapshots/a75a9a831d6b07aaffbd09713f2a1124f5c0f08f/populace_uk_2023.h5",
+  "managed_by": "policyengine.py"
+ },
+ "totals_gbp": {
+  "income_tax": 421891913533.19946,
+  "national_insurance": 61450306465.09366,
+  "ni_employer": 185481157065.2179,
+  "vat": 219622883998.86896,
+  "capital_gains_tax": 24243246083.18426,
+  "council_tax": 60083773529.38769,
+  "fuel_duty": 12976906953.47097,
+  "universal_credit": 39887838277.66961,
+  "child_benefit": 17434702263.490685,
+  "state_pension": 145097022169.8143,
+  "pension_credit": 5725827904.638691,
+  "housing_benefit": 5225876604.907799,
+  "dla": 6342775060.054455,
+  "pip": 20593016304.099655,
+  "attendance_allowance": 4733056192.259981,
+  "carers_allowance": 3358301903.9573593,
+  "esa_income": 3156436499.0282836,
+  "esa_contrib": 2156177884.0742674,
+  "jsa_income": 0.0,
+  "jsa_contrib": 157967402.95190462,
+  "income_support": 0.0,
+  "working_tax_credit": 0.0,
+  "child_tax_credit": 0.0,
+  "winter_fuel_allowance": 1665681809.4226718,
+  "statutory_sick_pay": 1334439593.0563817,
+  "statutory_maternity_pay": 1366751179.0460634,
+  "council_tax_benefit": 2934640355.279371,
+  "tax_credits": 0.0,
+  "scottish_child_payment": 159585140.49813133,
+  "household_net_income": 1791280163555.2764,
+  "gov_tax": 1046803930669.7205,
+  "gov_spending": 485663250574.56665,
+  "household_benefits": 485946590329.34766
+ },
+ "recipient_counts": {
+  "income_tax": {
+   "unit": "person",
+   "recipient_units_annual_ever": 37691747.66273152
+  },
+  "national_insurance": {
+   "unit": "person",
+   "recipient_units_annual_ever": 27160368.26024862
+  },
+  "ni_employer": {
+   "unit": "person",
+   "recipient_units_annual_ever": 26292511.121389605
+  },
+  "vat": {
+   "unit": "household",
+   "recipient_units_annual_ever": 29470263.382621806
+  },
+  "capital_gains_tax": {
+   "unit": "person",
+   "recipient_units_annual_ever": 1507931.6696882509
+  },
+  "council_tax": {
+   "unit": "household",
+   "recipient_units_annual_ever": 28469697.078922734
+  },
+  "fuel_duty": {
+   "unit": "household",
+   "recipient_units_annual_ever": 12682432.195110451
+  },
+  "universal_credit": {
+   "unit": "benunit",
+   "recipient_units_annual_ever": 3296452.404684961
+  },
+  "child_benefit": {
+   "unit": "benunit",
+   "recipient_units_annual_ever": 8476800.070532933
+  },
+  "state_pension": {
+   "unit": "person",
+   "recipient_units_annual_ever": 12698240.466625169
+  },
+  "pension_credit": {
+   "unit": "benunit",
+   "recipient_units_annual_ever": 1217787.1301087737
+  },
+  "housing_benefit": {
+   "unit": "benunit",
+   "recipient_units_annual_ever": 732051.740912199
+  },
+  "dla": {
+   "unit": "person",
+   "recipient_units_annual_ever": 914247.0047843456
+  },
+  "pip": {
+   "unit": "person",
+   "recipient_units_annual_ever": 2817522.645383328
+  },
+  "attendance_allowance": {
+   "unit": "person",
+   "recipient_units_annual_ever": 915595.5719996989
+  },
+  "carers_allowance": {
+   "unit": "person",
+   "recipient_units_annual_ever": 747052.9823623598
+  },
+  "esa_income": {
+   "unit": "benunit",
+   "recipient_units_annual_ever": 352682.03596651554
+  },
+  "esa_contrib": {
+   "unit": "person",
+   "recipient_units_annual_ever": 303683.59814062715
+  },
+  "jsa_income": {
+   "unit": "benunit",
+   "recipient_units_annual_ever": 0.0
+  },
+  "jsa_contrib": {
+   "unit": "person",
+   "recipient_units_annual_ever": 32927.54791140556
+  },
+  "income_support": {
+   "unit": "benunit",
+   "recipient_units_annual_ever": 0.0
+  },
+  "working_tax_credit": {
+   "unit": "benunit",
+   "recipient_units_annual_ever": 0.0
+  },
+  "child_tax_credit": {
+   "unit": "benunit",
+   "recipient_units_annual_ever": 0.0
+  },
+  "winter_fuel_allowance": {
+   "unit": "household",
+   "recipient_units_annual_ever": 7060742.019033432
+  },
+  "statutory_sick_pay": {
+   "unit": "person",
+   "recipient_units_annual_ever": 254034.1130834818
+  },
+  "statutory_maternity_pay": {
+   "unit": "person",
+   "recipient_units_annual_ever": 166412.83011466265
+  },
+  "council_tax_benefit": {
+   "unit": "benunit",
+   "recipient_units_annual_ever": 2886327.5622606277
+  },
+  "tax_credits": {
+   "unit": "benunit",
+   "recipient_units_annual_ever": 0.0
+  },
+  "scottish_child_payment": {
+   "unit": "person",
+   "recipient_units_annual_ever": 108827.83540725708
+  },
+  "household_net_income": {
+   "unit": "household",
+   "recipient_units_annual_ever": 29369810.998743203
+  },
+  "gov_tax": {
+   "unit": "household",
+   "recipient_units_annual_ever": 29470583.18248133
+  },
+  "gov_spending": {
+   "unit": "household",
+   "recipient_units_annual_ever": 29470583.18248133
+  },
+  "household_benefits": {
+   "unit": "household",
+   "recipient_units_annual_ever": 29470583.18248133
+  }
+ },
+ "not_in_model": []
+}
