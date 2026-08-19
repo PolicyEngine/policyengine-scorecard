@@ -92,12 +92,28 @@ from .models import (
     ReformRef,
     TimeBasis,
     UnitConcept,
+    baseline_key,
 )
 
 REPO = Path(__file__).resolve().parent.parent
 RAW = REPO / "sources" / "populace-reform-validation" / "raw"
 RUN_PREFIX = "populace-rv-"
 REGISTRY_MARK = "populace_reform_validation"
+
+# Executed-baseline provenance (issue #13). Level / reform_delta /
+# repeal_delta rows run against current law. OBBBA rows differ by the
+# release's scoring mode: isolated runs executed pre-OBBBA expiry law as
+# their baseline (the l0 backfill note's shared 2,735.78B world); stacked
+# runs (f0af251's own chain and the buildi+ JCX producer) executed the
+# stack below each provision's position — registered as the single
+# position-varying jcx_stack_position world, with the position itself in
+# the construction string.
+_CURRENT_LAW_KEY = BASELINE.baseline_key()
+_OBBBA_BASELINE_KEYS = {
+    "isolated": baseline_key({"policy": "pre_obbba_expiry_2026"}),
+    "stacked_chained": baseline_key({"policy": "jcx_stack_position"}),
+    "jcx_stacked": baseline_key({"policy": "jcx_stack_position"}),
+}
 
 # Exact engine pins per release (from each release_manifest.json on HF;
 # the artifact's PE values were computed at these versions).
@@ -639,6 +655,7 @@ def _obbba_results(
                 pe_construction=(f"reform_delta:{measure}:{mode}:cy2026_for_fy{fy}"),
                 run_id=f"{RUN_PREFIX}{release_id}",
                 computed_at=computed_at,
+                baseline_key=_OBBBA_BASELINE_KEYS[mode],
             )
         )
     return results
@@ -729,6 +746,7 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
                     pe_construction=construction,
                     run_id=f"{RUN_PREFIX}{release_id}",
                     computed_at=computed_at,
+                    baseline_key=_CURRENT_LAW_KEY,
                 )
             )
 

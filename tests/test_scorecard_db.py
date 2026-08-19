@@ -725,3 +725,91 @@ class TestDescriptiveRegister:
         ).fetchone()
         assert kept["diagnosis_class"] == "vintage"
         db.close()
+
+
+class TestBaselineMigrationHardening:
+    """The adjudication's null-hole conditions: faithful backfill, loud
+    failure on malformed descriptors, reopen idempotency."""
+
+    def _legacy_db(self, path):
+        import sqlite3 as s
+
+        conn = s.connect(path)
+        conn.executescript(
+            """CREATE TABLE external_scores (
+                   claim_id TEXT PRIMARY KEY, source TEXT NOT NULL,
+                   source_model TEXT, ledger_fact TEXT, source_column TEXT,
+                   publication TEXT NOT NULL DEFAULT '{}',
+                   reform_key TEXT NOT NULL, reform_json TEXT NOT NULL,
+                   metric TEXT NOT NULL, unit_concept TEXT NOT NULL,
+                   period INTEGER NOT NULL, time_basis TEXT NOT NULL,
+                   conditions TEXT NOT NULL DEFAULT '{}', geography TEXT,
+                   program TEXT, value REAL, value_kind TEXT NOT NULL,
+                   status TEXT NOT NULL DEFAULT 'ok',
+                   calibration_relationship TEXT NOT NULL DEFAULT 'held_out',
+                   period_start INTEGER, period_end INTEGER);"""
+        )
+        return conn
+
+    def _row(self, conn, cid, reform_json):
+        conn.execute(
+            "INSERT INTO external_scores (claim_id, source, reform_key,"
+            " reform_json, metric, unit_concept, period, time_basis,"
+            " value, value_kind) VALUES (?, 'x', 'k', ?, 'eligible_count',"
+            " 'persons', 2024, 'annual', 1.0, 'count')",
+            (cid, reform_json),
+        )
+
+    def test_backfill_projects_exactly(self, tmp_path):
+        import json as j
+
+        from scorecard_db.db import CURRENT_LAW_KEY
+        from scorecard_db.models import baseline_key
+
+        p = tmp_path / "legacy.db"
+        conn = self._legacy_db(p)
+        self._row(conn, "a", j.dumps({"framework": "baseline"}))
+        self._row(conn, "b", j.dumps({"baseline": None, "reform": {"p": 1}}))
+        self._row(
+            conn,
+            "c",
+            j.dumps({"baseline": {"policy": "tcja_extension"}, "reform": {}}),
+        )
+        conn.commit()
+        conn.close()
+
+        db = ScorecardDB(p)
+        keys = dict(
+            db.conn.execute("SELECT claim_id, baseline_key FROM external_scores")
+        )
+        assert keys["a"] == CURRENT_LAW_KEY
+        assert keys["b"] == CURRENT_LAW_KEY
+        assert keys["c"] == baseline_key({"policy": "tcja_extension"})
+        db.close()
+        # reopen: idempotent, nothing re-derived differently
+        db = ScorecardDB(p)
+        assert (
+            dict(db.conn.execute("SELECT claim_id, baseline_key FROM external_scores"))
+            == keys
+        )
+        db.close()
+
+    @pytest.mark.parametrize(
+        "bad",
+        [
+            '{"baseline": {}}',
+            '{"baseline": []}',
+            '{"baseline": false}',
+            '{"baseline": {"policy": 1}}',
+            '{"baseline": {"policy": ""}}',
+            "[1, 2]",
+        ],
+    )
+    def test_malformed_descriptor_fails_loudly(self, tmp_path, bad):
+        p = tmp_path / "legacy.db"
+        conn = self._legacy_db(p)
+        self._row(conn, "bad", bad)
+        conn.commit()
+        conn.close()
+        with pytest.raises(ValueError):
+            ScorecardDB(p)

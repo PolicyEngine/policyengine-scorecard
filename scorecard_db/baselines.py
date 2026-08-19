@@ -37,8 +37,9 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "JCT current-policy baseline: expiring provisions assumed "
         "continued rather than sunsetting under present law.",
         "policy_ref",
-        "JCX-29-25 (manager's amendment scored vs current policy; twin of "
-        "JCX-30/31 present-law scoring) — sources/harvest-2026-08-02/jct.",
+        "JCX-29-25 (SFC substitute scored vs current policy) and JCX-30-25 "
+        "(manager's amendment vs current policy; JCX-31-25 is its "
+        "present-law twin) — sources/harvest-2026-08-02/jct/NOTES.md.",
     ),
     (
         {"policy": "tcja_extension"},
@@ -52,11 +53,13 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
     (
         {"policy": "current_law_pre_2025_tariffs"},
         "current_law_pre_2025_tariffs",
-        "Current law excluding the 2025 tariff actions (Tax Foundation "
-        "Tariff Tracker scoring convention).",
+        "Current law excluding the 2025 tariff actions.",
         "policy_ref",
-        "Tax Foundation Tariff Tracker, July-2026 vintage "
-        "(sources/harvest-2026-08-02/tax_foundation).",
+        "TPC tariff tables (161 claims; baseline stated in "
+        "sources/harvest-2026-08-02/tpc/manifest.jsonl) and PWBM "
+        "tariff rows (22 claims). Tax Foundation tracker rows score "
+        "current law and do not key this world "
+        "(scorecard_db/ingest_tax_foundation.py).",
     ),
     (
         {"policy": "current_law_plus_senate_obbba_title_vii"},
@@ -64,7 +67,7 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "Current law plus the Senate OBBBA Title VII draft — the baseline "
         "under TPC's CTC options set.",
         "policy_ref",
-        "TPC T25-0209/0213/0215 baseline_hint (sources/harvest-2026-08-02/"
+        "TPC T25-0209/T25-0215 baseline_hint (sources/harvest-2026-08-02/"
         "tpc); draft≈enacted for these provisions per the campaign "
         "conventions note.",
     ),
@@ -118,6 +121,35 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "is scored against pre-OBBBA current law "
         "(scorecard_db/ingest_reform_validation.py; CBO Options for "
         "Reducing the Deficit, Dec 2024).",
+    ),
+    (
+        {"policy": "pre_obbba_expiry_2026"},
+        "pre_obbba_expiry_2026",
+        "Pre-OBBBA expiry law as executed by the reform-validation "
+        "registry's ISOLATED OBBBA scoring (l0-refit and its note's "
+        "shared 2,735.78B income-tax baseline): TCJA-era parameters at "
+        "their scheduled-expiry values, per provision, one at a time.",
+        "policy_ref",
+        "l0-refit backfill note (sources/populace-reform-validation/raw/"
+        "populace-us-2024-sparse-l0-refit-…json _backfill_note): 'scored "
+        "in isolation against pre-OBBBA law'; keys stamped by "
+        "scorecard_db/ingest_reform_validation.py.",
+    ),
+    (
+        {"policy": "jcx_stack_position"},
+        "jcx_stack_position",
+        "The stack below each OBBBA provision's JCX position — a "
+        "POSITION-VARYING family of executed baselines, not one world: "
+        "each stacked run's baseline is current law plus the provisions "
+        "above it (f0af251's own chain; the buildi+ JCX producer). The "
+        "position rides in the result's construction string; registered "
+        "as one entry so stacked runs carry non-null executed-baseline "
+        "provenance and can never render plain agreement against any "
+        "single-world claim.",
+        "policy_ref",
+        "Producer stack notes (sources/populace-reform-validation/raw "
+        "artifacts; verified chaining in the #24 review record); keys "
+        "stamped by scorecard_db/ingest_reform_validation.py.",
     ),
     (
         {"policy": "pre_obbba_law"},

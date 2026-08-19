@@ -212,8 +212,13 @@ def baseline_key(descriptor: dict) -> str:
     """Stable key over a baseline descriptor dict (issue #13). The same
     descriptor shape ReformRef.baseline carries; {"policy": "current_law"}
     keys the null baseline."""
-    if not (isinstance(descriptor, dict) and descriptor.get("policy")):
-        raise ValueError(f"baseline descriptor needs a 'policy' slug: {descriptor!r}")
+    if not isinstance(descriptor, dict):
+        raise ValueError(f"baseline descriptor must be a dict: {descriptor!r}")
+    policy = descriptor.get("policy")
+    if not (isinstance(policy, str) and policy.strip()):
+        raise ValueError(
+            f"baseline descriptor needs a nonempty string 'policy' slug: {descriptor!r}"
+        )
     return hashlib.sha256(_canonical(descriptor).encode()).hexdigest()[:16]
 
 

@@ -46,10 +46,12 @@ import json
 from pathlib import Path
 
 from .db import EXHIBITS_SQL, RESULTS_SQL, ScorecardDB
-from .models import ComparisonStatus, PEResult
+from .models import BASELINE, ComparisonStatus, PEResult
 
 REPO = Path(__file__).resolve().parent.parent
 STAGED_US = REPO / "sources" / "campaign-20260802" / "us"
+
+_CURRENT_LAW_KEY = BASELINE.baseline_key()
 
 # CPSP's CTC-brief scenario worlds live on the claim's policy_ref reform
 # (ingest_cpsp), not in conditions — descriptor policy_scenario -> policy.
@@ -201,6 +203,7 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
                         "run_id": row["run_id"],
                         "computed_at": row["computed_at"],
                         "note": note,
+                        "baseline_key": _CURRENT_LAW_KEY,
                     }
                 )
                 continue
@@ -221,6 +224,11 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
                     run_id=row["run_id"],
                     computed_at=row["computed_at"],
                     annotations=row.get("annotations", []),
+                    # every campaign run executed a current-law
+                    # baseline (reform side carries the option;
+                    # the jct expiry-reversal's negation is in
+                    # its construction)
+                    baseline_key=_CURRENT_LAW_KEY,
                 )
             )
 

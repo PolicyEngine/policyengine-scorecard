@@ -472,3 +472,38 @@ def test_reingest_idempotent(summary_and_db):
     conn.close()
     assert n_results == first["results"]
     assert n_claims == first["claims_upserted"]
+
+
+def test_results_carry_executed_baselines_per_mode(summary_and_db):
+    # Level/reform/repeal rows executed current law; OBBBA rows carry the
+    # release's scoring-mode world (isolated -> pre_obbba_expiry_2026;
+    # stacked modes -> the position-varying jcx_stack_position family).
+    # NULL provenance on a clean ingest is a defect.
+    _, path = summary_and_db
+    import sqlite3
+
+    from scorecard_db.ingest_reform_validation import (
+        _CURRENT_LAW_KEY,
+        _OBBBA_BASELINE_KEYS,
+    )
+
+    conn = sqlite3.connect(path)
+    assert (
+        conn.execute(
+            "SELECT COUNT(*) FROM pe_results WHERE run_id LIKE ?"
+            " AND baseline_key IS NULL",
+            (f"{RUN_PREFIX}%",),
+        ).fetchone()[0]
+        == 0
+    )
+    by_key = dict(
+        conn.execute(
+            "SELECT baseline_key, COUNT(*) FROM pe_results"
+            " WHERE run_id LIKE ? GROUP BY 1",
+            (f"{RUN_PREFIX}%",),
+        )
+    )
+    conn.close()
+    assert by_key[_OBBBA_BASELINE_KEYS["isolated"]] == 36
+    assert by_key[_OBBBA_BASELINE_KEYS["jcx_stacked"]] == 144
+    assert by_key[_CURRENT_LAW_KEY] == 675 - 180

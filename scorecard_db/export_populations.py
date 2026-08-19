@@ -28,7 +28,7 @@ import json
 from datetime import date
 from pathlib import Path
 
-from .db import ScorecardDB
+from .db import CURRENT_LAW_KEY, ScorecardDB
 from .ingest_harvest import sync_lane_feed
 
 REPO = Path(__file__).resolve().parent.parent
@@ -50,6 +50,19 @@ def release_label(bundle: str) -> str:
         if token in bundle:
             return token
     return bundle.rsplit("-", 1)[0][-12:]
+
+
+def _effective_status(status: str, result_bk: str | None, claim_bk: str | None) -> str:
+    """Mirror of the comparisons-view #13 guard, applied per result so
+    the exported feed can never publish plain agreement across baseline
+    worlds (or over unverifiable legacy provenance)."""
+    if status != "comparable" or claim_bk is None:
+        return status
+    if result_bk is not None and result_bk != claim_bk:
+        return "constructed"
+    if result_bk is None and claim_bk != CURRENT_LAW_KEY:
+        return "baseline_unvalidated"
+    return status
 
 
 def _ratio(pe: float | None, external: float | None) -> float | None:
@@ -78,6 +91,10 @@ def export(
         (URBAN_SOURCE,),
     ).fetchall()
 
+    labels = {
+        r["baseline_key"]: r["label"]
+        for r in db.conn.execute("SELECT baseline_key, label FROM baselines")
+    }
     rows = []
     by_source: dict[str, int] = {}
     by_status: dict[str, int] = {}
@@ -93,11 +110,15 @@ def export(
                 "construction": r["pe_construction"],
                 "computed_at": r["computed_at"],
                 "annotations": json.loads(r["annotations"]),
+                "baseline": labels.get(r["baseline_key"]),
+                "status_effective": _effective_status(
+                    r["status"], r["baseline_key"], c["baseline_key"]
+                ),
             }
             for r in db.conn.execute(
                 """SELECT computed_value, status, engine_version,
                           data_bundle, pe_construction, computed_at,
-                          annotations
+                          annotations, baseline_key
                    FROM pe_results WHERE claim_id = ?
                    ORDER BY computed_at, id""",
                 (c["claim_id"],),
@@ -119,7 +140,8 @@ def export(
         if len({r["data_bundle"] for r in results}) > 1:
             multi_release += 1
         by_source[c["source"]] = by_source.get(c["source"], 0) + 1
-        by_status[latest["status"]] = by_status.get(latest["status"], 0) + 1
+        eff = latest["status_effective"]
+        by_status[eff] = by_status.get(eff, 0) + 1
         rows.append(
             {
                 "claim_id": c["claim_id"],
@@ -143,6 +165,7 @@ def export(
                 "reform_key": c["reform_key"],
                 "external_value": c["value"],
                 "calibration_relationship": c["calibration_relationship"],
+                "claim_baseline": labels.get(c["baseline_key"]),
                 "latest": {
                     **latest,
                     "ratio": _ratio(latest["value"], c["value"]),

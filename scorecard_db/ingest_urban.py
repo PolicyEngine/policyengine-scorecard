@@ -189,6 +189,7 @@ def pe_results_from_comparison(
                 pe_construction=r.get("concept_note", ""),
                 run_id=meta.get("run_id", ""),
                 computed_at=meta.get("computed_at", ""),
+                baseline_key=BASELINE.baseline_key(),
             )
         )
     return results

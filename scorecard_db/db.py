@@ -230,6 +230,24 @@ LANE_SQL = (
 )
 
 
+def _legacy_claim_baseline_key(row) -> str:
+    """Exact projection of a legacy claim's baseline world from its own
+    reform_json. Absent baseline (missing key or JSON null) IS the null
+    current_law world by the registry convention; any other shape —
+    non-dict reform_json, falsy-but-present baseline ({} / [] / false),
+    non-string policy — fails loudly rather than silently keying current
+    law."""
+    parsed = json.loads(row["reform_json"])
+    if not isinstance(parsed, dict):
+        raise ValueError(
+            f"{row['claim_id']}: reform_json is not an object: {row['reform_json']!r}"
+        )
+    descriptor = parsed.get("baseline", None)
+    if descriptor is None:
+        return CURRENT_LAW_KEY
+    return _baseline_key(descriptor)
+
+
 class ScorecardDB:
     def __init__(self, path: str | Path):
         self.path = Path(path)
@@ -310,16 +328,7 @@ class ScorecardDB:
             if legacy:
                 self.conn.executemany(
                     "UPDATE external_scores SET baseline_key = ? WHERE claim_id = ?",
-                    [
-                        (
-                            _baseline_key(
-                                (json.loads(r["reform_json"]) or {}).get("baseline")
-                                or CURRENT_LAW_DESCRIPTOR
-                            ),
-                            r["claim_id"],
-                        )
-                        for r in legacy
-                    ],
+                    [(_legacy_claim_baseline_key(r), r["claim_id"]) for r in legacy],
                 )
 
     def close(self):
