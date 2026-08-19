@@ -195,7 +195,8 @@ def export(
         "note": (
             "Non-Urban populations exported from scorecard.db: the populace"
             " reform-validation registry (issue #20) plus the compute"
-            " campaign's attached comparisons (TPC/CPSP/PWBM/CBO/JCT)."
+            " campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT;"
+            " UK: the HMRC ready-reckoner family)."
             " Statuses and calibration relationships are verbatim; nothing"
             " here is a pass/fail grade."
         ),

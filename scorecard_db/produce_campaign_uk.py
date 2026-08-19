@@ -46,9 +46,10 @@ silently outgrow its stated reason):
     uprating_april2026 NOT RESOLVED (4 rows = 3 resolution_foundation
         benefit_uprating_pct + 1 metaless exhibit): RF long-tail, held
 
-The metaless exhibits (4 across the families) carry exhibit_context
-but no exhibit_meta; ingest_campaign would only ever defer them, so
-they block with their families rather than shipping as noise.
+The metaless exhibits (5 rows across the families — the free_joins
+pair is one construction duplicated) carry exhibit_context but no
+exhibit_meta; ingest_campaign would only ever defer them, so they
+block with their families rather than shipping as noise.
 
 Usage:
     PYTHONPATH=. python -m scorecard_db.produce_campaign_uk

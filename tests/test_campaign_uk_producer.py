@@ -72,7 +72,11 @@ def _composition(name):
     tally: dict[str, int] = {}
     for r in rows:
         if r.get("exhibit") and "external_claim_match" not in r:
-            key = "metaless_exhibit"
+            # the DEFINING property is the missing exhibit_meta (that is
+            # what makes ingest defer it) — a refreeze that adds meta
+            # makes the row ingestible and must change this tally, not
+            # slip through as "still metaless" (round-2 gate)
+            key = "metaless_exhibit" if "exhibit_meta" not in r else "exhibit_with_meta"
         else:
             m = r["external_claim_match"]
             key = f"{m['source']}:{m['metric']}"
