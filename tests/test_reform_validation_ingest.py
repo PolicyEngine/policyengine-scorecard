@@ -484,7 +484,9 @@ def test_results_carry_executed_baselines_per_mode(summary_and_db):
 
     from scorecard_db.ingest_reform_validation import (
         _CURRENT_LAW_KEY,
-        _OBBBA_BASELINE_KEYS,
+        _ISOLATED_KEY,
+        OBBBA_PROVISIONS,
+        _obbba_baseline_key,
     )
 
     conn = sqlite3.connect(path)
@@ -504,6 +506,24 @@ def test_results_carry_executed_baselines_per_mode(summary_and_db):
         )
     )
     conn.close()
-    assert by_key[_OBBBA_BASELINE_KEYS["isolated"]] == 36
-    assert by_key[_OBBBA_BASELINE_KEYS["jcx_stacked"]] == 144
+    assert by_key[_ISOLATED_KEY] == 36
     assert by_key[_CURRENT_LAW_KEY] == 675 - 180
+    # Stacked runs: one distinct executed world per (chain, provision) —
+    # f0af251's chain carries 2 results per provision (both FYs), the
+    # buildi+ producer chain 6 (3 releases x 2 FYs). Never a collapsed
+    # family key.
+    f0_keys = {
+        _obbba_baseline_key("stacked_chained", pid): pid for pid in OBBBA_PROVISIONS
+    }
+    producer_keys = {
+        _obbba_baseline_key("jcx_stacked", pid): pid for pid in OBBBA_PROVISIONS
+    }
+    assert all(by_key[k] == 2 for k in f0_keys)
+    assert all(by_key[k] == 6 for k in producer_keys)
+    assert (
+        36
+        + (675 - 180)
+        + sum(by_key[k] for k in f0_keys)
+        + sum(by_key[k] for k in producer_keys)
+        == 675
+    )

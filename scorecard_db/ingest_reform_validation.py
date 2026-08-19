@@ -109,11 +109,30 @@ REGISTRY_MARK = "populace_reform_validation"
 # position-varying jcx_stack_position world, with the position itself in
 # the construction string.
 _CURRENT_LAW_KEY = BASELINE.baseline_key()
-_OBBBA_BASELINE_KEYS = {
-    "isolated": baseline_key({"policy": "pre_obbba_expiry_2026"}),
-    "stacked_chained": baseline_key({"policy": "jcx_stack_position"}),
-    "jcx_stacked": baseline_key({"policy": "jcx_stack_position"}),
-}
+_ISOLATED_KEY = baseline_key({"policy": "pre_obbba_expiry_2026"})
+
+# Stacked runs execute a DISTINCT world per (chain, provision): current
+# law plus the provisions above this one in that chain. Two chains exist
+# — f0af251's own (through the pre-scope-fix exemption row and a separate
+# senior-deduction link) and the buildi+ JCX producer's — so each scored
+# provision keys its own registered world, and the construction string
+# carries the chain position.
+_STACK_CHAIN = {"stacked_chained": "f0af251", "jcx_stacked": "jcx_producer"}
+
+
+def stack_baseline_descriptor(mode: str, provision_id: str) -> dict:
+    return {
+        "policy": "obbba_stack_below",
+        "chain": _STACK_CHAIN[mode],
+        "provision": provision_id,
+    }
+
+
+def _obbba_baseline_key(mode: str, provision_id: str) -> str:
+    if mode == "isolated":
+        return _ISOLATED_KEY
+    return baseline_key(stack_baseline_descriptor(mode, provision_id))
+
 
 # Exact engine pins per release (from each release_manifest.json on HF;
 # the artifact's PE values were computed at these versions).
@@ -578,6 +597,7 @@ def _obbba_results(
     claims: dict[str, ExternalScore],
     tallies: dict,
     validate: bool,
+    position: int,
 ) -> list[PEResult]:
     """Attach the registry's OBBBA computation to the canonical harvest
     claims — the FY2026 provision claim, and the FY2027 one when the
@@ -652,10 +672,13 @@ def _obbba_results(
                 status=ComparisonStatus.CONSTRUCTED,
                 engine_version=engine,
                 data_bundle=release_id,
-                pe_construction=(f"reform_delta:{measure}:{mode}:cy2026_for_fy{fy}"),
+                pe_construction=(
+                    f"reform_delta:{measure}:{mode}"
+                    f":stack_pos{position:02d}:cy2026_for_fy{fy}"
+                ),
                 run_id=f"{RUN_PREFIX}{release_id}",
                 computed_at=computed_at,
-                baseline_key=_OBBBA_BASELINE_KEYS[mode],
+                baseline_key=_obbba_baseline_key(mode, row["id"]),
             )
         )
     return results
@@ -691,6 +714,7 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
             for r in artifact["reforms"]
             if r["category"] == "State program actual"
         }
+        obbba_position = 0
         for row in artifact["reforms"]:
             if row["jct"].get("score") is None:
                 skipped.append(f"{release_id[:20]}…:{row['id']}")
@@ -701,6 +725,7 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
                 or base_engine
             )
             if row["category"] == "OBBBA":
+                obbba_position += 1
                 results.extend(
                     _obbba_results(
                         db,
@@ -711,6 +736,7 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
                         claims,
                         tallies,
                         validate=path == releases[-1],
+                        position=obbba_position,
                     )
                 )
                 continue

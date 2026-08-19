@@ -55,8 +55,11 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "current_law_pre_2025_tariffs",
         "Current law excluding the 2025 tariff actions.",
         "policy_ref",
-        "TPC tariff tables (161 claims; baseline stated in "
-        "sources/harvest-2026-08-02/tpc/manifest.jsonl) and PWBM "
+        "TPC tariff tables, 161 claims: the baseline is explicit in "
+        "sources/harvest-2026-08-02/tpc/manifest.jsonl for T25-0366's 11 "
+        "claims (baseline_line) and assigned from the workbook "
+        "verification documented in scorecard_db/ingest_tpc.py for "
+        "T26-0010/0112/0113 (manifest baseline_line null). Plus PWBM "
         "tariff rows (22 claims). Tax Foundation tracker rows score "
         "current law and do not key this world "
         "(scorecard_db/ingest_tax_foundation.py).",
@@ -136,22 +139,6 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "scorecard_db/ingest_reform_validation.py.",
     ),
     (
-        {"policy": "jcx_stack_position"},
-        "jcx_stack_position",
-        "The stack below each OBBBA provision's JCX position — a "
-        "POSITION-VARYING family of executed baselines, not one world: "
-        "each stacked run's baseline is current law plus the provisions "
-        "above it (f0af251's own chain; the buildi+ JCX producer). The "
-        "position rides in the result's construction string; registered "
-        "as one entry so stacked runs carry non-null executed-baseline "
-        "provenance and can never render plain agreement against any "
-        "single-world claim.",
-        "policy_ref",
-        "Producer stack notes (sources/populace-reform-validation/raw "
-        "artifacts; verified chaining in the #24 review record); keys "
-        "stamped by scorecard_db/ingest_reform_validation.py.",
-    ),
-    (
         {"policy": "pre_obbba_law"},
         "pre_obbba_law",
         "TPC T26-0009's stated counterfactual: 'Law Prior to the 2025 "
@@ -219,3 +206,43 @@ def register_baselines(db: ScorecardDB) -> int:
             f"scorecard_db/baselines.py deliberately): {described}"
         )
     return len(BASELINES)
+
+
+# The stacked OBBBA runs execute one distinct world per (chain,
+# provision): current law plus the provisions above that one in that
+# chain. Enumerated deliberately from the canonical provision map — 18
+# provisions x 2 chains — rather than laundered into a single family key
+# (the earlier jcx_stack_position entry is disavowed and removed).
+from .ingest_reform_validation import (  # noqa: E402
+    OBBBA_PROVISIONS,
+    stack_baseline_descriptor,
+)
+
+_CHAIN_DESCRIPTIONS = {
+    "f0af251": (
+        "f0af251's own chained scoring — through the pre-scope-fix "
+        "exemption row and a separate senior-deduction link"
+    ),
+    "jcx_producer": "the buildi+ stacked producer, JCX order",
+}
+for _chain, _chain_desc in _CHAIN_DESCRIPTIONS.items():
+    for _pid in OBBBA_PROVISIONS:
+        BASELINES.append(
+            (
+                stack_baseline_descriptor(
+                    {"f0af251": "stacked_chained", "jcx_producer": "jcx_stacked"}[
+                        _chain
+                    ],
+                    _pid,
+                ),
+                f"obbba_stack_below__{_chain}__{_pid}",
+                f"Current law plus the OBBBA provisions above {_pid} in "
+                f"{_chain_desc}; the run's construction string carries the "
+                "chain position.",
+                "policy_ref",
+                "Producer stack notes and verified chaining "
+                "(sources/populace-reform-validation/raw artifacts; the #24 "
+                "review record); stamped by "
+                "scorecard_db/ingest_reform_validation.py.",
+            )
+        )
