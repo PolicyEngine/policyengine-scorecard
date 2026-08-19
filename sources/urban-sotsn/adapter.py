@@ -70,16 +70,20 @@ POVERTY_COLS = {
     "fullpart_spm_pov_rate_100_pop_total": ("poverty_rate_fullpart", "total"),
     "fullpart_spm_pov_rate_100_pop_child": ("poverty_rate_fullpart", "child"),
     "fullpart_change_spm_pov_rate_100_pop_total": (
-        "poverty_rate_relative_change_fullpart", "total",
+        "poverty_rate_relative_change_fullpart",
+        "total",
     ),
     "fullpart_change_spm_pov_rate_100_pop_child": (
-        "poverty_rate_relative_change_fullpart", "child",
+        "poverty_rate_relative_change_fullpart",
+        "child",
     ),
     "fullpart_change_spm_pov_num_100_pop_total": (
-        "poverty_count_change_fullpart", "total",
+        "poverty_count_change_fullpart",
+        "total",
     ),
     "fullpart_change_spm_pov_num_100_pop_child": (
-        "poverty_count_change_fullpart", "child",
+        "poverty_count_change_fullpart",
+        "child",
     ),
 }
 
@@ -111,15 +115,18 @@ def parse_column(col):
     program = next((p for p in PROGRAMS if name.startswith(p + "_base_")), None)
     if program is None:
         raise ValueError(f"unparsed column: {col}")
-    rest = name[len(program) + len("_base_"):]
+    rest = name[len(program) + len("_base_") :]
     metric_slug = next(
-        (m for m in ("elig_rate", "elig", "part_rate", "part_gap")
-         if rest == m or rest.startswith(m + "_")),
+        (
+            m
+            for m in ("elig_rate", "elig", "part_rate", "part_gap")
+            if rest == m or rest.startswith(m + "_")
+        ),
         None,
     )
     if metric_slug is None:
         raise ValueError(f"unparsed metric in: {col}")
-    rest = rest[len(metric_slug):].lstrip("_")
+    rest = rest[len(metric_slug) :].lstrip("_")
 
     variant = None
     for v in VARIANTS:
@@ -180,9 +187,7 @@ def run():
                         if t["program"] == "spm_poverty"
                         else "2023 average month"
                     ),
-                    "value": (
-                        None if suppressed else float(val) * t["scale"]
-                    ),
+                    "value": (None if suppressed else float(val) * t["scale"]),
                     "status": "suppressed" if suppressed else "ok",
                     "source_column": col,
                 }

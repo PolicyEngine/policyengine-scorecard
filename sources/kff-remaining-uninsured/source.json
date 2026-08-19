@@ -1,0 +1,21 @@
+{
+  "id": "kff-remaining-uninsured",
+  "name": "KFF — eligibility for coverage among the remaining uninsured",
+  "organization": "KFF",
+  "url": "https://www.kff.org/health-reform/state-indicator/distribution-of-eligibility-for-aca-coverage-among-the-remaining-uninsured/",
+  "data_url": "raw/state_indicator_2024acs_2025levels.md (rendered table extraction) and the national flagship-brief headlines recorded in PROVENANCE.md",
+  "fetched": "2026-08-18",
+  "fetch_notes": "The state table uses 2024 ACS data and 2025 eligibility levels. Its rendered first-column label is retained verbatim pending an offline check against KFF's CSV headers. The flagship brief uses 2022 ACS data and 2023 eligibility levels.",
+  "claim_class": "baseline_moment",
+  "benchmark_class": "different_model",
+  "calibration_relationship": "held_out",
+  "model": {
+    "name": "KFF/Damico eligibility simulation",
+    "open_source": false,
+    "method": "Static ACS-based eligibility microsimulation for the nonelderly uninsured. KFF reconstructs Medicaid and Marketplace units, applies ACA-definition MAGI and state eligibility levels, and imputes immigration status and employer coverage offers.",
+    "method_basis": "KFF methods boxes summarized with source links in PROVENANCE.md"
+  },
+  "period": "2022 flagship brief; 2024 State Health Facts indicator",
+  "geographies": "US plus 50 states and the District of Columbia",
+  "diagnosis_upstream": "Re-check the downloadable KFF CSV column headers before removing the rendered-label caution."
+}

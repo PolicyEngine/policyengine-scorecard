@@ -33,6 +33,13 @@ increments at 0.93-0.99 parity while levels diverge. A row WITHOUT
 exhibit_meta is deferred — tallied and listed in the summary for the
 campaign to re-emit, never silently dropped, never guessed.
 
+Input-override exhibit rows use the strict alternate ``reform_ref`` route
+instead of ``external_claim_match``. The descriptor must be a
+``policyengine_us_inputs`` ReformRef; its canonical key/JSON are stored on
+the exhibit, while ``exhibit_context`` supplies conditions and the indexed
+geography/program fields. This keeps take-up-flag counterfactuals executable
+and distinct from the legacy ``policy_ref`` exhibit descriptors above.
+
 Idempotent: this module replaces exactly the run_ids present in the
 staged files it is ingesting — never a prefix sweep, so re-running the US
 directory can't erase results another campaign directory (UK) ingested
@@ -46,7 +53,7 @@ import json
 from pathlib import Path
 
 from .db import EXHIBITS_SQL, RESULTS_SQL, ScorecardDB
-from .models import ComparisonStatus, PEResult
+from .models import ComparisonStatus, PEResult, ReformRef
 
 REPO = Path(__file__).resolve().parent.parent
 STAGED_US = REPO / "sources" / "campaign-20260802" / "us"
@@ -166,6 +173,60 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
             # deferred exhibits, so a row that LOSES its exhibit_meta
             # between runs can't leave its stale pe_exhibits row behind.
             staged_run_ids.add(row["run_id"])
+            if "reform_ref" in row:
+                if "external_claim_match" in row:
+                    raise ValueError(
+                        f"{path.stem}: reform_ref and external_claim_match "
+                        "are mutually exclusive"
+                    )
+                meta = row.get("exhibit_meta")
+                if not isinstance(meta, dict):
+                    raise ValueError(
+                        f"{path.stem}: reform_ref route requires exhibit_meta"
+                    )
+                raw_reform = row["reform_ref"]
+                if not isinstance(raw_reform, dict):
+                    raise ValueError(f"{path.stem}: reform_ref must be an object")
+                reform = ReformRef(**raw_reform)
+                if reform.framework != "policyengine_us_inputs":
+                    raise ValueError(
+                        f"{path.stem}: reform_ref route requires "
+                        "framework='policyengine_us_inputs'"
+                    )
+                if "reform_key" in meta and meta["reform_key"] != reform.key():
+                    raise ValueError(
+                        f"{path.stem}: exhibit_meta reform_key does not match "
+                        "reform_ref"
+                    )
+                conditions = row.get("exhibit_context", {})
+                if not isinstance(conditions, dict):
+                    raise ValueError(f"{path.stem}: exhibit_context must be an object")
+                note = " | ".join(
+                    [meta["note"], row["pe_construction"]] + row.get("annotations", [])
+                )
+                exhibits.append(
+                    {
+                        "exhibit": f"campaign:{path.stem}",
+                        "reform_key": reform.key(),
+                        "reform_json": reform.to_json(),
+                        "metric": meta["metric"],
+                        "unit_concept": meta["unit_concept"],
+                        "period": meta["period"],
+                        "time_basis": meta["time_basis"],
+                        "conditions": conditions,
+                        "geography": conditions.get("geography"),
+                        "program": conditions.get("program"),
+                        "value": row["pe_value"],
+                        "baseline_value": row.get("baseline_value"),
+                        "delta": row.get("delta"),
+                        "engine_version": row["engine_version"],
+                        "data_bundle": row["data_bundle"],
+                        "run_id": row["run_id"],
+                        "computed_at": row["computed_at"],
+                        "note": note,
+                    }
+                )
+                continue
             if row.get("exhibit"):
                 meta = row.get("exhibit_meta")
                 if meta is None:
@@ -255,4 +316,5 @@ if __name__ == "__main__":
     import sys
 
     out = Path(sys.argv[1] if len(sys.argv) > 1 else "data/scorecard.db")
-    print(json.dumps(ingest(out), indent=1))
+    staged = Path(sys.argv[2]) if len(sys.argv) > 2 else None
+    print(json.dumps(ingest(out, staged_dir=staged), indent=1))
