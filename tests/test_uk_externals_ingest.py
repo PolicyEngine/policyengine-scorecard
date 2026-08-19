@@ -49,6 +49,10 @@ def test_fy_parsing():
         _fy("2029-99")
     with pytest.raises(ValueError, match="suffix"):
         _fy("2029/31")
+    # fullmatch: $ would accept a trailing newline
+    for tainted in ("2029-30\n", "2029/30\n", "FYE 2030\n"):
+        with pytest.raises(ValueError):
+            _fy(tainted)
 
 
 def test_dwp_mapping_and_drops(monkeypatch):

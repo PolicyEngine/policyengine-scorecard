@@ -131,11 +131,13 @@ def _fy(label: str) -> tuple[int, str]:
     'FYE 2024' -> (2024, '2023-24'); '2023-24' -> (2024, '2023-24');
     '2024/25' -> (2025, '2024-25').
     """
-    m = re.match(r"^FYE (\d{4})$", label)
+    # fullmatch, not match-with-$: Python's $ also matches before a
+    # trailing newline, so "2029-30\n" would parse (round-2 gate).
+    m = re.fullmatch(r"FYE (\d{4})", label)
     if m:
         end = int(m.group(1))
         return end, f"{end - 1}-{str(end)[2:]}"
-    m = re.match(r"^(\d{4})[-/](\d{2})$", label)
+    m = re.fullmatch(r"(\d{4})[-/](\d{2})", label)
     if m:
         start = int(m.group(1))
         # the suffix must be the start year + 1 — '2029-99' is malformed,
