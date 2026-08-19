@@ -142,8 +142,8 @@
    "mode": 1,
    "stage": "ingested",
    "running": false,
-   "updated": "2026-08-14",
-   "note": "External side built (#34): FYE 2024 vintage, 3,094 tidy rows across PC/GC/SC-only/HB-pensioners \u00d7 caseload+expenditure, headline checks pass; PE counterparts pending the UK compute pipeline (#40)"
+   "updated": "2026-08-19",
+   "note": "1092 claims, 546 ledger facts"
   },
   {
    "id": "hbai-poverty",
@@ -152,8 +152,8 @@
    "mode": 1,
    "stage": "ingested",
    "running": false,
-   "updated": "2026-08-14",
-   "note": "External side built (#35): FYE 2025 vintage, 13,056 tidy rows \u2014 rel/abs low income x rate/count x BHC/AHC x 4 age groups, UK single-year + region/country 3-year averages; headline checks pass; PE counterparts pending #40"
+   "updated": "2026-08-19",
+   "note": "13056 claims"
   },
   {
    "id": "hmrc-personal-tax",
@@ -162,8 +162,8 @@
    "mode": 1,
    "stage": "ingested",
    "running": false,
-   "updated": "2026-08-14",
-   "note": "External side built (#36): 1,213 rows \u2014 Table 2.1 payers by marginal rate/sex/age 1990-91 to 2026-27, Table 2.5 counts+liabilities by income range x band, full June-2025 ready reckoner (12 tax heads, reform deltas w/ baseline_key); reckoner_t2 campaign counterparts attach via #33"
+   "updated": "2026-08-19",
+   "note": "723 claims, 490 ledger facts"
   },
   {
    "id": "obr-welfare",
@@ -172,8 +172,8 @@
    "mode": 1,
    "stage": "ingested",
    "running": false,
-   "updated": "2026-08-14",
-   "note": "External side built (#37): March 2026 EFO Table 4.9 baseline_moment claims \u2014 259 rows, 31 benefit lines x 2024-25 outturn + forecast to 2030-31, welfare-cap split as variant, cap+outside=total identity checked; obr_measures campaign counterparts attach via #33"
+   "updated": "2026-08-19",
+   "note": "222 claims, 37 ledger facts"
   },
   {
    "id": "ukmod-stats",
@@ -182,8 +182,8 @@
    "mode": 1,
    "stage": "ingested",
    "running": false,
-   "updated": "2026-08-14",
-   "note": "External side built (#38): Country Report 2023-2030 (B2026.01) validation tables 4.5-4.8 \u2014 1,131 rows, caseloads+expenditure for 30 instruments x 2023-2030 with official-as-cited columns, income distribution + poverty triangle (ukmod/input_data/hbai variants); 12 report-pinned checks + 40 structural invariants pass (quintile-row parse defect fixed)"
+   "updated": "2026-08-19",
+   "note": "758 claims"
   },
   {
    "id": "jct-reform-scores",

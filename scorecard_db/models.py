@@ -141,9 +141,13 @@ class UnitConcept(str, Enum):
 #
 # UK additions (2026-08-02 UK harvest; COLLATION UK worklist items 2-3):
 # fy                normalized fiscal-year label "2026-27" (Apr–Mar). The
-#                   integer period is ALWAYS the FY start year (pe-uk-data
-#                   convention) — adapters re-derive it from this label, so
-#                   end-year staging conventions cannot leak in.
+#                   integer period is the FY END year — the repo-wide claim
+#                   convention (ingest_reform_validation: "period is the
+#                   ending year"; e.g. a FY2027-28 fiscal note keys 2028).
+#                   PE-UK's engine time_period uses the START year; that is
+#                   RESULT-side provenance (engine_time_period), recorded at
+#                   attach with the one-year offset asserted — never a claim
+#                   identity.
 # basis             source's own designation: "outturn" | "forecast" |
 #                   "projected" | "provisional" | "unstated". Admin outturn
 #                   rows never reach external_scores (ledger routing rule).

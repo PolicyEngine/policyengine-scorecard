@@ -90,6 +90,7 @@ def test_hmrc_reckoner_rows_are_reform_claims(monkeypatch):
             metric="revenue_effect",
             subgroup="Change basic rate by 1p",
             geography="UK",
+            unit_concept="gbp_nominal",
             period="2026-27",
             value=6_900_000_000.0,
         ),
@@ -98,6 +99,7 @@ def test_hmrc_reckoner_rows_are_reform_claims(monkeypatch):
             metric="taxpayer_count",
             subgroup="basic_rate",
             geography="UK",
+            unit_concept="individuals",
             period="2026-27",
             value=31_400_000.0,
         ),
@@ -133,6 +135,7 @@ def test_reckoner_slug_separates_tax_heads(monkeypatch):
             metric="revenue_effect",
             subgroup="Change standard rate by 1 percentage point",
             geography="UK",
+            unit_concept="gbp_nominal",
             period="2027-28",
             value=value,
         )
@@ -275,6 +278,7 @@ def test_ukmod_primary_variant_only(monkeypatch):
         "subgroup": "children",
         "poverty_line": "relative_60_median",
         "housing_costs": "bhc",
+        "equivalisation": "modified_oecd",
     }
 
 
@@ -286,6 +290,7 @@ def test_ukmod_unknown_metric_raises(monkeypatch):
                 metric="mystery",
                 variant="ukmod",
                 geography="UK",
+                unit_concept="families",
                 period="2025",
             )
         ],
@@ -320,11 +325,11 @@ def test_full_ingest_round_trip(tmp_path):
     assert summary["claims"] == {
         "dwp_takeup": 1092,
         "dwp_hbai": 13056,
-        "uk_hmrc": 1047,
+        "uk_hmrc": 723,
         "obr": 222,
         "ukmod": 758,
     }
-    assert summary["ledger"] == {"dwp_takeup": 546, "uk_hmrc": 166, "obr": 37}
+    assert summary["ledger"] == {"dwp_takeup": 546, "uk_hmrc": 490, "obr": 37}
     assert summary["drops"] == {
         "dwp_takeup": {"range_variants": 1456},
         "ukmod": {"non_primary_variants": 373},
@@ -371,7 +376,7 @@ def test_full_ingest_round_trip(tmp_path):
         ("obr", "consumed_as_target"): 78,
         ("obr", "held_out"): 144,
         ("uk_hmrc", "held_out"): 225,
-        ("uk_hmrc", "seed_source"): 822,
+        ("uk_hmrc", "seed_source"): 498,
         ("ukmod", "held_out"): 758,
     }
     # No admin outturn ever reaches claims.
@@ -391,7 +396,7 @@ def _obr_row(**over):
         program="pension_credit",
         metric="welfare_spending",
         geography="UK",
-        unit_concept="gbp",
+        unit_concept="gbp_nominal",
         period="2023-24",
         value=5_500_000_000.0,
         aggregate_level="component",

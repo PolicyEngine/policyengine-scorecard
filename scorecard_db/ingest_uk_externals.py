@@ -80,14 +80,26 @@ def _ledger_row(source, row, fy, metric, unit, publication, consumed_by=None):
     fact_id is deterministic over the cell's identity so re-ingest
     rewrites the same facts and downstream Ledger consumers can key on
     it."""
+    unit = canon(source, "unit", unit)
+    program = (
+        canon(source, "program", row["program"])
+        if row.get("program") not in (None, "total")
+        else row.get("program")
+    )
+    subgroup = (
+        canon(source, "subgroup", row["subgroup"])
+        if row.get("subgroup") is not None
+        else None
+    )
+    geography = canon(source, "geography", row["geography"])
     identity = "|".join(
         str(x)
         for x in (
             source,
             metric,
-            row.get("program"),
-            row.get("subgroup"),
-            row.get("geography"),
+            program,
+            subgroup,
+            geography,
             fy,
             row.get("variant"),
         )
@@ -97,15 +109,17 @@ def _ledger_row(source, row, fy, metric, unit, publication, consumed_by=None):
         "source": source,
         "publication": publication,
         "metric": metric,
-        "program": row.get("program"),
-        "subgroup": row.get("subgroup"),
-        "geography": row.get("geography"),
+        "program": program,
+        "subgroup": subgroup,
+        "geography": geography,
         "fy": fy,
         "variant": row.get("variant"),
         "unit": unit,
         "value": row["value"],
         "status": row["status"],
         "source_column": row.get("source_column"),
+        "aggregate_level": row.get("aggregate_level"),
+        "parent": row.get("parent"),
         "consumed_by": consumed_by,
         "routing": "ledger: admin outturn (boundary rule 2026-08-02)",
     }
@@ -318,6 +332,7 @@ def stage_dwp_takeup() -> tuple[list[ExternalScore], list[dict], dict]:
                 )
             )
             continue
+        canon("dwp_takeup", "unit", row["unit_concept"])
         metric, unit, value_kind, kind, extra = _DWP_METRICS[row["metric"]]
         cond = _base_conditions("dwp_takeup", row) | extra | {"fy": fy}
         scores.append(
@@ -380,17 +395,37 @@ _SPAN = re.compile(r"^(\d{4})/(\d{2})-(\d{4})/(\d{2})$")
 def stage_hbai() -> tuple[list[ExternalScore], list[dict], dict]:
     scores = []
     for row in _load("hbai-poverty"):
+        canon("dwp_hbai", "unit", row["unit_concept"])
         metric, unit, value_kind, line = _HBAI_METRICS[row["metric"]]
         cond = _base_conditions("dwp_hbai", row)
         cond.pop("program", None)  # hbai_low_income is the source, not a program
+        housing = canon("dwp_hbai", "housing_costs", row["variant"])
+
+        def _absolute_anchor(start_year: int, end_year: int) -> str:
+            """Notes sheet Note 3 (vendored): the absolute fixed reference
+            year is FYE 2025 for 2021/22-2024/25; years before 2021/22
+            remain anchored at FYE 2011. A window straddling the break is
+            an explicit mixed construction, never averaged away."""
+            starts = range(start_year, end_year)
+            anchors = {"fye_2025" if s >= 2021 else "fye_2011" for s in starts}
+            return anchors.pop() if len(anchors) == 1 else ("mixed_fye2011_fye2025")
+
         cond |= {
             "poverty_line": canon("dwp_hbai", "poverty_line", line),
-            "housing_costs": canon("dwp_hbai", "housing_costs", row["variant"]),
+            "housing_costs": housing,
+            # FYE-2025 methodology report: "The main equivalence scales now
+            # used in HBAI are the modified OECD scales"; AHC uses the
+            # companion scale.
+            "equivalisation": (
+                "modified_oecd_companion_ahc" if housing == "ahc" else "modified_oecd"
+            ),
         }
         span = _SPAN.match(row["period"])
         if span:
             start, end = int(span.group(1)) + 1, int(span.group(3)) + 1
             cond["window_kind"] = "annual_average"
+            if line == "absolute":
+                cond["poverty_line_anchor"] = _absolute_anchor(start - 1, end)
             scores.append(
                 _score(
                     row,
@@ -409,6 +444,8 @@ def stage_hbai() -> tuple[list[ExternalScore], list[dict], dict]:
         else:
             period, fy = _fy(row["period"])
             cond["fy"] = fy
+            if line == "absolute":
+                cond["poverty_line_anchor"] = _absolute_anchor(period - 1, period)
             scores.append(
                 _score(
                     row,
@@ -445,9 +482,10 @@ _HMRC_LEVELS = {
     ),
 }
 
-# The liabilities publication's 2023-24 column is the SPI outturn year
-# (actuals); 2024-25 onward are HMRC projections. Outturn -> Ledger.
-_HMRC_OUTTURN_FY = "2023-24"
+# The liabilities publication's own description sheet (vendored
+# workbook, 2_1_Description!A5): every year through 2023-24 is OUTTURN;
+# 2024-25 onward are projections. All outturn years -> Ledger.
+_HMRC_LAST_OUTTURN_END = 2024  # FY 2023-24
 
 _RECKONER_BASELINE = "hmrc_indexed_baseline_spring_2025"
 
@@ -474,12 +512,17 @@ def stage_hmrc() -> tuple[list[ExternalScore], list[dict], dict]:
             # change description is the policy world.
             cond = {
                 "country": "UK",
-                "geography": row["geography"],
-                "program": row["program"],
+                "geography": canon("uk_hmrc", "geography", row["geography"]),
+                "program": canon("uk_hmrc", "program", row["program"]),
                 "fy": fy,
                 "option": row["subgroup"],
                 "baseline_policy": _RECKONER_BASELINE,
             }
+            # machine-readable comparison orientation (the source's own
+            # requirement: asymmetric (cost)/(yield) pairs are distinct)
+            for key in ("sign_convention", "direction", "change_direction"):
+                if row.get(key) is not None:
+                    cond[key] = row[key]
             reform = ReformRef(
                 framework="policy_ref",
                 reform={"policy": _reckoner_policy(row["program"], row["subgroup"])},
@@ -494,7 +537,7 @@ def stage_hmrc() -> tuple[list[ExternalScore], list[dict], dict]:
                     cond,
                     period,
                     TimeBasis.FISCAL_YEAR,
-                    "usd",
+                    "gbp",
                     _HMRC_PUB,
                     reform=reform,
                     source_model="hmrc_personal_tax_model",
@@ -503,7 +546,7 @@ def stage_hmrc() -> tuple[list[ExternalScore], list[dict], dict]:
                 )
             )
             continue
-        if fy == _HMRC_OUTTURN_FY:
+        if period <= _HMRC_LAST_OUTTURN_END:
             ledger.append(
                 _ledger_row(
                     "uk_hmrc",
@@ -521,6 +564,7 @@ def stage_hmrc() -> tuple[list[ExternalScore], list[dict], dict]:
                 )
             )
             continue
+        canon("uk_hmrc", "unit", row["unit_concept"])
         metric, unit, value_kind = _HMRC_LEVELS[row["metric"]]
         cond = _base_conditions("uk_hmrc", row) | {"fy": fy}
         if row["variant"] is not None:  # table 2.5 income-range rows
@@ -560,6 +604,7 @@ def stage_obr() -> tuple[list[ExternalScore], list[dict], dict]:
     for row in _load("obr-welfare"):
         if row["metric"] != "welfare_spending":
             raise ValueError(f"obr: unknown metric {row['metric']!r}")
+        canon("obr", "unit", row["unit_concept"])
         period, fy = _fy(row["period"])
         if fy == _OBR_OUTTURN_FY:
             from .relationships import OBR_CONSUMED_WELFARE_PROGRAMS
@@ -606,7 +651,7 @@ def stage_obr() -> tuple[list[ExternalScore], list[dict], dict]:
                 cond,
                 period,
                 TimeBasis.FISCAL_YEAR,
-                "usd",
+                "gbp",
                 _OBR_PUB,
                 source_model="obr_efo",
                 program=cond.get("program"),
@@ -642,6 +687,7 @@ def stage_ukmod() -> tuple[list[ExternalScore], list[dict], dict]:
         if row["variant"] != "ukmod":
             drops["non_primary_variants"] += 1
             continue
+        canon("ukmod", "unit", row["unit_concept"])
         period = int(row["period"])
         program = canon("ukmod", "program", row["program"])
         cond = _base_conditions("ukmod", row)
@@ -666,6 +712,8 @@ def stage_ukmod() -> tuple[list[ExternalScore], list[dict], dict]:
                 "index",
             )
             cond.pop("program", None)
+            cond["housing_costs"] = canon("ukmod", "housing_costs", "bhc")
+            cond["equivalisation"] = "modified_oecd"
         elif row["metric"] in (
             "mean_income",
             "median_income",
@@ -677,6 +725,8 @@ def stage_ukmod() -> tuple[list[ExternalScore], list[dict], dict]:
                 "gbp_per_month",
             )
             cond.pop("program", None)
+            cond["housing_costs"] = canon("ukmod", "housing_costs", "bhc")
+            cond["equivalisation"] = "modified_oecd"
             if row["metric"] == "mean_income":
                 pass  # mean is the default statistic
             else:
@@ -685,6 +735,8 @@ def stage_ukmod() -> tuple[list[ExternalScore], list[dict], dict]:
                 cond["quantile"] = cond.pop("subgroup")
         elif row["metric"] == "quintile_income_share":
             metric, unit, value_kind = Metric.INCOME_SHARE, UnitConcept.SHARE, "share"
+            cond["housing_costs"] = canon("ukmod", "housing_costs", "bhc")
+            cond["equivalisation"] = "modified_oecd"
             cond.pop("program", None)
             cond["quantile"] = cond.pop("subgroup")
         elif _UKMOD_POVERTY.match(row["metric"]):
@@ -700,6 +752,7 @@ def stage_ukmod() -> tuple[list[ExternalScore], list[dict], dict]:
                 _UKMOD_POVERTY.match(row["metric"]).group(1),
             )
             cond["housing_costs"] = canon("ukmod", "housing_costs", "bhc")
+            cond["equivalisation"] = "modified_oecd"
         else:
             raise ValueError(f"ukmod: unknown metric {row['metric']!r}")
         scores.append(
@@ -733,18 +786,19 @@ STAGERS = {
 # adapter regeneration must fail HERE, never shrink or grow the catalog
 # silently (adjudication blocker 7: the earlier >0 assertions let a
 # +168-claim drift pass unseen).
-# 16,175 claims + 749 Ledger facts + 1,829 deliberate drops account for
-# every adapter row (the pre-routing total was 16,924 claims; the 749
-# admin outturns now route to Ledger per the 2026-08-02 boundary rule).
+# 15,851 claims + 1,073 Ledger facts + 1,829 deliberate drops account
+# for every adapter row (16,924 pre-routing; the admin outturns — DWP
+# recipient/claimed cells, HMRC's full 1990-91..2023-24 outturn span,
+# OBR's FY2024-25 column — route to Ledger per the boundary rule).
 _EXPECTED = {
     "claims": {
         "dwp_takeup": 1092,
         "dwp_hbai": 13056,
-        "uk_hmrc": 1047,
+        "uk_hmrc": 723,
         "obr": 222,
         "ukmod": 758,
     },
-    "ledger": {"dwp_takeup": 546, "uk_hmrc": 166, "obr": 37},
+    "ledger": {"dwp_takeup": 546, "uk_hmrc": 490, "obr": 37},
     "drops": {
         "dwp_takeup": {"range_variants": 1456},
         "ukmod": {"non_primary_variants": 373},
@@ -796,6 +850,43 @@ def ingest(db_path: Path) -> dict:
             UK_SOURCES,
         )
         db.conn.executemany(SCORES_SQL, rows)
+    # Deliberate-registration gate (#13): every baseline world the five
+    # sources reference must be described; and mission control reflects
+    # the ingest.
+    from .baselines import register_baselines
+    from .ingest_harvest import sync_lane_feed
+
+    register_baselines(db)
+    # One lane id per source, matching the adapter-created feed entries
+    # (data/lanes.json) so DB and feed never disagree about stage.
+    lane_meta = {
+        "dwp-takeup": ("dwp_takeup", "DWP", "income-related benefits take-up"),
+        "hbai-poverty": ("dwp_hbai", "DWP", "HBAI low income"),
+        "hmrc-personal-tax": ("uk_hmrc", "HMRC", "personal tax liabilities + reckoner"),
+        "obr-welfare": ("obr", "OBR", "EFO welfare baseline"),
+        "ukmod-stats": ("ukmod", "UKMOD", "Country Report validation tables"),
+    }
+    for lane_id, (name, src_label, area) in lane_meta.items():
+        db.set_lane(
+            lane_id,
+            "ingested",
+            f"{summary['claims'][name]} claims"
+            + (
+                f", {summary['ledger'][name]} ledger facts"
+                if name in summary["ledger"]
+                else ""
+            ),
+            "2026-08-19",
+        )
+    sync_lane_feed(
+        db,
+        REPO / "data" / "lanes.json",
+        "2026-08-19",
+        lanes={
+            lane_id: {"source": s, "area": a, "mode": 1}
+            for lane_id, (_, s, a) in lane_meta.items()
+        },
+    )
     db.close()
 
     LEDGER_PATH.parent.mkdir(parents=True, exist_ok=True)

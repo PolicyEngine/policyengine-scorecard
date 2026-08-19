@@ -164,7 +164,11 @@ _alias("ukmod", "program", "winter_fuel_allowance", "winter_fuel_payment")
 
 # --- poverty lines ----------------------------------------------------------
 _alias("dwp_hbai", "poverty_line", "relative", "relative_60_median")
-_alias("dwp_hbai", "poverty_line", "absolute", "absolute_60_fye2011_median")
+# Absolute low income = 60% of a FIXED median; WHICH median is
+# year-dependent (Notes sheet Note 3: FYE-2025 anchor for 2021/22 on,
+# FYE-2011 before) and rides conditions["poverty_line_anchor"], set by
+# the stager per row — never baked into the line label.
+_alias("dwp_hbai", "poverty_line", "absolute", "absolute_60_fixed_median")
 for _n in ("50", "60", "70"):
     _alias("ukmod", "poverty_line", _n, f"relative_{_n}_median")
 
@@ -191,7 +195,10 @@ _UK_REGIONS = [
 _identity("dwp_takeup", "geography", ["GB"])
 _identity("dwp_hbai", "geography", ["UK", "GB"] + _UK_REGIONS)
 _identity("uk_hmrc", "geography", ["UK"])
-_identity("obr", "geography", ["UK", "GB", "NI"])
+_identity("obr", "geography", ["UK", "GB"])
+# OBR's NI social-security rows are Northern Ireland — same geography as
+# HBAI's region label; one canonical name.
+_alias("obr", "geography", "NI", "Northern Ireland")
 _identity("ukmod", "geography", ["UK"])
 
 # --- subgroups ---------------------------------------------------------------
