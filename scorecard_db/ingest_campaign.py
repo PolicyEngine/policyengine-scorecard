@@ -263,4 +263,5 @@ if __name__ == "__main__":
     import sys
 
     out = Path(sys.argv[1] if len(sys.argv) > 1 else "data/scorecard.db")
-    print(json.dumps(ingest(out), indent=1))
+    staged = Path(sys.argv[2]) if len(sys.argv) > 2 else None
+    print(json.dumps(ingest(out, staged), indent=1))
