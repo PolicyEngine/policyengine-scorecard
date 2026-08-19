@@ -78,3 +78,40 @@ def test_registry_schema():
         assert "parameters" not in comp and "reform" not in comp
     triage = {c["computability"] for c in pkg["components"]}
     assert triage == {"expressible", "partial", "not_expressible"}
+
+
+def _load_adapter():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("hmt_da_adapter", LANE / "adapter.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_document_anchoring_in_ci_when_pypdf_available():
+    """The lane's strongest honesty guarantee — every registry title and
+    figure anchor is verbatim in the real PDF — enforced in any test env
+    with pypdf+pyyaml rather than only on a manual adapter run. Skips
+    (like the yaml-gated schema test) where CI's bare env lacks them;
+    the adapter's own run() remains the local backstop."""
+    pytest.importorskip("pypdf")
+    pytest.importorskip("yaml")
+    adapter = _load_adapter()
+
+    text = adapter.document_text()  # also enforces the 20-page identity
+    reg = adapter.load_registry()
+    pkg = next(
+        p
+        for p in reg["packages"]
+        if p["package_key"] == "budget_2025__impact_on_households"
+    )
+    for fig, anchor in adapter.FIGURE_TITLES.items():
+        assert adapter.normalize(anchor) in text, f"figure {fig} anchor missing"
+    assert {c["figure"] for c in pkg["charts"]} == set(adapter.FIGURE_TITLES)
+    unanchored = [
+        c["title"]
+        for c in pkg["components"]
+        if adapter.normalize(c["title"]) not in text
+    ]
+    assert not unanchored, f"registry titles not verbatim in document: {unanchored}"
