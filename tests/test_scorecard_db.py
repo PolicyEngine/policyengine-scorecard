@@ -1,3 +1,4 @@
+from dataclasses import replace
 import pytest
 
 from scorecard_db import (
@@ -516,3 +517,211 @@ class TestPermanentHoldout:
 
         assert not never_calibrate(Metric.PARTICIPATION_RATE)
         assert not never_calibrate(Metric.ELIGIBLE_COUNT)
+
+
+class TestBaselineRegistry:
+    """Baseline as a first-class attribute of every score (issue #13)."""
+
+    def test_null_baseline_keys_current_law(self):
+        from scorecard_db import CURRENT_LAW_DESCRIPTOR, baseline_key
+
+        assert BASELINE.baseline_key() == baseline_key(CURRENT_LAW_DESCRIPTOR)
+        pe = ReformRef("policyengine_us", reform={"p": {"2025": 1}})
+        assert pe.baseline_key() == BASELINE.baseline_key()
+
+    def test_non_current_law_baseline_distinct(self):
+        r = ReformRef(
+            framework="policy_ref",
+            reform={"policy": "obbba"},
+            baseline={"policy": "tcja_extension"},
+        )
+        assert r.baseline_key() != BASELINE.baseline_key()
+
+    def test_descriptor_requires_policy_slug(self):
+        from scorecard_db import baseline_key
+
+        with pytest.raises(ValueError):
+            baseline_key({"label": "nope"})
+
+    def test_claim_id_unchanged_by_baseline_key_projection(self):
+        # Additive projection only: the #13 columns must not move ids.
+        assert score().claim_id() == "157243b61838075381ed"
+
+    def test_scores_carry_baseline_key(self, tmp_path):
+        db = ScorecardDB(tmp_path / "t.db")
+        db.upsert_scores([score()])
+        row = db.conn.execute("SELECT baseline_key FROM external_scores").fetchone()
+        assert row["baseline_key"] == BASELINE.baseline_key()
+        db.close()
+
+    def test_registry_seeding_and_unregistered_detection(self, tmp_path):
+        from scorecard_db.baselines import register_baselines
+
+        db = ScorecardDB(tmp_path / "t.db")
+        db.upsert_scores([score()])
+        register_baselines(db)
+        assert db.unregistered_baselines() == []
+        row = db.comparisons()[0]
+        assert row["claim_baseline_label"] == "current_law"
+
+        alien = score(
+            conditions={"geography": "US", "program": "wic"},
+            reform=ReformRef(
+                framework="policy_ref",
+                reform={"policy": "x"},
+                baseline={"policy": "never_registered_world"},
+            ),
+        )
+        db.upsert_scores([alien])
+        with pytest.raises(ValueError, match="never_registered"):
+            register_baselines(db)
+        db.close()
+
+    def test_view_guard_downgrades_cross_baseline_agreement(self, tmp_path):
+        """comparable vs a different executed baseline can never render as
+        plain agreement — pe_status_effective says constructed."""
+        from scorecard_db import baseline_key
+
+        db = ScorecardDB(tmp_path / "t.db")
+        s = score()
+        db.upsert_scores([s])
+        db.add_results(
+            [
+                PEResult(
+                    claim_id=s.claim_id(),
+                    computed_value=999.0,
+                    status=ComparisonStatus.COMPARABLE,
+                    engine_version="x",
+                    data_bundle="y",
+                    baseline_key=baseline_key({"policy": "pre_ab2025"}),
+                )
+            ]
+        )
+        row = db.comparisons()[0]
+        assert row["pe_status"] == "comparable"
+        assert row["pe_status_effective"] == "constructed"
+        db.close()
+
+    def test_view_guard_passes_same_baseline(self, tmp_path):
+        db = ScorecardDB(tmp_path / "t.db")
+        s = score()
+        db.upsert_scores([s])
+        db.add_results(
+            [
+                PEResult(
+                    claim_id=s.claim_id(),
+                    computed_value=999.0,
+                    status=ComparisonStatus.COMPARABLE,
+                    engine_version="x",
+                    data_bundle="y",
+                    baseline_key=BASELINE.baseline_key(),
+                )
+            ]
+        )
+        row = db.comparisons()[0]
+        assert row["pe_status_effective"] == "comparable"
+        db.close()
+
+    def test_legacy_results_pass_through_only_on_current_law(self, tmp_path):
+        # A legacy run (no recorded executed baseline) against a
+        # current-law claim keeps its status; against any non-current-law
+        # world its agreement is unverifiable — never plain.
+        db = ScorecardDB(tmp_path / "t.db")
+        s = score()
+        db.upsert_scores([s])
+        legacy = PEResult(
+            claim_id=s.claim_id(),
+            computed_value=999.0,
+            status=ComparisonStatus.COMPARABLE,
+            engine_version="x",
+            data_bundle="y",
+        )
+        db.add_results([legacy])
+        assert db.comparisons()[0]["pe_status_effective"] == "comparable"
+
+        world = score(
+            reform=ReformRef(
+                framework="policy_ref",
+                reform={"policy": "opt"},
+                baseline={"policy": "tcja_extension"},
+            ),
+            source_column="world_claim",
+        )
+        db.upsert_scores([world])
+        db.add_results([replace(legacy, claim_id=world.claim_id())])
+        row = next(r for r in db.comparisons() if r["source_column"] == "world_claim")
+        assert row["pe_status_effective"] == "baseline_unvalidated"
+        db.close()
+
+
+class TestDescriptiveRegister:
+    """Issue #9 latest ruling: normative classes gated on citable issues."""
+
+    def test_gated_classes_require_action_link(self, tmp_path):
+        db = ScorecardDB(tmp_path / "t.db")
+        s = score()
+        db.upsert_scores([s])
+        for cls in ("pe_gap", "external_issue"):
+            with pytest.raises(ValueError, match="citable"):
+                db.diagnose(s.claim_id(), cls, "divergence looks big")
+        db.diagnose(
+            s.claim_id(),
+            "pe_gap",
+            "EHS at engine-default take-up",
+            action_link="https://github.com/PolicyEngine/populace/issues/593",
+        )
+        db.close()
+
+    def test_methodological_difference_is_descriptive(self, tmp_path):
+        db = ScorecardDB(tmp_path / "t.db")
+        s = score()
+        db.upsert_scores([s])
+        db.diagnose(
+            s.claim_id(),
+            "methodological_difference",
+            "Populace calculates benefits and recalibrates where ASEC "
+            "carries reported attributes.",
+        )
+        assert db.comparisons()[0]["diagnosis_class"] == "methodological_difference"
+        db.close()
+
+    def test_old_diagnoses_table_migrates_to_new_check(self, tmp_path):
+        import sqlite3 as s3
+
+        path = tmp_path / "old.db"
+        conn = s3.connect(path)
+        conn.executescript(
+            """
+            CREATE TABLE external_scores (
+                claim_id TEXT PRIMARY KEY, source TEXT NOT NULL,
+                source_model TEXT, ledger_fact TEXT, source_column TEXT,
+                publication TEXT NOT NULL DEFAULT '{}',
+                reform_key TEXT NOT NULL, reform_json TEXT NOT NULL,
+                metric TEXT NOT NULL, unit_concept TEXT NOT NULL,
+                period INTEGER NOT NULL, time_basis TEXT NOT NULL,
+                conditions TEXT NOT NULL DEFAULT '{}',
+                geography TEXT, program TEXT, value REAL,
+                value_kind TEXT NOT NULL, status TEXT NOT NULL,
+                calibration_relationship TEXT NOT NULL
+            );
+            CREATE TABLE diagnoses (
+                claim_id TEXT PRIMARY KEY,
+                diagnosis_class TEXT NOT NULL CHECK (diagnosis_class IN (
+                    'pe_gap','external_issue','concept_mismatch','vintage',
+                    'undiagnosed'
+                )),
+                rationale TEXT NOT NULL DEFAULT '',
+                action_link TEXT NOT NULL DEFAULT ''
+            );
+            INSERT INTO diagnoses VALUES ('c1', 'vintage', 'r', '');
+            """
+        )
+        conn.close()
+        db = ScorecardDB(path)
+        db.upsert_scores([score()])
+        db.diagnose(score().claim_id(), "methodological_difference", "ok")
+        kept = db.conn.execute(
+            "SELECT diagnosis_class FROM diagnoses WHERE claim_id='c1'"
+        ).fetchone()
+        assert kept["diagnosis_class"] == "vintage"
+        db.close()

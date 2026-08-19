@@ -112,6 +112,29 @@ class UnitConcept(str, Enum):
 # window_kind       "total" | "annual_average" on period-range claims
 # month             "YYYY-MM" for monthly series
 # data_vintage      dataset base when it is not the obvious current one
+#
+# UK additions (2026-08-02 UK harvest; COLLATION UK worklist items 2-3):
+# fy                normalized fiscal-year label "2026-27" (Apr–Mar). The
+#                   integer period is ALWAYS the FY start year (pe-uk-data
+#                   convention) — adapters re-derive it from this label, so
+#                   end-year staging conventions cannot leak in.
+# basis             source's own designation: "outturn" | "forecast" |
+#                   "projected" | "provisional" | "unstated". Admin outturn
+#                   rows never reach external_scores (ledger routing rule).
+# income_concept    UK distribution rows: "BHC" | "AHC" (load-bearing on
+#                   every HBAI-family statistic), alongside the US values.
+# equivalisation    e.g. "modified_oecd" — load-bearing with income_concept.
+# poverty_measure   "relative" | "absolute" (+ poverty_line, e.g.
+#                   "60pct_median"; poverty_line_anchor for absolute lines)
+# fiscal_event      "autumn_budget_2024" | "budget_2025" | … — the event a
+#                   costing/measure belongs to
+# measure           verbatim measure title on scored fiscal-event lines
+#                   (mirrors the policy_ref slug, which hashes this title)
+# series            UKMOD validation-block column: "ukmod" |
+#                   "official_estimate" | "input_data" | "hbai"
+# edition           publication edition when two editions of the same
+#                   statistic are staged (HBAI FYE2025 vs admin-linked)
+# bound             "lower" | "central" | "upper" on estimate ranges
 STANDARD_CONDITIONS = frozenset(
     {
         "geography",
@@ -153,15 +176,45 @@ class ComparisonStatus(str, Enum):
 
 
 class DiagnosisClass(str, Enum):
+    """Adjudication classes under the descriptive register (issue #9,
+    Max 2026-08-02): the Scorecard is descriptive by default. PE_GAP and
+    EXTERNAL_ISSUE are normative and therefore GATED — they require a
+    citable known issue in action_link (a GitHub issue, published erratum,
+    internal contradiction, or tracked correction); divergence alone never
+    qualifies. METHODOLOGICAL_DIFFERENCE is strictly descriptive: the
+    models differ because of documented choices on both sides, stated,
+    sourced, and left there — no convergence or defended-departure
+    framing in either direction."""
+
     PE_GAP = "pe_gap"
     EXTERNAL_ISSUE = "external_issue"
     CONCEPT_MISMATCH = "concept_mismatch"
+    METHODOLOGICAL_DIFFERENCE = "methodological_difference"
     VINTAGE = "vintage"
     UNDIAGNOSED = "undiagnosed"
 
 
+# Diagnosis classes that may only be assigned with a citable known issue.
+GATED_DIAGNOSIS_CLASSES = frozenset(
+    {DiagnosisClass.PE_GAP, DiagnosisClass.EXTERNAL_ISSUE}
+)
+
+
 def _canonical(obj: Any) -> str:
     return json.dumps(obj, sort_keys=True, separators=(",", ":"))
+
+
+# The null baseline descriptor: current law at the source's scoring date.
+CURRENT_LAW_DESCRIPTOR = {"policy": "current_law"}
+
+
+def baseline_key(descriptor: dict) -> str:
+    """Stable key over a baseline descriptor dict (issue #13). The same
+    descriptor shape ReformRef.baseline carries; {"policy": "current_law"}
+    keys the null baseline."""
+    if not (isinstance(descriptor, dict) and descriptor.get("policy")):
+        raise ValueError(f"baseline descriptor needs a 'policy' slug: {descriptor!r}")
+    return hashlib.sha256(_canonical(descriptor).encode()).hexdigest()[:16]
 
 
 @dataclass(frozen=True)
@@ -239,6 +292,20 @@ class ReformRef:
                 }
             ).encode()
         ).hexdigest()[:16]
+
+    def baseline_descriptor(self) -> dict:
+        """The baseline world this reform is scored against, as a
+        descriptor dict. Absent baseline means current law — the JCT /
+        HMT-costing convention: scored against the law in force at
+        publication (the announcement vintage rides in conditions such as
+        fiscal_event / data_vintage, not in the baseline world)."""
+        return self.baseline if self.baseline is not None else CURRENT_LAW_DESCRIPTOR
+
+    def baseline_key(self) -> str:
+        """First-class baseline identity (issue #13): a stable hash of the
+        baseline descriptor, FK into the baselines registry. Additive
+        projection only — claim_id/key() hashing is unchanged."""
+        return baseline_key(self.baseline_descriptor())
 
     def to_json(self) -> str:
         return _canonical(
@@ -335,7 +402,14 @@ class ExternalScore:
 
 @dataclass
 class PEResult:
-    """PolicyEngine's computation for a claim (history preserved per run)."""
+    """PolicyEngine's computation for a claim (history preserved per run).
+
+    baseline_key records the baseline world the run ACTUALLY executed
+    (issue #13 point 5) — e.g. the two-child-limit runs execute a
+    pre_ab2025 reinstated counterfactual as their baseline, not current
+    law. None on legacy rows only; new ingests must pass it, and the
+    comparisons view refuses to render plain agreement when it differs
+    from the claim's baseline."""
 
     claim_id: str
     computed_value: Optional[float]
@@ -346,6 +420,7 @@ class PEResult:
     run_id: str = ""
     computed_at: str = ""  # ISO timestamp, caller-supplied
     annotations: list = field(default_factory=list)
+    baseline_key: Optional[str] = None  # baseline actually executed
 
     def __post_init__(self):
         self.status = ComparisonStatus(self.status)
