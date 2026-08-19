@@ -18,7 +18,7 @@ get their own entries.
 
 from __future__ import annotations
 
-from .db import ScorecardDB
+from .db import BASELINE_SQL, ScorecardDB
 from .models import CURRENT_LAW_DESCRIPTOR, baseline_key
 
 # descriptor, label, description, framework, provenance
@@ -139,6 +139,21 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "scorecard_db/ingest_reform_validation.py.",
     ),
     (
+        {"policy": "hmrc_indexed_baseline_spring_2025"},
+        "hmrc_indexed_baseline_spring_2025",
+        "HMRC's indexed baseline for the June-2025 tax ready reckoner: "
+        "the personal-tax-model counterfactual consistent with the OBR "
+        "Spring Statement 2025 forecast, with the illustrative change "
+        "implemented April 2026. A PE counterpart must run the same "
+        "nominal change against a matching indexed baseline and state it "
+        "explicitly (issue #13).",
+        "policy_ref",
+        "sources/hmrc-personal-tax/source.json (baselines.ready_reckoner, "
+        "method) and annotations.json reckoner-baseline note; descriptor "
+        "set in scorecard_db/ingest_uk_externals.py "
+        "(_RECKONER_BASELINE).",
+    ),
+    (
         {"policy": "pre_obbba_law"},
         "pre_obbba_law",
         "TPC T26-0009's stated counterfactual: 'Law Prior to the 2025 "
@@ -179,17 +194,25 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
 ]
 
 
-def register_baselines(db: ScorecardDB) -> int:
-    """Seed the registry, then fail loudly on any baseline_key the data
-    references that is not curated above."""
+def register_baselines_txn(db: ScorecardDB) -> int:
+    """Registration gate with the CALLER owning the transaction: bare
+    executes and loud raises, never a commit. Ingests run this INSIDE
+    the same write transaction as their claims, so an unregistered
+    baseline world rolls the whole replacement back — the gate guards
+    persistence itself, not just the state after a commit. (SQLite's
+    connection context manager commits the open transaction on exit,
+    which is why nothing here may open a nested `with db.conn:`.)"""
     for descriptor, label, description, framework, provenance in BASELINES:
-        db.register_baseline(
-            baseline_key(descriptor),
-            label,
-            description=description,
-            framework=framework,
-            spec_json=None,
-            provenance=provenance,
+        db.conn.execute(
+            BASELINE_SQL,
+            (
+                baseline_key(descriptor),
+                label,
+                description,
+                framework,
+                None,
+                provenance,
+            ),
         )
     # Convergence: a row this module no longer defines is pruned — but
     # never while data still references it (that would silently orphan
@@ -212,11 +235,10 @@ def register_baselines(db: ScorecardDB) -> int:
                 f"{referenced} data rows still reference it — re-key the "
                 "data before disavowing the world"
             )
-        with db.conn:
-            db.conn.execute(
-                "DELETE FROM baselines WHERE baseline_key = ?",
-                (row["baseline_key"],),
-            )
+        db.conn.execute(
+            "DELETE FROM baselines WHERE baseline_key = ?",
+            (row["baseline_key"],),
+        )
     missing = db.unregistered_baselines()
     if missing:
         described = []
@@ -232,6 +254,14 @@ def register_baselines(db: ScorecardDB) -> int:
             f"scorecard_db/baselines.py deliberately): {described}"
         )
     return len(BASELINES)
+
+
+def register_baselines(db: ScorecardDB) -> int:
+    """Standalone form of the gate: owns its transaction — registry
+    upserts and prunes commit on success, roll back together on a gate
+    failure."""
+    with db.conn:
+        return register_baselines_txn(db)
 
 
 # The stacked OBBBA runs execute one distinct world per (chain,

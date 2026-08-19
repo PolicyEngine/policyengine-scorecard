@@ -228,6 +228,13 @@ LANE_SQL = (
     " stage=excluded.stage, detail=excluded.detail,"
     " updated_at=excluded.updated_at"
 )
+BASELINE_SQL = (
+    "INSERT INTO baselines VALUES (?,?,?,?,?,?)"
+    " ON CONFLICT(baseline_key) DO UPDATE SET"
+    " label=excluded.label, description=excluded.description,"
+    " framework=excluded.framework, spec_json=excluded.spec_json,"
+    " provenance=excluded.provenance"
+)
 
 
 def _legacy_claim_baseline_key(row) -> str:
@@ -445,11 +452,7 @@ class ScorecardDB:
     ):
         with self.conn:
             self.conn.execute(
-                "INSERT INTO baselines VALUES (?,?,?,?,?,?)"
-                " ON CONFLICT(baseline_key) DO UPDATE SET"
-                " label=excluded.label, description=excluded.description,"
-                " framework=excluded.framework, spec_json=excluded.spec_json,"
-                " provenance=excluded.provenance",
+                BASELINE_SQL,
                 (baseline_key, label, description, framework, spec_json, provenance),
             )
 
