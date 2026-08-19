@@ -568,6 +568,30 @@ def test_us_rows_carry_country_and_nothing_else_changed(conn):
     assert [tuple(r) for r in prefixes] == [("populace-rv-",)]
 
 
+def test_us_claim_id_set_is_byte_stable(conn):
+    """Regression lock for the country refactor: the exact US claim-id
+    set, pinned as a digest computed from a pre-refactor origin/main
+    build (claim_id excludes publication, so the additive country stamp
+    cannot move any id — this asserts it in CI rather than by manual
+    verification)."""
+    import hashlib
+
+    ids = sorted(r[0] for r in conn.execute("SELECT claim_id FROM external_scores"))
+    assert len(ids) == 241
+    digest = hashlib.sha256("\n".join(ids).encode()).hexdigest()
+    assert digest == "288326d738e9e7a84c90949d3210f0b00d5d6e0ab8c4b3407a48aceab263378b"
+
+
+def test_obbba_path_refuses_non_us(tmp_path):
+    """OBBBA rows are US-only; the parameterized path must refuse any
+    other country before minting US-prefixed rows (the cross-country
+    deletion hazard the disjoint prefixes exist to prevent)."""
+    from scorecard_db.ingest_reform_validation import _obbba_results
+
+    with pytest.raises(ValueError, match="US-only"):
+        _obbba_results(None, {}, "rid", "e", "t", {}, {}, validate=False, country="UK")
+
+
 def test_unknown_country_raises(tmp_path):
     with pytest.raises(ValueError, match="unknown country"):
         ingest(tmp_path / "db.sqlite", country="XX")

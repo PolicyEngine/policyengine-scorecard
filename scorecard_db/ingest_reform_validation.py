@@ -513,7 +513,7 @@ def _map_row(
             conditions["baseline_policy"] = "pre_obbba_current_law"
         reform = ReformRef(
             framework="policy_ref",
-            reform={"policy": row["id"], "registry": REGISTRY_MARK},
+            reform={"policy": row["id"], "registry": registry_mark},
             baseline=baseline,
         )
         conditions["geography"] = state or "US"
@@ -675,12 +675,22 @@ def _obbba_results(
     tallies: dict,
     validate: bool,
     position: int,
+    country: str = "US",
+    run_prefix: str = RUN_PREFIX,
+    registry_mark: str = REGISTRY_MARK,
 ) -> list[PEResult]:
     """Attach the registry's OBBBA computation to the canonical harvest
     claims — the FY2026 provision claim, and the FY2027 one when the
     registry carries that benchmark. Same PE value both times (calendar-2026
     liability), so both are constructed comparisons; the construction names
     the release's scoring mode and the CY-for-FY approximation."""
+    # OBBBA is a JCT scoring exercise: US-only by construction. A
+    # non-US artifact must never reach this path — its rows would take
+    # the US run prefix/registry mark and become deletable by the US
+    # wholesale-delete, the exact cross-country deletion the disjoint
+    # prefixes exist to prevent.
+    if country != "US":
+        raise ValueError(f"OBBBA rows are US-only; got country {country!r}")
     provision = OBBBA_PROVISIONS.get(row["id"])
     if provision is None:
         raise ValueError(f"OBBBA row {row['id']} missing from OBBBA_PROVISIONS")
@@ -720,7 +730,7 @@ def _obbba_results(
                 conditions={"geography": "US", "scoring": "conventional"},
                 reform=ReformRef(
                     framework="policy_ref",
-                    reform={"policy": row["id"], "registry": REGISTRY_MARK},
+                    reform={"policy": row["id"], "registry": registry_mark},
                 ),
                 calibration_relationship="held_out",
                 source_column=row["id"],
@@ -730,7 +740,7 @@ def _obbba_results(
                     "score_type": row["jct"].get("score_type") or "",
                     "window": f"FY{fy}",
                     "name": row.get("name") or "",
-                    "registry": REGISTRY_MARK,
+                    "registry": registry_mark,
                 },
                 value_kind="usd",
             )
@@ -754,7 +764,7 @@ def _obbba_results(
                     + (f":chain_pos{position:02d}" if mode != "isolated" else "")
                     + f":cy2026_for_fy{fy}"
                 ),
-                run_id=f"{RUN_PREFIX}{release_id}",
+                run_id=f"{run_prefix}{release_id}",
                 computed_at=computed_at,
                 baseline_key=_obbba_baseline_key(mode, row["id"]),
             )
@@ -789,8 +799,8 @@ def ingest(db_path: Path, raw_dir: Path | None = None, country: str = "US") -> d
         base_engine = engine_versions.get(release_id)
         if base_engine is None:
             raise SystemExit(
-                f"{release_id} missing from ENGINE_VERSIONS — add its "
-                "release_manifest.json pin"
+                f"{release_id} missing from the {country} engine_versions "
+                "map in COUNTRIES — add its release_manifest.json pin"
             )
         overrides = ENGINE_OVERRIDES.get(release_id, {})
         computed_at = _release_timestamp(release_id)
@@ -823,6 +833,9 @@ def ingest(db_path: Path, raw_dir: Path | None = None, country: str = "US") -> d
                         tallies,
                         validate=path == releases[-1],
                         position=obbba_position,
+                        country=country,
+                        run_prefix=run_prefix,
+                        registry_mark=registry_mark,
                     )
                 )
                 continue
