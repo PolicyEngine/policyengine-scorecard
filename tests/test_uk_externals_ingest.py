@@ -443,13 +443,15 @@ def test_full_ingest_round_trip(tmp_path):
             )
         }
         assert got == {anchor}, (fy, got)
-    # every mixed anchor is a multi-year window, never a single year
+    # every mixed anchor is a multi-year window, never a single year —
+    # checked on the window COLUMNS, not just the window_kind label
     assert (
         _one(
             "SELECT COUNT(*) FROM external_scores WHERE source='dwp_hbai'"
             " AND json_extract(conditions, '$.poverty_line_anchor')"
-            " = 'mixed_fye2011_fye2025' AND json_extract(conditions,"
-            " '$.window_kind') IS NULL"
+            " = 'mixed_fye2011_fye2025' AND (json_extract(conditions,"
+            " '$.window_kind') IS NULL OR period_start IS NULL"
+            " OR period_end IS NULL)"
         )
         == 0
     )
@@ -476,13 +478,18 @@ def test_full_ingest_round_trip(tmp_path):
         ).fetchall()
     )
     assert ukmod_dist == {"gini": 8, "income_statistic": 56}
+    # NULL-safe: json_extract of a MISSING key is SQL NULL, and
+    # NULL <> 'x' is not true — a bare <> would count zero mismatches
+    # even with both conditions stripped from every row (round-3 gate).
     assert (
         _one(
             "SELECT COUNT(*) FROM external_scores WHERE source='ukmod'"
             " AND metric IN ('gini','income_statistic')"
-            " AND (json_extract(conditions, '$.equivalisation')"
-            " <> 'modified_oecd' OR json_extract(conditions,"
-            " '$.housing_costs') <> 'bhc')"
+            " AND (json_extract(conditions, '$.equivalisation') IS NULL"
+            " OR json_extract(conditions, '$.equivalisation')"
+            " <> 'modified_oecd'"
+            " OR json_extract(conditions, '$.housing_costs') IS NULL"
+            " OR json_extract(conditions, '$.housing_costs') <> 'bhc')"
         )
         == 0
     )
@@ -719,14 +726,25 @@ def test_unregistered_baseline_gate_rolls_back(tmp_path, monkeypatch):
     post-commit state (round-2 gate probe: registration used to run
     after the claims committed, so the raise validated a DB it had
     already failed to protect). A claim referencing an unregistered
-    baseline world must leave the DB byte-identical: prior claims
-    intact, zero poison claims, and the poison world never registered."""
+    baseline world must leave the DB logically identical: every prior
+    claim row intact, zero poison claims, and the poison world never
+    registered."""
     import dataclasses
 
     from scorecard_db import ingest_uk_externals as mod
     from scorecard_db.models import ReformRef, baseline_key
 
-    first = mod.ingest(tmp_path / "t.db")
+    def _claims_dump(path):
+        db = ScorecardDB(path)
+        rows = db.conn.execute(
+            "SELECT claim_id, source, value, conditions, baseline_key"
+            " FROM external_scores ORDER BY claim_id"
+        ).fetchall()
+        db.close()
+        return [tuple(r) for r in rows]
+
+    mod.ingest(tmp_path / "t.db")
+    before = _claims_dump(tmp_path / "t.db")
     poison_baseline = {"policy": "never_registered_world"}
 
     real = mod.stage_all
@@ -748,25 +766,15 @@ def test_unregistered_baseline_gate_rolls_back(tmp_path, monkeypatch):
         mod.ingest(tmp_path / "t.db")
     monkeypatch.undo()
 
-    db = ScorecardDB(tmp_path / "t.db")
-    counts = {
-        r[0]: r[1]
-        for r in db.conn.execute(
-            "SELECT source, COUNT(*) FROM external_scores GROUP BY 1"
-        )
-    }
+    after = _claims_dump(tmp_path / "t.db")
+    assert after == before  # every row, not just counts
     poison_key = baseline_key(poison_baseline)
-    poison_claims = db.conn.execute(
-        "SELECT COUNT(*) FROM external_scores WHERE baseline_key = ?",
-        (poison_key,),
-    ).fetchone()[0]
+    db = ScorecardDB(tmp_path / "t.db")
     poison_registered = db.conn.execute(
         "SELECT COUNT(*) FROM baselines WHERE baseline_key = ?",
         (poison_key,),
     ).fetchone()[0]
     db.close()
-    assert counts == first["claims"]
-    assert poison_claims == 0
     assert poison_registered == 0
 
 
