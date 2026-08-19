@@ -60,10 +60,8 @@ def test_rate_deltas_are_fractions_not_percentage_points():
     a .rate path would be a 100-point change emitted under a 1p label."""
     for m in REGISTRY["measures"]:
         for path, v in (m["pe_reform_delta"] or {}).items():
-            if (
-                path.endswith(".rate")
-                or ".rates." in path
-                and path.endswith(("main", "additional", "employer"))
+            if path.endswith(".rate") or (
+                ".rates." in path and path.endswith(("main", "additional", "employer"))
             ):
                 assert abs(v) <= 0.05, f"{m['measure_key']}: {path} delta {v}"
 

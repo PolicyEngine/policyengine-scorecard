@@ -178,6 +178,11 @@ def reform_values(measure, resolved, year):
     actually uses, mirroring HMRC's baseline-plus-change construction."""
     out = {}
     for path, node in resolved.items():
+        # Baseline read at a single mid-year instant while the reform
+        # spans the full calendar year: identical for flat-year
+        # parameters (every current registry path), but a relative delta
+        # on a parameter that steps mid-year would scale the 06-01 value
+        # only — revisit if such a path enters the registry.
         base = float(node(f"{year}-06-01"))
         delta = measure["pe_reform_delta"][path]
         if measure["delta_kind"] == "relative":
@@ -285,11 +290,19 @@ def main(argv=None):
                 )
                 continue
             values = reform_values(m, resolved, year)
+            # All 24 expressible measures today fall in these three
+            # programs; a future expressible measure elsewhere demotes to
+            # pe_gap (the gap stays on the page) instead of crashing.
             head_var = {
                 "income_tax": "income_tax",
                 "national_insurance": "national_insurance",
                 "child_benefit": "child_benefit",
-            }[m["program"]]
+            }.get(m["program"])
+            if head_var is None:
+                staged.append(
+                    staged_row(m, year, None, "pe_gap", run_id, engine_version, bundle)
+                )
+                continue
             if head_var not in base_rev:
                 base_rev[head_var] = float(base_sim.calculate(head_var, year).sum())
             reform = {p: {f"{year}-01-01.{year}-12-31": v} for p, v in values.items()}
