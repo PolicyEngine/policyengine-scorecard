@@ -1,6 +1,7 @@
 export type Status =
   | "comparable"
   | "constructed"
+  | "baseline_unvalidated"
   | "concept_mismatch"
   | "pe_gap"
   | "not_computed"
@@ -115,6 +116,7 @@ export const METRIC_LABELS: Record<string, string> = {
 export const STATUS_LABELS: Record<Status, string> = {
   comparable: "Comparable",
   constructed: "Constructed",
+  baseline_unvalidated: "Baseline unvalidated",
   concept_mismatch: "Concept mismatch",
   pe_gap: "Model gap",
   not_computed: "Not yet computed",
@@ -131,6 +133,8 @@ export interface ReleaseResult {
   construction: string;
   computed_at: string;
   annotations: string[];
+  baseline: string | null;
+  status_effective: Status;
 }
 
 /** A non-Urban claim from scorecard.db with its per-release history. */
@@ -156,6 +160,7 @@ export interface PopulationRow {
   reform_key: string;
   external_value: number | null;
   calibration_relationship: CalibrationRelationship;
+  claim_baseline: string | null;
   latest: ReleaseResult & { ratio: number | null; delta: number | null };
   results: ReleaseResult[];
   diagnosis: {

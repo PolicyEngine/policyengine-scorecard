@@ -431,3 +431,20 @@ def test_zero_match_aborts_with_nothing_written(db_copy, tmp_path):
     # The abort happens before the write transaction: any pre-existing
     # campaign rows (the committed DB carries them) survive untouched.
     assert campaign_rows() == before
+
+
+def test_results_carry_executed_baseline(db_copy):
+    # A clean re-ingest must never write NULL executed-baseline
+    # provenance (issue #13; NULL is legacy-only).
+    ingest(db_copy)
+    conn = sqlite3.connect(db_copy)
+    nulls = conn.execute(
+        "SELECT COUNT(*) FROM pe_results WHERE run_id LIKE 'campaign-%'"
+        " AND baseline_key IS NULL"
+    ).fetchone()[0]
+    ex_nulls = conn.execute(
+        "SELECT COUNT(*) FROM pe_exhibits WHERE run_id LIKE 'campaign-%'"
+        " AND baseline_key IS NULL"
+    ).fetchone()[0]
+    conn.close()
+    assert nulls == 0 and ex_nulls == 0

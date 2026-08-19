@@ -24,6 +24,7 @@ from pathlib import Path
 
 from .db import ScorecardDB
 from .ingest_urban import solo_reform
+from .models import BASELINE
 
 COMPARISON_DIR = Path.home() / "populace-sotsn-takeup" / "comparison"
 REPO = Path(__file__).resolve().parent.parent
@@ -109,6 +110,7 @@ def ingest(db_path: Path, comparison_dir: Path = COMPARISON_DIR) -> dict:
                         "run_id": "solo-takeup-2024",
                         "computed_at": "2026-08-01T20:20:00",
                         "note": NOTE,
+                        "baseline_key": BASELINE.baseline_key(),
                     }
                 )
         if len(seen) != 52:

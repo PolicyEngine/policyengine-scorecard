@@ -23,7 +23,8 @@ export function ReformValidationView({ feed }: { feed: PopulationsFeed }) {
     () =>
       feed.rows.filter((r) => {
         if (source !== "all" && r.source !== source) return false;
-        if (status !== "all" && r.latest.status !== status) return false;
+        if (status !== "all" && r.latest.status_effective !== status)
+          return false;
         if (releasesOnly && r.results.length < 2) return false;
         return true;
       }),
@@ -155,7 +156,7 @@ export function ReformValidationView({ feed }: { feed: PopulationsFeed }) {
                     {fmtDiv(r)}
                   </td>
                   <td className="whitespace-nowrap px-2 py-1.5">
-                    <StatusPill status={r.latest.status} />
+                    <StatusPill status={r.latest.status_effective} />
                   </td>
                   <td className="whitespace-nowrap px-2 py-1.5">
                     <span
@@ -204,7 +205,17 @@ function RowDetail({ row }: { row: PopulationRow }) {
                 {row.results.map((res) => (
                   <tr key={res.data_bundle} className="border-t border-border">
                     <td className="py-1 pr-3 fig">{res.release}</td>
-                    <td className="py-1 pr-3 fig">{res.engine_version}</td>
+                    <td className="py-1 pr-3 fig">
+                      {res.engine_version}
+                      {res.status_effective !== res.status && (
+                        <span
+                          className="ml-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide"
+                          title="The recorded status is downgraded by the baseline guard (issue #13): the executed baseline differs from, or is unverifiable against, the claim's world."
+                        >
+                          {STATUS_LABELS[res.status_effective]}
+                        </span>
+                      )}
+                    </td>
                     <td className="py-1 pr-3 text-right fig">
                       {fmtV(res.value, row.value_kind)}
                     </td>
