@@ -22,21 +22,33 @@ match contract:
 Every step is a closed lookup that raises on 0 or 2+ — a drifted
 archive, collation, or claim re-ingest fails loudly, never mis-joins.
 
-Family disposition (this module's summary reports it):
+Family disposition (this module's summary reports it; the per-row
+compositions below are pinned in tests so a re-frozen archive cannot
+silently outgrow its stated reason):
     hmrc_reckoner_t2   RESOLVED (14 rows) -> uk_resolved/
-    free_joins         NOT RESOLVED: targets OBR receipts forecast
-        lines, which are not staged as claims — pe-uk-data consumes EFO
-        receipts tables as calibration targets, so staging them is
-        relationship-evidence work (its own lane), never a quick join
-    obr_measures       NOT RESOLVED: targets the OBR policy-measures
-        costings database (long-tail source, held on the DB-storage
-        decision)
-    two_child          NOT RESOLVED: targets Resolution Foundation
-        claims (long-tail source, held)
-    uprating_april2026 NOT RESOLVED: 3 of 4 rows target Resolution
-        Foundation benefit_uprating_pct claims (long-tail, held); the
-        4th is an exhibit row without exhibit_meta, which would only
-        ever defer — nothing attachable until RF stages
+    free_joins         NOT RESOLVED (16 rows = 7 obr revenue_level +
+        7 uk_dwp benefit_cost + 2 metaless exhibits): the OBR rows
+        target EFO receipts forecast lines and the uk_dwp rows DWP
+        benefit-expenditure forecast lines — NEITHER is staged as
+        claims, and pe-uk-data consumes both publication families as
+        calibration surfaces, so staging them is relationship-evidence
+        work (two source lanes), never a quick join
+    obr_measures       NOT RESOLVED (10 rows = 9 obr revenue_change
+        fiscal-event costings + 1 metaless exhibit): targets the OBR
+        policy-measures costings database (long-tail source, held on
+        the DB-storage decision)
+    two_child          NOT RESOLVED (4 rows = 2 resolution_foundation
+        + 1 ukmod poverty_count_change + 1 metaless exhibit): RF is a
+        long-tail source (held), and the ukmod row targets a REFORM
+        claim — the staged UKMOD family is baseline validation
+        statistics only, so a 2CL-reform claim needs its own staging
+        decision
+    uprating_april2026 NOT RESOLVED (4 rows = 3 resolution_foundation
+        benefit_uprating_pct + 1 metaless exhibit): RF long-tail, held
+
+The metaless exhibits (4 across the families) carry exhibit_context
+but no exhibit_meta; ingest_campaign would only ever defer them, so
+they block with their families rather than shipping as noise.
 
 Usage:
     PYTHONPATH=. python -m scorecard_db.produce_campaign_uk
@@ -64,23 +76,28 @@ RESOLVED = CAMPAIGN / "uk_resolved"
 # archive fails loudly rather than being silently skipped.
 BLOCKED = {
     "free_joins": (
-        "targets OBR receipts forecast lines not staged as claims; "
-        "pe-uk-data consumes EFO receipts tables as calibration "
-        "targets — staging needs the relationship evidence read at the "
-        "pin (its own lane)"
+        "16 rows = 7 obr revenue_level (EFO receipts forecast lines) + "
+        "7 uk_dwp benefit_cost (DWP benefit-expenditure forecast "
+        "lines) + 2 metaless exhibits; neither publication family is "
+        "staged as claims, and pe-uk-data consumes both as calibration "
+        "surfaces — staging needs the relationship evidence read at "
+        "the pin (two source lanes)"
     ),
     "obr_measures": (
-        "targets the OBR policy-measures costings database — long-tail "
-        "source held on the DB-storage decision"
+        "10 rows = 9 obr revenue_change fiscal-event costings + 1 "
+        "metaless exhibit; targets the OBR policy-measures costings "
+        "database — long-tail source held on the DB-storage decision"
     ),
     "two_child": (
-        "targets Resolution Foundation claims — long-tail source held "
-        "on the DB-storage decision"
+        "4 rows = 2 resolution_foundation + 1 ukmod "
+        "poverty_count_change + 1 metaless exhibit; RF is long-tail "
+        "(held), and the ukmod row targets a REFORM claim — the staged "
+        "UKMOD family is baseline statistics only, so a 2CL-reform "
+        "claim needs its own staging decision"
     ),
     "uprating_april2026": (
-        "3 of 4 rows target Resolution Foundation benefit_uprating_pct "
-        "claims (long-tail, held); the 4th is an exhibit row without "
-        "exhibit_meta — nothing attachable until RF stages"
+        "4 rows = 3 resolution_foundation benefit_uprating_pct + 1 "
+        "metaless exhibit; RF long-tail, held"
     ),
 }
 RESOLVED_FAMILIES = {"hmrc_reckoner_t2"}

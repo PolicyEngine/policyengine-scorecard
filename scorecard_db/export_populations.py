@@ -2,13 +2,15 @@
 
 The Urban SotSN population reaches the app through the file-based
 pipeline/build_comparison.py export (data/comparison.json). Everything
-else — today, exactly the reform-validation registry (issue #20): its 205
-minted claims plus the 36 harvested JCX-35-25 provision claims its OBBBA
-results attach to — lives only in scorecard.db. This module exports every
-non-Urban claim that has at least one pe_result, carrying the dimension
-the Urban export doesn't have: the full per-release result history
-(one row per certified release, engine pins and OBBBA scoring mode in the
-construction), so cross-release drift is visible.
+else lives only in scorecard.db: the reform-validation registry (issue
+#20, its 205 minted claims plus the 36 harvested JCX-35-25 provision
+claims its OBBBA results attach to), the US campaign attaches, and —
+since the campaign-UK producer — the 14 uk_hmrc reckoner claims with
+campaign results. This module exports every non-Urban claim that has at
+least one pe_result, carrying the dimension the Urban export doesn't
+have: the full per-release result history (one row per certified
+release, engine pins and OBBBA scoring mode in the construction), so
+cross-release drift is visible.
 
 Doctrine (issues #1/#9): descriptive only. Statuses and calibration
 relationships are exported verbatim; ratios are raw pe/external with no

@@ -63,6 +63,79 @@ def test_produce_resolves_reckoner_and_blocks_the_rest(tmp_path):
     assert all("claim_id" not in a["external_claim_match"] for a in archived)
 
 
+def _composition(name):
+    rows = [
+        json.loads(line)
+        for line in (ARCHIVE / f"{name}.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
+    tally: dict[str, int] = {}
+    for r in rows:
+        if r.get("exhibit") and "external_claim_match" not in r:
+            key = "metaless_exhibit"
+        else:
+            m = r["external_claim_match"]
+            key = f"{m['source']}:{m['metric']}"
+        tally[key] = tally.get(key, 0) + 1
+    return tally
+
+
+def test_blocked_dispositions_match_the_archive_exactly():
+    """The stated reasons are per-row accurate (round-1 gate: the first
+    reasons generalized each family from its first row — free_joins is
+    NOT just OBR receipts). A re-frozen archive that changes any
+    family's composition fails here and forces a new disposition."""
+    assert _composition("free_joins") == {
+        "obr:revenue_level": 7,
+        "uk_dwp:benefit_cost": 7,
+        "metaless_exhibit": 2,
+    }
+    assert _composition("obr_measures") == {
+        "obr:revenue_change": 9,
+        "metaless_exhibit": 1,
+    }
+    assert _composition("two_child") == {
+        "resolution_foundation:poverty_count_change": 1,
+        "resolution_foundation:reform_fiscal_cost": 1,
+        "ukmod:poverty_count_change": 1,
+        "metaless_exhibit": 1,
+    }
+    assert _composition("uprating_april2026") == {
+        "resolution_foundation:benefit_uprating_pct": 3,
+        "metaless_exhibit": 1,
+    }
+
+
+def test_blocked_targets_have_no_claims_yet():
+    """'Genuinely blocked' is machine-checked: zero DB claims exist for
+    every blocked target shape. When a future lane stages one of these
+    (OBR receipts, DWP expenditure forecasts, the OBR costings DB, RF,
+    a UKMOD 2CL-reform claim), this fails and forces the deliberate
+    unblock instead of a silent one."""
+    db = ScorecardDB(DB)
+
+    def n(sql, *args):
+        return db.conn.execute(sql, args).fetchone()[0]
+
+    assert (
+        n(
+            "SELECT COUNT(*) FROM external_scores WHERE source='obr'"
+            " AND metric IN ('revenue_level', 'revenue_change')"
+        )
+        == 0
+    )
+    for source in ("uk_dwp", "resolution_foundation"):
+        assert n("SELECT COUNT(*) FROM external_scores WHERE source=?", source) == 0
+    assert (
+        n(
+            "SELECT COUNT(*) FROM external_scores WHERE source='ukmod'"
+            " AND metric='poverty_count_change'"
+        )
+        == 0
+    )
+    db.close()
+
+
 def test_resolution_chain_is_closed(tmp_path, monkeypatch):
     """A construction the archived runs never executed must fail the
     produce, never guess a claim."""
