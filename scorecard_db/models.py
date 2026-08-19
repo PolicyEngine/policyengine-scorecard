@@ -128,6 +128,10 @@ class UnitConcept(str, Enum):
     GBP_PER_WEEK = "gbp_per_week"
     GBP_PER_MONTH = "gbp_per_month"
     INDEX_0_1 = "index_0_1"
+    # Per-household GBP statistic (the UK mirror of USD_PER_HOUSEHOLD,
+    # same rule: averages must never be summable as aggregates). The
+    # FRR family's £420 average annual gain is per household per year.
+    GBP_PER_HOUSEHOLD = "gbp_per_household"
 
 
 # Standardized conditions vocabulary (COLLATION worklist item 4).
@@ -220,6 +224,11 @@ STANDARD_CONDITIONS = frozenset(
         #                  line uses: "fye_2011" | "fye_2025" |
         #                  "mixed_fye2011_fye2025" (a multi-year window
         #                  straddling the FYE-2025 re-anchor)
+        # fiscal_measure   which fiscal aggregate a change claim moves:
+        #                  "psncr" on the FRR family (a cash-requirement
+        #                  effect, deliberately NOT PSNB — PQ UIN 3751)
+        "measure",
+        "fiscal_measure",
         "country",
         "fy",
         "housing_costs",
