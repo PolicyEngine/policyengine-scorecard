@@ -1,6 +1,6 @@
 {
   "_schema": {
-    "description": "Per-measure decomposition registry for the OBR costings divergences (#59). Consumed by pipeline/decompose_uk_obr_divergence.py together with results/uk/obr_costings/COMPARISON.csv (PR #56). Components decompose gap = PE - OBR in GBP under the announced-measure positive_gain_to_exchequer orientation, per FY. A sized component carries per-FY GBP values traceable to a fetched primary source quoted verbatim in provenance; an unsized component carries only the sizing recipe. The pipeline computes residual = gap - sum(sized); any unsized component forces decomposition_status=partial and the remainder is labelled residual_plus_unsized, never explained. JSON not YAML: CI installs pytest only.",
+    "description": "Per-measure decomposition registry for the OBR costings divergences (#59). Consumed by pipeline/decompose_uk_obr_divergence.py together with results/uk/obr_costings/COMPARISON.csv (PR #56). Components decompose gap = PE - OBR in GBP under the announced-measure positive_gain_to_exchequer orientation, per FY. Statuses: sized = per-FY GBP values quoted VERBATIM from a fetched primary source (no arithmetic beyond unit scaling); derived = values computed from quoted numbers, with the derivation formula stated and its confounds named; unsized = sizing recipe only. The pipeline computes residual = gap - sum(sized + derived) and classifies every valued component by direction: explains_gap (same sign as the gap) or masks_gap (opposite sign - the axis hides part of a larger like-for-like disagreement, so the raw gap UNDERSTATES the divergence; the record then carries divergence_understated=true and like_for_like_gap_gbp). Any unsized component forces decomposition_status=partial and the remainder is residual_plus_unsized; explained_share is emitted only for complete decompositions with no masking components. JSON not YAML: CI installs pytest only.",
     "axes": [
       "behavioural_adjustment",
       "baseline_vintage",
@@ -20,14 +20,21 @@
           "axis": "construction_scope",
           "status": "sized",
           "values_gbp": { "2026-27": 4581000000, "2027-28": 4631000000 },
-          "provenance": "OBR, 'Static costing of changes to Employer National Insurance Contributions', supplementary forecast information release, 8 May 2025, https://obr.uk/docs/dlm_uploads/Cosings-supp-NICs-AB24-1-1.pdf. Table 1.3 'Static costing of increasing the employment allowance to £10,500': -3,353m (2026-27), -3,372m (2027-28). Table 1.4 'Static costing of removing the employment allowance threshold': -1,228m (2026-27), -1,259m (2027-28). PE has no Employment Allowance or firm entity (COMPARISON annotation), so both revenue-reducing elements are absent from the PE leg; their absence pushes PE above OBR by their published static magnitudes: +4,581m and +4,631m."
+          "provenance": "OBR, 'Static costing of changes to Employer National Insurance Contributions', supplementary forecast information release, 8 May 2025, https://obr.uk/docs/dlm_uploads/Cosings-supp-NICs-AB24-1-1.pdf. Table 1.3 'Static costing of increasing the employment allowance to £10,500': -3,353m (2026-27), -3,372m (2027-28). Table 1.4 'Static costing of removing the employment allowance threshold': -1,228m (2026-27), -1,259m (2027-28). PE has no Employment Allowance or firm entity (COMPARISON annotation), so both revenue-reducing elements are absent from the PE leg; their absence pushes PE above OBR by their published static magnitudes: +4,581m and +4,631m. HEAD ATTRIBUTION CAVEAT (review): the EA effect lands on the NICs head, where PE is only +831m above OBR (2026-27) - so if EA-absence alone contributes +4,581m there, offsetting NICs-base factors of ~-3,750m must exist on the same head; those are folded into the employee_incidence_and_base component's recipe, not assumed away. This component MASKS the gap (opposite sign): the observed -7.36bn total gap understates the like-for-like disagreement."
         },
         {
           "name": "behavioural_adjustment",
           "axis": "behavioural_adjustment",
-          "status": "sized",
+          "status": "derived",
           "values_gbp": { "2026-27": 723000000, "2027-28": 703000000 },
-          "provenance": "Same OBR release, Table 1.5 'Summary of static costing - including interactions': total static 24,333m (2026-27), 24,730m (2027-28). The comparison's OBR values are the certified post-behavioural per-head PMD rows summed (23,610m / 24,027m). Sized as static minus post-behavioural: +723m / +703m. CAVEAT: this difference bundles the behavioural response with any static-vs-PMD head-allocation mismatch; the release itself says behavioural responses 'reduced significantly' the yield (to 16.1bn in 2029-30, para 1.7), so the pure behavioural axis at these FYs may be larger with an offsetting head-scope term. Treated as the best published joint sizing."
+          "derivation": "OBR static total (Table 1.5) minus certified post-behavioural PMD rows summed: 24,333m - 23,610m = +723m (2026-27); 24,730m - 24,027m = +703m (2027-28). Not a quoted number: the subtraction bundles the behavioural response with any static-vs-PMD head-allocation mismatch.",
+          "provenance": "Same OBR release, Table 1.5 'Summary of static costing - including interactions': total static 24,333m (2026-27), 24,730m (2027-28). The comparison's OBR values are the certified post-behavioural per-head PMD rows summed (23,610m / 24,027m). The release itself says behavioural responses 'reduced significantly' the yield (to 16.1bn in 2029-30, para 1.7), so the pure behavioural axis at these FYs may be larger with an offsetting head-scope term. Best published joint sizing; carried as derived, not sized."
+        },
+        {
+          "name": "employee_incidence_and_base",
+          "axis": "construction_scope",
+          "status": "unsized",
+          "recipe": "The dominant driver of this measure's gap: PE sets gov.contrib.policyengine.employer_ni.employee_incidence = 1 (wages adjust holding employer cost fixed), pushing the PE Income-tax head to -8,508m against OBR's -313m (COMPARISON head rows) - OBR's costing has no comparable first-year wage pass-through. Size by re-running the PE leg with employee_incidence = 0 and differencing the two PE legs per head; the same paired run isolates the NICs-base offset the EA component's head-attribution caveat requires (PE class-1 base vs HMRC PTM Tables 1.1+1.2, 28,913m ex-EA in 2026-27). Whatever survives both is a policyengine-uk development item."
         },
         {
           "name": "cy_proxies_fy",
@@ -39,7 +46,7 @@
           "name": "residual_static_yield_gap",
           "axis": "residual",
           "status": "unsized",
-          "recipe": "After the sized components, the remainder is the like-for-like static gap: PE's employer-NICs machinery (employee-incidence wage adjustment, weekly £4,992 threshold) vs HMRC's Personal Tax Model static of rate + secondary-threshold elements (Tables 1.1+1.2: 28,913m in 2026-27 ex-EA). A PE run decomposed by element (rate-only, threshold-only) against Tables 1.1/1.2 attributes it; whatever survives is a policyengine-uk development item."
+          "recipe": "Remainder after the valued components and the employee_incidence_and_base sizing runs. Because the valued components mask the gap, the like-for-like static disagreement is LARGER than the observed gap (-12.67bn vs -7.36bn in 2026-27); the incidence/base paired runs attribute it element by element."
         }
       ]
     },
