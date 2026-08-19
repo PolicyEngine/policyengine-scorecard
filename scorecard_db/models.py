@@ -70,6 +70,18 @@ class Metric(str, Enum):
     MAXIMUM_MONTHLY_BENEFIT = "maximum_monthly_benefit"
     AVERAGE_WEEKLY_BENEFIT = "average_weekly_benefit"
     FIRST_PAYMENT_COUNT = "first_payment_count"
+    # UK externals ingest (#33). Levels, not changes: taxpayer counts are
+    # individuals with positive liability (not returns — the UK has no
+    # joint filing), unclaimed amounts are the DWP take-up publication's
+    # entitled-non-recipient aggregates, and the income-distribution
+    # family carries UKMOD's Gini/quantile statistics.
+    TAXPAYER_COUNT = "taxpayer_count"
+    AVERAGE_TAX_RATE = "average_tax_rate"
+    AVERAGE_TAX_AMOUNT = "average_tax_amount"
+    UNCLAIMED_BENEFIT_AMOUNT = "unclaimed_benefit_amount"
+    GINI = "gini"
+    INCOME_STATISTIC = "income_statistic"
+    INCOME_SHARE = "income_share"
 
 
 class UnitConcept(str, Enum):
@@ -94,6 +106,14 @@ class UnitConcept(str, Enum):
     # pct_change_after_tax_income / share_with_tax_cut row to PERCENT;
     # SHARE stays the fraction convention for rates (poverty, take-up).
     PERCENT = "percent"
+    # UK externals ingest (#33): GBP mirrors USD (raw pounds, never
+    # billions); BENEFIT_UNITS is the DWP family concept (single adult or
+    # couple plus dependents) matching PE UK's benunit entity; CHILDREN is
+    # the generic dependent-child concept (child benefit covers children
+    # up to 19 in approved education, so no age-bounded member fits).
+    GBP = "gbp"
+    BENEFIT_UNITS = "benefit_units"
+    CHILDREN = "children"
 
 
 # Standardized conditions vocabulary (COLLATION worklist item 4).
@@ -150,6 +170,37 @@ STANDARD_CONDITIONS = frozenset(
         "window_kind",
         "month",
         "data_vintage",
+        # UK externals ingest (#33)
+        # country          "UK" on every UK claim (absent = US)
+        # fy               UK financial-year label ("2026-27") alongside the
+        #                  integer period (= the FY end year)
+        # housing_costs    "bhc" | "ahc" on HBAI-concept poverty claims
+        # poverty_line     "relative" | "absolute" (HBAI) or the percent-of-
+        #                  median threshold ("50" | "60" | "70", UKMOD)
+        # basis            "caseload" | "expenditure" on take-up rates;
+        #                  "outturn" | "forecast" on OBR baseline lines
+        # welfare_cap      "in_welfare_cap" | "outside_welfare_cap"
+        # quantile         "q1".."q5" on distribution statistics
+        # per              period unit of per-unit money statistics ("week",
+        #                  "month" — CBO's benefit statistics precedent)
+        # component        sub-quantity of a metric ("unclaimed" on DWP
+        #                  amount statistics)
+        # aggregate_level  OBR roll-up marker: "component" (leaf) |
+        #                  "subtotal" | "total" — without it sibling
+        #                  benefit_cost rows double-count when summed
+        # parent           program slug of the aggregate an OBR row rolls
+        #                  into (absent on the top-level total)
+        "country",
+        "fy",
+        "housing_costs",
+        "poverty_line",
+        "basis",
+        "welfare_cap",
+        "quantile",
+        "per",
+        "component",
+        "aggregate_level",
+        "parent",
     }
 )
 
