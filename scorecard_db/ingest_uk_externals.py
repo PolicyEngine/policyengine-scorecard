@@ -425,7 +425,7 @@ def stage_hbai() -> tuple[list[ExternalScore], list[dict], dict]:
                 "modified_oecd_companion_ahc" if housing == "ahc" else "modified_oecd"
             ),
         }
-        span = _SPAN.match(row["period"])
+        span = _SPAN.fullmatch(row["period"])
         if span:
             start, end = int(span.group(1)) + 1, int(span.group(3)) + 1
             cond["window_kind"] = "annual_average"
@@ -747,7 +747,7 @@ def stage_ukmod() -> tuple[list[ExternalScore], list[dict], dict]:
             cond["equivalisation"] = "modified_oecd"
             cond.pop("program", None)
             cond["quantile"] = cond.pop("subgroup")
-        elif _UKMOD_POVERTY.match(row["metric"]):
+        elif _UKMOD_POVERTY.fullmatch(row["metric"]):
             metric, unit, value_kind = (
                 Metric.POVERTY_RATE,
                 UnitConcept.SHARE,
@@ -757,7 +757,7 @@ def stage_ukmod() -> tuple[list[ExternalScore], list[dict], dict]:
             cond["poverty_line"] = canon(
                 "ukmod",
                 "poverty_line",
-                _UKMOD_POVERTY.match(row["metric"]).group(1),
+                _UKMOD_POVERTY.fullmatch(row["metric"]).group(1),
             )
             cond["housing_costs"] = canon("ukmod", "housing_costs", "bhc")
             cond["equivalisation"] = "modified_oecd"

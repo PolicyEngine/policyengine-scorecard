@@ -849,3 +849,36 @@ class TestRegistryConvergence:
         with pytest.raises(ValueError, match="re-key the data"):
             register_baselines(db)
         db.close()
+
+
+def test_open_close_never_rewrites_the_file(tmp_path):
+    """Opening the DB read-only-in-spirit must be read-only in bytes:
+    the old unconditional DROP+CREATE of the comparisons view wrote a
+    schema change on every open, so tests and exporters that merely
+    READ the committed DB dirtied its header counters (the recurring
+    binary churn the #48/#52 gates flagged)."""
+    p = tmp_path / "t.db"
+    ScorecardDB(p).close()
+    before = p.read_bytes()
+    for _ in range(3):
+        ScorecardDB(p).close()
+    assert p.read_bytes() == before
+
+
+def test_stale_view_definition_is_rebuilt(tmp_path):
+    """The conditional recreate still upgrades a drifted view."""
+    import sqlite3
+
+    p = tmp_path / "t.db"
+    ScorecardDB(p).close()
+    c = sqlite3.connect(p)
+    with c:
+        c.executescript(
+            "DROP VIEW comparisons;"
+            " CREATE VIEW comparisons AS SELECT 1 AS not_the_view;"
+        )
+    c.close()
+    db = ScorecardDB(p)
+    cols = {r[1] for r in db.conn.execute("PRAGMA table_info(comparisons)")}
+    db.close()
+    assert "claim_id" in cols and "not_the_view" not in cols

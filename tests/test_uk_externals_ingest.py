@@ -55,6 +55,47 @@ def test_fy_parsing():
             _fy(tainted)
 
 
+def test_tainted_span_and_ukmod_metric_raise(monkeypatch):
+    """The other two $-anchored call sites (round-3 gate): a trailing-
+    newline HBAI window period and UKMOD poverty metric were both
+    ingested under .match(); fullmatch makes them fail loudly."""
+    from scorecard_db.ingest_uk_externals import stage_hbai
+
+    hbai_row = _row(
+        source="dwp_hbai",
+        program="hbai_low_income",
+        metric="relative_low_income_rate",
+        subgroup="total",
+        variant="bhc",
+        geography="UK",
+        unit_concept="persons",
+        period="2020/21-2022/23\n",
+        value=0.17,
+    )
+    monkeypatch.setattr(
+        "scorecard_db.ingest_uk_externals._load", lambda name: [hbai_row]
+    )
+    with pytest.raises(ValueError, match="unparseable"):
+        stage_hbai()
+
+    ukmod_row = _row(
+        source="ukmod",
+        program="poverty",
+        metric="poverty_rate_below_60pct_median\n",
+        subgroup="total",
+        variant="ukmod",  # the primary variant — anything else is dropped
+        geography="UK",
+        unit_concept="fraction",
+        period="2026",
+        value=0.18,
+    )
+    monkeypatch.setattr(
+        "scorecard_db.ingest_uk_externals._load", lambda name: [ukmod_row]
+    )
+    with pytest.raises(ValueError, match="unknown metric"):
+        stage_ukmod()
+
+
 def test_dwp_mapping_and_drops(monkeypatch):
     rows = [
         _row(),
