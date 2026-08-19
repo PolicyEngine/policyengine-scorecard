@@ -24,7 +24,7 @@ def _one(scores, metric, **conds):
 
 def test_stage_headline_values():
     scores = stage_scores()
-    assert len(scores) == 8
+    assert len(scores) == 7
     psncr = _one(scores, Metric.CASH_REQUIREMENT_CHANGE)
     assert psncr.value == 385_000_000
     assert psncr.period == 2030
@@ -55,24 +55,74 @@ def test_stage_headline_values():
     # a per-household average is never bare GBP (a query could sum it)
     assert {s.unit_concept for s in gain} == {UnitConcept.GBP_PER_HOUSEHOLD}
 
-    level = _one(scores, Metric.PARTICIPANT_COUNT)
-    assert level.value == 2_800_000
-    assert level.reform.framework == "baseline"
-
 
 def test_frr_rows_score_against_the_pre_frr_world():
     """The costing's own counterfactual is the 25%-cap law the FRR
     replaced — NOT today's current law, which includes the FRR. Every
-    reform row must carry the registered pre-FRR baseline descriptor,
-    mirrored in conditions (load-bearing, COLLATION worklist item 3)."""
+    row in the family is a reform claim carrying the registered pre-FRR
+    baseline descriptor, mirrored in conditions (load-bearing,
+    COLLATION worklist item 3). The family's one baseline-framework row
+    (the 2.8m deductions level) was removed at gate: it is the DWP
+    administrative deductions quantity relationships.py routes away
+    from external scores, republished in a press release with no
+    measurement vintage."""
     scores = stage_scores()
-    reform_rows = [s for s in scores if s.reform.framework == "policy_ref"]
-    assert len(reform_rows) == 7
-    for s in reform_rows:
+    assert len(scores) == 7
+    for s in scores:
+        assert s.reform.framework == "policy_ref"
         assert s.reform.baseline == {"policy": "pre_frr_uc_deductions"}
         assert s.conditions["baseline_policy"] == "pre_frr_uc_deductions"
-    (level,) = [s for s in scores if s.reform.framework == "baseline"]
-    assert "baseline_policy" not in level.conditions
+    assert all(s.metric is not Metric.PARTICIPANT_COUNT for s in scores)
+
+
+def test_reserved_condition_keys_are_rejected(tmp_path, monkeypatch):
+    """Gate probe (sol, #52 round 1): staged conditions used to be
+    merged AFTER the generated identity fields, so geography='Mars' and
+    a baseline_policy contradicting ReformRef.baseline were accepted.
+    Reserved keys now raise."""
+    import scorecard_db.ingest_uk_deductions as mod
+
+    for poison in ({"geography": "Mars"}, {"baseline_policy": "current_law"}):
+        rows = [
+            json.loads(line) for line in STAGED.read_text().splitlines() if line.strip()
+        ]
+        rows[0]["conditions"] |= poison
+        bad = tmp_path / "claims_staged.jsonl"
+        bad.write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+        monkeypatch.setattr(mod, "STAGED", bad)
+        with pytest.raises(ValueError, match="generated identity keys"):
+            stage_scores()
+
+
+def test_staging_accounting_gates_wholesale_replace(tmp_path, monkeypatch):
+    """An empty or truncated staging must fail loudly — without the
+    exact per-source accounting, ingest would wholesale-delete both
+    sources and commit zero rows."""
+    import scorecard_db.ingest_uk_deductions as mod
+
+    lines = [line for line in STAGED.read_text().splitlines() if line.strip()]
+    for content in ("", "\n".join(lines[:-1]) + "\n"):
+        bad = tmp_path / "claims_staged.jsonl"
+        bad.write_text(content)
+        monkeypatch.setattr(mod, "STAGED", bad)
+        with pytest.raises(ValueError, match="accounting drifted"):
+            stage_scores()
+
+
+def test_malformed_fy_label_raises(tmp_path, monkeypatch):
+    """'2029-99' must never parse (the suffix is not start year + 1)."""
+    import scorecard_db.ingest_uk_deductions as mod
+
+    rows = [
+        json.loads(line) for line in STAGED.read_text().splitlines() if line.strip()
+    ]
+    rows[0]["fy"] = "2029-99"
+    rows[0]["period"] = 2030
+    bad = tmp_path / "claims_staged.jsonl"
+    bad.write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+    monkeypatch.setattr(mod, "STAGED", bad)
+    with pytest.raises(ValueError, match="suffix is not start year"):
+        stage_scores()
 
 
 def test_period_must_be_fy_end_year(tmp_path, monkeypatch):
@@ -130,7 +180,7 @@ def test_every_claim_carries_quote_and_publication():
 def test_round_trip(tmp_path):
     from scorecard_db.models import baseline_key
 
-    assert ingest(tmp_path / "t.db") == {"claims": 8}
+    assert ingest(tmp_path / "t.db") == {"claims": 7}
     db = ScorecardDB(tmp_path / "t.db")
     n = db.conn.execute(
         "SELECT COUNT(*) FROM external_scores WHERE metric='cash_requirement_change'"
@@ -163,7 +213,7 @@ def test_round_trip(tmp_path):
     lane = db.conn.execute(
         "SELECT stage, detail FROM lanes WHERE lane='uk-deductions-frr'"
     ).fetchone()
-    assert lane["stage"] == "ingested" and lane["detail"] == "8 claims"
+    assert lane["stage"] == "ingested" and lane["detail"] == "7 claims"
     db.close()
 
 

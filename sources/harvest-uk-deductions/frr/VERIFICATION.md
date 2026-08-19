@@ -31,7 +31,32 @@ below was re-verified against the vendored PDFs / live page on
 | households better off | 1.2m | AB2024 5.134/2.30; DWP PR |
 | average annual gain | £420 | AB2024 5.134/2.30; DWP PR |
 | of which families with children | 700k | AB2024 2.30; DWP PR |
-| households with deductions (pre-FRR level) | 2.8m | DWP PR |
+
+### Removed at gate (2026-08-19): the 2.8m deductions level
+
+The 2026-08-14 staging carried a fifth row — 2.8m "households with
+deductions (pre-FRR level)", keyed FY2025-26, held_out. Removed on the
+#52 review round, three defects:
+
+1. **The staged quote was a paraphrase.** The release's actual sentence
+   (re-verified 2026-08-19 against the live page): "With as many as
+   2.8 million households seeing deductions made to their Universal
+   Credit award to pay off debt each month, the new rate is designed to
+   ensure money is repaid where it is owed…" — the staged "2.8 million
+   households currently experience deductions monthly" appears nowhere.
+2. **The release states no measurement vintage**, so FY2025-26 /
+   period 2026 / FISCAL_YEAR was an unsupported temporal identity; the
+   reviewer traced the figure to DWP's administrative deductions
+   statistics (the December 2023 to November 2024 publication —
+   pre-FRR data).
+3. **Boundary rule**: that administrative quantity is exactly the DWP
+   quarterly deductions OUTTURN family relationships.py routes away
+   from external scores ("deliberately not ingested"); a press-release
+   republication does not make it independent.
+
+Disposition: the figure belongs to the future Ledger lane, staged from
+the DWP deductions statistics publication itself (exact cell + vintage
++ the consuming pe-uk parameter named), never from the press release.
 
 ## Hygiene rules carried from #21
 

@@ -135,12 +135,15 @@ def _fy(label: str) -> tuple[int, str]:
     if m:
         end = int(m.group(1))
         return end, f"{end - 1}-{str(end)[2:]}"
-    m = re.match(r"^(\d{4})-(\d{2})$", label)
-    if m:
-        return int(m.group(1)) + 1, label
-    m = re.match(r"^(\d{4})/(\d{2})$", label)
+    m = re.match(r"^(\d{4})[-/](\d{2})$", label)
     if m:
         start = int(m.group(1))
+        # the suffix must be the start year + 1 — '2029-99' is malformed,
+        # never year 2030 (round-1 gate on the deductions family)
+        if (start + 1) % 100 != int(m.group(2)):
+            raise ValueError(
+                f"UK financial-year label {label!r}: suffix is not start year + 1"
+            )
         return start + 1, f"{start}-{m.group(2)}"
     raise ValueError(f"unparseable UK financial-year label: {label!r}")
 

@@ -20,13 +20,21 @@ Mapping, under the harvest fail-loud contract:
       revenue_change, per #21's PSNCR-never-PSNB rule
     - the £420 average annual gain is a per-household statistic ->
       GBP_PER_HOUSEHOLD, never bare GBP (an average a query could sum)
-    - the pre-FRR households-with-deductions level is a baseline claim
     - identity values route through the closed registry (uk_aliases);
-      period must equal the fy END year (the live claim convention) —
-      asserted per row, never trusted from staging
+      period must equal the fy END year (the live claim convention),
+      the fy label must be a well-formed YYYY-YY, and staged conditions
+      may never set the generated identity keys (country, geography,
+      fy, baseline_policy) — each asserted per row, never trusted from
+      staging; exact per-source accounting gates the staging wholesale
     - everything is held_out; the DWP quarterly deductions outturn
       tables PE's parameters consume are calibration territory and are
-      not staged here at all
+      not staged here at all. The press release's "as many as 2.8
+      million households seeing deductions" is that same administrative
+      quantity republished — it was staged here once as a held-out
+      FY2025-26 level and REMOVED at gate (the release states no
+      measurement vintage and the earlier staging paraphrased it); it
+      belongs to the future Ledger lane with the DWP deductions
+      statistics publication as provenance (VERIFICATION.md).
 
 The write path mirrors ingest_uk_externals: one transaction replaces
 this module's two sources wholesale AND runs the deliberate-
@@ -40,13 +48,13 @@ Usage:
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 from .db import LANE_SQL, SCORES_SQL, ScorecardDB
 from .harvest import REPO, finish
 from .uk_aliases import canon
 from .models import (
-    BASELINE,
     CalibrationRelationship,
     ExternalScore,
     Metric,
@@ -96,13 +104,21 @@ METRICS = {
         UnitConcept.GBP_PER_HOUSEHOLD,
         "gbp",
     ),
-    "participant_count": (
-        Metric.PARTICIPANT_COUNT,
-        "households",
-        UnitConcept.HOUSEHOLDS,
-        "count",
-    ),
 }
+
+# Staged conditions may NEVER carry these: the stager generates them
+# (country/geography constants, fy from the row's own field, the
+# baseline mirror from the reform routing). A staged row setting one
+# could silently override the generated identity — gate finding: a
+# poison row with geography="Mars" and a baseline_policy contradicting
+# ReformRef.baseline was accepted under the old merge order.
+RESERVED_CONDITIONS = frozenset({"country", "geography", "fy", "baseline_policy"})
+
+# Exact per-source accounting (the ingest_uk_externals _EXPECTED
+# pattern): a drifted or truncated staging fails wholesale — without
+# this, an empty file would wholesale-delete both sources and commit
+# zero rows.
+EXPECTED_COUNTS = {"hm_treasury": 4, "dwp": 3}
 
 PRE_FRR_BASELINE = {"policy": "pre_frr_uc_deductions"}
 
@@ -117,10 +133,26 @@ FRR_REFORM = ReformRef(
 )
 
 
+def _fy_end(label: str) -> int:
+    """Validated YYYY-YY financial-year label -> end year. The suffix
+    must be the start year + 1 (gate finding: '2029-99' parsed to 2030
+    under a bare int(label[:4]) + 1)."""
+    m = re.fullmatch(r"(\d{4})-(\d{2})", label)
+    if not m:
+        raise ValueError(f"uk_deductions: malformed fy label {label!r}")
+    start = int(m.group(1))
+    if (start + 1) % 100 != int(m.group(2)):
+        raise ValueError(
+            f"uk_deductions: fy label {label!r} suffix is not start year + 1"
+        )
+    return start + 1
+
+
 def stage_scores() -> list[ExternalScore]:
     if not STAGED.exists():
         raise FileNotFoundError(f"staged claims missing: {STAGED}")
     scores = []
+    counts: dict[str, int] = {}
     for line in STAGED.read_text().splitlines():
         if not line.strip():
             continue
@@ -132,9 +164,15 @@ def stage_scores() -> list[ExternalScore]:
             )
         if row["source"] not in DEDUCTION_SOURCES:
             raise ValueError(f"uk_deductions: unknown source {row['source']!r}")
+        reserved = RESERVED_CONDITIONS & set(row["conditions"])
+        if reserved:
+            raise ValueError(
+                "uk_deductions: staged conditions may not set generated "
+                f"identity keys {sorted(reserved)}"
+            )
         # period keys the FY END year (the live claim-side convention;
         # models.py fy note) — asserted, never inherited from staging.
-        end = int(row["fy"].split("-")[0]) + 1
+        end = _fy_end(row["fy"])
         if row["period"] != end:
             raise ValueError(
                 f"uk_deductions: period {row['period']} is not fy "
@@ -149,23 +187,21 @@ def stage_scores() -> list[ExternalScore]:
                 f"uk_deductions: {row['metric']} staged with unit "
                 f"{row['unit_concept']!r}, expected {staged_unit!r}"
             )
-        if row["reform_policy"] is None:
-            reform = BASELINE
-            mirror = {}
-        elif row["reform_policy"] == "uc_fair_repayment_rate":
+        if row["reform_policy"] == "uc_fair_repayment_rate":
             reform = FRR_REFORM
             # baseline variants are load-bearing: mirrored in conditions
             # for queryability (models.py COLLATION worklist item 3)
             mirror = {"baseline_policy": PRE_FRR_BASELINE["policy"]}
         else:
+            # No baseline-framework rows remain in this family — the 2.8m
+            # deductions level was removed at gate (see the module
+            # docstring); a future level row is a deliberate decision
+            # with its own routing, never a silent default.
             raise ValueError(f"uk_deductions: unknown reform {row['reform_policy']!r}")
-        conditions = {
-            "country": "UK",
-            "geography": canon(row["source"], "geography", "GB"),
-            "fy": row["fy"],
-            **mirror,
-            **row["conditions"],
-        }
+        # Staged conditions first, canonicalized; generated identity
+        # fields LAST so nothing staged can override them (the reserved-
+        # key check above makes an attempt loud, this makes it inert).
+        conditions = dict(row["conditions"])
         if "program" in conditions:
             conditions["program"] = canon(
                 row["source"], "program", conditions["program"]
@@ -174,6 +210,13 @@ def stage_scores() -> list[ExternalScore]:
             conditions["subgroup"] = canon(
                 row["source"], "subgroup", conditions["subgroup"]
             )
+        conditions |= {
+            "country": "UK",
+            "geography": canon(row["source"], "geography", "GB"),
+            "fy": row["fy"],
+            **mirror,
+        }
+        counts[row["source"]] = counts.get(row["source"], 0) + 1
         scores.append(
             ExternalScore(
                 source=row["source"],
@@ -189,6 +232,12 @@ def stage_scores() -> list[ExternalScore]:
                 publication=row["publication"],
                 value_kind=value_kind,
             )
+        )
+    if counts != EXPECTED_COUNTS:
+        raise ValueError(
+            f"uk_deductions: staging accounting drifted: {counts} != "
+            f"{EXPECTED_COUNTS} — a truncated or regrown staging must be "
+            "a deliberate re-pin, never a silent wholesale replace"
         )
     return finish(scores, "uk_deductions")
 

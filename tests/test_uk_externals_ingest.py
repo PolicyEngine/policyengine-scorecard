@@ -41,8 +41,14 @@ def test_fy_parsing():
     assert _fy("FYE 2024") == (2024, "2023-24")
     assert _fy("2023-24") == (2024, "2023-24")
     assert _fy("2024/25") == (2025, "2024-25")
+    assert _fy("1999-00") == (2000, "1999-00")
     with pytest.raises(ValueError):
         _fy("FY2024")
+    # a mismatched suffix is malformed, never silently start + 1
+    with pytest.raises(ValueError, match="suffix"):
+        _fy("2029-99")
+    with pytest.raises(ValueError, match="suffix"):
+        _fy("2029/31")
 
 
 def test_dwp_mapping_and_drops(monkeypatch):
