@@ -16,6 +16,10 @@ below was re-verified against the vendored PDFs / live page on
   'Repayment'/'deduction' across all 93 pages) — consistent with issue
   #21's note that the FRR is a financial transaction with no PSNB
   impact; the only fiscal quantity is the PSNCR line in para 5.134.
+  The absence is machine-checked, not prose-only:
+  `tests/test_uk_deductions_ingest.py::test_frr_costing_absence_is_machine_checked`
+  extracts the vendored costings PDF and asserts zero occurrences of
+  the measure name (skips where pypdf is unavailable, e.g. bare CI).
 - DWP press release 2025-04-30 (URL in the staged rows): effective
   date 30 April 2025, cap 25% -> 15% of the UC standard allowance.
 

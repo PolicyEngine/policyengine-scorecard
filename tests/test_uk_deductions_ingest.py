@@ -1,5 +1,7 @@
 """Tests for the FRR claim-family ingest (#39, staged per #21)."""
 
+from pathlib import Path
+
 import pytest
 
 from scorecard_db import Metric, ScorecardDB, UnitConcept
@@ -77,3 +79,39 @@ def test_round_trip(tmp_path):
     ).fetchone()[0]
     assert n == 1
     db.close()
+
+
+FRR_DIR = Path(__file__).resolve().parent.parent / "sources" / "harvest-uk-deductions"
+
+
+def _pdf_text(path):
+    pypdf = pytest.importorskip("pypdf")
+    import re
+
+    reader = pypdf.PdfReader(path)
+    text = " ".join((p.extract_text() or "") for p in reader.pages)
+    return re.sub(r"\s+", " ", text)
+
+
+def test_420_quotes_are_two_distinct_verbatim_sentences():
+    """Rows 2 and 3 cite the SAME figure from two DIFFERENT passages of
+    AB2024 (para 4.111's "£420 per year" sentence vs the para 2.30/5.134
+    "£420 a year" sentence). Both must appear verbatim — neither is a
+    reworded fragment of the other."""
+    text = _pdf_text(FRR_DIR / "frr" / "autumn_budget_2024.pdf")
+    assert (
+        "This will mean 1.2 million households will be better off by "
+        "£420 per year on average as a result of this change." in text
+    )
+    assert "with households expected to be better off by £420 a year on average" in text
+
+
+def test_frr_costing_absence_is_machine_checked():
+    """The 'verified absence' of an FRR costing line is not trust-me
+    prose: the AB2024 policy costings document (93 pages) contains zero
+    occurrences of the measure name. The FRR is a financial transaction
+    (PSNCR, not PSNB), so a costing line appearing in a future re-vendor
+    would mean the wrong document or a mis-staged claim."""
+    text = _pdf_text(FRR_DIR / "frr" / "autumn_budget_2024_policy_costings.pdf")
+    assert "Fair Repayment Rate" not in text
+    assert "repayment rate" not in text.lower()
