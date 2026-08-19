@@ -86,7 +86,7 @@ Person keys (closed set):
 | key | type | meaning |
 |---|---|---|
 | `age` | int, required | age at the start of the policy year |
-| `date_of_birth` | `YYYY-MM-DD` | only when the exact date is load-bearing (two-child-limit protection, state pension age) |
+| `date_of_birth` | `YYYY-MM-DD`, a real calendar date (`2026-13-40` fails) | only when the exact date is load-bearing (two-child-limit protection, state pension age) |
 | `employment_income` | number ≥ 0 | gross annual employee earnings |
 | `self_employment_income` | number ≥ 0 | annual trading profit |
 | `pension_income` | number ≥ 0 | private/occupational pension in payment |
@@ -126,7 +126,9 @@ as `pe_results`).
   "computed_at": "2026-08-14T12:00:00Z",
   "abs_diff": 0.04,
   "tolerance": 0.52,
-  "classification": "match_within_tolerance"
+  "variable_class": "currency",
+  "classification": "match_within_tolerance",
+  "schema_version": 1
 }
 ```
 
@@ -148,6 +150,17 @@ as `pe_results`).
   the numeric tolerance the row was judged against, satisfying
   `0 < abs_diff ≤ tolerance`. Stored so a tolerance-table change can never
   silently re-bless old rows.
+- `variable_class` — which tolerance rule applied (`currency` /
+  `boolean`), persisted so a stored row can be re-classified and
+  audited without inferring the class from the free-text `variable`.
+- `schema_version` — this contract's version (currently `1`), on the
+  battery file and every result row; a mismatched version raises, so
+  a future breaking change migrates stored artifacts explicitly.
+- Connectors build rows via `CaseResult.from_classification(...)` —
+  the one wiring path from `classify` to a stored row. It derives
+  `abs_diff`, threads the exact tolerance `classify` judged against,
+  and persists `variable_class`, so no caller re-derives the
+  tolerance by hand.
 - `annotations` — a list of non-empty strings. Required (non-empty) on the
   adjudicated-only classifications `oracle_difference` and `rounding`: the
   traceable writeup naming the oracle defect / documented rounding rule.

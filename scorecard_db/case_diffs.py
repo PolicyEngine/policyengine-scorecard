@@ -24,9 +24,15 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
+from datetime import date
 from enum import Enum
 from pathlib import Path
 from typing import Optional
+
+# Contract version for the battery file and result rows. Bump on any
+# breaking change to the vocabularies or row shape so stored artifacts
+# can be migrated explicitly instead of silently reinterpreted.
+SCHEMA_VERSION = 1
 
 
 class Oracle(str, Enum):
@@ -125,10 +131,18 @@ def _validate_person(person_id: str, person: dict) -> None:
     if not isinstance(age, int) or isinstance(age, bool) or age < 0:
         raise ValueError(f"person {person_id!r} needs an integer age >= 0")
     dob = person.get("date_of_birth")
-    if dob is not None and not (
-        isinstance(dob, str) and len(dob) == 10 and dob[4] == "-" and dob[7] == "-"
-    ):
-        raise ValueError(f"person {person_id!r} date_of_birth must be YYYY-MM-DD")
+    if dob is not None:
+        # a real calendar date, not just the YYYY-MM-DD shape
+        # ("2026-13-40" must fail)
+        try:
+            if not (isinstance(dob, str) and len(dob) == 10):
+                raise ValueError
+            date.fromisoformat(dob)
+        except ValueError:
+            raise ValueError(
+                f"person {person_id!r} date_of_birth must be a real "
+                f"YYYY-MM-DD date, got {dob!r}"
+            ) from None
     for key in PERSON_NUMERIC_KEYS & set(person):
         v = person[key]
         if isinstance(v, bool) or not isinstance(v, (int, float)) or v < 0:
@@ -236,11 +250,23 @@ class CaseResult:
     classification: DiffClassification
     abs_diff: Optional[float] = None
     tolerance: Optional[float] = None
+    # Which tolerance rule applied — persisted so a stored row can be
+    # re-classified/audited without inferring the class from the
+    # free-text variable name.
+    variable_class: Optional[VariableClass] = None
     annotations: list = field(default_factory=list)
+    schema_version: int = SCHEMA_VERSION
 
     def __post_init__(self):
         self.oracle = Oracle(self.oracle)
         self.classification = DiffClassification(self.classification)
+        if self.variable_class is not None:
+            self.variable_class = VariableClass(self.variable_class)
+        if self.schema_version != SCHEMA_VERSION:
+            raise ValueError(
+                f"schema_version {self.schema_version!r} is not the current "
+                f"contract version {SCHEMA_VERSION}; migrate explicitly"
+            )
         if not self.case_id or not self.variable:
             raise ValueError("case_id and variable are required")
         if not isinstance(self.annotations, list) or not all(
@@ -296,6 +322,54 @@ class CaseResult:
                 "requires a writeup in annotations (SCHEMA.md)"
             )
 
+    @classmethod
+    def from_classification(
+        cls,
+        *,
+        case_id: str,
+        variable: str,
+        pe_value: Optional[float],
+        oracle_value: Optional[float],
+        variable_class: VariableClass,
+        oracle: Oracle,
+        engine_version: str,
+        oracle_version: str,
+        computed_at: str,
+        tolerance_table: dict = DEFAULT_TOLERANCES,
+    ) -> "CaseResult":
+        """The one wiring path from ``classify`` to a stored row.
+
+        Derives abs_diff, threads the exact tolerance ``classify`` judged
+        against (only onto match_within_tolerance rows, per the field
+        contract), and persists the variable class — so no caller ever
+        re-derives the tolerance by hand and passes the wrong one.
+        """
+        variable_class = VariableClass(variable_class)
+        classification = classify(
+            pe_value, oracle_value, variable_class, tolerance_table
+        )
+        both = pe_value is not None and oracle_value is not None
+        abs_diff = abs(float(pe_value) - float(oracle_value)) if both else None
+        tolerance = (
+            float(tolerance_table[variable_class])
+            if classification == DiffClassification.MATCH_WITHIN_TOLERANCE
+            else None
+        )
+        return cls(
+            case_id=case_id,
+            variable=variable,
+            pe_value=pe_value,
+            oracle_value=oracle_value,
+            oracle=oracle,
+            engine_version=engine_version,
+            oracle_version=oracle_version,
+            computed_at=computed_at,
+            classification=classification,
+            abs_diff=abs_diff,
+            tolerance=tolerance,
+            variable_class=variable_class,
+        )
+
 
 def classify(
     pe_value: Optional[float],
@@ -325,7 +399,7 @@ def classify(
     return DiffClassification.UNCLASSIFIED
 
 
-BATTERY_KEYS = frozenset({"schema", "description", "cases"})
+BATTERY_KEYS = frozenset({"schema", "schema_version", "description", "cases"})
 CASE_KEYS = frozenset(
     {
         "case_id",
@@ -347,6 +421,11 @@ def load_battery(path) -> list[CaseSpec]:
     unknown = set(raw) - BATTERY_KEYS
     if unknown:
         raise ValueError(f"battery has unknown keys: {sorted(unknown)}")
+    if raw.get("schema_version") != SCHEMA_VERSION:
+        raise ValueError(
+            f"battery schema_version must be {SCHEMA_VERSION}, "
+            f"got {raw.get('schema_version')!r}"
+        )
     if not isinstance(raw.get("cases"), list) or not raw["cases"]:
         raise ValueError("battery.cases must be a non-empty list")
     cases = []

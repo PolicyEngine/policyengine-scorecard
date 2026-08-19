@@ -1,5 +1,6 @@
 {
  "schema": "sources/ukmod-cases/SCHEMA.md",
+ "schema_version": 1,
  "description": "Initial UK mode-3 case battery for the UKMOD/EUROMOD lane (#41): standard EUROMOD-style hypothetical households plus the edge cases PE UK carries regression coverage for. Inputs + expected focus only — expected output values come from engine runs (PE and the oracle), never from this file. All monetary amounts are annual GBP; weekly-quoted amounts enter as weekly x 52.",
  "cases": [
   {

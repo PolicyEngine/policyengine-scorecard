@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from scorecard_db.case_diffs import (
+    SCHEMA_VERSION,
     DEFAULT_TOLERANCES,
     CaseResult,
     CaseSpec,
@@ -321,3 +322,100 @@ class TestCaseResult:
             CaseResult(**self.result_kwargs(annotations="a writeup"))
         with pytest.raises(ValueError, match="annotations"):
             CaseResult(**self.result_kwargs(annotations=[""]))
+
+
+class TestDateOfBirthRealDate:
+    def test_impossible_date_rejected(self):
+        for bad in ("2026-13-40", "0000-00-00", "2025-02-30"):
+            hh = {
+                "people": {"adult_1": {"age": 30, "date_of_birth": bad}},
+                "benefit_units": [{"adults": ["adult_1"], "children": []}],
+            }
+            with pytest.raises(ValueError, match="real"):
+                CaseSpec(**case_kwargs(household=hh))
+
+    def test_real_date_accepted(self):
+        hh = {
+            "people": {"adult_1": {"age": 30, "date_of_birth": "1996-02-29"}},
+            "benefit_units": [{"adults": ["adult_1"], "children": []}],
+        }
+        CaseSpec(**case_kwargs(household=hh))
+
+
+class TestSchemaVersion:
+    def test_battery_carries_current_version(self):
+        raw = json.loads(BATTERY.read_text())
+        assert raw["schema_version"] == SCHEMA_VERSION
+
+    def test_battery_with_wrong_version_rejected(self, tmp_path):
+        raw = json.loads(BATTERY.read_text())
+        raw["schema_version"] = SCHEMA_VERSION + 1
+        p = tmp_path / "cases.json"
+        p.write_text(json.dumps(raw))
+        with pytest.raises(ValueError, match="schema_version"):
+            load_battery(p)
+
+    def test_battery_without_version_rejected(self, tmp_path):
+        raw = json.loads(BATTERY.read_text())
+        del raw["schema_version"]
+        p = tmp_path / "cases.json"
+        p.write_text(json.dumps(raw))
+        with pytest.raises(ValueError, match="schema_version"):
+            load_battery(p)
+
+    def test_result_row_rejects_foreign_version(self):
+        kw = TestCaseResult().result_kwargs(schema_version=SCHEMA_VERSION + 1)
+        with pytest.raises(ValueError, match="schema_version"):
+            CaseResult(**kw)
+
+
+class TestClassifyToResultSeam:
+    """The classify -> CaseResult wiring path (review: previously untested;
+    callers had to re-derive the tolerance by hand)."""
+
+    def wired(self, pe, oracle_value, vclass=VariableClass.CURRENCY, **kw):
+        base = dict(
+            case_id="uk-uc-single-unemployed",
+            variable="universal_credit",
+            pe_value=pe,
+            oracle_value=oracle_value,
+            variable_class=vclass,
+            oracle=Oracle.UKMOD,
+            engine_version="policyengine-uk 2.0.0",
+            oracle_version="UKMOD B2026.08",
+            computed_at="2026-08-14T12:00:00Z",
+        )
+        base.update(kw)
+        return CaseResult.from_classification(**base)
+
+    def test_tolerance_match_threads_the_applied_tolerance(self):
+        r = self.wired(100.0, 100.30)
+        assert r.classification is DiffClassification.MATCH_WITHIN_TOLERANCE
+        assert r.tolerance == DEFAULT_TOLERANCES[VariableClass.CURRENCY]
+        assert r.variable_class is VariableClass.CURRENCY
+        assert abs(r.abs_diff - 0.30) < 1e-9
+
+    def test_exact_match_carries_no_tolerance(self):
+        r = self.wired(100.0, 100.0)
+        assert r.classification is DiffClassification.MATCH_EXACT
+        assert r.tolerance is None and r.abs_diff == 0.0
+
+    def test_null_pe_side_wires_to_pe_gap(self):
+        r = self.wired(None, 5.0)
+        assert r.classification is DiffClassification.PE_GAP
+        assert r.abs_diff is None and r.tolerance is None
+
+    def test_custom_table_tolerance_is_the_one_stored(self):
+        table = {VariableClass.CURRENCY: 1.0}
+        r = self.wired(100.0, 100.9, tolerance_table=table)
+        assert r.classification is DiffClassification.MATCH_WITHIN_TOLERANCE
+        assert r.tolerance == 1.0
+
+    def test_above_tolerance_lands_unclassified(self):
+        r = self.wired(100.0, 200.0)
+        assert r.classification is DiffClassification.UNCLASSIFIED
+        assert r.tolerance is None
+
+    def test_variable_class_is_a_closed_vocabulary(self):
+        with pytest.raises(ValueError):
+            self.wired(100.0, 100.0, vclass="percentage")
