@@ -63,17 +63,27 @@ CALCULATOR_ORACLES = frozenset(
 
 
 def _contains_iso_date(s: str) -> bool:
+    """True if s contains a REAL YYYY-MM-DD calendar date.
+
+    Shape alone is not enough — "2026-13-45" and "0000-00-00" must fail,
+    so every shape-matching chunk is parsed as an actual date.
+    """
     for i in range(len(s) - 9):
         chunk = s[i : i + 10]
-        if (
-            chunk[4] == "-"
-            and chunk[7] == "-"
-            and chunk[:4].isdigit()
-            and chunk[5:7].isdigit()
-            and chunk[8:10].isdigit()
-        ):
+        if not (chunk[4] == "-" and chunk[7] == "-"):
+            continue
+        try:
+            date.fromisoformat(chunk)
             return True
+        except ValueError:
+            continue
     return False
+
+
+# Archive citation prefix required on calculator-oracle rows: the reading
+# itself must be archived (screenshot / saved page) and the row must say
+# where, or the SCHEMA.md provenance rule stays unenforced prose.
+ARCHIVE_PREFIX = "archive:"
 
 
 class VariableClass(str, Enum):
@@ -307,14 +317,22 @@ class CaseResult:
             raise ValueError("case_id and variable are required")
         if not isinstance(self.oracle_version, str) or not self.oracle_version.strip():
             raise ValueError("oracle_version is required (release string or date)")
-        if self.oracle in CALCULATOR_ORACLES and not _contains_iso_date(
-            self.oracle_version
-        ):
-            raise ValueError(
-                f"{self.oracle.value} is a live calculator: oracle_version must "
-                "carry the reading date (YYYY-MM-DD), and the reading must be "
-                "archived per SCHEMA.md"
-            )
+        if self.oracle in CALCULATOR_ORACLES:
+            if not _contains_iso_date(self.oracle_version):
+                raise ValueError(
+                    f"{self.oracle.value} is a live calculator: oracle_version "
+                    "must carry the reading date (YYYY-MM-DD), and the reading "
+                    "must be archived per SCHEMA.md"
+                )
+            if not any(
+                isinstance(a, str) and a.strip().lower().startswith(ARCHIVE_PREFIX)
+                for a in (self.annotations or [])
+            ):
+                raise ValueError(
+                    f"{self.oracle.value} rows require an '{ARCHIVE_PREFIX} ...' "
+                    "annotation citing the archived reading (screenshot / saved "
+                    "page) — the SCHEMA.md provenance rule is enforced, not prose"
+                )
         if not isinstance(self.annotations, list) or not all(
             isinstance(a, str) and a.strip() for a in self.annotations
         ):

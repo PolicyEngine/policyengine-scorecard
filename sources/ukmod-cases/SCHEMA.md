@@ -209,10 +209,13 @@ Calculator oracles are live services (gov.uk estimators; production benefit
 calculators), not versioned model releases, so their result rows carry a
 stricter provenance contract, enforced at validation:
 
-- `oracle_version` **must contain the reading date** (`YYYY-MM-DD`) — a
-  calculator answer is only meaningful with the date it was read.
+- `oracle_version` **must contain the reading date** (`YYYY-MM-DD`, a
+  real calendar date — `2026-13-45` fails validation) — a calculator
+  answer is only meaningful with the date it was read.
 - Every reading must be **archived** (screenshot or saved page) and the
-  archive cited in `annotations` when the row is adjudicated. Readings are
+  archive cited in `annotations` as an `archive: <path-or-url>` entry —
+  a calculator-oracle row **without** an `archive:` annotation fails
+  validation, so this rule is enforced, not prose. Readings are
   entered manually or via documented, terms-compliant access — one case at
   a time; these are oracle *readings*, never a harvest or a scrape.
 - The starter work list lives in `battery/calculator_set.json`

@@ -422,6 +422,7 @@ class TestClassifyToResultSeam:
         with pytest.raises(ValueError):
             self.wired(100.0, 100.0, vclass="percentage")
 
+
 class TestCalculatorOracles:
     """#63: calculator oracles join the closed set with a stricter
     provenance contract (reading date in oracle_version) and a >= 2-
@@ -439,6 +440,7 @@ class TestCalculatorOracles:
             computed_at="2026-08-17T12:00:00Z",
             classification="match_exact",
             abs_diff=0.0,
+            annotations=["archive: readings/2026-08-17-govuk-income-tax.png"],
         )
         base.update(kw)
         return base
@@ -546,3 +548,34 @@ class TestCalculatorSet:
         )
         with pytest.raises(ValueError, match="not a calculator oracle"):
             load_calculator_set(bad, load_battery(BATTERY))
+
+
+class TestCalculatorProvenanceEnforcement:
+    """Review items: _contains_iso_date must reject impossible dates, and
+    the archive rule must be validation, not prose."""
+
+    def kwargs(self, **kw):
+        return TestCalculatorOracles().result_kwargs(**kw)
+
+    def test_impossible_reading_dates_rejected(self):
+        for bad in ("read 2026-13-45", "read 0000-00-00", "read 2025-02-30"):
+            with pytest.raises(ValueError, match="reading date"):
+                CaseResult(**self.kwargs(oracle_version=bad))
+
+    def test_real_reading_date_accepted(self):
+        CaseResult(**self.kwargs(oracle_version="read 2024-02-29"))
+
+    def test_missing_archive_annotation_rejected(self):
+        with pytest.raises(ValueError, match="archive"):
+            CaseResult(**self.kwargs(annotations=[]))
+        with pytest.raises(ValueError, match="archive"):
+            CaseResult(**self.kwargs(annotations=["saved a screenshot somewhere"]))
+
+    def test_model_oracles_need_no_archive_annotation(self):
+        CaseResult(
+            **self.kwargs(
+                oracle="ukmod",
+                oracle_version="UKMOD B2026.08",
+                annotations=[],
+            )
+        )
