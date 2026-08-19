@@ -141,9 +141,13 @@ class UnitConcept(str, Enum):
 #
 # UK additions (2026-08-02 UK harvest; COLLATION UK worklist items 2-3):
 # fy                normalized fiscal-year label "2026-27" (Apr–Mar). The
-#                   integer period is the FY END year — the repo-wide claim
-#                   convention (ingest_reform_validation: "period is the
-#                   ending year"; e.g. a FY2027-28 fiscal note keys 2028).
+#                   integer period is the FY END year — the convention of
+#                   every LIVE claim in the DB (ingest_reform_validation:
+#                   "period is the ending year"; e.g. a FY2027-28 fiscal
+#                   note keys 2028). Archived harvest NOTES staged some
+#                   sources by START year, so any ingest built from those
+#                   selectors (e.g. #52's deductions) must translate at
+#                   staging time, never inherit the archive's keys.
 #                   PE-UK's engine time_period uses the START year; that is
 #                   RESULT-side provenance (engine_time_period), recorded at
 #                   attach with the one-year offset asserted — never a claim
@@ -200,10 +204,20 @@ STANDARD_CONDITIONS = frozenset(
         #                  benefit_cost rows double-count when summed
         # parent           program slug of the aggregate an OBR row rolls
         #                  into (absent on the top-level total)
+        # equivalisation   income-equivalisation scale on distribution
+        #                  statistics: "modified_oecd" (BHC) |
+        #                  "modified_oecd_companion_ahc" (AHC) — load-
+        #                  bearing beside housing_costs
+        # poverty_line_anchor  which FIXED median an absolute low-income
+        #                  line uses: "fye_2011" | "fye_2025" |
+        #                  "mixed_fye2011_fye2025" (a multi-year window
+        #                  straddling the FYE-2025 re-anchor)
         "country",
         "fy",
         "housing_costs",
         "poverty_line",
+        "poverty_line_anchor",
+        "equivalisation",
         "basis",
         "welfare_cap",
         "quantile",

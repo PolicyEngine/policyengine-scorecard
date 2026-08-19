@@ -56,7 +56,7 @@ from pathlib import Path
 
 import hashlib
 
-from .db import SCORES_SQL, ScorecardDB
+from .db import LANE_SQL, SCORES_SQL, ScorecardDB
 from .harvest import REPO, finish, require_fields
 from .uk_aliases import canon
 from .relationships import uk_relationship
@@ -506,6 +506,10 @@ def _reckoner_policy(program: str, description: str) -> str:
 def stage_hmrc() -> tuple[list[ExternalScore], list[dict], dict]:
     scores, ledger = [], []
     for row in _load("hmrc-personal-tax"):
+        # Unit validation before ANY branch: the reckoner branch below
+        # returns early and previously bypassed the closed registry
+        # (round-2 gate probe — an unknown unit sailed through as GBP).
+        canon("uk_hmrc", "unit", row["unit_concept"])
         period, fy = _fy(row["period"])
         if row["metric"] == "revenue_effect":
             # Reform deltas against HMRC's indexed baseline; the verbatim
@@ -564,7 +568,6 @@ def stage_hmrc() -> tuple[list[ExternalScore], list[dict], dict]:
                 )
             )
             continue
-        canon("uk_hmrc", "unit", row["unit_concept"])
         metric, unit, value_kind = _HMRC_LEVELS[row["metric"]]
         cond = _base_conditions("uk_hmrc", row) | {"fy": fy}
         if row["variant"] is not None:  # table 2.5 income-range rows
@@ -837,26 +840,22 @@ def stage_all() -> tuple[list[ExternalScore], list[dict], dict]:
 
 def ingest(db_path: Path) -> dict:
     """All staging and validation first; then ONE transaction replaces
-    this module's five sources wholesale (delete + insert — commit or
-    nothing). The Ledger staging file is rewritten after the commit;
-    its regeneration is idempotent (deterministic fact ids, sorted)."""
+    this module's five sources wholesale AND runs every persistence
+    gate inside it — delete, insert, the deliberate-registration gate
+    (#13), lane rows: commit or nothing. A claim referencing an
+    unregistered baseline world therefore never persists past its own
+    gate (round-2 fix: registration used to run post-commit, which
+    validated the state but did not guard it). The Ledger staging file
+    and the lane-feed mirror are rewritten only after the commit; both
+    regenerations are idempotent (deterministic fact ids, sorted; feed
+    merge keyed by lane id)."""
     all_scores, all_ledger, summary = stage_all()
     db = ScorecardDB(db_path)
     rows = [ScorecardDB.score_row(s) for s in all_scores]
     placeholders = ",".join("?" * len(UK_SOURCES))
-    with db.conn:
-        db.conn.execute(
-            f"DELETE FROM external_scores WHERE source IN ({placeholders})",
-            UK_SOURCES,
-        )
-        db.conn.executemany(SCORES_SQL, rows)
-    # Deliberate-registration gate (#13): every baseline world the five
-    # sources reference must be described; and mission control reflects
-    # the ingest.
-    from .baselines import register_baselines
+    from .baselines import register_baselines_txn
     from .ingest_harvest import sync_lane_feed
 
-    register_baselines(db)
     # One lane id per source, matching the adapter-created feed entries
     # (data/lanes.json) so DB and feed never disagree about stage.
     lane_meta = {
@@ -866,18 +865,28 @@ def ingest(db_path: Path) -> dict:
         "obr-welfare": ("obr", "OBR", "EFO welfare baseline"),
         "ukmod-stats": ("ukmod", "UKMOD", "Country Report validation tables"),
     }
-    for lane_id, (name, src_label, area) in lane_meta.items():
-        db.set_lane(
-            lane_id,
-            "ingested",
-            f"{summary['claims'][name]} claims"
-            + (
-                f", {summary['ledger'][name]} ledger facts"
-                if name in summary["ledger"]
-                else ""
-            ),
-            "2026-08-19",
+    with db.conn:
+        db.conn.execute(
+            f"DELETE FROM external_scores WHERE source IN ({placeholders})",
+            UK_SOURCES,
         )
+        db.conn.executemany(SCORES_SQL, rows)
+        register_baselines_txn(db)
+        for lane_id, (name, _src_label, _area) in lane_meta.items():
+            db.conn.execute(
+                LANE_SQL,
+                (
+                    lane_id,
+                    "ingested",
+                    f"{summary['claims'][name]} claims"
+                    + (
+                        f", {summary['ledger'][name]} ledger facts"
+                        if name in summary["ledger"]
+                        else ""
+                    ),
+                    "2026-08-19",
+                ),
+            )
     sync_lane_feed(
         db,
         REPO / "data" / "lanes.json",

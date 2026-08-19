@@ -2,7 +2,6 @@
 guards, lane sync, and an integration pass over the committed DB."""
 
 import json
-from pathlib import Path
 
 import pytest
 

@@ -10,7 +10,6 @@ import pytest
 from scorecard_db import Metric, ScorecardDB, UnitConcept
 from scorecard_db.ingest_uk_externals import (
     EXTERNALS,
-    STAGERS,
     _fy,
     stage_dwp_takeup,
     stage_hmrc,
@@ -118,6 +117,26 @@ def test_hmrc_reckoner_rows_are_reform_claims(monkeypatch):
     assert level.metric is Metric.TAXPAYER_COUNT
     assert level.reform.framework == "baseline"
     assert level.conditions["subgroup"] == "basic_rate"
+
+
+def test_reckoner_unknown_unit_raises(monkeypatch):
+    """Regression (round-2 gate probe): the reckoner branch returns
+    early and used to bypass the closed unit registry entirely — an
+    unknown unit was accepted and silently emitted as GBP."""
+    rows = [
+        _row(
+            program="income_tax",
+            metric="revenue_effect",
+            subgroup="Change basic rate by 1p",
+            geography="UK",
+            unit_concept="usd_million",
+            period="2026-27",
+            value=6_900_000_000.0,
+        )
+    ]
+    monkeypatch.setattr("scorecard_db.ingest_uk_externals._load", lambda name: rows)
+    with pytest.raises(ValueError, match="unregistered unit value 'usd_million'"):
+        stage_hmrc()
 
 
 def test_reckoner_slug_separates_tax_heads(monkeypatch):
@@ -320,8 +339,9 @@ def test_full_ingest_round_trip(tmp_path):
 
     summary = ingest(tmp_path / "t.db")
     # Exact accounting (adjudication blocker 7 — a drifted adapter
-    # regeneration must fail, never pass a >0 check): 16,175 claims +
-    # 749 Ledger facts + 1,829 deliberate drops = every adapter row.
+    # regeneration must fail, never pass a >0 check): 15,851 claims +
+    # 1,073 Ledger facts = 16,924 admitted rows; + 1,829 deliberate
+    # drops = 18,753, every adapter row.
     assert summary["claims"] == {
         "dwp_takeup": 1092,
         "dwp_hbai": 13056,
@@ -387,6 +407,85 @@ def test_full_ingest_round_trip(tmp_path):
         ).fetchone()[0]
         == 0
     )
+
+    # Semantic condition pins (round-2 gate): count-only accounting
+    # cannot detect loss of the load-bearing anchor/equivalisation
+    # conditions — pin the values themselves.
+    def _one(sql: str) -> int:
+        return db.conn.execute(sql).fetchone()[0]
+
+    # HBAI absolute lines: every absolute row carries an anchor, in the
+    # Notes-sheet distribution (Note 3: FYE-2025 for 2021/22 on,
+    # FYE-2011 before, windows straddling the break = explicit mixed).
+    anchors = dict(
+        db.conn.execute(
+            "SELECT json_extract(conditions, '$.poverty_line_anchor'),"
+            " COUNT(*) FROM external_scores WHERE source='dwp_hbai' AND"
+            " json_extract(conditions, '$.poverty_line')"
+            " = 'absolute_60_fixed_median' GROUP BY 1"
+        ).fetchall()
+    )
+    assert anchors == {
+        "fye_2011": 5632,
+        "fye_2025": 480,
+        "mixed_fye2011_fye2025": 416,
+    }
+    # pre-break single year -> FYE-2011; post-break -> FYE-2025
+    for fy, anchor in (("2019-20", "fye_2011"), ("2023-24", "fye_2025")):
+        got = {
+            r[0]
+            for r in db.conn.execute(
+                "SELECT DISTINCT json_extract(conditions,"
+                " '$.poverty_line_anchor') FROM external_scores"
+                " WHERE source='dwp_hbai' AND json_extract(conditions,"
+                f" '$.fy') = '{fy}' AND json_extract(conditions,"
+                " '$.poverty_line') = 'absolute_60_fixed_median'"
+            )
+        }
+        assert got == {anchor}, (fy, got)
+    # every mixed anchor is a multi-year window, never a single year
+    assert (
+        _one(
+            "SELECT COUNT(*) FROM external_scores WHERE source='dwp_hbai'"
+            " AND json_extract(conditions, '$.poverty_line_anchor')"
+            " = 'mixed_fye2011_fye2025' AND json_extract(conditions,"
+            " '$.window_kind') IS NULL"
+        )
+        == 0
+    )
+    # HBAI equivalisation rides every row and tracks housing costs
+    # (modified OECD; companion scale AHC).
+    assert (
+        _one(
+            "SELECT COUNT(*) FROM external_scores WHERE source='dwp_hbai'"
+            " AND (json_extract(conditions, '$.equivalisation') IS NULL"
+            " OR json_extract(conditions, '$.equivalisation') <> CASE"
+            " json_extract(conditions, '$.housing_costs') WHEN 'ahc'"
+            " THEN 'modified_oecd_companion_ahc'"
+            " ELSE 'modified_oecd' END)"
+        )
+        == 0
+    )
+    # UKMOD distribution statistics (Gini + income levels) all carry
+    # BHC + modified-OECD — and the guard cannot pass vacuously.
+    ukmod_dist = dict(
+        db.conn.execute(
+            "SELECT metric, COUNT(*) FROM external_scores WHERE"
+            " source='ukmod' AND metric IN ('gini','income_statistic')"
+            " GROUP BY 1"
+        ).fetchall()
+    )
+    assert ukmod_dist == {"gini": 8, "income_statistic": 56}
+    assert (
+        _one(
+            "SELECT COUNT(*) FROM external_scores WHERE source='ukmod'"
+            " AND metric IN ('gini','income_statistic')"
+            " AND (json_extract(conditions, '$.equivalisation')"
+            " <> 'modified_oecd' OR json_extract(conditions,"
+            " '$.housing_costs') <> 'bhc')"
+        )
+        == 0
+    )
     db.close()
 
 
@@ -435,7 +534,13 @@ def test_obr_hierarchy_lands_in_conditions(monkeypatch):
 def test_hierarchy_condition_keys_are_registered():
     from scorecard_db.models import STANDARD_CONDITIONS
 
-    assert {"aggregate_level", "parent", "component"} <= STANDARD_CONDITIONS
+    assert {
+        "aggregate_level",
+        "parent",
+        "component",
+        "equivalisation",
+        "poverty_line_anchor",
+    } <= STANDARD_CONDITIONS
 
 
 def test_load_gate_rejects_unhandled_adapter_fields(tmp_path, monkeypatch):
@@ -604,6 +709,65 @@ def test_write_phase_failure_rolls_back(tmp_path, monkeypatch):
     }
     db.close()
     assert counts == first["claims"]
+
+
+@pytest.mark.skipif(
+    not externals_present, reason="UK adapter outputs not present (PRs #43-#47)"
+)
+def test_unregistered_baseline_gate_rolls_back(tmp_path, monkeypatch):
+    """The deliberate-registration gate guards PERSISTENCE, not just the
+    post-commit state (round-2 gate probe: registration used to run
+    after the claims committed, so the raise validated a DB it had
+    already failed to protect). A claim referencing an unregistered
+    baseline world must leave the DB byte-identical: prior claims
+    intact, zero poison claims, and the poison world never registered."""
+    import dataclasses
+
+    from scorecard_db import ingest_uk_externals as mod
+    from scorecard_db.models import ReformRef, baseline_key
+
+    first = mod.ingest(tmp_path / "t.db")
+    poison_baseline = {"policy": "never_registered_world"}
+
+    real = mod.stage_all
+
+    def poisoned():
+        scores, ledger, summary = real()
+        bad = dataclasses.replace(
+            scores[0],
+            reform=ReformRef(
+                framework="policy_ref",
+                reform={"policy": "poison_probe"},
+                baseline=poison_baseline,
+            ),
+        )
+        return scores + [bad], ledger, summary
+
+    monkeypatch.setattr(mod, "stage_all", poisoned)
+    with pytest.raises(ValueError, match="not in the registry"):
+        mod.ingest(tmp_path / "t.db")
+    monkeypatch.undo()
+
+    db = ScorecardDB(tmp_path / "t.db")
+    counts = {
+        r[0]: r[1]
+        for r in db.conn.execute(
+            "SELECT source, COUNT(*) FROM external_scores GROUP BY 1"
+        )
+    }
+    poison_key = baseline_key(poison_baseline)
+    poison_claims = db.conn.execute(
+        "SELECT COUNT(*) FROM external_scores WHERE baseline_key = ?",
+        (poison_key,),
+    ).fetchone()[0]
+    poison_registered = db.conn.execute(
+        "SELECT COUNT(*) FROM baselines WHERE baseline_key = ?",
+        (poison_key,),
+    ).fetchone()[0]
+    db.close()
+    assert counts == first["claims"]
+    assert poison_claims == 0
+    assert poison_registered == 0
 
 
 @pytest.mark.skipif(
