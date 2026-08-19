@@ -95,16 +95,22 @@ def test_full_attach_on_committed_db(db_copy):
         ("wic", "constructed"): 6,
     }
     assert all(r["urban"] == r["n"] for r in urb)
-    # Provenance verbatim from the staging: real engine + certified bundle.
+    # Provenance verbatim from the staging: real engine + certified
+    # bundle per country (the UK reckoner family rides the committed DB
+    # from the campaign-UK producer; the US ingest must not disturb it).
     rows = conn.execute(
         "SELECT DISTINCT engine_version, data_bundle FROM pe_results"
-        " WHERE run_id LIKE 'campaign-%'"
+        " WHERE run_id LIKE 'campaign-%' ORDER BY engine_version"
     ).fetchall()
     assert [tuple(r) for r in rows] == [
         (
             "1.764.6",
             "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-        )
+        ),
+        (
+            "2.89.2",
+            "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+        ),
     ]
     # The CPSP TCJA-world attach lands on the claim whose reform is the
     # scenario (value 13.3% — the brief's number).
@@ -181,19 +187,28 @@ def test_full_attach_on_committed_db(db_copy):
 
 
 def test_reingest_idempotent(db_copy):
+    UK_RUN = "campaign-20260802-reckoner-t2"
     first = ingest(db_copy)
     again = ingest(db_copy)
     assert again == first
     conn = sqlite3.connect(db_copy)
     n = conn.execute(
         "SELECT COUNT(*) FROM pe_results WHERE run_id LIKE 'campaign-%'"
+        " AND run_id != ?",
+        (UK_RUN,),
     ).fetchone()[0]
     n_ex = conn.execute(
         "SELECT COUNT(*) FROM pe_exhibits WHERE run_id LIKE 'campaign-%'"
     ).fetchone()[0]
+    # Deletion is scoped to the run_ids being re-ingested: the US
+    # re-ingest must leave the committed UK reckoner family untouched.
+    uk = conn.execute(
+        "SELECT COUNT(*) FROM pe_results WHERE run_id = ?", (UK_RUN,)
+    ).fetchone()[0]
     conn.close()
     assert n == first["attached"]
     assert n_ex == first["exhibits"]
+    assert uk == 14
 
 
 def test_metaless_exhibit_defers(db_copy, tmp_path):
