@@ -82,6 +82,14 @@ class Metric(str, Enum):
     GINI = "gini"
     INCOME_STATISTIC = "income_statistic"
     INCOME_SHARE = "income_share"
+    # UK UC-deductions harvest (#39/#21). cash_requirement_change is a
+    # PSNCR effect — a cash measure, deliberately distinct from
+    # revenue_change (PSNB): the FRR has no PSNB impact and the boundary
+    # must be unconfusable. gainer_count / average_annual_gain are the
+    # distributional-impact vocabulary of UK fiscal-event documents.
+    CASH_REQUIREMENT_CHANGE = "cash_requirement_change"
+    GAINER_COUNT = "gainer_count"
+    AVERAGE_ANNUAL_GAIN = "average_annual_gain"
 
 
 class UnitConcept(str, Enum):
@@ -120,6 +128,10 @@ class UnitConcept(str, Enum):
     GBP_PER_WEEK = "gbp_per_week"
     GBP_PER_MONTH = "gbp_per_month"
     INDEX_0_1 = "index_0_1"
+    # Per-household GBP statistic (the UK mirror of USD_PER_HOUSEHOLD,
+    # same rule: averages must never be summable as aggregates). The
+    # FRR family's £420 average annual gain is per household per year.
+    GBP_PER_HOUSEHOLD = "gbp_per_household"
 
 
 # Standardized conditions vocabulary (COLLATION worklist item 4).
@@ -212,6 +224,11 @@ STANDARD_CONDITIONS = frozenset(
         #                  line uses: "fye_2011" | "fye_2025" |
         #                  "mixed_fye2011_fye2025" (a multi-year window
         #                  straddling the FYE-2025 re-anchor)
+        # fiscal_measure   which fiscal aggregate a change claim moves:
+        #                  "psncr" on the FRR family (a cash-requirement
+        #                  effect, deliberately NOT PSNB — PQ UIN 3751)
+        "measure",
+        "fiscal_measure",
         "country",
         "fy",
         "housing_costs",

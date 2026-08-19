@@ -131,16 +131,21 @@ def _fy(label: str) -> tuple[int, str]:
     'FYE 2024' -> (2024, '2023-24'); '2023-24' -> (2024, '2023-24');
     '2024/25' -> (2025, '2024-25').
     """
-    m = re.match(r"^FYE (\d{4})$", label)
+    # fullmatch, not match-with-$: Python's $ also matches before a
+    # trailing newline, so "2029-30\n" would parse (round-2 gate).
+    m = re.fullmatch(r"FYE (\d{4})", label)
     if m:
         end = int(m.group(1))
         return end, f"{end - 1}-{str(end)[2:]}"
-    m = re.match(r"^(\d{4})-(\d{2})$", label)
-    if m:
-        return int(m.group(1)) + 1, label
-    m = re.match(r"^(\d{4})/(\d{2})$", label)
+    m = re.fullmatch(r"(\d{4})[-/](\d{2})", label)
     if m:
         start = int(m.group(1))
+        # the suffix must be the start year + 1 — '2029-99' is malformed,
+        # never year 2030 (round-1 gate on the deductions family)
+        if (start + 1) % 100 != int(m.group(2)):
+            raise ValueError(
+                f"UK financial-year label {label!r}: suffix is not start year + 1"
+            )
         return start + 1, f"{start}-{m.group(2)}"
     raise ValueError(f"unparseable UK financial-year label: {label!r}")
 
@@ -420,7 +425,7 @@ def stage_hbai() -> tuple[list[ExternalScore], list[dict], dict]:
                 "modified_oecd_companion_ahc" if housing == "ahc" else "modified_oecd"
             ),
         }
-        span = _SPAN.match(row["period"])
+        span = _SPAN.fullmatch(row["period"])
         if span:
             start, end = int(span.group(1)) + 1, int(span.group(3)) + 1
             cond["window_kind"] = "annual_average"
@@ -742,7 +747,7 @@ def stage_ukmod() -> tuple[list[ExternalScore], list[dict], dict]:
             cond["equivalisation"] = "modified_oecd"
             cond.pop("program", None)
             cond["quantile"] = cond.pop("subgroup")
-        elif _UKMOD_POVERTY.match(row["metric"]):
+        elif _UKMOD_POVERTY.fullmatch(row["metric"]):
             metric, unit, value_kind = (
                 Metric.POVERTY_RATE,
                 UnitConcept.SHARE,
@@ -752,7 +757,7 @@ def stage_ukmod() -> tuple[list[ExternalScore], list[dict], dict]:
             cond["poverty_line"] = canon(
                 "ukmod",
                 "poverty_line",
-                _UKMOD_POVERTY.match(row["metric"]).group(1),
+                _UKMOD_POVERTY.fullmatch(row["metric"]).group(1),
             )
             cond["housing_costs"] = canon("ukmod", "housing_costs", "bhc")
             cond["equivalisation"] = "modified_oecd"

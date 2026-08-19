@@ -154,6 +154,20 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "(_RECKONER_BASELINE).",
     ),
     (
+        {"policy": "pre_frr_uc_deductions"},
+        "pre_frr_uc_deductions",
+        "UK law before the Fair Repayment Rate: UC deductions capped at "
+        "25% of the standard allowance (the FRR lowered the cap to 15% "
+        "from 2025-04-30). The counterfactual AB2024's FRR figures score "
+        "against — NOT today's current law, which includes the FRR; a PE "
+        "counterpart must construct the 25%-cap world explicitly.",
+        "policy_ref",
+        "AB2024 para 5.134 p.142 + DWP press release 2025-04-30 (both "
+        "vendored/linked in sources/harvest-uk-deductions/frr/"
+        "VERIFICATION.md); descriptor set in "
+        "scorecard_db/ingest_uk_deductions.py (PRE_FRR_BASELINE).",
+    ),
+    (
         {"policy": "pre_obbba_law"},
         "pre_obbba_law",
         "TPC T26-0009's stated counterfactual: 'Law Prior to the 2025 "

@@ -264,6 +264,13 @@ _identity(
     ],
 )
 
+# --- UC-deductions FRR family (#39; sources are fiscal-event documents,
+# not statistical adapters — same closed-registry rule) ----------------------
+for _src in ("hm_treasury", "dwp"):
+    _identity(_src, "program", ["universal_credit"])
+    _identity(_src, "subgroup", ["families_with_children"])
+    _identity(_src, "geography", ["GB"])
+
 # --- units (adapter unit_concept vocabulary; DB units mapped in ingest) ------
 _identity(
     "dwp_takeup",
@@ -288,6 +295,8 @@ _identity(
         "gbp_per_month_equivalised",
     ],
 )
+for _src in ("hm_treasury", "dwp"):
+    _identity(_src, "unit", ["gbp", "households"])
 
 
 def canon(source: str, axis: str, value: str) -> str:

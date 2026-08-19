@@ -304,6 +304,16 @@
    "running": false,
    "updated": "2026-08-04",
    "note": "205 claims, 675 per-release results (5 releases, 180 attached to harvest claims); 11 unscoreable rows skipped"
+  },
+  {
+   "id": "uk-deductions-frr",
+   "source": "HMT + DWP",
+   "area": "UC deductions (FRR)",
+   "mode": 2,
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-19",
+   "note": "7 claims"
   }
  ]
 }

@@ -262,9 +262,24 @@ class ScorecardDB:
         self.conn.row_factory = sqlite3.Row
         self.conn.executescript(DDL)
         self._migrate()
-        self.conn.executescript(
-            VIEW_DDL.replace("__CURRENT_LAW_KEY__", CURRENT_LAW_KEY)
-        )
+        self._ensure_view()
+
+    def _ensure_view(self):
+        """(Re)create the comparisons view ONLY when its stored
+        definition differs from the code's. The old unconditional
+        DROP+CREATE wrote a schema change on EVERY open, so a process
+        that merely READ the committed DB (tests, exporters) bumped its
+        header counters and left the binary dirty — the recurring
+        "harmless header churn" the #48/#52 gates kept flagging."""
+        ddl = VIEW_DDL.replace("__CURRENT_LAW_KEY__", CURRENT_LAW_KEY)
+        index_sql, create = ddl.split("DROP VIEW IF EXISTS comparisons;", 1)
+        self.conn.executescript(index_sql)  # IF NOT EXISTS — no-op when present
+        expected = create.strip().removesuffix(";")
+        stored = self.conn.execute(
+            "SELECT sql FROM sqlite_master WHERE type='view' AND name='comparisons'"
+        ).fetchone()
+        if stored is None or stored["sql"] != expected:
+            self.conn.executescript("DROP VIEW IF EXISTS comparisons;" + create)
 
     def _migrate(self):
         """Bring a pre-existing file up to the current schema.
