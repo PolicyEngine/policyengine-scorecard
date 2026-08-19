@@ -105,9 +105,9 @@ REGISTRY_MARK = "populace_reform_validation"
 # release's scoring mode: isolated runs executed pre-OBBBA expiry law as
 # their baseline (the l0 backfill note's shared 2,735.78B world); stacked
 # runs (f0af251's own chain and the buildi+ JCX producer) executed the
-# stack below each provision's position — registered as the single
-# position-varying jcx_stack_position world, with the position itself in
-# the construction string.
+# stack below each provision's position — one registered world per
+# (chain, provision), with the raw chain ordinal in the construction
+# string.
 _CURRENT_LAW_KEY = BASELINE.baseline_key()
 _ISOLATED_KEY = baseline_key({"policy": "pre_obbba_expiry_2026"})
 

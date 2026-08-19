@@ -527,3 +527,28 @@ def test_results_carry_executed_baselines_per_mode(summary_and_db):
         + sum(by_key[k] for k in producer_keys)
         == 675
     )
+
+
+def test_chain_ordinals_are_raw_and_stacked_only(summary_and_db):
+    # f0af251's CDCC sits at RAW chain position 17 — after the unscored
+    # senior-deduction link that feeds its baseline — and isolated rows
+    # carry no position token (their world is the shared expiry
+    # baseline).
+    _, path = summary_and_db
+    import sqlite3
+
+    conn = sqlite3.connect(path)
+    cdcc = conn.execute(
+        """SELECT r.pe_construction FROM pe_results r
+           JOIN external_scores s USING (claim_id)
+           WHERE r.data_bundle LIKE '%f0af251%'
+           AND s.source_column = 'obbba_cdcc'
+           LIMIT 1"""
+    ).fetchone()[0]
+    assert ":chain_pos17:" in cdcc
+    stray = conn.execute(
+        "SELECT COUNT(*) FROM pe_results"
+        " WHERE pe_construction LIKE '%isolated%chain_pos%'"
+    ).fetchone()[0]
+    conn.close()
+    assert stray == 0
