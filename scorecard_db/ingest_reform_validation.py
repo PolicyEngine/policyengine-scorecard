@@ -177,6 +177,36 @@ def _obbba_scoring_mode(release_id: str, artifact: dict) -> str:
     return mode
 
 
+_ATTESTATION_REQUIRED = ("producer_commit", "driver_commit", "h5_sha256")
+
+
+def _validate_attestation(release_id: str, artifact: dict) -> None:
+    """Consume the provenance attestation the automation stamps — reject a
+    missing/`unknown` one rather than ingesting un-attested provenance
+    (blocker 6: the attestation was write-only, so a forged/absent block
+    sailed through green). The five historical backfills predate it and are
+    exempt; a genuinely-new (automation-produced) release must carry a
+    complete block."""
+    if release_id in ENGINE_VERSIONS:
+        return
+    att = artifact.get("_attestation")
+    if not isinstance(att, dict):
+        raise SystemExit(
+            f"{release_id}: no _attestation block — the automated backfill "
+            "stamps one; refusing to ingest un-attested provenance."
+        )
+    missing = [
+        k
+        for k in _ATTESTATION_REQUIRED
+        if not att.get(k) or str(att.get(k)).strip().lower() == "unknown"
+    ]
+    if missing:
+        raise SystemExit(
+            f"{release_id}: _attestation has missing/unknown fields {missing} "
+            "— refusing to ingest incomplete provenance."
+        )
+
+
 def _base_engine(release_id: str, artifact: dict) -> str:
     """Resolve the release's policyengine-us pin.
 
@@ -799,6 +829,7 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
     for path in releases:
         artifact = json.loads(path.read_text())
         release_id = artifact["release_id"]
+        _validate_attestation(release_id, artifact)
         base_engine = _base_engine(release_id, artifact)
         overrides = ENGINE_OVERRIDES.get(release_id, {})
         computed_at = _release_timestamp(release_id)
@@ -929,14 +960,20 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
                 "2026-08-04",
             ),
         )
-    post_fingerprint = _non_rv_fingerprint(db.conn)
-    if post_fingerprint != pre_fingerprint:
-        raise SystemExit(
-            "reform-validation ingest changed non-RV data — the rebuild must "
-            "only touch its own results, registry-marked claims, and the "
-            "populace-reform-validation lane (fingerprint "
-            f"{pre_fingerprint[:12]} -> {post_fingerprint[:12]})."
-        )
+        # Assert the invariant INSIDE the transaction: raising here rolls the
+        # whole rebuild back (sqlite's `with conn` rolls back on exception),
+        # so a cross-slice write is ABORTED, not merely detected after the
+        # commit already landed the rogue row (blocker 6). Reads inside the
+        # transaction see the pending writes, and the RV rebuild's own rows
+        # are excluded from the fingerprint, so a correct rebuild is a no-op.
+        post_fingerprint = _non_rv_fingerprint(db.conn)
+        if post_fingerprint != pre_fingerprint:
+            raise SystemExit(
+                "reform-validation ingest changed non-RV data — the rebuild "
+                "must only touch its own results, registry-marked claims, and "
+                "the populace-reform-validation lane (fingerprint "
+                f"{pre_fingerprint[:12]} -> {post_fingerprint[:12]}); rolled back."
+            )
     cov = db.coverage()
     db.close()
     return {

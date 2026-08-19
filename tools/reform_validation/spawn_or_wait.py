@@ -56,10 +56,29 @@ def _sha8(release_id: str) -> str:
 
 
 def _read(vol: modal.Volume, path: str) -> str | None:
+    """Read a small marker file. Returns None ONLY when the file is genuinely
+    absent (FileNotFoundError); any other error (a transport blip) propagates,
+    so callers fail closed instead of mistaking an unreadable marker for a
+    missing one. Collapsing every error to None was the shared root of the
+    blocker-2 double-spawn and the blocker-4 pin overwrite: a live run's
+    call_id/producer_ref that momentarily fails to read looked like 'no run
+    recorded' and triggered a respawn / fresh-main re-pin."""
     try:
         return b"".join(vol.read_file(path)).decode()
-    except Exception:
+    except FileNotFoundError:
         return None
+
+
+def _artifact_present(vol: modal.Volume, release_id: str) -> bool:
+    """Whether the finished ``reform_validation_<id>.json`` is on the Volume.
+    Used to guard the healthy-completion TOCTOU (blocker 2): a call that
+    returns just after the drain listed the Volume has published its artifact,
+    so a completed call is not proof the work still needs redoing."""
+    target = f"reform_validation_{release_id}.json"
+    for entry in vol.listdir("/"):
+        if getattr(entry, "path", str(entry)).rsplit("/", 1)[-1] == target:
+            return True
+    return False
 
 
 def check(release_id: str) -> tuple[str, str]:
@@ -70,8 +89,15 @@ def check(release_id: str) -> tuple[str, str]:
     # after fn.spawn(), but the app only writes the `started` marker after
     # git clone + engine install (minutes later). Checking the marker first
     # (old behaviour) returned SPAWN in that window and double-spawned a live
-    # run (blocker 2).
-    call_id = _read(vol, f"{prefix}/call_id")
+    # run (blocker 2). An unreadable call_id marker fails closed to WAIT — it
+    # is NOT proof the run is absent.
+    try:
+        call_id = _read(vol, f"{prefix}/call_id")
+    except Exception as e:
+        return (
+            "WAIT",
+            f"call_id marker unreadable ({type(e).__name__}) — failing closed",
+        )
     indeterminate = None
     if call_id:
         call_id = call_id.strip()
@@ -91,12 +117,36 @@ def check(release_id: str) -> tuple[str, str]:
             # to the marker-age backstop.
             indeterminate = f"{type(e).__name__}: {e}"
         else:
+            # Completed. Guard the TOCTOU: the drain may have listed the Volume
+            # just before the app published, so a completed call is not proof
+            # the artifact is missing — re-check before respawning finished
+            # work. An unreadable re-check fails closed to WAIT.
+            try:
+                published = _artifact_present(vol, release_id)
+            except Exception as e:
+                return (
+                    "WAIT",
+                    f"call {call_id} completed; artifact re-check failed "
+                    f"({type(e).__name__}) — failing closed",
+                )
+            if published:
+                return (
+                    "WAIT",
+                    f"call {call_id} finished and the artifact is present — "
+                    "the drain will harvest it",
+                )
             return (
                 "SPAWN",
                 f"call {call_id} finished but no artifact was published — re-spawning",
             )
 
-    marker = _read(vol, f"{prefix}/started")
+    try:
+        marker = _read(vol, f"{prefix}/started")
+    except Exception as e:
+        return (
+            "WAIT",
+            f"started marker unreadable ({type(e).__name__}) — failing closed",
+        )
     if marker is None and call_id is None:
         return "SPAWN", "no run recorded for this release"
 
@@ -122,25 +172,39 @@ def check(release_id: str) -> tuple[str, str]:
     )
 
 
-def spawn(release_id: str, producer_ref: str) -> None:
+def spawn(release_id: str, producer_ref: str, driver_ref: str = "unknown") -> None:
     vol = modal.Volume.from_name(VOLUME_NAME, create_if_missing=True)
     prefix = f"rv_{_sha8(release_id)}"
     # Pin the producer ref for the life of this release: the FIRST spawn
     # records it, every re-spawn reuses it. Otherwise a re-spawn would
-    # resolve a fresh populace main SHA and, resuming in the same
+    # resolve a fresh microcosm main SHA and, resuming in the same
     # release-keyed workdir, merge partials from two producer revisions
     # (blocker 4). The workflow passes the current main SHA as the candidate;
-    # a recorded ref overrides it.
-    recorded = _read(vol, f"{prefix}/producer_ref")
+    # a recorded ref overrides it. The pin read fails CLOSED: an unreadable
+    # producer_ref aborts rather than silently re-resolving fresh main and
+    # overwriting the pin (the blocker-2 mechanism reappearing inside b4).
+    try:
+        recorded = _read(vol, f"{prefix}/producer_ref")
+    except Exception as e:
+        raise SystemExit(
+            f"producer_ref unreadable ({type(e).__name__}) — refusing to spawn "
+            "rather than risk overwriting the pin with a fresh ref"
+        )
     ref = recorded.strip() if recorded else producer_ref
 
     fn = modal.Function.from_name(APP_NAME, "backfill")
-    call = fn.spawn(release_id, ref)
+    call = fn.spawn(release_id, ref, driver_ref)
     with tempfile.TemporaryDirectory() as tmp:
         call_p = Path(tmp, "call_id")
         call_p.write_text(call.object_id)
+        # release_id in the workdir lets the schedule re-find a run that was
+        # spawned, became non-latest, and died before publishing (blocker 3) —
+        # sha8 is one-way, so the id has to be stored to be enumerable.
+        rid_p = Path(tmp, "release_id")
+        rid_p.write_text(release_id)
         with vol.batch_upload(force=True) as batch:
             batch.put_file(call_p, f"{prefix}/call_id")
+            batch.put_file(rid_p, f"{prefix}/release_id")
             if recorded is None:
                 ref_p = Path(tmp, "producer_ref")
                 ref_p.write_text(ref)
@@ -148,7 +212,7 @@ def spawn(release_id: str, producer_ref: str) -> None:
     pinned = " (pinned from first spawn)" if recorded else ""
     print(
         f"spawned Modal backfill {call.object_id} for {release_id} "
-        f"at populace {ref[:9]}{pinned}",
+        f"at microcosm {ref[:9]}{pinned}",
         file=sys.stderr,
     )
 
@@ -174,6 +238,25 @@ def list_artifacts() -> list[str]:
     return sorted(ids, key=_id_timestamp)
 
 
+def list_pending() -> list[str]:
+    """Release ids that have a spawned workdir (``rv_<sha8>/release_id``) but
+    no published artifact yet — runs in flight OR dead-before-publish. The
+    schedule uses this to revisit a release that became non-latest and then
+    died before publishing, which the latest-only spawn path would never
+    retry (blocker 3). Oldest-first; artifacts already draining are excluded."""
+    vol = modal.Volume.from_name(VOLUME_NAME, create_if_missing=True)
+    published = set(list_artifacts())
+    ids = []
+    for entry in vol.listdir("/"):
+        name = getattr(entry, "path", str(entry)).rstrip("/").rsplit("/", 1)[-1]
+        if not name.startswith("rv_"):
+            continue
+        rid = _read(vol, f"{name}/release_id")  # None if not written yet
+        if rid and rid.strip() and rid.strip() not in published:
+            ids.append(rid.strip())
+    return sorted(set(ids), key=_id_timestamp)
+
+
 def main() -> None:
     mode = sys.argv[1]
     if mode == "check":
@@ -181,12 +264,18 @@ def main() -> None:
         print(reason, file=sys.stderr)
         print(decision)
     elif mode == "spawn":
-        spawn(sys.argv[2], sys.argv[3])
+        # spawn <release_id> <producer_ref> [driver_ref]
+        spawn(sys.argv[2], sys.argv[3], sys.argv[4] if len(sys.argv) > 4 else "unknown")
     elif mode == "artifacts":
         for rid in list_artifacts():
             print(rid)
+    elif mode == "pending":
+        for rid in list_pending():
+            print(rid)
     else:
-        raise SystemExit(f"unknown mode {mode!r}; use check, spawn or artifacts")
+        raise SystemExit(
+            f"unknown mode {mode!r}; use check, spawn, artifacts or pending"
+        )
 
 
 if __name__ == "__main__":

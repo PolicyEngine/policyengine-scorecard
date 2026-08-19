@@ -1,7 +1,7 @@
-"""Modal app that runs the reform-validation backfill for a populace release.
+"""Modal app that runs the reform-validation backfill for a microcosm release.
 
 Why Modal: the producer needs one full Microsimulation per batch plus the
-populace/torch import stack, which no longer fits GitHub's 7GB ubuntu-latest
+microcosm/torch import stack, which no longer fits GitHub's 7GB ubuntu-latest
 runner — every scheduled run since 2026-07-21 died to the runner's OOM
 shutdown signal, including post-chunking (#107) runs where even a single
 16-spec levels chunk was killed before its first simulation finished. This
@@ -19,7 +19,7 @@ Division of labor with the scheduled workflow
                           rebuilt DB, open a PR. No simulation ever runs on
                           the runner, so ticks take seconds.
 
-  This app                clone populace at the requested ref, install the
+  This app                clone microcosm at the requested ref, install the
   (simulation layer)      release-exact policyengine-us/-core from the
                           release manifest at runtime, drive backfill.py
                           with a Volume-backed workdir (batch partials
@@ -29,14 +29,14 @@ Division of labor with the scheduled workflow
 Engine versions are installed at RUNTIME (not baked into the image) because
 they are release-exact and change per release; the image carries only the
 heavy version-stable dependencies. The producer ref is an argument for the
-same reason — no image rebuild per populace commit.
+same reason — no image rebuild per microcosm commit.
 
 Manual use:
     modal deploy tools/reform_validation/modal_backfill_app.py
     python -c "
     import modal
     fn = modal.Function.from_name('scorecard-reform-validation-backfill', 'backfill')
-    print(fn.spawn('<release-id>', '<populace-ref>').object_id)"
+    print(fn.spawn('<release-id>', '<microcosm-ref>').object_id)"
 
 Requires Modal credentials (MODAL_TOKEN_ID / MODAL_TOKEN_SECRET) for the
 PolicyEngine workspace.
@@ -73,18 +73,20 @@ image = (
 )
 
 PRODUCER_PACKAGES = (
-    "populace-build",
-    "populace-frame",
-    "populace-calibrate",
-    "populace-fit",
-    "populace-data",
+    "microcosm-build",
+    "microcosm-frame",
+    "microcosm-calibrate",
+    "microcosm-fit",
+    "microcosm-data",
 )
 
 
 @app.function(
     image=image, timeout=8 * 3600, memory=65536, cpu=8.0, volumes={"/vol": volume}
 )
-def backfill(release_id: str, producer_ref: str = "main") -> str:
+def backfill(
+    release_id: str, producer_ref: str = "main", driver_ref: str = "unknown"
+) -> str:
     """Produce reform_validation.json for ``release_id`` on the Volume.
 
     Writes, in order:
@@ -102,12 +104,14 @@ def backfill(release_id: str, producer_ref: str = "main") -> str:
     import urllib.request
 
     subprocess.run(
-        ["git", "clone", "https://github.com/PolicyEngine/populace", "/opt/populace"],
+        ["git", "clone", "https://github.com/PolicyEngine/microcosm", "/opt/microcosm"],
         check=True,
     )
-    subprocess.run(["git", "-C", "/opt/populace", "checkout", producer_ref], check=True)
+    subprocess.run(
+        ["git", "-C", "/opt/microcosm", "checkout", producer_ref], check=True
+    )
     producer_commit = subprocess.run(
-        ["git", "-C", "/opt/populace", "rev-parse", "--short", "HEAD"],
+        ["git", "-C", "/opt/microcosm", "rev-parse", "--short", "HEAD"],
         capture_output=True,
         text=True,
         check=True,
@@ -147,8 +151,11 @@ def backfill(release_id: str, producer_ref: str = "main") -> str:
     env = {
         **os.environ,
         "PYTHONPATH": ":".join(
-            f"/opt/populace/packages/{p}/src" for p in PRODUCER_PACKAGES
+            f"/opt/microcosm/packages/{p}/src" for p in PRODUCER_PACKAGES
         ),
+        # The scorecard checkout backfill.py was baked from at `modal deploy`
+        # time; merge() refuses partials that mix driver revisions (blocker 4).
+        "RV_DRIVER_COMMIT": driver_ref,
     }
     proc = subprocess.run(
         [
@@ -185,9 +192,13 @@ def backfill(release_id: str, producer_ref: str = "main") -> str:
     att.update(
         {
             "modal_app": APP_NAME,
+            # Real, container-populated identifiers only. The old `modal_image_id`
+            # read MODAL_IMAGE_ID, which the pinned client never sets (always
+            # ""), so it was a forged-provenance no-op — dropped (blocker 6).
             "modal_call_id": call_id or os.environ.get("MODAL_TASK_ID", ""),
-            "modal_image_id": os.environ.get("MODAL_IMAGE_ID", ""),
+            "modal_task_id": os.environ.get("MODAL_TASK_ID", ""),
             "producer_ref": producer_ref,
+            "driver_ref": driver_ref,
         }
     )
     with open(f"/vol/reform_validation_{release_id}.json", "w") as f:

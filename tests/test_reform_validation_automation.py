@@ -40,6 +40,16 @@ def _new_release_artifact() -> dict:
     # backfill.py stamps the scoring mode explicitly; the ingest fails loudly
     # without it (no silent default).
     artifact["obbba_scoring_mode"] = "jcx_stacked"
+    # The ingest consumes the attestation for a non-historical release and
+    # rejects a missing/unknown one (blocker 6), so a valid block is required.
+    artifact["_attestation"] = {
+        "release_id": NEW_RELEASE,
+        "producer_commit": "abc1234",
+        "driver_commit": "def5678",
+        "h5_sha256": "0" * 64,
+        "policyengine_us": "1.799.9",
+        "policyengine_core": "3.0.0",
+    }
     return artifact
 
 
@@ -213,3 +223,77 @@ def test_reingest_preserves_non_rv_rows(tmp_path):
         "SELECT stage FROM lanes WHERE lane = 'harvest-x'"
     ).fetchone() == ("ingested",)
     conn.close()
+
+
+def test_reingest_preserves_non_rv_pe_results_row(tmp_path):
+    # A harvest-style pe_results row (run_id NOT populace-rv-%) must survive the
+    # rebuild — pins the delete-scope so broadening the DELETE (or dropping the
+    # fingerprint abort) can't silently wipe non-RV results with all else green
+    # (re-gate blocker 6 / test-gap note).
+    db_path, raw_dir = _fresh_db(tmp_path)
+    conn = sqlite3.connect(db_path)
+    conn.execute(
+        "INSERT INTO pe_results (claim_id, status, engine_version, data_bundle,"
+        " pe_construction, run_id, computed_at, annotations)"
+        " VALUES ('harvest-claim', 'comparable', '1.0.0', 'harvest-bundle',"
+        " 'direct', 'harvest-run-123', '2026-01-01', '{}')"
+    )
+    conn.commit()
+    conn.close()
+    ingest(db_path, raw_dir=raw_dir)  # rebuild must not touch the seeded row
+    conn = sqlite3.connect(db_path)
+    assert (
+        conn.execute(
+            "SELECT COUNT(*) FROM pe_results WHERE run_id = 'harvest-run-123'"
+        ).fetchone()[0]
+        == 1
+    )
+    conn.close()
+
+
+def test_new_release_without_attestation_fails_loudly(tmp_path):
+    # A non-historical release must carry a complete provenance attestation;
+    # the ingest CONSUMES it and rejects a missing/unknown one rather than
+    # ingesting un-attested provenance (re-gate blocker 6).
+    artifact = _new_release_artifact()
+    del artifact["_attestation"]
+    raw_dir = tmp_path / "raw"
+    raw_dir.mkdir()
+    (raw_dir / f"{NEW_RELEASE}.json").write_text(json.dumps(artifact))
+    with pytest.raises(SystemExit, match="attestation"):
+        ingest(tmp_path / "scorecard.db", raw_dir=raw_dir)
+
+    # An `unknown`-stamped field is likewise rejected.
+    artifact = _new_release_artifact()
+    artifact["_attestation"]["producer_commit"] = "unknown"
+    (raw_dir / f"{NEW_RELEASE}.json").write_text(json.dumps(artifact))
+    with pytest.raises(SystemExit, match="missing/unknown"):
+        ingest(tmp_path / "scorecard.db", raw_dir=raw_dir)
+
+
+# --------------------------------------------------------------------------- #
+# backfill.merge revision refusal (re-gate blocker 4) — pure stdlib
+# --------------------------------------------------------------------------- #
+import backfill  # noqa: E402
+
+
+def test_refuse_if_mixed_revisions(tmp_path):
+    part_dir = tmp_path / "partials"
+    part_dir.mkdir()
+    (part_dir / "a.json").write_text("{}")  # something to purge
+
+    # Mixed producer revisions -> refuse AND purge the workdir partials.
+    with pytest.raises(SystemExit, match="multiple or unstamped"):
+        backfill._refuse_if_mixed({"aaa", "bbb"}, {"drv"}, part_dir)
+    assert not part_dir.exists()
+
+    # A missing/unknown stamp is refused too (not just a clean 2-way mix).
+    assert backfill._revision_dirty({None})
+    assert backfill._revision_dirty({"unknown"})
+    assert backfill._revision_dirty(set())
+    assert backfill._revision_dirty({"a", "b"})
+    # A single known revision on both axes is accepted (no raise).
+    ok_dir = tmp_path / "ok"
+    ok_dir.mkdir()
+    backfill._refuse_if_mixed({"aaa"}, {"drv"}, ok_dir)
+    assert ok_dir.exists()  # not purged
