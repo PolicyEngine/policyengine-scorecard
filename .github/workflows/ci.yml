@@ -33,9 +33,15 @@ jobs:
           EOF
         env:
           PYTHONPATH: .
+      # NO-DRIFT GATE: the builds and the suite rewrite tracked feeds
+      # (lanes, ledger, uk_resolved, populations) as a side effect of
+      # ingest — the tree must equal HEAD afterwards, or a committed
+      # artifact has gone stale relative to the code that regenerates it.
+      - run: git diff --exit-code
       - run: uv run --with pytest pytest tests/ -q
         env:
           PYTHONPATH: .
+      - run: git diff --exit-code
       - name: Upload built database
         uses: actions/upload-artifact@v4
         with:

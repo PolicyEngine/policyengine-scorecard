@@ -98,6 +98,18 @@ def build(db_path: Path) -> dict:
     summary: dict = {"steps": {}}
     for name, fn in steps:
         summary["steps"][name] = fn()
+    # id-columns are excluded from the content hash as physical artifacts;
+    # that is only sound while no (claim_id, computed_at) pair repeats,
+    # because the exporters use id as the tie-breaker in ORDER BY — a tie
+    # would let insert order leak into populations.json.
+    conn = sqlite3.connect(db_path)
+    ties = conn.execute(
+        "SELECT claim_id, computed_at, COUNT(*) FROM pe_results"
+        " GROUP BY 1, 2 HAVING COUNT(*) > 1"
+    ).fetchall()
+    conn.close()
+    if ties:
+        raise SystemExit(f"pe_results (claim_id, computed_at) ties: {ties[:3]}")
     summary["content_hash"] = content_hash(db_path)
     summary["bytes"] = db_path.stat().st_size
     return summary
