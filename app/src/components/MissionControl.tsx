@@ -82,10 +82,10 @@ export function MissionControl({
           </p>
         ) : (
           <p className="mt-1.5 text-xs leading-4 text-muted-foreground">
-            {country} rows exist in the comparison feed, but none qualify
-            for the held-out record yet (they are consumed-target or
-            missing a value on one side) — agreement on consumed targets
-            is a tautology and is never counted.
+            {country} rows exist in the comparison feed, but none are
+            held-out comparable/constructed rows with values on both
+            sides — the only rows this record counts. Consumed-target
+            agreement is a tautology and is never counted.
           </p>
         )}
       </section>
