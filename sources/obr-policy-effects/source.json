@@ -1,0 +1,35 @@
+{
+  "id": "obr-policy-effects",
+  "name": "OBR — published economic and behavioural effects of policy (AS2023–AB2025 packages, supply-side scorings, March 2026 decisions)",
+  "organization": "Office for Budget Responsibility",
+  "country": "UK",
+  "claim_class": "policy_effect",
+  "url": "https://obr.uk/efo/",
+  "data_urls": [
+    "https://obr.uk/docs/dlm_uploads/Chapter_2_charts_and_tables_November_2023.xlsx",
+    "https://obr.uk/docs/dlm_uploads/Chapter_2_charts_and_tables_March_2024.xlsx",
+    "https://obr.uk/docs/dlm_uploads/Chapter_2_charts_and_tables_October_2024.xlsx",
+    "https://obr.uk/docs/dlm_uploads/Chapter_3_charts_and_tables_November_2025.xlsx",
+    "https://obr.uk/docs/d055fbf02d5b3g6jq8l2/efo-march-2026-charts-and-tables-annex-tables.xlsx",
+    "https://obr.uk/docs/dlm_uploads/Briefing_paper_No.10_Accounting_for_the_supply-side_effects_of_policy_measures_charts_and_tables.xlsx"
+  ],
+  "published": "2023-11-22 to 2026-03-03 (per artifact; see raw/README.md)",
+  "fetched": "2026-08-20",
+  "model": {
+    "name": "OBR policy scoring (demand multipliers + supply-side scorings)",
+    "open_source": false,
+    "method": "Package demand effects via OBR fiscal multipliers; supply-side effects per measure via labour-supply elasticities (NICs, childcare, welfare conditionality), capital deepening (investment incentives, public investment) and TFP channels, scored against the pre-measures forecast baseline of each EFO round. Briefing Paper No.10 (Nov 2025) documents the framework and re-states every scored measure.",
+    "method_basis": "EFO policy chapters/boxes AS2023-AB2025; OBR Briefing Paper No.10"
+  },
+  "baseline_key": "Each row's counterfactual is that EFO round's pre-measures forecast; fiscal_event identifies the round. Not comparable across rounds without the baselines registry (#13).",
+  "period": "Financial years 2023-24 to 2030-31 as published; briefing-paper supply-side impacts are single forecast-horizon numbers",
+  "metrics": [
+    "gdp_level_effect",
+    "cpi_inflation_effect",
+    "supply_side_impact",
+    "decisions_effect_on_borrowing"
+  ],
+  "geographies": "UK",
+  "coverage_note": "Package GDP effects: AS2023 (by channel), SB2024 (by channel), AB2024 (by component AND by measure), AB2025 (by component). AB2025 CPI effects by measure. Per-measure supply-side impacts (percent of potential GDP, by channel) for every measure OBR has scored, SB2023-SS2025, from Briefing Paper No.10 Table 2.1. March 2026 total/direct/indirect effects of Government decisions on borrowing (nested, GBP). Counterpart compute (OBR emulator, PE-UK LSR, OG-UK) is issue #55 steps 2-3, not this build.",
+  "diagnosis_upstream": "OBR scoring models are closed; divergence diagnoses classified as external-model issues become a comparison memo, not an upstream PR."
+}
