@@ -1,0 +1,3339 @@
+#!/usr/bin/env python3
+"""Compute static PE-UK counterparts to selected OBR policy costings.
+
+The managed PolicyEngine baseline is the certified world served by
+``policyengine.py``. Registry reforms are plain parameter dictionaries. Most
+entries reverse a policy already present in that certified world. Artifacts
+retain both raw aggregates and the literal reversal delta, while ``pe_value``
+is oriented to the announced measure so it is directly comparable with OBR.
+
+No managed microsimulation is constructed by ``--dry-run`` or ``--restage``.
+Normal execution forces Hugging Face offline mode before importing
+PolicyEngine, so a missing certified artifact fails instead of downloading a
+different world.
+"""
+
+from __future__ import annotations
+
+import argparse
+import copy
+import gc
+import hashlib
+import json
+import math
+import os
+import re
+import stat
+import sys
+import tempfile
+import threading
+import time
+import unicodedata
+from collections import Counter
+from datetime import datetime, timezone
+from importlib.metadata import PackageNotFoundError, version
+from pathlib import Path
+from typing import Any, Iterable
+
+import yaml
+
+ROOT = Path(__file__).resolve().parent.parent
+DEFAULT_REGISTRY = ROOT / "data" / "uk" / "obr_measure_reforms.yaml"
+DEFAULT_CLAIMS = (
+    ROOT / "sources" / "harvest-20260802" / "uk_obr" / "obr_costings_claims.jsonl"
+)
+DEFAULT_OUTPUT_DIR = ROOT / "results" / "uk" / "obr_costings"
+DEFAULT_STAGED_OUTPUT = ROOT / "results" / "uk" / "staged" / "obr_costings.jsonl"
+LOCAL_DATA_MIRROR_ROOT = ROOT / "data" / "uk" / "policyengine-local"
+YEAR_MIN = 2024
+YEAR_MAX = 2030
+COMPUTABILITY = {"expressible", "partial", "not_expressible"}
+CONSTRUCTIONS = {"reversal_on_certified_world", "forward_from_baseline"}
+STAGED_STATUSES = {"comparable", "constructed", "concept_mismatch", "not_computed"}
+BEHAVIOURAL_ADJUSTMENT = "unstated in harvest"
+REQUIRED_MEASURE_FIELDS = {
+    "measure_key",
+    "fiscal_event",
+    "obr_description",
+    "source_table",
+    "external_metric",
+    "pe_reform",
+    "start_fy",
+    "computability",
+    "notes",
+    "construction",
+    "heads",
+    "unmapped_obr_heads",
+}
+DATE_RANGE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})\.(\d{4})-(\d{2})-(\d{2})$")
+MEASURE_KEY = re.compile(r"^[a-z0-9][a-z0-9_]*$")
+NI_HEAD_VARIABLES = [
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_4",
+]
+RUN_ID_DATE = datetime.now().astimezone().strftime("%Y%m%d")
+LEGACY_CLAIM_ORDINAL_DERIVATION = "six_key_descriptor_after_claims_sha256_verification"
+
+
+class RegistryError(ValueError):
+    """The registry or one of its engine/source references is invalid."""
+
+
+class ClaimMatchError(ValueError):
+    """A registry measure/head did not resolve to exactly one source row."""
+
+
+class ArtifactRestageError(ValueError):
+    """An existing run artifact cannot be safely restaged from raw aggregates."""
+
+
+class ArtifactWriteError(RuntimeError):
+    """Written artifact bytes differ from the canonical in-memory payload."""
+
+
+def claims_provenance_error(
+    path: Path,
+    *,
+    subject: str,
+    expected: Any,
+    actual: Any,
+) -> ArtifactRestageError:
+    return ArtifactRestageError(
+        f"{path}: {subject} differs from RUN_MANIFEST; "
+        f"expected {expected}; actual {actual}; claims provenance changed, "
+        "so this is a new run; re-run the compute pipeline instead of restaging"
+    )
+
+
+def registry_provenance_error(
+    path: Path,
+    *,
+    subject: str,
+    expected: Any,
+    actual: Any,
+) -> ArtifactRestageError:
+    return ArtifactRestageError(
+        f"{path}: {subject} differs from RUN_MANIFEST; "
+        f"expected {expected}; actual {actual}; registry provenance changed, "
+        "so this is a new run; re-run the compute pipeline instead of restaging"
+    )
+
+
+def artifact_provenance_error(
+    path: Path,
+    *,
+    expected: str,
+    actual: str,
+) -> ArtifactRestageError:
+    return ArtifactRestageError(
+        f"{path}: artifact SHA-256 differs from RUN_MANIFEST; "
+        f"expected {expected}; actual {actual}; artifact provenance changed, "
+        "so this is a new run; re-run the compute pipeline instead of restaging"
+    )
+
+
+def configure_offline() -> None:
+    """Make a cache miss fail rather than trigger a network request."""
+
+    os.environ["HF_HUB_OFFLINE"] = "1"
+    os.environ["TRANSFORMERS_OFFLINE"] = "1"
+    os.environ["HF_DATASETS_OFFLINE"] = "1"
+    os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
+    os.environ["POLICYENGINE_UK_DATA_REPO"] = str(LOCAL_DATA_MIRROR_ROOT)
+
+
+def package_version(name: str) -> str:
+    try:
+        return version(name)
+    except PackageNotFoundError:
+        return "unavailable"
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def fy_label(year: int) -> str:
+    return f"{year}-{str(year + 1)[-2:]}"
+
+
+def parse_registry_payload(payload: bytes, path: Path) -> dict[str, Any]:
+    """Parse registry bytes that have already passed any required hash gate."""
+
+    spec = yaml.safe_load(payload)
+    if not isinstance(spec, dict) or not isinstance(spec.get("measures"), list):
+        raise RegistryError(f"{path}: expected a mapping with a measures list")
+    return spec
+
+
+def load_registry_with_sha256(
+    path: Path = DEFAULT_REGISTRY,
+) -> tuple[dict[str, Any], str]:
+    """Hash registry bytes before parsing the same payload."""
+
+    payload = path.read_bytes()
+    digest = hashlib.sha256(payload).hexdigest()
+    return parse_registry_payload(payload, path), digest
+
+
+def load_registry(path: Path = DEFAULT_REGISTRY) -> dict[str, Any]:
+    spec, _ = load_registry_with_sha256(path)
+    return spec
+
+
+def frozen_registry_measure(measure: dict[str, Any]) -> dict[str, Any]:
+    """Return a canonical JSON-safe copy of one complete registry measure."""
+
+    snapshot = copy.deepcopy(measure)
+    snapshot.setdefault("computability_overrides", {})
+    return json.loads(json.dumps(snapshot, sort_keys=True, allow_nan=False))
+
+
+def load_claims(path: Path = DEFAULT_CLAIMS) -> list[dict[str, Any]]:
+    rows, _ = load_claims_with_sha256(path)
+    return rows
+
+
+def load_claims_with_sha256(
+    path: Path = DEFAULT_CLAIMS,
+) -> tuple[list[dict[str, Any]], str]:
+    """Parse and hash the same claims bytes."""
+
+    payload = path.read_bytes()
+    return parse_claims_payload(payload, path), hashlib.sha256(payload).hexdigest()
+
+
+def parse_claims_payload(payload: bytes, path: Path) -> list[dict[str, Any]]:
+    """Parse already-read claims bytes without reopening the input."""
+
+    rows: list[dict[str, Any]] = []
+    for line_number, line in enumerate(payload.decode().splitlines(), 1):
+        if not line.strip():
+            raise ValueError(
+                f"{path}:{line_number}: blank lines are incompatible with "
+                "physical-line claim ordinals"
+            )
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"{path}:{line_number}: {exc}") from exc
+        rows.append(row)
+    return rows
+
+
+def claim_metric(claim: dict[str, Any]) -> str | None:
+    """Adopt PMD spending's proposed metric without mutating the harvest."""
+
+    return claim.get("metric") or claim.get("proposed_metric")
+
+
+def head_source_table(measure: dict[str, Any], head: dict[str, Any]) -> str:
+    return head.get("source_table", measure["source_table"])
+
+
+def head_external_metric(measure: dict[str, Any], head: dict[str, Any]) -> str:
+    return head.get("external_metric", measure["external_metric"])
+
+
+def _source_candidates(
+    claims: Iterable[dict[str, Any]],
+    measure: dict[str, Any],
+    year: int,
+    *,
+    head: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    table = head_source_table(measure, head) if head else None
+    metric = head_external_metric(measure, head) if head else None
+    hits: list[dict[str, Any]] = []
+    for claim in claims:
+        if claim.get("source") != "obr":
+            continue
+        if claim.get("period") != year:
+            continue
+        if claim.get("reform_hint") != measure["obr_description"]:
+            continue
+        if table is not None and claim.get("source_table") != table:
+            continue
+        if metric is not None and claim_metric(claim) != metric:
+            continue
+        if claim.get("source_table") != "3.17: 3.17":
+            if (
+                claim.get("conditions", {}).get("fiscal_event")
+                != measure["fiscal_event"]
+            ):
+                continue
+        if head is not None and head.get("condition_key") is not None:
+            if (
+                claim.get("conditions", {}).get(head["condition_key"])
+                != head["obr_head"]
+            ):
+                continue
+        hits.append(claim)
+    return hits
+
+
+def resolve_claim(
+    claims: Iterable[dict[str, Any]],
+    measure: dict[str, Any],
+    head: dict[str, Any],
+    year: int,
+) -> dict[str, Any] | None:
+    """Resolve a mapped head, returning None only outside its source window."""
+
+    hits = _source_candidates(claims, measure, year, head=head)
+    if len(hits) == 1:
+        return hits[0]
+    if len(hits) > 1:
+        raise ClaimMatchError(
+            f"{measure['measure_key']} {year} {head['obr_head']}: "
+            f"{len(hits)} source matches; expected exactly one"
+        )
+    any_measure_rows = _source_candidates(claims, measure, year)
+    if any_measure_rows:
+        raise ClaimMatchError(
+            f"{measure['measure_key']} {year} {head['obr_head']}: "
+            "measure exists in source window but mapped head has zero matches"
+        )
+    return None
+
+
+def external_claim_match(claim: dict[str, Any]) -> dict[str, Any]:
+    """Descriptor uses the exact harvested conditions, never a subset."""
+
+    return {
+        "source": claim["source"],
+        "metric": claim_metric(claim),
+        "period": claim["period"],
+        "source_table": claim["source_table"],
+        "reform_hint": claim["reform_hint"],
+        "conditions": claim["conditions"],
+    }
+
+
+def frozen_claim_descriptor(snapshot: dict[str, Any]) -> dict[str, Any]:
+    """Return the six-key identity persisted in a frozen claim snapshot."""
+
+    return {
+        "source": snapshot.get("source"),
+        "metric": snapshot.get("metric"),
+        "period": snapshot.get("period"),
+        "source_table": snapshot.get("source_table"),
+        "reform_hint": snapshot.get("reform_hint"),
+        "conditions": snapshot.get("conditions"),
+    }
+
+
+def _named_descriptor_fields(value: Any, field: str = "") -> list[str]:
+    if isinstance(value, dict):
+        fields: list[str] = []
+        for key in sorted(value):
+            nested_field = f"{field}.{key}" if field else key
+            fields.extend(_named_descriptor_fields(value[key], nested_field))
+        return fields
+    return [f"{field}={value!r}"]
+
+
+def derive_legacy_claim_ordinal(
+    claims: Iterable[dict[str, Any]], snapshot: dict[str, Any]
+) -> int:
+    """Derive a legacy ordinal once from its frozen six-key descriptor."""
+
+    descriptor = frozen_claim_descriptor(snapshot)
+    hits = [
+        (ordinal, claim)
+        for ordinal, claim in enumerate(claims)
+        if {
+            "source": claim.get("source"),
+            "metric": claim_metric(claim),
+            "period": claim.get("period"),
+            "source_table": claim.get("source_table"),
+            "reform_hint": claim.get("reform_hint"),
+            "conditions": claim.get("conditions"),
+        }
+        == descriptor
+    ]
+    descriptor_text = ", ".join(_named_descriptor_fields(descriptor))
+    if not hits:
+        raise ArtifactRestageError(
+            f"frozen claim not found in current claims; descriptor: {descriptor_text}"
+        )
+    if len(hits) > 1:
+        raise ArtifactRestageError(
+            f"frozen claim ambiguous in current claims ({len(hits)} matches); "
+            f"descriptor: {descriptor_text}"
+        )
+    return hits[0][0]
+
+
+def claim_ordinal_for(
+    claims: Iterable[dict[str, Any]], matched_claim: dict[str, Any]
+) -> int:
+    """Return the physical-line ordinal for a claim returned from this slice."""
+
+    for ordinal, claim in enumerate(claims):
+        if claim is matched_claim:
+            return ordinal
+    raise RuntimeError("matched claim is not a row from the supplied claims slice")
+
+
+def resolve_frozen_claim(
+    claims: list[dict[str, Any]],
+    snapshot: dict[str, Any],
+    *,
+    expected_claims_sha256: str,
+    legacy_ordinal: int | None = None,
+) -> tuple[dict[str, Any], int]:
+    """Resolve a frozen claim by its stable ordinal after the SHA gate."""
+
+    if legacy_ordinal is None:
+        snapshot_sha256 = snapshot.get("claims_slice_sha256")
+        if snapshot_sha256 != expected_claims_sha256:
+            raise ArtifactRestageError(
+                "frozen claim claims_slice_sha256 differs from the verified "
+                f"slice: expected {expected_claims_sha256!r}; "
+                f"actual {snapshot_sha256!r}"
+            )
+        ordinal = snapshot.get("claim_ordinal")
+    else:
+        ordinal = legacy_ordinal
+    if isinstance(ordinal, bool) or not isinstance(ordinal, int):
+        raise ArtifactRestageError(
+            f"frozen claim claim_ordinal must be an integer; actual {ordinal!r}"
+        )
+    if ordinal < 0 or ordinal >= len(claims):
+        raise ArtifactRestageError(
+            f"frozen claim claim_ordinal {ordinal} is out of range for "
+            f"{len(claims)} claims rows"
+        )
+    return claims[ordinal], ordinal
+
+
+def claim_source_facts(claim: dict[str, Any]) -> dict[str, str]:
+    """Return only provenance/adjustment facts actually carried by the harvest."""
+
+    source_model = claim.get("source_model")
+    basis = claim.get("conditions", {}).get("basis")
+    if not isinstance(source_model, str) or not source_model:
+        raise ClaimMatchError("matched harvest row has no source_model")
+    if not isinstance(basis, str) or not basis:
+        raise ClaimMatchError("matched harvest row has no conditions.basis")
+    return {
+        "source_model": source_model,
+        "basis": basis,
+        "behavioural_adjustment": BEHAVIOURAL_ADJUSTMENT,
+    }
+
+
+def source_facts_annotation(claim: dict[str, Any]) -> str:
+    facts = claim_source_facts(claim)
+    return (
+        "OBR source facts: "
+        f"source_model={facts['source_model']}; basis={facts['basis']}; "
+        f"behavioural_adjustment={facts['behavioural_adjustment']}."
+    )
+
+
+def source_claim_snapshot(
+    claim: dict[str, Any],
+    *,
+    claims_slice_sha256: str | None = None,
+    claim_ordinal: int | None = None,
+) -> dict[str, Any]:
+    """Freeze every harvested source fact used by an artifact."""
+
+    if (claims_slice_sha256 is None) != (claim_ordinal is None):
+        raise ValueError(
+            "claims_slice_sha256 and claim_ordinal must be supplied together"
+        )
+    metric_field = "metric" if claim.get("metric") is not None else "proposed_metric"
+    snapshot = {
+        "source": claim["source"],
+        "source_table": claim["source_table"],
+        "reform_hint": claim["reform_hint"],
+        "source_model": claim["source_model"],
+        "metric": claim_metric(claim),
+        "source_metric_field": metric_field,
+        "period": claim["period"],
+        "conditions": copy.deepcopy(claim["conditions"]),
+        "value_gbp": claim["value"],
+        "value_raw": claim.get("value_raw"),
+        "normalization": claim.get("normalization"),
+        "unit": claim.get("proposed_unit"),
+        "time_basis": claim.get("time_basis"),
+        "publication": copy.deepcopy(claim.get("publication")),
+        "source_column": claim.get("source_column"),
+        "status": claim.get("status"),
+        "calibration_relationship": claim.get("calibration_relationship"),
+    }
+    if claims_slice_sha256 is not None:
+        snapshot["claims_slice_sha256"] = claims_slice_sha256
+        snapshot["claim_ordinal"] = claim_ordinal
+    return snapshot
+
+
+_MISSING = object()
+
+
+def frozen_claim_differences(
+    artifact_value: Any,
+    claims_value: Any,
+    *,
+    field: str = "",
+) -> list[dict[str, Any]]:
+    """Return every recursively differing frozen-claim field."""
+
+    if isinstance(artifact_value, dict) and isinstance(claims_value, dict):
+        differences: list[dict[str, Any]] = []
+        for key in sorted(set(artifact_value) | set(claims_value)):
+            nested_field = f"{field}.{key}" if field else key
+            differences.extend(
+                frozen_claim_differences(
+                    artifact_value.get(key, _MISSING),
+                    claims_value.get(key, _MISSING),
+                    field=nested_field,
+                )
+            )
+        return differences
+    if artifact_value == claims_value:
+        return []
+    return [
+        {
+            "field": field,
+            "frozen": ("<missing>" if artifact_value is _MISSING else artifact_value),
+            "current": "<missing>" if claims_value is _MISSING else claims_value,
+        }
+    ]
+
+
+def format_frozen_claim_difference(difference: dict[str, Any]) -> str:
+    return (
+        f"field={difference['field']} frozen={difference['frozen']!r} "
+        f"current={difference['current']!r}"
+    )
+
+
+def _validate_date_range(value: str, context: str) -> None:
+    match = DATE_RANGE.match(value)
+    if match is None:
+        raise RegistryError(f"{context}: invalid date range {value!r}")
+    start = tuple(int(x) for x in match.groups()[:3])
+    end = tuple(int(x) for x in match.groups()[3:])
+    if start > end:
+        raise RegistryError(f"{context}: reversed date range {value!r}")
+
+
+def effective_computability(
+    measure: dict[str, Any], year: int
+) -> tuple[str, str | None]:
+    """Return the registry status and note effective for one proxy year."""
+
+    overrides = measure.get("computability_overrides", {})
+    override = overrides.get(year, overrides.get(str(year)))
+    if override is None:
+        return measure["computability"], None
+    return override["computability"], override["note"]
+
+
+def validate_registry(
+    spec: dict[str, Any],
+    *,
+    tax_benefit_system: Any | None = None,
+    claims: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Validate schema, engine paths/variables, and optional source identities."""
+
+    measures = spec["measures"]
+    keys: set[str] = set()
+    counts: Counter[str] = Counter()
+    source_head_years = 0
+    for index, measure in enumerate(measures):
+        context = f"measures[{index}]"
+        if not isinstance(measure, dict):
+            raise RegistryError(f"{context}: expected mapping")
+        missing = REQUIRED_MEASURE_FIELDS - set(measure)
+        if missing:
+            raise RegistryError(f"{context}: missing fields {sorted(missing)}")
+        key = measure["measure_key"]
+        if not isinstance(key, str) or MEASURE_KEY.fullmatch(key) is None:
+            raise RegistryError(
+                f"{context}: measure_key must be lowercase filesystem-safe text"
+            )
+        if key in keys:
+            raise RegistryError(f"duplicate measure_key {key!r}")
+        keys.add(key)
+        if measure["computability"] not in COMPUTABILITY:
+            raise RegistryError(f"{key}: invalid computability")
+        overrides = measure.get("computability_overrides", {})
+        if not isinstance(overrides, dict):
+            raise RegistryError(f"{key}: computability_overrides must be a mapping")
+        for override_year, override in overrides.items():
+            if (
+                isinstance(override_year, bool)
+                or not isinstance(override_year, int)
+                or not YEAR_MIN <= override_year <= YEAR_MAX
+            ):
+                raise RegistryError(
+                    f"{key}: invalid computability override year {override_year!r}"
+                )
+            if not isinstance(override, dict) or set(override) != {
+                "computability",
+                "note",
+            }:
+                raise RegistryError(
+                    f"{key} {override_year}: override must contain exactly "
+                    "computability and note"
+                )
+            if override["computability"] not in COMPUTABILITY:
+                raise RegistryError(
+                    f"{key} {override_year}: invalid override computability"
+                )
+            if not isinstance(override["note"], str) or not override["note"].strip():
+                raise RegistryError(
+                    f"{key} {override_year}: override note must be non-empty"
+                )
+        if measure["construction"] not in CONSTRUCTIONS:
+            raise RegistryError(f"{key}: invalid construction")
+        if not isinstance(measure["start_fy"], int):
+            raise RegistryError(f"{key}: start_fy must be an integer")
+        if claims is not None:
+            measure_claims = [
+                claim
+                for claim in claims
+                if isinstance(claim.get("period"), int)
+                and _source_candidates([claim], measure, claim["period"])
+            ]
+            nonzero_years = [
+                claim["period"]
+                for claim in measure_claims
+                if isinstance(claim.get("value"), (int, float))
+                and not isinstance(claim["value"], bool)
+                and claim["value"] != 0
+            ]
+            if not nonzero_years:
+                raise RegistryError(f"{key}: no nonzero harvested costing for start_fy")
+            expected_start_fy = min(nonzero_years)
+            if measure["start_fy"] != expected_start_fy:
+                raise RegistryError(
+                    f"{key}: start_fy {measure['start_fy']} differs from first "
+                    f"nonzero harvested costing {expected_start_fy}"
+                )
+        if not isinstance(measure["notes"], str) or not measure["notes"].strip():
+            raise RegistryError(f"{key}: notes must be non-empty")
+        if not isinstance(measure["heads"], list):
+            raise RegistryError(f"{key}: heads must be a list")
+        if not isinstance(measure["unmapped_obr_heads"], list):
+            raise RegistryError(f"{key}: unmapped_obr_heads must be a list")
+        reform = measure["pe_reform"]
+        if measure["computability"] == "not_expressible":
+            if reform is not None:
+                raise RegistryError(f"{key}: not_expressible requires pe_reform: null")
+        elif not isinstance(reform, dict) or not reform:
+            raise RegistryError(f"{key}: runnable entry needs a non-empty pe_reform")
+        if reform:
+            for path, schedule in reform.items():
+                if (
+                    not isinstance(path, str)
+                    or not isinstance(schedule, dict)
+                    or not schedule
+                ):
+                    raise RegistryError(f"{key}: invalid reform schedule for {path!r}")
+                for period, value in schedule.items():
+                    _validate_date_range(str(period), f"{key} {path}")
+                    if not isinstance(value, (bool, int, float)):
+                        raise RegistryError(
+                            f"{key} {path}: unsupported parameter value {value!r}"
+                        )
+                    if not isinstance(value, bool) and not math.isfinite(float(value)):
+                        raise RegistryError(
+                            f"{key} {path}: reform values must be finite"
+                        )
+                if tax_benefit_system is not None:
+                    try:
+                        tax_benefit_system.parameters.get_child(path)
+                    except Exception as exc:
+                        raise RegistryError(
+                            f"{key}: unresolved parameter {path!r}: {exc}"
+                        ) from exc
+        head_identities: set[tuple[str, str | None, str]] = set()
+        for head_index, head in enumerate(measure["heads"]):
+            hctx = f"{key} heads[{head_index}]"
+            if not isinstance(head, dict):
+                raise RegistryError(f"{hctx}: expected mapping")
+            required = {"obr_head", "condition_key", "pe_variables", "channel"}
+            if required - set(head):
+                raise RegistryError(f"{hctx}: missing {sorted(required - set(head))}")
+            if head["condition_key"] not in (None, "tax_head", "spending_head"):
+                raise RegistryError(f"{hctx}: invalid condition_key")
+            if head["channel"] not in ("tax", "spending"):
+                raise RegistryError(f"{hctx}: invalid channel")
+            if not isinstance(head["obr_head"], str) or not head["obr_head"]:
+                raise RegistryError(f"{hctx}: obr_head must be non-empty text")
+            identity = (
+                head["obr_head"],
+                head["condition_key"],
+                head_source_table(measure, head),
+            )
+            if identity in head_identities:
+                raise RegistryError(f"{hctx}: duplicate head identity {identity}")
+            head_identities.add(identity)
+            variables = head["pe_variables"]
+            if not isinstance(variables, list) or not variables:
+                raise RegistryError(f"{hctx}: pe_variables must be non-empty")
+            if head["obr_head"] == "NICs" and variables != NI_HEAD_VARIABLES:
+                raise RegistryError(
+                    f"{hctx}: NICs must be exactly {NI_HEAD_VARIABLES}, got {variables}"
+                )
+            if tax_benefit_system is not None:
+                missing_variables = [
+                    v for v in variables if v not in tax_benefit_system.variables
+                ]
+                if missing_variables:
+                    raise RegistryError(
+                        f"{hctx}: unknown PE variables {missing_variables}"
+                    )
+            if claims is not None:
+                years_with_rows = 0
+                for year in range(YEAR_MIN, YEAR_MAX + 1):
+                    hit = resolve_claim(claims, measure, head, year)
+                    if hit is not None:
+                        years_with_rows += 1
+                if years_with_rows == 0:
+                    raise RegistryError(
+                        f"{hctx}: no source rows in {YEAR_MIN}-{YEAR_MAX}"
+                    )
+                source_head_years += years_with_rows
+        if claims is not None and not measure["heads"]:
+            source_years = sum(
+                bool(_source_candidates(claims, measure, year))
+                for year in range(YEAR_MIN, YEAR_MAX + 1)
+            )
+            if source_years == 0:
+                raise RegistryError(f"{key}: no source rows in {YEAR_MIN}-{YEAR_MAX}")
+        counts[measure["computability"]] += 1
+    return {
+        "measures": len(measures),
+        "computability": dict(sorted(counts.items())),
+        "source_head_years": source_head_years,
+    }
+
+
+def parse_tokens(values: list[str] | None) -> list[str]:
+    out: list[str] = []
+    for value in values or []:
+        out.extend(token.strip() for token in value.split(",") if token.strip())
+    return out
+
+
+def select_measures(
+    measures: list[dict[str, Any]],
+    requested: list[str] | None,
+    limit: int | None,
+) -> list[dict[str, Any]]:
+    requested_keys = parse_tokens(requested)
+    if len(set(requested_keys)) != len(requested_keys):
+        raise RegistryError("duplicate --measures keys")
+    by_key = {measure["measure_key"]: measure for measure in measures}
+    if requested_keys:
+        unknown = [key for key in requested_keys if key not in by_key]
+        if unknown:
+            raise RegistryError(f"unknown --measures keys: {unknown}")
+        selected = [by_key[key] for key in requested_keys]
+    else:
+        # A full run preserves null-reform registry entries as not_computed
+        # staged rows. They never construct simulations.
+        selected = list(measures)
+    if limit is not None:
+        if limit < 1:
+            raise RegistryError("--limit must be positive")
+        selected = selected[:limit]
+    return selected
+
+
+def select_years(requested: list[str] | None) -> list[int]:
+    tokens = parse_tokens(requested)
+    years = (
+        [int(token) for token in tokens]
+        if tokens
+        else list(range(YEAR_MIN, YEAR_MAX + 1))
+    )
+    invalid = [year for year in years if not YEAR_MIN <= year <= YEAR_MAX]
+    if invalid:
+        raise RegistryError(f"years outside {YEAR_MIN}-{YEAR_MAX}: {invalid}")
+    if len(set(years)) != len(years):
+        raise RegistryError("duplicate --years values")
+    return sorted(years)
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(8 * 1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def verify_runtime_dataset_sha256(
+    runtime_dataset_source: Path,
+    expected_sha256: str,
+    *,
+    phase: str,
+    before_sha256: str | None = None,
+) -> str:
+    """Hash the exact managed-data file and reject non-certified bytes."""
+
+    actual_sha256 = sha256_file(runtime_dataset_source)
+    if actual_sha256 != expected_sha256:
+        observed = (
+            f"before {before_sha256}; after {actual_sha256}"
+            if before_sha256 is not None
+            else f"actual {actual_sha256}"
+        )
+        raise RuntimeError(
+            f"runtime dataset SHA-256 {phase} differs from the certified "
+            f"release manifest: {runtime_dataset_source}; "
+            f"expected {expected_sha256}; {observed}"
+        )
+    return actual_sha256
+
+
+def ensure_writable_local_mirror(
+    cached_path: Path, relative_artifact_path: str, expected_sha256: str
+) -> tuple[Path, bool]:
+    """Copy certified bytes into the workspace for PyTables' read/write open."""
+
+    mirror_path = (
+        LOCAL_DATA_MIRROR_ROOT
+        / "policyengine_uk_data"
+        / "storage"
+        / relative_artifact_path
+    )
+    created = False
+    if not mirror_path.exists():
+        mirror_path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = mirror_path.with_name(mirror_path.name + ".tmp")
+        if temporary.exists():
+            temporary.unlink()
+        try:
+            with cached_path.open("rb") as source, temporary.open("wb") as target:
+                for chunk in iter(lambda: source.read(8 * 1024 * 1024), b""):
+                    target.write(chunk)
+            if sha256_file(temporary) != expected_sha256:
+                raise RuntimeError("workspace mirror copy failed SHA-256 verification")
+            temporary.replace(mirror_path)
+            created = True
+        finally:
+            if temporary.exists():
+                temporary.unlink()
+    if sha256_file(mirror_path) != expected_sha256:
+        raise RuntimeError(
+            "workspace UK data mirror differs from the certified artifact; "
+            "refusing to overwrite it"
+        )
+    try:
+        with mirror_path.open("r+b"):
+            pass
+    except OSError as exc:
+        raise RuntimeError(
+            f"workspace UK data mirror is not writable: {mirror_path}"
+        ) from exc
+    return mirror_path, created
+
+
+def preflight_certified_dataset() -> dict[str, Any]:
+    """Prove that the bundled dataset is cached and matches its manifest hash."""
+
+    configure_offline()
+    import policyengine as pe
+    from huggingface_hub import hf_hub_download
+    from policyengine.provenance.dataset_sources import parse_hf_uri
+
+    bundle = dict(pe.uk.uk_latest.release_bundle)
+    dataset_uri = bundle.get("default_dataset_uri")
+    expected_sha256 = bundle.get("certified_data_artifact_sha256")
+    if not isinstance(dataset_uri, str) or not dataset_uri.startswith("hf://"):
+        raise RuntimeError(
+            f"certified UK dataset is not a supported HF artifact: {dataset_uri!r}"
+        )
+    if not isinstance(expected_sha256, str) or not expected_sha256:
+        raise RuntimeError("certified UK release has no artifact SHA-256")
+    reference = parse_hf_uri(dataset_uri)
+    try:
+        cached_path = Path(
+            hf_hub_download(
+                repo_id=reference.repo_id,
+                repo_type="dataset",
+                filename=reference.path,
+                revision=reference.version,
+                local_files_only=True,
+            )
+        )
+    except Exception as exc:
+        raise RuntimeError(
+            "certified UK artifact is not cached; refusing any network fallback"
+        ) from exc
+    started = time.perf_counter()
+    actual_sha256 = sha256_file(cached_path)
+    if actual_sha256 != expected_sha256:
+        raise RuntimeError(
+            "cached UK artifact SHA-256 differs from the certified release manifest"
+        )
+    mirror_path, mirror_created = ensure_writable_local_mirror(
+        cached_path, reference.path, expected_sha256
+    )
+    hash_seconds = time.perf_counter() - started
+    return {
+        "release_bundle": bundle,
+        "dataset_uri": dataset_uri,
+        "cached_file": cached_path.name,
+        "sha256": actual_sha256,
+        "hash_seconds": hash_seconds,
+        "local_files_only": True,
+        "managed_local_mirror": relative_to_root(mirror_path),
+        "managed_local_mirror_created": mirror_created,
+        "runtime_dataset_source": str(mirror_path.resolve()),
+    }
+
+
+def current_rss_bytes() -> tuple[int, str]:
+    try:
+        import psutil
+
+        return psutil.Process(os.getpid()).memory_info().rss, "psutil_process_rss"
+    except (ImportError, OSError):
+        import resource
+
+        rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        # macOS reports bytes; Linux reports KiB.
+        if sys.platform != "darwin":
+            rss *= 1024
+        return int(rss), "resource_process_lifetime_peak"
+
+
+class PeakRSSSampler:
+    """Sample whole-process RSS while one managed sim is alive."""
+
+    def __init__(self, interval_seconds: float = 0.1):
+        self.interval_seconds = interval_seconds
+        self.stop_event = threading.Event()
+        self.thread: threading.Thread | None = None
+        self.start_rss_bytes = 0
+        self.peak_rss_bytes = 0
+        self.end_rss_bytes = 0
+        self.method = ""
+
+    def _sample(self) -> None:
+        while not self.stop_event.wait(self.interval_seconds):
+            rss, _ = current_rss_bytes()
+            self.peak_rss_bytes = max(self.peak_rss_bytes, rss)
+
+    def __enter__(self) -> "PeakRSSSampler":
+        self.start_rss_bytes, self.method = current_rss_bytes()
+        self.peak_rss_bytes = self.start_rss_bytes
+        self.thread = threading.Thread(target=self._sample, daemon=True)
+        self.thread.start()
+        return self
+
+    def __exit__(self, exc_type, exc, traceback) -> None:
+        self.stop_event.set()
+        if self.thread is not None:
+            self.thread.join(timeout=2)
+        self.end_rss_bytes, _ = current_rss_bytes()
+        self.peak_rss_bytes = max(self.peak_rss_bytes, self.end_rss_bytes)
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "rss_method": self.method,
+            "start_rss_bytes": self.start_rss_bytes,
+            "peak_rss_bytes": self.peak_rss_bytes,
+            "end_rss_bytes": self.end_rss_bytes,
+        }
+
+
+def variable_metadata(
+    tax_benefit_system: Any, variables: Iterable[str]
+) -> dict[str, Any]:
+    metadata: dict[str, Any] = {}
+    for name in variables:
+        variable = tax_benefit_system.variables[name]
+        metadata[name] = {
+            "label": getattr(variable, "label", None),
+            "entity": variable.entity.key,
+            "definition_period": str(getattr(variable, "definition_period", None)),
+            "unit": str(getattr(variable, "unit", None)),
+        }
+    return metadata
+
+
+def run_managed_simulation(
+    *,
+    year: int,
+    variables: list[str],
+    reform: dict[str, Any] | None,
+    runtime_dataset_source: Path,
+    expected_dataset_sha256: str,
+) -> dict[str, Any]:
+    """Run, aggregate, delete, and collect exactly one managed sim."""
+
+    configure_offline()
+    import policyengine as pe
+
+    started = time.perf_counter()
+    sim = None
+    try:
+        with PeakRSSSampler() as memory:
+            dataset_sha256_before = verify_runtime_dataset_sha256(
+                runtime_dataset_source,
+                expected_dataset_sha256,
+                phase="immediately before simulation construction",
+            )
+            sim = (
+                pe.uk.managed_microsimulation()
+                if reform is None
+                else pe.uk.managed_microsimulation(reform=reform)
+            )
+            bundle = dict(getattr(sim, "policyengine_bundle", {}) or {})
+            if not bundle.get("certified_data_build_id"):
+                raise RuntimeError(
+                    "managed sim did not expose a certified data build id"
+                )
+            reported_source = bundle.get("runtime_dataset_source")
+            if not isinstance(reported_source, str) or (
+                Path(reported_source).resolve() != runtime_dataset_source.resolve()
+            ):
+                raise RuntimeError(
+                    "managed sim runtime_dataset_source differs from the exact "
+                    f"file hashed before construction: {reported_source!r}"
+                )
+            missing = [
+                name
+                for name in variables
+                if name not in sim.tax_benefit_system.variables
+            ]
+            if missing:
+                raise RuntimeError(f"managed sim lacks variables: {missing}")
+            aggregates: dict[str, float] = {}
+            for name in variables:
+                calculated = sim.calculate(name, str(year))
+                aggregate = float(calculated.sum())
+                del calculated
+                if not math.isfinite(aggregate):
+                    raise RuntimeError(f"{name} {year}: non-finite aggregate")
+                aggregates[name] = aggregate
+            dataset_sha256_after = verify_runtime_dataset_sha256(
+                runtime_dataset_source,
+                expected_dataset_sha256,
+                phase="immediately after aggregate reads",
+                before_sha256=dataset_sha256_before,
+            )
+            metadata = variable_metadata(sim.tax_benefit_system, variables)
+            wall_seconds = time.perf_counter() - started
+    except BaseException:
+        sim = None
+        gc.collect()
+        raise
+    sim = None
+    cleanup_started = time.perf_counter()
+    gc.collect()
+    cleanup_seconds = time.perf_counter() - cleanup_started
+    rss_after_gc, rss_method = current_rss_bytes()
+    performance = {
+        "wall_seconds": wall_seconds,
+        **memory.as_dict(),
+        "cleanup_seconds": cleanup_seconds,
+        "rss_after_gc_bytes": rss_after_gc,
+        "rss_after_gc_method": rss_method,
+    }
+    return {
+        "aggregates_gbp": aggregates,
+        "variable_metadata": metadata,
+        "policyengine_bundle": bundle,
+        "dataset_sha256_before": dataset_sha256_before,
+        "dataset_sha256_after": dataset_sha256_after,
+        "performance": performance,
+    }
+
+
+def assert_managed_bundle(
+    runtime_bundle: dict[str, Any], release_bundle: dict[str, Any]
+) -> None:
+    """Require every certified release identity field in the managed run."""
+
+    differences = {
+        key: {"release": value, "runtime": runtime_bundle.get(key)}
+        for key, value in release_bundle.items()
+        if runtime_bundle.get(key) != value
+    }
+    if differences:
+        raise RuntimeError(f"managed run differs from release bundle: {differences}")
+
+
+def data_bundle_id(policyengine_bundle: dict[str, Any]) -> str:
+    value = policyengine_bundle.get("certified_data_build_id")
+    if not isinstance(value, str) or not value:
+        raise RuntimeError("policyengine_bundle.certified_data_build_id is missing")
+    return value
+
+
+def simulation_dataset_hash_fields(
+    baseline: dict[str, Any],
+    reform: dict[str, Any],
+    *,
+    run_id: str,
+) -> dict[str, dict[str, str]]:
+    """Build mandatory per-simulation dataset hashes for a new artifact."""
+
+    field_names = ("dataset_sha256_before", "dataset_sha256_after")
+    present = {
+        role: {name: name in simulation for name in field_names}
+        for role, simulation in (("baseline", baseline), ("reform", reform))
+    }
+    if not any(value for role in present.values() for value in role.values()):
+        raise RuntimeError(
+            f"{run_id}: per-simulation dataset SHA-256 fields are required"
+        )
+    if not all(value for role in present.values() for value in role.values()):
+        raise RuntimeError(
+            f"{run_id}: per-simulation dataset SHA-256 fields are incomplete"
+        )
+
+    expected = baseline["policyengine_bundle"].get("certified_data_artifact_sha256")
+    if (
+        not isinstance(expected, str)
+        or not expected
+        or reform["policyengine_bundle"].get("certified_data_artifact_sha256")
+        != expected
+    ):
+        raise RuntimeError(
+            f"{run_id}: managed simulations lack one certified artifact SHA-256"
+        )
+    fields = {
+        name: {
+            "baseline": baseline[name],
+            "reform": reform[name],
+        }
+        for name in field_names
+    }
+    if any(
+        value != expected for values in fields.values() for value in values.values()
+    ):
+        raise RuntimeError(
+            f"{run_id}: per-simulation dataset SHA-256 differs from bundle identity"
+        )
+    return fields
+
+
+def validate_artifact_dataset_hash_fields(
+    artifact: dict[str, Any], *, path: Path, allow_missing: bool = False
+) -> None:
+    """Validate hashes or admit an explicitly inventoried legacy artifact."""
+
+    field_names = ("dataset_sha256_before", "dataset_sha256_after")
+    present = [name in artifact for name in field_names]
+    if not any(present):
+        if allow_missing:
+            return
+        raise ArtifactRestageError(
+            f"{path}: missing dataset hash fields and is not listed in "
+            "legacy_artifacts_without_dataset_hashes"
+        )
+    if not all(present):
+        raise ArtifactRestageError(f"{path}: dataset hash fields are incomplete")
+    if allow_missing:
+        raise ArtifactRestageError(
+            f"{path}: listed in legacy_artifacts_without_dataset_hashes but "
+            "contains dataset hash fields"
+        )
+    bundles = artifact.get("policyengine_bundles")
+    if not isinstance(bundles, dict):
+        raise ArtifactRestageError(f"{path}: policyengine_bundles must be a mapping")
+    for name in field_names:
+        values = artifact[name]
+        if not isinstance(values, dict) or set(values) != {"baseline", "reform"}:
+            raise ArtifactRestageError(f"{path}: {name} must map baseline and reform")
+        for role in ("baseline", "reform"):
+            bundle = bundles.get(role)
+            expected = (
+                bundle.get("certified_data_artifact_sha256")
+                if isinstance(bundle, dict)
+                else None
+            )
+            if not isinstance(expected, str) or values[role] != expected:
+                raise ArtifactRestageError(
+                    f"{path}: {role} {name} differs from bundle identity"
+                )
+
+
+def reform_minus_baseline(
+    baseline: dict[str, float], reform: dict[str, float], variables: Iterable[str]
+) -> float:
+    return sum(reform[name] - baseline[name] for name in variables)
+
+
+def orient_exchequer_effect(
+    raw_reform_minus_baseline: float,
+    channel: str,
+    construction: str,
+) -> tuple[float, float]:
+    """Return ``(literal_delta, pe_value)`` in exchequer-gain sign.
+
+    Let ``G = +(reform - baseline)`` for tax and
+    ``G = -(reform - baseline)`` for spending. The staging identity is
+    ``pe_value = -G`` for ``reversal_on_certified_world`` (the announced
+    measure is the reversal's undoing), and ``pe_value = +G`` for
+    ``forward_from_baseline``.
+    """
+
+    if channel == "tax":
+        literal_delta = raw_reform_minus_baseline
+    elif channel == "spending":
+        literal_delta = -raw_reform_minus_baseline
+    else:
+        raise ValueError(f"unknown channel {channel!r}")
+    if construction == "reversal_on_certified_world":
+        return literal_delta, -literal_delta
+    if construction == "forward_from_baseline":
+        return literal_delta, literal_delta
+    raise ValueError(f"unknown construction {construction!r}")
+
+
+def artifact_path(output_dir: Path, measure_key: str, year: int) -> Path:
+    return output_dir / f"{measure_key}_{year}.json"
+
+
+def relative_to_root(path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(ROOT.resolve()))
+    except ValueError:
+        return str(path.resolve())
+
+
+def recorded_repo_relative_path(path: Path, *, role: str, root: Path = ROOT) -> str:
+    """Return a canonical relative path or reject a non-replayable location."""
+
+    resolved_root = root.resolve()
+    resolved_path = path.resolve()
+    try:
+        return str(resolved_path.relative_to(resolved_root))
+    except ValueError as exc:
+        raise RegistryError(
+            f"{role} {resolved_path} must be contained beneath repository root "
+            f"{resolved_root}"
+        ) from exc
+
+
+def atomic_write_bytes(path: Path, payload: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    destination_mode = stat.S_IMODE(path.stat().st_mode) if path.exists() else 0o644
+    temporary: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="wb",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as destination:
+            temporary = Path(destination.name)
+            destination.write(payload)
+        assert temporary is not None
+        temporary.chmod(destination_mode)
+        temporary.replace(path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
+def canonical_json_bytes(value: Any) -> bytes:
+    return (json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n").encode(
+        "utf-8"
+    )
+
+
+def retained_manifest_bytes(value: Any) -> bytes:
+    """Serialize a parsed manifest while retaining its existing key order."""
+
+    return (json.dumps(value, indent=2, allow_nan=False) + "\n").encode("utf-8")
+
+
+def canonical_jsonl_bytes(rows: Iterable[dict[str, Any]]) -> bytes:
+    return "".join(
+        json.dumps(row, sort_keys=True, allow_nan=False) + "\n" for row in rows
+    ).encode("utf-8")
+
+
+def write_json(path: Path, value: Any) -> None:
+    atomic_write_bytes(path, canonical_json_bytes(value))
+
+
+def write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> None:
+    atomic_write_bytes(path, canonical_jsonl_bytes(rows))
+
+
+def write_artifact_payload(path: Path, payload: bytes) -> None:
+    """Atomically publish artifact bytes already serialized and hashed in memory."""
+
+    atomic_write_bytes(path, payload)
+
+
+def _verify_written_payload(
+    path: Path,
+    expected_sha256: str,
+    *,
+    role: str,
+) -> None:
+    try:
+        payload = path.read_bytes()
+    except OSError as exc:
+        actual_sha256 = (
+            "<missing>" if isinstance(exc, FileNotFoundError) else "<unavailable>"
+        )
+        raise ArtifactWriteError(
+            f"{path}: written {role} differs from intended canonical bytes; "
+            f"expected SHA-256 {expected_sha256}; actual {actual_sha256}"
+        ) from exc
+    actual_sha256 = hashlib.sha256(payload).hexdigest()
+    if actual_sha256 != expected_sha256:
+        raise ArtifactWriteError(
+            f"{path}: written {role} differs from intended canonical bytes; "
+            f"expected SHA-256 {expected_sha256}; actual {actual_sha256}"
+        )
+
+
+def verify_written_artifacts(
+    artifacts: Iterable[tuple[Path, str]],
+) -> None:
+    """Verify a complete artifact set against its intended in-memory digests."""
+
+    for path, expected_sha256 in artifacts:
+        _verify_written_payload(path, expected_sha256, role="artifact")
+
+
+def verify_written_staged_output(path: Path, expected_sha256: str) -> None:
+    """Verify staged bytes against the digest derived before publication."""
+
+    _verify_written_payload(path, expected_sha256, role="staged output")
+
+
+def parse_json_object_payload(
+    payload: bytes,
+    *,
+    path: Path,
+    label: str,
+) -> dict[str, Any]:
+    """Parse an already-read JSON payload without reopening its path."""
+
+    try:
+        value = json.loads(payload)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ArtifactRestageError(f"cannot read {label} {path}: {exc}") from exc
+    if not isinstance(value, dict):
+        raise ArtifactRestageError(f"{label} {path}: expected a JSON object")
+    return value
+
+
+def verified_artifact_payload(path: Path, expected_sha256: str) -> bytes:
+    """Read and SHA-check exact artifact bytes before they are trusted."""
+
+    try:
+        payload = path.read_bytes()
+    except OSError as exc:
+        actual = "<missing>" if isinstance(exc, FileNotFoundError) else "<unavailable>"
+        raise artifact_provenance_error(
+            path,
+            expected=expected_sha256,
+            actual=actual,
+        ) from exc
+    actual_sha256 = hashlib.sha256(payload).hexdigest()
+    if actual_sha256 != expected_sha256:
+        raise artifact_provenance_error(
+            path,
+            expected=expected_sha256,
+            actual=actual_sha256,
+        )
+    return payload
+
+
+def _contained_path(path: Path, *, role: str, root: Path) -> Path:
+    resolved_root = root.resolve()
+    resolved_path = path.resolve()
+    try:
+        resolved_path.relative_to(resolved_root)
+    except ValueError as exc:
+        raise ArtifactRestageError(
+            f"{role} {path!s} escapes artifact root {resolved_root}"
+        ) from exc
+    return resolved_path
+
+
+def resolve_recorded_path(
+    reference: str,
+    root: Path = ROOT,
+    *,
+    role: str = "recorded path",
+) -> Path:
+    if not isinstance(reference, str) or not reference:
+        raise ArtifactRestageError(f"{role} must be a non-empty recorded path")
+    path = Path(reference)
+    if path.is_absolute():
+        raise ArtifactRestageError(
+            f"{role} must be repo-relative; recorded absolute path {reference!r}"
+        )
+    return _contained_path(root / path, role=role, root=root)
+
+
+def _raise_path_collision(
+    first_role: str,
+    second_role: str,
+    path: Path,
+) -> None:
+    raise ArtifactRestageError(
+        f"path collision: {first_role} and {second_role} both resolve to {path}"
+    )
+
+
+def _validate_restage_path_collisions(
+    *,
+    file_roles: list[tuple[str, Path]],
+    directory_roles: list[tuple[str, Path]],
+) -> None:
+    seen_files: dict[Path, str] = {}
+    seen_inodes: dict[tuple[int, int], tuple[str, Path]] = {}
+    seen_normalized: dict[str, tuple[str, Path]] = {}
+    for role, path in file_roles:
+        previous_role = seen_files.get(path)
+        if previous_role is not None:
+            _raise_path_collision(previous_role, role, path)
+        seen_files[path] = role
+        normalized = unicodedata.normalize("NFC", str(path)).casefold()
+        previous_normalized = seen_normalized.get(normalized)
+        if previous_normalized is not None:
+            previous_role, previous_path = previous_normalized
+            raise ArtifactRestageError(
+                f"path collision: {previous_role} {previous_path} and "
+                f"{role} {path} have the same normalized path"
+            )
+        seen_normalized[normalized] = (role, path)
+        try:
+            stat_result = path.stat()
+        except OSError:
+            continue
+        inode = (stat_result.st_dev, stat_result.st_ino)
+        previous_inode = seen_inodes.get(inode)
+        if previous_inode is not None:
+            previous_role, previous_path = previous_inode
+            raise ArtifactRestageError(
+                f"path collision: {previous_role} {previous_path} and "
+                f"{role} {path} identify the same file"
+            )
+        seen_inodes[inode] = (role, path)
+
+    # The artifact and comparison directories normally coincide. Directory-to-
+    # directory equality is therefore intentional, but no file role may resolve
+    # to a path that is also being treated as a directory.
+    for directory_role, directory_path in directory_roles:
+        file_role = seen_files.get(directory_path)
+        if file_role is not None:
+            _raise_path_collision(file_role, directory_role, directory_path)
+        normalized = unicodedata.normalize("NFC", str(directory_path)).casefold()
+        normalized_file = seen_normalized.get(normalized)
+        if normalized_file is not None:
+            file_role, file_path = normalized_file
+            raise ArtifactRestageError(
+                f"path collision: {file_role} {file_path} and "
+                f"{directory_role} {directory_path} have the same normalized path"
+            )
+        try:
+            stat_result = directory_path.stat()
+        except OSError:
+            continue
+        inode_file = seen_inodes.get((stat_result.st_dev, stat_result.st_ino))
+        if inode_file is not None:
+            file_role, file_path = inode_file
+            raise ArtifactRestageError(
+                f"path collision: {file_role} {file_path} and "
+                f"{directory_role} {directory_path} identify the same file"
+            )
+
+
+def build_restage_path_plan(
+    manifest: dict[str, Any],
+    *,
+    manifest_path: Path,
+    output_dir: Path,
+    artifact_root: Path,
+) -> dict[str, Any]:
+    """Resolve and collision-check every replay path before input parsing."""
+
+    references = manifest.get("artifacts")
+    if not isinstance(references, list) or not all(
+        isinstance(reference, str) and reference for reference in references
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifacts must be a list of paths"
+        )
+    legacy_references = manifest.get("legacy_artifacts_without_dataset_hashes", [])
+    if not isinstance(legacy_references, list) or not all(
+        isinstance(reference, str) and reference for reference in legacy_references
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy_artifacts_without_dataset_hashes must "
+            "be a list of paths"
+        )
+
+    artifact_dir = manifest_path.parent.resolve()
+    resolved_references = [
+        resolve_recorded_path(
+            reference,
+            artifact_root,
+            role=f"artifacts[{index}]",
+        )
+        for index, reference in enumerate(references)
+    ]
+    for index, path in enumerate(resolved_references):
+        _contained_path(path, role=f"artifacts[{index}]", root=artifact_dir)
+
+    resolved_legacy = [
+        resolve_recorded_path(
+            reference,
+            artifact_root,
+            role=f"legacy_artifacts_without_dataset_hashes[{index}]",
+        )
+        for index, reference in enumerate(legacy_references)
+    ]
+    if len(set(resolved_legacy)) != len(resolved_legacy):
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy artifact paths resolve to duplicate files"
+        )
+    unknown_legacy = set(resolved_legacy) - set(resolved_references)
+    if unknown_legacy:
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy artifact paths are absent from the "
+            f"artifact inventory: {sorted(str(path) for path in unknown_legacy)}"
+        )
+
+    registry_path = resolve_recorded_path(
+        manifest.get("registry"), artifact_root, role="registry"
+    )
+    claims_path = resolve_recorded_path(
+        manifest.get("claims"), artifact_root, role="claims"
+    )
+    staged_path = resolve_recorded_path(
+        manifest.get("staged_output"), artifact_root, role="staged_output"
+    )
+    comparison_csv = _contained_path(
+        output_dir / "COMPARISON.csv",
+        role="comparison CSV",
+        root=artifact_root,
+    )
+    comparison_markdown = _contained_path(
+        output_dir / "COMPARISON.md",
+        role="comparison Markdown",
+        root=artifact_root,
+    )
+
+    _validate_restage_path_collisions(
+        file_roles=[
+            ("manifest", manifest_path),
+            ("registry", registry_path),
+            ("claims", claims_path),
+            *[
+                (f"artifacts[{index}]", path)
+                for index, path in enumerate(resolved_references)
+            ],
+            ("staged_output", staged_path),
+            ("comparison CSV", comparison_csv),
+            ("comparison Markdown", comparison_markdown),
+        ],
+        directory_roles=[
+            ("artifact directory", artifact_dir),
+            ("comparison output directory", output_dir),
+        ],
+    )
+    return {
+        "artifact_dir": artifact_dir,
+        "artifacts": resolved_references,
+        "legacy_artifacts": set(resolved_legacy),
+        "registry": registry_path,
+        "claims": claims_path,
+        "staged_output": staged_path,
+        "comparison_csv": comparison_csv,
+        "comparison_markdown": comparison_markdown,
+    }
+
+
+def validate_artifact_sha256_manifest(
+    manifest: dict[str, Any],
+    *,
+    references: list[str],
+    resolved_references: list[Path],
+    manifest_path: Path,
+    artifact_root: Path,
+) -> dict[str, str]:
+    """Validate the canonical, complete artifact path-to-SHA binding."""
+
+    canonical_references = []
+    for index, (reference, path) in enumerate(zip(references, resolved_references)):
+        canonical = path.relative_to(artifact_root).as_posix()
+        if reference != canonical:
+            raise ArtifactRestageError(
+                f"{manifest_path}: artifacts[{index}] must be a canonical "
+                f"repo-relative path; recorded {reference!r}; canonical "
+                f"{canonical!r}"
+            )
+        canonical_references.append(canonical)
+
+    recorded = manifest.get("artifact_sha256")
+    if not isinstance(recorded, dict):
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifact_sha256 must be a path-to-SHA mapping"
+        )
+    expected_keys = set(canonical_references)
+    recorded_keys = set(recorded)
+    missing = sorted(expected_keys - recorded_keys)
+    if missing:
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifact_sha256 is missing entries for "
+            f"artifacts {missing}"
+        )
+    extra = sorted(recorded_keys - expected_keys)
+    if extra:
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifact_sha256 entries have no artifact "
+            f"files in the manifest inventory: {extra}"
+        )
+    for reference in canonical_references:
+        digest = recorded[reference]
+        if not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None:
+            raise ArtifactRestageError(
+                f"{manifest_path}: artifact_sha256[{reference!r}] must be a "
+                "lowercase SHA-256"
+            )
+    return {reference: recorded[reference] for reference in canonical_references}
+
+
+def measure_head_identity(
+    measure: dict[str, Any], head: dict[str, Any]
+) -> tuple[str, str | None, str, str]:
+    return (
+        head["obr_head"],
+        head["condition_key"],
+        head_source_table(measure, head),
+        head_external_metric(measure, head),
+    )
+
+
+def artifact_head_identity(head: dict[str, Any]) -> tuple[Any, ...]:
+    return (
+        head.get("obr_head"),
+        head.get("condition_key"),
+        head.get("source_table"),
+        head.get("external_metric"),
+    )
+
+
+def rederive_artifact_orientation(
+    artifact: dict[str, Any],
+    measure: dict[str, Any],
+    *,
+    path: Path,
+    claims: list[dict[str, Any]] | None = None,
+    expected_claims_sha256: str,
+    expected_registry_sha256: str,
+    claim_differences: list[dict[str, Any]] | None = None,
+    allow_missing_dataset_hashes: bool = False,
+    allow_missing_replay_fields: bool = False,
+    legacy_claim_ordinals: dict[str, int] | None = None,
+) -> dict[str, Any]:
+    """Validate and rederive one artifact from its persisted raw aggregates."""
+
+    if allow_missing_replay_fields:
+        if "registry_sha256" in artifact or "frozen_registry" in artifact:
+            raise ArtifactRestageError(
+                f"{path}: allowlisted legacy artifact must not carry partial "
+                "registry replay fields"
+            )
+        if not isinstance(legacy_claim_ordinals, dict):
+            raise ArtifactRestageError(
+                f"{path}: allowlisted legacy artifact has no manifest claim ordinals"
+            )
+    else:
+        artifact_registry_sha256 = artifact.get("registry_sha256")
+        if artifact_registry_sha256 != expected_registry_sha256:
+            raise registry_provenance_error(
+                path,
+                subject="artifact registry_sha256",
+                expected=expected_registry_sha256,
+                actual=artifact_registry_sha256,
+            )
+        if artifact.get("frozen_registry") != frozen_registry_measure(measure):
+            raise ArtifactRestageError(
+                f"{path}: frozen_registry differs from the replay measure"
+            )
+        if legacy_claim_ordinals is not None:
+            raise ArtifactRestageError(
+                f"{path}: nonlegacy artifact unexpectedly has legacy claim ordinals"
+            )
+
+    year = artifact.get("year")
+    if not isinstance(year, int) or not YEAR_MIN <= year <= YEAR_MAX:
+        raise ArtifactRestageError(f"{path}: invalid artifact year {year!r}")
+    year_computability, override_note = effective_computability(measure, year)
+    expected_override = (
+        {"computability": year_computability, "note": override_note}
+        if override_note is not None
+        else None
+    )
+    expected_identity = {
+        "measure_key": measure["measure_key"],
+        "fiscal_event": measure["fiscal_event"],
+        "obr_description": measure["obr_description"],
+        "source_table": measure["source_table"],
+        "construction": measure["construction"],
+        "computability": year_computability,
+        "computability_override": expected_override,
+        "reform": measure["pe_reform"],
+        "benchmark_class": "different_model",
+    }
+    differences = {
+        key: {"artifact": artifact.get(key), "registry": expected}
+        for key, expected in expected_identity.items()
+        if artifact.get(key) != expected
+    }
+    if differences:
+        raise ArtifactRestageError(
+            f"{path}: artifact/registry identity differs: {differences}"
+        )
+    if artifact.get("schema_version") != 1:
+        raise ArtifactRestageError(
+            f"{path}: unsupported artifact schema {artifact.get('schema_version')!r}"
+        )
+    if artifact.get("claims_sha256") != expected_claims_sha256:
+        raise claims_provenance_error(
+            path,
+            subject="artifact claims_sha256",
+            expected=expected_claims_sha256,
+            actual=artifact.get("claims_sha256"),
+        )
+    validate_artifact_dataset_hash_fields(
+        artifact,
+        path=path,
+        allow_missing=allow_missing_dataset_hashes,
+    )
+    raw_aggregates = artifact.get("raw_aggregates")
+    if not isinstance(raw_aggregates, dict):
+        raise ArtifactRestageError(f"{path}: raw_aggregates must be a mapping")
+    baseline = raw_aggregates.get("baseline_gbp")
+    reform = raw_aggregates.get("reform_gbp")
+    if not isinstance(baseline, dict) or not isinstance(reform, dict):
+        raise ArtifactRestageError(
+            f"{path}: raw baseline/reform aggregates must be mappings"
+        )
+
+    artifact_heads = artifact.get("heads")
+    if not isinstance(artifact_heads, list) or not all(
+        isinstance(head, dict) for head in artifact_heads
+    ):
+        raise ArtifactRestageError(f"{path}: heads must be a list of mappings")
+    if allow_missing_replay_fields:
+        assert legacy_claim_ordinals is not None
+        expected_ordinal_keys = {
+            str(index)
+            for index, result in enumerate(artifact_heads)
+            if isinstance(result.get("external_claim"), dict)
+        }
+        if set(legacy_claim_ordinals) != expected_ordinal_keys:
+            raise ArtifactRestageError(
+                f"{path}: manifest legacy claim ordinal heads differ: "
+                f"actual {sorted(legacy_claim_ordinals)}, "
+                f"expected {sorted(expected_ordinal_keys)}"
+            )
+    by_identity: dict[tuple[Any, ...], tuple[int, dict[str, Any]]] = {}
+    for head_index, result in enumerate(artifact_heads):
+        identity = artifact_head_identity(result)
+        if identity in by_identity:
+            raise ArtifactRestageError(f"{path}: duplicate artifact head {identity}")
+        by_identity[identity] = (head_index, result)
+    expected_identities = {
+        measure_head_identity(measure, head) for head in measure["heads"]
+    }
+    if set(by_identity) != expected_identities:
+        raise ArtifactRestageError(
+            f"{path}: artifact and registry head identities differ"
+        )
+
+    for head in measure["heads"]:
+        identity = measure_head_identity(measure, head)
+        head_index, result = by_identity[identity]
+        variables = head["pe_variables"]
+        if result.get("pe_variables") != variables:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} PE variables differ from registry"
+            )
+        if result.get("channel") != head["channel"]:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} channel differs from registry"
+            )
+        try:
+            baseline_head = {name: baseline[name] for name in variables}
+            reform_head = {name: reform[name] for name in variables}
+        except KeyError as exc:
+            raise ArtifactRestageError(
+                f"{path}: missing raw aggregate {exc.args[0]!r}"
+            ) from exc
+        if result.get("baseline_aggregates_gbp") != baseline_head:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} baseline aggregates differ"
+            )
+        if result.get("reform_aggregates_gbp") != reform_head:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} reform aggregates differ"
+            )
+        raw_delta = reform_minus_baseline(baseline, reform, variables)
+        if result.get("raw_reform_minus_baseline_gbp") != raw_delta:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} raw delta does not reconcile"
+            )
+        literal_delta, pe_value = orient_exchequer_effect(
+            raw_delta, head["channel"], measure["construction"]
+        )
+        delta_field = (
+            "reversal_delta_exchequer_gain"
+            if measure["construction"] == "reversal_on_certified_world"
+            else "forward_delta_exchequer_gain"
+        )
+        other_delta_field = (
+            "forward_delta_exchequer_gain"
+            if delta_field == "reversal_delta_exchequer_gain"
+            else "reversal_delta_exchequer_gain"
+        )
+        if other_delta_field in result:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} has the wrong construction delta field"
+            )
+        if delta_field in result:
+            if (
+                result[delta_field] != literal_delta
+                or result.get("pe_value") != pe_value
+            ):
+                raise ArtifactRestageError(
+                    f"{path}: {head['obr_head']} oriented values do not reconcile"
+                )
+        elif result.get("pe_value") != literal_delta:
+            raise ArtifactRestageError(
+                f"{path}: {head['obr_head']} legacy PE value is not the literal delta"
+            )
+        result[delta_field] = literal_delta
+        result["pe_value"] = pe_value
+        if claims is not None:
+            recorded_snapshot = result.get("external_claim")
+            if not isinstance(recorded_snapshot, dict):
+                raise ArtifactRestageError(
+                    f"{path}: {head['obr_head']} has no frozen source claim"
+                )
+            legacy_ordinal = None
+            if allow_missing_replay_fields:
+                assert legacy_claim_ordinals is not None
+                legacy_ordinal = legacy_claim_ordinals.get(str(head_index))
+                if legacy_ordinal is None:
+                    raise ArtifactRestageError(
+                        f"{path}: head {head_index} has no recorded legacy "
+                        "claim_ordinal"
+                    )
+            matched_claim, claim_ordinal = resolve_frozen_claim(
+                claims,
+                recorded_snapshot,
+                expected_claims_sha256=expected_claims_sha256,
+                legacy_ordinal=legacy_ordinal,
+            )
+            if allow_missing_replay_fields:
+                refreshed_snapshot = source_claim_snapshot(matched_claim)
+            else:
+                refreshed_snapshot = source_claim_snapshot(
+                    matched_claim,
+                    claims_slice_sha256=expected_claims_sha256,
+                    claim_ordinal=claim_ordinal,
+                )
+            differences = [
+                {
+                    "artifact_path": str(path),
+                    "measure_key": measure["measure_key"],
+                    "year": year,
+                    "obr_head": head["obr_head"],
+                    **difference,
+                }
+                for difference in frozen_claim_differences(
+                    recorded_snapshot, refreshed_snapshot
+                )
+            ]
+            if differences:
+                if claim_differences is None:
+                    raise ArtifactRestageError(
+                        f"{path}: frozen/claims fields differ: "
+                        + "; ".join(
+                            format_frozen_claim_difference(difference)
+                            for difference in differences
+                        )
+                    )
+                claim_differences.extend(differences)
+            else:
+                registry_claim = resolve_claim(claims, measure, head, year)
+                if registry_claim is not matched_claim:
+                    raise ArtifactRestageError(
+                        f"{path}: {head['obr_head']} frozen claim descriptor "
+                        "does not identify the registry-mapped current claim"
+                    )
+    artifact["notes"] = measure["notes"]
+    return artifact
+
+
+def annotations_for(
+    measure: dict[str, Any],
+    head: dict[str, Any],
+    year: int,
+    claim: dict[str, Any],
+) -> list[str]:
+    variables = " + ".join(head["pe_variables"])
+    sign = "+Δtax" if head["channel"] == "tax" else "−Δspending"
+    construction = (
+        "PE: static microsimulation on the certified world; reversal re-oriented "
+        "to the announced measure; "
+        f"PE calendar year {year} proxies FY {fy_label(year)}. "
+        "measure Δ = −(reversal − baseline)."
+        if measure["construction"] == "reversal_on_certified_world"
+        else (
+            "PE: static microsimulation on the certified world; forward change "
+            f"from the certified baseline; PE calendar year {year} proxies FY "
+            f"{fy_label(year)}. "
+            "measure Δ = +(reform − baseline)."
+        )
+    )
+    notes = [
+        source_facts_annotation(claim),
+        construction,
+        (
+            f"Head mapping: {head['obr_head']} = {variables}; "
+            f"positive gain to the Exchequer = {sign}."
+        ),
+    ]
+    year_computability, override_note = effective_computability(measure, year)
+    if year_computability == "partial":
+        override_annotation = (
+            f" Per-year computability override: {override_note}."
+            if override_note is not None
+            else ""
+        )
+        notes.append(
+            "Partial construction: "
+            + measure["notes"]
+            + (
+                " Unmapped OBR heads: "
+                + ", ".join(measure.get("unmapped_obr_heads", []))
+                + "."
+                if measure.get("unmapped_obr_heads")
+                else ""
+            )
+            + override_annotation
+        )
+    return notes
+
+
+def build_artifact(
+    *,
+    measure: dict[str, Any],
+    year: int,
+    baseline: dict[str, Any],
+    reform: dict[str, Any],
+    output_path: Path,
+    computed_at: str,
+    run_id: str,
+    claims: list[dict[str, Any]] | None,
+    claims_sha256: str,
+    registry_sha256: str,
+) -> dict[str, Any]:
+    baseline_bundle = baseline["policyengine_bundle"]
+    reform_bundle = reform["policyengine_bundle"]
+    if baseline_bundle != reform_bundle:
+        raise RuntimeError(
+            f"{measure['measure_key']} {year}: baseline/reform bundles differ"
+        )
+
+    heads: list[dict[str, Any]] = []
+    for head in measure["heads"]:
+        variables = head["pe_variables"]
+        raw_delta = reform_minus_baseline(
+            baseline["aggregates_gbp"], reform["aggregates_gbp"], variables
+        )
+        literal_delta, pe_value = orient_exchequer_effect(
+            raw_delta, head["channel"], measure["construction"]
+        )
+        if not math.isfinite(literal_delta) or not math.isfinite(pe_value):
+            raise RuntimeError(
+                f"{measure['measure_key']} {year} {head['obr_head']}: "
+                "non-finite PE value"
+            )
+        matched_claim = (
+            resolve_claim(claims, measure, head, year) if claims is not None else None
+        )
+        frozen_claim = None
+        if matched_claim is not None:
+            assert claims is not None
+            frozen_claim = source_claim_snapshot(
+                matched_claim,
+                claims_slice_sha256=claims_sha256,
+                claim_ordinal=claim_ordinal_for(claims, matched_claim),
+            )
+        construction_delta_field = (
+            "reversal_delta_exchequer_gain"
+            if measure["construction"] == "reversal_on_certified_world"
+            else "forward_delta_exchequer_gain"
+        )
+        heads.append(
+            {
+                "obr_head": head["obr_head"],
+                "condition_key": head["condition_key"],
+                "source_table": head_source_table(measure, head),
+                "external_metric": head_external_metric(measure, head),
+                "channel": head["channel"],
+                "pe_variables": variables,
+                "baseline_aggregates_gbp": {
+                    name: baseline["aggregates_gbp"][name] for name in variables
+                },
+                "reform_aggregates_gbp": {
+                    name: reform["aggregates_gbp"][name] for name in variables
+                },
+                "raw_reform_minus_baseline_gbp": raw_delta,
+                construction_delta_field: literal_delta,
+                "pe_value": pe_value,
+                "sign_convention": "positive_gain_to_exchequer",
+                "external_claim": frozen_claim,
+            }
+        )
+    year_computability, override_note = effective_computability(measure, year)
+    artifact = {
+        "schema_version": 1,
+        "measure_key": measure["measure_key"],
+        "fiscal_event": measure["fiscal_event"],
+        "obr_description": measure["obr_description"],
+        "source_table": measure["source_table"],
+        "year": year,
+        "fy": fy_label(year),
+        "calendar_year_proxy": f"PE calendar year {year} proxies FY {fy_label(year)}.",
+        "engine_version": package_version("policyengine-uk"),
+        "policyengine_version": package_version("policyengine"),
+        "data_bundle": data_bundle_id(baseline_bundle),
+        "policyengine_bundles": {
+            "baseline": baseline_bundle,
+            "reform": reform_bundle,
+        },
+        "reform": measure["pe_reform"],
+        "construction": measure["construction"],
+        "computability": year_computability,
+        "benchmark_class": "different_model",
+        "run_id": run_id,
+        "claims_sha256": claims_sha256,
+        "registry_sha256": registry_sha256,
+        "frozen_registry": frozen_registry_measure(measure),
+        "raw_aggregates": {
+            "baseline_gbp": baseline["aggregates_gbp"],
+            "reform_gbp": reform["aggregates_gbp"],
+        },
+        "variable_metadata": baseline["variable_metadata"],
+        "heads": heads,
+        "performance": {
+            "baseline": baseline["performance"],
+            "reform": reform["performance"],
+        },
+        "computed_at": computed_at,
+        "artifact": relative_to_root(output_path),
+        "notes": measure["notes"],
+    }
+    artifact.update(simulation_dataset_hash_fields(baseline, reform, run_id=run_id))
+    if override_note is not None:
+        artifact["computability_override"] = {
+            "computability": year_computability,
+            "note": override_note,
+        }
+    return artifact
+
+
+def stage_artifact_rows(
+    artifact: dict[str, Any],
+    measure: dict[str, Any],
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    artifact_heads = {artifact_head_identity(head): head for head in artifact["heads"]}
+    for head in measure["heads"]:
+        result = artifact_heads[measure_head_identity(measure, head)]
+        claim = result["external_claim"]
+        if claim is None:
+            continue
+        artifact_ref = artifact["artifact"]
+        row = {
+            "measure_key": measure["measure_key"],
+            "obr_description": measure["obr_description"],
+            "source_table": result["source_table"],
+            "benchmark_class": "different_model",
+            "row_kind": "total" if head["condition_key"] is None else "head",
+            "engine_version": artifact["engine_version"],
+            "data_bundle": artifact["data_bundle"],
+            "pe_value": result["pe_value"],
+            "status": "constructed",
+            "pe_construction": (
+                f"{measure['construction']} with plain parameter dictionary; "
+                f"raw aggregates in {artifact_ref}"
+            ),
+            "computed_at": artifact["computed_at"],
+            "run_id": artifact["run_id"],
+            "artifact": artifact_ref,
+            **claim_source_facts(claim),
+            "annotations": annotations_for(measure, head, artifact["year"], claim),
+            "external_claim_match": external_claim_match(claim),
+        }
+        if row["status"] not in STAGED_STATUSES:
+            raise RuntimeError(f"unexpected staged status {row['status']}")
+        rows.append(row)
+    return rows
+
+
+def stage_not_computed_rows(
+    *,
+    measure: dict[str, Any],
+    years: list[int],
+    claims: list[dict[str, Any]],
+    run_id: str,
+    computed_at: str,
+    release_bundle: dict[str, Any],
+    engine_version: str,
+) -> list[dict[str, Any]]:
+    """Keep explicitly selected null-reform measures visible."""
+
+    rows: list[dict[str, Any]] = []
+    for year in years:
+        # The harvested scorecard window, not direct-policy start_fy, controls
+        # visibility. Pre-effective zero and anticipatory OBR rows are evidence.
+        hits = _source_candidates(claims, measure, year)
+        for claim in hits:
+            condition = claim["conditions"]
+            head = (
+                condition.get("tax_head") or condition.get("spending_head") or "Total"
+            )
+            rows.append(
+                {
+                    "measure_key": measure["measure_key"],
+                    "obr_description": measure["obr_description"],
+                    "source_table": claim["source_table"],
+                    "benchmark_class": "different_model",
+                    "row_kind": "total" if head == "Total" else "head",
+                    "engine_version": engine_version,
+                    "data_bundle": data_bundle_id(release_bundle),
+                    "pe_value": None,
+                    "status": "not_computed",
+                    "pe_construction": measure["notes"],
+                    "computed_at": computed_at,
+                    "run_id": run_id,
+                    **claim_source_facts(claim),
+                    "annotations": [
+                        source_facts_annotation(claim),
+                        (
+                            "No PE value: this registry entry is not "
+                            "expressible as a supported plain parameter reform."
+                        ),
+                        (
+                            "PE: no microsimulation constructed; the registry "
+                            "construction is a reversal on the certified world."
+                            if measure["construction"] == "reversal_on_certified_world"
+                            else (
+                                "PE: no microsimulation constructed; the "
+                                "registry construction is a forward change "
+                                "from the certified baseline."
+                            )
+                        ),
+                        f"PE calendar year {year} would proxy OBR FY {fy_label(year)}.",
+                        (
+                            f"Head mapping unavailable for {head}; "
+                            "no aggregate is substituted."
+                        ),
+                    ],
+                    "external_claim_match": external_claim_match(claim),
+                }
+            )
+    return rows
+
+
+PA_SMOKE_MEASURE = {
+    "measure_key": "diagnostic__personal_allowance_plus_500",
+    "fiscal_event": "Engine-path diagnostic",
+    "obr_description": "Personal allowance £12,570 to £13,070 diagnostic",
+    "source_table": "Not an OBR claim",
+    "external_metric": "revenue_change",
+    "start_fy": 2026,
+    "computability": "expressible",
+    "construction": "forward_from_baseline",
+    "pe_reform": {
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+            "2026-01-01.2026-12-31": 13070
+        }
+    },
+    "heads": [
+        {
+            "obr_head": "Income tax",
+            "condition_key": None,
+            "pe_variables": ["income_tax"],
+            "channel": "tax",
+        }
+    ],
+    "unmapped_obr_heads": [],
+    "notes": (
+        "Requested smoke diagnostic only: a £500 PA increase in calendar 2026. "
+        "It is not staged as an OBR comparison and is not the full Table 3.19 "
+        "counterfactual."
+    ),
+}
+
+
+def legacy_diagnostic_measure(
+    artifact: dict[str, Any], *, path: Path
+) -> dict[str, Any]:
+    """Recover the legacy diagnostic definition only from its saved artifact."""
+
+    artifact_heads = artifact.get("heads")
+    if not isinstance(artifact_heads, list) or not artifact_heads:
+        raise ArtifactRestageError(f"{path}: legacy diagnostic has no saved heads")
+    heads: list[dict[str, Any]] = []
+    for index, result in enumerate(artifact_heads):
+        if not isinstance(result, dict):
+            raise ArtifactRestageError(
+                f"{path}: legacy diagnostic head {index} is not a mapping"
+            )
+        heads.append(
+            {
+                "obr_head": result.get("obr_head"),
+                "condition_key": result.get("condition_key"),
+                "source_table": result.get("source_table"),
+                "external_metric": result.get("external_metric"),
+                "pe_variables": copy.deepcopy(result.get("pe_variables")),
+                "channel": result.get("channel"),
+            }
+        )
+    measure = {
+        "measure_key": artifact.get("measure_key"),
+        "fiscal_event": artifact.get("fiscal_event"),
+        "obr_description": artifact.get("obr_description"),
+        "source_table": artifact.get("source_table"),
+        "external_metric": heads[0]["external_metric"],
+        "start_fy": artifact.get("year"),
+        "computability": artifact.get("computability"),
+        "computability_overrides": {},
+        "construction": artifact.get("construction"),
+        "pe_reform": copy.deepcopy(artifact.get("reform")),
+        "heads": heads,
+        "unmapped_obr_heads": [],
+        "notes": artifact.get("notes"),
+    }
+    return frozen_registry_measure(measure)
+
+
+def validated_frozen_registry_measure(
+    snapshot: Any,
+    live_measure: dict[str, Any],
+    *,
+    path: Path,
+) -> dict[str, Any]:
+    """Validate a saved snapshot, then return that snapshot as replay input."""
+
+    if not isinstance(snapshot, dict):
+        raise ArtifactRestageError(f"{path}: frozen_registry must be a mapping")
+    expected = frozen_registry_measure(live_measure)
+    if snapshot != expected:
+        raise ArtifactRestageError(
+            f"{path}: frozen_registry differs from the SHA-verified registry"
+        )
+    return copy.deepcopy(snapshot)
+
+
+def validate_legacy_claim_ordinal_manifest(
+    manifest: dict[str, Any],
+    *,
+    legacy_references: list[str],
+    manifest_path: Path,
+) -> dict[str, dict[str, int]]:
+    """Validate the one-time ordinal migration for exact allowlisted artifacts."""
+
+    ordinal_map = manifest.get("legacy_claim_ordinals", {})
+    if not isinstance(ordinal_map, dict):
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy_claim_ordinals must be a mapping"
+        )
+    if not legacy_references:
+        if ordinal_map:
+            raise ArtifactRestageError(
+                f"{manifest_path}: legacy claim ordinals exist without "
+                "allowlisted artifacts"
+            )
+        return {}
+    if manifest.get("legacy_claim_ordinal_derivation") != (
+        LEGACY_CLAIM_ORDINAL_DERIVATION
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy claim ordinal derivation was not recorded"
+        )
+    if set(ordinal_map) != set(legacy_references):
+        raise ArtifactRestageError(
+            f"{manifest_path}: legacy_claim_ordinals keys must equal the exact "
+            "legacy artifact allowlist"
+        )
+    validated: dict[str, dict[str, int]] = {}
+    for reference, head_ordinals in ordinal_map.items():
+        if not isinstance(head_ordinals, dict):
+            raise ArtifactRestageError(
+                f"{manifest_path}: legacy ordinals for {reference} must be a mapping"
+            )
+        if any(
+            not isinstance(index, str)
+            or not index.isdigit()
+            or isinstance(ordinal, bool)
+            or not isinstance(ordinal, int)
+            for index, ordinal in head_ordinals.items()
+        ):
+            raise ArtifactRestageError(
+                f"{manifest_path}: invalid legacy claim ordinal for {reference}"
+            )
+        validated[reference] = dict(head_ordinals)
+    return validated
+
+
+def restage_existing_run(
+    *,
+    manifest_path: Path,
+    output_dir: Path,
+    artifact_root: Path = ROOT,
+) -> dict[str, Any]:
+    """Restage a manifest inventory using artifacts only; construct no sim."""
+
+    artifact_root = artifact_root.resolve()
+    manifest_path = _contained_path(
+        manifest_path,
+        role="manifest",
+        root=artifact_root,
+    )
+    output_dir = _contained_path(
+        output_dir,
+        role="comparison output directory",
+        root=artifact_root,
+    )
+    try:
+        manifest_payload = manifest_path.read_bytes()
+    except OSError as exc:
+        raise ArtifactRestageError(
+            f"cannot read run manifest {manifest_path}: {exc}"
+        ) from exc
+    manifest = parse_json_object_payload(
+        manifest_payload,
+        path=manifest_path,
+        label="run manifest",
+    )
+    if manifest.get("schema_version") != 1:
+        raise ArtifactRestageError(
+            f"{manifest_path}: unsupported manifest schema "
+            f"{manifest.get('schema_version')!r}"
+        )
+    staged = manifest.get("staged")
+    if staged is False:
+        raise ArtifactRestageError(
+            f"{manifest_path}: non-replayable: run recorded with --no-stage"
+        )
+    if staged is not True:
+        raise ArtifactRestageError(
+            f"{manifest_path}: staged must be an explicit boolean"
+        )
+    run_id = manifest.get("run_id")
+    if not isinstance(run_id, str) or not run_id:
+        raise ArtifactRestageError(f"{manifest_path}: run_id must be non-empty text")
+    path_plan = build_restage_path_plan(
+        manifest,
+        manifest_path=manifest_path,
+        output_dir=output_dir,
+        artifact_root=artifact_root,
+    )
+    references = manifest["artifacts"]
+    resolved_references = path_plan["artifacts"]
+    recorded_artifact_sha256 = validate_artifact_sha256_manifest(
+        manifest,
+        references=references,
+        resolved_references=resolved_references,
+        manifest_path=manifest_path,
+        artifact_root=artifact_root,
+    )
+    resolved_legacy_paths = path_plan["legacy_artifacts"]
+    registry_path = path_plan["registry"]
+    claims_path = path_plan["claims"]
+    staged_path = path_plan["staged_output"]
+    recorded_registry_sha256 = manifest.get("registry_sha256")
+    if (
+        not isinstance(recorded_registry_sha256, str)
+        or re.fullmatch(r"[0-9a-f]{64}", recorded_registry_sha256) is None
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: registry_sha256 must be a lowercase SHA-256"
+        )
+    recorded_claims_sha256 = manifest.get("claims_sha256")
+    if (
+        not isinstance(recorded_claims_sha256, str)
+        or re.fullmatch(r"[0-9a-f]{64}", recorded_claims_sha256) is None
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: claims_sha256 must be a lowercase SHA-256"
+        )
+    recorded_staged_sha256 = manifest.get("staged_sha256")
+    if (
+        not isinstance(recorded_staged_sha256, str)
+        or re.fullmatch(r"[0-9a-f]{64}", recorded_staged_sha256) is None
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: staged_sha256 must be a lowercase SHA-256"
+        )
+    registry_payload = registry_path.read_bytes()
+    current_registry_sha256 = hashlib.sha256(registry_payload).hexdigest()
+    if current_registry_sha256 != recorded_registry_sha256:
+        raise registry_provenance_error(
+            registry_path,
+            subject="registry SHA-256",
+            expected=recorded_registry_sha256,
+            actual=current_registry_sha256,
+        )
+    claims_payload = claims_path.read_bytes()
+    current_claims_sha256 = hashlib.sha256(claims_payload).hexdigest()
+    if current_claims_sha256 != recorded_claims_sha256:
+        raise claims_provenance_error(
+            claims_path,
+            subject="claims SHA-256",
+            expected=recorded_claims_sha256,
+            actual=current_claims_sha256,
+        )
+    spec = parse_registry_payload(registry_payload, registry_path)
+    claims = parse_claims_payload(claims_payload, claims_path)
+    validate_registry(spec, claims=claims)
+    live_registry = {measure["measure_key"]: measure for measure in spec["measures"]}
+
+    selected = manifest.get("selected_measures")
+    if (
+        not isinstance(selected, list)
+        or not selected
+        or not all(isinstance(key, str) for key in selected)
+        or len(set(selected)) != len(selected)
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: selected_measures must be unique measure keys"
+        )
+    unknown_selected = set(selected) - set(live_registry)
+    if unknown_selected:
+        raise ArtifactRestageError(
+            f"{manifest_path}: selected measures are absent from registry: "
+            f"{sorted(unknown_selected)}"
+        )
+    years = manifest.get("years")
+    if (
+        not isinstance(years, list)
+        or not years
+        or any(
+            isinstance(year, bool)
+            or not isinstance(year, int)
+            or not YEAR_MIN <= year <= YEAR_MAX
+            for year in years
+        )
+        or years != sorted(set(years))
+    ):
+        raise ArtifactRestageError(
+            f"{manifest_path}: years must be unique sorted proxy years"
+        )
+    run_started_at = manifest.get("started_at")
+    if not isinstance(run_started_at, str) or not run_started_at:
+        raise ArtifactRestageError(
+            f"{manifest_path}: started_at must be non-empty text"
+        )
+    engine_version = manifest.get("engine_version")
+    if not isinstance(engine_version, str) or not engine_version:
+        raise ArtifactRestageError(
+            f"{manifest_path}: engine_version must be non-empty text"
+        )
+    cache_preflight = manifest.get("certified_cache_preflight")
+    release_bundle = (
+        cache_preflight.get("release_bundle")
+        if isinstance(cache_preflight, dict)
+        else None
+    )
+    if not isinstance(release_bundle, dict):
+        raise ArtifactRestageError(
+            f"{manifest_path}: certified release bundle is missing"
+        )
+    try:
+        data_bundle_id(release_bundle)
+    except RuntimeError as exc:
+        raise ArtifactRestageError(
+            f"{manifest_path}: invalid certified release bundle: {exc}"
+        ) from exc
+
+    legacy_references = manifest.get("legacy_artifacts_without_dataset_hashes", [])
+    legacy_claim_ordinals = validate_legacy_claim_ordinal_manifest(
+        manifest,
+        legacy_references=legacy_references,
+        manifest_path=manifest_path,
+    )
+    artifact_records: list[
+        tuple[
+            str,
+            Path,
+            dict[str, Any],
+            dict[str, Any],
+            bool,
+            dict[str, int] | None,
+        ]
+    ] = []
+    replay_registry: dict[str, dict[str, Any]] = {}
+    regular_artifact_pairs: set[tuple[str, int]] = set()
+    diagnostic_artifact_pairs: set[tuple[str, int]] = set()
+    diagnostic_artifacts = 0
+    for reference, path in zip(references, resolved_references):
+        artifact_payload = verified_artifact_payload(
+            path,
+            recorded_artifact_sha256[reference],
+        )
+        artifact = parse_json_object_payload(
+            artifact_payload,
+            path=path,
+            label="run artifact",
+        )
+        self_reference = artifact.get("artifact")
+        self_path = resolve_recorded_path(
+            self_reference,
+            artifact_root,
+            role=f"artifact self-reference in {path}",
+        )
+        if self_path != path:
+            raise ArtifactRestageError(
+                f"{path}: self-reference {self_reference!r} points elsewhere"
+            )
+        if artifact.get("run_id") != run_id:
+            raise ArtifactRestageError(f"{path}: run_id differs from manifest")
+        key = artifact.get("measure_key")
+        diagnostic_only = artifact.get("diagnostic_only")
+        is_legacy = path in resolved_legacy_paths
+        if diagnostic_only is True:
+            if key != PA_SMOKE_MEASURE["measure_key"]:
+                raise ArtifactRestageError(
+                    f"{path}: unsupported diagnostic measure {key!r}"
+                )
+            if is_legacy:
+                measure = legacy_diagnostic_measure(artifact, path=path)
+            else:
+                if artifact.get("registry_sha256") != recorded_registry_sha256:
+                    raise registry_provenance_error(
+                        path,
+                        subject="artifact registry_sha256",
+                        expected=recorded_registry_sha256,
+                        actual=artifact.get("registry_sha256"),
+                    )
+                snapshot = artifact.get("frozen_registry")
+                if not isinstance(snapshot, dict):
+                    raise ArtifactRestageError(
+                        f"{path}: frozen_registry must be a mapping"
+                    )
+                measure = copy.deepcopy(snapshot)
+            diagnostic_artifacts += 1
+            diagnostic_pair = (key, artifact.get("year"))
+            if diagnostic_pair in diagnostic_artifact_pairs:
+                raise ArtifactRestageError(
+                    f"{path}: duplicate diagnostic artifact {diagnostic_pair}"
+                )
+            diagnostic_artifact_pairs.add(diagnostic_pair)
+        elif diagnostic_only is False:
+            if key not in live_registry:
+                raise ArtifactRestageError(
+                    f"{path}: measure_key {key!r} is absent from registry"
+                )
+            if is_legacy:
+                # Exact allowlisted artifacts predate replay snapshots. Only
+                # after the registry SHA gate, freeze the verified live entry
+                # as their explicit legacy surrogate without modifying bytes.
+                measure = frozen_registry_measure(live_registry[key])
+            else:
+                if artifact.get("registry_sha256") != recorded_registry_sha256:
+                    raise registry_provenance_error(
+                        path,
+                        subject="artifact registry_sha256",
+                        expected=recorded_registry_sha256,
+                        actual=artifact.get("registry_sha256"),
+                    )
+                measure = validated_frozen_registry_measure(
+                    artifact.get("frozen_registry"),
+                    live_registry[key],
+                    path=path,
+                )
+            regular_pair = (key, artifact.get("year"))
+            if regular_pair in regular_artifact_pairs:
+                raise ArtifactRestageError(
+                    f"{path}: duplicate regular artifact {regular_pair}"
+                )
+            regular_artifact_pairs.add(regular_pair)
+            previous_measure = replay_registry.get(key)
+            if previous_measure is not None and previous_measure != measure:
+                raise ArtifactRestageError(
+                    f"{path}: frozen_registry differs across measure artifacts"
+                )
+            replay_registry[key] = measure
+        else:
+            raise ArtifactRestageError(
+                f"{path}: diagnostic_only must be an explicit boolean"
+            )
+        artifact_records.append(
+            (
+                reference,
+                path,
+                artifact,
+                measure,
+                diagnostic_only,
+                legacy_claim_ordinals.get(reference) if is_legacy else None,
+            )
+        )
+
+    artifactless_registry = manifest.get("artifactless_frozen_registry")
+    if not isinstance(artifactless_registry, dict):
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifactless_frozen_registry must be a mapping"
+        )
+    expected_artifactless = set(selected) - set(replay_registry)
+    if set(artifactless_registry) != expected_artifactless:
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifactless_frozen_registry keys differ: "
+            f"actual {sorted(artifactless_registry)}, "
+            f"expected {sorted(expected_artifactless)}"
+        )
+    for key, snapshot in artifactless_registry.items():
+        replay_registry[key] = validated_frozen_registry_measure(
+            snapshot,
+            live_registry[key],
+            path=manifest_path,
+        )
+    selected_measures = [replay_registry[key] for key in selected]
+
+    expected_regular_pairs: set[tuple[str, int]] = set()
+    for measure in selected_measures:
+        if measure["pe_reform"] is None:
+            continue
+        for year in years:
+            mapped_claims = [
+                resolve_claim(claims, measure, head, year) for head in measure["heads"]
+            ]
+            if any(claim is not None for claim in mapped_claims):
+                expected_regular_pairs.add((measure["measure_key"], year))
+
+    replacements: list[tuple[str, Path, dict[str, Any], dict[str, Any], bool]] = []
+    claim_differences: list[dict[str, Any]] = []
+    for (
+        reference,
+        path,
+        artifact,
+        measure,
+        diagnostic_only,
+        legacy_ordinals,
+    ) in artifact_records:
+        is_legacy = path in resolved_legacy_paths
+        refreshed = rederive_artifact_orientation(
+            artifact,
+            measure,
+            path=path,
+            claims=None if diagnostic_only else claims,
+            expected_claims_sha256=recorded_claims_sha256,
+            expected_registry_sha256=recorded_registry_sha256,
+            claim_differences=claim_differences,
+            allow_missing_dataset_hashes=is_legacy,
+            allow_missing_replay_fields=is_legacy,
+            legacy_claim_ordinals=legacy_ordinals,
+        )
+        replacements.append((reference, path, refreshed, measure, diagnostic_only))
+
+    if claim_differences:
+        details: list[str] = []
+        for difference in claim_differences:
+            details.append(
+                f"{difference['measure_key']} {difference['year']} "
+                f"{difference['obr_head']} "
+                + format_frozen_claim_difference(difference)
+            )
+        raise ArtifactRestageError("frozen/claims fields differ: " + "; ".join(details))
+    if regular_artifact_pairs != expected_regular_pairs:
+        raise ArtifactRestageError(
+            f"{manifest_path}: regular artifact inventory differs from selected "
+            f"source-backed measure-years: actual "
+            f"{sorted(regular_artifact_pairs)}, expected "
+            f"{sorted(expected_regular_pairs)}"
+        )
+    expected_diagnostic_pairs = (
+        {(PA_SMOKE_MEASURE["measure_key"], 2026)}
+        if manifest.get("pa_smoke_probe") is True and 2026 in years
+        else set()
+    )
+    if diagnostic_artifact_pairs != expected_diagnostic_pairs:
+        raise ArtifactRestageError(
+            f"{manifest_path}: diagnostic artifact inventory differs: actual "
+            f"{sorted(diagnostic_artifact_pairs)}, expected "
+            f"{sorted(expected_diagnostic_pairs)}"
+        )
+    prepared_artifacts = []
+    intended_artifact_sha256: dict[str, str] = {}
+    for reference, path, artifact, measure, diagnostic_only in replacements:
+        payload = canonical_json_bytes(artifact)
+        digest = hashlib.sha256(payload).hexdigest()
+        intended_artifact_sha256[reference] = digest
+        prepared_artifacts.append(
+            (
+                reference,
+                path,
+                artifact,
+                measure,
+                diagnostic_only,
+                payload,
+                digest,
+            )
+        )
+    prewrite_registry_sha256 = sha256_file(registry_path)
+    if prewrite_registry_sha256 != recorded_registry_sha256:
+        raise registry_provenance_error(
+            registry_path,
+            subject="registry SHA-256",
+            expected=recorded_registry_sha256,
+            actual=prewrite_registry_sha256,
+        )
+    prewrite_claims_sha256 = sha256_file(claims_path)
+    if prewrite_claims_sha256 != recorded_claims_sha256:
+        raise claims_provenance_error(
+            claims_path,
+            subject="claims SHA-256",
+            expected=recorded_claims_sha256,
+            actual=prewrite_claims_sha256,
+        )
+    if intended_artifact_sha256 != recorded_artifact_sha256:
+        raise ArtifactRestageError(
+            f"{manifest_path}: canonical replay artifact digests differ from "
+            "the manifest inventory"
+        )
+
+    staged_rows: list[dict[str, Any]] = []
+    for measure in selected_measures:
+        if measure["pe_reform"] is None:
+            staged_rows.extend(
+                stage_not_computed_rows(
+                    measure=measure,
+                    years=years,
+                    claims=claims,
+                    run_id=run_id,
+                    computed_at=run_started_at,
+                    release_bundle=release_bundle,
+                    engine_version=engine_version,
+                )
+            )
+    for _, _, artifact, measure, diagnostic_only, _, _ in prepared_artifacts:
+        if not diagnostic_only:
+            staged_rows.extend(stage_artifact_rows(artifact, measure))
+
+    poststage_registry_sha256 = sha256_file(registry_path)
+    if poststage_registry_sha256 != recorded_registry_sha256:
+        raise registry_provenance_error(
+            registry_path,
+            subject="registry SHA-256",
+            expected=recorded_registry_sha256,
+            actual=poststage_registry_sha256,
+        )
+    poststage_claims_sha256 = sha256_file(claims_path)
+    if poststage_claims_sha256 != recorded_claims_sha256:
+        raise claims_provenance_error(
+            claims_path,
+            subject="claims SHA-256",
+            expected=recorded_claims_sha256,
+            actual=poststage_claims_sha256,
+        )
+    expected_staged_rows = manifest.get("staged_rows")
+    if expected_staged_rows != len(staged_rows):
+        raise ArtifactRestageError(
+            f"{manifest_path}: artifact-only restage produced {len(staged_rows)} "
+            f"rows; manifest records {expected_staged_rows!r}"
+        )
+    staged_payload = canonical_jsonl_bytes(staged_rows)
+    intended_staged_sha256 = hashlib.sha256(staged_payload).hexdigest()
+    if intended_staged_sha256 != recorded_staged_sha256:
+        raise ArtifactRestageError(
+            f"{manifest_path}: staged_sha256 differs from canonical artifact-only "
+            f"restage; expected {recorded_staged_sha256}; "
+            f"actual {intended_staged_sha256}"
+        )
+
+    if __package__:
+        from pipeline import compare_uk_obr_costings as comparison
+    else:
+        import compare_uk_obr_costings as comparison
+
+    prepared_comparison = comparison.prepare_comparison_outputs(
+        manifest=manifest,
+        staged_rows=staged_rows,
+        claims=claims,
+        registry=replay_registry,
+        artifacts_by_reference={
+            reference: artifact
+            for reference, _, artifact, _, _, _, _ in prepared_artifacts
+        },
+    )
+    comparison.bind_comparison_output_digests(manifest, prepared_comparison)
+    updated_manifest_payload = retained_manifest_bytes(manifest)
+
+    manifest_path.unlink(missing_ok=True)
+    for _, path, _, _, _, payload, _ in prepared_artifacts:
+        write_artifact_payload(path, payload)
+    verify_written_artifacts(
+        (path, digest) for _, path, _, _, _, _, digest in prepared_artifacts
+    )
+    atomic_write_bytes(staged_path, staged_payload)
+    verify_written_staged_output(staged_path, intended_staged_sha256)
+
+    comparison.publish_comparison_outputs(
+        prepared_comparison,
+        output_dir=output_dir,
+    )
+    final_registry_sha256 = sha256_file(registry_path)
+    if final_registry_sha256 != recorded_registry_sha256:
+        raise registry_provenance_error(
+            registry_path,
+            subject="registry SHA-256",
+            expected=recorded_registry_sha256,
+            actual=final_registry_sha256,
+        )
+    final_claims_sha256 = sha256_file(claims_path)
+    if final_claims_sha256 != recorded_claims_sha256:
+        raise claims_provenance_error(
+            claims_path,
+            subject="claims SHA-256",
+            expected=recorded_claims_sha256,
+            actual=final_claims_sha256,
+        )
+    verify_written_staged_output(staged_path, intended_staged_sha256)
+    verify_written_artifacts(
+        (path, digest) for _, path, _, _, _, _, digest in prepared_artifacts
+    )
+    comparison.verify_comparison_outputs(
+        output_dir,
+        prepared_comparison.sha256,
+    )
+    atomic_write_bytes(manifest_path, updated_manifest_payload)
+    return {
+        "artifacts": len(replacements),
+        "diagnostic_artifacts": diagnostic_artifacts,
+        "staged_rows": len(staged_rows),
+        "comparison_rows": len(prepared_comparison.rows),
+        "staged_output": staged_path,
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    shared = parser.add_argument_group("shared mode options")
+    shared.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
+    shared.add_argument(
+        "--restage",
+        action="store_true",
+        help="Select manifest replay mode; otherwise run normal compute mode",
+    )
+
+    normal = parser.add_argument_group("normal compute mode options")
+    normal.add_argument(
+        "--registry",
+        type=Path,
+        help=f"Registry path (normal default: {DEFAULT_REGISTRY})",
+    )
+    normal.add_argument(
+        "--claims",
+        type=Path,
+        help=f"Claims slice (normal default: {DEFAULT_CLAIMS})",
+    )
+    normal.add_argument(
+        "--staged-output",
+        type=Path,
+        help=f"Staged JSONL (normal default: {DEFAULT_STAGED_OUTPUT})",
+    )
+    normal.add_argument("--measures", nargs="*", help="Exact keys; commas accepted")
+    normal.add_argument(
+        "--years", nargs="*", help="Calendar proxy years; commas accepted"
+    )
+    normal.add_argument("--limit", type=int, help="Maximum selected measures")
+    normal.add_argument(
+        "--dry-run", action="store_true", help="Validate only; construct no sim"
+    )
+    normal.add_argument(
+        "--no-stage", action="store_true", help="Write artifacts but no JSONL"
+    )
+    normal.add_argument(
+        "--pa-smoke-probe",
+        action="store_true",
+        help="Also run the non-OBR £12,570→£13,070 2026 diagnostic",
+    )
+    normal.add_argument(
+        "--run-id",
+        help=f"Run identifier (normal default: campaign-{RUN_ID_DATE}-obr-costings)",
+    )
+
+    restage = parser.add_argument_group("restage mode options")
+    restage.add_argument(
+        "--manifest",
+        type=Path,
+        help="Existing run manifest (default: OUTPUT_DIR/RUN_MANIFEST.json)",
+    )
+    restage.add_argument(
+        "--artifact-root",
+        type=Path,
+        help=f"Base for recorded paths (restage default: {ROOT})",
+    )
+    args = parser.parse_args(argv)
+
+    if args.restage:
+        incompatible = [
+            flag
+            for flag, enabled in (
+                ("--measures", args.measures is not None),
+                ("--years", args.years is not None),
+                ("--limit", args.limit is not None),
+                ("--dry-run", args.dry_run),
+                ("--no-stage", args.no_stage),
+                ("--pa-smoke-probe", args.pa_smoke_probe),
+                ("--registry", args.registry is not None),
+                ("--claims", args.claims is not None),
+                ("--staged-output", args.staged_output is not None),
+                ("--run-id", args.run_id is not None),
+            )
+            if enabled
+        ]
+        if incompatible:
+            parser.error("--restage cannot be combined with " + ", ".join(incompatible))
+        manifest_path = args.manifest or args.output_dir / "RUN_MANIFEST.json"
+        summary = restage_existing_run(
+            manifest_path=manifest_path,
+            output_dir=args.output_dir,
+            artifact_root=args.artifact_root or ROOT,
+        )
+        print(
+            f"restaged {summary['artifacts']} existing artifacts "
+            f"({summary['diagnostic_artifacts']} diagnostic), "
+            f"{summary['staged_rows']} staged rows, and "
+            f"{summary['comparison_rows']} comparison rows; "
+            "managed simulations constructed: 0",
+            flush=True,
+        )
+        return 0
+
+    incompatible = [
+        flag
+        for flag, enabled in (
+            ("--manifest", args.manifest is not None),
+            ("--artifact-root", args.artifact_root is not None),
+        )
+        if enabled
+    ]
+    if incompatible:
+        parser.error(
+            "normal compute mode cannot be combined with " + ", ".join(incompatible)
+        )
+    args.registry = args.registry or DEFAULT_REGISTRY
+    args.claims = args.claims or DEFAULT_CLAIMS
+    args.staged_output = args.staged_output or DEFAULT_STAGED_OUTPUT
+    args.run_id = args.run_id or f"campaign-{RUN_ID_DATE}-obr-costings"
+
+    configure_offline()
+    spec, registry_sha256 = load_registry_with_sha256(args.registry)
+    claims, claims_sha256 = load_claims_with_sha256(args.claims)
+    try:
+        from policyengine_uk import CountryTaxBenefitSystem
+    except ImportError as exc:
+        raise SystemExit(f"policyengine-uk is required: {exc}") from exc
+    tax_benefit_system = CountryTaxBenefitSystem()
+    validation = validate_registry(
+        spec, tax_benefit_system=tax_benefit_system, claims=claims
+    )
+    selected = select_measures(spec["measures"], args.measures, args.limit)
+    years = select_years(args.years)
+    print(
+        json.dumps(
+            {
+                "validation": validation,
+                "selected_measures": [m["measure_key"] for m in selected],
+                "years": years,
+                "offline": {
+                    key: os.environ.get(key)
+                    for key in (
+                        "HF_HUB_OFFLINE",
+                        "TRANSFORMERS_OFFLINE",
+                        "HF_DATASETS_OFFLINE",
+                    )
+                },
+            },
+            indent=2,
+        ),
+        flush=True,
+    )
+    if args.dry_run:
+        print("dry-run complete: no managed microsimulation constructed", flush=True)
+        return 0
+
+    registry_reference = recorded_repo_relative_path(
+        args.registry,
+        role="--registry",
+    )
+    claims_reference = recorded_repo_relative_path(
+        args.claims,
+        role="--claims",
+    )
+    recorded_repo_relative_path(
+        args.output_dir,
+        role="--output-dir",
+    )
+    args.registry = args.registry.resolve()
+    args.claims = args.claims.resolve()
+    args.output_dir = args.output_dir.resolve()
+    manifest_output_path = args.output_dir / "RUN_MANIFEST.json"
+    recorded_repo_relative_path(
+        manifest_output_path,
+        role="run manifest",
+    )
+    staged_reference = None
+    if not args.no_stage:
+        staged_reference = recorded_repo_relative_path(
+            args.staged_output,
+            role="--staged-output",
+        )
+        args.staged_output = args.staged_output.resolve()
+
+    candidate_artifact_paths = [
+        artifact_path(args.output_dir, measure["measure_key"], year).resolve()
+        for measure in selected
+        if measure["pe_reform"] is not None
+        for year in years
+    ]
+    if args.pa_smoke_probe and 2026 in years:
+        candidate_artifact_paths.append(
+            artifact_path(
+                args.output_dir,
+                PA_SMOKE_MEASURE["measure_key"],
+                2026,
+            ).resolve()
+        )
+    for index, path in enumerate(candidate_artifact_paths):
+        recorded_repo_relative_path(
+            path,
+            role=f"artifact output[{index}]",
+        )
+    normal_file_roles = [
+        ("manifest", manifest_output_path.resolve()),
+        ("registry", args.registry),
+        ("claims", args.claims),
+        *[
+            (f"artifacts[{index}]", path)
+            for index, path in enumerate(candidate_artifact_paths)
+        ],
+    ]
+    if not args.no_stage:
+        normal_file_roles.extend(
+            [
+                ("staged_output", args.staged_output),
+                ("comparison CSV", args.output_dir / "COMPARISON.csv"),
+                ("comparison Markdown", args.output_dir / "COMPARISON.md"),
+            ]
+        )
+    _validate_restage_path_collisions(
+        file_roles=normal_file_roles,
+        directory_roles=[("artifact directory", args.output_dir)],
+    )
+
+    cache_preflight = preflight_certified_dataset()
+    release_bundle = cache_preflight["release_bundle"]
+    runtime_dataset_source = Path(cache_preflight["runtime_dataset_source"])
+    expected_dataset_sha256 = release_bundle["certified_data_artifact_sha256"]
+    print(
+        "certified cache preflight: "
+        f"{data_bundle_id(release_bundle)}; SHA-256 verified in "
+        f"{cache_preflight['hash_seconds']:.1f}s",
+        flush=True,
+    )
+    started_at = utc_now()
+    engine_version = package_version("policyengine-uk")
+    manifest: dict[str, Any] = {
+        "schema_version": 1,
+        "run_id": args.run_id,
+        "started_at": started_at,
+        "engine_version": engine_version,
+        "registry": registry_reference,
+        "registry_sha256": registry_sha256,
+        "claims": claims_reference,
+        "claims_sha256": claims_sha256,
+        "years": years,
+        "selected_measures": [m["measure_key"] for m in selected],
+        "pa_smoke_probe": args.pa_smoke_probe,
+        "certified_cache_preflight": cache_preflight,
+        "artifacts": [],
+        "artifact_sha256": {},
+        "legacy_artifacts_without_dataset_hashes": [],
+        "artifactless_frozen_registry": {},
+        "baseline_by_year": {},
+        "skipped": [],
+        "staged": not args.no_stage,
+    }
+
+    artifact_measure_keys: set[str] = set()
+    artifact_records: list[tuple[str, Path, dict[str, Any], dict[str, Any], bool]] = []
+
+    for year in years:
+        active: list[dict[str, Any]] = []
+        for measure in selected:
+            if measure["pe_reform"] is None:
+                continue
+            # Reform schedules can start after this year; PE then returns a
+            # zero delta. Keep that counterpart when the OBR has a source row.
+            mapped_claims = [
+                resolve_claim(claims, measure, head, year) for head in measure["heads"]
+            ]
+            if any(claim is not None for claim in mapped_claims):
+                active.append(measure)
+            else:
+                manifest["skipped"].append(
+                    {
+                        "measure_key": measure["measure_key"],
+                        "year": year,
+                        "reason": "outside harvested OBR window",
+                    }
+                )
+        include_probe = args.pa_smoke_probe and year == 2026
+        if not active and not include_probe:
+            continue
+        variables = sorted(
+            {
+                variable
+                for measure in active + ([PA_SMOKE_MEASURE] if include_probe else [])
+                for head in measure["heads"]
+                for variable in head["pe_variables"]
+            }
+        )
+        print(f"[{year}] baseline: {', '.join(variables)}", flush=True)
+        baseline = run_managed_simulation(
+            year=year,
+            variables=variables,
+            reform=None,
+            runtime_dataset_source=runtime_dataset_source,
+            expected_dataset_sha256=expected_dataset_sha256,
+        )
+        assert_managed_bundle(baseline["policyengine_bundle"], release_bundle)
+        manifest["baseline_by_year"][str(year)] = {
+            "data_bundle": data_bundle_id(baseline["policyengine_bundle"]),
+            "dataset_sha256_before": baseline["dataset_sha256_before"],
+            "dataset_sha256_after": baseline["dataset_sha256_after"],
+            "aggregates_gbp": baseline["aggregates_gbp"],
+            "performance": baseline["performance"],
+        }
+        print(
+            f"[{year}] baseline done in "
+            f"{baseline['performance']['wall_seconds']:.1f}s; "
+            f"peak RSS {baseline['performance']['peak_rss_bytes'] / 2**30:.2f} GiB",
+            flush=True,
+        )
+
+        work = active + ([PA_SMOKE_MEASURE] if include_probe else [])
+        for measure in work:
+            measure_variables = sorted(
+                {
+                    variable
+                    for head in measure["heads"]
+                    for variable in head["pe_variables"]
+                }
+            )
+            print(f"[{year}] reform {measure['measure_key']}", flush=True)
+            reform = run_managed_simulation(
+                year=year,
+                variables=measure_variables,
+                reform=measure["pe_reform"],
+                runtime_dataset_source=runtime_dataset_source,
+                expected_dataset_sha256=expected_dataset_sha256,
+            )
+            assert_managed_bundle(reform["policyengine_bundle"], release_bundle)
+            # The baseline was aggregated over a superset; narrow it only in
+            # the artifact so each run records exactly what its values use.
+            narrowed_baseline = {
+                **baseline,
+                "aggregates_gbp": {
+                    name: baseline["aggregates_gbp"][name] for name in measure_variables
+                },
+                "variable_metadata": {
+                    name: baseline["variable_metadata"][name]
+                    for name in measure_variables
+                },
+            }
+            out_path = artifact_path(args.output_dir, measure["measure_key"], year)
+            artifact_reference = recorded_repo_relative_path(
+                out_path,
+                role="artifact output",
+            )
+            computed_at = utc_now()
+            artifact = build_artifact(
+                measure=measure,
+                year=year,
+                baseline=narrowed_baseline,
+                reform=reform,
+                output_path=out_path,
+                computed_at=computed_at,
+                run_id=args.run_id,
+                claims=None if measure is PA_SMOKE_MEASURE else claims,
+                claims_sha256=claims_sha256,
+                registry_sha256=registry_sha256,
+            )
+            diagnostic_only = measure is PA_SMOKE_MEASURE
+            artifact["diagnostic_only"] = diagnostic_only
+            artifact["artifact"] = artifact_reference
+            artifact_records.append(
+                (
+                    artifact_reference,
+                    out_path,
+                    artifact,
+                    measure,
+                    diagnostic_only,
+                )
+            )
+            values = ", ".join(
+                f"{head['obr_head']}={head['pe_value'] / 1e9:+.3f}bn"
+                for head in artifact["heads"]
+            )
+            print(
+                f"[{year}] {measure['measure_key']} done in "
+                f"{reform['performance']['wall_seconds']:.1f}s; "
+                f"peak RSS {reform['performance']['peak_rss_bytes'] / 2**30:.2f} GiB; "
+                f"{values}",
+                flush=True,
+            )
+            if not diagnostic_only:
+                artifact_measure_keys.add(measure["measure_key"])
+            del reform, narrowed_baseline
+            gc.collect()
+        del baseline
+        gc.collect()
+
+    manifest["artifactless_frozen_registry"] = {
+        measure["measure_key"]: frozen_registry_measure(measure)
+        for measure in selected
+        if measure["measure_key"] not in artifact_measure_keys
+    }
+
+    prepared_artifacts = []
+    intended_artifact_sha256: dict[str, str] = {}
+    for reference, path, artifact, measure, diagnostic_only in artifact_records:
+        payload = canonical_json_bytes(artifact)
+        digest = hashlib.sha256(payload).hexdigest()
+        intended_artifact_sha256[reference] = digest
+        prepared_artifacts.append(
+            (
+                reference,
+                path,
+                artifact,
+                measure,
+                diagnostic_only,
+                payload,
+                digest,
+            )
+        )
+    manifest["artifacts"] = [
+        reference for reference, _, _, _, _, _, _ in prepared_artifacts
+    ]
+    manifest["artifact_sha256"] = intended_artifact_sha256
+
+    manifest_output_path.unlink(missing_ok=True)
+    for _, path, _, _, _, payload, _ in prepared_artifacts:
+        write_artifact_payload(path, payload)
+    verify_written_artifacts(
+        (path, digest) for _, path, _, _, _, _, digest in prepared_artifacts
+    )
+
+    staged_rows: list[dict[str, Any]] = []
+    for measure in selected:
+        if measure["pe_reform"] is None:
+            staged_rows.extend(
+                stage_not_computed_rows(
+                    measure=measure,
+                    years=years,
+                    claims=claims,
+                    run_id=args.run_id,
+                    computed_at=started_at,
+                    release_bundle=release_bundle,
+                    engine_version=engine_version,
+                )
+            )
+    for _, _, artifact, measure, diagnostic_only, _, _ in prepared_artifacts:
+        if not diagnostic_only:
+            staged_rows.extend(stage_artifact_rows(artifact, measure))
+
+    if not args.no_stage:
+        assert staged_reference is not None
+        staged_payload = canonical_jsonl_bytes(staged_rows)
+        staged_sha256 = hashlib.sha256(staged_payload).hexdigest()
+        manifest["staged_output"] = staged_reference
+        manifest["staged_rows"] = len(staged_rows)
+        manifest["staged_sha256"] = staged_sha256
+        atomic_write_bytes(args.staged_output, staged_payload)
+        verify_written_staged_output(args.staged_output, staged_sha256)
+
+        if __package__:
+            from pipeline import compare_uk_obr_costings as comparison
+        else:
+            import compare_uk_obr_costings as comparison
+
+        comparison.write_comparison_outputs_from_rows(
+            manifest=manifest,
+            staged_rows=staged_rows,
+            claims=claims,
+            registry={measure["measure_key"]: measure for measure in selected},
+            artifacts_by_reference={
+                reference: artifact
+                for reference, _, artifact, _, _, _, _ in prepared_artifacts
+            },
+            output_dir=args.output_dir,
+        )
+    manifest["completed_at"] = utc_now()
+    # Final all-input digest sweep, mirroring restage: nothing is published
+    # unless every bound input still matches its recorded digest.
+    final_registry_sha256 = sha256_file(Path(args.registry))
+    if final_registry_sha256 != registry_sha256:
+        raise registry_provenance_error(
+            Path(args.registry),
+            subject="registry SHA-256",
+            expected=registry_sha256,
+            actual=final_registry_sha256,
+        )
+    final_claims_sha256 = sha256_file(Path(args.claims))
+    if final_claims_sha256 != claims_sha256:
+        raise claims_provenance_error(
+            Path(args.claims),
+            subject="claims SHA-256",
+            expected=claims_sha256,
+            actual=final_claims_sha256,
+        )
+    verify_written_artifacts(
+        (path, digest) for _, path, _, _, _, _, digest in prepared_artifacts
+    )
+    if not args.no_stage:
+        verify_written_staged_output(args.staged_output, staged_sha256)
+        comparison.verify_comparison_outputs(
+            args.output_dir,
+            {field: manifest[field] for field, _ in comparison.COMPARISON_OUTPUTS},
+        )
+    write_json(manifest_output_path, manifest)
+    print(
+        f"wrote {len(manifest['artifacts'])} artifacts"
+        + (f" and {len(staged_rows)} staged rows" if not args.no_stage else ""),
+        flush=True,
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

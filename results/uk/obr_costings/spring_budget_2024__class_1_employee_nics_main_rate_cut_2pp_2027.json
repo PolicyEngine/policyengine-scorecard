@@ -1,0 +1,323 @@
+{
+  "artifact": "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2027.json",
+  "benchmark_class": "different_model",
+  "calendar_year_proxy": "PE calendar year 2027 proxies FY 2027-28.",
+  "claims_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
+  "computability": "partial",
+  "computed_at": "2026-08-17T03:37:50.749537+00:00",
+  "construction": "reversal_on_certified_world",
+  "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "diagnostic_only": false,
+  "engine_version": "2.89.2",
+  "fiscal_event": "Spring Budget 2024",
+  "fy": "2027-28",
+  "heads": [
+    {
+      "baseline_aggregates_gbp": {
+        "income_tax": 443671961318.895
+      },
+      "channel": "tax",
+      "condition_key": "tax_head",
+      "external_claim": {
+        "calibration_relationship": "held_out",
+        "conditions": {
+          "basis": "forecast",
+          "costing_phase": "original_scorecard",
+          "fiscal_event": "Spring Budget 2024",
+          "fy": "2027-28",
+          "geography": "UK",
+          "sign_convention": "positive_gain_to_exchequer",
+          "tax_head": "Income tax"
+        },
+        "metric": "revenue_change",
+        "normalization": "sheet value in GBP millions x 1e6 -> GBP",
+        "period": 2027,
+        "publication": {
+          "publication_url": "https://obr.uk/data/",
+          "publisher": "Office for Budget Responsibility",
+          "sign_convention": "positive = gain to the Exchequer (reduces borrowing); verbatim from Notes sheet",
+          "title": "Policy measures database (November 2025)",
+          "units_note": "All figures in GBP million; Treasury costings rounded to nearest GBP 5m (GBP 1m since Budget 2018)",
+          "url": "https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "vintage": "November 2025 (updated to Autumn Budget 2025)",
+          "wayback": "https://web.archive.org/web/20260102175529id_/https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "workbook": "Policy_measures_database_November_2025_.xlsx"
+        },
+        "reform_hint": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 1 employee NICs from 6 April 2024",
+        "source": "obr",
+        "source_column": "2027-28",
+        "source_metric_field": "metric",
+        "source_model": "hmt_scorecard_obr_database",
+        "source_table": "Tax Measures (Policy measures database)",
+        "status": "ok",
+        "time_basis": "fiscal_year",
+        "unit": "gbp",
+        "value_gbp": 403939444.51041263,
+        "value_raw": 403.9394445104126
+      },
+      "external_metric": "revenue_change",
+      "obr_head": "Income tax",
+      "pe_value": -0.0,
+      "pe_variables": [
+        "income_tax"
+      ],
+      "raw_reform_minus_baseline_gbp": 0.0,
+      "reform_aggregates_gbp": {
+        "income_tax": 443671961318.895
+      },
+      "reversal_delta_exchequer_gain": 0.0,
+      "sign_convention": "positive_gain_to_exchequer",
+      "source_table": "Tax Measures (Policy measures database)"
+    },
+    {
+      "baseline_aggregates_gbp": {
+        "ni_class_1_employee": 58663620767.67447,
+        "ni_class_1_employer": 191108230450.7594,
+        "ni_class_4": 3775642037.858
+      },
+      "channel": "tax",
+      "condition_key": "tax_head",
+      "external_claim": {
+        "calibration_relationship": "held_out",
+        "conditions": {
+          "basis": "forecast",
+          "costing_phase": "original_scorecard",
+          "fiscal_event": "Spring Budget 2024",
+          "fy": "2027-28",
+          "geography": "UK",
+          "sign_convention": "positive_gain_to_exchequer",
+          "tax_head": "NICs"
+        },
+        "metric": "revenue_change",
+        "normalization": "sheet value in GBP millions x 1e6 -> GBP",
+        "period": 2027,
+        "publication": {
+          "publication_url": "https://obr.uk/data/",
+          "publisher": "Office for Budget Responsibility",
+          "sign_convention": "positive = gain to the Exchequer (reduces borrowing); verbatim from Notes sheet",
+          "title": "Policy measures database (November 2025)",
+          "units_note": "All figures in GBP million; Treasury costings rounded to nearest GBP 5m (GBP 1m since Budget 2018)",
+          "url": "https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "vintage": "November 2025 (updated to Autumn Budget 2025)",
+          "wayback": "https://web.archive.org/web/20260102175529id_/https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "workbook": "Policy_measures_database_November_2025_.xlsx"
+        },
+        "reform_hint": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 1 employee NICs from 6 April 2024",
+        "source": "obr",
+        "source_column": "2027-28",
+        "source_metric_field": "metric",
+        "source_model": "hmt_scorecard_obr_database",
+        "source_table": "Tax Measures (Policy measures database)",
+        "status": "ok",
+        "time_basis": "fiscal_year",
+        "unit": "gbp",
+        "value_gbp": -9817942032.094347,
+        "value_raw": -9817.942032094346
+      },
+      "external_metric": "revenue_change",
+      "obr_head": "NICs",
+      "pe_value": -12356159334.317142,
+      "pe_variables": [
+        "ni_class_1_employee",
+        "ni_class_1_employer",
+        "ni_class_4"
+      ],
+      "raw_reform_minus_baseline_gbp": 12356159334.317142,
+      "reform_aggregates_gbp": {
+        "ni_class_1_employee": 71023161067.93713,
+        "ni_class_1_employer": 191108230450.7594,
+        "ni_class_4": 3772261071.912478
+      },
+      "reversal_delta_exchequer_gain": 12356159334.317142,
+      "sign_convention": "positive_gain_to_exchequer",
+      "source_table": "Tax Measures (Policy measures database)"
+    },
+    {
+      "baseline_aggregates_gbp": {
+        "universal_credit": 40661555824.15493
+      },
+      "channel": "spending",
+      "condition_key": "spending_head",
+      "external_claim": {
+        "calibration_relationship": "held_out",
+        "conditions": {
+          "basis": "forecast",
+          "costing_phase": "original_scorecard",
+          "fiscal_event": "Spring Budget 2024",
+          "fy": "2027-28",
+          "geography": "UK",
+          "impact_channel": "spending_measure",
+          "sign_convention": "positive_gain_to_exchequer",
+          "spending_head": "Welfare inside cap"
+        },
+        "metric": "exchequer_impact",
+        "normalization": "sheet value in GBP millions x 1e6 -> GBP",
+        "period": 2027,
+        "publication": {
+          "publication_url": "https://obr.uk/data/",
+          "publisher": "Office for Budget Responsibility",
+          "sign_convention": "positive = gain to the Exchequer (reduces borrowing); verbatim from Notes sheet",
+          "title": "Policy measures database (November 2025)",
+          "units_note": "All figures in GBP million; Treasury costings rounded to nearest GBP 5m (GBP 1m since Budget 2018)",
+          "url": "https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "vintage": "November 2025 (updated to Autumn Budget 2025)",
+          "wayback": "https://web.archive.org/web/20260102175529id_/https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "workbook": "Policy_measures_database_November_2025_.xlsx"
+        },
+        "reform_hint": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 1 employee NICs from 6 April 2024",
+        "source": "obr",
+        "source_column": "2027-28",
+        "source_metric_field": "proposed_metric",
+        "source_model": "hmt_scorecard_obr_database",
+        "source_table": "Spending Measures (Policy measures database)",
+        "status": "ok",
+        "time_basis": "fiscal_year",
+        "unit": "gbp",
+        "value_gbp": 169987825.88819343,
+        "value_raw": 169.98782588819344
+      },
+      "external_metric": "exchequer_impact",
+      "obr_head": "Welfare inside cap",
+      "pe_value": 109333370.59695435,
+      "pe_variables": [
+        "universal_credit"
+      ],
+      "raw_reform_minus_baseline_gbp": 109333370.59695435,
+      "reform_aggregates_gbp": {
+        "universal_credit": 40770889194.751884
+      },
+      "reversal_delta_exchequer_gain": -109333370.59695435,
+      "sign_convention": "positive_gain_to_exchequer",
+      "source_table": "Spending Measures (Policy measures database)"
+    }
+  ],
+  "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+  "notes": "Direct Class 1 rate reversal; PE calendar 2024 proxies FY 2024-25. Welfare inside cap is represented only by universal_credit, not the full OBR welfare-head scope, and the named non-microsimulation heads are omitted.",
+  "obr_description": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 1 employee NICs from 6 April 2024",
+  "performance": {
+    "baseline": {
+      "cleanup_seconds": 0.4939094170113094,
+      "end_rss_bytes": 22310191104,
+      "peak_rss_bytes": 22310191104,
+      "rss_after_gc_bytes": 1830535168,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 1788067840,
+      "wall_seconds": 30.782723625015933
+    },
+    "reform": {
+      "cleanup_seconds": 0.6610180420102552,
+      "end_rss_bytes": 35243933696,
+      "peak_rss_bytes": 35243933696,
+      "rss_after_gc_bytes": 1992441856,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 1918124032,
+      "wall_seconds": 51.499392792000435
+    }
+  },
+  "policyengine_bundles": {
+    "baseline": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    },
+    "reform": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    }
+  },
+  "policyengine_version": "5.0.2",
+  "raw_aggregates": {
+    "baseline_gbp": {
+      "income_tax": 443671961318.895,
+      "ni_class_1_employee": 58663620767.67447,
+      "ni_class_1_employer": 191108230450.7594,
+      "ni_class_4": 3775642037.858,
+      "universal_credit": 40661555824.15493
+    },
+    "reform_gbp": {
+      "income_tax": 443671961318.895,
+      "ni_class_1_employee": 71023161067.93713,
+      "ni_class_1_employer": 191108230450.7594,
+      "ni_class_4": 3772261071.912478,
+      "universal_credit": 40770889194.751884
+    }
+  },
+  "reform": {
+    "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+      "2024-01-01.2030-12-31": 0.1
+    }
+  },
+  "run_id": "campaign-20260816-obr-costings",
+  "schema_version": 1,
+  "source_table": "Tax Measures (Policy measures database)",
+  "variable_metadata": {
+    "income_tax": {
+      "definition_period": "year",
+      "entity": "person",
+      "label": "Income Tax",
+      "unit": "currency-GBP"
+    },
+    "ni_class_1_employee": {
+      "definition_period": "month",
+      "entity": "person",
+      "label": "NI Class 1 employee-side contributions",
+      "unit": "currency-GBP"
+    },
+    "ni_class_1_employer": {
+      "definition_period": "year",
+      "entity": "person",
+      "label": "NI Class 1 employer-side contributions",
+      "unit": "currency-GBP"
+    },
+    "ni_class_4": {
+      "definition_period": "year",
+      "entity": "person",
+      "label": "NI Class 4 main contributions",
+      "unit": "currency-GBP"
+    },
+    "universal_credit": {
+      "definition_period": "year",
+      "entity": "benunit",
+      "label": "Universal Credit",
+      "unit": "currency-GBP"
+    }
+  },
+  "year": 2027
+}

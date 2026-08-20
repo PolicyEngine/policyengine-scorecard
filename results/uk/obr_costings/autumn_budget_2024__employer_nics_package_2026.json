@@ -1,0 +1,260 @@
+{
+  "artifact": "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2026.json",
+  "benchmark_class": "different_model",
+  "calendar_year_proxy": "PE calendar year 2026 proxies FY 2026-27.",
+  "claims_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
+  "computability": "partial",
+  "computed_at": "2026-08-17T03:32:42.850315+00:00",
+  "construction": "reversal_on_certified_world",
+  "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "diagnostic_only": false,
+  "engine_version": "2.89.2",
+  "fiscal_event": "Autumn Budget 2024",
+  "fy": "2026-27",
+  "heads": [
+    {
+      "baseline_aggregates_gbp": {
+        "income_tax": 421891913533.19946
+      },
+      "channel": "tax",
+      "condition_key": "tax_head",
+      "external_claim": {
+        "calibration_relationship": "held_out",
+        "conditions": {
+          "basis": "forecast",
+          "costing_phase": "original_scorecard",
+          "fiscal_event": "Autumn Budget 2024",
+          "fy": "2026-27",
+          "geography": "UK",
+          "sign_convention": "positive_gain_to_exchequer",
+          "tax_head": "Income tax"
+        },
+        "metric": "revenue_change",
+        "normalization": "sheet value in GBP millions x 1e6 -> GBP",
+        "period": 2026,
+        "publication": {
+          "publication_url": "https://obr.uk/data/",
+          "publisher": "Office for Budget Responsibility",
+          "sign_convention": "positive = gain to the Exchequer (reduces borrowing); verbatim from Notes sheet",
+          "title": "Policy measures database (November 2025)",
+          "units_note": "All figures in GBP million; Treasury costings rounded to nearest GBP 5m (GBP 1m since Budget 2018)",
+          "url": "https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "vintage": "November 2025 (updated to Autumn Budget 2025)",
+          "wayback": "https://web.archive.org/web/20260102175529id_/https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "workbook": "Policy_measures_database_November_2025_.xlsx"
+        },
+        "reform_hint": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+        "source": "obr",
+        "source_column": "2026-27",
+        "source_metric_field": "metric",
+        "source_model": "hmt_scorecard_obr_database",
+        "source_table": "Tax Measures (Policy measures database)",
+        "status": "ok",
+        "time_basis": "fiscal_year",
+        "unit": "gbp",
+        "value_gbp": -312921791.2621155,
+        "value_raw": -312.9217912621155
+      },
+      "external_metric": "revenue_change",
+      "obr_head": "Income tax",
+      "pe_value": -8507737534.679443,
+      "pe_variables": [
+        "income_tax"
+      ],
+      "raw_reform_minus_baseline_gbp": 8507737534.679443,
+      "reform_aggregates_gbp": {
+        "income_tax": 430399651067.8789
+      },
+      "reversal_delta_exchequer_gain": 8507737534.679443,
+      "sign_convention": "positive_gain_to_exchequer",
+      "source_table": "Tax Measures (Policy measures database)"
+    },
+    {
+      "baseline_aggregates_gbp": {
+        "ni_class_1_employee": 57077663137.03293,
+        "ni_class_1_employer": 185481157065.2179,
+        "ni_class_4": 4372643327.084593
+      },
+      "channel": "tax",
+      "condition_key": "tax_head",
+      "external_claim": {
+        "calibration_relationship": "held_out",
+        "conditions": {
+          "basis": "forecast",
+          "costing_phase": "original_scorecard",
+          "fiscal_event": "Autumn Budget 2024",
+          "fy": "2026-27",
+          "geography": "UK",
+          "sign_convention": "positive_gain_to_exchequer",
+          "tax_head": "NICs"
+        },
+        "metric": "revenue_change",
+        "normalization": "sheet value in GBP millions x 1e6 -> GBP",
+        "period": 2026,
+        "publication": {
+          "publication_url": "https://obr.uk/data/",
+          "publisher": "Office for Budget Responsibility",
+          "sign_convention": "positive = gain to the Exchequer (reduces borrowing); verbatim from Notes sheet",
+          "title": "Policy measures database (November 2025)",
+          "units_note": "All figures in GBP million; Treasury costings rounded to nearest GBP 5m (GBP 1m since Budget 2018)",
+          "url": "https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "vintage": "November 2025 (updated to Autumn Budget 2025)",
+          "wayback": "https://web.archive.org/web/20260102175529id_/https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "workbook": "Policy_measures_database_November_2025_.xlsx"
+        },
+        "reform_hint": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+        "source": "obr",
+        "source_column": "2026-27",
+        "source_metric_field": "metric",
+        "source_model": "hmt_scorecard_obr_database",
+        "source_table": "Tax Measures (Policy measures database)",
+        "status": "ok",
+        "time_basis": "fiscal_year",
+        "unit": "gbp",
+        "value_gbp": 23923342053.649563,
+        "value_raw": 23923.34205364956
+      },
+      "external_metric": "revenue_change",
+      "obr_head": "NICs",
+      "pe_value": 24754424875.897583,
+      "pe_variables": [
+        "ni_class_1_employee",
+        "ni_class_1_employer",
+        "ni_class_4"
+      ],
+      "raw_reform_minus_baseline_gbp": -24754424875.897583,
+      "reform_aggregates_gbp": {
+        "ni_class_1_employee": 58338163125.42018,
+        "ni_class_1_employer": 159467146858.90506,
+        "ni_class_4": 4371728669.112595
+      },
+      "reversal_delta_exchequer_gain": -24754424875.897583,
+      "sign_convention": "positive_gain_to_exchequer",
+      "source_table": "Tax Measures (Policy measures database)"
+    }
+  ],
+  "measure_key": "autumn_budget_2024__employer_nics_package",
+  "notes": "PE represents the employer rate and weekly secondary threshold (\u00a396 \u00d7 52 = \u00a34,992 in the installed model). It has no Employment Allowance or firm entity, so the allowance increase and \u00a3100,000 test removal are missing. policyengine_uk/parameters/gov/contrib/policyengine/employer_ni/employee_incidence.yaml sets gov.contrib.policyengine.employer_ni.employee_incidence to 1, and policyengine_uk/variables/contrib/policyengine/employer_ni/employer_ni_fixed_employer_cost_change.py adjusts wages holding employer cost fixed. The resulting wage change moves employee-side Income Tax and NICs, which is why the PE Income-tax head is non-zero.",
+  "obr_description": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+  "performance": {
+    "baseline": {
+      "cleanup_seconds": 0.49896574998274446,
+      "end_rss_bytes": 21935964160,
+      "peak_rss_bytes": 21935964160,
+      "rss_after_gc_bytes": 1431846912,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 474726400,
+      "wall_seconds": 31.40236329199979
+    },
+    "reform": {
+      "cleanup_seconds": 1.0417257089866325,
+      "end_rss_bytes": 25063456768,
+      "peak_rss_bytes": 28876472320,
+      "rss_after_gc_bytes": 1414168576,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 1225588736,
+      "wall_seconds": 56.375186041987035
+    }
+  },
+  "policyengine_bundles": {
+    "baseline": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    },
+    "reform": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    }
+  },
+  "policyengine_version": "5.0.2",
+  "raw_aggregates": {
+    "baseline_gbp": {
+      "income_tax": 421891913533.19946,
+      "ni_class_1_employee": 57077663137.03293,
+      "ni_class_1_employer": 185481157065.2179,
+      "ni_class_4": 4372643327.084593
+    },
+    "reform_gbp": {
+      "income_tax": 430399651067.8789,
+      "ni_class_1_employee": 58338163125.42018,
+      "ni_class_1_employer": 159467146858.90506,
+      "ni_class_4": 4371728669.112595
+    }
+  },
+  "reform": {
+    "gov.hmrc.national_insurance.class_1.rates.employer": {
+      "2025-01-01.2030-12-31": 0.138
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+      "2025-01-01.2030-12-31": 175
+    }
+  },
+  "run_id": "campaign-20260816-obr-costings",
+  "schema_version": 1,
+  "source_table": "Tax Measures (Policy measures database)",
+  "variable_metadata": {
+    "income_tax": {
+      "definition_period": "year",
+      "entity": "person",
+      "label": "Income Tax",
+      "unit": "currency-GBP"
+    },
+    "ni_class_1_employee": {
+      "definition_period": "month",
+      "entity": "person",
+      "label": "NI Class 1 employee-side contributions",
+      "unit": "currency-GBP"
+    },
+    "ni_class_1_employer": {
+      "definition_period": "year",
+      "entity": "person",
+      "label": "NI Class 1 employer-side contributions",
+      "unit": "currency-GBP"
+    },
+    "ni_class_4": {
+      "definition_period": "year",
+      "entity": "person",
+      "label": "NI Class 4 main contributions",
+      "unit": "currency-GBP"
+    }
+  },
+  "year": 2026
+}

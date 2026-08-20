@@ -1,0 +1,171 @@
+{
+  "artifact": "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2026.json",
+  "benchmark_class": "different_model",
+  "calendar_year_proxy": "PE calendar year 2026 proxies FY 2026-27.",
+  "claims_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
+  "computability": "partial",
+  "computed_at": "2026-08-17T03:33:44.004532+00:00",
+  "construction": "reversal_on_certified_world",
+  "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "diagnostic_only": false,
+  "engine_version": "2.89.2",
+  "fiscal_event": "Autumn Budget 2025",
+  "fy": "2026-27",
+  "heads": [
+    {
+      "baseline_aggregates_gbp": {
+        "universal_credit": 39887838277.66961
+      },
+      "channel": "spending",
+      "condition_key": "spending_head",
+      "external_claim": {
+        "calibration_relationship": "held_out",
+        "conditions": {
+          "basis": "forecast",
+          "costing_phase": "original_scorecard",
+          "fiscal_event": "Autumn Budget 2025",
+          "fy": "2026-27",
+          "geography": "UK",
+          "impact_channel": "spending_measure",
+          "sign_convention": "positive_gain_to_exchequer",
+          "spending_head": "Welfare inside cap"
+        },
+        "metric": "exchequer_impact",
+        "normalization": "sheet value in GBP millions x 1e6 -> GBP",
+        "period": 2026,
+        "publication": {
+          "publication_url": "https://obr.uk/data/",
+          "publisher": "Office for Budget Responsibility",
+          "sign_convention": "positive = gain to the Exchequer (reduces borrowing); verbatim from Notes sheet",
+          "title": "Policy measures database (November 2025)",
+          "units_note": "All figures in GBP million; Treasury costings rounded to nearest GBP 5m (GBP 1m since Budget 2018)",
+          "url": "https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "vintage": "November 2025 (updated to Autumn Budget 2025)",
+          "wayback": "https://web.archive.org/web/20260102175529id_/https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "workbook": "Policy_measures_database_November_2025_.xlsx"
+        },
+        "reform_hint": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+        "source": "obr",
+        "source_column": "2026-27",
+        "source_metric_field": "proposed_metric",
+        "source_model": "hmt_scorecard_obr_database",
+        "source_table": "Spending Measures (Policy measures database)",
+        "status": "ok",
+        "time_basis": "fiscal_year",
+        "unit": "gbp",
+        "value_gbp": -1886715000.0,
+        "value_raw": -1886.715
+      },
+      "external_metric": "exchequer_impact",
+      "obr_head": "Welfare inside cap",
+      "pe_value": -1104248292.8024673,
+      "pe_variables": [
+        "universal_credit"
+      ],
+      "raw_reform_minus_baseline_gbp": -1104248292.8024673,
+      "reform_aggregates_gbp": {
+        "universal_credit": 38783589984.86714
+      },
+      "reversal_delta_exchequer_gain": 1104248292.8024673,
+      "sign_convention": "positive_gain_to_exchequer",
+      "source_table": "Spending Measures (Policy measures database)"
+    }
+  ],
+  "measure_key": "autumn_budget_2025__uc_child_element_remove_two_child_limit",
+  "notes": "Reverses the UC child-element limit from infinity to two. The OBR also reports a Welfare outside cap row, but the harvest does not identify its program composition; CTC or devolved-offset mechanics are not assumed.",
+  "obr_description": "Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty",
+  "performance": {
+    "baseline": {
+      "cleanup_seconds": 0.49896574998274446,
+      "end_rss_bytes": 21935964160,
+      "peak_rss_bytes": 21935964160,
+      "rss_after_gc_bytes": 1431846912,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 474726400,
+      "wall_seconds": 31.40236329199979
+    },
+    "reform": {
+      "cleanup_seconds": 0.9894970000023022,
+      "end_rss_bytes": 25965297664,
+      "peak_rss_bytes": 28258369536,
+      "rss_after_gc_bytes": 1592311808,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 1414168576,
+      "wall_seconds": 59.976477708958555
+    }
+  },
+  "policyengine_bundles": {
+    "baseline": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    },
+    "reform": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    }
+  },
+  "policyengine_version": "5.0.2",
+  "raw_aggregates": {
+    "baseline_gbp": {
+      "universal_credit": 39887838277.66961
+    },
+    "reform_gbp": {
+      "universal_credit": 38783589984.86714
+    }
+  },
+  "reform": {
+    "gov.dwp.universal_credit.elements.child.limit.child_count": {
+      "2026-01-01.2030-12-31": 2
+    }
+  },
+  "run_id": "campaign-20260816-obr-costings",
+  "schema_version": 1,
+  "source_table": "Spending Measures (Policy measures database)",
+  "variable_metadata": {
+    "universal_credit": {
+      "definition_period": "year",
+      "entity": "benunit",
+      "label": "Universal Credit",
+      "unit": "currency-GBP"
+    }
+  },
+  "year": 2026
+}
