@@ -166,7 +166,7 @@ export default function App() {
             }}
           />
         )}
-        <MissionControl data={data} lanes={lanes} />
+        <MissionControl data={data} lanes={lanes} country={filters.country} />
       </div>
 
       <nav
@@ -209,7 +209,7 @@ export default function App() {
           ))}
         {tab === "validation" &&
           (populations ? (
-            <ReformValidationView feed={populations} />
+            <ReformValidationView feed={populations} country={filters.country} />
           ) : (
             <p className="text-sm text-muted-foreground">
               No populations feed — run scorecard_db.export_populations, then

@@ -1,5 +1,5 @@
 import { Fragment, useMemo, useState } from "react";
-import type { PopulationRow, PopulationsFeed } from "../types";
+import type { Country, PopulationRow, PopulationsFeed } from "../types";
 import {
   COUNTRY_LABELS,
   RELATIONSHIP_LABELS,
@@ -14,34 +14,52 @@ import {
  * mode in the construction, so cross-release drift is visible. Descriptive
  * only: statuses and calibration relationships label, never grade.
  */
-export function ReformValidationView({ feed }: { feed: PopulationsFeed }) {
+export function ReformValidationView({
+  feed,
+  country,
+}: {
+  feed: PopulationsFeed;
+  /** Owned by the header toggle — this view scopes to it (issue #42). */
+  country: Country;
+}) {
   const [source, setSource] = useState("all");
   const [status, setStatus] = useState("all");
-  const [country, setCountry] = useState("all");
   const [releasesOnly, setReleasesOnly] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  const sources = useMemo(
-    () => Object.keys(feed.summary.by_source).sort(),
-    [feed],
+  // Everything below is computed from the COUNTRY-SCOPED slice, never the
+  // global summary: the header's country selection owns this view too, and
+  // source/status counts must describe what the table can actually show.
+  const inCountry = useMemo(
+    () => feed.rows.filter((r) => countryOf(r) === country),
+    [feed, country],
   );
-  // Countries present in the feed; rows without a country key are US-era
-  // exports. One country -> state the scope explicitly instead of filtering.
-  const countries = useMemo(
-    () => [...new Set(feed.rows.map(countryOf))].sort(),
-    [feed],
+  const bySource = useMemo(() => {
+    const out: Record<string, number> = {};
+    for (const r of inCountry) out[r.source] = (out[r.source] ?? 0) + 1;
+    return out;
+  }, [inCountry]);
+  const byStatus = useMemo(() => {
+    const out: Record<string, number> = {};
+    for (const r of inCountry)
+      out[r.latest.status_effective] = (out[r.latest.status_effective] ?? 0) + 1;
+    return out;
+  }, [inCountry]);
+  const sources = useMemo(() => Object.keys(bySource).sort(), [bySource]);
+  const multiRelease = useMemo(
+    () => inCountry.filter((r) => r.results.length > 1).length,
+    [inCountry],
   );
   const rows = useMemo(
     () =>
-      feed.rows.filter((r) => {
-        if (country !== "all" && countryOf(r) !== country) return false;
+      inCountry.filter((r) => {
         if (source !== "all" && r.source !== source) return false;
         if (status !== "all" && r.latest.status_effective !== status)
           return false;
         if (releasesOnly && r.results.length < 2) return false;
         return true;
       }),
-    [feed, country, source, status, releasesOnly],
+    [inCountry, source, status, releasesOnly],
   );
 
   const sel = "h-8 rounded-md border border-border bg-background px-2 text-sm";
@@ -50,53 +68,26 @@ export function ReformValidationView({ feed }: { feed: PopulationsFeed }) {
     <div>
       <p className="mb-4 max-w-3xl text-sm leading-6 text-muted-foreground">
         Reform scores and references beyond the Urban comparison:{" "}
-        <b className="fig text-foreground">
-          {feed.summary.claims.toLocaleString()}
-        </b>{" "}
-        external claims — the populace reform-validation registry (JCT scores,
-        state fiscal notes, agency actuals, IRS and Census references) plus the
-        compute campaign's TPC, CPSP, PWBM and CBO comparisons — where each
-        available result carries its certified release's exact engine pins.{" "}
-        <b className="fig text-foreground">
-          {feed.summary.multi_release_claims.toLocaleString()}
-        </b>{" "}
+        <b className="fig text-foreground">{inCountry.length.toLocaleString()}</b>{" "}
+        {COUNTRY_LABELS[country]} external claims —{" "}
+        {country === "US"
+          ? "the populace reform-validation registry (JCT scores, state fiscal notes, agency actuals, IRS and Census references) plus the compute campaign's TPC, CPSP, PWBM and CBO comparisons"
+          : "the compute campaign's HMRC ready-reckoner comparisons (each PE score is a current-law static change; HMRC's are projected-FY direct effects against an indexed baseline, so every comparison is constructed-basis by design)"}{" "}
+        — where each available result carries its certified release's exact
+        engine pins.{" "}
+        <b className="fig text-foreground">{multiRelease.toLocaleString()}</b>{" "}
         carry results from more than one release, so drift across releases is
         queryable, and a scoring-construction change is labeled in the history
         rather than read as drift. Nothing here is a pass/fail grade.
       </p>
       <p className="mb-4 fig text-[11px] text-muted-foreground">
         populations feed · exported from scorecard.db · built {feed.built} ·
+        scope: {COUNTRY_LABELS[country]} (the header toggle owns it) ·
         per-release results carry their own engine + data-bundle provenance (the
         page-top stamp describes the Urban comparison only)
-        {countries.length === 1 && (
-          <>
-            {" "}
-            · scope: {COUNTRY_LABELS[countries[0]]} only — every claim in the
-            current registry is a {countries[0]} claim; a country filter
-            appears here once claims from another country land
-          </>
-        )}
       </p>
 
       <div className="mb-3 flex flex-wrap items-end gap-3">
-        {countries.length > 1 && (
-          <label className="text-xs text-muted-foreground">
-            Country
-            <br />
-            <select
-              className={sel}
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-            >
-              <option value="all">All countries</option>
-              {countries.map((c) => (
-                <option key={c} value={c}>
-                  {COUNTRY_LABELS[c]}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
         <label className="text-xs text-muted-foreground">
           Source
           <br />
@@ -108,7 +99,7 @@ export function ReformValidationView({ feed }: { feed: PopulationsFeed }) {
             <option value="all">All sources</option>
             {sources.map((s) => (
               <option key={s} value={s}>
-                {sourceLabel(s)} ({feed.summary.by_source[s]})
+                {sourceLabel(s)} ({bySource[s]})
               </option>
             ))}
           </select>
@@ -122,7 +113,7 @@ export function ReformValidationView({ feed }: { feed: PopulationsFeed }) {
             onChange={(e) => setStatus(e.target.value)}
           >
             <option value="all">All statuses</option>
-            {Object.entries(feed.summary.by_latest_status).map(([s, n]) => (
+            {Object.entries(byStatus).map(([s, n]) => (
               <option key={s} value={s}>
                 {STATUS_LABELS[s as keyof typeof STATUS_LABELS] ?? s} ({n})
               </option>
@@ -356,10 +347,15 @@ const SOURCE_SPECIAL: Record<string, string> = {
   tax_foundation: "Tax Foundation",
   obr: "OBR",
   hmrc: "HMRC",
+  uk_hmrc: "HMRC",
   dwp: "DWP",
+  dwp_takeup: "DWP take-up",
+  dwp_hbai: "DWP HBAI",
   hmt: "HMT",
+  hm_treasury: "HM Treasury",
   ifs: "IFS",
   rf: "Resolution Foundation",
+  resolution_foundation: "Resolution Foundation",
   ukmod: "UKMOD",
 };
 
@@ -378,12 +374,17 @@ function windowFromPeriod(r: PopulationRow): string {
 function fmtV(v: number | null, kind: string): string {
   if (v === null || v === undefined) return "—";
   if (kind === "share") return `${(v * 100).toFixed(1)}%`;
+  if (kind === "percent") return `${v.toFixed(1)}%`;
+  if (kind === "index") return v.toFixed(3);
+  // currency follows the value_kind, never a $ default: gbp* rows are
+  // pounds, count rows carry no symbol at all
+  const cur = kind.startsWith("gbp") ? "£" : kind.startsWith("usd") || kind === "usd" ? "$" : kind === "count" ? "" : "$";
   const a = Math.abs(v);
   const sign = v < 0 ? "−" : "";
-  if (a >= 1e9) return `${sign}$${(a / 1e9).toFixed(2)}B`;
-  if (a >= 1e6) return `${sign}$${(a / 1e6).toFixed(1)}M`;
-  if (a >= 1e3) return `${sign}$${(a / 1e3).toFixed(0)}k`;
-  return `${sign}$${a.toFixed(0)}`;
+  if (a >= 1e9) return `${sign}${cur}${(a / 1e9).toFixed(2)}B`;
+  if (a >= 1e6) return `${sign}${cur}${(a / 1e6).toFixed(1)}M`;
+  if (a >= 1e3) return `${sign}${cur}${(a / 1e3).toFixed(0)}k`;
+  return `${sign}${cur}${a.toFixed(0)}`;
 }
 
 function fmtDiv(r: PopulationRow): string {

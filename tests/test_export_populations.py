@@ -186,6 +186,13 @@ def test_integration_committed_db(tmp_path):
     ).fetchone()[0]
     db.close()
     assert stats["rows"] == expected == len(payload["rows"])
+    # Every row carries an explicit country (#42/#50 gate: 14 UK reckoner
+    # rows shipped into a feed the exporter never country-tagged, so the
+    # app's missing-key US default classified them all as US).
+    dist: dict = {}
+    for r in payload["rows"]:
+        dist[r["country"]] = dist.get(r["country"], 0) + 1
+    assert dist == {"US": 270, "UK": 14}
     # The committed deployment artifact must match a fresh export (modulo
     # the build date) — stale committed data can't pass CI.
     committed = json.loads((REPO / "data" / "populations.json").read_text())

@@ -148,6 +148,12 @@ def export(
             {
                 "claim_id": c["claim_id"],
                 "source": c["source"],
+                # the model instance the claim belongs to (issue #42): UK
+                # claims carry conditions["country"]; its absence IS the
+                # US claim-side convention, mirrored by the app's
+                # countryOf() default — emit it explicitly so the feed
+                # never relies on the default for non-US rows
+                "country": conditions.get("country", "US"),
                 "source_column": c["source_column"],
                 "name": name,
                 "window": publication.get("window") or "",
