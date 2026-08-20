@@ -103,7 +103,6 @@ class UnitConcept(str, Enum):
     TAX_UNITS = "tax_units"
     SPM_UNITS = "spm_units"
     USD = "usd"
-    GBP = "gbp"
     # Per-unit dollar statistics (averages/medians of tax change or
     # income change) — distinct from USD aggregates so queries cannot
     # accidentally sum averages, and split by denominator population

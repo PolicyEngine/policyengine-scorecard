@@ -552,6 +552,8 @@ def test_chain_ordinals_are_raw_and_stacked_only(summary_and_db):
     ).fetchone()[0]
     conn.close()
     assert stray == 0
+
+
 # --- country dimension (#62) ------------------------------------------------
 
 
@@ -589,7 +591,18 @@ def test_obbba_path_refuses_non_us(tmp_path):
     from scorecard_db.ingest_reform_validation import _obbba_results
 
     with pytest.raises(ValueError, match="US-only"):
-        _obbba_results(None, {}, "rid", "e", "t", {}, {}, validate=False, country="UK")
+        _obbba_results(
+            None,
+            {},
+            "rid",
+            "e",
+            "t",
+            {},
+            {},
+            validate=False,
+            position=0,
+            country="UK",
+        )
 
 
 def test_unknown_country_raises(tmp_path):
