@@ -275,6 +275,7 @@ def ingest(db_path: Path) -> dict:
                 "source": "HMT + DWP",
                 "area": "UC deductions (FRR)",
                 "mode": 2,
+                "country": "UK",
             }
         },
     )

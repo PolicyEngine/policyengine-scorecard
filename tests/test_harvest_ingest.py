@@ -5,6 +5,9 @@ sha256-manifested source artifacts during ingest (see the PR's validation
 report). Staged inputs are vendored at sources/harvest-2026-08-02/.
 """
 
+import json
+from pathlib import Path
+
 import pytest
 
 from scorecard_db import (
@@ -656,3 +659,31 @@ class TestFullIngest:
         ).fetchone()
         ref = ReformRef.from_json(row["reform_json"])
         assert ref.framework == "policy_ref"
+
+
+REPO = Path(__file__).resolve().parent.parent
+
+
+def test_every_committed_lane_carries_a_country():
+    """The app's countryOf() defaults a missing key to US, so a committed
+    lane without an explicit country would silently file under US (#42's
+    contract; the uk-deductions-frr lane arrived tag-less in exactly this
+    way during the #50 rebase)."""
+    feed = json.loads((REPO / "data" / "lanes.json").read_text())
+    untagged = [x["id"] for x in feed["lanes"] if x.get("country") not in ("US", "UK")]
+    assert untagged == []
+
+
+def test_app_data_copies_match_committed_data():
+    """app/public/data/* are prebuild-copied from data/*; the committed
+    copies must stay in step so a repo checkout never shows stale feeds
+    (#50 review follow-up — the copies had drifted to a 270-row
+    populations.json while data/ carried 284)."""
+    for name in ("lanes.json", "populations.json", "comparison.json", "exhibits.json"):
+        src = REPO / "data" / name
+        dst = REPO / "app" / "public" / "data" / name
+        assert dst.exists(), name
+        assert dst.read_bytes() == src.read_bytes(), (
+            f"{name}: app/public/data copy differs from data/ — run the "
+            "prebuild cp and commit both"
+        )
