@@ -10,8 +10,26 @@ export type Status =
 export type CalibrationRelationship =
   "consumed_as_target" | "seed_source" | "held_out";
 
+/** The model instance a row or lane belongs to (issue #42). */
+export type Country = "US" | "UK";
+
+export const COUNTRY_LABELS: Record<Country, string> = {
+  US: "United States",
+  UK: "United Kingdom",
+};
+
+/**
+ * Country of a row or lane. Historical US feeds predate the country key,
+ * so a missing country always means "US" — never drop a row over it.
+ */
+export function countryOf(r: { country?: Country }): Country {
+  return r.country ?? "US";
+}
+
 export interface Lane {
   id: string;
+  /** data/lanes.json carries this explicitly; absent means "US". */
+  country?: Country;
   source: string;
   area: string;
   mode: number;
@@ -28,6 +46,8 @@ export interface LanesFeed {
 
 export interface Row {
   source: string;
+  /** Absent on US-era exports; countryOf() defaults it to "US". */
+  country?: Country;
   program: string;
   metric: string;
   subgroup: string;
@@ -140,6 +160,8 @@ export interface ReleaseResult {
 /** A non-Urban claim from scorecard.db with its per-release history. */
 export interface PopulationRow {
   claim_id: string;
+  /** Absent on US-era exports; countryOf() defaults it to "US". */
+  country?: Country;
   source: string;
   source_column: string;
   name: string;

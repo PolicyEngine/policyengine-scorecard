@@ -897,7 +897,7 @@ def ingest(db_path: Path) -> dict:
         REPO / "data" / "lanes.json",
         "2026-08-19",
         lanes={
-            lane_id: {"source": s, "area": a, "mode": 1}
+            lane_id: {"source": s, "area": a, "mode": 1, "country": "UK"}
             for lane_id, (_, s, a) in lane_meta.items()
         },
     )

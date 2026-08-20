@@ -1,8 +1,8 @@
 {
  "built": "2026-08-19",
- "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (TPC/CPSP/PWBM/CBO/JCT). Statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
+ "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family). Statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
  "summary": {
-  "claims": 270,
+  "claims": 284,
   "multi_release_claims": 127,
   "by_source": {
    "az_admin": 1,
@@ -55,6 +55,7 @@
    "sc_admin": 1,
    "tpc": 10,
    "treasury": 1,
+   "uk_hmrc": 14,
    "ut_admin": 1,
    "va_admin": 1,
    "vt_admin": 2,
@@ -64,13 +65,14 @@
   "by_latest_status": {
    "comparable": 37,
    "concept_mismatch": 2,
-   "constructed": 231
+   "constructed": 245
   }
  },
  "rows": [
   {
    "claim_id": "53568d369f3081628b2d",
    "source": "az_admin",
+   "country": "US",
    "source_column": "state_az_dependent_credit",
    "name": "Arizona Dependent Tax Credit",
    "window": "TY2024",
@@ -163,6 +165,7 @@
   {
    "claim_id": "498a3108cce7ef3cbf73",
    "source": "ca_admin",
+   "country": "US",
    "source_column": "state_ca_eitc",
    "name": "California CalEITC",
    "window": "TY2023",
@@ -255,6 +258,7 @@
   {
    "claim_id": "9eda40b94ca5ce924e04",
    "source": "ca_admin",
+   "country": "US",
    "source_column": "state_ca_yctc",
    "name": "California Young Child Tax Credit",
    "window": "TY2023",
@@ -347,6 +351,7 @@
   {
    "claim_id": "c9b762228722c8e68305",
    "source": "ca_fiscal_note",
+   "country": "US",
    "source_column": "state.ca.ab2591",
    "name": "CA AB2591 \u2014 standard deduction increase",
    "window": "first full year (FY2027-28)",
@@ -438,6 +443,7 @@
   {
    "claim_id": "9412a33dffe76806b2f5",
    "source": "cbo",
+   "country": "US",
    "source_column": "Average Monthly Benefit per Beneficiary (Dollars)",
    "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
    "window": "",
@@ -495,6 +501,7 @@
   {
    "claim_id": "ee5f9b6d36786a5acd03",
    "source": "cbo",
+   "country": "US",
    "source_column": "Average Monthly Benefit per Participant (Dollars)",
    "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
    "window": "",
@@ -552,6 +559,7 @@
   {
    "claim_id": "6e8f56211bba4272cc31",
    "source": "cbo",
+   "country": "US",
    "source_column": "Earned income, child, and other tax credits",
    "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
    "window": "",
@@ -611,6 +619,7 @@
   {
    "claim_id": "eb4cb3d5e81cdf1c63fb",
    "source": "cbo",
+   "country": "US",
    "source_column": "Earned income, child, and other tax creditsd",
    "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
    "window": "",
@@ -670,6 +679,7 @@
   {
    "claim_id": "a44c8e195796cee4e5d7",
    "source": "cbo",
+   "country": "US",
    "source_column": "Estimated Budget Authority",
    "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
    "window": "",
@@ -728,6 +738,7 @@
   {
    "claim_id": "2fce267a8ea74d79cdff",
    "source": "cbo",
+   "country": "US",
    "source_column": "Estimated Outlays",
    "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
    "window": "",
@@ -786,6 +797,7 @@
   {
    "claim_id": "ffc6d48f894e88134428",
    "source": "cbo",
+   "country": "US",
    "source_column": "Total Outlays, Adjusted for Date of Payment Shiftb",
    "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
    "window": "",
@@ -843,6 +855,7 @@
   {
    "claim_id": "c7a6ced57044b52a7f91",
    "source": "cbo",
+   "country": "US",
    "source_column": "Average Monthly Beneficiaries (Thousands of people)",
    "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
    "window": "",
@@ -899,6 +912,7 @@
   {
    "claim_id": "9be64cb6bef0d6d3da07",
    "source": "cbo",
+   "country": "US",
    "source_column": "Average Monthly Participation (Millions of people)",
    "name": "The Budget and Economic Outlook: 2026 to 2036 (supplemental data)",
    "window": "",
@@ -955,6 +969,7 @@
   {
    "claim_id": "b9df9a9de41ba44a3979",
    "source": "cbo",
+   "country": "US",
    "source_column": "federal.cbo_rates_plus_1pt",
    "name": "CBO option \u2014 all individual rates +1pt (applied to 2024 data)",
    "window": "FY2026 (first full fiscal year)",
@@ -1011,6 +1026,7 @@
   {
    "claim_id": "e931e849f18e52572ae2",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ak",
    "name": "Alaska SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1068,6 +1084,7 @@
   {
    "claim_id": "e4d83b427fc214ea4eb3",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_al",
    "name": "Alabama SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1125,6 +1142,7 @@
   {
    "claim_id": "4d6626b38d8bd84c6e7d",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ar",
    "name": "Arkansas SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1182,6 +1200,7 @@
   {
    "claim_id": "7537730fcc7aa9722282",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_az",
    "name": "Arizona SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1239,6 +1258,7 @@
   {
    "claim_id": "364841741d272c58b038",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ca",
    "name": "California SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1296,6 +1316,7 @@
   {
    "claim_id": "bc66a347f2c2aa136efe",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_co",
    "name": "Colorado SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1353,6 +1374,7 @@
   {
    "claim_id": "d69d7a081344f1b4a729",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ct",
    "name": "Connecticut SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1410,6 +1432,7 @@
   {
    "claim_id": "2cebdc00578e54b45a22",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_dc",
    "name": "District of Columbia SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1467,6 +1490,7 @@
   {
    "claim_id": "5be90ddb7e953a22fe29",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_de",
    "name": "Delaware SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1524,6 +1548,7 @@
   {
    "claim_id": "e4a68546c4be960ea5d1",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_fl",
    "name": "Florida SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1581,6 +1606,7 @@
   {
    "claim_id": "ae7020f71018aa71e13b",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ga",
    "name": "Georgia SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1638,6 +1664,7 @@
   {
    "claim_id": "d80f38afc52ad764420b",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_hi",
    "name": "Hawaii SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1695,6 +1722,7 @@
   {
    "claim_id": "664f55921193cc68fe99",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ia",
    "name": "Iowa SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1752,6 +1780,7 @@
   {
    "claim_id": "9b9854e0a7826d3f6971",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_id",
    "name": "Idaho SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1809,6 +1838,7 @@
   {
    "claim_id": "60ca60bce71f685cf470",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_il",
    "name": "Illinois SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1866,6 +1896,7 @@
   {
    "claim_id": "ff7246abfe3677335ca6",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_in",
    "name": "Indiana SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1923,6 +1954,7 @@
   {
    "claim_id": "5b236b30fa3880759154",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ks",
    "name": "Kansas SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -1980,6 +2012,7 @@
   {
    "claim_id": "a3cc89a80759ebd0e943",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ky",
    "name": "Kentucky SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2037,6 +2070,7 @@
   {
    "claim_id": "53520f720a63c7550d45",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_la",
    "name": "Louisiana SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2094,6 +2128,7 @@
   {
    "claim_id": "bd4ea8335108373296f7",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ma",
    "name": "Massachusetts SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2151,6 +2186,7 @@
   {
    "claim_id": "fee6a482e8ac1fc33989",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_md",
    "name": "Maryland SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2208,6 +2244,7 @@
   {
    "claim_id": "8896cdbb8213f271fcc1",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_me",
    "name": "Maine SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2265,6 +2302,7 @@
   {
    "claim_id": "ee8a446834a4da49903b",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_mi",
    "name": "Michigan SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2322,6 +2360,7 @@
   {
    "claim_id": "6bd14bde63071d64404b",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_mn",
    "name": "Minnesota SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2379,6 +2418,7 @@
   {
    "claim_id": "780a950917b74d17f667",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_mo",
    "name": "Missouri SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2436,6 +2476,7 @@
   {
    "claim_id": "a27d4ff28bdfca616cb8",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ms",
    "name": "Mississippi SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2493,6 +2534,7 @@
   {
    "claim_id": "0e68641d4fe06928f3ed",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_mt",
    "name": "Montana SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2550,6 +2592,7 @@
   {
    "claim_id": "8e871b8216783c3198e1",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_nc",
    "name": "North Carolina SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2607,6 +2650,7 @@
   {
    "claim_id": "6d24cdfdc704c93ea20e",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_nd",
    "name": "North Dakota SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2664,6 +2708,7 @@
   {
    "claim_id": "0679c495803fff9001ca",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ne",
    "name": "Nebraska SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2721,6 +2766,7 @@
   {
    "claim_id": "c89efbc4ffd24fb15cf3",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_nh",
    "name": "New Hampshire SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2778,6 +2824,7 @@
   {
    "claim_id": "f4182a5794922259b4ce",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_nj",
    "name": "New Jersey SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2835,6 +2882,7 @@
   {
    "claim_id": "bf9816ce2ba4a0b01453",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_nm",
    "name": "New Mexico SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2892,6 +2940,7 @@
   {
    "claim_id": "8e712209885a93f74b4d",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_nv",
    "name": "Nevada SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -2949,6 +2998,7 @@
   {
    "claim_id": "b8fffe31f672e908c7d8",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ny",
    "name": "New York SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3006,6 +3056,7 @@
   {
    "claim_id": "01289c122011da498528",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_oh",
    "name": "Ohio SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3063,6 +3114,7 @@
   {
    "claim_id": "74caf7c832e428617b1a",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ok",
    "name": "Oklahoma SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3120,6 +3172,7 @@
   {
    "claim_id": "40e68ccaadfc3269a541",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_or",
    "name": "Oregon SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3177,6 +3230,7 @@
   {
    "claim_id": "f277efd6b574264216a2",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_pa",
    "name": "Pennsylvania SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3234,6 +3288,7 @@
   {
    "claim_id": "64058ab1b6764c42b03b",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ri",
    "name": "Rhode Island SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3291,6 +3346,7 @@
   {
    "claim_id": "f9d02a7845633c2b4268",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_sc",
    "name": "South Carolina SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3348,6 +3404,7 @@
   {
    "claim_id": "2ced6a36837da4879451",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_sd",
    "name": "South Dakota SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3405,6 +3462,7 @@
   {
    "claim_id": "fba997fbb6cfd6c39c4e",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_tn",
    "name": "Tennessee SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3462,6 +3520,7 @@
   {
    "claim_id": "114bc2d1f77f3b6e9d05",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_tx",
    "name": "Texas SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3519,6 +3578,7 @@
   {
    "claim_id": "02ce16f73ff66b8dd767",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_us",
    "name": "United States SPM child poverty rate",
    "window": "2024",
@@ -3575,6 +3635,7 @@
   {
    "claim_id": "01b883e821e73bbef43d",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_ut",
    "name": "Utah SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3632,6 +3693,7 @@
   {
    "claim_id": "51fa48d774c937b2e09f",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_va",
    "name": "Virginia SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3689,6 +3751,7 @@
   {
    "claim_id": "55715497136e3eb9c9dc",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_vt",
    "name": "Vermont SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3746,6 +3809,7 @@
   {
    "claim_id": "2a005f05a8f1ab16c446",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_wa",
    "name": "Washington SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3803,6 +3867,7 @@
   {
    "claim_id": "1b88ee46c23451091857",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_wi",
    "name": "Wisconsin SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3860,6 +3925,7 @@
   {
    "claim_id": "84359f336a5104b0d41d",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_wv",
    "name": "West Virginia SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3917,6 +3983,7 @@
   {
    "claim_id": "fe35a5d003686d2a4980",
    "source": "census",
+   "country": "US",
    "source_column": "spm_child_poverty_wy",
    "name": "Wyoming SPM child poverty rate",
    "window": "2022-2024 3-year average",
@@ -3974,6 +4041,7 @@
   {
    "claim_id": "8e07e6dc19cf58c62acc",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ak",
    "name": "Alaska SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4030,6 +4098,7 @@
   {
    "claim_id": "0deaebef07428ab342b5",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_al",
    "name": "Alabama SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4086,6 +4155,7 @@
   {
    "claim_id": "ddf374e51b7a975400d5",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ar",
    "name": "Arkansas SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4142,6 +4212,7 @@
   {
    "claim_id": "e9b5204d8089fc549e88",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_az",
    "name": "Arizona SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4198,6 +4269,7 @@
   {
    "claim_id": "cac67258e5b9b5da88d5",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ca",
    "name": "California SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4254,6 +4326,7 @@
   {
    "claim_id": "e733922d3029cd79b688",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_co",
    "name": "Colorado SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4310,6 +4383,7 @@
   {
    "claim_id": "fd746252fbe7d70168a1",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ct",
    "name": "Connecticut SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4366,6 +4440,7 @@
   {
    "claim_id": "82100da147ca1f887653",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_dc",
    "name": "District of Columbia SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4422,6 +4497,7 @@
   {
    "claim_id": "a1ea0acf638b713a5fa9",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_de",
    "name": "Delaware SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4478,6 +4554,7 @@
   {
    "claim_id": "ef92c4a17d9616b84e8d",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_fl",
    "name": "Florida SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4534,6 +4611,7 @@
   {
    "claim_id": "bcf36e2dd6a004196b3b",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ga",
    "name": "Georgia SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4590,6 +4668,7 @@
   {
    "claim_id": "157409312654547dda54",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_hi",
    "name": "Hawaii SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4646,6 +4725,7 @@
   {
    "claim_id": "f528a45068185199fcfc",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ia",
    "name": "Iowa SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4702,6 +4782,7 @@
   {
    "claim_id": "1e9d15d956b2f0ffa91a",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_id",
    "name": "Idaho SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4758,6 +4839,7 @@
   {
    "claim_id": "ae8c430221bad4ec14e2",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_il",
    "name": "Illinois SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4814,6 +4896,7 @@
   {
    "claim_id": "5549a20032311c6bbd31",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_in",
    "name": "Indiana SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4870,6 +4953,7 @@
   {
    "claim_id": "6a835a8f96aa55b18e21",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ks",
    "name": "Kansas SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4926,6 +5010,7 @@
   {
    "claim_id": "b0fd283612be85825169",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ky",
    "name": "Kentucky SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -4982,6 +5067,7 @@
   {
    "claim_id": "b708e39de2619d2180ec",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_la",
    "name": "Louisiana SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5038,6 +5124,7 @@
   {
    "claim_id": "7284f6fa3a580681d475",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ma",
    "name": "Massachusetts SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5094,6 +5181,7 @@
   {
    "claim_id": "f65cc2ffc9f6d7d2987b",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_md",
    "name": "Maryland SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5150,6 +5238,7 @@
   {
    "claim_id": "5e48c3b704ff32c51d7e",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_me",
    "name": "Maine SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5206,6 +5295,7 @@
   {
    "claim_id": "a6c9d71019fbeb5e5bf6",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_mi",
    "name": "Michigan SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5262,6 +5352,7 @@
   {
    "claim_id": "60cef97ef8b7236451da",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_mn",
    "name": "Minnesota SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5318,6 +5409,7 @@
   {
    "claim_id": "95ed0e94365e1c86a831",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_mo",
    "name": "Missouri SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5374,6 +5466,7 @@
   {
    "claim_id": "e2c82a2849885aafeec3",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ms",
    "name": "Mississippi SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5430,6 +5523,7 @@
   {
    "claim_id": "554e254ce2ffaa3e3e14",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_mt",
    "name": "Montana SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5486,6 +5580,7 @@
   {
    "claim_id": "254772c932dcbe1c9548",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_nc",
    "name": "North Carolina SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5542,6 +5637,7 @@
   {
    "claim_id": "270978b4c4a8ac0af7ca",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_nd",
    "name": "North Dakota SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5598,6 +5694,7 @@
   {
    "claim_id": "8ddffe87b963da46a42c",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ne",
    "name": "Nebraska SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5654,6 +5751,7 @@
   {
    "claim_id": "7650c5613087799e6b17",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_nh",
    "name": "New Hampshire SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5710,6 +5808,7 @@
   {
    "claim_id": "54ddcd746f6547275e70",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_nj",
    "name": "New Jersey SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5766,6 +5865,7 @@
   {
    "claim_id": "23d1c79481fc7369131f",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_nm",
    "name": "New Mexico SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5822,6 +5922,7 @@
   {
    "claim_id": "1d2f65ad30970d87ebaa",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_nv",
    "name": "Nevada SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5878,6 +5979,7 @@
   {
    "claim_id": "3b79d1eb7360f13381e3",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ny",
    "name": "New York SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5934,6 +6036,7 @@
   {
    "claim_id": "4647bef66a7f10631c14",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_oh",
    "name": "Ohio SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -5990,6 +6093,7 @@
   {
    "claim_id": "ad44e2913742d294570c",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ok",
    "name": "Oklahoma SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6046,6 +6150,7 @@
   {
    "claim_id": "5af425967764dab64322",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_or",
    "name": "Oregon SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6102,6 +6207,7 @@
   {
    "claim_id": "ce996b3e88742c0f0c37",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_pa",
    "name": "Pennsylvania SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6158,6 +6264,7 @@
   {
    "claim_id": "0b2a6ef72f5008337b42",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ri",
    "name": "Rhode Island SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6214,6 +6321,7 @@
   {
    "claim_id": "1809c60147fa37f67d49",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_sc",
    "name": "South Carolina SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6270,6 +6378,7 @@
   {
    "claim_id": "5d1e107bc05e215503b9",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_sd",
    "name": "South Dakota SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6326,6 +6435,7 @@
   {
    "claim_id": "a96a1236c09fa2d4625b",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_tn",
    "name": "Tennessee SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6382,6 +6492,7 @@
   {
    "claim_id": "7a67b187161e75679905",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_tx",
    "name": "Texas SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6438,6 +6549,7 @@
   {
    "claim_id": "2fb69d82a3df911ce693",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_us",
    "name": "United States SPM poverty rate",
    "window": "2024",
@@ -6493,6 +6605,7 @@
   {
    "claim_id": "f84919c3454b2fbbde8d",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_ut",
    "name": "Utah SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6549,6 +6662,7 @@
   {
    "claim_id": "c9774fefb7a67dd60d48",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_va",
    "name": "Virginia SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6605,6 +6719,7 @@
   {
    "claim_id": "228154f0104e67513ac7",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_vt",
    "name": "Vermont SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6661,6 +6776,7 @@
   {
    "claim_id": "450ad519bc170f6be9a5",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_wa",
    "name": "Washington SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6717,6 +6833,7 @@
   {
    "claim_id": "076afee6b488ce9204cb",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_wi",
    "name": "Wisconsin SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6773,6 +6890,7 @@
   {
    "claim_id": "5363db12f455bbb7c3be",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_wv",
    "name": "West Virginia SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6829,6 +6947,7 @@
   {
    "claim_id": "3da8bf5938b8e36727d5",
    "source": "census",
+   "country": "US",
    "source_column": "spm_poverty_wy",
    "name": "Wyoming SPM poverty rate",
    "window": "2022-2024 3-year average",
@@ -6885,6 +7004,7 @@
   {
    "claim_id": "6e5d908000025651e7d2",
    "source": "census_pep",
+   "country": "US",
    "source_column": "federal.ubi_mechanical",
    "name": "UBI mechanical check \u2014 $1,200/person/year",
    "window": "CY2024",
@@ -6940,6 +7060,7 @@
   {
    "claim_id": "03d666ddda6fe83bd6f4",
    "source": "co_admin",
+   "country": "US",
    "source_column": "state_co_ctc",
    "name": "Colorado Child Tax Credit",
    "window": "TY2023",
@@ -7032,6 +7153,7 @@
   {
    "claim_id": "96f0b26b18d8c5097d7f",
    "source": "co_admin",
+   "country": "US",
    "source_column": "state_co_eitc",
    "name": "Colorado EITC",
    "window": "TY2023",
@@ -7124,6 +7246,7 @@
   {
    "claim_id": "a4ac9f4bd35f476eee27",
    "source": "co_admin",
+   "country": "US",
    "source_column": "state_co_fac",
    "name": "Colorado Family Affordability Credit (refundable)",
    "window": "TY2024 (implied)",
@@ -7216,6 +7339,7 @@
   {
    "claim_id": "2c00aa7f5501d732d67e",
    "source": "co_fiscal_note",
+   "country": "US",
    "source_column": "state.co.hb1062",
    "name": "CO HB1062 \u2014 retirement income deduction expansion",
    "window": "TY2027",
@@ -7307,6 +7431,7 @@
   {
    "claim_id": "43bcf337ef7e636d639a",
    "source": "cpsp",
+   "country": "US",
    "source_column": "Table 1 SPM Poverty Rate, AFA CTC",
    "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
    "window": "",
@@ -7375,6 +7500,7 @@
   {
    "claim_id": "6776df1ea796030cbdc6",
    "source": "cpsp",
+   "country": "US",
    "source_column": "Table 1 SPM Poverty Rate, AFA CTC",
    "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
    "window": "",
@@ -7443,6 +7569,7 @@
   {
    "claim_id": "17357fa57e38729ecdcd",
    "source": "cpsp",
+   "country": "US",
    "source_column": "Table 1 SPM Poverty Rate, No CTC",
    "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
    "window": "",
@@ -7507,6 +7634,7 @@
   {
    "claim_id": "984ab8f1c0b001d4aa5c",
    "source": "cpsp",
+   "country": "US",
    "source_column": "Table 1 SPM Poverty Rate, No CTC",
    "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
    "window": "",
@@ -7571,6 +7699,7 @@
   {
    "claim_id": "1e71ccf56dcae8de7a23",
    "source": "cpsp",
+   "country": "US",
    "source_column": "Table 1 SPM Poverty Rate, OBBBA CTC",
    "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
    "window": "",
@@ -7637,6 +7766,7 @@
   {
    "claim_id": "fd02127839e40294e7a5",
    "source": "cpsp",
+   "country": "US",
    "source_column": "Table 1 SPM Poverty Rate, OBBBA CTC",
    "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
    "window": "",
@@ -7703,6 +7833,7 @@
   {
    "claim_id": "05e88b52036c2668389d",
    "source": "cpsp",
+   "country": "US",
    "source_column": "Table 1 SPM Poverty Rate, TCJA CTC",
    "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
    "window": "",
@@ -7767,6 +7898,7 @@
   {
    "claim_id": "e54aad0412968c828eba",
    "source": "cpsp",
+   "country": "US",
    "source_column": "Table 1 SPM Poverty Rate, TCJA CTC",
    "name": "What Could 2024 Child Poverty Rates Have Looked Like Had an Expanded Child Tax Credit Been in Place?",
    "window": "",
@@ -7831,6 +7963,7 @@
   {
    "claim_id": "dbb34965f41514214b05",
    "source": "ct_admin",
+   "country": "US",
    "source_column": "state_ct_eitc",
    "name": "Connecticut EITC",
    "window": "TY2024",
@@ -7923,6 +8056,7 @@
   {
    "claim_id": "5ca1b45fdce7c6533e9e",
    "source": "ct_fiscal_note",
+   "country": "US",
    "source_column": "state.ct.hb5134",
    "name": "CT HB5134 \u2014 new $600/child refundable CTC",
    "window": "FY2027",
@@ -7978,6 +8112,7 @@
   {
    "claim_id": "6ea0c9aa4297e64b5c73",
    "source": "ct_fiscal_note",
+   "country": "US",
    "source_column": "state.ct.rebate2026",
    "name": "CT 2026 one-time tax rebate ($200/$400)",
    "window": "FY2027 (one-time)",
@@ -8033,6 +8168,7 @@
   {
    "claim_id": "60b52914e93edd79c0d6",
    "source": "ct_fiscal_note",
+   "country": "US",
    "source_column": "state.ct.sb69",
    "name": "CT SB69 \u2014 EITC repeal (40% of federal)",
    "window": "FY2027",
@@ -8088,6 +8224,7 @@
   {
    "claim_id": "5ed0fe7e7f4521584fe1",
    "source": "dc_admin",
+   "country": "US",
    "source_column": "state_dc_eitc",
    "name": "District of Columbia EITC",
    "window": "FY2024",
@@ -8180,6 +8317,7 @@
   {
    "claim_id": "cb178eb6b2c76e2af325",
    "source": "de_admin",
+   "country": "US",
    "source_column": "state_de_eitc",
    "name": "Delaware EITC",
    "window": "FY2025",
@@ -8272,6 +8410,7 @@
   {
    "claim_id": "23a4533f823c7b1a1cc5",
    "source": "ga_fiscal_note",
+   "country": "US",
    "source_column": "state.ga.hb1001",
    "name": "GA HB1001 \u2014 income tax rate cut (5.19% \u2192 4.99%)",
    "window": "FY2028 (first clean full-cut year, individual income tax only)",
@@ -8363,6 +8502,7 @@
   {
    "claim_id": "ffb1fa41bff7bcb53ad3",
    "source": "hi_admin",
+   "country": "US",
    "source_column": "state_hi_eitc",
    "name": "Hawaii EITC",
    "window": "TY2024",
@@ -8455,6 +8595,7 @@
   {
    "claim_id": "b0423ecc33d56584fe58",
    "source": "ia_admin",
+   "country": "US",
    "source_column": "state_ia_eitc",
    "name": "Iowa EITC",
    "window": "TY2024",
@@ -8547,6 +8688,7 @@
   {
    "claim_id": "e3eb837aef9d9269a700",
    "source": "ia_fiscal_note",
+   "country": "US",
    "source_column": "state.ia.hf1020",
    "name": "IA HF1020 \u2014 child and dependent care credit expansion",
    "window": "FY2026",
@@ -8638,6 +8780,7 @@
   {
    "claim_id": "bd2894a6bf3d1e1eda0d",
    "source": "id_admin",
+   "country": "US",
    "source_column": "state_id_ctc",
    "name": "Idaho Child Tax Credit ($205/child nonrefundable)",
    "window": "CY2024 (revised)",
@@ -8730,6 +8873,7 @@
   {
    "claim_id": "cc1f77e73de5a803ff54",
    "source": "id_admin",
+   "country": "US",
    "source_column": "state_id_grocery_credit",
    "name": "Idaho Grocery Credit",
    "window": "TY2024",
@@ -8822,6 +8966,7 @@
   {
    "claim_id": "475d4273a14d418158e5",
    "source": "id_fiscal_note",
+   "country": "US",
    "source_column": "state.id.sb1450",
    "name": "ID SB1450 \u2014 $205/child CTC made permanent",
    "window": "FY2027",
@@ -8877,6 +9022,7 @@
   {
    "claim_id": "f2d0ad4dc7463653c9cd",
    "source": "il_admin",
+   "country": "US",
    "source_column": "state_il_eitc",
    "name": "Illinois EITC",
    "window": "TY2023",
@@ -8969,6 +9115,7 @@
   {
    "claim_id": "2b2c113ca2c8e9b86b70",
    "source": "il_admin",
+   "country": "US",
    "source_column": "state_repeal_il_eitc",
    "name": "Repeal Illinois EITC",
    "window": "TY2023",
@@ -9062,6 +9209,7 @@
   {
    "claim_id": "e053f2018d75bd10cecc",
    "source": "il_admin",
+   "country": "US",
    "source_column": "state_il_ctc",
    "name": "Illinois Child Tax Credit",
    "window": "TY2024",
@@ -9154,6 +9302,7 @@
   {
    "claim_id": "78dbc6fc468ac60b2a5e",
    "source": "in_admin",
+   "country": "US",
    "source_column": "state_in_eitc",
    "name": "Indiana EITC",
    "window": "FY2024",
@@ -9246,6 +9395,7 @@
   {
    "claim_id": "06016de9be1738973cf5",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_co",
    "name": "Federal EITC claimed in Colorado",
    "window": "TY2024",
@@ -9338,6 +9488,7 @@
   {
    "claim_id": "50a9a50ccca25948360a",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_ct",
    "name": "Federal EITC claimed in Connecticut",
    "window": "TY2024",
@@ -9430,6 +9581,7 @@
   {
    "claim_id": "605d23ef97b5eb2558db",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_hi",
    "name": "Federal EITC claimed in Hawaii",
    "window": "TY2024",
@@ -9522,6 +9674,7 @@
   {
    "claim_id": "a768c680a42ca9a01922",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_ia",
    "name": "Federal EITC claimed in Iowa",
    "window": "TY2024",
@@ -9614,6 +9767,7 @@
   {
    "claim_id": "149708c70b8ef674dd5c",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_il",
    "name": "Federal EITC claimed in Illinois",
    "window": "TY2024",
@@ -9706,6 +9860,7 @@
   {
    "claim_id": "89a24679a114154b7444",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_in",
    "name": "Federal EITC claimed in Indiana",
    "window": "TY2024",
@@ -9798,6 +9953,7 @@
   {
    "claim_id": "8c6132e18fd414d449ee",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_ks",
    "name": "Federal EITC claimed in Kansas",
    "window": "TY2024",
@@ -9890,6 +10046,7 @@
   {
    "claim_id": "956c50a43eec434c21e9",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_la",
    "name": "Federal EITC claimed in Louisiana",
    "window": "TY2024",
@@ -9982,6 +10139,7 @@
   {
    "claim_id": "3c60730499d9bd95aee5",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_me",
    "name": "Federal EITC claimed in Maine",
    "window": "TY2024",
@@ -10074,6 +10232,7 @@
   {
    "claim_id": "96c7370be9922c9c0369",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_mi",
    "name": "Federal EITC claimed in Michigan",
    "window": "TY2024",
@@ -10166,6 +10325,7 @@
   {
    "claim_id": "f8747b9eb86d56b17845",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_mt",
    "name": "Federal EITC claimed in Montana",
    "window": "TY2024",
@@ -10258,6 +10418,7 @@
   {
    "claim_id": "54aeb9e21f030d43fdf9",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_ne",
    "name": "Federal EITC claimed in Nebraska",
    "window": "TY2024",
@@ -10350,6 +10511,7 @@
   {
    "claim_id": "58e627121073666f82b1",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_nj",
    "name": "Federal EITC claimed in New Jersey",
    "window": "TY2024",
@@ -10442,6 +10604,7 @@
   {
    "claim_id": "93877d65a136e552907c",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_nm",
    "name": "Federal EITC claimed in New Mexico",
    "window": "TY2024",
@@ -10534,6 +10697,7 @@
   {
    "claim_id": "50a283e6050bdc045cfb",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_ny",
    "name": "Federal EITC claimed in New York",
    "window": "TY2024",
@@ -10626,6 +10790,7 @@
   {
    "claim_id": "84b6aa04519640d79c66",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_ok",
    "name": "Federal EITC claimed in Oklahoma",
    "window": "TY2024",
@@ -10718,6 +10883,7 @@
   {
    "claim_id": "8417ee9f08a57c39a520",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_ri",
    "name": "Federal EITC claimed in Rhode Island",
    "window": "TY2024",
@@ -10810,6 +10976,7 @@
   {
    "claim_id": "d5fbf0039fb4afa42bda",
    "source": "irs",
+   "country": "US",
    "source_column": "fed_eitc_vt",
    "name": "Federal EITC claimed in Vermont",
    "window": "TY2024",
@@ -10902,6 +11069,7 @@
   {
    "claim_id": "a30038fadf850d62d6f5",
    "source": "irs_soi",
+   "country": "US",
    "source_column": "soi_cdcc",
    "name": "Child and dependent care credit",
    "window": "TY2023",
@@ -11006,6 +11174,7 @@
   {
    "claim_id": "4346a9fa3a0808ab3ed8",
    "source": "irs_soi",
+   "country": "US",
    "source_column": "soi_ctc_nonrefundable",
    "name": "Child tax credit + ODC (nonrefundable)",
    "window": "TY2023",
@@ -11110,6 +11279,7 @@
   {
    "claim_id": "dfc756e1df8119360e71",
    "source": "irs_soi",
+   "country": "US",
    "source_column": "soi_ctc_refundable",
    "name": "Additional child tax credit (refundable)",
    "window": "TY2023",
@@ -11214,6 +11384,7 @@
   {
    "claim_id": "788712a4db74edbd1398",
    "source": "irs_soi",
+   "country": "US",
    "source_column": "soi_education_credits",
    "name": "Education credits (nonrefundable)",
    "window": "TY2023",
@@ -11318,6 +11489,7 @@
   {
    "claim_id": "1dba5bf211130e2ed566",
    "source": "irs_soi",
+   "country": "US",
    "source_column": "soi_savers_credit",
    "name": "Retirement savings contribution (saver's) credit",
    "window": "TY2023",
@@ -11422,6 +11594,7 @@
   {
    "claim_id": "705dc2ffcbb72e8915a0",
    "source": "irs_soi",
+   "country": "US",
    "source_column": "soi_amt",
    "name": "Alternative minimum tax",
    "window": "TY2023",
@@ -11526,6 +11699,7 @@
   {
    "claim_id": "dd2ee41fc22c32eee812",
    "source": "irs_soi",
+   "country": "US",
    "source_column": "soi_income_tax_net",
    "name": "Total income tax (net of refundable credits)",
    "window": "TY2023",
@@ -11630,6 +11804,7 @@
   {
    "claim_id": "75d3adf70657bb4eafeb",
    "source": "irs_soi",
+   "country": "US",
    "source_column": "soi_niit",
    "name": "Net investment income tax",
    "window": "TY2023",
@@ -11734,6 +11909,7 @@
   {
    "claim_id": "8b5e639eb6f1b8d952b6",
    "source": "irs_soi",
+   "country": "US",
    "source_column": "soi_se_tax",
    "name": "Self-employment tax",
    "window": "TY2023",
@@ -11838,6 +12014,7 @@
   {
    "claim_id": "256e2230f3480d4272d5",
    "source": "jct",
+   "country": "US",
    "source_column": "federal.arpa_childless_eitc",
    "name": "ARPA 2021 childless EITC expansion (applied to 2024 data)",
    "window": "FY2021-FY2031 (single tax year 2021)",
@@ -11893,6 +12070,7 @@
   {
    "claim_id": "55ed3641e33a393ac1de",
    "source": "jct",
+   "country": "US",
    "source_column": "federal.arpa_ctc_2021",
    "name": "ARPA 2021 CTC expansion (applied to 2024 data)",
    "window": "FY2021+FY2022 (single tax year 2021)",
@@ -11948,6 +12126,7 @@
   {
    "claim_id": "de0e060283cedbdece46",
    "source": "jct",
+   "country": "US",
    "source_column": "1. Extension and limited enhancement of reduced rates [1]",
    "name": "1. Extension and limited enhancement of reduced rates [1]",
    "window": "",
@@ -12055,6 +12234,7 @@
   {
    "claim_id": "73ef6ebfd109b05e4d60",
    "source": "jct",
+   "country": "US",
    "source_column": "1. No tax on tips (sunset 12/31/28) [5]",
    "name": "1. No tax on tips (sunset 12/31/28) [5]",
    "window": "",
@@ -12162,6 +12342,7 @@
   {
    "claim_id": "8879d6dd6ecc11bdf607",
    "source": "jct",
+   "country": "US",
    "source_column": "10. Termination of miscellaneous itemized deductions other than educator expenses",
    "name": "10. Termination of miscellaneous itemized deductions other than educator expenses",
    "window": "",
@@ -12269,6 +12450,7 @@
   {
    "claim_id": "72a92d1e0f6d6605f477",
    "source": "jct",
+   "country": "US",
    "source_column": "11. Limitation on tax benefit of itemized deductions",
    "name": "11. Limitation on tax benefit of itemized deductions",
    "window": "",
@@ -12376,6 +12558,7 @@
   {
    "claim_id": "f637f089b36522daa0f6",
    "source": "jct",
+   "country": "US",
    "source_column": "2. Extension and enhancement of increased standard deduction [1]",
    "name": "2. Extension and enhancement of increased standard deduction [1]",
    "window": "",
@@ -12483,6 +12666,7 @@
   {
    "claim_id": "e6f0232052da15690e4a",
    "source": "jct",
+   "country": "US",
    "source_column": "2. No tax on overtime (sunset 12/31/28)",
    "name": "2. No tax on overtime (sunset 12/31/28)",
    "window": "",
@@ -12590,6 +12774,7 @@
   {
    "claim_id": "a822378f6be2661eb525",
    "source": "jct",
+   "country": "US",
    "source_column": "20. Limitation on individual deductions for certain State and local taxes [1]",
    "name": "20. Limitation on individual deductions for certain State and local taxes [1]",
    "window": "",
@@ -12697,6 +12882,7 @@
   {
    "claim_id": "17ba03f21f372df6c315",
    "source": "jct",
+   "country": "US",
    "source_column": "3. No tax on car loan interest",
    "name": "3. No tax on car loan interest",
    "window": "",
@@ -12804,6 +12990,7 @@
   {
    "claim_id": "104dc5af09aca30514e5",
    "source": "jct",
+   "country": "US",
    "source_column": "3. Termination of deduction for personal exemptions other than temporary senior deduction [1]",
    "name": "3. Termination of deduction for personal exemptions other than temporary senior deduction [1]",
    "window": "",
@@ -12911,6 +13098,7 @@
   {
    "claim_id": "01304f138bf44f724ef0",
    "source": "jct",
+   "country": "US",
    "source_column": "4. Extension and enhancement of increased child tax credit [1]",
    "name": "4. Extension and enhancement of increased child tax credit [1]",
    "window": "",
@@ -13036,6 +13224,7 @@
   {
    "claim_id": "1cb8833f070d370af65f",
    "source": "jct",
+   "country": "US",
    "source_column": "4. Permanent and expanded reinstatement of partial deduction for charitable contributions of individuals who do not elect to itemize",
    "name": "4. Permanent and expanded reinstatement of partial deduction for charitable contributions of individuals who do not elect to itemize",
    "window": "",
@@ -13143,6 +13332,7 @@
   {
    "claim_id": "ecb717a9acc4a1b38078",
    "source": "jct",
+   "country": "US",
    "source_column": "5. 0.5 percent floor on deduction of contributions made by individuals",
    "name": "5. 0.5 percent floor on deduction of contributions made by individuals",
    "window": "",
@@ -13250,6 +13440,7 @@
   {
    "claim_id": "0b9f7c2b76e0753b5f75",
    "source": "jct",
+   "country": "US",
    "source_column": "5. Enhancement of child and dependent care tax credit [1]",
    "name": "5. Enhancement of child and dependent care tax credit [1]",
    "window": "",
@@ -13357,6 +13548,7 @@
   {
    "claim_id": "111a9e17fdff31b80598",
    "source": "jct",
+   "country": "US",
    "source_column": "5. Extension and enhancement of deduction for qualified business income",
    "name": "5. Extension and enhancement of deduction for qualified business income",
    "window": "",
@@ -13464,6 +13656,7 @@
   {
    "claim_id": "71c9d1d62387ef6b688d",
    "source": "jct",
+   "country": "US",
    "source_column": "6. Extension and enhancement of increased estate and gift tax exemption amounts",
    "name": "6. Extension and enhancement of increased estate and gift tax exemption amounts",
    "window": "",
@@ -13571,6 +13764,7 @@
   {
    "claim_id": "3dd3cd4f14af2d46bd66",
    "source": "jct",
+   "country": "US",
    "source_column": "7. Extension of increased alternative minimum tax exemption amounts, modification of phaseout thresholds, and increased threshold phaseout rate",
    "name": "7. Extension of increased alternative minimum tax exemption amounts, modification of phaseout thresholds, and increased threshold phaseout rate",
    "window": "",
@@ -13678,6 +13872,7 @@
   {
    "claim_id": "8c39fd4f728cdc2a89f9",
    "source": "jct",
+   "country": "US",
    "source_column": "8. Extension of limitation on deduction for qualified residence interest [1]",
    "name": "8. Extension of limitation on deduction for qualified residence interest [1]",
    "window": "",
@@ -13785,6 +13980,7 @@
   {
    "claim_id": "2b90f7cd21917bcf9730",
    "source": "jct",
+   "country": "US",
    "source_column": "9. Extension and modification of limitation on casualty loss deduction [1]",
    "name": "9. Extension and modification of limitation on casualty loss deduction [1]",
    "window": "",
@@ -13892,6 +14088,7 @@
   {
    "claim_id": "f61517861ecfa27f64ef",
    "source": "jct",
+   "country": "US",
    "source_column": "1. Extension and limited enhancement of reduced rates [1]",
    "name": "1. Extension and limited enhancement of reduced rates [1]",
    "window": "",
@@ -13999,6 +14196,7 @@
   {
    "claim_id": "f227bd9991831f737066",
    "source": "jct",
+   "country": "US",
    "source_column": "1. No tax on tips (sunset 12/31/28) [5]",
    "name": "1. No tax on tips (sunset 12/31/28) [5]",
    "window": "",
@@ -14106,6 +14304,7 @@
   {
    "claim_id": "7bd53e20cde8c5e5fbcc",
    "source": "jct",
+   "country": "US",
    "source_column": "10. Termination of miscellaneous itemized deductions other than educator expenses",
    "name": "10. Termination of miscellaneous itemized deductions other than educator expenses",
    "window": "",
@@ -14213,6 +14412,7 @@
   {
    "claim_id": "89ea72f1651301083a8e",
    "source": "jct",
+   "country": "US",
    "source_column": "11. Limitation on tax benefit of itemized deductions",
    "name": "11. Limitation on tax benefit of itemized deductions",
    "window": "",
@@ -14320,6 +14520,7 @@
   {
    "claim_id": "18bede778ad5fadeb9bb",
    "source": "jct",
+   "country": "US",
    "source_column": "2. Extension and enhancement of increased standard deduction [1]",
    "name": "2. Extension and enhancement of increased standard deduction [1]",
    "window": "",
@@ -14427,6 +14628,7 @@
   {
    "claim_id": "9c8d2af8d1b48b54d639",
    "source": "jct",
+   "country": "US",
    "source_column": "2. No tax on overtime (sunset 12/31/28)",
    "name": "2. No tax on overtime (sunset 12/31/28)",
    "window": "",
@@ -14534,6 +14736,7 @@
   {
    "claim_id": "2e598d8d5532fb885faf",
    "source": "jct",
+   "country": "US",
    "source_column": "20. Limitation on individual deductions for certain State and local taxes [1]",
    "name": "20. Limitation on individual deductions for certain State and local taxes [1]",
    "window": "",
@@ -14641,6 +14844,7 @@
   {
    "claim_id": "cf49ed4913b68459b9b0",
    "source": "jct",
+   "country": "US",
    "source_column": "3. No tax on car loan interest",
    "name": "3. No tax on car loan interest",
    "window": "",
@@ -14748,6 +14952,7 @@
   {
    "claim_id": "d6a87ab3ab17fc42ccd4",
    "source": "jct",
+   "country": "US",
    "source_column": "3. Termination of deduction for personal exemptions other than temporary senior deduction [1]",
    "name": "3. Termination of deduction for personal exemptions other than temporary senior deduction [1]",
    "window": "",
@@ -14855,6 +15060,7 @@
   {
    "claim_id": "91aa557b03ce5b269ec5",
    "source": "jct",
+   "country": "US",
    "source_column": "4. Extension and enhancement of increased child tax credit [1]",
    "name": "4. Extension and enhancement of increased child tax credit [1]",
    "window": "",
@@ -14962,6 +15168,7 @@
   {
    "claim_id": "85abfca7dfcd7c68d978",
    "source": "jct",
+   "country": "US",
    "source_column": "4. Permanent and expanded reinstatement of partial deduction for charitable contributions of individuals who do not elect to itemize",
    "name": "4. Permanent and expanded reinstatement of partial deduction for charitable contributions of individuals who do not elect to itemize",
    "window": "",
@@ -15069,6 +15276,7 @@
   {
    "claim_id": "19e20ef16966af3f35fd",
    "source": "jct",
+   "country": "US",
    "source_column": "5. 0.5 percent floor on deduction of contributions made by individuals",
    "name": "5. 0.5 percent floor on deduction of contributions made by individuals",
    "window": "",
@@ -15176,6 +15384,7 @@
   {
    "claim_id": "e6c572302a05ea6ecee3",
    "source": "jct",
+   "country": "US",
    "source_column": "5. Enhancement of child and dependent care tax credit [1]",
    "name": "5. Enhancement of child and dependent care tax credit [1]",
    "window": "",
@@ -15283,6 +15492,7 @@
   {
    "claim_id": "acb9d50ec97d81a5194b",
    "source": "jct",
+   "country": "US",
    "source_column": "5. Extension and enhancement of deduction for qualified business income",
    "name": "5. Extension and enhancement of deduction for qualified business income",
    "window": "",
@@ -15390,6 +15600,7 @@
   {
    "claim_id": "3244357bc57dbb8f68a4",
    "source": "jct",
+   "country": "US",
    "source_column": "6. Extension and enhancement of increased estate and gift tax exemption amounts",
    "name": "6. Extension and enhancement of increased estate and gift tax exemption amounts",
    "window": "",
@@ -15497,6 +15708,7 @@
   {
    "claim_id": "83486ec6135bb120a563",
    "source": "jct",
+   "country": "US",
    "source_column": "7. Extension of increased alternative minimum tax exemption amounts, modification of phaseout thresholds, and increased threshold phaseout rate",
    "name": "7. Extension of increased alternative minimum tax exemption amounts, modification of phaseout thresholds, and increased threshold phaseout rate",
    "window": "",
@@ -15604,6 +15816,7 @@
   {
    "claim_id": "c2a182aa7352c9149237",
    "source": "jct",
+   "country": "US",
    "source_column": "8. Extension of limitation on deduction for qualified residence interest [1]",
    "name": "8. Extension of limitation on deduction for qualified residence interest [1]",
    "window": "",
@@ -15711,6 +15924,7 @@
   {
    "claim_id": "03d90cf1164672f10599",
    "source": "jct",
+   "country": "US",
    "source_column": "9. Extension and modification of limitation on casualty loss deduction [1]",
    "name": "9. Extension and modification of limitation on casualty loss deduction [1]",
    "window": "",
@@ -15818,6 +16032,7 @@
   {
    "claim_id": "0ecddbcc90901c679aea",
    "source": "jct",
+   "country": "US",
    "source_column": "jct.tax_expenditures.cy2024.charitable_deduction.revenue_loss",
    "name": "jct.tax_expenditures.cy2024.charitable_deduction.revenue_loss",
    "window": "annual",
@@ -15922,6 +16137,7 @@
   {
    "claim_id": "3c3ac50336296926f5cd",
    "source": "jct",
+   "country": "US",
    "source_column": "jct.tax_expenditures.cy2024.deductible_mortgage_interest.revenue_loss",
    "name": "jct.tax_expenditures.cy2024.deductible_mortgage_interest.revenue_loss",
    "window": "annual",
@@ -16026,6 +16242,7 @@
   {
    "claim_id": "b426ce869163f8cc6a7c",
    "source": "jct",
+   "country": "US",
    "source_column": "jct.tax_expenditures.cy2024.medical_expense_deduction.revenue_loss",
    "name": "jct.tax_expenditures.cy2024.medical_expense_deduction.revenue_loss",
    "window": "annual",
@@ -16130,6 +16347,7 @@
   {
    "claim_id": "b4d3c3087c80b94ed0e9",
    "source": "jct",
+   "country": "US",
    "source_column": "jct.tax_expenditures.cy2024.qualified_business_income_deduction.revenue_loss",
    "name": "jct.tax_expenditures.cy2024.qualified_business_income_deduction.revenue_loss",
    "window": "annual",
@@ -16234,6 +16452,7 @@
   {
    "claim_id": "048502bf0bb135e86bb8",
    "source": "jct",
+   "country": "US",
    "source_column": "jct.tax_expenditures.cy2024.salt_deduction.revenue_loss",
    "name": "jct.tax_expenditures.cy2024.salt_deduction.revenue_loss",
    "window": "annual",
@@ -16338,6 +16557,7 @@
   {
    "claim_id": "3fa14ae8e6b1a2b1213c",
    "source": "jct",
+   "country": "US",
    "source_column": "te_ctc",
    "name": "Child Tax Credit (incl. ODC)",
    "window": "FY2024",
@@ -16442,6 +16662,7 @@
   {
    "claim_id": "87f89beafbdef5e79979",
    "source": "jct",
+   "country": "US",
    "source_column": "te_eitc",
    "name": "Earned Income Tax Credit",
    "window": "FY2024",
@@ -16546,6 +16767,7 @@
   {
    "claim_id": "1df35eedad0369e02af7",
    "source": "ks_admin",
+   "country": "US",
    "source_column": "state_ks_eitc",
    "name": "Kansas EITC",
    "window": "TY2023",
@@ -16638,6 +16860,7 @@
   {
    "claim_id": "b1d851ddf85100419afe",
    "source": "ks_fiscal_note",
+   "country": "US",
    "source_column": "state.ks.hb2629",
    "name": "KS HB2629 \u2014 standard deduction base increase",
    "window": "TY2026",
@@ -16694,6 +16917,7 @@
   {
    "claim_id": "e92503d7ac6daa8c6d27",
    "source": "ks_fiscal_note",
+   "country": "US",
    "source_column": "state.ks.hb2620",
    "name": "KS HB2620 \u2014 EITC match 17% \u2192 18%",
    "window": "FY2027",
@@ -16749,6 +16973,7 @@
   {
    "claim_id": "fa23fda19fbd858ad73c",
    "source": "la_admin",
+   "country": "US",
    "source_column": "state_la_eitc",
    "name": "Louisiana EITC",
    "window": "FY2025",
@@ -16841,6 +17066,7 @@
   {
    "claim_id": "2e661aad5809ae907e86",
    "source": "ma_admin",
+   "country": "US",
    "source_column": "state_ma_eitc",
    "name": "Massachusetts EITC",
    "window": "FY2024",
@@ -16933,6 +17159,7 @@
   {
    "claim_id": "5a97eecbfa8ce0e7b2b2",
    "source": "ma_admin",
+   "country": "US",
    "source_column": "state_ma_cftc",
    "name": "Massachusetts Child and Family Tax Credit",
    "window": "FY2025",
@@ -17025,6 +17252,7 @@
   {
    "claim_id": "e598532e06e1a4b95e8f",
    "source": "md_admin",
+   "country": "US",
    "source_column": "state_md_ctc",
    "name": "Maryland Child Tax Credit",
    "window": "FY2024",
@@ -17117,6 +17345,7 @@
   {
    "claim_id": "a0fc12d9e7bbddfdc301",
    "source": "md_admin",
+   "country": "US",
    "source_column": "state_md_eitc",
    "name": "Maryland EITC (refundable + nonrefundable)",
    "window": "TY2024",
@@ -17209,6 +17438,7 @@
   {
    "claim_id": "d43860aeb9f06453bf95",
    "source": "md_fiscal_note",
+   "country": "US",
    "source_column": "state.md.hb411",
    "name": "MD HB411 \u2014 standard deduction increase",
    "window": "FY2028 (annualized single tax year, state GF)",
@@ -17300,6 +17530,7 @@
   {
    "claim_id": "a774f0850e63efbbaf5a",
    "source": "me_admin",
+   "country": "US",
    "source_column": "state_me_eitc",
    "name": "Maine EITC",
    "window": "FY2024",
@@ -17392,6 +17623,7 @@
   {
    "claim_id": "9edcdf382496b453ba41",
    "source": "mi_admin",
+   "country": "US",
    "source_column": "state_mi_eitc",
    "name": "Michigan EITC",
    "window": "TY2024",
@@ -17484,6 +17716,7 @@
   {
    "claim_id": "763942c5e25476850bcd",
    "source": "mi_fiscal_note",
+   "country": "US",
    "source_column": "state.mi.hb4170",
    "name": "MI HB4170 \u2014 flat rate cut (4.25% \u2192 4.05%)",
    "window": "annual (approximate)",
@@ -17575,6 +17808,7 @@
   {
    "claim_id": "d8d704811e7a1c00152f",
    "source": "mn_admin",
+   "country": "US",
    "source_column": "state_mn_cwfc",
    "name": "Minnesota Child Tax Credit + Working Family Credit",
    "window": "TY2024",
@@ -17667,6 +17901,7 @@
   {
    "claim_id": "901232245430396bdea5",
    "source": "mn_admin",
+   "country": "US",
    "source_column": "state_mn_wfc",
    "name": "Minnesota Working Family Credit",
    "window": "TY2024",
@@ -17759,6 +17994,7 @@
   {
    "claim_id": "8f5824730b4189c3cbd5",
    "source": "mo_admin",
+   "country": "US",
    "source_column": "state_mo_wftc",
    "name": "Missouri Working Family Tax Credit (20% nonrefundable)",
    "window": "TY2024 (issued CY2025)",
@@ -17851,6 +18087,7 @@
   {
    "claim_id": "2e9e01358132a07ee74a",
    "source": "mt_admin",
+   "country": "US",
    "source_column": "state_mt_eitc",
    "name": "Montana EITC",
    "window": "TY2024",
@@ -17943,6 +18180,7 @@
   {
    "claim_id": "1ea7fa6c18d90fb829b8",
    "source": "nd_fiscal_note",
+   "country": "US",
    "source_column": "state.nd.hb1388",
    "name": "ND HB1388 \u2014 marriage penalty elimination",
    "window": "per year (2025-27 biennium \u00f7 2)",
@@ -18035,6 +18273,7 @@
   {
    "claim_id": "4cb4016dad85080ea408",
    "source": "ne_admin",
+   "country": "US",
    "source_column": "state_ne_eitc",
    "name": "Nebraska EITC",
    "window": "TY2024",
@@ -18127,6 +18366,7 @@
   {
    "claim_id": "a9b4cc297a86b645a031",
    "source": "nj_admin",
+   "country": "US",
    "source_column": "state_nj_ctc",
    "name": "New Jersey Child Tax Credit",
    "window": "TY2024",
@@ -18219,6 +18459,7 @@
   {
    "claim_id": "f5072dabfa7cb5b668d2",
    "source": "nj_admin",
+   "country": "US",
    "source_column": "state_nj_eitc",
    "name": "New Jersey EITC",
    "window": "TY2024",
@@ -18311,6 +18552,7 @@
   {
    "claim_id": "f852db33b142fc1e7dcd",
    "source": "nm_admin",
+   "country": "US",
    "source_column": "state_nm_ctc",
    "name": "New Mexico Child Income Tax Credit",
    "window": "TY2024",
@@ -18403,6 +18645,7 @@
   {
    "claim_id": "182cedf0d77c54ed4c9f",
    "source": "nm_admin",
+   "country": "US",
    "source_column": "state_nm_eitc",
    "name": "New Mexico Working Families Tax Credit",
    "window": "TY2024",
@@ -18495,6 +18738,7 @@
   {
    "claim_id": "31d84fc54ba33a9ec0af",
    "source": "ny_admin",
+   "country": "US",
    "source_column": "state_ny_escc",
    "name": "New York Empire State Child Credit",
    "window": "TY2023",
@@ -18587,6 +18831,7 @@
   {
    "claim_id": "38718b45a044da9dd49c",
    "source": "ny_admin",
+   "country": "US",
    "source_column": "state_ny_eitc",
    "name": "New York EITC",
    "window": "TY2024",
@@ -18679,6 +18924,7 @@
   {
    "claim_id": "4bac6a16f6267328daf0",
    "source": "oh_admin",
+   "country": "US",
    "source_column": "state_oh_eitc",
    "name": "Ohio EITC (30% nonrefundable)",
    "window": "FY2025 (TY2024 proxy)",
@@ -18771,6 +19017,7 @@
   {
    "claim_id": "2ccca369cb658b2b2818",
    "source": "ok_admin",
+   "country": "US",
    "source_column": "state_ok_eitc",
    "name": "Oklahoma EITC",
    "window": "TY2022",
@@ -18863,6 +19110,7 @@
   {
    "claim_id": "8a4c765fe0035c768546",
    "source": "ok_fiscal_note",
+   "country": "US",
    "source_column": "state.ok.sb2156",
    "name": "OK SB2156 \u2014 income tax elimination",
    "window": "TY2026 (note's tax-year table)",
@@ -18954,6 +19202,7 @@
   {
    "claim_id": "b90425c06f32c90a2ecb",
    "source": "or_admin",
+   "country": "US",
    "source_column": "state_or_eitc",
    "name": "Oregon EITC",
    "window": "TY2023",
@@ -19046,6 +19295,7 @@
   {
    "claim_id": "e7dce652ed95d395216c",
    "source": "or_admin",
+   "country": "US",
    "source_column": "state_or_kids_credit",
    "name": "Oregon Kids Credit",
    "window": "TY2023",
@@ -19138,6 +19388,7 @@
   {
    "claim_id": "f5d8c07a7503e0f13d55",
    "source": "pwbm",
+   "country": "US",
    "source_column": "Ending taxation of Social Security benefits | 2025",
    "name": "Ending taxation of Social Security benefits",
    "window": "",
@@ -19203,6 +19454,7 @@
   {
    "claim_id": "813dcc8b880813c74c72",
    "source": "pwbm",
+   "country": "US",
    "source_column": "Ending taxation of Social Security benefits | 2026",
    "name": "Ending taxation of Social Security benefits",
    "window": "",
@@ -19268,6 +19520,7 @@
   {
    "claim_id": "3f377de7e5d1a0b461ae",
    "source": "ri_admin",
+   "country": "US",
    "source_column": "state_ri_eitc",
    "name": "Rhode Island EITC",
    "window": "TY2023",
@@ -19360,6 +19613,7 @@
   {
    "claim_id": "4ed16ed1e0fce7e35aac",
    "source": "sc_admin",
+   "country": "US",
    "source_column": "state_sc_eitc",
    "name": "South Carolina EITC (125% nonrefundable)",
    "window": "FY2024-25",
@@ -19452,6 +19706,7 @@
   {
    "claim_id": "26f4c8e3cd7a99a66a80",
    "source": "tpc",
+   "country": "US",
    "source_column": "FY2026",
    "name": "Increase top individual income tax rate to 39.6 percent for taxable income in excess of $1,720,000 for married couples filing jointly; $1,528,875 for singles; and $1,624,400 for heads of household, indexed for inflation after 2026.",
    "window": "",
@@ -19518,6 +19773,7 @@
   {
    "claim_id": "4c5da78e09541a5bef54",
    "source": "tpc",
+   "country": "US",
    "source_column": "FY2026",
    "name": "Increase child tax credit (CTC) amount to $2,500, indexed for inflation after",
    "window": "",
@@ -19584,6 +19840,7 @@
   {
    "claim_id": "6d5669dbb6b63be76cb5",
    "source": "tpc",
+   "country": "US",
    "source_column": "FY2026",
    "name": "Total for both provisions",
    "window": "",
@@ -19650,6 +19907,7 @@
   {
    "claim_id": "702aa1bacdc03305375f",
    "source": "tpc",
+   "country": "US",
    "source_column": "FY2026",
    "name": "Increase CTC amount to $2,500 and CTC maximum refundable amount to $2,000, both amounts indexed for inflation after",
    "window": "",
@@ -19716,6 +19974,7 @@
   {
    "claim_id": "7aec7e652c558f3d6390",
    "source": "tpc",
+   "country": "US",
    "source_column": "FY2026",
    "name": "Total for both provisions",
    "window": "",
@@ -19782,6 +20041,7 @@
   {
    "claim_id": "9927a6ae54fbc3f4430d",
    "source": "tpc",
+   "country": "US",
    "source_column": "FY2026",
    "name": "American Family Act",
    "window": "",
@@ -19848,6 +20108,7 @@
   {
    "claim_id": "af5bb0777fe2e6595dd9",
    "source": "tpc",
+   "country": "US",
    "source_column": "FY2026",
    "name": "Increase CTC amount to $2,500 and CTC maximum refundable amount to $2,000, both amounts indexed for inflation after 2025; and phase in CTC starting with the first dollar of earnings",
    "window": "",
@@ -19914,6 +20175,7 @@
   {
    "claim_id": "dc43aca51b7e85351e9b",
    "source": "tpc",
+   "country": "US",
    "source_column": "FY2026",
    "name": "Total for both provisions",
    "window": "",
@@ -19980,6 +20242,7 @@
   {
    "claim_id": "f367dc1654ae1c27d0c0",
    "source": "tpc",
+   "country": "US",
    "source_column": "FY2026",
    "name": "Increase top individual income tax rate to 39.6 percent for taxable income in excess of $2,120,000 for married couples filing jointly; $1,884,425 for singles; and $2,002,200 for heads of household, indexed for inflation after 2026.",
    "window": "",
@@ -20046,6 +20309,7 @@
   {
    "claim_id": "f73ae09a929372503419",
    "source": "tpc",
+   "country": "US",
    "source_column": "FY2026",
    "name": "Increase top individual income tax rate to 39.6 percent for taxable income in excess of $1,562,500 for married couples filing jointly; $1,388,875 for singles; and $1,475,650 for heads of household, indexed for inflation after 2026.",
    "window": "",
@@ -20112,6 +20376,7 @@
   {
    "claim_id": "d5d06d635b1bba810311",
    "source": "treasury",
+   "country": "US",
    "source_column": "te_cdcc",
    "name": "Child & Dependent Care Credit",
    "window": "FY2024",
@@ -20214,8 +20479,989 @@
    "diagnosis": null
   },
   {
+   "claim_id": "23cb5f489c32e17b4b49",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "income_tax",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "unsigned",
+    "country": "UK",
+    "direction": "stated_change",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Change Savings allowance by \u00a3100 for BR and \u00a350 for HR taxpayers",
+    "program": "income_tax",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "05b7ff3832f3f02d",
+   "external_value": 0.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": -69675676.99536133,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.income_tax.allowances.personal_savings_allowance.basic: 1000 -> 1100; gov.hmrc.income_tax.allowances.personal_savings_allowance.higher: 500 -> 550 | heads income_tax",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 30000000.0 (ratio 2.322522566512044)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": null,
+    "delta": -69675676.99536133
+   },
+   "results": [
+    {
+     "value": -69675676.99536133,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.income_tax.allowances.personal_savings_allowance.basic: 1000 -> 1100; gov.hmrc.income_tax.allowances.personal_savings_allowance.higher: 500 -> 550 | heads income_tax",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 30000000.0 (ratio 2.322522566512044)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "39bb15c3c6084fd9c437",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "income_tax",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "increase",
+    "country": "UK",
+    "direction": "cost",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Increase basic rate limit by 10% (cost)",
+    "program": "income_tax",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "61c2077173777dd4",
+   "external_value": 4600000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": -6935879147.342651,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.income_tax.rates.uk[1].threshold: 37700 -> 41470.0 | heads income_tax",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 6250000000.0 (ratio 1.1097406635748241)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": -1.507799814639707,
+    "delta": -11535879147.342651
+   },
+   "results": [
+    {
+     "value": -6935879147.342651,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.income_tax.rates.uk[1].threshold: 37700 -> 41470.0 | heads income_tax",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 6250000000.0 (ratio 1.1097406635748241)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "4170013e721c13e0ddc1",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "income_tax",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "unsigned",
+    "country": "UK",
+    "direction": "stated_change",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Change personal allowance by 1%",
+    "program": "income_tax",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "aae15369320e1efc",
+   "external_value": 1000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": -1131417187.2644653,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.income_tax.allowances.personal_allowance.amount: 12570 -> 12695.7 | heads income_tax",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 1200000000.0 (ratio 0.9428476560537211)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": -1.1314171872644654,
+    "delta": -2131417187.2644653
+   },
+   "results": [
+    {
+     "value": -1131417187.2644653,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.income_tax.allowances.personal_allowance.amount: 12570 -> 12695.7 | heads income_tax",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 1200000000.0 (ratio 0.9428476560537211)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "5c6fc857d40327bb759c",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "income_tax",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "unsigned",
+    "country": "UK",
+    "direction": "stated_change",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Change personal allowance by 10%",
+    "program": "income_tax",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "b3c79dd8488bac94",
+   "external_value": 10000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": -11148223306.159363,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.income_tax.allowances.personal_allowance.amount: 12570 -> 13827.000000000002 | heads income_tax",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 11650000000.0 (ratio 0.9569290391553101)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": -1.1148223306159364,
+    "delta": -21148223306.159363
+   },
+   "results": [
+    {
+     "value": -11148223306.159363,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.income_tax.allowances.personal_allowance.amount: 12570 -> 13827.000000000002 | heads income_tax",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 11650000000.0 (ratio 0.9569290391553101)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "6f708fb9feb19cb70eac",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "child_benefit",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "increase",
+    "country": "UK",
+    "direction": "cost",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Increase subsequent child rate by \u00a31 per week (cost)",
+    "program": "child_benefit",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "d674e5d7bd144e7f",
+   "external_value": 230000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": 307891828.10876465,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.child_benefit.amount.additional: 17.9 -> 18.9 | heads child_benefit",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 240000000.0 (ratio 1.2828826171198526)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.3386601222120202,
+    "delta": 77891828.10876465
+   },
+   "results": [
+    {
+     "value": 307891828.10876465,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.child_benefit.amount.additional: 17.9 -> 18.9 | heads child_benefit",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 240000000.0 (ratio 1.2828826171198526)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "8e1c1f9b430e9d996f24",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "national_insurance",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "unsigned",
+    "country": "UK",
+    "direction": "stated_change",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Change Class 1 employee additional rate by 1 percentage point",
+    "program": "national_insurance",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "63ae5174945c7cb7",
+   "external_value": 2000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": 4391879294.86554,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.national_insurance.class_1.rates.employee.additional: 0.02 -> 0.03 | heads national_insurance",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 2000000000.0 (ratio 2.1959396474327697)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 2.1959396474327697,
+    "delta": 2391879294.8655396
+   },
+   "results": [
+    {
+     "value": 4391879294.86554,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.national_insurance.class_1.rates.employee.additional: 0.02 -> 0.03 | heads national_insurance",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 2000000000.0 (ratio 2.1959396474327697)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "b601650048d20e2606c9",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "national_insurance",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "unsigned",
+    "country": "UK",
+    "direction": "stated_change",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Change upper profits limit by \u00a3520 per year",
+    "program": "national_insurance",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "4637d737894b0e32",
+   "external_value": 10000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": 15204671.735198975,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit: 50270 -> 50790 | heads national_insurance",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 10000000.0 (ratio 1.5204671735198974)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.5204671735198974,
+    "delta": 5204671.735198975
+   },
+   "results": [
+    {
+     "value": 15204671.735198975,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit: 50270 -> 50790 | heads national_insurance",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 10000000.0 (ratio 1.5204671735198974)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "b8be62add3033280162d",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "national_insurance",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "unsigned",
+    "country": "UK",
+    "direction": "stated_change",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Change employee entry threshold by \u00a32 per week",
+    "program": "national_insurance",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "b7bd756c288799e3",
+   "external_value": 210000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": -202893958.81115723,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold: 241.73 -> 243.73 | heads national_insurance",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 230000000.0 (ratio 0.8821476470050315)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": -0.9661617086245582,
+    "delta": -412893958.8111572
+   },
+   "results": [
+    {
+     "value": -202893958.81115723,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold: 241.73 -> 243.73 | heads national_insurance",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 230000000.0 (ratio 0.8821476470050315)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "d2fbcdc3204a5b6e27d5",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "national_insurance",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "unsigned",
+    "country": "UK",
+    "direction": "stated_change",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Change upper earnings limit by \u00a310 per week",
+    "program": "national_insurance",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "0bb1cd60307ae735",
+   "external_value": 220000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": 248033861.83112335,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit: 966.73 -> 976.73 | heads national_insurance",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 220000000.0 (ratio 1.1274266446869243)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.1274266446869243,
+    "delta": 28033861.831123352
+   },
+   "results": [
+    {
+     "value": 248033861.83112335,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit: 966.73 -> 976.73 | heads national_insurance",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 220000000.0 (ratio 1.1274266446869243)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "e05ac73d999627cb18cb",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "income_tax",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "unsigned",
+    "country": "UK",
+    "direction": "stated_change",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Change dividend allowance by \u00a3100",
+    "program": "income_tax",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "ef2cbab3e901fc34",
+   "external_value": 0.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": -52777493.560424805,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.income_tax.allowances.dividend_allowance: 500 -> 600 | heads income_tax",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 70000000.0 (ratio 0.7539641937203544)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": null,
+    "delta": -52777493.560424805
+   },
+   "results": [
+    {
+     "value": -52777493.560424805,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.income_tax.allowances.dividend_allowance: 500 -> 600 | heads income_tax",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 70000000.0 (ratio 0.7539641937203544)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "e2aac04633b000d98d17",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "income_tax",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "unsigned",
+    "country": "UK",
+    "direction": "stated_change",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Change starting rate limit for savings income by \u00a3100",
+    "program": "income_tax",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "0d59821a6c4d3eb2",
+   "external_value": null,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": -33388707.427124023,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.income_tax.rates.savings_starter_rate.allowance: 5000 -> 5100 | heads income_tax",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 5000000.0 (ratio 6.6777414854248045)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": -33388707.427124023,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.income_tax.rates.savings_starter_rate.allowance: 5000 -> 5100 | heads income_tax",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 5000000.0 (ratio 6.6777414854248045)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "eea5432a24523ee02327",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "national_insurance",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "unsigned",
+    "country": "UK",
+    "direction": "stated_change",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Change employer threshold by \u00a32 per week",
+    "program": "national_insurance",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "1e02c43b824ed2f7",
+   "external_value": 420000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": -356685195.3192749,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold: 96 -> 98 | heads ni_employer",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 430000000.0 (ratio 0.8295004542308718)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": -0.8492504650458926,
+    "delta": -776685195.3192749
+   },
+   "results": [
+    {
+     "value": -356685195.3192749,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold: 96 -> 98 | heads ni_employer",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 430000000.0 (ratio 0.8295004542308718)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "fcefd20d8811df56657f",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "income_tax",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "unsigned",
+    "country": "UK",
+    "direction": "stated_change",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Change basic rate limit by 1%",
+    "program": "income_tax",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "6bda9aaade34d6da",
+   "external_value": 495000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": -725046338.0097046,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.income_tax.rates.uk[1].threshold: 37700 -> 38077.0 | heads income_tax",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 665000000.0 (ratio 1.0902952451273753)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": -1.464740076787282,
+    "delta": -1220046338.0097046
+   },
+   "results": [
+    {
+     "value": -725046338.0097046,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.income_tax.rates.uk[1].threshold: 37700 -> 38077.0 | heads income_tax",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 665000000.0 (ratio 1.0902952451273753)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "ff1a81248008fdad8c35",
+   "source": "uk_hmrc",
+   "country": "UK",
+   "source_column": "reckoner",
+   "name": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "window": "",
+   "publication_title": "Income Tax liabilities statistics 2023-24 to 2026-27 + June 2025 tax ready reckoner",
+   "url": "https://www.gov.uk/government/statistics/income-tax-liabilities-statistics-tax-year-2023-to-2024-to-tax-year-2026-to-2027",
+   "metric": "revenue_change",
+   "unit_concept": "gbp",
+   "value_kind": "gbp",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": "national_insurance",
+   "conditions": {
+    "baseline_policy": "hmrc_indexed_baseline_spring_2025",
+    "change_direction": "unsigned",
+    "country": "UK",
+    "direction": "stated_change",
+    "fy": "2026-27",
+    "geography": "UK",
+    "option": "Change lower profits limit by \u00a3104 per year",
+    "program": "national_insurance",
+    "sign_convention": "magnitude_with_direction_in_label"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "7a0446aba36175e3",
+   "external_value": 15000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "hmrc_indexed_baseline_spring_2025",
+   "latest": {
+    "value": -17503727.481391907,
+    "status": "constructed",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit: 12570 -> 12674 | heads national_insurance",
+    "computed_at": "2026-08-06T18:42:04.081907+00:00",
+    "annotations": [
+     "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+     "fuller-year FY2027-28 external value 15000000.0 (ratio 1.1669151654261272)"
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": -1.1669151654261272,
+    "delta": -32503727.481391907
+   },
+   "results": [
+    {
+     "value": -17503727.481391907,
+     "status": "constructed",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit: 12570 -> 12674 | heads national_insurance",
+     "computed_at": "2026-08-06T18:42:04.081907+00:00",
+     "annotations": [
+      "PE CY2026 static accrual vs HMRC projected FY direct effects (first-year cash vs fuller-year; TIE/behavioral in HMRC reckoner per their methodology notes); |magnitude| ratios",
+      "fuller-year FY2027-28 external value 15000000.0 (ratio 1.1669151654261272)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
    "claim_id": "93368a42000c01f07cc3",
    "source": "ut_admin",
+   "country": "US",
    "source_column": "state_ut_ctc",
    "name": "Utah Child Tax Credit ($1,000/child ages 1-3, nonrefundable)",
    "window": "TY2024",
@@ -20309,6 +21555,7 @@
   {
    "claim_id": "b54daa5e57467ddc4ab0",
    "source": "va_admin",
+   "country": "US",
    "source_column": "state_va_eitc_cli",
    "name": "Virginia EITC / low-income credit (Sec. 58.1-339.8, all elections)",
    "window": "FY2025-processed (mostly TY2024)",
@@ -20401,6 +21648,7 @@
   {
    "claim_id": "cd62e9d74be8b2ab40ed",
    "source": "vt_admin",
+   "country": "US",
    "source_column": "state_vt_ctc",
    "name": "Vermont Child Tax Credit",
    "window": "TY2022",
@@ -20493,6 +21741,7 @@
   {
    "claim_id": "5cd292ed254c2654f1bd",
    "source": "vt_admin",
+   "country": "US",
    "source_column": "state_vt_eitc",
    "name": "Vermont EITC",
    "window": "TY2022",
@@ -20585,6 +21834,7 @@
   {
    "claim_id": "cec61f33976bdc137a17",
    "source": "wa_admin",
+   "country": "US",
    "source_column": "state_wa_wftc",
    "name": "Washington Working Families Tax Credit",
    "window": "TY2024",
@@ -20677,6 +21927,7 @@
   {
    "claim_id": "d3b33f0034e5e4fca201",
    "source": "wi_admin",
+   "country": "US",
    "source_column": "state_wi_eic",
    "name": "Wisconsin Earned Income Credit",
    "window": "TY2023",
