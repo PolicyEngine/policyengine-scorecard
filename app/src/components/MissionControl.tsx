@@ -74,11 +74,18 @@ export function MissionControl({
               tautology and is labeled, never counted.
             </p>
           </>
-        ) : (
+        ) : countryRows.length === 0 ? (
           <p className="mt-1.5 text-xs leading-4 text-muted-foreground">
             No {country} rows in the comparison feed yet.
             {country === "UK" &&
               " The first UK PE results — 14 HMRC ready-reckoner scores, held-out relationship on a constructed comparison basis (PE current-law statics against HMRC's indexed-baseline FY projections) — are on the Reform validation tab; a UK record lands here when UK comparisons join this feed."}
+          </p>
+        ) : (
+          <p className="mt-1.5 text-xs leading-4 text-muted-foreground">
+            {country} rows exist in the comparison feed, but none qualify
+            for the held-out record yet (they are consumed-target or
+            missing a value on one side) — agreement on consumed targets
+            is a tautology and is never counted.
           </p>
         )}
       </section>
@@ -150,12 +157,17 @@ export function MissionControl({
               </li>
             ))}
           </ul>
-        ) : (
+        ) : countryRows.length === 0 ? (
           <p className="mt-1.5 text-xs leading-4 text-muted-foreground">
             Arrives when {country} rows join the comparison feed
             {country === "UK" &&
               " — the ingested DWP, HBAI, OBR and UKMOD claims are waiting on PE computes (the compute pipeline lane)"}
             .
+          </p>
+        ) : (
+          <p className="mt-1.5 text-xs leading-4 text-muted-foreground">
+            No material national-level divergences right now among the
+            {" "}{country} comparison rows.
           </p>
         )}
       </section>
