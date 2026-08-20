@@ -155,3 +155,54 @@ this ingest mints is marked publication.registry =
 "populace_reform_validation" — that marker is the idempotency contract
 (re-ingest deletes and recreates exactly these claims, never the harvest
 claims it attaches results to).
+
+## 2026-08-20 population: OBR published policy effects (UK)
+
+Fourth UK population and the external half of the Macro entry point
+(issue #55): 266 claims from OBR's own published estimates of what
+fiscal policy does to the ECONOMY, harvested by
+`sources/obr-policy-effects/adapter.py` and ingested by
+`ingest_obr_policy_effects` (chain position: after `uk_deductions`,
+before the campaign attaches).
+
+```bash
+PYTHONPATH=. python -m scorecard_db.ingest_obr_policy_effects data/scorecard.db
+```
+
+Four families on four new metrics — `gdp_level_effect` (151, per cent of
+real GDP), `cpi_inflation_effect` (36), `supply_side_impact` (19, per
+cent of POTENTIAL output) and `decisions_effect_on_borrowing` (60, GBP).
+The first and third are deliberately distinct metrics: a package's
+effect on the actual-GDP path is not one measure's supply-side scoring,
+and `decisions_effect_on_borrowing` (PSNB) is likewise kept apart from
+`revenue_change` and `cash_requirement_change` (PSNCR).
+
+Every row carries a `policy_ref` reform naming the world scored — the
+fiscal event's package, or the individual measure for the supply-side
+family — against the null `current_law` baseline, since OBR scores an
+announcement against the law in force at its own scoring date (the
+convention `baselines.py` documents; no new baseline world is
+registered). All 266 are `held_out`: nothing in pe-uk-data or
+policyengine-uk is fitted to a macro-effect path — they are what the
+Macro members get scored against.
+
+Two identity decisions this population forced:
+
+- **`conditions["decomposition"]`.** The October 2024 workbook prints
+  the AB2024 package twice — chart 2.A by expenditure component, 2.B by
+  measure/channel — so both publish a `total` and a
+  `demand_multipliers`. The decomposition is therefore identity-bearing,
+  not provenance, and is keyed off (fiscal_event, sheet): the sheet id
+  alone will not do, since C2.A is by-channel in the Nov 2023 and Mar
+  2024 workbooks.
+- **The supply-side horizon.** Briefing paper No.10's Table 2.1 states
+  its year in words ("the impact on potential output in the fifth year
+  of our forecast"), never as a digit. The note rides verbatim in
+  `conditions["horizon_note"]`, `conditions["horizon"]` names it
+  symbolically, and the period maps to one module constant
+  (`_BP10_HORIZON_FY`) that a reviewer can re-key in one place.
+
+Table B.1's nested rows keep the `aggregate_level`/`parent` guard the
+OBR welfare lines use, so no consumer summing borrowing effects by FY
+double-counts. PE counterparts are step 3 of #55 and are not computed
+here.

@@ -298,6 +298,91 @@ _identity(
 for _src in ("hm_treasury", "dwp"):
     _identity(_src, "unit", ["gbp", "households"])
 
+# --- OBR published policy effects (#55) --------------------------------------
+# A macro-effects vocabulary, registered as its OWN source: these slugs
+# name policy packages, fiscal-aggregate lines and economic channels, not
+# the benefit/tax programs the mode-1 sources share. Nothing here aliases
+# into obr's welfare program vocabulary — obr_policy_effects'
+# "employer_nics" is a measure whose supply-side effect is scored, not a
+# spending line, so unifying the two namespaces would be a category
+# error.
+_identity("obr_policy_effects", "geography", ["UK"])
+_identity("obr_policy_effects", "unit", ["percent", "gbp_nominal"])
+_identity(
+    "obr_policy_effects",
+    "program",
+    [
+        # the announced package as a whole (the chart families' subject)
+        "policy_package",
+        # March 2026 Table B.1 fiscal-aggregate lines (nested; the
+        # aggregate_level/parent conditions carry the roll-up)
+        "total_effect",
+        "direct_effects",
+        "indirect_effects",
+        "spending_measures",
+        "additional_departmental_spending",
+        "local_authority_support",
+        "other_spending_measures",
+        "tax_measures",
+        "pillar_2_reforms",
+        "other_tax_measures",
+        # briefing paper No.10 T2.1: individually scored measures
+        "30_free_hours_of_childcare",
+        "employee_nics_cut",
+        "employer_nics",
+        "full_expensing",
+        "high_income_child_benefit_charge_hicbc",
+        "individual_placement_and_support_ips",
+        "pensions_allowances",
+        "public_investment",
+        "residential_planning_reforms",
+        "restart",
+        "talking_therapies",
+        "tax_thresholds",
+        "uc_conditionality",
+        "universal_credit_uc_childcare",
+        "universal_support",
+        "universal_support_extension",
+        "wca_reversal",
+        "work_capability_assessment_wca_reforms",
+    ],
+)
+_identity(
+    "obr_policy_effects",
+    "subgroup",
+    [
+        "total",
+        # supply-side channels (briefing paper T2.1 column F)
+        "labour",
+        "capital",
+        "tfp",
+        # GDP-impact channels and expenditure components (chart data)
+        "demand",
+        "demand_multipliers",
+        "output_gap",
+        "consumption",
+        "private_consumption",
+        "business_investment",
+        "government_consumption",
+        "government_investment",
+        "government_consumption_and_investment",
+        "residential_and_business_investment",
+        "net_trade_and_other",
+        "supply_child_benefit",
+        "supply_crowding_out",
+        "supply_employer_nics",
+        "supply_full_expensing",
+        "supply_nics_cut",
+        "supply_public_investment",
+        "supply_welfare_reforms_other",
+        # CPI-impact measures (Nov 2025 C3.4)
+        "energy_bills_package",
+        "fuel_duty_freeze_extension",
+        "mileage_based_charge_on_electric_cars",
+        "rail_fares_freeze",
+    ],
+)
+
 
 def canon(source: str, axis: str, value: str) -> str:
     """Canonical value for (source, axis, source_value); unknown raises."""

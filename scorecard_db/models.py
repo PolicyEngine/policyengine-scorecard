@@ -90,6 +90,20 @@ class Metric(str, Enum):
     CASH_REQUIREMENT_CHANGE = "cash_requirement_change"
     GAINER_COUNT = "gainer_count"
     AVERAGE_ANNUAL_GAIN = "average_annual_gain"
+    # OBR published policy effects (#55): what policy does to the ECONOMY,
+    # not to a household or the exchequer's take. gdp_level_effect and
+    # supply_side_impact are both per cent of output and deliberately
+    # DISTINCT: the first is the package's effect on real (actual) GDP
+    # along the forecast path, the second one measure's effect on
+    # POTENTIAL output at the horizon — unifying them would merge a
+    # demand-inclusive path with a supply-side scoring.
+    # decisions_effect_on_borrowing is PSNB, kept distinct from
+    # revenue_change (a receipts line) and cash_requirement_change
+    # (PSNCR) for the same unconfusability reason.
+    GDP_LEVEL_EFFECT = "gdp_level_effect"
+    CPI_INFLATION_EFFECT = "cpi_inflation_effect"
+    SUPPLY_SIDE_IMPACT = "supply_side_impact"
+    DECISIONS_EFFECT_ON_BORROWING = "decisions_effect_on_borrowing"
 
 
 class UnitConcept(str, Enum):
