@@ -26,35 +26,32 @@ export function MissionControl({
     (l) => !l.running && l.stage === "registered",
   );
 
+  // Country-SCOPED comparison rows, never a US gate: today the feed is
+  // US-only so the UK slice is empty, but when UK comparison rows land
+  // they count here under UK — and never inflate the US cards.
+  const countryRows = data.rows.filter((r) => countryOf(r) === country);
+
   // Held-out record: the only published "validation" column (issue #1).
-  // data is the US Urban comparison feed — US-scope only, never shown as
-  // if it described the UK.
-  const heldOut =
-    country === "US"
-      ? data.rows.filter(
-          (r) =>
-            r.calibration_relationship === "held_out" &&
-            ["comparable", "constructed"].includes(r.status) &&
-            r.pe_value !== null &&
-            r.external_value !== null,
-        )
-      : [];
+  const heldOut = countryRows.filter(
+    (r) =>
+      r.calibration_relationship === "held_out" &&
+      ["comparable", "constructed"].includes(r.status) &&
+      r.pe_value !== null &&
+      r.external_value !== null,
+  );
   const wins = heldOut.filter((r) => closeness(r) === "close").length;
 
-  const freshest =
-    country === "US"
-      ? data.rows
-          .filter(
-            (r) =>
-              // national row: geography code equals the row's country code
-              r.geography === countryOf(r) &&
-              r.subgroup === "total" &&
-              r.variant === null &&
-              ["comparable", "constructed"].includes(r.status) &&
-              ["moderate", "far"].includes(closeness(r) ?? ""),
-          )
-          .slice(0, 3)
-      : [];
+  const freshest = countryRows
+    .filter(
+      (r) =>
+        // national row: geography code equals the row's country code
+        r.geography === countryOf(r) &&
+        r.subgroup === "total" &&
+        r.variant === null &&
+        ["comparable", "constructed"].includes(r.status) &&
+        ["moderate", "far"].includes(closeness(r) ?? ""),
+    )
+    .slice(0, 3);
 
   return (
     <div className="mt-5 grid gap-3 md:grid-cols-3">
@@ -62,7 +59,7 @@ export function MissionControl({
         <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Held-out record
         </h2>
-        {country === "US" ? (
+        {heldOut.length > 0 ? (
           <>
             <p className="mt-1.5 text-2xl font-bold fig">
               {wins.toLocaleString()}
@@ -79,12 +76,9 @@ export function MissionControl({
           </>
         ) : (
           <p className="mt-1.5 text-xs leading-4 text-muted-foreground">
-            No UK rows in the comparison feed yet. The first UK PE results —
-            14 HMRC ready-reckoner scores, held-out relationship on a
-            constructed comparison basis (PE current-law statics against
-            HMRC's indexed-baseline FY projections) — are on the Reform
-            validation tab; a UK record lands here when UK comparisons join
-            this feed.
+            No {country} rows in the comparison feed yet.
+            {country === "UK" &&
+              " The first UK PE results — 14 HMRC ready-reckoner scores, held-out relationship on a constructed comparison basis (PE current-law statics against HMRC's indexed-baseline FY projections) — are on the Reform validation tab; a UK record lands here when UK comparisons join this feed."}
           </p>
         )}
       </section>
@@ -137,7 +131,7 @@ export function MissionControl({
         <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           Freshest divergences
         </h2>
-        {country === "US" ? (
+        {freshest.length > 0 ? (
           <ul className="mt-1.5 space-y-1.5">
             {freshest.map((r) => (
               <li key={r.source_column} className="text-xs">
@@ -158,9 +152,10 @@ export function MissionControl({
           </ul>
         ) : (
           <p className="mt-1.5 text-xs leading-4 text-muted-foreground">
-            Arrives with the first UK held-out results — the ingested DWP,
-            HBAI, OBR and UKMOD claims are waiting on PE computes (the
-            compute pipeline lane).
+            Arrives when {country} rows join the comparison feed
+            {country === "UK" &&
+              " — the ingested DWP, HBAI, OBR and UKMOD claims are waiting on PE computes (the compute pipeline lane)"}
+            .
           </p>
         )}
       </section>

@@ -111,7 +111,7 @@ export default function App() {
       <div className="border-b border-border bg-muted/60">
         <div className="mx-auto max-w-content px-4 py-1.5 fig text-[11px] leading-4 text-muted-foreground flex flex-wrap gap-x-4">
           <span>
-            external · {data.source_meta.id} · fetched{" "}
+            external (US comparison) · {data.source_meta.id} · fetched{" "}
             {data.source_meta.fetched} · {data.source_meta.period}
           </span>
           <span>
@@ -209,7 +209,11 @@ export default function App() {
           ))}
         {tab === "validation" &&
           (populations ? (
-            <ReformValidationView feed={populations} country={filters.country} />
+            <ReformValidationView
+              key={filters.country}
+              feed={populations}
+              country={filters.country}
+            />
           ) : (
             <p className="text-sm text-muted-foreground">
               No populations feed — run scorecard_db.export_populations, then
