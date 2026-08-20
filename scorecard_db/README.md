@@ -37,8 +37,8 @@ PYTHONPATH=. python -m pytest tests/ -q
 
 `build_db` is from-scratch only (it refuses to overwrite — delete the
 old file first; nothing is lost, it is derived). Plain `pytest` also
-works from a fresh clone: a session fixture builds the database when it
-is absent. Individual ingest modules (`ingest_urban`, `ingest_platform`,
+works from a fresh clone: a pytest configuration hook builds the database
+before collection when it is absent. Individual ingest modules (`ingest_urban`, `ingest_platform`,
 …) remain runnable one at a time against an existing database, in the
 dependency order documented in `build_db.py`. Built artifacts for every
 main commit are published to the `scorecard-artifacts` Supabase storage
