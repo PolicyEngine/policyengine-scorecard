@@ -458,7 +458,9 @@ def load_2026():
 
     path = INTERCHANGE / "comparison.csv"
     if not path.exists():
-        return {}, {}
+        # a missing interchange file must never build an empty comparison
+        # (#74 gate: the silent {} made a gutted vendored dir look fine)
+        raise FileNotFoundError(f"vendored interchange file missing: {path}")
     v2026, v2024 = {}, {}
     with open(path) as f:
         for r in csv.DictReader(f):
