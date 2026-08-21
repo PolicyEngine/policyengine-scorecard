@@ -6,7 +6,7 @@
  "external_baseline": "HMRC indexed baseline as of Spring Statement 2025; illustrative changes take effect April 2026",
  "sign_convention": "magnitude_with_direction_in_label",
  "calendar_year_proxy": "PolicyEngine calendar year Y proxies HMRC FY Y-(Y+1).",
- "join_rule": "external rows join on (program, subgroup == hmrc_label verbatim); measure_key is reckoner_202506__<program>__slug(label) — the program prefix is mandatory because HMRC prints identical labels under different tax heads (VAT and IPT both print 'Change standard rate by 1 percentage point')",
+ "join_rule": "external rows join on (program, subgroup == hmrc_label verbatim); measure_key is reckoner_202506__<program>__slug(label) \u2014 the program prefix is mandatory because HMRC prints identical labels under different tax heads (VAT and IPT both print 'Change standard rate by 1 percentage point')",
  "parameter_path_verification": "policyengine-uk was not installed at authoring. paths_verified: true means every path in the measure was resolved by data/uk/obr_measure_reforms.yaml (obr-costings-mode2) against pe-uk 2.89.2; false means candidate paths (or null) that the pipeline's --dry-run must resolve on the managed environment before any sim. A measure whose paths fail to resolve is demoted to pe_gap, never computed against a guessed parameter.",
  "measures": [
   {
@@ -21,7 +21,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Income-tax leg is in PE-UK scope but the parameter path is not identified at authoring; pe_reform_delta stays null rather than a guessed path."
+   "note": "Income-tax leg is in PE-UK scope but the parameter path is not identified at authoring; pe_reform_delta stays null rather than a guessed path.",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__income_tax__change_basic_rate_by_1p",
@@ -37,7 +38,8 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": "Bracket structure verified via the OBR registry's uk[i].threshold paths; the .rate sibling is the policyengine-core bracket field."
+   "note": "Bracket structure verified via the OBR registry's uk[i].threshold paths; the .rate sibling is the policyengine-core bracket field.",
+   "pe_head_variable": "income_tax"
   },
   {
    "measure_key": "reckoner_202506__income_tax__change_higher_rate_by_1p",
@@ -53,7 +55,8 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": "Main rates only; the reckoner row is the income-tax higher rate, dividend rates are separate HMRC rows not present here."
+   "note": "Main rates only; the reckoner row is the income-tax higher rate, dividend rates are separate HMRC rows not present here.",
+   "pe_head_variable": "income_tax"
   },
   {
    "measure_key": "reckoner_202506__income_tax__increase_additional_rate_by_1p_yield",
@@ -69,7 +72,8 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": "Direction carried in the label (yield); HMRC's published behavioural offset is large at the top — basis annotation mandatory."
+   "note": "Direction carried in the label (yield); HMRC's published behavioural offset is large at the top \u2014 basis annotation mandatory.",
+   "pe_head_variable": "income_tax"
   },
   {
    "measure_key": "reckoner_202506__income_tax__decrease_additional_rate_by_1p_cost",
@@ -85,12 +89,13 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": "Direction carried in the label (cost)."
+   "note": "Direction carried in the label (cost).",
+   "pe_head_variable": "income_tax"
   },
   {
    "measure_key": "reckoner_202506__income_tax__change_personal_allowance_by_100",
    "program": "income_tax",
-   "hmrc_label": "Change personal allowance by £100",
+   "hmrc_label": "Change personal allowance by \u00a3100",
    "section_direction": "stated_change",
    "change_direction": "unsigned",
    "construction": "delta_on_certified_world",
@@ -101,7 +106,8 @@
    },
    "delta_kind": "absolute",
    "paths_verified": true,
-   "note": null
+   "note": null,
+   "pe_head_variable": "income_tax"
   },
   {
    "measure_key": "reckoner_202506__income_tax__change_personal_allowance_by_1",
@@ -117,7 +123,8 @@
    },
    "delta_kind": "relative",
    "paths_verified": true,
-   "note": null
+   "note": null,
+   "pe_head_variable": "income_tax"
   },
   {
    "measure_key": "reckoner_202506__income_tax__change_personal_allowance_by_10",
@@ -133,12 +140,13 @@
    },
    "delta_kind": "relative",
    "paths_verified": true,
-   "note": null
+   "note": null,
+   "pe_head_variable": "income_tax"
   },
   {
    "measure_key": "reckoner_202506__income_tax__change_savings_allowance_by_100_for_br_and_50_for_hr_taxpaye",
    "program": "income_tax",
-   "hmrc_label": "Change Savings allowance by £100 for BR and £50 for HR taxpayers",
+   "hmrc_label": "Change Savings allowance by \u00a3100 for BR and \u00a350 for HR taxpayers",
    "section_direction": "stated_change",
    "change_direction": "unsigned",
    "construction": "delta_on_certified_world",
@@ -147,12 +155,13 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Income-tax leg is in PE-UK scope but the parameter path is not identified at authoring; pe_reform_delta stays null rather than a guessed path."
+   "note": "Income-tax leg is in PE-UK scope but the parameter path is not identified at authoring; pe_reform_delta stays null rather than a guessed path.",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__income_tax__change_dividend_allowance_by_100",
    "program": "income_tax",
-   "hmrc_label": "Change dividend allowance by £100",
+   "hmrc_label": "Change dividend allowance by \u00a3100",
    "section_direction": "stated_change",
    "change_direction": "unsigned",
    "construction": "delta_on_certified_world",
@@ -161,12 +170,13 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Income-tax leg is in PE-UK scope but the parameter path is not identified at authoring; pe_reform_delta stays null rather than a guessed path."
+   "note": "Income-tax leg is in PE-UK scope but the parameter path is not identified at authoring; pe_reform_delta stays null rather than a guessed path.",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__income_tax__change_starting_rate_limit_for_savings_income_by_100",
    "program": "income_tax",
-   "hmrc_label": "Change starting rate limit for savings income by £100",
+   "hmrc_label": "Change starting rate limit for savings income by \u00a3100",
    "section_direction": "stated_change",
    "change_direction": "unsigned",
    "construction": "delta_on_certified_world",
@@ -175,7 +185,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Income-tax leg is in PE-UK scope but the parameter path is not identified at authoring; pe_reform_delta stays null rather than a guessed path."
+   "note": "Income-tax leg is in PE-UK scope but the parameter path is not identified at authoring; pe_reform_delta stays null rather than a guessed path.",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__income_tax__change_basic_rate_limit_by_1",
@@ -192,7 +203,8 @@
    },
    "delta_kind": "relative",
    "paths_verified": true,
-   "note": "Both the main and dividend threshold paths move together (pe-uk stores them separately; OBR registry precedent). Dividend-band lag caveat policyengine-uk#1822 applies before 2026-04-06."
+   "note": "Both the main and dividend threshold paths move together (pe-uk stores them separately; OBR registry precedent). Dividend-band lag caveat policyengine-uk#1822 applies before 2026-04-06.",
+   "pe_head_variable": "income_tax"
   },
   {
    "measure_key": "reckoner_202506__income_tax__increase_basic_rate_limit_by_10_cost",
@@ -209,7 +221,8 @@
    },
    "delta_kind": "relative",
    "paths_verified": true,
-   "note": null
+   "note": null,
+   "pe_head_variable": "income_tax"
   },
   {
    "measure_key": "reckoner_202506__income_tax__decrease_basic_rate_limit_by_10_yield",
@@ -226,7 +239,8 @@
    },
    "delta_kind": "relative",
    "paths_verified": true,
-   "note": null
+   "note": null,
+   "pe_head_variable": "income_tax"
   },
   {
    "measure_key": "reckoner_202506__income_tax__change_all_main_allowances_starting_and_basic_rate_limits_by",
@@ -237,14 +251,11 @@
    "construction": "delta_on_certified_world",
    "external_metric": "revenue_effect",
    "computability": "partial",
-   "pe_reform_delta": {
-    "gov.hmrc.income_tax.allowances.personal_allowance.amount": 0.01,
-    "gov.hmrc.income_tax.rates.uk[1].threshold": 0.01,
-    "gov.hmrc.income_tax.rates.dividends[1].threshold": 0.01
-   },
-   "delta_kind": "relative",
+   "pe_reform_delta": null,
+   "delta_kind": null,
    "paths_verified": true,
-   "note": "PA and BRL legs only: the starting-rate-for-savings limit path is not identified, so the savings-limit leg is missing."
+   "note": "PA and BRL legs only: the starting-rate-for-savings limit path is not identified, so the savings-limit leg is missing. The delta is therefore NULL: a partial multi-leg reform is a DIFFERENT reform from the one HMRC's label states, so applying the identified legs would have produced a confident number for a change nobody scored. It emits a cited pe_gap until the missing leg's path is identified.",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__income_tax__increase_all_main_allowances_starting_and_basic_rate_limits",
@@ -255,14 +266,11 @@
    "construction": "delta_on_certified_world",
    "external_metric": "revenue_effect",
    "computability": "partial",
-   "pe_reform_delta": {
-    "gov.hmrc.income_tax.allowances.personal_allowance.amount": 0.1,
-    "gov.hmrc.income_tax.rates.uk[1].threshold": 0.1,
-    "gov.hmrc.income_tax.rates.dividends[1].threshold": 0.1
-   },
-   "delta_kind": "relative",
+   "pe_reform_delta": null,
+   "delta_kind": null,
    "paths_verified": true,
-   "note": "PA and BRL legs only; savings-limit leg missing."
+   "note": "PA and BRL legs only; savings-limit leg missing. The delta is therefore NULL: a partial multi-leg reform is a DIFFERENT reform from the one HMRC's label states, so applying the identified legs would have produced a confident number for a change nobody scored. It emits a cited pe_gap until the missing leg's path is identified.",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__income_tax__decrease_all_main_allowances_starting_and_basic_rate_limits",
@@ -273,14 +281,11 @@
    "construction": "delta_on_certified_world",
    "external_metric": "revenue_effect",
    "computability": "partial",
-   "pe_reform_delta": {
-    "gov.hmrc.income_tax.allowances.personal_allowance.amount": -0.1,
-    "gov.hmrc.income_tax.rates.uk[1].threshold": -0.1,
-    "gov.hmrc.income_tax.rates.dividends[1].threshold": -0.1
-   },
-   "delta_kind": "relative",
+   "pe_reform_delta": null,
+   "delta_kind": null,
    "paths_verified": true,
-   "note": "PA and BRL legs only; savings-limit leg missing."
+   "note": "PA and BRL legs only; savings-limit leg missing. The delta is therefore NULL: a partial multi-leg reform is a DIFFERENT reform from the one HMRC's label states, so applying the identified legs would have produced a confident number for a change nobody scored. It emits a cited pe_gap until the missing leg's path is identified.",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__national_insurance__change_class_1_employee_main_rate_by_1_percentage_point",
@@ -296,7 +301,8 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": null
+   "note": null,
+   "pe_head_variable": "national_insurance"
   },
   {
    "measure_key": "reckoner_202506__national_insurance__change_class_1_employee_additional_rate_by_1_percentage_poin",
@@ -312,7 +318,8 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": null
+   "note": null,
+   "pe_head_variable": "national_insurance"
   },
   {
    "measure_key": "reckoner_202506__national_insurance__change_class_1_employer_rate_by_1_percentage_point",
@@ -328,7 +335,8 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": "Employer NICs incidence: PE computes the statutory liability; HMRC's post-behavioural row embeds pass-through assumptions — basis axis."
+   "note": "Employer NICs incidence: PE computes the statutory liability; HMRC's post-behavioural row embeds pass-through assumptions \u2014 basis axis.Employer NICs do NOT flow through the `national_insurance` head: the committed campaign artifacts establish `ni_employer` as the relevant head, and summing this measure through national_insurance would report an employee-side aggregate as the employer measure's revenue effect.",
+   "pe_head_variable": "ni_employer"
   },
   {
    "measure_key": "reckoner_202506__national_insurance__change_class_4_main_rate_by_1_percentage_point",
@@ -344,7 +352,8 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": null
+   "note": null,
+   "pe_head_variable": "national_insurance"
   },
   {
    "measure_key": "reckoner_202506__national_insurance__change_class_4_additional_rate_by_1_percentage_point",
@@ -360,12 +369,13 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": null
+   "note": null,
+   "pe_head_variable": "national_insurance"
   },
   {
    "measure_key": "reckoner_202506__national_insurance__change_employee_entry_threshold_by_2_per_week",
    "program": "national_insurance",
-   "hmrc_label": "Change employee entry threshold by £2 per week",
+   "hmrc_label": "Change employee entry threshold by \u00a32 per week",
    "section_direction": "stated_change",
    "change_direction": "unsigned",
    "construction": "delta_on_certified_world",
@@ -376,12 +386,13 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": "Primary threshold; PE parameter is weekly, delta is per-week as the label states."
+   "note": "Primary threshold; PE parameter is weekly, delta is per-week as the label states.",
+   "pe_head_variable": "national_insurance"
   },
   {
    "measure_key": "reckoner_202506__national_insurance__change_employer_threshold_by_2_per_week",
    "program": "national_insurance",
-   "hmrc_label": "Change employer threshold by £2 per week",
+   "hmrc_label": "Change employer threshold by \u00a32 per week",
    "section_direction": "stated_change",
    "change_direction": "unsigned",
    "construction": "delta_on_certified_world",
@@ -392,12 +403,13 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": "Secondary threshold; weekly."
+   "note": "Secondary threshold; weekly.Employer NICs do NOT flow through the `national_insurance` head: the committed campaign artifacts establish `ni_employer` as the relevant head, and summing this measure through national_insurance would report an employee-side aggregate as the employer measure's revenue effect.",
+   "pe_head_variable": "ni_employer"
   },
   {
    "measure_key": "reckoner_202506__national_insurance__change_lower_profits_limit_by_104_per_year",
    "program": "national_insurance",
-   "hmrc_label": "Change lower profits limit by £104 per year",
+   "hmrc_label": "Change lower profits limit by \u00a3104 per year",
    "section_direction": "stated_change",
    "change_direction": "unsigned",
    "construction": "delta_on_certified_world",
@@ -408,12 +420,13 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": "Class 4 LPL; PE parameter is annual, delta per-year as the label states."
+   "note": "Class 4 LPL; PE parameter is annual, delta per-year as the label states.",
+   "pe_head_variable": "national_insurance"
   },
   {
    "measure_key": "reckoner_202506__national_insurance__change_upper_profits_limit_by_520_per_year",
    "program": "national_insurance",
-   "hmrc_label": "Change upper profits limit by £520 per year",
+   "hmrc_label": "Change upper profits limit by \u00a3520 per year",
    "section_direction": "stated_change",
    "change_direction": "unsigned",
    "construction": "delta_on_certified_world",
@@ -424,12 +437,13 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": "Class 4 UPL; annual."
+   "note": "Class 4 UPL; annual.",
+   "pe_head_variable": "national_insurance"
   },
   {
    "measure_key": "reckoner_202506__national_insurance__change_upper_earnings_limit_by_10_per_week",
    "program": "national_insurance",
-   "hmrc_label": "Change upper earnings limit by £10 per week",
+   "hmrc_label": "Change upper earnings limit by \u00a310 per week",
    "section_direction": "stated_change",
    "change_direction": "unsigned",
    "construction": "delta_on_certified_world",
@@ -440,12 +454,13 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": "Class 1 UEL; weekly."
+   "note": "Class 1 UEL; weekly.",
+   "pe_head_variable": "national_insurance"
   },
   {
    "measure_key": "reckoner_202506__child_benefit__increase_first_child_rate_by_1_per_week_cost",
    "program": "child_benefit",
-   "hmrc_label": "Increase first child rate by £1 per week (cost)",
+   "hmrc_label": "Increase first child rate by \u00a31 per week (cost)",
    "section_direction": "cost",
    "change_direction": "increase",
    "construction": "delta_on_certified_world",
@@ -456,12 +471,13 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": "Weekly rate; direction in label (cost). HICBC clawback interacts — PE computes it, HMRC's row nets it; annotate."
+   "note": "Weekly rate; direction in label (cost). HICBC clawback interacts \u2014 PE computes it, HMRC's row nets it; annotate.",
+   "pe_head_variable": "child_benefit"
   },
   {
    "measure_key": "reckoner_202506__child_benefit__decrease_first_child_rate_by_1_per_week_yield",
    "program": "child_benefit",
-   "hmrc_label": "Decrease first child rate by £1 per week (yield)",
+   "hmrc_label": "Decrease first child rate by \u00a31 per week (yield)",
    "section_direction": "yield",
    "change_direction": "decrease",
    "construction": "delta_on_certified_world",
@@ -472,12 +488,13 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": null
+   "note": null,
+   "pe_head_variable": "child_benefit"
   },
   {
    "measure_key": "reckoner_202506__child_benefit__increase_subsequent_child_rate_by_1_per_week_cost",
    "program": "child_benefit",
-   "hmrc_label": "Increase subsequent child rate by £1 per week (cost)",
+   "hmrc_label": "Increase subsequent child rate by \u00a31 per week (cost)",
    "section_direction": "cost",
    "change_direction": "increase",
    "construction": "delta_on_certified_world",
@@ -488,12 +505,13 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": null
+   "note": null,
+   "pe_head_variable": "child_benefit"
   },
   {
    "measure_key": "reckoner_202506__child_benefit__decrease_subsequent_child_rate_by_1_per_week_yield",
    "program": "child_benefit",
-   "hmrc_label": "Decrease subsequent child rate by £1 per week (yield)",
+   "hmrc_label": "Decrease subsequent child rate by \u00a31 per week (yield)",
    "section_direction": "yield",
    "change_direction": "decrease",
    "construction": "delta_on_certified_world",
@@ -504,7 +522,8 @@
    },
    "delta_kind": "absolute",
    "paths_verified": false,
-   "note": null
+   "note": null,
+   "pe_head_variable": "child_benefit"
   },
   {
    "measure_key": "reckoner_202506__corporation_tax__increase_corporation_tax_by_1_percentage_point",
@@ -518,7 +537,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Corporate liability is outside PE-UK's household tax-benefit scope."
+   "note": "Corporate liability is outside PE-UK's household tax-benefit scope.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__capital_gains_tax__increase_business_asset_disposal_relief_rate_by_1_percentage",
@@ -532,7 +553,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "No asset-disposal microdata basis in the certified household bundle."
+   "note": "No asset-disposal microdata basis in the certified household bundle.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__capital_gains_tax__increase_business_asset_disposal_relief_rate_by_5_percentage",
@@ -546,7 +569,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "No asset-disposal microdata basis in the certified household bundle."
+   "note": "No asset-disposal microdata basis in the certified household bundle.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__capital_gains_tax__increase_lower_capital_gains_tax_rate_by_1_percentage_point",
@@ -560,7 +585,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "No asset-disposal microdata basis in the certified household bundle."
+   "note": "No asset-disposal microdata basis in the certified household bundle.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__capital_gains_tax__increase_lower_capital_gains_tax_rate_by_5_percentage_points",
@@ -574,7 +601,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "No asset-disposal microdata basis in the certified household bundle."
+   "note": "No asset-disposal microdata basis in the certified household bundle.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__capital_gains_tax__increase_lower_capital_gains_tax_rate_by_10_percentage_point",
@@ -588,7 +617,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "No asset-disposal microdata basis in the certified household bundle."
+   "note": "No asset-disposal microdata basis in the certified household bundle.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__capital_gains_tax__increase_higher_capital_gains_tax_rate_by_1_percentage_point",
@@ -602,7 +633,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "No asset-disposal microdata basis in the certified household bundle."
+   "note": "No asset-disposal microdata basis in the certified household bundle.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__capital_gains_tax__increase_higher_capital_gains_tax_rate_by_5_percentage_point",
@@ -616,7 +649,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "No asset-disposal microdata basis in the certified household bundle."
+   "note": "No asset-disposal microdata basis in the certified household bundle.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__capital_gains_tax__increase_higher_capital_gains_tax_rate_by_10_percentage_poin",
@@ -630,12 +665,14 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "No asset-disposal microdata basis in the certified household bundle."
+   "note": "No asset-disposal microdata basis in the certified household bundle.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__capital_gains_tax__increase_annual_exempt_amount_by_500_for_individuals_and_250",
    "program": "capital_gains_tax",
-   "hmrc_label": "Increase Annual Exempt Amount by £500 for individuals and £250 for trusts",
+   "hmrc_label": "Increase Annual Exempt Amount by \u00a3500 for individuals and \u00a3250 for trusts",
    "section_direction": "stated_change",
    "change_direction": "increase",
    "construction": "delta_on_certified_world",
@@ -644,7 +681,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "No asset-disposal microdata basis in the certified household bundle."
+   "note": "No asset-disposal microdata basis in the certified household bundle.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__inheritance_tax__increase_standard_rate_for_estates_left_on_death_by_1_percen",
@@ -658,12 +697,14 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Estates at death are outside the household survey frame."
+   "note": "Estates at death are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__inheritance_tax__increase_nil_rate_band_by_5_000_cost",
    "program": "inheritance_tax",
-   "hmrc_label": "Increase Nil Rate Band by £5,000 (cost)",
+   "hmrc_label": "Increase Nil Rate Band by \u00a35,000 (cost)",
    "section_direction": "cost",
    "change_direction": "increase",
    "construction": "delta_on_certified_world",
@@ -672,12 +713,14 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Estates at death are outside the household survey frame."
+   "note": "Estates at death are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__inheritance_tax__increase_residence_nil_rate_band_by_5_000_cost",
    "program": "inheritance_tax",
-   "hmrc_label": "Increase Residence Nil Rate Band by £5,000 (cost)",
+   "hmrc_label": "Increase Residence Nil Rate Band by \u00a35,000 (cost)",
    "section_direction": "cost",
    "change_direction": "increase",
    "construction": "delta_on_certified_world",
@@ -686,7 +729,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Estates at death are outside the household survey frame."
+   "note": "Estates at death are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__duties__beer_and_cider_duties",
@@ -700,7 +745,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms)."
+   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms).",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__duties__wine_and_other_fermented_product_duties",
@@ -714,7 +760,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms)."
+   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms).",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__duties__spirits_duties",
@@ -728,7 +775,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms)."
+   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms).",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__duties__tobacco_duties",
@@ -742,7 +790,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms)."
+   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms).",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__duties__petrol",
@@ -756,7 +805,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms)."
+   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms).",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__duties__diesel",
@@ -770,7 +820,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms)."
+   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms).",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__duties__rebated_oil",
@@ -784,7 +835,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms)."
+   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms).",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__duties__climate_change_levy",
@@ -798,7 +850,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms)."
+   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms).",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__duties__carbon_price_support",
@@ -812,7 +865,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms)."
+   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms).",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__duties__aggregates_levy",
@@ -826,7 +880,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms)."
+   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms).",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__duties__landfill_tax",
@@ -840,12 +895,13 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms)."
+   "note": "Fuel/alcohol/tobacco duty variables exist in PE-UK's consumption module but per-duty rate parameter paths are not identified; CCL, carbon price support, aggregates levy and landfill tax have no household basis (not_expressible if triage confirms).",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__vehicle_excise_duty__increase_rates_by_1_for_motorbikes_and_5_for_all_other_vehic",
    "program": "vehicle_excise_duty",
-   "hmrc_label": "Increase rates by £1 for motorbikes and £5 for all other vehicles",
+   "hmrc_label": "Increase rates by \u00a31 for motorbikes and \u00a35 for all other vehicles",
    "section_direction": "stated_change",
    "change_direction": "increase",
    "construction": "delta_on_certified_world",
@@ -854,12 +910,14 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Vehicle stock incidence not modeled per household."
+   "note": "Vehicle stock incidence not modeled per household.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__air_passenger_duty__increase_reduced_rate_by_1",
    "program": "air_passenger_duty",
-   "hmrc_label": "Increase reduced rate by £1",
+   "hmrc_label": "Increase reduced rate by \u00a31",
    "section_direction": "stated_change",
    "change_direction": "increase",
    "construction": "delta_on_certified_world",
@@ -868,7 +926,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Flight consumption incidence not modeled per household."
+   "note": "Flight consumption incidence not modeled per household.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__vat__change_reduced_rate_by_1_percentage_point",
@@ -882,7 +942,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "PE-UK carries consumption-imputation VAT; the rate parameter path is not identified at authoring — resolve on the managed environment before promising a counterpart."
+   "note": "PE-UK carries consumption-imputation VAT; the rate parameter path is not identified at authoring \u2014 resolve on the managed environment before promising a counterpart.",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__vat__change_standard_rate_by_1_percentage_point",
@@ -896,7 +957,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "PE-UK carries consumption-imputation VAT; the rate parameter path is not identified at authoring — resolve on the managed environment before promising a counterpart."
+   "note": "PE-UK carries consumption-imputation VAT; the rate parameter path is not identified at authoring \u2014 resolve on the managed environment before promising a counterpart.",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__insurance_premium_tax__change_standard_rate_by_1_percentage_point",
@@ -910,7 +972,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "IPT coverage in PE-UK's consumption module unconfirmed at authoring."
+   "note": "IPT coverage in PE-UK's consumption module unconfirmed at authoring.",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__insurance_premium_tax__change_higher_rate_by_1_percentage_point",
@@ -924,7 +987,8 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "IPT coverage in PE-UK's consumption module unconfirmed at authoring."
+   "note": "IPT coverage in PE-UK's consumption module unconfirmed at authoring.",
+   "pe_head_variable": null
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__cut_residential_2_marginal_rate_by_1_percentage_point_cost",
@@ -938,7 +1002,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__raise_residential_2_marginal_rate_by_1_percentage_point_yiel",
@@ -952,7 +1018,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__cut_residential_5_marginal_rate_by_1_percentage_point_cost",
@@ -966,7 +1034,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__raise_residential_5_marginal_rate_by_1_percentage_point_yiel",
@@ -980,7 +1050,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__cut_residential_10_marginal_rate_by_1_percentage_point_cost",
@@ -994,7 +1066,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__raise_residential_10_marginal_rate_by_1_percentage_point_yie",
@@ -1008,7 +1082,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__cut_residential_12_marginal_rate_by_1_percentage_point_cost",
@@ -1022,7 +1098,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__raise_residential_12_marginal_rate_by_1_percentage_point_yie",
@@ -1036,7 +1114,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__decrease_higher_rates_of_duty_on_additional_dwellings_by_1_p",
@@ -1050,7 +1130,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__increase_higher_rates_of_duty_on_additional_dwellings_by_1_p",
@@ -1064,7 +1146,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__decrease_nrsdlt_by_1_percentage_point_cost",
@@ -1078,7 +1162,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__increase_nrsdlt_by_1_percentage_point_yield",
@@ -1092,7 +1178,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__decrease_non_residential_5_marginal_rate_by_1_percentage_poi",
@@ -1106,7 +1194,9 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   },
   {
    "measure_key": "reckoner_202506__stamp_duty_land_tax__increase_non_residential_5_marginal_rate_by_1_percentage_poi",
@@ -1120,7 +1210,25 @@
    "pe_reform_delta": null,
    "delta_kind": null,
    "paths_verified": false,
-   "note": "Property transactions are outside the household survey frame."
+   "note": "Property transactions are outside the household survey frame.",
+   "pe_head_variable": null,
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/60"
   }
- ]
+ ],
+ "computability_triage": {
+  "expressible": 24,
+  "partial": 22,
+  "not_expressible": 29,
+  "carrying_a_delta": 24,
+  "note": "carrying_a_delta is the number the RUNTIME will compute. It must equal `expressible`: a partial measure with a delta computed a different reform from the one its label states, and made the runtime produce 27 ok / 48 gap against a declared 24 / 51."
+ },
+ "head_variable_rule": "Every measure carrying a delta names the PE head variable its revenue effect is read off, in the registry rather than in a dict inside the runtime. Employer NICs read `ni_employer`, not `national_insurance` \u2014 the committed campaign artifacts establish that head, and summing the employer measures through national_insurance reported an employee-side aggregate under an employer label.",
+ "gap_citation_rule": "Every not_expressible measure carries an action_link, so its pe_gap row is a finding with somewhere to go rather than a blank (descriptive gate #9). The free-text `note` travels onto the staged row as an annotation and is never dropped at staging.",
+ "engine_pin": {
+  "policyengine_uk": "2.89.2",
+  "note": "The version this registry's parameter paths were authored and verified against, and the version the merged campaign artifacts were computed at. The runtime REFUSES to compute against a different one: the earlier dry-run passed under whatever ambient policyengine-uk happened to be installed (2.75.3) while the registry prose referenced 2.89.2, so path resolution proved nothing about the engine the run would actually use."
+ },
+ "external_baseline_key": "hmrc_indexed_baseline_spring_2025",
+ "executed_baseline_key": "current_law",
+ "baseline_honesty_rule": "The run executes CURRENT LAW while the claim keys HMRC's indexed baseline (hmrc_indexed_baseline_spring_2025). Both keys are stamped \u2014 on the staged row and on the per-measure artifact \u2014 so the guard can VERIFY the two worlds differ instead of assuming, and every successful row is status `constructed`, never `ok` (which is not a valid ComparisonStatus at all). The merged campaign rows model this exactly."
 }
