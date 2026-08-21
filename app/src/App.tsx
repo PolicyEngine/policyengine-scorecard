@@ -344,7 +344,7 @@ function Headline({
       <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
         {country === "BE" ? (
           <>
-            Six JRC EUROMOD-BE model claims are registered. The two available
+            Five JRC EUROMOD-BE model claims are registered. The two available
             Axiom values have period, population-basis and scope gaps, so they
             are labeled concept mismatch on Reform validation rather than
             entering this comparison grid.
