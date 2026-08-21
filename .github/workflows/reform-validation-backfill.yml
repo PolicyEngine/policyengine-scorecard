@@ -1,0 +1,281 @@
+name: Reform validation backfill
+
+# Per-release producer for the populace/microcosm reform-validation registry,
+# re-homed from calibration-diagnostics #112 (scorecard issue #15 call 3). The
+# producer needs a full Microsimulation per batch plus the microcosm/torch
+# import stack, which no longer fits GitHub's 7GB ubuntu-latest runner, so the
+# simulation runs on Modal (tools/reform_validation/modal_backfill_app.py, 64GB
+# container). This workflow is only the trigger/commit layer and every tick
+# finishes in seconds:
+#
+#   drain:   any release with a published artifact on the Volume but no
+#            raw/<id>.json (and no OPEN PR) is harvested — one per tick,
+#            oldest-first — landed under raw/, ingested, and PR'd, regardless
+#            of which release is currently `latest` (so a run that finished
+#            after latest advanced is never stranded).
+#   spawn:   otherwise, every release that still needs work — the current
+#            release plus any stranded pending run (spawned, became non-latest,
+#            then died before publishing) — is (re-)spawned if its recorded
+#            Modal call isn't live.
+#
+# Liveness (tools/reform_validation/spawn_or_wait.py): the spawner records the
+# Modal call id + release id on the Volume; each tick consults that call's real
+# status before spawning. Marker reads FAIL CLOSED — an unreadable marker is a
+# WAIT, never a "no run recorded" respawn — so a transport blip never
+# double-spawns or re-pins live work, and a completed call re-checks the Volume
+# for its artifact before respawning finished work. The producer ref AND the
+# driver (scorecard) commit are pinned/stamped, and merge() refuses partials
+# that mix or omit either revision, purging the workdir to recompute clean.
+#
+# The PR is opened for review, not auto-merged: a new release brings new engine
+# pins and can shift the exact-count ingest tests, so a human confirms the DB
+# delta before it lands. It records the scorecard commit + artifact sha256 for
+# provenance; the ingest also consumes the artifact's `_attestation`.
+#
+# Requirements:
+#   - repository secrets MODAL_TOKEN_ID / MODAL_TOKEN_SECRET (PolicyEngine
+#     Modal workspace);
+#   - Settings -> Actions -> General -> "Allow GitHub Actions to create and
+#     approve pull requests" MUST be enabled, or the "Open PR" step 403s.
+#
+# Note: PolicyEngine/populace was renamed to PolicyEngine/microcosm (2026-08);
+# the producer is cloned from microcosm and imported as `microcosm.*`.
+#
+# Run by hand for a specific release via the "Run workflow" button
+# (release_id input), or leave it to the schedule.
+
+on:
+  schedule:
+    - cron: "0 */6 * * *" # every 6 hours
+  workflow_dispatch:
+    inputs:
+      release_id:
+        description: "Release id to backfill (blank = current latest)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: reform-validation-backfill
+  cancel-in-progress: false
+
+env:
+  HF_BASE: https://huggingface.co/datasets/policyengine/populace-us/resolve/main
+  MODAL_VOLUME: scorecard-reform-validation
+  RAW_DIR: sources/populace-reform-validation/raw
+  PRODUCER_REPO: PolicyEngine/microcosm
+  # A release id and nothing that could carry shell/codegen metacharacters —
+  # this value reaches the shell and Modal while credentials are live, so it is
+  # allow-listed before any use (blocker 1). Accepts the current populace-us-*
+  # ids and the microcosm-us-* line the rename moves to.
+  RELEASE_ID_RE: '(populace|microcosm)-us-[0-9]{4}-[A-Za-z0-9._-]+'
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.r.outputs.release_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: r
+        # The dispatch input is bound to an env var, never interpolated into
+        # the script body (blocker 1) — a `${{ }}` splice would let a crafted
+        # release_id inject shell.
+        env:
+          RELEASE_INPUT: ${{ github.event.inputs.release_id }}
+        run: |
+          set -euo pipefail
+          RID="$RELEASE_INPUT"
+          if [ -z "$RID" ]; then
+            RID=$(curl -sL "$HF_BASE/latest.json" \
+              | python3 -c "import sys,json;print(json.load(sys.stdin)['release_id'])")
+          fi
+          # Reject multiline BEFORE the regex: `grep -qxE` matches if ANY line
+          # matches, so a value whose first line is valid would pass and then
+          # inject via the multiline `$GITHUB_OUTPUT` heredoc (blocker 1).
+          if [ "$(printf '%s' "$RID" | wc -l)" -ne 0 ]; then
+            echo "::error::release id must be a single line"
+            exit 1
+          fi
+          if ! printf '%s' "$RID" | grep -qxE "$RELEASE_ID_RE"; then
+            echo "::error::release id '$RID' failed validation (expected ${RELEASE_ID_RE})"
+            exit 1
+          fi
+          echo "release_id=$RID" >> "$GITHUB_OUTPUT"
+
+  backfill:
+    needs: resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      RID: ${{ needs.resolve.outputs.release_id }}
+    steps:
+      - name: Checkout scorecard
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Modal client
+        # No Modal credentials in this step: `pip install modal` builds
+        # third-party sdists (grpclib compiles from source), so the tokens must
+        # not be in-scope here (non-blocker). Pinned EXACTLY so a client
+        # release can't silently change spawn/poll behaviour under us — none of
+        # the Modal paths run in CI, so the pin is the only guard.
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet 'modal==0.77.0'
+
+      - name: Drain a finished artifact, else spawn
+        id: harvest
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ -z "$MODAL_TOKEN_ID" ] || [ -z "$MODAL_TOKEN_SECRET" ]; then
+            echo "::error::MODAL_TOKEN_ID / MODAL_TOKEN_SECRET are not set — the simulation runs on Modal and cannot proceed without them."
+            exit 1
+          fi
+
+          valid() { printf '%s' "$1" | grep -qxE "$RELEASE_ID_RE"; }
+          sha8() { RID_="$1" python3 -c 'import hashlib,os;print(hashlib.sha256(os.environ["RID_"].encode()).hexdigest()[:8])'; }
+          published() { python3 tools/reform_validation/spawn_or_wait.py artifacts | grep -qxF "$1"; }
+          # An OPEN PR (not mere branch existence) means a prior tick already
+          # harvested this release — gate on the PR so a failed/closed/collided
+          # branch doesn't strand it, and FAIL CLOSED: an errored probe returns
+          # "covered" so a transient gh failure never re-pushes (blocker 3).
+          open_pr() {
+            local n
+            if ! n=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "reform-validation/$1" --state open --json number --jq 'length' 2>/dev/null); then
+              return 0
+            fi
+            [ "${n:-1}" != "0" ]
+          }
+
+          # 1) DRAIN one finished-but-unharvested artifact (oldest-first).
+          TARGET=""
+          for id in $(python3 tools/reform_validation/spawn_or_wait.py artifacts); do
+            valid "$id" || { echo "::warning::skipping malformed artifact id"; continue; }
+            [ -f "$RAW_DIR/$id.json" ] && continue
+            if open_pr "$id"; then
+              echo "::notice::open PR already covers $id — skipping."
+              continue
+            fi
+            TARGET="$id"
+            break
+          done
+
+          if [ -n "$TARGET" ]; then
+            mkdir -p "$RUNNER_TEMP/harvest"
+            modal volume get "$MODAL_VOLUME" "reform_validation_$TARGET.json" "$RUNNER_TEMP/harvest/$TARGET.json" --force
+            # Cross-check the harvested artifact's Modal call id against the id
+            # the spawner recorded on the Volume — a mismatch means the artifact
+            # came from a run we didn't track, so refuse it (blocker 2). Both
+            # present required; the recorded id is read before the workdir goes.
+            if modal volume get "$MODAL_VOLUME" "rv_$(sha8 "$TARGET")/call_id" "$RUNNER_TEMP/recorded_call" --force 2>/dev/null; then
+              RECORDED=$(tr -d '\r\n' < "$RUNNER_TEMP/recorded_call")
+              ARTIFACT_CALL=$(python3 -c "import json,sys;print((json.load(open(sys.argv[1])).get('_attestation') or {}).get('modal_call_id',''))" "$RUNNER_TEMP/harvest/$TARGET.json")
+              if [ -n "$RECORDED" ] && [ -n "$ARTIFACT_CALL" ] && [ "$RECORDED" != "$ARTIFACT_CALL" ]; then
+                echo "::error::$TARGET Modal call id mismatch (artifact=$ARTIFACT_CALL recorded=$RECORDED) — refusing a run we didn't track."
+                exit 1
+              fi
+            fi
+            # Drop the bulky workdir (H5 + partials); the published artifact
+            # stays on the Volume as the done-signal until the PR merges.
+            modal volume rm "$MODAL_VOLUME" "rv_$(sha8 "$TARGET")" -r || true
+            echo "harvested=$TARGET" >> "$GITHUB_OUTPUT"
+            echo "::notice::harvested $TARGET — ingesting and opening a PR."
+            exit 0
+          fi
+          echo "harvested=" >> "$GITHUB_OUTPUT"
+
+          # 2) Nothing to drain: ensure every release that still needs work is
+          #    running — the current $RID plus any stranded pending run that
+          #    became non-latest and died before publishing (blocker 3). Deploy
+          #    the app once, only if we actually spawn.
+          CANDIDATES=$(printf '%s\n' "$RID"; python3 tools/reform_validation/spawn_or_wait.py pending)
+          DEPLOYED=0
+          for cand in $(printf '%s\n' "$CANDIDATES" | awk 'NF' | sort -u); do
+            valid "$cand" || { echo "::warning::skipping malformed pending id"; continue; }
+            [ -f "$RAW_DIR/$cand.json" ] && continue
+            if published "$cand"; then
+              echo "::notice::$cand artifact is published — a later tick drains it."
+              continue
+            fi
+            DECISION=$(python3 tools/reform_validation/spawn_or_wait.py check "$cand")
+            if [ "$DECISION" = "WAIT" ]; then
+              echo "::notice::a Modal run for $cand is in flight — a later tick harvests it."
+              continue
+            fi
+            if [ "$DEPLOYED" = "0" ]; then
+              modal deploy tools/reform_validation/modal_backfill_app.py
+              DEPLOYED=1
+            fi
+            PRODUCER_REF=$(gh api "repos/$PRODUCER_REPO/commits/main" --jq .sha)
+            python3 tools/reform_validation/spawn_or_wait.py spawn "$cand" "$PRODUCER_REF" "$GITHUB_SHA"
+            echo "::notice::spawned Modal backfill for $cand at microcosm ${PRODUCER_REF:0:9} (driver ${GITHUB_SHA:0:9}) — a later tick harvests it."
+          done
+
+      - name: Register release + rebuild DB
+        if: steps.harvest.outputs.harvested != ''
+        env:
+          PYTHONPATH: .
+          TARGET: ${{ steps.harvest.outputs.harvested }}
+        run: |
+          set -euo pipefail
+          python3 tools/reform_validation/register_release.py "$TARGET" "$RUNNER_TEMP/harvest/$TARGET.json"
+
+      - name: Verify the DB builds with the new artifact
+        # Post-#74 `data/scorecard.db` is a derived artifact (gitignored, built
+        # in CI from the committed sources), never committed. So the verification
+        # is: build the whole DB from scratch to a THROWAWAY path and confirm the
+        # newly-registered raw artifact ingests — the DB is never staged, and the
+        # no-drift gates on the PR do the rest.
+        if: steps.harvest.outputs.harvested != ''
+        env:
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          python3 -m scorecard_db.build_db "$RUNNER_TEMP/verify.db"
+          python3 -c "import sqlite3,sys;n=sqlite3.connect(sys.argv[1]).execute(\"SELECT COUNT(*) FROM pe_results WHERE run_id LIKE 'populace-rv-%'\").fetchone()[0];print(n,'reform-validation results in the freshly built DB');assert n>0" "$RUNNER_TEMP/verify.db"
+
+      - name: Open PR
+        if: steps.harvest.outputs.harvested != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ steps.harvest.outputs.harvested }}
+        run: |
+          set -euo pipefail
+          BR="reform-validation/$TARGET"
+          # Provenance the reviewer can verify: the scorecard commit this ran
+          # at and the sha256 of the artifact being ingested (blocker 6 — this
+          # is the scorecard-commit + artifact-sha binding the attestation
+          # names; the artifact also carries its own producer/driver stamps).
+          ART_SHA=$(sha256sum "$RAW_DIR/$TARGET.json" | cut -d' ' -f1)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BR"
+          # Commit ONLY the durable outputs — the raw artifact + source.json.
+          # data/scorecard.db is gitignored post-#74 (derived, built in CI), so
+          # staging it would abort the step under `set -e`.
+          git add "$RAW_DIR/$TARGET.json" sources/populace-reform-validation/source.json
+          git commit -m "Ingest reform_validation for $TARGET"
+          # force-with-lease so a stale branch from a prior failed attempt is
+          # recoverable without stranding the release (blocker 3).
+          git push -u --force-with-lease origin "$BR"
+          gh pr create --base main --head "$BR" \
+            --title "Ingest reform_validation for $TARGET" \
+            --body "Automated backfill by \`.github/workflows/reform-validation-backfill.yml\`.
+
+          **Provenance (attestation):**
+          - scorecard commit: \`${GITHUB_SHA}\`
+          - artifact sha256: \`${ART_SHA}\`
+          - producer/driver revisions + engine pins: in the artifact's \`_attestation\` block (the ingest consumes it and rejects a missing/\`unknown\` one).
+
+          The producer ran on Modal (\`tools/reform_validation/modal_backfill_app.py\`) against the released \`populace_us_2024.h5\` at the build's exact package versions; \`register_release.py\` landed it under \`$RAW_DIR/\`. Only the raw artifact + \`source.json\` are committed — \`data/scorecard.db\` is a derived artifact (built in CI by \`scorecard_db.build_db\`, verified green here), and the reform-validation ingest asserts non-RV tables are unchanged inside its transaction, rolling back on any cross-slice write. Opened for review rather than auto-merged: confirm the new engine pin and the exact-count ingest tests (\`tests/test_reform_validation_ingest.py\`) before merging."
