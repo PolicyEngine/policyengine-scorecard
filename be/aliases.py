@@ -21,7 +21,7 @@ def _alias(axis: str, source_value: str, canonical: str) -> None:
 
 _identity("geography", ("BE",))
 _identity("publisher", (SOURCE,))
-_identity("series", ("euromod", "external", "ratio"))
+_identity("series", ("euromod", "external", "ratio", "euromod_non_simulated_input"))
 _identity("table", ("A3.4", "A3.6", "A3.7", "A3.8"))
 _identity(
     "metric",
@@ -35,7 +35,8 @@ _identity(
     ),
 )
 _identity("unit", ("eur_millions", "gini_x100", "percent_share"))
-_identity("model", ("EUROMOD BE_2025 (J2.0+)",))
+# Report front matter (p. 3): results derived using EUROMOD version J1.0+.
+_identity("model", ("EUROMOD BE (J1.0+)",))
 _identity("assessment_level", ("individual",))
 _identity(
     "population_scope",
@@ -52,6 +53,10 @@ _identity("benefit_scope", ("child_benefits", "unemployment_benefits"))
 _identity("income_concept", ("equivalised_household_standard_disposable_income",))
 _identity("housing_costs", ("not_deducted",))
 _identity("equivalisation", ("modified_oecd",))
+# Table 3.1 (p. 97): coverage "Private households"; database BE_2022_c1 =
+# EU-SILC 2022 collection, income reference year 2021.
+_identity("population_frame", ("private_households",))
+_identity("input_database", ("be_2022_c1_silc2022_income2021",))
 _identity("poverty_line", ("relative_60_median",))
 _identity(
     "source_scale",

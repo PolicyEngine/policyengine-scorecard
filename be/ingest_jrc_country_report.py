@@ -8,12 +8,19 @@ the copied manifest SHA-256 is
 ``04cb66729ae960f3a6e5c13eff43967ec276b715f6134a9ad599824ea7f3ddb0``.
 
 The artifact has 18 data records, despite the lane brief's 19-row / eight-
-claim description: six ``euromod`` MODEL outputs become Scorecard claims,
-six ``external`` statistical/outturn values route to deterministic Ledger
-staging facts, and six rounded ``ratio`` values are recomputable and never
-persisted. Periods are calendar policy-system/output years, base-year
-matched to the same income-reference years; they are not SILC collection
-years and 2025 is only the report/model vintage.
+claim description: five ``euromod`` MODEL outputs become Scorecard claims; the sixth
+``euromod``-labelled value (unemployment benefits) is a NON-SIMULATED
+uprated EU-SILC survey input (Table A3.6 marks ``bun`` Simulated=N, p. 127;
+``bun_be`` is switched off in the baseline, p. 24; the 11,706 for 2023 is
+the SILC income-year-2021 base of 10,416 uprated) and routes to Ledger
+staging with that provenance pinned, never to a model claim; six
+``external`` statistical/outturn values route to deterministic Ledger
+staging facts; and six rounded ``ratio`` values are recomputable and never
+persisted. Periods are calendar policy-system/output years simulated from EUROMOD
+database BE_2022_c1 (EU-SILC 2022 collection, income reference year 2021,
+coverage private households — Table 3.1, p. 97), with monetary values
+uprated into each simulation year; they are not matched income-reference
+years, not SILC collection years, and 2025 is only the report vintage.
 
 Two demo-grade Axiom worker aggregates are attached as ``concept_mismatch``
 results. Their vendored inputs are hash-gated, and every annotation names
@@ -75,7 +82,10 @@ REPORT_URL = (
     "https://euromod-web.jrc.ec.europa.eu/sites/default/files/2025-02/"
     "Y15_CR_BE_final.pdf"
 )
-SOURCE_MODEL = "EUROMOD BE_2025 (J2.0+)"
+# Front matter, Y15_CR_BE_final.pdf p. 3: "The results presented in this
+# report are derived using EUROMOD version J1.0+." (2025 is the report
+# vintage, not the model release.)
+SOURCE_MODEL = "EUROMOD BE (J1.0+)"
 DEMO_BANNER = (
     "demo-grade: US survey support records reweighted to Belgian "
     "administrative targets — not Belgian microdata."
@@ -209,6 +219,13 @@ _EXPECTED_SOURCE_ROWS = {
 
 _EXPECTED_SERIES = {"euromod": 6, "external": 6, "ratio": 6}
 
+# Table A3.6 (p. 127) marks Unemployment benefits (bun) Simulated=N and
+# p. 24 states bun_be is switched off in the baseline; its "EUROMOD"
+# column is the SILC income-year-2021 base (10,416) uprated per year
+# (11,706 for 2023). A survey input is not a model output: it routes to
+# Ledger staging, never to a claim.
+_NON_SIMULATED_EUROMOD_METRICS = {"unemployment_benefits"}
+
 _METRICS = {
     "national_income_tax": {
         "name": "National income tax",
@@ -218,6 +235,7 @@ _METRICS = {
         "source_unit": "eur_millions",
         "scale": Decimal("1000000"),
         "program": "national_income_tax",
+        "underlying_issuer": "NBB",
         "conditions": {
             "population_scope": "national_all_taxpayers",
             "tax_scope": "national_income_tax",
@@ -231,6 +249,7 @@ _METRICS = {
         "source_unit": "eur_millions",
         "scale": Decimal("1000000"),
         "program": "employee_social_insurance_contributions",
+        "underlying_issuer": "NBB",
         "conditions": {
             "population_scope": "national_all_employees",
             "contribution_payer": "employee",
@@ -244,6 +263,7 @@ _METRICS = {
         "source_unit": "eur_millions",
         "scale": Decimal("1000000"),
         "program": "child_benefit",
+        "underlying_issuer": "NBB",
         "conditions": {
             "population_scope": "national_all_recipients",
             "benefit_scope": "child_benefits",
@@ -257,6 +277,7 @@ _METRICS = {
         "source_unit": "eur_millions",
         "scale": Decimal("1000000"),
         "program": "unemployment_benefit",
+        "underlying_issuer": "RVA",
         "conditions": {
             "population_scope": "national_all_recipients",
             "benefit_scope": "unemployment_benefits",
@@ -270,6 +291,7 @@ _METRICS = {
         "source_unit": "gini_x100",
         "scale": Decimal("0.01"),
         "program": None,
+        "underlying_issuer": "EU-SILC",
         "conditions": {
             "population_scope": "total_person_population",
             "income_concept": "equivalised_household_standard_disposable_income",
@@ -285,6 +307,7 @@ _METRICS = {
         "source_unit": "percent_share",
         "scale": Decimal("0.01"),
         "program": None,
+        "underlying_issuer": "EU-SILC",
         "conditions": {
             "population_scope": "total_person_population",
             "income_concept": "equivalised_household_standard_disposable_income",
@@ -390,6 +413,14 @@ def _conditions(metric_name: str, period: int, series: str) -> dict[str, str]:
     }
     if series == "euromod":
         conditions["policy_system_year"] = str(period)
+        # Table 3.1, p. 97: coverage "Private households"; database
+        # BE_2022_c1 = SILC 2022 collection, income reference year 2021.
+        conditions["population_frame"] = _condition(
+            "population_frame", "private_households"
+        )
+        conditions["input_database"] = _condition(
+            "input_database", "be_2022_c1_silc2022_income2021"
+        )
     else:
         conditions["reference_year"] = str(period)
     for axis, value in config["conditions"].items():
@@ -400,7 +431,14 @@ def _conditions(metric_name: str, period: int, series: str) -> dict[str, str]:
 
 
 def _publication(row: dict) -> dict:
-    is_model = row["validation.series"] == "euromod"
+    is_model = (
+        row["validation.series"] == "euromod"
+        and row["validation.metric"] not in _NON_SIMULATED_EUROMOD_METRICS
+    )
+    is_survey_input = (
+        row["validation.series"] == "euromod"
+        and row["validation.metric"] in _NON_SIMULATED_EUROMOD_METRICS
+    )
     publication = {
         "name": _METRICS[row["validation.metric"]]["name"],
         "title": "EUROMOD Country Report Belgium 2025",
@@ -413,11 +451,20 @@ def _publication(row: dict) -> dict:
         "csv_sha256": CSV_SHA256,
         "chronicle_commit": CHRONICLE_COMMIT,
         "period_semantics": (
-            "calendar policy-system/output year, base-year matched to the "
-            "same income-reference year; not SILC collection year"
+            "calendar policy-system/output year simulated from EUROMOD "
+            "database BE_2022_c1 (EU-SILC 2022, income reference year "
+            "2021) with monetary uprating to the simulation year; not a "
+            "matched income-reference year and not the SILC collection year"
             if is_model
-            else "calendar reference year of the statistical/admin series; "
-            "not a EUROMOD policy-system year"
+            else (
+                "calendar simulation year of a NON-SIMULATED uprated "
+                "EU-SILC survey input (Table A3.6 Simulated=N, p. 127; "
+                "bun_be off in the baseline, p. 24; SILC income-year-2021 "
+                "base 10,416 uprated to 11,706 for 2023)"
+                if is_survey_input
+                else "calendar reference year of the statistical/admin "
+                "series; not a EUROMOD policy-system year"
+            )
         ),
     }
     if row["validation.metric"] in {
@@ -467,11 +514,18 @@ def _ledger_row(row: dict) -> dict:
     config = _METRICS[metric_name]
     period = int(row["period"])
     canon(SOURCE, "unit", config["source_unit"])
+    series = row["validation.series"]
+    non_simulated = series == "euromod"
     identity = f"{SOURCE}|{row['value_id']}"
     return {
         "fact_id": "be-admin-" + hashlib.sha256(identity.encode()).hexdigest()[:16],
         "source": SOURCE,
         "publisher": "European Commission Joint Research Centre",
+        "underlying_issuer": (
+            "EU-SILC (uprated survey input)"
+            if non_simulated
+            else config["underlying_issuer"]
+        ),
         "source_column": row["value_id"],
         "publication": _publication(row),
         "table": row["table_id"],
@@ -487,12 +541,43 @@ def _ledger_row(row: dict) -> dict:
         "source_unit": config["source_unit"],
         "source_value": row["value"],
         "value": _canonical_value(row),
-        "conditions": _conditions(metric_name, period, "external"),
-        "benchmark_class": BenchmarkClass.ADMINISTRATIVE_FACT.value,
+        "conditions": (
+            _survey_input_conditions(metric_name, period)
+            if non_simulated
+            else _conditions(metric_name, period, series)
+        ),
+        "benchmark_class": (
+            "survey_statistic"
+            if non_simulated
+            else BenchmarkClass.ADMINISTRATIVE_FACT.value
+        ),
         "status": "ok",
         "consumed_by": None,
-        "routing": "ledger: statistical/admin outturn (boundary rule 2026-08-02)",
+        "routing": (
+            "ledger: non-simulated uprated EU-SILC survey input published "
+            "in the report's EUROMOD column (Table A3.6 Simulated=N, "
+            "p. 127; bun_be switched off in the baseline, p. 24; SILC "
+            "income-year-2021 base 10,416 uprated to the simulation year)"
+            if non_simulated
+            else "ledger: statistical/admin outturn (boundary rule 2026-08-02)"
+        ),
     }
+
+
+def _survey_input_conditions(metric_name: str, period: int) -> dict[str, str]:
+    """Conditions for the non-simulated uprated EU-SILC survey input.
+
+    Starts from the external-series shape (a statistical value keyed by
+    reference year), then overrides the series and class: the value sits in
+    the report's EUROMOD column but Table A3.6 marks it Simulated=N (p. 127)
+    and ``bun_be`` is switched off in the baseline (p. 24). Model-only pins
+    (policy-system year, private-household frame, input database) are
+    deliberately absent — those describe executed model output.
+    """
+    conditions = _conditions(metric_name, period, "external")
+    conditions["series"] = _condition("series", "euromod_non_simulated_input")
+    conditions["benchmark_class"] = "survey_statistic"
+    return conditions
 
 
 def _validate_ratios(rows: list[dict]) -> None:
@@ -520,11 +605,22 @@ def stage_all(
     _validate_rows(rows)
     _validate_ratios(rows)
     scores = finish(
-        [_score(row) for row in rows if row["validation.series"] == "euromod"],
+        [
+            _score(row)
+            for row in rows
+            if row["validation.series"] == "euromod"
+            and row["validation.metric"] not in _NON_SIMULATED_EUROMOD_METRICS
+        ],
         SOURCE,
     )
     ledger = [
-        _ledger_row(row) for row in rows if row["validation.series"] == "external"
+        _ledger_row(row)
+        for row in rows
+        if row["validation.series"] == "external"
+        or (
+            row["validation.series"] == "euromod"
+            and row["validation.metric"] in _NON_SIMULATED_EUROMOD_METRICS
+        )
     ]
     ledger.sort(key=lambda row: row["fact_id"])
     summary = {
@@ -536,8 +632,8 @@ def stage_all(
         "source_records": len(rows),
     }
     if summary != {
-        "claims": 6,
-        "ledger_facts": 6,
+        "claims": 5,
+        "ledger_facts": 7,
         "ratios_dispositioned": 6,
         "source_records": 18,
     }:

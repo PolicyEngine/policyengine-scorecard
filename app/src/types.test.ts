@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { countryOf } from "./types";
+import { comparabilityFigure, countryOf } from "./types";
 
 // The load-bearing backward-compat contract: historical US feeds predate
 // the country key, so a missing country must always mean "US" — a row is
@@ -27,4 +27,18 @@ describe("countryOf", () => {
     expect(rows.filter((r) => countryOf(r) === "UK")).toHaveLength(1);
     expect(rows.filter((r) => countryOf(r) === "BE")).toHaveLength(1);
   });
+});
+
+
+test("comparabilityFigure suppresses figures for concept_mismatch", () => {
+  expect(comparabilityFigure("concept_mismatch", "not comparable", () => "1.23")).toBe(
+    "not comparable",
+  );
+  expect(comparabilityFigure("concept_mismatch", "—", () => "0.99")).toBe("—");
+});
+
+test("comparabilityFigure computes for every other status", () => {
+  for (const status of ["comparable", "constructed", "baseline_unvalidated"]) {
+    expect(comparabilityFigure(status, "not comparable", () => "1.23")).toBe("1.23");
+  }
 });

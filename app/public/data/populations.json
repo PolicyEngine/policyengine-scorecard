@@ -16766,7 +16766,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "75d24af7546a785c572e",
+   "claim_id": "66f852422521a5626ce4",
    "source": "jrc_euromod",
    "country": "BE",
    "source_column": "a3_4_employee_sics_euromod_2023",
@@ -16790,7 +16790,9 @@
     "country": "BE",
     "data_vintage": "euromod_be_country_report_2025",
     "geography": "BE",
+    "input_database": "be_2022_c1_silc2022_income2021",
     "policy_system_year": "2023",
+    "population_frame": "private_households",
     "population_scope": "national_all_employees",
     "program": "employee_social_insurance_contributions",
     "series": "euromod",
@@ -16836,7 +16838,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "85d43a3f7c4434ea6b64",
+   "claim_id": "50e2715b1ccbe7b9b053",
    "source": "jrc_euromod",
    "country": "BE",
    "source_column": "a3_4_national_income_tax_euromod_2023",
@@ -16859,7 +16861,9 @@
     "country": "BE",
     "data_vintage": "euromod_be_country_report_2025",
     "geography": "BE",
+    "input_database": "be_2022_c1_silc2022_income2021",
     "policy_system_year": "2023",
+    "population_frame": "private_households",
     "population_scope": "national_all_taxpayers",
     "program": "national_income_tax",
     "series": "euromod",

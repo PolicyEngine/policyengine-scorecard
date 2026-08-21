@@ -4,6 +4,7 @@ import {
   COUNTRY_LABELS,
   RELATIONSHIP_LABELS,
   STATUS_LABELS,
+  comparabilityFigure,
   countryOf,
 } from "../types";
 
@@ -187,9 +188,11 @@ export function ReformValidationView({
                     {fmtV(r.latest.value, r.value_kind)}
                   </td>
                   <td className="whitespace-nowrap px-2 py-1.5 text-right fig">
-                    {r.latest.status_effective === "concept_mismatch"
-                      ? "not comparable"
-                      : fmtDiv(r)}
+                    {comparabilityFigure(
+                      r.latest.status_effective,
+                      "not comparable",
+                      () => fmtDiv(r),
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-2 py-1.5">
                     <StatusPill status={r.latest.status_effective} />
@@ -256,9 +259,11 @@ function RowDetail({ row }: { row: PopulationRow }) {
                       {fmtV(res.value, row.value_kind)}
                     </td>
                     <td className="py-1 pr-3 text-right fig">
-                      {res.status_effective === "concept_mismatch"
-                        ? "—"
-                        : ratioOf(res.value, row.external_value)}
+                      {comparabilityFigure(
+                        res.status_effective,
+                        "—",
+                        () => ratioOf(res.value, row.external_value),
+                      )}
                     </td>
                     <td className="py-1 fig text-muted-foreground">
                       {res.construction || "—"}

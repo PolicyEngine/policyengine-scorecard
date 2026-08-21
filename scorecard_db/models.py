@@ -215,6 +215,12 @@ STANDARD_CONDITIONS = frozenset(
         "contribution_payer",
         "benefit_scope",
         "source_scale",
+        # Belgium model-claim universe pins (sol review of #82): the modeled
+        # EUROMOD universe is EU-SILC private households (Table 3.1, p. 97)
+        # from database BE_2022_c1 (SILC 2022 collection, income reference
+        # year 2021) — never presented as an unqualified national frame.
+        "population_frame",
+        "input_database",
         # UK externals ingest (#33)
         # country          "UK" on every UK claim (absent = US)
         # fy               UK financial-year label ("2026-27") alongside the

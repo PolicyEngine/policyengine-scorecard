@@ -215,8 +215,10 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         EUROMOD_BE_2022_WORLD,
         "euromod_be_2025_current_law_2022",
         "Belgium current-law policy system BE_2022 as published in the "
-        "2025 JRC EUROMOD-BE country-report validation tables; calendar "
-        "policy-system/output year and matching income-reference year 2022.",
+        "2025 JRC EUROMOD-BE country-report validation tables (EUROMOD "
+        "J1.0+); calendar policy-system/output year 2022 simulated from "
+        "database BE_2022_c1 (EU-SILC 2022, income reference year 2021) "
+        "with monetary uprating — not a matched income-reference year.",
         "euromod",
         "EUROMOD Country Report Belgium 2025, Annex 3 tables A3.7/A3.8; "
         "sources/jrc-euromod-be-2025/jrc_euromod_be_baseline_statistics_2025.csv "
@@ -227,8 +229,10 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         EUROMOD_BE_2023_WORLD,
         "euromod_be_2025_current_law_2023",
         "Belgium current-law policy system BE_2023 as published in the "
-        "2025 JRC EUROMOD-BE country-report validation tables; calendar "
-        "policy-system/output year and matching income-reference year 2023.",
+        "2025 JRC EUROMOD-BE country-report validation tables (EUROMOD "
+        "J1.0+); calendar policy-system/output year 2023 simulated from "
+        "database BE_2022_c1 (EU-SILC 2022, income reference year 2021) "
+        "with monetary uprating — not a matched income-reference year.",
         "euromod",
         "EUROMOD Country Report Belgium 2025, Annex 3 tables A3.4/A3.6; "
         "sources/jrc-euromod-be-2025/jrc_euromod_be_baseline_statistics_2025.csv "

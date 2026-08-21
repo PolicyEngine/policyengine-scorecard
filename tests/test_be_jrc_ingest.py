@@ -29,12 +29,11 @@ from scorecard_db.build_db import content_hash
 
 
 EXPECTED_CLAIM_IDS = {
-    "a3_4_national_income_tax_euromod_2023": "85d43a3f7c4434ea6b64",
-    "a3_4_employee_sics_euromod_2023": "75d24af7546a785c572e",
-    "a3_6_child_benefits_euromod_2023": "2eed7fc4eec777366651",
-    "a3_6_unemployment_benefits_euromod_2023": "203e3d299f7376434797",
-    "a3_7_gini_euromod_2022": "b5f1ee842bcaa95d15c2",
-    "a3_8_poverty_60_total_euromod_2022": "af0fb9ffbd85e6e2ab98",
+    "a3_4_national_income_tax_euromod_2023": "50e2715b1ccbe7b9b053",
+    "a3_4_employee_sics_euromod_2023": "66f852422521a5626ce4",
+    "a3_6_child_benefits_euromod_2023": "542478af9ceeb389ab79",
+    "a3_7_gini_euromod_2022": "0c155b086b4ed9cf478c",
+    "a3_8_poverty_60_total_euromod_2022": "7c694ed444ac77f9a56f",
 }
 
 
@@ -43,17 +42,18 @@ def _staged():
     return {score.source_column: score for score in scores}, ledger, summary
 
 
-def test_vendored_source_hash_and_exact_6_6_6_accounting():
+def test_vendored_source_hash_and_exact_5_7_6_accounting():
     assert mod._sha256(mod.SOURCE_CSV) == mod.CSV_SHA256
     assert mod._sha256(mod.SOURCE_MANIFEST) == mod.MANIFEST_SHA256
     scores, ledger, summary = _staged()
     assert summary == {
-        "claims": 6,
-        "ledger_facts": 6,
+        "claims": 5,
+        "ledger_facts": 7,
         "ratios_dispositioned": 6,
         "source_records": 18,
     }
-    assert len(scores) == len(ledger) == 6
+    assert len(scores) == 5
+    assert len(ledger) == 7
     assert EXPECTED_CLAIM_IDS == {
         source_column: score.claim_id() for source_column, score in scores.items()
     }
@@ -79,12 +79,6 @@ def test_claim_values_units_worlds_and_semantic_pins():
             UnitConcept.EUR,
             2023,
             7_454_000_000.0,
-        ),
-        "a3_6_unemployment_benefits_euromod_2023": (
-            Metric.BENEFIT_COST,
-            UnitConcept.EUR,
-            2023,
-            11_706_000_000.0,
         ),
         "a3_7_gini_euromod_2022": (
             Metric.GINI,
@@ -113,12 +107,17 @@ def test_claim_values_units_worlds_and_semantic_pins():
             BenchmarkClass.DIFFERENT_MODEL.value
         )
         assert score.conditions["policy_system_year"] == str(period)
+        assert score.conditions["population_frame"] == "private_households"
+        assert score.conditions["input_database"] == "be_2022_c1_silc2022_income2021"
+        assert score.source_model == "EUROMOD BE (J1.0+)"
+        assert "BE_2022_c1" in score.publication["period_semantics"]
+        assert "income reference year" in score.publication["period_semantics"]
         assert score.calibration_relationship is CalibrationRelationship.HELD_OUT
         assert set(score.conditions) <= STANDARD_CONDITIONS
         assert score.reform.baseline == (
             EUROMOD_BE_2022_WORLD if period == 2022 else EUROMOD_BE_2023_WORLD
         )
-        assert "not SILC collection year" in score.publication["period_semantics"]
+        assert "not the SILC collection year" in score.publication["period_semantics"]
 
     gini = scores["a3_7_gini_euromod_2022"]
     poverty = scores["a3_8_poverty_60_total_euromod_2022"]
@@ -151,13 +150,21 @@ def test_closed_identity_registry_rejects_unknowns():
 def test_external_rows_route_only_to_ledger_and_ratios_are_recomputed():
     scores, ledger, _ = _staged()
     assert all("_euromod_" in score.source_column for score in scores.values())
-    assert all("_external_" in row["source_column"] for row in ledger)
+    assert all(
+        "_external_" in row["source_column"]
+        or row["source_column"] == "a3_6_unemployment_benefits_euromod_2023"
+        for row in ledger
+    )
     assert all(row["routing"].startswith("ledger") for row in ledger)
     assert all(
         row["benchmark_class"] == BenchmarkClass.ADMINISTRATIVE_FACT.value
         for row in ledger
+        if row["conditions"]["series"] == "external"
     )
-    assert all(row["conditions"]["series"] == "external" for row in ledger)
+    assert {row["conditions"]["series"] for row in ledger} == {
+        "external",
+        "euromod_non_simulated_input",
+    }
     assert not any("_ratio_" in row["source_column"] for row in ledger)
     # The ratio validator proves every dropped cell is the rounded published
     # model/statistical quotient; a source mutation cannot pass silently.
@@ -245,15 +252,23 @@ def test_ingest_persists_boundary_baselines_and_lane(tmp_path, monkeypatch):
     _patch_repo_outputs(monkeypatch, tmp_path)
     db_path = tmp_path / "be.db"
     summary = mod.ingest(db_path)
-    assert summary["claims"] == 6
-    assert summary["ledger_facts"] == 6
+    assert summary["claims"] == 5
+    assert summary["ledger_facts"] == 7
     assert summary["attachments"] == 2
     db = ScorecardDB(db_path)
     assert (
         db.conn.execute(
             "SELECT COUNT(*) FROM external_scores WHERE source = ?", (SOURCE,)
         ).fetchone()[0]
-        == 6
+        == 5
+    )
+    assert (
+        db.conn.execute(
+            "SELECT COUNT(*) FROM external_scores WHERE source = ? "
+            "AND source_column = 'a3_6_unemployment_benefits_euromod_2023'",
+            (SOURCE,),
+        ).fetchone()[0]
+        == 0
     )
     assert (
         db.conn.execute(
@@ -298,7 +313,7 @@ def test_ingest_persists_boundary_baselines_and_lane(tmp_path, monkeypatch):
     assert all(row[2] != row[3] for row in compared)
     db.close()
     ledger_lines = (tmp_path / "be-ledger.jsonl").read_text().splitlines()
-    assert len(ledger_lines) == 6
+    assert len(ledger_lines) == 7
 
 
 def test_unregistered_baseline_poison_rolls_back_everything(tmp_path, monkeypatch):
@@ -342,3 +357,53 @@ def test_two_be_only_builds_have_identical_content_hash(tmp_path, monkeypatch):
     mod.ingest(first)
     mod.ingest(second)
     assert content_hash(first) == content_hash(second)
+
+
+def test_unemployment_euromod_value_is_ledger_routed_survey_input():
+    """Sol review of #82, blocker 3: Table A3.6 marks bun Simulated=N (p. 127)
+    and bun_be is off in the baseline (p. 24) — the 11,706 is the SILC
+    income-year-2021 base of 10,416 uprated, not executed model output."""
+    scores, ledger, _ = mod.stage_all()
+    assert all(
+        score.source_column != "a3_6_unemployment_benefits_euromod_2023"
+        for score in scores
+    )
+    survey = [
+        fact
+        for fact in ledger
+        if fact["source_column"] == "a3_6_unemployment_benefits_euromod_2023"
+    ]
+    assert len(survey) == 1
+    fact = survey[0]
+    assert fact["benchmark_class"] == "survey_statistic"
+    assert fact["conditions"]["series"] == "euromod_non_simulated_input"
+    assert fact["conditions"]["benchmark_class"] == "survey_statistic"
+    assert "policy_system_year" not in fact["conditions"]
+    assert "population_frame" not in fact["conditions"]
+    assert fact["underlying_issuer"] == "EU-SILC (uprated survey input)"
+    assert "Simulated=N" in fact["routing"]
+    assert "10,416" in fact["publication"]["period_semantics"]
+
+
+def test_external_facts_carry_underlying_issuers():
+    """Sol review of #82, finding 5: the report's own source table names the
+    original issuers (pp. 120-126; Gini/AROP comparators are EU-SILC-based
+    per p. 104). JRC stays the secondary publisher."""
+    _, ledger, _ = mod.stage_all()
+    issuers = {
+        fact["source_column"]: fact["underlying_issuer"]
+        for fact in ledger
+        if fact["conditions"]["series"] == "external"
+    }
+    assert issuers == {
+        "a3_4_national_income_tax_external_2023": "NBB",
+        "a3_4_employee_sics_external_2023": "NBB",
+        "a3_6_child_benefits_external_2023": "NBB",
+        "a3_6_unemployment_benefits_external_2023": "RVA",
+        "a3_7_gini_external_2022": "EU-SILC",
+        "a3_8_poverty_60_total_external_2022": "EU-SILC",
+    }
+    assert all(
+        fact["publisher"] == "European Commission Joint Research Centre"
+        for fact in ledger
+    )
