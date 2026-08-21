@@ -300,6 +300,21 @@ def merge(manifest: dict, producer_commit: str, h5_sha: str) -> Path:
                 seen.add(rid)
             rows.append(r)
     _refuse_if_mixed(producer_commits, driver_commits, part_dir)
+    # _refuse_if_mixed guarantees a single known revision on each axis; require
+    # it to EQUAL the one going into the attestation. Otherwise all-old partials
+    # could be relabeled under a new driver/producer at merge time (re-gate
+    # blocker 4 — the mixed-check alone doesn't pin the singleton's value).
+    driver_commit = os.environ.get("RV_DRIVER_COMMIT", "unknown")
+    for axis, got, want in (
+        ("producer", producer_commits, producer_commit),
+        ("driver", driver_commits, driver_commit),
+    ):
+        if got != {want}:
+            shutil.rmtree(part_dir, ignore_errors=True)
+            raise SystemExit(
+                f"partials {axis} revision {got} != attested {want!r} — purged "
+                "the workdir; the next run recomputes under the attested revision."
+            )
     header["reforms"] = rows
     header["_backfill_note"] = _backfill_note(manifest, producer_commit, h5_sha)
     # Structured engine pin (scorecard ingest reads this to resolve a new
@@ -350,6 +365,14 @@ def _cleanup_temp() -> None:
             pass
 
 
+def _sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 def orchestrate(release_id: str, producer_commit: str) -> Path:
     wd, h5, diag, _ = _paths()
     manifest = release_manifest(release_id)
@@ -357,6 +380,16 @@ def orchestrate(release_id: str, producer_commit: str) -> Path:
     if not h5.exists():
         print(f"downloading H5 ({art['sha256'][:12]}…)…", flush=True)
         _download(_resolve_url(art["path"], art["revision"]), h5, art["sha256"])
+    # Rehash the ACTUAL H5 — downloaded or CACHED — and verify against the
+    # manifest. A cached file must not be trusted on filename alone, and the
+    # attestation stamps the OBSERVED hash rather than the manifest's expected
+    # one (re-gate blocker 2).
+    h5_sha = _sha256_file(h5)
+    if h5_sha != art["sha256"]:
+        raise SystemExit(
+            f"H5 sha256 {h5_sha} != manifest {art['sha256']} — cached/corrupt file; "
+            "delete the workdir H5 and re-run."
+        )
     if not diag.exists():
         _download(
             _resolve_url(f"releases/{release_id}/calibration_diagnostics.json"), diag
@@ -383,7 +416,7 @@ def orchestrate(release_id: str, producer_commit: str) -> Path:
                 time.sleep(20)
         if not part.exists():
             raise SystemExit(f"batch {name} failed after 6 attempts")
-    return merge(manifest, producer_commit, art["sha256"])
+    return merge(manifest, producer_commit, h5_sha)
 
 
 # --------------------------------------------------------------------------- #

@@ -174,6 +174,18 @@ jobs:
           if [ -n "$TARGET" ]; then
             mkdir -p "$RUNNER_TEMP/harvest"
             modal volume get "$MODAL_VOLUME" "reform_validation_$TARGET.json" "$RUNNER_TEMP/harvest/$TARGET.json" --force
+            # Cross-check the harvested artifact's Modal call id against the id
+            # the spawner recorded on the Volume — a mismatch means the artifact
+            # came from a run we didn't track, so refuse it (blocker 2). Both
+            # present required; the recorded id is read before the workdir goes.
+            if modal volume get "$MODAL_VOLUME" "rv_$(sha8 "$TARGET")/call_id" "$RUNNER_TEMP/recorded_call" --force 2>/dev/null; then
+              RECORDED=$(tr -d '\r\n' < "$RUNNER_TEMP/recorded_call")
+              ARTIFACT_CALL=$(python3 -c "import json,sys;print((json.load(open(sys.argv[1])).get('_attestation') or {}).get('modal_call_id',''))" "$RUNNER_TEMP/harvest/$TARGET.json")
+              if [ -n "$RECORDED" ] && [ -n "$ARTIFACT_CALL" ] && [ "$RECORDED" != "$ARTIFACT_CALL" ]; then
+                echo "::error::$TARGET Modal call id mismatch (artifact=$ARTIFACT_CALL recorded=$RECORDED) — refusing a run we didn't track."
+                exit 1
+              fi
+            fi
             # Drop the bulky workdir (H5 + partials); the published artifact
             # stays on the Volume as the done-signal until the PR merges.
             modal volume rm "$MODAL_VOLUME" "rv_$(sha8 "$TARGET")" -r || true
@@ -218,13 +230,20 @@ jobs:
         run: |
           set -euo pipefail
           python3 tools/reform_validation/register_release.py "$TARGET" "$RUNNER_TEMP/harvest/$TARGET.json"
-          python3 -m scorecard_db.ingest_reform_validation data/scorecard.db
 
-      - name: Verify ingest
+      - name: Verify the DB builds with the new artifact
+        # Post-#74 `data/scorecard.db` is a derived artifact (gitignored, built
+        # in CI from the committed sources), never committed. So the verification
+        # is: build the whole DB from scratch to a THROWAWAY path and confirm the
+        # newly-registered raw artifact ingests — the DB is never staged, and the
+        # no-drift gates on the PR do the rest.
         if: steps.harvest.outputs.harvested != ''
+        env:
+          PYTHONPATH: .
         run: |
           set -euo pipefail
-          python3 -c "import sqlite3;n=sqlite3.connect('data/scorecard.db').execute(\"SELECT COUNT(*) FROM pe_results WHERE run_id LIKE 'populace-rv-%'\").fetchone()[0];print(f'{n} reform-validation results in the rebuilt DB');assert n>0"
+          python3 -m scorecard_db.build_db "$RUNNER_TEMP/verify.db"
+          python3 -c "import sqlite3,sys;n=sqlite3.connect(sys.argv[1]).execute(\"SELECT COUNT(*) FROM pe_results WHERE run_id LIKE 'populace-rv-%'\").fetchone()[0];print(n,'reform-validation results in the freshly built DB');assert n>0" "$RUNNER_TEMP/verify.db"
 
       - name: Open PR
         if: steps.harvest.outputs.harvested != ''
@@ -242,7 +261,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BR"
-          git add "$RAW_DIR/$TARGET.json" sources/populace-reform-validation/source.json data/scorecard.db
+          # Commit ONLY the durable outputs — the raw artifact + source.json.
+          # data/scorecard.db is gitignored post-#74 (derived, built in CI), so
+          # staging it would abort the step under `set -e`.
+          git add "$RAW_DIR/$TARGET.json" sources/populace-reform-validation/source.json
           git commit -m "Ingest reform_validation for $TARGET"
           # force-with-lease so a stale branch from a prior failed attempt is
           # recoverable without stranding the release (blocker 3).
@@ -256,4 +278,4 @@ jobs:
           - artifact sha256: \`${ART_SHA}\`
           - producer/driver revisions + engine pins: in the artifact's \`_attestation\` block (the ingest consumes it and rejects a missing/\`unknown\` one).
 
-          The producer ran on Modal (\`tools/reform_validation/modal_backfill_app.py\`) against the released \`populace_us_2024.h5\` at the build's exact package versions; \`register_release.py\` landed it under \`$RAW_DIR/\` and \`scorecard_db.ingest_reform_validation\` rebuilt the reform-validation slice of \`data/scorecard.db\` (the rebuild asserts non-RV tables are unchanged inside the transaction, rolling back on any cross-slice write). Opened for review rather than auto-merged: confirm the new engine pin and the exact-count ingest tests (\`tests/test_reform_validation_ingest.py\`) before merging."
+          The producer ran on Modal (\`tools/reform_validation/modal_backfill_app.py\`) against the released \`populace_us_2024.h5\` at the build's exact package versions; \`register_release.py\` landed it under \`$RAW_DIR/\`. Only the raw artifact + \`source.json\` are committed — \`data/scorecard.db\` is a derived artifact (built in CI by \`scorecard_db.build_db\`, verified green here), and the reform-validation ingest asserts non-RV tables are unchanged inside its transaction, rolling back on any cross-slice write. Opened for review rather than auto-merged: confirm the new engine pin and the exact-count ingest tests (\`tests/test_reform_validation_ingest.py\`) before merging."

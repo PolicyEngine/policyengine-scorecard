@@ -14,10 +14,12 @@ Division of labor with the scheduled workflow
   GitHub Actions          resolve release id -> spawn this app (fire-and-
   (trigger/commit layer)  forget) -> on a LATER tick, harvest the finished
                           artifact from the Volume -> land it under
-                          sources/populace-reform-validation/raw/, re-run
-                          scorecard_db.ingest_reform_validation, commit the
-                          rebuilt DB, open a PR. No simulation ever runs on
-                          the runner, so ticks take seconds.
+                          sources/populace-reform-validation/raw/, verify the
+                          DB builds (scorecard_db.build_db to a throwaway
+                          path — the DB is a derived artifact post-#74, never
+                          committed), commit the raw artifact + source.json,
+                          open a PR. No simulation runs on the runner, so
+                          ticks take seconds.
 
   This app                clone microcosm at the requested ref, install the
   (simulation layer)      release-exact policyengine-us/-core from the
@@ -140,6 +142,50 @@ def backfill(
         flush=True,
     )
 
+    # Install the checked-out microcosm shards so THEIR declared dependencies
+    # resolve — microcosm.fit eagerly imports quantile-forest, which putting the
+    # src dirs on PYTHONPATH alone never installed, so the producer couldn't
+    # start. A constraints file keeps the release-exact engines pinned while the
+    # shards' own deps install.
+    with open("/tmp/constraints.txt", "w") as c:
+        c.write(f"policyengine-us=={peus}\npolicyengine-core=={pecore}\n")
+    subprocess.run(
+        ["pip", "install", "--quiet", "-c", "/tmp/constraints.txt"]
+        + [f"/opt/microcosm/packages/{p}" for p in PRODUCER_PACKAGES],
+        check=True,
+    )
+
+    # Read back the ACTUAL installed engine versions (not the manifest's
+    # expected) so the attestation stamps what really ran (blocker: attestation
+    # must be verified, not declarative). A shard dep must not have pulled a
+    # different engine in past the constraint.
+    def _installed(pkg):
+        out = subprocess.run(
+            ["pip", "show", pkg], capture_output=True, text=True, check=True
+        ).stdout
+        for line in out.splitlines():
+            if line.startswith("Version:"):
+                return line.split(":", 1)[1].strip()
+        return ""
+
+    installed_peus, installed_pecore = (
+        _installed("policyengine-us"),
+        _installed("policyengine-core"),
+    )
+    if (installed_peus, installed_pecore) != (peus, pecore):
+        raise RuntimeError(
+            f"installed engines {installed_peus}/{installed_pecore} != manifest "
+            f"{peus}/{pecore} — a shard dependency overrode the release pin"
+        )
+
+    # Smoke the plan BEFORE the multi-hour run: this imports the producer module
+    # and every shard dependency, so a missing dep (blocker 1) fails fast and
+    # loud here instead of deep inside a batch.
+    subprocess.run(
+        ["python", "/root/backfill.py", "--plan", "--release-id", release_id],
+        check=True,
+    )
+
     workdir = f"/vol/rv_{hashlib.sha256(release_id.encode()).hexdigest()[:8]}"
     os.makedirs(workdir, exist_ok=True)
     with open(f"{workdir}/started", "w") as f:
@@ -148,15 +194,11 @@ def backfill(
         )
     volume.commit()
 
-    env = {
-        **os.environ,
-        "PYTHONPATH": ":".join(
-            f"/opt/microcosm/packages/{p}/src" for p in PRODUCER_PACKAGES
-        ),
-        # The scorecard checkout backfill.py was baked from at `modal deploy`
-        # time; merge() refuses partials that mix driver revisions (blocker 4).
-        "RV_DRIVER_COMMIT": driver_ref,
-    }
+    # No PYTHONPATH shard-src hack: the shards are pip-installed above, so their
+    # deps resolve. Only the driver revision is threaded through — the scorecard
+    # checkout backfill.py was baked from at `modal deploy` time; merge() refuses
+    # partials that mix driver revisions (blocker 4).
+    env = {**os.environ, "RV_DRIVER_COMMIT": driver_ref}
     proc = subprocess.run(
         [
             "python",

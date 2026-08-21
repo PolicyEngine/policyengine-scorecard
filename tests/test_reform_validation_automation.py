@@ -271,6 +271,37 @@ def test_new_release_without_attestation_fails_loudly(tmp_path):
         ingest(tmp_path / "scorecard.db", raw_dir=raw_dir)
 
 
+def test_attestation_is_verified_not_just_present(tmp_path):
+    # Presence isn't enough (re-gate blocker 2/6): a forged block with junk
+    # format or an engine that disagrees with the artifact must be rejected.
+    raw_dir = tmp_path / "raw"
+    raw_dir.mkdir()
+
+    def _ingest(mutate, match):
+        art = _new_release_artifact()
+        mutate(art)
+        (raw_dir / f"{NEW_RELEASE}.json").write_text(json.dumps(art))
+        with pytest.raises(SystemExit, match=match):
+            ingest(tmp_path / "scorecard.db", raw_dir=raw_dir)
+
+    # h5_sha256 that isn't a 64-char hex digest.
+    _ingest(lambda a: a["_attestation"].update(h5_sha256="x"), "h5_sha256")
+    # a commit id that isn't hex.
+    _ingest(lambda a: a["_attestation"].update(producer_commit="not-a-sha!"), "git sha")
+    # an engine version that disagrees with the artifact's own engine block
+    # (the forged `engine=9.9.9` Max reproduced).
+    _ingest(
+        lambda a: a["_attestation"].update(policyengine_us="9.9.9"),
+        "inconsistent",
+    )
+
+    # The clean fixture still ingests (cross-consistent block).
+    art = _new_release_artifact()
+    (raw_dir / f"{NEW_RELEASE}.json").write_text(json.dumps(art))
+    summary = ingest(tmp_path / "scorecard.db", raw_dir=raw_dir)
+    assert summary["results"] > 0
+
+
 # --------------------------------------------------------------------------- #
 # backfill.merge revision refusal (re-gate blocker 4) — pure stdlib
 # --------------------------------------------------------------------------- #

@@ -178,15 +178,19 @@ def _obbba_scoring_mode(release_id: str, artifact: dict) -> str:
 
 
 _ATTESTATION_REQUIRED = ("producer_commit", "driver_commit", "h5_sha256")
+_HEX = re.compile(r"\A[0-9a-f]+\Z")
 
 
 def _validate_attestation(release_id: str, artifact: dict) -> None:
-    """Consume the provenance attestation the automation stamps — reject a
-    missing/`unknown` one rather than ingesting un-attested provenance
-    (blocker 6: the attestation was write-only, so a forged/absent block
-    sailed through green). The five historical backfills predate it and are
-    exempt; a genuinely-new (automation-produced) release must carry a
-    complete block."""
+    """Consume AND VERIFY the provenance attestation the automation stamps.
+    The five historical backfills predate it and are exempt; a genuinely-new
+    (automation-produced) release must carry a complete block whose fields are
+    well-FORMED and CROSS-CONSISTENT with the artifact it describes. Presence
+    alone (the prior check) let a forged block through — junk commits,
+    ``h5_sha256="x"``, an ``engine=9.9.9`` that disagreed with the artifact
+    (re-gate blocker 6/2). The producer independently verifies the same fields
+    (rehashes the H5, reads back installed engine versions); this is the
+    ingest-side gate on a committed raw artifact."""
     if release_id in ENGINE_VERSIONS:
         return
     att = artifact.get("_attestation")
@@ -205,6 +209,34 @@ def _validate_attestation(release_id: str, artifact: dict) -> None:
             f"{release_id}: _attestation has missing/unknown fields {missing} "
             "— refusing to ingest incomplete provenance."
         )
+    # Format: h5_sha256 is 64 lowercase hex; commit ids are 7-64 hex.
+    h5 = str(att["h5_sha256"]).strip().lower()
+    if len(h5) != 64 or not _HEX.match(h5):
+        raise SystemExit(
+            f"{release_id}: _attestation.h5_sha256 is not a 64-char sha256 ({h5!r})."
+        )
+    for k in ("producer_commit", "driver_commit"):
+        v = str(att[k]).strip().lower()
+        if not (7 <= len(v) <= 64) or not _HEX.match(v):
+            raise SystemExit(
+                f"{release_id}: _attestation.{k} is not a git sha ({att[k]!r})."
+            )
+    # Cross-consistency with the artifact the block claims to describe: the
+    # attested id and BOTH engine versions must match the artifact's own
+    # `engine` block (which drives _base_engine / the pe_results stamp), so a
+    # forged engine can't ride in behind a plausible-looking attestation.
+    if att.get("release_id") not in (None, release_id):
+        raise SystemExit(
+            f"{release_id}: _attestation.release_id {att.get('release_id')!r} mismatches."
+        )
+    engine = artifact.get("engine") or {}
+    for k in ("policyengine_us", "policyengine_core"):
+        av, ev = att.get(k), engine.get(k)
+        if av is None or ev is None or str(av) != str(ev):
+            raise SystemExit(
+                f"{release_id}: _attestation.{k}={av!r} inconsistent with "
+                f"artifact.engine.{k}={ev!r}."
+            )
 
 
 def _base_engine(release_id: str, artifact: dict) -> str:
@@ -829,8 +861,8 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
     for path in releases:
         artifact = json.loads(path.read_text())
         release_id = artifact["release_id"]
-        _validate_attestation(release_id, artifact)
         base_engine = _base_engine(release_id, artifact)
+        _validate_attestation(release_id, artifact)
         overrides = ENGINE_OVERRIDES.get(release_id, {})
         computed_at = _release_timestamp(release_id)
         # Resolve+validate the OBBBA scoring mode once per release, and only
