@@ -423,6 +423,8 @@ def test_lane_note_carries_the_5_7_6_accounting(tmp_path, monkeypatch):
         "SELECT detail FROM lanes WHERE lane = ?", (mod.LANE_ID,)
     ).fetchone()[0]
     db.close()
-    assert "5 model claims" in note
-    assert "7 Ledger facts" in note
-    assert "survey input" in note
+    assert note == (
+        "5 model claims, 7 Ledger facts (6 statistical + 1 "
+        "non-simulated uprated EU-SILC survey input), 6 derived "
+        "ratios dispositioned; 2 concept-mismatch attachments"
+    )

@@ -606,7 +606,7 @@ def _validate_ratios(rows: list[dict]) -> None:
 def stage_all(
     rows: list[dict] | None = None,
 ) -> tuple[list[ExternalScore], list[dict], dict]:
-    """Stage the complete artifact and enforce its 6/6/6 accounting."""
+    """Stage the complete artifact and enforce its 5/7/6 accounting."""
     rows = _load_rows() if rows is None else rows
     _validate_rows(rows)
     _validate_ratios(rows)
