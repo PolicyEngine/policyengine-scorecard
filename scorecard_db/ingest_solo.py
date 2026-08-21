@@ -26,7 +26,12 @@ from .db import ScorecardDB
 from .ingest_urban import solo_reform
 from .models import BASELINE
 
-COMPARISON_DIR = Path.home() / "populace-sotsn-takeup" / "comparison"
+# Vendored from the populace-sotsn-takeup comparison run (2026-08-01/02)
+# so the database is buildable from THIS repo alone (build_db.py); the
+# original clone is machine-local and CI has no access to it.
+COMPARISON_DIR = (
+    Path(__file__).resolve().parent.parent / "sources" / "populace-sotsn-comparison"
+)
 REPO = Path(__file__).resolve().parent.parent
 PROGRAMS = ("snap", "ssi", "tanf", "wic", "housing")
 EXHIBIT = "solo_takeup_poverty"
