@@ -193,6 +193,25 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "out' (sources/harvest-uk-2026-08-02/uk_ifs).",
     ),
     (
+        {"policy": "obr_announcement_baseline_efo_march_2026"},
+        "obr_announcement_baseline_efo_march_2026",
+        "The announcement-consistent counterfactual the EFO March 2026 "
+        "re-estimates of the PA and HRT freezes are measured against: the "
+        "thresholds INDEXED as they would have been without the freeze, on "
+        "the March 2026 earnings determinants. It is a THRESHOLD-indexation "
+        "counterfactual, not a data-vintage one — the certified "
+        "policyengine-uk world already grows incomes along those same "
+        "determinants, so differencing the data vintage would difference a "
+        "world against itself. The divergence decomposition's "
+        "baseline_vintage axis claimed this world while it was registered "
+        "nowhere; a claimed baseline that no registry describes is not a "
+        "baseline.",
+        "policy_ref",
+        "EFO March 2026 Table 3.17 (PA and HRT freezes re-estimate); axis "
+        "recipe in data/uk/obr_divergence_axes.json "
+        "(efo_march_2026__pa_and_hrt_freezes / baseline_vintage).",
+    ),
+    (
         {"policy": "pre_ab2025"},
         "pre_ab2025",
         "UK current law with the Autumn Budget 2025 two-child-limit "

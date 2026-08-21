@@ -8,6 +8,16 @@ components from the axes registry (data/uk/obr_divergence_axes.json).
 that identity is bookkeeping, NOT evidence the decomposition is right,
 so the record carries diagnostics that can actually fail:
 
+  - Recipes are EXECUTED, not asserted. A `computed` component names an
+    executor that the pipeline runs against the comparison rows on every
+    run, and it may not carry a hard-coded value at all; the derivation
+    it produces states the assumption it rests on. The adjacent-CY 3:1
+    interpolation is the first: it sizes the cy_proxies_fy axis for both
+    focal March-2026 divergences from the fixture's own runs, which is
+    what turned two "residual = the entire gap" records into decompositions
+    with something actually attributed. Where the adjacent run is absent
+    the component stays unsized and says which run is missing.
+
   - Every valued component is classified by direction against the gap:
     ``explains_gap`` (same sign — the axis accounts for part of the
     observed divergence) or ``masks_gap`` (opposite sign — the axis
@@ -17,9 +27,15 @@ so the record carries diagnostics that can actually fail:
     observed gap understates the model disagreement, and the artifact
     says so instead of presenting the masking terms as explanation.
   - ``residual_exceeds_gap`` flags |residual| > |gap|.
-  - ``explained_share`` is emitted only for a complete decomposition
-    (no unsized components) with NO masking components and a nonzero
-    gap; it can never be produced by the identity alone.
+  - Components that share a channel are not additive. A component may
+    declare ``overlaps``; when two overlapping components are both
+    valued the record says so and withholds ``explained_share``.
+  - ``explained_share`` is emitted only for a complete decomposition (no
+    unsized components) with no masking components, no overlapping
+    components, a nonzero gap — and a share that is actually a share.
+    A value outside [0, 1] is withheld with a stated reason: "150%
+    explained" is a residual of the opposite sign wearing an
+    explanation's name.
 
 Honesty rules on the registry side, enforced by load_registry and
 tests/test_obr_divergence_decomposition.py:
@@ -60,14 +76,83 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
+# `residual` is deliberately NOT an axis. It was both a registry axis and
+# the quantity the pipeline computes, so a component could be filed under
+# the name of the thing it was supposed to be explaining — and the
+# identity would still close.
 AXES = (
     "behavioural_adjustment",
     "baseline_vintage",
     "cy_proxies_fy",
     "head_scope",
     "construction_scope",
-    "residual",
+    # A term that bundles two axes and cannot be attributed to either.
+    # The employer-NICs "behavioural" component was one: it subtracts a
+    # FULL-MEASURE static total from a MAPPED-HEAD post-behavioural
+    # subtotal, so it carries a scope difference and a behavioural
+    # response together. Filing it as behavioural_adjustment claimed an
+    # attribution the arithmetic does not support.
+    "joint_behavioural_and_scope",
 )
+
+# Recipes the pipeline EXECUTES, rather than components that assert a
+# number. An executed component's value is recomputed from the comparison
+# rows on every run, so it cannot drift from the data it claims to be
+# derived from — the failure mode a hard-coded values_gbp has.
+EXECUTORS = {}
+
+
+def executor(name):
+    def register(fn):
+        EXECUTORS[name] = fn
+        return fn
+
+    return register
+
+
+# FY Y-(Y+1) accrues nine months of CY Y and three of CY Y+1, so an
+# equal-accrual interpolation weights them 3:1. The PE leg proxies the FY
+# with the single CY-Y run, so the axis component is the difference:
+#
+#     (0.75*PE_Y + 0.25*PE_{Y+1}) - PE_Y  =  0.25 * (PE_{Y+1} - PE_Y)
+#
+# EQUAL ACCRUAL IS AN ASSUMPTION, not an engine fact: a measure whose
+# effect is concentrated in part of the year (a threshold that bites at
+# uprating, a rate change effective in April) does not accrue evenly, and
+# then 3:1 is an approximation whose error is unbounded. It is stated on
+# every value this executor produces. Note also that the FY label keys the
+# END year in claim identity (FY2026-27 -> period 2027) while the PE run's
+# calendar year is the START year — the two are different keys for the
+# same span and the executor reads the CSV's own `year` column rather than
+# inferring either from the other.
+_CY_CONFOUNDS = (
+    "Assumes EQUAL ACCRUAL across the financial year. A measure whose "
+    "effect concentrates in part of the year (a threshold biting at "
+    "April uprating, a mid-year rate change) does not accrue evenly and "
+    "the 3:1 weighting is then an approximation with unbounded error. "
+    "The FY label keys the END year in claim identity while the PE run's "
+    "calendar year is the START year; both are read from the comparison "
+    "row, never inferred from each other."
+)
+
+
+@executor("cy_3_to_1_from_adjacent_runs")
+def _cy_proxies_fy(component, row, rows_by_measure_year):
+    """Execute the adjacent-CY interpolation from the comparison rows."""
+    year = int(row["year"])
+    nxt = rows_by_measure_year.get((row["measure_key"], row["row_kind"], year + 1))
+    if nxt is None:
+        return None, (
+            f"no adjacent CY{year + 1} comparison row for this measure and "
+            "row_kind, so the 3:1 interpolation cannot be executed"
+        )
+    value = 0.25 * (float(nxt["pe_value_gbp"]) - float(row["pe_value_gbp"]))
+    derivation = (
+        f"0.25 * (PE CY{year + 1} - PE CY{year}) = 0.25 * "
+        f"({float(nxt['pe_value_gbp'])} - {float(row['pe_value_gbp'])}) = {value}. "
+        f"{_CY_CONFOUNDS}"
+    )
+    return value, derivation
 
 
 def load_registry(path):
@@ -95,11 +180,33 @@ def load_registry(path):
                     raise ValueError(
                         f"{key}/{c['name']}: derived but no derivation formula"
                     )
+            elif c["status"] == "computed":
+                if c.get("values_gbp"):
+                    raise ValueError(
+                        f"{key}/{c['name']}: a computed component is EXECUTED "
+                        "from the comparison rows; a hard-coded values_gbp "
+                        "would let it drift from the data it claims"
+                    )
+                if c.get("executor") not in EXECUTORS:
+                    raise ValueError(
+                        f"{key}/{c['name']}: unknown executor "
+                        f"{c.get('executor')!r} (known: {sorted(EXECUTORS)})"
+                    )
+                if not c.get("recipe"):
+                    raise ValueError(f"{key}/{c['name']}: computed but no recipe")
             elif c["status"] == "unsized":
                 if not c.get("recipe"):
                     raise ValueError(f"{key}/{c['name']}: unsized but no recipe")
             else:
                 raise ValueError(f"{key}/{c['name']}: bad status {c['status']}")
+            # A component that overlaps another names it, so the pipeline
+            # can refuse to present two terms that share a channel as an
+            # additive explanation.
+            for other in c.get("overlaps", []):
+                if other not in {x["name"] for x in m["components"]}:
+                    raise ValueError(
+                        f"{key}/{c['name']}: overlaps unknown component {other!r}"
+                    )
     return reg
 
 
@@ -111,6 +218,9 @@ def comparison_rows(path):
 def decompose(registry, rows):
     """One decomposition record per (measure, FY) in the registry."""
     out = []
+    by_measure_year = {
+        (r["measure_key"], r["row_kind"], int(r["year"])): r for r in rows
+    }
     for key, m in registry["measures"].items():
         kind = m["comparison_row_kind"]
         picked = [r for r in rows if r["measure_key"] == key and r["row_kind"] == kind]
@@ -123,6 +233,37 @@ def decompose(registry, rows):
             gap = pe - obr
             valued, unsized = [], []
             for c in m["components"]:
+                if c["status"] == "computed":
+                    value, note = EXECUTORS[c["executor"]](c, r, by_measure_year)
+                    if value is None:
+                        unsized.append(
+                            {
+                                "name": c["name"],
+                                "axis": c["axis"],
+                                "recipe": f"{c['recipe']} NOT EXECUTED: {note}",
+                            }
+                        )
+                        continue
+                    valued.append(
+                        {
+                            "name": c["name"],
+                            "axis": c["axis"],
+                            "status": "computed",
+                            "value_gbp": value,
+                            "direction": (
+                                "explains_gap"
+                                if gap and (value > 0) == (gap > 0)
+                                else "masks_gap"
+                            ),
+                            "provenance": (
+                                "EXECUTED by this pipeline from the comparison "
+                                f"rows on this run (executor {c['executor']})"
+                            ),
+                            "derivation": note,
+                            "overlaps": c.get("overlaps", []),
+                        }
+                    )
+                    continue
                 if c["status"] in ("sized", "derived") and fy in c["values_gbp"]:
                     value = float(c["values_gbp"][fy])
                     entry = {
@@ -142,6 +283,7 @@ def decompose(registry, rows):
                     }
                     if c["status"] == "derived":
                         entry["derivation"] = c["derivation"]
+                    entry["overlaps"] = c.get("overlaps", [])
                     valued.append(entry)
                 else:
                     unsized.append(
@@ -177,8 +319,36 @@ def decompose(registry, rows):
                 rec["like_for_like_gap_gbp"] = gap - sum(
                     c["value_gbp"] for c in masking
                 )
-            if not partial and not masking and gap:
-                rec["explained_share"] = 1.0 - residual / gap
+            # Components that share a channel are not additive: HICBC's
+            # welfare_head_missing and its take-up behavioural axis are
+            # the same £391m twice if both are ever valued.
+            named = {c["name"] for c in valued}
+            overlapping = sorted(
+                {
+                    f"{c['name']}~{o}"
+                    for c in valued
+                    for o in c.get("overlaps", [])
+                    if o in named
+                }
+            )
+            if overlapping:
+                rec["overlapping_components"] = overlapping
+            # explained_share is the ONE number a reader will quote, so it
+            # is emitted only when it means something: a complete
+            # decomposition, no masking terms, no overlapping terms, and a
+            # share that is actually a share. The synthetic test used to
+            # permit 1.5 — a "150% explained" gap, which is a residual of
+            # the opposite sign wearing an explanation's name.
+            if not partial and not masking and not overlapping and gap:
+                share = 1.0 - residual / gap
+                if 0.0 <= share <= 1.0:
+                    rec["explained_share"] = share
+                else:
+                    rec["explained_share_withheld"] = (
+                        f"computed share {share} is outside [0, 1]: the "
+                        "components do not explain a fraction of this gap, "
+                        "they over- or counter-shoot it"
+                    )
             out.append(rec)
     return out
 
@@ -226,11 +396,45 @@ def render_md(records):
     return "\n".join(lines) + "\n"
 
 
+LIVE_COMPARISON = ROOT / "results/uk/obr_costings/COMPARISON.csv"
+FIXTURE_COMPARISON = ROOT / "tests/fixtures/obr_costings_comparison_20260817.csv"
+
+
+def choose_comparison(explicit=None):
+    """Which comparison CSV to decompose, and say which out loud.
+
+    A clean invocation used to FileNotFoundError on #56's output, which
+    does not exist on this branch — so the tool did not stand alone. It
+    now falls back to the committed fixture and NAMES the fallback: a
+    decomposition of a frozen snapshot must never read as a
+    decomposition of live results.
+    """
+    if explicit is not None:
+        return Path(explicit), "explicit"
+    if LIVE_COMPARISON.exists():
+        return LIVE_COMPARISON, "live"
+    return FIXTURE_COMPARISON, "fixture"
+
+
+def fixture_drift():
+    """Whether the committed fixture still matches #56's live output.
+
+    The fixture is a frozen copy, so #56's baseline fixes would NOT
+    propagate to a decomposition built from it, silently. When both files
+    exist the difference is reported rather than discovered later.
+    """
+    if not (LIVE_COMPARISON.exists() and FIXTURE_COMPARISON.exists()):
+        return None
+    import hashlib
+
+    live = hashlib.sha256(LIVE_COMPARISON.read_bytes()).hexdigest()
+    fixed = hashlib.sha256(FIXTURE_COMPARISON.read_bytes()).hexdigest()
+    return None if live == fixed else {"live_sha256": live, "fixture_sha256": fixed}
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument(
-        "--comparison", default=str(ROOT / "results/uk/obr_costings/COMPARISON.csv")
-    )
+    ap.add_argument("--comparison", default=None)
     ap.add_argument(
         "--registry", default=str(ROOT / "data/uk/obr_divergence_axes.json")
     )
@@ -238,13 +442,45 @@ def main(argv=None):
     args = ap.parse_args(argv)
 
     registry = load_registry(args.registry)
-    records = decompose(registry, comparison_rows(args.comparison))
+    comparison, provenance = choose_comparison(args.comparison)
+    if provenance == "fixture":
+        print(
+            f"NOTE: {LIVE_COMPARISON} is absent (it is PR #56's output), so "
+            f"this decomposition is of the FROZEN FIXTURE {comparison.name}. "
+            "Its numbers are a snapshot, not live results."
+        )
+    drift = fixture_drift()
+    if drift:
+        print(
+            "WARNING: the committed fixture no longer matches #56's live "
+            f"COMPARISON.csv ({drift}); a fixture-based decomposition will "
+            "not carry #56's later baseline fixes. Re-freeze the fixture."
+        )
+    records = decompose(registry, comparison_rows(comparison))
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    (out / "DECOMPOSITION.json").write_text(json.dumps(records, indent=1))
+    (out / "DECOMPOSITION.json").write_text(json.dumps(records, indent=1) + "\n")
     (out / "DECOMPOSITION.md").write_text(render_md(records))
+    (out / "PROVENANCE.json").write_text(
+        json.dumps(
+            {
+                "comparison": str(comparison),
+                "comparison_provenance": provenance,
+                "fixture_drift": drift,
+                "records": len(records),
+            },
+            indent=1,
+        )
+        + "\n"
+    )
     partial = sum(r["decomposition_status"] == "partial" for r in records)
-    print(f"{len(records)} decompositions ({partial} partial) -> {out}")
+    executed = sum(
+        1 for r in records for c in r["valued_components"] if c["status"] == "computed"
+    )
+    print(
+        f"{len(records)} decompositions ({partial} partial, {executed} executed "
+        f"components) -> {out}"
+    )
     return records
 
 

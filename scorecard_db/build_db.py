@@ -19,6 +19,7 @@ Chain order is dependency order and is part of the contract:
     campaign_us  staged day-1/day-2 campaign results (claim matching)
     uk_externals five UK primary-source families + Ledger staging
     uk_deductions FRR family
+    obr_divergence        OBR costings divergence decomposition (#59)
     produce_uk + campaign_uk  archive-resolved UK reckoner attaches
 
 Usage:
@@ -37,6 +38,7 @@ from . import (
     ingest_campaign,
     ingest_diagnoses,
     ingest_harvest,
+    ingest_obr_divergence,
     ingest_platform,
     ingest_reform_validation,
     ingest_solo,
@@ -89,6 +91,14 @@ def build(db_path: Path) -> dict:
         ("campaign_us", lambda: ingest_campaign.ingest(db_path)),
         ("uk_externals", lambda: ingest_uk_externals.ingest(db_path)),
         ("uk_deductions", lambda: ingest_uk_deductions.ingest(db_path)),
+        # The divergence decomposition's artifact vanished on every CI
+        # rebuild because nothing registered it; the lane is written
+        # either way, so a build says "not run" rather than saying
+        # nothing.
+        (
+            "obr_divergence",
+            lambda: ingest_obr_divergence.ingest(db_path),
+        ),
         ("produce_uk", lambda: produce_campaign_uk.produce(db_path)),
         (
             "campaign_uk",
