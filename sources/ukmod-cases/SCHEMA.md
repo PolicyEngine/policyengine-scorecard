@@ -102,17 +102,95 @@ Person keys (closed set):
 
 Household keys (closed set): `people`, `benefit_units`, `region`, `tenure`
 (`owned_outright` | `owned_mortgage` | `rented_social` | `rented_private`),
-`rent` (annual), `council_tax` (annual, optional). `region` uses the target
-country's own geography vocabulary (UK: ITL-1 slugs like `LONDON`,
-`SCOTLAND`; US: state codes) — it is what routes devolved policy (Scottish
-income tax, Scottish Child Payment; US state taxes) and location-dependent
-amounts (LHA rates, benefit-cap tier).
+`rent` (annual), `council_tax` (annual, optional), `brma`. `region` uses
+the target country's own geography vocabulary (UK: ITL-1 slugs like
+`LONDON`, `SCOTLAND`; US: state codes) — it is what routes devolved policy
+(Scottish income tax, Scottish Child Payment; US state taxes) and the
+benefit-cap tier. It is a CLOSED registry (`VALID_REGIONS`), never free
+text: an unrecognised region would otherwise reach a connector that
+silently falls back to a default.
+
+`brma` is REQUIRED on a UK `rented_private` case and forbidden elsewhere.
+Local Housing Allowance rates are set per Broad Rental Market Area, not
+per ITL-1 region, so a region alone does not fix the world the two engines
+run — "the rent clears the cap in most Yorkshire BRMAs" is not a pinned
+comparison. `BRMA_REGION` is the registry, and each entry names the region
+it sits in, so a case cannot pin a BRMA outside its own region.
+
+`expected_focus` is likewise closed per country (`FOCUS_VARIABLES`): it
+names the output variables the case is curated to exercise, and a name no
+connector maps produces no comparison at all rather than an error.
+
+Amounts must be FINITE. NaN silently defeats every comparison operator,
+and an infinite rent produces an infinite entitlement rather than a
+failure.
+
+### `baseline` — the policy world a case is evaluated in
+
+Optional; absent means current law. A descriptor of the same shape
+`ReformRef.baseline` carries, and it must already be REGISTERED in
+`scorecard_db/baselines.py` — an unnamed counterfactual is exactly the
+"which law did this run?" ambiguity mode 3 exists to remove.
+
+This is how a case pins a SAME-YEAR counterfactual instead of leaning on a
+year-on-year delta. The two-child-limit family uses it: three 2026 cases,
+`uk-uc-two-child-limit-binding` and `uk-uc-two-child-limit-multiple-birth`
+in the registered `pre_ab2025` world (limit reinstated at two children)
+and `uk-uc-two-child-limit-abolished` under current law. The binding /
+abolished pair differs only in the world, so it attributes the abolition;
+the binding / multiple-birth pair differs only in `child_3`'s date of
+birth, so it attributes the exception. An earlier design paired a 2025
+case against a 2026 one, which moved ages, uprated rates and the policy
+year together, and used twins in the "limit in force" case — where an
+engine that wrongly kept the limit but rightly applied the multiple-birth
+exception still paid three elements and passed.
 
 ## Result row — `CaseResult`
 
 One row per case × output variable × run. History is preserved: re-running
 on a new engine or oracle version appends, never overwrites (same doctrine
 as `pe_results`).
+
+`variable_class` and `schema_version` are REQUIRED. Both used to be
+omissible, and an omitted `schema_version` defaulted to the current one —
+precisely the silent reinterpretation the field exists to prevent.
+`engine_version` and `oracle_version` may not be blank. A boolean-class
+comparison may only carry 0 or 1 on either side.
+
+### The classify → CaseResult seam is enforced, not conventional
+
+`CaseResult.__post_init__` RECOMPUTES `classify()` and compares. A stored
+classification is valid only if it is what the classifier says, or if it
+is an ADJUDICATION of a row the classifier left `unclassified`, drawn from
+`ADJUDICATABLE` (`oracle_difference`, `rounding`, `pe_gap`,
+`policy_scope_mismatch`) and carrying a writeup in `annotations`. A row
+the classifier has already decided is not up for reinterpretation, and
+nothing may be adjudicated INTO a match.
+
+Note the two-sidedness of `pe_gap` and `policy_scope_mismatch`: the
+classifier emits them mechanically for a null side, and a human may also
+assign them to a numeric-vs-numeric difference — where they are a
+judgement and need explaining. Previously only `oracle_difference` and
+`rounding` demanded a writeup, so `100` vs `200` could be filed as a
+`pe_gap` with nothing said.
+
+Tolerances come from `DEFAULT_TOLERANCES` alone. `from_classification`
+no longer accepts a tolerance table and a hand-written row carrying a
+tolerance other than the registered one is rejected — a caller-supplied
+tolerance is how a boolean `1` vs `0` became a `match_within_tolerance`.
+`from_classification` does accept `annotations`, because some lanes
+require one (the #64 calculator rows must carry an archive annotation).
+
+### Not yet built
+
+There is no case/result TABLE, writer, exporter or `build_db` step, so
+mode-3 rows do not persist to the DB yet. The epistemic wiring that rides
+on those columns — `calibration_relationship`, the executed baseline key,
+case/battery digests, engine bundle and run pins, the JRC connector
+revision, and a citable adjudication link — lands with that table, as does
+splitting the descriptive comparison status from the normative diagnosis
+the way `external_scores` and `diagnoses` already do. That design has
+repo-wide surface and is being paired on rather than decided here.
 
 ```json
 {
