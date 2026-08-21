@@ -57,9 +57,14 @@ def test_row_shape_is_closed(rows):
         "status",
         "fiscal_event",
         "basis",
+        "scoring_method",
         "scope",
         "aggregate_level",
         "parent",
+        "artifact",
+        "baseline",
+        "baseline_counterfactual",
+        "baseline_locator",
         "source_column",
     }
     for r in rows:
@@ -70,14 +75,37 @@ def test_row_shape_is_closed(rows):
         assert isinstance(r["value"], float)
 
 
+# The three macro quantities are semantically different and must never
+# share one unit concept: a per-cent deviation in the LEVEL of real GDP,
+# an effect on CPI inflation in PERCENTAGE POINTS, and an impact on
+# POTENTIAL output as a per cent of GDP.
+_EXPECTED_UNITS = {
+    "gdp_level_effect": "percent_of_real_gdp",
+    "cpi_inflation_effect": "percentage_points",
+    "supply_side_impact": "percent_of_potential_gdp",
+    "decisions_effect_on_borrowing": "gbp_nominal",
+}
+
+
 def test_units_match_metric(rows):
     for r in rows:
+        assert r["unit_concept"] == _EXPECTED_UNITS[r["metric"]], r["metric"]
         if r["metric"] == "decisions_effect_on_borrowing":
-            assert r["unit_concept"] == "gbp_nominal"
             # sign convention carried verbatim, never normalised silently
             assert r["sign_convention"] == "as_published_positive_increases"
-        else:
-            assert r["unit_concept"] == "percent"
+    # and the four are genuinely distinct labels, not aliases
+    assert len(set(_EXPECTED_UNITS.values())) == 4
+
+
+def test_basis_is_the_standard_axis_and_scoring_method_is_its_own(rows):
+    """`basis` means forecast|outturn everywhere in this repo; a scoring
+    method is not a basis and gets its own axis."""
+    for r in rows:
+        assert r["basis"] == "forecast"
+        assert r["scoring_method"] in {"post_behavioural", "supply_side"}
+        assert (r["scoring_method"] == "supply_side") == (
+            r["metric"] == "supply_side_impact"
+        )
 
 
 def test_spot_values_trace_to_published_cells(rows):
@@ -114,9 +142,9 @@ def test_spot_values_trace_to_published_cells(rows):
         period="2028-29",
     ) == pytest.approx(-1785290340.7289479)
     # BP10: tax thresholds freeze is the one large negative labour entry
-    assert get(metric="supply_side_impact", program="tax_thresholds") == pytest.approx(
-        -0.25
-    )
+    assert get(
+        metric="supply_side_impact", program="tax_threshold_freeze"
+    ) == pytest.approx(-0.25)
 
 
 def test_tb1_hierarchy_reconciles(rows):
@@ -174,3 +202,125 @@ def test_rebuild_is_byte_stable(tmp_path, monkeypatch):
     monkeypatch.setattr(adapter, "OUT_DIR", tmp_path)
     adapter.build()
     assert (tmp_path / "obr-policy-effects.json").read_text() == EXTERNAL.read_text()
+
+
+@pytest.fixture(scope="module")
+def adapter():
+    """The adapter module, loaded under a unique name (several sources/
+    trees ship a module called "adapter")."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "obr_policy_effects_adapter",
+        ROOT / "sources" / "obr-policy-effects" / "adapter.py",
+    )
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_publication_provenance_is_per_event(rows, adapter):
+    """Every row names the vendored artifact it was read from, and each
+    artifact carries its OWN release date — one generic publications/
+    URL stamped with the newest round's date misdates every older
+    round's claims."""
+    by_event = {}
+    for r in rows:
+        assert r["artifact"] in adapter.ARTIFACTS, r["artifact"]
+        by_event.setdefault(r["fiscal_event"], set()).add(r["artifact"])
+    # the four package rounds each read their own dated release
+    # AS2023 is read from its own EFO release AND re-stated in BP10
+    assert by_event["autumn_statement_2023"] == {
+        "efo_november2023_chapter2.xlsx",
+        "obr_briefing_paper_10_supply_side.xlsx",
+    }
+    assert by_event["autumn_budget_2024"] >= {"efo_october2024_chapter2.xlsx"}
+    assert by_event["march_2026_efo"] == {"efo_march2026_annex_tables.xlsx"}
+    dates = {f: a["date"] for f, a in adapter.ARTIFACTS.items()}
+    assert dates["efo_november2023_chapter2.xlsx"] == "2023-11-22"
+    assert dates["efo_march2024_chapter2.xlsx"] == "2024-03-06"
+    assert dates["efo_october2024_chapter2.xlsx"] == "2024-10-30"
+    assert dates["efo_november2025_chapter3.xlsx"] == "2025-11-26"
+    # publication date, NOT the Wayback capture (2026-03-16)
+    assert dates["efo_march2026_annex_tables.xlsx"] == "2026-03-03"
+    assert len(set(dates.values())) == 5  # BP10 shares the Nov-2025 date
+
+
+def test_every_row_carries_a_pre_measures_baseline(rows, adapter):
+    """OBR scores against each round's PRE-MEASURES forecast — a named
+    world per round, never the null current_law."""
+    for r in rows:
+        assert r["baseline"] == adapter._PRE_MEASURES[r["fiscal_event"]]
+        assert r["baseline"] != "current_law"
+        assert r["baseline_counterfactual"] in {
+            "policy_parameters",
+            "del_activity",
+            "regulatory",
+        }
+        assert len(r["baseline_locator"]) > 40
+    # six pre-measures rounds (SB2023..AB2025) plus March 2026's
+    # since-the-November-2025-Budget world: seven distinct baselines
+    assert len(set(r["baseline"] for r in rows)) == 7
+    # March 2026's counterfactual is the November 2025 Budget forecast,
+    # per Table B.1's own title — not a pre-measures world
+    tb = next(r for r in rows if r["fiscal_event"] == "march_2026_efo")
+    assert tb["baseline"] == "obr_november_2025_budget_forecast"
+    # BP10 splits legislated-parameter counterfactuals from DEL and
+    # regulatory activity baselines
+    bp10 = [r for r in rows if r["metric"] == "supply_side_impact"]
+    kinds = {r["variant"]: r["baseline_counterfactual"] for r in bp10}
+    assert kinds == {
+        "tax": "policy_parameters",
+        "welfare": "policy_parameters",
+        "del": "del_activity",
+        "regulation": "regulatory",
+    }
+    wca = next(r for r in bp10 if r["program"] == "wca_reversal")
+    assert "WCA-ADJUSTED" in wca["baseline_locator"]
+
+
+@pytest.mark.skipif(not RAW.exists(), reason="raw workbooks not present")
+def test_build_reconciles_every_source_cell(tmp_path, monkeypatch, adapter):
+    """272 numeric cells read = 266 claims + 6 deliberately dropped memo
+    cells. The memo line is a TALLIED drop, not a silent skip."""
+    monkeypatch.setattr(adapter, "OUT_DIR", tmp_path)
+    rows, counts, rec = adapter.build()
+    assert rec["source_cells_read"] == 272
+    assert rec["claims"] == 266 == len(rows)
+    assert rec["deliberate_drops"] == 6
+    assert len(rec["drops"]) == 1
+    drop = rec["drops"][0]
+    assert drop["slug"] == "memo_current_budget"
+    assert drop["cells"] == 6
+    assert "current budget" in drop["reason"]
+    # and the four claim metrics still tie out
+    assert counts["tb1_decisions"] == 60
+
+
+@pytest.mark.skipif(not RAW.exists(), reason="raw workbooks not present")
+def test_unregistered_labels_raise(monkeypatch, adapter, tmp_path):
+    """The identity vocabularies are CLOSED: a re-labelled workbook
+    fails loudly instead of minting a claim under an unseen slug."""
+    monkeypatch.setattr(adapter, "OUT_DIR", tmp_path)
+
+    series = dict(adapter._SERIES)
+    series[("autumn_statement_2023", "C2.A")] = {"Demand": "demand"}
+    monkeypatch.setattr(adapter, "_SERIES", series)
+    with pytest.raises(RuntimeError, match="unregistered C2.A series label"):
+        adapter.build()
+    monkeypatch.undo()
+    monkeypatch.setattr(adapter, "OUT_DIR", tmp_path)
+
+    monkeypatch.setattr(adapter, "_BP10_MEASURES", {"Universal Support": "us"})
+    with pytest.raises(RuntimeError, match="unregistered BP10 T2.1 measure"):
+        adapter.build()
+
+
+@pytest.mark.skipif(not RAW.exists(), reason="raw workbooks not present")
+def test_unclassified_tb1_value_line_raises(monkeypatch, adapter, tmp_path):
+    """A value-bearing TB.1 line that is neither emitted nor a declared
+    drop is an error — the failure mode the memo row slipped through."""
+    monkeypatch.setattr(adapter, "OUT_DIR", tmp_path)
+    monkeypatch.setattr(adapter, "TB1_DROPS", [])
+    with pytest.raises(RuntimeError, match="unclassified value line"):
+        adapter.build()
