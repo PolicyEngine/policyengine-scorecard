@@ -44,8 +44,8 @@
       "id": "rounding-precision",
       "applies_to": {"program": null, "metrics": null},
       "severity": "caution",
-      "text": "Rates are published to whole percentage points (fractions here carry ±0.005 rounding) and counts to 0.1 million (±50,000). '[low]' cells (< 0.05 million) and '[u]' small-sample cells are suppressed. DWP marks most recent-year movements not statistically significant; deltas inside sampling error should not be scored as divergence.",
-      "basis": "Guidance sheet; uncertainty tables in the same publication"
+      "text": "Values here carry the workbook's full office:value precision (the DISPLAYED tables round rates to whole percentage points and counts to 0.1 million; the adapter reads the unrounded stored value and verifies the display is its rounded rendering). '[low]' cells (< 0.05 million) and '[u]' small-sample cells are suppressed. DWP marks most recent-year movements not statistically significant; deltas inside sampling error should not be scored as divergence.",
+      "basis": "Guidance sheet; uncertainty tables in the same publication; ODS office:value attributes in the vendored raw files"
     },
     {
       "id": "equivalisation-income-concept",

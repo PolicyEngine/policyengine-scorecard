@@ -1,6 +1,7 @@
 from .db import ScorecardDB
 from .models import (
     BASELINE,
+    CURRENT_LAW_DESCRIPTOR,
     STANDARD_CONDITIONS,
     CalibrationRelationship,
     ComparisonStatus,
@@ -11,10 +12,12 @@ from .models import (
     ReformRef,
     TimeBasis,
     UnitConcept,
+    baseline_key,
 )
 
 __all__ = [
     "BASELINE",
+    "CURRENT_LAW_DESCRIPTOR",
     "STANDARD_CONDITIONS",
     "CalibrationRelationship",
     "ComparisonStatus",
@@ -26,4 +29,5 @@ __all__ = [
     "ScorecardDB",
     "TimeBasis",
     "UnitConcept",
+    "baseline_key",
 ]

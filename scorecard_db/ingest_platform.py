@@ -28,13 +28,19 @@ from .db import ScorecardDB
 from .ingest_urban import FULLPART_REFORM, POP_UNIT, UNITS_UNIT
 from .models import (
     BASELINE,
+    CURRENT_LAW_DESCRIPTOR,
     ComparisonStatus,
     ExternalScore,
     Metric,
     PEResult,
     TimeBasis,
     UnitConcept,
+    baseline_key,
 )
+
+# Platform-grid runs execute on the certified current-law world (fullpart
+# rows force take-up flags on that same world) — record it per issue #13.
+_CURRENT_LAW_KEY = baseline_key(CURRENT_LAW_DESCRIPTOR)
 
 REPO = Path(__file__).resolve().parent.parent
 
@@ -165,6 +171,7 @@ def ingest(
                 run_id="platform-grid-2024",
                 computed_at=f"{comp.get('built', '')}T12:00:00",
                 annotations=row.get("annotations", []),
+                baseline_key=_CURRENT_LAW_KEY,
             )
         )
     if unmatched:
