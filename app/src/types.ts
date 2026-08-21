@@ -11,11 +11,12 @@ export type CalibrationRelationship =
   "consumed_as_target" | "seed_source" | "held_out";
 
 /** The model instance a row or lane belongs to (issue #42). */
-export type Country = "US" | "UK";
+export type Country = "US" | "UK" | "BE";
 
 export const COUNTRY_LABELS: Record<Country, string> = {
   US: "United States",
   UK: "United Kingdom",
+  BE: "Belgium",
 };
 
 /**

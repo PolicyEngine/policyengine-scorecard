@@ -19,7 +19,7 @@ Design decisions (Max, 2026-08-01):
 
 3. **calibration_relationship is mandatory** — ``consumed_as_target`` /
    ``seed_source`` / ``held_out``. Only held_out rows may be published as
-   validation wins; agreement on consumed targets is a tautology.
+   validation comparisons; agreement on consumed targets is a tautology.
 """
 
 from __future__ import annotations
@@ -120,6 +120,10 @@ class UnitConcept(str, Enum):
     # the generic dependent-child concept (child benefit covers children
     # up to 19 in approved education, so no age-bounded member fits).
     GBP = "gbp"
+    # Belgium JRC country-report ingest: EUR is the aggregate currency
+    # concept, mirroring USD/GBP. Source EUR millions are normalized to
+    # raw euros before persistence.
+    EUR = "eur"
     BENEFIT_UNITS = "benefit_units"
     CHILDREN = "children"
     # Per-period GBP amounts and index statistics are their own unit
@@ -196,6 +200,21 @@ STANDARD_CONDITIONS = frozenset(
         "window_kind",
         "month",
         "data_vintage",
+        # Cross-model epistemics (ruling 2026-08-02): every new benchmark
+        # names its class explicitly; Belgium's JRC model claims use
+        # different_model, while the routed statistical rows carry
+        # administrative_fact in Ledger staging.
+        "benchmark_class",
+        # Source/report semantics used by the Belgium country-report lane.
+        "series",
+        "policy_system_year",
+        "reference_year",
+        "assessment_level",
+        "population_scope",
+        "tax_scope",
+        "contribution_payer",
+        "benefit_scope",
+        "source_scale",
         # UK externals ingest (#33)
         # country          "UK" on every UK claim (absent = US)
         # fy               UK financial-year label ("2026-27") alongside the
@@ -257,6 +276,18 @@ class CalibrationRelationship(str, Enum):
     CONSUMED_AS_TARGET = "consumed_as_target"
     SEED_SOURCE = "seed_source"
     HELD_OUT = "held_out"
+
+
+class BenchmarkClass(str, Enum):
+    """Epistemic relationship between the benchmark and our model.
+
+    This travels in claim conditions (and on routed Ledger facts) rather
+    than becoming a second metric/status system.
+    """
+
+    ADMINISTRATIVE_FACT = "administrative_fact"
+    SAME_ASSUMPTIONS = "same_assumptions"
+    DIFFERENT_MODEL = "different_model"
 
 
 class ComparisonStatus(str, Enum):
@@ -439,7 +470,7 @@ class ExternalScore:
     ledger_fact: Optional[str] = None  # validation_comparator fact id
     source_column: Optional[str] = None  # the source's own name for it
     publication: dict = field(default_factory=dict)  # {title,url,date,vintage}
-    value_kind: str = "count"  # count | share | usd
+    value_kind: str = "count"  # count | share | percent | index | usd | gbp | eur
     status: str = "ok"  # ok | suppressed
     # Multi-year window claims (10-year budget totals, decade averages —
     # COLLATION worklist item 2). Both set or neither; convention:

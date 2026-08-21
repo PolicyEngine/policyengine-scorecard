@@ -13,11 +13,18 @@ describe("countryOf", () => {
   test("explicit countries pass through", () => {
     expect(countryOf({ country: "US" })).toBe("US");
     expect(countryOf({ country: "UK" })).toBe("UK");
+    expect(countryOf({ country: "BE" })).toBe("BE");
   });
 
   test("country scoping filter never drops US-era rows from the US view", () => {
-    const rows = [{}, { country: "US" as const }, { country: "UK" as const }];
+    const rows = [
+      {},
+      { country: "US" as const },
+      { country: "UK" as const },
+      { country: "BE" as const },
+    ];
     expect(rows.filter((r) => countryOf(r) === "US")).toHaveLength(2);
     expect(rows.filter((r) => countryOf(r) === "UK")).toHaveLength(1);
+    expect(rows.filter((r) => countryOf(r) === "BE")).toHaveLength(1);
   });
 });

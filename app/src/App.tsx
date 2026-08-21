@@ -43,6 +43,21 @@ const DEFAULT_FILTERS: Filters = {
   bucket: null,
 };
 
+const HEADER_COPY: Record<Country, { eyebrow: string; counterpart: string }> = {
+  US: {
+    eyebrow: "Model validation · instance 1",
+    counterpart: "vs Urban Institute's State of the Safety Net",
+  },
+  UK: {
+    eyebrow: "Model validation · UK lanes",
+    counterpart: "vs DWP, HMRC, OBR and UKMOD",
+  },
+  BE: {
+    eyebrow: "Model validation · Belgium lane",
+    counterpart: "vs JRC EUROMOD-BE",
+  },
+};
+
 export default function App() {
   const [data, setData] = useState<Comparison | null>(null);
   const [lanes, setLanes] = useState<LanesFeed | null>(null);
@@ -125,9 +140,7 @@ export default function App() {
       <header className="mx-auto max-w-content px-4 pt-8 pb-2">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-            {filters.country === "US"
-              ? "Model validation · instance 1"
-              : "Model validation · UK lanes"}
+            {HEADER_COPY[filters.country].eyebrow}
           </p>
           <CountryToggle
             country={filters.country}
@@ -141,9 +154,7 @@ export default function App() {
         <h1 className="mt-1 text-3xl font-bold tracking-tight">
           PolicyEngine scorecard{" "}
           <span className="font-normal text-muted-foreground">
-            {filters.country === "US"
-              ? "vs Urban Institute's State of the Safety Net"
-              : "vs DWP, HMRC, OBR and UKMOD"}
+            {HEADER_COPY[filters.country].counterpart}
           </span>
         </h1>
         <Headline
@@ -231,9 +242,9 @@ export default function App() {
 
       <footer className="border-t border-border">
         <div className="mx-auto max-w-content px-4 py-4 text-xs text-muted-foreground">
-          Every annotation traces to the replication assessment, engine
-          metadata, or a measured diagnostic — see the method tab. Misses stay
-          on the page.
+          Every annotation traces to the comparison method, engine metadata,
+          or a measured diagnostic — see the method tab. Divergences and
+          concept mismatches stay visible.
         </div>
       </footer>
     </div>
@@ -274,9 +285,9 @@ function CountryToggle({
 }
 
 /**
- * A country whose lanes are still mid-pipeline renders as a status panel,
- * not a blank page (issue #42): the lanes and their stages stay visible,
- * and rows will land under the same status taxonomy as the US instance.
+ * A country without main-grid cells renders as a status panel, not a blank
+ * page (issue #42): lanes and their stages stay visible. A completed lane may
+ * intentionally live on Reform validation when its values are not comparable.
  */
 function CountryEmptyState({
   country,
@@ -288,14 +299,14 @@ function CountryEmptyState({
   const countryLanes = (lanes?.lanes ?? []).filter(
     (l) => countryOf(l) === country,
   );
+  const emptyCopy =
+    country === "BE"
+      ? "The JRC EUROMOD-BE lane has six model claims. Its six statistical rows route to Ledger and its six ratios remain derived, not claims. Two demo-grade Axiom worker values appear on Reform validation as concept mismatches; no value is presented as comparable."
+      : `No ${COUNTRY_LABELS[country]} rows in this view yet — the ${country} external lanes are mid-pipeline. Each lane below reports its stage from data/lanes.json; as counterparts compute, rows appear here under the same descriptive status taxonomy as the US instance, model gaps and concept mismatches included.`;
   return (
     <div className="max-w-3xl">
       <p className="text-sm leading-6 text-muted-foreground">
-        No {COUNTRY_LABELS[country]} rows in this view yet — the {country}{" "}
-        external lanes are mid-pipeline. Each lane below reports its stage from
-        data/lanes.json; as counterparts compute, rows appear here under the
-        same status taxonomy as the US instance, model gaps and concept
-        mismatches included.
+        {emptyCopy}
       </p>
       <ul className="mt-3 space-y-1.5">
         {countryLanes.map((l) => (
@@ -331,11 +342,23 @@ function Headline({
     );
     return (
       <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-        No {country} comparison cells yet —{" "}
-        <b className="text-foreground fig">{countryLanes.length}</b> {country}{" "}
-        lanes ({countryLanes.map((l) => l.source).join(", ") || "none"}) are
-        registered in data/lanes.json and tracked on mission control below.
-        The country stays on the page while its pipeline runs.
+        {country === "BE" ? (
+          <>
+            Six JRC EUROMOD-BE model claims are registered. The two available
+            Axiom values have period, population-basis and scope gaps, so they
+            are labeled concept mismatch on Reform validation rather than
+            entering this comparison grid.
+          </>
+        ) : (
+          <>
+            No {country} comparison cells yet —{" "}
+            <b className="text-foreground fig">{countryLanes.length}</b>{" "}
+            {country} lanes (
+            {countryLanes.map((l) => l.source).join(", ") || "none"}) are
+            registered in data/lanes.json and tracked on mission control
+            below. The country stays on the page while its pipeline runs.
+          </>
+        )}
       </p>
     );
   }
@@ -353,10 +376,15 @@ function Headline({
   ).size;
   return (
     <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-      {country === "US" ? "Urban publishes" : "UK sources publish"}{" "}
+      {country === "US"
+        ? "Urban publishes"
+        : country === "UK"
+          ? "UK sources publish"
+          : "JRC EUROMOD-BE publishes"}{" "}
       <b className="text-foreground fig">{n.toLocaleString()}</b> unsuppressed
-      cells across {programs} programs and the poverty counterfactual.
-      PolicyEngine currently produces a counterpart for{" "}
+      cells across {programs} programs
+      {country === "US" && " and the poverty counterfactual"}. The computed
+      model currently produces a counterpart for{" "}
       <b className="text-foreground fig">{withValues.toLocaleString()}</b> of
       them ({Math.round((withValues / n) * 100)}%);{" "}
       <b className="text-foreground fig">

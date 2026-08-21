@@ -167,6 +167,15 @@ def test_lane_sync_merges_without_touching_other_lanes(tmp_path, small_db):
     assert rv["source"] == "Populace releases"
     assert out["updated"] == "2026-08-05"
 
+    # An independently pinned older lane sync cannot make the feed look older.
+    export(
+        db_path,
+        out_path=tmp_path / "p-older.json",
+        lanes_path=feed,
+        built="2026-08-04",
+    )
+    assert json.loads(feed.read_text())["updated"] == "2026-08-05"
+
 
 def test_release_label():
     assert release_label("populace-us-2024-buildo-sparse-x") == "buildo"
@@ -192,7 +201,7 @@ def test_integration_committed_db(tmp_path):
     dist: dict = {}
     for r in payload["rows"]:
         dist[r["country"]] = dist.get(r["country"], 0) + 1
-    assert dist == {"US": 270, "UK": 14}
+    assert dist == {"US": 270, "UK": 14, "BE": 2}
     # The committed deployment artifact must match a fresh export (modulo
     # the build date) — stale committed data can't pass CI.
     committed = json.loads((REPO / "data" / "populations.json").read_text())
