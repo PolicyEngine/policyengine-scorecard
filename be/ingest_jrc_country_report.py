@@ -425,9 +425,10 @@ def _publication(row: dict) -> dict:
         "at_risk_poverty_60_median_total",
     }:
         publication["equivalisation_note"] = (
-            "modified-OECD is pinned from the general EUROMOD/Eurostat "
-            "convention; the absent report-specific table note was not "
-            "independently verified"
+            "modified-OECD verified against the report itself: "
+            "Y15_CR_BE_final.pdf p. 104 states household disposable income is "
+            "equivalised by the 'modified OECD' equivalence scale for the "
+            "section covering Tables A3.7 and A3.8 (reviewer-checked 2026-08-21)"
         )
     return publication
 

@@ -128,7 +128,11 @@ def test_claim_values_units_worlds_and_semantic_pins():
         )
         assert score.conditions["housing_costs"] == "not_deducted"
         assert score.conditions["equivalisation"] == "modified_oecd"
-        assert "not independently verified" in score.publication["equivalisation_note"]
+        assert (
+            "verified against the report itself"
+            in score.publication["equivalisation_note"]
+        )
+        assert "p. 104" in score.publication["equivalisation_note"]
     assert poverty.conditions["poverty_line"] == "relative_60_median"
     assert poverty.conditions["subgroup"] == "total"
 
