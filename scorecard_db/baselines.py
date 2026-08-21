@@ -193,6 +193,24 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "out' (sources/harvest-uk-2026-08-02/uk_ifs).",
     ),
     (
+        {"policy": "hmt_no_policy_change_from_ab2024"},
+        "hmt_no_policy_change_from_ab2024",
+        "HM Treasury's published counterfactual for the Budget 2025 "
+        "'Impact on households' analysis: no policy changes over the "
+        "relevant period — i.e. the world without any of the decisions "
+        "announced from Autumn Budget 2024 onwards (Spring Statement "
+        "2025, Spending Review 2025 and Budget 2025 included), scored in "
+        "2028-29. Figures 1.A and 1.B are CHANGES against this world; "
+        "figure 1.C is a post-policy LEVEL and keys current law instead, "
+        "so the three charts are deliberately not one world.",
+        "policy_ref",
+        "Impact on households (Budget 2025) paras 1.1 and 1.6, vendored at "
+        "sources/hmt-distributional/raw/Impact_on_households.pdf (sha256 "
+        "in data/uk/hmt_da_packages.yaml); per-figure assignment lives in "
+        "that registry's charts[].baseline and is emitted into "
+        "data/externals/hmt-distributional-meta.json.",
+    ),
+    (
         {"policy": "pre_ab2025"},
         "pre_ab2025",
         "UK current law with the Autumn Budget 2025 two-child-limit "

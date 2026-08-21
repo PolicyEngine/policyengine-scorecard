@@ -55,6 +55,11 @@ DISTINCT: frozenset[tuple[str, str]] = frozenset(
         ("dwp_takeup:housing_benefit_pensioners", "obr:housing_benefit_on_jsa"),
         ("dwp_takeup:housing_benefit_pensioners", "ukmod:housing_benefit"),
         ("dwp_takeup:benefit_units", "ukmod:families"),
+        # A decile of HMT's equivalised-net-income distribution is not a
+        # quintile of UKMOD's: different publications, different income
+        # concepts, different cut points. Never aliased.
+        ("hmt_distributional:decile_1", "ukmod:q1"),
+        ("hmt_distributional:decile_10", "ukmod:q5"),
     }
 )
 
@@ -297,6 +302,35 @@ _identity(
 )
 for _src in ("hm_treasury", "dwp"):
     _identity(_src, "unit", ["gbp", "households"])
+
+
+# --- HMT distributional analysis (#61) ---------------------------------------
+# HMT ranks households by equivalised net household income (BHC) into ten
+# deciles plus an all-households summary bar. Registered as CLOSED data
+# identities so a future numeric row cannot carry "decile 1" as prose —
+# and deliberately NOT unified with UKMOD's quintiles: a decile of one
+# publication's distribution is not a quintile of another's, and the two
+# rank on different income concepts. housing_costs=bhc and
+# equivalisation=modified_oecd are load-bearing beside them, exactly as on
+# the HBAI family.
+_identity("hmt_distributional", "geography", ["UK"])
+_identity(
+    "hmt_distributional",
+    "income_group",
+    [f"decile_{_i}" for _i in range(1, 11)] + ["all_households"],
+)
+_identity("hmt_distributional", "housing_costs", ["bhc"])
+_identity(
+    "hmt_distributional",
+    "program",
+    ["hmt_distributional_analysis"],
+)
+_identity(
+    "hmt_distributional",
+    "subgroup",
+    ["tax", "welfare", "benefits_in_kind_public_services", "overall"],
+)
+_identity("hmt_distributional", "unit", ["percent", "gbp_nominal"])
 
 
 def canon(source: str, axis: str, value: str) -> str:

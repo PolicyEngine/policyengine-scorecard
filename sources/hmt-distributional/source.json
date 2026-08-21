@@ -20,5 +20,5 @@
   "programs": ["hmt_distributional_analysis"],
   "geographies": "UK households (devolved administrations' own decisions excluded)",
   "vintage_note": "Each fiscal event's edition re-scores the cumulative package against that event's counterfactual; editions are not comparable to each other row-by-row. Score only against the edition named in the claim's fiscal_event condition.",
-  "diagnosis_upstream": "Divergences decompose against package composition (which measures are in scope), income concept and equivalisation, the public-services benefits-in-kind allocation (not_expressible in PE), and the no-policy-change counterfactual baseline, before any engine defect is inferred."
+  "diagnosis_upstream": "Divergences decompose against package composition (which measures are in scope), income concept and equivalisation, the public-services benefits-in-kind allocation (not_expressible in PE), and the no-policy-change counterfactual baseline. Only after every one of those axes is sized may an engine defect be named — and then only through the citable-known-issue gate: a diagnosis carries a class, a rationale and an action_link to the upstream issue, exactly as every other diagnosed divergence does. 'May be inferred' is not a route; an uncited engine-defect claim is blame, not a finding."
 }

@@ -41,6 +41,12 @@ REGISTRY = ROOT / "data" / "uk" / "hmt_da_packages.yaml"
 OUT_DIR = ROOT / "data" / "externals"
 
 EXPECTED_PAGES = 20
+
+# Registered baseline worlds a chart may name. Closed: a figure whose
+# baseline is not one of these raises, so a future numeric row cannot
+# default to current law by omission.
+CHART_BASELINES = {"hmt_no_policy_change_from_ab2024", "current_law"}
+CHART_KINDS = {"change", "level"}
 FIGURE_TITLES = {
     "1.A": "Impact of decisions from Autumn Budget 2024",
     "1.B": "in cash terms",
@@ -115,6 +121,44 @@ def run():
     if unanchored:
         raise ValueError(f"registry components not verbatim in document: {unanchored}")
 
+    # --- exact chart-omission accounting -------------------------------
+    # The registry lists figures and series but not the GROUPS, so the
+    # omission was untallied: "no values emitted" is only honest if it
+    # says how many there were. 3 figures x 11 income groups x 4 series =
+    # 132 marks on the page, every one of them chart_not_digitized.
+    groups = pkg["income_groups"]
+    if len(set(groups)) != len(groups):
+        raise ValueError("income_groups repeats a decile")
+    cells = []
+    for chart in pkg["charts"]:
+        if chart["baseline"] not in CHART_BASELINES:
+            raise ValueError(
+                f"figure {chart['figure']}: unregistered baseline "
+                f"{chart['baseline']!r} — register the world in "
+                "scorecard_db/baselines.py and add it to CHART_BASELINES"
+            )
+        if chart["kind"] not in CHART_KINDS:
+            raise ValueError(f"figure {chart['figure']}: unknown kind")
+        for group in groups:
+            for series in chart["split"]:
+                cells.append(
+                    {
+                        "figure": chart["figure"],
+                        "income_group": group,
+                        "series": series,
+                        "disposition": "chart_not_digitized",
+                    }
+                )
+    expected = len(pkg["charts"]) * len(groups) * len(pkg["charts"][0]["split"])
+    if len(cells) != expected or expected != 132:
+        raise ValueError(
+            f"chart-cell accounting does not close: {len(cells)} cells "
+            f"!= {expected} (3 figures x {len(groups)} groups x 4 series = 132)"
+        )
+    by_figure = {}
+    for c in cells:
+        by_figure[c["figure"]] = by_figure.get(c["figure"], 0) + 1
+
     counts = {"by_computability": {}, "by_channel": {}}
     for comp in pkg["components"]:
         for key, field in (
@@ -135,12 +179,43 @@ def run():
                 "components": len(pkg["components"]),
                 "component_counts": counts,
                 "value_claims_emitted": 0,
+                # The omission, tallied: every mark on every chart, by
+                # figure / income group / series, with its disposition.
+                "chart_cells": {
+                    "source_marks": len(cells),
+                    "emitted": 0,
+                    "chart_not_digitized": len(cells),
+                    "by_figure": dict(sorted(by_figure.items())),
+                    "income_groups": groups,
+                    "series": pkg["charts"][0]["split"],
+                    "cells": cells,
+                },
+                # Decile identity as DATA, not prose: the closed group
+                # vocabulary plus the two conditions that are load-bearing
+                # beside it (the HBAI/UKMOD pattern).
+                "income_identity": {
+                    "income_axis": "equivalised_net_household_income_decile",
+                    "housing_costs": pkg["housing_costs"],
+                    "equivalisation": pkg["equivalisation"],
+                    "income_groups": groups,
+                },
+                # Per-figure baseline world, so a future numeric row
+                # cannot default to current law by omission.
+                "chart_baselines": {
+                    c["figure"]: {"kind": c["kind"], "baseline": c["baseline"]}
+                    for c in pkg["charts"]
+                },
                 "value_availability": reg["value_availability_rule"],
             },
             indent=1,
         )
+        + "\n"
     )
     print(f"verified {len(pkg['components'])} components, 3 figures -> {out}")
+    print(
+        f"  chart cells: {len(cells)} source marks = 0 emitted "
+        f"+ {len(cells)} chart_not_digitized"
+    )
     print(f"  computability: {counts['by_computability']}")
     print("  value claims emitted: 0 (chart-only publication; see module docstring)")
 

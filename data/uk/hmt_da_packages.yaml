@@ -30,16 +30,38 @@ packages:
       Statement 2025, Spending Review 2025 and Budget 2025 (para 1.1, 1.6).
     income_concept: equivalised net household income, before housing costs
     ranking: income deciles of the household distribution in 2028-29
+    # The decile groups every figure plots, as CLOSED identities rather
+    # than prose. Ten equivalised-net-income deciles plus the all-
+    # households summary bar: 11 groups x 4 series x 3 figures = the 132
+    # chart cells the omission tally must account for.
+    income_groups:
+      [
+        decile_1, decile_2, decile_3, decile_4, decile_5,
+        decile_6, decile_7, decile_8, decile_9, decile_10,
+        all_households,
+      ]
+    housing_costs: bhc
+    equivalisation: modified_oecd
     charts:
+      # baseline: which world each figure is measured against. 1.A and
+      # 1.B are CHANGES against the no-policy-change package world; 1.C
+      # is a post-policy LEVEL under current law. One prose counterfactual
+      # covering all three would let future rows default to current_law.
       - figure: "1.A"
         metric: pct_net_income_change
         split: [tax, welfare, benefits_in_kind_public_services, overall]
+        kind: change
+        baseline: hmt_no_policy_change_from_ab2024
       - figure: "1.B"
         metric: cash_change_gbp_per_year
         split: [tax, welfare, benefits_in_kind_public_services, overall]
+        kind: change
+        baseline: hmt_no_policy_change_from_ab2024
       - figure: "1.C"
         metric: overall_level_pct_net_income
         split: [tax, welfare, benefits_in_kind_public_services, overall]
+        kind: level
+        baseline: current_law
     published_exclusions:
       # para 1.2-1.3 and 2.3: axes to name before any engine defect is
       # inferred from a divergence.
