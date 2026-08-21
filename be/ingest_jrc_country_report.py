@@ -522,9 +522,7 @@ def _ledger_row(row: dict) -> dict:
         "source": SOURCE,
         "publisher": "European Commission Joint Research Centre",
         "underlying_issuer": (
-            "EU-SILC (uprated survey input)"
-            if non_simulated
-            else config["underlying_issuer"]
+            "EU-SILC" if non_simulated else config["underlying_issuer"]
         ),
         "source_column": row["value_id"],
         "publication": _publication(row),
@@ -532,7 +530,11 @@ def _ledger_row(row: dict) -> dict:
         "metric": config["metric"].value,
         "program": config["program"],
         "period": period,
-        "period_semantics": "calendar_statistical_reference_year",
+        "period_semantics": (
+            "simulation_year_of_uprated_survey_input"
+            if non_simulated
+            else "calendar_statistical_reference_year"
+        ),
         "geography": "BE",
         "subgroup": "total",
         "unit_concept": config["unit"].value,
@@ -577,6 +579,10 @@ def _survey_input_conditions(metric_name: str, period: int) -> dict[str, str]:
     conditions = _conditions(metric_name, period, "external")
     conditions["series"] = _condition("series", "euromod_non_simulated_input")
     conditions["benchmark_class"] = "survey_statistic"
+    # One truthful period identity: 2023 is the SIMULATION year the SILC
+    # income-year-2021 base is uprated to — not a statistical reference year.
+    del conditions["reference_year"]
+    conditions["simulation_year"] = str(period)
     return conditions
 
 
@@ -773,8 +779,9 @@ def ingest(db_path: Path) -> dict:
                 (
                     LANE_ID,
                     "computed",
-                    "6 model claims, 6 Ledger facts, 6 derived ratios "
-                    "dispositioned; 2 concept-mismatch attachments",
+                    "5 model claims, 7 Ledger facts (6 statistical + 1 "
+                    "non-simulated uprated EU-SILC survey input), 6 derived "
+                    "ratios dispositioned; 2 concept-mismatch attachments",
                     UPDATED,
                 ),
             )

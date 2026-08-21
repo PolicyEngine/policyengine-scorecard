@@ -19,10 +19,6 @@ export const COUNTRY_LABELS: Record<Country, string> = {
   BE: "Belgium",
 };
 
-/**
- * Country of a row or lane. Historical US feeds predate the country key,
- * so a missing country always means "US" — never drop a row over it.
- */
 /** A concept_mismatch attachment must never render a divergence or ratio:
  * the comparison is declared not comparable (Belgium lane, PR #82). The
  * fallback string is what the caller shows instead of a computed figure. */
@@ -34,6 +30,10 @@ export function comparabilityFigure(
   return statusEffective === "concept_mismatch" ? fallback : compute();
 }
 
+/**
+ * Country of a row or lane. Historical US feeds predate the country key,
+ * so a missing country always means "US" — never drop a row over it.
+ */
 export function countryOf(r: { country?: Country }): Country {
   return r.country ?? "US";
 }

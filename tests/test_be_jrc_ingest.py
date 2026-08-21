@@ -380,7 +380,10 @@ def test_unemployment_euromod_value_is_ledger_routed_survey_input():
     assert fact["conditions"]["benchmark_class"] == "survey_statistic"
     assert "policy_system_year" not in fact["conditions"]
     assert "population_frame" not in fact["conditions"]
-    assert fact["underlying_issuer"] == "EU-SILC (uprated survey input)"
+    assert fact["underlying_issuer"] == "EU-SILC"
+    assert fact["period_semantics"] == "simulation_year_of_uprated_survey_input"
+    assert fact["conditions"]["simulation_year"] == "2023"
+    assert "reference_year" not in fact["conditions"]
     assert "Simulated=N" in fact["routing"]
     assert "10,416" in fact["publication"]["period_semantics"]
 
@@ -407,3 +410,19 @@ def test_external_facts_carry_underlying_issuers():
         fact["publisher"] == "European Commission Joint Research Centre"
         for fact in ledger
     )
+
+
+def test_lane_note_carries_the_5_7_6_accounting(tmp_path, monkeypatch):
+    """Sol delta review of #82: a semantically stale lane note passed the
+    byte-drift gate; pin the persisted detail to the real accounting."""
+    _patch_repo_outputs(monkeypatch, tmp_path)
+    db_path = tmp_path / "be.db"
+    mod.ingest(db_path)
+    db = ScorecardDB(db_path)
+    note = db.conn.execute(
+        "SELECT detail FROM lanes WHERE lane = ?", (mod.LANE_ID,)
+    ).fetchone()[0]
+    db.close()
+    assert "5 model claims" in note
+    assert "7 Ledger facts" in note
+    assert "survey input" in note

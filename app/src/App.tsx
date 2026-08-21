@@ -301,7 +301,7 @@ function CountryEmptyState({
   );
   const emptyCopy =
     country === "BE"
-      ? "The JRC EUROMOD-BE lane has six model claims. Its six statistical rows route to Ledger and its six ratios remain derived, not claims. Two demo-grade Axiom worker values appear on Reform validation as concept mismatches; no value is presented as comparable."
+      ? "The JRC EUROMOD-BE lane has five model claims. Its six statistical rows and one non-simulated uprated EU-SILC survey input route to Ledger, and its six ratios remain derived, not claims. Two demo-grade Axiom worker values appear on Reform validation as concept mismatches; no value is presented as comparable."
       : `No ${COUNTRY_LABELS[country]} rows in this view yet — the ${country} external lanes are mid-pipeline. Each lane below reports its stage from data/lanes.json; as counterparts compute, rows appear here under the same descriptive status taxonomy as the US instance, model gaps and concept mismatches included.`;
   return (
     <div className="max-w-3xl">

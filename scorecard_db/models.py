@@ -221,6 +221,11 @@ STANDARD_CONDITIONS = frozenset(
         # year 2021) — never presented as an unqualified national frame.
         "population_frame",
         "input_database",
+        # simulation_year: the uprating target year of a non-simulated
+        # survey-input Ledger fact (Belgium bun row) — deliberately distinct
+        # from reference_year (statistical outturns) and policy_system_year
+        # (executed model output).
+        "simulation_year",
         # UK externals ingest (#33)
         # country          "UK" on every UK claim (absent = US)
         # fy               UK financial-year label ("2026-27") alongside the
