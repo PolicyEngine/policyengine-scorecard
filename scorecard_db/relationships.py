@@ -104,6 +104,11 @@ PERMANENT_HOLDOUT_METRICS = frozenset(
         Metric.POVERTY_RATE,
         Metric.POVERTY_RATE_CHANGE,
         Metric.POVERTY_COUNT_CHANGE,
+        # A poverty COUNT is the same survey-derived quantity as a poverty
+        # rate with the denominator multiplied back in; the doctrine covers
+        # "anything derived from such". Added with the UK HBAI ingest (#33),
+        # which is the first population to carry poverty counts.
+        Metric.POVERTY_COUNT,
     }
 )
 PERMANENT_HOLDOUT_BASIS = (
@@ -128,3 +133,161 @@ def effective_relationship(program, metric):
     if hit is None:
         return CR.HELD_OUT, "no PE consumption identified"
     return hit
+
+
+# --- UK sources (#33) ----------------------------------------------------
+# Assigned from the LITERAL consumption surfaces, read at the certified
+# pins (2026-08-19): populace-uk-2023-dd68c73 embeds policyengine-uk-data
+# @ dd68c73, whose targets/sources/{obr,dwp,hmrc_spi}.py define the 149
+# consumed targets; engine-side take-up parameters read from
+# policyengine-uk (gov/dwp/*/takeup.yaml). consumed_as_target is claimed
+# ONLY where a row's quantity matches a named consumed line; everything
+# else is seed_source (shared base or parameter seeding, evidence named)
+# or held_out. Never family-wide defaults in either direction.
+
+# OBR EFO Table 4.9 welfare lines consumed by pe-uk-data@dd68c73
+# (targets/sources/obr.py::_parse_welfare row labels; March-2026 EFO,
+# forecast columns FY2024-25..2030-31 — the FY2024-25 OUTTURN column is
+# also read there, but outturn cells route to Ledger, never to claims).
+# Stated in the ADAPTER's program vocabulary; the pe-uk-data label each
+# maps to is quoted (targets/sources/obr.py benefit_rows, verbatim).
+OBR_CONSUMED_WELFARE_PROGRAMS = frozenset(
+    {
+        "housing_benefit_not_jsa",  # "Housing benefit (not on JSA)"
+        "dla_and_pip",  # "Disability living allowance and personal indep…"
+        "incapacity_benefits",  # "Incapacity benefits"
+        "attendance_allowance",  # "Attendance allowance"
+        "pension_credit",  # "Pension credit"
+        "carers_allowance",  # "Carer's allowance"
+        "statutory_maternity_pay",  # "Statutory maternity pay"
+        "winter_fuel_payment",  # "Winter fuel payment"
+        "universal_credit",  # "Universal credit" (in-cap + outside-cap)
+        "child_benefit",  # "Child benefit"
+        "state_pension",  # "State pension"
+        "jobseekers_allowance",  # "Jobseeker's allowance"
+    }
+)
+_OBR_CONSUMED = (
+    CR.CONSUMED_AS_TARGET,
+    "pe-uk-data@dd68c73 targets/sources/obr.py::_parse_welfare consumes "
+    "this Table 4.9 line's March-2026 EFO forecast values as calibration "
+    "targets (read 2026-08-19).",
+)
+_OBR_UNCONSUMED = (
+    CR.HELD_OUT,
+    "Table 4.9 line NOT in pe-uk-data@dd68c73's consumed welfare set "
+    "(targets/sources/obr.py, read 2026-08-19); forecast-vs-forecast "
+    "comparison.",
+)
+
+# DWP income-related-benefits take-up (FYE 2024 publication, adapter #43).
+# Engine evidence (policyengine-uk, read 2026-08-19):
+#   gov/dwp/pension_credit/takeup.yaml = 0.7, citing the FYE-2020 edition
+#   of THIS series -> the parameter is seeded from an older edition;
+#   gov/dwp/housing_benefit/takeup.yaml = 1.0 "by definition ... only
+#   current claimants are eligible (no new claims)" -> a stated modeling
+#   choice, the live comparator for policyengine-uk#1813.
+# Administrative cells (recipient counts, amounts claimed) route to
+# Ledger and never reach these claims.
+_PC_TAKEUP_SEED = (
+    CR.SEED_SOURCE,
+    "policyengine-uk pension_credit/takeup.yaml (0.7) cites the FYE-2020 "
+    "edition of this series — parameter seeding from an older edition, "
+    "not calibration to this one; edition mismatch (FYE-2024 here) is a "
+    "named axis. Modeled derivatives (entitled non-recipients, unclaimed "
+    "amounts) share the seeding series.",
+)
+_HB_TAKEUP_HELD = (
+    CR.HELD_OUT,
+    "policyengine-uk housing_benefit/takeup.yaml sets 1.0 by stated "
+    "design ('only current claimants are eligible — no new claims'); "
+    "nothing is fitted to this series. Live comparator for "
+    "policyengine-uk#1813.",
+)
+
+# HMRC liabilities (adapter #45): HMRC's liabilities statistics are SPI
+# projections; pe-uk-data@dd68c73 consumes SPI Tables 3.6/3.7 income-band
+# distributions (targets/sources/hmrc_spi.py) — a shared microdata base,
+# not these statistics themselves.
+_HMRC_SPI_SEED = (
+    CR.SEED_SOURCE,
+    "shared SPI base: pe-uk-data@dd68c73 consumes SPI Tables 3.6/3.7 "
+    "income-band distributions (targets/sources/hmrc_spi.py, read "
+    "2026-08-19); these liabilities tables are projections from the same "
+    "SPI microdata, not themselves consumed.",
+)
+_HMRC_RECKONER_HELD = (
+    CR.HELD_OUT,
+    "ready-reckoner rows are HMRC model claims (policy-change scores); "
+    "nothing in pe-uk-data consumes them.",
+)
+
+_UKMOD_HELD = (
+    CR.HELD_OUT,
+    "UKMOD is a peer microsimulation, not a calibration source; no PE UK "
+    "parameter is fitted to its published statistics.",
+)
+
+
+def uk_relationship(source, metric, program=None, kind=None):
+    """(CalibrationRelationship, basis) for a UK claim, keyed exactly.
+
+    ``program`` is the claim's program condition; ``kind`` disambiguates
+    within a source where the publication mixes products:
+      dwp_takeup: "takeup_rate" | "modeled_estimate" (ENR / unclaimed) |
+                  "average_award"
+      uk_hmrc:    "liabilities" | "reckoner"
+      obr:        forecast rows only (outturn cells route to Ledger
+                  before relationships are assigned)
+    Unknown combinations raise — assignment is always deliberate.
+    """
+    if metric is not None and never_calibrate(metric):
+        return CR.HELD_OUT, PERMANENT_HOLDOUT_BASIS
+    if source == "dwp_takeup":
+        if program in ("housing_benefit_pensioners", "housing_benefit"):
+            return _HB_TAKEUP_HELD
+        if program in (
+            "pension_credit",
+            "guarantee_credit",
+            "savings_credit_only",
+        ):
+            if kind == "average_award":
+                return (
+                    CR.HELD_OUT,
+                    "average award amounts fall out of the modelled "
+                    "entitlement; not a seeding series input.",
+                )
+            return _PC_TAKEUP_SEED
+        raise ValueError(
+            f"dwp_takeup program {program!r} needs a deliberate relationship assignment"
+        )
+    if source == "uk_hmrc":
+        if kind == "reckoner":
+            return _HMRC_RECKONER_HELD
+        if kind == "liabilities":
+            return _HMRC_SPI_SEED
+        raise ValueError(f"uk_hmrc kind {kind!r} needs a deliberate assignment")
+    if source == "obr":
+        if kind == "outturn":
+            raise ValueError(
+                "OBR outturn cells route to Ledger before relationship "
+                "assignment — an outturn row must never become a claim"
+            )
+        if program in OBR_CONSUMED_WELFARE_PROGRAMS:
+            return _OBR_CONSUMED
+        return _OBR_UNCONSUMED
+    if source == "ukmod":
+        return _UKMOD_HELD
+    if source == "hm_treasury":
+        return (CR.HELD_OUT, "fiscal-event costings are scored, never consumed.")
+    if source == "dwp":
+        return (
+            CR.HELD_OUT,
+            "FRR impact statements are scored, never consumed; the DWP "
+            "quarterly deductions OUTTURN tables PE's parameters do "
+            "consume are deliberately not ingested as external scores.",
+        )
+    raise ValueError(
+        f"no UK calibration relationship for ({source!r}, {metric}, "
+        f"{program!r}, {kind!r}) — assign it here rather than defaulting"
+    )

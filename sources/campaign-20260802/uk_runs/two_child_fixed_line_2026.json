@@ -1,0 +1,338 @@
+{
+ "reform_key": "two_child_limit_removal_fixed_line",
+ "year": 2026,
+ "takeup_mode": "calibrated",
+ "worlds": {
+  "with_limit": {
+   "world": "with_limit",
+   "year": 2026,
+   "construction": "gov.dwp.universal_credit.elements.child.limit.child_count: inf -> 2 (reinstate; born-pre-2017 exemption active)",
+   "reform_json": "{\"gov.dwp.universal_credit.elements.child.limit.child_count\": {\"2026-01-01.2028-12-31\": 2}}",
+   "hbai_dependent_child_proxy": "is_child_or_qualifying_young_person_for_child_tax_credit: under-16 OR 16-19 qualifying young person in full-time non-advanced education, excl. looked-after children (closest installed analogue of the HBAI dependent-child definition)",
+   "bundle": {
+    "bundle_id": "uk-5.0.1",
+    "country_id": "uk",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-uk",
+    "model_version": "2.89.2",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_uk_2023",
+    "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+    "data_build_model_version": "2.89.2",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_uk_2023",
+    "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-uk-private/snapshots/a75a9a831d6b07aaffbd09713f2a1124f5c0f08f/populace_uk_2023.h5",
+    "managed_by": "policyengine.py"
+   },
+   "aggregates_gbp": {
+    "universal_credit": 38783589984.86714,
+    "household_net_income": 1790266784216.2012,
+    "gov_spending": 484560539496.0421
+   }
+  },
+  "without_limit": {
+   "world": "without_limit",
+   "year": 2026,
+   "construction": "baseline (limit abolished in current law)",
+   "reform_json": "baseline",
+   "hbai_dependent_child_proxy": "is_child_or_qualifying_young_person_for_child_tax_credit: under-16 OR 16-19 qualifying young person in full-time non-advanced education, excl. looked-after children (closest installed analogue of the HBAI dependent-child definition)",
+   "bundle": {
+    "bundle_id": "uk-5.0.1",
+    "country_id": "uk",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-uk",
+    "model_version": "2.89.2",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_uk_2023",
+    "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+    "data_build_model_version": "2.89.2",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_uk_2023",
+    "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-uk-private/snapshots/a75a9a831d6b07aaffbd09713f2a1124f5c0f08f/populace_uk_2023.h5",
+    "managed_by": "policyengine.py"
+   },
+   "aggregates_gbp": {
+    "universal_credit": 39887838277.66961,
+    "household_net_income": 1791280163555.2764,
+    "gov_spending": 485663250574.56665
+   }
+  }
+ },
+ "median_equiv_hbai_ahc_gbp_year": {
+  "with_limit": {
+   "person": 34191.88671875,
+   "household": 35570.34765625
+  },
+  "without_limit": {
+   "person": 34191.88671875,
+   "household": 35570.34765625
+  }
+ },
+ "median_weighting_primary": "person",
+ "median_weighting_note": "HBAI convention ranks individuals (person-weighted); pe-uk's in_relative_poverty_ahc uses household-weighted medians \u2014 both recorded, person-weighted used for all lines here",
+ "results": {
+  "floating": {
+   "with_limit": {
+    "line_gbp_year": 20515.13203125,
+    "all": {
+     "rate": 0.23298984026069908,
+     "count": 16294514.372394413,
+     "population": 69936587.59610294
+    },
+    "u16": {
+     "rate": 0.3341678225294723,
+     "count": 4521835.423247635,
+     "population": 13531630.271938667
+    },
+    "u18": {
+     "rate": 0.3364532579020019,
+     "count": 5057541.576392353,
+     "population": 15031929.272818789
+    },
+    "hbai_dep": {
+     "rate": 0.33582958572177674,
+     "count": 5075353.906113207,
+     "population": 15112884.992562756
+    }
+   },
+   "without_limit": {
+    "line_gbp_year": 20515.13203125,
+    "all": {
+     "rate": 0.22778059178483795,
+     "count": 15930197.310052484,
+     "population": 69936587.59610294
+    },
+    "u16": {
+     "rate": 0.31680746914383723,
+     "count": 4286921.539843023,
+     "population": 13531630.271938667
+    },
+    "u18": {
+     "rate": 0.32028047932865245,
+     "count": 4814433.512732804,
+     "population": 15031929.272818789
+    },
+    "hbai_dep": {
+     "rate": 0.3197434404371944,
+     "count": 4832245.842453659,
+     "population": 15112884.992562756
+    }
+   },
+   "removal_effect": {
+    "all": {
+     "count_change": -364317.0623419285,
+     "rate_change_pp": -0.5209248475861128
+    },
+    "u16": {
+     "count_change": -234913.88340461254,
+     "rate_change_pp": -1.7360353385635074
+    },
+    "u18": {
+     "count_change": -243108.06365954876,
+     "rate_change_pp": -1.6172778573349478
+    },
+    "hbai_dep": {
+     "count_change": -243108.06365954876,
+     "rate_change_pp": -1.6086145284582354
+    }
+   }
+  },
+  "fixed_with_limit": {
+   "with_limit": {
+    "line_gbp_year": 20515.13203125,
+    "all": {
+     "rate": 0.23298984026069908,
+     "count": 16294514.372394413,
+     "population": 69936587.59610294
+    },
+    "u16": {
+     "rate": 0.3341678225294723,
+     "count": 4521835.423247635,
+     "population": 13531630.271938667
+    },
+    "u18": {
+     "rate": 0.3364532579020019,
+     "count": 5057541.576392353,
+     "population": 15031929.272818789
+    },
+    "hbai_dep": {
+     "rate": 0.33582958572177674,
+     "count": 5075353.906113207,
+     "population": 15112884.992562756
+    }
+   },
+   "without_limit": {
+    "line_gbp_year": 20515.13203125,
+    "all": {
+     "rate": 0.22778059178483795,
+     "count": 15930197.310052484,
+     "population": 69936587.59610294
+    },
+    "u16": {
+     "rate": 0.31680746914383723,
+     "count": 4286921.539843023,
+     "population": 13531630.271938667
+    },
+    "u18": {
+     "rate": 0.32028047932865245,
+     "count": 4814433.512732804,
+     "population": 15031929.272818789
+    },
+    "hbai_dep": {
+     "rate": 0.3197434404371944,
+     "count": 4832245.842453659,
+     "population": 15112884.992562756
+    }
+   },
+   "removal_effect": {
+    "all": {
+     "count_change": -364317.0623419285,
+     "rate_change_pp": -0.5209248475861128
+    },
+    "u16": {
+     "count_change": -234913.88340461254,
+     "rate_change_pp": -1.7360353385635074
+    },
+    "u18": {
+     "count_change": -243108.06365954876,
+     "rate_change_pp": -1.6172778573349478
+    },
+    "hbai_dep": {
+     "count_change": -243108.06365954876,
+     "rate_change_pp": -1.6086145284582354
+    }
+   }
+  },
+  "fixed_without_limit": {
+   "with_limit": {
+    "line_gbp_year": 20515.13203125,
+    "all": {
+     "rate": 0.23298984026069908,
+     "count": 16294514.372394413,
+     "population": 69936587.59610294
+    },
+    "u16": {
+     "rate": 0.3341678225294723,
+     "count": 4521835.423247635,
+     "population": 13531630.271938667
+    },
+    "u18": {
+     "rate": 0.3364532579020019,
+     "count": 5057541.576392353,
+     "population": 15031929.272818789
+    },
+    "hbai_dep": {
+     "rate": 0.33582958572177674,
+     "count": 5075353.906113207,
+     "population": 15112884.992562756
+    }
+   },
+   "without_limit": {
+    "line_gbp_year": 20515.13203125,
+    "all": {
+     "rate": 0.22778059178483795,
+     "count": 15930197.310052484,
+     "population": 69936587.59610294
+    },
+    "u16": {
+     "rate": 0.31680746914383723,
+     "count": 4286921.539843023,
+     "population": 13531630.271938667
+    },
+    "u18": {
+     "rate": 0.32028047932865245,
+     "count": 4814433.512732804,
+     "population": 15031929.272818789
+    },
+    "hbai_dep": {
+     "rate": 0.3197434404371944,
+     "count": 4832245.842453659,
+     "population": 15112884.992562756
+    }
+   },
+   "removal_effect": {
+    "all": {
+     "count_change": -364317.0623419285,
+     "rate_change_pp": -0.5209248475861128
+    },
+    "u16": {
+     "count_change": -234913.88340461254,
+     "rate_change_pp": -1.7360353385635074
+    },
+    "u18": {
+     "count_change": -243108.06365954876,
+     "rate_change_pp": -1.6172778573349478
+    },
+    "hbai_dep": {
+     "count_change": -243108.06365954876,
+     "rate_change_pp": -1.6086145284582354
+    }
+   }
+  }
+ },
+ "absolute_ahc_continuity_check": {
+  "with_limit": {
+   "all": 13308574.643841207,
+   "u16": 3823821.647847593,
+   "u18": 4274117.985204399,
+   "hbai_dep": 4282418.631839693
+  },
+  "without_limit": {
+   "all": 13028998.553302944,
+   "u16": 3642525.343844831,
+   "u18": 4087835.8398367763,
+   "hbai_dep": 4094797.2934226394
+  },
+  "removal_count_change": {
+   "all": -279576.0905382633,
+   "u16": -181296.30400276184,
+   "u18": -186282.14536762238,
+   "hbai_dep": -187621.33841705322
+  }
+ },
+ "uc_cost_of_removal_gbp": 1104248292.8024673,
+ "external_pentagon": {
+  "_discipline": "legs are NOT same-concept; per-leg basis verbatim; no win/replication language",
+  "ifs": {
+   "value": -540000,
+   "basis": "two-child-limit removal alone, steady-state (fully rolled-in), fixed-line rel AHC"
+  },
+  "govt_hmt": {
+   "value": -450000,
+   "basis": "'taking 450,000 children out of poverty' embedded in HMT B2025 scorecard two-child-limit measure name; horizon per govt materials (~2029-30)"
+  },
+  "resolution_foundation": {
+   "value": -420000,
+   "basis": "LSO 2026: year-over-year child-poverty fall 33%->30% 2025-26 to 2026-27, Budget-package-driven (2CL-dominated), fixed-line rel AHC, IPPR tax-benefit model; NOT a pure 2CL-only leg"
+  },
+  "ukmod_cempa_3_26": {
+   "value_children_2026": -13193,
+   "basis": "NET Autumn-Budget package (freezes + 2CL removal + WFA + PC cuts) child fixed-AHC count change FY2026/27 \u2014 freezes offset the 2CL gain; NOT comparable as 2CL-only; per-measure split not in staged rows"
+  },
+  "pe": {
+   "basis": "2CL removal alone, 2026, actual partially-rolled-in law (born<2017 exempt), fixed baseline line (moot: line static), HBAI-dep-proxy children, calibrated take-up",
+   "comparable_leg": "fixed_with_limit removal_effect hbai_dep"
+  }
+ },
+ "divergence_hypotheses_at_compute": [
+  "roll_in_vintage: PE 2026 grandfathering (born<2017 exempt) = partially rolled-in law; IFS -540k is steady-state -> PE expected BELOW IFS magnitude",
+  "data_lineage: populace_uk_2023 (FRS 2023-24 base, calibrated) vs IFS/RF FRS vintages+own calibrations",
+  "takeup: PE UC take-up assumptions vs RF's UC 80% / IFS TAXBEN full-entitlement basis (registry axis)",
+  "median_construction: person- vs household-weighted median moves the line (both computed)",
+  "child_definition: hbai_dep proxy lacks HBAI marital/living-arrangement conditions (16-19 slice only)"
+ ]
+}

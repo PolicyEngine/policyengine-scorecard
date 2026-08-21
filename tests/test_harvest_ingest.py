@@ -5,6 +5,9 @@ sha256-manifested source artifacts during ingest (see the PR's validation
 report). Staged inputs are vendored at sources/harvest-2026-08-02/.
 """
 
+import json
+from pathlib import Path
+
 import pytest
 
 from scorecard_db import (
@@ -611,6 +614,34 @@ class TestFullIngest:
         feed_stages = {lane["id"]: lane["stage"] for lane in feed["lanes"]}
         assert all(feed_stages[lane] == "ingested" for lane in expected)
 
+    def test_lane_feed_entries_all_carry_country(self):
+        from scorecard_db.ingest_harvest import LANE_FEED
+
+        # countryOf() in the app defaults a missing country to US, so a
+        # country-less appended entry would silently file under US.
+        assert all("country" in meta for meta in LANE_FEED.values())
+
+    def test_appending_a_countryless_lane_raises(self, ingested, tmp_path):
+        import json
+
+        from scorecard_db.ingest_harvest import sync_lane_feed
+
+        db, _, feed = ingested
+        # feed without the lane -> sync takes the append path
+        stripped = {
+            "updated": feed["updated"],
+            "lanes": [x for x in feed["lanes"] if x["id"] != "jct-reform-scores"],
+        }
+        feed_path = tmp_path / "lanes.json"
+        feed_path.write_text(json.dumps(stripped))
+        with pytest.raises(ValueError, match="no 'country'"):
+            sync_lane_feed(
+                db,
+                feed_path,
+                "2026-08-19",
+                lanes={"jct-reform-scores": {"source": "JCT", "mode": 2}},
+            )
+
     def test_erratum_diagnosis_seeded(self, ingested):
         db, _, _ = ingested
         rows = db.conn.execute(
@@ -628,3 +659,31 @@ class TestFullIngest:
         ).fetchone()
         ref = ReformRef.from_json(row["reform_json"])
         assert ref.framework == "policy_ref"
+
+
+REPO = Path(__file__).resolve().parent.parent
+
+
+def test_every_committed_lane_carries_a_country():
+    """The app's countryOf() defaults a missing key to US, so a committed
+    lane without an explicit country would silently file under US (#42's
+    contract; the uk-deductions-frr lane arrived tag-less in exactly this
+    way during the #50 rebase)."""
+    feed = json.loads((REPO / "data" / "lanes.json").read_text())
+    untagged = [x["id"] for x in feed["lanes"] if x.get("country") not in ("US", "UK")]
+    assert untagged == []
+
+
+def test_app_data_copies_match_committed_data():
+    """app/public/data/* are prebuild-copied from data/*; the committed
+    copies must stay in step so a repo checkout never shows stale feeds
+    (#50 review follow-up — the copies had drifted to a 270-row
+    populations.json while data/ carried 284)."""
+    for name in ("lanes.json", "populations.json", "comparison.json", "exhibits.json"):
+        src = REPO / "data" / name
+        dst = REPO / "app" / "public" / "data" / name
+        assert dst.exists(), name
+        assert dst.read_bytes() == src.read_bytes(), (
+            f"{name}: app/public/data copy differs from data/ — run the "
+            "prebuild cp and commit both"
+        )

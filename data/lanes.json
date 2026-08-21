@@ -1,12 +1,14 @@
 {
  "_schema": {
   "stage": "registered | cataloged | ingested | computed | diagnosing | published | regressed",
+  "country": "US | UK \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-08-14",
+ "updated": "2026-08-19",
  "lanes": [
   {
    "id": "urban-sotsn",
+   "country": "US",
    "source": "Urban SotSN",
    "area": "US safety-net statistics",
    "mode": 1,
@@ -17,6 +19,7 @@
   },
   {
    "id": "urban-sotsn-2026",
+   "country": "US",
    "source": "Urban SotSN",
    "area": "2026 projection grid",
    "mode": 1,
@@ -27,6 +30,7 @@
   },
   {
    "id": "diagnosis-batch-1",
+   "country": "US",
    "source": "Urban SotSN",
    "area": "divergence diagnosis (10 items)",
    "mode": 1,
@@ -37,6 +41,7 @@
   },
   {
    "id": "urban-sotsn-solo-attribution",
+   "country": "US",
    "source": "Urban SotSN",
    "area": "per-program take-up poverty attribution",
    "mode": 1,
@@ -47,6 +52,7 @@
   },
   {
    "id": "ledger-catalog-urban",
+   "country": "US",
    "source": "Ledger",
    "area": "validation_comparator fact packages (#6)",
    "mode": 0,
@@ -57,6 +63,7 @@
   },
   {
    "id": "fns-snap-rates",
+   "country": "US",
    "source": "FNS",
    "area": "official SNAP state participation rates",
    "mode": 1,
@@ -67,6 +74,7 @@
   },
   {
    "id": "snap-qc",
+   "country": "US",
    "source": "SNAP QC",
    "area": "caseload composition",
    "mode": 1,
@@ -77,6 +85,7 @@
   },
   {
    "id": "aspe-welfare-indicators",
+   "country": "US",
    "source": "ASPE",
    "area": "TANF/SSI recipiency",
    "mode": 1,
@@ -87,6 +96,7 @@
   },
   {
    "id": "nta-eitc",
+   "country": "US",
    "source": "IRS/NTA",
    "area": "EITC participation by children",
    "mode": 1,
@@ -97,6 +107,7 @@
   },
   {
    "id": "census-spm",
+   "country": "US",
    "source": "Census",
    "area": "SPM state poverty",
    "mode": 1,
@@ -107,6 +118,7 @@
   },
   {
    "id": "kff-medicaid",
+   "country": "US",
    "source": "KFF",
    "area": "Medicaid enrollment/eligibility",
    "mode": 1,
@@ -117,6 +129,7 @@
   },
   {
    "id": "hud-psh",
+   "country": "US",
    "source": "HUD",
    "area": "Picture of Subsidized Households",
    "mode": 1,
@@ -127,6 +140,7 @@
   },
   {
    "id": "trim3-tables",
+   "country": "US",
    "source": "TRIM3",
    "area": "published tables",
    "mode": 1,
@@ -137,56 +151,62 @@
   },
   {
    "id": "dwp-takeup",
+   "country": "UK",
    "source": "DWP",
    "area": "UK income-related benefits take-up",
    "mode": 1,
    "stage": "ingested",
    "running": false,
-   "updated": "2026-08-14",
-   "note": "External side built (#34): FYE 2024 vintage, 3,094 tidy rows across PC/GC/SC-only/HB-pensioners \u00d7 caseload+expenditure, headline checks pass; PE counterparts pending the UK compute pipeline (#40)"
+   "updated": "2026-08-19",
+   "note": "1092 claims, 546 ledger facts"
   },
   {
    "id": "hbai-poverty",
+   "country": "UK",
    "source": "DWP HBAI",
    "area": "UK poverty rates",
    "mode": 1,
    "stage": "ingested",
    "running": false,
-   "updated": "2026-08-14",
-   "note": "External side built (#35): FYE 2025 vintage, 13,056 tidy rows \u2014 rel/abs low income x rate/count x BHC/AHC x 4 age groups, UK single-year + region/country 3-year averages; headline checks pass; PE counterparts pending #40"
+   "updated": "2026-08-19",
+   "note": "13056 claims"
   },
   {
    "id": "hmrc-personal-tax",
+   "country": "UK",
    "source": "HMRC",
    "area": "UK personal tax statistics",
    "mode": 1,
    "stage": "ingested",
    "running": false,
-   "updated": "2026-08-14",
-   "note": "External side built (#36): 1,213 rows \u2014 Table 2.1 payers by marginal rate/sex/age 1990-91 to 2026-27, Table 2.5 counts+liabilities by income range x band, full June-2025 ready reckoner (12 tax heads, reform deltas w/ baseline_key); reckoner_t2 campaign counterparts attach via #33"
+   "updated": "2026-08-19",
+   "note": "723 claims, 490 ledger facts"
   },
   {
    "id": "obr-welfare",
+   "country": "UK",
    "source": "OBR",
    "area": "welfare trends / EFO baselines",
    "mode": 1,
    "stage": "ingested",
    "running": false,
-   "updated": "2026-08-14",
-   "note": "External side built (#37): March 2026 EFO Table 4.9 baseline_moment claims \u2014 259 rows, 31 benefit lines x 2024-25 outturn + forecast to 2030-31, welfare-cap split as variant, cap+outside=total identity checked; obr_measures campaign counterparts attach via #33"
+   "updated": "2026-08-19",
+   "note": "222 claims, 37 ledger facts"
   },
   {
    "id": "ukmod-stats",
+   "country": "UK",
    "source": "UKMOD",
    "area": "published statistics",
    "mode": 1,
    "stage": "ingested",
    "running": false,
-   "updated": "2026-08-14",
-   "note": "External side built (#38): Country Report 2023-2030 (B2026.01) validation tables 4.5-4.8 \u2014 1,131 rows, caseloads+expenditure for 30 instruments x 2023-2030 with official-as-cited columns, income distribution + poverty triangle (ukmod/input_data/hbai variants); 12 report-pinned checks + 40 structural invariants pass (quintile-row parse defect fixed)"
+   "updated": "2026-08-19",
+   "note": "758 claims"
   },
   {
    "id": "jct-reform-scores",
+   "country": "US",
    "source": "JCT",
    "area": "tax expenditures + revenue estimates",
    "mode": 2,
@@ -197,6 +217,7 @@
   },
   {
    "id": "cbo-cost-estimates",
+   "country": "US",
    "source": "CBO",
    "area": "per-bill cost estimates",
    "mode": 2,
@@ -207,6 +228,7 @@
   },
   {
    "id": "tpc-distribution",
+   "country": "US",
    "source": "TPC",
    "area": "distribution tables",
    "mode": 2,
@@ -217,6 +239,7 @@
   },
   {
    "id": "taxsim-cases",
+   "country": "US",
    "source": "NBER TAXSIM",
    "area": "record-level tax liability",
    "mode": 3,
@@ -227,6 +250,7 @@
   },
   {
    "id": "snap-screeners",
+   "country": "US",
    "source": "SNAP screeners",
    "area": "household case diffs",
    "mode": 3,
@@ -237,6 +261,7 @@
   },
   {
    "id": "ukmod-cases",
+   "country": "UK",
    "source": "UKMOD/EUROMOD",
    "area": "household cases via JRC connector",
    "mode": 3,
@@ -247,6 +272,7 @@
   },
   {
    "id": "cbo-baseline",
+   "country": "US",
    "source": "CBO",
    "area": "Feb-2026 baseline workbooks",
    "mode": 1,
@@ -257,6 +283,7 @@
   },
   {
    "id": "pwbm-reform-scores",
+   "country": "US",
    "source": "PWBM",
    "area": "reform scores + distributions",
    "mode": 2,
@@ -267,6 +294,7 @@
   },
   {
    "id": "tax-foundation-scores",
+   "country": "US",
    "source": "Tax Foundation",
    "area": "revenue + tariff scores",
    "mode": 2,
@@ -277,6 +305,7 @@
   },
   {
    "id": "budget-lab-scores",
+   "country": "US",
    "source": "Budget Lab",
    "area": "budget + distribution scores",
    "mode": 2,
@@ -287,6 +316,7 @@
   },
   {
    "id": "cpsp-poverty",
+   "country": "US",
    "source": "Columbia CPSP",
    "area": "US poverty statistics",
    "mode": 1,
@@ -297,6 +327,7 @@
   },
   {
    "id": "populace-reform-validation",
+   "country": "US",
    "source": "Populace releases",
    "area": "reform-validation registry (per-release)",
    "mode": 2,
@@ -304,6 +335,17 @@
    "running": false,
    "updated": "2026-08-04",
    "note": "205 claims, 675 per-release results (5 releases, 180 attached to harvest claims); 11 unscoreable rows skipped"
+  },
+  {
+   "id": "uk-deductions-frr",
+   "country": "UK",
+   "source": "HMT + DWP",
+   "area": "UC deductions (FRR)",
+   "mode": 2,
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-19",
+   "note": "7 claims"
   }
  ]
 }

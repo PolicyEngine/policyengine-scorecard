@@ -430,7 +430,14 @@ def calibration_relationship(program, metric):
     return hit if hit else ("held_out", "no PE consumption identified")
 
 
-INTERCHANGE = Path.home() / "populace-sotsn-takeup" / "comparison"
+# Vendored interchange (sources/populace-sotsn-comparison) — the original
+# clone is machine-local; the repo must be self-sufficient (#74). Missing
+# files fail loudly rather than building an empty comparison.
+INTERCHANGE = (
+    Path(__file__).resolve().parent.parent / "sources" / "populace-sotsn-comparison"
+)
+if not INTERCHANGE.exists():
+    raise FileNotFoundError(f"vendored interchange missing: {INTERCHANGE}")
 
 # Interchange (program, metric) -> platform (program, metric). Poverty maps
 # from A's base/fullpart pseudo-programs; fullpart 2026 rows are excluded
@@ -451,7 +458,9 @@ def load_2026():
 
     path = INTERCHANGE / "comparison.csv"
     if not path.exists():
-        return {}, {}
+        # a missing interchange file must never build an empty comparison
+        # (#74 gate: the silent {} made a gutted vendored dir look fine)
+        raise FileNotFoundError(f"vendored interchange file missing: {path}")
     v2026, v2024 = {}, {}
     with open(path) as f:
         for r in csv.DictReader(f):
