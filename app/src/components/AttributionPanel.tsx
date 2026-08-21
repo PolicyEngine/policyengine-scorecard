@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { Country } from "../types";
 import { PROGRAM_LABELS } from "../types";
 
 interface ExhibitRow {
@@ -19,8 +20,12 @@ interface Exhibits {
 /**
  * PE-only exhibit (no external claim): force ONE program's take-up to 100%
  * and difference SPM poverty — which take-up gap is the poverty lever.
+ *
+ * exhibits.json is a US-only feed (SPM poverty, state geographies), so the
+ * panel is gated by the selected country: under any other country it
+ * renders nothing rather than US attribution.
  */
-export function AttributionPanel() {
+export function AttributionPanel({ country }: { country: Country }) {
   const [data, setData] = useState<Exhibits | null>(null);
   useEffect(() => {
     fetch("./data/exhibits.json")
@@ -28,7 +33,7 @@ export function AttributionPanel() {
       .then(setData)
       .catch(() => setData(null));
   }, []);
-  if (!data) return null;
+  if (country !== "US" || !data) return null;
 
   const programs = [...new Set(data.rows.map((r) => r.program))];
   const summary = programs

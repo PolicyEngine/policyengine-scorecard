@@ -4,6 +4,11 @@ export function AboutView({ data }: { data: Comparison }) {
   const b = data.pe_bundle;
   return (
     <div className="max-w-3xl space-y-6 text-sm leading-6">
+      <p className="text-xs text-muted-foreground">
+        Scope: this page describes the US Urban comparison — the country
+        toggle does not change it. UK method notes land with the UK
+        comparison feed.
+      </p>
       <section>
         <h2 className="mb-2 text-lg font-semibold">What the two columns are</h2>
         <p>

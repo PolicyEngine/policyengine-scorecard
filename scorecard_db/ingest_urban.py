@@ -27,7 +27,12 @@ from .models import (
 )
 from .relationships import effective_relationship
 
-COMPARISON_DIR = Path.home() / "populace-sotsn-takeup" / "comparison"
+# Vendored from the populace-sotsn-takeup comparison run (2026-08-01/02)
+# so the database is buildable from THIS repo alone (build_db.py); the
+# original clone is machine-local and CI has no access to it.
+COMPARISON_DIR = (
+    Path(__file__).resolve().parent.parent / "sources" / "populace-sotsn-comparison"
+)
 
 PUBLICATION = {
     "title": "State of the Safety Net data tool",
@@ -189,6 +194,7 @@ def pe_results_from_comparison(
                 pe_construction=r.get("concept_note", ""),
                 run_id=meta.get("run_id", ""),
                 computed_at=meta.get("computed_at", ""),
+                baseline_key=BASELINE.baseline_key(),
             )
         )
     return results

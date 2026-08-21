@@ -1,0 +1,58 @@
+{
+  "_schema": {
+    "applies_to": "matcher on {program, metrics, subgroups}; null = any",
+    "severity": "period | definitional | construction | caution | gap",
+    "basis": "traceability: the country report's own notes and health warnings, a GitHub issue, or a measured diagnostic in this repo's data"
+  },
+  "annotations": [
+    {
+      "id": "model-vs-model",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "construction",
+      "text": "UKMOD 'ukmod'-variant rows are simulated statistics from a peer FRS-based microsimulation, not measurements: same survey base as PE UK but different weighting (HBAI-adjusted FRS 2023/24), different uprating, and take-up corrections frozen at 2021 outside Scotland/pension-age (the report's own health warning). PE-vs-UKMOD divergence decomposes into data-vintage, uprating, take-up and policy-scope channels before it says anything about either engine.",
+      "basis": "Country report sections 3.2.3 and 4.3"
+    },
+    {
+      "id": "official-as-cited",
+      "applies_to": {"program": null, "metrics": ["caseload", "expenditure"]},
+      "severity": "caution",
+      "text": "'official_as_cited' rows are the report's transcription of DWP/HMRC/OBR/SFC estimates, kept here to reproduce UKMOD's own validation frame. Before scoring PE against those values, resolve them to the primary publication (several are already ingested lanes: HMRC liabilities, OBR EFO March 2026) — cite the primary, and treat any transcription mismatch as an external-issue seed against this report.",
+      "basis": "Table 4.5/4.6 source notes"
+    },
+    {
+      "id": "caseload-unit-mix",
+      "applies_to": {"program": null, "metrics": ["caseload"]},
+      "severity": "definitional",
+      "text": "Caseloads count families except where the report marks (c) children, (h) households, (i) individuals — carried per row as unit_concept. Child Benefit appears twice (families and children covered); Income Support includes income-based JSA. Match the unit before comparing.",
+      "basis": "Table 4.5 notes"
+    },
+    {
+      "id": "policy-year-not-fy",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "period",
+      "text": "Periods are UKMOD policy years (the system as at a reference date in the named calendar year), not DWP/HMRC financial years; forecasts start in 2025. A PE counterpart should simulate the matching policy year, and comparisons to FY-denominated official statistics inherit a timing wedge.",
+      "basis": "Country report section 3.5"
+    },
+    {
+      "id": "bhc-modified-oecd",
+      "applies_to": {"program": ["income_distribution", "poverty"], "metrics": null},
+      "severity": "definitional",
+      "text": "Distribution and poverty statistics are before-housing-costs household equivalised disposable income, modified OECD scale, individual unit of analysis — the same construction as the hbai-poverty lane's BHC rows, so the three-way PE/UKMOD/HBAI triangle is well-posed on this definition. The report itself flags UKMOD child poverty understating HBAI, attributing it to child-benefit take-up assumptions.",
+      "basis": "Table 4.7/4.8 notes; section 4.2.2"
+    },
+    {
+      "id": "rounding",
+      "applies_to": {"program": ["income_distribution", "poverty"], "metrics": null},
+      "severity": "caution",
+      "text": "Gini, quintile shares and poverty rates are printed to whole percents (fractions carry ±0.005); caseloads to thousands; expenditure to £ millions. Score within rounding tolerance.",
+      "basis": "printed table precision"
+    },
+    {
+      "id": "open-source-upstream",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "gap",
+      "text": "UKMOD is open source, so confirmed external-model issues here have an upstream path (unique among UK lanes). Case-level adjudication belongs to the mode-3 ukmod-cases lane via the JRC connector (#41); this lane stays at published-aggregate altitude.",
+      "basis": "scorecard issues #38 and #41"
+    }
+  ]
+}

@@ -9,11 +9,15 @@ descriptor naming the harvested claim it compares against — either a
 family-vocabulary descriptor (translated below) or, for claims already in
 the DB (the Urban subgroup joins), the claim_id directly.
 
-US families attach here. The UK families (free_joins, hmrc_reckoner_t2,
-obr_measures, uprating_april2026, two_child) are vendored alongside but
-NOT ingested: their claims live in the UK harvest, which has no DB ingest
-yet — they attach when it lands, and this module fails loudly if pointed
-at them early.
+US families attach from sources/campaign-20260802/us. UK families
+attach from sources/campaign-20260802/uk_resolved — the DERIVED staging
+produce_campaign_uk builds from the frozen uk/ archive by resolving
+each row to a claim_id against the ingested UK claims (today:
+hmrc_reckoner_t2's 14 rows; the other archived families stay blocked
+with per-row reasons in that module until their target sources are
+staged). Pointing this module at the frozen uk/ archive directly still
+fails loudly (its descriptors under-specify by design — resolution is
+the producer's job).
 
 Match contract: descriptors were verified by the campaign against the
 harvest STAGING files; the DB's per-source adapters normalized vocabulary
@@ -46,10 +50,12 @@ import json
 from pathlib import Path
 
 from .db import EXHIBITS_SQL, RESULTS_SQL, ScorecardDB
-from .models import ComparisonStatus, PEResult
+from .models import BASELINE, ComparisonStatus, PEResult
 
 REPO = Path(__file__).resolve().parent.parent
 STAGED_US = REPO / "sources" / "campaign-20260802" / "us"
+
+_CURRENT_LAW_KEY = BASELINE.baseline_key()
 
 # CPSP's CTC-brief scenario worlds live on the claim's policy_ref reform
 # (ingest_cpsp), not in conditions — descriptor policy_scenario -> policy.
@@ -201,6 +207,7 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
                         "run_id": row["run_id"],
                         "computed_at": row["computed_at"],
                         "note": note,
+                        "baseline_key": _CURRENT_LAW_KEY,
                     }
                 )
                 continue
@@ -221,6 +228,11 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
                     run_id=row["run_id"],
                     computed_at=row["computed_at"],
                     annotations=row.get("annotations", []),
+                    # every campaign run executed a current-law
+                    # baseline (reform side carries the option;
+                    # the jct expiry-reversal's negation is in
+                    # its construction)
+                    baseline_key=_CURRENT_LAW_KEY,
                 )
             )
 
@@ -255,4 +267,5 @@ if __name__ == "__main__":
     import sys
 
     out = Path(sys.argv[1] if len(sys.argv) > 1 else "data/scorecard.db")
-    print(json.dumps(ingest(out), indent=1))
+    staged = Path(sys.argv[2]) if len(sys.argv) > 2 else None
+    print(json.dumps(ingest(out, staged), indent=1))

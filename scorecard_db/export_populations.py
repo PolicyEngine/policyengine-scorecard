@@ -2,13 +2,15 @@
 
 The Urban SotSN population reaches the app through the file-based
 pipeline/build_comparison.py export (data/comparison.json). Everything
-else — today, exactly the reform-validation registry (issue #20): its 205
-minted claims plus the 36 harvested JCX-35-25 provision claims its OBBBA
-results attach to — lives only in scorecard.db. This module exports every
-non-Urban claim that has at least one pe_result, carrying the dimension
-the Urban export doesn't have: the full per-release result history
-(one row per certified release, engine pins and OBBBA scoring mode in the
-construction), so cross-release drift is visible.
+else lives only in scorecard.db: the reform-validation registry (issue
+#20, its 205 minted claims plus the 36 harvested JCX-35-25 provision
+claims its OBBBA results attach to), the US campaign attaches, and —
+since the campaign-UK producer — the 14 uk_hmrc reckoner claims with
+campaign results. This module exports every non-Urban claim that has at
+least one pe_result, carrying the dimension the Urban export doesn't
+have: the full per-release result history (one row per certified
+release, engine pins and OBBBA scoring mode in the construction), so
+cross-release drift is visible.
 
 Doctrine (issues #1/#9): descriptive only. Statuses and calibration
 relationships are exported verbatim; ratios are raw pe/external with no
@@ -28,7 +30,7 @@ import json
 from datetime import date
 from pathlib import Path
 
-from .db import ScorecardDB
+from .db import CURRENT_LAW_KEY, ScorecardDB
 from .ingest_harvest import sync_lane_feed
 
 REPO = Path(__file__).resolve().parent.parent
@@ -50,6 +52,19 @@ def release_label(bundle: str) -> str:
         if token in bundle:
             return token
     return bundle.rsplit("-", 1)[0][-12:]
+
+
+def _effective_status(status: str, result_bk: str | None, claim_bk: str | None) -> str:
+    """Mirror of the comparisons-view #13 guard, applied per result so
+    the exported feed can never publish plain agreement across baseline
+    worlds (or over unverifiable legacy provenance)."""
+    if status != "comparable" or claim_bk is None:
+        return status
+    if result_bk is not None and result_bk != claim_bk:
+        return "constructed"
+    if result_bk is None and claim_bk != CURRENT_LAW_KEY:
+        return "baseline_unvalidated"
+    return status
 
 
 def _ratio(pe: float | None, external: float | None) -> float | None:
@@ -78,6 +93,10 @@ def export(
         (URBAN_SOURCE,),
     ).fetchall()
 
+    labels = {
+        r["baseline_key"]: r["label"]
+        for r in db.conn.execute("SELECT baseline_key, label FROM baselines")
+    }
     rows = []
     by_source: dict[str, int] = {}
     by_status: dict[str, int] = {}
@@ -93,11 +112,15 @@ def export(
                 "construction": r["pe_construction"],
                 "computed_at": r["computed_at"],
                 "annotations": json.loads(r["annotations"]),
+                "baseline": labels.get(r["baseline_key"]),
+                "status_effective": _effective_status(
+                    r["status"], r["baseline_key"], c["baseline_key"]
+                ),
             }
             for r in db.conn.execute(
                 """SELECT computed_value, status, engine_version,
                           data_bundle, pe_construction, computed_at,
-                          annotations
+                          annotations, baseline_key
                    FROM pe_results WHERE claim_id = ?
                    ORDER BY computed_at, id""",
                 (c["claim_id"],),
@@ -119,11 +142,18 @@ def export(
         if len({r["data_bundle"] for r in results}) > 1:
             multi_release += 1
         by_source[c["source"]] = by_source.get(c["source"], 0) + 1
-        by_status[latest["status"]] = by_status.get(latest["status"], 0) + 1
+        eff = latest["status_effective"]
+        by_status[eff] = by_status.get(eff, 0) + 1
         rows.append(
             {
                 "claim_id": c["claim_id"],
                 "source": c["source"],
+                # the model instance the claim belongs to (issue #42): UK
+                # claims carry conditions["country"]; its absence IS the
+                # US claim-side convention, mirrored by the app's
+                # countryOf() default — emit it explicitly so the feed
+                # never relies on the default for non-US rows
+                "country": conditions.get("country", "US"),
                 "source_column": c["source_column"],
                 "name": name,
                 "window": publication.get("window") or "",
@@ -143,6 +173,7 @@ def export(
                 "reform_key": c["reform_key"],
                 "external_value": c["value"],
                 "calibration_relationship": c["calibration_relationship"],
+                "claim_baseline": labels.get(c["baseline_key"]),
                 "latest": {
                     **latest,
                     "ratio": _ratio(latest["value"], c["value"]),
@@ -170,7 +201,8 @@ def export(
         "note": (
             "Non-Urban populations exported from scorecard.db: the populace"
             " reform-validation registry (issue #20) plus the compute"
-            " campaign's attached comparisons (TPC/CPSP/PWBM/CBO/JCT)."
+            " campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT;"
+            " UK: the HMRC ready-reckoner family)."
             " Statuses and calibration relationships are verbatim; nothing"
             " here is a pass/fail grade."
         ),
@@ -195,6 +227,7 @@ def export(
                     "source": "Populace releases",
                     "area": "reform-validation registry (per-release)",
                     "mode": 2,
+                    "country": "US",
                 },
             },
         )

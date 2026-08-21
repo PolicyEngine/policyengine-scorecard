@@ -1,0 +1,65 @@
+{
+  "_schema": {
+    "applies_to": "matcher on {program, metrics, subgroups}; null = any",
+    "severity": "period | definitional | construction | caution | gap",
+    "basis": "traceability: the bulletin supporting documentation, the ready-reckoner bulletin, a GitHub issue, or a measured diagnostic in this repo's data"
+  },
+  "annotations": [
+    {
+      "id": "reckoner-baseline-key",
+      "applies_to": {"program": null, "metrics": ["revenue_effect"]},
+      "severity": "definitional",
+      "text": "Ready-reckoner rows are reform deltas, not levels: direct effects against HMRC's indexed baseline under the OBR Spring Statement 2025 forecast, implemented April 2026. A PE counterpart must run the same nominal change against a matching indexed baseline and state the baseline explicitly (#13). The asymmetric (cost)/(yield) row pairs are distinct claims — behavioural response differs by direction — and must not be averaged.",
+      "basis": "Direct effects bulletin June 2025; scorecard issue #13"
+    },
+    {
+      "id": "reckoner-sign-convention",
+      "applies_to": {"program": null, "metrics": ["revenue_effect"]},
+      "severity": "definitional",
+      "text": "These values are NOT (reform − baseline). HMRC publishes them as magnitudes with the direction carried in the English label, so a cost and a yield can both be positive: 'Increase additional rate by 1p (yield)' is +£145m and 'Decrease additional rate by 1p (cost)' is +£175m in 2026-27. Every row therefore carries sign_convention='magnitude_with_direction_in_label' plus direction (cost | yield | stated_change) and change_direction (increase | decrease | unsigned), both read off the verbatim label. Comparison constraint: orient the PE counterpart using direction before differencing — a signed (reform − baseline) run returns −£175m for that cost row and reads as a 100% divergence, while an abs() comparison hides the error by matching everything. 'stated_change' means the label states no cost/yield direction; the figure is the effect of the change the label describes, and for the plain 'Change X by 1p' form it applies in either direction. Do not read an unmarked 'Increase …' as a yield — HMRC publishes several negative (e.g. 'Increase lower Capital Gains Tax rate by 10 percentage points' is −£130m in 2026-27, and two (Yield)-marked SDLT rows are negative too). Negatives are HMRC's own published signs and are carried through unflipped.",
+      "basis": "Direct effects bulletin June 2025, Tables 1-2 row labels; measured over data/externals/hmrc-personal-tax.json (225 revenue_effect rows, 28 negative)"
+    },
+    {
+      "id": "reckoner-behavioural",
+      "applies_to": {"program": null, "metrics": ["revenue_effect"]},
+      "severity": "construction",
+      "text": "Direct effects include HMRC's specified behavioural adjustments (e.g. taxable income elasticities for additional-rate changes), not pure static costings. A static PE run is the right first counterpart but is expected to exceed HMRC yield estimates where elasticities bite; classify that wedge as construction, not model error. The campaign's hmrc_reckoner_t2 family already carries PE static counterparts for Table 2 rows.",
+      "basis": "Direct effects bulletin June 2025 methodology; sources/campaign-20260802/uk/hmrc_reckoner_t2.jsonl"
+    },
+    {
+      "id": "spi-projection-vintage",
+      "applies_to": {"program": "income_tax", "metrics": ["taxpayer_count", "tax_liability", "total_income", "average_tax_rate", "average_tax_amount"]},
+      "severity": "period",
+      "text": "2023-24 is the latest SPI outturn year; 2024-25 to 2026-27 are HMRC projections on OBR-consistent economic assumptions, not measurements. Score projected years as forecast-vs-forecast (both models project), and expect revisions when the next SPI lands.",
+      "basis": "Bulletin supporting documentation, July 2026 edition"
+    },
+    {
+      "id": "taxpayer-concept",
+      "applies_to": {"program": "income_tax", "metrics": ["taxpayer_count"]},
+      "severity": "definitional",
+      "text": "An Income Tax payer is an individual with positive liability after allowances and reliefs; marginal-rate bands follow HMRC's classification (savers rate = savings/dividend-rate payers; Scottish rates fold into the nearest rUK band). The PE counterpart is individuals with income_tax > 0, banded by marginal rate on the same definitions — not adults, not benefit units.",
+      "basis": "Table 2.1 footnotes"
+    },
+    {
+      "id": "liability-not-receipts",
+      "applies_to": {"program": "income_tax", "metrics": ["tax_liability"]},
+      "severity": "definitional",
+      "text": "Liabilities are accrued amounts for the tax year, not cash receipts (HMRC receipts statistics and OBR receipts forecasts differ by timing and non-SPI elements). Compare PE income tax liability aggregates against these rows, never against receipts outturns.",
+      "basis": "Bulletin supporting documentation, liabilities-vs-receipts section"
+    },
+    {
+      "id": "rounding-suppression",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "caution",
+      "text": "Counts are rounded (thousands at varying precision), liabilities to £ millions; '[no estimate]' marks small-sample cells and 'Neg' marks reckoner effects that round to zero — both carried as suppressed. Table 2.1 pre-2009-10 years reflect historical band structures ('[not applicable]' cells are skipped, not suppressed).",
+      "basis": "Table notes; reckoner bulletin"
+    },
+    {
+      "id": "scope-not-scotland",
+      "applies_to": {"program": "income_tax", "metrics": null},
+      "severity": "caution",
+      "text": "UK-total rows include Scottish and Welsh taxpayers under their devolved rates. PE UK models devolved income tax; comparisons are UK-total here, and per-country rows wait on Table 2.2 emission.",
+      "basis": "Bulletin supporting documentation"
+    }
+  ]
+}

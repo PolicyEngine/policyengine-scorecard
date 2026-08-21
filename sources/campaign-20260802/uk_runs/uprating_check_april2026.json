@@ -1,0 +1,144 @@
+{
+ "check": "april_2026_uprating_tree_vs_rf_staged",
+ "date_run": "2026-08-02",
+ "tree_package": "policyengine-uk (installed, .venv-pe)",
+ "windows": {
+  "before": "2025-06-01",
+  "after": "2026-06-01"
+ },
+ "rf_staged_claims": {
+  "inflation_linked_benefits": 0.038,
+  "state_pension_triple_lock_earnings": 0.048,
+  "uc_standard_allowance": 0.062,
+  "uc_standard_allowance_u25": 0.068,
+  "uc_health_element_existing": 0.015,
+  "lha_frozen": 0.0
+ },
+ "tree_changes": {
+  "uc_standard_single_25plus": {
+   "path": "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD",
+   "before": 400.14,
+   "after": 424.9,
+   "pct": 0.061878342580096835
+  },
+  "uc_standard_single_u25": {
+   "path": "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG",
+   "before": 316.98,
+   "after": 338.58,
+   "pct": 0.06814310051107308
+  },
+  "uc_standard_couple_25plus": {
+   "path": "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD",
+   "before": 628.1,
+   "after": 666.97,
+   "pct": 0.06188505015124979
+  },
+  "uc_standard_couple_u25": {
+   "path": "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG",
+   "before": 497.55,
+   "after": 528.34,
+   "pct": 0.06188322781629996
+  },
+  "uc_child_element": {
+   "path": "gov.dwp.universal_credit.elements.child.amount",
+   "before": 292.81,
+   "after": 303.94,
+   "pct": 0.03801099689218268
+  },
+  "child_benefit_eldest": {
+   "path": "gov.hmrc.child_benefit.amount.eldest",
+   "before": 26.05,
+   "after": 27.05,
+   "pct": 0.03838771593090207
+  },
+  "child_benefit_additional": {
+   "path": "gov.hmrc.child_benefit.amount.additional",
+   "before": 17.25,
+   "after": 17.9,
+   "pct": 0.03768115942028971
+  },
+  "state_pension_new": {
+   "path": "gov.dwp.state_pension.new_state_pension.amount",
+   "before": 230.25,
+   "after": 241.3,
+   "pct": 0.0479913137893595
+  },
+  "state_pension_basic": {
+   "path": "gov.dwp.state_pension.basic_state_pension.amount",
+   "before": 176.45,
+   "after": 184.9,
+   "pct": 0.0478889203740438
+  },
+  "uc_lcwra_element": {
+   "path": "gov.dwp.universal_credit.elements.disabled.amount",
+   "before": 423.27,
+   "after": 217.26,
+   "pct": -0.4867106102487774
+  },
+  "pension_credit_mig_single": {
+   "path": "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.single",
+   "error": "KeyError: 'single'"
+  }
+ },
+ "notes": [
+  "tree-only check; no sim. Paths that error are recorded verbatim (vocabulary gaps or different parameter layout \u2014 fail loud, no guessing).",
+  "LHA rates are data-driven per BRMA in pe-uk; freeze verification needs the LHA parameter/dataset mechanism \u2014 recorded as follow-up if paths error.",
+  "UC health element AB2025 new/existing split may be structural rather than a single amount parameter; error here means map the encoding first."
+ ],
+ "findings": {
+  "concordant": {
+   "uc_standard_25plus": {
+    "pe": 0.0619,
+    "rf": 0.062
+   },
+   "uc_standard_single_u25": {
+    "pe": 0.0681,
+    "rf": 0.068
+   },
+   "inflation_linked (uc child element)": {
+    "pe": 0.038,
+    "rf": 0.038
+   },
+   "child_benefit": {
+    "pe": "0.0377-0.0384 (5p rounding)",
+    "rf": 0.038
+   },
+   "state_pension_new_and_basic": {
+    "pe": "0.0479-0.0480",
+    "rf": 0.048
+   }
+  },
+  "flags": [
+   {
+    "id": "uc_couple_u25_uprating",
+    "severity": "low",
+    "note": "pe-uk couple-U25 standard allowance +6.19% while single-U25 +6.81%; RF staged a single U25 figure (6.8%). Verify against the DWP 2026-27 rates order which couple-young rate applies."
+   },
+   {
+    "id": "lcwra_halving_applied_to_stock",
+    "severity": "RESOLVED_FALSE_ALARM",
+    "class": "verification_method",
+    "evidence": "parameters/gov/dwp/universal_credit/elements/disabled/amount.yaml: 2026-04-01: 217.26 (=\u00a350/wk) replacing 423.27; variables/.../uc_LCWRA_element.py pays flat p.amount to every uc_limited_capability_for_WRA person \u2014 no new/existing-claimant split anywhere in the disability_element tree.",
+    "external_basis": "RF staged: UC health element EXISTING recipients +1.5% April 2026 (new claimants halved to \u00a350/wk); HMT B2025 measure name: \"Changes to the standard allowance and health element to protect existing claimants\".",
+    "implication": "PE 2026+ understates UC for the existing LCWRA stock by ~\u00a32.5k/yr each; depresses disabled-family incomes in ALL 2026 UK results this session (both two-child worlds share it; deltas mostly net out).",
+    "action": "file upstream policyengine-uk issue; note in every 2026 UK result until fixed.",
+    "resolution": "policyengine_uk/simulation.py applies universal_credit_july_2025_reform.simulation_modifier UNCONDITIONALLY at baseline build (line ~177): per year 2026-29 it stochastically tags post-2025 claimants (2026: 11%, WPI/Trussell shares, rng seed 43) at the new-claimant \u00a3217.26 rate and set_inputs the CPI-protected combined-award value for the existing stock (PR #1567, closed issue #1389). The certified baseline USED IN ALL THIS SESSION'S UK RUNS therefore models the existing-claimant protection.",
+    "method_lesson": "tree+variable-formula reading is insufficient for parameters overlaid by simulation-level modifiers; any tree-only uprating check must cross-check scenarios/ and simulation.py build hooks before flagging.",
+    "residual": "implied existing-claimant health-element growth in the modifier is CPI-combined-minus-uplifted-SA, consistent with RF's +1.5% staged figure; stochastic new-claimant share (11% 2026) is an assumptions-registry row (WPI Economics/Trussell, admin PIP data 2025)."
+   },
+   {
+    "id": "param_step_conventions_mixed",
+    "severity": "info",
+    "note": "standard allowance/state pension carry Jan-1-stepped projected values to 2041; disabled amount.yaml steps at real April dates. Year-on-year (June-June) windows capture both."
+   },
+   {
+    "id": "pension_credit_mig_path",
+    "severity": "info",
+    "note": "gov.dwp.pension_credit.guarantee_credit.minimum_guarantee.single KeyError \u2014 layout differs; map before checking MIG uprating."
+   }
+  ],
+  "assumptions_registry_rows": [
+   "pe-uk UC rebalancing: post-2025-claimant share by year {2026: 0.11, 2027: 0.13, 2028: 0.16, 2029: 0.22} (WPI Economics for Trussell Trust, admin PIP data 2025), stochastic rng seed 43, applied at build"
+  ]
+ }
+}

@@ -1,6 +1,9 @@
 # TPC harvest notes (2026-08-02, overnight)
 
 Status: COMPLETE. 54 docs manifested, 1,486 claims staged from 35 tables.
+Post-harvest correction: T26-0009's 48 rows were verified defective
+(VALIDATION.md) and replaced by a 135-row coordinate-pinned re-parse
+(reparse_t26_0009.py, below) — claims_staged.jsonl now carries 1,573 rows.
 
 ## Access path (matters for re-harvest)
 - taxpolicycenter.org hard-blocks curl at the Cloudflare TLS-fingerprint level
@@ -81,6 +84,20 @@ Status: COMPLETE. 54 docs manifested, 1,486 claims staged from 35 tables.
   mission's EITC/CTC priority whose only published form is benefit-shaped.
 - `preliminary` vintage: TPC stamps most reconciliation-era files
   "PRELIMINARY"/"VERY PRELIMINARY"; propagated into publication.vintage.
+- T26-0009 (OBBBA x racial/ethnic group; re-parsed): five sheets (All Tax
+  Units + White/Black non-Hispanic, Hispanic, Additional Races), each a
+  tax-change panel (rows 15-25) over a baseline-distribution panel (rows
+  37-47) that reuses the same group labels/columns — the generic parser
+  merged the panels and collapsed the race axis, so its 48 rows were
+  replaced by reparse_t26_0009.py's coordinate-pinned staging: 5 sheets x
+  9 groups x 3 mission metrics (C share_with_tax_cut / K
+  pct_change_after_tax_income / O avg_tax_change_usd) = 135 rows, race as
+  conditions.subgroup slugs (white_non_hispanic, black_non_hispanic,
+  hispanic, additional_races; the All sheet stages no subgroup key),
+  publication carries sheet/cell/population per row. The baseline panel
+  (pre-OBBBA income/tax levels) stays unstaged like the other
+  baseline-level tables below. No unrounded twin block exists in this
+  workbook, so no value_unrounded.
 - calibration_relationship: held_out for all rows (nothing here is a
   Populace calibration target).
 - Closed-enum note for the ingester: of the staged metrics only
@@ -137,10 +154,15 @@ Status: COMPLETE. 54 docs manifested, 1,486 claims staged from 35 tables.
 ## Files
 - manifest.jsonl — 54 rows: url, table_id, title, file_title_lines,
   baseline_line, dist_line, date, sha256, bytes, local_path, doc_type, sheets.
-- claims_staged.jsonl — 1,486 rows as above.
+- claims_staged.jsonl — 1,573 rows as above (1,486 harvested - 48
+  defective T26-0009 rows + 135 re-parsed).
 - parse_report.json — per-file staged/skip status.
 - parse_tpc.py — reproducible parser (uv run --with pandas --with xlrd
   --with openpyxl python parse_tpc.py).
+- reparse_t26_0009.py — coordinate-pinned T26-0009 re-parse; splices
+  claims_staged.jsonl in place and re-verifies every staged row against
+  the workbook cell it names (uv run --with openpyxl python
+  reparse_t26_0009.py).
 - browser_meta.json — 170 listing cards + 45 page-discovery records.
 - Wayback CDX dumps + 14 archived T25 pages remain in the session scratchpad
   (wiped on restart); regenerate via the CDX queries in this file if needed.

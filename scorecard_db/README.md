@@ -26,15 +26,29 @@ can check, one SQLite file, reform-keyed.
 
 ## Use
 
+The database is a DERIVED artifact and is not committed: build it from
+the vendored sources (all inputs live in this repo; ~4 seconds,
+deterministic — CI verifies two builds agree on a logical content hash).
+
 ```bash
-PYTHONPATH=. python -m scorecard_db.ingest_urban data/scorecard.db
-PYTHONPATH=. python -m scorecard_db.ingest_platform data/scorecard.db
-python -m pytest tests/test_scorecard_db.py
+PYTHONPATH=. python -m scorecard_db.build_db data/scorecard.db
+PYTHONPATH=. python -m pytest tests/ -q
 ```
+
+`build_db` is from-scratch only (it refuses to overwrite — delete the
+old file first; nothing is lost, it is derived). Plain `pytest` also
+works from a fresh clone: a pytest configuration hook builds the database
+before collection when it is absent. Individual ingest modules (`ingest_urban`, `ingest_platform`,
+…) remain runnable one at a time against an existing database, in the
+dependency order documented in `build_db.py`. Built artifacts for every
+main commit are published to the `scorecard-artifacts` Supabase storage
+bucket as `<sha>.db.gz` and `latest.db.gz`.
 
 ```python
 from scorecard_db import ScorecardDB
 
+# after build_db (opening a missing path creates an EMPTY db,
+# which the from-scratch builder then refuses to overwrite)
 db = ScorecardDB("data/scorecard.db")
 db.comparisons(program="snap", geography="US", held_out_only=True)
 db.coverage()
@@ -42,8 +56,8 @@ db.coverage()
 
 ## 2026-08-02 harvest population
 
-Second population: the overnight seven-source harvest — 12,266 claims
-(JCT 6,771 · Budget Lab 1,229 · CPSP 1,033 · CBO 931 · TPC 922 · PWBM
+Second population: the overnight seven-source harvest — 12,401 claims
+(JCT 6,771 · Budget Lab 1,229 · CPSP 1,033 · TPC 1,057 · CBO 931 · PWBM
 717 · Tax Foundation 663) from staging vendored at
 sources/harvest-2026-08-02/ (claims + sha256 manifests + notes; raw
 downloads stay outside the repo, pinned by the manifests). Run
@@ -79,11 +93,14 @@ Schema decisions this population forced (COLLATION worklist):
   (income_group/income_axis/income_concept, scoring, baseline_policy,
   option, statistic, window_kind, month, data_vintage).
 - Deliberate exclusions, tallied in lane notes: TPC's 468
-  tax-benefit-family rows (beyond the validation vocabulary) and
-  T26-0009's 48 rows (staging defect verified against the workbook).
-  Same-statistic republication twins (68) are merged with
-  rounding-consistency assertions; see
-  sources/harvest-2026-08-02/VALIDATION.md for the artifact validation.
+  tax-benefit-family rows (beyond the validation vocabulary).
+  T26-0009's original 48 rows (staging defect verified against the
+  workbook) were replaced by a coordinate-pinned per-sheet re-parse —
+  135 rows, race as conditions["subgroup"] — via
+  sources/harvest-2026-08-02/tpc/reparse_t26_0009.py. Same-statistic
+  republication twins (68) are merged with rounding-consistency
+  assertions; see sources/harvest-2026-08-02/VALIDATION.md for the
+  artifact validation.
 
 First population: Urban SotSN — 30,004 claims (24,717 published values).
 `calibration_relationship` is assigned per (program, metric) from the

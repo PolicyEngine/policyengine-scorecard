@@ -1,0 +1,36 @@
+{
+  "id": "ukmod-stats",
+  "name": "UKMOD Country Report 2023-2030 (version B2026.01)",
+  "organization": "CeMPA / ISER, University of Essex",
+  "country": "UK",
+  "url": "https://www.iser.essex.ac.uk/research/publications/publication-589013",
+  "data_urls": [
+    "https://www.iser.essex.ac.uk/wp-content/uploads/files/working-papers/cempa/cempa8-26.pdf"
+  ],
+  "published": "2026-03 (CeMPA WP 8/26; posted 2026-04-15)",
+  "fetched": "2026-08-14",
+  "model": {
+    "name": "UKMOD B2026.01",
+    "open_source": true,
+    "method": "Static tax-benefit microsimulation on the EUROMOD platform, FRS input data (2023/24 base with HBAI-adjusted weights and incomes), uprated and projected to 2030 on official forecasts. Baseline applies approximate non-take-up corrections for means-tested benefits; take-up probabilities outside Scotland/pension-age have not been updated since 2021 (the report's own health warning).",
+    "method_basis": "UKMOD Country Report 2023-2030, sections 3-4 and 4.3 health warnings"
+  },
+  "period": "Policy years 2023-2030 (forecasts from 2025); reference input-data and HBAI columns for 2023",
+  "programs": [
+    "universal_credit", "child_benefit", "pension_credit", "housing_benefit",
+    "council_tax_reduction", "income_support", "esa_income_based",
+    "jsa_contribution_based", "child_and_working_tax_credits",
+    "free_school_meals", "healthy_start_food", "best_start_grant_and_foods",
+    "school_clothing_grant", "scottish_child_payment",
+    "scottish_carers_allowance_supplement", "scottish_child_winter_heating",
+    "sure_start_maternity_grant", "winter_fuel_allowance",
+    "benefit_cap_housing_benefit", "benefit_cap_universal_credit",
+    "nic_employees", "nic_self_employed", "nic_employers", "nic_all",
+    "income_tax", "income_tax_non_devolved", "income_tax_welsh",
+    "income_tax_scottish", "income_distribution", "poverty"
+  ],
+  "geographies": "UK (devolved income tax rows are jurisdiction-specific by construction)",
+  "variant_note": "variant distinguishes claim provenance: 'ukmod' (simulated), 'official_as_cited' (the report's transcription of DWP/HMRC/OBR/SFC estimates — cite the primary source, not this report, before scoring against them), 'input_data' (un-simulated FRS/HBAI input), 'hbai' (DWP HBAI as cited).",
+  "coverage_note": "This build emits validation tables 4.5 (caseloads), 4.6 (expenditure), 4.7 (income distribution) and 4.8 (poverty rates). Earlier tables are policy-parameter documentation, not statistics. The Annex 6.6 FRS-only variant tables are not emitted.",
+  "diagnosis_upstream": "UKMOD is open source (microsimulation.ac.uk/ukmod); divergence diagnoses classified as external-model issues can, uniquely among UK sources, become upstream reports to the UKMOD team."
+}

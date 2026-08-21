@@ -2,14 +2,16 @@
 guards, lane sync, and an integration pass over the committed DB."""
 
 import json
-from pathlib import Path
 
 import pytest
 
 from scorecard_db import ScorecardDB
 from scorecard_db.export_populations import REPO, export, release_label
+from dataclasses import replace
+
 from scorecard_db.models import (
     BASELINE,
+    ReformRef,
     ComparisonStatus,
     ExternalScore,
     Metric,
@@ -184,6 +186,13 @@ def test_integration_committed_db(tmp_path):
     ).fetchone()[0]
     db.close()
     assert stats["rows"] == expected == len(payload["rows"])
+    # Every row carries an explicit country (#42/#50 gate: 14 UK reckoner
+    # rows shipped into a feed the exporter never country-tagged, so the
+    # app's missing-key US default classified them all as US).
+    dist: dict = {}
+    for r in payload["rows"]:
+        dist[r["country"]] = dist.get(r["country"], 0) + 1
+    assert dist == {"US": 270, "UK": 14}
     # The committed deployment artifact must match a fresh export (modulo
     # the build date) — stale committed data can't pass CI.
     committed = json.loads((REPO / "data" / "populations.json").read_text())
@@ -199,3 +208,66 @@ def test_integration_committed_db(tmp_path):
         in ("consumed_as_target", "seed_source", "held_out")
         for r in payload["rows"]
     )
+
+
+def test_export_carries_effective_status_downgrades(tmp_path):
+    # The #13 guard end-to-end: a comparable result against a claim in a
+    # different world exports status_effective='constructed'; a legacy
+    # NULL result against a non-current-law world exports
+    # 'baseline_unvalidated'. Raw status is preserved alongside.
+    from scorecard_db.models import baseline_key as bk
+
+    db = ScorecardDB(tmp_path / "s.db")
+    world_ref = ReformRef(
+        framework="policy_ref",
+        reform={"policy": "opt"},
+        baseline={"policy": "tcja_extension"},
+    )
+    world = _claim("jct", "world_claim", 100.0)
+    world = ExternalScore(
+        source="jct",
+        metric=Metric.REVENUE_CHANGE,
+        unit_concept=UnitConcept.USD,
+        period=2026,
+        time_basis=TimeBasis.FISCAL_YEAR,
+        value=100.0,
+        conditions={"geography": "US"},
+        reform=world_ref,
+        calibration_relationship="held_out",
+        source_column="world_claim",
+        publication={"name": "w", "window": "FY2026"},
+        value_kind="usd",
+    )
+    db.upsert_scores([world])
+    cross = _result(
+        world.claim_id(),
+        90.0,
+        "populace-us-2024-buildo-x",
+        "2026-07-22",
+        status=ComparisonStatus.COMPARABLE,
+    )
+    cross = replace(cross, baseline_key=bk({"policy": "current_policy"}))
+    legacy = replace(
+        _result(
+            world.claim_id(),
+            91.0,
+            "populace-us-2024-buildp-x",
+            "2026-07-28",
+            status=ComparisonStatus.COMPARABLE,
+        ),
+    )
+    db.add_results([cross, legacy])
+    db.close()
+
+    out = tmp_path / "p.json"
+    export(tmp_path / "s.db", out_path=out, built="2026-08-19")
+    row = json.loads(out.read_text())["rows"][0]
+    statuses = {
+        r["data_bundle"]: (r["status"], r["status_effective"]) for r in row["results"]
+    }
+    assert statuses["populace-us-2024-buildo-x"] == ("comparable", "constructed")
+    assert statuses["populace-us-2024-buildp-x"] == (
+        "comparable",
+        "baseline_unvalidated",
+    )
+    assert row["latest"]["status_effective"] == "baseline_unvalidated"
