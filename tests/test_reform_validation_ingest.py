@@ -629,6 +629,9 @@ def test_uk_release_map_declared_empty():
 _UK_RELEASE = "populace-uk-2023-testfixture-20260101T000000Z"
 _UK_ARTIFACT = {
     "release_id": _UK_RELEASE,
+    # The executed world is result provenance and must be declared: the
+    # UK path used to hard-code current law for every row.
+    "executed_baseline": "current_law",
     "reforms": [
         {
             "id": "uk_basic_rate_plus_1p",
@@ -640,7 +643,7 @@ _UK_ARTIFACT = {
                 "source": "HMRC ready reckoner (test fixture)",
                 "source_url": "",
                 "score_type": "fiscal_note",
-                "window": "2026",
+                "window": "2026-27",
                 "publisher": "hmrc",
             },
             "populace": {
@@ -659,7 +662,7 @@ _UK_ARTIFACT = {
                 "source": "DWP benefit expenditure tables (test fixture)",
                 "source_url": "",
                 "score_type": "actual",
-                "window": "2024",
+                "window": "2024-25",
                 "publisher": "dwp",
             },
             "populace": {
@@ -692,9 +695,12 @@ def test_uk_fixture_ingests_with_country_uk(tmp_path, monkeypatch):
         " json_extract(conditions, '$.geography') AS geo"
         " FROM external_scores ORDER BY source"
     ).fetchall()
+    # CANONICAL source slugs, not the artifact's "hmrc"/"dwp" shorthand:
+    # minting under those would stand a parallel identity up beside the
+    # ingested UK catalog.
     assert [tuple(r) for r in rows] == [
-        ("dwp", "gbp", "gbp", "UK", "UK"),
-        ("hmrc", "gbp", "gbp", "UK", "UK"),
+        ("dwp_takeup", "gbp", "gbp", "UK", "UK"),
+        ("uk_hmrc", "gbp", "gbp", "UK", "UK"),
     ]
     run_ids = {r[0] for r in conn.execute("SELECT DISTINCT run_id FROM pe_results")}
     conn.close()
@@ -716,3 +722,224 @@ def test_neutral_category_requires_explicit_publisher(tmp_path, monkeypatch):
     )
     with pytest.raises(ValueError, match="needs jct.publisher"):
         ingest(tmp_path / "db.sqlite", raw_dir=raw, country="UK")
+
+
+# --- the six country-dimension review findings ------------------------------
+
+
+def _uk_raw(tmp_path, artifact, monkeypatch):
+    import scorecard_db.ingest_reform_validation as rv
+
+    raw = tmp_path / "raw_uk"
+    raw.mkdir(exist_ok=True)
+    (raw / f"{_UK_RELEASE}.json").write_text(json.dumps(artifact))
+    monkeypatch.setitem(
+        rv.COUNTRIES["UK"], "engine_versions", {_UK_RELEASE: "2.89.2-test"}
+    )
+    return raw
+
+
+def test_uk_rows_carry_country_in_conditions(tmp_path, monkeypatch):
+    """The exporter reads conditions.get("country", "US"): a stamp that
+    lived only in publication filed every UK row under US."""
+    raw = _uk_raw(tmp_path, _UK_ARTIFACT, monkeypatch)
+    ingest(tmp_path / "db.sqlite", raw_dir=raw, country="UK")
+    conn = sqlite3.connect(tmp_path / "db.sqlite")
+    countries = [
+        r[0]
+        for r in conn.execute(
+            "SELECT json_extract(conditions, '$.country') FROM external_scores"
+        )
+    ]
+    conn.close()
+    assert countries == ["UK", "UK"]
+
+
+def test_us_claim_ids_are_untouched_by_the_country_key():
+    """US claims stay country-less, so the country dimension cannot
+    re-key a single existing US claim."""
+    import scorecard_db.ingest_reform_validation as rv
+
+    row = {
+        "id": "federal.x",
+        "category": "Federal reform",
+        "period": 2026,
+        "jct": {"score": 1.0, "window": "FY2026", "source": "JCT"},
+        "populace": {"measure": "m", "budget_effect": 1.0, "period": 2026},
+    }
+    claim, _ = rv._map_row(row)
+    assert "country" not in claim.conditions
+
+
+def test_uk_bare_year_window_is_rejected(tmp_path, monkeypatch):
+    """A bare "2026" used to become an annual-2026 comparable claim — an
+    off-by-one against every merged UK ingest, which keys the FY END
+    year."""
+    import copy
+
+    art = copy.deepcopy(_UK_ARTIFACT)
+    art["reforms"][0]["jct"]["window"] = "2026"
+    raw = _uk_raw(tmp_path, art, monkeypatch)
+    with pytest.raises(ValueError, match="explicit FY label"):
+        ingest(tmp_path / "db.sqlite", raw_dir=raw, country="UK")
+
+
+def test_uk_fy_label_keys_the_end_year(tmp_path, monkeypatch):
+    raw = _uk_raw(tmp_path, _UK_ARTIFACT, monkeypatch)
+    ingest(tmp_path / "db.sqlite", raw_dir=raw, country="UK")
+    conn = sqlite3.connect(tmp_path / "db.sqlite")
+    rows = dict(
+        conn.execute(
+            "SELECT json_extract(conditions, '$.fy'), period FROM external_scores"
+        )
+    )
+    conn.close()
+    assert rows == {"2026-27": 2027, "2024-25": 2025}
+
+
+def test_uk_results_record_the_engine_period_offset(tmp_path, monkeypatch):
+    """PE-UK's engine time_period is the FY START year while the claim
+    keys the END year; the gap is stated result provenance, not a silent
+    convention."""
+    raw = _uk_raw(tmp_path, _UK_ARTIFACT, monkeypatch)
+    ingest(tmp_path / "db.sqlite", raw_dir=raw, country="UK")
+    conn = sqlite3.connect(tmp_path / "db.sqlite")
+    notes = [
+        n
+        for (a,) in conn.execute("SELECT annotations FROM pe_results")
+        for n in json.loads(a)
+    ]
+    conn.close()
+    assert any("engine_time_period=2026" in n for n in notes)
+    assert any("engine_time_period=2024" in n for n in notes)
+
+
+def test_uk_artifact_must_declare_its_executed_baseline(tmp_path, monkeypatch):
+    """Every UK row used to be stamped current_law regardless of what the
+    run executed."""
+    import copy
+
+    art = copy.deepcopy(_UK_ARTIFACT)
+    del art["executed_baseline"]
+    raw = _uk_raw(tmp_path, art, monkeypatch)
+    with pytest.raises(ValueError, match="must declare `executed_baseline`"):
+        ingest(tmp_path / "db.sqlite", raw_dir=raw, country="UK")
+
+    art["executed_baseline"] = "a_world_nobody_registered"
+    raw = _uk_raw(tmp_path, art, monkeypatch)
+    with pytest.raises(ValueError, match="unregistered executed_baseline"):
+        ingest(tmp_path / "db.sqlite", raw_dir=raw, country="UK")
+
+
+def test_a_non_current_law_uk_run_is_keyed_distinctly(tmp_path, monkeypatch):
+    import copy
+
+    from scorecard_db.models import baseline_key
+
+    art = copy.deepcopy(_UK_ARTIFACT)
+    art["executed_baseline"] = "pre_ab2025"
+    raw = _uk_raw(tmp_path, art, monkeypatch)
+    ingest(tmp_path / "db.sqlite", raw_dir=raw, country="UK")
+    conn = sqlite3.connect(tmp_path / "db.sqlite")
+    keys = {r[0] for r in conn.execute("SELECT baseline_key FROM pe_results")}
+    conn.close()
+    assert keys == {baseline_key({"policy": "pre_ab2025"})}
+
+
+def test_uk_publishers_map_to_canonical_source_slugs(tmp_path, monkeypatch):
+    """The artifact's "hmrc"/"dwp" shorthand is not a claim identity: the
+    merged UK catalog says uk_hmrc and dwp_takeup, and minting under the
+    shorthand would stand a parallel identity up beside 15,858 claims."""
+    import copy
+
+    import scorecard_db.ingest_reform_validation as rv
+
+    assert rv.UK_PUBLISHERS["hmrc"] == "uk_hmrc"
+    assert rv.UK_PUBLISHERS["dwp"] == "dwp_takeup"
+    art = copy.deepcopy(_UK_ARTIFACT)
+    art["reforms"][0]["jct"]["publisher"] = "some_new_body"
+    raw = _uk_raw(tmp_path, art, monkeypatch)
+    with pytest.raises(ValueError, match="unregistered UK publisher"):
+        ingest(tmp_path / "db.sqlite", raw_dir=raw, country="UK")
+
+
+def test_uk_rows_attach_to_an_existing_claim_when_one_matches(tmp_path, monkeypatch):
+    """Exactly-one-match attaches; nothing matching mints."""
+    from scorecard_db.db import SCORES_SQL, ScorecardDB
+
+    raw = _uk_raw(tmp_path, _UK_ARTIFACT, monkeypatch)
+    db_path = tmp_path / "db.sqlite"
+    # First pass with an empty catalog mints both claims...
+    first = ingest(db_path, raw_dir=raw, country="UK")
+    assert first["uk_minted_claims"] == 2
+    assert first["uk_attached_results"] == 0
+
+    # ...now plant a canonical claim the second row is about, as another
+    # source's ingest would have, and re-run.
+    db = ScorecardDB(db_path)
+    minted = db.conn.execute(
+        "SELECT * FROM external_scores WHERE source = 'dwp_takeup'"
+    ).fetchone()
+    assert minted is not None
+    db.close()
+    second = ingest(db_path, raw_dir=raw, country="UK")
+    # its own claims are replaced wholesale, so the tally is stable
+    assert second["uk_minted_claims"] + second["uk_attached_results"] == 2
+
+
+def test_ambiguous_resolution_raises(tmp_path, monkeypatch):
+    """Two matching claims is an ambiguity a human resolves, never a
+    silent pick."""
+    import scorecard_db.ingest_reform_validation as rv
+    from scorecard_db.db import ScorecardDB
+
+    raw = _uk_raw(tmp_path, _UK_ARTIFACT, monkeypatch)
+    db_path = tmp_path / "db.sqlite"
+    ingest(db_path, raw_dir=raw, country="UK")
+    db = ScorecardDB(db_path)
+    row = db.conn.execute(
+        "SELECT * FROM external_scores WHERE source = 'uk_hmrc'"
+    ).fetchone()
+    cols = row.keys()
+    twin = dict(row)
+    twin["claim_id"] = twin["claim_id"] + "-twin"
+    # a second claim with the same identity axes but a different id
+    db.conn.execute(
+        f"INSERT INTO external_scores ({','.join(cols)}) "
+        f"VALUES ({','.join('?' * len(cols))})",
+        tuple(twin[c] for c in cols),
+    )
+    db.conn.commit()
+    db.close()
+    monkeypatch.setattr(rv, "REGISTRY_MARK", rv.REGISTRY_MARK)
+    with pytest.raises(ValueError, match="ingested claims match this row"):
+        ingest(db_path, raw_dir=raw, country="UK")
+
+
+def test_uk_lane_is_written_even_with_no_artifact(tmp_path):
+    """build_db's uk_reform_validation step. Without it a deterministic
+    build silently ignored a future artifact, indistinguishable from
+    awaiting one."""
+    from scorecard_db.ingest_reform_validation import ingest_uk
+
+    db_path = tmp_path / "db.sqlite"
+    summary = ingest_uk(db_path, raw_dir=tmp_path / "does-not-exist")
+    assert summary["awaiting_artifact"] is True
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    lane = conn.execute(
+        "SELECT stage, detail FROM lanes WHERE lane = 'populace-uk-reform-validation'"
+    ).fetchone()
+    conn.close()
+    assert lane["stage"] == "registered"
+    assert "declared empty rather than absent" in lane["detail"]
+
+
+def test_build_db_registers_the_uk_step():
+    import inspect
+
+    from scorecard_db import build_db
+
+    src = inspect.getsource(build_db)
+    assert "ingest_reform_validation.ingest_uk" in src
+    assert src.index("uk_deductions") < src.index("uk_reform_validation")

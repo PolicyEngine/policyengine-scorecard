@@ -346,6 +346,17 @@
    "running": false,
    "updated": "2026-08-19",
    "note": "7 claims"
+  },
+  {
+   "id": "populace-uk-reform-validation",
+   "source": "Populace releases",
+   "area": "reform-validation registry (per-release)",
+   "mode": 2,
+   "country": "UK",
+   "stage": "registered",
+   "running": false,
+   "updated": "2026-08-17",
+   "note": "0 claims \u2014 no populace-uk reform_validation.json exists yet (issue #79 produces the first one); the lane is declared empty rather than absent"
   }
  ]
 }

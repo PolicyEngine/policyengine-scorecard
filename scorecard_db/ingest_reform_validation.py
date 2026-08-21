@@ -162,6 +162,18 @@ def _obbba_baseline_key(mode: str, provision_id: str) -> str:
 # populated by the first reform_validation.json a managed populace-uk run
 # produces, never invented here; until then a UK ingest fails loudly at
 # "no artifacts".
+# This lane's own transition date, and the UK family's SHARED top-level
+# feed literal — every UK ingest must pass the same one or the committed
+# data/lanes.json drifts with ingest order (sync_lane_feed's contract).
+LANE_UPDATED = "2026-08-17"
+FEED_UPDATED = "2026-08-19"
+LANE_FEED_META = {
+    "source": "Populace releases",
+    "area": "reform-validation registry (per-release)",
+    "mode": 2,
+    "country": "UK",
+}
+
 COUNTRIES = {
     "US": {
         "raw_dir": RAW,
@@ -186,6 +198,86 @@ COUNTRIES = {
         "engine_versions": {},
     },
 }
+
+# UK artifact publisher -> the CANONICAL source slug the merged UK
+# ingests already use. Closed: an unregistered publisher raises rather
+# than minting claims under a parallel identity beside the ingested
+# 15,858. "hmrc"/"dwp" are the artifact's own shorthand and are NOT the
+# claim identities — uk_hmrc and dwp_takeup are.
+UK_PUBLISHERS = {
+    "hmrc": "uk_hmrc",
+    "dwp": "dwp_takeup",
+    "obr": "obr",
+    "hmt": "hm_treasury",
+    "dwp_expenditure": "obr",
+}
+
+# Executed-baseline worlds a UK artifact may declare. The US path derives
+# real worlds per scoring mode; the UK path used to hard-code current law
+# for every row, so a stacked or non-current-law run would have been
+# silently mis-stamped. A UK artifact must SAY which world it executed,
+# and the value must be a world baselines.py describes.
+UK_EXECUTED_BASELINES = {
+    "current_law": {"policy": "current_law"},
+    "pre_ab2025": {"policy": "pre_ab2025"},
+    "pre_frr_uc_deductions": {"policy": "pre_frr_uc_deductions"},
+    "hmrc_indexed_baseline_spring_2025": {
+        "policy": "hmrc_indexed_baseline_spring_2025"
+    },
+}
+
+
+def _uk_executed_baseline(artifact: dict, release_id: str) -> str:
+    declared = artifact.get("executed_baseline")
+    if declared is None:
+        raise ValueError(
+            f"{release_id}: a UK reform-validation artifact must declare "
+            "`executed_baseline` — the executed world is result provenance "
+            "and cannot be assumed to be current law "
+            f"(known: {sorted(UK_EXECUTED_BASELINES)})"
+        )
+    if declared not in UK_EXECUTED_BASELINES:
+        raise ValueError(
+            f"{release_id}: unregistered executed_baseline {declared!r} — "
+            "register the world in scorecard_db/baselines.py and add it "
+            "here deliberately"
+        )
+    return baseline_key(UK_EXECUTED_BASELINES[declared])
+
+
+def _resolve_existing_claim(db, claim) -> str | None:
+    """The claim_id of the ONE ingested claim this row is about, or None.
+
+    A neutral UK row that mints a fresh claim creates a parallel identity
+    beside the canonical UK catalog rather than attaching a PE result to
+    it. Resolution is exactly-one-match or nothing: two matches are an
+    ambiguity a human must resolve, never a silent pick.
+    """
+    cond = claim.conditions
+    rows = db.conn.execute(
+        "SELECT claim_id FROM external_scores"
+        " WHERE source = ? AND metric = ? AND period = ?"
+        "   AND unit_concept = ?"
+        "   AND IFNULL(json_extract(conditions, '$.program'), '') = ?"
+        "   AND IFNULL(json_extract(conditions, '$.geography'), '') = ?"
+        "   AND IFNULL(json_extract(conditions, '$.country'), 'US') = 'UK'",
+        (
+            claim.source,
+            claim.metric.value,
+            claim.period,
+            claim.unit_concept.value,
+            cond.get("program", ""),
+            cond.get("geography", ""),
+        ),
+    ).fetchall()
+    if len(rows) > 1:
+        raise ValueError(
+            f"{claim.source}/{cond.get('program')}/{claim.period}: "
+            f"{len(rows)} ingested claims match this row — resolve the "
+            "ambiguity deliberately (claim_id-direct), never pick one"
+        )
+    return rows[0][0] if rows else None
+
 
 # US alias kept for the module's own US-specific tables below.
 ENGINE_VERSIONS = COUNTRIES["US"]["engine_versions"]
@@ -373,7 +465,7 @@ def _state_of(row: dict) -> str | None:
     return None
 
 
-def _publisher(row: dict) -> str:
+def _publisher(row: dict, country: str = "US") -> str:
     src = row["jct"].get("source") or ""
     cat = row["category"]
     # Country-neutral categories carry their publisher explicitly — the
@@ -384,6 +476,18 @@ def _publisher(row: dict) -> str:
             raise ValueError(
                 f"{row['id']}: neutral category {cat!r} needs jct.publisher"
             )
+        if country == "UK":
+            # Map to the CANONICAL source slug the merged UK ingests use,
+            # so results attach to the existing catalog instead of
+            # standing up "hmrc" beside "uk_hmrc".
+            if publisher not in UK_PUBLISHERS:
+                raise ValueError(
+                    f"{row['id']}: unregistered UK publisher {publisher!r} "
+                    f"(known: {sorted(UK_PUBLISHERS)}) — a new publisher is "
+                    "mapped to a canonical source slug deliberately, never "
+                    "passed through as a parallel identity"
+                )
+            return UK_PUBLISHERS[publisher]
         return publisher
     if cat in ("IRS SOI actual",):
         return "irs_soi"
@@ -421,6 +525,10 @@ _BIENNIUM = re.compile(r"\((\d{4})-(\d{2}) biennium")
 _FY_SPAN = re.compile(r"\bFY(\d{4})-(\d{2})\b")
 _FY = re.compile(r"\bFY(\d{4})\b")
 _TY_CY = re.compile(r"\b(?:TY|CY)(\d{4})\b")
+# UK financial-year label as every merged UK ingest writes it: "2026-27",
+# with or without an FY prefix. Period is the END year — the convention of
+# every LIVE claim in the DB (models.py, `fy`).
+_UK_FY = re.compile(r"^(?:FY)?(\d{4})-(\d{2})$")
 
 
 def _parse_window(
@@ -456,11 +564,35 @@ def _parse_window(
     raise ValueError(f"cannot parse claim period from window {window!r}")
 
 
+def _uk_period(window, fallback: int) -> tuple[int, TimeBasis, str]:
+    """(period, time_basis, fy_label) for a UK row.
+
+    UK claims are financial-year claims and must SAY so. A bare "2026"
+    used to fall through to the generic annual branch and mint an
+    annual-2026 claim with status=comparable — a fail-open identity, and
+    an off-by-one against every merged UK ingest, which keys the FY END
+    year. The label is required, and the period is that end year.
+    """
+    w = str(window or fallback).strip()
+    m = _UK_FY.match(w)
+    if not m:
+        raise ValueError(
+            f"UK rows are financial-year claims and need an explicit FY "
+            f"label ('2026-27'), got window {window!r} — a bare year mints "
+            "an annual claim that no UK ingest can join to"
+        )
+    start = int(m.group(1))
+    if (start + 1) % 100 != int(m.group(2)):
+        raise ValueError(f"UK FY label {w!r}: suffix is not start year + 1")
+    return start + 1, TimeBasis.FISCAL_YEAR, f"{start}-{m.group(2)}"
+
+
 def _map_row(
     row: dict,
     currency: UnitConcept = UnitConcept.USD,
     default_geo: str = "US",
     registry_mark: str = REGISTRY_MARK,
+    country: str = "US",
 ) -> tuple[ExternalScore, str] | None:
     """(claim, pe_construction) for one artifact row; None -> skip.
 
@@ -475,10 +607,19 @@ def _map_row(
     cat = row["category"]
     measure = row["populace"].get("measure") or ""
     window = row["jct"].get("window")
-    period, time_basis, period_start, period_end, window_kind = _parse_window(
-        window, int(row["period"])
-    )
-    conditions: dict[str, str] = {}
+    period_start = period_end = window_kind = None
+    if country == "US":
+        period, time_basis, period_start, period_end, window_kind = _parse_window(
+            window, int(row["period"])
+        )
+        conditions: dict[str, str] = {}
+    else:
+        period, time_basis, fy_label = _uk_period(window, int(row["period"]))
+        # country in CONDITIONS, not only in publication: the exporter and
+        # the app's country view read conditions["country"] (its absence
+        # IS "US"), so a publication-only stamp filed UK rows under US.
+        # US claims stay country-less, so their claim ids are unchanged.
+        conditions: dict[str, str] = {"country": country, "fy": fy_label}
     if window_kind:
         conditions["window_kind"] = window_kind
     state = _state_of(row)
@@ -571,7 +712,7 @@ def _map_row(
 
     return (
         ExternalScore(
-            source=_publisher(row),
+            source=_publisher(row, country),
             metric=metric,
             unit_concept=uc,
             period=period,
@@ -772,6 +913,55 @@ def _obbba_results(
     return results
 
 
+def ingest_uk(db_path: Path, raw_dir: Path | None = None) -> dict:
+    """The UK step for deterministic builds (build_db).
+
+    The UK artifact does not exist yet — issue #79's run produces the
+    first one. Until then the lane must still be WRITTEN, as an explicit
+    "awaiting artifact" row: a build that simply never invoked the UK
+    ingest left the DB indistinguishable from one where the artifact
+    existed and was silently ignored, which is the failure this step
+    removes. Once the artifact lands, this same call ingests it with no
+    further wiring.
+    """
+    cfg = COUNTRIES["UK"]
+    raw_dir = raw_dir or cfg["raw_dir"]
+    artifacts = sorted(raw_dir.glob("*.json")) if raw_dir.exists() else []
+    if artifacts:
+        return ingest(db_path, raw_dir=raw_dir, country="UK")
+    from .ingest_harvest import sync_lane_feed
+
+    db = ScorecardDB(db_path)
+    with db.conn:
+        db.conn.execute(
+            LANE_SQL,
+            (
+                cfg["lane"],
+                "registered",
+                "0 claims — no populace-uk reform_validation.json exists "
+                "yet (issue #79 produces the first one); the lane is "
+                "declared empty rather than absent",
+                LANE_UPDATED,
+            ),
+        )
+    # ...and the lane reaches mission control, filed under UK. Writing it
+    # to SQLite alone left it invisible in the app. FEED_UPDATED is the
+    # UK family's shared literal (sync_lane_feed's contract).
+    sync_lane_feed(
+        db,
+        REPO / "data" / "lanes.json",
+        FEED_UPDATED,
+        lanes={cfg["lane"]: LANE_FEED_META},
+    )
+    db.close()
+    return {
+        "releases": 0,
+        "claims_upserted": 0,
+        "results": 0,
+        "awaiting_artifact": True,
+    }
+
+
 def ingest(db_path: Path, raw_dir: Path | None = None, country: str = "US") -> dict:
     if country not in COUNTRIES:
         raise ValueError(f"unknown country {country!r}; known: {sorted(COUNTRIES)}")
@@ -789,6 +979,8 @@ def ingest(db_path: Path, raw_dir: Path | None = None, country: str = "US") -> d
         "superseded_repeal_constructions": 0,
         "obbba_attached_results": 0,
         "obbba_fallback_claims": 0,
+        "uk_attached_results": 0,
+        "uk_minted_claims": 0,
     }
     releases = sorted(raw_dir.glob("*.json"), key=lambda p: _release_timestamp(p.stem))
     if not releases:
@@ -796,6 +988,11 @@ def ingest(db_path: Path, raw_dir: Path | None = None, country: str = "US") -> d
     for path in releases:
         artifact = json.loads(path.read_text())
         release_id = artifact["release_id"]
+        executed_key = (
+            _CURRENT_LAW_KEY
+            if country == "US"
+            else _uk_executed_baseline(artifact, release_id)
+        )
         base_engine = engine_versions.get(release_id)
         if base_engine is None:
             raise SystemExit(
@@ -854,13 +1051,42 @@ def ingest(db_path: Path, raw_dir: Path | None = None, country: str = "US") -> d
                         )
                     tallies["superseded_repeal_constructions"] += 1
                     continue
-            mapped = _map_row(row, currency, country, registry_mark)
+            mapped = _map_row(row, currency, country, registry_mark, country)
             if mapped is None:
                 skipped.append(f"{release_id[:20]}…:{row['id']}")
                 continue
             claim, construction = mapped
-            cid = claim.claim_id()
-            claims.setdefault(cid, claim)
+            annotations: list[str] = []
+            if country == "US":
+                cid = claim.claim_id()
+                claims.setdefault(cid, claim)
+            else:
+                # Attach to the canonical UK claim when exactly one exists;
+                # only mint when the catalog genuinely has nothing.
+                existing = _resolve_existing_claim(db, claim)
+                if existing is not None:
+                    cid = existing
+                    tallies["uk_attached_results"] += 1
+                    annotations.append(
+                        f"attached to ingested claim {cid} "
+                        f"({claim.source}/{claim.conditions.get('program')}/"
+                        f"{claim.conditions['fy']})"
+                    )
+                else:
+                    cid = claim.claim_id()
+                    claims.setdefault(cid, claim)
+                    tallies["uk_minted_claims"] += 1
+                # PE-UK's engine time_period is the FY START year while the
+                # claim keys the END year. Record the offset as RESULT
+                # provenance and assert it, so the one-year gap is a stated
+                # fact rather than a silent convention.
+                engine_period = claim.period - 1
+                if claim.period - engine_period != 1:  # pragma: no cover
+                    raise ValueError("UK engine-period offset must be exactly one year")
+                annotations.append(
+                    f"engine_time_period={engine_period} (PE-UK keys the FY "
+                    f"START year; the claim keys the END year {claim.period})"
+                )
             results.append(
                 PEResult(
                     claim_id=cid,
@@ -871,7 +1097,8 @@ def ingest(db_path: Path, raw_dir: Path | None = None, country: str = "US") -> d
                     pe_construction=construction,
                     run_id=f"{run_prefix}{release_id}",
                     computed_at=computed_at,
-                    baseline_key=_CURRENT_LAW_KEY,
+                    baseline_key=executed_key,
+                    annotations=annotations,
                 )
             )
 
