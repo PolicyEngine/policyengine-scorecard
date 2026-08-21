@@ -1,0 +1,47 @@
+{
+ "reform_key": "two_child_limit_removal",
+ "year": 2026,
+ "reform_hint": "Remove the UC two-child limit",
+ "pe_construction": "gov.dwp.universal_credit.elements.child.limit.child_count: inf -> inf",
+ "reform_json": "{\"gov.dwp.universal_credit.elements.child.limit.child_count\": {\"2026-01-01.2028-12-31\": Infinity}}",
+ "bundle": {
+  "bundle_id": "uk-5.0.1",
+  "country_id": "uk",
+  "policyengine_version": "5.0.1",
+  "model_package": "policyengine-uk",
+  "model_version": "2.89.2",
+  "data_package": "populace-data",
+  "data_version": "0.1.0",
+  "default_dataset": "populace_uk_2023",
+  "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+  "data_build_model_version": "2.89.2",
+  "data_build_model_git_sha": "None",
+  "data_build_fingerprint": "None",
+  "compatibility_basis": "exact_build_model_version",
+  "certified_by": "None",
+  "runtime_dataset": "populace_uk_2023",
+  "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-uk-private/snapshots/a75a9a831d6b07aaffbd09713f2a1124f5c0f08f/populace_uk_2023.h5",
+  "managed_by": "policyengine.py"
+ },
+ "aggregates_gbp": {
+  "income_tax": 421891913533.19946,
+  "national_insurance": 61450306465.09366,
+  "ni_employer": 185481157065.2179,
+  "child_benefit": 17434702263.490685,
+  "universal_credit": 39887838277.66961,
+  "vat": 219622883998.86896,
+  "household_net_income": 1791280163555.2764,
+  "gov_tax": 1046803930669.7205,
+  "gov_spending": 485663250574.56665
+ },
+ "poverty": {
+  "var": "in_poverty_ahc",
+  "rate_all": 0.18629731591349413,
+  "count_all": 13028998.553302944,
+  "rate_child_u16": 0.26918599390042075,
+  "count_child_u16": 3642525.343844831
+ }
+}

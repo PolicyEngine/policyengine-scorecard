@@ -472,3 +472,83 @@ def test_reingest_idempotent(summary_and_db):
     conn.close()
     assert n_results == first["results"]
     assert n_claims == first["claims_upserted"]
+
+
+def test_results_carry_executed_baselines_per_mode(summary_and_db):
+    # Level/reform/repeal rows executed current law; isolated OBBBA
+    # rows the shared pre_obbba_expiry_2026 world; stacked OBBBA rows
+    # one registered world per (chain, provision). NULL provenance on
+    # a clean ingest is a defect.
+    _, path = summary_and_db
+    import sqlite3
+
+    from scorecard_db.ingest_reform_validation import (
+        _CURRENT_LAW_KEY,
+        _ISOLATED_KEY,
+        OBBBA_PROVISIONS,
+        _obbba_baseline_key,
+    )
+
+    conn = sqlite3.connect(path)
+    assert (
+        conn.execute(
+            "SELECT COUNT(*) FROM pe_results WHERE run_id LIKE ?"
+            " AND baseline_key IS NULL",
+            (f"{RUN_PREFIX}%",),
+        ).fetchone()[0]
+        == 0
+    )
+    by_key = dict(
+        conn.execute(
+            "SELECT baseline_key, COUNT(*) FROM pe_results"
+            " WHERE run_id LIKE ? GROUP BY 1",
+            (f"{RUN_PREFIX}%",),
+        )
+    )
+    conn.close()
+    assert by_key[_ISOLATED_KEY] == 36
+    assert by_key[_CURRENT_LAW_KEY] == 675 - 180
+    # Stacked runs: one distinct executed world per (chain, provision) —
+    # f0af251's chain carries 2 results per provision (both FYs), the
+    # buildi+ producer chain 6 (3 releases x 2 FYs). Never a collapsed
+    # family key.
+    f0_keys = {
+        _obbba_baseline_key("stacked_chained", pid): pid for pid in OBBBA_PROVISIONS
+    }
+    producer_keys = {
+        _obbba_baseline_key("jcx_stacked", pid): pid for pid in OBBBA_PROVISIONS
+    }
+    assert all(by_key[k] == 2 for k in f0_keys)
+    assert all(by_key[k] == 6 for k in producer_keys)
+    assert (
+        36
+        + (675 - 180)
+        + sum(by_key[k] for k in f0_keys)
+        + sum(by_key[k] for k in producer_keys)
+        == 675
+    )
+
+
+def test_chain_ordinals_are_raw_and_stacked_only(summary_and_db):
+    # f0af251's CDCC sits at RAW chain position 17 — after the unscored
+    # senior-deduction link that feeds its baseline — and isolated rows
+    # carry no position token (their world is the shared expiry
+    # baseline).
+    _, path = summary_and_db
+    import sqlite3
+
+    conn = sqlite3.connect(path)
+    cdcc = conn.execute(
+        """SELECT r.pe_construction FROM pe_results r
+           JOIN external_scores s USING (claim_id)
+           WHERE r.data_bundle LIKE '%f0af251%'
+           AND s.source_column = 'obbba_cdcc'
+           LIMIT 1"""
+    ).fetchone()[0]
+    assert ":chain_pos17:" in cdcc
+    stray = conn.execute(
+        "SELECT COUNT(*) FROM pe_results"
+        " WHERE pe_construction LIKE '%isolated%chain_pos%'"
+    ).fetchone()[0]
+    conn.close()
+    assert stray == 0

@@ -34,12 +34,14 @@ export function ComparisonTable({
     () => [...new Set(data.rows.map((r) => r.subgroup))].sort(),
     [data],
   );
+  // The national geography code equals the country code ("US" | "UK").
+  const national = filters.country;
   const states = useMemo(
     () =>
       [...new Set(data.rows.map((r) => r.geography))]
-        .filter((g) => g !== "US")
+        .filter((g) => g !== national)
         .sort(),
-    [data],
+    [data, national],
   );
 
   const filtered = useMemo(() => {
@@ -47,12 +49,9 @@ export function ComparisonTable({
       if (filters.program !== "all" && r.program !== filters.program)
         return false;
       if (filters.metric !== "all" && r.metric !== filters.metric) return false;
-      if (filters.geography === "US" && r.geography !== "US") return false;
-      if (filters.geography === "states" && r.geography === "US") return false;
-      if (
-        !["US", "states"].includes(filters.geography) &&
-        r.geography !== filters.geography
-      )
+      if (filters.geography === "states" && r.geography === national)
+        return false;
+      if (filters.geography !== "states" && r.geography !== filters.geography)
         return false;
       if (filters.subgroup !== "all" && r.subgroup !== filters.subgroup)
         return false;
@@ -71,7 +70,7 @@ export function ComparisonTable({
           a.geography.localeCompare(b.geography),
     );
     return rows;
-  }, [data, filters, buckets, sortByDivergence]);
+  }, [data, filters, buckets, sortByDivergence, national]);
 
   const sel =
     "h-8 rounded-md border border-border bg-background px-2 text-sm";
@@ -123,7 +122,7 @@ export function ComparisonTable({
               setFilters({ ...filters, geography: e.target.value })
             }
           >
-            <option value="US">National</option>
+            <option value={national}>National</option>
             <option value="states">All states</option>
             {states.map((s) => (
               <option key={s} value={s}>
