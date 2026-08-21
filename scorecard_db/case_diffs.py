@@ -43,6 +43,7 @@ rather than decided unilaterally here; SCHEMA.md records the open shape.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass, field
 from datetime import date
 from enum import Enum
@@ -58,6 +59,232 @@ SCHEMA_VERSION = 1
 class Oracle(str, Enum):
     UKMOD = "ukmod"
     TAXSIM = "taxsim"
+    # Official-calculator oracles (#63): gov.uk estimators and production
+    # benefit calculators, read manually or via terms-compliant access.
+    GOVUK_INCOME_TAX_ESTIMATOR = "govuk_income_tax_estimator"
+    GOVUK_HICBC_CALCULATOR = "govuk_hicbc_calculator"
+    POLICY_IN_PRACTICE_BOC = "policy_in_practice_boc"
+    ENTITLEDTO = "entitledto"
+    TURN2US = "turn2us"
+
+
+# Calculator oracles are live services with no release versioning, so a
+# result's oracle_version must carry the READING DATE (YYYY-MM-DD) and the
+# reading itself must be archived (screenshot / saved page) per SCHEMA.md.
+# Model oracles (UKMOD, TAXSIM) keep their release-string versioning.
+CALCULATOR_ORACLES = frozenset(
+    {
+        Oracle.GOVUK_INCOME_TAX_ESTIMATOR,
+        Oracle.GOVUK_HICBC_CALCULATOR,
+        Oracle.POLICY_IN_PRACTICE_BOC,
+        Oracle.ENTITLEDTO,
+        Oracle.TURN2US,
+    }
+)
+
+
+def _contains_iso_date(s: str) -> bool:
+    """True if s contains a REAL YYYY-MM-DD calendar date.
+
+    Shape alone is not enough — "2026-13-45" and "0000-00-00" must fail,
+    so every shape-matching chunk is parsed as an actual date.
+    """
+    for i in range(len(s) - 9):
+        chunk = s[i : i + 10]
+        if not (chunk[4] == "-" and chunk[7] == "-"):
+            continue
+        try:
+            date.fromisoformat(chunk)
+            return True
+        except ValueError:
+            continue
+    return False
+
+
+# Archive citation prefix required on calculator-oracle rows: the reading
+# itself must be archived (screenshot / saved page) and the row must say
+# where, or the SCHEMA.md provenance rule stays unenforced prose.
+ARCHIVE_PREFIX = "archive:"
+
+
+# Which tax/benefit years each live calculator ACTUALLY computes. A
+# reading date is not a policy year: gov.uk's income-tax estimator serves
+# only the current tax year (6 April 2026 – 5 April 2027 today), so
+# pointing a 2025 case at it produces a confident number for the wrong
+# year. Declared per oracle, checked against the case's policy_year, and
+# revisited when a service's coverage moves — which is why the year the
+# reading itself reports is also recorded and compared.
+CALCULATOR_POLICY_YEARS = {
+    Oracle.GOVUK_INCOME_TAX_ESTIMATOR: frozenset({2026}),
+    # The Child Benefit tax calculator offers a tax-year selector.
+    Oracle.GOVUK_HICBC_CALCULATOR: frozenset({2024, 2025, 2026}),
+    Oracle.POLICY_IN_PRACTICE_BOC: frozenset({2026}),
+    Oracle.ENTITLEDTO: frozenset({2026}),
+    Oracle.TURN2US: frozenset({2026}),
+}
+
+# Every oracle's benchmark class and calibration relationship, with the
+# publisher evidence behind the assignment — per oracle, not one umbrella
+# "official" claim. Calculators are `different_model` + `held_out`:
+# GOV.UK describes its tools' outputs as ESTIMATES, and explicitly calls
+# Entitledto / Turn2us / Policy in Practice "independent" calculators, so
+# none of them is an authority PE is fitted to, and nothing in pe-uk-data
+# or policyengine-uk consumes any of them.
+BenchmarkClass = str  # "different_model" | "official_calculation"
+
+ORACLE_BENCHMARK: dict[Oracle, tuple[BenchmarkClass, str, str]] = {
+    Oracle.UKMOD: (
+        "different_model",
+        "held_out",
+        "UKMOD is an independently maintained tax-benefit microsimulation "
+        "model (CeMPA); no pe-uk-data target or policyengine-uk parameter "
+        "is fitted to it (relationships.py records the same).",
+    ),
+    Oracle.TAXSIM: (
+        "different_model",
+        "held_out",
+        "NBER TAXSIM is an independently maintained tax calculator; "
+        "nothing in the PolicyEngine US stack consumes its output.",
+    ),
+    Oracle.GOVUK_INCOME_TAX_ESTIMATOR: (
+        "different_model",
+        "held_out",
+        "GOV.UK 'Estimate your Income Tax for the current year' describes "
+        "its output as an estimate and excludes several income types; it "
+        "is a departmental tool, not an assessment, and PE consumes none "
+        "of it.",
+    ),
+    Oracle.GOVUK_HICBC_CALCULATOR: (
+        "different_model",
+        "held_out",
+        "GOV.UK 'Child Benefit tax calculator' is published as an "
+        "estimate of the High Income Child Benefit Charge; PE consumes "
+        "none of it.",
+    ),
+    Oracle.POLICY_IN_PRACTICE_BOC: (
+        "different_model",
+        "held_out",
+        "GOV.UK lists Policy in Practice's Better Off Calculator among "
+        "INDEPENDENT benefits calculators, and DWP states it does not "
+        "guarantee their results; PE consumes none of it.",
+    ),
+    Oracle.ENTITLEDTO: (
+        "different_model",
+        "held_out",
+        "GOV.UK lists entitledto among INDEPENDENT benefits calculators; "
+        "PE consumes none of it.",
+    ),
+    Oracle.TURN2US: (
+        "different_model",
+        "held_out",
+        "GOV.UK lists Turn2us among INDEPENDENT benefits calculators; PE "
+        "consumes none of it.",
+    ),
+}
+assert set(ORACLE_BENCHMARK) == set(Oracle), "every oracle needs a benchmark assignment"
+
+
+_SHA256 = re.compile(r"^[0-9a-f]{64}$")
+
+
+@dataclass
+class CalculatorReading:
+    """Structured provenance for one reading of a live calculator.
+
+    A reading date buried in a free-text ``oracle_version`` is a string,
+    not provenance: any 10-character chunk passed, a bare
+    ``annotations=["archive:"]`` satisfied the citation rule, and nothing
+    recorded WHICH page, WHICH inputs, or WHICH tax year the service
+    actually computed. All of that is required here, and the archived
+    bytes are pinned by digest so the citation is checkable rather than a
+    promise.
+    """
+
+    read_on: str  # YYYY-MM-DD, a real calendar date
+    url: str  # the exact page read, not a hub
+    policy_year: int  # the tax/benefit year the service computed
+    archive_ref: str  # where the archived screenshot / saved page lives
+    archive_sha256: str  # digest of those archived bytes
+    inputs_sha256: str  # digest of the canonical input vector entered
+
+    def __post_init__(self):
+        try:
+            if not (isinstance(self.read_on, str) and len(self.read_on) == 10):
+                raise ValueError
+            date.fromisoformat(self.read_on)
+        except ValueError:
+            raise ValueError(
+                f"reading read_on must be a real YYYY-MM-DD date, got {self.read_on!r}"
+            ) from None
+        if not (isinstance(self.url, str) and self.url.startswith("https://")):
+            raise ValueError(f"reading url must be an https URL, got {self.url!r}")
+        if isinstance(self.policy_year, bool) or not isinstance(self.policy_year, int):
+            raise ValueError("reading policy_year must be an integer year")
+        if not str(self.archive_ref).strip():
+            raise ValueError("reading archive_ref must name where the archive lives")
+        for name in ("archive_sha256", "inputs_sha256"):
+            v = getattr(self, name)
+            if not (isinstance(v, str) and _SHA256.match(v)):
+                raise ValueError(
+                    f"reading {name} must be a sha256 hex digest — a citation "
+                    "nobody can check is not provenance"
+                )
+
+
+def _validate_calculator_provenance(result) -> None:
+    """Every rule a live-calculator row must satisfy, in one place."""
+    reading = result.reading
+    if reading is None:
+        raise ValueError(
+            f"{result.oracle.value} is a live calculator: the row must carry "
+            "a structured `reading` (date, exact URL, computed policy year, "
+            "archived bytes by digest, input-vector digest). A date inside "
+            "oracle_version is a string, not provenance."
+        )
+    if not _contains_iso_date(result.oracle_version):
+        raise ValueError(
+            f"{result.oracle.value} is a live calculator: oracle_version "
+            "must carry the reading date (YYYY-MM-DD), and the reading "
+            "must be archived per SCHEMA.md"
+        )
+    if reading.read_on not in result.oracle_version:
+        raise ValueError(
+            f"oracle_version {result.oracle_version!r} does not carry the "
+            f"reading's own date {reading.read_on!r}"
+        )
+    cited = [
+        a
+        for a in (result.annotations or [])
+        if isinstance(a, str) and a.strip().lower().startswith(ARCHIVE_PREFIX)
+    ]
+    if not cited:
+        raise ValueError(
+            f"{result.oracle.value} rows require an '{ARCHIVE_PREFIX} ...' "
+            "annotation citing the archived reading (screenshot / saved "
+            "page) — the SCHEMA.md provenance rule is enforced, not prose"
+        )
+    if not any(len(a.strip()) > len(ARCHIVE_PREFIX) + 8 for a in cited):
+        raise ValueError(
+            f"a bare '{ARCHIVE_PREFIX}' annotation cites nothing — name the "
+            "archived artifact"
+        )
+    if not any(reading.archive_ref in a for a in cited):
+        raise ValueError(
+            f"the archive annotation must cite the reading's own "
+            f"archive_ref ({reading.archive_ref!r})"
+        )
+    supported = CALCULATOR_POLICY_YEARS[result.oracle]
+    if reading.policy_year not in supported:
+        raise ValueError(
+            f"{result.oracle.value} computes {sorted(supported)}, but this "
+            f"reading reports policy year {reading.policy_year} — a reading "
+            "date cannot substitute for the year the service embeds"
+        )
+    if reading.read_on > result.computed_at[:10]:
+        raise ValueError(
+            f"reading date {reading.read_on} is after the row's computed_at "
+            f"{result.computed_at[:10]}"
+        )
 
 
 class VariableClass(str, Enum):
@@ -198,6 +425,8 @@ BRMA_REGION = {
     "Nottingham": "EAST_MIDLANDS",
     "Birmingham": "WEST_MIDLANDS",
     "Southampton": "SOUTH_EAST",
+    "Cardiff": "WALES",
+    "Lothian": "SCOTLAND",
 }
 
 # expected_focus is claim-shaped: it names the output variables a case is
@@ -445,6 +674,16 @@ class CaseResult:
     abs_diff: Optional[float] = None
     tolerance: Optional[float] = None
     annotations: list = field(default_factory=list)
+    # Live-calculator rows only: structured reading provenance (see
+    # CalculatorReading). Required on those rows, forbidden on model
+    # oracles, which version by release string instead.
+    reading: Optional["CalculatorReading"] = None
+    # Derived in __post_init__ from ORACLE_BENCHMARK — declared as fields
+    # so they persist and serialize with the row rather than living only
+    # in a lookup a consumer might not perform. A caller-supplied value
+    # that disagrees with the registry raises.
+    benchmark_class: Optional[str] = None
+    calibration_relationship: Optional[str] = None
     # REQUIRED: an omitted version used to default to the current one,
     # which is precisely the silent reinterpretation the field exists to
     # prevent. `None` raises rather than assuming 1.
@@ -472,6 +711,28 @@ class CaseResult:
                 "engine_version and oracle_version are required — a blank "
                 "version makes a stored comparison unreproducible"
             )
+        if self.oracle in CALCULATOR_ORACLES:
+            _validate_calculator_provenance(self)
+        elif self.reading is not None:
+            raise ValueError(
+                f"{self.oracle.value} versions by release string; a "
+                "calculator reading belongs only on a live-calculator row"
+            )
+        # Epistemic assignment is per oracle and evidenced, never an
+        # umbrella "official" claim (see ORACLE_BENCHMARK).
+        bench, relationship, _ = ORACLE_BENCHMARK[self.oracle]
+        for name, decided in (
+            ("benchmark_class", bench),
+            ("calibration_relationship", relationship),
+        ):
+            supplied = getattr(self, name)
+            if supplied is not None and supplied != decided:
+                raise ValueError(
+                    f"{name} for {self.oracle.value} is {decided!r} by "
+                    f"registry decision, not {supplied!r} — the assignment "
+                    "lives in ORACLE_BENCHMARK with its publisher evidence"
+                )
+            setattr(self, name, decided)
         for name in ("pe_value", "oracle_value"):
             v = getattr(self, name)
             if v is None:
@@ -704,3 +965,103 @@ def load_battery(path) -> list[CaseSpec]:
     if dupes:
         raise ValueError(f"duplicate case_ids: {dupes}")
     return cases
+
+
+CALCULATOR_SET_KEYS = frozenset({"schema", "description", "entries"})
+CALCULATOR_ENTRY_KEYS = frozenset({"case_id", "oracles", "notes"})
+
+
+def load_calculator_set(path, battery_cases) -> list[dict]:
+    """Load the calculator starter set (#63); every defect raises.
+
+    Each entry names a battery case and the >= 2 calculator oracles it is
+    to be entered into — a work list for manual readings, never results.
+    """
+    raw = json.loads(Path(path).read_text())
+    if not isinstance(raw, dict):
+        raise ValueError("calculator set must be a JSON object")
+    unknown = set(raw) - CALCULATOR_SET_KEYS
+    if unknown:
+        raise ValueError(f"calculator set has unknown keys: {sorted(unknown)}")
+    entries = raw.get("entries")
+    if not isinstance(entries, list) or not entries:
+        raise ValueError("calculator set entries must be a non-empty list")
+    known_ids = {c.case_id for c in battery_cases}
+    seen: list[str] = []
+    for entry in entries:
+        if not isinstance(entry, dict) or set(entry) - CALCULATOR_ENTRY_KEYS:
+            raise ValueError(f"bad calculator entry keys: {entry!r}")
+        case_id = entry.get("case_id")
+        if case_id not in known_ids:
+            raise ValueError(f"calculator entry references unknown case {case_id!r}")
+        oracles = entry.get("oracles")
+        if not isinstance(oracles, list) or len(oracles) < 2:
+            raise ValueError(
+                f"case {case_id!r} needs >= 2 calculator oracles (adjudication "
+                "is the point of the lane)"
+            )
+        for o in oracles:
+            if Oracle(o) not in CALCULATOR_ORACLES:
+                raise ValueError(f"case {case_id!r}: {o!r} is not a calculator oracle")
+        if len(set(oracles)) != len(oracles):
+            raise ValueError(f"case {case_id!r} lists a duplicate oracle")
+        if not isinstance(entry.get("notes"), str) or not entry["notes"].strip():
+            raise ValueError(f"case {case_id!r} needs non-empty notes")
+        case = next(c for c in battery_cases if c.case_id == case_id)
+        if case.baseline is not None:
+            raise ValueError(
+                f"case {case_id!r} is evaluated in the "
+                f"{case.baseline['policy']!r} world; production calculators "
+                "compute current law only, so it cannot be a calculator "
+                "work-list entry"
+            )
+        for o in oracles:
+            supported = CALCULATOR_POLICY_YEARS[Oracle(o)]
+            if case.policy_year not in supported:
+                raise ValueError(
+                    f"case {case_id!r} is a {case.policy_year} case but "
+                    f"{o} computes {sorted(supported)} — assigning it would "
+                    "produce a confident number for the wrong year"
+                )
+        seen.append(case_id)
+    dupes = sorted({i for i in seen if seen.count(i) > 1})
+    if dupes:
+        raise ValueError(f"duplicate calculator entries: {dupes}")
+    return entries
+
+
+def validate_results(results, cases) -> int:
+    """Check a run's results against the battery they claim to be from.
+
+    Round-2 probe: an unknown ``case_id`` and an invented ``variable``
+    were both accepted, so a result set could describe comparisons no
+    case asks for. A result must name a case in the battery and a
+    variable that case is curated to exercise.
+    """
+    by_id = {c.case_id: c for c in cases}
+    for r in results:
+        case = by_id.get(r.case_id)
+        if case is None:
+            raise ValueError(
+                f"result names case {r.case_id!r}, which is not in this battery"
+            )
+        if r.variable not in case.expected_focus:
+            raise ValueError(
+                f"case {case.case_id!r} does not ask for {r.variable!r} "
+                f"(expected_focus={case.expected_focus}) — a result for a "
+                "variable no case names is not part of this comparison"
+            )
+        if r.reading is not None and r.reading.policy_year != case.policy_year:
+            raise ValueError(
+                f"case {case.case_id!r} is a {case.policy_year} case but the "
+                f"{r.oracle.value} reading reports policy year "
+                f"{r.reading.policy_year}"
+            )
+        if r.reading is not None and case.baseline is not None:
+            raise ValueError(
+                f"case {case.case_id!r} is evaluated in the "
+                f"{case.baseline['policy']!r} world, which a live calculator "
+                "cannot be asked to compute — production calculators run "
+                "current law only"
+            )
+    return len(results)
