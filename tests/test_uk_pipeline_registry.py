@@ -86,20 +86,38 @@ def test_fullpart_overrides_use_the_engine_takeup_vocabulary():
 def test_hmrc_band_cuts_match_external_subgroup_vocabulary():
     """sources/hmrc-personal-tax/adapter.py emits taxpayer_count under
     basic_rate/higher_rate/additional_rate; the PE side must cut on the
-    same ids, each through a declared boolean band concept."""
-    assert [s for s, _ in HMRC_BAND_CUTS] == [
+    same ids. Resolution is the engine's tax_band ENUM first — the three
+    boolean band variables do not exist in the certified engine, so
+    leading with them guaranteed three uncited band gaps every run — with
+    the booleans kept only as fallbacks."""
+    assert [s for s, _, _ in HMRC_BAND_CUTS] == [
         "basic_rate",
         "higher_rate",
         "additional_rate",
     ]
-    for _, concept in HMRC_BAND_CUTS:
+    assert "tax_band" in CANDIDATES
+    for _, enum_value, concept in HMRC_BAND_CUTS:
+        assert enum_value.isupper()
         assert concept in CANDIDATES
 
 
 def test_takeup_validated_programs_are_emitted_programs():
-    emitted = {program for program, _, _, _ in BENEFIT_LINES} | {PENSION_AGE_HB_LINE[0]}
+    emitted = (
+        {program for program, _, _, _ in BENEFIT_LINES}
+        | {PENSION_AGE_HB_LINE[0]}
+        | {program for program, _, _, _, _ in uk.PC_COMPONENT_LINES}
+    )
     for program in TAKEUP_VALIDATED_PROGRAMS + TAKEUP_COMPONENT_PROGRAMS:
         assert program in emitted, f"{program}: validated but never emitted"
+
+
+def test_housing_benefit_is_not_takeup_validated():
+    """HB's fullpart rows are a cited gap (the engine cannot express its
+    entitled population), so demanding movement would force the
+    wrong-direction number back in."""
+    for program in ("housing_benefit", "housing_benefit_pensioners"):
+        assert program not in TAKEUP_VALIDATED_PROGRAMS
+        assert program in uk.FULLPART_UNEXPRESSIBLE
 
 
 def test_candidate_lists_are_nonempty_and_unique():
@@ -190,20 +208,30 @@ def test_fullpart_override_is_an_ndarray_not_a_list():
 # --- poverty denominator ---------------------------------------------------
 
 
-def _fake_microseries(weighted_count):
-    """Type-identity stand-in for microdf.generic.MicroSeries.
+def _microseries(weighted_count):
+    """A MicroSeries carrying `weighted_count` as its weighted count.
 
-    The module identifies a MicroSeries by TYPE (name + defining
-    module), never by reading its weight array — microdf itself is not
-    installed in CI, so the fallback identity path is what these tests
-    exercise."""
-    cls = type("MicroSeries", (), {"count": lambda self: weighted_count})
-    cls.__module__ = "microdf.generic"
-    return cls()
+    Real when microdf is importable, a type-identity stand-in when it is
+    not — the module identifies a MicroSeries by isinstance where microdf
+    exists and by TYPE (name + defining module) where it does not, and
+    both paths must be exercised where they actually run. The earlier
+    stand-in-only helper passed in CI and FAILED in the managed
+    environment, where isinstance rejects it: a test that only holds
+    where the real dependency is absent tests the fallback, not the
+    contract.
+    """
+    try:
+        from microdf import MicroSeries  # type: ignore
+    except ImportError:
+        cls = type("MicroSeries", (), {"count": lambda self: weighted_count})
+        cls.__module__ = "microdf.generic"
+        return cls()
+    # two records whose weights sum to weighted_count
+    return MicroSeries([1.0, 1.0], weights=[weighted_count / 2, weighted_count / 2])
 
 
 def test_weighted_population_returns_weighted_count():
-    assert weighted_population(_fake_microseries(67_000_000.0)) == 67_000_000.0
+    assert weighted_population(_microseries(67_000_000.0)) == 67_000_000.0
 
 
 def _impostor_microseries():
@@ -222,6 +250,13 @@ def _impostor_microseries():
 )
 def test_weighted_population_refuses_non_microseries_objects(unweighted):
     assert weighted_population(unweighted) is None
+
+
+def test_weighted_population_identity_holds_in_both_environments():
+    """Whichever identity path runs here, a real-shaped MicroSeries is
+    accepted and a plain sequence is not."""
+    assert weighted_population(_microseries(10.0)) == 10.0
+    assert weighted_population([0, 1, 1]) is None
 
 
 def test_weighted_population_never_touches_weight_arrays():
@@ -263,9 +298,7 @@ def test_population_denominator_never_emits_unweighted_count_as_ok():
 
 def test_population_denominator_emits_weighted_count_as_ok():
     before = len(rows)
-    out = emit_population_denominator(
-        "baseline", "bhc", _fake_microseries(67_000_000.0)
-    )
+    out = emit_population_denominator("baseline", "bhc", _microseries(67_000_000.0))
     assert out == 67_000_000.0
     assert rows[before]["status"] == "ok"
     assert rows[before]["value"] == 67_000_000.0
@@ -278,7 +311,7 @@ def test_population_denominator_carries_its_subgroup():
     lands on the denominator so a children's rate divides by children."""
     before = len(rows)
     emit_population_denominator(
-        "baseline", "ahc", _fake_microseries(12_000_000.0), "children"
+        "baseline", "ahc", _microseries(12_000_000.0), "children"
     )
     assert rows[before]["subgroup"] == "children"
     assert rows[before]["metric"] == "population_ahc"
@@ -349,42 +382,94 @@ def test_one_benefit_moving_does_not_bless_another():
         uk.assert_fullpart_moved(base, full)
 
 
+def _pair(run, program, count, spend):
+    return [
+        _row(run, program, "recipient_count", count),
+        _row(run, program, "benefit_spending", spend),
+    ]
+
+
+def _validated_rows(run, bump=0.0):
+    out = []
+    for program, count, spend in (
+        ("pension_credit", 1_320_000.0, 6.0e9),
+        ("universal_credit", 5_000_000.0, 70.0e9),
+        ("child_benefit", 7_000_000.0, 12.0e9),
+    ):
+        out += _pair(run, program, count + bump, spend + bump)
+    return out
+
+
 def test_stuck_component_warns_but_does_not_fail():
-    """savings_credit is closed to new claims: a forced-on PC can move
-    the aggregate while the component stays put — warn-only."""
-    base = [
-        _row("baseline", "pension_credit", "recipient_count", 1_320_000.0),
-        _row("baseline", "savings_credit", "recipient_count", 120_000.0),
-        _row("baseline", "universal_credit", "recipient_count", 5_000_000.0),
-        _row("baseline", "housing_benefit", "recipient_count", 2_000_000.0),
-        _row("baseline", "child_benefit", "recipient_count", 7_000_000.0),
-        _row("baseline", "housing_benefit_pensioners", "recipient_count", 1_100_000.0),
-    ]
-    full = [
-        _row("fullpart", "pension_credit", "recipient_count", 2_100_000.0),
-        _row("fullpart", "savings_credit", "recipient_count", 120_000.0),
-        _row("fullpart", "universal_credit", "recipient_count", 6_400_000.0),
-        _row("fullpart", "housing_benefit", "recipient_count", 2_600_000.0),
-        _row("fullpart", "child_benefit", "recipient_count", 7_300_000.0),
-        _row("fullpart", "housing_benefit_pensioners", "recipient_count", 1_400_000.0),
-    ]
+    """savings_credit_only is closed to new claims: a forced-on PC can
+    move the aggregate while the component stays put — warn-only."""
+    base = _validated_rows("baseline") + _pair(
+        "baseline", "savings_credit_only", 120_000.0, 0.3e9
+    )
+    full = _validated_rows("fullpart", bump=100_000.0) + _pair(
+        "fullpart", "savings_credit_only", 120_000.0, 0.3e9
+    )
     uk.assert_fullpart_moved(base, full)
-    assert meta["fullpart_moved"]["by_program"]["savings_credit"] == {
-        "compared": 1,
-        "moved": 0,
-    }
+    assert meta["fullpart_moved"]["by_program"]["savings_credit_only"]["moved"] == 0
 
 
 def test_moved_fullpart_passes_and_is_logged_per_program():
-    base = [_row("baseline", "pension_credit", "recipient_count", 1_320_000.0)]
-    full = [_row("fullpart", "pension_credit", "recipient_count", 2_100_000.0)]
-    uk.assert_fullpart_moved(base, full)
-    assert meta["fullpart_moved"]["compared"] == 1
-    assert meta["fullpart_moved"]["moved"] == 1
-    assert meta["fullpart_moved"]["by_program"]["pension_credit"] == {
-        "compared": 1,
-        "moved": 1,
-    }
+    uk.assert_fullpart_moved(
+        _validated_rows("baseline"), _validated_rows("fullpart", 1)
+    )
+    assert meta["fullpart_moved"]["compared"] == 6
+    assert meta["fullpart_moved"]["moved"] == 6
+    assert meta["fullpart_moved"]["direction"] == "increase"
+    pc = meta["fullpart_moved"]["by_program"]["pension_credit"]
+    assert pc["metrics"]["recipient_count"] == {"compared": 1, "moved": 1}
+    assert pc["metrics"]["benefit_spending"] == {"compared": 1, "moved": 1}
+
+
+def test_one_metric_moving_is_not_a_pass():
+    """The round-2 probe: a frozen recipient_count with a moved spending
+    figure read as "1/2 moved", which lets a broken caseload denominator —
+    and hence a 100% take-up error — survive."""
+    base = _validated_rows("baseline")
+    full = _validated_rows("fullpart", bump=100_000.0)
+    for r in full:
+        if r["program"] == "pension_credit" and r["metric"] == "recipient_count":
+            r["value"] = 1_320_000.0  # frozen caseload, moved spending
+    with pytest.raises(RuntimeError, match="did not increase"):
+        uk.assert_fullpart_moved(base, full)
+
+
+def test_a_decrease_is_a_hard_failure():
+    """Forcing take-up ON can only ADD recipients and spending. Accepting
+    any movement is how a receipt-gated benefit driven toward zero reads
+    as healthy."""
+    base = _validated_rows("baseline")
+    full = _validated_rows("fullpart", bump=100_000.0)
+    for r in full:
+        if r["program"] == "child_benefit" and r["metric"] == "recipient_count":
+            r["value"] = 10.0
+    with pytest.raises(RuntimeError, match="made these values FALL"):
+        uk.assert_fullpart_moved(base, full)
+
+
+def test_partial_metric_coverage_is_not_a_pass():
+    base = _validated_rows("baseline")
+    full = _validated_rows("fullpart", bump=100_000.0)
+    base = [
+        r
+        for r in base
+        if not (
+            r["program"] == "universal_credit" and r["metric"] == "benefit_spending"
+        )
+    ]
+    full = [
+        r
+        for r in full
+        if not (
+            r["program"] == "universal_credit" and r["metric"] == "benefit_spending"
+        )
+    ]
+    with pytest.raises(RuntimeError, match="covers only part of the contract"):
+        uk.assert_fullpart_moved(base, full)
 
 
 # --- period handling -------------------------------------------------------
@@ -409,7 +494,9 @@ def test_periods_follow_the_variables_definition_period(period, expected_len, la
 def test_emit_and_pe_gap_row_shape():
     before = len(rows)
     emit("baseline", "pension_credit", "recipient_count", "total", "GB", 1_320_000)
-    pe_gap("baseline", "x", "m", "total", "UK", "some_concept")
+    pe_gap(
+        "baseline", "pension_credit", "recipient_count", "total", "UK", "some_concept"
+    )
     ok_row, gap_row = rows[before], rows[before + 1]
     assert ok_row["country"] == "UK" and ok_row["status"] == "ok"
     assert ok_row["value"] == 1_320_000.0
@@ -417,3 +504,107 @@ def test_emit_and_pe_gap_row_shape():
     assert meta["unresolved"][-1]["concept"] == "some_concept"
     del rows[before:]
     meta["unresolved"].pop()
+
+
+def test_every_row_says_which_lane_and_unit_it_answers():
+    """The closed UK registry keeps DWP benefit_units distinct from UKMOD
+    families, so one generic benunit count cannot serve both lanes."""
+    before = len(rows)
+    emit("baseline", "pension_credit", "recipient_count", "total", "GB", 1.0)
+    emit("baseline", "universal_credit", "recipient_count", "total", "GB", 1.0)
+    dwp, ukmod = rows[before], rows[before + 1]
+    assert (dwp["source"], dwp["unit_concept"]) == ("dwp_takeup", "benefit_units")
+    assert (ukmod["source"], ukmod["unit_concept"]) == ("ukmod", "families")
+    assert dwp["unit_concept"] != ukmod["unit_concept"]
+
+
+def test_an_unattributed_row_raises():
+    with pytest.raises(RuntimeError, match="no source/unit assignment"):
+        emit("baseline", "invented_program", "recipient_count", "total", "GB", 1.0)
+
+
+def test_gaps_are_citable():
+    """Descriptive gate #9: a gap carries a rationale and an action link,
+    or it is an absence rather than a finding — and the exporter only
+    surfaces claims that already have a result."""
+    before = len(rows)
+    pe_gap(
+        "fullpart",
+        "housing_benefit",
+        "recipient_count",
+        "total",
+        "GB",
+        "housing_benefit",
+        reason="housing_benefit_receipt_gated",
+    )
+    gap = rows[before]
+    assert gap["gap_reason"] == "housing_benefit_receipt_gated"
+    assert "receipt-gated" in gap["gap_rationale"].lower()
+    assert gap["action_link"].startswith("https://github.com/PolicyEngine/")
+    assert "would_claim_uc" in gap["gap_rationale"]
+
+
+def test_an_unregistered_gap_reason_raises():
+    with pytest.raises(RuntimeError, match="unregistered gap reason"):
+        pe_gap(
+            "baseline",
+            "pension_credit",
+            "recipient_count",
+            "total",
+            "GB",
+            "x",
+            reason="just_because",
+        )
+
+
+def test_pension_credit_components_are_dwps_concepts_not_the_engines():
+    """guarantee_credit / savings_credit never consult would_claim_pc —
+    only the aggregate does — and the closed registry knows
+    savings_credit_only, never a bare savings_credit."""
+    programs = [p for p, _, _, _, _ in uk.PC_COMPONENT_LINES]
+    assert programs == ["guarantee_credit", "savings_credit_only"]
+    # savings-credit-ONLY additionally requires guarantee credit to be zero
+    sc_only = next(
+        line for line in uk.PC_COMPONENT_LINES if line[0] == "savings_credit_only"
+    )
+    assert sc_only[4] == "guarantee_credit"
+    assert uk.PC_CLAIM_FLAG == "would_claim_pc"
+    assert uk.PC_CLAIM_FLAG in CANDIDATES
+    # and the raw components are no longer plain benefit lines
+    plain = {p for p, _, _, _ in BENEFIT_LINES}
+    assert "guarantee_credit" not in plain and "savings_credit" not in plain
+
+
+# --- output location (decided deliberately post-#74) -----------------------
+
+
+def test_outputs_land_in_the_tracked_pe_directory():
+    """Run OUTPUTS, not derived build artifacts: the operator commits
+    them from the managed environment and a later build reads them as an
+    input. data/pe/ is already tracked (the US pe_metrics.json lives
+    there), so their first creation is a normal commit rather than
+    something the no-drift gate has to be taught about."""
+    assert uk.OUT.name == "pe" and uk.OUT.parent.name == "data"
+    src = inspect.getsource(uk)
+    assert "pe_uk_metrics.json" in src and "pe_uk_meta.json" in src
+    assert "They are therefore tracked" in src
+
+
+def test_every_gap_reason_is_cited():
+    for reason, (rationale, link) in uk.GAP_REASONS.items():
+        assert len(rationale) > 60, reason
+        assert link.startswith("https://github.com/PolicyEngine/"), reason
+
+
+def test_hbai_gap_path_is_exhaustive():
+    """The concrete round-2 instance: when a poverty variable was
+    unavailable the loop emitted only the total-numerator gap and
+    `continue`d, so an empty-registry probe produced 2 HBAI gaps where 12
+    claims were owed — and the other 10 simply vanished."""
+    src = inspect.getsource(uk.compute_run)
+    assert "def hbai_gaps(" in src
+    # 2 bases x 3 subgroups x 2 metrics = 12 owed cells
+    assert "hbai_gaps(hc, concept)" in src
+    subgroups = ("total", "children", "pensioners")
+    metrics = ("poverty_count_{hc}", "population_{hc}")
+    assert len(subgroups) * len(metrics) * 2 == 12

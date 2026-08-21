@@ -74,6 +74,24 @@ Likewise a population denominator whose weighted count is unavailable
 emits ``pe_gap``; an unweighted record count is never emitted as if it
 were weighted.
 
+Where the outputs live, decided deliberately (post-#74). The two
+artifacts land in data/pe/ — pe_uk_metrics.json and pe_uk_meta.json —
+alongside the US pe_metrics.json / pe_meta.json that are already tracked
+there. They are RUN OUTPUTS, not derived build artifacts: the operator
+commits them from the managed environment, and a later build reads them
+as an input, exactly the relationship sources/campaign-20260802/uk_runs/
+already has with the campaign ingest. They are therefore tracked, and
+their first creation is a normal commit rather than something the
+no-drift gate has to be taught about (the gate compares a build against
+HEAD; an untracked new file would have slipped past it silently).
+
+The ingest that reads pe_uk_metrics.json into the DB lands with the
+first real run (#76), because it needs that run's actual gap set to
+build its claim attachments. Until then nothing imports these rows, and
+that is why every gap here is CITED at emission (see GAP_REASONS): the
+exporter only surfaces claims that already have a DB result, so an
+uncited gap would vanish rather than stay on the page.
+
 Not executed in CI or on unmanaged machines: requires the
 policyengine.py-managed environment and the certified populace-uk
 bundle. Still unverified until that first real run, and knowingly so:
@@ -126,6 +144,9 @@ CANDIDATES = {
     # dwp_takeup counterparts (benunit-level GB benefits)
     "pension_credit": ["pension_credit"],
     "guarantee_credit": ["guarantee_credit"],
+    # the PC claim flag: take-up lives on the AGGREGATE, so the component
+    # series have to be gated on it explicitly
+    "would_claim_pc": ["would_claim_pc"],
     "savings_credit": ["savings_credit"],
     "housing_benefit": ["housing_benefit"],
     # hbai counterparts
@@ -145,6 +166,13 @@ CANDIDATES = {
     # amount like higher_rate_earned_income_tax is a different concept
     # and is banned as a candidate.
     "income_tax": ["income_tax"],
+    # The certified engine exposes a `tax_band` ENUM, not three boolean
+    # band flags — none of pays_*_rate_tax / is_*_rate_taxpayer exists at
+    # this pin, so the band cuts guaranteed three uncited gaps every run.
+    # The enum is the primary resolution; the booleans stay only as
+    # forward/backward-compatible fallbacks for engines that do expose
+    # them.
+    "tax_band": ["tax_band"],
     "pays_basic_rate": ["pays_basic_rate_tax", "is_basic_rate_taxpayer"],
     "pays_higher_rate": ["pays_higher_rate_tax", "is_higher_rate_taxpayer"],
     "pays_additional_rate": [
@@ -186,6 +214,26 @@ FULLPART_OVERRIDES = {
     "claims_all_entitled_benefits": True,
 }
 
+# Benefits whose ENTITLED population the combined fullpart world cannot
+# express, with the gap reason each is emitted under.
+#
+# Housing Benefit is the case the round-2 engine read found. In pinned
+# 2.89.2, housing_benefit_eligible requires BOTH ~would_claim_uc (the
+# UC/legacy mutual exclusion — there is an engine regression test for
+# exactly this) and housing_benefit_reported > 0. Eligibility is
+# therefore RECEIPT-gated: a take-up world cannot create entitled
+# non-recipients for HB, and forcing all five flags on drives HB toward
+# ZERO rather than toward all-entitled. Emitting those rows as `ok`
+# would publish a take-up denominator smaller than its numerator.
+#
+# So HB's fullpart rows are a CITED GAP, not a number. The baseline rows
+# are unaffected — HB as a level is fine; it is the entitled-population
+# construction that the engine cannot express today.
+FULLPART_UNEXPRESSIBLE = {
+    "housing_benefit": "housing_benefit_receipt_gated",
+    "housing_benefit_pensioners": "housing_benefit_receipt_gated",
+}
+
 # (program, concept, entity_kind, geography restriction)
 # Entity levels follow the engine's own variable entities: ESA/JSA are
 # benefit-unit variables and winter fuel is household-level — mapping
@@ -193,8 +241,10 @@ FULLPART_OVERRIDES = {
 # overcounts recipients.
 BENEFIT_LINES = [
     ("pension_credit", "pension_credit", "benunit", "GB"),
-    ("guarantee_credit", "guarantee_credit", "benunit", "GB"),
-    ("savings_credit", "savings_credit", "benunit", "GB"),
+    # NOTE: guarantee_credit and savings_credit are NOT plain lines. See
+    # PC_COMPONENT_LINES — the engine's raw components are entitlement
+    # quantities that never consult would_claim_pc, while DWP publishes
+    # CLAIMED guarantee credit and savings-credit-only.
     ("housing_benefit", "housing_benefit", "benunit", "GB"),
     ("universal_credit", "universal_credit", "benunit", "GB"),
     ("child_benefit", "child_benefit", "benunit", "UK"),
@@ -209,6 +259,31 @@ BENEFIT_LINES = [
     ("council_tax_reduction", "council_tax_benefit", "benunit", "GB"),
 ]
 
+# Pension Credit components, as DWP defines them — not as the engine's
+# raw component variables.
+#
+# Round-2 engine read: `guarantee_credit` and `savings_credit` are
+# ENTITLEMENT components and never consult `would_claim_pc`; the only
+# reference to that flag is in pension_credit.py, on the aggregate. So
+# emitting the raw components as recipient counts published a
+# wrong-concept value under status "ok" — an entitlement caseload
+# labelled as a claimed one — and under a `savings_credit` slug the
+# closed external registry does not even recognise.
+#
+# DWP's two published series are:
+#   guarantee_credit      benefit units RECEIVING guarantee credit
+#   savings_credit_only   benefit units receiving savings credit and NOT
+#                         guarantee credit (sources/dwp-takeup/adapter.py
+#                         line 88: the series additionally requires
+#                         guarantee_credit == 0)
+# Both are gated on the PC claim flag, which is where take-up lives.
+# (program, component concept, entity, geo, exclude-if-positive concept)
+PC_COMPONENT_LINES = [
+    ("guarantee_credit", "guarantee_credit", "benunit", "GB", None),
+    ("savings_credit_only", "savings_credit", "benunit", "GB", "guarantee_credit"),
+]
+PC_CLAIM_FLAG = "would_claim_pc"
+
 # DWP take-up advertises pension-age housing benefit under its own
 # external program id (housing_benefit_pensioners, per
 # sources/dwp-takeup/adapter.py TITLE_PROGRAMS) — a pension-age benunit
@@ -216,32 +291,86 @@ BENEFIT_LINES = [
 # housing_benefit total that serves the obr/ukmod expenditure lanes.
 PENSION_AGE_HB_LINE = ("housing_benefit_pensioners", "housing_benefit", "benunit", "GB")
 
-# HMRC marginal-band cuts: external subgroup id -> boolean band concept
-# (sources/hmrc-personal-tax/adapter.py subgroup vocabulary).
+# HMRC marginal-band cuts: external subgroup id -> (tax_band enum value,
+# fallback boolean concept). The external subgroup vocabulary comes from
+# sources/hmrc-personal-tax/adapter.py; the enum values are the engine's
+# own tax_band names. Resolution order is enum first, boolean second —
+# the boolean variables do not exist in the certified engine, so leading
+# with them guaranteed three uncited band gaps on every run.
 HMRC_BAND_CUTS = [
-    ("basic_rate", "pays_basic_rate"),
-    ("higher_rate", "pays_higher_rate"),
-    ("additional_rate", "pays_additional_rate"),
+    ("basic_rate", "BASIC", "pays_basic_rate"),
+    ("higher_rate", "HIGHER", "pays_higher_rate"),
+    ("additional_rate", "ADDITIONAL", "pays_additional_rate"),
 ]
+
+# (program, metric) -> (external source id, unit concept). The closed UK
+# registry keeps DWP benefit_units distinct from UKMOD families and knows
+# only savings_credit_only (never a bare savings_credit), so a row that
+# does not say which lane it answers cannot be attached to anything.
+_DWP_BU = ("dwp_takeup", "benefit_units")
+_OBR_GBP = ("obr", "gbp_nominal")
+_UKMOD_BU = ("ukmod", "families")
+ROW_IDENTITY = {}
+for _p in (
+    "pension_credit",
+    "guarantee_credit",
+    "savings_credit_only",
+    "housing_benefit_pensioners",
+):
+    ROW_IDENTITY[(_p, "recipient_count")] = _DWP_BU
+    ROW_IDENTITY[(_p, "benefit_spending")] = ("dwp_takeup", "gbp_nominal")
+for _p in (
+    "housing_benefit",
+    "universal_credit",
+    "child_benefit",
+    "state_pension",
+    "dla",
+    "pip",
+    "attendance_allowance",
+    "carers_allowance",
+    "esa_income",
+    "jsa",
+    "winter_fuel_allowance",
+    "council_tax_reduction",
+):
+    # The expenditure lanes: OBR publishes the spending line, UKMOD the
+    # caseload in ITS OWN family unit — never the DWP benefit unit.
+    ROW_IDENTITY[(_p, "benefit_spending")] = _OBR_GBP
+    ROW_IDENTITY[(_p, "recipient_count")] = _UKMOD_BU
+for _hc in ("bhc", "ahc"):
+    ROW_IDENTITY[("hbai_low_income", f"poverty_count_{_hc}")] = ("dwp_hbai", "persons")
+    ROW_IDENTITY[("hbai_low_income", f"population_{_hc}")] = ("dwp_hbai", "persons")
+ROW_IDENTITY[("income_tax", "taxpayer_count")] = ("uk_hmrc", "individuals")
+ROW_IDENTITY[("income_tax", "tax_liability")] = ("uk_hmrc", "gbp_nominal")
+ROW_IDENTITY[("national_insurance", "tax_liability")] = ("uk_hmrc", "gbp_nominal")
 
 # Metrics whose fullpart values must move when take-up is forced on.
 TAKEUP_SENSITIVE_METRICS = ("recipient_count", "benefit_spending")
+
+# Forcing take-up ON can only ever ADD recipients and spending. The
+# round-2 probe: validation aggregated both metrics and passed when
+# EITHER moved in ANY direction, so a frozen PC recipient_count with a
+# moved spending figure read as "1/2 moved" — and a broken caseload
+# denominator (hence a 100%-take-up error) survived. Direction is part of
+# the contract, per metric.
+TAKEUP_DIRECTION = "increase"
 
 # Per-benefit movement contract (see assert_fullpart_moved): each of
 # these programs feeds DWP take-up denominators through its own override
 # flag, so each must move on its own — one benefit moving must never
 # bless another's unchanged caseload.
+# HB is deliberately absent: its fullpart rows are a cited gap
+# (FULLPART_UNEXPRESSIBLE), so there is nothing to validate movement on,
+# and demanding movement would force the wrong-direction number back in.
 TAKEUP_VALIDATED_PROGRAMS = (
     "pension_credit",
-    "housing_benefit",
-    "housing_benefit_pensioners",
     "universal_credit",
     "child_benefit",
 )
 # Pension credit components: expected to move with would_claim_pc but
 # warn-only — savings credit is closed to new claims, so a forced-on PC
 # can move the aggregate while a component split stays put.
-TAKEUP_COMPONENT_PROGRAMS = ("guarantee_credit", "savings_credit")
+TAKEUP_COMPONENT_PROGRAMS = ("guarantee_credit", "savings_credit_only")
 
 rows = []
 meta = {
@@ -253,24 +382,120 @@ meta = {
 }
 
 
-def emit(run, program, metric, subgroup, geo, value, status="ok"):
+def emit(
+    run,
+    program,
+    metric,
+    subgroup,
+    geo,
+    value,
+    status="ok",
+    gap_reason=None,
+    gap_rationale=None,
+    action_link=None,
+):
+    # source + unit_concept travel with every row. The closed UK registry
+    # deliberately keeps DWP `benefit_units` distinct from UKMOD
+    # `families`, so one generic benunit count cannot serve both lanes:
+    # attachment has to know which external source and which unit concept
+    # a value is a counterpart to.
+    lane = ROW_IDENTITY.get((program, metric))
+    if lane is None:
+        raise RuntimeError(
+            f"({program}, {metric}) has no source/unit assignment — add it "
+            "to ROW_IDENTITY deliberately; an unattributed row cannot be "
+            "attached to an external claim"
+        )
+    source, unit_concept = lane
     rows.append(
         {
             "run": run,
             "country": "UK",
+            "source": source,
             "program": program,
             "metric": metric,
             "subgroup": subgroup,
             "geography": geo,
+            "unit_concept": unit_concept,
             "value": None if value is None else float(value),
             "status": status,
+            "gap_reason": gap_reason,
+            "gap_rationale": gap_rationale,
+            "action_link": action_link,
         }
     )
 
 
-def pe_gap(run, program, metric, subgroup, geo, concept):
-    meta["unresolved"].append({"concept": concept, "program": program})
-    emit(run, program, metric, subgroup, geo, None, status="pe_gap")
+# Every gap this pipeline can emit, with the rationale and the citable
+# action link the descriptive gate (#9) requires. A gap is a FINDING —
+# "PolicyEngine cannot express this yet, here is where that is tracked" —
+# and a record without a citation is just a blank. Emitting a gap whose
+# concept is not in this registry raises: a new gap is named deliberately.
+GAP_REASONS = {
+    "engine_variable_missing": (
+        "No variable in the certified policyengine-uk bundle expresses this "
+        "concept; the counterpart cannot be computed at this pin.",
+        "https://github.com/PolicyEngine/policyengine-scorecard/issues/40",
+    ),
+    "housing_benefit_receipt_gated": (
+        "Housing Benefit entitlement cannot be expressed in a full-take-up "
+        "world at this pin: housing_benefit_eligible requires BOTH "
+        "~would_claim_uc (the UC/legacy mutual exclusion, which has its own "
+        "engine regression test) and housing_benefit_reported > 0, so "
+        "eligibility is RECEIPT-gated. Forcing the take-up flags on drives "
+        "HB toward zero rather than toward all-entitled, and the engine "
+        "cannot produce entitled non-recipients for HB at all. This is a "
+        "capability gap, not a divergence.",
+        "https://github.com/PolicyEngine/policyengine-uk/issues/1178",
+    ),
+    "country_anchor_unavailable": (
+        "The geography restriction could not be anchored to this entity, and "
+        "an unrestricted total must never be emitted under a GB/NI label.",
+        "https://github.com/PolicyEngine/policyengine-scorecard/issues/40",
+    ),
+    "unweighted_population": (
+        "The population denominator did not come back as a weighted "
+        "MicroSeries; an unweighted record count is never emitted as if it "
+        "were weighted.",
+        "https://github.com/PolicyEngine/policyengine-scorecard/issues/40",
+    ),
+    "tax_band_unresolvable": (
+        "The marginal-band cut could not be resolved from the engine's "
+        "tax_band enum or any boolean band variable, and an all-taxpayer "
+        "aggregate must never be emitted under a band label.",
+        "https://github.com/PolicyEngine/policyengine-scorecard/issues/40",
+    ),
+}
+
+
+def pe_gap(
+    run, program, metric, subgroup, geo, concept, reason="engine_variable_missing"
+):
+    """Emit a CITED gap. Descriptive gate #9: a gap record carries a
+    rationale and an action link, or it is not a finding — it is an
+    absence, and the exporter only surfaces claims that already have a
+    DB result, so an uncited gap can disappear entirely."""
+    if reason not in GAP_REASONS:
+        raise RuntimeError(
+            f"unregistered gap reason {reason!r} — name it in GAP_REASONS "
+            "with its rationale and action link before emitting it"
+        )
+    rationale, action_link = GAP_REASONS[reason]
+    meta["unresolved"].append(
+        {"concept": concept, "program": program, "reason": reason}
+    )
+    emit(
+        run,
+        program,
+        metric,
+        subgroup,
+        geo,
+        None,
+        status="pe_gap",
+        gap_reason=reason,
+        gap_rationale=f"{rationale} (concept: {concept})",
+        action_link=action_link,
+    )
 
 
 def resolve(vs, concept):
@@ -568,18 +793,25 @@ def geo_masks(sim, vs):
 
 
 def assert_fullpart_moved(baseline_rows, fullpart_rows):
-    """Fail loudly, PER BENEFIT, if forcing take-up on changed nothing.
+    """Fail loudly, per benefit AND PER METRIC AND BY DIRECTION.
 
     Every DWP take-up counterpart divides recipients by the fullpart
     entitled caseload; if a benefit's fullpart == baseline, that
     benefit's denominator is the baseline caseload and its take-up rate
     silently comes out at 100% while every row still reads status "ok".
-    A global any-value-moved check cannot catch this: universal credit
-    moving must not bless an unchanged pension credit caseload. So each
-    TAKEUP_VALIDATED_PROGRAMS entry with comparable rows must move on
-    its own; a validated program with nothing comparable (all pe_gap)
-    is warned — its denominators are already pe_gap downstream.
-    TAKEUP_COMPONENT_PROGRAMS are warn-only (see registry comment).
+
+    Round 2 found the check was still too weak in two ways. It
+    AGGREGATED the two sensitive metrics, so a probe with a frozen
+    pension-credit recipient_count and a moved spending figure passed as
+    "1/2 moved" — exactly the broken-caseload-denominator case. And it
+    accepted ANY movement, so a DECREASE passed silently, which is how a
+    receipt-gated benefit driven toward zero would have read as healthy.
+
+    So: every (program, metric) pair that is comparable must move, and it
+    must move UP. Forcing take-up on adds recipients and adds spending;
+    it can never remove either. A benefit whose entitled population the
+    engine cannot express is a cited gap upstream of this check
+    (FULLPART_UNEXPRESSIBLE), not a number that gets to fail quietly.
     """
 
     def key(r):
@@ -590,49 +822,89 @@ def assert_fullpart_moved(baseline_rows, fullpart_rows):
         for r in baseline_rows
         if r["status"] == "ok" and r["metric"] in TAKEUP_SENSITIVE_METRICS
     }
-    by_program = {}
+    by_pair = {}
+    wrong_direction = []
     for r in fullpart_rows:
         if r["status"] != "ok" or r["metric"] not in TAKEUP_SENSITIVE_METRICS:
             continue
         if key(r) not in base:
             continue
-        stats = by_program.setdefault(r["program"], {"compared": 0, "moved": 0})
+        was, now = base[key(r)], r["value"]
+        stats = by_pair.setdefault(
+            (r["program"], r["metric"]), {"compared": 0, "moved": 0}
+        )
         stats["compared"] += 1
-        if r["value"] != base[key(r)]:
+        if now > was:
             stats["moved"] += 1
-    compared = sum(s["compared"] for s in by_program.values())
-    moved = sum(s["moved"] for s in by_program.values())
+        elif now < was:
+            wrong_direction.append((key(r), was, now))
+    compared = sum(s["compared"] for s in by_pair.values())
+    moved = sum(s["moved"] for s in by_pair.values())
+    by_program = {}
+    for (program, metric), stats in by_pair.items():
+        agg = by_program.setdefault(program, {"compared": 0, "moved": 0, "metrics": {}})
+        agg["compared"] += stats["compared"]
+        agg["moved"] += stats["moved"]
+        agg["metrics"][metric] = stats
     meta["fullpart_moved"] = {
         "compared": compared,
         "moved": moved,
+        "direction": TAKEUP_DIRECTION,
         "by_program": by_program,
     }
-    log(f"fullpart vs baseline: {moved}/{compared} take-up-sensitive values moved")
+    log(
+        f"fullpart vs baseline: {moved}/{compared} take-up-sensitive values "
+        f"increased (direction is part of the contract)"
+    )
     for program, stats in sorted(by_program.items()):
-        log(f"  {program}: {stats['moved']}/{stats['compared']} moved")
+        detail = ", ".join(
+            f"{m}:{v['moved']}/{v['compared']}"
+            for m, v in sorted(stats["metrics"].items())
+        )
+        log(f"  {program}: {detail}")
+
+    if wrong_direction:
+        raise RuntimeError(
+            "forcing take-up ON made these values FALL, which is impossible "
+            "for a take-up denominator and is how a receipt-gated benefit "
+            f"reads as healthy: {wrong_direction[:5]}. Do not publish this run."
+        )
     if not compared:
         raise RuntimeError(
             "no take-up-sensitive values were comparable between baseline and "
             "fullpart (all pe_gap?) — nothing verifies the fullpart run."
         )
-    stuck = [
-        p
-        for p in TAKEUP_VALIDATED_PROGRAMS
-        if by_program.get(p, {}).get("compared", 0)
-        and not by_program[p].get("moved", 0)
-    ]
+    stuck = sorted(
+        f"{program}/{metric}"
+        for (program, metric), stats in by_pair.items()
+        if program in TAKEUP_VALIDATED_PROGRAMS
+        and stats["compared"]
+        and not stats["moved"]
+    )
     if stuck:
         raise RuntimeError(
             f"fullpart is identical to baseline for {stuck}: the overrides "
-            "applied and read back on, but these benefits did not change. "
+            "applied and read back on, but these values did not increase. "
             "Their DWP take-up denominators would silently be the baseline "
             "caseload (a 100% take-up rate). Do not publish this run."
         )
-    for p in TAKEUP_VALIDATED_PROGRAMS:
-        if not by_program.get(p, {}).get("compared", 0):
+    # PER METRIC: a program that moved on spending but not on caseload has
+    # a broken denominator, and that is the exact probe that used to pass.
+    for program in TAKEUP_VALIDATED_PROGRAMS:
+        stats = by_program.get(program)
+        if not stats or not stats["compared"]:
             log(
-                f"  WARNING: {p} had no comparable take-up-sensitive values "
-                "(pe_gap?) — its take-up denominators are unverified"
+                f"  WARNING: {program} had no comparable take-up-sensitive "
+                "values (pe_gap?) — its take-up denominators are unverified"
+            )
+            continue
+        missing = [m for m in TAKEUP_SENSITIVE_METRICS if m not in stats["metrics"]]
+        if missing:
+            raise RuntimeError(
+                f"{program} has no comparable {missing} rows, so its "
+                "take-up validation covers only part of the contract. "
+                "Every take-up-sensitive metric is validated or the "
+                "benefit is a cited gap — never a partial pass."
             )
     for p in TAKEUP_COMPONENT_PROGRAMS:
         stats = by_program.get(p, {})
@@ -676,6 +948,14 @@ def compute_run(run_name, fullpart):
         else:
             raise ValueError(kind)
 
+    def benunit_bool(concept, entity="benunit"):
+        """Entity-level numpy bool array for a flag concept, or None."""
+        name = resolve(vs, concept)
+        if name is None:
+            return None
+        m = sim.calculate(name, YEAR, map_to=entity)
+        return np.asarray(getattr(m, "values", m)).astype(bool)
+
     def person_bool(concept):
         """Person-level numpy bool array for a flag concept, or None."""
         name = resolve(vs, concept)
@@ -686,8 +966,66 @@ def compute_run(run_name, fullpart):
 
     # benefit caseloads + expenditure (dwp_takeup / obr / ukmod)
     for program, concept, entity, geo in BENEFIT_LINES:
+        if fullpart and program in FULLPART_UNEXPRESSIBLE:
+            # The engine cannot build this benefit's entitled population
+            # (see FULLPART_UNEXPRESSIBLE). A cited gap, not a number
+            # whose direction happens to be wrong.
+            for metric in TAKEUP_SENSITIVE_METRICS:
+                pe_gap(
+                    run_name,
+                    program,
+                    metric,
+                    "total",
+                    geo,
+                    concept,
+                    reason=FULLPART_UNEXPRESSIBLE[program],
+                )
+            continue
         weighted(concept, entity, geo, "count_positive", program, "recipient_count")
         weighted(concept, entity, geo, "sum", program, "benefit_spending")
+
+    # Pension Credit components, as DWP publishes them (PC_COMPONENT_LINES).
+    # The engine's raw guarantee_credit / savings_credit are entitlement
+    # quantities that never consult would_claim_pc; DWP counts CLAIMED
+    # guarantee credit and savings-credit-ONLY. Both are therefore gated
+    # on the PC claim flag, and savings-credit-only additionally requires
+    # guarantee credit to be zero. Without the gate these rows published a
+    # wrong-concept value under status "ok".
+    pc_claim = benunit_bool(PC_CLAIM_FLAG)
+    for program, concept, entity, geo, exclude in PC_COMPONENT_LINES:
+        if pc_claim is None:
+            for metric in TAKEUP_SENSITIVE_METRICS:
+                pe_gap(run_name, program, metric, "total", geo, PC_CLAIM_FLAG)
+            continue
+        mask = pc_claim
+        if exclude is not None:
+            other = resolve(vs, exclude)
+            if other is None:
+                for metric in TAKEUP_SENSITIVE_METRICS:
+                    pe_gap(run_name, program, metric, "total", geo, exclude)
+                continue
+            other_series = sim.calculate(other, YEAR, map_to=entity)
+            mask = mask & (
+                np.asarray(getattr(other_series, "values", other_series)) == 0
+            )
+        weighted(
+            concept,
+            entity,
+            geo,
+            "count_positive",
+            program,
+            "recipient_count",
+            extra_mask=mask,
+        )
+        weighted(
+            concept,
+            entity,
+            geo,
+            "sum",
+            program,
+            "benefit_spending",
+            extra_mask=mask,
+        )
 
     # dwp_takeup's HB program is pension-age only (working-age HB has
     # migrated to UC): emit it under the external program id with a
@@ -736,20 +1074,27 @@ def compute_run(run_name, fullpart):
     # population denominator so each published rate has a derivation
     # (region cuts follow once the base concept is validated against
     # HBAI's published UK rows)
+    # HBAI subgroup cuts every housing-cost basis owes, so the loop can
+    # be exhaustive rather than bailing out after one gap.
+    HBAI_SUBGROUPS = (("children", "is_child"), ("pensioners", "is_SP_age"))
+
+    def hbai_gaps(hc, concept):
+        """Every cell this basis owes, as cited gaps. The round-2 probe:
+        an unresolvable poverty variable emitted only the total-numerator
+        gap and `continue`d, so an empty-registry run produced 2 HBAI
+        gaps where 12 claims were owed — and the exporter only surfaces
+        claims that already have a result, so the other 10 vanished."""
+        for subgroup in ("total",) + tuple(s for s, _ in HBAI_SUBGROUPS):
+            for metric in (f"poverty_count_{hc}", f"population_{hc}"):
+                pe_gap(run_name, "hbai_low_income", metric, subgroup, "UK", concept)
+
     for hc, concept in (
         ("bhc", "in_relative_poverty_bhc"),
         ("ahc", "in_relative_poverty_ahc"),
     ):
         pov = resolve(vs, concept)
         if pov is None:
-            pe_gap(
-                run_name,
-                "hbai_low_income",
-                f"poverty_count_{hc}",
-                "total",
-                "UK",
-                concept,
-            )
+            hbai_gaps(hc, concept)
             continue
         in_pov = sim.calculate(pov, YEAR, map_to="person")
         emit(
@@ -761,10 +1106,7 @@ def compute_run(run_name, fullpart):
             in_pov.sum(),
         )
         emit_population_denominator(run_name, hc, in_pov)
-        for subgroup, mask_concept in (
-            ("children", "is_child"),
-            ("pensioners", "is_SP_age"),
-        ):
+        for subgroup, mask_concept in HBAI_SUBGROUPS:
             arr = person_bool(mask_concept)
             if arr is None:
                 pe_gap(
@@ -805,12 +1147,36 @@ def compute_run(run_name, fullpart):
         "income_tax", "person", "UK", "count_positive", "income_tax", "taxpayer_count"
     )
     weighted("income_tax", "person", "UK", "sum", "income_tax", "tax_liability")
-    for band_subgroup, band_concept in HMRC_BAND_CUTS:
-        band = person_bool(band_concept)
+    band_enum = resolve(vs, "tax_band")
+    band_values = None
+    if band_enum is not None:
+        series = sim.calculate(band_enum, YEAR, map_to="person")
+        band_values = np.asarray(
+            getattr(getattr(series, "values", series), "decode_to_str", lambda: None)()
+            if hasattr(getattr(series, "values", series), "decode_to_str")
+            else getattr(series, "values", series)
+        ).astype(str)
+    for band_subgroup, enum_value, band_concept in HMRC_BAND_CUTS:
+        band = None
+        if band_values is not None:
+            band = band_values == enum_value
+            if not band.any():
+                # The enum resolved but names its bands differently at
+                # this pin: fall through rather than emit an empty cut as
+                # if it were a real zero.
+                band = None
+        if band is None:
+            band = person_bool(band_concept)
         if band is None:
             for metric in ("taxpayer_count", "tax_liability"):
                 pe_gap(
-                    run_name, "income_tax", metric, band_subgroup, "UK", band_concept
+                    run_name,
+                    "income_tax",
+                    metric,
+                    band_subgroup,
+                    "UK",
+                    f"tax_band={enum_value} / {band_concept}",
+                    reason="tax_band_unresolvable",
                 )
             continue
         weighted(
