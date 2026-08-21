@@ -1,7 +1,7 @@
 {
  "schema": "sources/ukmod-cases/SCHEMA.md",
  "schema_version": 1,
- "description": "Initial UK mode-3 case battery for the UKMOD/EUROMOD lane (#41): standard EUROMOD-style hypothetical households plus the edge cases PE UK carries regression coverage for. Inputs + expected focus only — expected output values come from engine runs (PE and the oracle), never from this file. All monetary amounts are annual GBP; weekly-quoted amounts enter as weekly x 52.",
+ "description": "Initial UK mode-3 case battery for the UKMOD/EUROMOD lane (#41): standard EUROMOD-style hypothetical households plus the edge cases PE UK carries regression coverage for. Inputs + expected focus only \u2014 expected output values come from engine runs (PE and the oracle), never from this file. All monetary amounts are annual GBP; weekly-quoted amounts enter as weekly x 52.",
  "cases": [
   {
    "case_id": "uk-uc-single-unemployed",
@@ -10,16 +10,27 @@
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 30}
+     "adult_1": {
+      "age": 30
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1"], "children": []}
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
     ],
     "region": "NORTH_EAST",
     "tenure": "rented_social",
     "rent": 6240
    },
-   "expected_focus": ["universal_credit", "income_tax", "national_insurance"],
+   "expected_focus": [
+    "universal_credit",
+    "income_tax",
+    "national_insurance"
+   ],
    "rationale": "The simplest UC case: standard allowance (single 25+) plus social-rent housing element with no deductions. Rent GBP 120/week = 6,240/year. Pins the standard allowance and housing element before any taper, cap, or element interacts."
   },
   {
@@ -29,65 +40,190 @@
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 32},
-     "child_1": {"age": 8},
-     "child_2": {"age": 4}
+     "adult_1": {
+      "age": 32
+     },
+     "child_1": {
+      "age": 8
+     },
+     "child_2": {
+      "age": 4
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1"], "children": ["child_1", "child_2"]}
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": [
+       "child_1",
+       "child_2"
+      ]
+     }
     ],
     "region": "YORKSHIRE",
     "tenure": "rented_private",
-    "rent": 9360
+    "rent": 9360,
+    "brma": "Leeds"
    },
-   "expected_focus": ["universal_credit", "child_benefit"],
+   "expected_focus": [
+    "universal_credit",
+    "child_benefit"
+   ],
    "rationale": "UC child elements (two children, both post-April-2017 so no protected rate) plus the private-rent housing element via LHA (2-bed rate, Yorkshire BRMA) and Child Benefit for two. Rent GBP 180/week = 9,360/year, below the LHA cap in most Yorkshire BRMAs so the LHA-vs-actual-rent minimum is exercised without binding."
   },
   {
-   "case_id": "uk-uc-two-child-limit-multiple-birth",
-   "description": "Workless couple, three children incl. twins, limit in force (2025)",
-   "policy_year": 2025,
-   "country": "UK",
-   "household": {
-    "people": {
-     "adult_1": {"age": 36},
-     "adult_2": {"age": 34},
-     "child_1": {"age": 6, "date_of_birth": "2018-06-01"},
-     "child_2": {"age": 2, "date_of_birth": "2022-09-01"},
-     "child_3": {"age": 2, "date_of_birth": "2022-09-01"}
-    },
-    "benefit_units": [
-     {"adults": ["adult_1", "adult_2"], "children": ["child_1", "child_2", "child_3"]}
-    ],
-    "region": "WEST_MIDLANDS",
-    "tenure": "rented_social",
-    "rent": 8320
-   },
-   "expected_focus": ["universal_credit", "child_benefit"],
-   "rationale": "Two-child limit with the multiple-birth exception, pinned to policy year 2025 because the limit was abolished from 6 April 2026 (AB2025) and only a pre-abolition year can exercise it. All three children are post-April-2017, so the limit binds on ordinal position alone: child_1 takes the first element, child_2 (first of the twins) the second, and child_3 - the second child of the multiple birth - is exempt and takes a third element the limit would otherwise deny. The exemption sits on a third-or-later child, so it strictly changes the entitlement (3 elements vs 2). Also pins that Child Benefit ignores the limit (paid for all three). Shared DOBs are explicit because the exception keys off the birth event."
-  },
-  {
-   "case_id": "uk-uc-two-child-limit-abolished",
-   "description": "Same three-child family evaluated post-abolition (2026)",
+   "case_id": "uk-uc-two-child-limit-binding",
+   "description": "Workless couple, three singleton-birth children, limit in force",
    "policy_year": 2026,
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 37},
-     "adult_2": {"age": 35},
-     "child_1": {"age": 7, "date_of_birth": "2018-06-01"},
-     "child_2": {"age": 3, "date_of_birth": "2022-09-01"},
-     "child_3": {"age": 3, "date_of_birth": "2022-09-01"}
+     "adult_1": {
+      "age": 37
+     },
+     "adult_2": {
+      "age": 35
+     },
+     "child_1": {
+      "age": 7,
+      "date_of_birth": "2018-06-01"
+     },
+     "child_2": {
+      "age": 3,
+      "date_of_birth": "2022-09-01"
+     },
+     "child_3": {
+      "age": 3,
+      "date_of_birth": "2022-11-15"
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1", "adult_2"], "children": ["child_1", "child_2", "child_3"]}
+     {
+      "adults": [
+       "adult_1",
+       "adult_2"
+      ],
+      "children": [
+       "child_1",
+       "child_2",
+       "child_3"
+      ]
+     }
     ],
     "region": "WEST_MIDLANDS",
     "tenure": "rented_social",
     "rent": 8320
    },
-   "expected_focus": ["universal_credit", "child_benefit"],
-   "rationale": "The abolition counterpart to uk-uc-two-child-limit-multiple-birth: the same family one year on, in the first year the two-child limit no longer exists (removed from 6 April 2026, AB2025). All three post-April-2017 children take child elements with no exception needed; an engine still applying the limit under-pays exactly one element. Paired with the 2025 case, the year-on-year delta isolates the abolition itself."
+   "expected_focus": [
+    "universal_credit",
+    "child_benefit"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025"
+   },
+   "rationale": "The limit itself, with nothing else to hide behind. Three post-April-2017 children, all SEPARATE births (child_2 and child_3 have different dates of birth), so no exception of any kind applies: an engine applying the two-child limit pays two child elements and an engine that has dropped it pays three. The earlier version of this case used twins, which meant an engine that wrongly retained the limit but rightly applied the multiple-birth exception still paid three elements \u2014 it could not catch the failure its own rationale named. Evaluated in the registered pre_ab2025 world (limit reinstated at two children), so the case does not depend on a pre-abolition policy year."
+  },
+  {
+   "case_id": "uk-uc-two-child-limit-abolished",
+   "description": "The same 2026 household under current law (limit abolished)",
+   "policy_year": 2026,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 37
+     },
+     "adult_2": {
+      "age": 35
+     },
+     "child_1": {
+      "age": 7,
+      "date_of_birth": "2018-06-01"
+     },
+     "child_2": {
+      "age": 3,
+      "date_of_birth": "2022-09-01"
+     },
+     "child_3": {
+      "age": 3,
+      "date_of_birth": "2022-11-15"
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1",
+       "adult_2"
+      ],
+      "children": [
+       "child_1",
+       "child_2",
+       "child_3"
+      ]
+     }
+    ],
+    "region": "WEST_MIDLANDS",
+    "tenure": "rented_social",
+    "rent": 8320
+   },
+   "expected_focus": [
+    "universal_credit",
+    "child_benefit"
+   ],
+   "rationale": "The abolition counterpart to uk-uc-two-child-limit-binding: byte-identical household, SAME policy year, same rates, same ages \u2014 the only difference is the policy world (current law, where AB2025 removed the limit from 6 April 2026, versus the registered pre_ab2025 counterfactual). The pair therefore isolates the abolition itself. The earlier year-on-year pair moved ages, uprated rates and the policy year together, so its delta could not attribute anything."
+  },
+  {
+   "case_id": "uk-uc-two-child-limit-multiple-birth",
+   "description": "Same household with a multiple birth, limit in force",
+   "policy_year": 2026,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 37
+     },
+     "adult_2": {
+      "age": 35
+     },
+     "child_1": {
+      "age": 7,
+      "date_of_birth": "2018-06-01"
+     },
+     "child_2": {
+      "age": 3,
+      "date_of_birth": "2022-09-01"
+     },
+     "child_3": {
+      "age": 3,
+      "date_of_birth": "2022-09-01"
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1",
+       "adult_2"
+      ],
+      "children": [
+       "child_1",
+       "child_2",
+       "child_3"
+      ]
+     }
+    ],
+    "region": "WEST_MIDLANDS",
+    "tenure": "rented_social",
+    "rent": 8320
+   },
+   "expected_focus": [
+    "universal_credit",
+    "child_benefit"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025"
+   },
+   "rationale": "The multiple-birth exception, isolated against uk-uc-two-child-limit-binding: identical household, identical ages, identical pre_ab2025 world, differing in exactly one input \u2014 child_3's date of birth, which makes children 2 and 3 a multiple birth. The exception sits on a third-or-later child, so it strictly changes entitlement (three elements vs the binding case's two), and the one-field difference is what attributes the change to the exception rather than to the limit. Also pins that Child Benefit ignores the limit in both."
   },
   {
    "case_id": "uk-benefit-cap-london",
@@ -96,19 +232,41 @@
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 33},
-     "adult_2": {"age": 31},
-     "child_1": {"age": 6},
-     "child_2": {"age": 3}
+     "adult_1": {
+      "age": 33
+     },
+     "adult_2": {
+      "age": 31
+     },
+     "child_1": {
+      "age": 6
+     },
+     "child_2": {
+      "age": 3
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1", "adult_2"], "children": ["child_1", "child_2"]}
+     {
+      "adults": [
+       "adult_1",
+       "adult_2"
+      ],
+      "children": [
+       "child_1",
+       "child_2"
+      ]
+     }
     ],
     "region": "LONDON",
     "tenure": "rented_private",
-    "rent": 20800
+    "rent": 20800,
+    "brma": "Inner London"
    },
-   "expected_focus": ["benefit_cap", "universal_credit", "child_benefit"],
+   "expected_focus": [
+    "benefit_cap",
+    "universal_credit",
+    "child_benefit"
+   ],
    "rationale": "Benefit cap binding: rent GBP 400/week = 20,800/year drives pre-cap UC (standard + 2 child elements + housing) above the Greater London couple cap, so the cap reduction is nonzero. Exercises the London cap tier and the cap-applies-to-UC-not-Child-Benefit accounting."
   },
   {
@@ -118,18 +276,37 @@
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 29, "employment_income": 12000, "hours_worked_per_week": 20},
-     "child_1": {"age": 5}
+     "adult_1": {
+      "age": 29,
+      "employment_income": 12000,
+      "hours_worked_per_week": 20
+     },
+     "child_1": {
+      "age": 5
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1"], "children": ["child_1"]}
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": [
+       "child_1"
+      ]
+     }
     ],
     "region": "NORTH_WEST",
     "tenure": "rented_private",
-    "rent": 7800
+    "rent": 7800,
+    "brma": "Manchester"
    },
-   "expected_focus": ["universal_credit", "income_tax", "national_insurance", "child_benefit"],
-   "rationale": "The 55% UC earnings taper above the lower (with-housing) work allowance. Earnings GBP 12,000 sit below the personal allowance (income tax GBP 0) but above the NI primary threshold pro-rata, so net-earnings-for-UC differs from gross — the taper base (net of tax and NI) is the thing under test. Rent GBP 150/week = 7,800/year."
+   "expected_focus": [
+    "universal_credit",
+    "income_tax",
+    "national_insurance",
+    "child_benefit"
+   ],
+   "rationale": "The 55% UC earnings taper above the lower (with-housing) work allowance. Earnings GBP 12,000 sit below the personal allowance (income tax GBP 0) but above the NI primary threshold pro-rata, so net-earnings-for-UC differs from gross \u2014 the taper base (net of tax and NI) is the thing under test. Rent GBP 150/week = 7,800/year."
   },
   {
    "case_id": "uk-uc-minimum-income-floor",
@@ -138,16 +315,28 @@
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 40, "self_employment_income": 6000, "gainfully_self_employed": true}
+     "adult_1": {
+      "age": 40,
+      "self_employment_income": 6000,
+      "gainfully_self_employed": true
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1"], "children": []}
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
     ],
     "region": "EAST_MIDLANDS",
     "tenure": "rented_private",
-    "rent": 7280
+    "rent": 7280,
+    "brma": "Nottingham"
    },
-   "expected_focus": ["universal_credit"],
+   "expected_focus": [
+    "universal_credit"
+   ],
    "rationale": "Minimum income floor: actual trading profit GBP 6,000/year is far below the assumed floor (35 hours x NLW net of notional tax/NI), so UC is tapered on the floor, not on actual income. Past the 12-month start-up period by assumption (gainfully_self_employed = true). Pins the floor construction, a known cross-model divergence spot."
   },
   {
@@ -157,16 +346,27 @@
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 70, "state_pension": 9000}
+     "adult_1": {
+      "age": 70,
+      "state_pension": 9000
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1"], "children": []}
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
     ],
     "region": "SOUTH_WEST",
     "tenure": "owned_outright",
     "rent": 0
    },
-   "expected_focus": ["pension_credit", "income_tax"],
+   "expected_focus": [
+    "pension_credit",
+    "income_tax"
+   ],
    "rationale": "Guarantee credit tops a GBP 9,000 state pension up to the single-person standard minimum guarantee; income below the personal allowance so income tax is zero. Deliberately below the full new state pension so the top-up is strictly positive."
   },
   {
@@ -176,17 +376,33 @@
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 72, "state_pension": 9500, "pension_income": 1000},
-     "adult_2": {"age": 70, "state_pension": 4500}
+     "adult_1": {
+      "age": 72,
+      "state_pension": 9500,
+      "pension_income": 1000
+     },
+     "adult_2": {
+      "age": 70,
+      "state_pension": 4500
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1", "adult_2"], "children": []}
+     {
+      "adults": [
+       "adult_1",
+       "adult_2"
+      ],
+      "children": []
+     }
     ],
     "region": "WALES",
     "tenure": "owned_outright",
     "rent": 0
    },
-   "expected_focus": ["pension_credit", "income_tax"],
+   "expected_focus": [
+    "pension_credit",
+    "income_tax"
+   ],
    "rationale": "Couple guarantee credit with joint income assessment: GBP 15,000 combined (two state pensions of 9,500 and 4,500 plus a 1,000 private pension) against the couple standard minimum guarantee. Pins joint aggregation and that private pension income counts in full."
   },
   {
@@ -196,17 +412,31 @@
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 68, "state_pension": 9500},
-     "adult_2": {"age": 60}
+     "adult_1": {
+      "age": 68,
+      "state_pension": 9500
+     },
+     "adult_2": {
+      "age": 60
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1", "adult_2"], "children": []}
+     {
+      "adults": [
+       "adult_1",
+       "adult_2"
+      ],
+      "children": []
+     }
     ],
     "region": "NORTH_EAST",
     "tenure": "rented_social",
     "rent": 6760
    },
-   "expected_focus": ["universal_credit", "pension_credit"],
+   "expected_focus": [
+    "universal_credit",
+    "pension_credit"
+   ],
    "rationale": "Since May 2019 a mixed-age couple (one over, one under state pension age) claims UC, not Pension Credit. Expect pension_credit = 0 and UC assessed with the state pension counted as unearned income (GBP-for-GBP deduction). A known routing rule models get wrong in both directions. Rent GBP 130/week = 6,760/year."
   },
   {
@@ -216,20 +446,44 @@
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 35, "employment_income": 22000, "hours_worked_per_week": 35},
-     "adult_2": {"age": 33},
-     "child_1": {"age": 7},
-     "child_2": {"age": 2}
+     "adult_1": {
+      "age": 35,
+      "employment_income": 22000,
+      "hours_worked_per_week": 35
+     },
+     "adult_2": {
+      "age": 33
+     },
+     "child_1": {
+      "age": 7
+     },
+     "child_2": {
+      "age": 2
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1", "adult_2"], "children": ["child_1", "child_2"]}
+     {
+      "adults": [
+       "adult_1",
+       "adult_2"
+      ],
+      "children": [
+       "child_1",
+       "child_2"
+      ]
+     }
     ],
     "region": "SCOTLAND",
     "tenure": "rented_social",
     "rent": 8840
    },
-   "expected_focus": ["income_tax", "universal_credit", "scottish_child_payment", "child_benefit"],
-   "rationale": "Devolution double-check: GBP 22,000 earnings span the Scottish starter, basic, and intermediate bands (different liability than rUK at the same gross), while UC entitlement plus two under-16s triggers Scottish Child Payment for both children. Exercises whether the oracle models devolved Scottish payments at all — a candidate policy_scope_mismatch, which is exactly why it is in the battery."
+   "expected_focus": [
+    "income_tax",
+    "universal_credit",
+    "scottish_child_payment",
+    "child_benefit"
+   ],
+   "rationale": "Devolution double-check: GBP 22,000 earnings span the Scottish starter, basic, and intermediate bands (different liability than rUK at the same gross), while UC entitlement plus two under-16s triggers Scottish Child Payment for both children. Exercises whether the oracle models devolved Scottish payments at all \u2014 a candidate policy_scope_mismatch, which is exactly why it is in the battery."
   },
   {
    "case_id": "uk-hicbc-partial-taper",
@@ -238,19 +492,40 @@
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 41, "employment_income": 70000},
-     "adult_2": {"age": 39},
-     "child_1": {"age": 10},
-     "child_2": {"age": 7}
+     "adult_1": {
+      "age": 41,
+      "employment_income": 70000
+     },
+     "adult_2": {
+      "age": 39
+     },
+     "child_1": {
+      "age": 10
+     },
+     "child_2": {
+      "age": 7
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1", "adult_2"], "children": ["child_1", "child_2"]}
+     {
+      "adults": [
+       "adult_1",
+       "adult_2"
+      ],
+      "children": [
+       "child_1",
+       "child_2"
+      ]
+     }
     ],
     "region": "SOUTH_EAST",
     "tenure": "owned_mortgage",
     "rent": 0
    },
-   "expected_focus": ["income_tax", "child_benefit"],
+   "expected_focus": [
+    "income_tax",
+    "child_benefit"
+   ],
    "rationale": "High Income Child Benefit Charge at the midpoint of the post-2024 GBP 60,000-80,000 taper: adjusted net income 70,000 claws back exactly half the two-child Child Benefit through the earner's income tax. Round midpoint chosen so the expected clawback fraction (1/2) is auditable by inspection."
   },
   {
@@ -260,18 +535,35 @@
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 45, "employment_income": 12570},
-     "adult_2": {"age": 44, "employment_income": 50270, "employee_pension_contributions": 2000, "salary_sacrifice": true}
+     "adult_1": {
+      "age": 45,
+      "employment_income": 12570
+     },
+     "adult_2": {
+      "age": 44,
+      "employment_income": 50270,
+      "employee_pension_contributions": 2000,
+      "salary_sacrifice": true
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1", "adult_2"], "children": []}
+     {
+      "adults": [
+       "adult_1",
+       "adult_2"
+      ],
+      "children": []
+     }
     ],
     "region": "EAST_OF_ENGLAND",
     "tenure": "owned_mortgage",
     "rent": 0
    },
-   "expected_focus": ["national_insurance", "income_tax"],
-   "rationale": "Threshold edges: adult_1 sits exactly at GBP 12,570 (personal allowance = NI primary threshold; both liabilities should be exactly zero). Adult_2 sits at the GBP 50,270 UEL with a GBP 2,000 salary sacrifice, so NI-able and taxable pay drop to 48,270 — pinning that sacrifice reduces both tax and Class 1 NI, and that the main-vs-additional NI rate boundary is applied to post-sacrifice pay."
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "rationale": "Threshold edges: adult_1 sits exactly at GBP 12,570 (personal allowance = NI primary threshold; both liabilities should be exactly zero). Adult_2 sits at the GBP 50,270 UEL with a GBP 2,000 salary sacrifice, so NI-able and taxable pay drop to 48,270 \u2014 pinning that sacrifice reduces both tax and Class 1 NI, and that the main-vs-additional NI rate boundary is applied to post-sacrifice pay."
   },
   {
    "case_id": "uk-carer-ca-uc",
@@ -280,17 +572,28 @@
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 45, "is_carer": true}
+     "adult_1": {
+      "age": 45,
+      "is_carer": true
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1"], "children": []}
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
     ],
     "region": "NORTH_WEST",
     "tenure": "rented_social",
     "rent": 6240
    },
-   "expected_focus": ["carers_allowance", "universal_credit"],
-   "rationale": "Carer's Allowance plus UC carer element interaction: CA is unearned income deducted from UC GBP-for-GBP, while the carer element is added — the net gain should equal the carer element alone. The cared-for person (receiving a qualifying disability benefit) lives outside the household, per the is_carer flag's definition. A classic double-counting trap between models."
+   "expected_focus": [
+    "carers_allowance",
+    "universal_credit"
+   ],
+   "rationale": "Carer's Allowance plus UC carer element interaction: CA is unearned income deducted from UC GBP-for-GBP, while the carer element is added \u2014 the net gain should equal the carer element alone. The cared-for person (receiving a qualifying disability benefit) lives outside the household, per the is_carer flag's definition. A classic double-counting trap between models."
   },
   {
    "case_id": "uk-pa-taper-110k",
@@ -299,76 +602,128 @@
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 48, "employment_income": 110000}
+     "adult_1": {
+      "age": 48,
+      "employment_income": 110000
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1"], "children": []}
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
     ],
     "region": "LONDON",
     "tenure": "owned_mortgage",
     "rent": 0
    },
-   "expected_focus": ["income_tax", "national_insurance"],
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
    "rationale": "The GBP 100,000 cliff: at 110,000 the personal allowance is tapered by GBP 1 per 2 over 100,000 (5,000 of allowance lost), producing the 60% effective marginal band. Round 10,000 excess makes the expected allowance (12,570 - 5,000 = 7,570) auditable by inspection."
   },
   {
    "case_id": "uk-hicbc-full-clawback-80k",
    "description": "Earner exactly at GBP 80,000: HICBC clawback reaches 100%",
-   "policy_year": 2025,
+   "policy_year": 2026,
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 42, "employment_income": 80000},
-     "adult_2": {"age": 40},
-     "child_1": {"age": 9}
+     "adult_1": {
+      "age": 42,
+      "employment_income": 80000
+     },
+     "adult_2": {
+      "age": 40
+     },
+     "child_1": {
+      "age": 9
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1", "adult_2"], "children": ["child_1"]}
+     {
+      "adults": [
+       "adult_1",
+       "adult_2"
+      ],
+      "children": [
+       "child_1"
+      ]
+     }
     ],
     "region": "SOUTH_EAST",
     "tenure": "owned_mortgage",
     "rent": 0
    },
-   "expected_focus": ["income_tax", "child_benefit"],
-   "rationale": "Top of the HICBC taper: adjusted net income exactly GBP 80,000, where the post-2024 charge (1% of Child Benefit per GBP 200 of income between 60,000 and 80,000; gov.uk / LITRG, 2025-26 values) first reaches 100% of the one-child Child Benefit. Paired with uk-hicbc-partial-taper (midpoint) it brackets the taper; calculator oracle: the gov.uk Child Benefit tax calculator states this charge directly. Year 2025 pins the verified 2025-26 thresholds."
+   "expected_focus": [
+    "income_tax",
+    "child_benefit"
+   ],
+   "rationale": "Top of the HICBC taper: adjusted net income exactly GBP 80,000, where the post-2024 charge (1% of Child Benefit per GBP 200 of income between 60,000 and 80,000; gov.uk / LITRG, 2025-26 values) first reaches 100% of the one-child Child Benefit. Paired with uk-hicbc-partial-taper (midpoint) it brackets the taper; calculator oracle: the gov.uk Child Benefit tax calculator states this charge directly. Year 2025 pins the verified 2025-26 thresholds. Pinned to policy year 2026: the thresholds this case turns on are frozen at the same nominal values in 2026-27 as in 2025-26, and the live gov.uk estimator computes only the current tax year \u2014 a 2025 case pointed at it would produce a confident number for a year the service does not calculate."
   },
   {
    "case_id": "uk-additional-rate-boundary-125140",
    "description": "Earner exactly at GBP 125,140: allowance fully tapered, additional rate begins",
-   "policy_year": 2025,
+   "policy_year": 2026,
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 50, "employment_income": 125140}
+     "adult_1": {
+      "age": 50,
+      "employment_income": 125140
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1"], "children": []}
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
     ],
     "region": "LONDON",
     "tenure": "owned_mortgage",
     "rent": 0
    },
-   "expected_focus": ["income_tax", "national_insurance"],
-   "rationale": "The double boundary at GBP 125,140 (2025-26): the personal allowance taper completes (125,140 = 100,000 + 2 x 12,570, allowance exactly zero) at the same income where the 45% additional rate begins. Both engines and the gov.uk estimator must agree that not one pound is charged at 45% and the allowance is exactly nil — off-by-one errors in either rule show up as a discrete miss here."
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "rationale": "The double boundary at GBP 125,140 (2025-26): the personal allowance taper completes (125,140 = 100,000 + 2 x 12,570, allowance exactly zero) at the same income where the 45% additional rate begins. Both engines and the gov.uk estimator must agree that not one pound is charged at 45% and the allowance is exactly nil \u2014 off-by-one errors in either rule show up as a discrete miss here. Pinned to policy year 2026: the thresholds this case turns on are frozen at the same nominal values in 2026-27 as in 2025-26, and the live gov.uk estimator computes only the current tax year \u2014 a 2025 case pointed at it would produce a confident number for a year the service does not calculate."
   },
   {
    "case_id": "uk-psa-savings-income",
    "description": "Basic-rate earner with GBP 1,500 savings interest (PSA partially used)",
-   "policy_year": 2025,
+   "policy_year": 2026,
    "country": "UK",
    "household": {
     "people": {
-     "adult_1": {"age": 38, "employment_income": 30000, "savings_income": 1500}
+     "adult_1": {
+      "age": 38,
+      "employment_income": 30000,
+      "savings_income": 1500
+     }
     },
     "benefit_units": [
-     {"adults": ["adult_1"], "children": []}
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
     ],
     "region": "WALES",
     "tenure": "rented_private",
-    "rent": 7800
+    "rent": 7800,
+    "brma": "Cardiff"
    },
-   "expected_focus": ["income_tax"],
-   "rationale": "Personal Savings Allowance ordering: a basic-rate taxpayer's first GBP 1,000 of interest is taxed at 0% and the remaining 500 at 20% (2025-26 PSA: 1,000 basic / 500 higher). Savings income sits on top of GBP 30,000 earnings without tipping the earner into higher rate, so the expected extra liability is exactly GBP 100 - auditable by inspection and directly answerable by the gov.uk estimator."
+   "expected_focus": [
+    "income_tax"
+   ],
+   "rationale": "Personal Savings Allowance ordering: a basic-rate taxpayer's first GBP 1,000 of interest is taxed at 0% and the remaining 500 at 20% (2025-26 PSA: 1,000 basic / 500 higher). Savings income sits on top of GBP 30,000 earnings without tipping the earner into higher rate, so the expected extra liability is exactly GBP 100 - auditable by inspection and directly answerable by the gov.uk estimator. Pinned to policy year 2026: the thresholds this case turns on are frozen at the same nominal values in 2026-27 as in 2025-26, and the live gov.uk estimator computes only the current tax year \u2014 a 2025 case pointed at it would produce a confident number for a year the service does not calculate."
   }
  ]
 }
