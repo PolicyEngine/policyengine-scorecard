@@ -20,6 +20,9 @@ Chain order is dependency order and is part of the contract:
     uk_externals five UK primary-source families + Ledger staging
     uk_deductions FRR family
     produce_uk + campaign_uk  archive-resolved UK reckoner attaches
+    be_jrc      JRC EUROMOD-BE model claims + honest demo attachments;
+                final so its 2026-08-21 lane update cannot be regressed by
+                an older feed sync
 
 Usage:
     PYTHONPATH=. python -m scorecard_db.build_db [data/scorecard.db]
@@ -32,6 +35,8 @@ import json
 import sqlite3
 import sys
 from pathlib import Path
+
+from be import ingest_jrc_country_report
 
 from . import (
     ingest_campaign,
@@ -94,6 +99,7 @@ def build(db_path: Path) -> dict:
             "campaign_uk",
             lambda: ingest_campaign.ingest(db_path, produce_campaign_uk.RESOLVED),
         ),
+        ("be_jrc", lambda: ingest_jrc_country_report.ingest(db_path)),
     ]
     summary: dict = {"steps": {}}
     for name, fn in steps:

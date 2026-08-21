@@ -25,9 +25,9 @@ export const SPINE_META: Record<
   { label: string; color: string; text: string }
 > = {
   close: {
-    label: "Reproduced",
+    label: "Close",
     color: "var(--chart-1)",
-    text: "PE counterpart within tolerance (2.5pp / 10%)",
+    text: "Computed counterpart within descriptive tolerance (2.5pp / 10%)",
   },
   moderate: {
     label: "Diverging",

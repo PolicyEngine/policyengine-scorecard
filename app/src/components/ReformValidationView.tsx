@@ -4,6 +4,7 @@ import {
   COUNTRY_LABELS,
   RELATIONSHIP_LABELS,
   STATUS_LABELS,
+  comparabilityFigure,
   countryOf,
 } from "../types";
 
@@ -72,7 +73,9 @@ export function ReformValidationView({
         {COUNTRY_LABELS[country]} external claims —{" "}
         {country === "US"
           ? "the populace reform-validation registry (JCT scores, state fiscal notes, agency actuals, IRS and Census references) plus the compute campaign's TPC, CPSP, PWBM and CBO comparisons"
-          : "the compute campaign's HMRC ready-reckoner comparisons (each PE score is a current-law static change; HMRC's are projected-FY direct effects against an indexed baseline, so every comparison is constructed-basis by design)"}{" "}
+          : country === "UK"
+            ? "the compute campaign's HMRC ready-reckoner comparisons (each PE score is a current-law static change; HMRC's are projected-FY direct effects against an indexed baseline, so every comparison is constructed-basis by design)"
+            : "two JRC EUROMOD-BE model claims with demo-grade Axiom worker attachments. Both are concept mismatches: CY2026 versus CY2023, reweighted US survey support versus Belgian SILC, and worker-slice versus national scope"}{" "}
         — where each available result carries its certified release's exact
         engine pins.{" "}
         <b className="fig text-foreground">{multiRelease.toLocaleString()}</b>{" "}
@@ -141,7 +144,9 @@ export function ReformValidationView({
               <th className="px-2 py-2 font-medium">Source</th>
               <th className="px-2 py-2 font-medium">Window</th>
               <th className="px-2 py-2 text-right font-medium">External</th>
-              <th className="px-2 py-2 text-right font-medium">PolicyEngine</th>
+              <th className="px-2 py-2 text-right font-medium">
+                {country === "BE" ? "Axiom" : "PolicyEngine"}
+              </th>
               <th className="px-2 py-2 text-right font-medium">Divergence</th>
               <th className="px-2 py-2 font-medium">Status</th>
               <th className="px-2 py-2 font-medium">Relationship</th>
@@ -183,7 +188,11 @@ export function ReformValidationView({
                     {fmtV(r.latest.value, r.value_kind)}
                   </td>
                   <td className="whitespace-nowrap px-2 py-1.5 text-right fig">
-                    {fmtDiv(r)}
+                    {comparabilityFigure(
+                      r.latest.status_effective,
+                      "not comparable",
+                      () => fmtDiv(r),
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-2 py-1.5">
                     <StatusPill status={r.latest.status_effective} />
@@ -250,7 +259,11 @@ function RowDetail({ row }: { row: PopulationRow }) {
                       {fmtV(res.value, row.value_kind)}
                     </td>
                     <td className="py-1 pr-3 text-right fig">
-                      {ratioOf(res.value, row.external_value)}
+                      {comparabilityFigure(
+                        res.status_effective,
+                        "—",
+                        () => ratioOf(res.value, row.external_value),
+                      )}
                     </td>
                     <td className="py-1 fig text-muted-foreground">
                       {res.construction || "—"}
@@ -357,6 +370,7 @@ const SOURCE_SPECIAL: Record<string, string> = {
   rf: "Resolution Foundation",
   resolution_foundation: "Resolution Foundation",
   ukmod: "UKMOD",
+  jrc_euromod: "JRC EUROMOD",
 };
 
 function sourceLabel(s: string): string {
@@ -378,7 +392,15 @@ function fmtV(v: number | null, kind: string): string {
   if (kind === "index") return v.toFixed(3);
   // currency follows the value_kind, never a $ default: gbp* rows are
   // pounds, count rows carry no symbol at all
-  const cur = kind.startsWith("gbp") ? "£" : kind.startsWith("usd") || kind === "usd" ? "$" : kind === "count" ? "" : "$";
+  const cur = kind.startsWith("gbp")
+    ? "£"
+    : kind.startsWith("eur")
+      ? "€"
+      : kind.startsWith("usd") || kind === "usd"
+        ? "$"
+        : kind === "count"
+          ? ""
+          : "$";
   const a = Math.abs(v);
   const sign = v < 0 ? "−" : "";
   if (a >= 1e9) return `${sign}${cur}${(a / 1e9).toFixed(2)}B`;
