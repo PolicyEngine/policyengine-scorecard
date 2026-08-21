@@ -307,7 +307,21 @@ for _src in ("hm_treasury", "dwp"):
 # spending line, so unifying the two namespaces would be a category
 # error.
 _identity("obr_policy_effects", "geography", ["UK"])
-_identity("obr_policy_effects", "unit", ["percent", "gbp_nominal"])
+# Three DIFFERENT macro quantities, three unit concepts (the harvest's
+# gate finding): a per-cent deviation in the LEVEL of real GDP, an effect
+# on CPI inflation in PERCENTAGE POINTS, and an impact on POTENTIAL
+# output as a per cent of GDP. Bare "percent" is deliberately NOT
+# registered here — it would let the three collapse back into one.
+_identity(
+    "obr_policy_effects",
+    "unit",
+    [
+        "percent_of_real_gdp",
+        "percentage_points",
+        "percent_of_potential_gdp",
+        "gbp_nominal",
+    ],
+)
 _identity(
     "obr_policy_effects",
     "program",
@@ -327,24 +341,24 @@ _identity(
         "pillar_2_reforms",
         "other_tax_measures",
         # briefing paper No.10 T2.1: individually scored measures
-        "30_free_hours_of_childcare",
+        "free_childcare_30_hours",
         "employee_nics_cut",
         "employer_nics",
         "full_expensing",
-        "high_income_child_benefit_charge_hicbc",
-        "individual_placement_and_support_ips",
+        "hicbc_threshold",
+        "individual_placement_and_support",
         "pensions_allowances",
         "public_investment",
         "residential_planning_reforms",
-        "restart",
+        "restart_scheme",
         "talking_therapies",
-        "tax_thresholds",
+        "tax_threshold_freeze",
         "uc_conditionality",
-        "universal_credit_uc_childcare",
+        "uc_childcare_upfront_costs",
         "universal_support",
         "universal_support_extension",
         "wca_reversal",
-        "work_capability_assessment_wca_reforms",
+        "wca_reforms",
     ],
 )
 _identity(
@@ -374,7 +388,7 @@ _identity(
         "supply_full_expensing",
         "supply_nics_cut",
         "supply_public_investment",
-        "supply_welfare_reforms_other",
+        "supply_welfare_reforms_and_other",
         # CPI-impact measures (Nov 2025 C3.4)
         "energy_bills_package",
         "fuel_duty_freeze_extension",
