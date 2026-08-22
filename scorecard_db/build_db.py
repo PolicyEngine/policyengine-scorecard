@@ -19,6 +19,8 @@ Chain order is dependency order and is part of the contract:
     campaign_us  staged day-1/day-2 campaign results (claim matching)
     uk_externals five UK primary-source families + Ledger staging
     uk_deductions FRR family
+    uk_reform_validation  the UK reform-validation lane (declared empty
+                          until issue #79's artifact lands)
     produce_uk + campaign_uk  archive-resolved UK reckoner attaches
     be_jrc      JRC EUROMOD-BE model claims + honest demo attachments;
                 final so its 2026-08-21 lane update cannot be regressed by
@@ -94,6 +96,14 @@ def build(db_path: Path) -> dict:
         ("campaign_us", lambda: ingest_campaign.ingest(db_path)),
         ("uk_externals", lambda: ingest_uk_externals.ingest(db_path)),
         ("uk_deductions", lambda: ingest_uk_deductions.ingest(db_path)),
+        # The UK reform-validation lane. Registered even though issue
+        # #79's artifact does not exist yet: without this step a
+        # deterministic build silently ignored a future artifact and left
+        # the DB indistinguishable from "awaiting artifact".
+        (
+            "uk_reform_validation",
+            lambda: ingest_reform_validation.ingest_uk(db_path),
+        ),
         ("produce_uk", lambda: produce_campaign_uk.produce(db_path)),
         (
             "campaign_uk",

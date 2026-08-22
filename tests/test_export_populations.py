@@ -134,6 +134,14 @@ def test_lane_sync_merges_without_touching_other_lanes(tmp_path, small_db):
     db_path, _ = small_db
     db = ScorecardDB(db_path)
     db.set_lane("populace-reform-validation", "ingested", "205 claims", "2026-08-04")
+    # The UK lane is written by build_db's uk_reform_validation step —
+    # as ingested rows, or as an explicit awaiting-artifact row.
+    db.set_lane(
+        "populace-uk-reform-validation",
+        "registered",
+        "0 claims — awaiting issue #79's artifact",
+        "2026-08-17",
+    )
     db.close()
     feed = tmp_path / "lanes.json"
     feed.write_text(
@@ -158,7 +166,7 @@ def test_lane_sync_merges_without_touching_other_lanes(tmp_path, small_db):
     stats = export(
         db_path, out_path=tmp_path / "p.json", lanes_path=feed, built="2026-08-05"
     )
-    assert stats["lanes_synced"] == 1
+    assert stats["lanes_synced"] == 2
     out = json.loads(feed.read_text())
     lanes = {lane["id"]: lane for lane in out["lanes"]}
     assert lanes["other-lane"]["note"] == "untouched"
@@ -166,6 +174,12 @@ def test_lane_sync_merges_without_touching_other_lanes(tmp_path, small_db):
     assert rv["stage"] == "ingested"
     assert rv["source"] == "Populace releases"
     assert out["updated"] == "2026-08-05"
+    # The UK lane reaches mission control too, filed under UK — the feed
+    # used to list only the US lane, so both the tracked-feed count and
+    # the UK page silently lost it.
+    uk = lanes["populace-uk-reform-validation"]
+    assert uk["country"] == "UK"
+    assert uk["stage"] == "registered"
 
     # An independently pinned older lane sync cannot make the feed look older.
     export(
