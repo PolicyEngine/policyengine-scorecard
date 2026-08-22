@@ -265,10 +265,10 @@
    "source": "UKMOD/EUROMOD",
    "area": "household cases via JRC connector",
    "mode": 3,
-   "stage": "registered",
+   "stage": "cataloged",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "Connector runnable per axiom-oracles#264 (#5)"
+   "updated": "2026-08-14",
+   "note": "Case schema + 1st battery landed (#41); connector run pending UKMOD environment; schema shared with taxsim-cases (#5)"
   },
   {
    "id": "cbo-baseline",
