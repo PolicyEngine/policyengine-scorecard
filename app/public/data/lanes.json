@@ -1,7 +1,7 @@
 {
  "_schema": {
   "stage": "registered | cataloged | ingested | computed | diagnosing | published | regressed",
-  "country": "US | UK | BE \u2014 the model instance the lane feeds (issue #42)",
+  "country": "US | UK \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
  "updated": "2026-08-21",
@@ -346,6 +346,17 @@
    "running": false,
    "updated": "2026-08-19",
    "note": "7 claims"
+  },
+  {
+   "id": "obr-divergence-decomposition",
+   "source": "OBR",
+   "area": "costings divergence decomposition",
+   "mode": 2,
+   "country": "UK",
+   "stage": "registered",
+   "running": false,
+   "updated": "2026-08-17",
+   "note": "not run \u2014 no DECOMPOSITION.json; run pipeline/decompose_uk_obr_divergence.py against #56's COMPARISON.csv (or the committed fixture)"
   },
   {
    "id": "jrc-euromod-be-country-report",
