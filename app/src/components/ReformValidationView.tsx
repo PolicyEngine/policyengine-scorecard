@@ -228,9 +228,10 @@ function RowDetail({ row }: { row: PopulationRow }) {
     <tr className="border-b border-border bg-muted/30">
       <td colSpan={9} className="px-4 py-3">
         <div className="grid gap-4 text-xs md:grid-cols-2">
-          <div>
+          <div className="min-w-0">
             <p className="mb-1 font-semibold">Per-release history</p>
-            <table className="w-full border-collapse">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
               <thead>
                 <tr className="text-left text-muted-foreground">
                   <th className="py-1 pr-3 font-medium">Release</th>
@@ -244,7 +245,7 @@ function RowDetail({ row }: { row: PopulationRow }) {
                 {row.results.map((res) => (
                   <tr key={res.data_bundle} className="border-t border-border">
                     <td className="py-1 pr-3 fig">{res.release}</td>
-                    <td className="py-1 pr-3 fig">
+                    <td className="py-1 pr-3 fig break-all">
                       {res.engine_version}
                       {res.status_effective !== res.status && (
                         <span
@@ -265,13 +266,14 @@ function RowDetail({ row }: { row: PopulationRow }) {
                         () => ratioOf(res.value, row.external_value),
                       )}
                     </td>
-                    <td className="py-1 fig text-muted-foreground">
+                    <td className="py-1 fig text-muted-foreground break-all">
                       {res.construction || "—"}
                     </td>
                   </tr>
                 ))}
               </tbody>
-            </table>
+              </table>
+            </div>
             {row.results.some((res) => res.annotations.length > 0) && (
               <ul className="mt-2 space-y-1 text-muted-foreground">
                 {row.results.flatMap((res) =>
@@ -292,7 +294,7 @@ function RowDetail({ row }: { row: PopulationRow }) {
               same construction.
             </p>
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="mb-1 font-semibold">Claim</p>
             <p className="text-muted-foreground">
               {row.publication_title || "—"}
@@ -310,13 +312,13 @@ function RowDetail({ row }: { row: PopulationRow }) {
                 </>
               )}
             </p>
-            <p className="mt-2 fig text-muted-foreground">
+            <p className="mt-2 fig break-words text-muted-foreground">
               {row.source_column} · {row.metric} · {row.time_basis} {row.period}
               {row.period_start !== null &&
                 ` (window ${row.period_start}–${row.period_end})`}
             </p>
             {Object.entries(row.conditions).length > 0 && (
-              <p className="mt-2 text-muted-foreground">
+              <p className="mt-2 break-words text-muted-foreground">
                 {Object.entries(row.conditions)
                   .map(([k, v]) => `${k}: ${v}`)
                   .join(" · ")}
