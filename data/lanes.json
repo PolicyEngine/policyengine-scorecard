@@ -4,7 +4,7 @@
   "country": "US | UK \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-08-19",
+ "updated": "2026-08-21",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -357,6 +357,17 @@
    "running": false,
    "updated": "2026-08-17",
    "note": "0 claims \u2014 no populace-uk reform_validation.json exists yet (issue #79 produces the first one); the lane is declared empty rather than absent"
+  },
+  {
+   "id": "jrc-euromod-be-country-report",
+   "source": "JRC EUROMOD",
+   "area": "Belgium Country Report validation tables",
+   "mode": 1,
+   "country": "BE",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-08-21",
+   "note": "5 model claims, 7 Ledger facts (6 statistical + 1 non-simulated uprated EU-SILC survey input), 6 derived ratios dispositioned; 2 concept-mismatch attachments"
   }
  ]
 }

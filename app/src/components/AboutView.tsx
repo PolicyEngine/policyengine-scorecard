@@ -6,8 +6,8 @@ export function AboutView({ data }: { data: Comparison }) {
     <div className="max-w-3xl space-y-6 text-sm leading-6">
       <p className="text-xs text-muted-foreground">
         Scope: this page describes the US Urban comparison — the country
-        toggle does not change it. UK method notes land with the UK
-        comparison feed.
+        toggle does not change it. UK and Belgium provenance and method notes
+        travel with their own claims and comparison feeds.
       </p>
       <section>
         <h2 className="mb-2 text-lg font-semibold">What the two columns are</h2>
@@ -27,8 +27,8 @@ export function AboutView({ data }: { data: Comparison }) {
       <section>
         <h2 className="mb-2 text-lg font-semibold">Tolerances</h2>
         <p>
-          Rates: within 2.5 percentage points is "reproduced", within 10pp
-          "diverging", beyond that "far apart". Counts: within 10% / 30%.
+          Rates: within 2.5 percentage points is "close", within 10pp
+          "moderate", beyond that "far". Counts: within 10% / 30%.
           These are display buckets, not scientific claims; the exact values
           sit on every row.
         </p>
@@ -80,9 +80,9 @@ export function AboutView({ data }: { data: Comparison }) {
       <section>
         <h2 className="mb-2 text-lg font-semibold">Docs</h2>
         <p className="text-muted-foreground">
-          The full replication assessment (methodology, the three calibration
-          regimes, per-program verdicts) and the engine mechanics audit live in
-          this repo under docs/.
+          The full comparison assessment (methodology, the three calibration
+          regimes, per-program analysis) and the engine mechanics audit live
+          in this repo under docs/.
         </p>
       </section>
     </div>

@@ -1,8 +1,8 @@
 {
- "built": "2026-08-19",
- "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family). Statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
+ "built": "2026-08-21",
+ "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family; BE: JRC EUROMOD-BE claims with demo-grade Axiom concept-mismatch attachments). Statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
  "summary": {
-  "claims": 284,
+  "claims": 286,
   "multi_release_claims": 127,
   "by_source": {
    "az_admin": 1,
@@ -29,6 +29,7 @@
    "irs": 18,
    "irs_soi": 9,
    "jct": 45,
+   "jrc_euromod": 2,
    "ks_admin": 1,
    "ks_fiscal_note": 2,
    "la_admin": 1,
@@ -64,7 +65,7 @@
   },
   "by_latest_status": {
    "comparable": 37,
-   "concept_mismatch": 2,
+   "concept_mismatch": 4,
    "constructed": 245
   }
  },
@@ -16760,6 +16761,150 @@
      "annotations": [],
      "baseline": "current_law",
      "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "66f852422521a5626ce4",
+   "source": "jrc_euromod",
+   "country": "BE",
+   "source_column": "a3_4_employee_sics_euromod_2023",
+   "name": "Employee social insurance contributions",
+   "window": "",
+   "publication_title": "EUROMOD Country Report Belgium 2025",
+   "url": "https://euromod-web.jrc.ec.europa.eu/sites/default/files/2025-02/Y15_CR_BE_final.pdf",
+   "metric": "tax_liability",
+   "unit_concept": "eur",
+   "value_kind": "eur",
+   "period": 2023,
+   "time_basis": "annual",
+   "period_start": null,
+   "period_end": null,
+   "geography": "BE",
+   "program": "employee_social_insurance_contributions",
+   "conditions": {
+    "assessment_level": "individual",
+    "benchmark_class": "different_model",
+    "contribution_payer": "employee",
+    "country": "BE",
+    "data_vintage": "euromod_be_country_report_2025",
+    "geography": "BE",
+    "input_database": "be_2022_c1_silc2022_income2021",
+    "policy_system_year": "2023",
+    "population_frame": "private_households",
+    "population_scope": "national_all_employees",
+    "program": "employee_social_insurance_contributions",
+    "series": "euromod",
+    "source_scale": "millions"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "057daaa410086495",
+   "external_value": 28861000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "euromod_be_2025_current_law_2023",
+   "latest": {
+    "value": 20874276470.798096,
+    "status": "concept_mismatch",
+    "engine_version": "axiom-rules-engine 0.1.0; rulespec-be@7c85808ae99f5731b21059e643e5e19b66438904",
+    "data_bundle": "microcosm_be_v02_2026@9164ef8cb267cc1f1be4fa3898d506416b04260dbf6aec8e373f5800db802d04",
+    "release": "microcosm_be_v02",
+    "construction": "{\"aggregate\": \"aggregates_eur.employee_ssc_article_38_before_reductions\", \"attachment_class\": \"concept_mismatch\", \"claim_period\": 2023, \"claim_population_basis\": \"Belgian SILC country-report basis\", \"claim_scope\": \"national all-employee regular employee-SIC total\", \"computed_period\": 2026, \"computed_scope\": \"Article 38 employee SSC before reductions\", \"population_basis\": \"US survey support reweighted to Belgian administrative targets\", \"population_manifest_sha256\": \"f69cfce742f603c089ba7777749df8afb6c4b5266af2b80097d5480955e2851d\", \"rulespec_be_commit\": \"7c85808ae99f5731b21059e643e5e19b66438904\", \"worker_results_sha256\": \"910a7d7756b65fdee4fb8c8a9e711a13f0c78faa9e1839ba7e354101710c335c\"}",
+    "computed_at": "2026-08-21T02:49:10.444352+00:00",
+    "annotations": [
+     "demo-grade: US survey support records reweighted to Belgian administrative targets \u2014 not Belgian microdata. Concept gaps: period is CY2026 versus the claim's CY2023; population basis is US survey support reweighted to Belgian administrative targets versus the country report's Belgian SILC basis; scope is a positive-remuneration worker slice (Article 38 employee SSC before reductions) versus national all-employee regular employee-SIC total. Benchmark class is different_model and the executed Axiom baseline differs from the EUROMOD published-claim world; this is not a comparable result."
+    ],
+    "baseline": "axiom_be_rulespec_current_law_demo_2026",
+    "status_effective": "concept_mismatch",
+    "ratio": 0.7232693416998058,
+    "delta": -7986723529.201904
+   },
+   "results": [
+    {
+     "value": 20874276470.798096,
+     "status": "concept_mismatch",
+     "engine_version": "axiom-rules-engine 0.1.0; rulespec-be@7c85808ae99f5731b21059e643e5e19b66438904",
+     "data_bundle": "microcosm_be_v02_2026@9164ef8cb267cc1f1be4fa3898d506416b04260dbf6aec8e373f5800db802d04",
+     "release": "microcosm_be_v02",
+     "construction": "{\"aggregate\": \"aggregates_eur.employee_ssc_article_38_before_reductions\", \"attachment_class\": \"concept_mismatch\", \"claim_period\": 2023, \"claim_population_basis\": \"Belgian SILC country-report basis\", \"claim_scope\": \"national all-employee regular employee-SIC total\", \"computed_period\": 2026, \"computed_scope\": \"Article 38 employee SSC before reductions\", \"population_basis\": \"US survey support reweighted to Belgian administrative targets\", \"population_manifest_sha256\": \"f69cfce742f603c089ba7777749df8afb6c4b5266af2b80097d5480955e2851d\", \"rulespec_be_commit\": \"7c85808ae99f5731b21059e643e5e19b66438904\", \"worker_results_sha256\": \"910a7d7756b65fdee4fb8c8a9e711a13f0c78faa9e1839ba7e354101710c335c\"}",
+     "computed_at": "2026-08-21T02:49:10.444352+00:00",
+     "annotations": [
+      "demo-grade: US survey support records reweighted to Belgian administrative targets \u2014 not Belgian microdata. Concept gaps: period is CY2026 versus the claim's CY2023; population basis is US survey support reweighted to Belgian administrative targets versus the country report's Belgian SILC basis; scope is a positive-remuneration worker slice (Article 38 employee SSC before reductions) versus national all-employee regular employee-SIC total. Benchmark class is different_model and the executed Axiom baseline differs from the EUROMOD published-claim world; this is not a comparable result."
+     ],
+     "baseline": "axiom_be_rulespec_current_law_demo_2026",
+     "status_effective": "concept_mismatch"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "50e2715b1ccbe7b9b053",
+   "source": "jrc_euromod",
+   "country": "BE",
+   "source_column": "a3_4_national_income_tax_euromod_2023",
+   "name": "National income tax",
+   "window": "",
+   "publication_title": "EUROMOD Country Report Belgium 2025",
+   "url": "https://euromod-web.jrc.ec.europa.eu/sites/default/files/2025-02/Y15_CR_BE_final.pdf",
+   "metric": "tax_liability",
+   "unit_concept": "eur",
+   "value_kind": "eur",
+   "period": 2023,
+   "time_basis": "annual",
+   "period_start": null,
+   "period_end": null,
+   "geography": "BE",
+   "program": "national_income_tax",
+   "conditions": {
+    "assessment_level": "individual",
+    "benchmark_class": "different_model",
+    "country": "BE",
+    "data_vintage": "euromod_be_country_report_2025",
+    "geography": "BE",
+    "input_database": "be_2022_c1_silc2022_income2021",
+    "policy_system_year": "2023",
+    "population_frame": "private_households",
+    "population_scope": "national_all_taxpayers",
+    "program": "national_income_tax",
+    "series": "euromod",
+    "source_scale": "millions",
+    "tax_scope": "national_income_tax"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "057daaa410086495",
+   "external_value": 77531000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "euromod_be_2025_current_law_2023",
+   "latest": {
+    "value": 23284895966.30996,
+    "status": "concept_mismatch",
+    "engine_version": "axiom-rules-engine 0.1.0; rulespec-be@7c85808ae99f5731b21059e643e5e19b66438904",
+    "data_bundle": "microcosm_be_v02_2026@9164ef8cb267cc1f1be4fa3898d506416b04260dbf6aec8e373f5800db802d04",
+    "release": "microcosm_be_v02",
+    "construction": "{\"aggregate\": \"aggregates_eur.worker_pit_before_withholding_communal_0\", \"attachment_class\": \"concept_mismatch\", \"claim_period\": 2023, \"claim_population_basis\": \"Belgian SILC country-report basis\", \"claim_scope\": \"national all-taxpayer income-tax total\", \"computed_period\": 2026, \"computed_scope\": \"worker PIT before withholding, communal rate 0\", \"population_basis\": \"US survey support reweighted to Belgian administrative targets\", \"population_manifest_sha256\": \"f69cfce742f603c089ba7777749df8afb6c4b5266af2b80097d5480955e2851d\", \"rulespec_be_commit\": \"7c85808ae99f5731b21059e643e5e19b66438904\", \"worker_results_sha256\": \"910a7d7756b65fdee4fb8c8a9e711a13f0c78faa9e1839ba7e354101710c335c\"}",
+    "computed_at": "2026-08-21T02:49:10.444352+00:00",
+    "annotations": [
+     "demo-grade: US survey support records reweighted to Belgian administrative targets \u2014 not Belgian microdata. Concept gaps: period is CY2026 versus the claim's CY2023; population basis is US survey support reweighted to Belgian administrative targets versus the country report's Belgian SILC basis; scope is a positive-remuneration worker slice (worker PIT before withholding, communal rate 0) versus national all-taxpayer income-tax total. Benchmark class is different_model and the executed Axiom baseline differs from the EUROMOD published-claim world; this is not a comparable result."
+    ],
+    "baseline": "axiom_be_rulespec_current_law_demo_2026",
+    "status_effective": "concept_mismatch",
+    "ratio": 0.3003301384776407,
+    "delta": -54246104033.69004
+   },
+   "results": [
+    {
+     "value": 23284895966.30996,
+     "status": "concept_mismatch",
+     "engine_version": "axiom-rules-engine 0.1.0; rulespec-be@7c85808ae99f5731b21059e643e5e19b66438904",
+     "data_bundle": "microcosm_be_v02_2026@9164ef8cb267cc1f1be4fa3898d506416b04260dbf6aec8e373f5800db802d04",
+     "release": "microcosm_be_v02",
+     "construction": "{\"aggregate\": \"aggregates_eur.worker_pit_before_withholding_communal_0\", \"attachment_class\": \"concept_mismatch\", \"claim_period\": 2023, \"claim_population_basis\": \"Belgian SILC country-report basis\", \"claim_scope\": \"national all-taxpayer income-tax total\", \"computed_period\": 2026, \"computed_scope\": \"worker PIT before withholding, communal rate 0\", \"population_basis\": \"US survey support reweighted to Belgian administrative targets\", \"population_manifest_sha256\": \"f69cfce742f603c089ba7777749df8afb6c4b5266af2b80097d5480955e2851d\", \"rulespec_be_commit\": \"7c85808ae99f5731b21059e643e5e19b66438904\", \"worker_results_sha256\": \"910a7d7756b65fdee4fb8c8a9e711a13f0c78faa9e1839ba7e354101710c335c\"}",
+     "computed_at": "2026-08-21T02:49:10.444352+00:00",
+     "annotations": [
+      "demo-grade: US survey support records reweighted to Belgian administrative targets \u2014 not Belgian microdata. Concept gaps: period is CY2026 versus the claim's CY2023; population basis is US survey support reweighted to Belgian administrative targets versus the country report's Belgian SILC basis; scope is a positive-remuneration worker slice (worker PIT before withholding, communal rate 0) versus national all-taxpayer income-tax total. Benchmark class is different_model and the executed Axiom baseline differs from the EUROMOD published-claim world; this is not a comparable result."
+     ],
+     "baseline": "axiom_be_rulespec_current_law_demo_2026",
+     "status_effective": "concept_mismatch"
     }
    ],
    "diagnosis": null

@@ -16,7 +16,8 @@ can check, one SQLite file, reform-keyed.
   methodological `variant`, `rate_unit`, …). Adapters fail loudly on
   anything unmapped.
 - **`calibration_relationship` mandatory** (`consumed_as_target` /
-  `seed_source` / `held_out`). Published validation wins = held_out only.
+  `seed_source` / `held_out`). Published validation comparisons use held-out
+  rows only.
 - **History, not state.** `pe_results` keeps every computation (engine
   version × certified data bundle × run); the `comparisons` view joins each
   claim to its latest result. Re-scoring on a new certified artifact appends.

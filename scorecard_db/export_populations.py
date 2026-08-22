@@ -6,7 +6,8 @@ else lives only in scorecard.db: the reform-validation registry (issue
 #20, its 205 minted claims plus the 36 harvested JCX-35-25 provision
 claims its OBBBA results attach to), the US campaign attaches, and —
 since the campaign-UK producer — the 14 uk_hmrc reckoner claims with
-campaign results. This module exports every non-Urban claim that has at
+campaign results; and Belgium's honest concept-mismatch Axiom attachments
+to JRC EUROMOD-BE claims. This module exports every non-Urban claim that has at
 least one pe_result, carrying the dimension the Urban export doesn't
 have: the full per-release result history (one row per certified
 release, engine pins and OBBBA scoring mode in the construction), so
@@ -43,6 +44,7 @@ _RELEASE_TOKEN = (
     "buildo",
     "buildp",
     "f0af251",
+    "microcosm_be_v02",
 )
 
 
@@ -202,7 +204,8 @@ def export(
             "Non-Urban populations exported from scorecard.db: the populace"
             " reform-validation registry (issue #20) plus the compute"
             " campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT;"
-            " UK: the HMRC ready-reckoner family)."
+            " UK: the HMRC ready-reckoner family; BE: JRC EUROMOD-BE claims"
+            " with demo-grade Axiom concept-mismatch attachments)."
             " Statuses and calibration relationships are verbatim; nothing"
             " here is a pass/fail grade."
         ),
