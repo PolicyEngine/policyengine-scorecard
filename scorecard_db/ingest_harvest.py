@@ -10,6 +10,7 @@ which ingest_platform seeds the DB from on rebuild).
 from __future__ import annotations
 
 import json
+from datetime import date
 from pathlib import Path
 
 from . import (
@@ -131,7 +132,18 @@ def sync_lane_feed(
             note=row["detail"],
         )
         n += 1
-    feed["updated"] = updated
+    # Lane writers run independently and some source modules carry an older
+    # pinned update date. Never let a later build/test step regress the feed's
+    # top-level freshness marker (the BE 2026-08-21 lane used to be followed
+    # by a UK 2026-08-19 sync). Non-date legacy placeholders such as "old" are
+    # replaced by the incoming date.
+    try:
+        existing_date = date.fromisoformat(feed.get("updated", ""))
+        incoming_date = date.fromisoformat(updated)
+    except (TypeError, ValueError):
+        feed["updated"] = updated
+    else:
+        feed["updated"] = max(existing_date, incoming_date).isoformat()
     feed_path.write_text(json.dumps(feed, indent=1) + "\n")
     return n
 
