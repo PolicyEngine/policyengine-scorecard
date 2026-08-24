@@ -55,6 +55,16 @@ DISTINCT: frozenset[tuple[str, str]] = frozenset(
         ("dwp_takeup:housing_benefit_pensioners", "obr:housing_benefit_on_jsa"),
         ("dwp_takeup:housing_benefit_pensioners", "ukmod:housing_benefit"),
         ("dwp_takeup:benefit_units", "ukmod:families"),
+        # A decile of one publisher's distribution is not a decile — or a
+        # quintile — of another's: different models, different income
+        # concepts, different cut points. Never aliased.
+        ("ifs:decile_1", "ukmod:q1"),
+        ("ifs:decile_10", "ukmod:q5"),
+        ("resolution_foundation:quintile_1", "ukmod:q1"),
+        ("resolution_foundation:decile_1", "ifs:decile_1"),
+        # And a coverage-restricted geography is not the UK.
+        ("ifs:UK_excl_northern_ireland", "ifs:UK"),
+        ("ifs:UK_excl_scotland", "ifs:UK"),
     }
 )
 
@@ -297,6 +307,142 @@ _identity(
 )
 for _src in ("hm_treasury", "dwp"):
     _identity(_src, "unit", ["gbp", "households"])
+
+
+# --- UK think tanks (#86: IFS, Resolution Foundation) ------------------------
+# Both publish PROSE identities — "UK excluding Northern Ireland (note
+# verbatim: ...)", "Decile Poorest", "poorest fifth (quintile 1)" — so
+# closing them is the whole identity job for this lane. Two rules drive it:
+#
+# 1. A coverage-restricted geography is NOT the UK. IFS's Scotland- and
+#    NI-excluding analyses get their own values; aliasing them to "UK"
+#    would file an England-and-Wales figure as a UK one, the exact
+#    fail-open this registry exists to stop. The publication's verbatim
+#    wording stays on the claim as a geography_note.
+# 2. A decile of one publisher's distribution is not a decile of
+#    another's. The IFS and RF groups are registered per source and
+#    recorded DISTINCT from UKMOD's quintiles and HBAI's deciles.
+_identity(
+    "ifs",
+    "geography",
+    ["UK", "England", "UK_excl_northern_ireland", "UK_excl_scotland"],
+)
+_alias("ifs", "geography", "UK excluding Northern Ireland", "UK_excl_northern_ireland")
+_alias(
+    "ifs",
+    "geography",
+    "UK excluding Northern Ireland (note verbatim: 'Northern Ireland is not "
+    "included in this analysis')",
+    "UK_excl_northern_ireland",
+)
+_alias(
+    "ifs",
+    "geography",
+    "UK excluding Scotland (note verbatim: 'Excludes Scotland')",
+    "UK_excl_scotland",
+)
+_identity("resolution_foundation", "geography", ["UK", "GB", "Scotland"])
+
+_identity("ifs", "program", ["universal_credit"])
+_identity(
+    "ifs",
+    "income_group",
+    [f"decile_{_i}" for _i in range(1, 11)] + ["all"],
+)
+for _i, _label in enumerate(
+    ["Decile Poorest"] + [f"Decile {_n}" for _n in range(2, 10)] + ["Decile Richest"],
+    start=1,
+):
+    _alias("ifs", "income_group", _label, f"decile_{_i}")
+_alias("ifs", "income_group", "All", "all")
+
+# Resolution Foundation mixes quintiles, deciles and halves in one
+# publication, so the vocabulary carries all three shapes explicitly
+# rather than forcing them onto one grid.
+_identity(
+    "resolution_foundation",
+    "income_group",
+    [
+        "quintile_1",
+        "quintile_5",
+        "decile_1",
+        "decile_10",
+        "bottom_half",
+        "top_half",
+        "decile_1_vs_decile_10",
+    ],
+)
+for _src_value, _canon in (
+    ("poorest fifth (quintile 1)", "quintile_1"),
+    ("richest fifth (quintile 5)", "quintile_5"),
+    ("poorest decile (decile 1)", "decile_1"),
+    ("richest tenth (decile 10)", "decile_10"),
+    ("richest decile (decile 10)", "decile_10"),
+    ("bottom half", "bottom_half"),
+    ("top half", "top_half"),
+    ("lowest income decile vs highest income decile", "decile_1_vs_decile_10"),
+):
+    _alias("resolution_foundation", "income_group", _src_value, _canon)
+
+# RF names the benefit in prose; these are the instruments, closed.
+_identity(
+    "resolution_foundation",
+    "benefit",
+    [
+        "universal_credit_standard_allowance",
+        "universal_credit_standard_allowance_under_25",
+        "universal_credit_health_element",
+        "local_housing_allowance",
+        "state_pension",
+        "inflation_linked_benefits",
+    ],
+)
+for _src_value, _canon in (
+    ("Universal Credit standard allowance", "universal_credit_standard_allowance"),
+    ("UC standard allowance", "universal_credit_standard_allowance"),
+    (
+        "basic rate of unemployment benefits (UC standard allowance)",
+        "universal_credit_standard_allowance",
+    ),
+    (
+        "UC standard allowance, under-25s",
+        "universal_credit_standard_allowance_under_25",
+    ),
+    ("UC health element, existing recipients", "universal_credit_health_element"),
+    ("UC health element (new claimants)", "universal_credit_health_element"),
+    ("Local Housing Allowance (frozen)", "local_housing_allowance"),
+    ("State Pension (triple lock: earnings growth)", "state_pension"),
+    ("inflation-linked benefits", "inflation_linked_benefits"),
+):
+    _alias("resolution_foundation", "benefit", _src_value, _canon)
+
+_identity(
+    "ifs",
+    "unit",
+    [
+        "gbp",
+        "gbp_per_year",
+        "share",
+        "percent",
+        "percentage_points",
+        "persons",
+        "children_under_18",
+        "families",
+    ],
+)
+_identity(
+    "resolution_foundation",
+    "unit",
+    [
+        "gbp",
+        "share",
+        "percent",
+        "percentage_points",
+        "persons",
+        "children_under_18",
+        "families",
+    ],
+)
 
 
 def canon(source: str, axis: str, value: str) -> str:

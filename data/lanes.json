@@ -357,6 +357,17 @@
    "running": false,
    "updated": "2026-08-21",
    "note": "5 model claims, 7 Ledger facts (6 statistical + 1 non-simulated uprated EU-SILC survey input), 6 derived ratios dispositioned; 2 concept-mismatch attachments"
+  },
+  {
+   "id": "uk-thinktanks",
+   "source": "IFS + Resolution Foundation",
+   "area": "independent UK tax-benefit modelling",
+   "mode": 2,
+   "country": "UK",
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-24",
+   "note": "314 claims from 2 independent models (339 staged rows = 314 ingested + 25 tallied drops)"
   }
  ]
 }

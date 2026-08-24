@@ -38,13 +38,30 @@ silently outgrow its stated reason):
         policy-measures costings database (long-tail source, held on
         the DB-storage decision)
     two_child          NOT RESOLVED (4 rows = 2 resolution_foundation
-        + 1 ukmod poverty_count_change + 1 metaless exhibit): RF is a
-        long-tail source (held), and the ukmod row targets a REFORM
-        claim — the staged UKMOD family is baseline validation
-        statistics only, so a 2CL-reform claim needs its own staging
-        decision
+        + 1 ukmod poverty_count_change + 1 metaless exhibit). RF is no
+        longer a long-tail source — #86 ingested 58 RF claims — so the
+        reason is now precise rather than categorical:
+          * the poverty_count_change row's descriptor is under-specified
+            against the ingested vocabulary (unit_population "children"
+            with no income_concept or poverty_line), the same
+            under-specification #48 forced the reckoner rows through the
+            derivation below;
+          * the reform_fiscal_cost row targets a claim #86 DELIBERATELY
+            DROPS — it is an HM Treasury scorecard figure that RF
+            re-publishes, so there is no RF claim to attach to and there
+            should not be;
+          * the ukmod row targets a REFORM claim and the staged UKMOD
+            family is baseline validation statistics only.
     uprating_april2026 NOT RESOLVED (4 rows = 3 resolution_foundation
-        benefit_uprating_pct + 1 metaless exhibit): RF long-tail, held
+        benefit_uprating_pct + 1 metaless exhibit). Also no longer "RF
+        long-tail, held": the claims exist, but the archived descriptors
+        speak the HARVEST's proposal vocabulary (metric
+        "benefit_uprating_pct", benefit named in verbatim prose such as
+        "UC standard allowance, under-25s") while the ingested claims
+        speak the DECIDED vocabulary (metric benefit_uprating_rate,
+        benefit universal_credit_standard_allowance_under_25). Resolving
+        them means deriving the mapping the way the reckoner family is
+        derived below — a deliberate act, not a looser match.
 
 The metaless exhibits (5 rows across the families — the free_joins
 pair is one construction duplicated) carry exhibit_context but no
