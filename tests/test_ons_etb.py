@@ -217,15 +217,39 @@ def test_coverage_facts_ride_on_the_claim():
 
 
 def test_the_ranking_axis_is_recorded_and_never_unified():
+    """The DISTINCT set is an audit ledger, so it is exhaustive over the
+    pairs the prose claims — and names only vocabularies that exist
+    (review)."""
     from scorecard_db.ingest_ons_etb import INCOME_AXIS, stage
-    from scorecard_db.uk_aliases import DISTINCT
+    from scorecard_db.uk_aliases import DISTINCT, known
 
     scores, _ = stage()
     assert all(s.conditions["income_axis"] == INCOME_AXIS for s in scores)
     assert "equivalised_disposable" in INCOME_AXIS
-    # a quintile of one publisher's distribution is not another's
-    assert ("ons_etb:q1", "ukmod:q1") in DISTINCT
+    for q in range(1, 6):
+        assert (f"ons_etb:q{q}", f"ukmod:q{q}") in DISTINCT
     assert ("ons_etb:q1", "resolution_foundation:quintile_1") in DISTINCT
+    assert ("ons_etb:q5", "resolution_foundation:quintile_5") in DISTINCT
+    assert ("ons_etb:q1", "ifs:decile_1") in DISTINCT
+    # ...and HBAI is deliberately absent: it registers no quantile or
+    # decile vocabulary, so there is nothing there to assert against.
+    assert not any("hbai" in a + b for a, b in DISTINCT)
+    assert not known("dwp_hbai", "quantile")
+
+
+def test_the_adapter_pins_its_read_encoding():
+    """The SHA-256 gate fixes the BYTES; a platform default could still
+    change how they are decoded (review)."""
+    src = (LANE / "adapter.py").read_text()
+    assert 'encoding="utf-8"' in src
+
+
+def test_vendored_text_artifacts_are_protected_from_eol_rewriting():
+    """A Windows checkout with autocrlf on would rewrite line endings and
+    break every SHA pin confusingly (reported in review)."""
+    attrs = (ROOT / ".gitattributes").read_text()
+    assert "*.csv -text" in attrs
+    assert "*.csv-metadata.json -text" in attrs
 
 
 def test_mean_is_the_absent_default():

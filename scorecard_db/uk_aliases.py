@@ -62,12 +62,47 @@ DISTINCT: frozenset[tuple[str, str]] = frozenset(
         # and RF each rank by something else. A quintile of one
         # publisher's distribution is not a quintile of another's.
         ("ons_etb:q1", "ukmod:q1"),
+        ("ons_etb:q2", "ukmod:q2"),
+        ("ons_etb:q3", "ukmod:q3"),
+        ("ons_etb:q4", "ukmod:q4"),
         ("ons_etb:q5", "ukmod:q5"),
         ("ons_etb:q1", "resolution_foundation:quintile_1"),
-        ("ifs:decile_1", "ukmod:q1"),
-        ("ifs:decile_10", "ukmod:q5"),
+        ("ons_etb:q5", "resolution_foundation:quintile_5"),
+        *(
+            (f"ons_etb:q{_q}", f"ifs:decile_{_i}")
+            for _q, _i in ((1, 1), (1, 2), (5, 9), (5, 10))
+        ),
+        # Recorded EXHAUSTIVELY rather than by example (review): the
+        # DISTINCT set is an audit ledger, so a half-populated one reads
+        # as if the unlisted pairs were undecided. Cross-source
+        # unification is impossible regardless — the registry key is
+        # (source, axis, value) and no alias crosses sources — but the
+        # ledger should say so for every pair the prose claims.
+        *(
+            (f"ifs:decile_{_i}", f"ukmod:q{_q}")
+            for _i, _q in (
+                (1, 1),
+                (2, 1),
+                (3, 2),
+                (4, 2),
+                (5, 3),
+                (6, 3),
+                (7, 4),
+                (8, 4),
+                (9, 5),
+                (10, 5),
+            )
+        ),
+        # NOTE: no ifs/rf-vs-HBAI edges appear here on purpose. HBAI
+        # registers no decile or quantile vocabulary at all (its
+        # subgroups are children/pensioners/working_age/total), so there
+        # is nothing on that side to be distinct FROM — and asserting a
+        # pair against a value nobody registered would be the same
+        # overclaiming this ledger exists to prevent.
         ("resolution_foundation:quintile_1", "ukmod:q1"),
+        ("resolution_foundation:quintile_5", "ukmod:q5"),
         ("resolution_foundation:decile_1", "ifs:decile_1"),
+        ("resolution_foundation:decile_10", "ifs:decile_10"),
         # And a coverage-restricted geography is not the UK.
         ("ifs:UK_excl_northern_ireland", "ifs:UK"),
         ("ifs:UK_excl_scotland", "ifs:UK"),
@@ -327,7 +362,10 @@ for _src in ("hm_treasury", "dwp"):
 #    wording stays on the claim as a geography_note.
 # 2. A decile of one publisher's distribution is not a decile of
 #    another's. The IFS and RF groups are registered per source and
-#    recorded DISTINCT from UKMOD's quintiles and HBAI's deciles.
+#    recorded DISTINCT from UKMOD's quintiles and from each other,
+#    exhaustively rather than by example. HBAI is deliberately absent
+#    from that ledger: it registers no decile or quantile vocabulary, so
+#    there is nothing on its side to be distinct from.
 _identity(
     "ifs",
     "geography",
@@ -453,9 +491,14 @@ _identity(
 
 # --- ONS effects of taxes and benefits (#90) ---------------------------------
 # ONS ranks households into quintile groups by EQUIVALISED DISPOSABLE
-# income. That is not HBAI's BHC/AHC net-income ranking, not UKMOD's, and
-# not the IFS/RF groupings — so the quintiles are registered here per
-# source and recorded DISTINCT from the others below. The five income
+# income, which is not how UKMOD, IFS or RF rank theirs — so the
+# quintiles are registered here per source and recorded DISTINCT from
+# each of those below, exhaustively rather than by example. HBAI is NOT
+# in that ledger and the omission is deliberate: HBAI registers no
+# decile or quantile vocabulary (its subgroups are
+# children/pensioners/working_age/total), so there is nothing on its
+# side to be distinct from, and naming it would be an assertion against
+# a value nobody registered. The five income
 # concepts are five running totals of the same household, one per stage
 # of the tax-benefit system, and are closed so a sixth cannot appear
 # silently.

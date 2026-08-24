@@ -50,10 +50,11 @@ than assumed:
    declared drop; the build reconciles 5,280 = 2,640 + 2,640.
 
 Ranking: ONS ranks households by EQUIVALISED DISPOSABLE income. That is
-not HBAI's BHC/AHC net-income ranking and not HMT's, so the quintile
-identities are registered per source and recorded DISTINCT downstream —
-a quintile of one publisher's distribution is not a quintile of
-another's.
+not how UKMOD, IFS or RF rank theirs, so the quintile identities are
+registered per source and recorded DISTINCT downstream — a quintile of
+one publisher's distribution is not a quintile of another's. (HBAI is
+deliberately absent from that ledger: it registers no quantile
+vocabulary at all, so there is nothing there to be distinct from.)
 """
 
 import csv
@@ -171,7 +172,9 @@ def build():
     rows = []
     drops = {}
     read = 0
-    with open(path, newline="") as f:
+    # encoding pinned explicitly: the SHA-256 gate fixes the BYTES, but a
+    # platform default could still change how they are decoded.
+    with open(path, newline="", encoding="utf-8") as f:
         for rec in csv.DictReader(f):
             read += 1
             if rec["Geography"] != GEOGRAPHY:

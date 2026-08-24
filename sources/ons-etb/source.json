@@ -1,6 +1,6 @@
 {
   "id": "ons-etb",
-  "name": "ONS — Effects of taxes and benefits on household income (tax-benefits-statistics, time-series v3)",
+  "name": "ONS \u2014 Effects of taxes and benefits on household income (tax-benefits-statistics, time-series v3)",
   "organization": "Office for National Statistics",
   "country": "UK",
   "claim_class": "population_statistic",
@@ -9,7 +9,7 @@
     "https://static.ons.gov.uk/datasets/tax-benefits-statistics-time-series-v3.csv",
     "https://static.ons.gov.uk/datasets/tax-benefits-statistics-time-series-v3.csv-metadata.json"
   ],
-  "published": "2022-09-09 (dct:issued of dataset version 3; the bulletin series runs later — see raw/README.md on why the version is pinned rather than following latest_version)",
+  "published": "2022-09-09 (dct:issued of dataset version 3; the bulletin series runs later \u2014 see raw/README.md on why the version is pinned rather than following latest_version)",
   "fetched": "2026-08-24",
   "model": {
     "name": "ONS Effects of Taxes and Benefits household income model",
@@ -17,7 +17,9 @@
     "method": "Household survey microdata (Household Finances Survey / Living Costs and Food Survey) with direct taxes and cash benefits attributed per household, indirect taxes imputed from expenditure, and benefits in kind (health, education, housing subsidy, rail/bus travel subsidy, school meals) allocated by usage and population share. Households are ranked into quintile groups by EQUIVALISED DISPOSABLE income.",
     "method_basis": "ONS Effects of Taxes and Benefits Quality and Methodology Information"
   },
-  "metrics": ["income_statistic"],
+  "metrics": [
+    "income_statistic"
+  ],
   "income_concepts": {
     "original": "market income before any state intervention",
     "gross": "original + cash benefits",
@@ -25,11 +27,11 @@
     "post_tax": "disposable - indirect taxes",
     "final": "post-tax + benefits in kind"
   },
-  "income_concept_note": "Five running totals of the same household, one per stage of the tax-benefit system — five quantities, not one with a qualifier. Summing or comparing across them is a category error, and every row carries which stage it is.",
-  "ranking_note": "The dataset labels its dimension only 'Quintile'. That the ranking is by EQUIVALISED DISPOSABLE income on the modified-OECD scale comes from the ETB Quality and Methodology Information, which is stable across editions — so the axis name records the methodology and this note cites where it comes from, rather than the dataset asserting it.",
+  "income_concept_note": "Five running totals of the same household, one per stage of the tax-benefit system \u2014 five quantities, not one with a qualifier. Summing or comparing across them is a category error, and every row carries which stage it is.",
+  "ranking_note": "The dataset labels its dimension only 'Quintile'. That the ranking is by EQUIVALISED DISPOSABLE income on the modified-OECD scale comes from the ETB Quality and Methodology Information, which is stable across editions \u2014 so the axis name records the methodology and this note cites where it comes from, rather than the dataset asserting it. The quintiles are recorded DISTINCT from UKMOD's, IFS's and Resolution Foundation's groupings, exhaustively. They are NOT recorded distinct from HBAI's, deliberately: HBAI registers no decile or quantile vocabulary, so there is nothing on that side to assert against. The quintiles are recorded DISTINCT from UKMOD's, IFS's and Resolution Foundation's groupings, exhaustively. They are NOT recorded distinct from HBAI's, deliberately: HBAI registers no decile or quantile vocabulary, so there is nothing on that side to assert against.",
   "period": "Mixed by design: calendar years 1977-1993 and financial years 1994-95 to 2020-21. ONS's own code list is named `financial-and-calendar-years`. Each row carries the time basis its label implies, and a financial year keys its END year.",
   "geographies": "United Kingdom (the dataset's only geography value)",
   "coverage_note": "Source reconciliation: 5,280 published observations = 2,640 claims + 2,640 deliberate drops. The dropped half is the `Deflated value` series, whose PRICE BASE is stated nowhere in the dataset, its CSVW metadata, or the `value-deflation` code list; a real-terms figure with an unknown base year cannot be reproduced or compared. The 2024 bulletin names CPIH excluding Council Tax, but that is a different release from this version-3 dataset and attributing its deflator here would launder one publication's methodology onto another's numbers. Quintiles, not deciles: the decile table on the legacy dataset page is a 2015-saved .xls from a discontinued series (raw/README.md).",
-  "not_expressible_note": "BENEFITS IN KIND — health, education, housing subsidy, travel subsidies, school meals — have no PolicyEngine-UK counterpart, so the `final` income concept (and the post-tax-to-final step) is not computable at all. It is carried as an external claim and catalogued as not_expressible, the same call the HMT distributional lane made about public services. Indirect taxes are partially expressible: PE-UK has vat and the individual duties but no single indirect-tax aggregate, so a post-tax counterpart must sum them explicitly.",
-  "diagnosis_upstream": "Divergences decompose against the survey base (ONS uses HFS/LCFS; PE-UK's certified world is FRS-based), the equivalisation scale, the indirect-tax imputation, and the benefits-in-kind allocation, before any engine defect is named — and then only through the citable-known-issue gate."
+  "not_expressible_note": "BENEFITS IN KIND \u2014 health, education, housing subsidy, travel subsidies, school meals \u2014 have no PolicyEngine-UK counterpart, so the `final` income concept (and the post-tax-to-final step) is not computable at all. It is carried as an external claim and catalogued as not_expressible, the same call the HMT distributional lane made about public services. Indirect taxes are partially expressible: PE-UK has vat and the individual duties but no single indirect-tax aggregate, so a post-tax counterpart must sum them explicitly.",
+  "diagnosis_upstream": "Divergences decompose against the survey base (ONS uses HFS/LCFS; PE-UK's certified world is FRS-based), the equivalisation scale, the indirect-tax imputation, and the benefits-in-kind allocation, before any engine defect is named \u2014 and then only through the citable-known-issue gate."
 }
