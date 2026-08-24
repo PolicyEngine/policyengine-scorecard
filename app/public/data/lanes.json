@@ -357,6 +357,17 @@
    "running": false,
    "updated": "2026-08-21",
    "note": "5 model claims, 7 Ledger facts (6 statistical + 1 non-simulated uprated EU-SILC survey input), 6 derived ratios dispositioned; 2 concept-mismatch attachments"
+  },
+  {
+   "id": "lpc-minimum-wage",
+   "source": "Low Pay Commission",
+   "area": "minimum wage coverage and bite",
+   "mode": 1,
+   "country": "UK",
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-24",
+   "note": "119 claims \u2014 the first external validation of PE-UK's minimum-wage machinery (coverage in JOBS, bite vs the ASHE median)"
   }
  ]
 }

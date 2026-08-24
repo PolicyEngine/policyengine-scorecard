@@ -19,6 +19,7 @@ Chain order is dependency order and is part of the contract:
     campaign_us  staged day-1/day-2 campaign results (claim matching)
     uk_externals five UK primary-source families + Ledger staging
     uk_deductions FRR family
+    lpc_minimum_wage  LPC coverage + bite (jobs, not people)
     produce_uk + campaign_uk  archive-resolved UK reckoner attaches
     be_jrc      JRC EUROMOD-BE model claims + honest demo attachments;
                 final so its 2026-08-21 lane update cannot be regressed by
@@ -47,6 +48,7 @@ from . import (
     ingest_solo,
     ingest_uk_deductions,
     ingest_uk_externals,
+    ingest_lpc_minimum_wage,
     ingest_urban,
     produce_campaign_uk,
 )
@@ -94,6 +96,9 @@ def build(db_path: Path) -> dict:
         ("campaign_us", lambda: ingest_campaign.ingest(db_path)),
         ("uk_externals", lambda: ingest_uk_externals.ingest(db_path)),
         ("uk_deductions", lambda: ingest_uk_deductions.ingest(db_path)),
+        # Low Pay Commission (#88): the first external validation of
+        # PE-UK's minimum-wage machinery.
+        ("lpc_minimum_wage", lambda: ingest_lpc_minimum_wage.ingest(db_path)),
         ("produce_uk", lambda: produce_campaign_uk.produce(db_path)),
         (
             "campaign_uk",
