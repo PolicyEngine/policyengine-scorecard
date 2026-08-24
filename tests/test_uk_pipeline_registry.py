@@ -608,3 +608,25 @@ def test_hbai_gap_path_is_exhaustive():
     subgroups = ("total", "children", "pensioners")
     metrics = ("poverty_count_{hc}", "population_{hc}")
     assert len(subgroups) * len(metrics) * 2 == 12
+
+
+# --- verified against a real policyengine-uk 2.89.2 ------------------------
+
+
+def test_the_band_booleans_are_only_a_fallback():
+    """Checked against the certified engine: none of the six boolean band
+    variables exists, so `tax_band` must lead. Resolution order matters —
+    leading with the booleans guaranteed three uncited gaps per run."""
+    enum_first = [c for _, _, c in HMRC_BAND_CUTS]
+    assert all(c in CANDIDATES for c in enum_first)
+    src = inspect.getsource(uk.compute_run)
+    assert src.index('resolve(vs, "tax_band")') < src.index("person_bool(band_concept)")
+
+
+def test_the_enum_array_is_decoded_before_comparison():
+    """An EnumArray holds integer INDICES; decode_to_str() turns them into
+    member names. Comparing the undecoded array to "BASIC" would match
+    nothing and silently empty every band cut."""
+    src = inspect.getsource(uk.compute_run)
+    assert "decode_to_str()" in src
+    assert "did not come back as a decodable" in src

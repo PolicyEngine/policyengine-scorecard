@@ -1151,15 +1151,29 @@ def compute_run(run_name, fullpart):
     band_values = None
     if band_enum is not None:
         series = sim.calculate(band_enum, YEAR, map_to="person")
-        band_values = np.asarray(
-            getattr(getattr(series, "values", series), "decode_to_str", lambda: None)()
-            if hasattr(getattr(series, "values", series), "decode_to_str")
-            else getattr(series, "values", series)
-        ).astype(str)
+        raw = getattr(series, "values", series)
+        # An EnumArray stores integer INDICES; decode_to_str() turns them
+        # into the enum member NAMES ("BASIC"/"HIGHER"/"ADDITIONAL" at the
+        # certified pin). Comparing the undecoded array to a name would
+        # match nothing and silently empty every band cut, so a series
+        # that cannot be decoded is not used at all — the band falls to
+        # its boolean fallback and then to a cited gap.
+        if hasattr(raw, "decode_to_str"):
+            band_values = np.asarray(raw.decode_to_str()).astype(str)
+        else:
+            log(
+                f"  WARNING: {band_enum} did not come back as a decodable "
+                "enum array; band cuts fall back to the boolean concepts"
+            )
     for band_subgroup, enum_value, band_concept in HMRC_BAND_CUTS:
         band = None
         if band_values is not None:
-            band = band_values == enum_value
+            # Accept the member NAME (what decode_to_str returns) or the
+            # member VALUE, so a core release that changes which one it
+            # decodes to does not silently empty the cut.
+            band = (band_values == enum_value) | (
+                np.char.lower(band_values) == enum_value.lower()
+            )
             if not band.any():
                 # The enum resolved but names its bands differently at
                 # this pin: fall through rather than emit an empty cut as
