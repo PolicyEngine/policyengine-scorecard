@@ -88,6 +88,7 @@ a wrong parameter.
 """
 
 import argparse
+import importlib.metadata
 import json
 import re
 import sys
@@ -492,7 +493,15 @@ def main(argv=None):
     try:
         import policyengine_uk  # type: ignore
 
-        installed = getattr(policyengine_uk, "__version__", None)
+        # policyengine-uk exposes NO __version__ attribute (verified
+        # against the 2.89.2 wheel), so reading one would make `installed`
+        # None and the pin check raise on the CORRECT engine. The
+        # distribution metadata is the version of record; __version__ is
+        # kept as a fallback in case a future release adds one.
+        try:
+            installed = importlib.metadata.version("policyengine-uk")
+        except importlib.metadata.PackageNotFoundError:
+            installed = getattr(policyengine_uk, "__version__", None)
         if installed != pin:
             # The earlier dry-run passed under whatever ambient version
             # happened to be installed (2.75.3) while the registry prose
