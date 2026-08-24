@@ -368,6 +368,17 @@
    "running": false,
    "updated": "2026-08-24",
    "note": "314 claims from 2 independent models (339 staged rows = 314 ingested + 25 tallied drops)"
+  },
+  {
+   "id": "ons-etb",
+   "source": "ONS",
+   "area": "effects of taxes and benefits on household income",
+   "mode": 1,
+   "country": "UK",
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-24",
+   "note": "2640 claims across 5 income concepts (1 not_expressible in PE-UK: benefits in kind)"
   }
  ]
 }

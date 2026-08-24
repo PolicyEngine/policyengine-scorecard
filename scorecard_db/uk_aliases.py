@@ -58,6 +58,12 @@ DISTINCT: frozenset[tuple[str, str]] = frozenset(
         # A decile of one publisher's distribution is not a decile — or a
         # quintile — of another's: different models, different income
         # concepts, different cut points. Never aliased.
+        # ONS ranks by equivalised DISPOSABLE income; UKMOD, HBAI, IFS
+        # and RF each rank by something else. A quintile of one
+        # publisher's distribution is not a quintile of another's.
+        ("ons_etb:q1", "ukmod:q1"),
+        ("ons_etb:q5", "ukmod:q5"),
+        ("ons_etb:q1", "resolution_foundation:quintile_1"),
         ("ifs:decile_1", "ukmod:q1"),
         ("ifs:decile_10", "ukmod:q5"),
         ("resolution_foundation:quintile_1", "ukmod:q1"),
@@ -443,6 +449,26 @@ _identity(
         "families",
     ],
 )
+
+
+# --- ONS effects of taxes and benefits (#90) ---------------------------------
+# ONS ranks households into quintile groups by EQUIVALISED DISPOSABLE
+# income. That is not HBAI's BHC/AHC net-income ranking, not UKMOD's, and
+# not the IFS/RF groupings — so the quintiles are registered here per
+# source and recorded DISTINCT from the others below. The five income
+# concepts are five running totals of the same household, one per stage
+# of the tax-benefit system, and are closed so a sixth cannot appear
+# silently.
+_identity("ons_etb", "geography", ["UK"])
+_identity("ons_etb", "program", ["household_income"])
+_identity("ons_etb", "quantile", ["q1", "q2", "q3", "q4", "q5", "all"])
+_identity(
+    "ons_etb",
+    "income_concept",
+    ["original", "gross", "disposable", "post_tax", "final"],
+)
+_identity("ons_etb", "statistic", ["mean", "median"])
+_identity("ons_etb", "unit", ["gbp_nominal"])
 
 
 def canon(source: str, axis: str, value: str) -> str:
