@@ -198,10 +198,43 @@ def test_coverage_restricted_geographies_are_not_the_uk(staged):
 
 
 def test_publisher_deciles_are_never_unified(staged):
+    """The DISTINCT set is an audit ledger, so it is exhaustive over the
+    pairs the prose claims rather than carrying examples (review)."""
     from scorecard_db.uk_aliases import DISTINCT
 
-    assert ("ifs:decile_1", "ukmod:q1") in DISTINCT
+    for i, q in (
+        (1, 1),
+        (2, 1),
+        (3, 2),
+        (4, 2),
+        (5, 3),
+        (6, 3),
+        (7, 4),
+        (8, 4),
+        (9, 5),
+        (10, 5),
+    ):
+        assert (f"ifs:decile_{i}", f"ukmod:q{q}") in DISTINCT
+    assert ("resolution_foundation:quintile_1", "ukmod:q1") in DISTINCT
+    assert ("resolution_foundation:quintile_5", "ukmod:q5") in DISTINCT
     assert ("resolution_foundation:decile_1", "ifs:decile_1") in DISTINCT
+    assert ("resolution_foundation:decile_10", "ifs:decile_10") in DISTINCT
+
+
+def test_hbai_is_deliberately_absent_from_the_ledger():
+    """HBAI registers no decile or quantile vocabulary — its subgroups
+    are children/pensioners/working_age/total — so there is nothing on
+    that side to be distinct FROM, and asserting a pair against a value
+    nobody registered would be the same overclaiming the ledger exists
+    to prevent."""
+    from scorecard_db.uk_aliases import DISTINCT, known
+
+    assert not any("hbai" in a + b for a, b in DISTINCT)
+    assert not known("dwp_hbai", "income_group")
+    assert not known("dwp_hbai", "quantile")
+    assert known("dwp_hbai", "subgroup") == frozenset(
+        {"children", "pensioners", "working_age", "total"}
+    )
 
 
 def test_prose_identities_are_canonicalised(staged):

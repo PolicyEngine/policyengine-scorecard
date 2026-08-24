@@ -101,7 +101,17 @@ class Metric(str, Enum):
     #                                    avg_change_after_tax_income_usd
     #                                    (that one is legacy-named; a new
     #                                    currency rides unit_concept, not
-    #                                    the metric name)
+    #                                    the metric name). NOT the same
+    #                                    QUANTITY, though: this one is a
+    #                                    change in HOUSEHOLD NET income
+    #                                    (post tax AND transfers, the
+    #                                    concept IFS and RF publish),
+    #                                    while avg_change_after_tax_income
+    #                                    is the US distribution tables'
+    #                                    after-TAX income. A connector
+    #                                    must map an IFS/RF row onto the
+    #                                    net-income quantity, not the
+    #                                    after-tax one.
     #   share_gaining / share_losing     siblings of share_with_tax_cut,
     #                                    kept as TWO metrics because "not
     #                                    gaining" is not "losing" — a

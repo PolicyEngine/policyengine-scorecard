@@ -58,10 +58,37 @@ DISTINCT: frozenset[tuple[str, str]] = frozenset(
         # A decile of one publisher's distribution is not a decile — or a
         # quintile — of another's: different models, different income
         # concepts, different cut points. Never aliased.
-        ("ifs:decile_1", "ukmod:q1"),
-        ("ifs:decile_10", "ukmod:q5"),
+        # Recorded EXHAUSTIVELY rather than by example (review): the
+        # DISTINCT set is an audit ledger, so a half-populated one reads
+        # as if the unlisted pairs were undecided. Cross-source
+        # unification is impossible regardless — the registry key is
+        # (source, axis, value) and no alias crosses sources — but the
+        # ledger should say so for every pair the prose claims.
+        *(
+            (f"ifs:decile_{_i}", f"ukmod:q{_q}")
+            for _i, _q in (
+                (1, 1),
+                (2, 1),
+                (3, 2),
+                (4, 2),
+                (5, 3),
+                (6, 3),
+                (7, 4),
+                (8, 4),
+                (9, 5),
+                (10, 5),
+            )
+        ),
+        # NOTE: no ifs/rf-vs-HBAI edges appear here on purpose. HBAI
+        # registers no decile or quantile vocabulary at all (its
+        # subgroups are children/pensioners/working_age/total), so there
+        # is nothing on that side to be distinct FROM — and asserting a
+        # pair against a value nobody registered would be the same
+        # overclaiming this ledger exists to prevent.
         ("resolution_foundation:quintile_1", "ukmod:q1"),
+        ("resolution_foundation:quintile_5", "ukmod:q5"),
         ("resolution_foundation:decile_1", "ifs:decile_1"),
+        ("resolution_foundation:decile_10", "ifs:decile_10"),
         # And a coverage-restricted geography is not the UK.
         ("ifs:UK_excl_northern_ireland", "ifs:UK"),
         ("ifs:UK_excl_scotland", "ifs:UK"),
@@ -321,7 +348,10 @@ for _src in ("hm_treasury", "dwp"):
 #    wording stays on the claim as a geography_note.
 # 2. A decile of one publisher's distribution is not a decile of
 #    another's. The IFS and RF groups are registered per source and
-#    recorded DISTINCT from UKMOD's quintiles and HBAI's deciles.
+#    recorded DISTINCT from UKMOD's quintiles and from each other,
+#    exhaustively rather than by example. HBAI is deliberately absent
+#    from that ledger: it registers no decile or quantile vocabulary, so
+#    there is nothing on its side to be distinct from.
 _identity(
     "ifs",
     "geography",
