@@ -1,0 +1,85 @@
+{
+ "schema_version": 1,
+ "registry_rule": "Every measure ALREADY LEGISLATED with an effective date inside the horizons this repo computes at, and whether the certified policyengine-uk baseline actually carries it. The repo has a baselines registry (#13) that DESCRIBES worlds and an ingest that stamps which world a run executed \u2014 but nothing checked that the certified world contains the law that was legislated into it. A counterpart at 2027 or 2028 measured against a baseline missing an announced measure diverges for a reason no axis in #59's registry names, and the divergence would be attributed to whatever the analyst reached for.",
+ "engine_pin": {
+  "policyengine_uk": "2.89.2",
+  "probed_on": "2026-08-25"
+ },
+ "verdicts": {
+  "carried": "the parameter path moves as the measure requires",
+  "consistent": "no single parameter encodes it, but the baseline path is consistent with the measure's published profile; evidence recorded",
+  "missing": "the measure has no representation at the pin, so any claim at or beyond its effective date is measured against the wrong law"
+ },
+ "measures": [
+  {
+   "key": "ab2025__two_child_limit_abolition",
+   "title": "Universal Credit two-child limit abolished",
+   "announced_at": "Autumn Budget 2025",
+   "effective_from": "2026-04-06",
+   "parameter": "gov.dwp.universal_credit.elements.child.limit.child_count",
+   "probe": {
+    "2025": 2.0,
+    "2026": Infinity,
+    "2027": Infinity
+   },
+   "verdict": "carried",
+   "evidence": "The limit is 2 in 2025 and unbounded from 2026, so the abolition is in the certified world. This also confirms the registered pre_ab2025 counterfactual (#49's case battery, baselines.py) is genuinely a counterfactual rather than a restatement of the baseline."
+  },
+  {
+   "key": "freeze__income_tax_thresholds",
+   "title": "Income tax personal allowance and threshold freeze",
+   "announced_at": "pre-existing, extended at successive events",
+   "effective_from": "2022-04-06",
+   "parameter": "gov.hmrc.income_tax.allowances.personal_allowance.amount",
+   "probe": {
+    "2026": 12570.0,
+    "2027": 12570.0,
+    "2028": 12570.0
+   },
+   "verdict": "carried",
+   "evidence": "Flat at 12,570 through 2028, and the basic-rate threshold flat at 37,700, so the freeze is in the baseline. This is what makes the freeze measurable only against an INDEXED counterfactual (#67's baseline_vintage axis): the frozen path is the baseline, not the reform."
+  },
+  {
+   "key": "ab2025__fuel_duty_freeze_extension",
+   "title": "Fuel duty freeze extension",
+   "announced_at": "Autumn Budget 2025",
+   "effective_from": "2026-04-01",
+   "parameter": "gov.hmrc.fuel_duty.petrol_and_diesel",
+   "probe": {
+    "2026": 0.5345,
+    "2027": 0.5925,
+    "2028": 0.6151
+   },
+   "verdict": "consistent",
+   "evidence": "No single parameter encodes 'a freeze was extended', so this was checked against the OBR's own scored profile instead. The certified path holds the rate low in 2026 and steps up in 2027 \u2014 and OBR's AB2025 CPI scoring of this measure (data/externals/obr-policy-effects.json, #75) is NEGATIVE in 2026-27 (-0.129pp) and POSITIVE in 2027-28 (+0.076pp), the signature of a freeze that ends and catches up. The baseline is consistent with the measure; this entry records the check rather than a defect."
+  },
+  {
+   "key": "ab2025__high_value_council_tax_surcharge",
+   "title": "High Value Council Tax Surcharge, English homes over GBP 2m",
+   "announced_at": "Autumn Budget 2025",
+   "effective_from": "2028-04-01",
+   "parameter": "gov.hmrc.high_value_council_tax_surcharge",
+   "probe": {
+    "2028": null
+   },
+   "verdict": "missing",
+   "affected_from_period": 2028,
+   "evidence": "Probed at the pin and the path does not resolve. The measure is already law, effective April 2028, charging GBP 2,500-7,500 by band on English homes over GBP 2m. Any counterpart the repo computes for 2028 or later is therefore measured against a world without it.",
+   "consequence": "Claims already exist at that horizon: the OBR policy-effects lane (#55) runs to 2030-31. A 2028 divergence on a property- or council-tax-adjacent quantity currently has no axis naming this cause."
+  },
+  {
+   "key": "announced__property_income_tax_rates",
+   "title": "Higher income tax rates on property income",
+   "announced_at": "reported as legislated for April 2027",
+   "effective_from": "2027-04-06",
+   "parameter": "gov.hmrc.income_tax.rates.property",
+   "probe": {
+    "2027": null
+   },
+   "verdict": "missing",
+   "affected_from_period": 2027,
+   "evidence": "The engine taxes property income at the main income tax rates with no separate schedule, so there is nothing to carry the measure. Probed at the pin: the path does not resolve.",
+   "consequence": "The reckoner lane (#60) computes 2026-27 to 2028-29 and the divergence decomposition (#59) works FY2027-28 rows, so this horizon is actively in use."
+  }
+ ]
+}
