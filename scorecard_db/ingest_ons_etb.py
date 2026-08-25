@@ -15,13 +15,15 @@ loudly on any unmapped metric, unknown identity value or unhandled
 adapter field; values arrive in raw units and are NEVER re-derived here;
 calibration_relationship is decided in relationships.py.
 
-What this lane deliberately does NOT claim: that PolicyEngine can answer
-all of it. `final` income includes benefits in kind — health, education,
-housing subsidy — which PE-UK has no counterpart for, and `post_tax`
-needs an indirect-tax total PE-UK exposes only as separate heads. Those
-are coverage facts about the counterpart side, recorded on the claims as
-`pe_expressibility` so a later compute lane reads them off the row
-instead of rediscovering them.
+What this lane does NOT claim: that PolicyEngine answers all of it —
+and equally not that it answers LESS than it does. Both concepts that
+fall short say exactly what is missing. `post_tax` needs an indirect-tax
+total PE-UK exposes only as separate heads. `final` adds benefits in
+kind, of which PE-UK models FOUR of ONS's five (health, education,
+school meals, travel subsidies) and lacks only the housing subsidy.
+Those facts ride on the claims as `pe_expressibility` and `pe_missing`,
+so a later compute lane sizes the right thing rather than waving a real
+divergence away as "PolicyEngine doesn't do this".
 
     PYTHONPATH=. python -m scorecard_db.ingest_ons_etb data/scorecard.db
 """
@@ -79,13 +81,38 @@ EXPRESSIBILITY = {
     # PE-UK has vat and the individual duties but no single indirect-tax
     # aggregate, so a counterpart must sum the heads explicitly.
     "post_tax": "partial",
-    # Benefits in kind (health, education, housing subsidy, travel
-    # subsidies, school meals) have no PE-UK counterpart at all.
-    "final": "not_expressible",
+    # CORRECTED after reading the certified engine rather than assuming:
+    # PE-UK models FOUR of ONS's five benefits-in-kind components —
+    # health (gov/dhsc nhs_spending, itself A&E + outpatient + admitted
+    # patient), education (gov/dfe dfe_education_spending), school meals
+    # (gov/dfe free_school_meals) and travel subsidies (gov/dft
+    # rail_subsidy_spending, bus_subsidy_spending). Only the HOUSING
+    # SUBSIDY component has no counterpart. So `final` is partial, not
+    # not_expressible: calling it a total coverage gap would let a real
+    # divergence on the four modelled components be waved away as
+    # "PolicyEngine doesn't do this", which is the opposite failure to
+    # the one the gate exists for.
+    "final": "partial",
 }
-NOT_EXPRESSIBLE_ACTION = (
-    "https://github.com/PolicyEngine/policyengine-scorecard/issues/90"
-)
+
+# What is missing from each partial concept, carried ON THE CLAIM so a
+# counterpart lane sizes the right thing instead of guessing.
+PARTIAL_GAPS = {
+    "post_tax": (
+        "PE-UK has vat and the individual duties but no single "
+        "indirect-tax aggregate; a counterpart must sum the heads "
+        "explicitly"
+    ),
+    "final": (
+        "PE-UK models four of ONS's five benefits-in-kind components — "
+        "health (nhs_spending), education (dfe_education_spending), "
+        "school meals (free_school_meals) and travel subsidies "
+        "(rail_subsidy_spending, bus_subsidy_spending). The HOUSING "
+        "SUBSIDY component has no counterpart, so a final-income "
+        "comparison is short by that component and nothing else"
+    ),
+}
+PARTIAL_ACTION = "https://github.com/PolicyEngine/policyengine-scorecard/issues/90"
 
 _KNOWN_FIELDS = frozenset(
     {
@@ -153,10 +180,11 @@ def stage() -> tuple[list[ExternalScore], dict]:
             cond["statistic"] = statistic
         if row["fy"] is not None:
             cond["fy"] = row["fy"]
-        if EXPRESSIBILITY[concept] == "not_expressible":
+        if EXPRESSIBILITY[concept] == "partial":
             # Descriptive gate #9: a coverage gap is a finding only if it
-            # is citable.
-            cond["action_link"] = NOT_EXPRESSIBLE_ACTION
+            # is citable — and a PARTIAL one has to say which part.
+            cond["pe_missing"] = PARTIAL_GAPS[concept]
+            cond["action_link"] = PARTIAL_ACTION
         basis = _TIME_BASES[row["time_basis"]]
         scores.append(
             ExternalScore(

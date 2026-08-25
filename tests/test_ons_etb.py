@@ -193,9 +193,10 @@ def test_income_concepts_are_five_quantities_not_one(rows):
 
 
 def test_coverage_facts_ride_on_the_claim():
-    """A `final`-income divergence is a COVERAGE gap — PE-UK has no
-    benefits-in-kind counterpart — and must never be reportable as an
-    engine defect. The claim says so, and cites where."""
+    """How far PE-UK follows each concept, recorded ACCURATELY in both
+    directions. Overstating the gap is the opposite failure to
+    overstating the capability, and just as misleading: it would let a
+    real divergence be waved away as "PolicyEngine doesn't do this"."""
     from scorecard_db.ingest_ons_etb import stage
 
     scores, _ = stage()
@@ -208,12 +209,36 @@ def test_coverage_facts_ride_on_the_claim():
     assert by_concept["gross"] == {"expressible"}
     assert by_concept["disposable"] == {"expressible"}
     assert by_concept["post_tax"] == {"partial"}
-    assert by_concept["final"] == {"not_expressible"}
-    final = [s for s in scores if s.conditions["income_concept"] == "final"]
-    assert all(
-        s.conditions["action_link"].startswith("https://github.com/PolicyEngine/")
-        for s in final
-    )
+    # NOT not_expressible: PE-UK models four of ONS's five
+    # benefits-in-kind components.
+    assert by_concept["final"] == {"partial"}
+    for concept in ("post_tax", "final"):
+        rows = [s for s in scores if s.conditions["income_concept"] == concept]
+        assert all(
+            s.conditions["action_link"].startswith("https://github.com/PolicyEngine/")
+            for s in rows
+        )
+        # a PARTIAL gap has to say which part
+        assert all(s.conditions["pe_missing"] for s in rows)
+
+
+def test_the_benefits_in_kind_gap_names_only_what_is_actually_missing():
+    """Checked against a real policyengine-uk 2.89.2: it has
+    nhs_spending, dfe_education_spending, free_school_meals,
+    rail_subsidy_spending and bus_subsidy_spending. Housing subsidy is
+    the only ONS component with no counterpart."""
+    from scorecard_db.ingest_ons_etb import PARTIAL_GAPS
+
+    gap = PARTIAL_GAPS["final"]
+    for modelled in (
+        "nhs_spending",
+        "dfe_education_spending",
+        "free_school_meals",
+        "rail_subsidy_spending",
+    ):
+        assert modelled in gap
+    assert "HOUSING SUBSIDY" in gap
+    assert "four of ONS's five" in gap
 
 
 def test_the_ranking_axis_is_recorded_and_never_unified():

@@ -21,9 +21,11 @@ running total after another stage of the tax-benefit system:
     final       + benefits in kind (health, education, housing subsidy)
 
 They are FIVE quantities, not one with a qualifier, and the adapter keeps
-them apart: summing or comparing across them is a category error, and
-"final income" in particular includes a benefits-in-kind allocation that
-PolicyEngine-UK has no counterpart for at all.
+them apart: summing or comparing across them is a category error. How far
+PolicyEngine-UK can follow each is recorded downstream on the claim, and
+recorded ACCURATELY in both directions — it models four of the five
+benefits-in-kind components ONS allocates into `final` income, and lacks
+only the housing subsidy.
 
 Two identity facts this source forces, both read out of the data rather
 than assumed:
