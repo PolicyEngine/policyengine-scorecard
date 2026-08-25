@@ -4,10 +4,10 @@ import { METRIC_LABELS, PROGRAM_LABELS, countryOf } from "../types";
 
 /**
  * The home view is mission control (issue #7): running lanes, the held-out
- * win/miss record, and the freshest divergences — in-progress work visible,
+ * agreement profile, and the freshest divergences — in-progress work visible,
  * not just results. Scoped to the header's country (issue #42): the
  * comparison feed is the US Urban comparison, so its record and divergences
- * render only under US; the UK panels describe the UK lanes' own state.
+ * render only under US; other panels describe their countries' own lanes.
  */
 export function MissionControl({
   data,
@@ -26,9 +26,8 @@ export function MissionControl({
     (l) => !l.running && l.stage === "registered",
   );
 
-  // Country-SCOPED comparison rows, never a US gate: today the feed is
-  // US-only so the UK slice is empty, but when UK comparison rows land
-  // they count here under UK — and never inflate the US cards.
+  // Country-scoped comparison rows: future country rows count only in their
+  // own slice and never inflate another country's cards.
   const countryRows = data.rows.filter((r) => countryOf(r) === country);
 
   // Held-out record: the only published "validation" column (issue #1).
@@ -39,7 +38,7 @@ export function MissionControl({
       r.pe_value !== null &&
       r.external_value !== null,
   );
-  const wins = heldOut.filter((r) => closeness(r) === "close").length;
+  const closeMatches = heldOut.filter((r) => closeness(r) === "close").length;
 
   const freshest = countryRows
     .filter(
@@ -62,7 +61,7 @@ export function MissionControl({
         {heldOut.length > 0 ? (
           <>
             <p className="mt-1.5 text-2xl font-bold fig">
-              {wins.toLocaleString()}
+              {closeMatches.toLocaleString()}
               <span className="text-base font-normal text-muted-foreground">
                 {" "}
                 / {heldOut.length.toLocaleString()}
@@ -79,6 +78,8 @@ export function MissionControl({
             No {country} rows in the comparison feed yet.
             {country === "UK" &&
               " The first UK PE results — 14 HMRC ready-reckoner scores, held-out relationship on a constructed comparison basis (PE current-law statics against HMRC's indexed-baseline FY projections) — are on the Reform validation tab; a UK record lands here when UK comparisons join this feed."}
+            {country === "BE" &&
+              " Two demo-grade Axiom worker values are on Reform validation as concept mismatches: CY2026 versus CY2023, reweighted US support versus Belgian SILC, and worker slice versus national scope. They do not form a comparable record."}
           </p>
         ) : (
           <p className="mt-1.5 text-xs leading-4 text-muted-foreground">
@@ -111,10 +112,10 @@ export function MissionControl({
             </li>
           )}
         </ul>
-        {country === "UK" && (
+        {country !== "US" && (
           <>
             <h3 className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-              UK pipeline
+              {country} pipeline
             </h3>
             <ul className="mt-1 space-y-1">
               {countryLanes
@@ -162,6 +163,8 @@ export function MissionControl({
             Arrives when {country} rows join the comparison feed
             {country === "UK" &&
               " — the ingested DWP, HBAI, OBR and UKMOD claims are waiting on PE computes (the compute pipeline lane)"}
+            {country === "BE" &&
+              " — the existing Axiom attachments remain on Reform validation because their period, population basis and scope do not match the JRC claims"}
             .
           </p>
         ) : (

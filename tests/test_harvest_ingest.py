@@ -670,7 +670,9 @@ def test_every_committed_lane_carries_a_country():
     contract; the uk-deductions-frr lane arrived tag-less in exactly this
     way during the #50 rebase)."""
     feed = json.loads((REPO / "data" / "lanes.json").read_text())
-    untagged = [x["id"] for x in feed["lanes"] if x.get("country") not in ("US", "UK")]
+    untagged = [
+        x["id"] for x in feed["lanes"] if x.get("country") not in ("US", "UK", "BE")
+    ]
     assert untagged == []
 
 

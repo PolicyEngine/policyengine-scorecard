@@ -463,3 +463,13 @@ def test_results_carry_executed_baseline(db_copy):
     ).fetchone()[0]
     conn.close()
     assert nulls == 0 and ex_nulls == 0
+
+
+def test_missing_interchange_file_fails_loudly(tmp_path, monkeypatch):
+    """A gutted vendored interchange (dir present, comparison.csv absent)
+    must raise, never build an empty comparison (#74 gate)."""
+    import pipeline.build_comparison as bc
+
+    monkeypatch.setattr(bc, "INTERCHANGE", tmp_path)
+    with pytest.raises(FileNotFoundError, match="comparison.csv"):
+        bc.load_2026()
