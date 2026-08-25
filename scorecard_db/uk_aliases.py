@@ -60,10 +60,16 @@ DISTINCT: frozenset[tuple[str, str]] = frozenset(
         # are not UKMOD's quantiles nor anyone's deciles.
         ("dwp_pensions:gbp_10k_20k", "ukmod:q1"),
         ("dwp_pensions:gbp_70k_plus", "ukmod:q5"),
-        # ...and DWP's age bands are not LPC's minimum-wage age bands:
-        # one is an auto-enrolment range, the other a wage-rate category.
-        ("dwp_pensions:age_22_25", "lpc:age_18_20"),
-        ("dwp_pensions:age_22_25", "lpc:age_25_plus"),
+        # DEFERRED, deliberately: DWP's age bands are also not LPC's
+        # minimum-wage age bands (one is an auto-enrolment range, the
+        # other a wage-rate category), but the `lpc` vocabulary is
+        # registered on the #93 branch and not here. Asserting a pair
+        # against a source nobody has registered is the same overclaiming
+        # the review caught on #92 — the ledger would read as if the
+        # distinction had been checked when there is nothing on the other
+        # side to check against. The pairs go in once #93 lands; until
+        # then the distinction lives in prose, in
+        # sources/dwp-pension-participation/source.json.
     }
 )
 

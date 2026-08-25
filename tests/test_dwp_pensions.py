@@ -115,11 +115,22 @@ def test_eligibility_bands_are_not_income_quantiles():
     assert ("dwp_pensions:gbp_70k_plus", "ukmod:q5") in DISTINCT
 
 
-def test_pension_age_bands_are_not_minimum_wage_age_bands():
-    """One is an auto-enrolment range, the other a wage-rate category."""
-    from scorecard_db.uk_aliases import DISTINCT
+def test_the_lpc_age_band_distinction_is_deferred_not_asserted():
+    """DWP's age bands are also not LPC's minimum-wage age bands — one is
+    an enrolment range, the other a wage-rate category — but the `lpc`
+    vocabulary is registered on #93's branch, not here. Asserting a pair
+    against a source nobody has registered is the same overclaiming the
+    review caught on #92: the ledger would read as if the distinction had
+    been checked when there is nothing on the other side. So it is
+    deferred in a comment and stated in prose instead."""
+    from scorecard_db.uk_aliases import DISTINCT, known
 
-    assert ("dwp_pensions:age_22_25", "lpc:age_18_20") in DISTINCT
+    assert not known("lpc", "subgroup"), "lpc is registered here after all"
+    assert not any("lpc" in a + b for a, b in DISTINCT)
+    src = (ROOT / "scorecard_db" / "uk_aliases.py").read_text()
+    assert "DEFERRED, deliberately" in src
+    note = json.loads((LANE / "source.json").read_text())["identity_note"]
+    assert "DEFERRED from the ledger" in note
 
 
 def test_unregistered_values_raise():
