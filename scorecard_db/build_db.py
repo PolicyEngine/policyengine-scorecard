@@ -49,6 +49,45 @@ from . import (
 )
 
 
+def _assert_every_imported_ingest_runs(steps) -> None:
+    """Every ingest module imported at the top must appear in `steps`.
+
+    The chain is one ordered list that many branches add to at the same
+    anchor, so `build_db.py` conflicts on nearly every merge — and the
+    conflict region splits a step tuple, which means a careless
+    resolution either breaks the syntax (loud) or DROPS A STEP (silent).
+    A silently dropped step ships a database missing a whole lane while
+    every test still passes, because the tests that would notice are the
+    ones the dropped ingest brought with it.
+
+    So the import list is the contract: if a module is imported here it
+    must run here. Adding an ingest means adding both, and removing one
+    means removing both, deliberately.
+    """
+    registered = set()
+    for _, fn in steps:
+        registered.update(
+            name
+            for name in fn.__code__.co_names
+            if name.startswith(("ingest_", "produce_"))
+        )
+    imported = {
+        name
+        for name in globals()
+        if name.startswith(("ingest_", "produce_"))
+        and hasattr(globals()[name], "__file__")
+    }
+    missing = sorted(imported - registered)
+    if missing:
+        raise SystemExit(
+            f"build_db imports {missing} but never runs them. Either the "
+            "chain lost a step in a merge resolution (build_db.py conflicts "
+            "on nearly every branch, and the conflict splits a step tuple), "
+            "or the import is dead. Both are decided deliberately, never "
+            "left to a silently shorter database."
+        )
+
+
 def content_hash(db_path: Path) -> str:
     """Order-insensitive logical hash over every table (autoincrement
     ids excluded) — two builds from the same inputs must match."""
@@ -101,6 +140,7 @@ def build(db_path: Path) -> dict:
             lambda: ingest_campaign.ingest(db_path, produce_campaign_uk.RESOLVED),
         ),
     ]
+    _assert_every_imported_ingest_runs(steps)
     summary: dict = {"steps": {}}
     for name, fn in steps:
         summary["steps"][name] = fn()

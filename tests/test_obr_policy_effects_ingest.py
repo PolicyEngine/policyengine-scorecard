@@ -669,3 +669,38 @@ def test_every_baseline_world_is_registered(tmp_path):
     assert "current_law" not in labels
     assert len(labels) == 11  # the (round, counterfactual) pairs in the data
     db.close()
+
+
+# --- the build chain cannot silently lose a step ---------------------------
+
+
+def test_every_imported_ingest_actually_runs():
+    """build_db.py is one ordered list that many branches add to at the
+    same anchor, so it conflicts on nearly every merge — and the conflict
+    region splits a step tuple. A careless resolution either breaks the
+    syntax (loud) or DROPS A STEP (silent), shipping a database missing a
+    whole lane while every test still passes, because the tests that
+    would notice came with the dropped ingest.
+
+    The import list is the contract: imported here means runs here.
+    """
+    from scorecard_db import build_db
+
+    steps = [
+        ("x", (lambda: build_db.ingest_obr_policy_effects.ingest(None))),
+    ]
+    # a chain that imports more than it runs must be refused
+    with pytest.raises(SystemExit, match="but never runs them"):
+        build_db._assert_every_imported_ingest_runs(steps)
+
+
+def test_the_real_chain_satisfies_the_contract():
+    import inspect
+
+    from scorecard_db import build_db
+
+    src = inspect.getsource(build_db.build)
+    assert "_assert_every_imported_ingest_runs(steps)" in src
+    # and it passes for the chain as committed
+    tree = inspect.getsource(build_db)
+    assert "ingest_obr_policy_effects.ingest(db_path)" in tree
