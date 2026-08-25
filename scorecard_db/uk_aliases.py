@@ -306,9 +306,11 @@ for _src in ("hm_treasury", "dwp"):
 
 # --- Low Pay Commission minimum wage (#88) -----------------------------------
 # A rate family, so the vocabularies are age bands and rate scopes rather
-# than programs. Geographies reuse the repo's registered UK region names
-# (LPC prints "East of England" where the rest of the repo says "East" —
-# aliased here, once).
+# than programs. Geographies are the repo's registered UK region names,
+# and this registry only ACCEPTS them — LPC prints "East of England"
+# where the rest of the repo says "East", and that alias is applied on
+# the harvest side, in sources/lpc-minimum-wage/adapter.py's REGIONS map,
+# so the staged rows never carry the LPC spelling in the first place.
 _identity("lpc", "geography", ["UK"] + _UK_REGIONS)
 _identity("lpc", "program", ["minimum_wage"])
 _identity(
