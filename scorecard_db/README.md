@@ -16,7 +16,8 @@ can check, one SQLite file, reform-keyed.
   methodological `variant`, `rate_unit`, …). Adapters fail loudly on
   anything unmapped.
 - **`calibration_relationship` mandatory** (`consumed_as_target` /
-  `seed_source` / `held_out`). Published validation wins = held_out only.
+  `seed_source` / `held_out`). Published validation comparisons use held-out
+  rows only.
 - **History, not state.** `pe_results` keeps every computation (engine
   version × certified data bundle × run); the `comparisons` view joins each
   claim to its latest result. Re-scoring on a new certified artifact appends.
@@ -26,15 +27,29 @@ can check, one SQLite file, reform-keyed.
 
 ## Use
 
+The database is a DERIVED artifact and is not committed: build it from
+the vendored sources (all inputs live in this repo; ~4 seconds,
+deterministic — CI verifies two builds agree on a logical content hash).
+
 ```bash
-PYTHONPATH=. python -m scorecard_db.ingest_urban data/scorecard.db
-PYTHONPATH=. python -m scorecard_db.ingest_platform data/scorecard.db
-python -m pytest tests/test_scorecard_db.py
+PYTHONPATH=. python -m scorecard_db.build_db data/scorecard.db
+PYTHONPATH=. python -m pytest tests/ -q
 ```
+
+`build_db` is from-scratch only (it refuses to overwrite — delete the
+old file first; nothing is lost, it is derived). Plain `pytest` also
+works from a fresh clone: a pytest configuration hook builds the database
+before collection when it is absent. Individual ingest modules (`ingest_urban`, `ingest_platform`,
+…) remain runnable one at a time against an existing database, in the
+dependency order documented in `build_db.py`. Built artifacts for every
+main commit are published to the `scorecard-artifacts` Supabase storage
+bucket as `<sha>.db.gz` and `latest.db.gz`.
 
 ```python
 from scorecard_db import ScorecardDB
 
+# after build_db (opening a missing path creates an EMPTY db,
+# which the from-scratch builder then refuses to overwrite)
 db = ScorecardDB("data/scorecard.db")
 db.comparisons(program="snap", geography="US", held_out_only=True)
 db.coverage()

@@ -11,12 +11,24 @@ export type CalibrationRelationship =
   "consumed_as_target" | "seed_source" | "held_out";
 
 /** The model instance a row or lane belongs to (issue #42). */
-export type Country = "US" | "UK";
+export type Country = "US" | "UK" | "BE";
 
 export const COUNTRY_LABELS: Record<Country, string> = {
   US: "United States",
   UK: "United Kingdom",
+  BE: "Belgium",
 };
+
+/** A concept_mismatch attachment must never render a divergence or ratio:
+ * the comparison is declared not comparable (Belgium lane, PR #82). The
+ * fallback string is what the caller shows instead of a computed figure. */
+export function comparabilityFigure(
+  statusEffective: string,
+  fallback: string,
+  compute: () => string,
+): string {
+  return statusEffective === "concept_mismatch" ? fallback : compute();
+}
 
 /**
  * Country of a row or lane. Historical US feeds predate the country key,
