@@ -113,7 +113,7 @@ def test_dwp_mapping_and_drops(monkeypatch):
     assert admin["metric"] == "recipients_count"
     assert admin["fy"] == "2023-24"
     assert admin["fact_id"].startswith("uk-admin-")
-    assert admin["routing"].startswith("ledger")
+    assert admin["routing"].startswith("chronicle")
     # PC take-up rate: the engine PARAMETER cites the FYE-2020 edition of
     # this series -> seed_source, never consumed (evidence in
     # relationships.py, read 2026-08-19).
@@ -267,7 +267,7 @@ def test_calibration_comes_from_the_registry(monkeypatch):
         )[0]
         is CR.HELD_OUT
     )
-    with pytest.raises(ValueError, match="route to Ledger"):
+    with pytest.raises(ValueError, match="route to Chronicle"):
         uk_relationship(
             "obr", Metric.BENEFIT_COST, program="pension_credit", kind="outturn"
         )

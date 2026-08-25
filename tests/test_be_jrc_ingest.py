@@ -155,7 +155,7 @@ def test_external_rows_route_only_to_ledger_and_ratios_are_recomputed():
         or row["source_column"] == "a3_6_unemployment_benefits_euromod_2023"
         for row in ledger
     )
-    assert all(row["routing"].startswith("ledger") for row in ledger)
+    assert all(row["routing"].startswith("chronicle") for row in ledger)
     assert all(
         row["benchmark_class"] == BenchmarkClass.ADMINISTRATIVE_FACT.value
         for row in ledger
@@ -424,7 +424,7 @@ def test_lane_note_carries_the_5_7_6_accounting(tmp_path, monkeypatch):
     ).fetchone()[0]
     db.close()
     assert note == (
-        "5 model claims, 7 Ledger facts (6 statistical + 1 "
+        "5 model claims, 7 Chronicle facts (6 statistical + 1 "
         "non-simulated uprated EU-SILC survey input), 6 derived "
         "ratios dispositioned; 2 concept-mismatch attachments"
     )
