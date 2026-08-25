@@ -1,0 +1,25 @@
+{
+  "id": "dwp-pension-participation",
+  "name": "DWP — Workplace pension participation and savings trends (2009 to 2025)",
+  "organization": "Department for Work and Pensions",
+  "country": "UK",
+  "claim_class": "population_statistic",
+  "url": "https://www.gov.uk/government/statistics/workplace-pension-participation-and-savings-trends-2009-to-2025",
+  "data_urls": [
+    "https://assets.publishing.service.gov.uk/media/6a68b23acc35a9471da4c1cf/workplace-pension-participation-2009-2025.xlsx"
+  ],
+  "published": "2026-07-30",
+  "fetched": "2026-08-25",
+  "model": {
+    "name": "DWP estimates derived from ONS ASHE",
+    "open_source": false,
+    "method": "Participation is the share of employees ELIGIBLE for automatic enrolment who are saving into a workplace pension, estimated from the Annual Survey of Hours and Earnings (an employer survey of jobs), Great Britain, April reference period.",
+    "method_basis": "DWP background information and methodology note accompanying the release"
+  },
+  "metrics": ["participation_rate"],
+  "denominator_note": "ELIGIBILITY IS PART OF THE IDENTITY. The denominator is employees eligible for automatic enrolment, defined by an earnings trigger and an age range that have both moved over the series. A participation rate whose denominator is unstated is uninterpretable, so it is carried on every claim rather than left in a methodology note.",
+  "period": "ASHE April reference years 2009 to 2025, carried as calendar years",
+  "geographies": "Great Britain — ASHE excludes Northern Ireland, so rows carry GB and not UK",
+  "coverage_note": "What is READ: block 1 of sheets 1.3a (earnings band), 1.4 (age band) and 1.9a (region), each split Public / Private / Overall. What is deliberately NOT read and tallied by the build: the five unlabelled side-by-side blocks on each of those sheets, because every sheet holds six tables next to each other and only the first carries a descriptor — a number whose meaning is inferred from its column position is not a claim; and the other 21 data sheets, each of which is its own population decision.",
+  "diagnosis_upstream": "Built on ASHE, an employer survey of jobs, where the certified policyengine-uk world is FRS-based, a household survey. A PE-vs-DWP participation gap is a survey-population difference before it is an engine question — the same axis the Low Pay Commission lane (#88) carries — and it must be sized before any engine defect is named, and then only through the citable-known-issue gate. Note also that PE-UK models pension CONTRIBUTIONS and their relief but has no representation of the pension commencement lump sum (verified at the certified pin, #98), so the pensions question this scorecard can ask is narrower than the pensions system."
+}
