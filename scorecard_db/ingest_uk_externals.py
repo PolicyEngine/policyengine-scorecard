@@ -835,7 +835,7 @@ def stage_all() -> tuple[list[ExternalScore], list[dict], dict]:
         )
     if _EXPECTED["ledger"] and summary["ledger"] != _EXPECTED["ledger"]:
         raise ValueError(
-            f"ledger accounting drifted: {summary['ledger']} != {_EXPECTED['ledger']}"
+            f"Chronicle accounting drifted: {summary['ledger']} != {_EXPECTED['ledger']}"
         )
     if _EXPECTED["drops"] and summary["drops"] != _EXPECTED["drops"]:
         raise ValueError(
