@@ -148,7 +148,7 @@ def effective_relationship(program, metric):
 # OBR EFO Table 4.9 welfare lines consumed by pe-uk-data@dd68c73
 # (targets/sources/obr.py::_parse_welfare row labels; March-2026 EFO,
 # forecast columns FY2024-25..2030-31 — the FY2024-25 OUTTURN column is
-# also read there, but outturn cells route to Ledger, never to claims).
+# also read there, but outturn cells route to Chronicle, never to claims).
 # Stated in the ADAPTER's program vocabulary; the pe-uk-data label each
 # maps to is quoted (targets/sources/obr.py benefit_rows, verbatim).
 OBR_CONSUMED_WELFARE_PROGRAMS = frozenset(
@@ -188,7 +188,7 @@ _OBR_UNCONSUMED = (
 #   current claimants are eligible (no new claims)" -> a stated modeling
 #   choice, the live comparator for policyengine-uk#1813.
 # Administrative cells (recipient counts, amounts claimed) route to
-# Ledger and never reach these claims.
+# Chronicle and never reach these claims.
 _PC_TAKEUP_SEED = (
     CR.SEED_SOURCE,
     "policyengine-uk pension_credit/takeup.yaml (0.7) cites the FYE-2020 "
@@ -252,7 +252,7 @@ def uk_relationship(source, metric, program=None, kind=None):
       dwp_takeup: "takeup_rate" | "modeled_estimate" (ENR / unclaimed) |
                   "average_award"
       uk_hmrc:    "liabilities" | "reckoner"
-      obr:        forecast rows only (outturn cells route to Ledger
+      obr:        forecast rows only (outturn cells route to Chronicle
                   before relationships are assigned)
     Unknown combinations raise — assignment is always deliberate.
     """
@@ -285,7 +285,7 @@ def uk_relationship(source, metric, program=None, kind=None):
     if source == "obr":
         if kind == "outturn":
             raise ValueError(
-                "OBR outturn cells route to Ledger before relationship "
+                "OBR outturn cells route to Chronicle before relationship "
                 "assignment — an outturn row must never become a claim"
             )
         if program in OBR_CONSUMED_WELFARE_PROGRAMS:

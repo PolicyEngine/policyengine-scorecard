@@ -9,8 +9,8 @@ Design decisions (Max, 2026-08-01):
    (population statistics) and mode 2 (reform scores) in one table: a level
    is just a score of the null reform.
 
-2. **Populace-targets-DB shape.** Each row = a provenance reference (the
-   ``ledger_fact`` column — a Ledger ``validation_comparator`` fact id once
+2. **Microcosm-targets-DB shape.** Each row = a provenance reference (the
+   ``ledger_fact`` column — a Chronicle ``validation_comparator`` fact id once
    cataloged; publication metadata inline until then) + a small enum'd core
    (metric, unit_concept, period) + a ``conditions`` mapping carrying every
    subset criterion (geography, program, subgroup axes, methodological
@@ -192,7 +192,7 @@ class UnitConcept(str, Enum):
 #                   identity.
 # basis             source's own designation: "outturn" | "forecast" |
 #                   "projected" | "provisional" | "unstated". Admin outturn
-#                   rows never reach external_scores (ledger routing rule).
+#                   rows never reach external_scores (Chronicle routing rule).
 # income_concept    UK distribution rows: "BHC" | "AHC" (load-bearing on
 #                   every HBAI-family statistic), alongside the US values.
 # equivalisation    e.g. "modified_oecd" — load-bearing with income_concept.
@@ -225,7 +225,7 @@ STANDARD_CONDITIONS = frozenset(
         # Cross-model epistemics (ruling 2026-08-02): every new benchmark
         # names its class explicitly; Belgium's JRC model claims use
         # different_model, while the routed statistical rows carry
-        # administrative_fact in Ledger staging.
+        # administrative_fact in Chronicle staging.
         "benchmark_class",
         # Source/report semantics used by the Belgium country-report lane.
         "series",
@@ -244,7 +244,7 @@ STANDARD_CONDITIONS = frozenset(
         "population_frame",
         "input_database",
         # simulation_year: the uprating target year of a non-simulated
-        # survey-input Ledger fact (Belgium bun row) — deliberately distinct
+        # survey-input Chronicle fact (Belgium bun row) — deliberately distinct
         # from reference_year (statistical outturns) and policy_system_year
         # (executed model output).
         "simulation_year",
@@ -314,7 +314,7 @@ class CalibrationRelationship(str, Enum):
 class BenchmarkClass(str, Enum):
     """Epistemic relationship between the benchmark and our model.
 
-    This travels in claim conditions (and on routed Ledger facts) rather
+    This travels in claim conditions (and on routed Chronicle facts) rather
     than becoming a second metric/status system.
     """
 
