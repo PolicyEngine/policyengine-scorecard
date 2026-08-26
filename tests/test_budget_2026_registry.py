@@ -30,6 +30,58 @@ def test_registry_validates():
     assert validate(REG) == len(REG["measures"]) == 14
 
 
+def test_the_two_false_gaps_are_corrected():
+    """v1 recorded both of these not_expressible on GUESSED paths that
+    failed to resolve. Both are expressible, and both are already in the
+    certified baseline — so neither is a Budget-day scoring job."""
+    for key, leaf, want in (
+        (
+            "ab2026__property_income_tax_rate_rise",
+            "gov.hmrc.income_tax.rates.property.basic",
+            0.20,
+        ),
+        (
+            "ab2026__high_value_council_tax_surcharge",
+            "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount",
+            2500.0,
+        ),
+    ):
+        m = MEASURES[key]
+        assert m["computability"] == "expressible", key
+        assert m["already_in_baseline"] is True, key
+        assert m["engine_baseline_2026"][leaf] == want, key
+        assert "CORRECTED" in m["note"], key
+        assert "why" not in m, key
+
+
+def test_a_gap_claim_needs_a_name_search_not_a_guessed_path():
+    """--resolve cannot catch a false gap, because a not_expressible
+    entry carries no path to resolve. That is exactly how v1's two got
+    through. So the claim must be backed by a search of the tree."""
+    for k, m in MEASURES.items():
+        if m["computability"] == "not_expressible" and not m.get("out_of_model_scope"):
+            assert "Searched the whole parameter tree" in m["name_search"], k
+
+
+def test_validate_rejects_an_unsearched_gap_claim():
+    bad = json.loads(json.dumps(REG))
+    m = next(
+        x
+        for x in bad["measures"]
+        if x["computability"] == "not_expressible" and not x.get("out_of_model_scope")
+    )
+    m["name_search"] = ""
+    with pytest.raises(ValueError, match="NAME SEARCH"):
+        validate(bad)
+
+
+def test_the_provenance_rule_citation_is_precise():
+    """#86 is the lane; the rule was established in its PR, #91."""
+    note = REG["provenance_rule_note"]
+    assert "#91" in note and "#86" in note
+    assert "the RULE was established in its PR" in note
+
+
 def test_it_is_a_scoreability_registry_not_a_claims_lane():
     """The revenue figures in circulation are journalism citing third
     parties, and the #86 rule applies: a re-published figure belongs to
@@ -99,6 +151,14 @@ def test_a_freeze_is_not_treated_as_a_delta_on_current_law():
 # --- gaps have to name themselves ------------------------------------------
 
 
+def test_the_pensions_gap_survived_the_re_check():
+    """The other two gaps did not. This one was verified by name search:
+    no lump|commencement|tax_free_cash|pcls node anywhere in the tree."""
+    m = MEASURES["ab2026__pension_tax_free_lump_sum_restriction"]
+    assert m["computability"] == "not_expressible"
+    assert "no nodes" in m["name_search"]
+
+
 def test_the_pensions_measure_gap_was_verified_not_assumed():
     """The most-reported pensions measure of this Budget cannot be scored
     at all: gov.hmrc.pensions has no tax-free lump sum parameter at the
@@ -156,16 +216,23 @@ def test_validate_rejects_a_registry_that_hides_the_unmodellable_half():
         validate(bad)
 
 
-def test_already_announced_measures_raise_a_baseline_integrity_question():
-    """Two measures are already law. The interesting question is not how
-    to score them but whether the certified world's future baselines
-    already carry them — if not, every counterpart at those years is
-    measured against the wrong law."""
-    flagged = [m for m in MEASURES.values() if m.get("baseline_integrity_flag")]
-    assert len(flagged) == 2
-    for m in flagged:
-        assert m["reported_status"] == "already_announced"
-        assert "baseline" in m["why"].lower()
+def test_the_already_announced_measures_are_confirmed_in_the_baseline():
+    """v1 raised these two as an OPEN question — did the certified
+    world's future baselines carry measures already in law? It then
+    answered it the wrong way, recording both as engine gaps. Reading
+    the tree settled it: both are carried, with the dated schedules.
+    So the question is closed, not flagged."""
+    announced = [
+        m for m in MEASURES.values() if m["reported_status"] == "already_announced"
+    ]
+    assert len(announced) == 2
+    for m in announced:
+        assert m["already_in_baseline"] is True
+        assert m["computability"] == "expressible"
+        assert m["engine_baseline_2026"], m["measure_key"]
+        # no open flag and no gap prose survives the correction
+        assert not m.get("baseline_integrity_flag")
+        assert "why" not in m
 
 
 def test_a_ruled_out_measure_is_kept_as_a_counterfactual():

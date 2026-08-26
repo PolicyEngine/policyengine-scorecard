@@ -92,6 +92,21 @@ def validate(reg):
                     "can't do this' is not a finding unless it says what is "
                     "missing"
                 )
+            # v1 recorded TWO false gaps from guessed paths that failed to
+            # resolve. --resolve cannot catch this class, because a
+            # not_expressible entry carries no path to resolve. So the
+            # claim has to be backed by a NAME SEARCH of the parameter
+            # tree, not by one path that happened not to work.
+            if (
+                not m.get("out_of_model_scope")
+                and not (m.get("name_search") or "").strip()
+            ):
+                errors.append(
+                    f"{k}: an in-scope not_expressible verdict must record the "
+                    "NAME SEARCH that proved it. A guessed path that fails to "
+                    "resolve proves nothing — it is how v1 published two false "
+                    "engine gaps that --resolve could not catch"
+                )
             if not (
                 m.get("policyengine_uk_development_item") or m.get("out_of_model_scope")
             ):
