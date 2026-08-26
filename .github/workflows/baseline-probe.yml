@@ -60,23 +60,28 @@ jobs:
           PYTHONPATH: .
         run: python pipeline/check_baseline_integrity.py --probe
 
-      # The Budget 2026 registry (#100) lands on its own branch. Skip
-      # rather than fail while it is absent, so this step starts
-      # enforcing the moment that PR merges — but announce the skip:
-      # a silently-skipped gate reads as a passing gate, which is the
-      # #74 failure mode this repo already paid for once.
-      - name: Budget 2026 registry — resolve every parameter path
+      # The sibling registries land on their own branches (#100, #102),
+      # so on this ref their validators may not exist yet. Skip rather
+      # than fail — but ANNOUNCE every skip, and fail if NOTHING ran.
+      # A gate that quietly validates nothing reads as a gate that
+      # passed, which is the #74 failure mode this repo already paid
+      # for once. Each validator starts enforcing the moment its PR
+      # merges, with no edit here.
+      - name: Sibling registries — resolve every parameter path
         env:
           PYTHONPATH: .
         run: |
-          f=pipeline/validate_budget_2026_registry.py
-          if [ -f "$f" ]; then
-            python "$f" --resolve
-          else
-            echo "::notice::$f absent on this ref — Budget 2026 resolve NOT run (arrives with #100)"
-          fi
-
-      - name: CGT reform spec — resolve and compare baselines
-        env:
-          PYTHONPATH: .
-        run: python pipeline/validate_cgt_reform_spec.py --resolve
+          set -euo pipefail
+          ran=0
+          for f in pipeline/validate_budget_2026_registry.py \
+                   pipeline/validate_cgt_reform_spec.py; do
+            if [ -f "$f" ]; then
+              echo "::group::$f --resolve"
+              python "$f" --resolve
+              echo "::endgroup::"
+              ran=$((ran + 1))
+            else
+              echo "::notice::$f absent on this ref — NOT run (arrives with its own PR)"
+            fi
+          done
+          echo "resolved $ran sibling registr(ies) against the pinned engine"
