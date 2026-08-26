@@ -1,15 +1,21 @@
 {
- "schema_version": 1,
- "registry_rule": "Every measure ALREADY LEGISLATED with an effective date inside the horizons this repo computes at, and whether the certified policyengine-uk baseline actually carries it. The repo has a baselines registry (#13) that DESCRIBES worlds and an ingest that stamps which world a run executed \u2014 but nothing checked that the certified world contains the law that was legislated into it. A counterpart at 2027 or 2028 measured against a baseline missing an announced measure diverges for a reason no axis in #59's registry names, and the divergence would be attributed to whatever the analyst reached for.",
+ "schema_version": 2,
+ "registry_rule": "Every measure ALREADY LEGISLATED with an effective date inside the horizons this repo computes at, and whether the certified policyengine-uk baseline carries it. The repo has a baselines registry (#13) that DESCRIBES worlds and ingests that stamp which world a run executed \u2014 but nothing checked that the certified world contains the law legislated into it.",
+ "probe_rule": "A probe distinguishes ABSENT (no such path) from SUBTREE (the path exists but is not a scalar) from SCALAR. Version 1 of this registry collapsed subtree and absent into 'missing' and recorded TWO FALSE ENGINE GAPS as a result \u2014 see corrections_log. A parameter tree is searched, never guessed: a path that does not resolve is searched for by name across the tree before any 'absent' verdict is written. Each reading also records the exact PATH and DATE it came from. A re-probe re-runs those verbatim rather than reconstructing a path from a key name \u2014 reconstruction was itself a source of false readings while this registry was being repaired.",
  "engine_pin": {
   "policyengine_uk": "2.89.2",
-  "probed_on": "2026-08-25"
+  "probed_on": "2026-08-26"
  },
  "verdicts": {
-  "carried": "the parameter path moves as the measure requires",
-  "consistent": "no single parameter encodes it, but the baseline path is consistent with the measure's published profile; evidence recorded",
-  "missing": "the measure has no representation at the pin, so any claim at or beyond its effective date is measured against the wrong law"
+  "carried": "the certified baseline contains the measure",
+  "consistent": "no single parameter encodes it, but the baseline path matches the measure's published profile; evidence recorded",
+  "absent": "no representation anywhere in the tree, verified by NAME SEARCH and not by a guessed path"
  },
+ "corrections_log": [
+  "Version 1 recorded `announced__property_income_tax_rates` as missing on the strength of a guessed path that raised TypeError. The real path is gov.hmrc.income_tax.rates.property, a SUBTREE with basic/higher/additional children, and it already carries the April-2027 rise (0.20->0.22, 0.40->0.42, 0.45->0.47). Caught in review by DTrim99 on PR #100.",
+  "Re-checking after that, version 1 also recorded `ab2025__high_value_council_tax_surcharge` as missing on a guessed path (gov.hmrc.high_value_council_tax_surcharge). The real path is gov.hmrc.council_tax.high_value_surcharge.amount, found by searching the tree, and it carries the full announced schedule. The first bracket's amount is 0 because it is the below-threshold band, which is what the original reading mistook for an empty schedule.",
+  "Both errors published a FALSE ENGINE GAP \u2014 precisely the unearned excuse this registry exists to prevent \u2014 and neither was caught by CI, because the only function that queries the engine was gated behind a flag no test or workflow ever passed. That is fixed too: see .github/workflows/baseline-probe.yml."
+ ],
  "measures": [
   {
    "key": "ab2025__two_child_limit_abolition",
@@ -17,13 +23,30 @@
    "announced_at": "Autumn Budget 2025",
    "effective_from": "2026-04-06",
    "parameter": "gov.dwp.universal_credit.elements.child.limit.child_count",
-   "probe": {
-    "2025": 2.0,
-    "2026": Infinity,
-    "2027": Infinity
-   },
+   "probe": [
+    {
+     "path": "gov.dwp.universal_credit.elements.child.limit.child_count",
+     "date": "2025-06-01",
+     "kind": "scalar",
+     "value": 2.0
+    },
+    {
+     "path": "gov.dwp.universal_credit.elements.child.limit.child_count",
+     "date": "2026-06-01",
+     "kind": "scalar",
+     "value": null,
+     "unbounded": true
+    },
+    {
+     "path": "gov.dwp.universal_credit.elements.child.limit.child_count",
+     "date": "2027-06-01",
+     "kind": "scalar",
+     "value": null,
+     "unbounded": true
+    }
+   ],
    "verdict": "carried",
-   "evidence": "The limit is 2 in 2025 and unbounded from 2026, so the abolition is in the certified world. This also confirms the registered pre_ab2025 counterfactual (#49's case battery, baselines.py) is genuinely a counterfactual rather than a restatement of the baseline."
+   "evidence": "Limit is 2 in 2025 and UNBOUNDED from 2026 (recorded as unbounded rather than as a JSON Infinity literal, which is not valid JSON and broke strict parsers in v1). This also confirms the registered pre_ab2025 world is a genuine counterfactual and not a restatement of the baseline."
   },
   {
    "key": "freeze__income_tax_thresholds",
@@ -31,13 +54,28 @@
    "announced_at": "pre-existing, extended at successive events",
    "effective_from": "2022-04-06",
    "parameter": "gov.hmrc.income_tax.allowances.personal_allowance.amount",
-   "probe": {
-    "2026": 12570.0,
-    "2027": 12570.0,
-    "2028": 12570.0
-   },
+   "probe": [
+    {
+     "path": "gov.hmrc.income_tax.allowances.personal_allowance.amount",
+     "date": "2026-06-01",
+     "kind": "scalar",
+     "value": 12570.0
+    },
+    {
+     "path": "gov.hmrc.income_tax.allowances.personal_allowance.amount",
+     "date": "2027-06-01",
+     "kind": "scalar",
+     "value": 12570.0
+    },
+    {
+     "path": "gov.hmrc.income_tax.allowances.personal_allowance.amount",
+     "date": "2028-06-01",
+     "kind": "scalar",
+     "value": 12570.0
+    }
+   ],
    "verdict": "carried",
-   "evidence": "Flat at 12,570 through 2028, and the basic-rate threshold flat at 37,700, so the freeze is in the baseline. This is what makes the freeze measurable only against an INDEXED counterfactual (#67's baseline_vintage axis): the frozen path is the baseline, not the reform."
+   "evidence": "Flat at 12,570 through 2028, which is what makes a freeze measurable only against an INDEXED counterfactual (#67's baseline_vintage axis): the frozen path IS the baseline."
   },
   {
    "key": "ab2025__fuel_duty_freeze_extension",
@@ -45,41 +83,166 @@
    "announced_at": "Autumn Budget 2025",
    "effective_from": "2026-04-01",
    "parameter": "gov.hmrc.fuel_duty.petrol_and_diesel",
-   "probe": {
-    "2026": 0.5345,
-    "2027": 0.5925,
-    "2028": 0.6151
-   },
+   "probe": [
+    {
+     "path": "gov.hmrc.fuel_duty.petrol_and_diesel",
+     "date": "2026-06-01",
+     "kind": "scalar",
+     "value": 0.5345
+    },
+    {
+     "path": "gov.hmrc.fuel_duty.petrol_and_diesel",
+     "date": "2027-06-01",
+     "kind": "scalar",
+     "value": 0.5925
+    },
+    {
+     "path": "gov.hmrc.fuel_duty.petrol_and_diesel",
+     "date": "2028-06-01",
+     "kind": "scalar",
+     "value": 0.6151
+    }
+   ],
    "verdict": "consistent",
-   "evidence": "No single parameter encodes 'a freeze was extended', so this was checked against the OBR's own scored profile instead. The certified path holds the rate low in 2026 and steps up in 2027 \u2014 and OBR's AB2025 CPI scoring of this measure (data/externals/obr-policy-effects.json, #75) is NEGATIVE in 2026-27 (-0.129pp) and POSITIVE in 2027-28 (+0.076pp), the signature of a freeze that ends and catches up. The baseline is consistent with the measure; this entry records the check rather than a defect."
+   "evidence": "No single parameter encodes 'a freeze was extended', so the certified path is checked against the measure's published CPI profile instead: the rate is held low in 2026 and steps up in 2027, the signature of a freeze that ends and catches up. PROVENANCE CAVEAT (review): the OBR scoring that profile comes from is data/externals/obr-policy-effects.json, which is NOT on main \u2014 it arrives with PR #81. Until that merges this verdict rests on an unmerged artifact, and the evidence is prose rather than a computed check. It is recorded as 'consistent' and not 'carried' for exactly that reason.",
+   "evidence_artifact_unmerged": true
+  },
+  {
+   "key": "announced__property_income_tax_rates",
+   "title": "Higher income tax rates on property income",
+   "announced_at": "legislated for April 2027",
+   "effective_from": "2027-04-06",
+   "parameter": "gov.hmrc.income_tax.rates.property",
+   "probe": [
+    {
+     "path": "gov.hmrc.income_tax.rates.property",
+     "date": "2027-06-01",
+     "kind": "subtree",
+     "value": null
+    },
+    {
+     "path": "gov.hmrc.income_tax.rates.property.basic",
+     "date": "2026-06-01",
+     "kind": "scalar",
+     "value": 0.2
+    },
+    {
+     "path": "gov.hmrc.income_tax.rates.property.basic",
+     "date": "2027-06-01",
+     "kind": "scalar",
+     "value": 0.22
+    },
+    {
+     "path": "gov.hmrc.income_tax.rates.property.higher",
+     "date": "2026-06-01",
+     "kind": "scalar",
+     "value": 0.4
+    },
+    {
+     "path": "gov.hmrc.income_tax.rates.property.higher",
+     "date": "2027-06-01",
+     "kind": "scalar",
+     "value": 0.42
+    },
+    {
+     "path": "gov.hmrc.income_tax.rates.property.additional",
+     "date": "2026-06-01",
+     "kind": "scalar",
+     "value": 0.45
+    },
+    {
+     "path": "gov.hmrc.income_tax.rates.property.additional",
+     "date": "2027-06-01",
+     "kind": "scalar",
+     "value": 0.47
+    }
+   ],
+   "verdict": "carried",
+   "evidence": "CORRECTED (review, PR #100). The path is a SUBTREE with basic/higher/additional children and it already carries the April-2027 rise: 0.20->0.22, 0.40->0.42, 0.45->0.47 at 2027-01-01. Version 1 called this missing because a guessed scalar call raised TypeError and the probe collapsed that into absence."
   },
   {
    "key": "ab2025__high_value_council_tax_surcharge",
    "title": "High Value Council Tax Surcharge, English homes over GBP 2m",
    "announced_at": "Autumn Budget 2025",
    "effective_from": "2028-04-01",
-   "parameter": "gov.hmrc.high_value_council_tax_surcharge",
-   "probe": {
-    "2028": null
-   },
-   "verdict": "missing",
-   "affected_from_period": 2028,
-   "evidence": "Probed at the pin and the path does not resolve. The measure is already law, effective April 2028, charging GBP 2,500-7,500 by band on English homes over GBP 2m. Any counterpart the repo computes for 2028 or later is therefore measured against a world without it.",
-   "consequence": "Claims already exist at that horizon: the OBR policy-effects lane (#55) runs to 2030-31. A 2028 divergence on a property- or council-tax-adjacent quantity currently has no axis naming this cause."
+   "parameter": "gov.hmrc.council_tax.high_value_surcharge.amount",
+   "probe": [
+    {
+     "path": "gov.hmrc.council_tax.high_value_surcharge.amount[0].amount",
+     "date": "2028-06-01",
+     "kind": "scalar",
+     "value": 0.0
+    },
+    {
+     "path": "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount",
+     "date": "2028-06-01",
+     "kind": "scalar",
+     "value": 2500.0
+    },
+    {
+     "path": "gov.hmrc.council_tax.high_value_surcharge.amount[2].amount",
+     "date": "2028-06-01",
+     "kind": "scalar",
+     "value": 3500.0
+    },
+    {
+     "path": "gov.hmrc.council_tax.high_value_surcharge.amount[3].amount",
+     "date": "2028-06-01",
+     "kind": "scalar",
+     "value": 5000.0
+    },
+    {
+     "path": "gov.hmrc.council_tax.high_value_surcharge.amount[4].amount",
+     "date": "2028-06-01",
+     "kind": "scalar",
+     "value": 7500.0
+    },
+    {
+     "path": "gov.hmrc.council_tax.high_value_surcharge.amount[1].threshold",
+     "date": "2028-06-01",
+     "kind": "scalar",
+     "value": 2000000.0
+    },
+    {
+     "path": "gov.hmrc.council_tax.high_value_surcharge.amount[2].threshold",
+     "date": "2028-06-01",
+     "kind": "scalar",
+     "value": 2500000.0
+    },
+    {
+     "path": "gov.hmrc.council_tax.high_value_surcharge.amount[3].threshold",
+     "date": "2028-06-01",
+     "kind": "scalar",
+     "value": 3500000.0
+    },
+    {
+     "path": "gov.hmrc.council_tax.high_value_surcharge.amount[4].threshold",
+     "date": "2028-06-01",
+     "kind": "scalar",
+     "value": 5000000.0
+    }
+   ],
+   "verdict": "carried",
+   "evidence": "CORRECTED. The full announced schedule is in the baseline from 2027: GBP 2,500 / 3,500 / 5,000 / 7,500 at thresholds GBP 2m / 2.5m / 3.5m / 5m, uprated from 2029. Version 1 probed a GUESSED path (gov.hmrc.high_value_council_tax_surcharge) that does not exist, and separately misread the first bracket's 0 \u2014 the below-threshold band \u2014 as an empty schedule. A third path error surfaced while writing this: the bracket syntax is `x[i]`, meaning x.brackets[i], per the repo convention in compute_uk_reckoner \u2014 writing `x.brackets[i]` double-applies it and reads as absent. That one was caught by this registry's own test rather than by a reviewer, which is the tooling working."
   },
   {
-   "key": "announced__property_income_tax_rates",
-   "title": "Higher income tax rates on property income",
-   "announced_at": "reported as legislated for April 2027",
-   "effective_from": "2027-04-06",
-   "parameter": "gov.hmrc.income_tax.rates.property",
-   "probe": {
-    "2027": null
-   },
-   "verdict": "missing",
-   "affected_from_period": 2027,
-   "evidence": "The engine taxes property income at the main income tax rates with no separate schedule, so there is nothing to carry the measure. Probed at the pin: the path does not resolve.",
-   "consequence": "The reckoner lane (#60) computes 2026-27 to 2028-29 and the divergence decomposition (#59) works FY2027-28 rows, so this horizon is actively in use."
+   "key": "reported__pension_tax_free_lump_sum",
+   "title": "Pension commencement lump sum (the 25% tax-free lump sum)",
+   "announced_at": "not announced; reported as an option for 28 October 2026",
+   "effective_from": "n/a",
+   "parameter": "gov.hmrc.pensions.tax_free_lump_sum",
+   "probe": [
+    {
+     "path": "gov.hmrc.pensions.tax_free_lump_sum",
+     "date": "2026-06-01",
+     "kind": "absent",
+     "value": null
+    }
+   ],
+   "verdict": "absent",
+   "name_search": "Searched the whole parameter tree for lump|commencement|tax_free_cash|pcls: no node. This is the only absent verdict here, and unlike v1's two it was verified by NAME SEARCH rather than by a guessed path.",
+   "evidence": "The engine models pension contributions and their relief but has no pension commencement lump sum. NOTE this is a SCORING capability gap, not a baseline-integrity failure: the measure is not law, so the baseline is correct to omit it. It is carried here because the same search proved it, and #98 tracks it upstream.",
+   "scoring_gap_not_baseline_gap": true
   }
  ]
 }

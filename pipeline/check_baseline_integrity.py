@@ -40,7 +40,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 REGISTRY = ROOT / "data" / "uk" / "baseline_integrity.json"
-VERDICTS = {"carried", "consistent", "missing"}
+VERDICTS = {"carried", "consistent", "absent"}
 
 
 def load(path=REGISTRY):
@@ -70,21 +70,42 @@ def validate(reg):
             errors.append(
                 f"{k}: no probe recorded — a verdict without one is an opinion"
             )
-        # A `consistent` verdict is the one that could hide a defect, so it
-        # carries the heaviest evidence requirement.
+        for i, reading in enumerate(m.get("probe") or []):
+            if not isinstance(reading, dict) or reading.get("kind") not in (
+                "scalar",
+                "subtree",
+                "absent",
+            ):
+                errors.append(
+                    f"{k}[{i}]: a probe must record its KIND. Collapsing "
+                    "'subtree' into 'absent' is what produced two false engine "
+                    "gaps in v1"
+                )
+            elif not (reading.get("path") and reading.get("date")):
+                errors.append(
+                    f"{k}[{i}]: a reading must record the PATH and DATE it "
+                    "came from, so a re-probe re-runs exactly that rather "
+                    "than reconstructing a path from a key name"
+                )
         if m["verdict"] == "consistent" and len(m.get("evidence", "")) < 200:
             errors.append(
                 f"{k}: a 'consistent' verdict needs the evidence spelled out — "
                 "it is the verdict that could be wishful thinking"
             )
-        if m["verdict"] == "missing":
-            if not m.get("affected_from_period"):
-                errors.append(f"{k}: missing verdict without affected_from_period")
-            if not str(m.get("consequence") or "").strip():
-                errors.append(
-                    f"{k}: a missing measure must say WHICH claims it affects; "
-                    "an unlocated gap cannot be caveated"
-                )
+        # An ABSENT verdict is now the dangerous one: it asserts the engine
+        # cannot do something. v1 got two of them wrong by guessing a path,
+        # so a name search is mandatory before the claim can be made.
+        if m["verdict"] == "absent" and not str(m.get("name_search") or "").strip():
+            errors.append(
+                f"{k}: an 'absent' verdict must record the NAME SEARCH that "
+                "proved it. A guessed path that fails to resolve proves "
+                "nothing — it is how v1 published two false engine gaps"
+            )
+    if not reg.get("corrections_log"):
+        errors.append(
+            "corrections_log is empty: the two false gaps this registry "
+            "published are part of its evidence and are not quietly dropped"
+        )
     if errors:
         raise ValueError(
             f"registry invalid ({len(errors)} defects):\n  " + "\n  ".join(errors)
@@ -92,35 +113,19 @@ def validate(reg):
     return len(reg["measures"])
 
 
-def affected_claims(reg, db_path=None):
-    """UK claims at or beyond a missing measure's effective period.
+def baseline_gaps(reg):
+    """Measures the certified baseline genuinely fails to carry.
 
-    This is an EXPOSURE ENVELOPE, not a defect count. A claim inside it
-    is computed at a horizon where the certified world is missing law
-    that exists; whether that actually moves the claim depends on the
-    quantity — a council-tax surcharge does not touch a taxpayer count.
-    The envelope is what has to be triaged, and the point is that it is
-    currently neither triaged nor visible.
+    Distinct from `absent`: a measure that is not law (the pension lump
+    sum) is a SCORING capability gap, and the baseline is correct to omit
+    it. Only a legislated measure the baseline lacks is a baseline gap —
+    and as of this probe there are none.
     """
-    db_path = db_path or ROOT / "data" / "scorecard.db"
-    if not Path(db_path).exists():
-        return None
-    import sqlite3
-
-    conn = sqlite3.connect(db_path)
-    out = {}
-    for m in reg["measures"]:
-        if m["verdict"] != "missing":
-            continue
-        n = conn.execute(
-            "SELECT COUNT(*) FROM external_scores"
-            " WHERE IFNULL(json_extract(conditions,'$.country'),'US')='UK'"
-            "   AND period >= ?",
-            (m["affected_from_period"],),
-        ).fetchone()[0]
-        out[m["key"]] = {"from_period": m["affected_from_period"], "uk_claims": n}
-    conn.close()
-    return out
+    return [
+        m
+        for m in reg["measures"]
+        if m["verdict"] == "absent" and not m.get("scoring_gap_not_baseline_gap")
+    ]
 
 
 def _resolve(node, path):
@@ -137,10 +142,11 @@ def _resolve(node, path):
 def reprobe(reg):
     """Re-run every recorded probe against the live engine.
 
-    A registry that says `missing` about a parameter that now resolves is
-    good news that must not go unnoticed — the caveat should come off.
-    A registry that says `carried` about one that no longer does is a
-    regression.
+    This is the only function that touches the engine, and in v1 it was
+    gated behind a flag no test and no workflow ever passed — so CI
+    checked the registry against its own recorded numbers and the two
+    false gaps sailed through. .github/workflows/baseline-probe.yml now
+    installs the pinned engine and runs it.
     """
     import importlib.metadata
 
@@ -152,34 +158,46 @@ def reprobe(reg):
         raise SystemExit(f"policyengine-uk {installed} installed, pinned {pin}")
 
     params = policyengine_uk.CountryTaxBenefitSystem().parameters
-    drift = []
-    for m in reg["measures"]:
-        for year, recorded in m["probe"].items():
-            try:
-                live = float(_resolve(params, m["parameter"])(f"{year}-06-01"))
-            except Exception:
-                live = None
-            if recorded is None and live is not None:
-                drift.append(
-                    f"{m['key']} @{year}: recorded MISSING but now resolves to "
-                    f"{live} — the caveat may be removable"
+
+    def live(path, date):
+        node = params
+        try:
+            for part in path.split("."):
+                m = re.fullmatch(r"(.+)\[(\d+)\]", part)
+                node = (
+                    getattr(node, m.group(1)).brackets[int(m.group(2))]
+                    if m
+                    else getattr(node, part)
                 )
-            elif recorded is not None and live is None:
+        except AttributeError:
+            return {"kind": "absent", "value": None}
+        try:
+            return {"kind": "scalar", "value": float(node(date))}
+        except Exception:
+            return {"kind": "subtree", "value": None}
+
+    drift, checked = [], 0
+    for m in reg["measures"]:
+        for reading in m["probe"]:
+            got = live(reading["path"], reading["date"])
+            checked += 1
+            if got["kind"] != reading["kind"]:
                 drift.append(
-                    f"{m['key']} @{year}: recorded {recorded} but no longer "
-                    "resolves — regression"
+                    f"{m['key']} {reading['path']}@{reading['date']}: recorded "
+                    f"kind {reading['kind']!r}, engine says {got['kind']!r}"
                 )
             elif (
-                recorded is not None
-                and live is not None
-                and abs(live - recorded) > 1e-9
+                got["kind"] == "scalar"
+                and reading.get("value") is not None
+                and abs(got["value"] - reading["value"]) > 1e-9
             ):
-                drift.append(f"{m['key']} @{year}: recorded {recorded}, engine {live}")
+                drift.append(
+                    f"{m['key']} {reading['path']}@{reading['date']}: recorded "
+                    f"{reading['value']}, engine {got['value']}"
+                )
     if drift:
-        raise SystemExit(
-            f"{len(drift)} baseline probes drifted:\n  " + "\n  ".join(drift)
-        )
-    return sum(len(m["probe"]) for m in reg["measures"])
+        raise SystemExit(f"{len(drift)} probes drifted:\n  " + "\n  ".join(drift))
+    return checked
 
 
 def main(argv=None):
@@ -192,14 +210,12 @@ def main(argv=None):
     for m in reg["measures"]:
         by[m["verdict"]] = by.get(m["verdict"], 0) + 1
     print(f"baseline integrity: {n} measures {by}")
-    affected = affected_claims(reg)
-    if affected:
-        for key, info in affected.items():
-            print(
-                f"  MISSING {key}: {info['uk_claims']} UK claims sit at or "
-                f"beyond {info['from_period']} — the exposure envelope to "
-                "triage, not a defect count"
-            )
+    gaps = baseline_gaps(reg)
+    if gaps:
+        for m in gaps:
+            print(f"  BASELINE GAP {m['key']} (from {m['effective_from']})")
+    else:
+        print("  no baseline gaps: every legislated measure checked is carried")
     if args.probe:
         print(f"  re-probed {reprobe(reg)} parameter readings against the engine")
     return reg

@@ -1,20 +1,25 @@
 """Does the certified world carry the law legislated into its future? (#99)
 
-The repo has a baselines registry that DESCRIBES worlds and ingests that
-stamp which world a run executed. Nothing checked that the certified
-world CONTAINS the measures already legislated into the years it
-computes at — a gap that is quiet by construction, because the resulting
-divergence gets attributed to whatever axis the analyst reaches for.
+Version 1 of this registry published TWO FALSE ENGINE GAPS. Both came
+from the same mistake — guessing a parameter path, watching it fail to
+resolve, and recording that as absence — and neither was caught, because
+the only function that queries the engine was gated behind a flag no
+test and no workflow ever passed. CI checked the registry against its
+own recorded numbers.
+
+So the tests here pin the DISCIPLINE that stops it recurring, and the
+engine half now runs in .github/workflows/baseline-probe.yml.
 """
 
 import json
+import re
 from pathlib import Path
 
 import pytest
 
 from pipeline.check_baseline_integrity import (
     VERDICTS,
-    affected_claims,
+    baseline_gaps,
     load,
     validate,
 )
@@ -25,113 +30,155 @@ BY = {m["key"]: m for m in REG["measures"]}
 
 
 def test_registry_validates():
-    assert validate(REG) == 5
+    assert validate(REG) == 6
 
 
-def test_every_verdict_carries_the_probe_that_produced_it():
-    """A verdict without a probe is an opinion."""
+def test_the_file_is_strict_json():
+    """v1 wrote bare `Infinity` literals. Python accepts them; the JSON
+    spec does not, and the app side would fail to parse."""
+    raw = (ROOT / "data" / "uk" / "baseline_integrity.json").read_text()
+    assert not re.search(r":\s*(Infinity|-Infinity|NaN)\b", raw)
+    json.loads(raw)
+
+
+# --- the mistake that produced two false gaps -------------------------------
+
+
+def test_a_probe_records_its_kind():
+    """Collapsing SUBTREE into ABSENT is what did it: a path that exists
+    but is not a scalar raises, and v1 read that as 'no such parameter'."""
     for k, m in BY.items():
-        assert m["verdict"] in VERDICTS, k
-        assert m["probe"], k
-        assert m["evidence"].strip(), k
+        for reading in m["probe"]:
+            assert reading["kind"] in ("scalar", "subtree", "absent"), k
+            # and each reading says where it came from, so a re-probe
+            # re-runs exactly that rather than reconstructing a path
+            assert reading["path"] and reading["date"], k
 
 
-def test_validate_rejects_a_verdict_with_no_probe():
+def test_validate_rejects_a_kindless_probe():
     bad = json.loads(json.dumps(REG))
-    bad["measures"][0]["probe"] = {}
-    with pytest.raises(ValueError, match="a verdict without one is an opinion"):
+    bad["measures"][0]["probe"][0] = 12570.0
+    with pytest.raises(ValueError, match="must record its KIND"):
         validate(bad)
 
 
-# --- the good news is recorded, not just the bad -----------------------------
+def test_validate_rejects_a_reading_with_no_path():
+    """Reconstructing a path from a key name was itself a source of
+    false readings while this registry was being repaired."""
+    bad = json.loads(json.dumps(REG))
+    del bad["measures"][0]["probe"][0]["path"]
+    with pytest.raises(ValueError, match="must record the PATH and DATE"):
+        validate(bad)
 
 
-def test_the_two_child_abolition_is_in_the_baseline():
-    """2 in 2025, unbounded from 2026 — which also confirms the registered
-    pre_ab2025 world is a real counterfactual rather than a restatement
-    of the baseline."""
-    m = BY["ab2025__two_child_limit_abolition"]
+def test_an_absent_verdict_requires_a_name_search():
+    """An absent verdict asserts the engine cannot do something. A
+    guessed path that fails to resolve proves nothing."""
+    for k, m in BY.items():
+        if m["verdict"] == "absent":
+            assert m["name_search"].strip(), k
+            assert "Searched the whole parameter tree" in m["name_search"], k
+
+
+def test_validate_rejects_an_absent_verdict_without_one():
+    bad = json.loads(json.dumps(REG))
+    m = next(x for x in bad["measures"] if x["verdict"] == "absent")
+    m["name_search"] = ""
+    with pytest.raises(ValueError, match="must record the NAME SEARCH"):
+        validate(bad)
+
+
+def test_the_corrections_are_kept_not_dropped():
+    """The two false gaps are part of this registry's evidence."""
+    log = " ".join(REG["corrections_log"])
+    assert "property income tax" in log.lower() or "rates.property" in log
+    assert "high_value_surcharge" in log
+    assert "FALSE ENGINE GAP" in log
+    assert "DTrim99" in log
+
+
+def test_validate_rejects_dropping_the_corrections_log():
+    bad = json.loads(json.dumps(REG))
+    bad["corrections_log"] = []
+    with pytest.raises(ValueError, match="corrections_log is empty"):
+        validate(bad)
+
+
+# --- the corrected verdicts --------------------------------------------------
+
+
+def test_property_income_rates_are_carried_after_all():
+    m = BY["announced__property_income_tax_rates"]
     assert m["verdict"] == "carried"
-    assert m["probe"]["2025"] == 2.0
-    assert m["probe"]["2026"] == float("inf")
-    assert "pre_ab2025" in m["evidence"]
+    readings = {(r["path"], r["date"]): r for r in m["probe"]}
+    assert (
+        readings[("gov.hmrc.income_tax.rates.property", "2027-06-01")]["kind"]
+        == "subtree"
+    )
+    assert (
+        readings[("gov.hmrc.income_tax.rates.property.basic", "2026-06-01")]["value"]
+        == 0.20
+    )
+    assert (
+        readings[("gov.hmrc.income_tax.rates.property.basic", "2027-06-01")]["value"]
+        == 0.22
+    )
+    assert (
+        readings[("gov.hmrc.income_tax.rates.property.higher", "2027-06-01")]["value"]
+        == 0.42
+    )
+    assert "CORRECTED" in m["evidence"]
 
 
-def test_the_threshold_freeze_is_the_baseline_not_the_reform():
-    m = BY["freeze__income_tax_thresholds"]
+def test_the_council_tax_surcharge_is_carried_after_all():
+    m = BY["ab2025__high_value_council_tax_surcharge"]
     assert m["verdict"] == "carried"
-    assert m["probe"]["2026"] == m["probe"]["2028"] == 12570.0
-    assert "INDEXED counterfactual" in m["evidence"]
+    amounts = sorted(r["value"] for r in m["probe"] if r["path"].endswith(".amount"))
+    thresholds = sorted(
+        r["value"] for r in m["probe"] if r["path"].endswith(".threshold")
+    )
+    assert amounts == [0.0, 2500.0, 3500.0, 5000.0, 7500.0]
+    assert thresholds == [2_000_000.0, 2_500_000.0, 3_500_000.0, 5_000_000.0]
+    assert all(r["kind"] == "scalar" for r in m["probe"])
+    assert "below-threshold band" in m["evidence"]
 
 
-def test_a_measure_with_no_parameter_can_still_be_verified():
-    """No single parameter encodes 'a freeze was extended'. Rather than
-    guess, it was checked against the OBR's own scored CPI profile: the
-    sign flips negative in 2026-27 and positive in 2027-28, the signature
-    of a freeze that ends and catches up."""
+def test_the_only_absent_measure_is_not_a_baseline_gap():
+    """The pension lump sum is not law, so the baseline is CORRECT to
+    omit it. That is a scoring capability gap, not a baseline failure."""
+    m = BY["reported__pension_tax_free_lump_sum"]
+    assert m["verdict"] == "absent"
+    assert m["scoring_gap_not_baseline_gap"] is True
+    assert baseline_gaps(REG) == []
+
+
+def test_the_honest_headline_is_that_nothing_is_missing():
+    """After correction, every legislated measure checked is carried.
+    The tooling is the deliverable, not a finding."""
+    verdicts = {
+        m["verdict"]
+        for m in REG["measures"]
+        if not m.get("scoring_gap_not_baseline_gap")
+    }
+    assert verdicts <= {"carried", "consistent"}
+
+
+def test_the_fuel_duty_evidence_flags_its_unmerged_artifact():
+    """The OBR scoring it rests on is not on main — it arrives with #81."""
     m = BY["ab2025__fuel_duty_freeze_extension"]
     assert m["verdict"] == "consistent"
-    assert m["probe"]["2026"] < m["probe"]["2027"] < m["probe"]["2028"]
-    assert "-0.129pp" in m["evidence"] and "+0.076pp" in m["evidence"]
-    assert "obr-policy-effects.json" in m["evidence"]
+    assert m["evidence_artifact_unmerged"] is True
+    assert "NOT" in m["evidence"] and "#81" in m["evidence"]
 
 
-def test_a_consistent_verdict_must_be_argued_not_asserted():
-    """It is the verdict that could be wishful thinking, so it carries
-    the heaviest evidence requirement."""
-    bad = json.loads(json.dumps(REG))
-    m = next(x for x in bad["measures"] if x["verdict"] == "consistent")
-    m["evidence"] = "looks fine"
-    with pytest.raises(ValueError, match="could be wishful thinking"):
-        validate(bad)
+# --- the check now actually runs --------------------------------------------
 
 
-# --- and the gaps are located, not just noticed -----------------------------
-
-
-def test_the_missing_measures_are_probed_and_located():
-    for key, period in (
-        ("ab2025__high_value_council_tax_surcharge", 2028),
-        ("announced__property_income_tax_rates", 2027),
-    ):
-        m = BY[key]
-        assert m["verdict"] == "missing"
-        assert all(v is None for v in m["probe"].values()), key
-        assert m["affected_from_period"] == period
-        assert m["consequence"].strip(), key
-
-
-def test_a_missing_measure_must_say_which_claims_it_affects():
-    """An unlocated gap cannot be caveated."""
-    bad = json.loads(json.dumps(REG))
-    m = next(x for x in bad["measures"] if x["verdict"] == "missing")
-    m["consequence"] = ""
-    with pytest.raises(ValueError, match="must say WHICH claims"):
-        validate(bad)
-    bad2 = json.loads(json.dumps(REG))
-    m2 = next(x for x in bad2["measures"] if x["verdict"] == "missing")
-    del m2["affected_from_period"]
-    with pytest.raises(ValueError, match="without affected_from_period"):
-        validate(bad2)
-
-
-@pytest.mark.skipif(not (ROOT / "data" / "scorecard.db").exists(), reason="no built DB")
-def test_the_exposure_envelope_is_real_and_quantified():
-    """Not a defect count — a claim inside the envelope is computed at a
-    horizon where the certified world is missing law that exists, and
-    whether that moves the claim depends on the quantity. The point is
-    that it is currently neither triaged nor visible."""
-    envelope = affected_claims(REG)
-    assert envelope["announced__property_income_tax_rates"]["uk_claims"] > 0
-    assert envelope["ab2025__high_value_council_tax_surcharge"]["uk_claims"] > 0
-    # 2028 is a subset of 2027
-    assert (
-        envelope["ab2025__high_value_council_tax_surcharge"]["uk_claims"]
-        <= envelope["announced__property_income_tax_rates"]["uk_claims"]
-    )
-
-
-def test_the_envelope_is_described_as_an_envelope_not_a_defect_count():
-    src = (ROOT / "pipeline" / "check_baseline_integrity.py").read_text()
-    assert "EXPOSURE ENVELOPE, not a defect count" in src
-    assert "does not touch a taxpayer count" in src
+def test_the_engine_probe_is_wired_into_a_workflow():
+    """v1's reprobe() was gated behind a flag nothing ever passed."""
+    wf = ROOT / ".github" / "workflows" / "baseline-probe.yml"
+    assert wf.exists()
+    text = wf.read_text()
+    assert "check_baseline_integrity.py --probe" in text
+    assert "policyengine-uk==" in text
+    assert "schedule:" in text  # notices the engine moving with no diff

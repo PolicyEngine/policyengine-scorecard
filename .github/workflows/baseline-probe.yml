@@ -1,0 +1,71 @@
+name: baseline probe
+
+# WHY THIS EXISTS
+#
+# pipeline/check_baseline_integrity.py has two halves. `validate()` reads
+# the registry's own recorded numbers; `reprobe()` is the only function
+# that asks the ENGINE. In the first version of that PR, reprobe() was
+# gated behind a --probe flag that no test and no workflow ever passed —
+# so CI checked the registry against itself, and TWO FALSE ENGINE GAPS
+# passed review and CI both. Review caught one; searching the tree caught
+# the second.
+#
+# A check that never runs is not a check. This installs the pinned engine
+# and runs the probe for real.
+#
+# It is a separate workflow from ci.yml because it installs a heavy
+# dependency the rest of the suite does not need, and because it must be
+# able to FAIL for a reason unrelated to the diff — the engine moving
+# under a pinned registry is exactly the signal it exists to raise.
+
+on:
+  pull_request:
+    paths:
+      - "data/uk/baseline_integrity.json"
+      - "data/uk/budget_2026_measures.json"
+      - "data/uk/cgt_alignment_reform.json"
+      - "pipeline/check_baseline_integrity.py"
+      - "pipeline/validate_budget_2026_registry.py"
+      - "pipeline/validate_cgt_reform_spec.py"
+      - ".github/workflows/baseline-probe.yml"
+  schedule:
+    # Weekly: the registries pin an engine version, and the point is to
+    # notice when the world moves under them even with no diff.
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: probe the registries against the pinned engine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the pinned engine
+        run: |
+          set -euo pipefail
+          PIN=$(python -c "import json;print(json.load(open('data/uk/baseline_integrity.json'))['engine_pin']['policyengine_uk'])")
+          echo "registry pins policyengine-uk $PIN"
+          python -m pip install --quiet "policyengine-uk==$PIN"
+
+      - name: Baseline integrity — probe every recorded reading
+        env:
+          PYTHONPATH: .
+        run: python pipeline/check_baseline_integrity.py --probe
+
+      - name: Budget 2026 registry — resolve every parameter path
+        env:
+          PYTHONPATH: .
+        run: python pipeline/validate_budget_2026_registry.py --resolve
+
+      - name: CGT reform spec — resolve and compare baselines
+        env:
+          PYTHONPATH: .
+        run: python pipeline/validate_cgt_reform_spec.py --resolve
