@@ -17,7 +17,7 @@ Chain order is dependency order and is part of the contract:
     solo         solo-counterfactual results + exhibits
     diagnoses    curated diagnosis rows
     campaign_us  staged day-1/day-2 campaign results (claim matching)
-    uk_externals five UK primary-source families + Ledger staging
+    uk_externals five UK primary-source families + Chronicle staging
     uk_deductions FRR family
     dwp_pensions  workplace pension participation (ASHE, GB)
     produce_uk + campaign_uk  archive-resolved UK reckoner attaches
