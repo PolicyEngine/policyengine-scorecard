@@ -357,6 +357,17 @@
    "running": false,
    "updated": "2026-08-21",
    "note": "5 model claims, 7 Chronicle facts (6 statistical + 1 non-simulated uprated EU-SILC survey input), 6 derived ratios dispositioned; 2 concept-mismatch attachments"
+  },
+  {
+   "id": "dwp-pension-participation",
+   "source": "DWP",
+   "area": "workplace pension participation",
+   "mode": 1,
+   "country": "UK",
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-25",
+   "note": "1377 claims \u2014 the first external validation of any pensions quantity in the UK scorecard (participation among auto-enrolment ELIGIBLE employees, GB, ASHE-derived)"
   }
  ]
 }
