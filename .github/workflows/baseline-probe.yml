@@ -60,10 +60,21 @@ jobs:
           PYTHONPATH: .
         run: python pipeline/check_baseline_integrity.py --probe
 
+      # The Budget 2026 registry (#100) lands on its own branch. Skip
+      # rather than fail while it is absent, so this step starts
+      # enforcing the moment that PR merges — but announce the skip:
+      # a silently-skipped gate reads as a passing gate, which is the
+      # #74 failure mode this repo already paid for once.
       - name: Budget 2026 registry — resolve every parameter path
         env:
           PYTHONPATH: .
-        run: python pipeline/validate_budget_2026_registry.py --resolve
+        run: |
+          f=pipeline/validate_budget_2026_registry.py
+          if [ -f "$f" ]; then
+            python "$f" --resolve
+          else
+            echo "::notice::$f absent on this ref — Budget 2026 resolve NOT run (arrives with #100)"
+          fi
 
       - name: CGT reform spec — resolve and compare baselines
         env:
