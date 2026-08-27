@@ -1,0 +1,67 @@
+{
+ "schema_version": 1,
+ "measure_key": "ab2026__bus_fare_cap",
+ "title": "Bus fare cap (\u00a32 then \u00a33): not expressible, and the reason is specific",
+ "fiscal_event": "autumn_budget_2026",
+ "registry_rule": "A GAP registry. It stages NO value claims \u2014 the DfT-commissioned evaluation figures belong to their originators (#86/#91) and are harvested in their own mode-1 lane from primary documents. What is recorded here is the engine gap, the evidence for it, and the upstream change that would close it.",
+ "engine_pin": {
+  "policyengine_uk": "2.89.2",
+  "resolved_on": "2026-08-27"
+ },
+ "verdict": "not_expressible",
+ "policyengine_uk_development_item": true,
+ "search_rule": "This repo has published two false engine gaps (#100, #101), both from a guessed path that failed to resolve. A gap claim here must be backed by an exhaustive NAME SEARCH. It must search VARIABLES as well as PARAMETERS: the first pass at this measure searched only the parameter tree, concluded bus was absent from the model, and was WRONG \u2014 bus_subsidy_spending is a variable and a parameter-only search misses it.",
+ "name_search": {
+  "parameter_pattern": "bus|coach|fare|transport|travel|dft|concession",
+  "parameter_hits": [
+   "gov.contrib.policyengine.economy.transport",
+   "gov.dfe.travel_grant",
+   "gov.dft",
+   "gov.dft.rail.fare_index",
+   "gov.dft.rail.prior_law_fare_index",
+   "gov.hmrc.business_rates",
+   "household.consumption.carbon.emissions.transport",
+   "household.consumption.carbon.intensity.transport_consumption",
+   "household.consumption.carbon.production_by_source.other_transport",
+   "household.consumption.total_by_category.transport_consumption"
+  ],
+  "variable_pattern": "bus_|_bus|fare|transport|rail|dft",
+  "variable_hits": [
+   "baseline_business_rates",
+   "bus_fare_spending",
+   "bus_subsidy_spending",
+   "dft_subsidy_spending",
+   "rail_subsidy_spending",
+   "rail_usage",
+   "transport_consumption"
+  ],
+  "gov_dft_children": [
+   "rail",
+   "spending"
+  ],
+  "finding": "gov.dft has exactly two children, rail and spending. There is no bus node anywhere in the parameter tree \u2014 no fare cap, no bus fare index, no concession parameter."
+ },
+ "what_the_engine_does_have": {
+  "bus_subsidy_spending": {
+   "kind": "input variable",
+   "has_formula": false,
+   "feeds": "dft_subsidy_spending (adds = [rail_subsidy_spending, bus_subsidy_spending])",
+   "note": "Bus subsidy IS in the model as a household-level quantity, and its incidence across households is modelled. So the gap is NOT 'PolicyEngine does not do buses'."
+  },
+  "bus_fare_spending": {
+   "kind": "input variable",
+   "has_formula": false,
+   "note": "Household spending on bus and coach fares (COICOP 7.3.2), CPI-uprated. Consumed by nothing outside a test, so it is a dead-end leaf and not a route to a scoreable outcome."
+  }
+ },
+ "the_gap": "bus_subsidy_spending is a PURE INPUT \u2014 no formula, no parameter behind it. Its sibling rail has the price/quantity split that makes a reform possible: rail_subsidy_spending = rail_usage x gov.dft.rail.fare_index. Bus never received it. So the gap is not a missing subject area; it is a missing FACTORISATION. There is no lever to move, which is why a fare cap cannot be expressed even though bus subsidy is present.",
+ "nearest_lever_and_why_it_does_not_work": {
+  "path": "gov.contrib.policyengine.economy.transport",
+  "description": "Raise transport expenses by this percentage.",
+  "value_2026": 0.0,
+  "why_not": "It moves ALL transport expenses by a percentage. It is not bus-specific and it is not a fare cap, so using it would model something other than the measure and label it as the measure."
+ },
+ "upstream_item": "Mirror the structure rail already has: a bus_usage quantity, a gov.dft.bus.fare_index parameter, and bus_subsidy_spending = bus_usage x fare_index. Small and well-precedented \u2014 the rail side is the working reference implementation. It would make every future fare-cap question scoreable, not only this one.",
+ "policy_context": "The \u00a32 cap ran through 2024 and was evaluated independently for DfT by Frontier Economics and SYSTRA (final plus interim reports). The \u00a33 cap runs to March 2027, so it is live for the 28 October Budget. The claims are worth holding even while the counterpart is not computable.",
+ "contrast_with_rail": "#105 is the scoreable half of this pair; the engine ships both legs there."
+}
