@@ -34,6 +34,36 @@ export interface Filters {
   bucket: SpineBucket | null;
 }
 
+/**
+ * Deep links (issue-free share URLs): ?country=be&view=validation.
+ * Read once on load; the tab bar and country toggle write back with
+ * replaceState so shared URLs land on the exact view. Defaults stay
+ * out of the URL so the bare origin remains canonical.
+ */
+function initialUrlState(): { country: Country; tab: TabId } {
+  const params = new URLSearchParams(window.location.search);
+  const c = (params.get("country") ?? "").toUpperCase();
+  const v = (params.get("view") ?? "").toLowerCase();
+  return {
+    country: c in COUNTRY_LABELS ? (c as Country) : "US",
+    tab: TABS.some((t) => t.id === v) ? (v as TabId) : "scorecard",
+  };
+}
+
+function writeUrlState(country: Country, tab: TabId) {
+  const params = new URLSearchParams(window.location.search);
+  if (country === "US") params.delete("country");
+  else params.set("country", country.toLowerCase());
+  if (tab === "scorecard") params.delete("view");
+  else params.set("view", tab);
+  const query = params.toString();
+  window.history.replaceState(
+    null,
+    "",
+    query ? `${window.location.pathname}?${query}` : window.location.pathname,
+  );
+}
+
 const DEFAULT_FILTERS: Filters = {
   country: "US",
   program: "all",
@@ -63,8 +93,15 @@ export default function App() {
   const [lanes, setLanes] = useState<LanesFeed | null>(null);
   const [populations, setPopulations] = useState<PopulationsFeed | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<TabId>("scorecard");
-  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
+  const [tab, setTab] = useState<TabId>(() => initialUrlState().tab);
+  const [filters, setFilters] = useState<Filters>(() => {
+    const { country } = initialUrlState();
+    return { ...DEFAULT_FILTERS, country, geography: country };
+  });
+
+  useEffect(() => {
+    writeUrlState(filters.country, tab);
+  }, [filters.country, tab]);
 
   useEffect(() => {
     fetch("./data/comparison.json")
