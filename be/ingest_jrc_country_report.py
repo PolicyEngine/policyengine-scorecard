@@ -42,7 +42,14 @@ from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 
 from scorecard_db.baselines import register_baselines_txn
-from scorecard_db.db import LANE_SQL, RESULTS_SQL, SCORES_SQL, ScorecardDB
+from scorecard_db.db import (
+    LANE_SQL,
+    PUBLICATIONS_SQL,
+    REFORMS_SQL,
+    RESULTS_SQL,
+    SCORES_SQL,
+    ScorecardDB,
+)
 from scorecard_db.harvest import REPO, finish
 from scorecard_db.ingest_harvest import sync_lane_feed
 from scorecard_db.models import (
@@ -771,6 +778,9 @@ def ingest(db_path: Path) -> dict:
                 (SOURCE,),
             )
             db.conn.execute("DELETE FROM external_scores WHERE source = ?", (SOURCE,))
+            pub_rows, reform_rows = ScorecardDB.provenance_rows(scores)
+            db.conn.executemany(PUBLICATIONS_SQL, pub_rows)
+            db.conn.executemany(REFORMS_SQL, reform_rows)
             db.conn.executemany(SCORES_SQL, score_rows)
             db.conn.executemany(RESULTS_SQL, result_rows)
             register_baselines_txn(db)

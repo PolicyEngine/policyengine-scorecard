@@ -752,12 +752,18 @@ class TestBaselineMigrationHardening:
         return conn
 
     def _row(self, conn, cid, reform_json):
+        # reform_key is by construction the hash of exactly this row's
+        # reform_json; a distinct-per-json key models that (the interning
+        # migration asserts the 1:1-ness and rejects shared fake keys).
+        import hashlib
+
+        key = hashlib.sha256(reform_json.encode()).hexdigest()[:16]
         conn.execute(
             "INSERT INTO external_scores (claim_id, source, reform_key,"
             " reform_json, metric, unit_concept, period, time_basis,"
-            " value, value_kind) VALUES (?, 'x', 'k', ?, 'eligible_count',"
+            " value, value_kind) VALUES (?, 'x', ?, ?, 'eligible_count',"
             " 'persons', 2024, 'annual', 1.0, 'count')",
-            (cid, reform_json),
+            (cid, key, reform_json),
         )
 
     def test_backfill_projects_exactly(self, tmp_path):

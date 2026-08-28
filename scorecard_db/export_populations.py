@@ -84,8 +84,12 @@ def export(
     out_path = out_path or REPO / "data" / "populations.json"
     db = ScorecardDB(db_path)
     claims = db.conn.execute(
-        """SELECT s.*, d.diagnosis_class, d.rationale, d.action_link
+        """SELECT s.*, p.publication AS publication,
+                  rf.reform_json AS reform_json,
+                  d.diagnosis_class, d.rationale, d.action_link
            FROM external_scores s
+           JOIN publications p USING (publication_id)
+           JOIN reforms rf USING (reform_key)
            LEFT JOIN diagnoses d USING (claim_id)
            WHERE s.source != ?
              AND EXISTS (SELECT 1 FROM pe_results r

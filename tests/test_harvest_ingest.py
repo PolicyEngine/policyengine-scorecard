@@ -655,7 +655,9 @@ class TestFullIngest:
     def test_reform_json_round_trips_from_db(self, ingested):
         db, _, _ = ingested
         row = db.conn.execute(
-            "SELECT reform_json FROM external_scores WHERE source='jct' LIMIT 1"
+            "SELECT reform_json FROM external_scores"
+            " JOIN reforms USING (reform_key)"
+            " WHERE source='jct' LIMIT 1"
         ).fetchone()
         ref = ReformRef.from_json(row["reform_json"])
         assert ref.framework == "policy_ref"

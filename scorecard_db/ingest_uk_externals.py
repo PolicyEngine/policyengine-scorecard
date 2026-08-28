@@ -57,7 +57,7 @@ from pathlib import Path
 
 import hashlib
 
-from .db import LANE_SQL, SCORES_SQL, ScorecardDB
+from .db import LANE_SQL, PUBLICATIONS_SQL, REFORMS_SQL, SCORES_SQL, ScorecardDB
 from .harvest import REPO, finish, require_fields
 from .uk_aliases import canon
 from .relationships import uk_relationship
@@ -876,6 +876,9 @@ def ingest(db_path: Path) -> dict:
             f"DELETE FROM external_scores WHERE source IN ({placeholders})",
             UK_SOURCES,
         )
+        pub_rows, reform_rows = ScorecardDB.provenance_rows(all_scores)
+        db.conn.executemany(PUBLICATIONS_SQL, pub_rows)
+        db.conn.executemany(REFORMS_SQL, reform_rows)
         db.conn.executemany(SCORES_SQL, rows)
         register_baselines_txn(db)
         for lane_id, (name, _src_label, _area) in lane_meta.items():
