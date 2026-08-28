@@ -664,6 +664,119 @@ class TestFullIngest:
 REPO = Path(__file__).resolve().parent.parent
 
 
+class TestAdvanceComputedLanes:
+    """Harvest lanes advance ingested -> computed from DB contents (the
+    post-campaign build step), so the feed can never claim 'ingested'
+    while results sit attached to its claims."""
+
+    def _claim(self, source, reform=BASELINE):
+        from scorecard_db import ExternalScore
+
+        return ExternalScore(
+            source=source,
+            metric="revenue_change",
+            unit_concept="usd",
+            period=2026,
+            time_basis="fiscal_year",
+            value=1.0,
+            conditions={"geography": "US"},
+            reform=reform,
+        )
+
+    @pytest.fixture()
+    def prepared(self, tmp_path):
+        import shutil
+
+        from scorecard_db import PEResult
+
+        db_path = tmp_path / "t.db"
+        db = ScorecardDB(db_path)
+        policy = ReformRef(framework="policy_ref", reform={"policy": "x"})
+        jct = self._claim("jct", reform=policy)
+        cbo_base = self._claim("cbo")
+        cbo_ce = self._claim("cbo", reform=policy)
+        db.upsert_scores([jct, cbo_base, cbo_ce])
+        db.add_results(
+            [
+                PEResult(
+                    claim_id=jct.claim_id(),
+                    computed_value=1.0,
+                    status="comparable",
+                    engine_version="1",
+                    data_bundle="b",
+                    computed_at="2026-08-03T12:00:00Z",
+                ),
+                PEResult(
+                    claim_id=cbo_base.claim_id(),
+                    computed_value=1.0,
+                    status="comparable",
+                    engine_version="1",
+                    data_bundle="b",
+                    computed_at="2026-08-07T09:00:00Z",
+                ),
+            ]
+        )
+        for lane in (
+            "jct-reform-scores",
+            "cbo-baseline",
+            "cbo-cost-estimates",
+        ):
+            db.set_lane(lane, "ingested", "adapter note", "2026-08-02")
+        db.close()
+        feed = tmp_path / "lanes.json"
+        shutil.copy(REPO / "data" / "lanes.json", feed)
+        return db_path, feed
+
+    def test_advances_only_lanes_with_results(self, prepared):
+        from scorecard_db.ingest_harvest import advance_computed_lanes
+
+        db_path, feed = prepared
+        stats = advance_computed_lanes(db_path, feed_path=feed)
+        assert set(stats["lanes_advanced"]) == {
+            "jct-reform-scores",
+            "cbo-baseline",
+        }
+        db = ScorecardDB(db_path)
+        lanes = {r["lane"]: dict(r) for r in db.conn.execute("SELECT * FROM lanes")}
+        db.close()
+        assert lanes["jct-reform-scores"]["stage"] == "computed"
+        assert (
+            lanes["jct-reform-scores"]["detail"]
+            == "1 of 1 claims computed — adapter note"
+        )
+        assert lanes["jct-reform-scores"]["updated_at"] == "2026-08-03"
+        assert lanes["cbo-baseline"]["stage"] == "computed"
+        assert lanes["cbo-baseline"]["updated_at"] == "2026-08-07"
+        # The cost-estimate claim has no result: its lane stays put.
+        assert lanes["cbo-cost-estimates"]["stage"] == "ingested"
+        entry = {x["id"]: x for x in json.loads(feed.read_text())["lanes"]}[
+            "jct-reform-scores"
+        ]
+        assert entry["stage"] == "computed"
+        assert entry["note"].startswith("1 of 1 claims computed — ")
+
+    def test_idempotent_prefix_and_no_regression(self, prepared):
+        from scorecard_db.ingest_harvest import advance_computed_lanes
+
+        db_path, feed = prepared
+        advance_computed_lanes(db_path, feed_path=feed)
+        advance_computed_lanes(db_path, feed_path=feed)
+        db = ScorecardDB(db_path)
+        detail = db.conn.execute(
+            "SELECT detail FROM lanes WHERE lane='jct-reform-scores'"
+        ).fetchone()["detail"]
+        assert detail == "1 of 1 claims computed — adapter note"
+        db.set_lane("jct-reform-scores", "diagnosing", "batch open", "2026-08-20")
+        db.close()
+        advance_computed_lanes(db_path, feed_path=feed)
+        db = ScorecardDB(db_path)
+        row = db.conn.execute(
+            "SELECT stage, detail FROM lanes WHERE lane='jct-reform-scores'"
+        ).fetchone()
+        db.close()
+        assert (row["stage"], row["detail"]) == ("diagnosing", "batch open")
+
+
 def test_every_committed_lane_carries_a_country():
     """The app's countryOf() defaults a missing key to US, so a committed
     lane without an explicit country would silently file under US (#42's
