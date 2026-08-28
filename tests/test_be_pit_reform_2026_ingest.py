@@ -386,3 +386,58 @@ def test_write_phase_failure_rolls_back(tmp_path, monkeypatch):
     assert _registry_rows(db) == first
     db.conn.close()
     assert mod.ingest(path) == first_summary
+
+
+def test_vendored_artifact_missing_or_drifted_fails_loudly(tmp_path):
+    # stored_in_repo=true pins bytes in the repo: the loader must refuse a
+    # manifest whose vendored artifact is absent or has different bytes.
+    manifest_lines = mod.MANIFEST_PATH.read_text().splitlines()
+    rows = [json.loads(line) for line in manifest_lines if line.strip()]
+
+    src = tmp_path / "sources" / "be-pit-reform-2026"
+    src.mkdir(parents=True)
+    drifted = tmp_path / "manifest.jsonl"
+    drifted.write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+
+    import unittest.mock
+
+    # The vendored-bytes branch runs under full verification, so pin the
+    # rewritten manifest's own hash rather than bypassing verify_sha.
+    drifted_sha = hashlib.sha256(drifted.read_bytes()).hexdigest()
+    with (
+        unittest.mock.patch.object(mod, "SOURCE_DIR", src),
+        unittest.mock.patch.object(mod, "MANIFEST_SHA256", drifted_sha),
+    ):
+        with pytest.raises(ValueError, match=r"(?i)vendored.*missing|drifted"):
+            mod._load_manifest(drifted, verify_sha=True)
+
+        report = src / "LANE_AGED3_REPORT.md"
+        report.write_text("not the pinned bytes\n")
+        with pytest.raises(ValueError, match=r"(?i)vendored.*drifted|sha-256"):
+            mod._load_manifest(drifted, verify_sha=True)
+
+
+def test_non_boolean_stored_in_repo_fails_loudly(tmp_path):
+    rows = [
+        json.loads(line)
+        for line in mod.MANIFEST_PATH.read_text().splitlines()
+        if line.strip()
+    ]
+    rows[0]["stored_in_repo"] = "false"
+    drifted = tmp_path / "manifest.jsonl"
+    drifted.write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+    with pytest.raises(ValueError, match=r"(?i)true or false"):
+        mod._load_manifest(drifted, verify_sha=False)
+
+
+def test_reform_provenance_rides_every_result_construction():
+    _, results, _, _ = _staged()
+    assert len(results) == 7
+    for result in results:
+        recipe = json.loads(result.pe_construction)
+        assert recipe["reform_implementation"] == (
+            "beReform@cf05994bc815d70014eff64261d296c200402384"
+        )
+        assert recipe["reform_law_sha256"] == (
+            "c95eda87835a874fc49cc84f2d65b834c2f372b150e6b65a1732a1b2f485f9d1"
+        )
