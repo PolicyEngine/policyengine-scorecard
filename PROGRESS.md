@@ -16,9 +16,9 @@ The vendored Belgian PIT-reform claims now have a hash-gated registry adapter, t
 - Registered distinct SPF Finances, Cour des comptes, and Axiom same-year indexed baseline families.
 - Wired `be_pit_reform` immediately before final `be_jrc` and removed the unused `data/externals/be-pit-reform-2026.json`.
 - Added focused ingest tests; `8 passed in 0.03s`.
+- Updated the Belgian Reform validation description and added readable labels for all three new sources; the focused Bun test passes (`1 pass`, `0 fail`).
 
 ## Next
 
-- Commit the app-facing Belgian description and source labels.
 - Rebuild the database from scratch, run the full Python suite, and export the populations feed.
 - Verify all BE values/signs directly, then run the app CI commands and write the final report.
