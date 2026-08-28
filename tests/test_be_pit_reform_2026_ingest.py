@@ -239,6 +239,7 @@ def test_persistence_idempotency_lane_and_baseline_registration(tmp_path, monkey
     first_summary = mod.ingest(path)
     assert first_summary["claims"] == 7
     assert first_summary["results"] == 7
+    assert first_summary["coverage"]["claims"] == 7
 
     db = ScorecardDB(path)
     first = _registry_rows(db)

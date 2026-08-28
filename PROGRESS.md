@@ -17,6 +17,7 @@ The vendored Belgian PIT-reform claims now have a hash-gated registry adapter, t
 - Wired `be_pit_reform` immediately before final `be_jrc` and removed the unused `data/externals/be-pit-reform-2026.json`.
 - Added focused ingest tests; `8 passed in 0.03s`.
 - Updated the Belgian Reform validation description and added readable labels for all three new sources; the focused Bun test passes (`1 pass`, `0 fail`).
+- Completed an initial from-scratch build; it exposed and prompted a fix for a summary-key collision between the adapter's seven claims and database-wide coverage.
 
 ## Next
 
