@@ -130,6 +130,25 @@ def test_export_shape_and_guards(tmp_path, small_db):
     assert z["diagnosis"] is None
 
 
+def test_export_refuses_dangling_provenance_without_writing(tmp_path, small_db):
+    db_path, multi_id = small_db
+    db = ScorecardDB(db_path)
+    with db.conn:
+        db.conn.execute(
+            "UPDATE external_scores SET publication_id = ? WHERE claim_id = ?",
+            ("missing-publication", multi_id),
+        )
+    db.close()
+
+    out = tmp_path / "populations.json"
+    with pytest.raises(
+        SystemExit,
+        match=r"export_populations: 1 claims reference missing provenance rows",
+    ):
+        export(db_path, out_path=out, built="2026-08-05")
+    assert not out.exists()
+
+
 def test_lane_sync_merges_without_touching_other_lanes(tmp_path, small_db):
     db_path, _ = small_db
     db = ScorecardDB(db_path)
