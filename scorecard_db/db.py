@@ -1,8 +1,20 @@
 """SQLite storage for the Scorecard database.
 
-One file (`scorecard.db`), five tables:
+One file (`scorecard.db`), seven tables:
 
-- external_scores — the claims (populace-targets shape; see models.py)
+- external_scores — the claims (populace-targets shape; see models.py).
+                   Provenance is INTERNED: the row carries publication_id
+                   and reform_key; the JSON lives once per distinct value
+                   in the publications / reforms side tables (58k claims
+                   carried 8.7k distinct publication dicts and 289
+                   distinct reform dicts inline — 20 MB of duplication).
+                   The comparisons view re-exposes both columns, so view
+                   readers are unaffected; base-table readers join.
+- publications   — content-addressed publication dicts
+                   (publication_id = sha256(canonical JSON)[:16])
+- reforms        — reform_key -> canonical ReformRef JSON (reform_key was
+                   already the hash of exactly this JSON, so the table is
+                   pure normalization)
 - pe_results     — PolicyEngine computations, full history per claim
 - baselines      — registry of baseline worlds (issue #13): every claim and
                    every PE run carries a baseline_key FK; the comparisons
@@ -32,6 +44,7 @@ from .models import (
     ExternalScore,
     PEResult,
     baseline_key as _baseline_key,
+    publication_key as _publication_key,
 )
 
 # The null world's key, injected into the view SQL so the guard works on
@@ -45,9 +58,8 @@ CREATE TABLE IF NOT EXISTS external_scores (
     source_model TEXT,
     ledger_fact TEXT,
     source_column TEXT,
-    publication TEXT NOT NULL DEFAULT '{}',
+    publication_id TEXT,
     reform_key TEXT NOT NULL,
-    reform_json TEXT NOT NULL,
     metric TEXT NOT NULL,
     unit_concept TEXT NOT NULL,
     period INTEGER NOT NULL,
@@ -70,6 +82,16 @@ CREATE INDEX IF NOT EXISTS idx_scores_source ON external_scores(source);
 CREATE INDEX IF NOT EXISTS idx_scores_geo ON external_scores(geography);
 CREATE INDEX IF NOT EXISTS idx_scores_prog ON external_scores(program);
 CREATE INDEX IF NOT EXISTS idx_scores_reform ON external_scores(reform_key);
+
+CREATE TABLE IF NOT EXISTS publications (
+    publication_id TEXT PRIMARY KEY,
+    publication TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS reforms (
+    reform_key TEXT PRIMARY KEY,
+    reform_json TEXT NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS pe_results (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -153,6 +175,8 @@ DROP VIEW IF EXISTS comparisons;
 CREATE VIEW comparisons AS
 SELECT
     s.*,
+    p.publication AS publication,
+    rf.reform_json AS reform_json,
     r.computed_value AS pe_value,
     r.status AS pe_status,
     r.engine_version,
@@ -195,19 +219,29 @@ LEFT JOIN pe_results r ON r.id = (
 )
 LEFT JOIN diagnoses d ON d.claim_id = s.claim_id
 LEFT JOIN baselines bc ON bc.baseline_key = s.baseline_key
-LEFT JOIN baselines bp ON bp.baseline_key = r.baseline_key;
+LEFT JOIN baselines bp ON bp.baseline_key = r.baseline_key
+LEFT JOIN publications p ON p.publication_id = s.publication_id
+LEFT JOIN reforms rf ON rf.reform_key = s.reform_key;
 """
 
 
 SCORES_SQL = (
     "INSERT OR REPLACE INTO external_scores"
     " (claim_id, source, source_model, ledger_fact,"
-    " source_column, publication, reform_key, reform_json,"
+    " source_column, publication_id, reform_key,"
     " metric, unit_concept, period, time_basis, conditions,"
     " geography, program, value, value_kind, status,"
     " calibration_relationship, period_start, period_end, baseline_key)"
-    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
 )
+# Provenance side tables are content-addressed, so INSERT OR IGNORE is
+# exact: identical content maps to the identical key. Every raw
+# executemany(SCORES_SQL, ...) site must also executemany these with
+# ScorecardDB.provenance_rows(scores) in the same transaction (the
+# convenience upsert_scores does it for you); build_db asserts no claim
+# references a missing side-table row.
+PUBLICATIONS_SQL = "INSERT OR IGNORE INTO publications VALUES (?,?)"
+REFORMS_SQL = "INSERT OR IGNORE INTO reforms VALUES (?,?)"
 RESULTS_SQL = (
     "INSERT INTO pe_results (claim_id, computed_value, status,"
     " engine_version, data_bundle, pe_construction, run_id,"
@@ -343,15 +377,72 @@ class ScorecardDB:
             # executed is provenance we don't have; the comparisons view
             # downgrades those to 'baseline_unvalidated' wherever the
             # claim's world is not current law.
-            legacy = self.conn.execute(
-                "SELECT claim_id, reform_json FROM external_scores"
-                " WHERE baseline_key IS NULL"
-            ).fetchall()
-            if legacy:
-                self.conn.executemany(
-                    "UPDATE external_scores SET baseline_key = ? WHERE claim_id = ?",
-                    [(_legacy_claim_baseline_key(r), r["claim_id"]) for r in legacy],
-                )
+            if "reform_json" in cols("external_scores"):
+                legacy = self.conn.execute(
+                    "SELECT claim_id, reform_json FROM external_scores"
+                    " WHERE baseline_key IS NULL"
+                ).fetchall()
+                if legacy:
+                    self.conn.executemany(
+                        "UPDATE external_scores SET baseline_key = ?"
+                        " WHERE claim_id = ?",
+                        [
+                            (_legacy_claim_baseline_key(r), r["claim_id"])
+                            for r in legacy
+                        ],
+                    )
+            self._intern_provenance(cols)
+
+    def _intern_provenance(self, cols):
+        """Migrate a pre-interning file: move the inline publication /
+        reform_json columns into the content-addressed side tables and
+        drop them. Runs AFTER the legacy baseline backfill (which reads
+        the inline reform_json on pre-#13 files). reform_key is by
+        construction the hash of exactly the row's reform_json; that
+        1:1-ness is asserted, never assumed."""
+        if "publication" not in cols("external_scores"):
+            return
+        clash = self.conn.execute(
+            "SELECT reform_key FROM external_scores"
+            " GROUP BY reform_key HAVING COUNT(DISTINCT reform_json) > 1"
+        ).fetchall()
+        if clash:
+            raise ValueError(
+                "interning migration: reform_key maps to multiple "
+                f"reform_json values: {[r['reform_key'] for r in clash]}"
+            )
+        rows = self.conn.execute(
+            "SELECT claim_id, publication, reform_json, reform_key FROM external_scores"
+        ).fetchall()
+        self.conn.executemany(
+            PUBLICATIONS_SQL,
+            sorted(
+                {
+                    (_publication_key(json.loads(r["publication"])), r["publication"])
+                    for r in rows
+                }
+            ),
+        )
+        self.conn.executemany(
+            REFORMS_SQL,
+            sorted({(r["reform_key"], r["reform_json"]) for r in rows}),
+        )
+        if "publication_id" not in cols("external_scores"):
+            self.conn.execute(
+                "ALTER TABLE external_scores ADD COLUMN publication_id TEXT"
+            )
+        self.conn.executemany(
+            "UPDATE external_scores SET publication_id = ? WHERE claim_id = ?",
+            [
+                (_publication_key(json.loads(r["publication"])), r["claim_id"])
+                for r in rows
+            ],
+        )
+        # The stored view may reference the doomed columns; drop it first
+        # (_ensure_view recreates the current definition right after).
+        self.conn.execute("DROP VIEW IF EXISTS comparisons")
+        self.conn.execute("ALTER TABLE external_scores DROP COLUMN publication")
+        self.conn.execute("ALTER TABLE external_scores DROP COLUMN reform_json")
 
     def close(self):
         self.conn.close()
@@ -369,9 +460,8 @@ class ScorecardDB:
             s.source_model,
             s.ledger_fact,
             s.source_column,
-            json.dumps(s.publication, sort_keys=True),
+            _publication_key(s.publication),
             s.reform.key(),
-            s.reform.to_json(),
             s.metric.value,
             s.unit_concept.value,
             s.period,
@@ -403,9 +493,28 @@ class ScorecardDB:
             r.baseline_key,
         )
 
+    @staticmethod
+    def provenance_rows(
+        scores: Iterable[ExternalScore],
+    ) -> tuple[list[tuple], list[tuple]]:
+        """Deduped (publications, reforms) rows for a batch of scores —
+        the mandatory companion of any raw executemany(SCORES_SQL, ...)."""
+        publications: dict[str, str] = {}
+        reforms: dict[str, str] = {}
+        for s in scores:
+            publications[_publication_key(s.publication)] = json.dumps(
+                s.publication, sort_keys=True
+            )
+            reforms[s.reform.key()] = s.reform.to_json()
+        return sorted(publications.items()), sorted(reforms.items())
+
     def upsert_scores(self, scores: Iterable[ExternalScore]) -> int:
+        scores = list(scores)
         rows = [self.score_row(s) for s in scores]
+        pub_rows, reform_rows = self.provenance_rows(scores)
         with self.conn:
+            self.conn.executemany(PUBLICATIONS_SQL, pub_rows)
+            self.conn.executemany(REFORMS_SQL, reform_rows)
             self.conn.executemany(SCORES_SQL, rows)
         return len(rows)
 

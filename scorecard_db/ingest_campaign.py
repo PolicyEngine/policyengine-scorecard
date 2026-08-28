@@ -140,7 +140,11 @@ def _find_claim(db: ScorecardDB, family: str, match: dict) -> str:
         json.dumps(cond, sort_keys=True),
     ]
     if reform_policy is not None:
-        q += " AND json_extract(reform_json, '$.reform.policy') = ?"
+        q += (
+            " AND (SELECT json_extract(reform_json, '$.reform.policy')"
+            "      FROM reforms"
+            "      WHERE reforms.reform_key = external_scores.reform_key) = ?"
+        )
         args.append(reform_policy)
     hits = [r[0] for r in db.conn.execute(q, args)]
     if len(hits) != 1:

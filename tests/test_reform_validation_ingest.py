@@ -447,7 +447,7 @@ def test_cbo_option_declares_pre_obbba_baseline(conn):
     row = conn.execute(
         "SELECT json_extract(reform_json, '$.baseline.policy'),"
         " json_extract(conditions, '$.baseline_policy')"
-        " FROM external_scores"
+        " FROM external_scores JOIN reforms USING (reform_key)"
         " WHERE source_column = 'federal.cbo_rates_plus_1pt'"
     ).fetchone()
     assert tuple(row) == ("pre_obbba_current_law", "pre_obbba_current_law")

@@ -188,8 +188,9 @@ def advance_computed_lanes(db_path: Path, feed_path: Path | None = None) -> dict
     lane_of: dict[str, str] = {}
     claim_totals: Counter = Counter()
     for row in db.conn.execute(
-        "SELECT claim_id, source, reform_json FROM external_scores"
-        " WHERE source IN ('jct','tpc','cpsp','pwbm','tax_foundation',"
+        "SELECT s.claim_id, s.source, r.reform_json"
+        " FROM external_scores AS s JOIN reforms AS r USING (reform_key)"
+        " WHERE s.source IN ('jct','tpc','cpsp','pwbm','tax_foundation',"
         "'budget_lab','cbo')"
     ):
         lane = _harvest_lane(row["source"], row["reform_json"])

@@ -30,7 +30,14 @@ import re
 from pathlib import Path
 
 from scorecard_db.baselines import register_baselines_txn
-from scorecard_db.db import LANE_SQL, RESULTS_SQL, SCORES_SQL, ScorecardDB
+from scorecard_db.db import (
+    LANE_SQL,
+    PUBLICATIONS_SQL,
+    REFORMS_SQL,
+    RESULTS_SQL,
+    SCORES_SQL,
+    ScorecardDB,
+)
 from scorecard_db.harvest import REPO, finish
 from scorecard_db.ingest_harvest import sync_lane_feed
 from scorecard_db.models import (
@@ -659,8 +666,9 @@ def ingest(db_path: Path) -> dict:
     try:
         with db.conn:
             selector = (
-                "SELECT claim_id FROM external_scores "
-                "WHERE json_extract(publication, '$.registry') = ?"
+                "SELECT s.claim_id FROM external_scores AS s "
+                "JOIN publications AS p USING (publication_id) "
+                "WHERE json_extract(p.publication, '$.registry') = ?"
             )
             db.conn.execute(
                 f"DELETE FROM diagnoses WHERE claim_id IN ({selector})",
@@ -671,10 +679,12 @@ def ingest(db_path: Path) -> dict:
                 (REGISTRY_MARK,),
             )
             db.conn.execute(
-                "DELETE FROM external_scores "
-                "WHERE json_extract(publication, '$.registry') = ?",
+                f"DELETE FROM external_scores WHERE claim_id IN ({selector})",
                 (REGISTRY_MARK,),
             )
+            pub_rows, reform_rows = ScorecardDB.provenance_rows(scores)
+            db.conn.executemany(PUBLICATIONS_SQL, pub_rows)
+            db.conn.executemany(REFORMS_SQL, reform_rows)
             db.conn.executemany(SCORES_SQL, score_rows)
             db.conn.executemany(RESULTS_SQL, result_rows)
             register_baselines_txn(db)

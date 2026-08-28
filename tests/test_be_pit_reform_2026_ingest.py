@@ -209,10 +209,11 @@ def _registry_rows(db):
         "claims": [
             tuple(row)
             for row in db.conn.execute(
-                "SELECT claim_id, source, value, period, conditions, reform_json, "
-                "baseline_key FROM external_scores "
-                "WHERE json_extract(reform_json, '$.reform.policy') = ? "
-                "ORDER BY claim_id",
+                "SELECT s.claim_id, s.source, s.value, s.period, s.conditions, "
+                "r.reform_json, s.baseline_key FROM external_scores AS s "
+                "JOIN reforms AS r USING (reform_key) "
+                "WHERE json_extract(r.reform_json, '$.reform.policy') = ? "
+                "ORDER BY s.claim_id",
                 (POLICY,),
             ).fetchall()
         ],
@@ -223,7 +224,8 @@ def _registry_rows(db):
                 "r.data_bundle, r.pe_construction, r.run_id, r.computed_at, "
                 "r.annotations, r.baseline_key FROM pe_results r "
                 "JOIN external_scores s USING (claim_id) "
-                "WHERE json_extract(s.reform_json, '$.reform.policy') = ? "
+                "JOIN reforms rf USING (reform_key) "
+                "WHERE json_extract(rf.reform_json, '$.reform.policy') = ? "
                 "ORDER BY r.claim_id",
                 (POLICY,),
             ).fetchall()
