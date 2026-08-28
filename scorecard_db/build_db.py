@@ -17,6 +17,8 @@ Chain order is dependency order and is part of the contract:
     solo         solo-counterfactual results + exhibits
     diagnoses    curated diagnosis rows
     campaign_us  staged day-1/day-2 campaign results (claim matching)
+    harvest_lane_stages  harvest lanes ingested -> computed where results
+                attached (derived from the DB, so the feed can't drift)
     uk_externals five UK primary-source families + Chronicle staging
     uk_deductions FRR family
     produce_uk + campaign_uk  archive-resolved UK reckoner attaches
@@ -92,6 +94,10 @@ def build(db_path: Path) -> dict:
         ("solo", lambda: ingest_solo.ingest(db_path)),
         ("diagnoses", lambda: ingest_diagnoses.ingest(db_path)),
         ("campaign_us", lambda: ingest_campaign.ingest(db_path)),
+        (
+            "harvest_lane_stages",
+            lambda: ingest_harvest.advance_computed_lanes(db_path),
+        ),
         ("uk_externals", lambda: ingest_uk_externals.ingest(db_path)),
         ("uk_deductions", lambda: ingest_uk_deductions.ingest(db_path)),
         ("produce_uk", lambda: produce_campaign_uk.produce(db_path)),
