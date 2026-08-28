@@ -2,7 +2,7 @@
 
 ## State
 
-The vendored Belgian PIT-reform claims now have a hash-gated registry adapter, three registered baseline families, seven result attachments, build-chain wiring immediately before final `be_jrc`, and focused passing tests. The wrong-layer `data/externals/` file has been removed.
+The Belgian PIT-reform registry work is implemented and exported. The fresh database build is stable, all 273 Python tests and all 6 Bun source tests pass, and the committed data/app feeds contain the seven new BE rows. The frozen Bun dependency install cannot fetch lockfile packages in the network-disabled sandbox, so dependency-backed lint and production build remain unavailable here.
 
 ## Done
 
@@ -19,8 +19,11 @@ The vendored Belgian PIT-reform claims now have a hash-gated registry adapter, t
 - Updated the Belgian Reform validation description and added readable labels for all three new sources; the focused Bun test passes (`1 pass`, `0 fail`).
 - Completed an initial from-scratch build; it exposed and prompted a fix for a summary-key collision between the adapter's seven claims and database-wide coverage.
 - Rebuilt after the fix: the adapter reports seven claims, seven results, and three sources; the logical content hash remained `945a5fe042343622a696ea4ac7e2e50196df6026af5fc9ba3d4f00804fd0dab0`.
+- Exported 293 populations rows with the canonical module invocation and synchronized the committed app feed through its canonical `prebuild` script.
+- Verified the seven PIT-reform rows directly in `app/public/data/populations.json`: one SPF Finances row, one Cour des comptes row, and five PolicyEngine rows, all for BE with the requested negative values.
+- Reran the full Python suite after synchronization: `273 passed in 7.36s`; Ruff reports `53 files already formatted`.
+- Mirrored the app commands: `bun test src` passes (`6 pass`, `0 fail`); `bun install --frozen-lockfile` cannot obtain uncached lockfile packages without network access, leaving `oxlint` and `tsc` unavailable for lint/build.
 
 ## Next
 
-- Rebuild the database from scratch, run the full Python suite, and export the populations feed.
-- Verify all BE values/signs directly, then run the app CI commands and write the final report.
+- Commit the generated feeds, perform the final deterministic rebuild/no-drift check, and write the lane report.

@@ -4,7 +4,7 @@
   "country": "US | UK | BE \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-08-21",
+ "updated": "2026-08-29",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -357,6 +357,17 @@
    "running": false,
    "updated": "2026-08-21",
    "note": "5 model claims, 7 Chronicle facts (6 statistical + 1 non-simulated uprated EU-SILC survey input), 6 derived ratios dispositioned; 2 concept-mismatch attachments"
+  },
+  {
+   "id": "be-pit-reform-2026",
+   "source": "Belgian PIT reform scorekeepers",
+   "area": "15 July 2026 PIT-reform revenue changes",
+   "mode": 2,
+   "country": "BE",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-08-29",
+   "note": "7 claims from 3 sources; 7 results (5 same-computation PolicyEngine self-attachments, 2 constructed official cross-attachments with unresolved horizon basis)"
   }
  ]
 }
