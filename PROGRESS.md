@@ -18,6 +18,7 @@ The vendored Belgian PIT-reform claims now have a hash-gated registry adapter, t
 - Added focused ingest tests; `8 passed in 0.03s`.
 - Updated the Belgian Reform validation description and added readable labels for all three new sources; the focused Bun test passes (`1 pass`, `0 fail`).
 - Completed an initial from-scratch build; it exposed and prompted a fix for a summary-key collision between the adapter's seven claims and database-wide coverage.
+- Rebuilt after the fix: the adapter reports seven claims, seven results, and three sources; the logical content hash remained `945a5fe042343622a696ea4ac7e2e50196df6026af5fc9ba3d4f00804fd0dab0`.
 
 ## Next
 

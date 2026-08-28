@@ -10,7 +10,8 @@ campaign results; and Belgium's honest concept-mismatch Axiom attachments
 to JRC EUROMOD-BE claims. This module exports every non-Urban claim that has at
 least one pe_result, carrying the dimension the Urban export doesn't
 have: the full per-release result history (one row per certified
-release, engine pins and OBBBA scoring mode in the construction), so
+release, engine pins and OBBBA scoring mode in the construction), plus the
+Belgian PIT-reform scorekeeper rows, so
 cross-release drift is visible.
 
 Doctrine (issues #1/#9): descriptive only. Statuses and calibration
@@ -45,6 +46,7 @@ _RELEASE_TOKEN = (
     "buildp",
     "f0af251",
     "microcosm_be_v02",
+    "microcosm_be_v05h",
 )
 
 
@@ -205,7 +207,8 @@ def export(
             " reform-validation registry (issue #20) plus the compute"
             " campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT;"
             " UK: the HMRC ready-reckoner family; BE: JRC EUROMOD-BE claims"
-            " with demo-grade Axiom concept-mismatch attachments)."
+            " with demo-grade Axiom concept-mismatch attachments and the"
+            " 2026 PIT-reform scorekeeper claims)."
             " Statuses and calibration relationships are verbatim; nothing"
             " here is a pass/fail grade."
         ),
