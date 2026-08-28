@@ -34,6 +34,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterable, Optional
 
@@ -51,14 +52,37 @@ from .models import (
 # fresh files before the registry is seeded.
 CURRENT_LAW_KEY = _baseline_key(CURRENT_LAW_DESCRIPTOR)
 
-DDL = """
-CREATE TABLE IF NOT EXISTS external_scores (
+EXTERNAL_SCORES_COLUMNS = (
+    "claim_id",
+    "source",
+    "source_model",
+    "ledger_fact",
+    "source_column",
+    "publication_id",
+    "reform_key",
+    "metric",
+    "unit_concept",
+    "period",
+    "time_basis",
+    "conditions",
+    "geography",
+    "program",
+    "value",
+    "value_kind",
+    "status",
+    "calibration_relationship",
+    "period_start",
+    "period_end",
+    "baseline_key",
+)
+
+EXTERNAL_SCORES_SCHEMA = """(
     claim_id TEXT PRIMARY KEY,
     source TEXT NOT NULL,
     source_model TEXT,
     ledger_fact TEXT,
     source_column TEXT,
-    publication_id TEXT,
+    publication_id TEXT NOT NULL,
     reform_key TEXT NOT NULL,
     metric TEXT NOT NULL,
     unit_concept TEXT NOT NULL,
@@ -77,19 +101,32 @@ CREATE TABLE IF NOT EXISTS external_scores (
     period_start INTEGER,
     period_end INTEGER,
     baseline_key TEXT
-);
+)"""
+
+SCORE_INDEX_SQL = (
+    "CREATE INDEX IF NOT EXISTS idx_scores_source ON external_scores(source)",
+    "CREATE INDEX IF NOT EXISTS idx_scores_geo ON external_scores(geography)",
+    "CREATE INDEX IF NOT EXISTS idx_scores_prog ON external_scores(program)",
+    "CREATE INDEX IF NOT EXISTS idx_scores_reform ON external_scores(reform_key)",
+)
+
+DDL = (
+    "CREATE TABLE IF NOT EXISTS external_scores "
+    + EXTERNAL_SCORES_SCHEMA
+    + ";\n"
+    + """
 CREATE INDEX IF NOT EXISTS idx_scores_source ON external_scores(source);
 CREATE INDEX IF NOT EXISTS idx_scores_geo ON external_scores(geography);
 CREATE INDEX IF NOT EXISTS idx_scores_prog ON external_scores(program);
 CREATE INDEX IF NOT EXISTS idx_scores_reform ON external_scores(reform_key);
 
 CREATE TABLE IF NOT EXISTS publications (
-    publication_id TEXT PRIMARY KEY,
+    publication_id TEXT PRIMARY KEY NOT NULL,
     publication TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS reforms (
-    reform_key TEXT PRIMARY KEY,
+    reform_key TEXT PRIMARY KEY NOT NULL,
     reform_json TEXT NOT NULL
 );
 
@@ -164,6 +201,7 @@ CREATE TABLE IF NOT EXISTS lanes (
 );
 
 """
+)
 
 # Everything below is (re)created after _migrate so it may reference
 # columns added by migration (baseline_key on pre-#13 files); DROP+CREATE
@@ -234,14 +272,14 @@ SCORES_SQL = (
     " calibration_relationship, period_start, period_end, baseline_key)"
     " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
 )
-# Provenance side tables are content-addressed, so INSERT OR IGNORE is
-# exact: identical content maps to the identical key. Every raw
-# executemany(SCORES_SQL, ...) site must also executemany these with
-# ScorecardDB.provenance_rows(scores) in the same transaction (the
-# convenience upsert_scores does it for you); build_db asserts no claim
-# references a missing side-table row.
-PUBLICATIONS_SQL = "INSERT OR IGNORE INTO publications VALUES (?,?)"
-REFORMS_SQL = "INSERT OR IGNORE INTO reforms VALUES (?,?)"
+# INSERT OR IGNORE is paired with exact post-insert verification by
+# ScorecardDB.insert_provenance(). Raw score writers must use that method
+# in their enclosing score transaction; using these statements directly
+# would make a truncated-hash collision silently retain the older JSON.
+PUBLICATIONS_SQL = (
+    "INSERT OR IGNORE INTO publications (publication_id, publication) VALUES (?,?)"
+)
+REFORMS_SQL = "INSERT OR IGNORE INTO reforms (reform_key, reform_json) VALUES (?,?)"
 RESULTS_SQL = (
     "INSERT INTO pe_results (claim_id, computed_value, status,"
     " engine_version, data_bundle, pe_construction, run_id,"
@@ -269,6 +307,62 @@ BASELINE_SQL = (
     " framework=excluded.framework, spec_json=excluded.spec_json,"
     " provenance=excluded.provenance"
 )
+
+
+PROVENANCE_ORPHANS_SQL = """
+SELECT COUNT(*)
+FROM external_scores AS s
+WHERE s.publication_id IS NULL
+   OR NOT EXISTS (
+       SELECT 1
+       FROM publications AS p
+       WHERE p.publication_id = s.publication_id
+   )
+   OR NOT EXISTS (
+       SELECT 1
+       FROM reforms AS r
+       WHERE r.reform_key = s.reform_key
+   )
+"""
+
+
+def provenance_orphan_count(conn: sqlite3.Connection) -> int:
+    """Count claims with NULL or dangling provenance references.
+
+    Correlated NOT EXISTS is deliberate: unlike NOT IN, a schema-valid
+    NULL key in an older/malformed side table cannot poison the predicate.
+    """
+    return conn.execute(PROVENANCE_ORPHANS_SQL).fetchone()[0]
+
+
+def require_complete_provenance(
+    conn: sqlite3.Connection, *, context: str = "operation"
+) -> None:
+    """Fail loudly before a build/export can publish incomplete claims."""
+    orphans = provenance_orphan_count(conn)
+    if orphans:
+        raise SystemExit(
+            f"{context}: {orphans} claims reference missing provenance rows"
+        )
+
+
+@contextmanager
+def _savepoint(conn: sqlite3.Connection, name: str):
+    """Nested-safe explicit transaction for SQLite schema changes.
+
+    Python's sqlite3 context manager does not itself begin a transaction
+    for DDL, so DROP/CREATE pairs need an explicit savepoint even when the
+    caller is written as ``with conn:``.
+    """
+    conn.execute(f"SAVEPOINT {name}")
+    try:
+        yield
+    except BaseException:
+        conn.execute(f"ROLLBACK TO {name}")
+        conn.execute(f"RELEASE {name}")
+        raise
+    else:
+        conn.execute(f"RELEASE {name}")
 
 
 def _legacy_claim_baseline_key(row) -> str:
@@ -305,15 +399,34 @@ class ScorecardDB:
         that merely READ the committed DB (tests, exporters) bumped its
         header counters and left the binary dirty — the recurring
         "harmless header churn" the #48/#52 gates kept flagging."""
-        ddl = VIEW_DDL.replace("__CURRENT_LAW_KEY__", CURRENT_LAW_KEY)
-        index_sql, create = ddl.split("DROP VIEW IF EXISTS comparisons;", 1)
-        self.conn.executescript(index_sql)  # IF NOT EXISTS — no-op when present
-        expected = create.strip().removesuffix(";")
+        index_sql, expected = self._view_parts()
         stored = self.conn.execute(
             "SELECT sql FROM sqlite_master WHERE type='view' AND name='comparisons'"
         ).fetchone()
         if stored is None or stored["sql"] != expected:
-            self.conn.executescript("DROP VIEW IF EXISTS comparisons;" + create)
+            # DDL does not make ``with self.conn`` start a transaction.
+            # The explicit savepoint makes DROP+CREATE one atomic schema
+            # replacement, including when no other write is in flight.
+            with _savepoint(self.conn, "refresh_comparisons_view"):
+                self._replace_view(index_sql, expected)
+        else:
+            # The view can be current while an index was removed manually.
+            # A single CREATE INDEX IF NOT EXISTS statement is atomic itself.
+            self.conn.execute(index_sql)
+
+    @staticmethod
+    def _view_parts() -> tuple[str, str]:
+        ddl = VIEW_DDL.replace("__CURRENT_LAW_KEY__", CURRENT_LAW_KEY)
+        index_sql, create = ddl.split("DROP VIEW IF EXISTS comparisons;", 1)
+        return index_sql.strip().removesuffix(";"), create.strip().removesuffix(";")
+
+    def _replace_view(self, index_sql: str | None = None, create: str | None = None):
+        """Replace comparisons inside a caller-owned transaction/savepoint."""
+        if index_sql is None or create is None:
+            index_sql, create = self._view_parts()
+        self.conn.execute(index_sql)
+        self.conn.execute("DROP VIEW IF EXISTS comparisons")
+        self.conn.execute(create)
 
     def _migrate(self):
         """Bring a pre-existing file up to the current schema.
@@ -322,8 +435,9 @@ class ScorecardDB:
         added later (period_start/period_end 2026-08-02, baseline_key
         2026-08-02 #13) are ALTERed in, and the diagnoses CHECK is
         rebuilt when it predates methodological_difference (issue #9).
-        The comparisons view is dropped and recreated after migration so
-        its definition always matches the code.
+        An interning rebuild recreates the comparisons view before its
+        savepoint is committed; _ensure_view conditionally repairs older
+        definitions for migrations that do not rebuild external_scores.
         """
 
         def cols(table):
@@ -396,53 +510,99 @@ class ScorecardDB:
     def _intern_provenance(self, cols):
         """Migrate a pre-interning file: move the inline publication /
         reform_json columns into the content-addressed side tables and
-        drop them. Runs AFTER the legacy baseline backfill (which reads
-        the inline reform_json on pre-#13 files). reform_key is by
-        construction the hash of exactly the row's reform_json; that
-        1:1-ness is asserted, never assumed."""
-        if "publication" not in cols("external_scores"):
+        rebuild external_scores in the exact fresh-schema order. Runs
+        AFTER the legacy baseline backfill (which reads inline reform_json).
+        The whole side insert / rebuild / view replacement is one explicit
+        savepoint, including for an empty legacy table."""
+        score_cols = cols("external_scores")
+        inline = {"publication", "reform_json"} & score_cols
+        if not inline:
             return
-        clash = self.conn.execute(
-            "SELECT reform_key FROM external_scores"
-            " GROUP BY reform_key HAVING COUNT(DISTINCT reform_json) > 1"
-        ).fetchall()
-        if clash:
+        if inline != {"publication", "reform_json"}:
             raise ValueError(
-                "interning migration: reform_key maps to multiple "
-                f"reform_json values: {[r['reform_key'] for r in clash]}"
+                "interning migration: expected publication and reform_json "
+                f"together, found {sorted(inline)}"
             )
-        rows = self.conn.execute(
-            "SELECT claim_id, publication, reform_json, reform_key FROM external_scores"
-        ).fetchall()
-        self.conn.executemany(
-            PUBLICATIONS_SQL,
-            sorted(
-                {
-                    (_publication_key(json.loads(r["publication"])), r["publication"])
-                    for r in rows
-                }
-            ),
-        )
-        self.conn.executemany(
-            REFORMS_SQL,
-            sorted({(r["reform_key"], r["reform_json"]) for r in rows}),
-        )
-        if "publication_id" not in cols("external_scores"):
+        with _savepoint(self.conn, "intern_provenance"):
+            clash = self.conn.execute(
+                "SELECT reform_key FROM external_scores"
+                " GROUP BY reform_key HAVING COUNT(DISTINCT reform_json) > 1"
+            ).fetchall()
+            if clash:
+                raise ValueError(
+                    "interning migration: reform_key maps to multiple "
+                    f"reform_json values: {[r['reform_key'] for r in clash]}"
+                )
+            rows = self.conn.execute(
+                "SELECT claim_id, publication, reform_json, reform_key"
+                " FROM external_scores"
+            ).fetchall()
+            publication_map: dict[str, str] = {}
+            publication_values: dict[str, str] = {}
+            for row in rows:
+                parsed = json.loads(row["publication"])
+                publication_id = _publication_key(parsed)
+                canonical = json.dumps(parsed, sort_keys=True)
+                if (
+                    publication_id in publication_values
+                    and publication_values[publication_id] != canonical
+                ):
+                    raise ValueError(
+                        "publication provenance collision for key "
+                        f"{publication_id}: multiple JSON values in migration"
+                    )
+                publication_map[row["publication"]] = publication_id
+                publication_values[publication_id] = canonical
+            pub_rows = sorted(publication_values.items())
+            reform_rows = sorted({(r["reform_key"], r["reform_json"]) for r in rows})
+            self.insert_provenance(pub_rows, reform_rows)
+
             self.conn.execute(
-                "ALTER TABLE external_scores ADD COLUMN publication_id TEXT"
+                "CREATE TEMP TABLE _intern_publications ("
+                " publication TEXT PRIMARY KEY NOT NULL,"
+                " publication_id TEXT NOT NULL)"
             )
-        self.conn.executemany(
-            "UPDATE external_scores SET publication_id = ? WHERE claim_id = ?",
-            [
-                (_publication_key(json.loads(r["publication"])), r["claim_id"])
-                for r in rows
-            ],
-        )
-        # The stored view may reference the doomed columns; drop it first
-        # (_ensure_view recreates the current definition right after).
-        self.conn.execute("DROP VIEW IF EXISTS comparisons")
-        self.conn.execute("ALTER TABLE external_scores DROP COLUMN publication")
-        self.conn.execute("ALTER TABLE external_scores DROP COLUMN reform_json")
+            self.conn.executemany(
+                "INSERT INTO _intern_publications VALUES (?,?)",
+                sorted(publication_map.items()),
+            )
+            self.conn.execute(
+                "CREATE TABLE _external_scores_interned " + EXTERNAL_SCORES_SCHEMA
+            )
+            column_sql = ", ".join(EXTERNAL_SCORES_COLUMNS)
+            self.conn.execute(
+                f"INSERT INTO _external_scores_interned ({column_sql}) "
+                "SELECT s.claim_id, s.source, s.source_model, s.ledger_fact,"
+                " s.source_column, m.publication_id, s.reform_key, s.metric,"
+                " s.unit_concept, s.period, s.time_basis, s.conditions,"
+                " s.geography, s.program, s.value, s.value_kind, s.status,"
+                " s.calibration_relationship, s.period_start, s.period_end,"
+                " s.baseline_key FROM external_scores AS s"
+                " JOIN _intern_publications AS m"
+                " ON m.publication = s.publication"
+            )
+            copied = self.conn.execute(
+                "SELECT COUNT(*) FROM _external_scores_interned"
+            ).fetchone()[0]
+            if copied != len(rows):
+                raise ValueError(
+                    "interning migration: publication mapping copied "
+                    f"{copied} of {len(rows)} claims"
+                )
+
+            # The old view can reference the inline columns. Recreate it
+            # against the renamed fresh-shape table before releasing the
+            # savepoint, so no committed migration state lacks comparisons.
+            self.conn.execute("DROP VIEW IF EXISTS comparisons")
+            self.conn.execute("DROP TABLE external_scores")
+            self.conn.execute(
+                "ALTER TABLE _external_scores_interned RENAME TO external_scores"
+            )
+            self.conn.execute("DROP TABLE _intern_publications")
+            for index_sql in SCORE_INDEX_SQL:
+                self.conn.execute(index_sql)
+            self._replace_view()
+            self.prune_provenance()
 
     def close(self):
         self.conn.close()
@@ -501,21 +661,91 @@ class ScorecardDB:
         the mandatory companion of any raw executemany(SCORES_SQL, ...)."""
         publications: dict[str, str] = {}
         reforms: dict[str, str] = {}
+
+        def remember(rows: dict[str, str], key: str, value: str, kind: str) -> None:
+            if key in rows and rows[key] != value:
+                raise ValueError(
+                    f"{kind} provenance collision for key {key}: "
+                    "multiple JSON values in one batch"
+                )
+            rows[key] = value
+
         for s in scores:
-            publications[_publication_key(s.publication)] = json.dumps(
-                s.publication, sort_keys=True
+            remember(
+                publications,
+                _publication_key(s.publication),
+                json.dumps(s.publication, sort_keys=True),
+                "publication",
             )
-            reforms[s.reform.key()] = s.reform.to_json()
+            remember(reforms, s.reform.key(), s.reform.to_json(), "reform")
         return sorted(publications.items()), sorted(reforms.items())
+
+    def insert_provenance(
+        self, pub_rows: Iterable[tuple], reform_rows: Iterable[tuple]
+    ) -> None:
+        """Insert side rows and verify every key's stored JSON exactly.
+
+        Transaction ownership deliberately stays with the caller so raw
+        writers can include provenance, claims, results, and lane state in
+        one outer transaction. A collision raises before that transaction
+        can commit and names the conflicting shipped 16-hex key.
+        """
+        batches = (
+            (
+                "publication",
+                "publications",
+                "publication_id",
+                "publication",
+                PUBLICATIONS_SQL,
+                list(pub_rows),
+            ),
+            (
+                "reform",
+                "reforms",
+                "reform_key",
+                "reform_json",
+                REFORMS_SQL,
+                list(reform_rows),
+            ),
+        )
+        for kind, table, key_column, json_column, insert_sql, rows in batches:
+            self.conn.executemany(insert_sql, rows)
+            for key, incoming in rows:
+                stored = self.conn.execute(
+                    f"SELECT {json_column} FROM {table} WHERE {key_column} = ?",
+                    (key,),
+                ).fetchone()
+                if stored is None or stored[json_column] != incoming:
+                    raise ValueError(
+                        f"{kind} provenance collision for key {key}: "
+                        "incoming JSON does not match stored JSON"
+                    )
+
+    def prune_provenance(self) -> None:
+        """Remove side rows unreferenced by any claim.
+
+        This method does not own a transaction; writers call it after their
+        score changes inside the same enclosing transaction.
+        """
+        self.conn.execute(
+            "DELETE FROM publications WHERE NOT EXISTS ("
+            " SELECT 1 FROM external_scores AS s"
+            " WHERE s.publication_id = publications.publication_id)"
+        )
+        self.conn.execute(
+            "DELETE FROM reforms WHERE NOT EXISTS ("
+            " SELECT 1 FROM external_scores AS s"
+            " WHERE s.reform_key = reforms.reform_key)"
+        )
 
     def upsert_scores(self, scores: Iterable[ExternalScore]) -> int:
         scores = list(scores)
         rows = [self.score_row(s) for s in scores]
         pub_rows, reform_rows = self.provenance_rows(scores)
         with self.conn:
-            self.conn.executemany(PUBLICATIONS_SQL, pub_rows)
-            self.conn.executemany(REFORMS_SQL, reform_rows)
+            self.insert_provenance(pub_rows, reform_rows)
             self.conn.executemany(SCORES_SQL, rows)
+            self.prune_provenance()
         return len(rows)
 
     def add_results(self, results: Iterable[PEResult]) -> int:

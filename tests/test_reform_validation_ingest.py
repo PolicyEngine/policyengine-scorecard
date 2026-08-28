@@ -13,6 +13,7 @@ from scorecard_db.ingest_reform_validation import (
     OBBBA_PROVISIONS,
     RAW,
     RUN_PREFIX,
+    _harvest_claim,
     ingest,
 )
 from scorecard_db.models import (
@@ -202,6 +203,77 @@ def _scored_obbba(artifact):
         for r in artifact["reforms"]
         if r["category"] == "OBBBA" and r["jct"].get("score") is not None
     ]
+
+
+def test_harvest_claim_is_null_safe_and_excludes_registry_claims():
+    conn = sqlite3.connect(":memory:")
+    conn.row_factory = sqlite3.Row
+    conn.executescript(
+        """
+        CREATE TABLE external_scores (
+            claim_id TEXT PRIMARY KEY,
+            source TEXT NOT NULL,
+            metric TEXT NOT NULL,
+            time_basis TEXT NOT NULL,
+            period INTEGER NOT NULL,
+            conditions TEXT NOT NULL,
+            publication_id TEXT,
+            value REAL
+        );
+        -- Deliberately model the legacy nullable-key side table: the NULL
+        -- registry row poisoned the old NOT IN predicate for every claim.
+        CREATE TABLE publications (
+            publication_id TEXT PRIMARY KEY,
+            publication TEXT NOT NULL
+        );
+        """
+    )
+    conn.executemany(
+        "INSERT INTO publications VALUES (?, ?)",
+        [
+            (None, json.dumps({"registry": "null-poison"})),
+            ("canonical-publication", json.dumps({"title": "JCX-35-25"})),
+            ("registry-publication", json.dumps({"registry": "populace-rv"})),
+        ],
+    )
+    conditions = json.dumps(
+        {"bill_version": "JCX-35-25", "provision": "SALT cap"},
+        sort_keys=True,
+    )
+    conn.executemany(
+        "INSERT INTO external_scores VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+            (
+                "canonical-claim",
+                "jct",
+                "revenue_change",
+                "fiscal_year",
+                2026,
+                conditions,
+                "canonical-publication",
+                -1.0,
+            ),
+            (
+                "registry-claim",
+                "jct",
+                "revenue_change",
+                "fiscal_year",
+                2026,
+                conditions,
+                "registry-publication",
+                -2.0,
+            ),
+        ],
+    )
+    db = object.__new__(ScorecardDB)
+    db.conn = conn
+    try:
+        assert _harvest_claim(db, "SALT cap", 2026) == {
+            "claim_id": "canonical-claim",
+            "value": -1.0,
+        }
+    finally:
+        db.close()
 
 
 def test_obbba_results_attach_to_harvest_claims(tmp_path):

@@ -652,15 +652,24 @@ class TestFullIngest:
             for r in rows
         )
 
-    def test_reform_json_round_trips_from_db(self, ingested):
+    def test_every_claim_has_complete_provenance(self, ingested):
         db, _, _ = ingested
-        row = db.conn.execute(
-            "SELECT reform_json FROM external_scores"
-            " JOIN reforms USING (reform_key)"
-            " WHERE source='jct' LIMIT 1"
-        ).fetchone()
-        ref = ReformRef.from_json(row["reform_json"])
-        assert ref.framework == "policy_ref"
+        orphans = db.conn.execute(
+            "SELECT COUNT(*) FROM external_scores AS s"
+            " LEFT JOIN publications AS p"
+            "   ON p.publication_id = s.publication_id"
+            " LEFT JOIN reforms AS r ON r.reform_key = s.reform_key"
+            " WHERE p.publication_id IS NULL OR r.reform_key IS NULL"
+        ).fetchone()[0]
+        assert orphans == 0
+
+        reform_jsons = db.conn.execute(
+            "SELECT DISTINCT r.reform_json FROM external_scores AS s"
+            " JOIN reforms AS r ON r.reform_key = s.reform_key"
+            " WHERE s.source = 'jct'"
+        ).fetchall()
+        refs = [ReformRef.from_json(row["reform_json"]) for row in reform_jsons]
+        assert refs and all(ref.framework == "policy_ref" for ref in refs)
 
 
 REPO = Path(__file__).resolve().parent.parent

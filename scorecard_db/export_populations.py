@@ -31,7 +31,7 @@ import json
 from datetime import date
 from pathlib import Path
 
-from .db import CURRENT_LAW_KEY, ScorecardDB
+from .db import CURRENT_LAW_KEY, ScorecardDB, require_complete_provenance
 from .ingest_harvest import sync_lane_feed
 
 REPO = Path(__file__).resolve().parent.parent
@@ -83,6 +83,11 @@ def export(
 ) -> dict:
     out_path = out_path or REPO / "data" / "populations.json"
     db = ScorecardDB(db_path)
+    try:
+        require_complete_provenance(db.conn, context="export_populations")
+    except BaseException:
+        db.close()
+        raise
     claims = db.conn.execute(
         """SELECT s.*, p.publication AS publication,
                   rf.reform_json AS reform_json,

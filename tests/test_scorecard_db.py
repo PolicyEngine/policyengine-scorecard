@@ -1,4 +1,7 @@
+import json
+import sqlite3
 from dataclasses import replace
+
 import pytest
 
 from scorecard_db import (
@@ -117,6 +120,138 @@ class TestDB:
         assert db.upsert_scores([score(), score(value=5.0)]) == 2
         n = db.conn.execute("SELECT COUNT(*) c FROM external_scores").fetchone()["c"]
         assert n == 1  # same claim_id -> replaced, not duplicated
+
+    def test_provenance_keys_are_explicitly_not_null(self, db):
+        expected = (
+            ("external_scores", "publication_id"),
+            ("publications", "publication_id"),
+            ("reforms", "reform_key"),
+        )
+        for table, column in expected:
+            info = {
+                row["name"]: row
+                for row in db.conn.execute(f"PRAGMA table_info({table})")
+            }
+            assert info[column]["notnull"] == 1, f"{table}.{column}"
+
+    def test_publication_resolves_through_comparisons(self, db):
+        from scorecard_db.models import publication_key
+
+        publication = {
+            "title": "Publication resolution probe",
+            "url": "https://example.test/provenance",
+        }
+        claim = score(publication=publication)
+        db.upsert_scores([claim])
+
+        row = db.conn.execute(
+            "SELECT publication_id, publication FROM comparisons WHERE claim_id = ?",
+            (claim.claim_id(),),
+        ).fetchone()
+        assert row["publication_id"] == publication_key(publication)
+        assert json.loads(row["publication"]) == publication
+
+    def test_provenance_rows_rejects_publication_collision(self, monkeypatch):
+        key = "f" * 16
+        monkeypatch.setattr("scorecard_db.db._publication_key", lambda _: key)
+        first = score(period=2023, publication={"title": "first"})
+        second = score(period=2024, publication={"title": "second"})
+
+        with pytest.raises(ValueError, match=rf"publication.*{key}"):
+            ScorecardDB.provenance_rows([first, second])
+
+    def test_provenance_rows_rejects_reform_collision(self, monkeypatch):
+        key = "e" * 16
+        first = score(
+            period=2023,
+            reform=ReformRef(framework="policy_ref", reform={"policy": "first"}),
+        )
+        second = score(
+            period=2024,
+            reform=ReformRef(framework="policy_ref", reform={"policy": "second"}),
+        )
+        monkeypatch.setattr(ReformRef, "key", lambda self: key)
+
+        with pytest.raises(ValueError, match=rf"reform.*{key}"):
+            ScorecardDB.provenance_rows([first, second])
+
+    def test_upsert_rejects_cross_batch_publication_collision(self, db, monkeypatch):
+        key = "d" * 16
+        monkeypatch.setattr("scorecard_db.db._publication_key", lambda _: key)
+        first = score(period=2023, publication={"title": "first"})
+        second = score(period=2024, publication={"title": "second"})
+        db.upsert_scores([first])
+
+        with pytest.raises(ValueError, match=rf"publication.*{key}"):
+            db.upsert_scores([second])
+
+        assert (
+            db.conn.execute("SELECT COUNT(*) FROM external_scores").fetchone()[0] == 1
+        )
+        stored = db.conn.execute(
+            "SELECT publication FROM publications WHERE publication_id = ?", (key,)
+        ).fetchone()[0]
+        assert json.loads(stored) == first.publication
+
+    def test_upsert_rejects_cross_batch_reform_collision(self, db, monkeypatch):
+        key = "c" * 16
+        first = score(
+            period=2023,
+            reform=ReformRef(framework="policy_ref", reform={"policy": "first"}),
+        )
+        second = score(
+            period=2024,
+            reform=ReformRef(framework="policy_ref", reform={"policy": "second"}),
+        )
+        monkeypatch.setattr(ReformRef, "key", lambda self: key)
+        db.upsert_scores([first])
+
+        with pytest.raises(ValueError, match=rf"reform.*{key}"):
+            db.upsert_scores([second])
+
+        assert (
+            db.conn.execute("SELECT COUNT(*) FROM external_scores").fetchone()[0] == 1
+        )
+        stored = db.conn.execute(
+            "SELECT reform_json FROM reforms WHERE reform_key = ?", (key,)
+        ).fetchone()[0]
+        assert stored == first.reform.to_json()
+
+    def test_insert_provenance_does_not_commit_outer_transaction(self, db):
+        pub_rows, reform_rows = ScorecardDB.provenance_rows(
+            [score(publication={"title": "rolled back"})]
+        )
+
+        with pytest.raises(RuntimeError, match="rollback probe"):
+            with db.conn:
+                db.insert_provenance(pub_rows, reform_rows)
+                raise RuntimeError("rollback probe")
+
+        assert db.conn.execute("SELECT COUNT(*) FROM publications").fetchone()[0] == 0
+        assert db.conn.execute("SELECT COUNT(*) FROM reforms").fetchone()[0] == 0
+
+    def test_upsert_prunes_unreferenced_publication_and_reform(self, db):
+        old = score(publication={"title": "old"})
+        corrected = replace(old, publication={"title": "corrected"})
+        orphan_reform = ReformRef(
+            framework="policy_ref", reform={"policy": "unreferenced"}
+        )
+        db.upsert_scores([old])
+        with db.conn:
+            db.insert_provenance([], [(orphan_reform.key(), orphan_reform.to_json())])
+        assert db.conn.execute("SELECT COUNT(*) FROM publications").fetchone()[0] == 1
+        assert db.conn.execute("SELECT COUNT(*) FROM reforms").fetchone()[0] == 2
+
+        db.upsert_scores([corrected])
+
+        publications = db.conn.execute(
+            "SELECT publication FROM publications"
+        ).fetchall()
+        reform_keys = {
+            row[0] for row in db.conn.execute("SELECT reform_key FROM reforms")
+        }
+        assert [json.loads(row[0]) for row in publications] == [corrected.publication]
+        assert reform_keys == {BASELINE.key()}
 
     def test_latest_result_wins_in_view(self, db):
         s = score()
@@ -400,8 +535,6 @@ class TestMigration:
     """
 
     def test_old_file_gains_period_columns(self, tmp_path):
-        import sqlite3
-
         path = tmp_path / "old.db"
         conn = sqlite3.connect(path)
         conn.executescript(self._OLD_DDL)
@@ -414,6 +547,89 @@ class TestMigration:
         db.upsert_scores([score(period=2034, period_start=2025, period_end=2034)])
         assert db.comparisons()[0]["period_start"] == 2025
         db.close()
+
+    @staticmethod
+    def _table_signature(db):
+        return [
+            tuple(row) for row in db.conn.execute("PRAGMA table_info(external_scores)")
+        ]
+
+    @staticmethod
+    def _index_signature(db):
+        return {
+            (row["name"], row["unique"], row["origin"], row["partial"])
+            for row in db.conn.execute("PRAGMA index_list(external_scores)")
+        }
+
+    def test_interning_rebuild_matches_fresh_schema_and_view(self, tmp_path):
+        from scorecard_db.models import publication_key
+
+        publication = {
+            "title": "Legacy publication",
+            "url": "https://example.test/legacy",
+        }
+        conditions = {"geography": "US", "program": "snap"}
+        legacy_path = tmp_path / "legacy.db"
+        conn = sqlite3.connect(legacy_path)
+        conn.executescript(self._OLD_DDL)
+        conn.execute(
+            """INSERT INTO external_scores (
+                   claim_id, source, source_column, publication, reform_key,
+                   reform_json, metric, unit_concept, period, time_basis,
+                   conditions, geography, program, value, value_kind, status,
+                   calibration_relationship
+               ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                "legacy-claim",
+                "legacy-source",
+                "legacy-column",
+                json.dumps(publication, sort_keys=True),
+                BASELINE.key(),
+                BASELINE.to_json(),
+                "eligible_count",
+                "persons",
+                2024,
+                "annual",
+                json.dumps(conditions, sort_keys=True),
+                "US",
+                "snap",
+                42.0,
+                "count",
+                "ok",
+                "held_out",
+            ),
+        )
+        conn.commit()
+        conn.close()
+
+        fresh = ScorecardDB(tmp_path / "fresh.db")
+        migrated = ScorecardDB(legacy_path)
+        fresh_signature = self._table_signature(fresh)
+        migrated_signature = self._table_signature(migrated)
+        assert [row[1] for row in migrated_signature] == [
+            row[1] for row in fresh_signature
+        ]
+        assert migrated_signature == fresh_signature
+        assert self._index_signature(migrated) == self._index_signature(fresh)
+
+        fresh_view_columns = [
+            row["name"] for row in fresh.conn.execute("PRAGMA table_info(comparisons)")
+        ]
+        migrated_view_columns = [
+            row["name"]
+            for row in migrated.conn.execute("PRAGMA table_info(comparisons)")
+        ]
+        assert migrated_view_columns == fresh_view_columns
+
+        row = migrated.conn.execute(
+            "SELECT publication_id, publication, reform_json"
+            " FROM comparisons WHERE claim_id = 'legacy-claim'"
+        ).fetchone()
+        assert row["publication_id"] == publication_key(publication)
+        assert json.loads(row["publication"]) == publication
+        assert ReformRef.from_json(row["reform_json"]) == BASELINE
+        fresh.close()
+        migrated.close()
 
 
 class TestPlatformProbe:
@@ -873,8 +1089,6 @@ def test_open_close_never_rewrites_the_file(tmp_path):
 
 def test_stale_view_definition_is_rebuilt(tmp_path):
     """The conditional recreate still upgrades a drifted view."""
-    import sqlite3
-
     p = tmp_path / "t.db"
     ScorecardDB(p).close()
     c = sqlite3.connect(p)
@@ -888,3 +1102,33 @@ def test_stale_view_definition_is_rebuilt(tmp_path):
     cols = {r[1] for r in db.conn.execute("PRAGMA table_info(comparisons)")}
     db.close()
     assert "claim_id" in cols and "not_the_view" not in cols
+
+
+def test_failed_view_rebuild_preserves_previous_view(tmp_path):
+    """DROP and CREATE are atomic when replacement fails mid-flight."""
+    db = ScorecardDB(tmp_path / "t.db")
+    db.conn.executescript(
+        "DROP VIEW comparisons; CREATE VIEW comparisons AS SELECT 1 AS not_the_view;"
+    )
+
+    def deny_create_view(action, _arg1, _arg2, _database, _trigger):
+        if action == sqlite3.SQLITE_CREATE_VIEW:
+            return sqlite3.SQLITE_DENY
+        return sqlite3.SQLITE_OK
+
+    db.conn.set_authorizer(deny_create_view)
+    try:
+        with pytest.raises(sqlite3.DatabaseError):
+            db._ensure_view()
+    finally:
+        db.conn.set_authorizer(None)
+
+    stored = db.conn.execute(
+        "SELECT sql FROM sqlite_master WHERE type='view' AND name='comparisons'"
+    ).fetchone()["sql"]
+    assert "not_the_view" in stored
+
+    db._ensure_view()
+    columns = {row["name"] for row in db.conn.execute("PRAGMA table_info(comparisons)")}
+    assert "claim_id" in columns and "not_the_view" not in columns
+    db.close()

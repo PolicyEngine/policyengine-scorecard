@@ -84,8 +84,6 @@ from pathlib import Path
 
 from .db import (
     LANE_SQL,
-    PUBLICATIONS_SQL,
-    REFORMS_SQL,
     RESULTS_SQL,
     SCORES_SQL,
     ScorecardDB,
@@ -584,14 +582,15 @@ def _release_timestamp(release_id: str) -> str:
 
 def _harvest_claim(db: ScorecardDB, provision: str, period: int) -> dict | None:
     rows = db.conn.execute(
-        "SELECT claim_id, value FROM external_scores"
+        "SELECT claim_id, value FROM external_scores AS s"
         " WHERE source='jct' AND metric='revenue_change'"
         " AND time_basis='fiscal_year' AND period=?"
         " AND json_extract(conditions, '$.bill_version')='JCX-35-25'"
         " AND json_extract(conditions, '$.provision')=?"
-        " AND publication_id NOT IN"
-        "     (SELECT publication_id FROM publications"
-        "      WHERE json_extract(publication, '$.registry') IS NOT NULL)",
+        " AND NOT EXISTS"
+        "     (SELECT 1 FROM publications AS p"
+        "      WHERE p.publication_id = s.publication_id"
+        "        AND json_extract(p.publication, '$.registry') IS NOT NULL)",
         (period, provision),
     ).fetchall()
     if len(rows) > 1:
@@ -825,9 +824,9 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
             (REGISTRY_MARK,),
         )
         pub_rows, reform_rows = ScorecardDB.provenance_rows(claims.values())
-        db.conn.executemany(PUBLICATIONS_SQL, pub_rows)
-        db.conn.executemany(REFORMS_SQL, reform_rows)
+        db.insert_provenance(pub_rows, reform_rows)
         db.conn.executemany(SCORES_SQL, score_rows)
+        db.prune_provenance()
         db.conn.executemany(RESULTS_SQL, result_rows)
         db.conn.execute(
             LANE_SQL,

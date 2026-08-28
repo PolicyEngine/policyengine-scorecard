@@ -38,6 +38,7 @@ from pathlib import Path
 
 from be import ingest_jrc_country_report
 
+from .db import require_complete_provenance
 from . import (
     ingest_campaign,
     ingest_diagnoses,
@@ -50,6 +51,11 @@ from . import (
     ingest_urban,
     produce_campaign_uk,
 )
+
+
+def _provenance_gate(conn: sqlite3.Connection) -> None:
+    """Build-time fail-loud gate for NULL or dangling side references."""
+    require_complete_provenance(conn, context="build_db")
 
 
 def content_hash(db_path: Path) -> str:
@@ -113,21 +119,13 @@ def build(db_path: Path) -> dict:
         "SELECT claim_id, computed_at, COUNT(*) FROM pe_results"
         " GROUP BY 1, 2 HAVING COUNT(*) > 1"
     ).fetchall()
-    # Interned provenance must be complete: a claim referencing a missing
-    # publications/reforms row means a writer bypassed provenance_rows.
-    orphans = conn.execute(
-        "SELECT COUNT(*) FROM external_scores WHERE publication_id IS NULL"
-        " OR publication_id NOT IN (SELECT publication_id FROM publications)"
-        " OR reform_key NOT IN (SELECT reform_key FROM reforms)"
-    ).fetchone()[0]
-    conn.close()
     if ties:
+        conn.close()
         raise SystemExit(f"pe_results (claim_id, computed_at) ties: {ties[:3]}")
-    if orphans:
-        raise SystemExit(
-            f"{orphans} claims reference missing provenance rows — a raw"
-            " SCORES_SQL writer skipped ScorecardDB.provenance_rows"
-        )
+    try:
+        _provenance_gate(conn)
+    finally:
+        conn.close()
     summary["content_hash"] = content_hash(db_path)
     summary["bytes"] = db_path.stat().st_size
     return summary
