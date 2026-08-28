@@ -2,7 +2,7 @@
 
 ## State
 
-The Belgian PIT-reform registry work is implemented and exported. The fresh database build is stable, all 273 Python tests and all 6 Bun source tests pass, and the committed data/app feeds contain the seven new BE rows. The frozen Bun dependency install cannot fetch lockfile packages in the network-disabled sandbox, so dependency-backed lint and production build remain unavailable here.
+Complete. The Belgian PIT-reform registry work is implemented and exported. Repeated fresh builds have the same logical hash, all 273 Python tests and all 6 Bun source tests pass, and the committed data/app feeds contain the seven new BE rows. The requested lane report is written to `.lane-inputs/OUT.md`. The frozen Bun dependency install cannot fetch uncached lockfile packages in the network-disabled sandbox, so dependency-backed lint and production build remain unavailable here.
 
 ## Done
 
@@ -23,7 +23,9 @@ The Belgian PIT-reform registry work is implemented and exported. The fresh data
 - Verified the seven PIT-reform rows directly in `app/public/data/populations.json`: one SPF Finances row, one Cour des comptes row, and five PolicyEngine rows, all for BE with the requested negative values.
 - Reran the full Python suite after synchronization: `273 passed in 7.36s`; Ruff reports `53 files already formatted`.
 - Mirrored the app commands: `bun test src` passes (`6 pass`, `0 fail`); `bun install --frozen-lockfile` cannot obtain uncached lockfile packages without network access, leaving `oxlint` and `tsc` unavailable for lint/build.
+- Rebuilt and re-exported once more from scratch; the logical content hash remained stable and the committed feeds had no diff.
+- Completed a final read-only audit with no implementation defects found and wrote `.lane-inputs/OUT.md`.
 
 ## Next
 
-- Commit the generated feeds, perform the final deterministic rebuild/no-drift check, and write the lane report.
+- None.
