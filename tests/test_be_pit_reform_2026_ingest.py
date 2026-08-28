@@ -32,7 +32,7 @@ PE_VALUES = {
     2027: -456_510_000.0,
     2028: -779_680_000.0,
     2029: -2_457_460_000.0,
-    2030: -4_156_010_000.0,
+    2030: -4_155_520_000.0,
 }
 SOURCE_COUNTS = {
     "spf_finances": 1,
@@ -306,3 +306,83 @@ def test_payload_schema_and_census_drift_fail_loudly():
     unknown["claims"][0]["unmapped_contract_term"] = "invented"
     with pytest.raises(ValueError, match=r"(?i)(schema|unknown|unexpected|unmapped)"):
         mod.stage_all(unknown)
+
+
+def test_policyengine_values_are_reread_from_the_pinned_report():
+    # The census constants live next to the claims they check, so a
+    # synchronized transcription error passes both. The load path re-reads
+    # the vendored aged-run report itself; these are its exact deltas.
+    deltas = mod._report_aged_deltas(mod.SOURCE_DIR / "LANE_AGED3_REPORT.md")
+    assert deltas == {
+        2027: -513_454_844.21,
+        2028: -456_511_621.84,
+        2029: -779_679_224.51,
+        2030: -2_457_460_040.32,
+        2031: -4_155_521_961.68,
+    }
+    for row in mod.load_claims()["claims"]:
+        if row["source"] == "policyengine":
+            assert row["value"] == round(deltas[row["assessment_year"]], -4)
+
+
+def test_synchronized_value_drift_still_fails_against_the_report(tmp_path, monkeypatch):
+    # Reintroduce the defect this gate was added for: the income-2030 value
+    # drifts in claims.json AND in the census constants at once. The report
+    # cross-check must still refuse it.
+    payload = copy.deepcopy(mod.load_claims())
+    drifted_rows = copy.deepcopy(mod._EXPECTED_ROWS)
+    for row in payload["claims"]:
+        if row["id"] == "policyengine_income_2030_ay2031":
+            row["value"] = -4_156_010_000
+    key = "policyengine_income_2030_ay2031"
+    drifted_rows[key] = (
+        drifted_rows[key][:3] + (-4_156_010_000,) + drifted_rows[key][4:]
+    )
+    monkeypatch.setattr(mod, "_EXPECTED_ROWS", drifted_rows)
+    drifted = tmp_path / "claims.json"
+    drifted.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match=r"(?i)report.*aged delta|not the pinned"):
+        mod.load_claims(drifted, verify_sha=False)
+
+
+def test_vendored_report_bytes_match_the_manifest_pin():
+    report = mod.SOURCE_DIR / "LANE_AGED3_REPORT.md"
+    assert hashlib.sha256(report.read_bytes()).hexdigest() == mod.REPORT_SHA256
+
+
+def test_write_phase_failure_rolls_back(tmp_path, monkeypatch):
+    # The replacement is one transaction: a failure mid-write (after the
+    # deletes, during the result inserts) must roll everything back — not
+    # leave claims without results.
+    import sqlite3
+
+    if hasattr(mod, "sync_lane_feed"):
+        monkeypatch.setattr(mod, "sync_lane_feed", lambda *args, **kwargs: None)
+
+    path = tmp_path / "scorecard.db"
+    first_summary = mod.ingest(path)
+    db = ScorecardDB(path)
+    first = _registry_rows(db)
+    db.conn.close()
+
+    real = ScorecardDB.result_row
+    calls = {"n": 0}
+
+    def sabotaged(r):
+        row = real(r)
+        calls["n"] += 1
+        if calls["n"] == 5:  # deep in the seven-result batch
+            return row[:2] + ("bogus_status",) + row[3:]
+        return row
+
+    monkeypatch.setattr(ScorecardDB, "result_row", staticmethod(sabotaged))
+    with pytest.raises(sqlite3.IntegrityError):
+        mod.ingest(path)
+    monkeypatch.undo()
+    if hasattr(mod, "sync_lane_feed"):
+        monkeypatch.setattr(mod, "sync_lane_feed", lambda *args, **kwargs: None)
+
+    db = ScorecardDB(path)
+    assert _registry_rows(db) == first
+    db.conn.close()
+    assert mod.ingest(path) == first_summary

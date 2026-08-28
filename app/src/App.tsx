@@ -15,15 +15,7 @@ import { GapsView } from "./components/GapsView";
 import { AboutView } from "./components/AboutView";
 import { MissionControl } from "./components/MissionControl";
 import { ReformValidationView } from "./components/ReformValidationView";
-
-const TABS = [
-  { id: "scorecard", label: "Scorecard" },
-  { id: "divergences", label: "Divergences" },
-  { id: "validation", label: "Reform validation" },
-  { id: "gaps", label: "Gaps" },
-  { id: "about", label: "Method" },
-] as const;
-type TabId = (typeof TABS)[number]["id"];
+import { TABS, buildUrlQuery, parseUrlState, type TabId } from "./urlState";
 
 export interface Filters {
   country: Country;
@@ -34,33 +26,17 @@ export interface Filters {
   bucket: SpineBucket | null;
 }
 
-/**
- * Deep links (issue-free share URLs): ?country=be&view=validation.
- * Read once on load; the tab bar and country toggle write back with
- * replaceState so shared URLs land on the exact view. Defaults stay
- * out of the URL so the bare origin remains canonical.
- */
 function initialUrlState(): { country: Country; tab: TabId } {
-  const params = new URLSearchParams(window.location.search);
-  const c = (params.get("country") ?? "").toUpperCase();
-  const v = (params.get("view") ?? "").toLowerCase();
-  return {
-    country: c in COUNTRY_LABELS ? (c as Country) : "US",
-    tab: TABS.some((t) => t.id === v) ? (v as TabId) : "scorecard",
-  };
+  return parseUrlState(window.location.search);
 }
 
 function writeUrlState(country: Country, tab: TabId) {
-  const params = new URLSearchParams(window.location.search);
-  if (country === "US") params.delete("country");
-  else params.set("country", country.toLowerCase());
-  if (tab === "scorecard") params.delete("view");
-  else params.set("view", tab);
-  const query = params.toString();
+  const query = buildUrlQuery(window.location.search, country, tab);
   window.history.replaceState(
     null,
     "",
-    query ? `${window.location.pathname}?${query}` : window.location.pathname,
+    (query ? `${window.location.pathname}?${query}` : window.location.pathname) +
+      window.location.hash,
   );
 }
 

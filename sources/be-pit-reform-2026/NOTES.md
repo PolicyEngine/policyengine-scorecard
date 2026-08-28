@@ -23,7 +23,7 @@ The requested claim values are keyed to income year, with the assessment year ca
 | 2027 | 2028 | −456,510,000 | `lane_aged3_report`, `v05h_aged_results` |
 | 2028 | 2029 | −779,680,000 | `lane_aged3_report`, `v05h_aged_results` |
 | 2029 | 2030 | −2,457,460,000 | `lane_aged3_report`, `v05h_aged_results` |
-| 2030 | 2031 | −4,156,010,000 | `lane_aged3_report`, `v05h_aged_results` |
+| 2030 | 2031 | −4,155,520,000 | `lane_aged3_report`, `v05h_aged_results` |
 
 These are nominal-EUR, no-behavioural-response results from the corrected v05h aged run at commit `3d9f690`. Each result compares the reform with its same-year indexed current-law baseline: the encoded Article 178 chain and statutory special coefficients, declared FPB income uprating on fixed 2025 weights, and Royal-Decree-pending Article 147 values carried at their last enacted levels. The series is draft and pending standard validation procedures.
 

@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 
 from scorecard_db.baselines import register_baselines_txn
@@ -56,9 +57,9 @@ CLAIMS_PATH = SOURCE_DIR / "claims.json"
 MANIFEST_PATH = SOURCE_DIR / "manifest.jsonl"
 NOTES_PATH = SOURCE_DIR / "NOTES.md"
 
-CLAIMS_SHA256 = "f77ccf4f44a4a7afdefe2e662f937d432f467d4ae4e4f171b19a95e6811b9e51"
-MANIFEST_SHA256 = "bfeb093458c11bc66095fe287c26bc873cb8ddc8394ed93a0e4eb95fe439851e"
-NOTES_SHA256 = "2072a481cd6b9c2ecfdd5079db182209c8eacd38d01920a60155534d1dec62fe"
+CLAIMS_SHA256 = "0406e6edaaf2ea99c3eeeaf7712267841aeffc0865f5c9e43b3174db9d8cf935"
+MANIFEST_SHA256 = "b1717480bcd720df9c3e492a4d7aaaef157403421b1e12c8eb7e59173c724572"
+NOTES_SHA256 = "281d8c81e8b786af24518ed829e9b85ac76c7a86e5d86e2629e0a3cf2aa64890"
 
 REGISTRY_MARK = "be_pit_reform_2026"
 LANE_ID = "be-pit-reform-2026"
@@ -70,6 +71,12 @@ REPORT_SHA256 = "53c65d610f2d2624040528287a47b1810ef7096f42fa1ea7a00ef1ef016c29d
 AGED_RESULTS_SHA256 = "f138697423c77c77af10467dccf253faf10bc9869a0f9844379d31ab5ab88d50"
 AXIOM_COMMIT = "c6cc389a8f5e7238019e4fa06849325fad9acd46"
 RULESPEC_BE_COMMIT = "ddc28fe7fba3509019a2b80ada5fb6f3ee922839"
+# First-class reform-implementation provenance (the report's own pins): the
+# beReform overlay commit that implements the loi du 15 juillet 2026 and the
+# digest of the enacted-law source bytes it encodes. Without these the exact
+# implementation is recoverable only transitively through the report.
+BEREFORM_COMMIT = "cf05994bc815d70014eff64261d296c200402384"
+REFORM_LAW_SHA256 = "c95eda87835a874fc49cc84f2d65b834c2f372b150e6b65a1732a1b2f485f9d1"
 ENGINE_VERSION = f"axiom@{AXIOM_COMMIT}; rulespec-be@{RULESPEC_BE_COMMIT}"
 DATA_BUNDLE = f"microcosm_be_v05h_corrected@{AGED_RESULTS_SHA256}"
 
@@ -187,7 +194,7 @@ _EXPECTED_ROWS = {
         "policyengine",
         2030,
         2031,
-        -4_156_010_000,
+        -4_155_520_000,
         "projection_conditioned_mechanics",
         "income_year",
         "same_assumptions",
@@ -272,8 +279,16 @@ def _load_manifest(
         pin_id = row["id"]
         if pin_id in records:
             raise ValueError(f"duplicate Belgian PIT-reform pin: {pin_id}")
-        if row["stored_in_repo"] is not False:
-            raise ValueError(f"{pin_id}: raw artifact must remain outside the repo")
+        if row["stored_in_repo"] is True:
+            artifact = SOURCE_DIR / row["artifact"]
+            if verify_sha and (
+                not artifact.is_file() or _sha256(artifact) != row["sha256"]
+            ):
+                raise ValueError(
+                    f"{pin_id}: vendored artifact missing or SHA-256 drifted"
+                )
+        elif row["stored_in_repo"] is not False:
+            raise ValueError(f"{pin_id}: stored_in_repo must be true or false")
         records[pin_id] = row
     observed = {pin_id: row["sha256"] for pin_id, row in records.items()}
     if observed != _EXPECTED_PINS:
@@ -348,6 +363,50 @@ def _validate_payload(payload: dict, manifest: dict[str, dict]) -> None:
         )
 
 
+_REPORT_HEADLINE_ROW = re.compile(
+    r"^\| AY(20\d\d) \| (-[\d,]+\.\d\d) \| (-[\d,]+\.\d\d) \| ([\d,]+\.\d\d) \|$"
+)
+
+
+def _report_aged_deltas(report_path: Path) -> dict[int, float]:
+    """The vendored report's headline aged deltas, keyed by assessment year.
+
+    The report is the pinned source the PolicyEngine claims transcribe; a
+    census that only compares claims against constants written alongside them
+    is green by construction, so the applied per-year values are re-read from
+    the report itself on every load.
+    """
+    deltas: dict[int, float] = {}
+    for line in report_path.read_text().splitlines():
+        match = _REPORT_HEADLINE_ROW.match(line)
+        if match:
+            # Columns: AY | static delta | aged delta | aged minus static.
+            deltas[int(match.group(1))] = float(match.group(3).replace(",", ""))
+    return deltas
+
+
+def _verify_report_faithfulness(payload: dict) -> None:
+    report_path = SOURCE_DIR / "LANE_AGED3_REPORT.md"
+    deltas = _report_aged_deltas(report_path)
+    if sorted(deltas) != [2027, 2028, 2029, 2030, 2031]:
+        raise ValueError(
+            "Belgian PIT-reform report headline table drifted: "
+            f"assessment years {sorted(deltas)}"
+        )
+    for row in payload["claims"]:
+        if row["source"] != "policyengine":
+            continue
+        # Static-column deltas share the AY row; the aged column is what the
+        # claims transcribe, rounded to the nearest EUR 10,000.
+        expected = round(deltas[row["assessment_year"]], -4)
+        if row["value"] != expected:
+            raise ValueError(
+                f"{row['id']}: value {row['value']} is not the pinned "
+                f"report's aged delta {deltas[row['assessment_year']]} "
+                f"rounded to EUR 10,000 ({expected:.0f})"
+            )
+
+
 def load_claims(
     path: Path = CLAIMS_PATH,
     *,
@@ -362,6 +421,7 @@ def load_claims(
     manifest = _load_manifest(manifest_path, verify_sha=verify_sha)
     payload = json.loads(path.read_text())
     _validate_payload(payload, manifest)
+    _verify_report_faithfulness(payload)
     return payload
 
 
@@ -471,6 +531,8 @@ def _self_result(score: ExternalScore, row: dict) -> PEResult:
         "source_commit": "3d9f690",
         "report_sha256": REPORT_SHA256,
         "aged_results_sha256": AGED_RESULTS_SHA256,
+        "reform_implementation": f"beReform@{BEREFORM_COMMIT}",
+        "reform_law_sha256": REFORM_LAW_SHA256,
     }
     annotation = (
         "This result and the PolicyEngine claim project the same pinned draft "
@@ -508,6 +570,8 @@ def _official_result(
         "computed_baseline": AXIOM_BASELINE["policy"],
         "source_commit": "3d9f690",
         "aged_results_sha256": AGED_RESULTS_SHA256,
+        "reform_implementation": f"beReform@{BEREFORM_COMMIT}",
+        "reform_law_sha256": REFORM_LAW_SHA256,
     }
     source_name = _SOURCE_META[official_row["source"]]["publisher"]
     extra = (

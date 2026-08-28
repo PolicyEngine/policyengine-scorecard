@@ -224,7 +224,7 @@ def test_integration_committed_db(tmp_path):
         ("policyengine", 2027, -456_510_000.0),
         ("policyengine", 2028, -779_680_000.0),
         ("policyengine", 2029, -2_457_460_000.0),
-        ("policyengine", 2030, -4_156_010_000.0),
+        ("policyengine", 2030, -4_155_520_000.0),
         ("spf_finances", 2030, -4_000_000_000.0),
     ]
     # The committed deployment artifact must match a fresh export (modulo

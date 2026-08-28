@@ -16,6 +16,13 @@ import { sourceLabel } from "../sourceLabels";
  * mode in the construction, so cross-release drift is visible. Descriptive
  * only: statuses and calibration relationships label, never grade.
  */
+/**
+ * The Belgian description is doctrine-bearing (self-attachment disclosure,
+ * unresolved official period basis) and pinned by test — reword with care.
+ */
+export const BE_REFORM_DESCRIPTION =
+  "two JRC EUROMOD-BE claims with demo-grade Axiom worker concept-mismatch attachments, plus seven Belgian PIT-reform claims. Five are PolicyEngine self-attachments: each claim and result records the same Axiom-over-Microcosm-BE computation for income years 2026–2030. The SPF Finances and Cour des comptes claims each carry a constructed cross-attachment. The two official horizon-2030 statements do not specify whether 2030 is an income or assessment year; no shared period basis with the PolicyEngine income-year rows is asserted";
+
 export function ReformValidationView({
   feed,
   country,
@@ -76,7 +83,7 @@ export function ReformValidationView({
           ? "the populace reform-validation registry (JCT scores, state fiscal notes, agency actuals, IRS and Census references) plus the compute campaign's TPC, CPSP, PWBM and CBO comparisons"
           : country === "UK"
             ? "the compute campaign's HMRC ready-reckoner comparisons (each PE score is a current-law static change; HMRC's are projected-FY direct effects against an indexed baseline, so every comparison is constructed-basis by design)"
-            : "two JRC EUROMOD-BE claims with demo-grade Axiom worker concept-mismatch attachments, plus seven Belgian PIT-reform claims. Five are PolicyEngine self-attachments: each claim and result records the same Axiom-over-Microcosm-BE computation for income years 2026–2030. The SPF Finances and Cour des comptes claims each carry a constructed cross-attachment. The two official horizon-2030 statements do not specify whether 2030 is an income or assessment year; no shared period basis with the PolicyEngine income-year rows is asserted"}{" "}
+            : BE_REFORM_DESCRIPTION}{" "}
         — where each available result carries its certified release's exact
         engine pins.{" "}
         <b className="fig text-foreground">{multiRelease.toLocaleString()}</b>{" "}
