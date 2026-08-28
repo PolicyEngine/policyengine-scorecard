@@ -15,15 +15,7 @@ import { GapsView } from "./components/GapsView";
 import { AboutView } from "./components/AboutView";
 import { MissionControl } from "./components/MissionControl";
 import { ReformValidationView } from "./components/ReformValidationView";
-
-const TABS = [
-  { id: "scorecard", label: "Scorecard" },
-  { id: "divergences", label: "Divergences" },
-  { id: "validation", label: "Reform validation" },
-  { id: "gaps", label: "Gaps" },
-  { id: "about", label: "Method" },
-] as const;
-type TabId = (typeof TABS)[number]["id"];
+import { TABS, buildUrlQuery, parseUrlState, type TabId } from "./urlState";
 
 export interface Filters {
   country: Country;
@@ -32,6 +24,20 @@ export interface Filters {
   geography: string; // country code (national) | "states" | state code
   subgroup: string; // "total" | "all" | slug
   bucket: SpineBucket | null;
+}
+
+function initialUrlState(): { country: Country; tab: TabId } {
+  return parseUrlState(window.location.search);
+}
+
+function writeUrlState(country: Country, tab: TabId) {
+  const query = buildUrlQuery(window.location.search, country, tab);
+  window.history.replaceState(
+    null,
+    "",
+    (query ? `${window.location.pathname}?${query}` : window.location.pathname) +
+      window.location.hash,
+  );
 }
 
 const DEFAULT_FILTERS: Filters = {
@@ -63,8 +69,15 @@ export default function App() {
   const [lanes, setLanes] = useState<LanesFeed | null>(null);
   const [populations, setPopulations] = useState<PopulationsFeed | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<TabId>("scorecard");
-  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
+  const [tab, setTab] = useState<TabId>(() => initialUrlState().tab);
+  const [filters, setFilters] = useState<Filters>(() => {
+    const { country } = initialUrlState();
+    return { ...DEFAULT_FILTERS, country, geography: country };
+  });
+
+  useEffect(() => {
+    writeUrlState(filters.country, tab);
+  }, [filters.country, tab]);
 
   useEffect(() => {
     fetch("./data/comparison.json")

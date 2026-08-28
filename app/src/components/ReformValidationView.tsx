@@ -7,6 +7,7 @@ import {
   comparabilityFigure,
   countryOf,
 } from "../types";
+import { sourceLabel } from "../sourceLabels";
 
 /**
  * The reform-validation registry (issue #20): every non-Urban claim in
@@ -15,6 +16,13 @@ import {
  * mode in the construction, so cross-release drift is visible. Descriptive
  * only: statuses and calibration relationships label, never grade.
  */
+/**
+ * The Belgian description is doctrine-bearing (self-attachment disclosure,
+ * unresolved official period basis) and pinned by test — reword with care.
+ */
+export const BE_REFORM_DESCRIPTION =
+  "two JRC EUROMOD-BE claims with demo-grade Axiom worker concept-mismatch attachments, plus seven Belgian PIT-reform claims. Five are PolicyEngine self-attachments: each claim and result records the same Axiom-over-Microcosm-BE computation for income years 2026–2030. The SPF Finances and Cour des comptes claims each carry a constructed cross-attachment. The two official horizon-2030 statements do not specify whether 2030 is an income or assessment year; no shared period basis with the PolicyEngine income-year rows is asserted";
+
 export function ReformValidationView({
   feed,
   country,
@@ -75,7 +83,7 @@ export function ReformValidationView({
           ? "the populace reform-validation registry (JCT scores, state fiscal notes, agency actuals, IRS and Census references) plus the compute campaign's TPC, CPSP, PWBM and CBO comparisons"
           : country === "UK"
             ? "the compute campaign's HMRC ready-reckoner comparisons (each PE score is a current-law static change; HMRC's are projected-FY direct effects against an indexed baseline, so every comparison is constructed-basis by design)"
-            : "two JRC EUROMOD-BE model claims with demo-grade Axiom worker attachments. Both are concept mismatches: CY2026 versus CY2023, reweighted US survey support versus Belgian SILC, and worker-slice versus national scope"}{" "}
+            : BE_REFORM_DESCRIPTION}{" "}
         — where each available result carries its certified release's exact
         engine pins.{" "}
         <b className="fig text-foreground">{multiRelease.toLocaleString()}</b>{" "}
@@ -345,41 +353,6 @@ function StatusPill({ status }: { status: PopulationRow["latest"]["status"] }) {
       {STATUS_LABELS[status] ?? status}
     </span>
   );
-}
-
-const SOURCE_SPECIAL: Record<string, string> = {
-  jct: "JCT",
-  cbo: "CBO",
-  irs: "IRS",
-  irs_soi: "IRS SOI",
-  census: "Census",
-  census_pep: "Census PEP",
-  treasury: "Treasury",
-  tpc: "TPC",
-  pwbm: "PWBM",
-  cpsp: "Columbia CPSP",
-  budget_lab: "Budget Lab",
-  tax_foundation: "Tax Foundation",
-  obr: "OBR",
-  hmrc: "HMRC",
-  uk_hmrc: "HMRC",
-  dwp: "DWP",
-  dwp_takeup: "DWP take-up",
-  dwp_hbai: "DWP HBAI",
-  hmt: "HMT",
-  hm_treasury: "HM Treasury",
-  ifs: "IFS",
-  rf: "Resolution Foundation",
-  resolution_foundation: "Resolution Foundation",
-  ukmod: "UKMOD",
-  jrc_euromod: "JRC EUROMOD",
-};
-
-function sourceLabel(s: string): string {
-  if (SOURCE_SPECIAL[s]) return SOURCE_SPECIAL[s];
-  const m = s.match(/^([a-z]{2})_(admin|fiscal_note)$/);
-  if (m) return `${m[1].toUpperCase()} ${m[2].replace("_", " ")}`;
-  return s;
 }
 
 function windowFromPeriod(r: PopulationRow): string {

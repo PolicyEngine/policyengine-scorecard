@@ -181,6 +181,9 @@ def test_release_label():
     assert release_label("populace-us-2024-buildo-sparse-x") == "buildo"
     assert release_label("populace-us-2024-sparse-l0-refit-57k-x") == "l0-refit"
     assert release_label("populace-us-2024-f0af251-703bd81a565c-x") == "f0af251"
+    assert (
+        release_label("microcosm_be_v05h_corrected@f138697423c7") == "microcosm_be_v05h"
+    )
 
 
 @pytest.mark.skipif(not COMMITTED_DB.exists(), reason="no committed DB")
@@ -201,7 +204,29 @@ def test_integration_committed_db(tmp_path):
     dist: dict = {}
     for r in payload["rows"]:
         dist[r["country"]] = dist.get(r["country"], 0) + 1
-    assert dist == {"US": 270, "UK": 14, "BE": 2}
+    assert dist == {"US": 270, "UK": 14, "BE": 9}
+    be_pit = [
+        row
+        for row in payload["rows"]
+        if row["source"] in {"spf_finances", "cour_des_comptes", "policyengine"}
+    ]
+    assert len(be_pit) == 7
+    assert all(row["country"] == "BE" for row in be_pit)
+    assert {
+        source: sum(row["source"] == source for row in be_pit)
+        for source in ("spf_finances", "cour_des_comptes", "policyengine")
+    } == {"spf_finances": 1, "cour_des_comptes": 1, "policyengine": 5}
+    assert sorted(
+        (row["source"], row["period"], row["external_value"]) for row in be_pit
+    ) == [
+        ("cour_des_comptes", 2030, -5_000_000_000.0),
+        ("policyengine", 2026, -513_450_000.0),
+        ("policyengine", 2027, -456_510_000.0),
+        ("policyengine", 2028, -779_680_000.0),
+        ("policyengine", 2029, -2_457_460_000.0),
+        ("policyengine", 2030, -4_155_520_000.0),
+        ("spf_finances", 2030, -4_000_000_000.0),
+    ]
     # The committed deployment artifact must match a fresh export (modulo
     # the build date) — stale committed data can't pass CI.
     committed = json.loads((REPO / "data" / "populations.json").read_text())
