@@ -640,7 +640,7 @@ def ingest(db_path: Path) -> dict:
     return summary | {
         "lane": LANE_ID,
         "lanes_synced": lanes_synced,
-        **coverage,
+        "coverage": coverage,
     }
 
 
