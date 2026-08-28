@@ -2,7 +2,7 @@
 
 ## State
 
-The architecture and source evidence have been inspected. Seven exact claims and their upstream SHA-256 pins are now vendored under `sources/be-pit-reform-2026/`; raw PDFs remain outside the repository.
+The vendored Belgian PIT-reform claims now have a hash-gated registry adapter, three registered baseline families, seven result attachments, build-chain wiring immediately before final `be_jrc`, and focused passing tests. The wrong-layer `data/externals/` file has been removed.
 
 ## Done
 
@@ -12,9 +12,13 @@ The architecture and source evidence have been inspected. Seven exact claims and
 - Read the Belgian JRC and reform-validation adapters, registry models and README, build order, exporter, app view, tests, and CI commands.
 - Confirmed that the populations exporter requires a result for every rendered claim; the two official claims therefore need descriptive cross-attachments with explicit period-basis ambiguity.
 - Vendored `claims.json`, `NOTES.md`, and `manifest.jsonl` with seven claims and five upstream artifact/PDF pins.
+- Added seven `ExternalScore` rows and seven `PEResult` rows: five same-computation PolicyEngine self-attachments and two constructed official cross-attachments.
+- Registered distinct SPF Finances, Cour des comptes, and Axiom same-year indexed baseline families.
+- Wired `be_pit_reform` immediately before final `be_jrc` and removed the unused `data/externals/be-pit-reform-2026.json`.
+- Added focused ingest tests; `8 passed in 0.03s`.
 
 ## Next
 
-- Implement the hash-gated registry adapter, registered baselines, build wiring, and focused tests.
-- Remove the wrong-layer `data/externals/be-pit-reform-2026.json`.
-- Rebuild/export the registry feed and run the Python and app CI commands.
+- Commit the app-facing Belgian description and source labels.
+- Rebuild the database from scratch, run the full Python suite, and export the populations feed.
+- Verify all BE values/signs directly, then run the app CI commands and write the final report.

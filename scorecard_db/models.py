@@ -154,6 +154,12 @@ class UnitConcept(str, Enum):
 # window_kind       "total" | "annual_average" on period-range claims
 # month             "YYYY-MM" for monthly series
 # data_vintage      dataset base when it is not the obvious current one
+# period_basis      claim-side year semantics when the integer period alone
+#                   is insufficient (for example income_year or an explicitly
+#                   unresolved official horizon basis)
+# assessment_year   Belgian assessment year, stored as a string beside a
+#                   claim whose integer period keys the income year
+# behavioral_response  source-stated response treatment (for example none)
 #
 # UK additions (2026-08-02 UK harvest; COLLATION UK worklist items 2-3):
 # fy                normalized fiscal-year label "2026-27" (Apr–Mar). The
@@ -200,6 +206,9 @@ STANDARD_CONDITIONS = frozenset(
         "window_kind",
         "month",
         "data_vintage",
+        "period_basis",
+        "assessment_year",
+        "behavioral_response",
         # Cross-model epistemics (ruling 2026-08-02): every new benchmark
         # names its class explicitly; Belgium's JRC model claims use
         # different_model, while the routed statistical rows carry
