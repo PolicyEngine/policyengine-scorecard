@@ -21,7 +21,7 @@ import { sourceLabel } from "../sourceLabels";
  * unresolved official period basis) and pinned by test — reword with care.
  */
 export const BE_REFORM_DESCRIPTION =
-  "seven Belgian PIT-reform claims plus two JRC EUROMOD-BE claims with demo-grade Axiom worker concept-mismatch attachments. Five of the reform claims are PolicyEngine self-attachments: each claim and result records the same Axiom-over-Microcosm-BE computation for income years 2026–2030. The SPF Finances and Cour des comptes claims each carry a constructed cross-attachment. The two official horizon-2030 statements do not specify whether 2030 is an income or assessment year; no shared period basis with the PolicyEngine income-year rows is asserted";
+  "seven Belgian PIT-reform claims plus two JRC EUROMOD-BE claims — EUROMOD J1.0+ totals simulated on uprated EU-SILC 2022 survey input (income year 2021, private households), not administrative statistics — with demo-grade Axiom worker concept-mismatch attachments. Five of the reform claims are PolicyEngine self-attachments: each claim and result records the same Axiom-over-Microcosm-BE computation for income years 2026–2030. The SPF Finances and Cour des comptes claims each carry a constructed cross-attachment. The two official horizon-2030 statements do not specify whether 2030 is an income or assessment year; no shared period basis with the PolicyEngine income-year rows is asserted";
 
 export function ReformValidationView({
   feed,
@@ -180,7 +180,21 @@ export function ReformValidationView({
                 >
                   <td className="max-w-md px-2 py-1.5">
                     <span className="line-clamp-2">
-                      {r.name || r.source_column}
+                      {r.url ? (
+                        <a
+                          className="underline decoration-muted-foreground/50 underline-offset-2 hover:decoration-foreground"
+                          href={r.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          title="Open the source document"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {r.name || r.source_column}
+                          {" ↗"}
+                        </a>
+                      ) : (
+                        r.name || r.source_column
+                      )}
                     </span>
                   </td>
                   <td className="whitespace-nowrap px-2 py-1.5">

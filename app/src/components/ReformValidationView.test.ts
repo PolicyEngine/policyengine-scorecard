@@ -18,6 +18,11 @@ describe("Belgian reform description doctrine", () => {
     );
   });
 
+  test("names the EU-SILC input basis of the EUROMOD claims", () => {
+    expect(BE_REFORM_DESCRIPTION).toContain("EU-SILC");
+    expect(BE_REFORM_DESCRIPTION).toContain("not administrative statistics");
+  });
+
   test("leaves the official period basis unresolved", () => {
     expect(BE_REFORM_DESCRIPTION).toContain(
       "do not specify whether 2030 is an income or assessment year",
