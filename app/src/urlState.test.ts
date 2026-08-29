@@ -15,6 +15,7 @@ describe("parseUrlState", () => {
 
   test("country codes are case-insensitive", () => {
     expect(parseUrlState("?country=Uk").country).toBe("UK");
+    expect(parseUrlState("?country=nZ").country).toBe("NZ");
   });
 
   test("values outside the closed vocabularies fall back to defaults", () => {
@@ -52,9 +53,9 @@ describe("buildUrlQuery", () => {
   });
 
   test("round-trips through parseUrlState", () => {
-    const query = buildUrlQuery("", "UK", "divergences");
+    const query = buildUrlQuery("", "NZ", "divergences");
     expect(parseUrlState(`?${query}`)).toEqual({
-      country: "UK",
+      country: "NZ",
       tab: "divergences",
     });
   });

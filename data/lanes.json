@@ -1,7 +1,7 @@
 {
  "_schema": {
   "stage": "registered | cataloged | ingested | computed | diagnosing | published | regressed",
-  "country": "US | UK | BE \u2014 the model instance the lane feeds (issue #42)",
+  "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
  "updated": "2026-08-29",
@@ -368,6 +368,17 @@
    "running": false,
    "updated": "2026-08-29",
    "note": "7 claims from 3 sources; 7 results (5 same-computation PolicyEngine self-attachments, 2 constructed official cross-attachments with unresolved horizon basis)"
+  },
+  {
+   "id": "nz-official-budget-scores",
+   "source": "New Zealand Treasury",
+   "area": "official Budget reform scores",
+   "mode": 2,
+   "country": "NZ",
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-29",
+   "note": "12 official claims across 2 rule-encoded replication candidates; fiscal timing and IWTC termination bridge pending"
   }
  ]
 }

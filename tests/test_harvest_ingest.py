@@ -784,7 +784,9 @@ def test_every_committed_lane_carries_a_country():
     way during the #50 rebase)."""
     feed = json.loads((REPO / "data" / "lanes.json").read_text())
     untagged = [
-        x["id"] for x in feed["lanes"] if x.get("country") not in ("US", "UK", "BE")
+        x["id"]
+        for x in feed["lanes"]
+        if x.get("country") not in ("US", "UK", "BE", "NZ")
     ]
     assert untagged == []
 

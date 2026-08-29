@@ -62,6 +62,10 @@ const HEADER_COPY: Record<Country, { eyebrow: string; counterpart: string }> = {
     eyebrow: "Model validation · Belgium lanes",
     counterpart: "vs SPF Finances, Cour des comptes and JRC EUROMOD-BE",
   },
+  NZ: {
+    eyebrow: "Model validation · New Zealand lanes",
+    counterpart: "vs New Zealand official budget scores",
+  },
 };
 
 export default function App() {
@@ -366,6 +370,13 @@ function Headline({
             are labeled concept mismatch there rather than entering this
             comparison grid.
           </>
+        ) : country === "NZ" ? (
+          <>
+            New Zealand Treasury official budget scores live on Reform
+            validation. Claims appear there even before a PolicyEngine result
+            is available, labeled Not yet computed; their external values stay
+            visible as replicated estimates are added.
+          </>
         ) : (
           <>
             No {country} comparison cells yet —{" "}
@@ -397,7 +408,9 @@ function Headline({
         ? "Urban publishes"
         : country === "UK"
           ? "UK sources publish"
-          : "JRC EUROMOD-BE publishes"}{" "}
+          : country === "BE"
+            ? "JRC EUROMOD-BE publishes"
+            : "New Zealand sources publish"}{" "}
       <b className="text-foreground fig">{n.toLocaleString()}</b> unsuppressed
       cells across {programs} programs
       {country === "US" && " and the poverty counterfactual"}. The computed
