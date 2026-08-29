@@ -365,6 +365,14 @@ def baseline_key(descriptor: dict) -> str:
     return hashlib.sha256(_canonical(descriptor).encode()).hexdigest()[:16]
 
 
+def publication_key(publication: dict) -> str:
+    """Content address for a publication-provenance dict (the interning
+    key for the publications side table): identical provenance stored
+    once, referenced by hash. Same construction as baseline_key —
+    sha256 over canonical JSON, 16 hex chars."""
+    return hashlib.sha256(_canonical(publication).encode()).hexdigest()[:16]
+
+
 @dataclass(frozen=True)
 class ReformRef:
     """The policy world a claim scores.

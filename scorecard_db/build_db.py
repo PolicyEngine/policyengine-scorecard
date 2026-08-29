@@ -41,6 +41,7 @@ from pathlib import Path
 
 from be import ingest_jrc_country_report, ingest_pit_reform_2026
 
+from .db import require_complete_provenance
 from . import (
     ingest_campaign,
     ingest_diagnoses,
@@ -53,6 +54,11 @@ from . import (
     ingest_urban,
     produce_campaign_uk,
 )
+
+
+def _provenance_gate(conn: sqlite3.Connection) -> None:
+    """Build-time fail-loud gate for NULL or dangling side references."""
+    require_complete_provenance(conn, context="build_db")
 
 
 def content_hash(db_path: Path) -> str:
@@ -121,9 +127,13 @@ def build(db_path: Path) -> dict:
         "SELECT claim_id, computed_at, COUNT(*) FROM pe_results"
         " GROUP BY 1, 2 HAVING COUNT(*) > 1"
     ).fetchall()
-    conn.close()
     if ties:
+        conn.close()
         raise SystemExit(f"pe_results (claim_id, computed_at) ties: {ties[:3]}")
+    try:
+        _provenance_gate(conn)
+    finally:
+        conn.close()
     summary["content_hash"] = content_hash(db_path)
     summary["bytes"] = db_path.stat().st_size
     return summary

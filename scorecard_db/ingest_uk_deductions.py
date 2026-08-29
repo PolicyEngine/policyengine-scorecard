@@ -260,7 +260,10 @@ def ingest(db_path: Path) -> dict:
             f"DELETE FROM external_scores WHERE source IN ({placeholders})",
             DEDUCTION_SOURCES,
         )
+        pub_rows, reform_rows = ScorecardDB.provenance_rows(scores)
+        db.insert_provenance(pub_rows, reform_rows)
         db.conn.executemany(SCORES_SQL, rows)
+        db.prune_provenance()
         register_baselines_txn(db)
         db.conn.execute(
             LANE_SQL,

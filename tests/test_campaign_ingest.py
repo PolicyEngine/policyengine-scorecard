@@ -118,7 +118,9 @@ def test_full_attach_on_committed_db(db_copy):
         """SELECT s.value, r.computed_value FROM pe_results r
            JOIN external_scores s USING (claim_id)
            WHERE r.run_id = 'campaign-20260802-cpsp'
-           AND json_extract(s.reform_json, '$.reform.policy') = 'tcja_ctc'
+           AND json_extract((SELECT reform_json FROM reforms
+                              WHERE reform_key = s.reform_key),
+                            '$.reform.policy') = 'tcja_ctc'
            AND json_extract(s.conditions, '$.subgroup')
                = 'children_under_18'"""
     ).fetchone()

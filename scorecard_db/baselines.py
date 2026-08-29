@@ -345,6 +345,7 @@ def register_baselines_txn(db: ScorecardDB) -> int:
         for key in missing:
             sample = db.conn.execute(
                 "SELECT reform_json FROM external_scores"
+                " JOIN reforms USING (reform_key)"
                 " WHERE baseline_key = ? LIMIT 1",
                 (key,),
             ).fetchone()
