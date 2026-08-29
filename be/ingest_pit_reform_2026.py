@@ -86,6 +86,10 @@ REFORM = {
     "moniteur_belge": "2026-07-29_p40196",
 }
 
+# Public home of the pinned committee report: lachambre.be serves exactly the
+# doc56_1243_004_pdf bytes (sha256 verified against the manifest pin 2026-08-29).
+DOC56_1243_004_URL = "https://www.lachambre.be/FLWB/PDF/56/1243/56K1243004.pdf"
+
 AXIOM_BASELINE = AXIOM_BE_PIT_REFORM_2026_BASELINE
 
 _BASELINE_BY_SOURCE = {
@@ -462,7 +466,7 @@ def _publication(row: dict, manifest: dict[str, dict]) -> dict:
         }
     publication = {
         **meta,
-        "url": "",
+        "url": DOC56_1243_004_URL,
         "window": "Horizon 2030 (income/assessment-year basis unspecified)",
         "registry": REGISTRY_MARK,
         "source_pins": source_pins,
