@@ -2,6 +2,7 @@ import { Fragment, useMemo, useState } from "react";
 import type { Country, PopulationRow, PopulationsFeed } from "../types";
 import {
   COUNTRY_LABELS,
+  METRIC_LABELS,
   RELATIONSHIP_LABELS,
   STATUS_LABELS,
   comparabilityFigure,
@@ -10,11 +11,12 @@ import {
 import { sourceLabel } from "../sourceLabels";
 
 /**
- * The reform-validation registry (issue #20): every non-Urban claim in
- * scorecard.db with a PE result, shown with its full per-release history —
- * one result per certified populace release, engine pins and OBBBA scoring
- * mode in the construction, so cross-release drift is visible. Descriptive
- * only: statuses and calibration relationships label, never grade.
+ * The reform-validation registry (issue #20): every non-Urban claim with a PE
+ * result, plus claims explicitly opted into pre-result display. Available
+ * results are shown with their full per-release history — one result per
+ * certified populace release, engine pins and OBBBA scoring mode in the
+ * construction, so cross-release drift is visible. Descriptive only: statuses
+ * and calibration relationships label, never grade.
  */
 /**
  * The Belgian description is doctrine-bearing (self-attachment disclosure,
@@ -83,7 +85,9 @@ export function ReformValidationView({
           ? "the populace reform-validation registry (JCT scores, state fiscal notes, agency actuals, IRS and Census references) plus the compute campaign's TPC, CPSP, PWBM and CBO comparisons"
           : country === "UK"
             ? "the compute campaign's HMRC ready-reckoner comparisons (each PE score is a current-law static change; HMRC's are projected-FY direct effects against an indexed baseline, so every comparison is constructed-basis by design)"
-            : BE_REFORM_DESCRIPTION}{" "}
+            : country === "BE"
+              ? BE_REFORM_DESCRIPTION
+              : "New Zealand Treasury official budget-score replication candidates, with fiscal timing and the IWTC termination scenario explicit before a PolicyEngine counterpart attaches"}{" "}
         — where each available result carries its certified release's exact
         engine pins.{" "}
         <b className="fig text-foreground">{multiRelease.toLocaleString()}</b>{" "}
@@ -210,11 +214,13 @@ export function ReformValidationView({
                     {fmtV(r.latest.value, r.value_kind)}
                   </td>
                   <td className="whitespace-nowrap px-2 py-1.5 text-right fig">
-                    {comparabilityFigure(
-                      r.latest.status_effective,
-                      "not comparable",
-                      () => fmtDiv(r),
-                    )}
+                    {r.results.length === 0
+                      ? "—"
+                      : comparabilityFigure(
+                          r.latest.status_effective,
+                          "not comparable",
+                          () => fmtDiv(r),
+                        )}
                   </td>
                   <td className="whitespace-nowrap px-2 py-1.5">
                     <StatusPill status={r.latest.status_effective} />
@@ -264,35 +270,46 @@ function RowDetail({ row }: { row: PopulationRow }) {
                 </tr>
               </thead>
               <tbody>
-                {row.results.map((res) => (
-                  <tr key={res.data_bundle} className="border-t border-border">
-                    <td className="py-1 pr-3 fig">{res.release}</td>
-                    <td className="py-1 pr-3 fig break-all">
-                      {res.engine_version}
-                      {res.status_effective !== res.status && (
-                        <span
-                          className="ml-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide"
-                          title="The recorded status is downgraded by the baseline guard (issue #13): the executed baseline differs from, or is unverifiable against, the claim's world."
-                        >
-                          {STATUS_LABELS[res.status_effective]}
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-1 pr-3 text-right fig">
-                      {fmtV(res.value, row.value_kind)}
-                    </td>
-                    <td className="py-1 pr-3 text-right fig">
-                      {comparabilityFigure(
-                        res.status_effective,
-                        "—",
-                        () => ratioOf(res.value, row.external_value),
-                      )}
-                    </td>
-                    <td className="py-1 fig text-muted-foreground break-all">
-                      {res.construction || "—"}
+                {row.results.length === 0 ? (
+                  <tr className="border-t border-border">
+                    <td
+                      colSpan={5}
+                      className="py-2 text-muted-foreground"
+                    >
+                      No PolicyEngine result has been computed for this claim.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  row.results.map((res) => (
+                    <tr key={res.data_bundle} className="border-t border-border">
+                      <td className="py-1 pr-3 fig">{res.release}</td>
+                      <td className="py-1 pr-3 fig break-all">
+                        {res.engine_version}
+                        {res.status_effective !== res.status && (
+                          <span
+                            className="ml-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide"
+                            title="The recorded status is downgraded by the baseline guard (issue #13): the executed baseline differs from, or is unverifiable against, the claim's world."
+                          >
+                            {STATUS_LABELS[res.status_effective]}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-1 pr-3 text-right fig">
+                        {fmtV(res.value, row.value_kind)}
+                      </td>
+                      <td className="py-1 pr-3 text-right fig">
+                        {comparabilityFigure(
+                          res.status_effective,
+                          "—",
+                          () => ratioOf(res.value, row.external_value),
+                        )}
+                      </td>
+                      <td className="py-1 fig text-muted-foreground break-all">
+                        {res.construction || "—"}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
               </table>
             </div>
@@ -310,11 +327,13 @@ function RowDetail({ row }: { row: PopulationRow }) {
                 )}
               </ul>
             )}
-            <p className="mt-2 text-muted-foreground">
-              A construction change between releases (e.g. an OBBBA scoring
-              mode) is part of the label above — compare values only within the
-              same construction.
-            </p>
+            {row.results.length > 0 && (
+              <p className="mt-2 text-muted-foreground">
+                A construction change between releases (e.g. an OBBBA scoring
+                mode) is part of the label above — compare values only within
+                the same construction.
+              </p>
+            )}
           </div>
           <div className="min-w-0">
             <p className="mb-1 font-semibold">Claim</p>
@@ -335,7 +354,8 @@ function RowDetail({ row }: { row: PopulationRow }) {
               )}
             </p>
             <p className="mt-2 fig break-words text-muted-foreground">
-              {row.source_column} · {row.metric} · {row.time_basis} {row.period}
+              {row.source_column} · {METRIC_LABELS[row.metric] ?? row.metric} ·{" "}
+              {row.time_basis} {row.period}
               {row.period_start !== null &&
                 ` (window ${row.period_start}–${row.period_end})`}
             </p>
@@ -379,17 +399,19 @@ function fmtV(v: number | null, kind: string): string {
   if (kind === "share") return `${(v * 100).toFixed(1)}%`;
   if (kind === "percent") return `${v.toFixed(1)}%`;
   if (kind === "index") return v.toFixed(3);
-  // currency follows the value_kind, never a $ default: gbp* rows are
-  // pounds, count rows carry no symbol at all
+  // Currency follows value_kind, never a $ default: GBP and NZD rows use
+  // their own symbols, while count rows carry no symbol at all.
   const cur = kind.startsWith("gbp")
     ? "£"
     : kind.startsWith("eur")
       ? "€"
-      : kind.startsWith("usd") || kind === "usd"
-        ? "$"
-        : kind === "count"
-          ? ""
-          : "$";
+      : kind.startsWith("nzd")
+        ? "NZ$"
+        : kind.startsWith("usd") || kind === "usd"
+          ? "$"
+          : kind === "count"
+            ? ""
+            : "$";
   const a = Math.abs(v);
   const sign = v < 0 ? "−" : "";
   if (a >= 1e9) return `${sign}${cur}${(a / 1e9).toFixed(2)}B`;

@@ -26,6 +26,7 @@ const SOURCE_SPECIAL: Record<string, string> = {
   jrc_euromod: "JRC EUROMOD",
   spf_finances: "SPF Finances",
   cour_des_comptes: "Cour des comptes",
+  nz_treasury: "New Zealand Treasury",
   policyengine: "PolicyEngine",
 };
 
