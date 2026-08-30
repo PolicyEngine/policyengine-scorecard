@@ -16,6 +16,7 @@ import { AboutView } from "./components/AboutView";
 import { MissionControl } from "./components/MissionControl";
 import { ReformValidationView } from "./components/ReformValidationView";
 import { TABS, buildUrlQuery, parseUrlState, type TabId } from "./urlState";
+import { withBasePath } from "./basePath";
 
 export interface Filters {
   country: Country;
@@ -84,18 +85,18 @@ export default function App() {
   }, [filters.country, tab]);
 
   useEffect(() => {
-    fetch("./data/comparison.json")
+    fetch(withBasePath("data/comparison.json"))
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
       })
       .then(setData)
       .catch((e) => setError(String(e)));
-    fetch("./data/lanes.json")
+    fetch(withBasePath("data/lanes.json"))
       .then((r) => (r.ok ? r.json() : null))
       .then(setLanes)
       .catch(() => setLanes(null));
-    fetch("./data/populations.json")
+    fetch(withBasePath("data/populations.json"))
       .then((r) => (r.ok ? r.json() : null))
       .then(setPopulations)
       .catch(() => setPopulations(null));
