@@ -10,7 +10,8 @@
  {
   "id": "yale-vintage-missing-brazil-301-338",
   "applies": {
-   "source": "yale-tariff-tracker"
+   "source": "yale-tariff-tracker",
+   "geography": "us"
   },
   "text": "The 2026-06-09 published vintage (data through 2026 rev 10) predates the tracker's Brazil section-301 and section-338 encodings per its own deviations registry, so its series understates those components relative to instruments in force.",
   "basis": "tracker deviations registry at the pinned vintage"
@@ -24,9 +25,19 @@
   "basis": "adapter.py"
  },
  {
+  "id": "yale-canada-construct-mismatch",
+  "applies": {
+   "source": "yale-tariff-tracker",
+   "geography": "ca"
+  },
+  "text": "Canada rows place Yale's effective statutory rate on fixed 2024 Canada import weights next to Microcosm's observed calculated duties divided by contemporaneous Canada customs value. Yale models product-level USMCA utilization and other statutory adjustments; the observed collections series reflects claims, exclusions, entry timing, compliance, and the contemporaneous trade mix. The delta is therefore a construct comparison, not an apples-to-apples validation and not evidence of Axiom whole-basket coverage.",
+  "basis": "source.json country_series; pinned tracker docs/methodology.md (USMCA utilization) + docs/weights.md at 39d394d9d1e65af5486dd785e2b3eeb912170ee8; pipeline/compute_tariff_counterparts.py"
+ },
+ {
   "id": "yale-tpc-divergence-decomposed",
   "applies": {
-   "source": "yale-tariff-tracker"
+   "source": "yale-tariff-tracker",
+   "geography": "us"
   },
   "text": "The spring-2026 divergence between the two fixed-base statutory series is the weight year, quantified by replication: running Yale's own daily-series stage and own rate panel (c4307e51, built locally) with the weight base rebuilt via Yale's own weights recipe for 2025 instead of 2024 moves the 2026-04..06 mean from 10.72% to 9.38%, within 0.08 points of TPC's published 9.46% (weight-year effect -1.34p; construct residual ~0). Author-attributed; leg outputs committed at data/pe/diagnostics/daily_overall_weights{2024,2025}.csv. The validation leg (2024 weights) tracks Yale's published series within 0.2-0.6p in stable months, with departures explained by vintage (their 2026-06-09 publication predates their Brazil-301/338 encodings) and by single-pass vs per-revision weight keying.",
   "basis": "P5 stage-1 runs 2026-08-08/09 (~/PolicyEngine/_tariff-p5/stage1/); weight bases built via tracker src/io/build_import_weights.R --no-gtap over sha-manifested Census archives (2024 $3,119.3B; 2025 $3,242.5B)"

@@ -15,7 +15,7 @@ Output: app/public/data/moments.json.
 """
 
 import json
-from datetime import date
+from datetime import UTC, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -40,11 +40,13 @@ def main():
         for r in pe_payload["rows"]
     }
     annotations = load_annotations()
-    source_annotation_ids = {}
-    for entry in annotations:
-        source_annotation_ids.setdefault(entry["applies"]["source"], []).append(
+
+    def annotation_ids(row: dict) -> list[str]:
+        return [
             entry["id"]
-        )
+            for entry in annotations
+            if all(row.get(key) == value for key, value in entry["applies"].items())
+        ]
 
     rows = []
     for source in SOURCES:
@@ -89,7 +91,7 @@ def main():
                     "pe_variant": pe_variant,
                     "delta": None if pe_value is None else pe_value - ext["value"],
                     "status": status,
-                    "annotation_ids": source_annotation_ids.get(source, []),
+                    "annotation_ids": annotation_ids(ext),
                 }
             )
 
@@ -97,7 +99,7 @@ def main():
     for row in rows:
         statuses[row["status"]] = statuses.get(row["status"], 0) + 1
     payload = {
-        "built": date.today().isoformat(),
+        "built": datetime.now(UTC).date().isoformat(),
         "claim_class": "baseline_moment",
         "pe_provenance": pe_payload["provenance"],
         "sources": SOURCES,

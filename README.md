@@ -49,17 +49,19 @@ Status taxonomy — honesty made structural:
 
 The scorecard's second claim class, `baseline_moment`: current-law
 statistics published by external modelers, captured with the same
-honesty machinery as reform scores. First population: average US
-tariff rates —
+honesty machinery as reform scores. First population: average US tariff
+rates, plus a Canada country slice —
 
 - **Yale Budget Lab tariff-rate-tracker** (`weighted_etr`): effective
   statutory rates × fixed 2024 import weights, vintage pinned at the
-  2026-06-09 publication (commit 39d394d).
+  2026-06-09 publication (commit 39d394d). US-total rows come from the
+  published overall file; Canada rows come from an authenticated,
+  byte-preserving extract of the same publication's country file.
 - **TPC Tracking Trump Tariffs**: average statutory rate × fixed 2025
   weights, ex-AD/CVD, Datawrapper datasets version-pinned (aO4iG v44,
   MC81F v43 incl. by-authority types).
-- **Our side**: the ex-post collections rate (Σ calculated duty /
-  Σ customs value, monthly) from the Microcosm import-entry margins
+- **Our side**: US-total and Canada ex-post collections rates
+  (Σ calculated duty / Σ customs value, monthly) from the Microcosm margins
   (exact-reconciled; microcosm #620) — today a `concept_mismatch`
   counterpart by design, with the fixed-base-vs-contemporaneous gap
   annotated; same-construct replications (our rates under each
@@ -70,10 +72,10 @@ tariff rates —
 Pipeline (additive; does not touch the Instance-1 build):
 
 ```bash
-python sources/yale-tariff-tracker/adapter.py
-python sources/tpc-tariffs/adapter.py
-python pipeline/compute_tariff_counterparts.py   # parquet if present, else the committed extract
-python pipeline/build_moments.py                 # -> app/public/data/moments.json
+uv run python sources/yale-tariff-tracker/adapter.py
+uv run python sources/tpc-tariffs/adapter.py
+uv run python pipeline/compute_tariff_counterparts.py   # parquet if present, else committed extracts
+uv run python pipeline/build_moments.py                 # -> app/public/data/moments.json
 ```
 
 ## Reproducing

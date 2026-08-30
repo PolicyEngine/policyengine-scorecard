@@ -1,9 +1,19 @@
 {
  "provenance": {
   "margins_source": "microcosm #620 (merge d4b0855157af996bd367146bc200a2f72ee7d15d)",
-  "construct": "sum(cal_dut_mo)/sum(con_val_mo) monthly, all lines x countries",
+  "margins_parquet_sha256": "f7f88f5824112d1a9c6beaaf4addc9b15f795f6ba6d6e4447e72957731c29607",
+  "construct": "sum(cal_dut_mo)/sum(con_val_mo) monthly on contemporaneous customs values",
+  "geography_scope": {
+   "us": "all HTS10 x origin rows",
+   "ca": "iso2=CA, Census cty_code=1220, country_name=Canada"
+  },
+  "weighting": "publisher dollar margins only; no synthetic household or survey weights",
   "reconciliation": "exact-integer vs publisher control totals, 3 axes x 18 months, 0 failures",
-  "computed_from": "/Users/maxghenis/PolicyEngine/policyengine-scorecard/data/pe/tariff_expost_monthly.csv"
+  "committed_extract_sha256": {
+   "us": "9e93c1189a3ec32796ac08626cbfcef0c77ae244961c153c107a5b3abc9c3b10",
+   "ca": "91d453fb634c39ef89165496cbd7dfb1860d47dd91bdda0d1d29a43f08f53d73"
+  },
+  "computed_from": "Microcosm margins artifact sha256:f7f88f5824112d1a9c6beaaf4addc9b15f795f6ba6d6e4447e72957731c29607; direct parquet or authenticated committed monthly extracts"
  },
  "rows": [
   {
@@ -239,6 +249,240 @@
    "value": 0.06813445379474954,
    "numerator_usd": 21290948706,
    "denominator_usd": 312484323572
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2025-01",
+   "value": 0.0010838543133274991,
+   "numerator_usd": 42259879,
+   "denominator_usd": 38990368429
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2025-02",
+   "value": 0.0010960970789421127,
+   "numerator_usd": 38181494,
+   "denominator_usd": 34834044113
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2025-03",
+   "value": 0.016023260905414,
+   "numerator_usd": 560924567,
+   "denominator_usd": 35006892187
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2025-04",
+   "value": 0.029841457854950623,
+   "numerator_usd": 869338638,
+   "denominator_usd": 29131909112
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2025-05",
+   "value": 0.03284665166615837,
+   "numerator_usd": 985485834,
+   "denominator_usd": 30002626874
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2025-06",
+   "value": 0.03550051727483561,
+   "numerator_usd": 1054156926,
+   "denominator_usd": 29694128619
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2025-07",
+   "value": 0.028904157796537225,
+   "numerator_usd": 928648783,
+   "denominator_usd": 32128553599
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2025-08",
+   "value": 0.03761532588740635,
+   "numerator_usd": 1094947263,
+   "denominator_usd": 29109072889
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2025-09",
+   "value": 0.03813005395412471,
+   "numerator_usd": 1211340039,
+   "denominator_usd": 31768642144
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2025-10",
+   "value": 0.03802774607051567,
+   "numerator_usd": 1186228748,
+   "denominator_usd": 31193769565
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2025-11",
+   "value": 0.036341504857230304,
+   "numerator_usd": 1035785426,
+   "denominator_usd": 28501445663
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2025-12",
+   "value": 0.03089833570055594,
+   "numerator_usd": 978820546,
+   "denominator_usd": 31678746567
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2026-01",
+   "value": 0.03104211188518216,
+   "numerator_usd": 877318989,
+   "denominator_usd": 28262219795
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2026-02",
+   "value": 0.03202937925939913,
+   "numerator_usd": 928658768,
+   "denominator_usd": 28993967085
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2026-03",
+   "value": 0.03150417496565815,
+   "numerator_usd": 1071319016,
+   "denominator_usd": 34005620435
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2026-04",
+   "value": 0.031902351687156875,
+   "numerator_usd": 1114812459,
+   "denominator_usd": 34944522897
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2026-05",
+   "value": 0.030678256334232698,
+   "numerator_usd": 1107768744,
+   "denominator_usd": 36109247277
+  },
+  {
+   "source": "pe",
+   "program": "tariff",
+   "metric": "average_tariff_rate",
+   "subgroup": "total",
+   "variant": "expost_collections_contemporaneous",
+   "geography": "ca",
+   "unit_concept": "fraction_of_customs_value_contemporaneous",
+   "period": "2026-06",
+   "value": 0.02850212576114973,
+   "numerator_usd": 1060310570,
+   "denominator_usd": 37201104889
   }
  ]
 }
