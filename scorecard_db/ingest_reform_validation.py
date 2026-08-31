@@ -137,7 +137,11 @@ def _obbba_baseline_key(mode: str, provision_id: str) -> str:
 
 
 # Exact engine pins per release (from each release_manifest.json on HF;
-# the artifact's PE values were computed at these versions).
+# the artifact's PE values were computed at these versions). These five are
+# the historical backfill; a genuinely new release arriving from the
+# automated backfill (tools/reform_validation/) carries its own pin in the
+# artifact's ``engine`` block, so it ingests without a code edit here — see
+# ``_base_engine``.
 ENGINE_VERSIONS = {
     "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z": "1.729.0",
     "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701": "1.752.2",
@@ -145,6 +149,117 @@ ENGINE_VERSIONS = {
     "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z": "1.764.6",
     "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z": "1.764.6",
 }
+
+# The closed vocabulary of OBBBA scoring modes. A release the historical
+# OBBBA_SCORING_MODE table below doesn't name must SAY how it scored OBBBA
+# in the artifact (backfill.py stamps ``obbba_scoring_mode``); we never
+# guess a default, because a silent wrong mode reads as release-over-release
+# drift. ``_obbba_scoring_mode`` resolves and validates against this set.
+VALID_OBBBA_SCORING_MODES = frozenset({"stacked_chained", "isolated", "jcx_stacked"})
+
+
+def _obbba_scoring_mode(release_id: str, artifact: dict) -> str:
+    """Resolve the release's OBBBA scoring mode, failing loudly.
+
+    The five backfilled releases are pinned in OBBBA_SCORING_MODE
+    (authoritative). Any other release must carry an explicit, valid
+    ``obbba_scoring_mode`` in its artifact — the current producer stamps
+    ``jcx_stacked`` (backfill.py), but we validate rather than assume, so a
+    producer that changes its stacking can't slip through as drift."""
+    mode = OBBBA_SCORING_MODE.get(release_id) or artifact.get("obbba_scoring_mode")
+    if mode not in VALID_OBBBA_SCORING_MODES:
+        raise SystemExit(
+            f"{release_id}: OBBBA scoring mode {mode!r} is missing or not in "
+            f"{sorted(VALID_OBBBA_SCORING_MODES)} — the artifact must carry a "
+            "valid `obbba_scoring_mode` (backfill.py stamps it) or the release "
+            "must be added to OBBBA_SCORING_MODE. Refusing to guess a default."
+        )
+    return mode
+
+
+_ATTESTATION_REQUIRED = ("producer_commit", "driver_commit", "h5_sha256")
+_HEX = re.compile(r"\A[0-9a-f]+\Z")
+
+
+def _validate_attestation(release_id: str, artifact: dict) -> None:
+    """Consume AND VERIFY the provenance attestation the automation stamps.
+    The five historical backfills predate it and are exempt; a genuinely-new
+    (automation-produced) release must carry a complete block whose fields are
+    well-FORMED and CROSS-CONSISTENT with the artifact it describes. Presence
+    alone (the prior check) let a forged block through — junk commits,
+    ``h5_sha256="x"``, an ``engine=9.9.9`` that disagreed with the artifact
+    (re-gate blocker 6/2). The producer independently verifies the same fields
+    (rehashes the H5, reads back installed engine versions); this is the
+    ingest-side gate on a committed raw artifact."""
+    if release_id in ENGINE_VERSIONS:
+        return
+    att = artifact.get("_attestation")
+    if not isinstance(att, dict):
+        raise SystemExit(
+            f"{release_id}: no _attestation block — the automated backfill "
+            "stamps one; refusing to ingest un-attested provenance."
+        )
+    missing = [
+        k
+        for k in _ATTESTATION_REQUIRED
+        if not att.get(k) or str(att.get(k)).strip().lower() == "unknown"
+    ]
+    if missing:
+        raise SystemExit(
+            f"{release_id}: _attestation has missing/unknown fields {missing} "
+            "— refusing to ingest incomplete provenance."
+        )
+    # Format: h5_sha256 is 64 lowercase hex; commit ids are 7-64 hex.
+    h5 = str(att["h5_sha256"]).strip().lower()
+    if len(h5) != 64 or not _HEX.match(h5):
+        raise SystemExit(
+            f"{release_id}: _attestation.h5_sha256 is not a 64-char sha256 ({h5!r})."
+        )
+    for k in ("producer_commit", "driver_commit"):
+        v = str(att[k]).strip().lower()
+        if not (7 <= len(v) <= 64) or not _HEX.match(v):
+            raise SystemExit(
+                f"{release_id}: _attestation.{k} is not a git sha ({att[k]!r})."
+            )
+    # Cross-consistency with the artifact the block claims to describe: the
+    # attested id and BOTH engine versions must match the artifact's own
+    # `engine` block (which drives _base_engine / the pe_results stamp), so a
+    # forged engine can't ride in behind a plausible-looking attestation.
+    if att.get("release_id") not in (None, release_id):
+        raise SystemExit(
+            f"{release_id}: _attestation.release_id {att.get('release_id')!r} mismatches."
+        )
+    engine = artifact.get("engine") or {}
+    for k in ("policyengine_us", "policyengine_core"):
+        av, ev = att.get(k), engine.get(k)
+        if av is None or ev is None or str(av) != str(ev):
+            raise SystemExit(
+                f"{release_id}: _attestation.{k}={av!r} inconsistent with "
+                f"artifact.engine.{k}={ev!r}."
+            )
+
+
+def _base_engine(release_id: str, artifact: dict) -> str:
+    """Resolve the release's policyengine-us pin.
+
+    The five backfilled releases are pinned in ENGINE_VERSIONS (authoritative,
+    including the l0-refit subtlety where the release was built at 1.752.2 but
+    named 1.729.0 rows offline — that lives in ENGINE_OVERRIDES). A new release
+    from the automated backfill self-describes: backfill.py stamps the
+    release_manifest's versions into the artifact's ``engine`` block, so no
+    hand-edit is needed to ingest it."""
+    pin = ENGINE_VERSIONS.get(release_id)
+    if pin is not None:
+        return pin
+    pin = (artifact.get("engine") or {}).get("policyengine_us")
+    if pin:
+        return str(pin)
+    raise SystemExit(
+        f"{release_id}: no engine pin — not in ENGINE_VERSIONS and the "
+        "artifact carries no engine.policyengine_us block. Re-run the "
+        "backfill (it stamps the pin) or add the release_manifest.json pin."
+    )
+
 
 # Pin overrides an artifact documents about itself, keyed per category and
 # per row id. The l0-refit backfill note names three offline batches scored
@@ -598,6 +713,7 @@ def _obbba_results(
     computed_at: str,
     claims: dict[str, ExternalScore],
     tallies: dict,
+    mode: str,
     validate: bool,
     position: int,
 ) -> list[PEResult]:
@@ -605,12 +721,12 @@ def _obbba_results(
     claims — the FY2026 provision claim, and the FY2027 one when the
     registry carries that benchmark. Same PE value both times (calendar-2026
     liability), so both are constructed comparisons; the construction names
-    the release's scoring mode and the CY-for-FY approximation."""
+    the release's scoring ``mode`` (resolved+validated by the caller) and the
+    CY-for-FY approximation."""
     provision = OBBBA_PROVISIONS.get(row["id"])
     if provision is None:
         raise ValueError(f"OBBBA row {row['id']} missing from OBBBA_PROVISIONS")
     measure = row["populace"].get("measure") or ""
-    mode = OBBBA_SCORING_MODE[release_id]
     pe_value = _pe_value(row, f"reform_delta:{measure}")
     results = []
     for fy, score in (
@@ -687,6 +803,47 @@ def _obbba_results(
     return results
 
 
+def _non_rv_fingerprint(conn) -> str:
+    """Order-independent hash over every row this ingest must NOT touch.
+
+    The rebuild is scoped to the reform-validation slice: it deletes its own
+    results (``run_id LIKE 'populace-rv-%'``) and the registry-marked
+    external_scores, re-inserts them, and upserts the one
+    ``populace-reform-validation`` lane. Everything else — the harvest and
+    Urban claims, their results, exhibits, diagnoses, other lanes — must be
+    byte-identical before and after. Fingerprinting the complement and
+    asserting it is unchanged turns "some rows exist" into a real invariant:
+    a bug that dropped or rewrote a non-RV row fails the ingest loudly."""
+    import hashlib
+
+    filters = {
+        "pe_results": ("run_id NOT LIKE ?", (f"{RUN_PREFIX}%",)),
+        "external_scores": (
+            "COALESCE(json_extract(publication, '$.registry'), '') != ?",
+            (REGISTRY_MARK,),
+        ),
+        "lanes": ("lane != ?", ("populace-reform-validation",)),
+    }
+    tables = [
+        r[0]
+        for r in conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' "
+            "AND name NOT LIKE 'sqlite_%' ORDER BY name"
+        )
+    ]
+    acc = 0
+    for t in tables:
+        if t in filters:
+            where, params = filters[t]
+            cur = conn.execute(f'SELECT * FROM "{t}" WHERE {where}', params)
+        else:
+            cur = conn.execute(f'SELECT * FROM "{t}"')
+        for row in cur:
+            digest = hashlib.sha256(repr((t, tuple(row))).encode()).digest()
+            acc ^= int.from_bytes(digest, "big")  # XOR: order-independent
+    return f"{acc:064x}"
+
+
 def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
     raw_dir = raw_dir or RAW
     db = ScorecardDB(db_path)
@@ -704,14 +861,18 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
     for path in releases:
         artifact = json.loads(path.read_text())
         release_id = artifact["release_id"]
-        base_engine = ENGINE_VERSIONS.get(release_id)
-        if base_engine is None:
-            raise SystemExit(
-                f"{release_id} missing from ENGINE_VERSIONS — add its "
-                "release_manifest.json pin"
-            )
+        base_engine = _base_engine(release_id, artifact)
+        _validate_attestation(release_id, artifact)
         overrides = ENGINE_OVERRIDES.get(release_id, {})
         computed_at = _release_timestamp(release_id)
+        # Resolve+validate the OBBBA scoring mode once per release, and only
+        # when the release actually has OBBBA rows — fails loudly on a
+        # missing/unknown mode rather than defaulting.
+        obbba_mode = (
+            _obbba_scoring_mode(release_id, artifact)
+            if any(r["category"] == "OBBBA" for r in artifact["reforms"])
+            else None
+        )
         actuals = {
             r["id"]: r["jct"].get("score")
             for r in artifact["reforms"]
@@ -739,6 +900,7 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
                         computed_at,
                         claims,
                         tallies,
+                        mode=obbba_mode,
                         validate=path == releases[-1],
                         position=obbba_position,
                     )
@@ -804,6 +966,9 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
     score_rows = [ScorecardDB.score_row(c) for c in claims.values()]
     result_rows = [ScorecardDB.result_row(r) for r in results]
     n_claims, n_results = len(score_rows), len(result_rows)
+    # Snapshot the non-RV data so we can prove the rebuild touched only the
+    # reform-validation slice (issue #53 re-gate blocker 6).
+    pre_fingerprint = _non_rv_fingerprint(db.conn)
     with db.conn:
         db.conn.execute(
             "DELETE FROM pe_results WHERE run_id LIKE ?", (f"{RUN_PREFIX}%",)
@@ -827,6 +992,20 @@ def ingest(db_path: Path, raw_dir: Path | None = None) -> dict:
                 "2026-08-04",
             ),
         )
+        # Assert the invariant INSIDE the transaction: raising here rolls the
+        # whole rebuild back (sqlite's `with conn` rolls back on exception),
+        # so a cross-slice write is ABORTED, not merely detected after the
+        # commit already landed the rogue row (blocker 6). Reads inside the
+        # transaction see the pending writes, and the RV rebuild's own rows
+        # are excluded from the fingerprint, so a correct rebuild is a no-op.
+        post_fingerprint = _non_rv_fingerprint(db.conn)
+        if post_fingerprint != pre_fingerprint:
+            raise SystemExit(
+                "reform-validation ingest changed non-RV data — the rebuild "
+                "must only touch its own results, registry-marked claims, and "
+                "the populace-reform-validation lane (fingerprint "
+                f"{pre_fingerprint[:12]} -> {post_fingerprint[:12]}); rolled back."
+            )
     cov = db.coverage()
     db.close()
     return {
