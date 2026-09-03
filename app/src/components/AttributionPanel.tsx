@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Country } from "../types";
 import { PROGRAM_LABELS } from "../types";
+import { withBasePath } from "../basePath";
 
 interface ExhibitRow {
   program: string;
@@ -28,7 +29,7 @@ interface Exhibits {
 export function AttributionPanel({ country }: { country: Country }) {
   const [data, setData] = useState<Exhibits | null>(null);
   useEffect(() => {
-    fetch("./data/exhibits.json")
+    fetch(withBasePath("data/exhibits.json"))
       .then((r) => (r.ok ? r.json() : null))
       .then(setData)
       .catch(() => setData(null));
