@@ -220,6 +220,13 @@ def resolve(spec):
                 f"{entry['engine_default']} — the finding rests on this number"
             )
 
+    # DTrim99: these were stated but never verified. A number sitting
+    # in a spec unchecked is the same defect class as the pin.
+    for path, recorded in (spec.get("related_incidence_defaults") or {}).items():
+        live = float(get(path)(f"{spec['years'][0]}-01-01"))
+        if live != recorded:
+            raise SystemExit(f"{path}: engine says {live}, spec records {recorded}")
+
     missing = [v for v in spec["head_variables"] if v not in system.variables]
     if missing:
         raise SystemExit(f"head variables absent from the engine: {missing}")
@@ -238,6 +245,7 @@ def main(argv=None):
         years, heads = resolve(spec)
         print(f"  resolved the cap across {years} years against the certified engine")
         print(f"  confirmed both assumption defaults and {heads} head variables")
+        print("  verified the related employer-NI incidence defaults")
 
 
 if __name__ == "__main__":

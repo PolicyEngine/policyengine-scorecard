@@ -194,3 +194,15 @@ def test_validate_rejects_a_staged_figure():
 
 def test_no_counterpart_is_claimed_yet():
     assert "#51" in SPEC["not_yet_run"]
+
+
+def test_the_incidence_defaults_are_recorded_for_verification():
+    """DTrim99: v1 stated these but never checked them. --resolve now
+    reads each out of the engine."""
+    inc = SPEC["related_incidence_defaults"]
+    assert inc["gov.contrib.policyengine.employer_ni.employee_incidence"] == 1.0
+    assert set(inc) == {
+        "gov.contrib.policyengine.employer_ni.employee_incidence",
+        "gov.contrib.policyengine.employer_ni.capital_incidence",
+        "gov.contrib.policyengine.employer_ni.consumer_incidence",
+    }
