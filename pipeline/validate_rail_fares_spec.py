@@ -29,6 +29,7 @@ Usage:
 """
 
 import argparse
+import importlib.metadata
 import json
 import sys
 from pathlib import Path
@@ -113,6 +114,18 @@ def resolve(spec):
     import policyengine_uk
 
     system = policyengine_uk.CountryTaxBenefitSystem()
+
+    # The recorded pin must be the engine actually in front of us. v1
+    # hardcoded a version copied from a sibling spec while the readings
+    # came from the installed engine — a typed pin is not provenance.
+    installed = importlib.metadata.version("policyengine-uk")
+    pinned = spec["engine_pin"]["policyengine_uk"]
+    if installed != pinned:
+        raise SystemExit(
+            f"engine pin mismatch: spec pins {pinned}, installed is {installed}. "
+            "Re-resolve against the installed engine and update the pin — do not "
+            "edit the pin by hand to match."
+        )
 
     def get(path):
         node = system.parameters

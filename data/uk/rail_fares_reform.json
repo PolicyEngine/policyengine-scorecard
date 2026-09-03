@@ -5,8 +5,9 @@
  "fiscal_event": "autumn_budget_2026",
  "registry_rule": "The reform specification for the 2026 regulated rail fares freeze. This file stages NO value claims: the DfT saving figures in circulation are DfT's, and the #86/#91 re-publication rule applies \u2014 a re-published figure belongs to its originator, and is harvested in its own lane from primary documents, never copied from reporting into a spec.",
  "engine_pin": {
-  "policyengine_uk": "2.89.2",
-  "resolved_on": "2026-08-27"
+  "policyengine_uk": "2.92.0",
+  "resolved_on": "2026-09-03",
+  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal. v1 of this spec hardcoded 2.89.2 \u2014 copied from a sibling spec \u2014 while the readings actually came from the installed engine. A typed pin is not provenance; --resolve refuses a mismatch."
  },
  "direction_note": "The freeze is ALREADY IN the certified baseline \u2014 gov.dft.rail.fare_index carries it. So the scored object is the COUNTERFACTUAL: what fares would have done under prior law. The engine ships that leg too, as gov.dft.rail.prior_law_fare_index. This is the indexed-baseline problem #13 and #67 keep meeting, except here we do not have to construct the counterfactual \u2014 the engine already carries both legs, and the comparison is baseline vs counterfactual rather than baseline vs reform.",
  "counterfactual": {

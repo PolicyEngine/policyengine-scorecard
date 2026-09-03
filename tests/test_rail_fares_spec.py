@@ -109,3 +109,12 @@ def test_no_counterpart_is_claimed_yet():
     """#51 carries UK counterpart compute and is not merged."""
     assert "#51" in SPEC["not_yet_run"]
     assert "computes no counterpart" in SPEC["not_yet_run"]
+
+
+def test_the_engine_pin_is_derived_not_typed():
+    """v1 pinned 2.89.2 — copied from a sibling spec — while the
+    readings came from the installed engine. A typed pin is not
+    provenance, and --resolve now refuses a mismatch."""
+    pin = SPEC["engine_pin"]
+    assert "importlib.metadata" in pin["pin_rule"]
+    assert "never typed as a literal" in pin["pin_rule"]
