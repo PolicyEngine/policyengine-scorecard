@@ -93,6 +93,15 @@ App:
 cd app && bun install && bun dev
 ```
 
+## Deployment
+
+The application is connected to the `policyengine-scorecard` Vercel project
+through Vercel's native GitHub integration. Vercel builds from `app/` while
+including the repository-level data used by the application's `prebuild`
+script. Pull request branches receive preview deployments, and commits on
+`main` create production deployments. The deployed application is served at
+`/scorecard/`.
+
 ## Architecture for N sources
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the registry/adapter

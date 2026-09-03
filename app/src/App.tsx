@@ -15,15 +15,8 @@ import { GapsView } from "./components/GapsView";
 import { AboutView } from "./components/AboutView";
 import { MissionControl } from "./components/MissionControl";
 import { ReformValidationView } from "./components/ReformValidationView";
-
-const TABS = [
-  { id: "scorecard", label: "Scorecard" },
-  { id: "divergences", label: "Divergences" },
-  { id: "validation", label: "Reform validation" },
-  { id: "gaps", label: "Gaps" },
-  { id: "about", label: "Method" },
-] as const;
-type TabId = (typeof TABS)[number]["id"];
+import { TABS, buildUrlQuery, parseUrlState, type TabId } from "./urlState";
+import { withBasePath } from "./basePath";
 
 export interface Filters {
   country: Country;
@@ -32,6 +25,20 @@ export interface Filters {
   geography: string; // country code (national) | "states" | state code
   subgroup: string; // "total" | "all" | slug
   bucket: SpineBucket | null;
+}
+
+function initialUrlState(): { country: Country; tab: TabId } {
+  return parseUrlState(window.location.search);
+}
+
+function writeUrlState(country: Country, tab: TabId) {
+  const query = buildUrlQuery(window.location.search, country, tab);
+  window.history.replaceState(
+    null,
+    "",
+    (query ? `${window.location.pathname}?${query}` : window.location.pathname) +
+      window.location.hash,
+  );
 }
 
 const DEFAULT_FILTERS: Filters = {
@@ -53,8 +60,12 @@ const HEADER_COPY: Record<Country, { eyebrow: string; counterpart: string }> = {
     counterpart: "vs DWP, HMRC, OBR and UKMOD",
   },
   BE: {
-    eyebrow: "Model validation · Belgium lane",
-    counterpart: "vs JRC EUROMOD-BE",
+    eyebrow: "Model validation · Belgium lanes",
+    counterpart: "vs SPF Finances, Cour des comptes and JRC EUROMOD-BE",
+  },
+  NZ: {
+    eyebrow: "Model validation · New Zealand lanes",
+    counterpart: "vs New Zealand official budget scores",
   },
 };
 
@@ -63,22 +74,29 @@ export default function App() {
   const [lanes, setLanes] = useState<LanesFeed | null>(null);
   const [populations, setPopulations] = useState<PopulationsFeed | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<TabId>("scorecard");
-  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
+  const [tab, setTab] = useState<TabId>(() => initialUrlState().tab);
+  const [filters, setFilters] = useState<Filters>(() => {
+    const { country } = initialUrlState();
+    return { ...DEFAULT_FILTERS, country, geography: country };
+  });
 
   useEffect(() => {
-    fetch("./data/comparison.json")
+    writeUrlState(filters.country, tab);
+  }, [filters.country, tab]);
+
+  useEffect(() => {
+    fetch(withBasePath("data/comparison.json"))
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
       })
       .then(setData)
       .catch((e) => setError(String(e)));
-    fetch("./data/lanes.json")
+    fetch(withBasePath("data/lanes.json"))
       .then((r) => (r.ok ? r.json() : null))
       .then(setLanes)
       .catch(() => setLanes(null));
-    fetch("./data/populations.json")
+    fetch(withBasePath("data/populations.json"))
       .then((r) => (r.ok ? r.json() : null))
       .then(setPopulations)
       .catch(() => setPopulations(null));
@@ -301,7 +319,7 @@ function CountryEmptyState({
   );
   const emptyCopy =
     country === "BE"
-      ? "The JRC EUROMOD-BE lane has five model claims. Its six statistical rows and one non-simulated uprated EU-SILC survey input route to Chronicle, and its six ratios remain derived, not claims. Two demo-grade Axiom worker values appear on Reform validation as concept mismatches; no value is presented as comparable."
+      ? "Belgium registers two lanes. On Reform validation, SPF Finances, Cour des comptes and PolicyEngine estimates of the 15 July 2026 PIT reform sit side by side, the official horizon-2030 figures carried as constructed cross-attachments on an unresolved period basis. The JRC EUROMOD-BE lane has five model claims — EUROMOD totals simulated on uprated EU-SILC survey input, not administrative statistics; its six statistical rows and one non-simulated uprated EU-SILC survey input route to Chronicle, and its six ratios remain derived, not claims. Two demo-grade Axiom worker values appear on Reform validation as concept mismatches; no value is presented as comparable."
       : `No ${COUNTRY_LABELS[country]} rows in this view yet — the ${country} external lanes are mid-pipeline. Each lane below reports its stage from data/lanes.json; as counterparts compute, rows appear here under the same descriptive status taxonomy as the US instance, model gaps and concept mismatches included.`;
   return (
     <div className="max-w-3xl">
@@ -344,10 +362,21 @@ function Headline({
       <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
         {country === "BE" ? (
           <>
-            Five JRC EUROMOD-BE model claims are registered. The two available
-            Axiom values have period, population-basis and scope gaps, so they
-            are labeled concept mismatch on Reform validation rather than
-            entering this comparison grid.
+            Belgium&apos;s registered claims — seven on the 15 July 2026 PIT
+            reform from SPF Finances, Cour des comptes and PolicyEngine, plus
+            five JRC EUROMOD-BE model claims (EUROMOD totals simulated on
+            uprated EU-SILC survey input, not administrative statistics) —
+            live on Reform validation. The two available Axiom values on the
+            JRC claims have period, population-basis and scope gaps, so they
+            are labeled concept mismatch there rather than entering this
+            comparison grid.
+          </>
+        ) : country === "NZ" ? (
+          <>
+            New Zealand Treasury official budget scores live on Reform
+            validation. Claims appear there even before a PolicyEngine result
+            is available, labeled Not yet computed; their external values stay
+            visible as replicated estimates are added.
           </>
         ) : (
           <>
@@ -380,7 +409,9 @@ function Headline({
         ? "Urban publishes"
         : country === "UK"
           ? "UK sources publish"
-          : "JRC EUROMOD-BE publishes"}{" "}
+          : country === "BE"
+            ? "JRC EUROMOD-BE publishes"
+            : "New Zealand sources publish"}{" "}
       <b className="text-foreground fig">{n.toLocaleString()}</b> unsuppressed
       cells across {programs} programs
       {country === "US" && " and the poverty counterfactual"}. The computed
