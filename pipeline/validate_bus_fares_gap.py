@@ -28,6 +28,7 @@ Usage:
 """
 
 import argparse
+import importlib.metadata
 import json
 import re
 import sys
@@ -97,11 +98,38 @@ def validate(reg):
 
     # The nearest lever has to be named AND ruled out, or a future
     # reader will find it and assume nobody looked.
-    lever = reg.get("nearest_lever_and_why_it_does_not_work") or {}
-    if not lever.get("path") or not (lever.get("why_not") or "").strip():
+    levers = reg.get("nearest_levers_and_why_they_do_not_work") or []
+    if not levers:
         errors.append(
-            "the nearest lever must be named and explicitly ruled out — otherwise a "
-            "reader finds it and assumes it was missed"
+            "the nearest levers must be named and explicitly ruled out — otherwise a "
+            "reader finds one and assumes it was missed"
+        )
+    for lever in levers:
+        if not lever.get("path") or not (lever.get("why_not") or "").strip():
+            errors.append(
+                f"{lever.get('path', '?')}: named but not ruled out — a lever listed "
+                "without a reason reads as an oversight"
+            )
+    # Every bus-named parameter the search found must be ruled out by
+    # name. v1 could say "gov.dft has no bus node"; at 2.92.0 it does,
+    # and an unaddressed bus parameter would leave the verdict dangling.
+    ruled = {lever.get("path") for lever in levers}
+    bus_nodes = {
+        h
+        for h in (reg.get("name_search", {}).get("parameter_hits") or [])
+        if h.startswith("gov.dft.bus")
+    }
+    unaddressed = bus_nodes - ruled
+    if unaddressed:
+        errors.append(
+            f"bus parameters found by the search but never ruled out: {sorted(unaddressed)} "
+            "— a gap verdict cannot stand while a bus-named parameter is unaddressed"
+        )
+
+    if not (reg.get("corrections_log") or []):
+        errors.append(
+            "corrections_log missing — v1's evidence went stale when the engine moved, "
+            "and that has to stay visible"
         )
 
     if "stages NO value claims" not in (reg.get("registry_rule") or ""):
@@ -131,6 +159,18 @@ def probe(reg):
     import policyengine_uk
 
     system = policyengine_uk.CountryTaxBenefitSystem()
+
+    # For a GAP registry the pin matters more than anywhere else: the
+    # verdict is only as good as the engine it was searched in. v1
+    # hardcoded a version copied from a sibling spec.
+    installed = importlib.metadata.version("policyengine-uk")
+    pinned = reg["engine_pin"]["policyengine_uk"]
+    if installed != pinned:
+        raise SystemExit(
+            f"engine pin mismatch: registry pins {pinned}, installed is {installed}. "
+            "A gap verdict searched in one engine cannot be published against "
+            "another — re-run the search and update the pin."
+        )
     search = reg["name_search"]
 
     hits = []
