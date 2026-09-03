@@ -33,6 +33,7 @@ Usage:
 """
 
 import argparse
+import importlib.metadata
 import json
 import sys
 from pathlib import Path
@@ -73,6 +74,23 @@ def validate(spec):
                 f"the cap appears to LAPSE (uncapped at {max(uncapped)} after capped "
                 f"at {min(capped)}) — the announced measure only ever switches on"
             )
+    # v1 keyed the schedule by bare years and asserted a 01-01 dating
+    # convention that does not exist. NI parameters are tax-year dated.
+    for key in sched:
+        if not key.endswith("-04-06"):
+            errors.append(
+                f"schedule key {key!r} is not a UK tax-year start — NI parameters are "
+                "tax-year dated (the 01-01 'convention' v1 asserted was invented)"
+            )
+    if "checked_and_not_a_finding" in ev:
+        errors.append(
+            "checked_and_not_a_finding: v1 used this to excuse a dating it had not "
+            "checked. An invented rationale is worse than the thing it excuses — "
+            "record findings in corrections_log with how they were caught"
+        )
+    if not (ev.get("corrections_log") or []):
+        errors.append("baseline_evidence.corrections_log missing")
+
     if spec.get("baseline_verdict") != "carried":
         errors.append(
             "baseline_verdict must be 'carried' when the schedule shows the step"
@@ -169,13 +187,29 @@ def resolve(spec):
             node = node.children[part]
         return node
 
+    # The recorded pin must be the engine actually in front of us. v1
+    # hardcoded a version copied from a sibling spec while the readings
+    # came from a later engine — a literal pin is not provenance.
+    installed = importlib.metadata.version("policyengine-uk")
+    pinned = spec["engine_pin"]["policyengine_uk"]
+    if installed != pinned:
+        raise SystemExit(
+            f"engine pin mismatch: spec pins {pinned}, installed is {installed}. "
+            "Re-resolve against the installed engine and update the pin — do not "
+            "edit the pin by hand to match."
+        )
+
     cap = get(CAP)
-    for year, recorded in (spec["baseline_evidence"]["schedule"]).items():
-        live = float(cap(f"{year}-01-01"))
+    # Keys are the SOURCE's own tax-year dates. Reading at 01-01 would
+    # still return the capped value (the parameter has period: year, so
+    # core expands it to calendar instants) — which is exactly how v1's
+    # false dating note survived --resolve. Read where the source steps.
+    for date, recorded in (spec["baseline_evidence"]["schedule"]).items():
+        live = float(cap(date))
         live_json = None if math.isinf(live) else live
         if live_json != recorded:
             raise SystemExit(
-                f"{CAP} at {year}: engine says {live_json}, spec records {recorded}"
+                f"{CAP} at {date}: engine says {live_json}, spec records {recorded}"
             )
 
     for path, entry in (spec.get("assumption_parameters") or {}).items():

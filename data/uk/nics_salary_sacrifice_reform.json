@@ -6,22 +6,27 @@
  "effective_from": "2029-04",
  "registry_rule": "The reform specification and the ASSUMPTION SWEEP for the Budget's largest NICs measure. This file stages NO value claims \u2014 IFS's assessment and the official costing belong to their originators (#86/#91) and are harvested in their own lane from primary documents, never copied from reporting into a spec.",
  "engine_pin": {
-  "policyengine_uk": "2.89.2",
-  "resolved_on": "2026-08-27"
+  "policyengine_uk": "2.92.0",
+  "resolved_on": "2026-09-03",
+  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal. v1 of this spec hardcoded 2.89.2 while the readings actually came from a later engine \u2014 the pin was copied from a sibling spec instead of derived. --resolve now refuses a mismatch."
  },
  "baseline_verdict": "carried",
  "baseline_evidence": {
   "path": "gov.hmrc.national_insurance.salary_sacrifice_pension_cap",
   "schedule": {
-   "2026": null,
-   "2027": null,
-   "2028": null,
-   "2029": 2000.0,
-   "2030": 2000.0
+   "2026-04-06": null,
+   "2027-04-06": null,
+   "2028-04-06": null,
+   "2029-04-06": 2000.0,
+   "2030-04-06": 2000.0
   },
   "uncapped_sentinel": "inf, recorded as null in JSON \u2014 the parameter is uncapped before the measure bites",
-  "note": "Answers the #99/#101 baseline-integrity question for this measure: CARRIED, with the dated step in the right place and the correct gov.uk references on the parameter.",
-  "checked_and_not_a_finding": "The step is dated 2029-01-01 while the measure starts April 2029. Every parameter under gov.hmrc.national_insurance uses 01-01 \u2014 it is the module-wide convention, not an anomaly here. Recorded so a future reader does not re-raise it as a defect."
+  "note": "Answers the #99/#101 baseline-integrity question for this measure: CARRIED, with the announced step present at the correct tax-year date and the correct gov.uk references on the parameter.",
+  "reading_dates": "UK tax-year starts (04-06), matching the parameter's own YAML dating",
+  "corrections_log": [
+   "v1 asserted the step is dated 2029-01-01 and that 'every parameter under gov.hmrc.national_insurance uses 01-01 \u2014 module-wide convention'. That is FALSE and was invented, not checked. The YAML step is 2029-04-06, and NI parameters are tax-year dated (class_2 flat_rate runs 2015-04-01, 2022-04-06, ...). Caught in review by DTrim99 on PR #110. An invented 'checked, not a defect' rationale is worse than the thing it excuses.",
+   "The reason v1's --resolve still passed, which is worth recording rather than leaving as a puzzle: the parameter carries metadata period: year, so policyengine-core expands it to CALENDAR-year instants. At runtime cap('2029-01-01') therefore returns 2000, even though the source step is 2029-04-06. Runtime instants and source dating are two different things; this spec now records the source dating and reads at tax-year dates so the two agree."
+  ]
  },
  "the_finding": "A DEFAULT PolicyEngine-UK score of this measure is NOT assumption-neutral, and the two assumptions point opposite ways. salary_sacrifice_broad_base_haircut_rate defaults to 0.0016 and is ON: it reduces employment income for ALL workers, not just sacrificers, on the reasoning that employers spread the added NI cost across the whole workforce. It is gated on the cap being finite, so it switches on exactly when the measure bites, and it cites a PolicyEngine research page as its methodology. Meanwhile employee_salary_sacrifice_reduction_rate defaults to 0 and is OFF: the response of employees actually reducing salary sacrifice once it is capped is not modelled by default.\n\nThat asymmetry is a PolicyEngine methodology choice, not HMRC's and not OBR's. Published without disclosure it would surface in a comparison as arithmetic disagreement. This is the #97 pattern (CGT's zero elasticity) but sharper, because there the default asserted no behaviour and here the default asserts some.",
  "assumption_parameters": {

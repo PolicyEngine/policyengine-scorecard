@@ -21,23 +21,60 @@ def test_the_measure_is_carried_in_the_certified_baseline():
     """The #99/#101 question, answered for this measure."""
     ev = SPEC["baseline_evidence"]
     assert SPEC["baseline_verdict"] == "carried"
-    assert ev["schedule"]["2028"] is None  # uncapped
-    assert ev["schedule"]["2029"] == 2000.0  # the announced cap
-    assert ev["schedule"]["2030"] == 2000.0
+    assert ev["schedule"]["2028-04-06"] is None  # uncapped
+    assert ev["schedule"]["2029-04-06"] == 2000.0  # the announced cap
+    assert ev["schedule"]["2030-04-06"] == 2000.0
 
 
-def test_the_january_dating_is_recorded_as_checked_not_as_a_defect():
-    """The step is dated 2029-01-01 while the measure starts April
-    2029. Every gov.hmrc.national_insurance parameter uses 01-01."""
-    note = SPEC["baseline_evidence"]["checked_and_not_a_finding"]
-    assert "module-wide convention" in note
-    assert "not an anomaly" in note
+def test_the_false_dating_note_is_corrected_not_quietly_dropped():
+    """v1 asserted a 01-01 'module-wide convention' that does not
+    exist — NI parameters are tax-year dated. The invented rationale
+    was the defect, so it stays in the log rather than vanishing."""
+    ev = SPEC["baseline_evidence"]
+    assert "checked_and_not_a_finding" not in ev
+    log = " ".join(ev["corrections_log"])
+    assert "2029-04-06" in log and "FALSE" in log
+    assert "DTrim99" in log
+    # and the reason it survived --resolve is recorded, not left a puzzle
+    assert "period: year" in log and "CALENDAR-year instants" in log
+
+
+def test_the_schedule_is_read_at_tax_year_dates():
+    for key in SPEC["baseline_evidence"]["schedule"]:
+        assert key.endswith("-04-06"), key
+    assert "tax-year starts" in SPEC["baseline_evidence"]["reading_dates"]
+
+
+def test_validate_rejects_calendar_year_schedule_keys():
+    bad = json.loads(json.dumps(SPEC))
+    sched = bad["baseline_evidence"]["schedule"]
+    bad["baseline_evidence"]["schedule"] = {
+        k.replace("-04-06", "-01-01"): v for k, v in sched.items()
+    }
+    with pytest.raises(ValueError, match="invented"):
+        validate(bad)
+
+
+def test_validate_rejects_the_invented_rationale_returning():
+    bad = json.loads(json.dumps(SPEC))
+    bad["baseline_evidence"]["checked_and_not_a_finding"] = "looks fine to me"
+    with pytest.raises(ValueError, match="worse than the thing it excuses"):
+        validate(bad)
+
+
+def test_the_engine_pin_is_derived_not_typed():
+    """v1 pinned 2.89.2 — copied from a sibling spec — while the
+    readings came from a later engine. A literal pin is not
+    provenance."""
+    pin = SPEC["engine_pin"]
+    assert "importlib.metadata" in pin["pin_rule"]
+    assert "never typed as a literal" in pin["pin_rule"]
 
 
 def test_validate_rejects_a_schedule_with_no_step():
     """A schedule showing only one state cannot evidence 'carried'."""
     bad = json.loads(json.dumps(SPEC))
-    bad["baseline_evidence"]["schedule"] = {"2029": 2000.0, "2030": 2000.0}
+    bad["baseline_evidence"]["schedule"] = {"2029-04-06": 2000.0, "2030-04-06": 2000.0}
     with pytest.raises(ValueError, match="BOTH an uncapped period"):
         validate(bad)
 
@@ -45,7 +82,7 @@ def test_validate_rejects_a_schedule_with_no_step():
 def test_validate_rejects_a_lapsing_cap():
     """The announced measure only ever switches on."""
     bad = json.loads(json.dumps(SPEC))
-    bad["baseline_evidence"]["schedule"]["2031"] = None
+    bad["baseline_evidence"]["schedule"]["2031-04-06"] = None
     with pytest.raises(ValueError, match="LAPSE"):
         validate(bad)
 
