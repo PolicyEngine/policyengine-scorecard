@@ -10,7 +10,7 @@ describe("parseUrlState", () => {
   });
 
   test("bare origin gives the defaults", () => {
-    expect(parseUrlState("")).toEqual({ country: "US", tab: "scorecard" });
+    expect(parseUrlState("")).toEqual({ country: "US", tab: "overview" });
   });
 
   test("country codes are case-insensitive", () => {
@@ -21,17 +21,22 @@ describe("parseUrlState", () => {
   test("values outside the closed vocabularies fall back to defaults", () => {
     expect(parseUrlState("?country=fr&view=admin")).toEqual({
       country: "US",
-      tab: "scorecard",
+      tab: "overview",
     });
     expect(
       parseUrlState("?country=%3Cscript%3E&view=javascript%3Aalert(1)"),
-    ).toEqual({ country: "US", tab: "scorecard" });
+    ).toEqual({ country: "US", tab: "overview" });
   });
 });
 
 describe("buildUrlQuery", () => {
   test("defaults stay out of the URL", () => {
-    expect(buildUrlQuery("", "US", "scorecard")).toBe("");
+    expect(buildUrlQuery("", "US", "overview")).toBe("");
+  });
+
+  test("the comparison view keeps its historical id in links", () => {
+    expect(buildUrlQuery("", "US", "scorecard")).toBe("view=scorecard");
+    expect(parseUrlState("?view=scorecard").tab).toBe("scorecard");
   });
 
   test("non-defaults are written lowercased", () => {
@@ -41,7 +46,7 @@ describe("buildUrlQuery", () => {
   });
 
   test("switching back to defaults removes the params", () => {
-    expect(buildUrlQuery("?country=be&view=validation", "US", "scorecard")).toBe(
+    expect(buildUrlQuery("?country=be&view=validation", "US", "overview")).toBe(
       "",
     );
   });
