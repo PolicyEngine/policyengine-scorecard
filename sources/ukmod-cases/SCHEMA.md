@@ -181,6 +181,43 @@ tolerance is how a boolean `1` vs `0` became a `match_within_tolerance`.
 `from_classification` does accept `annotations`, because some lanes
 require one (the #64 calculator rows must carry an archive annotation).
 
+### Calculator oracles carry structured reading provenance
+
+A live calculator has no release version, so a `CaseResult` from one must
+carry a `reading` (`CalculatorReading`): the reading date as a real
+calendar date, the exact `https` page read, the tax/benefit year the
+SERVICE computed, where the archived screenshot / saved page lives, and
+sha256 digests of both the archived bytes and the canonical input vector.
+A date buried in free-text `oracle_version` is a string, not provenance —
+any ten-character chunk passed, and a bare `annotations=["archive:"]`
+satisfied the citation rule. The `oracle_version` date must now be the
+reading's own, the archive annotation must cite the reading's own
+`archive_ref`, and a reading may not postdate its row.
+
+`CALCULATOR_POLICY_YEARS` declares which years each service actually
+computes. GOV.UK's income-tax estimator serves only the current tax year,
+so a 2025 case pointed at it would return a confident number for a year it
+never calculates: both the work list and each row are checked against it.
+For the same reason a case evaluated in a registered non-current-law
+world (the `pre_ab2025` two-child cases) can never be a calculator entry —
+production calculators compute current law only.
+
+`validate_results(results, cases)` checks a run against the battery it
+claims to be from: a result must name a case that exists and a variable
+that case's `expected_focus` asks for.
+
+### Every oracle's epistemic standing is assigned, with evidence
+
+`ORACLE_BENCHMARK` gives each oracle a `benchmark_class` and a
+`calibration_relationship` plus the publisher evidence behind them, and
+both land on the row. All are `different_model` + `held_out`: GOV.UK
+describes its own tools' outputs as ESTIMATES and explicitly lists
+Entitledto, Turn2us and Policy in Practice among INDEPENDENT benefits
+calculators, so none of them is an authority PE is fitted to — and nothing
+in pe-uk-data or policyengine-uk consumes any of them. The assignment is
+per oracle, never one umbrella "official" claim, and a caller cannot
+relabel a calculator as authoritative.
+
 ### Not yet built
 
 There is no case/result TABLE, writer, exporter or `build_db` step, so
@@ -215,7 +252,10 @@ repo-wide surface and is being paired on rather than decided here.
   `child_benefit`, `pension_credit`, …). The connector's mapping table
   pairs it with the oracle's variable (UKMOD `bsauc_s`, etc.) and records
   any construction (e.g. summing UKMOD monthly output × 12).
-- `oracle` — closed set `{"ukmod", "taxsim"}`; grows with #5.
+- `oracle` — closed set: the model oracles `ukmod` and `taxsim`, plus the
+  official-calculator oracles (#63) `govuk_income_tax_estimator`,
+  `govuk_hicbc_calculator`, `policy_in_practice_boc`, `entitledto`,
+  `turn2us`; grows with #5.
 - `pe_value` / `oracle_value` — annual amounts (booleans as 0/1). `null`
   means that side cannot produce the variable: `pe_value: null` ⇒
   `pe_gap`; `oracle_value: null` ⇒ `policy_scope_mismatch` (the oracle
@@ -277,6 +317,27 @@ rows raise without the `tolerance` they were judged against.
 The tolerance table is data (`DEFAULT_TOLERANCES`), passed to `classify`
 explicitly; a variable class missing from the table raises rather than
 guessing.
+
+## Official-calculator oracles (#63)
+
+Calculator oracles are live services (gov.uk estimators; production benefit
+calculators), not versioned model releases, so their result rows carry a
+stricter provenance contract, enforced at validation:
+
+- `oracle_version` **must contain the reading date** (`YYYY-MM-DD`, a
+  real calendar date — `2026-13-45` fails validation) — a calculator
+  answer is only meaningful with the date it was read.
+- Every reading must be **archived** (screenshot or saved page) and the
+  archive cited in `annotations` as an `archive: <path-or-url>` entry —
+  a calculator-oracle row **without** an `archive:` annotation fails
+  validation, so this rule is enforced, not prose. Readings are
+  entered manually or via documented, terms-compliant access — one case at
+  a time; these are oracle *readings*, never a harvest or a scrape.
+- The starter work list lives in `battery/calculator_set.json`
+  (`load_calculator_set`): each entry names a battery case and the ≥ 2
+  calculators it is to be entered into, so a PE-vs-UKMOD disagreement
+  always has an adjudicating third reading. Entries are inputs only —
+  results arrive as ordinary `CaseResult` rows.
 
 ## What this lane still needs (out of scope here)
 

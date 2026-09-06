@@ -9,6 +9,11 @@ import pytest
 
 from scorecard_db.case_diffs import (
     BRMA_REGION,
+    CALCULATOR_ORACLES,
+    CALCULATOR_POLICY_YEARS,
+    ORACLE_BENCHMARK,
+    CalculatorReading,
+    validate_results,
     SCHEMA_VERSION,
     DEFAULT_TOLERANCES,
     CaseResult,
@@ -18,6 +23,7 @@ from scorecard_db.case_diffs import (
     VariableClass,
     classify,
     load_battery,
+    load_calculator_set,
 )
 
 BATTERY = Path(__file__).parent.parent / "sources/ukmod-cases/battery/cases.json"
@@ -44,7 +50,7 @@ def case_kwargs(**kw):
 class TestBattery:
     def test_loads_and_validates(self):
         cases = load_battery(BATTERY)
-        assert 12 <= len(cases) <= 20
+        assert 15 <= len(cases) <= 24
         assert all(isinstance(c, CaseSpec) for c in cases)
 
     def test_unique_ids(self):
@@ -526,6 +532,372 @@ class TestClassifyToResultSeam:
     def test_variable_class_is_a_closed_vocabulary(self):
         with pytest.raises(ValueError):
             self.wired(100.0, 100.0, vclass="percentage")
+
+
+class TestCalculatorOracles:
+    """#63: calculator oracles join the closed set with a stricter
+    provenance contract (reading date in oracle_version) and a >= 2-
+    calculator starter work list."""
+
+    def result_kwargs(self, **kw):
+        base = dict(
+            case_id="uk-hicbc-partial-taper",
+            variable="income_tax",
+            pe_value=13432.0,
+            oracle_value=13432.0,
+            oracle="govuk_income_tax_estimator",
+            engine_version="policyengine-uk 2.0.0",
+            oracle_version="gov.uk estimate-income-tax, read 2026-08-17",
+            computed_at="2026-08-17T12:00:00Z",
+            classification="match_exact",
+            variable_class="currency",
+            abs_diff=0.0,
+            annotations=["archive: readings/2026-08-17-govuk-income-tax.png"],
+            reading=CalculatorReading(
+                read_on="2026-08-17",
+                url="https://www.tax.service.gov.uk/estimate-paye-take-home-pay/",
+                policy_year=2026,
+                archive_ref="readings/2026-08-17-govuk-income-tax.png",
+                archive_sha256="a" * 64,
+                inputs_sha256="b" * 64,
+            ),
+            schema_version=SCHEMA_VERSION,
+        )
+        base.update(kw)
+        return base
+
+    def test_calculator_oracle_ids_registered(self):
+        assert CALCULATOR_ORACLES == {
+            Oracle.GOVUK_INCOME_TAX_ESTIMATOR,
+            Oracle.GOVUK_HICBC_CALCULATOR,
+            Oracle.POLICY_IN_PRACTICE_BOC,
+            Oracle.ENTITLEDTO,
+            Oracle.TURN2US,
+        }
+        # model oracles keep release-string versioning
+        assert Oracle.UKMOD not in CALCULATOR_ORACLES
+
+    def test_calculator_row_with_dated_version_validates(self):
+        r = CaseResult(**self.result_kwargs())
+        assert r.oracle is Oracle.GOVUK_INCOME_TAX_ESTIMATOR
+
+    def test_calculator_row_without_reading_date_rejected(self):
+        with pytest.raises(ValueError, match="reading date"):
+            CaseResult(**self.result_kwargs(oracle_version="gov.uk estimator"))
+
+    def test_oracle_version_never_empty(self):
+        with pytest.raises(ValueError, match="oracle_version"):
+            CaseResult(**self.result_kwargs(oracle_version="  "))
+        with pytest.raises(ValueError, match="oracle_version"):
+            CaseResult(
+                **self.result_kwargs(oracle="ukmod", oracle_version="", reading=None)
+            )
+
+    def test_model_oracle_needs_no_date(self):
+        r = CaseResult(
+            **self.result_kwargs(
+                oracle="ukmod", oracle_version="UKMOD B2026.08", reading=None
+            )
+        )
+        assert r.oracle is Oracle.UKMOD
+
+
+class TestCalculatorSet:
+    SET_PATH = (
+        Path(__file__).parent.parent / "sources/ukmod-cases/battery/calculator_set.json"
+    )
+
+    def test_loads_against_battery(self):
+        cases = load_battery(BATTERY)
+        entries = load_calculator_set(self.SET_PATH, cases)
+        assert len(entries) == 9
+        for e in entries:
+            assert len(e["oracles"]) >= 2
+
+    def test_only_current_law_cases_reach_the_work_list(self):
+        """A production calculator computes current law. The two-child
+        family's binding and multiple-birth cases are evaluated in the
+        registered pre_ab2025 world, so only the abolished case — the
+        current-law one — can be read from a calculator."""
+        cases = {c.case_id: c for c in load_battery(BATTERY)}
+        entries = load_calculator_set(self.SET_PATH, list(cases.values()))
+        ids = {e["case_id"] for e in entries}
+        assert "uk-uc-two-child-limit-abolished" in ids
+        assert "uk-uc-two-child-limit-binding" not in ids
+        assert "uk-uc-two-child-limit-multiple-birth" not in ids
+        for e in entries:
+            assert cases[e["case_id"]].baseline is None
+
+    def test_counterfactual_case_in_the_set_rejected(self, tmp_path):
+        bad = tmp_path / "set.json"
+        bad.write_text(
+            json.dumps(
+                {
+                    "entries": [
+                        {
+                            "case_id": "uk-uc-two-child-limit-binding",
+                            "oracles": ["entitledto", "turn2us"],
+                            "notes": "x",
+                        }
+                    ]
+                }
+            )
+        )
+        with pytest.raises(ValueError, match="compute current law only"):
+            load_calculator_set(bad, load_battery(BATTERY))
+
+    def test_case_year_outside_the_calculator_coverage_rejected(self, tmp_path):
+        """The concrete round-2 example: the gov.uk income-tax estimator
+        computes only the current tax year, so a 2025 case assigned to it
+        would produce a confident number for a year it never calculates."""
+        cases = load_battery(BATTERY)
+        stale = next(c for c in cases if c.case_id == "uk-pa-taper-110k")
+        stale.policy_year = 2025
+        bad = tmp_path / "set.json"
+        bad.write_text(
+            json.dumps(
+                {
+                    "entries": [
+                        {
+                            "case_id": "uk-pa-taper-110k",
+                            "oracles": ["govuk_income_tax_estimator", "entitledto"],
+                            "notes": "x",
+                        }
+                    ]
+                }
+            )
+        )
+        with pytest.raises(ValueError, match="wrong year"):
+            load_calculator_set(bad, cases)
+
+    def test_unknown_case_rejected(self, tmp_path):
+        bad = tmp_path / "set.json"
+        bad.write_text(
+            json.dumps(
+                {
+                    "entries": [
+                        {
+                            "case_id": "uk-nope",
+                            "oracles": ["entitledto", "turn2us"],
+                            "notes": "x",
+                        }
+                    ]
+                }
+            )
+        )
+        with pytest.raises(ValueError, match="unknown case"):
+            load_calculator_set(bad, load_battery(BATTERY))
+
+    def test_single_oracle_rejected(self, tmp_path):
+        bad = tmp_path / "set.json"
+        bad.write_text(
+            json.dumps(
+                {
+                    "entries": [
+                        {
+                            "case_id": "uk-benefit-cap-london",
+                            "oracles": ["entitledto"],
+                            "notes": "x",
+                        }
+                    ]
+                }
+            )
+        )
+        with pytest.raises(ValueError, match=">= 2"):
+            load_calculator_set(bad, load_battery(BATTERY))
+
+    def test_model_oracle_in_set_rejected(self, tmp_path):
+        bad = tmp_path / "set.json"
+        bad.write_text(
+            json.dumps(
+                {
+                    "entries": [
+                        {
+                            "case_id": "uk-benefit-cap-london",
+                            "oracles": ["ukmod", "entitledto"],
+                            "notes": "x",
+                        }
+                    ]
+                }
+            )
+        )
+        with pytest.raises(ValueError, match="not a calculator oracle"):
+            load_calculator_set(bad, load_battery(BATTERY))
+
+
+class TestCalculatorProvenanceEnforcement:
+    """Review items: _contains_iso_date must reject impossible dates, and
+    the archive rule must be validation, not prose."""
+
+    def kwargs(self, **kw):
+        return TestCalculatorOracles().result_kwargs(**kw)
+
+    def test_impossible_reading_dates_rejected(self):
+        for bad in ("read 2026-13-45", "read 0000-00-00", "read 2025-02-30"):
+            with pytest.raises(ValueError, match="reading date"):
+                CaseResult(**self.kwargs(oracle_version=bad))
+
+    def test_real_reading_date_accepted(self):
+        CaseResult(**self.kwargs(oracle_version="gov.uk, read 2026-08-17"))
+
+    def test_oracle_version_date_must_be_the_readings_own(self):
+        """A date somewhere in a free-text string is a string. It has to
+        be the date the structured reading records."""
+        with pytest.raises(ValueError, match="does not carry the reading"):
+            CaseResult(**self.kwargs(oracle_version="gov.uk, read 2024-02-29"))
+
+    def test_missing_archive_annotation_rejected(self):
+        with pytest.raises(ValueError, match="archive"):
+            CaseResult(**self.kwargs(annotations=[]))
+        with pytest.raises(ValueError, match="archive"):
+            CaseResult(**self.kwargs(annotations=["saved a screenshot somewhere"]))
+
+    def test_model_oracles_need_no_archive_annotation(self):
+        CaseResult(
+            **self.kwargs(
+                oracle="ukmod",
+                oracle_version="UKMOD B2026.08",
+                annotations=[],
+                reading=None,
+            )
+        )
+
+
+class TestCalculatorReadingProvenance:
+    """Round-2: the dated-reading rule was syntactic. A calculator row now
+    carries structured provenance — which page, which inputs, which tax
+    year the service actually computed, and the archived bytes by
+    digest."""
+
+    def kwargs(self, **kw):
+        return TestCalculatorOracles().result_kwargs(**kw)
+
+    def reading(self, **kw):
+        base = dict(
+            read_on="2026-08-17",
+            url="https://www.tax.service.gov.uk/estimate-paye-take-home-pay/",
+            policy_year=2026,
+            archive_ref="readings/2026-08-17-govuk-income-tax.png",
+            archive_sha256="a" * 64,
+            inputs_sha256="b" * 64,
+        )
+        base.update(kw)
+        return CalculatorReading(**base)
+
+    def test_a_calculator_row_needs_a_structured_reading(self):
+        with pytest.raises(ValueError, match="structured `reading`"):
+            CaseResult(**self.kwargs(reading=None))
+
+    def test_a_model_oracle_may_not_carry_one(self):
+        with pytest.raises(ValueError, match="versions by release string"):
+            CaseResult(**self.kwargs(oracle="ukmod", oracle_version="UKMOD B2026.08"))
+
+    def test_digests_must_be_checkable(self):
+        for field in ("archive_sha256", "inputs_sha256"):
+            with pytest.raises(ValueError, match="sha256 hex digest"):
+                self.reading(**{field: "see the screenshot"})
+
+    def test_url_must_be_the_page_read(self):
+        with pytest.raises(ValueError, match="https URL"):
+            self.reading(url="the gov.uk calculator")
+
+    def test_reading_date_must_be_real(self):
+        for bad in ("2026-13-45", "0000-00-00", "2025-02-30", "17 Aug 2026"):
+            with pytest.raises(ValueError, match="real YYYY-MM-DD"):
+                self.reading(read_on=bad)
+
+    def test_a_bare_archive_prefix_cites_nothing(self):
+        with pytest.raises(ValueError, match="cites nothing"):
+            CaseResult(**self.kwargs(annotations=["archive:"]))
+
+    def test_the_annotation_must_cite_the_readings_own_archive(self):
+        with pytest.raises(ValueError, match="cite the reading's own"):
+            CaseResult(**self.kwargs(annotations=["archive: some/other/file.png"]))
+
+    def test_the_service_must_actually_compute_that_policy_year(self):
+        """The concrete example: gov.uk's income-tax estimator serves only
+        the current tax year, so a 2025 reading from it is a confident
+        number for a year it never calculated."""
+        assert CALCULATOR_POLICY_YEARS[Oracle.GOVUK_INCOME_TAX_ESTIMATOR] == {2026}
+        with pytest.raises(ValueError, match="cannot substitute"):
+            CaseResult(**self.kwargs(reading=self.reading(policy_year=2025)))
+
+    def test_a_reading_cannot_postdate_the_row(self):
+        with pytest.raises(ValueError, match="after the row's computed_at"):
+            CaseResult(
+                **self.kwargs(
+                    oracle_version="gov.uk, read 2026-09-01",
+                    reading=self.reading(read_on="2026-09-01"),
+                )
+            )
+
+
+class TestEpistemicAssignment:
+    """Round-2: CaseResult carried no benchmark class and no calibration
+    relationship, and the assignment had to be per oracle with publisher
+    evidence rather than one umbrella "official" claim."""
+
+    def test_every_oracle_has_an_evidenced_assignment(self):
+        assert set(ORACLE_BENCHMARK) == set(Oracle)
+        for oracle, (bench, relationship, evidence) in ORACLE_BENCHMARK.items():
+            assert bench == "different_model", oracle
+            assert relationship == "held_out", oracle
+            assert len(evidence) > 60, oracle
+
+    def test_the_assignment_lands_on_the_row(self):
+        r = CaseResult(**TestCalculatorOracles().result_kwargs())
+        assert r.benchmark_class == "different_model"
+        assert r.calibration_relationship == "held_out"
+
+    def test_a_caller_cannot_relabel_a_calculator_as_authoritative(self):
+        with pytest.raises(ValueError, match="registry decision"):
+            CaseResult(
+                **TestCalculatorOracles().result_kwargs(
+                    benchmark_class="official_calculation"
+                )
+            )
+
+    def test_publisher_evidence_names_the_independence(self):
+        """GOV.UK calls Entitledto / Turn2us / Policy in Practice
+        INDEPENDENT calculators and describes its own tools' outputs as
+        estimates — that is the evidence, not an umbrella label."""
+        for oracle in (
+            Oracle.ENTITLEDTO,
+            Oracle.TURN2US,
+            Oracle.POLICY_IN_PRACTICE_BOC,
+        ):
+            assert "INDEPENDENT" in ORACLE_BENCHMARK[oracle][2]
+        assert "estimate" in ORACLE_BENCHMARK[Oracle.GOVUK_INCOME_TAX_ESTIMATOR][2]
+
+
+class TestResultsValidateAgainstTheBattery:
+    """Round-2 probe: an unknown case_id and an invented variable were
+    both accepted."""
+
+    def results(self, **kw):
+        return [CaseResult(**TestCalculatorOracles().result_kwargs(**kw))]
+
+    def test_a_result_must_name_a_case_in_the_battery(self):
+        cases = load_battery(BATTERY)
+        with pytest.raises(ValueError, match="not in this battery"):
+            validate_results(self.results(case_id="uk-invented"), cases)
+
+    def test_a_result_must_name_a_variable_the_case_asks_for(self):
+        cases = load_battery(BATTERY)
+        with pytest.raises(ValueError, match="does not ask for"):
+            validate_results(self.results(variable="teleportation_credit"), cases)
+
+    def test_a_valid_run_passes(self):
+        cases = load_battery(BATTERY)
+        assert validate_results(self.results(), cases) == 1
+
+    def test_a_reading_cannot_answer_a_counterfactual_case(self):
+        cases = load_battery(BATTERY)
+        rows = self.results(
+            case_id="uk-uc-two-child-limit-binding", variable="universal_credit"
+        )
+        with pytest.raises(ValueError, match="current law only"):
+            validate_results(rows, cases)
 
 
 class TestIdentityClosureAtTheEdges:

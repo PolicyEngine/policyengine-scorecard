@@ -624,6 +624,106 @@
     "national_insurance"
    ],
    "rationale": "The GBP 100,000 cliff: at 110,000 the personal allowance is tapered by GBP 1 per 2 over 100,000 (5,000 of allowance lost), producing the 60% effective marginal band. Round 10,000 excess makes the expected allowance (12,570 - 5,000 = 7,570) auditable by inspection."
+  },
+  {
+   "case_id": "uk-hicbc-full-clawback-80k",
+   "description": "Earner exactly at GBP 80,000: HICBC clawback reaches 100%",
+   "policy_year": 2026,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 42,
+      "employment_income": 80000
+     },
+     "adult_2": {
+      "age": 40
+     },
+     "child_1": {
+      "age": 9
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1",
+       "adult_2"
+      ],
+      "children": [
+       "child_1"
+      ]
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "child_benefit"
+   ],
+   "rationale": "Top of the HICBC taper: adjusted net income exactly GBP 80,000, where the post-2024 charge (1% of Child Benefit per GBP 200 of income between 60,000 and 80,000; gov.uk / LITRG, 2025-26 values) first reaches 100% of the one-child Child Benefit. Paired with uk-hicbc-partial-taper (midpoint) it brackets the taper; calculator oracle: the gov.uk Child Benefit tax calculator states this charge directly. Year 2025 pins the verified 2025-26 thresholds. Pinned to policy year 2026: the thresholds this case turns on are frozen at the same nominal values in 2026-27 as in 2025-26, and the live gov.uk estimator computes only the current tax year \u2014 a 2025 case pointed at it would produce a confident number for a year the service does not calculate."
+  },
+  {
+   "case_id": "uk-additional-rate-boundary-125140",
+   "description": "Earner exactly at GBP 125,140: allowance fully tapered, additional rate begins",
+   "policy_year": 2026,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 50,
+      "employment_income": 125140
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "LONDON",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "rationale": "The double boundary at GBP 125,140 (2025-26): the personal allowance taper completes (125,140 = 100,000 + 2 x 12,570, allowance exactly zero) at the same income where the 45% additional rate begins. Both engines and the gov.uk estimator must agree that not one pound is charged at 45% and the allowance is exactly nil \u2014 off-by-one errors in either rule show up as a discrete miss here. Pinned to policy year 2026: the thresholds this case turns on are frozen at the same nominal values in 2026-27 as in 2025-26, and the live gov.uk estimator computes only the current tax year \u2014 a 2025 case pointed at it would produce a confident number for a year the service does not calculate."
+  },
+  {
+   "case_id": "uk-psa-savings-income",
+   "description": "Basic-rate earner with GBP 1,500 savings interest (PSA partially used)",
+   "policy_year": 2026,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 38,
+      "employment_income": 30000,
+      "savings_income": 1500
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "WALES",
+    "tenure": "rented_private",
+    "rent": 7800,
+    "brma": "Cardiff"
+   },
+   "expected_focus": [
+    "income_tax"
+   ],
+   "rationale": "Personal Savings Allowance ordering: a basic-rate taxpayer's first GBP 1,000 of interest is taxed at 0% and the remaining 500 at 20% (2025-26 PSA: 1,000 basic / 500 higher). Savings income sits on top of GBP 30,000 earnings without tipping the earner into higher rate, so the expected extra liability is exactly GBP 100 - auditable by inspection and directly answerable by the gov.uk estimator. Pinned to policy year 2026: the thresholds this case turns on are frozen at the same nominal values in 2026-27 as in 2025-26, and the live gov.uk estimator computes only the current tax year \u2014 a 2025 case pointed at it would produce a confident number for a year the service does not calculate."
   }
  ]
 }
