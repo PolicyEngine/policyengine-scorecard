@@ -8,6 +8,8 @@ engine-free, and --dry-run completes without the engine.
 """
 
 import ast
+import builtins
+import importlib.metadata
 import inspect
 import json
 from pathlib import Path
@@ -192,11 +194,51 @@ def test_annotations_are_strings_and_carry_the_magnitude_ratio():
     )
 
 
-def test_dry_run_completes_without_engine(capsys):
+def test_dry_run_completes_without_engine(capsys, monkeypatch):
+    """The engine-free path, tested engine-FREE.
+
+    This test used to rely on policyengine-uk simply not being
+    installed. That made it ambient-dependent: with the engine present
+    it took the engine branch instead, and once the installed engine
+    drifted from the registry pin it failed on a guard it was never
+    meant to exercise. CI never installs the engine, so CI stayed green
+    while a developer machine that had it went red — the green tick
+    meaning less than it looked, which is the thing #95 is about.
+
+    Import is now blocked explicitly, so the test covers what it says.
+    """
+    real_import = builtins.__import__
+
+    def no_engine(name, *args, **kwargs):
+        if name == "policyengine_uk":
+            raise ImportError("policyengine_uk blocked for this test")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", no_engine)
     rk.main(["--dry-run"])
     out = capsys.readouterr().out
     assert "dry run complete" in out
     assert "no sims" in out
+    assert "path resolution deferred" in out
+
+
+def test_the_pin_guard_refuses_a_mismatched_engine(monkeypatch):
+    """The other half, which nothing covered: with an engine present
+    whose version is NOT the pin, the run must refuse. A registry that
+    resolved paths against a different engine proves nothing about the
+    run it is pinning."""
+    pytest.importorskip("policyengine_uk")
+    monkeypatch.setattr(
+        importlib.metadata, "version", lambda _name: "0.0.0-not-the-pin"
+    )
+    with pytest.raises(SystemExit, match="is pinned to"):
+        rk.main(["--dry-run"])
+
+
+def test_the_registry_pin_is_the_certified_engine():
+    """Moving this is a deliberate re-certification, not a convenience.
+    It is asserted here so a bump has to touch a test that says so."""
+    assert REGISTRY["engine_pin"]["policyengine_uk"] == "2.89.2"
 
 
 # --- the six review findings ------------------------------------------------
