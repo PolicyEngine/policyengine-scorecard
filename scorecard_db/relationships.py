@@ -222,6 +222,20 @@ _HMRC_RECKONER_HELD = (
     "nothing in pe-uk-data consumes them.",
 )
 
+# ONS effects of taxes and benefits (#90). A national statistic built on
+# a DIFFERENT survey from the certified PE-UK world (HFS/LCFS vs FRS), so
+# it is neither a calibration target nor a shared-input tautology.
+_ONS_ETB_HELD = (
+    CR.HELD_OUT,
+    "ONS's Effects of Taxes and Benefits estimates are built on the "
+    "Household Finances Survey / Living Costs and Food Survey, not the "
+    "FRS the certified policyengine-uk world uses, and no pe-uk-data "
+    "target or policyengine-uk parameter is fitted to an ETB statistic "
+    "(consumption surfaces read 2026-08-24 at the certified pins). Its "
+    "benefits-in-kind allocation has no PE counterpart at all, so the "
+    "`final` income concept is a coverage gap rather than a divergence.",
+)
+
 # UK think tanks (#86). Both are INDEPENDENT models — which is precisely
 # why their rows are worth carrying: agreement is evidence rather than a
 # tautology. Verified at the certified pin before staging, per the #48
@@ -318,6 +332,8 @@ def uk_relationship(source, metric, program=None, kind=None):
         if program in OBR_CONSUMED_WELFARE_PROGRAMS:
             return _OBR_CONSUMED
         return _OBR_UNCONSUMED
+    if source == "ons_etb":
+        return _ONS_ETB_HELD
     if source in ("ifs", "resolution_foundation"):
         return _THINKTANK_HELD[source]
     if source == "obr_policy_effects":

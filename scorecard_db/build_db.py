@@ -22,6 +22,7 @@ Chain order is dependency order and is part of the contract:
     uk_externals five UK primary-source families + Chronicle staging
     uk_deductions FRR family
     uk_thinktanks IFS + Resolution Foundation (independent models)
+    ons_etb       ONS effects of taxes and benefits (5 income concepts)
     uk_policy_effects  OBR published economic effects of policy
     produce_uk + campaign_uk  archive-resolved UK reckoner attaches
     nz_budget_scores New Zealand Treasury Budget score tables (official-only)
@@ -56,6 +57,7 @@ from . import (
     ingest_uk_deductions,
     ingest_uk_externals,
     ingest_uk_thinktanks,
+    ingest_ons_etb,
     ingest_urban,
     produce_campaign_uk,
 )
@@ -149,6 +151,9 @@ def build(db_path: Path) -> dict:
         # Two independent UK models (#86), harvested in the 2026-08-02
         # sweep and unused until now.
         ("uk_thinktanks", lambda: ingest_uk_thinktanks.ingest(db_path)),
+        # ONS effects of taxes and benefits (#90): the distributional
+        # population HMT publishes only as charts.
+        ("ons_etb", lambda: ingest_ons_etb.ingest(db_path)),
         (
             "uk_policy_effects",
             lambda: ingest_obr_policy_effects.ingest(db_path),

@@ -58,6 +58,20 @@ DISTINCT: frozenset[tuple[str, str]] = frozenset(
         # A decile of one publisher's distribution is not a decile — or a
         # quintile — of another's: different models, different income
         # concepts, different cut points. Never aliased.
+        # ONS ranks by equivalised DISPOSABLE income; UKMOD, HBAI, IFS
+        # and RF each rank by something else. A quintile of one
+        # publisher's distribution is not a quintile of another's.
+        ("ons_etb:q1", "ukmod:q1"),
+        ("ons_etb:q2", "ukmod:q2"),
+        ("ons_etb:q3", "ukmod:q3"),
+        ("ons_etb:q4", "ukmod:q4"),
+        ("ons_etb:q5", "ukmod:q5"),
+        ("ons_etb:q1", "resolution_foundation:quintile_1"),
+        ("ons_etb:q5", "resolution_foundation:quintile_5"),
+        *(
+            (f"ons_etb:q{_q}", f"ifs:decile_{_i}")
+            for _q, _i in ((1, 1), (1, 2), (5, 9), (5, 10))
+        ),
         # Recorded EXHAUSTIVELY rather than by example (review): the
         # DISTINCT set is an audit ledger, so a half-populated one reads
         # as if the unlisted pairs were undecided. Cross-source
@@ -572,6 +586,31 @@ _identity(
         "families",
     ],
 )
+
+
+# --- ONS effects of taxes and benefits (#90) ---------------------------------
+# ONS ranks households into quintile groups by EQUIVALISED DISPOSABLE
+# income, which is not how UKMOD, IFS or RF rank theirs — so the
+# quintiles are registered here per source and recorded DISTINCT from
+# each of those below, exhaustively rather than by example. HBAI is NOT
+# in that ledger and the omission is deliberate: HBAI registers no
+# decile or quantile vocabulary (its subgroups are
+# children/pensioners/working_age/total), so there is nothing on its
+# side to be distinct from, and naming it would be an assertion against
+# a value nobody registered. The five income
+# concepts are five running totals of the same household, one per stage
+# of the tax-benefit system, and are closed so a sixth cannot appear
+# silently.
+_identity("ons_etb", "geography", ["UK"])
+_identity("ons_etb", "program", ["household_income"])
+_identity("ons_etb", "quantile", ["q1", "q2", "q3", "q4", "q5", "all"])
+_identity(
+    "ons_etb",
+    "income_concept",
+    ["original", "gross", "disposable", "post_tax", "final"],
+)
+_identity("ons_etb", "statistic", ["mean", "median"])
+_identity("ons_etb", "unit", ["gbp_nominal"])
 
 
 def canon(source: str, axis: str, value: str) -> str:
