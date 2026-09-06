@@ -1,0 +1,100 @@
+{
+ "schema_version": 1,
+ "measure_key": "ab2025__salary_sacrifice_ni_cap",
+ "title": "\u00a32,000 cap on NI relief for salary-sacrificed pension contributions",
+ "fiscal_event": "autumn_budget_2025",
+ "effective_from": "2029-04",
+ "registry_rule": "The reform specification and the ASSUMPTION SWEEP for the Budget's largest NICs measure. This file stages NO value claims \u2014 IFS's assessment and the official costing belong to their originators (#86/#91) and are harvested in their own lane from primary documents, never copied from reporting into a spec.",
+ "engine_pin": {
+  "policyengine_uk": "2.92.0",
+  "resolved_on": "2026-09-03",
+  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal. v1 of this spec hardcoded 2.89.2 while the readings actually came from a later engine \u2014 the pin was copied from a sibling spec instead of derived. --resolve now refuses a mismatch."
+ },
+ "baseline_verdict": "carried",
+ "baseline_evidence": {
+  "path": "gov.hmrc.national_insurance.salary_sacrifice_pension_cap",
+  "schedule": {
+   "2026-04-06": null,
+   "2027-04-06": null,
+   "2028-04-06": null,
+   "2029-04-06": 2000.0,
+   "2030-04-06": 2000.0
+  },
+  "uncapped_sentinel": "inf, recorded as null in JSON \u2014 the parameter is uncapped before the measure bites",
+  "note": "Answers the #99/#101 baseline-integrity question for this measure: CARRIED, with the announced step present at the correct tax-year date and the correct gov.uk references on the parameter.",
+  "reading_dates": "UK tax-year starts (04-06), matching the parameter's own YAML dating",
+  "corrections_log": [
+   "v1 asserted the step is dated 2029-01-01 and that 'every parameter under gov.hmrc.national_insurance uses 01-01 \u2014 module-wide convention'. That is FALSE and was invented, not checked. The YAML step is 2029-04-06, and NI parameters are tax-year dated (class_2 flat_rate runs 2015-04-01, 2022-04-06, ...). Caught in review by DTrim99 on PR #110. An invented 'checked, not a defect' rationale is worse than the thing it excuses.",
+   "The reason v1's --resolve still passed, which is worth recording rather than leaving as a puzzle: the parameter carries metadata period: year, so policyengine-core expands it to CALENDAR-year instants. At runtime cap('2029-01-01') therefore returns 2000, even though the source step is 2029-04-06. Runtime instants and source dating are two different things; this spec now records the source dating and reads at tax-year dates so the two agree."
+  ]
+ },
+ "the_finding": "A DEFAULT PolicyEngine-UK score of this measure is NOT assumption-neutral, and the two assumptions point opposite ways. salary_sacrifice_broad_base_haircut_rate defaults to 0.0016 and is ON: it reduces employment income for ALL workers, not just sacrificers, on the reasoning that employers spread the added NI cost across the whole workforce. It is gated on the cap being finite, so it switches on exactly when the measure bites, and it cites a PolicyEngine research page as its methodology. Meanwhile employee_salary_sacrifice_reduction_rate defaults to 0 and is OFF: the response of employees actually reducing salary sacrifice once it is capped is not modelled by default.\n\nThat asymmetry is a PolicyEngine methodology choice, not HMRC's and not OBR's. Published without disclosure it would surface in a comparison as arithmetic disagreement. This is the #97 pattern (CGT's zero elasticity) but sharper, because there the default asserted no behaviour and here the default asserts some.",
+ "assumption_parameters": {
+  "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+   "engine_default": 0.0016,
+   "state": "ON",
+   "applies_to": "ALL workers' employment income, not only salary sacrificers",
+   "gated_on": "cap being finite (np.isinf(cap) -> 0), so it activates exactly at the measure",
+   "provenance": "PolicyEngine research methodology, cited on the variable itself"
+  },
+  "gov.contrib.behavioral_responses.employee_salary_sacrifice_reduction_rate": {
+   "engine_default": 0.0,
+   "state": "OFF",
+   "applies_to": "employees reducing salary sacrifice in response to the cap",
+   "provenance": "engine default; no response asserted"
+  }
+ },
+ "related_incidence_defaults": {
+  "gov.contrib.policyengine.employer_ni.employee_incidence": 1.0,
+  "gov.contrib.policyengine.employer_ni.capital_incidence": 0.5,
+  "gov.contrib.policyengine.employer_ni.consumer_incidence": 0.5
+ },
+ "head_variables": [
+  "salary_sacrifice_pension_ni_employee",
+  "salary_sacrifice_pension_ni_employer",
+  "salary_sacrifice_broad_base_haircut",
+  "national_insurance",
+  "total_national_insurance"
+ ],
+ "years": [
+  2029,
+  2030,
+  2031
+ ],
+ "assumption_sweep": [
+  {
+   "label": "engine_default",
+   "haircut_rate": 0.0016,
+   "employee_reduction_rate": 0.0,
+   "source": "The certified engine's own defaults. Publishing this leg still requires DISCLOSING the broad-base haircut, because unlike a static leg it asserts an incidence assumption.",
+   "citation_required": false,
+   "publishable": true,
+   "disclosure_required": true
+  },
+  {
+   "label": "no_behavioural_assumptions",
+   "haircut_rate": 0.0,
+   "employee_reduction_rate": 0.0,
+   "source": "Both assumptions switched off \u2014 the arithmetic-only leg. Asserts no behaviour, so it needs no citation, and it is the correct comparator for a static official costing.",
+   "citation_required": false,
+   "publishable": true,
+   "disclosure_required": false
+  },
+  {
+   "label": "with_employee_response",
+   "haircut_rate": 0.0016,
+   "employee_reduction_rate": null,
+   "source": null,
+   "citation_required": true,
+   "publishable": false,
+   "disclosure_required": true
+  }
+ ],
+ "comparison_rule": "The published comparison must state which sweep leg it is. A leg with disclosure_required must name the broad-base haircut in the published note \u2014 a comparison that omits it reports a PolicyEngine incidence assumption as if it were arithmetic.",
+ "divergence_axes": [
+  "broad_base_incidence: PE spreads employer NI cost across all workers by default; an external costing may not",
+  "employee_response: PE asserts none by default; an external costing may assume some",
+  "employer_ni_incidence: PE assumes full employee incidence (1.0)"
+ ],
+ "not_yet_run": "This PR specifies and resolves the reform; it computes no counterpart. UK counterpart compute runs through #51, which is not merged."
+}
