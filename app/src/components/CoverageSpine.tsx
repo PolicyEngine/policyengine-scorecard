@@ -5,7 +5,7 @@ import { SPINE_META, SPINE_ORDER, type SpineBucket } from "../spine";
  * The signature element: one full-width stacked bar in which every published
  * cell appears, bucketed by how well PolicyEngine sees it. The gray segments
  * (gaps) are structurally inseparable from the teal ones — honesty as layout.
- * Clicking a segment filters the scorecard.
+ * Clicking a segment filters the comparison table.
  */
 export function CoverageSpine({
   rows,
@@ -26,8 +26,8 @@ export function CoverageSpine({
   const total = rows.length || 1;
 
   return (
-    <figure aria-label="Coverage of Urban's published cells by comparison status">
-      <div className="flex h-9 w-full overflow-hidden rounded-md border border-border">
+    <figure aria-label="Coverage of published cells by comparison status">
+      <div className="flex h-8 w-full overflow-hidden rounded-md border border-border">
         {SPINE_ORDER.map((b) => {
           const n = counts.get(b) ?? 0;
           if (!n) return null;
@@ -37,21 +37,24 @@ export function CoverageSpine({
           return (
             <button
               key={b}
+              type="button"
               title={`${meta.label}: ${n.toLocaleString()} cells — ${meta.text}`}
+              aria-label={`${meta.label}: ${n.toLocaleString()} cells`}
               aria-pressed={active === b}
               onClick={() => onSelect(active === b ? null : b)}
-              className="h-full transition-opacity"
+              className={
+                "h-full transition-opacity hover:opacity-80 " + meta.swatch
+              }
               style={{
                 width: `${pct}%`,
-                background: meta.color,
-                opacity: dimmed ? 0.25 : 1,
+                opacity: dimmed ? 0.25 : undefined,
                 minWidth: 3,
               }}
             />
           );
         })}
       </div>
-      <figcaption className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+      <figcaption className="mt-2 flex flex-wrap gap-x-4 gap-y-1.5">
         {SPINE_ORDER.map((b) => {
           const n = counts.get(b) ?? 0;
           if (!n) return null;
@@ -59,7 +62,9 @@ export function CoverageSpine({
           return (
             <button
               key={b}
+              type="button"
               onClick={() => onSelect(active === b ? null : b)}
+              title={meta.text}
               className={
                 "flex items-center gap-1.5 text-xs " +
                 (active === b
@@ -68,8 +73,11 @@ export function CoverageSpine({
               }
             >
               <span
-                className="inline-block h-2.5 w-2.5 rounded-[2px] border border-border"
-                style={{ background: meta.color }}
+                aria-hidden
+                className={
+                  "inline-block h-2.5 w-2.5 rounded-[2px] border border-border " +
+                  meta.swatch
+                }
               />
               {meta.label}
               <span className="fig">{n.toLocaleString()}</span>
@@ -78,10 +86,11 @@ export function CoverageSpine({
         })}
         {active && (
           <button
+            type="button"
             onClick={() => onSelect(null)}
             className="text-xs text-primary underline underline-offset-2"
           >
-            clear filter
+            Clear
           </button>
         )}
       </figcaption>

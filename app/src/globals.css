@@ -14,6 +14,16 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Sentence-case, small-caps kicker used above stats and section headings. */
+.kicker {
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
 :focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;

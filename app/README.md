@@ -1,32 +1,32 @@
-# React + TypeScript + Vite
+# Scorecard app
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+The scorecard UI: a Vite + React app on the `@policyengine/ui-kit` design
+system (shared PolicyEngine header and footer, theme tokens, primitives).
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+bun install
+bun dev          # copies ../data/*.json into public/data/ first
+bun test src
+bun run lint
+bun run build
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Structure
+
+- `src/App.tsx` — the shell: PolicyEngine header/footer, title band, country
+  selector and the view tabs. Reads and writes `?country=` / `?view=`.
+- `src/components/Overview.tsx` — landing view: headline counts, the
+  coverage bar, top divergences, pipeline lanes and gap counts.
+- `src/components/ComparisonTable.tsx` — every published cell next to its
+  PolicyEngine counterpart, with filters and expandable row detail.
+- `src/components/DivergenceBoard.tsx` — the ranked diagnosis queue.
+- `src/components/ReformValidationView.tsx` — reform scores and references
+  with per-release history.
+- `src/components/GapsView.tsx`, `AboutView.tsx` — gaps and method notes.
+- `src/components/ui.tsx` — shared pieces (stat cards, panels, status badges,
+  labelled selects) built on ui-kit primitives.
+- `src/spine.ts` — coverage buckets; every colour is a token utility class.
+- `src/urlState.ts` — deep-link vocabulary; view ids are stable URL values.
+
+Runtime data requests go through `withBasePath()` (`src/basePath.ts`) because
+the app is mounted at `/scorecard` — see `docs/AI_GUIDANCE.md`.
