@@ -1,0 +1,241 @@
+{
+ "schema_version": 1,
+ "fiscal_event": "autumn_budget_2026",
+ "event_date": "2026-10-28",
+ "chancellor": "John Healey",
+ "administration": "Burnham government (from 2026-07-20)",
+ "registry_rule": "One entry per measure REPORTED as under consideration for the Autumn Budget on 28 October 2026. This is a pre-event scoreability registry, not a claims lane: it records what each measure would BE as a PolicyEngine-UK reform and whether the certified engine can express it, so that on Budget day a counterpart can be computed immediately rather than the work starting then. It stages NO value claims \u2014 the revenue figures in circulation are journalism citing third parties, and the #86 rule applies: a re-published figure belongs to its originator, not to the outlet. When HM Treasury and the OBR publish the scorecard and the EFO costings on the day, those become claims through the existing OBR/HMT lanes and join to these measure keys.",
+ "verification_note": "Every pe_reform_delta path in this file was RESOLVED against an installed policyengine-uk 2.89.2 at authoring time, and the baseline values recorded below are what that engine returns for 2026 \u2014 not values copied from reporting. A measure whose path does not resolve is recorded not_expressible with the engine gap named, never guessed. CORRECTION (review, DTrim99): version 1 recorded TWO measures not_expressible on GUESSED paths that failed to resolve. Both were wrong. A path that does not resolve is now searched for by name across the parameter tree before any not_expressible verdict is written, and a path that exists but is not a scalar (a SUBTREE) is never read as absence. Note the --resolve validator could not catch this: a not_expressible entry carries no path to resolve, so a false gap passed silently. That is now covered by requiring a name search, and by .github/workflows/baseline-probe.yml running the resolver in CI against the pinned engine \u2014 v1 asserted --resolve had been run and pinned nothing.",
+ "engine_pin": {
+  "policyengine_uk": "2.89.2",
+  "resolved_on": "2026-08-25"
+ },
+ "computability": {
+  "expressible": "every leg is a resolvable parameter in the certified engine",
+  "partial": "some legs resolve; the missing ones are named in `missing`",
+  "not_expressible": "the engine has no representation; `why` names the gap"
+ },
+ "measures": [
+  {
+   "measure_key": "ab2026__cgt_align_with_income_tax_rates",
+   "title": "Align capital gains tax rates with income tax rates",
+   "reported_status": "probable",
+   "source_note": "Widely reported as the leading broad-based option with the 'big three' ruled out; reported as previously supported by the Prime Minister, the Chancellor, the Chief Secretary and the Pensions Minister.",
+   "program": "capital_gains_tax",
+   "computability": "expressible",
+   "pe_reform_delta": {
+    "gov.hmrc.cgt.basic_rate": 0.2,
+    "gov.hmrc.cgt.higher_rate": 0.4,
+    "gov.hmrc.cgt.additional_rate": 0.45
+   },
+   "delta_kind": "absolute_value",
+   "engine_baseline_2026": {
+    "gov.hmrc.cgt.basic_rate": 0.18,
+    "gov.hmrc.cgt.higher_rate": 0.24,
+    "gov.hmrc.cgt.additional_rate": 0.24
+   },
+   "behavioural_note": "PE-UK carries a CGT behavioural response (capital_gains_behavioural_response, relative_capital_gains_mtr_change, elasticity at gov.simulation.capital_gains_responses.elasticity), so this measure can be scored BOTH static and post-behavioural. That matters more here than anywhere else in the registry: realisations respond strongly to the rate, published estimates disagree mostly about that response, and a static-only PE number would not be comparable to a behavioural OBR costing.",
+   "head_variables": [
+    "capital_gains_tax",
+    "income_tax"
+   ]
+  },
+  {
+   "measure_key": "ab2026__cgt_remove_uplift_on_death",
+   "title": "Remove the capital gains uplift on death for inherited assets",
+   "reported_status": "possible",
+   "source_note": "Reported as a possible measure raising \u00a31.5-2bn annually.",
+   "program": "capital_gains_tax",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "The certified engine models CGT on realised gains within the simulation year and has no representation of death, bequest or the base-cost uplift, so there is no parameter to move and no household event to attach the measure to. Scoring it needs an engine capability, not a registry entry.",
+   "policyengine_uk_development_item": true,
+   "name_search": "Searched the whole parameter tree for /death|bequest|inherit|uplift|probate/: 1 node(s): ['gov.dwp.universal_credit.rebalancing.standard_allowance_uplift'] Recorded because a guessed path that fails to resolve proves nothing \u2014 it is how v1 published two false engine gaps."
+  },
+  {
+   "measure_key": "ab2026__pension_tax_free_lump_sum_restriction",
+   "title": "Reduce or remove the 25% tax-free pension lump sum",
+   "reported_status": "possible",
+   "source_note": "Reported as a possible measure worth around \u00a32bn a year; currently capped at \u00a3268,275.",
+   "program": "income_tax",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "VERIFIED, not assumed: gov.hmrc.pensions has no tax-free lump sum parameter at the certified pin (probed and raised AttributeError). The engine carries pension CONTRIBUTIONS and their relief, plus a lump_sum_income input variable, but not the pension commencement lump sum or its cap. So the most-reported pensions measure of this Budget cannot be scored at all today.",
+   "policyengine_uk_development_item": true,
+   "name_search": "Searched the whole parameter tree for /lump|commencement|tax_free_cash|pcls/: no nodes. Recorded because a guessed path that fails to resolve proves nothing \u2014 it is how v1 published two false engine gaps."
+  },
+  {
+   "measure_key": "ab2026__ni_extended_to_investment_property_pension_income",
+   "title": "Extend National Insurance beyond employment income",
+   "reported_status": "possible",
+   "source_note": "Reported at around \u00a322bn annually, and 'deeply unpopular'.",
+   "program": "national_insurance",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "The NI base in the certified engine is employment and self-employment earnings; there is no parameter that widens the charge to investment, property or pension income. A counterpart would be a new charge, not a parameter change.",
+   "policyengine_uk_development_item": true,
+   "name_search": "Searched the whole parameter tree for /national_insurance.*(investment|property|pension)|unearned/: 1 node(s): ['gov.dwp.universal_credit.means_test.income_definitions.unearned'] Recorded because a guessed path that fails to resolve proves nothing \u2014 it is how v1 published two false engine gaps."
+  },
+  {
+   "measure_key": "ab2026__personal_allowance_freeze_extension",
+   "title": "Extend the personal allowance and threshold freeze",
+   "reported_status": "probable",
+   "source_note": "Reported as the most politically charged option and the one touching the most people; the rates pledge does not cover thresholds.",
+   "program": "income_tax",
+   "computability": "expressible",
+   "pe_reform_delta": {
+    "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
+    "gov.hmrc.income_tax.rates.uk[1].threshold": 37700
+   },
+   "delta_kind": "absolute_value",
+   "engine_baseline_2026": {
+    "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570.0,
+    "gov.hmrc.income_tax.rates.uk[1].threshold": 37700.0
+   },
+   "baseline_construction_note": "A freeze is only measurable against an INDEXED counterfactual \u2014 the world where the thresholds had been uprated. That counterfactual is a registered baseline world question (#13), and it is exactly the axis #67 found undecomposed on the OBR's own PA/HRT freeze re-estimates. The registry does not pretend a freeze is a delta on current law.",
+   "head_variables": [
+    "income_tax",
+    "national_insurance"
+   ]
+  },
+  {
+   "measure_key": "ab2026__wealth_tax_2pc_above_10m",
+   "title": "Annual wealth tax of 2% on net assets above \u00a310m",
+   "reported_status": "unlikely",
+   "source_note": "Reported as divisive with cabinet opposition; revenue estimates range from nil to \u00a326bn, which is itself the finding \u2014 the spread is about behaviour and coverage, not arithmetic.",
+   "program": "wealth_tax",
+   "computability": "expressible",
+   "pe_reform_delta": {
+    "gov.contrib.ubi_center.wealth_tax": "bracket: 0.02 above 10_000_000"
+   },
+   "delta_kind": "bracket_schedule",
+   "engine_baseline_2026": {
+    "gov.contrib.ubi_center.wealth_tax": "empty schedule"
+   },
+   "caveat": "Expressible does NOT mean credible: the engine applies the schedule to total_wealth from survey-imputed wealth, which is the weakest data in the certified world for exactly the population this measure targets. A PE number here should be published with that stated, or not published.",
+   "head_variables": [
+    "wealth_tax"
+   ]
+  },
+  {
+   "measure_key": "ab2026__council_tax_and_sdlt_to_land_value_tax",
+   "title": "Replace council tax and stamp duty with an annual land value tax",
+   "reported_status": "ruled_out_for_this_budget",
+   "source_note": "Reported at around 1.3%; the Prime Minister is reported to have ruled out major property-tax change at the first Budget. Kept in the registry because it is the structural reform this administration is most associated with, and because a ruled-out measure is a scoreable counterfactual.",
+   "program": "property_taxes",
+   "computability": "partial",
+   "pe_reform_delta": {
+    "gov.contrib.abolish_council_tax": 1
+   },
+   "delta_kind": "absolute_value",
+   "engine_baseline_2026": {
+    "gov.contrib.abolish_council_tax": 0.0
+   },
+   "missing": "The abolition leg resolves, and land values exist (household_land_value, land_value), but there is no LVT RATE parameter to levy against them and no stamp-duty abolition switch. So PE can currently model the hole, not the replacement.",
+   "head_variables": [
+    "council_tax"
+   ]
+  },
+  {
+   "measure_key": "ab2026__high_value_council_tax_surcharge",
+   "title": "High Value Council Tax Surcharge on English homes over \u00a32m",
+   "reported_status": "already_announced",
+   "source_note": "Announced at the November 2025 Budget, taking effect April 2028, \u00a32,500-\u00a37,500 by band. Already law, so it belongs in the certified world's baseline rather than in a Budget-day reform \u2014 recorded here so it is not double-counted as new.",
+   "program": "council_tax",
+   "computability": "expressible",
+   "pe_reform_delta": {
+    "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2500
+   },
+   "already_in_baseline": true,
+   "delta_kind": "absolute_value",
+   "engine_baseline_2026": {
+    "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2500.0
+   },
+   "note": "CORRECTED. v1 probed a GUESSED path (gov.hmrc.high_value_council_tax_surcharge) that does not exist and recorded a false gap. The real path, found by searching the tree, is gov.hmrc.council_tax.high_value_surcharge.amount \u2014 a bracket schedule carrying the full announced measure from 2027: 2,500 / 3,500 / 5,000 / 7,500 at 2m / 2.5m / 3.5m / 5m, uprated from 2029. Already law and already in the baseline."
+  },
+  {
+   "measure_key": "ab2026__property_income_tax_rate_rise",
+   "title": "Higher income tax rates on property income from April 2027",
+   "reported_status": "already_announced",
+   "source_note": "Reported as taking effect April 2027 regardless of this Budget.",
+   "program": "income_tax",
+   "computability": "expressible",
+   "pe_reform_delta": {
+    "gov.hmrc.income_tax.rates.property.basic": 0.22,
+    "gov.hmrc.income_tax.rates.property.higher": 0.42,
+    "gov.hmrc.income_tax.rates.property.additional": 0.47
+   },
+   "already_in_baseline": true,
+   "delta_kind": "absolute_value",
+   "engine_baseline_2026": {
+    "gov.hmrc.income_tax.rates.property.basic": 0.2,
+    "gov.hmrc.income_tax.rates.property.higher": 0.4,
+    "gov.hmrc.income_tax.rates.property.additional": 0.45
+   },
+   "note": "CORRECTED (review). v1 claimed 'the engine taxes property income at the main income tax rates with no separate schedule'. False: gov.hmrc.income_tax.rates.property exists with basic/higher/additional children, and the certified baseline ALREADY carries the April-2027 rise (0.20->0.22, 0.40->0.42, 0.45->0.47). So it is expressible AND already in the baseline \u2014 not a Budget-day scoring job, and the baseline-integrity question it raised is already answered. The values above are the post-2027 schedule recorded for reference, not something to apply."
+  },
+  {
+   "measure_key": "ab2026__bank_profit_surcharge_increase",
+   "title": "Increase the surcharge on bank profits above \u00a3100m",
+   "reported_status": "probable",
+   "source_note": "Reported as part of the business-levy package.",
+   "program": "corporate_and_indirect",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Out of scope for a household microsimulation: the incidence falls on firms and the certified engine has no firm entity. Recorded rather than omitted so the registry states the whole reported package and its coverage honestly \u2014 roughly half of the reported Budget is not household-modellable at all, which is itself worth saying out loud.",
+   "out_of_model_scope": true
+  },
+  {
+   "measure_key": "ab2026__online_sales_levy",
+   "title": "Introduce an online sales levy",
+   "reported_status": "probable",
+   "source_note": "Reported as part of the business-levy package.",
+   "program": "corporate_and_indirect",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Out of scope for a household microsimulation: the incidence falls on firms and the certified engine has no firm entity. Recorded rather than omitted so the registry states the whole reported package and its coverage honestly \u2014 roughly half of the reported Budget is not household-modellable at all, which is itself worth saying out loud.",
+   "out_of_model_scope": true
+  },
+  {
+   "measure_key": "ab2026__business_rates_warehouse_up_pub_down",
+   "title": "Raise warehouse business rates, cut pub rates by 20%",
+   "reported_status": "probable",
+   "source_note": "Reported as part of the business-levy package.",
+   "program": "corporate_and_indirect",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Out of scope for a household microsimulation: the incidence falls on firms and the certified engine has no firm entity. Recorded rather than omitted so the registry states the whole reported package and its coverage honestly \u2014 roughly half of the reported Budget is not household-modellable at all, which is itself worth saying out loud.",
+   "out_of_model_scope": true
+  },
+  {
+   "measure_key": "ab2026__vape_duty_increase",
+   "title": "Increase duty on vaping products",
+   "reported_status": "probable",
+   "source_note": "Reported as part of the business-levy package.",
+   "program": "corporate_and_indirect",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Out of scope for a household microsimulation: the incidence falls on firms and the certified engine has no firm entity. Recorded rather than omitted so the registry states the whole reported package and its coverage honestly \u2014 roughly half of the reported Budget is not household-modellable at all, which is itself worth saying out loud.",
+   "out_of_model_scope": true
+  },
+  {
+   "measure_key": "ab2026__ated_increase_and_sdlt_envelope_close",
+   "title": "Raise ATED and close the corporate-envelope SDLT route",
+   "reported_status": "probable",
+   "source_note": "Reported as part of the business-levy package.",
+   "program": "corporate_and_indirect",
+   "computability": "not_expressible",
+   "pe_reform_delta": null,
+   "why": "Out of scope for a household microsimulation: the incidence falls on firms and the certified engine has no firm entity. Recorded rather than omitted so the registry states the whole reported package and its coverage honestly \u2014 roughly half of the reported Budget is not household-modellable at all, which is itself worth saying out loud.",
+   "out_of_model_scope": true
+  }
+ ],
+ "provenance_rule_note": "The 'a re-published figure belongs to its originator' rule is cited as '#86' in places. To be precise (review): issue #86 is the IFS + Resolution Foundation ingest; the RULE was established in its PR (#91), where eight RF rows carrying an attribution to HM Treasury or a Parliament impact assessment were dropped rather than staged as RF claims. Cite #91 for the rule and #86 for the lane.",
+ "triage": {
+  "expressible": 5,
+  "partial": 1,
+  "not_expressible": 8,
+  "already_in_baseline": 2,
+  "note": "already_in_baseline measures are expressible AND already law AND already carried by the certified world, so they are not Budget-day scoring jobs. Both were false not_expressible entries in v1."
+ }
+}
