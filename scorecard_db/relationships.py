@@ -222,6 +222,32 @@ _HMRC_RECKONER_HELD = (
     "nothing in pe-uk-data consumes them.",
 )
 
+# UK think tanks (#86). Both are INDEPENDENT models — which is precisely
+# why their rows are worth carrying: agreement is evidence rather than a
+# tautology. Verified at the certified pin before staging, per the #48
+# rule that a held-out claim states where it looked.
+_THINKTANK_HELD = {
+    "ifs": (
+        CR.HELD_OUT,
+        "TAXBEN is the IFS's own microsimulation model, maintained "
+        "independently of PolicyEngine; no pe-uk-data target and no "
+        "policyengine-uk parameter is fitted to an IFS output "
+        "(consumption surfaces read 2026-08-24 at the certified pins — "
+        "the only IFS material the repo previously referenced is the "
+        "Green-Budget options BASELINE world in baselines.py, which is a "
+        "counterfactual descriptor, not a calibration target).",
+    ),
+    "resolution_foundation": (
+        CR.HELD_OUT,
+        "Resolution Foundation's living-standards modelling is "
+        "independent of PolicyEngine and nothing in pe-uk-data or "
+        "policyengine-uk consumes it (surfaces read 2026-08-24 at the "
+        "certified pins). Note that RF itself re-publishes government "
+        "figures; those rows are dropped at ingest rather than carried "
+        "as RF claims, so this relationship covers RF's OWN outputs only.",
+    ),
+}
+
 _UKMOD_HELD = (
     CR.HELD_OUT,
     "UKMOD is a peer microsimulation, not a calibration source; no PE UK "
@@ -292,6 +318,8 @@ def uk_relationship(source, metric, program=None, kind=None):
         if program in OBR_CONSUMED_WELFARE_PROGRAMS:
             return _OBR_CONSUMED
         return _OBR_UNCONSUMED
+    if source in ("ifs", "resolution_foundation"):
+        return _THINKTANK_HELD[source]
     if source == "obr_policy_effects":
         if kind not in ("post_behavioural", "supply_side"):
             raise ValueError(

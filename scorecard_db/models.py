@@ -94,6 +94,50 @@ class Metric(str, Enum):
     CASH_REQUIREMENT_CHANGE = "cash_requirement_change"
     GAINER_COUNT = "gainer_count"
     AVERAGE_ANNUAL_GAIN = "average_annual_gain"
+    # UK think-tank families (#86: IFS, Resolution Foundation). Each is a
+    # CHANGE or SHARE sibling of a level metric this repo already carries,
+    # following the same rule that keeps revenue_change apart from
+    # revenue_level and poverty_rate_change apart from poverty_rate: a
+    # change is not a level, and the two must never be summed or compared.
+    #   benefit_cost_change              sibling of benefit_cost
+    #   taxpayer_count_change            sibling of taxpayer_count
+    #   average_household_income_change  currency-neutral sibling of
+    #                                    avg_change_after_tax_income_usd
+    #                                    (that one is legacy-named; a new
+    #                                    currency rides unit_concept, not
+    #                                    the metric name). NOT the same
+    #                                    QUANTITY, though: this one is a
+    #                                    change in HOUSEHOLD NET income
+    #                                    (post tax AND transfers, the
+    #                                    concept IFS and RF publish),
+    #                                    while avg_change_after_tax_income
+    #                                    is the US distribution tables'
+    #                                    after-TAX income. A connector
+    #                                    must map an IFS/RF row onto the
+    #                                    net-income quantity, not the
+    #                                    after-tax one.
+    #   share_gaining / share_losing     siblings of share_with_tax_cut,
+    #                                    kept as TWO metrics because "not
+    #                                    gaining" is not "losing" — a
+    #                                    household can be unaffected, and
+    #                                    one minus the other is not the
+    #                                    complement
+    #   spending_share                   sibling of income_share: the
+    #                                    share of a programme's spending
+    #                                    reaching an income group
+    #   benefit_uprating_rate            the uprating applied to a benefit
+    #                                    rate — a policy parameter, not a
+    #                                    receipt
+    #   real_income_growth               real growth in a household income
+    #                                    statistic between two periods
+    BENEFIT_COST_CHANGE = "benefit_cost_change"
+    TAXPAYER_COUNT_CHANGE = "taxpayer_count_change"
+    AVERAGE_HOUSEHOLD_INCOME_CHANGE = "average_household_income_change"
+    SHARE_GAINING = "share_gaining"
+    SHARE_LOSING = "share_losing"
+    SPENDING_SHARE = "spending_share"
+    BENEFIT_UPRATING_RATE = "benefit_uprating_rate"
+    REAL_INCOME_GROWTH = "real_income_growth"
     # OBR published policy effects (#55): what policy does to the ECONOMY,
     # not to a household or the exchequer's take. gdp_level_effect and
     # supply_side_impact are both per cent of output and deliberately
