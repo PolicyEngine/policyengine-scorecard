@@ -222,6 +222,24 @@ _HMRC_RECKONER_HELD = (
     "nothing in pe-uk-data consumes them.",
 )
 
+# HMT's Budget distributional analysis (#61). The resolver used to fail
+# closed on this source, which was correct but temporary — the entry is
+# made deliberately, with its evidence, BEFORE any numeric row can land,
+# so the first digitized decile does not arrive needing an emergency
+# relationship decision.
+_HMT_DA_HELD = (
+    CR.HELD_OUT,
+    "HM Treasury's distributional analysis is a closed departmental "
+    "microsimulation scored against HMT's own no-policy-change "
+    "counterfactual; no pe-uk-data target and no policyengine-uk "
+    "parameter is fitted to a decile impact from it (consumption "
+    "surfaces read 2026-08-19 at the certified pins — the only HMT "
+    "material with a consuming pin is the uk_hmt fiscal-event costings "
+    "family, which is itself held out). Its benefits-in-kind public-"
+    "services allocation has no PE counterpart at all, so a large part "
+    "of every bar is not_expressible rather than divergent.",
+)
+
 # ONS effects of taxes and benefits (#90). A national statistic built on
 # a DIFFERENT survey from the certified PE-UK world (HFS/LCFS vs FRS), so
 # it is neither a calibration target nor a shared-input tautology.
@@ -344,6 +362,8 @@ def uk_relationship(source, metric, program=None, kind=None):
         return _OBR_POLICY_EFFECTS_HELD
     if source == "ukmod":
         return _UKMOD_HELD
+    if source == "hmt_distributional":
+        return _HMT_DA_HELD
     if source == "hm_treasury":
         return (CR.HELD_OUT, "fiscal-event costings are scored, never consumed.")
     if source == "dwp":
