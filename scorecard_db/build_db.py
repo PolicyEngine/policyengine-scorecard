@@ -17,9 +17,13 @@ Chain order is dependency order and is part of the contract:
     solo         solo-counterfactual results + exhibits
     diagnoses    curated diagnosis rows
     campaign_us  staged day-1/day-2 campaign results (claim matching)
-    uk_externals five UK primary-source families + Ledger staging
+    harvest_lane_stages  harvest lanes ingested -> computed where results
+                attached (derived from the DB, so the feed can't drift)
+    uk_externals five UK primary-source families + Chronicle staging
     uk_deductions FRR family
     produce_uk + campaign_uk  archive-resolved UK reckoner attaches
+    nz_budget_scores New Zealand Treasury Budget score tables (official-only)
+    be_pit_reform Belgian PIT-reform claims + Axiom result attachments
     be_jrc      JRC EUROMOD-BE model claims + honest demo attachments;
                 final so its 2026-08-21 lane update cannot be regressed by
                 an older feed sync
@@ -36,7 +40,8 @@ import sqlite3
 import sys
 from pathlib import Path
 
-from be import ingest_jrc_country_report
+from be import ingest_jrc_country_report, ingest_pit_reform_2026
+from nz import ingest_official_budget_scores
 
 from . import (
     ingest_campaign,
@@ -92,6 +97,10 @@ def build(db_path: Path) -> dict:
         ("solo", lambda: ingest_solo.ingest(db_path)),
         ("diagnoses", lambda: ingest_diagnoses.ingest(db_path)),
         ("campaign_us", lambda: ingest_campaign.ingest(db_path)),
+        (
+            "harvest_lane_stages",
+            lambda: ingest_harvest.advance_computed_lanes(db_path),
+        ),
         ("uk_externals", lambda: ingest_uk_externals.ingest(db_path)),
         ("uk_deductions", lambda: ingest_uk_deductions.ingest(db_path)),
         ("produce_uk", lambda: produce_campaign_uk.produce(db_path)),
@@ -99,6 +108,8 @@ def build(db_path: Path) -> dict:
             "campaign_uk",
             lambda: ingest_campaign.ingest(db_path, produce_campaign_uk.RESOLVED),
         ),
+        ("nz_budget_scores", lambda: ingest_official_budget_scores.ingest(db_path)),
+        ("be_pit_reform", lambda: ingest_pit_reform_2026.ingest(db_path)),
         ("be_jrc", lambda: ingest_jrc_country_report.ingest(db_path)),
     ]
     summary: dict = {"steps": {}}
