@@ -276,3 +276,19 @@ def test_the_lane_reaches_mission_control():
     lanes = json.loads((ROOT / "data" / "lanes.json").read_text())["lanes"]
     entry = next(lane for lane in lanes if lane["id"] == "lpc-minimum-wage")
     assert entry["country"] == "UK" and entry["mode"] == 1
+
+
+def test_the_jobs_persons_pair_is_a_unit_axis_claim_not_a_ranking_one():
+    """#91 and #92 assert that HBAI names no DISTINCT pair, on the
+    stated grounds that it registers no ranking vocabulary. That
+    reasoning is about the RANKING axis and stays true. This lane adds a
+    pair on the UNIT axis, where both sides are registered: LPC counts
+    jobs, HBAI counts persons, and one person can hold two jobs — so
+    the two must never be unified or summed."""
+    from scorecard_db.uk_aliases import DISTINCT, known
+
+    assert "jobs" in known("lpc", "unit")
+    assert "persons" in known("dwp_hbai", "unit")
+    assert ("lpc:jobs", "dwp_hbai:persons") in DISTINCT
+    # and the ranking claim those tests make is untouched
+    assert not known("dwp_hbai", "quantile")

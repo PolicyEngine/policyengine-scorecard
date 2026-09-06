@@ -1,0 +1,880 @@
+{
+ "source": "hmt-distributional",
+ "package_key": "budget_2025__impact_on_households",
+ "raw_sha256": "9f7e68f3e44349c8a6a4a89b9e1427cc23f1691771902b154ef67cadd33480ea",
+ "figures_verified": [
+  "1.A",
+  "1.B",
+  "1.C"
+ ],
+ "components": 30,
+ "component_counts": {
+  "by_computability": {
+   "expressible": 3,
+   "partial": 9,
+   "not_expressible": 18
+  },
+  "by_channel": {
+   "tax": 16,
+   "welfare": 9,
+   "benefits_in_kind_public_services": 5
+  }
+ },
+ "value_claims_emitted": 0,
+ "chart_cells": {
+  "source_marks": 132,
+  "emitted": 0,
+  "chart_not_digitized": 132,
+  "by_figure": {
+   "1.A": 44,
+   "1.B": 44,
+   "1.C": 44
+  },
+  "income_groups": [
+   "decile_1",
+   "decile_2",
+   "decile_3",
+   "decile_4",
+   "decile_5",
+   "decile_6",
+   "decile_7",
+   "decile_8",
+   "decile_9",
+   "decile_10",
+   "all_households"
+  ],
+  "series": [
+   "tax",
+   "welfare",
+   "benefits_in_kind_public_services",
+   "overall"
+  ],
+  "cells": [
+   {
+    "figure": "1.A",
+    "income_group": "decile_1",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_1",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_1",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_1",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_2",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_2",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_2",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_2",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_3",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_3",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_3",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_3",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_4",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_4",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_4",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_4",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_5",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_5",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_5",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_5",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_6",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_6",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_6",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_6",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_7",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_7",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_7",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_7",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_8",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_8",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_8",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_8",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_9",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_9",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_9",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_9",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_10",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_10",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_10",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "decile_10",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "all_households",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "all_households",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "all_households",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.A",
+    "income_group": "all_households",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_1",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_1",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_1",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_1",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_2",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_2",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_2",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_2",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_3",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_3",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_3",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_3",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_4",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_4",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_4",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_4",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_5",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_5",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_5",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_5",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_6",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_6",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_6",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_6",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_7",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_7",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_7",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_7",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_8",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_8",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_8",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_8",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_9",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_9",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_9",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_9",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_10",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_10",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_10",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "decile_10",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "all_households",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "all_households",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "all_households",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.B",
+    "income_group": "all_households",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_1",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_1",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_1",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_1",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_2",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_2",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_2",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_2",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_3",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_3",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_3",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_3",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_4",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_4",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_4",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_4",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_5",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_5",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_5",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_5",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_6",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_6",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_6",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_6",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_7",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_7",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_7",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_7",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_8",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_8",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_8",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_8",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_9",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_9",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_9",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_9",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_10",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_10",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_10",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "decile_10",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "all_households",
+    "series": "tax",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "all_households",
+    "series": "welfare",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "all_households",
+    "series": "benefits_in_kind_public_services",
+    "disposition": "chart_not_digitized"
+   },
+   {
+    "figure": "1.C",
+    "income_group": "all_households",
+    "series": "overall",
+    "disposition": "chart_not_digitized"
+   }
+  ]
+ },
+ "income_identity": {
+  "income_axis": "equivalised_net_household_income_decile",
+  "housing_costs": "bhc",
+  "equivalisation": "modified_oecd",
+  "income_groups": [
+   "decile_1",
+   "decile_2",
+   "decile_3",
+   "decile_4",
+   "decile_5",
+   "decile_6",
+   "decile_7",
+   "decile_8",
+   "decile_9",
+   "decile_10",
+   "all_households"
+  ]
+ },
+ "chart_baselines": {
+  "1.A": {
+   "kind": "change",
+   "baseline": "hmt_no_policy_change_from_ab2024"
+  },
+  "1.B": {
+   "kind": "change",
+   "baseline": "hmt_no_policy_change_from_ab2024"
+  },
+  "1.C": {
+   "kind": "level",
+   "baseline": "current_law"
+  }
+ },
+ "value_availability": "HMT publishes decile impacts as unlabeled chart bars in a PDF (see sources/hmt-distributional/raw/README.md). Entries therefore carry chart inventory, not values; external value claims enter only if HMT releases data tables or a documented chart digitization lands with per-bar provenance. Nothing downstream may treat this registry as a value source."
+}

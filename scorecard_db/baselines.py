@@ -20,8 +20,11 @@ from __future__ import annotations
 
 from be.worlds import (
     AXIOM_BE_2026_DEMO_WORLD,
+    AXIOM_BE_PIT_REFORM_2026_BASELINE,
+    COUR_DES_COMPTES_PIT_REFORM_2026_BASELINE,
     EUROMOD_BE_2022_WORLD,
     EUROMOD_BE_2023_WORLD,
+    SPF_FINANCES_PIT_REFORM_2026_BASELINE,
 )
 
 from .db import BASELINE_SQL, ScorecardDB
@@ -198,6 +201,238 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "with two-child limit and family premium removal fully rolled "
         "out' (sources/harvest-uk-2026-08-02/uk_ifs).",
     ),
+    # --- OBR published policy effects (#55) ---------------------------
+    # OBR does NOT score a package against "the law in force" in the
+    # abstract: it scores against that EFO round's PRE-MEASURES forecast
+    # — a distinct, named world per round, which also fixes the economic
+    # determinants the effect is measured off. Two rounds' pre-measures
+    # worlds are different worlds, so a PE result computed against
+    # current law is NOT comparable to these claims unless it says so.
+    # Briefing paper No.10 chapter 2 splits the counterfactual KIND, so
+    # the kind is a descriptor key rather than a blurred single world:
+    #   policy_parameters  the measures' pre-announcement legislated
+    #                      parameters (tax and welfare measures, and every
+    #                      package-level chart)
+    #   del_activity       the pre-existing DEL activity/spending level —
+    #                      a departmental programme's counterfactual is
+    #                      the activity already assumed, not a parameter
+    #   regulatory         the pre-existing regulatory baseline (the
+    #                      National Planning Policy Framework as it stood)
+    # Only the (round, kind) pairs the data actually keys are registered;
+    # the registry is a record of decisions, not a cross-product.
+    (
+        {
+            "policy": "obr_pre_measures_spring_budget_2023",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_pre_measures_spring_budget_2023__policy_parameters",
+        "OBR's pre-measures March 2023 forecast, the world the "
+        "Spring Budget 2023 package and its individually scored measures "
+        "are measured against; counterfactual kind: the measures' pre-announcement legislated parameters.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_spring_budget_2023",
+            "counterfactual": "del_activity",
+        },
+        "obr_pre_measures_spring_budget_2023__del_activity",
+        "OBR's pre-measures March 2023 forecast, the world the "
+        "Spring Budget 2023 package and its individually scored measures "
+        "are measured against; counterfactual kind: the pre-existing DEL activity/spending baseline.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_autumn_statement_2023",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_pre_measures_autumn_statement_2023__policy_parameters",
+        "OBR's pre-measures November 2023 forecast, the world the "
+        "Autumn Statement 2023 package and its individually scored measures "
+        "are measured against; counterfactual kind: the measures' pre-announcement legislated parameters.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_autumn_statement_2023",
+            "counterfactual": "del_activity",
+        },
+        "obr_pre_measures_autumn_statement_2023__del_activity",
+        "OBR's pre-measures November 2023 forecast, the world the "
+        "Autumn Statement 2023 package and its individually scored measures "
+        "are measured against; counterfactual kind: the pre-existing DEL activity/spending baseline.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_spring_budget_2024",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_pre_measures_spring_budget_2024__policy_parameters",
+        "OBR's pre-measures March 2024 forecast, the world the "
+        "Spring Budget 2024 package and its individually scored measures "
+        "are measured against; counterfactual kind: the measures' pre-announcement legislated parameters.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_autumn_budget_2024",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_pre_measures_autumn_budget_2024__policy_parameters",
+        "OBR's pre-measures October 2024 forecast, the world the "
+        "Autumn Budget 2024 package and its individually scored measures "
+        "are measured against; counterfactual kind: the measures' pre-announcement legislated parameters.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_autumn_budget_2024",
+            "counterfactual": "del_activity",
+        },
+        "obr_pre_measures_autumn_budget_2024__del_activity",
+        "OBR's pre-measures October 2024 forecast, the world the "
+        "Autumn Budget 2024 package and its individually scored measures "
+        "are measured against; counterfactual kind: the pre-existing DEL activity/spending baseline.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_spring_statement_2025",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_pre_measures_spring_statement_2025__policy_parameters",
+        "OBR's pre-measures March 2025 forecast, the world the "
+        "Spring Statement 2025 package and its individually scored measures "
+        "are measured against; counterfactual kind: the measures' pre-announcement legislated parameters.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_spring_statement_2025",
+            "counterfactual": "regulatory",
+        },
+        "obr_pre_measures_spring_statement_2025__regulatory",
+        "OBR's pre-measures March 2025 forecast, the world the "
+        "Spring Statement 2025 package and its individually scored measures "
+        "are measured against; counterfactual kind: the pre-existing regulatory baseline.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_autumn_budget_2025",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_pre_measures_autumn_budget_2025__policy_parameters",
+        "OBR's pre-measures November 2025 forecast, the world the "
+        "Autumn Budget 2025 package and its individually scored measures "
+        "are measured against; counterfactual kind: the measures' pre-announcement legislated parameters.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_november_2025_budget_forecast",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_november_2025_budget_forecast__policy_parameters",
+        "The OBR's November 2025 Budget forecast — the counterfactual "
+        "March 2026 Table B.1 names in its own title ('Total effect of "
+        "Government decisions SINCE the November 2025 Budget'). A "
+        "post-measures world, deliberately not a pre-measures one.",
+        "policy_ref",
+        "EFO March 2026, Annex B Table B.1 title, vendored at "
+        "sources/obr-policy-effects/raw/efo_march2026_annex_tables.xlsx; "
+        "descriptor stamped by "
+        "scorecard_db/ingest_obr_policy_effects.py (_baseline_descriptor).",
+    ),
+    (
+        {"policy": "obr_announcement_baseline_efo_march_2026"},
+        "obr_announcement_baseline_efo_march_2026",
+        "The announcement-consistent counterfactual the EFO March 2026 "
+        "re-estimates of the PA and HRT freezes are measured against: the "
+        "thresholds INDEXED as they would have been without the freeze, on "
+        "the March 2026 earnings determinants. It is a THRESHOLD-indexation "
+        "counterfactual, not a data-vintage one — the certified "
+        "policyengine-uk world already grows incomes along those same "
+        "determinants, so differencing the data vintage would difference a "
+        "world against itself. The divergence decomposition's "
+        "baseline_vintage axis claimed this world while it was registered "
+        "nowhere; a claimed baseline that no registry describes is not a "
+        "baseline.",
+        "policy_ref",
+        "EFO March 2026 Table 3.17 (PA and HRT freezes re-estimate); axis "
+        "recipe in data/uk/obr_divergence_axes.json "
+        "(efo_march_2026__pa_and_hrt_freezes / baseline_vintage).",
+    ),
+    (
+        {"policy": "hmt_no_policy_change_from_ab2024"},
+        "hmt_no_policy_change_from_ab2024",
+        "HM Treasury's published counterfactual for the Budget 2025 "
+        "'Impact on households' analysis: no policy changes over the "
+        "relevant period — i.e. the world without any of the decisions "
+        "announced from Autumn Budget 2024 onwards (Spring Statement "
+        "2025, Spending Review 2025 and Budget 2025 included), scored in "
+        "2028-29. Figures 1.A and 1.B are CHANGES against this world; "
+        "figure 1.C is a post-policy LEVEL and keys current law instead, "
+        "so the three charts are deliberately not one world.",
+        "policy_ref",
+        "Impact on households (Budget 2025) paras 1.1 and 1.6, vendored at "
+        "sources/hmt-distributional/raw/Impact_on_households.pdf (sha256 "
+        "in data/uk/hmt_da_packages.yaml); per-figure assignment lives in "
+        "that registry's charts[].baseline and is emitted into "
+        "data/externals/hmt-distributional-meta.json.",
+    ),
     (
         {"policy": "pre_ab2025"},
         "pre_ab2025",
@@ -251,6 +486,42 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "SHA-256 f69cfce742f603c089ba7777749df8afb6c4b5266af2b80097d5480955e2851d; "
         "demo-grade: US survey support records reweighted to Belgian "
         "administrative targets — not Belgian microdata.",
+    ),
+    (
+        SPF_FINANCES_PIT_REFORM_2026_BASELINE,
+        "spf_finances_internal_pit_baseline_2026",
+        "SPF Finances' internal baseline for its Belgian PIT-reform score. "
+        "DOC 56 1243/001 says the model uses assessment-year-2023 "
+        "microdata; the methodology is unpublished.",
+        "internal_model",
+        "Belgian Chamber DOC 56 1243/001 and DOC 56 1243/004, pinned in "
+        "sources/be-pit-reform-2026/manifest.jsonl. No equivalence to "
+        "another registered baseline is asserted.",
+    ),
+    (
+        COUR_DES_COMPTES_PIT_REFORM_2026_BASELINE,
+        "cour_des_comptes_pit_baseline_2026_unspecified",
+        "Baseline underlying the Cour des comptes Belgian PIT-reform "
+        "evaluation; its basis is not stated in the pinned secondary "
+        "citation.",
+        "external_model",
+        "Belgian Chamber DOC 56 1243/004, pinned in "
+        "sources/be-pit-reform-2026/manifest.jsonl. The Cour des comptes "
+        "advice document is not pinned, so no additional baseline terms "
+        "are inferred.",
+    ),
+    (
+        AXIOM_BE_PIT_REFORM_2026_BASELINE,
+        "axiom_be_pit_v05h_same_year_indexed_current_law",
+        "Axiom/Microcosm-BE v05h same-year indexed current-law baseline "
+        "family for the Belgian PIT reform: encoded Article 178 chain and "
+        "statutory special coefficients, declared FPB income uprating on "
+        "fixed 2025 weights, and Royal-Decree-pending Article 147 values "
+        "carried at their last enacted levels.",
+        "axiom",
+        "population-rerun@3d9f690; LANE_AGED3_REPORT.md and "
+        "out/v05h/aged_results.json hashes pinned in "
+        "sources/be-pit-reform-2026/manifest.jsonl.",
     ),
 ]
 

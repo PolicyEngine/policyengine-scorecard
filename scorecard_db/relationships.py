@@ -237,10 +237,84 @@ _LPC_HELD = (
     "before it is an engine question.",
 )
 
+# HMT's Budget distributional analysis (#61). The resolver used to fail
+# closed on this source, which was correct but temporary — the entry is
+# made deliberately, with its evidence, BEFORE any numeric row can land,
+# so the first digitized decile does not arrive needing an emergency
+# relationship decision.
+_HMT_DA_HELD = (
+    CR.HELD_OUT,
+    "HM Treasury's distributional analysis is a closed departmental "
+    "microsimulation scored against HMT's own no-policy-change "
+    "counterfactual; no pe-uk-data target and no policyengine-uk "
+    "parameter is fitted to a decile impact from it (consumption "
+    "surfaces read 2026-08-19 at the certified pins — the only HMT "
+    "material with a consuming pin is the uk_hmt fiscal-event costings "
+    "family, which is itself held out). Its benefits-in-kind public-"
+    "services allocation has no PE counterpart at all, so a large part "
+    "of every bar is not_expressible rather than divergent.",
+)
+
+# ONS effects of taxes and benefits (#90). A national statistic built on
+# a DIFFERENT survey from the certified PE-UK world (HFS/LCFS vs FRS), so
+# it is neither a calibration target nor a shared-input tautology.
+_ONS_ETB_HELD = (
+    CR.HELD_OUT,
+    "ONS's Effects of Taxes and Benefits estimates are built on the "
+    "Household Finances Survey / Living Costs and Food Survey, not the "
+    "FRS the certified policyengine-uk world uses, and no pe-uk-data "
+    "target or policyengine-uk parameter is fitted to an ETB statistic "
+    "(consumption surfaces read 2026-08-24 at the certified pins). Its "
+    "benefits-in-kind allocation has no PE counterpart at all, so the "
+    "`final` income concept is a coverage gap rather than a divergence.",
+)
+
+# UK think tanks (#86). Both are INDEPENDENT models — which is precisely
+# why their rows are worth carrying: agreement is evidence rather than a
+# tautology. Verified at the certified pin before staging, per the #48
+# rule that a held-out claim states where it looked.
+_THINKTANK_HELD = {
+    "ifs": (
+        CR.HELD_OUT,
+        "TAXBEN is the IFS's own microsimulation model, maintained "
+        "independently of PolicyEngine; no pe-uk-data target and no "
+        "policyengine-uk parameter is fitted to an IFS output "
+        "(consumption surfaces read 2026-08-24 at the certified pins — "
+        "the only IFS material the repo previously referenced is the "
+        "Green-Budget options BASELINE world in baselines.py, which is a "
+        "counterfactual descriptor, not a calibration target).",
+    ),
+    "resolution_foundation": (
+        CR.HELD_OUT,
+        "Resolution Foundation's living-standards modelling is "
+        "independent of PolicyEngine and nothing in pe-uk-data or "
+        "policyengine-uk consumes it (surfaces read 2026-08-24 at the "
+        "certified pins). Note that RF itself re-publishes government "
+        "figures; those rows are dropped at ingest rather than carried "
+        "as RF claims, so this relationship covers RF's OWN outputs only.",
+    ),
+}
+
 _UKMOD_HELD = (
     CR.HELD_OUT,
     "UKMOD is a peer microsimulation, not a calibration source; no PE UK "
     "parameter is fitted to its published statistics.",
+)
+
+# OBR published policy EFFECTS (#55): package impacts on GDP/CPI, the
+# per-measure supply-side scorings, and the decisions' effect on
+# borrowing. Distinct from the obr welfare-baseline source, whose
+# FY2024-25 outturn column pe-uk-data does consume: nothing in
+# pe-uk-data or policyengine-uk reads a macro-effect path — they are
+# what the Macro members are scored AGAINST.
+_OBR_POLICY_EFFECTS_HELD = (
+    CR.HELD_OUT,
+    "OBR macro/policy-effect estimates are scored, never consumed: no "
+    "pe-uk-data target and no policyengine-uk parameter is fitted to a "
+    "GDP/CPI impact path, a supply-side scoring, or the decisions' "
+    "effect on borrowing (consumption surfaces read 2026-08-19 at the "
+    "certified pins; the obr welfare source is the only OBR material "
+    "with a consuming pin).",
 )
 
 
@@ -293,8 +367,20 @@ def uk_relationship(source, metric, program=None, kind=None):
         return _OBR_UNCONSUMED
     if source == "lpc":
         return _LPC_HELD
+    if source == "ons_etb":
+        return _ONS_ETB_HELD
+    if source in ("ifs", "resolution_foundation"):
+        return _THINKTANK_HELD[source]
+    if source == "obr_policy_effects":
+        if kind not in ("post_behavioural", "supply_side"):
+            raise ValueError(
+                f"obr_policy_effects basis {kind!r} needs a deliberate assignment"
+            )
+        return _OBR_POLICY_EFFECTS_HELD
     if source == "ukmod":
         return _UKMOD_HELD
+    if source == "hmt_distributional":
+        return _HMT_DA_HELD
     if source == "hm_treasury":
         return (CR.HELD_OUT, "fiscal-event costings are scored, never consumed.")
     if source == "dwp":
