@@ -21,6 +21,7 @@ Chain order is dependency order and is part of the contract:
                 attached (derived from the DB, so the feed can't drift)
     uk_externals five UK primary-source families + Chronicle staging
     uk_deductions FRR family
+    obr_divergence        OBR costings divergence decomposition (#59)
     uk_reform_validation  the UK reform-validation lane (declared empty
                           until issue #79's artifact lands)
     uk_thinktanks IFS + Resolution Foundation (independent models)
@@ -52,6 +53,7 @@ from . import (
     ingest_campaign,
     ingest_diagnoses,
     ingest_harvest,
+    ingest_obr_divergence,
     ingest_obr_policy_effects,
     ingest_platform,
     ingest_reform_validation,
@@ -150,6 +152,14 @@ def build(db_path: Path) -> dict:
         ),
         ("uk_externals", lambda: ingest_uk_externals.ingest(db_path)),
         ("uk_deductions", lambda: ingest_uk_deductions.ingest(db_path)),
+        # The divergence decomposition's artifact vanished on every CI
+        # rebuild because nothing registered it; the lane is written
+        # either way, so a build says "not run" rather than saying
+        # nothing.
+        (
+            "obr_divergence",
+            lambda: ingest_obr_divergence.ingest(db_path),
+        ),
         # The UK reform-validation lane. Registered even though issue
         # #79's artifact does not exist yet: without this step a
         # deterministic build silently ignored a future artifact and left
