@@ -157,6 +157,20 @@ this ingest mints is marked publication.registry =
 (re-ingest deletes and recreates exactly these claims, never the harvest
 claims it attaches results to).
 
+<<<<<<< HEAD
+Country dimension (#62): the ingest is parameterised, not forked —
+`ingest(..., country="US")` is the default; every minted claim carries
+`publication.country` (claim ids are unchanged: publication is outside the
+claim-id hash). The `COUNTRIES` map declares the UK lane (raw_uk/ dir,
+`populace-uk-rv-` run prefix, `populace_uk_reform_validation` registry
+mark, GBP claims) with a deliberately **empty** release map: the first
+`reform_validation.json` a managed populace-uk run produces adds its
+release_manifest.json pin there. Non-US artifacts use the country-neutral
+categories `Reform` / `Program actual` with an explicit `jct.publisher`
+(the US category→publisher inference never runs for them). Replacement
+scope is per country — run prefixes are disjoint by test, so one country's
+wholesale replace cannot delete another's rows.
+=======
 ## 2026-08-20 population: OBR published policy effects (UK)
 
 Fourth UK population and the external half of the Macro entry point
@@ -238,3 +252,4 @@ Table B.1's nested rows keep the `aggregate_level`/`parent` guard the
 OBR welfare lines use, so no consumer summing borrowing effects by FY
 double-counts. PE counterparts are step 3 of #55 and are not computed
 here.
+>>>>>>> origin/main

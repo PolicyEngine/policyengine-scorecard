@@ -259,6 +259,17 @@ def export(
                     "mode": 2,
                     "country": "US",
                 },
+                # The UK lane reaches mission control too. The ingest
+                # writes it to SQLite either way — as ingested rows or as
+                # an explicit "awaiting artifact" row — but the feed only
+                # listed the US lane, so both the tracked-feed count and
+                # the UK page silently lost it.
+                "populace-uk-reform-validation": {
+                    "source": "Populace releases",
+                    "area": "reform-validation registry (per-release)",
+                    "mode": 2,
+                    "country": "UK",
+                },
             },
         )
     db.close()
