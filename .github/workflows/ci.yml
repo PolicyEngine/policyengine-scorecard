@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - run: uvx ruff format --check scorecard_db tests pipeline
+      - run: uvx ruff format --check be nz scorecard_db tests pipeline
       # The database is a DERIVED artifact (scorecard_db/build_db.py):
       # built fresh from the committed sources on every run (~4s), then
       # verified deterministic — two builds must agree on the logical

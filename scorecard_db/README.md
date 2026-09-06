@@ -9,14 +9,15 @@ can check, one SQLite file, reform-keyed.
   `baseline` (current law) for level validation, a PolicyEngine parametric
   reform for score validation, an Axiom rulespec reference reserved. A level
   is a score of the null reform — modes 1 and 2 share one table.
-- **Populace-targets shape.** Row = `ledger_fact` (a Ledger
+- **Microcosm-targets shape.** Row = `ledger_fact` (a Chronicle
   `validation_comparator` fact id once cataloged; inline publication
-  provenance until then) + closed-vocabulary `metric` / `unit_concept` /
+  provenance until then — legacy `ledger` field/path names are frozen) + closed-vocabulary `metric` / `unit_concept` /
   `time_basis` + an open `conditions` mapping (geography, program, subgroup,
   methodological `variant`, `rate_unit`, …). Adapters fail loudly on
   anything unmapped.
 - **`calibration_relationship` mandatory** (`consumed_as_target` /
-  `seed_source` / `held_out`). Published validation wins = held_out only.
+  `seed_source` / `held_out`). Published validation comparisons use held-out
+  rows only.
 - **History, not state.** `pe_results` keeps every computation (engine
   version × certified data bundle × run); the `comparisons` view joins each
   claim to its latest result. Re-scoring on a new certified artifact appends.

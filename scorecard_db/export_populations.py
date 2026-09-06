@@ -6,16 +6,23 @@ else lives only in scorecard.db: the reform-validation registry (issue
 #20, its 205 minted claims plus the 36 harvested JCX-35-25 provision
 claims its OBBBA results attach to), the US campaign attaches, and —
 since the campaign-UK producer — the 14 uk_hmrc reckoner claims with
-campaign results. This module exports every non-Urban claim that has at
-least one pe_result, carrying the dimension the Urban export doesn't
-have: the full per-release result history (one row per certified
-release, engine pins and OBBBA scoring mode in the construction), so
+campaign results; Belgium's honest concept-mismatch Axiom attachments
+to JRC EUROMOD-BE claims; and New Zealand's official budget scores. This
+module exports every non-Urban claim with a result plus claims that explicitly
+opt in through publication.publish_without_result. That narrow gate
+lets newly registered official scores appear before their first model run
+without flooding the app with the entire uncomputed harvest. Available results
+carry the dimension the Urban export doesn't have: the full per-release result
+history (one row per certified release, engine pins and OBBBA scoring mode in
+the construction), plus the Belgian PIT-reform scorekeeper rows, so
 cross-release drift is visible.
 
-Doctrine (issues #1/#9): descriptive only. Statuses and calibration
-relationships are exported verbatim; ratios are raw pe/external with no
-pass/fail anywhere. concept_mismatch results carry their construction so
-the app can label, never grade.
+Doctrine (issues #1/#9): descriptive only. Recorded result statuses and
+calibration relationships are exported verbatim; a no-result claim receives
+only a synthetic latest status of not_computed, never a fabricated history
+entry. Ratios are raw pe/external with no pass/fail anywhere.
+concept_mismatch results carry their construction so the app can label, never
+grade.
 
 Also refreshes data/lanes.json via ingest_harvest.sync_lane_feed so the
 populace-reform-validation lane appears in mission control.
@@ -43,6 +50,8 @@ _RELEASE_TOKEN = (
     "buildo",
     "buildp",
     "f0af251",
+    "microcosm_be_v02",
+    "microcosm_be_v05h",
 )
 
 
@@ -86,8 +95,10 @@ def export(
            FROM external_scores s
            LEFT JOIN diagnoses d USING (claim_id)
            WHERE s.source != ?
-             AND EXISTS (SELECT 1 FROM pe_results r
-                         WHERE r.claim_id = s.claim_id)
+             AND (EXISTS (SELECT 1 FROM pe_results r
+                          WHERE r.claim_id = s.claim_id)
+                  OR json_extract(s.publication,
+                                  '$.publish_without_result') = 1)
            ORDER BY s.source, s.metric, s.period, s.source_column,
                     s.claim_id""",
         (URBAN_SOURCE,),
@@ -126,7 +137,22 @@ def export(
                 (c["claim_id"],),
             )
         ]
-        latest = results[-1]
+        latest = (
+            results[-1]
+            if results
+            else {
+                "value": None,
+                "status": "not_computed",
+                "engine_version": "",
+                "data_bundle": "",
+                "release": "",
+                "construction": "",
+                "computed_at": "",
+                "annotations": [],
+                "baseline": None,
+                "status_effective": "not_computed",
+            }
+        )
         publication = json.loads(c["publication"])
         reform = json.loads(c["reform_json"])
         conditions = json.loads(c["conditions"])
@@ -148,11 +174,11 @@ def export(
             {
                 "claim_id": c["claim_id"],
                 "source": c["source"],
-                # the model instance the claim belongs to (issue #42): UK
-                # claims carry conditions["country"]; its absence IS the
-                # US claim-side convention, mirrored by the app's
-                # countryOf() default — emit it explicitly so the feed
-                # never relies on the default for non-US rows
+                # the model instance the claim belongs to (issue #42):
+                # non-US claims carry conditions["country"]; its absence IS
+                # the US claim-side convention, mirrored by the app's
+                # countryOf() default — emit it explicitly so the feed never
+                # relies on the default for non-US rows
                 "country": conditions.get("country", "US"),
                 "source_column": c["source_column"],
                 "name": name,
@@ -202,9 +228,13 @@ def export(
             "Non-Urban populations exported from scorecard.db: the populace"
             " reform-validation registry (issue #20) plus the compute"
             " campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT;"
-            " UK: the HMRC ready-reckoner family)."
-            " Statuses and calibration relationships are verbatim; nothing"
-            " here is a pass/fail grade."
+            " UK: the HMRC ready-reckoner family; BE: JRC EUROMOD-BE claims"
+            " with demo-grade Axiom concept-mismatch attachments and the"
+            " 2026 PIT-reform scorekeeper claims; NZ: official budget"
+            " scores). Claims explicitly opted into pre-result display remain"
+            " in the feed with latest status not_computed and empty history."
+            " Recorded result statuses and calibration relationships are"
+            " verbatim; nothing here is a pass/fail grade."
         ),
         "summary": {
             "claims": len(rows),

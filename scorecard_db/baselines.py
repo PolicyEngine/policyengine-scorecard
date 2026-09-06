@@ -18,6 +18,15 @@ get their own entries.
 
 from __future__ import annotations
 
+from be.worlds import (
+    AXIOM_BE_2026_DEMO_WORLD,
+    AXIOM_BE_PIT_REFORM_2026_BASELINE,
+    COUR_DES_COMPTES_PIT_REFORM_2026_BASELINE,
+    EUROMOD_BE_2022_WORLD,
+    EUROMOD_BE_2023_WORLD,
+    SPF_FINANCES_PIT_REFORM_2026_BASELINE,
+)
+
 from .db import BASELINE_SQL, ScorecardDB
 from .models import CURRENT_LAW_DESCRIPTOR, baseline_key
 
@@ -399,6 +408,83 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "Campaign run results/uk/two_child_reinstate_2026.json "
         "(gov.dwp.universal_credit.elements.child.limit.child_count: "
         "inf -> 2); issue #13 grounding artifact.",
+    ),
+    (
+        EUROMOD_BE_2022_WORLD,
+        "euromod_be_2025_current_law_2022",
+        "Belgium current-law policy system BE_2022 as published in the "
+        "2025 JRC EUROMOD-BE country-report validation tables (EUROMOD "
+        "J1.0+); calendar policy-system/output year 2022 simulated from "
+        "database BE_2022_c1 (EU-SILC 2022, income reference year 2021) "
+        "with monetary uprating — not a matched income-reference year.",
+        "euromod",
+        "EUROMOD Country Report Belgium 2025, Annex 3 tables A3.7/A3.8; "
+        "sources/jrc-euromod-be-2025/jrc_euromod_be_baseline_statistics_2025.csv "
+        "SHA-256 2ed1f8a677799fefe7cc2f092b4f30221940a2a2fc9deecbf29e7a5f7d71b69f; "
+        "Chronicle origin/main@1cab80987a462e00055f259cc56dc6b311c030bf.",
+    ),
+    (
+        EUROMOD_BE_2023_WORLD,
+        "euromod_be_2025_current_law_2023",
+        "Belgium current-law policy system BE_2023 as published in the "
+        "2025 JRC EUROMOD-BE country-report validation tables (EUROMOD "
+        "J1.0+); calendar policy-system/output year 2023 simulated from "
+        "database BE_2022_c1 (EU-SILC 2022, income reference year 2021) "
+        "with monetary uprating — not a matched income-reference year.",
+        "euromod",
+        "EUROMOD Country Report Belgium 2025, Annex 3 tables A3.4/A3.6; "
+        "sources/jrc-euromod-be-2025/jrc_euromod_be_baseline_statistics_2025.csv "
+        "SHA-256 2ed1f8a677799fefe7cc2f092b4f30221940a2a2fc9deecbf29e7a5f7d71b69f; "
+        "Chronicle origin/main@1cab80987a462e00055f259cc56dc6b311c030bf.",
+    ),
+    (
+        AXIOM_BE_2026_DEMO_WORLD,
+        "axiom_be_rulespec_current_law_demo_2026",
+        "Axiom rulespec-be current-law worker-slice execution for CY2026 "
+        "on the demo-grade microcosm_be_v02 population. This world is not "
+        "equivalent to either EUROMOD published-claim world.",
+        "axiom",
+        "rulespec-be@7c85808ae99f5731b21059e643e5e19b66438904; "
+        "sources/jrc-euromod-be-2025/microcosm_be_v02_manifest.json "
+        "SHA-256 f69cfce742f603c089ba7777749df8afb6c4b5266af2b80097d5480955e2851d; "
+        "demo-grade: US survey support records reweighted to Belgian "
+        "administrative targets — not Belgian microdata.",
+    ),
+    (
+        SPF_FINANCES_PIT_REFORM_2026_BASELINE,
+        "spf_finances_internal_pit_baseline_2026",
+        "SPF Finances' internal baseline for its Belgian PIT-reform score. "
+        "DOC 56 1243/001 says the model uses assessment-year-2023 "
+        "microdata; the methodology is unpublished.",
+        "internal_model",
+        "Belgian Chamber DOC 56 1243/001 and DOC 56 1243/004, pinned in "
+        "sources/be-pit-reform-2026/manifest.jsonl. No equivalence to "
+        "another registered baseline is asserted.",
+    ),
+    (
+        COUR_DES_COMPTES_PIT_REFORM_2026_BASELINE,
+        "cour_des_comptes_pit_baseline_2026_unspecified",
+        "Baseline underlying the Cour des comptes Belgian PIT-reform "
+        "evaluation; its basis is not stated in the pinned secondary "
+        "citation.",
+        "external_model",
+        "Belgian Chamber DOC 56 1243/004, pinned in "
+        "sources/be-pit-reform-2026/manifest.jsonl. The Cour des comptes "
+        "advice document is not pinned, so no additional baseline terms "
+        "are inferred.",
+    ),
+    (
+        AXIOM_BE_PIT_REFORM_2026_BASELINE,
+        "axiom_be_pit_v05h_same_year_indexed_current_law",
+        "Axiom/Microcosm-BE v05h same-year indexed current-law baseline "
+        "family for the Belgian PIT reform: encoded Article 178 chain and "
+        "statutory special coefficients, declared FPB income uprating on "
+        "fixed 2025 weights, and Royal-Decree-pending Article 147 values "
+        "carried at their last enacted levels.",
+        "axiom",
+        "population-rerun@3d9f690; LANE_AGED3_REPORT.md and "
+        "out/v05h/aged_results.json hashes pinned in "
+        "sources/be-pit-reform-2026/manifest.jsonl.",
     ),
 ]
 
