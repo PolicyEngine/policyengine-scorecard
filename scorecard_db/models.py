@@ -9,8 +9,8 @@ Design decisions (Max, 2026-08-01):
    (population statistics) and mode 2 (reform scores) in one table: a level
    is just a score of the null reform.
 
-2. **Populace-targets-DB shape.** Each row = a provenance reference (the
-   ``ledger_fact`` column — a Ledger ``validation_comparator`` fact id once
+2. **Microcosm-targets-DB shape.** Each row = a provenance reference (the
+   ``ledger_fact`` column — a Chronicle ``validation_comparator`` fact id once
    cataloged; publication metadata inline until then) + a small enum'd core
    (metric, unit_concept, period) + a ``conditions`` mapping carrying every
    subset criterion (geography, program, subgroup axes, methodological
@@ -42,6 +42,10 @@ class Metric(str, Enum):
     POVERTY_COUNT_CHANGE = "poverty_count_change"
     POVERTY_COUNT = "poverty_count"
     BENEFIT_COST = "benefit_cost"
+    # Change in an official operating-cost / operating-balance line. Kept
+    # distinct from BENEFIT_COST (a level) and REVENUE_CHANGE (receipts):
+    # the source's accounting scope rides in conditions.
+    OPERATING_COST_CHANGE = "operating_cost_change"
     REVENUE_CHANGE = "revenue_change"
     CASELOAD = "caseload"
     ENROLLMENT = "enrollment"
@@ -134,6 +138,20 @@ class Metric(str, Enum):
     SPENDING_SHARE = "spending_share"
     BENEFIT_UPRATING_RATE = "benefit_uprating_rate"
     REAL_INCOME_GROWTH = "real_income_growth"
+    # OBR published policy effects (#55): what policy does to the ECONOMY,
+    # not to a household or the exchequer's take. gdp_level_effect and
+    # supply_side_impact are both per cent of output and deliberately
+    # DISTINCT: the first is the package's effect on real (actual) GDP
+    # along the forecast path, the second one measure's effect on
+    # POTENTIAL output at the horizon — unifying them would merge a
+    # demand-inclusive path with a supply-side scoring.
+    # decisions_effect_on_borrowing is PSNB, kept distinct from
+    # revenue_change (a receipts line) and cash_requirement_change
+    # (PSNCR) for the same unconfusability reason.
+    GDP_LEVEL_EFFECT = "gdp_level_effect"
+    CPI_INFLATION_EFFECT = "cpi_inflation_effect"
+    SUPPLY_SIDE_IMPACT = "supply_side_impact"
+    DECISIONS_EFFECT_ON_BORROWING = "decisions_effect_on_borrowing"
 
 
 class UnitConcept(str, Enum):
@@ -168,6 +186,9 @@ class UnitConcept(str, Enum):
     # concept, mirroring USD/GBP. Source EUR millions are normalized to
     # raw euros before persistence.
     EUR = "eur"
+    # New Zealand official Budget score ingest: source NZD millions are
+    # normalized to raw New Zealand dollars before persistence.
+    NZD = "nzd"
     BENEFIT_UNITS = "benefit_units"
     CHILDREN = "children"
     # Per-period GBP amounts and index statistics are their own unit
@@ -180,6 +201,23 @@ class UnitConcept(str, Enum):
     # same rule: averages must never be summable as aggregates). The
     # FRR family's £420 average annual gain is per household per year.
     GBP_PER_HOUSEHOLD = "gbp_per_household"
+    # OBR macro policy effects (#55). Three quantities that all LOOK like
+    # "percent" and must never be summed, averaged or compared as one:
+    #   PERCENT_OF_REAL_GDP        per cent deviation in the LEVEL of real
+    #                              GDP (or of an expenditure component)
+    #                              along the forecast path
+    #   PERCENTAGE_POINTS          effect on a RATE — OBR publishes the
+    #                              AB2025 package's CPI inflation impact
+    #                              in pp, not as a level deviation
+    #   PERCENT_OF_POTENTIAL_GDP   impact on POTENTIAL output, per cent of
+    #                              GDP (briefing paper No.10 supply-side
+    #                              scorings) — a supply concept, not the
+    #                              demand-inclusive actual-GDP path
+    # Same rule that split GBP_PER_WEEK from bare GBP: a mislabeled unit
+    # misstates what the number is.
+    PERCENT_OF_REAL_GDP = "percent_of_real_gdp"
+    PERCENTAGE_POINTS = "percentage_points"
+    PERCENT_OF_POTENTIAL_GDP = "percent_of_potential_gdp"
 
 
 # Standardized conditions vocabulary (COLLATION worklist item 4).
@@ -198,6 +236,12 @@ class UnitConcept(str, Enum):
 # window_kind       "total" | "annual_average" on period-range claims
 # month             "YYYY-MM" for monthly series
 # data_vintage      dataset base when it is not the obvious current one
+# period_basis      claim-side year semantics when the integer period alone
+#                   is insufficient (for example income_year or an explicitly
+#                   unresolved official horizon basis)
+# assessment_year   Belgian assessment year, stored as a string beside a
+#                   claim whose integer period keys the income year
+# behavioral_response  source-stated response treatment (for example none)
 #
 # UK additions (2026-08-02 UK harvest; COLLATION UK worklist items 2-3):
 # fy                normalized fiscal-year label "2026-27" (Apr–Mar). The
@@ -214,7 +258,7 @@ class UnitConcept(str, Enum):
 #                   identity.
 # basis             source's own designation: "outturn" | "forecast" |
 #                   "projected" | "provisional" | "unstated". Admin outturn
-#                   rows never reach external_scores (ledger routing rule).
+#                   rows never reach external_scores (Chronicle routing rule).
 # income_concept    UK distribution rows: "BHC" | "AHC" (load-bearing on
 #                   every HBAI-family statistic), alongside the US values.
 # equivalisation    e.g. "modified_oecd" — load-bearing with income_concept.
@@ -244,10 +288,14 @@ STANDARD_CONDITIONS = frozenset(
         "window_kind",
         "month",
         "data_vintage",
+        "period_basis",
+        "assessment_year",
+        "behavioral_response",
+        "fiscal_event",
         # Cross-model epistemics (ruling 2026-08-02): every new benchmark
         # names its class explicitly; Belgium's JRC model claims use
         # different_model, while the routed statistical rows carry
-        # administrative_fact in Ledger staging.
+        # administrative_fact in Chronicle staging.
         "benchmark_class",
         # Source/report semantics used by the Belgium country-report lane.
         "series",
@@ -266,7 +314,7 @@ STANDARD_CONDITIONS = frozenset(
         "population_frame",
         "input_database",
         # simulation_year: the uprating target year of a non-simulated
-        # survey-input Ledger fact (Belgium bun row) — deliberately distinct
+        # survey-input Chronicle fact (Belgium bun row) — deliberately distinct
         # from reference_year (statistical outturns) and policy_system_year
         # (executed model output).
         "simulation_year",
@@ -316,6 +364,39 @@ STANDARD_CONDITIONS = frozenset(
         "component",
         "aggregate_level",
         "parent",
+        # scoring_method  HOW an effect was scored, on sources that publish
+        #                 more than one scoring: "post_behavioural" (the
+        #                 published post-adjustment path) | "supply_side"
+        #                 (a per-measure potential-output scoring). It is
+        #                 NOT a basis — `basis` stays forecast|outturn —
+        #                 and it is identity-bearing: the same measure's
+        #                 demand-inclusive path and supply-side scoring are
+        #                 different quantities.
+        "scoring_method",
+        # counterfactual  the KIND of world a baseline names, where a
+        #                 source scores different measure types against
+        #                 different counterfactuals: "policy_parameters"
+        #                 (legislated-parameter counterfactual) |
+        #                 "del_activity" | "regulatory" (pre-existing
+        #                 activity/spending baseline). OBR Briefing paper
+        #                 No.10 chapter 2 is explicit about the split.
+        "counterfactual",
+        # decomposition   how a published chart splits an effect
+        #                 ("channel" | "expenditure_component" | "measure" |
+        #                 "supply_side_channel" | "fiscal_aggregate")
+        "decomposition",
+        # measure_type    source's own measure classification
+        #                 ("tax" | "welfare" | "del" | "regulation")
+        "measure_type",
+        # sign_convention the published sign rule, carried verbatim rather
+        #                 than normalised ("as_published_positive_increases")
+        "sign_convention",
+        # horizon         symbolic period on a horizon-terminal number
+        #                 ("fifth_year_of_forecast"), beside the resolved
+        #                 integer period; horizon_note carries the
+        #                 publication's own words
+        "horizon",
+        "horizon_note",
     }
 )
 
@@ -336,7 +417,7 @@ class CalibrationRelationship(str, Enum):
 class BenchmarkClass(str, Enum):
     """Epistemic relationship between the benchmark and our model.
 
-    This travels in claim conditions (and on routed Ledger facts) rather
+    This travels in claim conditions (and on routed Chronicle facts) rather
     than becoming a second metric/status system.
     """
 
@@ -525,7 +606,7 @@ class ExternalScore:
     ledger_fact: Optional[str] = None  # validation_comparator fact id
     source_column: Optional[str] = None  # the source's own name for it
     publication: dict = field(default_factory=dict)  # {title,url,date,vintage}
-    value_kind: str = "count"  # count | share | percent | index | usd | gbp | eur
+    value_kind: str = "count"  # count | share | percent | index | usd | gbp | eur | nzd
     status: str = "ok"  # ok | suppressed
     # Multi-year window claims (10-year budget totals, decade averages —
     # COLLATION worklist item 2). Both set or neither; convention:

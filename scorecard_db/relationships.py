@@ -148,7 +148,7 @@ def effective_relationship(program, metric):
 # OBR EFO Table 4.9 welfare lines consumed by pe-uk-data@dd68c73
 # (targets/sources/obr.py::_parse_welfare row labels; March-2026 EFO,
 # forecast columns FY2024-25..2030-31 — the FY2024-25 OUTTURN column is
-# also read there, but outturn cells route to Ledger, never to claims).
+# also read there, but outturn cells route to Chronicle, never to claims).
 # Stated in the ADAPTER's program vocabulary; the pe-uk-data label each
 # maps to is quoted (targets/sources/obr.py benefit_rows, verbatim).
 OBR_CONSUMED_WELFARE_PROGRAMS = frozenset(
@@ -188,7 +188,7 @@ _OBR_UNCONSUMED = (
 #   current claimants are eligible (no new claims)" -> a stated modeling
 #   choice, the live comparator for policyengine-uk#1813.
 # Administrative cells (recipient counts, amounts claimed) route to
-# Ledger and never reach these claims.
+# Chronicle and never reach these claims.
 _PC_TAKEUP_SEED = (
     CR.SEED_SOURCE,
     "policyengine-uk pension_credit/takeup.yaml (0.7) cites the FYE-2020 "
@@ -268,6 +268,22 @@ _UKMOD_HELD = (
     "parameter is fitted to its published statistics.",
 )
 
+# OBR published policy EFFECTS (#55): package impacts on GDP/CPI, the
+# per-measure supply-side scorings, and the decisions' effect on
+# borrowing. Distinct from the obr welfare-baseline source, whose
+# FY2024-25 outturn column pe-uk-data does consume: nothing in
+# pe-uk-data or policyengine-uk reads a macro-effect path — they are
+# what the Macro members are scored AGAINST.
+_OBR_POLICY_EFFECTS_HELD = (
+    CR.HELD_OUT,
+    "OBR macro/policy-effect estimates are scored, never consumed: no "
+    "pe-uk-data target and no policyengine-uk parameter is fitted to a "
+    "GDP/CPI impact path, a supply-side scoring, or the decisions' "
+    "effect on borrowing (consumption surfaces read 2026-08-19 at the "
+    "certified pins; the obr welfare source is the only OBR material "
+    "with a consuming pin).",
+)
+
 
 def uk_relationship(source, metric, program=None, kind=None):
     """(CalibrationRelationship, basis) for a UK claim, keyed exactly.
@@ -277,7 +293,7 @@ def uk_relationship(source, metric, program=None, kind=None):
       dwp_takeup: "takeup_rate" | "modeled_estimate" (ENR / unclaimed) |
                   "average_award"
       uk_hmrc:    "liabilities" | "reckoner"
-      obr:        forecast rows only (outturn cells route to Ledger
+      obr:        forecast rows only (outturn cells route to Chronicle
                   before relationships are assigned)
     Unknown combinations raise — assignment is always deliberate.
     """
@@ -310,7 +326,7 @@ def uk_relationship(source, metric, program=None, kind=None):
     if source == "obr":
         if kind == "outturn":
             raise ValueError(
-                "OBR outturn cells route to Ledger before relationship "
+                "OBR outturn cells route to Chronicle before relationship "
                 "assignment — an outturn row must never become a claim"
             )
         if program in OBR_CONSUMED_WELFARE_PROGRAMS:
@@ -320,6 +336,12 @@ def uk_relationship(source, metric, program=None, kind=None):
         return _ONS_ETB_HELD
     if source in ("ifs", "resolution_foundation"):
         return _THINKTANK_HELD[source]
+    if source == "obr_policy_effects":
+        if kind not in ("post_behavioural", "supply_side"):
+            raise ValueError(
+                f"obr_policy_effects basis {kind!r} needs a deliberate assignment"
+            )
+        return _OBR_POLICY_EFFECTS_HELD
     if source == "ukmod":
         return _UKMOD_HELD
     if source == "hm_treasury":

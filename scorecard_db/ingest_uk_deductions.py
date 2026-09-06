@@ -33,7 +33,7 @@ Mapping, under the harvest fail-loud contract:
       quantity republished — it was staged here once as a held-out
       FY2025-26 level and REMOVED at gate (the release states no
       measurement vintage and the earlier staging paraphrased it); it
-      belongs to the future Ledger lane with the DWP deductions
+      belongs to the future Chronicle lane with the DWP deductions
       statistics publication as provenance (VERIFICATION.md).
 
 The write path mirrors ingest_uk_externals: one transaction replaces
