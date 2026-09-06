@@ -156,3 +156,85 @@ this ingest mints is marked publication.registry =
 "populace_reform_validation" — that marker is the idempotency contract
 (re-ingest deletes and recreates exactly these claims, never the harvest
 claims it attaches results to).
+
+## 2026-08-20 population: OBR published policy effects (UK)
+
+Fourth UK population and the external half of the Macro entry point
+(issue #55): 266 claims from OBR's own published estimates of what
+fiscal policy does to the ECONOMY, harvested by
+`sources/obr-policy-effects/adapter.py` and ingested by
+`ingest_obr_policy_effects` (chain position: after `uk_deductions`,
+before the campaign attaches).
+
+```bash
+PYTHONPATH=. python -m scorecard_db.ingest_obr_policy_effects data/scorecard.db
+```
+
+Four families on four new metrics — `gdp_level_effect` (151),
+`cpi_inflation_effect` (36), `supply_side_impact` (19) and
+`decisions_effect_on_borrowing` (60). The first and third are
+deliberately distinct metrics: a package's effect on the actual-GDP path
+is not one measure's supply-side scoring, and
+`decisions_effect_on_borrowing` (PSNB) is likewise kept apart from
+`revenue_change` and `cash_requirement_change` (PSNCR).
+
+**Units.** Three of the four quantities look like "percent" and are not
+one thing, so each carries its own unit concept:
+`percent_of_real_gdp` (a deviation in the LEVEL of real GDP),
+`percentage_points` (the AB2025 package's effect on CPI inflation) and
+`percent_of_potential_gdp` (briefing paper No.10's supply-side
+scorings); borrowing is `gbp`. The mapping is validate-THEN-map: the
+adapter's staged unit label must equal the one the metric carries or the
+ingest raises, so a mislabeled row can never be stored as a different
+quantity.
+
+**Baselines.** These claims are NOT scored against `current_law`. OBR
+measures a package as a deviation from that EFO round's PRE-MEASURES
+forecast — a distinct named world per round — and briefing paper No.10
+chapter 2 splits the counterfactual KIND further: tax and welfare
+measures against a legislated-parameter counterfactual, DEL and
+regulatory measures against the pre-existing activity/spending baseline.
+March 2026 Table B.1 states its own counterfactual in its title (the
+November 2025 Budget forecast). Each row carries the world and kind as a
+`ReformRef.baseline` descriptor with `conditions["baseline_policy"]`
+mirroring it, a locator travels with the claim, an event whose baseline
+does not match its round raises, and all eleven (round, counterfactual)
+worlds are registered in `baselines.py`. Defaulting to `current_law`
+would have let a PE result computed against current law read as
+comparable.
+
+**Publication.** Provenance is per vendored artifact, so each round's
+claims carry their own release date and dated URL (2023-11-22,
+2024-03-06, 2024-10-30, 2025-11-26, 2026-03-03) rather than one generic
+`obr.uk/publications/` stamp — and the March 2026 rows carry the
+publication date, not the Wayback capture.
+
+All 266 are `held_out`: nothing in pe-uk-data or policyengine-uk is
+fitted to a macro-effect path — they are what the Macro members get
+scored against. `basis` is `forecast` on every row (its repo-wide
+meaning); how the effect was scored rides in
+`conditions["scoring_method"]` (`post_behavioural` | `supply_side`).
+
+Two identity decisions this population forced:
+
+- **`conditions["decomposition"]`.** The October 2024 workbook prints
+  the AB2024 package twice — chart 2.A by expenditure component, 2.B by
+  measure/channel — so both publish a `total` and a
+  `demand_multipliers`. The decomposition is therefore identity-bearing,
+  not provenance, and is keyed off (fiscal_event, sheet): the sheet id
+  alone will not do, since C2.A is by-channel in the Nov 2023 and Mar
+  2024 workbooks.
+- **The supply-side horizon, per scoring round.** Briefing paper No.10's
+  Table 2.1 states its year in words ("the impact on potential output in
+  the fifth year of our forecast"), never as a digit — and the paper
+  re-states scorings made at five EARLIER fiscal events, so "our
+  forecast" is each measure's own round. `_BP10_HORIZON` resolves the
+  symbol per event (2027-28 for March 2023 through 2029-30 for March
+  2025); the note rides verbatim in `conditions["horizon_note"]` and
+  `conditions["horizon"]` names the symbol. Period is claim identity, so
+  one shared horizon would have been 19 wrong claims.
+
+Table B.1's nested rows keep the `aggregate_level`/`parent` guard the
+OBR welfare lines use, so no consumer summing borrowing effects by FY
+double-counts. PE counterparts are step 3 of #55 and are not computed
+here.

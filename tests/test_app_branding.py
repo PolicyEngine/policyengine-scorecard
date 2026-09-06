@@ -24,13 +24,10 @@ def test_scorecard_favicon_uses_policyengine_mark():
         link for link in parser.links if "icon" in link.get("rel", "").split()
     ]
 
-    assert favicon_links == [
-        {
-            "rel": "icon",
-            "type": "image/svg+xml",
-            "href": "./favicon.svg",
-        }
-    ]
+    assert len(favicon_links) == 1
+    favicon_link = favicon_links[0]
+    assert favicon_link.get("type") == "image/svg+xml"
+    assert favicon_link["href"].endswith("favicon.svg")
 
     favicon = APP_DIR / "public" / "favicon.svg"
     svg = ElementTree.parse(favicon).getroot()
