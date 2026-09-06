@@ -1,3 +1,16 @@
+from .case_diffs import (
+    ADJUDICATED_ONLY,
+    CALCULATOR_ORACLES,
+    DEFAULT_TOLERANCES,
+    CaseResult,
+    CaseSpec,
+    DiffClassification,
+    Oracle,
+    VariableClass,
+    classify,
+    load_battery,
+    load_calculator_set,
+)
 from .db import ScorecardDB
 from .models import (
     BASELINE,
@@ -17,19 +30,30 @@ from .models import (
 )
 
 __all__ = [
+    "ADJUDICATED_ONLY",
     "BASELINE",
+    "CALCULATOR_ORACLES",
     "CURRENT_LAW_DESCRIPTOR",
+    "DEFAULT_TOLERANCES",
     "STANDARD_CONDITIONS",
     "BenchmarkClass",
     "CalibrationRelationship",
+    "CaseResult",
+    "CaseSpec",
     "ComparisonStatus",
     "DiagnosisClass",
+    "DiffClassification",
     "ExternalScore",
     "Metric",
+    "Oracle",
     "PEResult",
     "ReformRef",
     "ScorecardDB",
     "TimeBasis",
     "UnitConcept",
+    "VariableClass",
     "baseline_key",
+    "classify",
+    "load_battery",
+    "load_calculator_set",
 ]

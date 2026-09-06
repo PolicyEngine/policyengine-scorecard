@@ -12,9 +12,9 @@ claim description: five ``euromod`` MODEL outputs become Scorecard claims; the s
 ``euromod``-labelled value (unemployment benefits) is a NON-SIMULATED
 uprated EU-SILC survey input (Table A3.6 marks ``bun`` Simulated=N, p. 127;
 ``bun_be`` is switched off in the baseline, p. 24; the 11,706 for 2023 is
-the SILC income-year-2021 base of 10,416 uprated) and routes to Ledger
+the SILC income-year-2021 base of 10,416 uprated) and routes to Chronicle
 staging with that provenance pinned, never to a model claim; six
-``external`` statistical/outturn values route to deterministic Ledger
+``external`` statistical/outturn values route to deterministic Chronicle
 staging facts; and six rounded ``ratio`` values are recomputable and never
 persisted. Periods are calendar policy-system/output years simulated from EUROMOD
 database BE_2022_c1 (EU-SILC 2022 collection, income reference year 2021,
@@ -223,7 +223,7 @@ _EXPECTED_SERIES = {"euromod": 6, "external": 6, "ratio": 6}
 # p. 24 states bun_be is switched off in the baseline; its "EUROMOD"
 # column is the SILC income-year-2021 base (10,416) uprated per year
 # (11,706 for 2023). A survey input is not a model output: it routes to
-# Ledger staging, never to a claim.
+# Chronicle staging, never to a claim.
 _NON_SIMULATED_EUROMOD_METRICS = {"unemployment_benefits"}
 
 _METRICS = {
@@ -556,12 +556,12 @@ def _ledger_row(row: dict) -> dict:
         "status": "ok",
         "consumed_by": None,
         "routing": (
-            "ledger: non-simulated uprated EU-SILC survey input published "
+            "chronicle: non-simulated uprated EU-SILC survey input published "
             "in the report's EUROMOD column (Table A3.6 Simulated=N, "
             "p. 127; bun_be switched off in the baseline, p. 24; SILC "
             "income-year-2021 base 10,416 uprated to the simulation year)"
             if non_simulated
-            else "ledger: statistical/admin outturn (boundary rule 2026-08-02)"
+            else "chronicle: statistical/admin outturn (boundary rule 2026-08-02)"
         ),
     }
 
@@ -779,7 +779,7 @@ def ingest(db_path: Path) -> dict:
                 (
                     LANE_ID,
                     "computed",
-                    "5 model claims, 7 Ledger facts (6 statistical + 1 "
+                    "5 model claims, 7 Chronicle facts (6 statistical + 1 "
                     "non-simulated uprated EU-SILC survey input), 6 derived "
                     "ratios dispositioned; 2 concept-mismatch attachments",
                     UPDATED,
