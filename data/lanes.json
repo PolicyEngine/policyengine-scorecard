@@ -1,10 +1,10 @@
 {
  "_schema": {
   "stage": "registered | cataloged | ingested | computed | diagnosing | published | regressed",
-  "country": "US | UK \u2014 the model instance the lane feeds (issue #42)",
+  "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-08-21",
+ "updated": "2026-08-29",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -53,7 +53,7 @@
   {
    "id": "ledger-catalog-urban",
    "country": "US",
-   "source": "Ledger",
+   "source": "Chronicle",
    "area": "validation_comparator fact packages (#6)",
    "mode": 0,
    "stage": "registered",
@@ -158,7 +158,7 @@
    "stage": "ingested",
    "running": false,
    "updated": "2026-08-19",
-   "note": "1092 claims, 546 ledger facts"
+   "note": "1092 claims, 546 Chronicle facts"
   },
   {
    "id": "hbai-poverty",
@@ -180,7 +180,7 @@
    "stage": "ingested",
    "running": false,
    "updated": "2026-08-19",
-   "note": "723 claims, 490 ledger facts"
+   "note": "723 claims, 490 Chronicle facts"
   },
   {
    "id": "obr-welfare",
@@ -191,7 +191,7 @@
    "stage": "ingested",
    "running": false,
    "updated": "2026-08-19",
-   "note": "222 claims, 37 ledger facts"
+   "note": "222 claims, 37 Chronicle facts"
   },
   {
    "id": "ukmod-stats",
@@ -210,10 +210,10 @@
    "source": "JCT",
    "area": "tax expenditures + revenue estimates",
    "mode": 2,
-   "stage": "ingested",
+   "stage": "computed",
    "running": false,
-   "updated": "2026-08-02",
-   "note": "6771 claims across 7 JCX conventional tables (per-provision \u00d7 FY2025-34; JCX-29/30 vs current-policy baseline); JCX-45-25 tax-expenditure report pending coordinate-aware parser"
+   "updated": "2026-08-03",
+   "note": "45 of 6780 claims computed \u2014 6771 claims across 7 JCX conventional tables (per-provision \u00d7 FY2025-34; JCX-29/30 vs current-policy baseline); JCX-45-25 tax-expenditure report pending coordinate-aware parser"
   },
   {
    "id": "cbo-cost-estimates",
@@ -221,10 +221,10 @@
    "source": "CBO",
    "area": "per-bill cost estimates",
    "mode": 2,
-   "stage": "ingested",
+   "stage": "computed",
    "running": false,
-   "updated": "2026-08-02",
-   "note": "1 single-year claims from the PL 119-21 SNAP supplement (61367, Jan-2025 baseline vintage); OBBBA cost-estimate PDFs are period-ranged verbatim pointers pending period-window staging"
+   "updated": "2026-07-22",
+   "note": "1 of 2 claims computed \u2014 1 single-year claims from the PL 119-21 SNAP supplement (61367, Jan-2025 baseline vintage); OBBBA cost-estimate PDFs are period-ranged verbatim pointers pending period-window staging"
   },
   {
    "id": "tpc-distribution",
@@ -232,10 +232,10 @@
    "source": "TPC",
    "area": "distribution tables",
    "mode": 2,
-   "stage": "ingested",
+   "stage": "computed",
    "running": false,
    "updated": "2026-08-02",
-   "note": "1057 claims from 31 T-series tables (Senate-OBBBA distributions, OBBBA-by-race, CTC/AFA/WPTRA sets, tariffs); dropped: 468 tax-benefit-family rows (beyond vocab); T26-0009 re-staged per-sheet after the harvest parse defect (race as subgroup condition); T26-0010 page/file mismatch keyed off workbook-internal table (external-issue seed)"
+   "note": "10 of 1057 claims computed \u2014 1057 claims from 31 T-series tables (Senate-OBBBA distributions, OBBBA-by-race, CTC/AFA/WPTRA sets, tariffs); dropped: 468 tax-benefit-family rows (beyond vocab); T26-0009 re-staged per-sheet after the harvest parse defect (race as subgroup condition); T26-0010 page/file mismatch keyed off workbook-internal table (external-issue seed)"
   },
   {
    "id": "taxsim-cases",
@@ -265,10 +265,10 @@
    "source": "UKMOD/EUROMOD",
    "area": "household cases via JRC connector",
    "mode": 3,
-   "stage": "registered",
+   "stage": "cataloged",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "Connector runnable per axiom-oracles#264 (#5)"
+   "updated": "2026-08-14",
+   "note": "Case schema + 1st battery landed (#41); connector run pending UKMOD environment; schema shared with taxsim-cases (#5)"
   },
   {
    "id": "cbo-baseline",
@@ -276,10 +276,10 @@
    "source": "CBO",
    "area": "Feb-2026 baseline workbooks",
    "mode": 1,
-   "stage": "ingested",
+   "stage": "computed",
    "running": false,
-   "updated": "2026-08-02",
-   "note": "930 Feb-2026 outlook claims (Medicaid/SSI/SNAP/UI/CHIP + 330-row IIT walk); 317 consumed_as_target (pre-verified vs pe-us calibration/gov/cbo); June-2026 spending refresh + 4 more artifacts pending browser fetch"
+   "updated": "2026-08-07",
+   "note": "9 of 930 claims computed \u2014 930 Feb-2026 outlook claims (Medicaid/SSI/SNAP/UI/CHIP + 330-row IIT walk); 317 consumed_as_target (pre-verified vs pe-us calibration/gov/cbo); June-2026 spending refresh + 4 more artifacts pending browser fetch"
   },
   {
    "id": "pwbm-reform-scores",
@@ -287,10 +287,10 @@
    "source": "PWBM",
    "area": "reform scores + distributions",
    "mode": 2,
-   "stage": "ingested",
+   "stage": "computed",
    "running": false,
    "updated": "2026-08-02",
-   "note": "717 claims: OBBBA signed/House (incl. primary-deficit Table 3), SS-benefit-tax elimination, KYPA/WATCA, TCJA-extension-baseline option sets; distribution income concept is after-tax-and-transfer"
+   "note": "2 of 717 claims computed \u2014 717 claims: OBBBA signed/House (incl. primary-deficit Table 3), SS-benefit-tax elimination, KYPA/WATCA, TCJA-extension-baseline option sets; distribution income concept is after-tax-and-transfer"
   },
   {
    "id": "tax-foundation-scores",
@@ -320,10 +320,10 @@
    "source": "Columbia CPSP",
    "area": "US poverty statistics",
    "mode": 1,
-   "stage": "ingested",
+   "stage": "computed",
    "running": false,
    "updated": "2026-08-02",
-   "note": "1033 claims: monthly SPM 2024-01\u21922025-12 (final series \u2014 project ended Dec 2025), CTC counterfactuals 2023/2024 at 100% take-up, state refundable-CTC designs, SNAP TFP-revocation state tables (TRIM3 2015-19 base); annual-SPM\u2248Census reviewed \u2192 held_out (no poverty targets in pe-us calibration); 16.6-vs-11.4 erratum diagnosed external_issue"
+   "note": "8 of 1033 claims computed \u2014 1033 claims: monthly SPM 2024-01\u21922025-12 (final series \u2014 project ended Dec 2025), CTC counterfactuals 2023/2024 at 100% take-up, state refundable-CTC designs, SNAP TFP-revocation state tables (TRIM3 2015-19 base); annual-SPM\u2248Census reviewed \u2192 held_out (no poverty targets in pe-us calibration); 16.6-vs-11.4 erratum diagnosed external_issue"
   },
   {
    "id": "populace-reform-validation",
@@ -348,6 +348,83 @@
    "note": "7 claims"
   },
   {
+   "id": "jrc-euromod-be-country-report",
+   "source": "JRC EUROMOD",
+   "area": "Belgium Country Report validation tables",
+   "mode": 1,
+   "country": "BE",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-08-21",
+   "note": "5 model claims, 7 Chronicle facts (6 statistical + 1 non-simulated uprated EU-SILC survey input), 6 derived ratios dispositioned; 2 concept-mismatch attachments"
+  },
+  {
+   "id": "be-pit-reform-2026",
+   "source": "Belgian PIT reform scorekeepers",
+   "area": "15 July 2026 PIT-reform revenue changes",
+   "mode": 2,
+   "country": "BE",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-08-29",
+   "note": "7 claims from 3 sources; 7 results (5 same-computation PolicyEngine self-attachments, 2 constructed official cross-attachments with unresolved horizon basis)"
+  },
+  {
+   "id": "nz-official-budget-scores",
+   "source": "New Zealand Treasury",
+   "area": "official Budget reform scores",
+   "mode": 2,
+   "country": "NZ",
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-29",
+   "note": "12 official claims across 2 rule-encoded replication candidates; fiscal timing and IWTC termination bridge pending"
+  },
+  {
+   "id": "obr-policy-effects",
+   "source": "OBR",
+   "area": "published economic effects of policy",
+   "mode": 2,
+   "country": "UK",
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-20",
+   "note": "266 claims"
+  },
+  {
+   "id": "uk-thinktanks",
+   "source": "IFS + Resolution Foundation",
+   "area": "independent UK tax-benefit modelling",
+   "mode": 2,
+   "country": "UK",
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-24",
+   "note": "314 claims from 2 independent models (339 staged rows = 314 ingested + 25 tallied drops)"
+  },
+  {
+   "id": "ons-etb",
+   "source": "ONS",
+   "area": "effects of taxes and benefits on household income",
+   "mode": 1,
+   "country": "UK",
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-08-24",
+   "note": "2640 claims across 5 income concepts (1 not_expressible in PE-UK: benefits in kind)"
+  },
+  {
+   "id": "populace-uk-reform-validation",
+   "source": "Populace releases",
+   "area": "reform-validation registry (per-release)",
+   "mode": 2,
+   "country": "UK",
+   "stage": "registered",
+   "running": false,
+   "updated": "2026-08-17",
+   "note": "0 claims \u2014 no populace-uk reform_validation.json exists yet (issue #79 produces the first one); the lane is declared empty rather than absent"
+  },
+  {
    "id": "obr-divergence-decomposition",
    "source": "OBR",
    "area": "costings divergence decomposition",
@@ -357,17 +434,6 @@
    "running": false,
    "updated": "2026-08-17",
    "note": "not run \u2014 no DECOMPOSITION.json; run pipeline/decompose_uk_obr_divergence.py against #56's COMPARISON.csv (or the committed fixture)"
-  },
-  {
-   "id": "jrc-euromod-be-country-report",
-   "source": "JRC EUROMOD",
-   "area": "Belgium Country Report validation tables",
-   "mode": 1,
-   "country": "BE",
-   "stage": "computed",
-   "running": false,
-   "updated": "2026-08-21",
-   "note": "5 model claims, 7 Ledger facts (6 statistical + 1 non-simulated uprated EU-SILC survey input), 6 derived ratios dispositioned; 2 concept-mismatch attachments"
   }
  ]
 }

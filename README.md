@@ -87,11 +87,36 @@ simlock -- .venv-pe/bin/python pipeline/compute_counterparts.py
 python pipeline/build_comparison.py
 ```
 
+UK side (#40; adapters are stdlib-only except ukmod-stats, which needs
+pypdf; the compute stage needs the managed policyengine-uk environment
+and the certified populace-uk bundle):
+
+```bash
+python sources/dwp-takeup/adapter.py          # + hbai-poverty, hmrc-personal-tax,
+python sources/obr-welfare/adapter.py         #   ukmod-stats
+simlock -- .venv-pe/bin/python pipeline/compute_uk_counterparts.py 2025
+```
+
+The single positional argument is the policy year (default 2025); both the
+baseline and fullpart runs always execute, and the script aborts rather than
+writing output if any take-up-validated benefit fails to move under the
+fullpart overrides — the movement check is per benefit, so one benefit
+responding never blesses another's unchanged caseload.
+
 App:
 
 ```bash
 cd app && bun install && bun dev
 ```
+
+## Deployment
+
+The application is connected to the `policyengine-scorecard` Vercel project
+through Vercel's native GitHub integration. Vercel builds from `app/` while
+including the repository-level data used by the application's `prebuild`
+script. Pull request branches receive preview deployments, and commits on
+`main` create production deployments. The deployed application is served at
+`/scorecard/`.
 
 ## Architecture for N sources
 
