@@ -1,0 +1,46 @@
+{
+ "schema_version": 1,
+ "measure_key": "ab2026__rail_fares_freeze",
+ "title": "Regulated rail fares freeze (England), 2026",
+ "fiscal_event": "autumn_budget_2026",
+ "registry_rule": "The reform specification for the 2026 regulated rail fares freeze. This file stages NO value claims: the DfT saving figures in circulation are DfT's, and the #86/#91 re-publication rule applies \u2014 a re-published figure belongs to its originator, and is harvested in its own lane from primary documents, never copied from reporting into a spec.",
+ "engine_pin": {
+  "policyengine_uk": "2.92.0",
+  "resolved_on": "2026-09-03",
+  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal. v1 of this spec hardcoded 2.89.2 \u2014 copied from a sibling spec \u2014 while the readings actually came from the installed engine. A typed pin is not provenance; --resolve refuses a mismatch."
+ },
+ "direction_note": "The freeze is ALREADY IN the certified baseline \u2014 gov.dft.rail.fare_index carries it. So the scored object is the COUNTERFACTUAL: what fares would have done under prior law. The engine ships that leg too, as gov.dft.rail.prior_law_fare_index. This is the indexed-baseline problem #13 and #67 keep meeting, except here we do not have to construct the counterfactual \u2014 the engine already carries both legs, and the comparison is baseline vs counterfactual rather than baseline vs reform.",
+ "counterfactual": {
+  "gov.dft.rail.fare_index": "gov.dft.rail.prior_law_fare_index"
+ },
+ "engine_readings": {
+  "2026": {
+   "gov.dft.rail.fare_index": 1.217,
+   "gov.dft.rail.prior_law_fare_index": 1.288
+  },
+  "2027": {
+   "gov.dft.rail.fare_index": 1.268,
+   "gov.dft.rail.prior_law_fare_index": 1.342
+  },
+  "2028": {
+   "gov.dft.rail.fare_index": 1.318,
+   "gov.dft.rail.prior_law_fare_index": 1.394
+  }
+ },
+ "head_variables": [
+  "rail_subsidy_spending",
+  "dft_subsidy_spending"
+ ],
+ "mechanism_note": "rail_usage x fare_index -> rail_subsidy_spending -> dft_subsidy_spending. The factorisation is deliberate and documented in the engine: rail_subsidy_spending's docstring states it exists 'allowing reforms to modify fare prices independently of usage quantity'. So a fare-price change is expressible without touching the usage quantity.",
+ "years": [
+  2026,
+  2027,
+  2028
+ ],
+ "scope_conditions": {
+  "regulated_share_note": "Regulated fares are a MINORITY of tickets sold in England. A DfT passenger-level saving and a PE household-level subsidy aggregate therefore measure different populations. This is recorded here as a named divergence axis (#59) BEFORE any comparison runs, so a gap is attributed to scope rather than to the engine.",
+  "geography": "England (regulated National Rail fares)",
+  "entity_mismatch": "DfT reports savings per passenger; the engine's quantities are per household. The two are not the same denominator and a counterpart must state which it publishes."
+ },
+ "not_yet_run": "This PR specifies and resolves the reform; it computes no counterpart. UK counterpart compute runs through #51, which is not merged. Publishing a number before that lands would bypass the compute contract."
+}
