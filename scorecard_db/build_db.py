@@ -21,6 +21,7 @@ Chain order is dependency order and is part of the contract:
                 attached (derived from the DB, so the feed can't drift)
     uk_externals five UK primary-source families + Chronicle staging
     uk_deductions FRR family
+    uk_policy_effects  OBR published economic effects of policy
     produce_uk + campaign_uk  archive-resolved UK reckoner attaches
     nz_budget_scores New Zealand Treasury Budget score tables (official-only)
     be_pit_reform Belgian PIT-reform claims + Axiom result attachments
@@ -47,6 +48,7 @@ from . import (
     ingest_campaign,
     ingest_diagnoses,
     ingest_harvest,
+    ingest_obr_policy_effects,
     ingest_platform,
     ingest_reform_validation,
     ingest_solo,
@@ -55,6 +57,45 @@ from . import (
     ingest_urban,
     produce_campaign_uk,
 )
+
+
+def _assert_every_imported_ingest_runs(steps) -> None:
+    """Every ingest module imported at the top must appear in `steps`.
+
+    The chain is one ordered list that many branches add to at the same
+    anchor, so `build_db.py` conflicts on nearly every merge — and the
+    conflict region splits a step tuple, which means a careless
+    resolution either breaks the syntax (loud) or DROPS A STEP (silent).
+    A silently dropped step ships a database missing a whole lane while
+    every test still passes, because the tests that would notice are the
+    ones the dropped ingest brought with it.
+
+    So the import list is the contract: if a module is imported here it
+    must run here. Adding an ingest means adding both, and removing one
+    means removing both, deliberately.
+    """
+    registered = set()
+    for _, fn in steps:
+        registered.update(
+            name
+            for name in fn.__code__.co_names
+            if name.startswith(("ingest_", "produce_"))
+        )
+    imported = {
+        name
+        for name in globals()
+        if name.startswith(("ingest_", "produce_"))
+        and hasattr(globals()[name], "__file__")
+    }
+    missing = sorted(imported - registered)
+    if missing:
+        raise SystemExit(
+            f"build_db imports {missing} but never runs them. Either the "
+            "chain lost a step in a merge resolution (build_db.py conflicts "
+            "on nearly every branch, and the conflict splits a step tuple), "
+            "or the import is dead. Both are decided deliberately, never "
+            "left to a silently shorter database."
+        )
 
 
 def content_hash(db_path: Path) -> str:
@@ -103,6 +144,10 @@ def build(db_path: Path) -> dict:
         ),
         ("uk_externals", lambda: ingest_uk_externals.ingest(db_path)),
         ("uk_deductions", lambda: ingest_uk_deductions.ingest(db_path)),
+        (
+            "uk_policy_effects",
+            lambda: ingest_obr_policy_effects.ingest(db_path),
+        ),
         ("produce_uk", lambda: produce_campaign_uk.produce(db_path)),
         (
             "campaign_uk",
@@ -112,6 +157,7 @@ def build(db_path: Path) -> dict:
         ("be_pit_reform", lambda: ingest_pit_reform_2026.ingest(db_path)),
         ("be_jrc", lambda: ingest_jrc_country_report.ingest(db_path)),
     ]
+    _assert_every_imported_ingest_runs(steps)
     summary: dict = {"steps": {}}
     for name, fn in steps:
         summary["steps"][name] = fn()

@@ -94,6 +94,20 @@ class Metric(str, Enum):
     CASH_REQUIREMENT_CHANGE = "cash_requirement_change"
     GAINER_COUNT = "gainer_count"
     AVERAGE_ANNUAL_GAIN = "average_annual_gain"
+    # OBR published policy effects (#55): what policy does to the ECONOMY,
+    # not to a household or the exchequer's take. gdp_level_effect and
+    # supply_side_impact are both per cent of output and deliberately
+    # DISTINCT: the first is the package's effect on real (actual) GDP
+    # along the forecast path, the second one measure's effect on
+    # POTENTIAL output at the horizon — unifying them would merge a
+    # demand-inclusive path with a supply-side scoring.
+    # decisions_effect_on_borrowing is PSNB, kept distinct from
+    # revenue_change (a receipts line) and cash_requirement_change
+    # (PSNCR) for the same unconfusability reason.
+    GDP_LEVEL_EFFECT = "gdp_level_effect"
+    CPI_INFLATION_EFFECT = "cpi_inflation_effect"
+    SUPPLY_SIDE_IMPACT = "supply_side_impact"
+    DECISIONS_EFFECT_ON_BORROWING = "decisions_effect_on_borrowing"
 
 
 class UnitConcept(str, Enum):
@@ -143,6 +157,23 @@ class UnitConcept(str, Enum):
     # same rule: averages must never be summable as aggregates). The
     # FRR family's £420 average annual gain is per household per year.
     GBP_PER_HOUSEHOLD = "gbp_per_household"
+    # OBR macro policy effects (#55). Three quantities that all LOOK like
+    # "percent" and must never be summed, averaged or compared as one:
+    #   PERCENT_OF_REAL_GDP        per cent deviation in the LEVEL of real
+    #                              GDP (or of an expenditure component)
+    #                              along the forecast path
+    #   PERCENTAGE_POINTS          effect on a RATE — OBR publishes the
+    #                              AB2025 package's CPI inflation impact
+    #                              in pp, not as a level deviation
+    #   PERCENT_OF_POTENTIAL_GDP   impact on POTENTIAL output, per cent of
+    #                              GDP (briefing paper No.10 supply-side
+    #                              scorings) — a supply concept, not the
+    #                              demand-inclusive actual-GDP path
+    # Same rule that split GBP_PER_WEEK from bare GBP: a mislabeled unit
+    # misstates what the number is.
+    PERCENT_OF_REAL_GDP = "percent_of_real_gdp"
+    PERCENTAGE_POINTS = "percentage_points"
+    PERCENT_OF_POTENTIAL_GDP = "percent_of_potential_gdp"
 
 
 # Standardized conditions vocabulary (COLLATION worklist item 4).
@@ -289,6 +320,39 @@ STANDARD_CONDITIONS = frozenset(
         "component",
         "aggregate_level",
         "parent",
+        # scoring_method  HOW an effect was scored, on sources that publish
+        #                 more than one scoring: "post_behavioural" (the
+        #                 published post-adjustment path) | "supply_side"
+        #                 (a per-measure potential-output scoring). It is
+        #                 NOT a basis — `basis` stays forecast|outturn —
+        #                 and it is identity-bearing: the same measure's
+        #                 demand-inclusive path and supply-side scoring are
+        #                 different quantities.
+        "scoring_method",
+        # counterfactual  the KIND of world a baseline names, where a
+        #                 source scores different measure types against
+        #                 different counterfactuals: "policy_parameters"
+        #                 (legislated-parameter counterfactual) |
+        #                 "del_activity" | "regulatory" (pre-existing
+        #                 activity/spending baseline). OBR Briefing paper
+        #                 No.10 chapter 2 is explicit about the split.
+        "counterfactual",
+        # decomposition   how a published chart splits an effect
+        #                 ("channel" | "expenditure_component" | "measure" |
+        #                 "supply_side_channel" | "fiscal_aggregate")
+        "decomposition",
+        # measure_type    source's own measure classification
+        #                 ("tax" | "welfare" | "del" | "regulation")
+        "measure_type",
+        # sign_convention the published sign rule, carried verbatim rather
+        #                 than normalised ("as_published_positive_increases")
+        "sign_convention",
+        # horizon         symbolic period on a horizon-terminal number
+        #                 ("fifth_year_of_forecast"), beside the resolved
+        #                 integer period; horizon_note carries the
+        #                 publication's own words
+        "horizon",
+        "horizon_note",
     }
 )
 

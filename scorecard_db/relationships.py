@@ -228,6 +228,22 @@ _UKMOD_HELD = (
     "parameter is fitted to its published statistics.",
 )
 
+# OBR published policy EFFECTS (#55): package impacts on GDP/CPI, the
+# per-measure supply-side scorings, and the decisions' effect on
+# borrowing. Distinct from the obr welfare-baseline source, whose
+# FY2024-25 outturn column pe-uk-data does consume: nothing in
+# pe-uk-data or policyengine-uk reads a macro-effect path — they are
+# what the Macro members are scored AGAINST.
+_OBR_POLICY_EFFECTS_HELD = (
+    CR.HELD_OUT,
+    "OBR macro/policy-effect estimates are scored, never consumed: no "
+    "pe-uk-data target and no policyengine-uk parameter is fitted to a "
+    "GDP/CPI impact path, a supply-side scoring, or the decisions' "
+    "effect on borrowing (consumption surfaces read 2026-08-19 at the "
+    "certified pins; the obr welfare source is the only OBR material "
+    "with a consuming pin).",
+)
+
 
 def uk_relationship(source, metric, program=None, kind=None):
     """(CalibrationRelationship, basis) for a UK claim, keyed exactly.
@@ -276,6 +292,12 @@ def uk_relationship(source, metric, program=None, kind=None):
         if program in OBR_CONSUMED_WELFARE_PROGRAMS:
             return _OBR_CONSUMED
         return _OBR_UNCONSUMED
+    if source == "obr_policy_effects":
+        if kind not in ("post_behavioural", "supply_side"):
+            raise ValueError(
+                f"obr_policy_effects basis {kind!r} needs a deliberate assignment"
+            )
+        return _OBR_POLICY_EFFECTS_HELD
     if source == "ukmod":
         return _UKMOD_HELD
     if source == "hm_treasury":
