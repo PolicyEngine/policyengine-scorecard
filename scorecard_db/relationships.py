@@ -222,6 +222,21 @@ _HMRC_RECKONER_HELD = (
     "nothing in pe-uk-data consumes them.",
 )
 
+# Low Pay Commission (#88). Built on ASHE — an employer survey of JOBS —
+# where the certified PE-UK world is FRS-based, a household survey. That
+# difference is the first divergence axis, not an afterthought.
+_LPC_HELD = (
+    CR.HELD_OUT,
+    "Low Pay Commission coverage and bite estimates are built on the "
+    "Annual Survey of Hours and Earnings, an employer survey of jobs; the "
+    "certified policyengine-uk world is FRS-based, a household survey, "
+    "and no pe-uk-data target or policyengine-uk parameter is fitted to "
+    "an LPC statistic (consumption surfaces read 2026-08-24 at the "
+    "certified pins). The bite denominator is ASHE's own median hourly "
+    "wage, so a PE-vs-LPC bite gap is a survey-population difference "
+    "before it is an engine question.",
+)
+
 # HMT's Budget distributional analysis (#61). The resolver used to fail
 # closed on this source, which was correct but temporary — the entry is
 # made deliberately, with its evidence, BEFORE any numeric row can land,
@@ -350,6 +365,8 @@ def uk_relationship(source, metric, program=None, kind=None):
         if program in OBR_CONSUMED_WELFARE_PROGRAMS:
             return _OBR_CONSUMED
         return _OBR_UNCONSUMED
+    if source == "lpc":
+        return _LPC_HELD
     if source == "ons_etb":
         return _ONS_ETB_HELD
     if source in ("ifs", "resolution_foundation"):

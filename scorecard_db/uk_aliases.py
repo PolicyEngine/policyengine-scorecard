@@ -55,6 +55,11 @@ DISTINCT: frozenset[tuple[str, str]] = frozenset(
         ("dwp_takeup:housing_benefit_pensioners", "obr:housing_benefit_on_jsa"),
         ("dwp_takeup:housing_benefit_pensioners", "ukmod:housing_benefit"),
         ("dwp_takeup:benefit_units", "ukmod:families"),
+        # A JOB is not a person: one person can hold two. ASHE counts
+        # employer jobs, every other population here counts people or
+        # households, and the two must never be substituted.
+        ("lpc:jobs", "dwp_hbai:persons"),
+        ("lpc:jobs", "uk_hmrc:individuals"),
         # A decile of HMT's equivalised-net-income distribution is not a
         # quintile of UKMOD's: different publications, different income
         # concepts, different cut points. Never aliased.
@@ -645,6 +650,28 @@ _identity(
     ["tax", "welfare", "benefits_in_kind_public_services", "overall"],
 )
 _identity("hmt_distributional", "unit", ["percent", "gbp_nominal"])
+
+
+# --- Low Pay Commission minimum wage (#88) -----------------------------------
+# A rate family, so the vocabularies are age bands and rate scopes rather
+# than programs. Geographies are the repo's registered UK region names,
+# and this registry only ACCEPTS them — LPC prints "East of England"
+# where the rest of the repo says "East", and that alias is applied on
+# the harvest side, in sources/lpc-minimum-wage/adapter.py's REGIONS map,
+# so the staged rows never carry the LPC spelling in the first place.
+_identity("lpc", "geography", ["UK"] + _UK_REGIONS)
+_identity("lpc", "program", ["minimum_wage"])
+_identity(
+    "lpc",
+    "subgroup",
+    ["age_16_plus", "age_16_17", "age_18_20", "age_25_plus"],
+)
+_identity(
+    "lpc",
+    "rate_scope",
+    ["adult_rate", "age_band_rate", "all_nmw_nlw_rates"],
+)
+_identity("lpc", "unit", ["jobs", "percent"])
 
 
 def canon(source: str, axis: str, value: str) -> str:

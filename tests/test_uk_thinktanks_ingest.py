@@ -229,7 +229,15 @@ def test_hbai_is_deliberately_absent_from_the_ledger():
     to prevent."""
     from scorecard_db.uk_aliases import DISTINCT, known
 
-    assert not any("hbai" in a + b for a, b in DISTINCT)
+    # Narrowed (#93): the claim is about RANKING vocabulary, which is
+    # what the rationale above actually argues. HBAI registers no
+    # quantile or decile values, so no ranking pair can name it. It DOES
+    # register unit values, and lpc:jobs vs dwp_hbai:persons is a
+    # legitimate never-unify pair on that axis — a job is not a person.
+    ranking = ("decile", "quintile", "quantile", "q1", "q2", "q3", "q4", "q5")
+    assert not any(
+        "hbai" in a + b and any(r in a + b for r in ranking) for a, b in DISTINCT
+    )
     assert not known("dwp_hbai", "income_group")
     assert not known("dwp_hbai", "quantile")
     assert known("dwp_hbai", "subgroup") == frozenset(

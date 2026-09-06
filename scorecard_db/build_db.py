@@ -21,6 +21,7 @@ Chain order is dependency order and is part of the contract:
                 attached (derived from the DB, so the feed can't drift)
     uk_externals five UK primary-source families + Chronicle staging
     uk_deductions FRR family
+    lpc_minimum_wage  LPC coverage + bite (jobs, not people)
     hmt_distributional    HMT Budget distributional analysis (zero claims,
                           declared: 132 chart cells, none digitized)
     obr_divergence        OBR costings divergence decomposition (#59)
@@ -63,6 +64,7 @@ from . import (
     ingest_solo,
     ingest_uk_deductions,
     ingest_uk_externals,
+    ingest_lpc_minimum_wage,
     ingest_uk_thinktanks,
     ingest_ons_etb,
     ingest_urban,
@@ -155,6 +157,9 @@ def build(db_path: Path) -> dict:
         ),
         ("uk_externals", lambda: ingest_uk_externals.ingest(db_path)),
         ("uk_deductions", lambda: ingest_uk_deductions.ingest(db_path)),
+        # Low Pay Commission (#88): the first external validation of
+        # PE-UK's minimum-wage machinery.
+        ("lpc_minimum_wage", lambda: ingest_lpc_minimum_wage.ingest(db_path)),
         # A ZERO-claim lane, registered on purpose: HMT publishes the
         # Budget decile impacts as unlabeled chart bars, and without this
         # step a fresh build contained no trace of the lane at all —

@@ -256,9 +256,15 @@ def test_the_ranking_axis_is_recorded_and_never_unified():
     assert ("ons_etb:q1", "resolution_foundation:quintile_1") in DISTINCT
     assert ("ons_etb:q5", "resolution_foundation:quintile_5") in DISTINCT
     assert ("ons_etb:q1", "ifs:decile_1") in DISTINCT
-    # ...and HBAI is deliberately absent: it registers no quantile or
-    # decile vocabulary, so there is nothing there to assert against.
-    assert not any("hbai" in a + b for a, b in DISTINCT)
+    # ...and HBAI is deliberately absent FROM THE RANKING AXIS: it
+    # registers no quantile or decile vocabulary, so there is nothing
+    # there to assert against. It is not absent from DISTINCT
+    # altogether — lpc:jobs vs dwp_hbai:persons is a unit-axis pair
+    # (#93), and a job is not a person.
+    ranking = ("decile", "quintile", "quantile", "q1", "q2", "q3", "q4", "q5")
+    assert not any(
+        "hbai" in a + b and any(r in a + b for r in ranking) for a, b in DISTINCT
+    )
     assert not known("dwp_hbai", "quantile")
 
 

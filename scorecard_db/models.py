@@ -94,6 +94,21 @@ class Metric(str, Enum):
     CASH_REQUIREMENT_CHANGE = "cash_requirement_change"
     GAINER_COUNT = "gainer_count"
     AVERAGE_ANNUAL_GAIN = "average_annual_gain"
+    # Minimum wage (#88). PolicyEngine-UK carries `minimum_wage`,
+    # `minimum_wage_category` and a full gov.hmrc.minimum_wage parameter
+    # tree, and nothing validated any of it. These are a RATE family with
+    # no benefit or tax head — a shape the UK side had never had.
+    #   minimum_wage_bite           the applicable rate as a per cent of
+    #                               median hourly pay
+    #   minimum_wage_coverage       count of JOBS paid at or below the
+    #                               applicable rate
+    #   minimum_wage_coverage_rate  the same as a per cent of jobs
+    # coverage and coverage_rate are kept apart for the same reason
+    # poverty_count and poverty_rate are: a count and a rate answer
+    # different questions and must never be summed or substituted.
+    MINIMUM_WAGE_BITE = "minimum_wage_bite"
+    MINIMUM_WAGE_COVERAGE = "minimum_wage_coverage"
+    MINIMUM_WAGE_COVERAGE_RATE = "minimum_wage_coverage_rate"
     # UK think-tank families (#86: IFS, Resolution Foundation). Each is a
     # CHANGE or SHARE sibling of a level metric this repo already carries,
     # following the same rule that keeps revenue_change apart from
@@ -201,6 +216,13 @@ class UnitConcept(str, Enum):
     # same rule: averages must never be summable as aggregates). The
     # FRR family's £420 average annual gain is per household per year.
     GBP_PER_HOUSEHOLD = "gbp_per_household"
+    # Minimum-wage coverage counts JOBS (#88). A job is not a person and
+    # not a household: one person can hold two jobs and one household
+    # several, so a job count is not interchangeable with any population
+    # unit already here. ASHE — the survey behind it — is an employer
+    # survey OF JOBS, which is also why this unit and PERSONS must never
+    # be aliased.
+    JOBS = "jobs"
     # OBR macro policy effects (#55). Three quantities that all LOOK like
     # "percent" and must never be summed, averaged or compared as one:
     #   PERCENT_OF_REAL_GDP        per cent deviation in the LEVEL of real
