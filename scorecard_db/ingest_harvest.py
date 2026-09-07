@@ -10,6 +10,8 @@ which ingest_platform seeds the DB from on rebuild).
 from __future__ import annotations
 
 import json
+import re
+from collections import Counter
 from datetime import date
 from pathlib import Path
 
@@ -100,7 +102,18 @@ def sync_lane_feed(
 ) -> int:
     """Merge DB lane rows into the committed feed. `lanes` maps lane id ->
     display meta; defaults to this module's harvest registry (other
-    exporters pass their own — the merge only touches listed ids)."""
+    exporters pass their own — the merge only touches listed ids).
+
+    ``updated`` is a LITERAL the caller supplies, not a derived value.
+    That is the contract, stated here because it is easy to misread: the
+    feed's top-level `updated` stamp is whatever the LAST caller in a
+    build passes, so every ingest that syncs this feed must pass the SAME
+    constant. If two callers disagree, the committed data/lanes.json
+    drifts depending on ingest order and the no-drift gate fails — the
+    exact breakage that had to be repaired once already. A lane's own
+    `updated_at` comes from its DB row and is per-lane; only this
+    top-level stamp is the shared literal.
+    """
     feed = json.loads(feed_path.read_text())
     by_id = {lane["id"]: lane for lane in feed["lanes"]}
     n = 0
@@ -146,6 +159,91 @@ def sync_lane_feed(
         feed["updated"] = max(existing_date, incoming_date).isoformat()
     feed_path.write_text(json.dumps(feed, indent=1) + "\n")
     return n
+
+
+# Harvest source -> mission-control lane. CBO splits by the claim's world
+# (see advance_computed_lanes): baseline-framework claims are the outlook
+# workbooks, policy_ref claims are cost-estimate scores.
+_SOURCE_LANES = {
+    "jct": "jct-reform-scores",
+    "tpc": "tpc-distribution",
+    "cpsp": "cpsp-poverty",
+    "pwbm": "pwbm-reform-scores",
+    "tax_foundation": "tax-foundation-scores",
+    "budget_lab": "budget-lab-scores",
+}
+
+_COMPUTED_PREFIX = re.compile(r"^\d+ of \d+ claims computed — ")
+
+
+def _harvest_lane(source: str, reform_json: str) -> str:
+    if source != "cbo":
+        return _SOURCE_LANES[source]
+    framework = json.loads(reform_json)["framework"]
+    return "cbo-baseline" if framework == "baseline" else "cbo-cost-estimates"
+
+
+def advance_computed_lanes(db_path: Path, feed_path: Path | None = None) -> dict:
+    """Advance harvest lanes ingested -> computed once PE results exist
+    for their claims.
+
+    The adapters run early in the build chain and only know staging;
+    results attach later (reform_validation, campaign_us), so this runs
+    after campaign_us and derives each lane's stage from the DB itself:
+    any lane whose claims carry pe_results moves to computed, its note
+    gains a "N of M claims computed" prefix, and updated_at becomes the
+    latest computed_at date so the feed shows when compute actually
+    landed. Lanes already past computed are never regressed. Deterministic
+    and idempotent (the prefix is replaced, not stacked)."""
+    db = ScorecardDB(db_path)
+    lane_of: dict[str, str] = {}
+    claim_totals: Counter = Counter()
+    for row in db.conn.execute(
+        "SELECT claim_id, source, reform_json FROM external_scores"
+        " WHERE source IN ('jct','tpc','cpsp','pwbm','tax_foundation',"
+        "'budget_lab','cbo')"
+    ):
+        lane = _harvest_lane(row["source"], row["reform_json"])
+        lane_of[row["claim_id"]] = lane
+        claim_totals[lane] += 1
+
+    computed: Counter = Counter()
+    latest: dict[str, str] = {}
+    for row in db.conn.execute(
+        "SELECT claim_id, MAX(substr(computed_at, 1, 10)) AS d"
+        " FROM pe_results GROUP BY claim_id"
+    ):
+        lane = lane_of.get(row["claim_id"])
+        if lane is None:
+            continue
+        computed[lane] += 1
+        latest[lane] = max(latest.get(lane, ""), row["d"] or "")
+
+    advanced = {}
+    for lane, n in sorted(computed.items()):
+        current = db.conn.execute(
+            "SELECT stage, detail FROM lanes WHERE lane = ?", (lane,)
+        ).fetchone()
+        if current is None:
+            raise ValueError(f"lane {lane} missing from DB before advance")
+        if current["stage"] not in ("registered", "cataloged", "ingested"):
+            continue  # never regress diagnosing/published lanes
+        detail = (
+            f"{n} of {claim_totals[lane]} claims computed — "
+            + _COMPUTED_PREFIX.sub("", current["detail"])
+        )
+        db.set_lane(lane, "computed", detail, latest[lane])
+        advanced[lane] = f"{n} computed, updated {latest[lane]}"
+
+    if advanced:
+        sync_lane_feed(
+            db,
+            feed_path or REPO / "data" / "lanes.json",
+            max(latest[lane] for lane in advanced),
+            lanes={lane: LANE_FEED[lane] for lane in advanced},
+        )
+    db.close()
+    return {"lanes_advanced": advanced}
 
 
 def ingest(db_path: Path) -> dict:

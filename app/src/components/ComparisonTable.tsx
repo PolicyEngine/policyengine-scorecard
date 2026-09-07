@@ -1,9 +1,16 @@
 import { Fragment, useMemo, useState } from "react";
-import type { Filters } from "../App";
-import { closeness, divergenceScore, fmtDivergence, fmtValue } from "../format";
+import { Button, Label, Switch } from "@policyengine/ui-kit/primitives";
+import { defaultFilters, hasActiveFilters, type Filters } from "../filters";
+import {
+  divergenceScore,
+  divergenceTextClass,
+  fmtDivergence,
+  fmtValue,
+} from "../format";
 import type { Comparison, Row } from "../types";
-import { METRIC_LABELS, PROGRAM_LABELS, STATUS_LABELS } from "../types";
-import { SPINE_META, type SpineBucket } from "../spine";
+import { METRIC_LABELS, PROGRAM_LABELS } from "../types";
+import { SPINE_META, SPINE_ORDER, type SpineBucket } from "../spine";
+import { LabeledSelect, StatusBadge, Tag } from "./ui";
 
 const PROGRAM_ORDER = [
   "snap", "ssi", "tanf", "wic", "ccdf", "housing", "liheap", "eitc",
@@ -29,6 +36,7 @@ export function ComparisonTable({
 }) {
   const [sortByDivergence, setSortByDivergence] = useState(false);
   const [expanded, setExpanded] = useState<Row | null>(null);
+  const externalLabel = filters.country === "US" ? "Urban" : "External";
 
   const subgroups = useMemo(
     () => [...new Set(data.rows.map((r) => r.subgroup))].sort(),
@@ -72,121 +80,137 @@ export function ComparisonTable({
     return rows;
   }, [data, filters, buckets, sortByDivergence, national]);
 
-  const sel =
-    "h-8 rounded-md border border-border bg-background px-2 text-sm";
+  const th = "px-3 py-2 font-medium";
 
   return (
-    <div>
-      <div className="mb-4 flex flex-wrap items-end gap-3">
-        <label className="text-xs text-muted-foreground">
-          Program
-          <br />
-          <select
-            className={sel}
+    <div className="space-y-4">
+      <div className="rounded-lg border border-border bg-card p-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <LabeledSelect
+            label="Program"
             value={filters.program}
-            onChange={(e) =>
-              setFilters({ ...filters, program: e.target.value })
-            }
-          >
-            <option value="all">All programs</option>
-            {PROGRAM_ORDER.map((p) => (
-              <option key={p} value={p}>
-                {PROGRAM_LABELS[p] ?? p}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="text-xs text-muted-foreground">
-          Metric
-          <br />
-          <select
-            className={sel}
-            value={filters.metric}
-            onChange={(e) => setFilters({ ...filters, metric: e.target.value })}
-          >
-            <option value="all">All metrics</option>
-            {METRIC_ORDER.map((m) => (
-              <option key={m} value={m}>
-                {METRIC_LABELS[m] ?? m}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="text-xs text-muted-foreground">
-          Geography
-          <br />
-          <select
-            className={sel}
-            value={filters.geography}
-            onChange={(e) =>
-              setFilters({ ...filters, geography: e.target.value })
-            }
-          >
-            <option value={national}>National</option>
-            <option value="states">All states</option>
-            {states.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="text-xs text-muted-foreground">
-          Subgroup
-          <br />
-          <select
-            className={sel}
-            value={filters.subgroup}
-            onChange={(e) =>
-              setFilters({ ...filters, subgroup: e.target.value })
-            }
-          >
-            <option value="total">Total only</option>
-            <option value="all">All subgroups</option>
-            {subgroups
-              .filter((s) => s !== "total")
-              .map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-          </select>
-        </label>
-        <label className="flex h-8 items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={sortByDivergence}
-            onChange={(e) => setSortByDivergence(e.target.checked)}
+            onChange={(program) => setFilters({ ...filters, program })}
+            options={[
+              { value: "all", label: "All programs" },
+              ...PROGRAM_ORDER.map((p) => ({
+                value: p,
+                label: PROGRAM_LABELS[p] ?? p,
+              })),
+            ]}
           />
-          Sort by divergence
-        </label>
-        <span className="ml-auto text-xs text-muted-foreground fig">
-          {filtered.length.toLocaleString()} rows
-        </span>
+          <LabeledSelect
+            label="Metric"
+            value={filters.metric}
+            onChange={(metric) => setFilters({ ...filters, metric })}
+            options={[
+              { value: "all", label: "All metrics" },
+              ...METRIC_ORDER.map((m) => ({
+                value: m,
+                label: METRIC_LABELS[m] ?? m,
+              })),
+            ]}
+          />
+          <LabeledSelect
+            label="Geography"
+            value={filters.geography}
+            onChange={(geography) => setFilters({ ...filters, geography })}
+            options={[
+              { value: national, label: "National" },
+              { value: "states", label: "All states" },
+              ...states.map((s) => ({ value: s, label: s })),
+            ]}
+          />
+          <LabeledSelect
+            label="Subgroup"
+            value={filters.subgroup}
+            onChange={(subgroup) => setFilters({ ...filters, subgroup })}
+            options={[
+              { value: "total", label: "Total only" },
+              { value: "all", label: "All subgroups" },
+              ...subgroups
+                .filter((s) => s !== "total")
+                .map((s) => ({ value: s, label: s })),
+            ]}
+          />
+          <LabeledSelect
+            label="Status"
+            value={filters.bucket ?? "all"}
+            onChange={(v) =>
+              setFilters({
+                ...filters,
+                bucket: v === "all" ? null : (v as SpineBucket),
+              })
+            }
+            options={[
+              { value: "all", label: "All statuses" },
+              ...SPINE_ORDER.map((b) => ({
+                value: b,
+                label: SPINE_META[b].label,
+              })),
+            ]}
+          />
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-3">
+          <div className="flex items-center gap-2">
+            <Switch
+              id="sort-divergence"
+              checked={sortByDivergence}
+              onCheckedChange={setSortByDivergence}
+            />
+            <Label htmlFor="sort-divergence" className="text-sm">
+              Sort by divergence
+            </Label>
+          </div>
+          {hasActiveFilters(filters) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFilters(defaultFilters(filters.country))}
+            >
+              Reset filters
+            </Button>
+          )}
+          <span className="fig ml-auto text-xs text-muted-foreground">
+            {filtered.length.toLocaleString()} rows
+          </span>
+        </div>
       </div>
 
-      <div className="overflow-x-auto rounded-md border border-border">
+      <div className="overflow-x-auto rounded-lg border border-border bg-card">
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="border-b border-border bg-muted/60 text-left text-xs text-muted-foreground">
-              <th className="px-2 py-2 font-medium">Program</th>
-              <th className="px-2 py-2 font-medium">Metric</th>
-              <th className="px-2 py-2 font-medium">Subgroup</th>
-              <th className="px-2 py-2 font-medium">Geo</th>
-              <th className="px-2 py-2 text-right font-medium">
-                Urban <VintageChip label="2023 avg-month" tone="external" />
+            <tr className="border-b border-border bg-muted text-left text-xs text-muted-foreground">
+              <th className={th}>Program</th>
+              <th className={th}>Metric</th>
+              <th className={th}>Subgroup</th>
+              <th className={th}>Geo</th>
+              <th className={th + " text-right"}>
+                {externalLabel}
+                <span className="block font-normal">2023 avg month</span>
               </th>
-              <th className="px-2 py-2 text-right font-medium">
-                PolicyEngine <VintageChip label="2024 calibrated" tone="pe" />
+              <th className={th + " text-right"}>
+                PolicyEngine
+                <span className="block font-normal">2024 calibrated</span>
               </th>
-              <th className="px-2 py-2 text-right font-medium">Δ</th>
-              <th className="px-2 py-2 text-right font-medium">
-                <VintageChip label="2026+ projected" tone="proj" />
+              <th className={th + " text-right"}>Δ</th>
+              <th className={th + " text-right"}>
+                Projected
+                <span className="block font-normal">2026</span>
               </th>
-              <th className="px-2 py-2 font-medium">Status</th>
+              <th className={th}>Status</th>
             </tr>
           </thead>
           <tbody>
+            {filtered.length === 0 && (
+              <tr>
+                <td
+                  colSpan={9}
+                  className="px-3 py-8 text-center text-sm text-muted-foreground"
+                >
+                  No rows match these filters.
+                </td>
+              </tr>
+            )}
             {filtered.slice(0, MAX_RENDER).map((r) => (
               <Fragment key={r.source_column + r.geography}>
                 <RowLine
@@ -195,13 +219,19 @@ export function ComparisonTable({
                   expanded={expanded === r}
                   onToggle={() => setExpanded(expanded === r ? null : r)}
                 />
-                {expanded === r && <RowDetail row={r} data={data} />}
+                {expanded === r && (
+                  <RowDetail
+                    row={r}
+                    data={data}
+                    externalLabel={externalLabel}
+                  />
+                )}
               </Fragment>
             ))}
           </tbody>
         </table>
         {filtered.length > MAX_RENDER && (
-          <p className="border-t border-border px-2 py-2 text-xs text-muted-foreground">
+          <p className="border-t border-border px-3 py-2 text-xs text-muted-foreground">
             Showing the first {MAX_RENDER} of{" "}
             {filtered.length.toLocaleString()} rows — narrow the filters to see
             the rest.
@@ -223,64 +253,66 @@ function RowLine({
   expanded: boolean;
   onToggle: () => void;
 }) {
-  const c = closeness(row);
-  const divergenceColor =
-    c === "far"
-      ? "text-destructive"
-      : c === "moderate"
-        ? "text-[#B45309]"
-        : "text-muted-foreground";
+  const td = "px-3 py-2";
   return (
     <tr
       onClick={onToggle}
+      tabIndex={0}
+      aria-expanded={expanded}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onToggle();
+        }
+      }}
       className={
-        "cursor-pointer border-b border-border/60 hover:bg-muted/40 " +
-        (expanded ? "bg-muted/40" : "")
+        "cursor-pointer border-b border-border hover:bg-muted/60 " +
+        (expanded ? "bg-muted/60" : "")
       }
     >
-      <td className="px-2 py-1.5 whitespace-nowrap">
+      <td className={td + " whitespace-nowrap font-medium"}>
         {PROGRAM_LABELS[row.program] ?? row.program}
         {row.variant ? (
-          <span className="text-muted-foreground"> · {row.variant}</span>
+          <span className="font-normal text-muted-foreground">
+            {" "}
+            · {row.variant}
+          </span>
         ) : null}
       </td>
-      <td className="px-2 py-1.5 whitespace-nowrap">
+      <td className={td + " whitespace-nowrap"}>
         {METRIC_LABELS[row.metric] ?? row.metric}
       </td>
-      <td className="px-2 py-1.5 whitespace-nowrap text-muted-foreground">
+      <td className={td + " whitespace-nowrap text-muted-foreground"}>
         {row.subgroup}
       </td>
-      <td className="px-2 py-1.5 fig">{row.geography}</td>
-      <td className="px-2 py-1.5 text-right fig">
+      <td className={td + " fig"}>{row.geography}</td>
+      <td className={td + " fig text-right"}>
         {fmtValue(row.external_value, row.metric)}
       </td>
-      <td className="px-2 py-1.5 text-right fig">
+      <td className={td + " fig text-right"}>
         {fmtValue(row.pe_value, row.metric)}
       </td>
-      <td className={"px-2 py-1.5 text-right fig " + divergenceColor}>
+      <td className={td + " fig text-right " + divergenceTextClass(row)}>
         {fmtDivergence(row)}
       </td>
-      <td className="px-2 py-1.5 text-right fig text-muted-foreground">
+      <td className={td + " fig text-right text-muted-foreground"}>
         {row.pe_value_2026 !== null
           ? fmtValue(row.pe_value_2026, row.metric)
           : ""}
       </td>
-      <td className="px-2 py-1.5">
-        <StatusChip bucket={bucket} status={row.status} />
+      <td className={td + " whitespace-nowrap"}>
+        <StatusBadge bucket={bucket} status={row.status} />
         {row.calibration_relationship !== "held_out" && (
-          <span
-            className="ml-1 align-middle rounded-sm border border-dashed border-border px-1 py-px text-[9px] uppercase tracking-wide text-muted-foreground"
-            title={row.calibration_basis}
-          >
+          <Tag tone="dashed" className="ml-1" title={row.calibration_basis}>
             {row.calibration_relationship === "seed_source"
               ? "seed"
               : "target"}
-          </span>
+          </Tag>
         )}
         {row.annotations.length > 0 && (
           <span
             className="ml-1.5 align-middle text-[10px] text-muted-foreground"
-            title={`${row.annotations.length} annotations — click row`}
+            title={`${row.annotations.length} annotations — open the row`}
           >
             ⓘ{row.annotations.length}
           </span>
@@ -290,75 +322,35 @@ function RowLine({
   );
 }
 
-function VintageChip({
-  label,
-  tone,
+function RowDetail({
+  row,
+  data,
+  externalLabel,
 }: {
-  label: string;
-  tone: "external" | "pe" | "proj";
+  row: Row;
+  data: Comparison;
+  externalLabel: string;
 }) {
-  const styles: Record<string, string> = {
-    external: "border-border text-muted-foreground",
-    pe: "border-[var(--chart-1)] text-[var(--chart-3)]",
-    proj: "border-[var(--chart-2)] text-[var(--chart-4)]",
-  };
   return (
-    <span
-      className={
-        "ml-1 inline-block rounded-sm border px-1 py-px text-[9px] font-medium uppercase tracking-wide " +
-        styles[tone]
-      }
-    >
-      {label}
-    </span>
-  );
-}
-
-function StatusChip({
-  bucket,
-  status,
-}: {
-  bucket: SpineBucket;
-  status: Row["status"];
-}) {
-  const meta = SPINE_META[bucket];
-  return (
-    <span
-      className="inline-flex items-center gap-1.5 rounded-sm border border-border px-1.5 py-0.5 text-[11px] whitespace-nowrap"
-      title={meta.text}
-    >
-      <span
-        className="h-2 w-2 rounded-[2px]"
-        style={{ background: meta.color }}
-      />
-      {["close", "moderate", "far"].includes(bucket)
-        ? STATUS_LABELS[status]
-        : meta.label}
-    </span>
-  );
-}
-
-function RowDetail({ row, data }: { row: Row; data: Comparison }) {
-  return (
-    <tr className="border-b border-border bg-muted/30">
+    <tr className="border-b border-border bg-muted/40">
       <td colSpan={9} className="px-4 py-3">
-        <div className="grid gap-3 text-xs md:grid-cols-2">
+        <div className="grid gap-4 text-xs md:grid-cols-2">
           <div>
             <p className="mb-1 font-semibold">Construction</p>
             <p className="fig text-muted-foreground">
-              {row.pe_construction ?? "no PE counterpart"}
+              {row.pe_construction ?? "no PolicyEngine counterpart"}
             </p>
             <p className="mt-2 text-muted-foreground">
-              Urban: {row.unit_concept}, {row.period} · PolicyEngine:{" "}
+              {externalLabel}: {row.unit_concept}, {row.period} · PolicyEngine:{" "}
               {row.pe_period ?? "—"}
               {row.pe_value_2026 !== null &&
                 " · 2026 projection: same artifact, engine-side uprating"}{" "}
               · source column <span className="fig">{row.source_column}</span>
             </p>
             <p className="mt-2 text-muted-foreground">
-              <span className="mr-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide">
+              <Tag className="mr-1.5">
                 {row.calibration_relationship.replace(/_/g, " ")}
-              </span>
+              </Tag>
               {row.calibration_basis}
             </p>
           </div>
@@ -373,9 +365,7 @@ function RowDetail({ row, data }: { row: Row; data: Comparison }) {
                 if (!a) return null;
                 return (
                   <li key={id}>
-                    <span className="mr-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide">
-                      {a.severity}
-                    </span>
+                    <Tag className="mr-1.5">{a.severity}</Tag>
                     {a.text}{" "}
                     <span className="text-muted-foreground">({a.basis})</span>
                   </li>

@@ -115,22 +115,35 @@ def test_eligibility_bands_are_not_income_quantiles():
     assert ("dwp_pensions:gbp_70k_plus", "ukmod:q5") in DISTINCT
 
 
-def test_the_lpc_age_band_distinction_is_deferred_not_asserted():
-    """DWP's age bands are also not LPC's minimum-wage age bands — one is
-    an enrolment range, the other a wage-rate category — but the `lpc`
-    vocabulary is registered on #93's branch, not here. Asserting a pair
-    against a source nobody has registered is the same overclaiming the
-    review caught on #92: the ledger would read as if the distinction had
-    been checked when there is nothing on the other side. So it is
-    deferred in a comment and stated in prose instead."""
+def test_the_lpc_age_band_distinction_is_now_discharged():
+    """This was DEFERRED while `lpc` was registered only on #93's
+    branch: asserting a pair against a source nobody had registered
+    would have read as if the distinction had been checked when there
+    was nothing on the other side. #93 has landed, so the deferral is
+    discharged and the pair is asserted for real."""
     from scorecard_db.uk_aliases import DISTINCT, known
 
-    assert not known("lpc", "subgroup"), "lpc is registered here after all"
-    assert not any("lpc" in a + b for a, b in DISTINCT)
+    assert known("lpc", "subgroup"), "lpc must be registered for this claim"
+    assert known("dwp_pensions", "age_band")
+    assert ("lpc:age_25_plus", "dwp_pensions:age_22_25") in DISTINCT
     src = (ROOT / "scorecard_db" / "uk_aliases.py").read_text()
-    assert "DEFERRED, deliberately" in src
+    assert "DISCHARGED (#93 landed" in src
     note = json.loads((LANE / "source.json").read_text())["identity_note"]
-    assert "DEFERRED from the ledger" in note
+    assert "DISCHARGED" in note
+
+
+def test_only_the_confusable_age_pair_is_asserted():
+    """The ledger records never-unify pairs, not every possible cross
+    product. LPC has 4 categories and DWP 9 bands; asserting all 36
+    would pad the ledger with pairs nobody would confuse, which is its
+    own overclaiming. age_16_17 and age_18_20 fall entirely below DWP's
+    lowest band (22), and age_16_plus is an all-ages total."""
+    from scorecard_db.uk_aliases import DISTINCT, known
+
+    pairs = {(a, b) for a, b in DISTINCT if "lpc:age" in a and "dwp_pensions" in b}
+    assert pairs == {("lpc:age_25_plus", "dwp_pensions:age_22_25")}
+    # and the two vocabularies share no label, so nothing unifies by name
+    assert not (known("lpc", "subgroup") & known("dwp_pensions", "age_band"))
 
 
 def test_unregistered_values_raise():

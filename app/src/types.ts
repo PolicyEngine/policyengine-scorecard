@@ -11,12 +11,13 @@ export type CalibrationRelationship =
   "consumed_as_target" | "seed_source" | "held_out";
 
 /** The model instance a row or lane belongs to (issue #42). */
-export type Country = "US" | "UK" | "BE";
+export type Country = "US" | "UK" | "BE" | "NZ";
 
 export const COUNTRY_LABELS: Record<Country, string> = {
   US: "United States",
   UK: "United Kingdom",
   BE: "Belgium",
+  NZ: "New Zealand",
 };
 
 /** A concept_mismatch attachment must never render a divergence or ratio:
@@ -143,6 +144,7 @@ export const METRIC_LABELS: Record<string, string> = {
   poverty_rate_fullpart: "Poverty rate, full participation",
   poverty_rate_relative_change_fullpart: "Poverty change, full participation",
   poverty_count_change_fullpart: "People lifted, full participation",
+  operating_cost_change: "Operating cost change",
 };
 
 export const STATUS_LABELS: Record<Status, string> = {
@@ -195,6 +197,7 @@ export interface PopulationRow {
   external_value: number | null;
   calibration_relationship: CalibrationRelationship;
   claim_baseline: string | null;
+  /** Synthetic not_computed snapshot when results is empty. */
   latest: ReleaseResult & { ratio: number | null; delta: number | null };
   results: ReleaseResult[];
   diagnosis: {

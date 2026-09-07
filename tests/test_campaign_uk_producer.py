@@ -128,8 +128,54 @@ def test_blocked_targets_have_no_claims_yet():
         )
         == 0
     )
-    for source in ("uk_dwp", "resolution_foundation"):
-        assert n("SELECT COUNT(*) FROM external_scores WHERE source=?", source) == 0
+    assert n("SELECT COUNT(*) FROM external_scores WHERE source=?", "uk_dwp") == 0
+    # Resolution Foundation is NO LONGER claim-absent: #86 ingested 58 RF
+    # claims, which is what this assertion was built to catch. The
+    # deliberate unblock is recorded rather than relaxed — the two
+    # affected families stay blocked for a now-PRECISE reason, and this
+    # is the machine-checked form of it.
+    assert (
+        n(
+            "SELECT COUNT(*) FROM external_scores WHERE source=?",
+            "resolution_foundation",
+        )
+        > 0
+    )
+    # 1. the archived descriptors speak the harvest's PROPOSAL vocabulary,
+    #    which no ingested claim carries
+    assert (
+        n(
+            "SELECT COUNT(*) FROM external_scores WHERE source='resolution_foundation'"
+            " AND metric='benefit_uprating_pct'"
+        )
+        == 0
+    )
+    assert (
+        n(
+            "SELECT COUNT(*) FROM external_scores WHERE source='resolution_foundation'"
+            " AND metric='benefit_uprating_rate'"
+        )
+        > 0
+    )
+    # 2. ...and the benefit names are canonical slugs, not the verbatim
+    #    prose the descriptors carry
+    assert (
+        n(
+            "SELECT COUNT(*) FROM external_scores WHERE source='resolution_foundation'"
+            " AND json_extract(conditions,'$.benefit')='UC standard allowance, under-25s'"
+        )
+        == 0
+    )
+    # 3. the two_child fiscal-cost row targets a claim #86 deliberately
+    #    drops (an HMT figure RF re-publishes), so there is nothing to
+    #    attach to and there should not be
+    assert (
+        n(
+            "SELECT COUNT(*) FROM external_scores WHERE source='resolution_foundation'"
+            " AND json_extract(conditions,'$.measure')='exchequer cost'"
+        )
+        == 0
+    )
     assert (
         n(
             "SELECT COUNT(*) FROM external_scores WHERE source='ukmod'"
