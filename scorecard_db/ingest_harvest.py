@@ -102,7 +102,18 @@ def sync_lane_feed(
 ) -> int:
     """Merge DB lane rows into the committed feed. `lanes` maps lane id ->
     display meta; defaults to this module's harvest registry (other
-    exporters pass their own — the merge only touches listed ids)."""
+    exporters pass their own — the merge only touches listed ids).
+
+    ``updated`` is a LITERAL the caller supplies, not a derived value.
+    That is the contract, stated here because it is easy to misread: the
+    feed's top-level `updated` stamp is whatever the LAST caller in a
+    build passes, so every ingest that syncs this feed must pass the SAME
+    constant. If two callers disagree, the committed data/lanes.json
+    drifts depending on ingest order and the no-drift gate fails — the
+    exact breakage that had to be repaired once already. A lane's own
+    `updated_at` comes from its DB row and is per-lane; only this
+    top-level stamp is the shared literal.
+    """
     feed = json.loads(feed_path.read_text())
     by_id = {lane["id"]: lane for lane in feed["lanes"]}
     n = 0

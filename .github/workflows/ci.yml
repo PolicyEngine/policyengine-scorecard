@@ -38,7 +38,10 @@ jobs:
       # ingest — the tree must equal HEAD afterwards, or a committed
       # artifact has gone stale relative to the code that regenerates it.
       - run: git diff --exit-code
-      - run: uv run --with pytest pytest tests/ -q
+      # pypdf + pyyaml are NOT optional extras: the HMT lane's strongest
+      # honesty guarantee (every registry title and figure anchor verbatim
+      # in the real PDF) runs as a test, and a bare env silently skipped it.
+      - run: uv run --with pytest --with pypdf --with pyyaml pytest tests/ -q
         env:
           PYTHONPATH: .
       - run: git diff --exit-code
