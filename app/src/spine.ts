@@ -20,44 +20,49 @@ export const SPINE_ORDER: SpineBucket[] = [
   "suppressed",
 ];
 
+/**
+ * Every bucket colour is a design-token utility class (never a hex value),
+ * so the spine, badges and legend follow the ui-kit theme — including any
+ * dark-mode override — without a second palette to maintain.
+ */
 export const SPINE_META: Record<
   SpineBucket,
-  { label: string; color: string; text: string }
+  { label: string; swatch: string; text: string }
 > = {
   close: {
     label: "Close",
-    color: "var(--chart-1)",
+    swatch: "bg-chart-1",
     text: "Computed counterpart within descriptive tolerance (2.5pp / 10%)",
   },
   moderate: {
     label: "Diverging",
-    color: "#FEC601",
+    swatch: "bg-warning",
     text: "Within 10pp / 30% — worth a look",
   },
   far: {
     label: "Far apart",
-    color: "var(--destructive)",
+    swatch: "bg-destructive",
     text: "Beyond 10pp / 30% — diagnosis candidates",
   },
   concept_mismatch: {
     label: "Concept mismatch",
-    color: "var(--chart-4)",
+    swatch: "bg-chart-4",
     text: "Values exist but measure different concepts",
   },
   pe_gap: {
     label: "Model gap",
-    color: "#475569",
+    swatch: "bg-gray-600",
     text: "PolicyEngine cannot produce this today",
   },
   not_computed: {
     label: "Not yet computed",
-    color: "#CBD5E1",
+    swatch: "bg-gray-300",
     text: "Producible, not yet in the pipeline",
   },
   suppressed: {
     label: "Suppressed",
-    color: "#F2F4F7",
-    text: "Urban suppressed the cell",
+    swatch: "bg-gray-100",
+    text: "The source suppressed the cell",
   },
 };
 

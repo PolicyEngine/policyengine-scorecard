@@ -1,4 +1,5 @@
 import { Fragment, useMemo, useState } from "react";
+import { Label, Switch } from "@policyengine/ui-kit/primitives";
 import type { Country, PopulationRow, PopulationsFeed } from "../types";
 import {
   COUNTRY_LABELS,
@@ -9,6 +10,7 @@ import {
   countryOf,
 } from "../types";
 import { sourceLabel } from "../sourceLabels";
+import { LabeledSelect, Provenance, Stat, StatusPill, Tag } from "./ui";
 
 /**
  * The reform-validation registry (issue #20): every non-Urban claim with a PE
@@ -25,12 +27,19 @@ import { sourceLabel } from "../sourceLabels";
 export const BE_REFORM_DESCRIPTION =
   "seven Belgian PIT-reform claims plus two JRC EUROMOD-BE claims — EUROMOD J1.0+ totals simulated on uprated EU-SILC 2022 survey input (income year 2021, private households), not administrative statistics — with demo-grade Axiom worker concept-mismatch attachments. Five of the reform claims are PolicyEngine self-attachments: each claim and result records the same Axiom-over-Microcosm-BE computation for income years 2026–2030. The SPF Finances and Cour des comptes claims each carry a constructed cross-attachment. The two official horizon-2030 statements do not specify whether 2030 is an income or assessment year; no shared period basis with the PolicyEngine income-year rows is asserted";
 
+const SCOPE_COPY: Record<Country, string> = {
+  US: "the populace reform-validation registry (JCT scores, state fiscal notes, agency actuals, IRS and Census references) plus the compute campaign's TPC, CPSP, PWBM and CBO comparisons",
+  UK: "the compute campaign's HMRC ready-reckoner comparisons (each PE score is a current-law static change; HMRC's are projected-FY direct effects against an indexed baseline, so every comparison is constructed-basis by design)",
+  BE: BE_REFORM_DESCRIPTION,
+  NZ: "New Zealand Treasury official budget-score replication candidates, with fiscal timing and the IWTC termination scenario explicit before a PolicyEngine counterpart attaches",
+};
+
 export function ReformValidationView({
   feed,
   country,
 }: {
   feed: PopulationsFeed;
-  /** Owned by the header toggle — this view scopes to it (issue #42). */
+  /** Owned by the country selector — this view scopes to it (issue #42). */
   country: Country;
 }) {
   const [source, setSource] = useState("all");
@@ -39,7 +48,7 @@ export function ReformValidationView({
   const [expanded, setExpanded] = useState<string | null>(null);
 
   // Everything below is computed from the COUNTRY-SCOPED slice, never the
-  // global summary: the header's country selection owns this view too, and
+  // global summary: the country selection owns this view too, and
   // source/status counts must describe what the table can actually show.
   const inCountry = useMemo(
     () => feed.rows.filter((r) => countryOf(r) === country),
@@ -57,6 +66,10 @@ export function ReformValidationView({
     return out;
   }, [inCountry]);
   const sources = useMemo(() => Object.keys(bySource).sort(), [bySource]);
+  const withResult = useMemo(
+    () => inCountry.filter((r) => r.results.length > 0).length,
+    [inCountry],
+  );
   const multiRelease = useMemo(
     () => inCountry.filter((r) => r.results.length > 1).length,
     [inCountry],
@@ -73,103 +86,124 @@ export function ReformValidationView({
     [inCountry, source, status, releasesOnly],
   );
 
-  const sel = "h-8 rounded-md border border-border bg-background px-2 text-sm";
+  const th = "px-3 py-2 font-medium";
+  const peLabel = country === "BE" ? "Axiom" : "PolicyEngine";
 
   return (
-    <div>
-      <p className="mb-4 max-w-3xl text-sm leading-6 text-muted-foreground">
-        Reform scores and references beyond the Urban comparison:{" "}
-        <b className="fig text-foreground">{inCountry.length.toLocaleString()}</b>{" "}
-        {COUNTRY_LABELS[country]} external claims —{" "}
-        {country === "US"
-          ? "the populace reform-validation registry (JCT scores, state fiscal notes, agency actuals, IRS and Census references) plus the compute campaign's TPC, CPSP, PWBM and CBO comparisons"
-          : country === "UK"
-            ? "the compute campaign's HMRC ready-reckoner comparisons (each PE score is a current-law static change; HMRC's are projected-FY direct effects against an indexed baseline, so every comparison is constructed-basis by design)"
-            : country === "BE"
-              ? BE_REFORM_DESCRIPTION
-              : "New Zealand Treasury official budget-score replication candidates, with fiscal timing and the IWTC termination scenario explicit before a PolicyEngine counterpart attaches"}{" "}
-        — where each available result carries its certified release's exact
-        engine pins.{" "}
-        <b className="fig text-foreground">{multiRelease.toLocaleString()}</b>{" "}
-        carry results from more than one release, so drift across releases is
-        queryable, and a scoring-construction change is labeled in the history
-        rather than read as drift. Nothing here is a pass/fail grade.
-      </p>
-      <p className="mb-4 fig text-[11px] text-muted-foreground">
-        populations feed · exported from scorecard.db · built {feed.built} ·
-        scope: {COUNTRY_LABELS[country]} (the header toggle owns it) ·
-        per-release results carry their own engine + data-bundle provenance (the
-        page-top stamp describes the Urban comparison only)
-      </p>
-
-      <div className="mb-3 flex flex-wrap items-end gap-3">
-        <label className="text-xs text-muted-foreground">
-          Source
-          <br />
-          <select
-            className={sel}
-            value={source}
-            onChange={(e) => setSource(e.target.value)}
-          >
-            <option value="all">All sources</option>
-            {sources.map((s) => (
-              <option key={s} value={s}>
-                {sourceLabel(s)} ({bySource[s]})
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="text-xs text-muted-foreground">
-          Latest status
-          <br />
-          <select
-            className={sel}
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="all">All statuses</option>
-            {Object.entries(byStatus).map(([s, n]) => (
-              <option key={s} value={s}>
-                {STATUS_LABELS[s as keyof typeof STATUS_LABELS] ?? s} ({n})
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="flex h-8 items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={releasesOnly}
-            onChange={(e) => setReleasesOnly(e.target.checked)}
-          />
-          Multi-release only
-        </label>
-        <span className="ml-auto text-xs text-muted-foreground fig">
-          {rows.length.toLocaleString()} claims
-        </span>
+    <div className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Stat
+          label="External claims"
+          value={inCountry.length.toLocaleString()}
+          sub={`${COUNTRY_LABELS[country]} reform scores and references beyond the main comparison`}
+        />
+        <Stat
+          label="With a PolicyEngine result"
+          value={withResult.toLocaleString()}
+          sub="Each result carries its certified release's exact engine pins"
+        />
+        <Stat
+          label="Multi-release claims"
+          value={multiRelease.toLocaleString()}
+          sub="Drift across releases is queryable; a scoring-construction change is labeled, not read as drift"
+        />
       </div>
 
-      <div className="overflow-x-auto rounded-md border border-border">
+      <details className="rounded-lg border border-border bg-card px-4 py-3 text-sm">
+        <summary className="cursor-pointer font-medium">
+          Scope and method note for {COUNTRY_LABELS[country]}
+        </summary>
+        <p className="mt-2 max-w-3xl leading-6 text-muted-foreground">
+          This registry covers {SCOPE_COPY[country]}. Nothing here is a
+          pass/fail grade: statuses and calibration relationships label, never
+          grade.
+        </p>
+        <Provenance
+          className="mt-2"
+          items={[
+            "populations feed · exported from scorecard.db",
+            `built ${feed.built}`,
+            `scope: ${COUNTRY_LABELS[country]} (the country selector owns it)`,
+            "per-release results carry their own engine and data-bundle provenance",
+          ]}
+        />
+      </details>
+
+      <div className="rounded-lg border border-border bg-card p-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <LabeledSelect
+            label="Source"
+            value={source}
+            onChange={setSource}
+            options={[
+              { value: "all", label: "All sources" },
+              ...sources.map((s) => ({
+                value: s,
+                label: `${sourceLabel(s)} (${bySource[s]})`,
+              })),
+            ]}
+          />
+          <LabeledSelect
+            label="Latest status"
+            value={status}
+            onChange={setStatus}
+            options={[
+              { value: "all", label: "All statuses" },
+              ...Object.entries(byStatus).map(([s, n]) => ({
+                value: s,
+                label: `${STATUS_LABELS[s as keyof typeof STATUS_LABELS] ?? s} (${n})`,
+              })),
+            ]}
+          />
+          <div className="flex items-end gap-2 pb-1">
+            <Switch
+              id="multi-release"
+              checked={releasesOnly}
+              onCheckedChange={setReleasesOnly}
+            />
+            <Label htmlFor="multi-release" className="text-sm">
+              Multi-release only
+            </Label>
+          </div>
+          <span className="fig self-end pb-1 text-xs text-muted-foreground sm:text-right">
+            {rows.length.toLocaleString()} claims
+          </span>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto rounded-lg border border-border bg-card">
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="border-b border-border bg-muted/60 text-left text-xs text-muted-foreground">
-              <th className="px-2 py-2 font-medium">Claim</th>
-              <th className="px-2 py-2 font-medium">Source</th>
-              <th className="px-2 py-2 font-medium">Window</th>
-              <th className="px-2 py-2 text-right font-medium">External</th>
-              <th className="px-2 py-2 text-right font-medium">
-                {country === "BE" ? "Axiom" : "PolicyEngine"}
-              </th>
-              <th className="px-2 py-2 text-right font-medium">Divergence</th>
-              <th className="px-2 py-2 font-medium">Status</th>
-              <th className="px-2 py-2 font-medium">Relationship</th>
-              <th className="px-2 py-2 text-right font-medium">Releases</th>
+            <tr className="border-b border-border bg-muted text-left text-xs text-muted-foreground">
+              <th className={th}>Claim</th>
+              <th className={th}>Source</th>
+              <th className={th}>Window</th>
+              <th className={th + " text-right"}>External</th>
+              <th className={th + " text-right"}>{peLabel}</th>
+              <th className={th + " text-right"}>Divergence</th>
+              <th className={th}>Status</th>
+              <th className={th}>Relationship</th>
+              <th className={th + " text-right"}>Releases</th>
             </tr>
           </thead>
           <tbody>
+            {rows.length === 0 && (
+              <tr>
+                <td
+                  colSpan={9}
+                  className="px-3 py-8 text-center text-sm text-muted-foreground"
+                >
+                  No claims match these filters.
+                </td>
+              </tr>
+            )}
             {rows.map((r) => (
               <Fragment key={r.claim_id}>
                 <tr
-                  className="cursor-pointer border-b border-border hover:bg-muted/40"
+                  className={
+                    "cursor-pointer border-b border-border hover:bg-muted/60 " +
+                    (expanded === r.claim_id ? "bg-muted/60" : "")
+                  }
                   tabIndex={0}
                   aria-expanded={expanded === r.claim_id}
                   onClick={() =>
@@ -182,8 +216,8 @@ export function ReformValidationView({
                     }
                   }}
                 >
-                  <td className="max-w-md px-2 py-1.5">
-                    <span className="line-clamp-2">
+                  <td className="px-3 py-2">
+                    <span className="line-clamp-2 block max-w-xs lg:max-w-sm">
                       {r.url ? (
                         <a
                           className="underline decoration-muted-foreground/50 underline-offset-2 hover:decoration-foreground"
@@ -201,19 +235,21 @@ export function ReformValidationView({
                       )}
                     </span>
                   </td>
-                  <td className="whitespace-nowrap px-2 py-1.5">
+                  <td className="whitespace-nowrap px-3 py-2">
                     {sourceLabel(r.source)}
                   </td>
-                  <td className="whitespace-nowrap px-2 py-1.5 fig text-xs text-muted-foreground">
-                    {r.window || windowFromPeriod(r)}
+                  <td className="fig px-3 py-2 text-xs text-muted-foreground">
+                    <span className="block max-w-40">
+                      {r.window || windowFromPeriod(r)}
+                    </span>
                   </td>
-                  <td className="whitespace-nowrap px-2 py-1.5 text-right fig">
+                  <td className="fig whitespace-nowrap px-3 py-2 text-right">
                     {fmtV(r.external_value, r.value_kind)}
                   </td>
-                  <td className="whitespace-nowrap px-2 py-1.5 text-right fig">
+                  <td className="fig whitespace-nowrap px-3 py-2 text-right">
                     {fmtV(r.latest.value, r.value_kind)}
                   </td>
-                  <td className="whitespace-nowrap px-2 py-1.5 text-right fig">
+                  <td className="fig whitespace-nowrap px-3 py-2 text-right">
                     {r.results.length === 0
                       ? "—"
                       : comparabilityFigure(
@@ -222,12 +258,11 @@ export function ReformValidationView({
                           () => fmtDiv(r),
                         )}
                   </td>
-                  <td className="whitespace-nowrap px-2 py-1.5">
+                  <td className="whitespace-nowrap px-3 py-2">
                     <StatusPill status={r.latest.status_effective} />
                   </td>
-                  <td className="whitespace-nowrap px-2 py-1.5">
-                    <span
-                      className="rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide"
+                  <td className="whitespace-nowrap px-3 py-2">
+                    <Tag
                       title={
                         r.calibration_relationship === "consumed_as_target"
                           ? "This value is on the calibration target surface — agreement is a tautology, labeled and never counted as validation."
@@ -235,9 +270,9 @@ export function ReformValidationView({
                       }
                     >
                       {RELATIONSHIP_LABELS[r.calibration_relationship]}
-                    </span>
+                    </Tag>
                   </td>
-                  <td className="whitespace-nowrap px-2 py-1.5 text-right fig">
+                  <td className="fig whitespace-nowrap px-3 py-2 text-right">
                     {r.results.length}
                   </td>
                 </tr>
@@ -253,64 +288,62 @@ export function ReformValidationView({
 
 function RowDetail({ row }: { row: PopulationRow }) {
   return (
-    <tr className="border-b border-border bg-muted/30">
+    <tr className="border-b border-border bg-muted/40">
       <td colSpan={9} className="px-4 py-3">
         <div className="grid gap-4 text-xs md:grid-cols-2">
           <div className="min-w-0">
             <p className="mb-1 font-semibold">Per-release history</p>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
-              <thead>
-                <tr className="text-left text-muted-foreground">
-                  <th className="py-1 pr-3 font-medium">Release</th>
-                  <th className="py-1 pr-3 font-medium">Engine</th>
-                  <th className="py-1 pr-3 text-right font-medium">Value</th>
-                  <th className="py-1 pr-3 text-right font-medium">Ratio</th>
-                  <th className="py-1 font-medium">Construction</th>
-                </tr>
-              </thead>
-              <tbody>
-                {row.results.length === 0 ? (
-                  <tr className="border-t border-border">
-                    <td
-                      colSpan={5}
-                      className="py-2 text-muted-foreground"
-                    >
-                      No PolicyEngine result has been computed for this claim.
-                    </td>
+                <thead>
+                  <tr className="text-left text-muted-foreground">
+                    <th className="py-1 pr-3 font-medium">Release</th>
+                    <th className="py-1 pr-3 font-medium">Engine</th>
+                    <th className="py-1 pr-3 text-right font-medium">Value</th>
+                    <th className="py-1 pr-3 text-right font-medium">Ratio</th>
+                    <th className="py-1 font-medium">Construction</th>
                   </tr>
-                ) : (
-                  row.results.map((res) => (
-                    <tr key={res.data_bundle} className="border-t border-border">
-                      <td className="py-1 pr-3 fig">{res.release}</td>
-                      <td className="py-1 pr-3 fig break-all">
-                        {res.engine_version}
-                        {res.status_effective !== res.status && (
-                          <span
-                            className="ml-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide"
-                            title="The recorded status is downgraded by the baseline guard (issue #13): the executed baseline differs from, or is unverifiable against, the claim's world."
-                          >
-                            {STATUS_LABELS[res.status_effective]}
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-1 pr-3 text-right fig">
-                        {fmtV(res.value, row.value_kind)}
-                      </td>
-                      <td className="py-1 pr-3 text-right fig">
-                        {comparabilityFigure(
-                          res.status_effective,
-                          "—",
-                          () => ratioOf(res.value, row.external_value),
-                        )}
-                      </td>
-                      <td className="py-1 fig text-muted-foreground break-all">
-                        {res.construction || "—"}
+                </thead>
+                <tbody>
+                  {row.results.length === 0 ? (
+                    <tr className="border-t border-border">
+                      <td colSpan={5} className="py-2 text-muted-foreground">
+                        No PolicyEngine result has been computed for this
+                        claim.
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
+                  ) : (
+                    row.results.map((res) => (
+                      <tr key={res.data_bundle} className="border-t border-border">
+                        <td className="fig py-1 pr-3">{res.release}</td>
+                        <td className="fig break-all py-1 pr-3">
+                          {res.engine_version}
+                          {res.status_effective !== res.status && (
+                            <Tag
+                              className="ml-1.5"
+                              title="The recorded status is downgraded by the baseline guard (issue #13): the executed baseline differs from, or is unverifiable against, the claim's world."
+                            >
+                              {STATUS_LABELS[res.status_effective]}
+                            </Tag>
+                          )}
+                        </td>
+                        <td className="fig py-1 pr-3 text-right">
+                          {fmtV(res.value, row.value_kind)}
+                        </td>
+                        <td className="fig py-1 pr-3 text-right">
+                          {comparabilityFigure(
+                            res.status_effective,
+                            "—",
+                            () => ratioOf(res.value, row.external_value),
+                          )}
+                        </td>
+                        <td className="fig break-all py-1 text-muted-foreground">
+                          {res.construction || "—"}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
               </table>
             </div>
             {row.results.some((res) => res.annotations.length > 0) && (
@@ -318,9 +351,7 @@ function RowDetail({ row }: { row: PopulationRow }) {
                 {row.results.flatMap((res) =>
                   res.annotations.map((a, i) => (
                     <li key={`${res.data_bundle}-${i}`}>
-                      <span className="mr-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide">
-                        {res.release}
-                      </span>
+                      <Tag className="mr-1.5">{res.release}</Tag>
                       {a}
                     </li>
                   )),
@@ -353,7 +384,7 @@ function RowDetail({ row }: { row: PopulationRow }) {
                 </>
               )}
             </p>
-            <p className="mt-2 fig break-words text-muted-foreground">
+            <p className="fig mt-2 break-words text-muted-foreground">
               {row.source_column} · {METRIC_LABELS[row.metric] ?? row.metric} ·{" "}
               {row.time_basis} {row.period}
               {row.period_start !== null &&
@@ -368,9 +399,9 @@ function RowDetail({ row }: { row: PopulationRow }) {
             )}
             {row.diagnosis && (
               <p className="mt-2">
-                <span className="mr-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide">
+                <Tag className="mr-1.5">
                   {row.diagnosis.class.replace(/_/g, " ")}
-                </span>
+                </Tag>
                 {row.diagnosis.rationale}
               </p>
             )}
@@ -378,14 +409,6 @@ function RowDetail({ row }: { row: PopulationRow }) {
         </div>
       </td>
     </tr>
-  );
-}
-
-function StatusPill({ status }: { status: PopulationRow["latest"]["status"] }) {
-  return (
-    <span className="inline-flex items-center rounded-sm border border-border px-1.5 py-0.5 text-[11px] whitespace-nowrap">
-      {STATUS_LABELS[status] ?? status}
-    </span>
   );
 }
 

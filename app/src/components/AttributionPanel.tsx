@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Country } from "../types";
 import { PROGRAM_LABELS } from "../types";
 import { withBasePath } from "../basePath";
+import { Panel } from "./ui";
 
 interface ExhibitRow {
   program: string;
@@ -64,45 +65,49 @@ export function AttributionPanel({ country }: { country: Country }) {
   const pp = (v: number) => `${(v * 100).toFixed(2)}pp`;
 
   return (
-    <section className="mt-8 rounded-md border border-border p-4">
-      <h2 className="text-lg font-semibold">
-        Take-up-gap poverty attribution
-      </h2>
-      <p className="mt-1 text-xs text-muted-foreground">
-        PE-only exhibit, beyond Urban's report: one program's take-up forced
-        to 100%, SPM poverty differenced against baseline (annual 2024,
-        certified artifact). Solo effects are non-additive — they sum to{" "}
-        <span className="fig">{data.non_additivity.solo_sum_pp}pp</span> vs
-        the joint counterfactual's{" "}
-        <span className="fig">{data.non_additivity.joint_all_programs_pp}pp</span>.
-      </p>
-      <table className="mt-3 text-sm">
-        <thead>
-          <tr className="text-left text-xs text-muted-foreground">
-            <th className="pr-6 py-1 font-medium">Take-up → 100%</th>
-            <th className="pr-6 py-1 text-right font-medium">Poverty Δ</th>
-            <th className="pr-6 py-1 text-right font-medium">Child Δ</th>
-            <th className="py-1 font-medium">Largest state</th>
-          </tr>
-        </thead>
-        <tbody>
-          {summary.map((s) => (
-            <tr key={s.program} className="border-t border-border/60">
-              <td className="pr-6 py-1.5">
-                {PROGRAM_LABELS[s.program] ?? s.program}
-              </td>
-              <td className="pr-6 py-1.5 text-right fig">{pp(s.total)}</td>
-              <td className="pr-6 py-1.5 text-right fig">{pp(s.child)}</td>
-              <td className="py-1.5 fig text-muted-foreground">
-                {s.biggest?.geography} {pp(s.biggest?.delta ?? 0)}
-              </td>
+    <Panel
+      title="Take-up-gap poverty attribution"
+      description={
+        <>
+          PolicyEngine-only exhibit, beyond Urban&apos;s report: one program&apos;s
+          take-up forced to 100%, SPM poverty differenced against baseline
+          (annual 2024, certified artifact). Solo effects are non-additive —
+          they sum to{" "}
+          <span className="fig">{data.non_additivity.solo_sum_pp}pp</span> vs
+          the joint counterfactual&apos;s{" "}
+          <span className="fig">{data.non_additivity.joint_all_programs_pp}pp</span>.
+        </>
+      }
+    >
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs text-muted-foreground">
+              <th className="py-1 pr-6 font-medium">Take-up to 100%</th>
+              <th className="py-1 pr-6 text-right font-medium">Poverty Δ</th>
+              <th className="py-1 pr-6 text-right font-medium">Child Δ</th>
+              <th className="py-1 font-medium">Largest state</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {summary.map((s) => (
+              <tr key={s.program} className="border-t border-border">
+                <td className="py-1.5 pr-6">
+                  {PROGRAM_LABELS[s.program] ?? s.program}
+                </td>
+                <td className="fig py-1.5 pr-6 text-right">{pp(s.total)}</td>
+                <td className="fig py-1.5 pr-6 text-right">{pp(s.child)}</td>
+                <td className="fig py-1.5 text-muted-foreground">
+                  {s.biggest?.geography} {pp(s.biggest?.delta ?? 0)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <p className="mt-3 text-[11px] leading-4 text-muted-foreground">
         {data.note}
       </p>
-    </section>
+    </Panel>
   );
 }

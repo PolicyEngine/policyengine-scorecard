@@ -1,0 +1,60 @@
+{
+ "schema_version": 1,
+ "measure_key": "ab2026__cgt_align_with_income_tax_rates",
+ "title": "Align capital gains tax rates with income tax rates",
+ "fiscal_event": "autumn_budget_2026",
+ "registry_rule": "The reform specification and the ELASTICITY SWEEP for the Budget's flagship measure. Two legs are computed per elasticity: the reform against the certified baseline, and the baseline itself. The published comparison is post-behavioural against OBR's post-behavioural costing when it lands; the static leg is published beside it as the wedge, because that wedge IS the disagreement.",
+ "engine_pin": {
+  "policyengine_uk": "2.89.2",
+  "resolved_on": "2026-08-25"
+ },
+ "reform": {
+  "gov.hmrc.cgt.basic_rate": 0.2,
+  "gov.hmrc.cgt.higher_rate": 0.4,
+  "gov.hmrc.cgt.additional_rate": 0.45
+ },
+ "engine_baseline_2026": {
+  "gov.hmrc.cgt.basic_rate": 0.18,
+  "gov.hmrc.cgt.higher_rate": 0.24,
+  "gov.hmrc.cgt.additional_rate": 0.24
+ },
+ "head_variables": [
+  "capital_gains_tax",
+  "income_tax"
+ ],
+ "years": [
+  2026,
+  2027,
+  2028
+ ],
+ "behavioural_finding": "VERIFIED against the certified engine, and it changes what this lane is. gov.simulation.capital_gains_responses.elasticity is ZERO from 2000-01-01, and capital_gains_behavioural_response short-circuits to 0 when the elasticity is 0. So a default PolicyEngine-UK score of this measure is STATIC \u2014 the engine does not hand you a behavioural number, it hands you the machinery to compute one once YOU supply an elasticity. The response also requires simulation.baseline to be attached, so it only exists in a reform run.\n\nThat means the elasticity is an ASSUMPTION THIS REPO MAKES, not a property of the engine, and it is the single parameter the whole comparison turns on. Published estimates of this measure disagree mostly about the realisations response; reported receipts have ranged widely on a broadly stable rate structure. So the lane does not pick one value and publish a number \u2014 it sweeps, and every sweep point must carry a citation before anything is published from it.",
+ "elasticity_parameter": "gov.simulation.capital_gains_responses.elasticity",
+ "engine_default_elasticity": 0.0,
+ "elasticity_sweep": [
+  {
+   "value": 0.0,
+   "label": "static",
+   "source": "The certified engine's own default (policyengine_uk/parameters/gov/simulation/capital_gains_responses/elasticity.yaml, 2000-01-01: 0). Publishing this leg needs no external citation because it asserts no behaviour.",
+   "citation_required": false,
+   "publishable": true
+  },
+  {
+   "value": null,
+   "label": "central",
+   "source": null,
+   "citation_required": true,
+   "publishable": false,
+   "note": "A central realisations elasticity must be taken from a named published source \u2014 an HMRC or OBR costing note, or an academic estimate for the UK \u2014 with the definition it uses (semi-elasticity vs elasticity, and with respect to WHICH rate). Until that citation exists this sweep point is not runnable and the validator refuses to mark it publishable."
+  },
+  {
+   "value": null,
+   "label": "high_response",
+   "source": null,
+   "citation_required": true,
+   "publishable": false,
+   "note": "The upper end of the published range, so the lane reports an interval rather than a point. Same citation rule."
+  }
+ ],
+ "comparison_rule": "Compare LIKE FOR LIKE. OBR costings of this measure will be post-behavioural; the static leg is not comparable to them and must never be presented as though it were \u2014 that is the #67 finding one level up. The static-vs-behavioural difference is published as its own quantity on the behavioural_elasticity axis, not folded into a residual.",
+ "not_yet_run": "This spec is unexecuted. The compute needs the managed environment and the certified populace-uk bundle, exactly like #51 and #66; a local Microsimulation() refuses without an explicit dataset. Everything below the engine boundary \u2014 the reform values, the paths, the baselines, the sweep contract \u2014 is verified and tested here."
+}
