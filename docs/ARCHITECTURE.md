@@ -173,5 +173,8 @@ and a `composition` metric family for QC-style shares. Nothing else changes.
 - Private-first; flip public only deliberately.
 - `data/` artifacts are committed — the scorecard is a provenance artifact,
   and CI can re-derive them.
-- App: bun + vite + react + `@policyengine/ui-kit` tokens; sentence case;
+- App: bun + vite + react on the `@policyengine/ui-kit` shell (shared
+  PolicyEngine header/footer, tokens, primitives). Views: Overview (landing),
+  Comparison (`?view=scorecard`), Divergences, Reform validation, Gaps,
+  Method; one country selector scopes every view. Sentence case;
   counts/rates formatted centrally.

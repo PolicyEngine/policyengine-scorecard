@@ -52,3 +52,13 @@ export function divergenceScore(row: Row): number {
   if (row.external_value === 0 || row.pe_value === 0) return 0;
   return Math.abs(Math.log2(row.pe_value / row.external_value)); // 2x -> 1.0
 }
+
+/** Divergence text colour follows the closeness bucket, via AA text tokens. */
+export function divergenceTextClass(row: Row): string {
+  const c = closeness(row);
+  return c === "far"
+    ? "text-error-foreground"
+    : c === "moderate"
+      ? "text-warning-foreground"
+      : "text-muted-foreground";
+}

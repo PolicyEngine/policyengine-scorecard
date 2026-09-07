@@ -1,9 +1,16 @@
 import { useMemo } from "react";
-import { divergenceScore, fmtDivergence, fmtValue } from "../format";
+import { Badge } from "@policyengine/ui-kit/primitives";
+import {
+  divergenceScore,
+  divergenceTextClass,
+  fmtDivergence,
+  fmtValue,
+} from "../format";
 import type { Comparison, Country, Row } from "../types";
 import { METRIC_LABELS, PROGRAM_LABELS, countryOf } from "../types";
 import type { SpineBucket } from "../spine";
 import { AttributionPanel } from "./AttributionPanel";
+import { Panel, Tag } from "./ui";
 
 /**
  * The diagnosis queue: the largest material divergences among rows where the
@@ -37,94 +44,111 @@ export function DivergenceBoard({
   const states = candidates
     .filter((r) => r.geography !== countryOf(r))
     .slice(0, 30);
+  const diagnosed = candidates.filter((r) => r.diagnosis).length;
 
   return (
-    <div>
-    <div className="grid gap-8 lg:grid-cols-2">
-      <section>
-        <h2 className="mb-1 text-lg font-semibold">National</h2>
-        <p className="mb-3 text-xs text-muted-foreground">
-          Every national total-row divergence beyond tolerance, largest first.
-          These seed the diagnosis pipeline.
-        </p>
-        <ol className="space-y-2">
-          {national.map((r) => (
-            <DivergenceCard key={r.source_column} row={r} data={data} />
-          ))}
-          {national.length === 0 && (
+    <div className="space-y-4">
+      <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
+        Total rows beyond tolerance where the two concepts are close enough
+        for the difference to mean something (comparable and constructed rows
+        only), largest first. National rows seed the diagnosis pipeline;{" "}
+        <span className="fig text-foreground">{diagnosed}</span> of{" "}
+        <span className="fig text-foreground">{candidates.length}</span>{" "}
+        carry a diagnosis.
+      </p>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Panel
+          title="National"
+          description="Every national total-row divergence beyond tolerance."
+        >
+          {national.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               No national divergences beyond tolerance.
             </p>
+          ) : (
+            <ol className="space-y-3">
+              {national.map((r) => (
+                <DivergenceCard key={r.source_column} row={r} data={data} />
+              ))}
+            </ol>
           )}
-        </ol>
-      </section>
-      <section>
-        <h2 className="mb-1 text-lg font-semibold">States</h2>
-        <p className="mb-3 text-xs text-muted-foreground">
-          The 30 largest state-level divergences (total rows).
-        </p>
-        <ol className="space-y-2">
-          {states.map((r) => (
-            <DivergenceCard
-              key={r.source_column + r.geography}
-              row={r}
-              data={data}
-            />
-          ))}
-        </ol>
-      </section>
-    </div>
-    <AttributionPanel country={country} />
+        </Panel>
+        <Panel
+          title="States"
+          description="The 30 largest state-level divergences (total rows)."
+        >
+          {states.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No state divergences beyond tolerance.
+            </p>
+          ) : (
+            <ol className="space-y-3">
+              {states.map((r) => (
+                <DivergenceCard
+                  key={r.source_column + r.geography}
+                  row={r}
+                  data={data}
+                />
+              ))}
+            </ol>
+          )}
+        </Panel>
+      </div>
+      <AttributionPanel country={country} />
     </div>
   );
 }
 
 function DivergenceCard({ row, data }: { row: Row; data: Comparison }) {
+  const external = countryOf(row) === "US" ? "Urban" : "External";
   return (
     <li className="rounded-md border border-border p-3">
-      <div className="flex items-baseline justify-between gap-3">
-        <span className="font-medium">
-          {PROGRAM_LABELS[row.program] ?? row.program} ·{" "}
-          {METRIC_LABELS[row.metric] ?? row.metric}
-          {row.geography !== countryOf(row) && (
-            <span className="fig text-muted-foreground">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-medium">
+            {PROGRAM_LABELS[row.program] ?? row.program}
+            <span className="text-muted-foreground">
               {" "}
-              · {row.geography}
+              · {METRIC_LABELS[row.metric] ?? row.metric}
             </span>
-          )}
-          <span
-            className={
-              "ml-1.5 align-middle rounded-sm border px-1 py-px text-[9px] uppercase tracking-wide " +
-              (row.calibration_relationship === "held_out"
-                ? "border-[var(--chart-1)] text-[var(--chart-3)]"
-                : "border-dashed border-border text-muted-foreground")
-            }
+            {row.geography !== countryOf(row) && (
+              <span className="fig text-muted-foreground">
+                {" "}
+                · {row.geography}
+              </span>
+            )}
+          </p>
+          <p className="fig mt-0.5 text-xs text-muted-foreground">
+            {external} {fmtValue(row.external_value, row.metric)} ·
+            PolicyEngine {fmtValue(row.pe_value, row.metric)}
+          </p>
+        </div>
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <span className={"fig text-lg font-semibold " + divergenceTextClass(row)}>
+            {fmtDivergence(row)}
+          </span>
+          <Tag
+            tone={row.calibration_relationship === "held_out" ? "primary" : "dashed"}
             title={row.calibration_basis}
           >
             {row.calibration_relationship.replace(/_/g, " ")}
-          </span>
-        </span>
-        <span className="fig text-destructive">{fmtDivergence(row)}</span>
+          </Tag>
+        </div>
       </div>
-      <p className="mt-1 fig text-sm text-muted-foreground">
-        {countryOf(row) === "US" ? "Urban" : "External"}{" "}
-        {fmtValue(row.external_value, row.metric)} · PolicyEngine{" "}
-        {fmtValue(row.pe_value, row.metric)}
-      </p>
       {row.diagnosis && (
-        <p className="mt-1.5 text-xs">
-          <span
-            className={
-              "mr-1.5 rounded-sm px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide " +
-              (row.diagnosis.classification === "external_model_issue"
-                ? "bg-[var(--chart-2)] text-white"
+        <p className="mt-2 text-xs">
+          <Badge
+            variant={
+              row.diagnosis.classification === "external_model_issue"
+                ? "default"
                 : row.diagnosis.classification === "pe_gap"
-                  ? "bg-[var(--destructive)] text-white"
-                  : "bg-border")
+                  ? "destructive"
+                  : "secondary"
             }
+            className="mr-1.5 align-middle"
           >
             diagnosed: {row.diagnosis.classification.replace(/_/g, " ")}
-          </span>
+          </Badge>
           {row.diagnosis.title} ({row.diagnosis.confidence} confidence
           {row.diagnosis.fix_type
             ? `, fix drafted: ${row.diagnosis.fix_type.replace(/_/g, " ")}`
@@ -133,7 +157,7 @@ function DivergenceCard({ row, data }: { row: Row; data: Comparison }) {
         </p>
       )}
       {row.pe_construction && (
-        <p className="mt-1 text-xs text-muted-foreground">
+        <p className="mt-1.5 text-xs text-muted-foreground">
           {row.pe_construction}
         </p>
       )}
@@ -143,7 +167,7 @@ function DivergenceCard({ row, data }: { row: Row; data: Comparison }) {
             .map((id) => data.annotations[id]?.severity)
             .filter(Boolean)
             .join(" · ")}{" "}
-          annotations apply — see the scorecard row.
+          annotations apply — see the comparison row.
         </p>
       )}
     </li>

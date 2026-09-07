@@ -200,13 +200,26 @@ LEFT JOIN baselines bp ON bp.baseline_key = r.baseline_key;
 
 
 SCORES_SQL = (
-    "INSERT OR REPLACE INTO external_scores"
+    "INSERT INTO external_scores"
     " (claim_id, source, source_model, ledger_fact,"
     " source_column, publication, reform_key, reform_json,"
     " metric, unit_concept, period, time_basis, conditions,"
     " geography, program, value, value_kind, status,"
     " calibration_relationship, period_start, period_end, baseline_key)"
     " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+    " ON CONFLICT(claim_id) DO UPDATE SET"
+    " source=excluded.source, source_model=excluded.source_model,"
+    " ledger_fact=excluded.ledger_fact, source_column=excluded.source_column,"
+    " publication=excluded.publication, reform_key=excluded.reform_key,"
+    " reform_json=excluded.reform_json, metric=excluded.metric,"
+    " unit_concept=excluded.unit_concept, period=excluded.period,"
+    " time_basis=excluded.time_basis, conditions=excluded.conditions,"
+    " geography=excluded.geography, program=excluded.program,"
+    " value=excluded.value, value_kind=excluded.value_kind,"
+    " status=excluded.status,"
+    " calibration_relationship=excluded.calibration_relationship,"
+    " period_start=excluded.period_start, period_end=excluded.period_end,"
+    " baseline_key=excluded.baseline_key"
 )
 RESULTS_SQL = (
     "INSERT INTO pe_results (claim_id, computed_value, status,"

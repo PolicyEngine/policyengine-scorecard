@@ -1,0 +1,31 @@
+{
+  "id": "lpc-minimum-wage",
+  "name": "Low Pay Commission — minimum wage coverage and bite (Report 2025 data annexes)",
+  "organization": "Low Pay Commission",
+  "country": "UK",
+  "claim_class": "population_statistic",
+  "url": "https://www.gov.uk/government/publications/low-pay-commission-report-2025",
+  "data_urls": [
+    "https://assets.publishing.service.gov.uk/media/6980987cf0e5cf1ed2612de7/2025_Main_Report_Data.xlsx",
+    "https://assets.publishing.service.gov.uk/media/6980901f3915f712365800dc/2025_Coverage_tables_by_LA_region_nation.xlsx"
+  ],
+  "published": "2026-02-02 (Low Pay Commission Report 2025)",
+  "fetched": "2026-08-24",
+  "model": {
+    "name": "LPC analysis of the Annual Survey of Hours and Earnings (ASHE)",
+    "open_source": false,
+    "method": "Coverage is the number and share of employee JOBS paid at or below the applicable NMW/NLW rate, measured from ASHE's April reference-period hourly pay excluding overtime. Bite is the applicable rate as a percentage of the ASHE median hourly wage of full-time workers. First-year apprentices are excluded from 2013 onwards.",
+    "method_basis": "Low Pay Commission Report 2025, sources and notes to the data annexes"
+  },
+  "metrics": [
+    "minimum_wage_bite",
+    "minimum_wage_coverage",
+    "minimum_wage_coverage_rate"
+  ],
+  "unit_note": "Coverage counts JOBS, which is a unit concept this repo did not previously have. One person can hold two jobs and one household several, so a job count is never interchangeable with persons, households, benefit units or families — uk_aliases records lpc:jobs DISTINCT from dwp_hbai:persons and uk_hmrc:individuals.",
+  "period": "ASHE April reference years, carried as calendar years. The regional coverage table is April 2025.",
+  "geographies": "UK plus the twelve ITL-1 regions and nations, using the repo's registered UK region names (LPC prints 'East of England' where the rest of the repo says 'East'; aliased once).",
+  "coverage_note": "What is READ: main annex sheets 5.2 (bite and coverage of the adult rate, UK, 1999-2025) and 6.7 right (bite by age band, UK, 2013-2025), plus the coverage annex's 'Region and nation' table. What is deliberately NOT read, and tallied by the build: 191 of the 193 main-annex sheets (the report's other figures — earnings distributions, employment effects, international comparisons — each its own population decision), and the 349-row local-authority coverage table.",
+  "local_authority_note": "Local-authority geography is finer than any UK geography this repo registers, and the certified policyengine-uk world cannot resolve it either. Opening an LA vocabulary for one table would create identities nothing else can join to, so the table is a declared drop with a tallied row count rather than an omission.",
+  "diagnosis_upstream": "BITE IS A DIFFERENT-DATA COMPARISON BEFORE IT IS ANYTHING ELSE. Its denominator is ASHE's median hourly wage of full-time workers; ASHE is an employer survey of jobs and PE-UK's certified world is FRS-based, a household survey, whose hourly-pay distribution is not ASHE's. Every bite claim carries that denominator in conditions, and the survey-population axis must be sized before any engine defect is named — and then only through the citable-known-issue gate. Underpayment (jobs paid BELOW the rate through non-compliance) is a compliance quantity with no PE-UK counterpart and is not staged here at all."
+}
