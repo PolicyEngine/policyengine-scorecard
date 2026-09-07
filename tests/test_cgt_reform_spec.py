@@ -129,3 +129,39 @@ def test_the_lane_says_it_has_not_run():
     environment and the certified bundle."""
     assert "unexecuted" in SPEC["not_yet_run"]
     assert "refuses without an explicit dataset" in SPEC["not_yet_run"]
+
+
+def test_the_pin_was_moved_on_evidence_not_convenience():
+    """The installed engine moved 2.89.2 -> 2.92.0 mid-week. This pin
+    may move because the lane has computed nothing: it records
+    verification, not a computed-at date."""
+    rc = SPEC["recertification"]
+    assert rc["from"] == "2.89.2" and rc["to"] == "2.92.0"
+    assert (
+        "may be moved" in SPEC["engine_pin"]["pin_meaning"]
+        or "can be moved" in SPEC["engine_pin"]["pin_meaning"]
+    )
+    # every baseline carries both readings, so the claim is checkable
+    for path in SPEC["engine_baseline_2026"]:
+        assert path in rc["readings"]
+        assert "at_2_89_2" in rc["readings"][path]
+        assert "at_2_92_0" in rc["readings"][path]
+
+
+def test_the_basic_rate_float_artifact_is_recorded_not_enshrined():
+    """basic_rate reads 0.18000000000000002 because the parameter is
+    fiscal-year blended. The recorded baseline stays the legislated
+    0.18 — writing the float artifact in as the rate would turn an
+    arithmetic detail into a policy claim."""
+    assert SPEC["engine_baseline_2026"]["gov.hmrc.cgt.basic_rate"] == 0.18
+    note = SPEC["recertification"]["float_note"]
+    assert "fiscal_year_blend" in note
+    assert "NOT a policy" in note
+    assert "1e-12" in note
+
+
+def test_the_elasticity_finding_survived_the_bump():
+    """If the engine had switched the response on by default, this
+    lane's static/behavioural framing would need rewriting."""
+    assert SPEC["engine_default_elasticity"] == 0.0
+    assert "still 0" in SPEC["recertification"]["verdict"]

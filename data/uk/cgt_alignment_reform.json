@@ -5,8 +5,10 @@
  "fiscal_event": "autumn_budget_2026",
  "registry_rule": "The reform specification and the ELASTICITY SWEEP for the Budget's flagship measure. Two legs are computed per elasticity: the reform against the certified baseline, and the baseline itself. The published comparison is post-behavioural against OBR's post-behavioural costing when it lands; the static leg is published beside it as the wedge, because that wedge IS the disagreement.",
  "engine_pin": {
-  "policyengine_uk": "2.89.2",
-  "resolved_on": "2026-08-25"
+  "policyengine_uk": "2.92.0",
+  "resolved_on": "2026-09-07",
+  "pin_meaning": "The engine this registry's parameter paths and baselines were VERIFIED against. No results have been computed from this spec, so nothing downstream is dated by this pin \u2014 which is why it can be moved on re-verification. Contrast hmrc_reckoner_reforms.json, whose pin records the engine its 14 committed results were COMPUTED at and therefore cannot move.",
+  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal."
  },
  "reform": {
   "gov.hmrc.cgt.basic_rate": 0.2,
@@ -56,5 +58,27 @@
   }
  ],
  "comparison_rule": "Compare LIKE FOR LIKE. OBR costings of this measure will be post-behavioural; the static leg is not comparable to them and must never be presented as though it were \u2014 that is the #67 finding one level up. The static-vs-behavioural difference is published as its own quantity on the behavioural_elasticity axis, not folded into a residual.",
- "not_yet_run": "This spec is unexecuted. The compute needs the managed environment and the certified populace-uk bundle, exactly like #51 and #66; a local Microsimulation() refuses without an explicit dataset. Everything below the engine boundary \u2014 the reform values, the paths, the baselines, the sweep contract \u2014 is verified and tested here."
+ "not_yet_run": "This spec is unexecuted. The compute needs the managed environment and the certified populace-uk bundle, exactly like #51 and #66; a local Microsimulation() refuses without an explicit dataset. Everything below the engine boundary \u2014 the reform values, the paths, the baselines, the sweep contract \u2014 is verified and tested here.",
+ "recertification": {
+  "from": "2.89.2",
+  "to": "2.92.0",
+  "date": "2026-09-07",
+  "why": "The installed engine moved from 2.89.2 to 2.92.0 mid-week. A pin that no longer names the engine in front of you is not provenance, so every value was re-read rather than assumed.",
+  "readings": {
+   "gov.hmrc.cgt.basic_rate": {
+    "at_2_89_2": 0.18,
+    "at_2_92_0": 0.18000000000000002
+   },
+   "gov.hmrc.cgt.higher_rate": {
+    "at_2_89_2": 0.24,
+    "at_2_92_0": 0.24
+   },
+   "gov.hmrc.cgt.additional_rate": {
+    "at_2_89_2": 0.24,
+    "at_2_92_0": 0.24
+   }
+  },
+  "verdict": "Unchanged. Every rate is identical to the 2.89.2 reading within the validator's 1e-12 tolerance, and the elasticity finding still holds: gov.simulation.capital_gains_responses.elasticity is still 0, so a default score of this measure is still static and the sweep is still the point of the lane.",
+  "float_note": "gov.hmrc.cgt.basic_rate reads 0.18000000000000002, not 0.18. It is NOT a policy change: the parameter carries metadata fiscal_year_blend: true, so the engine day-weights the transition year and that arithmetic leaves float error even where the two weighted values are equal. The legislated rate is 18% (Finance Act 2025 s.7). This is why the comparison is a 1e-12 tolerance and not exact equality \u2014 tightening it to == would fail on a value that has not moved."
+ }
 }

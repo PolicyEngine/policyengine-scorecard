@@ -1226,9 +1226,17 @@
  "gap_citation_rule": "Every not_expressible measure carries an action_link, so its pe_gap row is a finding with somewhere to go rather than a blank (descriptive gate #9). The free-text `note` travels onto the staged row as an annotation and is never dropped at staging.",
  "engine_pin": {
   "policyengine_uk": "2.89.2",
-  "note": "The version this registry's parameter paths were authored and verified against, and the version the merged campaign artifacts were computed at. The runtime REFUSES to compute against a different one: the earlier dry-run passed under whatever ambient policyengine-uk happened to be installed (2.75.3) while the registry prose referenced 2.89.2, so path resolution proved nothing about the engine the run would actually use."
+  "note": "The version this registry's parameter paths were authored and verified against, and the version the merged campaign artifacts were computed at. The runtime REFUSES to compute against a different one: the earlier dry-run passed under whatever ambient policyengine-uk happened to be installed (2.75.3) while the registry prose referenced 2.89.2, so path resolution proved nothing about the engine the run would actually use.",
+  "pin_meaning": "TWO things are pinned here and only one of them is a verification date. This pin names the engine the 14 committed reckoner results were COMPUTED at (run_id campaign-20260802-reckoner-t2, engine_version 2.89.2 in pe_results). Moving it would claim those results ran on an engine they did not. So it does NOT move when the installed engine moves \u2014 re-verification is recorded in paths_reverified instead, and the pin changes only when the results are RE-COMPUTED. Contrast cgt_alignment_reform.json, which has computed nothing and whose pin therefore records verification alone and may move."
  },
  "external_baseline_key": "hmrc_indexed_baseline_spring_2025",
  "executed_baseline_key": "current_law",
- "baseline_honesty_rule": "The run executes CURRENT LAW while the claim keys HMRC's indexed baseline (hmrc_indexed_baseline_spring_2025). Both keys are stamped \u2014 on the staged row and on the per-measure artifact \u2014 so the guard can VERIFY the two worlds differ instead of assuming, and every successful row is status `constructed`, never `ok` (which is not a valid ComparisonStatus at all). The merged campaign rows model this exactly."
+ "baseline_honesty_rule": "The run executes CURRENT LAW while the claim keys HMRC's indexed baseline (hmrc_indexed_baseline_spring_2025). Both keys are stamped \u2014 on the staged row and on the per-measure artifact \u2014 so the guard can VERIFY the two worlds differ instead of assuming, and every successful row is status `constructed`, never `ok` (which is not a valid ComparisonStatus at all). The merged campaign rows model this exactly.",
+ "paths_reverified": {
+  "at_version": "2.92.0",
+  "date": "2026-09-07",
+  "paths_checked": 27,
+  "unresolvable": [],
+  "finding": "All parameter paths in this registry still resolve on the newer engine, so the registry is not stale \u2014 but the RESULTS are still 2.89.2 results and the pin stays there. Re-computing at 2.92.0 is issue #77's job, not a pin edit."
+ }
 }
