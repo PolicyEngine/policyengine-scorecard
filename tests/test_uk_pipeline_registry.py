@@ -630,3 +630,66 @@ def test_the_enum_array_is_decoded_before_comparison():
     src = inspect.getsource(uk.compute_run)
     assert "decode_to_str()" in src
     assert "did not come back as a decodable" in src
+
+
+# --- certified-artifact compute route -------------------------------------
+
+
+def test_the_certified_bundle_is_committed_so_verification_is_offline():
+    """A run checks the artifact it was handed against this digest
+    before building a simulation, rather than trusting a filename."""
+    b = uk.certified_bundle()
+    assert b["revision"] == "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    assert len(b["sha256"]) == 64
+    assert b["compatible_model_packages"] == [
+        {"name": "policyengine-uk", "specifier": "==2.89.2"}
+    ]
+
+
+def test_no_artifact_env_means_the_managed_harness_is_used():
+    """The explicit route is opt-in; absent the env var, nothing about
+    the managed path changes."""
+    assert uk.verified_artifact_path() is None
+
+
+def test_a_wrong_sized_file_is_refused_before_it_is_hashed(tmp_path, monkeypatch):
+    f = tmp_path / "not-it.h5"
+    f.write_bytes(b"0" * 2048)
+    monkeypatch.setenv(uk.UK_ARTIFACT_ENV, str(f))
+    with pytest.raises(SystemExit, match="refusing before hashing"):
+        uk.verified_artifact_path()
+
+
+def test_a_missing_file_is_refused(tmp_path, monkeypatch):
+    monkeypatch.setenv(uk.UK_ARTIFACT_ENV, str(tmp_path / "absent.h5"))
+    with pytest.raises(SystemExit, match="does not exist"):
+        uk.verified_artifact_path()
+
+
+def test_the_digest_check_cannot_be_skipped():
+    """The danger this module warned about was a bare Microsimulation on
+    its DEFAULT dataset — an uncertified world wearing the same class
+    name. What makes the explicit route admissible is that
+    certification is asserted by EVIDENCE: the artifact's own digest
+    and the engine the artifact declares. So there must be no path from
+    the env var to a Simulation that skips either check."""
+    src = inspect.getsource(uk.verified_artifact_path)
+    assert "_sha256(path)" in src
+    assert 'importlib.metadata.version("policyengine-uk")' in src
+    assert "no digest, no run" in src
+    build = inspect.getsource(uk.build_sim)
+    # the bare Microsimulation is reachable ONLY through the verified path
+    assert "from policyengine_uk import Microsimulation" in build
+    assert build.index("verified = verified_artifact_path()") < build.index(
+        "from policyengine_uk import Microsimulation"
+    )
+
+
+def test_the_run_records_which_harness_actually_served():
+    """Results computed through the explicit route must be
+    distinguishable from managed-harness results without trusting
+    prose."""
+    build = inspect.getsource(uk.build_sim)
+    assert '"harness": harness' in build
+    assert '"engine_version": importlib.metadata.version("policyengine-uk")' in build
+    assert "explicit certified artifact (sha256-verified)" in build

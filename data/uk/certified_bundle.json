@@ -1,0 +1,18 @@
+{
+ "schema_version": 1,
+ "registry_rule": "The identity of the certified populace-uk artifact a UK compute run must execute against. Committed so verification is OFFLINE and byte-exact: a run checks the artifact it was handed against this digest before constructing a simulation, rather than trusting a filename or a path.",
+ "repo_id": "policyengine/populace-uk-private",
+ "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "artifact": "populace_uk_2023.h5",
+ "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "size_bytes": 1315880118,
+ "compatible_model_packages": [
+  {
+   "name": "policyengine-uk",
+   "specifier": "==2.89.2"
+  }
+ ],
+ "provenance": "Read from the release's own release_manifest.json in policyengine/populace-uk-private on 2026-09-07, and independently confirmed by downloading the artifact at that revision and hashing it.",
+ "why_this_bundle": "It is the bundle the 14 existing UK results were computed against (run_id campaign-20260802-reckoner-t2, engine_version 2.89.2 in pe_results). A counterpart computed on a different bundle is not comparable to them.",
+ "engine_constraint_note": "The bundle DECLARES policyengine-uk ==2.89.2. That is not this repo's preference; it is the data's own compatibility statement. Computing at a newer engine needs a NEW certified bundle, not a relaxed check — see #126."
+}
