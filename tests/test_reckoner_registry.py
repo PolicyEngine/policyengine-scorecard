@@ -387,3 +387,14 @@ def test_the_paths_were_reverified_against_the_newer_engine():
     assert rv["paths_checked"] == 27
     assert rv["unresolvable"] == []
     assert "#77" in rv["finding"]
+
+
+def test_the_bundle_independently_requires_the_pinned_engine():
+    """Two reasons for one number: the pin is the engine the 14 results
+    were computed at, AND the engine the certified data declares it is
+    compatible with."""
+    ev = REGISTRY["paths_reverified"]["bundle_evidence"]
+    assert ev["bundle"]["compatible_model_packages"] == [
+        {"name": "policyengine-uk", "specifier": "==2.89.2"}
+    ]
+    assert REGISTRY["engine_pin"]["policyengine_uk"] == "2.89.2"

@@ -165,3 +165,35 @@ def test_the_elasticity_finding_survived_the_bump():
     lane's static/behavioural framing would need rewriting."""
     assert SPEC["engine_default_elasticity"] == 0.0
     assert "still 0" in SPEC["recertification"]["verdict"]
+
+
+def test_verification_and_compute_versions_are_kept_apart():
+    """Self-review caught this: the pin moved to 2.92.0 while the
+    certified bundle declares ==2.89.2, so 'verified at' and 'must run
+    at' had silently diverged with nothing saying so. A registry that
+    implies the newer engine is usable end to end would send a compute
+    at an engine the data does not support."""
+    c = SPEC["compute_engine_constraint"]
+    assert c["required_specifier"] == "==2.89.2"
+    assert c["bundle"]["compatible_model_packages"] == [
+        {"name": "policyengine-uk", "specifier": "==2.89.2"}
+    ]
+    assert SPEC["engine_pin"]["policyengine_uk"] == "2.92.0"
+    assert "VERIFICATION version only" in SPEC["engine_pin"]["pin_meaning"]
+    assert "needs a NEW certified bundle, not a pin edit" in c["note"]
+
+
+def test_the_moved_pin_is_only_safe_because_the_readings_agree():
+    """The per-path before/after readings are what license the move: if
+    a value had differed between engines, a 2.89.2 compute against
+    2.92.0-verified baselines would be wrong."""
+    rc = SPEC["recertification"]
+    assert "identical on 2.89.2 and 2.92.0" in rc["holds_on_both_engines"]
+    for path, r in rc["readings"].items():
+        assert abs(r["at_2_92_0"] - r["at_2_89_2"]) <= 1e-12, path
+
+
+def test_the_bundle_is_identified_by_digest_not_by_name():
+    b = SPEC["compute_engine_constraint"]["bundle"]
+    assert b["revision"] == "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    assert len(b["sha256"]) == 64

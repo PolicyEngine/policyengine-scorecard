@@ -1237,6 +1237,23 @@
   "date": "2026-09-07",
   "paths_checked": 27,
   "unresolvable": [],
-  "finding": "All parameter paths in this registry still resolve on the newer engine, so the registry is not stale \u2014 but the RESULTS are still 2.89.2 results and the pin stays there. Re-computing at 2.92.0 is issue #77's job, not a pin edit."
+  "finding": "All parameter paths in this registry still resolve on the newer engine, so the registry is not stale \u2014 but the RESULTS are still 2.89.2 results and the pin stays there. Re-computing at 2.92.0 is issue #77's job, not a pin edit.",
+  "bundle_evidence": {
+   "bundle": {
+    "repo_id": "policyengine/populace-uk-private",
+    "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "artifact": "populace_uk_2023.h5",
+    "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+    "size_bytes": 1315880118,
+    "compatible_model_packages": [
+     {
+      "name": "policyengine-uk",
+      "specifier": "==2.89.2"
+     }
+    ],
+    "read_on": "2026-09-07"
+   },
+   "finding": "Independent confirmation that this pin must not move: the certified bundle itself declares policyengine-uk ==2.89.2. The pin matches the engine the 14 results were computed at AND the engine the data requires. Two reasons, one number."
+  }
  }
 }
