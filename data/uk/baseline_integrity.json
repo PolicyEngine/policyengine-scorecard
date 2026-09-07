@@ -4,7 +4,19 @@
  "probe_rule": "A probe distinguishes ABSENT (no such path) from SUBTREE (the path exists but is not a scalar) from SCALAR. Version 1 of this registry collapsed subtree and absent into 'missing' and recorded TWO FALSE ENGINE GAPS as a result \u2014 see corrections_log. A parameter tree is searched, never guessed: a path that does not resolve is searched for by name across the tree before any 'absent' verdict is written. Each reading also records the exact PATH and DATE it came from. A re-probe re-runs those verbatim rather than reconstructing a path from a key name \u2014 reconstruction was itself a source of false readings while this registry was being repaired.",
  "engine_pin": {
   "policyengine_uk": "2.89.2",
-  "probed_on": "2026-08-26"
+  "probed_on": "2026-08-26",
+  "pin_meaning": "This pin does NOT move, and the reason is this registry's own question. It asks whether the CERTIFIED WORLD carries the law legislated into its future. The certified world is the certified populace-uk bundle, and that bundle DECLARES policyengine-uk ==2.89.2 in its release_manifest.json. Probing a newer engine would answer the question about a different world than the one the scorecard computes in \u2014 so the pin follows the DATA, not whatever happens to be installed. Compare cgt_alignment_reform.json, which has computed nothing and is tied to no bundle, and whose pin therefore records verification alone and may move (#126).",
+  "certified_bundle": {
+   "repo_id": "policyengine/populace-uk-private",
+   "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "compatible_model_packages": [
+    {
+     "name": "policyengine-uk",
+     "specifier": "==2.89.2"
+    }
+   ],
+   "read_on": "2026-09-07"
+  }
  },
  "verdicts": {
   "carried": "the certified baseline contains the measure",
@@ -244,5 +256,11 @@
    "evidence": "The engine models pension contributions and their relief but has no pension commencement lump sum. NOTE this is a SCORING capability gap, not a baseline-integrity failure: the measure is not law, so the baseline is correct to omit it. It is carried here because the same search proved it, and #98 tracks it upstream.",
    "scoring_gap_not_baseline_gap": true
   }
- ]
+ ],
+ "also_verified_at": {
+  "version": "2.92.0",
+  "date": "2026-09-07",
+  "finding": "All 26 recorded readings re-probe clean on 2.92.0 as well, so none of this registry's verdicts is an artifact of one engine version. Recorded because the opposite result would matter: a 'carried' verdict that held only on the pinned engine would be a much weaker claim than it reads as. This is evidence ABOUT the readings, not a licence to move the pin \u2014 the pin follows the bundle.",
+  "how": "pipeline/check_baseline_integrity.py reprobe() run under a 2.92.0 interpreter against a copy of this registry with the pin raised, so the version guard did not short-circuit the readings it exists to protect."
+ }
 }

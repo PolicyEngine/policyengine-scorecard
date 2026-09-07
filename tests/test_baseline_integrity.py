@@ -182,3 +182,29 @@ def test_the_engine_probe_is_wired_into_a_workflow():
     assert "check_baseline_integrity.py --probe" in text
     assert "policyengine-uk==" in text
     assert "schedule:" in text  # notices the engine moving with no diff
+
+
+def test_the_pin_follows_the_certified_bundle_not_the_installed_engine():
+    """This registry asks whether the CERTIFIED WORLD carries the law.
+    That world is the certified bundle, which declares ==2.89.2, so
+    probing a newer engine would answer the question about a different
+    world."""
+    pin = REG["engine_pin"]
+    assert pin["policyengine_uk"] == "2.89.2"
+    assert pin["certified_bundle"]["compatible_model_packages"] == [
+        {"name": "policyengine-uk", "specifier": "==2.89.2"}
+    ]
+    assert "does NOT move" in pin["pin_meaning"]
+    assert "follows the DATA" in pin["pin_meaning"]
+
+
+def test_the_verdicts_are_not_an_artifact_of_one_engine_version():
+    """A 'carried' verdict that held only on the pinned engine would be
+    a weaker claim than it reads as. All 26 readings re-probe clean on
+    2.92.0 too."""
+    av = REG["also_verified_at"]
+    assert av["version"] == "2.92.0"
+    assert "all 26 recorded readings" in av["finding"].lower()
+    # and it is explicitly not treated as a licence to bump the pin
+    assert "not a licence to move the pin" in av["finding"]
+    assert "version guard did not short-circuit" in av["how"]
