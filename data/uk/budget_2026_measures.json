@@ -8,7 +8,19 @@
  "verification_note": "Every pe_reform_delta path in this file was RESOLVED against an installed policyengine-uk 2.89.2 at authoring time, and the baseline values recorded below are what that engine returns for 2026 \u2014 not values copied from reporting. A measure whose path does not resolve is recorded not_expressible with the engine gap named, never guessed. CORRECTION (review, DTrim99): version 1 recorded TWO measures not_expressible on GUESSED paths that failed to resolve. Both were wrong. A path that does not resolve is now searched for by name across the parameter tree before any not_expressible verdict is written, and a path that exists but is not a scalar (a SUBTREE) is never read as absence. Note the --resolve validator could not catch this: a not_expressible entry carries no path to resolve, so a false gap passed silently. That is now covered by requiring a name search, and by .github/workflows/baseline-probe.yml running the resolver in CI against the pinned engine \u2014 v1 asserted --resolve had been run and pinned nothing.",
  "engine_pin": {
   "policyengine_uk": "2.89.2",
-  "resolved_on": "2026-08-25"
+  "resolved_on": "2026-08-25",
+  "pin_meaning": "This is a PRE-EVENT scoreability registry: its verdicts say what the certified world could express on Budget day, and the counterparts it enables will be computed against the certified populace-uk bundle. That bundle DECLARES policyengine-uk ==2.89.2, so the pin follows the DATA rather than whatever is installed \u2014 a scoreability verdict about a world the scorecard does not compute in would be the wrong answer to the question. See #126 and #101 for the same distinction; hmrc_reckoner_reforms.json is the third case, where the pin records what results were COMPUTED at.",
+  "certified_bundle": {
+   "repo_id": "policyengine/populace-uk-private",
+   "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "compatible_model_packages": [
+    {
+     "name": "policyengine-uk",
+     "specifier": "==2.89.2"
+    }
+   ],
+   "read_on": "2026-09-07"
+  }
  },
  "computability": {
   "expressible": "every leg is a resolvable parameter in the certified engine",
@@ -50,7 +62,7 @@
    "pe_reform_delta": null,
    "why": "The certified engine models CGT on realised gains within the simulation year and has no representation of death, bequest or the base-cost uplift, so there is no parameter to move and no household event to attach the measure to. Scoring it needs an engine capability, not a registry entry.",
    "policyengine_uk_development_item": true,
-   "name_search": "Searched the whole parameter tree for /death|bequest|inherit|uplift|probate/: 1 node(s): ['gov.dwp.universal_credit.rebalancing.standard_allowance_uplift'] Recorded because a guessed path that fails to resolve proves nothing \u2014 it is how v1 published two false engine gaps."
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /death|bequest|inherit|uplift|probate/. Parameters: 1 node(s) ['gov.dwp.universal_credit.rebalancing.standard_allowance_uplift']. Variables: 0 []. Both are searched because a parameter-only search misses a variable \u2014 that is how #106 nearly published a false bus gap (bus_subsidy_spending is a variable). Re-run at policyengine-uk 2.89.2."
   },
   {
    "measure_key": "ab2026__pension_tax_free_lump_sum_restriction",
@@ -62,7 +74,15 @@
    "pe_reform_delta": null,
    "why": "VERIFIED, not assumed: gov.hmrc.pensions has no tax-free lump sum parameter at the certified pin (probed and raised AttributeError). The engine carries pension CONTRIBUTIONS and their relief, plus a lump_sum_income input variable, but not the pension commencement lump sum or its cap. So the most-reported pensions measure of this Budget cannot be scored at all today.",
    "policyengine_uk_development_item": true,
-   "name_search": "Searched the whole parameter tree for /lump|commencement|tax_free_cash|pcls/: no nodes. Recorded because a guessed path that fails to resolve proves nothing \u2014 it is how v1 published two false engine gaps."
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /lump|commencement|tax_free_cash|pcls/. Parameters: 0 node(s) []. Variables: 1 ['lump_sum_income']. Both are searched because a parameter-only search misses a variable \u2014 that is how #106 nearly published a false bus gap (bus_subsidy_spending is a variable). Re-run at policyengine-uk 2.89.2.",
+   "nearest_variable_and_why_it_does_not_work": {
+    "variable": "lump_sum_income",
+    "entity": "person",
+    "has_formula": false,
+    "documentation": "Income from lump sums",
+    "why_not": "The variable-side search turns this up, so it is ruled out by name rather than left for a reader to find and assume nobody looked. It is a GENERIC lump-sum income input \u2014 no formula, no parameter behind it, and not specific to a pension commencement lump sum. A restriction is a CAP on a particular kind of lump sum; there is nothing here to cap. Same shape as the bus gap in #106: the data field exists, the policy lever does not.",
+    "present_at_both_engines": "2.89.2 and 2.92.0 \u2014 not a new arrival, so this does not change the verdict."
+   }
   },
   {
    "measure_key": "ab2026__ni_extended_to_investment_property_pension_income",
@@ -74,7 +94,7 @@
    "pe_reform_delta": null,
    "why": "The NI base in the certified engine is employment and self-employment earnings; there is no parameter that widens the charge to investment, property or pension income. A counterpart would be a new charge, not a parameter change.",
    "policyengine_uk_development_item": true,
-   "name_search": "Searched the whole parameter tree for /national_insurance.*(investment|property|pension)|unearned/: 1 node(s): ['gov.dwp.universal_credit.means_test.income_definitions.unearned'] Recorded because a guessed path that fails to resolve proves nothing \u2014 it is how v1 published two false engine gaps."
+   "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /national_insurance.*(investment|property|pension)|unearned/. Parameters: 1 node(s) ['gov.dwp.universal_credit.means_test.income_definitions.unearned']. Variables: 1 ['uc_unearned_income']. Both are searched because a parameter-only search misses a variable \u2014 that is how #106 nearly published a false bus gap (bus_subsidy_spending is a variable). Re-run at policyengine-uk 2.89.2."
   },
   {
    "measure_key": "ab2026__personal_allowance_freeze_extension",
@@ -237,5 +257,10 @@
   "not_expressible": 8,
   "already_in_baseline": 2,
   "note": "already_in_baseline measures are expressible AND already law AND already carried by the certified world, so they are not Budget-day scoring jobs. Both were false not_expressible entries in v1."
+ },
+ "reverified_at": {
+  "version": "2.92.0",
+  "date": "2026-09-07",
+  "finding": "Every gap search was re-run on 2.92.0 and no gap has closed: the CGT-at-death and NI-on-unearned searches return the same unrelated UC nodes, and the pensions search still finds no parameter. The one variable it finds, lump_sum_income, is present at BOTH engines and is a generic input with no formula \u2014 ruled out by name in the measure itself. Recorded because the dangerous direction for a gap registry is a verdict the engine has since made false."
  }
 }

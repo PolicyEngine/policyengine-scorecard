@@ -60,7 +60,10 @@ def test_a_gap_claim_needs_a_name_search_not_a_guessed_path():
     through. So the claim must be backed by a search of the tree."""
     for k, m in MEASURES.items():
         if m["computability"] == "not_expressible" and not m.get("out_of_model_scope"):
-            assert "Searched the whole parameter tree" in m["name_search"], k
+            assert (
+                "Searched BOTH the parameter tree and the VARIABLE list"
+                in m["name_search"]
+            ), k
 
 
 def test_validate_rejects_an_unsearched_gap_claim():
@@ -156,7 +159,11 @@ def test_the_pensions_gap_survived_the_re_check():
     no lump|commencement|tax_free_cash|pcls node anywhere in the tree."""
     m = MEASURES["ab2026__pension_tax_free_lump_sum_restriction"]
     assert m["computability"] == "not_expressible"
-    assert "no nodes" in m["name_search"]
+    # no PARAMETER anywhere; the one variable it finds is ruled out
+    assert "Parameters: 0 node" in m["name_search"]
+    assert (
+        m["nearest_variable_and_why_it_does_not_work"]["variable"] == "lump_sum_income"
+    )
 
 
 def test_the_pensions_measure_gap_was_verified_not_assumed():
@@ -250,3 +257,58 @@ def test_the_wealth_tax_entry_separates_expressible_from_credible():
     assert m["computability"] == "expressible"
     assert "Expressible does NOT mean credible" in m["caveat"]
     assert "survey-imputed wealth" in m["caveat"]
+
+
+def test_gap_searches_cover_variables_not_only_parameters():
+    """v2 searched the parameter tree alone. #106 showed why that is
+    not enough: bus_subsidy_spending is a VARIABLE, and a
+    parameter-only search nearly published a false bus gap."""
+    for k, m in MEASURES.items():
+        if m["computability"] == "not_expressible" and not m.get("out_of_model_scope"):
+            assert "VARIABLE" in m["name_search"], k
+
+
+def test_validate_rejects_a_parameter_only_gap_search():
+    bad = json.loads(json.dumps(REG))
+    m = next(
+        x
+        for x in bad["measures"]
+        if x["computability"] == "not_expressible" and not x.get("out_of_model_scope")
+    )
+    m["name_search"] = "Searched the whole parameter tree for /lump/: no nodes."
+    with pytest.raises(ValueError, match="covered VARIABLES"):
+        validate(bad)
+
+
+def test_the_pensions_gap_rules_out_the_variable_the_search_finds():
+    """lump_sum_income turns up on the variable side, so it is ruled
+    out by name rather than left for a reader to find and assume nobody
+    looked."""
+    m = MEASURES["ab2026__pension_tax_free_lump_sum_restriction"]
+    n = m["nearest_variable_and_why_it_does_not_work"]
+    assert n["variable"] == "lump_sum_income"
+    assert n["has_formula"] is False
+    assert (
+        "generic lump-sum income input" in n["why_not"].lower()
+        or "GENERIC" in n["why_not"]
+    )
+    assert "2.89.2 and 2.92.0" in n["present_at_both_engines"]
+
+
+def test_the_pin_follows_the_certified_bundle():
+    """A scoreability verdict about a world the scorecard does not
+    compute in would be the wrong answer to the question."""
+    pin = REG["engine_pin"]
+    assert pin["policyengine_uk"] == "2.89.2"
+    assert pin["certified_bundle"]["compatible_model_packages"] == [
+        {"name": "policyengine-uk", "specifier": "==2.89.2"}
+    ]
+    assert "follows the DATA" in pin["pin_meaning"]
+
+
+def test_no_gap_has_closed_on_the_newer_engine():
+    """The dangerous direction for a gap registry is a verdict the
+    engine has since made false."""
+    rv = REG["reverified_at"]
+    assert rv["version"] == "2.92.0"
+    assert "no gap has closed" in rv["finding"]

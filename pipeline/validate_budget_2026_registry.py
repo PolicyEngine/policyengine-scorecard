@@ -107,6 +107,17 @@ def validate(reg):
                     "resolve proves nothing — it is how v1 published two false "
                     "engine gaps that --resolve could not catch"
                 )
+            # v2 searched only the PARAMETER tree. #106 showed why that
+            # is not enough: bus_subsidy_spending is a variable, and a
+            # parameter-only search nearly published a false gap.
+            elif not m.get("out_of_model_scope") and "VARIABLE" not in (
+                m.get("name_search") or ""
+            ):
+                errors.append(
+                    f"{k}: the name search does not say it covered VARIABLES. A "
+                    "parameter-only search misses a variable — that is how #106 "
+                    "nearly published a false bus gap"
+                )
             if not (
                 m.get("policyengine_uk_development_item") or m.get("out_of_model_scope")
             ):
