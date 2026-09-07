@@ -120,15 +120,21 @@ def test_the_engine_pin_is_derived_not_typed():
     assert "never typed as a literal" in pin["pin_rule"]
 
 
-def test_verification_and_compute_versions_are_kept_apart():
-    """Self-review: the pin is 2.92.0 while the certified bundle
-    declares ==2.89.2, so 'verified at' and 'must run at' differ. A
-    registry that does not say so would send a compute at an engine the
-    data does not support."""
+def test_the_pin_follows_the_compute_engine():
+    """First pass split 'verified at' from 'must run at'. That was not
+    enough: pinning away from the compute engine made --resolve REFUSE
+    at the certified engine, so the spec could not be checked against
+    the world its own not_yet_run says the compute needs."""
     c = SPEC["compute_engine_constraint"]
     assert c["required_specifier"] == "==2.89.2"
-    assert c["bundle"]["compatible_model_packages"] == [
-        {"name": "policyengine-uk", "specifier": "==2.89.2"}
-    ]
-    assert "not the compute version" in SPEC["engine_pin"]["pin_meaning"]
-    assert "byte-identical" in c["readings_hold_on_both_engines"]
+    assert SPEC["engine_pin"]["policyengine_uk"] == "2.89.2"
+    assert (
+        "follows the certified populace-uk bundle" in SPEC["engine_pin"]["pin_meaning"]
+    )
+    assert "REFUSED at the certified" in SPEC["engine_pin"]["pin_meaning"]
+
+
+def test_the_readings_are_not_an_artifact_of_one_engine():
+    a = SPEC["also_verified_at"]
+    assert a["version"] == "2.92.0"
+    assert "byte-identical" in a["finding"]
