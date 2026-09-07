@@ -208,17 +208,20 @@ def test_the_incidence_defaults_are_recorded_for_verification():
     }
 
 
-def test_verification_and_compute_versions_are_kept_apart():
-    """Self-review: the pin is 2.92.0, the certified bundle declares
-    ==2.89.2. This matters more here than in the sibling lanes, because
-    this lane's whole finding IS a pair of engine default values — if
-    they differed on the compute engine, the finding would not survive
-    the run that publishes it."""
+def test_the_pin_follows_the_compute_engine():
+    """This matters more here than in the sibling lanes: the finding IS
+    a pair of engine DEFAULT values, so it has to be checkable on the
+    engine that publishes it. Pinning whatever was installed made
+    --resolve refuse at the certified engine."""
     c = SPEC["compute_engine_constraint"]
     assert c["required_specifier"] == "==2.89.2"
-    assert c["bundle"]["compatible_model_packages"] == [
-        {"name": "policyengine-uk", "specifier": "==2.89.2"}
-    ]
-    assert "not the compute version" in SPEC["engine_pin"]["pin_meaning"]
-    ev = c["readings_hold_on_both_engines"]
-    assert "0.0016" in ev and "2.89.2" in ev
+    assert SPEC["engine_pin"]["policyengine_uk"] == "2.89.2"
+    pm = SPEC["engine_pin"]["pin_meaning"]
+    assert "follows the certified populace-uk bundle" in pm
+    assert "finding IS a pair of engine DEFAULT values" in pm
+
+
+def test_the_asymmetry_is_not_an_artifact_of_one_engine():
+    a = SPEC["also_verified_at"]
+    assert a["version"] == "2.92.0"
+    assert "not an artifact of one engine version" in a["finding"]
