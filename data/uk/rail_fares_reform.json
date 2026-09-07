@@ -7,7 +7,8 @@
  "engine_pin": {
   "policyengine_uk": "2.92.0",
   "resolved_on": "2026-09-03",
-  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal. v1 of this spec hardcoded 2.89.2 \u2014 copied from a sibling spec \u2014 while the readings actually came from the installed engine. A typed pin is not provenance; --resolve refuses a mismatch."
+  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal. v1 of this spec hardcoded 2.89.2 \u2014 copied from a sibling spec \u2014 while the readings actually came from the installed engine. A typed pin is not provenance; --resolve refuses a mismatch.",
+  "pin_meaning": "The engine this registry's readings were VERIFIED against. It is not the compute version \u2014 the certified bundle pins ==2.89.2 (see compute_engine_constraint)."
  },
  "direction_note": "The freeze is ALREADY IN the certified baseline \u2014 gov.dft.rail.fare_index carries it. So the scored object is the COUNTERFACTUAL: what fares would have done under prior law. The engine ships that leg too, as gov.dft.rail.prior_law_fare_index. This is the indexed-baseline problem #13 and #67 keep meeting, except here we do not have to construct the counterfactual \u2014 the engine already carries both legs, and the comparison is baseline vs counterfactual rather than baseline vs reform.",
  "counterfactual": {
@@ -42,5 +43,25 @@
   "geography": "England (regulated National Rail fares)",
   "entity_mismatch": "DfT reports savings per passenger; the engine's quantities are per household. The two are not the same denominator and a counterpart must state which it publishes."
  },
- "not_yet_run": "This PR specifies and resolves the reform; it computes no counterpart. UK counterpart compute runs through #51, which is not merged. Publishing a number before that lands would bypass the compute contract."
+ "not_yet_run": "This PR specifies and resolves the reform; it computes no counterpart. UK counterpart compute runs through #51, which is not merged. Publishing a number before that lands would bypass the compute contract.",
+ "compute_engine_constraint": {
+  "required_specifier": "==2.89.2",
+  "source": "certified bundle release_manifest.json",
+  "bundle": {
+   "repo_id": "policyengine/populace-uk-private",
+   "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "artifact": "populace_uk_2023.h5",
+   "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "size_bytes": 1315880118,
+   "compatible_model_packages": [
+    {
+     "name": "policyengine-uk",
+     "specifier": "==2.89.2"
+    }
+   ],
+   "read_on": "2026-09-07"
+  },
+  "note": "The certified bundle DECLARES its own engine compatibility: policyengine-uk ==2.89.2. So a compute of this lane runs at 2.89.2 regardless of what is installed for verification, and re-computing at a newer engine needs a NEW certified bundle, not a pin edit. engine_pin is what the paths were re-read against; this is what the run must use. They differ, and the registry says so rather than implying the newer engine is usable end to end.",
+  "readings_hold_on_both_engines": "Verified across BOTH engines, not assumed: the readings first committed on 2026-08-27 under 2.89.2 (fare_index 1.217/1.268/1.318, prior_law 1.288/1.342/1.394) are byte-identical to the 2.92.0 re-resolve. So 2.92.0-verified readings are safe for a 2.89.2 compute."
+ }
 }

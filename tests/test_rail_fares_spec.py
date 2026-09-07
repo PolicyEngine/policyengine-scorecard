@@ -118,3 +118,17 @@ def test_the_engine_pin_is_derived_not_typed():
     pin = SPEC["engine_pin"]
     assert "importlib.metadata" in pin["pin_rule"]
     assert "never typed as a literal" in pin["pin_rule"]
+
+
+def test_verification_and_compute_versions_are_kept_apart():
+    """Self-review: the pin is 2.92.0 while the certified bundle
+    declares ==2.89.2, so 'verified at' and 'must run at' differ. A
+    registry that does not say so would send a compute at an engine the
+    data does not support."""
+    c = SPEC["compute_engine_constraint"]
+    assert c["required_specifier"] == "==2.89.2"
+    assert c["bundle"]["compatible_model_packages"] == [
+        {"name": "policyengine-uk", "specifier": "==2.89.2"}
+    ]
+    assert "not the compute version" in SPEC["engine_pin"]["pin_meaning"]
+    assert "byte-identical" in c["readings_hold_on_both_engines"]
