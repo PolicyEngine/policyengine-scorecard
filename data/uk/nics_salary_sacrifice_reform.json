@@ -8,7 +8,8 @@
  "engine_pin": {
   "policyengine_uk": "2.92.0",
   "resolved_on": "2026-09-03",
-  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal. v1 of this spec hardcoded 2.89.2 while the readings actually came from a later engine \u2014 the pin was copied from a sibling spec instead of derived. --resolve now refuses a mismatch."
+  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal. v1 of this spec hardcoded 2.89.2 while the readings actually came from a later engine \u2014 the pin was copied from a sibling spec instead of derived. --resolve now refuses a mismatch.",
+  "pin_meaning": "The engine this registry's readings were VERIFIED against. It is not the compute version \u2014 the certified bundle pins ==2.89.2 (see compute_engine_constraint)."
  },
  "baseline_verdict": "carried",
  "baseline_evidence": {
@@ -96,5 +97,25 @@
   "employee_response: PE asserts none by default; an external costing may assume some",
   "employer_ni_incidence: PE assumes full employee incidence (1.0)"
  ],
- "not_yet_run": "This PR specifies and resolves the reform; it computes no counterpart. UK counterpart compute runs through #51, which is not merged."
+ "not_yet_run": "This PR specifies and resolves the reform; it computes no counterpart. UK counterpart compute runs through #51, which is not merged.",
+ "compute_engine_constraint": {
+  "required_specifier": "==2.89.2",
+  "source": "certified bundle release_manifest.json",
+  "bundle": {
+   "repo_id": "policyengine/populace-uk-private",
+   "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "artifact": "populace_uk_2023.h5",
+   "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "size_bytes": 1315880118,
+   "compatible_model_packages": [
+    {
+     "name": "policyengine-uk",
+     "specifier": "==2.89.2"
+    }
+   ],
+   "read_on": "2026-09-07"
+  },
+  "note": "The certified bundle DECLARES policyengine-uk ==2.89.2, so a compute of this lane runs at 2.89.2 whatever is installed for verification. Re-computing at a newer engine needs a NEW certified bundle, not a pin edit. engine_pin is the verification version; this is the run version. They differ, and the registry says so.",
+  "readings_hold_on_both_engines": "Verified across BOTH engines, not assumed: the schedule first committed on 2026-08-27 under 2.89.2 carried the same cap step (uncapped through 2028, 2000 from 2029) and the same haircut default of 0.0016. The 09-03 revision re-keyed the schedule to the source's tax-year dates and re-read it on 2.92.0; the values are unchanged. So the asymmetry this lane rests on holds on the compute engine too \u2014 which matters more here than elsewhere, because the finding IS the default values."
+ }
 }
