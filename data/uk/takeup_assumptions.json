@@ -1,0 +1,154 @@
+{
+ "schema_version": 1,
+ "registry_rule": "A PARAMETER-level comparison: what each model ASSUMES about benefit take-up, not what either model outputs. It stages NO value claims. The rates originate with DWP and HMRC (#86/#91) \u2014 UKMOD's table is a transcription of those plus mid-point choices of its own, and is recorded here as comparison context with its originator named, never as a scoreable claim.",
+ "engine_pin": {
+  "policyengine_uk": "2.89.2",
+  "read_on": "2026-09-07",
+  "pin_meaning": "The pin follows the certified populace-uk bundle (==2.89.2), which is the engine these parameters are read from and the engine the scorecard computes in.",
+  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal."
+ },
+ "policyengine_assumptions": {
+  "gov.dwp.housing_benefit.takeup": {
+   "benefit": "Housing Benefit",
+   "value_2026": 1.0,
+   "assumes_full_take_up": true,
+   "schedule": {
+    "2019-01-01": 1.0,
+    "2020-01-01": 1.0,
+    "2021-01-01": 1.0,
+    "2022-01-01": 1.0,
+    "2023-01-01": 1.0,
+    "2024-01-01": 1.0,
+    "2025-01-01": 1.0
+   },
+   "first_dated": "2019-01-01",
+   "last_dated": "2025-01-01",
+   "yaml": "parameters/gov/dwp/housing_benefit/takeup.yaml"
+  },
+  "gov.dwp.income_support.takeup": {
+   "benefit": "Income Support",
+   "value_2026": 1.0,
+   "assumes_full_take_up": true,
+   "schedule": {
+    "2019-01-01": 1.0,
+    "2020-01-01": 1.0,
+    "2021-01-01": 1.0,
+    "2022-01-01": 1.0,
+    "2023-01-01": 1.0,
+    "2024-01-01": 1.0,
+    "2025-01-01": 1.0
+   },
+   "first_dated": "2019-01-01",
+   "last_dated": "2025-01-01",
+   "yaml": "parameters/gov/dwp/income_support/takeup.yaml"
+  },
+  "gov.dwp.tax_credits.child_tax_credit.takeup": {
+   "benefit": "Child Tax Credit",
+   "value_2026": 1.0,
+   "assumes_full_take_up": true,
+   "schedule": {
+    "2019-01-01": 1.0,
+    "2020-01-01": 1.0,
+    "2021-01-01": 1.0,
+    "2022-01-01": 1.0,
+    "2023-01-01": 1.0,
+    "2024-01-01": 1.0,
+    "2025-01-01": 1.0
+   },
+   "first_dated": "2019-01-01",
+   "last_dated": "2025-01-01",
+   "yaml": "parameters/gov/dwp/tax_credits/child_tax_credit/takeup.yaml"
+  },
+  "gov.dwp.tax_credits.working_tax_credit.takeup": {
+   "benefit": "Working Tax Credit",
+   "value_2026": 1.0,
+   "assumes_full_take_up": true,
+   "schedule": {
+    "2019-01-01": 1.0,
+    "2020-01-01": 1.0,
+    "2021-01-01": 1.0,
+    "2022-01-01": 1.0,
+    "2023-01-01": 1.0,
+    "2024-01-01": 1.0,
+    "2025-01-01": 1.0
+   },
+   "first_dated": "2019-01-01",
+   "last_dated": "2025-01-01",
+   "yaml": "parameters/gov/dwp/tax_credits/working_tax_credit/takeup.yaml"
+  },
+  "gov.dwp.universal_credit.takeup_rate": {
+   "benefit": "Universal Credit",
+   "value_2026": 0.55,
+   "assumes_full_take_up": false,
+   "schedule": {
+    "2015-01-01": 0.55
+   },
+   "first_dated": "2015-01-01",
+   "last_dated": "2015-01-01",
+   "yaml": "parameters/gov/dwp/universal_credit/takeup_rate.yaml"
+  },
+  "gov.dwp.pension_credit.takeup": {
+   "benefit": "Pension Credit",
+   "value_2026": 0.7,
+   "assumes_full_take_up": false,
+   "schedule": {
+    "2015-01-01": 0.7
+   },
+   "first_dated": "2015-01-01",
+   "last_dated": "2015-01-01",
+   "yaml": "parameters/gov/dwp/pension_credit/takeup.yaml"
+  },
+  "gov.dwp.JSA.income.takeup": {
+   "benefit": "income-based JSA",
+   "value_2026": 0.56,
+   "assumes_full_take_up": false,
+   "schedule": {
+    "2009-04-06": 0.69,
+    "2012-04-06": 0.67,
+    "2013-04-06": 0.67,
+    "2014-04-06": 0.59,
+    "2015-04-06": 0.56
+   },
+   "first_dated": "2009-04-06",
+   "last_dated": "2015-04-06",
+   "yaml": "parameters/gov/dwp/JSA/income/takeup.yaml"
+  }
+ },
+ "ukmod_assumptions": {
+  "source": "UKMOD Country Report 2023-2030, CeMPA WP 8/26, Table 3.4 (assumed take-up probabilities)",
+  "originating_sources": [
+   "DWP (2020) Income-related benefits: estimates of take-up",
+   "HMRC (2019) Child and Working Tax Credits take-up rates 2017-18",
+   "Scottish Fiscal Commission (December 2024) for devolved payments"
+  ],
+  "transcription_note": "SECOND-HAND. These are UKMOD's stated assumptions, which are themselves drawn from the DWP/HMRC/SFC publications named above, taking the mid-point where a range is published. Recorded as context for the comparison, never as a claim to score against \u2014 the first-hand figures belong to their originators.",
+  "rates": {
+   "Housing Benefit": {
+    "pension_age": 0.85,
+    "working_age_in_work": 0.57,
+    "working_age_not_in_work": 0.96
+   },
+   "Income Support": {
+    "without_children": 0.89,
+    "with_children": 0.92
+   },
+   "Child Tax Credit + Working Tax Credit": {
+    "lone_parents_non_london": 0.95,
+    "couples_with_children_non_london": 0.73,
+    "all_parents_london": 0.81,
+    "scotland": 0.85,
+    "wales": 0.87,
+    "ctc_family_element_only": 0.66,
+    "wtc_no_children": 0.32
+   },
+   "Pension Credit": {
+    "guarantee_incl_savings": 0.69,
+    "savings_only": 0.37
+   }
+  },
+  "mechanism_note": "UKMOD applies take-up at HOUSEHOLD level per benefit, allocating first to units observed receiving in the data and then randomly (extension BTO, on by default). PolicyEngine's are national scalars. The mechanisms differ, so the comparable object is the ASSUMED AGGREGATE RATE, not the algorithm.",
+  "staleness_note": "UKMOD flags its own rates as decaying: DWP and HMRC have not updated working-age take-up statistics since 2021, and CeMPA writes 'we have, as yet, failed to identify a suitable remedy'."
+ },
+ "divergence_axis": "take_up_basis: where PolicyEngine assumes full take-up, it produces an ENTITLEMENT count while DWP administrative figures are a RECEIPT count. A caseload or expenditure comparison across that difference measures non-take-up and would attribute it to the engine. This axis must be named on any such comparison (#59).",
+ "not_a_conclusion": "This registry does NOT claim PolicyEngine's outputs are wrong. policyengine-uk-data applies reported-recipient anchoring during calibration, and weights are fitted to receipt-based DWP/OBR targets, either of which may bring outputs closer than the bare parameter implies. What is recorded here is the ASSUMPTION and its provenance. Establishing output error needs the compute in #76, which is blocked on #128."
+}
