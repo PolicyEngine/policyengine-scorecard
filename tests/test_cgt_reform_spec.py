@@ -131,16 +131,20 @@ def test_the_lane_says_it_has_not_run():
     assert "refuses without an explicit dataset" in SPEC["not_yet_run"]
 
 
-def test_the_pin_was_moved_on_evidence_not_convenience():
-    """The installed engine moved 2.89.2 -> 2.92.0 mid-week. This pin
-    may move because the lane has computed nothing: it records
-    verification, not a computed-at date."""
+def test_the_pin_follows_the_certified_world():
+    """v1 of the re-certification moved this pin to 2.92.0, arguing a
+    lane that has computed nothing is free to pin its verification
+    engine. Too clever: this lane WILL be computed against the
+    certified bundle, and pinning away from it made --resolve refuse
+    there. Verification at an engine you cannot compute at is not
+    useful verification."""
     rc = SPEC["recertification"]
-    assert rc["from"] == "2.89.2" and rc["to"] == "2.92.0"
+    assert SPEC["engine_pin"]["policyengine_uk"] == "2.89.2"
     assert (
-        "may be moved" in SPEC["engine_pin"]["pin_meaning"]
-        or "can be moved" in SPEC["engine_pin"]["pin_meaning"]
+        "follows the certified populace-uk bundle" in SPEC["engine_pin"]["pin_meaning"]
     )
+    assert "THE PIN FOLLOWS THE CERTIFIED WORLD" in rc["correction"]
+    assert "no special case" in rc["correction"]
     # every baseline carries both readings, so the claim is checkable
     for path in SPEC["engine_baseline_2026"]:
         assert path in rc["readings"]
@@ -167,7 +171,7 @@ def test_the_elasticity_finding_survived_the_bump():
     assert "still 0" in SPEC["recertification"]["verdict"]
 
 
-def test_verification_and_compute_versions_are_kept_apart():
+def test_the_bundle_constraint_is_recorded_with_its_source():
     """Self-review caught this: the pin moved to 2.92.0 while the
     certified bundle declares ==2.89.2, so 'verified at' and 'must run
     at' had silently diverged with nothing saying so. A registry that
@@ -178,8 +182,6 @@ def test_verification_and_compute_versions_are_kept_apart():
     assert c["bundle"]["compatible_model_packages"] == [
         {"name": "policyengine-uk", "specifier": "==2.89.2"}
     ]
-    assert SPEC["engine_pin"]["policyengine_uk"] == "2.92.0"
-    assert "VERIFICATION version only" in SPEC["engine_pin"]["pin_meaning"]
     assert "needs a NEW certified bundle, not a pin edit" in c["note"]
 
 
