@@ -14,6 +14,7 @@ describe("countryOf", () => {
     expect(countryOf({ country: "US" })).toBe("US");
     expect(countryOf({ country: "UK" })).toBe("UK");
     expect(countryOf({ country: "BE" })).toBe("BE");
+    expect(countryOf({ country: "NZ" })).toBe("NZ");
   });
 
   test("country scoping filter never drops US-era rows from the US view", () => {
@@ -22,10 +23,12 @@ describe("countryOf", () => {
       { country: "US" as const },
       { country: "UK" as const },
       { country: "BE" as const },
+      { country: "NZ" as const },
     ];
     expect(rows.filter((r) => countryOf(r) === "US")).toHaveLength(2);
     expect(rows.filter((r) => countryOf(r) === "UK")).toHaveLength(1);
     expect(rows.filter((r) => countryOf(r) === "BE")).toHaveLength(1);
+    expect(rows.filter((r) => countryOf(r) === "NZ")).toHaveLength(1);
   });
 });
 
