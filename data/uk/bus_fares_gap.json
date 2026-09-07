@@ -5,9 +5,21 @@
  "fiscal_event": "autumn_budget_2026",
  "registry_rule": "A GAP registry. It stages NO value claims \u2014 the DfT-commissioned evaluation figures belong to their originators (#86/#91) and are harvested in their own mode-1 lane from primary documents. What is recorded here is the engine gap, the evidence for it, and the upstream change that would close it.",
  "engine_pin": {
-  "policyengine_uk": "2.92.0",
-  "resolved_on": "2026-09-03",
-  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal. For a GAP registry the pin matters more than anywhere else: the verdict is only as good as the engine it was searched in. --probe refuses a mismatch."
+  "policyengine_uk": "2.89.2",
+  "searched_on": "2026-09-07",
+  "pin_meaning": "The pin follows the certified populace-uk bundle, which DECLARES policyengine-uk ==2.89.2, because a gap verdict has to be true of the world the scorecard COMPUTES in. v1 of this registry pinned 2.92.0 \u2014 whatever happened to be installed \u2014 and the consequence was concrete: --probe REFUSED to run at the certified engine, so the registry could not be checked in the world it makes claims about. Same distinction as #100, #101 and #126.",
+  "certified_bundle": {
+   "repo_id": "policyengine/populace-uk-private",
+   "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "compatible_model_packages": [
+    {
+     "name": "policyengine-uk",
+     "specifier": "==2.89.2"
+    }
+   ],
+   "read_on": "2026-09-07"
+  },
+  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal."
  },
  "verdict": "not_expressible",
  "policyengine_uk_development_item": true,
@@ -18,8 +30,6 @@
    "gov.contrib.policyengine.economy.transport",
    "gov.dfe.travel_grant",
    "gov.dft",
-   "gov.dft.bus",
-   "gov.dft.bus.fare_allocation_weight_by_age",
    "gov.dft.rail.fare_index",
    "gov.dft.rail.prior_law_fare_index",
    "gov.hmrc.business_rates",
@@ -34,18 +44,15 @@
    "bus_fare_spending",
    "bus_subsidy_spending",
    "dft_subsidy_spending",
-   "household_bus_fare_age_weight",
-   "person_bus_fare_spending",
    "rail_subsidy_spending",
    "rail_usage",
    "transport_consumption"
   ],
   "gov_dft_children": [
-   "bus",
    "rail",
    "spending"
   ],
-  "finding": "gov.dft now has three children: bus, rail and spending. The bus node holds ONE parameter, fare_allocation_weight_by_age, and it is not a policy lever \u2014 see nearest_levers_and_why_they_do_not_work. There is still no bus fare cap, no bus fare index, and no concession parameter anywhere in the tree."
+  "finding": "At the CERTIFIED engine 2.89.2, gov.dft has exactly two children, rail and spending: there is no bus node in the parameter tree at all. At 2.92.0 a gov.dft.bus node exists holding one allocation weight \u2014 recorded under also_searched_at and ruled out by name. Neither engine has a bus fare cap, a bus fare index, or a concession parameter."
  },
  "what_the_engine_does_have": {
   "bus_subsidy_spending": {
@@ -85,6 +92,42 @@
   }
  ],
  "corrections_log": [
-  "v1 was written against 2.89.2 and recorded that gov.dft had exactly two children, rail and spending. At 2.92.0 that is no longer true: gov.dft.bus exists, holding fare_allocation_weight_by_age. The --probe drift check caught this on the first run against the newer engine, which is what it was built for. The VERDICT is unchanged \u2014 the new node is an allocation weight, not a price lever, and bus_subsidy_spending still has no formula \u2014 but the evidence behind it had gone stale, and a stale gap is exactly what this file exists to prevent."
- ]
+  "v1 was written against 2.89.2 and recorded that gov.dft had exactly two children, rail and spending. At 2.92.0 that is no longer true: gov.dft.bus exists, holding fare_allocation_weight_by_age. The --probe drift check caught this on the first run against the newer engine, which is what it was built for. The VERDICT is unchanged \u2014 the new node is an allocation weight, not a price lever, and bus_subsidy_spending still has no formula \u2014 but the evidence behind it had gone stale, and a stale gap is exactly what this file exists to prevent.",
+  "v2 pinned 2.92.0, the installed engine, rather than the certified bundle's ==2.89.2. Because the probe refuses a pin mismatch \u2014 correctly \u2014 that made the registry UNPROBEABLE at the engine the scorecard actually computes in: `--probe` at 2.89.2 exited on the version guard before checking a single reading. The pin now follows the bundle and the 2.92.0 search is kept as corroborating evidence under also_searched_at. Found by self-audit after the PR had already merged."
+ ],
+ "also_searched_at": {
+  "version": "2.92.0",
+  "date": "2026-09-03",
+  "parameter_hits": [
+   "gov.contrib.policyengine.economy.transport",
+   "gov.dfe.travel_grant",
+   "gov.dft",
+   "gov.dft.bus",
+   "gov.dft.bus.fare_allocation_weight_by_age",
+   "gov.dft.rail.fare_index",
+   "gov.dft.rail.prior_law_fare_index",
+   "gov.hmrc.business_rates",
+   "household.consumption.carbon.emissions.transport",
+   "household.consumption.carbon.intensity.transport_consumption",
+   "household.consumption.carbon.production_by_source.other_transport",
+   "household.consumption.total_by_category.transport_consumption"
+  ],
+  "variable_hits": [
+   "baseline_business_rates",
+   "bus_fare_spending",
+   "bus_subsidy_spending",
+   "dft_subsidy_spending",
+   "household_bus_fare_age_weight",
+   "person_bus_fare_spending",
+   "rail_subsidy_spending",
+   "rail_usage",
+   "transport_consumption"
+  ],
+  "gov_dft_children": [
+   "bus",
+   "rail",
+   "spending"
+  ],
+  "finding": "The newer engine ADDS gov.dft.bus (an allocation weight, ruled out below) and does not add any bus policy lever. So the verdict holds on both engines \u2014 which is a stronger claim than holding on one, and is why this reading is kept rather than discarded."
+ }
 }
