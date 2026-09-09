@@ -11,7 +11,6 @@
   "gov.dwp.housing_benefit.takeup": {
    "benefit": "Housing Benefit",
    "value_2026": 1.0,
-   "assumes_full_take_up": true,
    "schedule": {
     "2019-01-01": 1.0,
     "2020-01-01": 1.0,
@@ -23,12 +22,15 @@
    },
    "first_dated": "2019-01-01",
    "last_dated": "2025-01-01",
-   "yaml": "parameters/gov/dwp/housing_benefit/takeup.yaml"
+   "yaml": "parameters/gov/dwp/housing_benefit/takeup.yaml",
+   "engine_description": "Share of eligible Housing Benefit recipients that participate. By definition, this is 100%, because only current claimants are eligible (no new claims).",
+   "closed_cohort": true,
+   "comparable_to_an_open_programme_rate": false,
+   "why_one": "NOT an assumption of full take-up. The engine's own description says the eligible population is restricted to existing claimants \u2014 'By definition, this is 100%, because only current claimants are eligible (no new claims)' \u2014 so participation among them is 100% BY CONSTRUCTION. This is a closed legacy benefit, and the value is a cohort artifact of the denominator, not a modelling choice about behaviour."
   },
   "gov.dwp.income_support.takeup": {
    "benefit": "Income Support",
    "value_2026": 1.0,
-   "assumes_full_take_up": true,
    "schedule": {
     "2019-01-01": 1.0,
     "2020-01-01": 1.0,
@@ -40,12 +42,15 @@
    },
    "first_dated": "2019-01-01",
    "last_dated": "2025-01-01",
-   "yaml": "parameters/gov/dwp/income_support/takeup.yaml"
+   "yaml": "parameters/gov/dwp/income_support/takeup.yaml",
+   "engine_description": "Share of eligible Income Support recipients that participate. By definition, this is 100%, because only current claimants are eligible (no new claims).",
+   "closed_cohort": true,
+   "comparable_to_an_open_programme_rate": false,
+   "why_one": "NOT an assumption of full take-up. The engine's own description says the eligible population is restricted to existing claimants \u2014 'By definition, this is 100%, because only current claimants are eligible (no new claims)' \u2014 so participation among them is 100% BY CONSTRUCTION. This is a closed legacy benefit, and the value is a cohort artifact of the denominator, not a modelling choice about behaviour."
   },
   "gov.dwp.tax_credits.child_tax_credit.takeup": {
    "benefit": "Child Tax Credit",
    "value_2026": 1.0,
-   "assumes_full_take_up": true,
    "schedule": {
     "2019-01-01": 1.0,
     "2020-01-01": 1.0,
@@ -57,12 +62,15 @@
    },
    "first_dated": "2019-01-01",
    "last_dated": "2025-01-01",
-   "yaml": "parameters/gov/dwp/tax_credits/child_tax_credit/takeup.yaml"
+   "yaml": "parameters/gov/dwp/tax_credits/child_tax_credit/takeup.yaml",
+   "engine_description": "Share of eligible Child Tax Credit recipients that participate. By definition, this is 100%, because only current claimants are eligible (no new claims).",
+   "closed_cohort": true,
+   "comparable_to_an_open_programme_rate": false,
+   "why_one": "NOT an assumption of full take-up. The engine's own description says the eligible population is restricted to existing claimants \u2014 'By definition, this is 100%, because only current claimants are eligible (no new claims)' \u2014 so participation among them is 100% BY CONSTRUCTION. This is a closed legacy benefit, and the value is a cohort artifact of the denominator, not a modelling choice about behaviour."
   },
   "gov.dwp.tax_credits.working_tax_credit.takeup": {
    "benefit": "Working Tax Credit",
    "value_2026": 1.0,
-   "assumes_full_take_up": true,
    "schedule": {
     "2019-01-01": 1.0,
     "2020-01-01": 1.0,
@@ -74,34 +82,41 @@
    },
    "first_dated": "2019-01-01",
    "last_dated": "2025-01-01",
-   "yaml": "parameters/gov/dwp/tax_credits/working_tax_credit/takeup.yaml"
+   "yaml": "parameters/gov/dwp/tax_credits/working_tax_credit/takeup.yaml",
+   "engine_description": "Share of eligible Working Tax Credit recipients that participate. By definition, this is 100%, because only current claimants are eligible (no new claims).",
+   "closed_cohort": true,
+   "comparable_to_an_open_programme_rate": false,
+   "why_one": "NOT an assumption of full take-up. The engine's own description says the eligible population is restricted to existing claimants \u2014 'By definition, this is 100%, because only current claimants are eligible (no new claims)' \u2014 so participation among them is 100% BY CONSTRUCTION. This is a closed legacy benefit, and the value is a cohort artifact of the denominator, not a modelling choice about behaviour."
   },
   "gov.dwp.universal_credit.takeup_rate": {
    "benefit": "Universal Credit",
    "value_2026": 0.55,
-   "assumes_full_take_up": false,
    "schedule": {
     "2015-01-01": 0.55
    },
    "first_dated": "2015-01-01",
    "last_dated": "2015-01-01",
-   "yaml": "parameters/gov/dwp/universal_credit/takeup_rate.yaml"
+   "yaml": "parameters/gov/dwp/universal_credit/takeup_rate.yaml",
+   "engine_description": "Take-up rate of Universal Credit.",
+   "closed_cohort": false,
+   "comparable_to_an_open_programme_rate": true
   },
   "gov.dwp.pension_credit.takeup": {
    "benefit": "Pension Credit",
    "value_2026": 0.7,
-   "assumes_full_take_up": false,
    "schedule": {
     "2015-01-01": 0.7
    },
    "first_dated": "2015-01-01",
    "last_dated": "2015-01-01",
-   "yaml": "parameters/gov/dwp/pension_credit/takeup.yaml"
+   "yaml": "parameters/gov/dwp/pension_credit/takeup.yaml",
+   "engine_description": "Share of eligible Pension Credit recipients that participate.",
+   "closed_cohort": false,
+   "comparable_to_an_open_programme_rate": true
   },
   "gov.dwp.JSA.income.takeup": {
    "benefit": "income-based JSA",
    "value_2026": 0.56,
-   "assumes_full_take_up": false,
    "schedule": {
     "2009-04-06": 0.69,
     "2012-04-06": 0.67,
@@ -111,7 +126,10 @@
    },
    "first_dated": "2009-04-06",
    "last_dated": "2015-04-06",
-   "yaml": "parameters/gov/dwp/JSA/income/takeup.yaml"
+   "yaml": "parameters/gov/dwp/JSA/income/takeup.yaml",
+   "engine_description": "Share of eligible Income-based Jobseeker's Allowance recipients that participate.",
+   "closed_cohort": false,
+   "comparable_to_an_open_programme_rate": true
   }
  },
  "ukmod_assumptions": {
@@ -147,8 +165,11 @@
    }
   },
   "mechanism_note": "UKMOD applies take-up at HOUSEHOLD level per benefit, allocating first to units observed receiving in the data and then randomly (extension BTO, on by default). PolicyEngine's are national scalars. The mechanisms differ, so the comparable object is the ASSUMED AGGREGATE RATE, not the algorithm.",
-  "staleness_note": "UKMOD flags its own rates as decaying: DWP and HMRC have not updated working-age take-up statistics since 2021, and CeMPA writes 'we have, as yet, failed to identify a suitable remedy'."
+  "staleness_note": "UKMOD flags its own rates as decaying: DWP and HMRC have not updated working-age take-up statistics since 2021, and CeMPA writes 'we have, as yet, failed to identify a suitable remedy'.",
+  "comparability_note": "UKMOD models these as OPEN programmes on a 2023/24 FRS base, so its Housing Benefit, Income Support and tax-credit rates are not comparable with PolicyEngine's closed-cohort 1.0 values. Only the Pension Credit rows are a like-for-like comparison on the UKMOD side."
  },
- "divergence_axis": "take_up_basis: where PolicyEngine assumes full take-up, it produces an ENTITLEMENT count while DWP administrative figures are a RECEIPT count. A caseload or expenditure comparison across that difference measures non-take-up and would attribute it to the engine. This axis must be named on any such comparison (#59).",
- "not_a_conclusion": "This registry does NOT claim PolicyEngine's outputs are wrong. policyengine-uk-data applies reported-recipient anchoring during calibration, and weights are fitted to receipt-based DWP/OBR targets, either of which may bring outputs closer than the bare parameter implies. What is recorded here is the ASSUMPTION and its provenance. Establishing output error needs the compute in #76, which is blocked on #128."
+ "not_a_conclusion": "This registry does NOT claim PolicyEngine's outputs are wrong, and after the #131 review it does not claim its take-up assumptions are deficient either. Four of the seven parameters are structural, not assumptions. For the three that are assumptions, a difference in an input is not an error in an output: policyengine-uk-data applies reported-recipient anchoring and fits weights to receipt-based DWP/OBR targets, either of which may move the result. Establishing output error needs #76.",
+ "the_finding": "NARROWED after review. v1 of this registry reported that PolicyEngine 'assumes full take-up' for Housing Benefit, Income Support, Child Tax Credit and Working Tax Credit, and compared those 1.0 values with UKMOD's non-take-up rates of 0.32-0.96. That was WRONG, and unfair to PolicyEngine. All four are CLOSED legacy benefits: the engine restricts eligibility to existing claimants, so 1.0 is definitional, not an assumption. Comparing it to an open-programme rate is not like for like. Caught by DTrim99 on PR #131; the rationale was in the parameters' own descriptions, which v1 read the values of without reading.\n\nWhat survives is narrower and genuine. Three parameters are real assumed rates on programmes that are open, and carry no closed-cohort note: Universal Credit 0.55, Pension Credit 0.70, income-based JSA 0.56. Universal Credit is the substantive one \u2014 0.55 against the 0.80 the Resolution Foundation states for the shared Landman/PERU model and the 0.82 recorded for that model in the Scottish Government's appendix. That is a 25-27 point spread on the largest working-age benefit, between open-programme rates that ARE comparable.",
+ "comparability_rule": "A closed-cohort parameter may NOT be compared with an open-programme take-up rate. The denominators differ: one is participation among existing claimants, the other take-up among everyone entitled. The validator refuses a comparison that crosses that line.",
+ "divergence_axis": "take_up_denominator: a closed-cohort parameter counts participation among EXISTING CLAIMANTS, while an open-programme rate counts take-up among everyone ENTITLED. Any comparison that crosses those denominators measures the difference in population, not in behaviour, and must be refused rather than named (#59)."
 }
