@@ -74,6 +74,8 @@ export interface Row {
   pe_period: string | null;
   status: Status;
   pe_construction: string | null;
+  /** Model variables the PE value was computed from; [] when there is no value. */
+  policyengine_variables?: string[];
   ratio: number | null;
   delta: number | null;
   annotations: string[];
