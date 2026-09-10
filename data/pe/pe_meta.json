@@ -181,5 +181,37 @@
     "HISPANIC",
     "OTHER",
     "WHITE"
-  ]
+  ],
+  "program_variables": {
+    "snap": [
+      "snap",
+      "is_snap_eligible"
+    ],
+    "ssi": [
+      "ssi",
+      "is_ssi_eligible"
+    ],
+    "tanf": [
+      "tanf",
+      "is_demographic_tanf_eligible"
+    ],
+    "wic": [
+      "wic",
+      "is_wic_eligible"
+    ],
+    "eitc": [
+      "eitc",
+      "eitc_child_count"
+    ],
+    "ctc_refund": [
+      "refundable_ctc"
+    ],
+    "housing": [
+      "housing_assistance",
+      "is_eligible_for_housing_assistance"
+    ],
+    "spm_poverty": [
+      "spm_unit_is_in_spm_poverty"
+    ]
+  }
 }

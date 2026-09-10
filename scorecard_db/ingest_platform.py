@@ -172,6 +172,7 @@ def ingest(
                 computed_at=f"{comp.get('built', '')}T12:00:00",
                 annotations=row.get("annotations", []),
                 baseline_key=_CURRENT_LAW_KEY,
+                policyengine_variables=row.get("policyengine_variables") or [],
             )
         )
     if unmatched:

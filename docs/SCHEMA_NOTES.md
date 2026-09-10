@@ -48,7 +48,13 @@ the reconciliation:
    `pe_construction` recipe plus **annotation ids** resolving to a registry
    where every annotation has a `basis` (assessment doc §, engine metadata
    recorded at runtime, issue link, or measured diagnostic). That registry is
-   what enforces the no-fabricated-mechanisms rule at scale.
+   what enforces the no-fabricated-mechanisms rule at scale. Alongside the
+   prose recipe, every row with a PE value carries `policyengine_variables`:
+   the model variable names the value was computed from, recorded by the
+   grid run (`pe_meta.json` → `program_variables`). It is the join key a
+   consumer uses to match a reform, traced to the variables it moves, to
+   the claims that measure those variables — the same key the calibration
+   dashboard exposes per target. Rows without a PE value carry `[]`.
 
 8. **Counterfactual runs must log toggle verification.** The
    `would_claim_wic` bug (RECONCILIATION.md #2) was caught only because the
