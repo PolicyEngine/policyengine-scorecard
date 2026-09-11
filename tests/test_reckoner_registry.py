@@ -365,3 +365,36 @@ def test_the_run_writes_a_checkable_manifest():
     src = inspect.getsource(rk.write_manifest)
     assert "sha256" in src and "reconciliation" in src
     assert "staged_sha256" in src
+
+
+def test_the_pin_records_a_computed_at_version_and_does_not_move():
+    """The 14 committed reckoner results were computed at 2.89.2
+    (run_id campaign-20260802-reckoner-t2). Moving this pin would claim
+    they ran on an engine they did not, so re-verification against a
+    newer engine is recorded separately."""
+    pin = REGISTRY["engine_pin"]
+    assert pin["policyengine_uk"] == "2.89.2"
+    assert "COMPUTED at" in pin["pin_meaning"]
+    assert "does NOT move" in pin["pin_meaning"]
+
+
+def test_the_paths_were_reverified_against_the_newer_engine():
+    """Not stale: every path still resolves at 2.92.0. That is a
+    different claim from 'the results are 2.92.0 results', which they
+    are not."""
+    rv = REGISTRY["paths_reverified"]
+    assert rv["at_version"] == "2.92.0"
+    assert rv["paths_checked"] == 27
+    assert rv["unresolvable"] == []
+    assert "#77" in rv["finding"]
+
+
+def test_the_bundle_independently_requires_the_pinned_engine():
+    """Two reasons for one number: the pin is the engine the 14 results
+    were computed at, AND the engine the certified data declares it is
+    compatible with."""
+    ev = REGISTRY["paths_reverified"]["bundle_evidence"]
+    assert ev["bundle"]["compatible_model_packages"] == [
+        {"name": "policyengine-uk", "specifier": "==2.89.2"}
+    ]
+    assert REGISTRY["engine_pin"]["policyengine_uk"] == "2.89.2"
