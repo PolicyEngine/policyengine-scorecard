@@ -21,6 +21,7 @@ Chain order is dependency order and is part of the contract:
                 attached (derived from the DB, so the feed can't drift)
     uk_externals five UK primary-source families + Chronicle staging
     uk_deductions FRR family
+    dwp_pensions  workplace pension participation (ASHE, GB)
     lpc_minimum_wage  LPC coverage + bite (jobs, not people)
     hmt_distributional    HMT Budget distributional analysis (zero claims,
                           declared: 132 chart cells, none digitized)
@@ -64,6 +65,7 @@ from . import (
     ingest_solo,
     ingest_uk_deductions,
     ingest_uk_externals,
+    ingest_dwp_pensions,
     ingest_lpc_minimum_wage,
     ingest_uk_thinktanks,
     ingest_ons_etb,
@@ -157,6 +159,9 @@ def build(db_path: Path) -> dict:
         ),
         ("uk_externals", lambda: ingest_uk_externals.ingest(db_path)),
         ("uk_deductions", lambda: ingest_uk_deductions.ingest(db_path)),
+        # DWP workplace pension participation (#98): the first external
+        # validation of any pensions quantity in the UK scorecard.
+        ("dwp_pensions", lambda: ingest_dwp_pensions.ingest(db_path)),
         # Low Pay Commission (#88): the first external validation of
         # PE-UK's minimum-wage machinery.
         ("lpc_minimum_wage", lambda: ingest_lpc_minimum_wage.ingest(db_path)),

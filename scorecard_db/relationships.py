@@ -222,6 +222,20 @@ _HMRC_RECKONER_HELD = (
     "nothing in pe-uk-data consumes them.",
 )
 
+# DWP workplace pension participation (#98). ASHE-derived, like the LPC
+# lane, so the survey difference is the first divergence axis.
+_DWP_PENSIONS_HELD = (
+    CR.HELD_OUT,
+    "DWP's workplace pension participation estimates are derived from ONS "
+    "ASHE, an employer survey of jobs, where the certified "
+    "policyengine-uk world is FRS-based; no pe-uk-data target and no "
+    "policyengine-uk parameter is fitted to a participation rate "
+    "(consumption surfaces read 2026-08-25 at the certified pins). Note "
+    "the engine models pension contributions and their relief but has no "
+    "pension commencement lump sum at all, so the pensions question this "
+    "scorecard can ask is narrower than the pensions system.",
+)
+
 # Low Pay Commission (#88). Built on ASHE — an employer survey of JOBS —
 # where the certified PE-UK world is FRS-based, a household survey. That
 # difference is the first divergence axis, not an afterthought.
@@ -365,6 +379,8 @@ def uk_relationship(source, metric, program=None, kind=None):
         if program in OBR_CONSUMED_WELFARE_PROGRAMS:
             return _OBR_CONSUMED
         return _OBR_UNCONSUMED
+    if source == "dwp_pensions":
+        return _DWP_PENSIONS_HELD
     if source == "lpc":
         return _LPC_HELD
     if source == "ons_etb":

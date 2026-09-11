@@ -55,6 +55,26 @@ DISTINCT: frozenset[tuple[str, str]] = frozenset(
         ("dwp_takeup:housing_benefit_pensioners", "obr:housing_benefit_on_jsa"),
         ("dwp_takeup:housing_benefit_pensioners", "ukmod:housing_benefit"),
         ("dwp_takeup:benefit_units", "ukmod:families"),
+        # DWP's auto-enrolment ELIGIBILITY earnings bands are defined by
+        # the enrolment trigger, not by an income distribution, so they
+        # are not UKMOD's quantiles nor anyone's deciles.
+        ("dwp_pensions:gbp_10k_20k", "ukmod:q1"),
+        ("dwp_pensions:gbp_70k_plus", "ukmod:q5"),
+        # DISCHARGED (#93 landed, so `lpc` is registered and there is
+        # now something on the other side to check against). DWP's age
+        # bands are auto-enrolment ranges; LPC's are wage-rate
+        # categories. They are different partitions of age and must
+        # never be unified or summed.
+        #
+        # Only the genuinely confusable pair is asserted, not the
+        # 4x9 cross-product: LPC's age_25_plus and DWP's age_22_25 both
+        # name 25, so "the 25 band" could plausibly be read as either.
+        # The other LPC categories (age_16_17, age_18_20) fall entirely
+        # below DWP's lowest band, which starts at 22, and age_16_plus
+        # is an all-ages total — none of those could be mistaken for a
+        # DWP band, and asserting them would pad the ledger with pairs
+        # nobody would confuse, which is its own kind of overclaiming.
+        ("lpc:age_25_plus", "dwp_pensions:age_22_25"),
         # A JOB is not a person: one person can hold two. ASHE counts
         # employer jobs, every other population here counts people or
         # households, and the two must never be substituted.
@@ -672,6 +692,48 @@ _identity(
     ["adult_rate", "age_band_rate", "all_nmw_nlw_rates"],
 )
 _identity("lpc", "unit", ["jobs", "percent"])
+
+
+# --- DWP workplace pension participation (#98) -------------------------------
+# Geography is GB, not UK: ASHE excludes Northern Ireland, and the two
+# are kept apart for the same reason #91 keeps IFS's coverage-restricted
+# analyses apart from the UK. The earnings and age bands are the
+# publication's own and are closed per source — DWP's auto-enrolment
+# eligibility bands are not UKMOD's income groups and not LPC's age
+# bands, even where the numbers coincide.
+_identity("dwp_pensions", "geography", ["GB"])
+_identity("dwp_pensions", "program", ["workplace_pension"])
+_identity("dwp_pensions", "sector", ["public", "private", "all"])
+_identity(
+    "dwp_pensions",
+    "earnings_band",
+    [
+        "gbp_10k_20k",
+        "gbp_20k_30k",
+        "gbp_30k_40k",
+        "gbp_40k_50k",
+        "gbp_50k_60k",
+        "gbp_60k_70k",
+        "gbp_70k_plus",
+    ],
+)
+_identity(
+    "dwp_pensions",
+    "age_band",
+    [
+        "age_22_25",
+        "age_26_30",
+        "age_31_35",
+        "age_36_40",
+        "age_41_45",
+        "age_46_50",
+        "age_51_55",
+        "age_56_60",
+        "age_61_65",
+    ],
+)
+_identity("dwp_pensions", "region", _UK_REGIONS)
+_identity("dwp_pensions", "unit", ["share"])
 
 
 def canon(source: str, axis: str, value: str) -> str:
