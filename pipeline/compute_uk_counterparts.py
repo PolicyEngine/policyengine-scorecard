@@ -1136,40 +1136,66 @@ def compute_run(run_name, fullpart):
     # flag or the anchor is unavailable, the cut goes pe_gap; the
     # unrestricted housing_benefit line above never stands in for it.
     program, concept, entity, geo = PENSION_AGE_HB_LINE
-    sp_age = person_bool("is_SP_age")
-    if sp_age is None:
-        for metric in ("recipient_count", "benefit_spending"):
-            pe_gap(run_name, program, metric, "total", geo, "is_SP_age")
+    if fullpart and program in FULLPART_UNEXPRESSIBLE:
+        # Same receipt-gating as the unrestricted HB line above, and the
+        # same verdict. This path used to skip the check because it is
+        # emitted outside the BENEFIT_LINES loop, so a program DECLARED
+        # unexpressible still published a number — which then fell to
+        # zero under forced take-up and tripped assert_fullpart_moved
+        # (the first real run, #128). The declaration lives in one place;
+        # every emission path must consult it.
+        for metric in TAKEUP_SENSITIVE_METRICS:
+            pe_gap(
+                run_name,
+                program,
+                metric,
+                "total",
+                geo,
+                concept,
+                reason=FULLPART_UNEXPRESSIBLE[program],
+            )
     else:
-        try:
-            pension_age_bu = first_person_anchor(sim, entity, sp_age).astype(bool)
-        except Exception as e:
-            log(f"  WARNING: no {entity}-level SP-age anchor ({e}); {program} pe_gap")
-            pension_age_bu = None
-        if pension_age_bu is None:
+        sp_age = person_bool("is_SP_age")
+        if sp_age is None:
             for metric in ("recipient_count", "benefit_spending"):
-                pe_gap(
-                    run_name, program, metric, "total", geo, f"sp_age_anchor_{entity}"
-                )
+                pe_gap(run_name, program, metric, "total", geo, "is_SP_age")
         else:
-            weighted(
-                concept,
-                entity,
-                geo,
-                "count_positive",
-                program,
-                "recipient_count",
-                extra_mask=pension_age_bu,
-            )
-            weighted(
-                concept,
-                entity,
-                geo,
-                "sum",
-                program,
-                "benefit_spending",
-                extra_mask=pension_age_bu,
-            )
+            try:
+                pension_age_bu = first_person_anchor(sim, entity, sp_age).astype(bool)
+            except Exception as e:
+                log(
+                    f"  WARNING: no {entity}-level SP-age anchor ({e}); {program} pe_gap"
+                )
+                pension_age_bu = None
+            if pension_age_bu is None:
+                for metric in ("recipient_count", "benefit_spending"):
+                    pe_gap(
+                        run_name,
+                        program,
+                        metric,
+                        "total",
+                        geo,
+                        f"sp_age_anchor_{entity}",
+                    )
+            else:
+                weighted(
+                    concept,
+                    entity,
+                    geo,
+                    "count_positive",
+                    program,
+                    "recipient_count",
+                    extra_mask=pension_age_bu,
+                )
+                weighted(
+                    concept,
+                    entity,
+                    geo,
+                    "sum",
+                    program,
+                    "benefit_spending",
+                    extra_mask=pension_age_bu,
+                )
 
     # hbai poverty counterparts: persons in relative poverty, BHC and
     # AHC, by age group — every numerator cut paired with its own
