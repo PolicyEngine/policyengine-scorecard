@@ -10,6 +10,8 @@ count as "ok", and the module imports without the engine installed.
 
 import ast
 import inspect
+import re
+import textwrap
 
 import pytest
 
@@ -693,3 +695,70 @@ def test_the_run_records_which_harness_actually_served():
     assert '"harness": harness' in build
     assert '"engine_version": importlib.metadata.version("policyengine-uk")' in build
     assert "explicit certified artifact (sha256-verified)" in build
+
+
+# --- fullpart unexpressible: every emission path must consult it -----------
+
+
+def test_every_unexpressible_program_is_gapped_on_every_emission_path():
+    """#128. housing_benefit_pensioners was DECLARED unexpressible and
+    still published a number, because the check lived only in the
+    BENEFIT_LINES loop while that program is emitted on its own path.
+    The declaration is in one place; every path must consult it."""
+    # Counting a substring would let a COMMENT mentioning
+    # FULLPART_UNEXPRESSIBLE satisfy the pin without a real guard
+    # (DTrim99 on #135). Walk the AST and count actual `if` tests, so
+    # the pin cannot be spoofed by prose.
+    tree = ast.parse(textwrap.dedent(inspect.getsource(uk.compute_run)))
+    guards = [
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, ast.If)
+        and any(
+            isinstance(n, ast.Name) and n.id == "FULLPART_UNEXPRESSIBLE"
+            for n in ast.walk(node.test)
+        )
+    ]
+    emitted_outside_benefit_lines = {
+        p
+        for p in uk.FULLPART_UNEXPRESSIBLE
+        if p not in {b[0] for b in uk.BENEFIT_LINES}
+    }
+    # one guard for the BENEFIT_LINES loop, plus one per program that is
+    # emitted somewhere else
+    assert len(guards) >= 1 + len(emitted_outside_benefit_lines), (
+        f"{emitted_outside_benefit_lines} are emitted outside BENEFIT_LINES "
+        "and need their own FULLPART_UNEXPRESSIBLE guard"
+    )
+
+
+def test_pension_age_hb_is_declared_unexpressible_and_guarded():
+    assert uk.PENSION_AGE_HB_LINE[0] == "housing_benefit_pensioners"
+    assert uk.PENSION_AGE_HB_LINE[0] in uk.FULLPART_UNEXPRESSIBLE
+    assert uk.PENSION_AGE_HB_LINE[0] not in {b[0] for b in uk.BENEFIT_LINES}
+    src = inspect.getsource(uk.compute_run)
+    # the guard sits on the pension-age path, before the SP-age anchor
+    i_guard = src.index("PENSION_AGE_HB_LINE")
+    i_anchor = src.index('person_bool("is_SP_age")')
+    assert "in FULLPART_UNEXPRESSIBLE" in src[i_guard:i_anchor]
+
+
+def test_the_guard_does_not_skip_the_rows_that_follow():
+    """The first fix used an early `return`, which would have silently
+    dropped the HBAI poverty counterparts emitted after the HB block."""
+    src = inspect.getsource(uk.compute_run)
+    i_guard = src.index("PENSION_AGE_HB_LINE")
+    i_hbai = src.index("hbai poverty counterparts")
+    between = src[i_guard:i_hbai]
+    # Any depth, not just the 8-space one the first version
+    # matched (DTrim99 on #135): a return nested deeper would
+    # skip the same rows.
+    assert re.search(r"\n\s+return\b", between) is None
+    assert "else:" in between
+
+
+def test_unexpressible_programs_are_never_in_the_movement_contract():
+    """A program that cannot be built must not also be required to move
+    — that would force the wrong-direction number back in."""
+    for program in uk.FULLPART_UNEXPRESSIBLE:
+        assert program not in uk.TAKEUP_VALIDATED_PROGRAMS
