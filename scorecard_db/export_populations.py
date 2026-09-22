@@ -121,6 +121,7 @@ def export(
                 "data_bundle": r["data_bundle"],
                 "release": release_label(r["data_bundle"]),
                 "construction": r["pe_construction"],
+                "policyengine_variables": json.loads(r["policyengine_variables"]),
                 "computed_at": r["computed_at"],
                 "annotations": json.loads(r["annotations"]),
                 "baseline": labels.get(r["baseline_key"]),
@@ -131,7 +132,7 @@ def export(
             for r in db.conn.execute(
                 """SELECT computed_value, status, engine_version,
                           data_bundle, pe_construction, computed_at,
-                          annotations, baseline_key
+                          annotations, baseline_key, policyengine_variables
                    FROM pe_results WHERE claim_id = ?
                    ORDER BY computed_at, id""",
                 (c["claim_id"],),
@@ -147,6 +148,7 @@ def export(
                 "data_bundle": "",
                 "release": "",
                 "construction": "",
+                "policyengine_variables": [],
                 "computed_at": "",
                 "annotations": [],
                 "baseline": None,

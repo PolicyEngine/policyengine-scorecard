@@ -707,6 +707,9 @@ class PEResult:
     computed_at: str = ""  # ISO timestamp, caller-supplied
     annotations: list = field(default_factory=list)
     baseline_key: Optional[str] = None  # baseline actually executed
+    # Model variables the value was computed from: the join key for
+    # matching a reform (traced to the variables it moves) to this claim.
+    policyengine_variables: list = field(default_factory=list)
 
     def __post_init__(self):
         self.status = ComparisonStatus(self.status)

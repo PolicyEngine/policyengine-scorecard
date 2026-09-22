@@ -149,6 +149,7 @@ def test_export_shape_and_guards(tmp_path, small_db):
         "data_bundle": "",
         "release": "",
         "construction": "",
+        "policyengine_variables": [],
         "computed_at": "",
         "annotations": [],
         "baseline": None,

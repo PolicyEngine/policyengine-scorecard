@@ -57,6 +57,7 @@ from pathlib import Path
 from .db import LANE_SQL, SCORES_SQL, ScorecardDB
 from .harvest import REPO, finish, policy_ref, with_baseline_condition
 from .models import ExternalScore, Metric, ReformRef, TimeBasis, UnitConcept
+from .engines import engine_of
 from .relationships import uk_relationship
 from .uk_aliases import canon
 
@@ -335,6 +336,43 @@ def _drop(acct: dict, fam_stats: dict, reason_key: str, reason: str) -> None:
     fam_stats["dropped"] += 1
 
 
+def _source_model(source: str, row: dict) -> str:
+    """The ENGINE behind a modelled claim, never the publisher (#132).
+
+    Falling back to the source slug is what put "resolution_foundation"
+    in this column, losing a fact the harvest had already established:
+    RF's distributional work runs on the IPPR / Landman / PERU
+    tax-transfer model, which IPPR, JRF, NEF and Legatum also use. Two
+    publishers sharing an engine are not independent evidence about each
+    other, and the column is where a consumer would look to find that
+    out.
+    """
+    declared = row.get("source_model")
+    engine = engine_of(source)
+    if engine is not None:
+        # The registry wins over a staged value for a source known to
+        # publish simulation. RF's rows declare "resolution_foundation",
+        # which is the publisher; the engine is the shared Landman/PERU
+        # tax-transfer model, and that is what a consumer needs in order
+        # to see that RF and IPPR are not independent.
+        if declared and declared not in (source, engine):
+            raise ValueError(
+                f"{source}: staged source_model {declared!r} contradicts the "
+                f"registered engine {engine!r}. One of them is wrong — fix "
+                "the row or engines.MODEL_OUTPUT_SOURCES, do not let both "
+                "stand."
+            )
+        return engine
+    if declared:
+        return declared
+    raise ValueError(
+        f"{source}: no engine declared and none registered. A modelled claim "
+        "must name the engine that produced it — add the source to "
+        "engines.MODEL_OUTPUT_SOURCES, or set source_model on the row if it "
+        "is not simulation output."
+    )
+
+
 def _score(row: dict, source: str, metric: Metric) -> ExternalScore:
     unit_label = row.get("unit_concept") or row.get("proposed_unit")
     if unit_label is None:
@@ -385,7 +423,7 @@ def _score(row: dict, source: str, metric: Metric) -> ExternalScore:
         conditions=cond,
         reform=reform,
         calibration_relationship=uk_relationship(source, metric)[0],
-        source_model=row.get("source_model") or source,
+        source_model=_source_model(source, row),
         source_column=row.get("source_column") or "",
         publication=row.get("publication") or {},
         value_kind=row.get("value_kind") or unit.value,

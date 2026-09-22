@@ -66,7 +66,7 @@ ALL_FLAGS = [
 WIC_GATE = "would_claim_wic"
 
 rows = []
-meta = {"year": YEAR, "runs": {}, "variables": {}}
+meta = {"year": YEAR, "runs": {}, "variables": {}, "program_variables": {}}
 
 
 def emit(run, program, metric, subgroup, geo, value):
@@ -80,6 +80,17 @@ def emit(run, program, metric, subgroup, geo, value):
             "value": float(value),
         }
     )
+
+
+def record_program_vars(program, *names):
+    """The model variables a program's rows are computed from — the join
+    key a consumer needs to match a reform to this program (a reform is
+    traced to the variables it moves; this says which variables the
+    scorecard measures). Kept per program, in first-seen order."""
+    seen = meta["program_variables"].setdefault(program, [])
+    for name in names:
+        if name and name not in seen:
+            seen.append(name)
 
 
 def record_var(vs, name):
@@ -296,6 +307,7 @@ def analyze(run_name, flags_true):
     try:
         for v in ["is_snap_eligible", "snap"]:
             record_var(vs, v)
+        record_program_vars("snap", "snap", "is_snap_eligible")
         elig = sim.calculate("is_snap_eligible", YEAR, map_to="person") > 0
         part = sim.calculate("snap", YEAR, map_to="person") > 0
         person_program("snap", elig, part)
@@ -315,6 +327,7 @@ def analyze(run_name, flags_true):
     try:
         for v in ["ssi", "is_ssi_eligible"]:
             record_var(vs, v)
+        record_program_vars("ssi", "ssi", "is_ssi_eligible")
         ssi_amt = sim.calculate("ssi", YEAR)
         part = ssi_amt > 0
         elig_broad = sim.calculate("is_ssi_eligible", YEAR) > 0
@@ -348,6 +361,7 @@ def analyze(run_name, flags_true):
     try:
         for v in ["tanf", "is_demographic_tanf_eligible"]:
             record_var(vs, v)
+        record_program_vars("tanf", "tanf", "is_demographic_tanf_eligible")
         elig = sim.calculate("is_demographic_tanf_eligible", YEAR, map_to="person") > 0
         part = sim.calculate("tanf", YEAR, map_to="person") > 0
         person_program("tanf", elig, part)
@@ -367,6 +381,7 @@ def analyze(run_name, flags_true):
     try:
         for v in ["wic", "is_wic_eligible", WIC_GATE]:
             record_var(vs, v)
+        record_program_vars("wic", "wic", "is_wic_eligible")
         wic_amt = sim.calculate("wic", YEAR)
         elig = sim.calculate("is_wic_eligible", YEAR) > 0
         part = wic_amt > 0
@@ -395,6 +410,7 @@ def analyze(run_name, flags_true):
         tu_state_np = {s: tu_state == s for s in states}
         for prog, var in [("eitc", "eitc"), ("ctc_refund", "refundable_ctc")]:
             record_var(vs, var)
+            record_program_vars(prog, var)
             amt = sim.calculate(var, YEAR)
             part = amt > 0
             emit(
@@ -425,6 +441,7 @@ def analyze(run_name, flags_true):
         cc_var = pick(vs, ["eitc_child_count", "count_eitc_qualifying_children"])
         if cc_var:
             record_var(vs, cc_var)
+            record_program_vars("eitc", cc_var)
             cc = np.asarray(sim.calculate(cc_var, YEAR).values, dtype=float)
             eitc_part = sim.calculate("eitc", YEAR) > 0
             emit(
@@ -451,6 +468,9 @@ def analyze(run_name, flags_true):
     try:
         for v in ["housing_assistance", "is_eligible_for_housing_assistance"]:
             record_var(vs, v)
+        record_program_vars(
+            "housing", "housing_assistance", "is_eligible_for_housing_assistance"
+        )
         su_state = first_person_anchor_state(sim, "spm_unit", person_state)
         su_state_np = {s: su_state == s for s in states}
         elig = sim.calculate("is_eligible_for_housing_assistance", YEAR) > 0
@@ -495,6 +515,8 @@ def analyze(run_name, flags_true):
     try:
         pov_var = pick(vs, ["spm_unit_is_in_spm_poverty", "in_poverty"])
         record_var(vs, pov_var)
+        # Emitted under "_poverty"; externals name the program spm_poverty.
+        record_program_vars("spm_poverty", pov_var)
         poor = sim.calculate(pov_var, YEAR, map_to="person") > 0
         for sub, m in [("total", None), ("child", age < 18)]:
             emit(
@@ -559,6 +581,8 @@ def main():
         if meta_path.exists():
             prior_meta = json.loads(meta_path.read_text())
             meta["variables"].update(prior_meta.get("variables", {}))
+            for k, v in prior_meta.get("program_variables", {}).items():
+                meta["program_variables"].setdefault(k, v)
             for k, v in prior_meta.get("runs", {}).items():
                 if k not in selected:
                     meta["runs"][k] = v

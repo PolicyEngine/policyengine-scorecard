@@ -1,3 +1,4 @@
+import json
 from dataclasses import replace
 import pytest
 
@@ -882,3 +883,59 @@ def test_stale_view_definition_is_rebuilt(tmp_path):
     cols = {r[1] for r in db.conn.execute("PRAGMA table_info(comparisons)")}
     db.close()
     assert "claim_id" in cols and "not_the_view" not in cols
+
+
+class TestPolicyEngineVariables:
+    def test_variables_round_trip_through_view_and_default_empty(self, tmp_path):
+        db = ScorecardDB(tmp_path / "v.db")
+        s = score()
+        db.upsert_scores([s])
+        db.add_results(
+            [
+                PEResult(
+                    claim_id=s.claim_id(),
+                    computed_value=1.0,
+                    status="comparable",
+                    engine_version="1",
+                    data_bundle="b",
+                    computed_at="2026-09-10T00:00",
+                    policyengine_variables=["refundable_ctc"],
+                )
+            ]
+        )
+        row = db.comparisons(source="urban_sotsn")[0]
+        assert json.loads(row["policyengine_variables"]) == ["refundable_ctc"]
+
+        # A result that names nothing stores an empty list, never NULL.
+        db.add_results(
+            [
+                PEResult(
+                    claim_id=s.claim_id(),
+                    computed_value=2.0,
+                    status="comparable",
+                    engine_version="1",
+                    data_bundle="b",
+                    computed_at="2026-09-11T00:00",
+                )
+            ]
+        )
+        row = db.comparisons(source="urban_sotsn")[0]
+        assert json.loads(row["policyengine_variables"]) == []
+
+    def test_pre_existing_file_gains_the_column(self, tmp_path):
+        # A file written before the column existed: build one with the
+        # current schema, then take the column away the way an old file
+        # would lack it, and reopen.
+        import sqlite3
+
+        path = tmp_path / "old.db"
+        ScorecardDB(path).close()
+        with sqlite3.connect(path) as conn:
+            conn.executescript(
+                "DROP VIEW IF EXISTS comparisons;"
+                "ALTER TABLE pe_results DROP COLUMN policyengine_variables;"
+            )
+        db = ScorecardDB(path)
+        cols = {r["name"] for r in db.conn.execute("PRAGMA table_info(pe_results)")}
+        assert "policyengine_variables" in cols
+        db.close()

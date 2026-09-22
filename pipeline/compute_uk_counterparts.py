@@ -109,7 +109,10 @@ tests/test_uk_pipeline_registry.py.
 """
 
 import gc
+import hashlib
+import importlib.metadata
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -611,6 +614,80 @@ def restricted_mask(masks, entity, geo):
     return mask, mask is not None
 
 
+CERTIFIED_BUNDLE = (
+    Path(__file__).resolve().parent.parent / "data" / "uk" / "certified_bundle.json"
+)
+UK_ARTIFACT_ENV = "UK_POPULACE_H5"
+
+
+def certified_bundle():
+    """The committed identity of the artifact a run must execute on."""
+    return json.loads(CERTIFIED_BUNDLE.read_text())
+
+
+def _sha256(path, chunk=1 << 22):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for block in iter(lambda: f.read(chunk), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
+def verified_artifact_path():
+    """Resolve UK_POPULACE_H5, refusing anything that is not the
+    certified artifact.
+
+    This is the second of two ways to reach a certified world. The
+    managed harness (pe.uk.managed_microsimulation) asserts
+    certification by construction; here it is asserted by EVIDENCE —
+    the artifact's own sha256 against the committed release digest, and
+    the installed engine against the bundle's declared compatibility.
+
+    That distinction is the whole reason a bare Microsimulation is
+    admissible at all. The danger this module warned about was a bare
+    Microsimulation on its DEFAULT dataset, which is an uncertified
+    world wearing the same class name. A bare Microsimulation on a
+    digest-verified certified artifact at the engine that artifact
+    declares is not that. So the check is not optional and not
+    skippable: no digest, no run.
+    """
+    raw = os.environ.get(UK_ARTIFACT_ENV)
+    if not raw:
+        return None
+    path = Path(raw)
+    if not path.exists():
+        raise SystemExit(f"{UK_ARTIFACT_ENV}={raw} does not exist")
+    b = certified_bundle()
+
+    size = path.stat().st_size
+    if size != b["size_bytes"]:
+        raise SystemExit(
+            f"{path} is {size} bytes, certified artifact is {b['size_bytes']} "
+            "— refusing before hashing a file that cannot be it"
+        )
+    digest = _sha256(path)
+    if digest != b["sha256"]:
+        raise SystemExit(
+            f"{path} sha256 {digest} != certified {b['sha256']}. This is not "
+            f"the {b['revision']} artifact; a run on it would not be "
+            "comparable to the results already in the DB."
+        )
+
+    installed = importlib.metadata.version("policyengine-uk")
+    for spec in b["compatible_model_packages"]:
+        if spec["name"] != "policyengine-uk":
+            continue
+        want = spec["specifier"].lstrip("=")
+        if installed != want:
+            raise SystemExit(
+                f"policyengine-uk {installed} is installed but the certified "
+                f"bundle declares {spec['specifier']}. That is the DATA's "
+                "compatibility statement, not a preference — computing at a "
+                "different engine needs a new certified bundle (#126)."
+            )
+    return path, digest, b
+
+
 def build_sim(fullpart):
     """Managed sim on the certified populace-uk bundle.
 
@@ -630,9 +707,19 @@ def build_sim(fullpart):
     # UK accessor turns out to be spelled differently, this is the line
     # that changes — do not silently swap in a bare country-package
     # Microsimulation, which is a different (uncertified) world.
-    import policyengine as pe  # type: ignore
+    verified = verified_artifact_path()
+    if verified is None:
+        import policyengine as pe  # type: ignore
 
-    sim = pe.uk.managed_microsimulation()
+        sim = pe.uk.managed_microsimulation()
+        harness = "managed"
+    else:
+        # Explicit certified artifact, digest- and engine-verified above.
+        from policyengine_uk import Microsimulation  # type: ignore
+
+        artifact, digest, bundle_record = verified
+        sim = Microsimulation(dataset=str(artifact))
+        harness = "explicit certified artifact"
     run_name = "fullpart" if fullpart else "baseline"
     # Provenance: sim.policyengine_bundle is the managed-run bundle
     # record (US precedent: compute_counterparts.py reads exactly this);
@@ -650,9 +737,24 @@ def build_sim(fullpart):
     else:
         bundle_info = getattr(sim, "data_bundle", None) or getattr(sim, "dataset", None)
         bundle_source = "data_bundle/dataset fallback"
+    if verified is not None:
+        # Provenance is the digest, not the harness: record what was
+        # actually executed so a reader can tell these results from
+        # managed-harness results without trusting prose.
+        artifact, digest, bundle_record = verified
+        bundle_info = {
+            "repo_id": bundle_record["repo_id"],
+            "revision": bundle_record["revision"],
+            "artifact": bundle_record["artifact"],
+            "sha256": digest,
+            "local_path": str(artifact),
+        }
+        bundle_source = "explicit certified artifact (sha256-verified)"
     run_meta = {
         "bundle": bundle_info,
         "bundle_source": bundle_source,
+        "harness": harness,
+        "engine_version": importlib.metadata.version("policyengine-uk"),
         "year": YEAR,
     }
     meta["runs"][run_name] = run_meta

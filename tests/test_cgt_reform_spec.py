@@ -129,3 +129,73 @@ def test_the_lane_says_it_has_not_run():
     environment and the certified bundle."""
     assert "unexecuted" in SPEC["not_yet_run"]
     assert "refuses without an explicit dataset" in SPEC["not_yet_run"]
+
+
+def test_the_pin_follows_the_certified_world():
+    """v1 of the re-certification moved this pin to 2.92.0, arguing a
+    lane that has computed nothing is free to pin its verification
+    engine. Too clever: this lane WILL be computed against the
+    certified bundle, and pinning away from it made --resolve refuse
+    there. Verification at an engine you cannot compute at is not
+    useful verification."""
+    rc = SPEC["recertification"]
+    assert SPEC["engine_pin"]["policyengine_uk"] == "2.89.2"
+    assert (
+        "follows the certified populace-uk bundle" in SPEC["engine_pin"]["pin_meaning"]
+    )
+    assert "THE PIN FOLLOWS THE CERTIFIED WORLD" in rc["correction"]
+    assert "no special case" in rc["correction"]
+    # every baseline carries both readings, so the claim is checkable
+    for path in SPEC["engine_baseline_2026"]:
+        assert path in rc["readings"]
+        assert "at_2_89_2" in rc["readings"][path]
+        assert "at_2_92_0" in rc["readings"][path]
+
+
+def test_the_basic_rate_float_artifact_is_recorded_not_enshrined():
+    """basic_rate reads 0.18000000000000002 because the parameter is
+    fiscal-year blended. The recorded baseline stays the legislated
+    0.18 — writing the float artifact in as the rate would turn an
+    arithmetic detail into a policy claim."""
+    assert SPEC["engine_baseline_2026"]["gov.hmrc.cgt.basic_rate"] == 0.18
+    note = SPEC["recertification"]["float_note"]
+    assert "fiscal_year_blend" in note
+    assert "NOT a policy" in note
+    assert "1e-12" in note
+
+
+def test_the_elasticity_finding_survived_the_bump():
+    """If the engine had switched the response on by default, this
+    lane's static/behavioural framing would need rewriting."""
+    assert SPEC["engine_default_elasticity"] == 0.0
+    assert "still 0" in SPEC["recertification"]["verdict"]
+
+
+def test_the_bundle_constraint_is_recorded_with_its_source():
+    """Self-review caught this: the pin moved to 2.92.0 while the
+    certified bundle declares ==2.89.2, so 'verified at' and 'must run
+    at' had silently diverged with nothing saying so. A registry that
+    implies the newer engine is usable end to end would send a compute
+    at an engine the data does not support."""
+    c = SPEC["compute_engine_constraint"]
+    assert c["required_specifier"] == "==2.89.2"
+    assert c["bundle"]["compatible_model_packages"] == [
+        {"name": "policyengine-uk", "specifier": "==2.89.2"}
+    ]
+    assert "needs a NEW certified bundle, not a pin edit" in c["note"]
+
+
+def test_the_moved_pin_is_only_safe_because_the_readings_agree():
+    """The per-path before/after readings are what license the move: if
+    a value had differed between engines, a 2.89.2 compute against
+    2.92.0-verified baselines would be wrong."""
+    rc = SPEC["recertification"]
+    assert "identical on 2.89.2 and 2.92.0" in rc["holds_on_both_engines"]
+    for path, r in rc["readings"].items():
+        assert abs(r["at_2_92_0"] - r["at_2_89_2"]) <= 1e-12, path
+
+
+def test_the_bundle_is_identified_by_digest_not_by_name():
+    b = SPEC["compute_engine_constraint"]["bundle"]
+    assert b["revision"] == "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    assert len(b["sha256"]) == 64

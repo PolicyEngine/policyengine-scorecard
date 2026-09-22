@@ -6,7 +6,9 @@
  "registry_rule": "The reform specification and the ELASTICITY SWEEP for the Budget's flagship measure. Two legs are computed per elasticity: the reform against the certified baseline, and the baseline itself. The published comparison is post-behavioural against OBR's post-behavioural costing when it lands; the static leg is published beside it as the wedge, because that wedge IS the disagreement.",
  "engine_pin": {
   "policyengine_uk": "2.89.2",
-  "resolved_on": "2026-08-25"
+  "resolved_on": "2026-09-07",
+  "pin_meaning": "The pin follows the certified populace-uk bundle, which DECLARES policyengine-uk ==2.89.2 \u2014 the engine this lane will be COMPUTED at.",
+  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal."
  },
  "reform": {
   "gov.hmrc.cgt.basic_rate": 0.2,
@@ -56,5 +58,53 @@
   }
  ],
  "comparison_rule": "Compare LIKE FOR LIKE. OBR costings of this measure will be post-behavioural; the static leg is not comparable to them and must never be presented as though it were \u2014 that is the #67 finding one level up. The static-vs-behavioural difference is published as its own quantity on the behavioural_elasticity axis, not folded into a residual.",
- "not_yet_run": "This spec is unexecuted. The compute needs the managed environment and the certified populace-uk bundle, exactly like #51 and #66; a local Microsimulation() refuses without an explicit dataset. Everything below the engine boundary \u2014 the reform values, the paths, the baselines, the sweep contract \u2014 is verified and tested here."
+ "not_yet_run": "This spec is unexecuted. The compute needs the managed environment and the certified populace-uk bundle, exactly like #51 and #66; a local Microsimulation() refuses without an explicit dataset. Everything below the engine boundary \u2014 the reform values, the paths, the baselines, the sweep contract \u2014 is verified and tested here.",
+ "recertification": {
+  "from": "2.89.2",
+  "to": "2.92.0",
+  "date": "2026-09-07",
+  "why": "The installed engine moved from 2.89.2 to 2.92.0 mid-week. A pin that no longer names the engine in front of you is not provenance, so every value was re-read rather than assumed.",
+  "readings": {
+   "gov.hmrc.cgt.basic_rate": {
+    "at_2_89_2": 0.18,
+    "at_2_92_0": 0.18000000000000002
+   },
+   "gov.hmrc.cgt.higher_rate": {
+    "at_2_89_2": 0.24,
+    "at_2_92_0": 0.24
+   },
+   "gov.hmrc.cgt.additional_rate": {
+    "at_2_89_2": 0.24,
+    "at_2_92_0": 0.24
+   }
+  },
+  "verdict": "Unchanged. Every rate is identical to the 2.89.2 reading within the validator's 1e-12 tolerance, and the elasticity finding still holds: gov.simulation.capital_gains_responses.elasticity is still 0, so a default score of this measure is still static and the sweep is still the point of the lane.",
+  "float_note": "gov.hmrc.cgt.basic_rate reads 0.18000000000000002, not 0.18. It is NOT a policy change: the parameter carries metadata fiscal_year_blend: true, so the engine day-weights the transition year and that arithmetic leaves float error even where the two weighted values are equal. The legislated rate is 18% (Finance Act 2025 s.7). This is why the comparison is a 1e-12 tolerance and not exact equality \u2014 tightening it to == would fail on a value that has not moved.",
+  "holds_on_both_engines": "The recorded readings are identical on 2.89.2 and 2.92.0 within the validator's 1e-12 tolerance, so the baselines are safe for a 2.89.2 compute even though verification ran on 2.92.0. Had any value differed, moving the pin would have been unsafe and is what the per-path before/after readings exist to show.",
+  "correction": "v1 of this PR moved the pin to 2.92.0, arguing that a lane which has COMPUTED nothing is free to pin its verification engine. That argument was too clever. This lane will be computed against the certified bundle, and pinning away from that engine made --resolve REFUSE there \u2014 so the spec could not be checked against the world it is for. Verification at an engine you cannot compute at is not useful verification.\n\nThe three-way distinction v1 drew therefore collapses to one rule: THE PIN FOLLOWS THE CERTIFIED WORLD. The reckoner is not an exception to it \u2014 its pin records what its 14 results were computed at, which is the same 2.89.2 the bundle declares. Two reasons, one number, and no special case."
+ },
+ "compute_engine_constraint": {
+  "required_specifier": "==2.89.2",
+  "source": "certified bundle release_manifest.json",
+  "bundle": {
+   "repo_id": "policyengine/populace-uk-private",
+   "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "artifact": "populace_uk_2023.h5",
+   "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "size_bytes": 1315880118,
+   "compatible_model_packages": [
+    {
+     "name": "policyengine-uk",
+     "specifier": "==2.89.2"
+    }
+   ],
+   "read_on": "2026-09-07"
+  },
+  "note": "The certified bundle DECLARES its own engine compatibility: policyengine-uk ==2.89.2, read from its release_manifest.json. So a compute of this lane runs at 2.89.2 regardless of what is installed for verification, and re-computing at a newer engine needs a NEW certified bundle, not a pin edit. That is why verification and compute are recorded as two separate facts here: engine_pin is what the paths and baselines were re-read against; compute_engine_constraint is what the run must use. They currently differ, and the registry says so rather than implying the newer engine is usable end to end."
+ },
+ "also_verified_at": {
+  "version": "2.92.0",
+  "date": "2026-09-07",
+  "finding": "Every baseline reads the same on 2.92.0 within 1e-12 and the elasticity is still 0, so no value here is an artifact of one engine version. Kept as corroboration."
+ }
 }

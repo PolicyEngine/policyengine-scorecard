@@ -28,10 +28,19 @@ def test_the_search_covers_variables_not_only_parameters():
     # substring false positive. At 2.92.0 gov.dft.bus exists too. Both
     # are pinned: the false positive so nobody mistakes it for a lever,
     # the real node because it IS bus and still is not a price.
+    # At the certified 2.89.2 the only "bus" parameter is
+    # gov.hmrc.business_rates, a substring false positive. gov.dft.bus
+    # appears only at 2.92.0 (also_searched_at) and is ruled out there.
     bus_named = sorted(
         h for h in search["parameter_hits"] if "bus" in h.split(".")[-1].lower()
     )
-    assert bus_named == ["gov.dft.bus", "gov.hmrc.business_rates"]
+    assert bus_named == ["gov.hmrc.business_rates"]
+    later = sorted(
+        h
+        for h in REG["also_searched_at"]["parameter_hits"]
+        if "bus" in h.split(".")[-1].lower()
+    )
+    assert later == ["gov.dft.bus", "gov.hmrc.business_rates"]
 
 
 def test_validate_rejects_a_parameter_only_search():
@@ -42,9 +51,15 @@ def test_validate_rejects_a_parameter_only_search():
 
 
 def test_gov_dft_gained_a_bus_node_and_it_is_still_not_a_lever():
-    """v1 recorded gov.dft as rail + spending. At 2.92.0 there is a bus
-    node — and it holds an ALLOCATION weight, not a price."""
-    assert sorted(REG["name_search"]["gov_dft_children"]) == ["bus", "rail", "spending"]
+    """At the certified engine 2.89.2 gov.dft is rail + spending. At
+    2.92.0 there is a bus node — and it holds an ALLOCATION weight, not
+    a price. The verdict holds on both, which is the stronger claim."""
+    assert sorted(REG["name_search"]["gov_dft_children"]) == ["rail", "spending"]
+    assert sorted(REG["also_searched_at"]["gov_dft_children"]) == [
+        "bus",
+        "rail",
+        "spending",
+    ]
     weight = next(
         l
         for l in REG["nearest_levers_and_why_they_do_not_work"]
@@ -55,9 +70,14 @@ def test_gov_dft_gained_a_bus_node_and_it_is_still_not_a_lever():
 
 
 def test_every_bus_named_parameter_is_ruled_out_by_name():
+    """Across BOTH engines' searches — a node that exists only on the
+    newer engine still has to be ruled out, or the verdict dangles."""
     ruled = {l["path"] for l in REG["nearest_levers_and_why_they_do_not_work"]}
     bus_nodes = {
-        h for h in REG["name_search"]["parameter_hits"] if h.startswith("gov.dft.bus")
+        h
+        for h in REG["name_search"]["parameter_hits"]
+        + REG["also_searched_at"]["parameter_hits"]
+        if h.startswith("gov.dft.bus")
     }
     assert bus_nodes and bus_nodes <= ruled
 
@@ -162,4 +182,22 @@ def test_the_engine_pin_is_derived_not_typed():
     engine it was searched in."""
     pin = REG["engine_pin"]
     assert "importlib.metadata" in pin["pin_rule"]
-    assert "only as good as the engine it was searched in" in pin["pin_rule"]
+    assert "never typed as a literal" in pin["pin_rule"]
+
+
+def test_the_pin_follows_the_bundle_so_the_registry_stays_probeable():
+    """v2 pinned the installed engine, and the consequence was
+    concrete: --probe REFUSED at the certified engine, so the registry
+    could not be checked in the world it makes claims about."""
+    pin = REG["engine_pin"]
+    assert pin["policyengine_uk"] == "2.89.2"
+    assert pin["certified_bundle"]["compatible_model_packages"] == [
+        {"name": "policyengine-uk", "specifier": "==2.89.2"}
+    ]
+    assert "UNPROBEABLE" in " ".join(REG["corrections_log"])
+
+
+def test_the_verdict_holds_on_both_engines():
+    a = REG["also_searched_at"]
+    assert a["version"] == "2.92.0"
+    assert "holds on both engines" in a["finding"]

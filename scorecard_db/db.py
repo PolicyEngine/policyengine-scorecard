@@ -84,7 +84,8 @@ CREATE TABLE IF NOT EXISTS pe_results (
     run_id TEXT NOT NULL DEFAULT '',
     computed_at TEXT NOT NULL DEFAULT '',
     annotations TEXT NOT NULL DEFAULT '[]',
-    baseline_key TEXT
+    baseline_key TEXT,
+    policyengine_variables TEXT NOT NULL DEFAULT '[]'
 );
 CREATE INDEX IF NOT EXISTS idx_results_claim ON pe_results(claim_id);
 
@@ -158,6 +159,7 @@ SELECT
     r.engine_version,
     r.data_bundle,
     r.pe_construction,
+    r.policyengine_variables,
     r.computed_at,
     r.baseline_key AS pe_baseline_key,
     bc.label AS claim_baseline_label,
@@ -224,8 +226,8 @@ SCORES_SQL = (
 RESULTS_SQL = (
     "INSERT INTO pe_results (claim_id, computed_value, status,"
     " engine_version, data_bundle, pe_construction, run_id,"
-    " computed_at, annotations, baseline_key)"
-    " VALUES (?,?,?,?,?,?,?,?,?,?)"
+    " computed_at, annotations, baseline_key, policyengine_variables)"
+    " VALUES (?,?,?,?,?,?,?,?,?,?,?)"
 )
 EXHIBITS_SQL = (
     "INSERT INTO pe_exhibits (exhibit, reform_key, reform_json,"
@@ -324,6 +326,11 @@ class ScorecardDB:
                     self.conn.execute(
                         f"ALTER TABLE {table} ADD COLUMN baseline_key TEXT"
                     )
+            if "policyengine_variables" not in cols("pe_results"):
+                self.conn.execute(
+                    "ALTER TABLE pe_results ADD COLUMN policyengine_variables"
+                    " TEXT NOT NULL DEFAULT '[]'"
+                )
             diag_sql = self.conn.execute(
                 "SELECT sql FROM sqlite_master WHERE type='table' AND name='diagnoses'"
             ).fetchone()
@@ -414,6 +421,7 @@ class ScorecardDB:
             r.computed_at,
             json.dumps(r.annotations),
             r.baseline_key,
+            json.dumps(list(r.policyengine_variables)),
         )
 
     def upsert_scores(self, scores: Iterable[ExternalScore]) -> int:
