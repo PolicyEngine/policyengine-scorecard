@@ -132,3 +132,22 @@ def test_it_stages_no_value_claims():
 
 def test_the_pin_follows_the_certified_world():
     assert REG["engine_pin"]["policyengine_uk"] == "2.89.2"
+
+
+def test_the_comparison_rates_are_cited_by_document():
+    """DTrim99's nit: the_finding named the organisations but not the
+    publications, unlike originating_sources."""
+    cs = REG["comparison_sources"]
+    assert cs["resolution_foundation_uc_0_80"]["assumed_rate"] == 0.80
+    assert "Living Standards Outlook" in cs["resolution_foundation_uc_0_80"]["document"]
+    assert "80 per cent take-up" in cs["resolution_foundation_uc_0_80"]["quote"]
+    assert "Appendix 2" in cs["scottish_government_uc_0_82"]["document"]
+
+
+def test_the_two_comparison_rates_are_not_independent():
+    """Both describe the same engine — two readings of one model's
+    assumption, not two estimates (#132)."""
+    cs = REG["comparison_sources"]
+    assert cs["resolution_foundation_uc_0_80"]["engine"] == "landman_ttm"
+    assert cs["scottish_government_uc_0_82"]["engine"] == "landman_ttm"
+    assert "corroborate each other only weakly" in cs["caveat"]

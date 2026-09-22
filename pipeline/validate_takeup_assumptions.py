@@ -90,7 +90,7 @@ def validate(reg):
         if not e.get("schedule"):
             errors.append(
                 f"{path}: no schedule recorded — a single value hides how OLD "
-                "the assumption is, which is half the finding"
+                "the assumption is"
             )
         # A 1.0 must be EXPLAINED from the engine, not asserted by us.
         if e.get("value_2026") == 1.0:

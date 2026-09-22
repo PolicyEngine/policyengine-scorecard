@@ -171,5 +171,21 @@
  "not_a_conclusion": "This registry does NOT claim PolicyEngine's outputs are wrong, and after the #131 review it does not claim its take-up assumptions are deficient either. Four of the seven parameters are structural, not assumptions. For the three that are assumptions, a difference in an input is not an error in an output: policyengine-uk-data applies reported-recipient anchoring and fits weights to receipt-based DWP/OBR targets, either of which may move the result. Establishing output error needs #76.",
  "the_finding": "NARROWED after review. v1 of this registry reported that PolicyEngine 'assumes full take-up' for Housing Benefit, Income Support, Child Tax Credit and Working Tax Credit, and compared those 1.0 values with UKMOD's non-take-up rates of 0.32-0.96. That was WRONG, and unfair to PolicyEngine. All four are CLOSED legacy benefits: the engine restricts eligibility to existing claimants, so 1.0 is definitional, not an assumption. Comparing it to an open-programme rate is not like for like. Caught by DTrim99 on PR #131; the rationale was in the parameters' own descriptions, which v1 read the values of without reading.\n\nWhat survives is narrower and genuine. Three parameters are real assumed rates on programmes that are open, and carry no closed-cohort note: Universal Credit 0.55, Pension Credit 0.70, income-based JSA 0.56. Universal Credit is the substantive one \u2014 0.55 against the 0.80 the Resolution Foundation states for the shared Landman/PERU model and the 0.82 recorded for that model in the Scottish Government's appendix. That is a 25-27 point spread on the largest working-age benefit, between open-programme rates that ARE comparable.",
  "comparability_rule": "A closed-cohort parameter may NOT be compared with an open-programme take-up rate. The denominators differ: one is participation among existing claimants, the other take-up among everyone entitled. The validator refuses a comparison that crosses that line.",
- "divergence_axis": "take_up_denominator: a closed-cohort parameter counts participation among EXISTING CLAIMANTS, while an open-programme rate counts take-up among everyone ENTITLED. Any comparison that crosses those denominators measures the difference in population, not in behaviour, and must be refused rather than named (#59)."
+ "divergence_axis": "take_up_denominator: a closed-cohort parameter counts participation among EXISTING CLAIMANTS, while an open-programme rate counts take-up among everyone ENTITLED. Any comparison that crosses those denominators measures the difference in population, not in behaviour, and must be refused rather than named (#59).",
+ "comparison_sources": {
+  "resolution_foundation_uc_0_80": {
+   "document": "Resolution Foundation, Living Standards Outlook \u2014 modelling-assumptions note",
+   "quote": "We model incomplete take-up of the main means-tested benefits. For example, we assume 80 per cent take-up of Universal Credit",
+   "local_provenance": "sources/harvest-uk-2026-08-02/uk_resolution_foundation/NOTES.md",
+   "engine": "landman_ttm",
+   "assumed_rate": 0.8
+  },
+  "scottish_government_uc_0_82": {
+   "document": "Scottish Government, 'Tackling child poverty delivery plan: forecasting child poverty in Scotland', Appendix 2 \u2014 'The IPPR/Resolution Foundation/Landman Economics tax-transfer model'",
+   "note": "The fullest public methodology statement for that engine.",
+   "engine": "landman_ttm",
+   "assumed_rate": 0.82
+  },
+  "caveat": "Both figures describe the SAME engine (see #132 and scorecard_db/engines.py), so they corroborate each other only weakly. They are two readings of one model's assumption, not two independent estimates \u2014 which is exactly the trap the engine-provenance registry exists to stop the scorecard walking into."
+ }
 }
