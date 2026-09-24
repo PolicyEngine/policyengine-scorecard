@@ -751,3 +751,351 @@ def canon(source: str, axis: str, value: str) -> str:
 def known(source: str, axis: str) -> frozenset[str]:
     """All source-side values registered for (source, axis)."""
     return frozenset(v for (s, a, v) in _R if s == source and a == axis)
+
+
+# --- Autumn Budget 2025 port (#136): every producer that scored the Budget ----
+# The harvest at sources/harvest-uk-ab2025-2026-09-24/ stages 25 families
+# from 50 producers. Their geography and income-group vocabularies are
+# registered here per source, read from the staged rows (the identity is a
+# decision, so the list is explicit rather than derived at import time),
+# and the pairs that LOOK unifiable are recorded DISTINCT: a Resolution
+# Foundation vigintile is not an IFS decile, an IFS earnings decile is not
+# an IFS income decile, a JRF tertile is nobody's quintile, and WPI's
+# "severe hardship" is not HBAI poverty. Prose programme labels are not
+# registered as identities: the ingest keeps them verbatim under
+# conditions.program_verbatim and canonicalises only the slugs below.
+from .uk_constituencies_2024 import ENGLAND_WESTMINSTER_CONSTITUENCIES_2024
+
+_identity("aegon", "geography", ["UK"])
+_identity("aj_bell", "geography", ["UK"])
+_identity("blick_rothenberg", "geography", ["UK"])
+_identity("cebr", "geography", ["OECD average", "UK"])
+_identity("cebr", "income_group", ["quintile_1", "quintile_2"])
+_identity(
+    "centax",
+    "geography",
+    [
+        "12 constituencies (11 in London)",
+        "Kensington",
+        "Liverpool Walton",
+        "London",
+        "UK",
+        "Wales and Northern Ireland",
+    ],
+)
+_identity("centax", "income_group", ["bottom_50pct", "decile_10", "top_0.1pct"])
+_identity(
+    "cpag",
+    "geography",
+    [
+        "Brighton and Hove",
+        "Cardiff",
+        "England and Wales",
+        "GB",
+        "Guildford",
+        "Harlow",
+        "Inner London",
+        "Northampton",
+        "Oxford",
+        "Scotland",
+        "UK",
+    ],
+)
+_identity("cpag", "program", ["benefit_cap"])
+_identity("cpag", "housing_costs", ["ahc"])
+_identity(
+    "cpag",
+    "poverty_line",
+    [
+        "deep poverty (producer's definition not stated on the page)",
+        "relative_60_median",
+    ],
+)
+_identity("cps", "geography", ["UK"])
+_identity("deloitte", "geography", ["UK"])
+_identity("demos", "geography", ["UK"])
+_identity("demos", "income_group", ["bottom_50pct", "decile_10"])
+_identity("entitledto", "geography", ["England"])
+_identity("entitledto", "program", ["council_tax_reduction"])
+_identity("evelyn_partners", "geography", ["UK"])
+_identity("ey", "geography", ["UK"])
+_identity("fabian_society", "geography", ["UK"])
+_identity("fabian_society", "income_group", ["quintile_1", "quintile_5"])
+_identity("fidelity", "geography", ["UK"])
+_identity("fraser_of_allander", "geography", ["Scotland", "UK"])
+_identity("fraser_of_allander", "housing_costs", ["ahc"])
+_identity("fraser_of_allander", "poverty_line", ["relative_60_median"])
+_identity("hargreaves_lansdown", "geography", ["UK"])
+_identity(
+    "hm_treasury", "geography", ["England", "Great Britain", "Scotland", "UK", "Wales"]
+)
+_identity("hm_treasury", "poverty_line", ["unstated in the red book"])
+_identity("iea", "geography", ["UK"])
+_identity("ifs", "geography", ["England", "UK"])
+_identity(
+    "ifs",
+    "income_group",
+    [
+        "all",
+        "decile_1",
+        "decile_10",
+        "decile_2",
+        "decile_3",
+        "decile_4",
+        "decile_5",
+        "decile_6",
+        "decile_7",
+        "decile_8",
+        "decile_9",
+        "earnings_decile_10",
+        "earnings_decile_1_2",
+        "earnings_decile_3",
+        "earnings_decile_4",
+        "earnings_decile_5",
+        "earnings_decile_6",
+        "earnings_decile_7",
+        "earnings_decile_8",
+        "earnings_decile_9",
+    ],
+)
+_identity("ifs", "housing_costs", ["ahc"])
+_identity(
+    "ifs",
+    "poverty_line",
+    [
+        "absolute_40_fye2011_median",
+        "absolute_50_fye2011_median",
+        "absolute_60_fye2011_median",
+        "relative_60_median",
+    ],
+)
+_identity("ig", "geography", ["UK"])
+_identity("ig", "income_group", ["decile_10", "decile_9"])
+_identity("investengine", "geography", ["UK"])
+_identity(
+    "ippr",
+    "geography",
+    [
+        "East Midlands",
+        "Eastern",
+        "England",
+        "England (council tax) and UK (SDLT surcharge)",
+        "London",
+        "North East",
+        "North West",
+        "Northern Ireland",
+        "Scotland",
+        "South East",
+        "South West",
+        "UK",
+        "Wales",
+        "West Midlands",
+        "Yorkshire & Humber",
+        "Yorkshire and The Humber",
+    ],
+)
+_identity(
+    "ippr",
+    "program",
+    ["benefit_cap", "non_uk_resident_sdlt_surcharge", "universal_credit_child_element"],
+)
+_identity("ippr", "housing_costs", ["ahc"])
+_identity(
+    "ippr",
+    "poverty_line",
+    ["government basis (not restated on the page)", "relative_60_median"],
+)
+_identity("jrf", "geography", ["UK"])
+_identity("jrf", "income_group", ["all", "tertile_1", "tertile_2", "tertile_3"])
+_identity("jrf", "program", ["universal_credit_child_element"])
+_identity("jrf", "housing_costs", ["ahc"])
+_identity("jrf", "poverty_line", ["relative_60_median"])
+_identity("loughborough_crsp", "geography", ["UK"])
+_identity("moore_kingston_smith", "geography", ["UK"])
+_identity("nef", "geography", ["England", "Great Britain", "UK"])
+_identity(
+    "nef",
+    "income_group",
+    ["household income over \u00a380,000", "household income under \u00a330,000"],
+)
+_identity("niesr", "geography", ["UK"])
+_identity(
+    "niesr",
+    "income_group",
+    [
+        "decile_1",
+        "decile_2",
+        "decile_3",
+        "decile_4",
+        "decile_5",
+        "decile_6",
+        "decile_7",
+    ],
+)
+_identity("niesr", "housing_costs", ["ahc"])
+_identity(
+    "obr_efo", "geography", ["England", "England and Wales", "Great Britain", "UK"]
+)
+_identity("obr_efo", "poverty_line", ["unstated (Government estimate)"])
+_identity(
+    "onward",
+    "geography",
+    [
+        "England",
+        "UK",
+        "UK (England core plus Barnett adjustment)",
+        "UK (England core schemes plus Barnett adjustment)",
+    ],
+)
+_identity("policy_exchange", "geography", ["UK"])
+_identity(
+    "policy_in_practice",
+    "geography",
+    ["Scotland", "UK", "UK (eight local authorities, county and district)"],
+)
+_identity(
+    "policy_in_practice",
+    "program",
+    [
+        "help_to_save",
+        "universal_credit_child_element",
+        "universal_credit_standard_allowance",
+    ],
+)
+_identity("ppi", "geography", ["UK"])
+_identity("public_first", "geography", ["England"])
+_identity("public_first", "housing_costs", ["ahc"])
+_identity("quilter", "geography", ["UK"])
+_identity("rathbones", "geography", ["UK"])
+_identity(
+    "resolution_foundation", "geography", ["England", "GB", "UK", "UK_excl_scotland"]
+)
+_identity(
+    "resolution_foundation",
+    "income_group",
+    [
+        "all",
+        "bottom_half",
+        "decile_1",
+        "decile_10",
+        "decile_2",
+        "decile_3",
+        "decile_4",
+        "decile_5",
+        "decile_6",
+        "decile_7",
+        "decile_8",
+        "decile_9",
+        "quintile_1",
+        "quintile_5",
+        "top_half",
+        "vigintile_1",
+        "vigintile_10",
+        "vigintile_11",
+        "vigintile_12",
+        "vigintile_13",
+        "vigintile_14",
+        "vigintile_15",
+        "vigintile_16",
+        "vigintile_17",
+        "vigintile_18",
+        "vigintile_19",
+        "vigintile_2",
+        "vigintile_20",
+        "vigintile_3",
+        "vigintile_4",
+        "vigintile_5",
+        "vigintile_6",
+        "vigintile_7",
+        "vigintile_8",
+        "vigintile_9",
+    ],
+)
+_identity("resolution_foundation", "housing_costs", ["ahc"])
+_identity("resolution_foundation", "poverty_line", ["relative_60_median"])
+_identity("royal_london", "geography", ["UK"])
+_identity("rsm", "geography", ["UK"])
+_identity("scottish_fiscal_commission", "geography", ["Scotland"])
+_identity(
+    "smf",
+    "geography",
+    [
+        "England",
+        "England and Scotland (pilots)",
+        "England and Wales",
+        "Great Britain",
+        "Scotland",
+        "UK",
+    ],
+)
+_identity("smf", "income_group", ["quintile_1", "quintile_5"])
+_identity("tax_justice_uk", "geography", ["England", "UK"])
+_identity(
+    "tax_policy_associates",
+    "geography",
+    ["England", "UK", "Vale of Glamorgan"]
+    + list(ENGLAND_WESTMINSTER_CONSTITUENCIES_2024),
+)
+_identity("taxpayers_alliance", "geography", ["UK"])
+_identity(
+    "trussell_wpi",
+    "geography",
+    ["England", "Northern Ireland", "Scotland", "UK", "Wales"],
+)
+_identity("trussell_wpi", "housing_costs", ["ahc"])
+_identity(
+    "trussell_wpi",
+    "poverty_line",
+    [
+        "deep poverty (producer's threshold not stated on the page)",
+        "poverty (producer's threshold not stated on the page)",
+        "relative_60_median",
+        "very deep poverty (producer's threshold not stated on the page)",
+    ],
+)
+_identity("trussell_wpi", "poverty_measure", ["wpi_severe_hardship"])
+_identity("uk_hmrc", "geography", ["UK"])
+_identity("wbg", "geography", ["UK"])
+_identity("wbg", "poverty_line", ["relative_60_median"])
+_identity("which", "geography", ["UK"])
+# IPPR prints one region two ways (Table 1 vs Table 2 of Restoring security); one identity.
+_alias("ippr", "geography", "Yorkshire & Humber", "Yorkshire and The Humber")
+
+# Pairs that look unifiable across the AB2025 producers and must never be.
+# Every side is registered above or earlier in this module (the ledger test
+# checks); the reasons are the distributions' own definitions.
+DISTINCT = DISTINCT | frozenset(
+    {
+        # a vigintile of RF's AHC distribution is not a decile of anyone's
+        ("resolution_foundation:vigintile_1", "ifs:decile_1"),
+        ("resolution_foundation:vigintile_20", "ifs:decile_10"),
+        ("resolution_foundation:vigintile_1", "hmt_distributional:decile_1"),
+        ("resolution_foundation:vigintile_20", "hmt_distributional:decile_10"),
+        # IFS ranks employees by EARNINGS for the salary-sacrifice report and
+        # households by equivalised income everywhere else
+        ("ifs:earnings_decile_1_2", "ifs:decile_1"),
+        ("ifs:earnings_decile_10", "ifs:decile_10"),
+        # JRF's income thirds are person-level tertiles of equivalised AHC
+        # income, not quintiles or deciles
+        ("jrf:tertile_1", "resolution_foundation:quintile_1"),
+        ("jrf:tertile_1", "ifs:decile_1"),
+        # NIESR's Box D deciles come from an HBAI quantile regression, IFS's
+        # from TAXBEN, HMT's from IGOTM: three distributions
+        ("niesr:decile_1", "ifs:decile_1"),
+        ("niesr:decile_1", "hmt_distributional:decile_1"),
+        # Cebr's and SMF's quintiles are their own tabulations
+        ("cebr:quintile_1", "resolution_foundation:quintile_1"),
+        ("smf:quintile_1", "resolution_foundation:quintile_1"),
+        # top/bottom shares of different distributions (CenTax income,
+        # Demos wealth, RF income halves)
+        ("centax:bottom_50pct", "resolution_foundation:bottom_half"),
+        ("demos:bottom_50pct", "resolution_foundation:bottom_half"),
+        ("centax:top_0.1pct", "ifs:decile_10"),
+        # an absolute poverty line anchored on FYE 2011 is not the relative
+        # line, and WPI's severe hardship is not poverty on any HBAI line
+        ("ifs:absolute_60_fye2011_median", "ifs:relative_60_median"),
+        ("ifs:absolute_60_fye2011_median", "dwp_hbai:relative"),
+        ("trussell_wpi:wpi_severe_hardship", "dwp_hbai:relative"),
+        ("trussell_wpi:wpi_severe_hardship", "jrf:relative_60_median"),
+    }
+)
