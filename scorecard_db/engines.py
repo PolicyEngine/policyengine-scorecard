@@ -71,6 +71,36 @@ ENGINES: dict[str, tuple[str, str, str]] = {
         "PolicyEngine",
         "Rules engine behind the Belgian lane.",
     ),
+    # --- Autumn Budget 2025 port (#136) ---------------------------------
+    "hmrc_ptm": (
+        "Personal Tax Model",
+        "HM Revenue and Customs",
+        "Microsimulation on the Survey of Personal Incomes; the model "
+        "behind HMRC's personal-tax costings and TIIN counts. Government "
+        "model; limited public information.",
+    ),
+    "nigem": (
+        "NiGEM",
+        "National Institute of Economic and Social Research",
+        "Global macroeconometric model; the engine behind NIESR's fiscal "
+        "scenarios. Macro, not a household microsimulation: its rows are "
+        "the #55 lane, never a household counterpart.",
+    ),
+    "wpi_hardship_model": (
+        "WPI Economics severe-hardship model",
+        "WPI Economics, for Trussell",
+        "Projects a 'severe hardship' population from HBAI-derived inputs "
+        "on WPI's own definition; never unified with HBAI relative poverty "
+        "(uk_aliases DISTINCT).",
+    ),
+    "policyengine_uk": (
+        "PolicyEngine UK",
+        "PolicyEngine",
+        "The model under test. An external claim computed with it (the "
+        "Fabian Society's freeze-extension figure, Oct 2025) is "
+        "benchmark_class same_assumptions: agreement is a replication, not "
+        "evidence.",
+    ),
 }
 
 # Publishers that report results from the SAME engine. Recorded as an
@@ -91,6 +121,11 @@ SHARED_ENGINE: dict[str, frozenset[str]] = {
             "legatum",
         }
     ),
+    # UKMOD is open and versioned, but four AB2025 producers ran it (CeMPA
+    # B2025.09, CPAG B1.13, WBG B2025.08, Fraser of Allander): their
+    # agreement on a two-child or benefit-cap figure is one engine reported
+    # several times, on different releases.
+    "ukmod": frozenset({"ukmod", "cpag", "wbg", "fraser_of_allander"}),
 }
 
 # Sources whose claims are model OUTPUT rather than administrative
@@ -101,6 +136,15 @@ MODEL_OUTPUT_SOURCES: dict[str, str] = {
     "ifs": "ifs_taxben",
     "jrc_euromod": "euromod",
     "resolution_foundation": "landman_ttm",
+    # #136. Source-level only where EVERY modelled claim of the source
+    # comes from one engine. jrf (HBAI workbook vs the shared model),
+    # fraser_of_allander (UKMOD vs block-grant arithmetic), niesr (NiGEM vs
+    # HBAI regressions) and fabian_society (one PolicyEngine row, the rest
+    # cited) are deliberately absent: their engine is on the claim.
+    "ippr": "landman_ttm",
+    "cpag": "ukmod",
+    "wbg": "ukmod",
+    "trussell_wpi": "wpi_hardship_model",
 }
 
 

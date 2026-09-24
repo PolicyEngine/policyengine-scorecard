@@ -7,9 +7,11 @@ registry_rule: >-
   (composition semantics, verbatim measure titles from the publication's
   in-scope list), the published counterfactual and income concept, and an
   honest computability triage per component. It never invents reform
-  parameter dicts: PE-expressible components reference measure families for
-  the obr_measure_reforms.yaml registry (data/uk/, #54) to carry the
-  executable spec, so one measure has one executable home.
+  parameter dicts: PE-expressible components reference measure families
+  whose executable spec lives in the Autumn Budget 2025 measure registry
+  (data/uk/ab2025_measures.json, #136; the obr_measure_reforms.yaml of
+  PR #56 reconciles to the same keys), so one measure has one executable
+  home.
 value_availability_rule: >-
   HMT publishes decile impacts as unlabeled chart bars in a PDF (see
   sources/hmt-distributional/raw/README.md). Entries therefore carry chart

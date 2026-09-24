@@ -332,6 +332,152 @@ _OBR_POLICY_EFFECTS_HELD = (
 )
 
 
+# Autumn Budget 2025 port (#136): every producer that scored the Budget,
+# assigned one by one. All held_out — nothing in pe-uk-data@dd68c73
+# (targets/sources/{obr,dwp,hmrc_spi}.py) or policyengine-uk 2.89.2
+# (takeup.yaml files, economic_assumptions) reads a think-tank, a
+# consultancy's or a commercial firm's Budget scoring; consumption surfaces
+# read 2026-09-24 at the certified pins. The one OBR caveat is stated on
+# its entry. Never family-wide defaults: a source absent here raises.
+_AB2025_SURFACES = (
+    " (consumption surfaces read 2026-09-24 at the certified pins: "
+    "pe-uk-data@dd68c73 targets and policyengine-uk 2.89.2 takeup and "
+    "economic_assumptions trees)."
+)
+_AB2025_HELD: dict[str, tuple] = {
+    "jrf": (
+        CR.HELD_OUT,
+        "JRF's projections run the shared Landman/IPPR tax-benefit model and its own HBAI work; neither is consumed"
+        + _AB2025_SURFACES,
+    ),
+    "ippr": (
+        CR.HELD_OUT,
+        "IPPR's tax-benefit model outputs and gambling/property arithmetic are scored, never consumed"
+        + _AB2025_SURFACES,
+    ),
+    "cpag": (
+        CR.HELD_OUT,
+        "CPAG's UKMOD B1.13 runs are a peer microsimulation's output, not a calibration source"
+        + _AB2025_SURFACES,
+    ),
+    "policy_in_practice": (
+        CR.HELD_OUT,
+        "Policy in Practice's local-authority UC administrative shares are held out: pe-uk-data's UC targets are DWP national caseload and expenditure, not PiP's council extracts"
+        + _AB2025_SURFACES,
+    ),
+    "entitledto": (
+        CR.HELD_OUT,
+        "entitledto's council tax reduction scheme survey is not a calibration source"
+        + _AB2025_SURFACES,
+    ),
+    "trussell_wpi": (
+        CR.HELD_OUT,
+        "WPI Economics' severe-hardship projections for Trussell are on WPI's own definition; nothing is fitted to them"
+        + _AB2025_SURFACES,
+    ),
+    "niesr": (
+        CR.HELD_OUT,
+        "NIESR's HBAI regressions and NiGEM scenarios are scored, never consumed"
+        + _AB2025_SURFACES,
+    ),
+    "centax": (
+        CR.HELD_OUT,
+        "CenTax's HMRC-microdata estimates are held out; the SPI targets pe-uk-data consumes are HMRC's own published statistics, not CenTax's derived figures"
+        + _AB2025_SURFACES,
+    ),
+    "tax_policy_associates": (
+        CR.HELD_OUT,
+        "Tax Policy Associates' open-source models and Land Registry tabulations are not consumed"
+        + _AB2025_SURFACES,
+    ),
+    "nef": (
+        CR.HELD_OUT,
+        "NEF's LCFS/SERL/EHS energy-levy incidence is not a calibration source (the consumption module's NEED calibration is administrative)"
+        + _AB2025_SURFACES,
+    ),
+    "fraser_of_allander": (
+        CR.HELD_OUT,
+        "Fraser of Allander's UKMOD runs and block-grant arithmetic are not consumed"
+        + _AB2025_SURFACES,
+    ),
+    "scottish_fiscal_commission": (
+        CR.HELD_OUT,
+        "SFC forecasts are not among the OBR determinants policyengine-uk uprates by; no pe-uk-data target reads them"
+        + _AB2025_SURFACES,
+    ),
+    "wbg": (
+        CR.HELD_OUT,
+        "WBG's UKMOD B2025.08 gender splits are peer-model output" + _AB2025_SURFACES,
+    ),
+    "cebr": (
+        CR.HELD_OUT,
+        "Cebr's freeze yield sits on Cebr's own earnings forecast (an assumptions-registry axis, #10), not on anything consumed"
+        + _AB2025_SURFACES,
+    ),
+    "smf": (
+        CR.HELD_OUT,
+        "SMF's fuel-duty and gambling estimates are not consumed" + _AB2025_SURFACES,
+    ),
+    "public_first": (
+        CR.HELD_OUT,
+        "Public First's FRS 2023-24 tabulations are the same survey pe-uk-data is built on but not a target: an independent tabulation, not a calibration"
+        + _AB2025_SURFACES,
+    ),
+    "demos": (
+        CR.HELD_OUT,
+        "Demos' static arithmetic (and CenTax's, where re-published) is not consumed"
+        + _AB2025_SURFACES,
+    ),
+    "fabian_society": (
+        CR.HELD_OUT,
+        "Nothing is fitted to the Fabian Society's figures. Its freeze-extension row was computed WITH PolicyEngine, which is benchmark_class same_assumptions on the claim, a different question from calibration"
+        + _AB2025_SURFACES,
+    ),
+    "taxpayers_alliance": (
+        CR.HELD_OUT,
+        "TaxPayers' Alliance tallies are sums of OBR figures (dropped as restated) or its own; neither is consumed"
+        + _AB2025_SURFACES,
+    ),
+    "cps": (
+        CR.HELD_OUT,
+        "CPS arithmetic on OBR paths is not consumed" + _AB2025_SURFACES,
+    ),
+    "onward": (
+        CR.HELD_OUT,
+        "Onward's FRS arithmetic is not consumed" + _AB2025_SURFACES,
+    ),
+    "tax_justice_uk": (
+        CR.HELD_OUT,
+        "Tax Justice UK's package inherits its components' yields; not consumed"
+        + _AB2025_SURFACES,
+    ),
+    "iea": (CR.HELD_OUT, "IEA fiscal arithmetic is not consumed" + _AB2025_SURFACES),
+    "policy_exchange": (
+        CR.HELD_OUT,
+        "Policy Exchange costings are not consumed (and not staged without the primary)"
+        + _AB2025_SURFACES,
+    ),
+    "ppi": (
+        CR.HELD_OUT,
+        "Pensions Policy Institute worked examples are arithmetic on stated rates"
+        + _AB2025_SURFACES,
+    ),
+    "loughborough_crsp": (
+        CR.HELD_OUT,
+        "Minimum Income Standard budgets are context benchmarks, not calibration targets"
+        + _AB2025_SURFACES,
+    ),
+    "obr_efo": (
+        CR.HELD_OUT,
+        "OBR EFO costings tables, boxes, uncertainty ratings and supplementary "
+        "costing notes are scored, never consumed. policyengine-uk DOES uprate "
+        "by the OBR economy determinants (gov.economic_assumptions.indices.obr.*) "
+        "— those forecast paths are deliberately NOT staged in this family, so "
+        "the caveat stays a statement rather than a row" + _AB2025_SURFACES,
+    ),
+}
+
+
 def uk_relationship(source, metric, program=None, kind=None):
     """(CalibrationRelationship, basis) for a UK claim, keyed exactly.
 
@@ -369,6 +515,14 @@ def uk_relationship(source, metric, program=None, kind=None):
             return _HMRC_RECKONER_HELD
         if kind == "liabilities":
             return _HMRC_SPI_SEED
+        if kind == "tiin":
+            return (
+                CR.HELD_OUT,
+                "HMRC tax information and impact note counts (individuals "
+                "affected by a measure) are scored, never consumed: pe-uk-data's "
+                "SPI targets are the liabilities statistics, not TIIN impact "
+                "counts" + _AB2025_SURFACES,
+            )
         raise ValueError(f"uk_hmrc kind {kind!r} needs a deliberate assignment")
     if source == "obr":
         if kind == "outturn":
@@ -399,6 +553,8 @@ def uk_relationship(source, metric, program=None, kind=None):
         return _HMT_DA_HELD
     if source == "hm_treasury":
         return (CR.HELD_OUT, "fiscal-event costings are scored, never consumed.")
+    if source in _AB2025_HELD:
+        return _AB2025_HELD[source]
     if source == "dwp":
         return (
             CR.HELD_OUT,
