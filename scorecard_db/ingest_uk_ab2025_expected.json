@@ -1,0 +1,150 @@
+{
+ "read": 8194,
+ "ingested": 6985,
+ "dropped": 1209,
+ "by_family": {
+  "uk_hmt_costings": {
+   "read": 699,
+   "ingested": 665,
+   "dropped": 34
+  },
+  "uk_hmt_redbook": {
+   "read": 39,
+   "ingested": 33,
+   "dropped": 6
+  },
+  "uk_hmrc_tiins": {
+   "read": 65,
+   "ingested": 54,
+   "dropped": 11
+  },
+  "uk_obr_tables": {
+   "read": 927,
+   "ingested": 746,
+   "dropped": 181
+  },
+  "uk_ifs_ab2025": {
+   "read": 931,
+   "ingested": 803,
+   "dropped": 128
+  },
+  "uk_rf_ab2025": {
+   "read": 1460,
+   "ingested": 1121,
+   "dropped": 339
+  },
+  "uk_jrf": {
+   "read": 134,
+   "ingested": 86,
+   "dropped": 48
+  },
+  "uk_ippr": {
+   "read": 118,
+   "ingested": 76,
+   "dropped": 42
+  },
+  "uk_cpag": {
+   "read": 59,
+   "ingested": 25,
+   "dropped": 34
+  },
+  "uk_fai_sfc": {
+   "read": 82,
+   "ingested": 48,
+   "dropped": 34
+  },
+  "uk_wbg": {
+   "read": 7,
+   "ingested": 4,
+   "dropped": 3
+  },
+  "uk_centax": {
+   "read": 87,
+   "ingested": 80,
+   "dropped": 7
+  },
+  "uk_tpa": {
+   "read": 3008,
+   "ingested": 3003,
+   "dropped": 5
+  },
+  "uk_pip": {
+   "read": 36,
+   "ingested": 21,
+   "dropped": 15
+  },
+  "uk_entitledto": {
+   "read": 5,
+   "ingested": 0,
+   "dropped": 5
+  },
+  "uk_nef": {
+   "read": 17,
+   "ingested": 5,
+   "dropped": 12
+  },
+  "uk_cebr": {
+   "read": 12,
+   "ingested": 10,
+   "dropped": 2
+  },
+  "uk_smf": {
+   "read": 40,
+   "ingested": 25,
+   "dropped": 15
+  },
+  "uk_publicfirst": {
+   "read": 12,
+   "ingested": 11,
+   "dropped": 1
+  },
+  "uk_demos": {
+   "read": 15,
+   "ingested": 5,
+   "dropped": 10
+  },
+  "uk_fabians": {
+   "read": 21,
+   "ingested": 11,
+   "dropped": 10
+  },
+  "uk_thinktank_misc": {
+   "read": 216,
+   "ingested": 109,
+   "dropped": 107
+  },
+  "uk_trussell_wpi": {
+   "read": 56,
+   "ingested": 35,
+   "dropped": 21
+  },
+  "uk_niesr": {
+   "read": 27,
+   "ingested": 9,
+   "dropped": 18
+  },
+  "uk_cases_commercial": {
+   "read": 121,
+   "ingested": 0,
+   "dropped": 121
+  }
+ },
+ "drops": {
+  "assumption_or_base_not_a_score": 104,
+  "macro_fiscal_or_out_of_scope": 119,
+  "restated_official_figure": 342,
+  "unit_no_household_concept": 46,
+  "parameter_or_threshold_level": 53,
+  "categorical_rating_not_a_value": 100,
+  "mode3_specimen_household": 116,
+  "ratio_or_derived_quantity": 62,
+  "share_level_no_registered_metric": 18,
+  "energy_levy_level_no_metric": 2,
+  "mtr_no_registered_metric": 7,
+  "in_kind_series_deferred": 85,
+  "no_registered_metric": 2,
+  "scheme_average_award_no_metric": 20,
+  "mode3_worked_example": 105,
+  "republished_twin_merged": 28
+ }
+}

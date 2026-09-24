@@ -67,6 +67,7 @@ from . import (
     ingest_uk_externals,
     ingest_dwp_pensions,
     ingest_lpc_minimum_wage,
+    ingest_uk_ab2025,
     ingest_uk_thinktanks,
     ingest_ons_etb,
     ingest_urban,
@@ -199,11 +200,20 @@ def build(db_path: Path) -> dict:
             "uk_policy_effects",
             lambda: ingest_obr_policy_effects.ingest(db_path),
         ),
+        # Every Autumn Budget 2025 score (#136): 25 harvest families from
+        # 27 producers, keyed to data/uk/ab2025_measures.json, with exact
+        # per-family accounting.
+        ("uk_ab2025", lambda: ingest_uk_ab2025.ingest(db_path)),
         ("produce_uk", lambda: produce_campaign_uk.produce(db_path)),
         (
             "campaign_uk",
             lambda: ingest_campaign.ingest(db_path, produce_campaign_uk.RESOLVED),
         ),
+        # The pe_gap verdicts for AB2025 claims on measures the certified
+        # engine cannot express: a result row AND a diagnosis row carrying
+        # the registry's action_link, so the gap is a finding with somewhere
+        # to go rather than a blank (#136, gate #9).
+        ("uk_ab2025_verdicts", lambda: ingest_uk_ab2025.ingest_verdicts(db_path)),
         ("nz_budget_scores", lambda: ingest_official_budget_scores.ingest(db_path)),
         ("be_pit_reform", lambda: ingest_pit_reform_2026.ingest(db_path)),
         ("be_jrc", lambda: ingest_jrc_country_report.ingest(db_path)),

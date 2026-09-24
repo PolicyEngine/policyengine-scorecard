@@ -243,6 +243,12 @@ LANE_SQL = (
     " stage=excluded.stage, detail=excluded.detail,"
     " updated_at=excluded.updated_at"
 )
+DIAGNOSES_SQL = (
+    "INSERT INTO diagnoses VALUES (?,?,?,?) ON CONFLICT(claim_id)"
+    " DO UPDATE SET diagnosis_class=excluded.diagnosis_class,"
+    " rationale=excluded.rationale,"
+    " action_link=excluded.action_link"
+)
 BASELINE_SQL = (
     "INSERT INTO baselines VALUES (?,?,?,?,?,?)"
     " ON CONFLICT(baseline_key) DO UPDATE SET"
@@ -508,15 +514,21 @@ class ScorecardDB:
             )
         ]
 
-    def diagnose(
-        self,
+    @staticmethod
+    def diagnosis_row(
         claim_id: str,
         diagnosis_class: str,
         rationale: str = "",
         action_link: str = "",
-    ):
-        # Descriptive register (issue #9): normative classes are gated on
-        # a citable known issue; divergence alone never qualifies.
+    ) -> tuple:
+        """Prepare a diagnoses row for DIAGNOSES_SQL, applying the
+        descriptive-register gate (issue #9): the normative classes
+        (pe_gap, external_issue) need a citable known issue in
+        action_link; divergence alone never qualifies. Exposed like
+        score_row / result_row so an ingest can write claims, results
+        and diagnoses inside ONE `with db.conn:` block (diagnose() below
+        commits per call, which would break a wholesale-replace
+        transaction the way baselines.py documents)."""
         if DiagnosisClass(diagnosis_class) in GATED_DIAGNOSIS_CLASSES and (
             not action_link
         ):
@@ -524,14 +536,18 @@ class ScorecardDB:
                 f"{diagnosis_class} requires a citable known issue in "
                 "action_link (descriptive register, issue #9)"
             )
+        return (claim_id, diagnosis_class, rationale, action_link)
+
+    def diagnose(
+        self,
+        claim_id: str,
+        diagnosis_class: str,
+        rationale: str = "",
+        action_link: str = "",
+    ):
+        row = self.diagnosis_row(claim_id, diagnosis_class, rationale, action_link)
         with self.conn:
-            self.conn.execute(
-                "INSERT INTO diagnoses VALUES (?,?,?,?) ON CONFLICT(claim_id)"
-                " DO UPDATE SET diagnosis_class=excluded.diagnosis_class,"
-                " rationale=excluded.rationale,"
-                " action_link=excluded.action_link",
-                (claim_id, diagnosis_class, rationale, action_link),
-            )
+            self.conn.execute(DIAGNOSES_SQL, row)
 
     # -- reads ----------------------------------------------------------
     def comparisons(

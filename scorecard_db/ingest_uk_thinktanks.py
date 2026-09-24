@@ -29,8 +29,8 @@ Two honesty problems the staging carries, and how each is handled:
    have shrunk silently to zero and nobody would have seen it, which is
    what the exact accounting at the bottom of this module prevents.
 
-2. **8 Resolution Foundation rows are not Resolution Foundation
-   claims.** They carry an ``attribution`` naming HM Treasury, a UK
+2. **8 Resolution Foundation rows (and, since #136, 2 IFS deck rows) are
+   not the publisher's claims.** They carry an ``attribution`` naming HM Treasury, a UK
    Parliament impact assessment, or "Government estimate cited by RF",
    and two say so outright in their note ("not an RF model output").
    Staging them under ``resolution_foundation`` would attribute a
@@ -436,11 +436,11 @@ def _score(row: dict, source: str, metric: Metric) -> ExternalScore:
 # particular the 145 proposal-only rows must never quietly become zero.
 _EXPECTED = {
     "read": 339,
-    "ingested": 314,
-    "dropped": 25,
+    "ingested": 312,
+    "dropped": 27,
     "drops": {
         "cost_per_child_lifted_out_of_poverty": 12,
-        "third_party_attribution": 8,
+        "third_party_attribution": 10,
         "benefit_rate_gap_weekly": 2,
         "avg_gain_per_unit": 1,
         "benefit_rate_weekly": 1,
