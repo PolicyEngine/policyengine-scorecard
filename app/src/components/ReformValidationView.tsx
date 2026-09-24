@@ -29,10 +29,50 @@ export const BE_REFORM_DESCRIPTION =
 
 const SCOPE_COPY: Record<Country, string> = {
   US: "the populace reform-validation registry (JCT scores, state fiscal notes, agency actuals, IRS and Census references) plus the compute campaign's TPC, CPSP, PWBM and CBO comparisons",
-  UK: "the compute campaign's HMRC ready-reckoner comparisons (each PE score is a current-law static change; HMRC's are projected-FY direct effects against an indexed baseline, so every comparison is constructed-basis by design)",
+  UK: "the compute campaign's HMRC ready-reckoner comparisons (each PE score is a current-law static change; HMRC's are projected-FY direct effects against an indexed baseline, so every comparison is constructed-basis by design), and every Autumn Budget 2025 score from 27 producers keyed to the AB2025 measure registry: rows on a measure the certified engine cannot express carry a pe_gap verdict with a link to where the gap is tracked, the rest await their counterpart run",
   BE: BE_REFORM_DESCRIPTION,
   NZ: "New Zealand Treasury official budget-score replication candidates, with fiscal timing and the IWTC termination scenario explicit before a PolicyEngine counterpart attaches",
 };
+
+/** Distinct values of one condition key across rows, sorted; rows that
+ *  lack the key are counted under "" so a filter can still select them. */
+export function conditionValues(
+  rows: PopulationRow[],
+  key: string,
+): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const r of rows) {
+    const v = r.conditions[key] ?? "";
+    out[v] = (out[v] ?? 0) + 1;
+  }
+  return out;
+}
+
+export interface RowFilters {
+  source: string;
+  status: string;
+  releasesOnly: boolean;
+  fiscalEvent: string;
+  benchmarkClass: string;
+}
+
+/** The table's filter, kept pure so it is testable without a DOM.
+ *  "all" disables a filter; an empty string matches rows without the key. */
+export function filterRows(rows: PopulationRow[], f: RowFilters): PopulationRow[] {
+  return rows.filter((r) => {
+    if (f.source !== "all" && r.source !== f.source) return false;
+    if (f.status !== "all" && r.latest.status_effective !== f.status) return false;
+    if (f.releasesOnly && r.results.length < 2) return false;
+    if (f.fiscalEvent !== "all" && (r.conditions.fiscal_event ?? "") !== f.fiscalEvent)
+      return false;
+    if (
+      f.benchmarkClass !== "all" &&
+      (r.conditions.benchmark_class ?? "") !== f.benchmarkClass
+    )
+      return false;
+    return true;
+  });
+}
 
 export function ReformValidationView({
   feed,
@@ -45,6 +85,8 @@ export function ReformValidationView({
   const [source, setSource] = useState("all");
   const [status, setStatus] = useState("all");
   const [releasesOnly, setReleasesOnly] = useState(false);
+  const [fiscalEvent, setFiscalEvent] = useState("all");
+  const [benchmarkClass, setBenchmarkClass] = useState("all");
   const [expanded, setExpanded] = useState<string | null>(null);
 
   // Everything below is computed from the COUNTRY-SCOPED slice, never the
@@ -74,16 +116,23 @@ export function ReformValidationView({
     () => inCountry.filter((r) => r.results.length > 1).length,
     [inCountry],
   );
+  // Retrieval by event and by benchmark class (#136): both are claim
+  // conditions, so the option lists come from the rows, like sources.
+  const byEvent = useMemo(() => conditionValues(inCountry, "fiscal_event"), [inCountry]);
+  const byClass = useMemo(
+    () => conditionValues(inCountry, "benchmark_class"),
+    [inCountry],
+  );
   const rows = useMemo(
     () =>
-      inCountry.filter((r) => {
-        if (source !== "all" && r.source !== source) return false;
-        if (status !== "all" && r.latest.status_effective !== status)
-          return false;
-        if (releasesOnly && r.results.length < 2) return false;
-        return true;
+      filterRows(inCountry, {
+        source,
+        status,
+        releasesOnly,
+        fiscalEvent,
+        benchmarkClass,
       }),
-    [inCountry, source, status, releasesOnly],
+    [inCountry, source, status, releasesOnly, fiscalEvent, benchmarkClass],
   );
 
   const th = "px-3 py-2 font-medium";
@@ -130,7 +179,7 @@ export function ReformValidationView({
       </details>
 
       <div className="rounded-lg border border-border bg-card p-4">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
           <LabeledSelect
             label="Source"
             value={source}
@@ -153,6 +202,34 @@ export function ReformValidationView({
                 value: s,
                 label: `${STATUS_LABELS[s as keyof typeof STATUS_LABELS] ?? s} (${n})`,
               })),
+            ]}
+          />
+          <LabeledSelect
+            label="Fiscal event"
+            value={fiscalEvent}
+            onChange={setFiscalEvent}
+            options={[
+              { value: "all", label: "All events" },
+              ...Object.entries(byEvent)
+                .sort()
+                .map(([v, n]) => ({
+                  value: v,
+                  label: `${v === "" ? "(none recorded)" : v.replace(/_/g, " ")} (${n})`,
+                })),
+            ]}
+          />
+          <LabeledSelect
+            label="Benchmark class"
+            value={benchmarkClass}
+            onChange={setBenchmarkClass}
+            options={[
+              { value: "all", label: "All classes" },
+              ...Object.entries(byClass)
+                .sort()
+                .map(([v, n]) => ({
+                  value: v,
+                  label: `${v === "" ? "(none recorded)" : v.replace(/_/g, " ")} (${n})`,
+                })),
             ]}
           />
           <div className="flex items-end gap-2 pb-1">
@@ -403,6 +480,19 @@ function RowDetail({ row }: { row: PopulationRow }) {
                   {row.diagnosis.class.replace(/_/g, " ")}
                 </Tag>
                 {row.diagnosis.rationale}
+                {row.diagnosis.action_link && (
+                  <>
+                    {" "}
+                    <a
+                      href={row.diagnosis.action_link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline underline-offset-2"
+                    >
+                      where this is tracked
+                    </a>
+                  </>
+                )}
               </p>
             )}
           </div>
