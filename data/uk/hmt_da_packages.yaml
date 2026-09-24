@@ -94,8 +94,14 @@ packages:
         measure_family: savings_rates
       - title: "Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the property higher rate and 47% for the property additional rate, from 6 April 2027"
         channel: tax
-        computability: partial
-        missing: separate property-income rate schedule not in the pe-uk parameter tree
+        computability: expressible
+        measure_family: property_income_rates
+        # CORRECTED (#136 prep). v1 said the schedule was "not in the pe-uk
+        # parameter tree"; gov.hmrc.income_tax.rates.property is a SUBTREE
+        # (basic/higher/additional) that already carries the April-2027 rise
+        # (baseline_integrity.json: announced__property_income_tax_rates,
+        # verdict carried, corrected at PR #100). Already in the baseline.
+        already_in_baseline: true
       - title: "Universal Credit Child Element: Remove the two child limit from 1 April 2026, taking 450,000 children out of poverty"
         channel: welfare
         computability: expressible
@@ -134,8 +140,16 @@ packages:
         missing: consumption incidence requires expenditure imputation; pe-uk carries fuel duty via consumption module only
       - title: "High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over £2m in England from 1 April 2028"
         channel: tax
-        computability: partial
-        missing: property-value distribution above £2m not resolved in the certified bundle
+        computability: expressible
+        measure_family: high_value_council_tax_surcharge
+        # CORRECTED (#136 prep). The full announced schedule is in the
+        # baseline from 2027 at gov.hmrc.council_tax.high_value_surcharge.amount
+        # (baseline_integrity.json: ab2025__high_value_council_tax_surcharge,
+        # verdict carried; budget_2026_measures.json records it expressible and
+        # already_in_baseline). The bundle's main_residence_value above GBP 2m is
+        # WAS-imputed: that is a credibility annotation on the counterpart's
+        # incidence, not a computability gap.
+        already_in_baseline: true
       - title: "Student Loans: Freeze Plan 2 repayment threshold for 3 years from 6 April 2027"
         channel: tax
         computability: partial
@@ -154,8 +168,13 @@ packages:
         why: course-aligned eligibility below survey resolution
       - title: "Rail Fares: Freeze rail fares in England for one year from 1 March 2026"
         channel: benefits_in_kind_public_services
-        computability: not_expressible
-        why: public-services benefits-in-kind allocation, outside PE scope
+        computability: expressible
+        measure_family: rail_fares_freeze
+        # CORRECTED (#136 prep). v1 called this outside PE scope; the engine
+        # carries the fare index (gov.dft.rail.fare_index vs
+        # gov.dft.rail.prior_law_fare_index, readings 1.217 vs 1.288 for 2026 at
+        # 2.89.2) and household rail_subsidy_spending / dft_subsidy_spending, and
+        # data/uk/rail_fares_reform.json resolves the reform at the certified pin.
       - title: "Health and Social Care: Freeze NHS prescription charges in England for one year from 1 April 2026"
         channel: benefits_in_kind_public_services
         computability: not_expressible
