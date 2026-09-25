@@ -417,7 +417,7 @@ def run_measure(
     worlds: dict,
     measure: dict,
     years: list[int],
-    base_sims: dict,
+    base_frames: dict,
     pre: dict,
     run_id: str,
     out_dir: Path,
@@ -437,8 +437,10 @@ def run_measure(
     before = sha256_file(pre["artifact"])
     alt = build_sim(alt_reform)
     for year in years:
-        base = base_sims[year]
-        fb = household_frame(base, year, heads)
+        fb = base_frames[year]
+        if any(v not in fb["heads"] for v in heads):
+            raise SystemExit(f"{key}: baseline frame for {year} lacks heads {heads}")
+        fb = {**fb, "heads": {v: fb["heads"][v] for v in heads}}
         fa = household_frame(alt, year, heads)
         base_frame, ref_frame = (fa, fb) if alt_is_baseline else (fb, fa)
         artifact = {
@@ -547,12 +549,23 @@ def main(argv: list[str] | None = None) -> int:
         flush=True,
     )
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    base_sims = {}
+    # One simulation alive at a time: each year's baseline FRAME is
+    # extracted once (every head variable any selected measure names) and
+    # the baseline simulation discarded before the next is built.
+    all_heads = sorted(
+        {v for k in selected for v in (index[k].get("head_variables") or [])}
+    )
+    base_frames = {}
     for year in args.years:
-        base_sims[year] = build_sim(None)
-        # warm the baseline frames once per year (calculations cache on the sim)
-        household_frame(base_sims[year], year, [])
-        print(f"[{year}] baseline world ready", flush=True)
+        t0 = time.perf_counter()
+        base = build_sim(None)
+        base_frames[year] = household_frame(base, year, all_heads)
+        del base
+        print(
+            f"[{year}] baseline frame extracted ({len(all_heads)} heads) in "
+            f"{time.perf_counter() - t0:.0f}s",
+            flush=True,
+        )
     written = []
     for k in selected:
         written += run_measure(
@@ -560,7 +573,7 @@ def main(argv: list[str] | None = None) -> int:
             runnable[k],
             index[k],
             args.years,
-            base_sims,
+            base_frames,
             pre,
             args.run_id,
             args.output_dir,
