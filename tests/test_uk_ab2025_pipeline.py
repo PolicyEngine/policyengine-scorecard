@@ -81,6 +81,55 @@ def test_every_expressible_measure_is_computable_or_listed():
     exp = [k for k, m in INDEX.items() if m["computability"] == "expressible"]
     missing = [k for k in exp if k not in comp_]
     assert missing == [], missing
+    # by design (nothing to execute) is a reason, malformed is an error
+    reasons = comp.not_computable(INDEX)
+    assert reasons and all(reasons.values())
+    assert not (set(reasons) & set(comp_))
+    bad = {
+        **INDEX,
+        "ab2025__broken": {
+            **INDEX["ab2025__dividend_rates_plus_2pp"],
+            "measure_key": "ab2025__broken",
+            "pe_baseline_modifier": None,
+        },
+    }
+    with pytest.raises(ValueError, match="reversal without"):
+        comp.worlds_for(bad["ab2025__broken"], bad)
+
+
+def test_a_package_refuses_conflicting_or_mixed_components():
+    a = INDEX["ab2025__dividend_rates_plus_2pp"]
+    b = {
+        **a,
+        "measure_key": "x",
+        "pe_baseline_modifier": {k: {"2026": 0.5} for k in a["pe_baseline_modifier"]},
+    }
+    idx = {
+        **INDEX,
+        "x": b,
+        "pkg": {
+            "measure_key": "pkg",
+            "computability": "partial",
+            "construction": "package_of_registry_measures",
+            "package_of": ["ab2025__dividend_rates_plus_2pp", "x"],
+        },
+    }
+    with pytest.raises(ValueError, match="differently"):
+        comp.worlds_for(idx["pkg"], idx)
+    mixed = {
+        **INDEX,
+        "pkg": {
+            "measure_key": "pkg",
+            "computability": "partial",
+            "construction": "package_of_registry_measures",
+            "package_of": [
+                "ab2025__dividend_rates_plus_2pp",
+                "ab2025_option__income_tax_basic_rate_plus_1p",
+            ],
+        },
+    }
+    with pytest.raises(ValueError, match="mixes"):
+        comp.worlds_for(mixed["pkg"], mixed)
 
 
 def test_weighted_quantile_groups_are_person_weighted():
@@ -167,6 +216,7 @@ def _artifact(
             },
         },
         "affected": {"households": 7.0, "people": 9.0, "children": 3.0},
+        "head_variables": ["universal_credit"],
         "null_executed_as_no_limit": [],
         "engine_version": "2.89.2",
         "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
@@ -174,6 +224,13 @@ def _artifact(
         "computed_at": "2026-09-25T00:00:00+00:00",
         "_path": "results/uk/ab2025/test.json",
     }
+
+
+YIELD = "positive = yield to the Exchequer (reduces borrowing); negative = cost"
+OBR_NEG = "Note (verbatim): This table uses the convention that a negative figure means a reduction in PSNB."
+OBR_POS = "Note (verbatim): A positive sign implies an increase in borrowing."
+POV_UP = "positive = more people in poverty under the reform"
+POV_DOWN = "positive = children lifted out of poverty"
 
 
 def _claim(metric, unit="gbp", **cond):
@@ -190,24 +247,47 @@ def _claim(metric, unit="gbp", **cond):
 
 def test_revenue_change_is_the_static_exchequer_effect_oriented_to_the_claim():
     art = _artifact()
-    v, notes, reason = stg.map_claim(_claim("revenue_change"), art)
-    assert reason is None and v == 0.0  # +10 tax, +10 spending
-    v, _, _ = stg.map_claim(
-        _claim("revenue_change", sign_convention="positive = cost to the Exchequer"),
-        {
-            **art,
-            "totals": {
-                "baseline": art["totals"]["baseline"],
-                "reform": {**art["totals"]["reform"], "gov_spending": 50.0},
-            },
+    yield_art = {
+        **art,
+        "totals": {
+            "baseline": art["totals"]["baseline"],
+            "reform": {**art["totals"]["reform"], "gov_spending": 50.0},
         },
+    }  # +10 tax, spending unchanged: a £10 yield
+    v, notes, reason = stg.map_claim(
+        _claim("revenue_change", sign_convention=YIELD), yield_art
     )
-    assert v == -10.0
-    v, _, reason = stg.map_claim(_claim("revenue_change", tax_head="Income tax"), art)
+    assert reason is None and v == 10.0
+    # the OBR states the opposite convention in two phrasings: both are costs
+    for text in (OBR_NEG, OBR_POS, "positive = cost to the Exchequer"):
+        v, _, _ = stg.map_claim(
+            _claim("revenue_change", sign_convention=text), yield_art
+        )
+        assert v == -10.0, text
+    v, _, reason = stg.map_claim(
+        _claim("revenue_change", tax_head="Income tax", sign_convention=YIELD), art
+    )
     assert v is None and "OBR head-level" in reason
 
 
-def test_poverty_counts_follow_the_claim_line_basis_and_population():
+def test_an_unrecognised_sign_convention_is_a_gap_not_a_default():
+    art = _artifact()
+    for text in (
+        None,
+        "as worded",
+        "as worded: 'reduces the yield by' (positive = reduction in yield)",
+    ):
+        v, _, reason = stg.map_claim(
+            _claim("revenue_change", sign_convention=text), art
+        )
+        assert v is None and reason, text
+    v, _, reason = stg.map_claim(
+        _claim("revenue_change", "percent_of_gdp", sign_convention=YIELD), art
+    )
+    assert v is None and "unit" in reason
+
+
+def test_poverty_counts_follow_the_claim_line_basis_population_and_sign():
     art = _artifact()
     v, notes, reason = stg.map_claim(
         _claim(
@@ -216,24 +296,69 @@ def test_poverty_counts_follow_the_claim_line_basis_and_population():
             housing_costs="ahc",
             poverty_line="relative_60_median",
             unit_population="children",
+            sign_convention=POV_UP,
         ),
         art,
     )
     assert reason is None and v == -100.0 and "children" in notes[0]
+    # "lifted out of poverty" is the opposite orientation: PE's −100 becomes +100
+    v, notes, _ = stg.map_claim(
+        _claim(
+            "poverty_count_change",
+            "children",
+            housing_costs="ahc",
+            poverty_line="relative_60_median",
+            sign_convention=POV_DOWN,
+        ),
+        art,
+    )
+    assert v == 100.0
     v, notes, _ = stg.map_claim(
         _claim(
             "poverty_count_change",
             "persons",
             housing_costs="bhc",
             poverty_line="absolute_60_fye2011_median",
+            sign_convention=POV_UP,
         ),
         art,
     )
     assert v == -100.0 and "absolute_bhc" in notes[0]
     v, _, _ = stg.map_claim(
-        _claim("poverty_rate_change", "percentage_points", housing_costs="ahc"), art
+        _claim(
+            "poverty_rate_change",
+            "percentage_points",
+            housing_costs="ahc",
+            poverty_line="fixed_at_baseline",
+            sign_convention=POV_UP,
+        ),
+        art,
     )
     assert v == pytest.approx(-1.0)
+    # a basis, a line or a population PE did not compute is a gap
+    for cond in (
+        dict(poverty_line="relative_60_median", sign_convention=POV_UP),  # no basis
+        dict(
+            housing_costs="ahc",
+            poverty_line="absolute_40_fye2011_median",
+            sign_convention=POV_UP,
+        ),
+        dict(
+            housing_costs="ahc",
+            poverty_line="relative_60_median",
+            subgroup="elderly",
+            sign_convention=POV_UP,
+        ),
+        dict(
+            housing_costs="ahc",
+            poverty_line="relative_60_median",
+            sign_convention="positive = children whose depth of poverty is reduced",
+        ),
+    ):
+        v, _, reason = stg.map_claim(
+            _claim("poverty_count_change", "persons", **cond), art
+        )
+        assert v is None and reason, cond
 
 
 def test_group_shapes_use_the_baseline_world_groups():
@@ -269,14 +394,83 @@ def test_group_shapes_use_the_baseline_world_groups():
         _claim("share_losing", "share", income_group="bottom_half"), art
     )
     assert v is None and "income_group" in reason
+    # income shares: a level share, or a change in percentage points, never mixed
+    v, _, _ = stg.map_claim(
+        _claim(
+            "income_share",
+            "share",
+            income_group="decile_1",
+            housing_costs="ahc",
+            scenario="reform",
+        ),
+        art,
+    )
+    assert v == pytest.approx(3_052_000.0 / 30_520_000.0)
+    v, _, _ = stg.map_claim(
+        _claim(
+            "income_share",
+            "percentage_points",
+            income_group="decile_1",
+            housing_costs="ahc",
+            scenario="reform_minus_baseline",
+        ),
+        art,
+    )
+    assert v == pytest.approx(
+        100 * (3_052_000.0 / 30_520_000.0 - 3_000_000.0 / 30_000_000.0)
+    )
+    v, _, reason = stg.map_claim(
+        _claim(
+            "income_share",
+            "percentage_points",
+            income_group="decile_1",
+            housing_costs="ahc",
+            scenario="reform",
+        ),
+        art,
+    )
+    assert v is None and "income_share" in reason
+    # units off the list are gaps
+    v, _, reason = stg.map_claim(
+        _claim(
+            "average_household_income_change",
+            "gbp_per_person",
+            income_group="decile_1",
+            housing_costs="ahc",
+        ),
+        art,
+    )
+    assert v is None and "unit" in reason
+    v, _, _ = stg.map_claim(
+        _claim(
+            "average_household_income_change",
+            "gbp_per_month",
+            income_group="decile_1",
+            housing_costs="ahc",
+        ),
+        art,
+    )
+    assert v == pytest.approx(52_000.0 / 100 / 12)
 
 
 def test_unanswerable_shapes_are_tallied_not_guessed():
     art = _artifact()
     v, _, reason = stg.map_claim(_claim("gini", "index_0_1"), art)
     assert v is None and "no counterpart shape" in reason
-    v, _, reason = stg.map_claim(_claim("revenue_change", geography="Scotland"), art)
+    v, _, reason = stg.map_claim(
+        _claim("revenue_change", geography="Scotland", sign_convention=YIELD), art
+    )
     assert v is None and "geography" in reason
+    # affected populations: persons, households or children, and only where
+    # the measure names head variables
+    v, _, _ = stg.map_claim(_claim("affected_count", "children"), art)
+    assert v == 3.0
+    v, _, reason = stg.map_claim(_claim("affected_count", "families"), art)
+    assert v is None and "unit" in reason
+    v, _, reason = stg.map_claim(
+        _claim("affected_count", "persons"), {**art, "head_variables": []}
+    )
+    assert v is None and "no head variables" in reason
 
 
 def test_executed_worlds_are_registered():

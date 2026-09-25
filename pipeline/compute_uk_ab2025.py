@@ -139,6 +139,22 @@ def reform_dict(spec: dict) -> tuple[dict, list[str]]:
     return out, sentinels
 
 
+class NotExecutable(Exception):
+    """A registry entry with nothing to execute BY DESIGN (a partial measure
+    whose expressible leg is not a parameter, a package with no executable
+    component): listed, never confused with a malformed entry, which raises
+    ValueError."""
+
+
+def _merge_reform(into: dict, add: dict, key: str, what: str) -> None:
+    for path, periods in add.items():
+        if path in into and into[path] != periods:
+            raise ValueError(
+                f"{key}: component {what} sets {path} differently from another component"
+            )
+        into[path] = periods
+
+
 def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
     """{'construction', 'baseline_reform', 'reform_reform', 'components'}:
     the reform dicts the baseline and reform worlds execute (None = the
@@ -150,20 +166,35 @@ def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
         return {"alias_of": target}
     if construction == "package_of_registry_measures":
         comps = measure.get("package_of")
+        if isinstance(comps, str):
+            # the Budget's totals describe their composition in words (every
+            # announced measure), not as registry keys: nothing to execute
+            raise NotExecutable(
+                f"{key}: package_of is a description, not a list of measure keys"
+            )
         if not isinstance(comps, list) or not comps:
             raise ValueError(f"{key}: package_of is not a list of measure keys")
         merged_mod: dict = {}
         merged_delta: dict = {}
         sentinels: list[str] = []
         for c in comps:
+            if c not in index:
+                raise ValueError(f"{key}: package_of names an unknown measure {c!r}")
             w = worlds_for(index[c], index)
             if "alias_of" in w:
                 w = worlds_for(index[w["alias_of"]], index)
             if w.get("baseline_reform"):
-                merged_mod.update(w["baseline_reform"])
+                _merge_reform(merged_mod, w["baseline_reform"], key, c)
             if w.get("reform_reform"):
-                merged_delta.update(w["reform_reform"])
+                _merge_reform(merged_delta, w["reform_reform"], key, c)
             sentinels += w.get("sentinels", [])
+        if merged_mod and merged_delta:
+            raise ValueError(
+                f"{key}: package mixes reversals and forward deltas; one world cannot "
+                "execute both sides"
+            )
+        if not merged_mod and not merged_delta:
+            raise NotExecutable(f"{key}: no component has an executable leg")
         return {
             "construction": construction,
             "baseline_reform": merged_mod or None,
@@ -193,18 +224,36 @@ def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
             "components": [key],
             "sentinels": sent,
         }
-    raise ValueError(f"{key}: nothing to execute")
+    if measure["computability"] in ("expressible", "partial"):
+        raise NotExecutable(f"{key}: no pe_reform_delta or pe_baseline_modifier")
+    raise ValueError(f"{key}: not expressible")
 
 
 def computable(index: dict[str, dict]) -> dict[str, dict]:
+    """Executable worlds for every expressible or partial measure. A measure
+    with nothing to execute by design is left out (see not_computable); a
+    malformed entry raises — the two are never one list."""
     out = {}
     for key, m in index.items():
         if m["computability"] not in ("expressible", "partial"):
             continue
         try:
             out[key] = worlds_for(m, index)
-        except ValueError:
+        except NotExecutable:
             continue
+    return out
+
+
+def not_computable(index: dict[str, dict]) -> dict[str, str]:
+    """measure -> why it has nothing to execute (by design)."""
+    out = {}
+    for key, m in index.items():
+        if m["computability"] not in ("expressible", "partial"):
+            continue
+        try:
+            worlds_for(m, index)
+        except NotExecutable as e:
+            out[key] = str(e).split(": ", 1)[1]
     return out
 
 
@@ -371,6 +420,7 @@ def distribution_block(base: dict, ref: dict) -> dict:
     rel = np.divide(
         d_hni, np.abs(base["hni"]), out=np.zeros_like(d_hni), where=base["hni"] != 0
     )
+    undefined = base["hni"] == 0  # no baseline income: relative change undefined
     for basis in ("bhc", "ahc"):
         for n, label in ((10, "decile"), (20, "vigintile")):
             groups = _weighted_quantile_groups(
@@ -390,6 +440,7 @@ def distribution_block(base: dict, ref: dict) -> dict:
                 for t in THRESHOLDS:
                     row[f"gaining_over_{t:g}"] = float(w[rel[m] > t].sum())
                     row[f"losing_over_{t:g}"] = float(w[rel[m] < -t].sum())
+                row["undefined_change"] = float(w[undefined[m]].sum())
                 rows.append(row)
             out[f"{basis}_{label}"] = rows
     all_w = base["weight"]
@@ -400,11 +451,14 @@ def distribution_block(base: dict, ref: dict) -> dict:
         "hni_reform": float((all_w * ref["hni"]).sum()),
         **{f"gaining_over_{t:g}": float(all_w[rel > t].sum()) for t in THRESHOLDS},
         **{f"losing_over_{t:g}": float(all_w[rel < -t].sum()) for t in THRESHOLDS},
+        "undefined_change": float(all_w[undefined].sum()),
     }
     return out
 
 
-def affected_block(base: dict, ref: dict) -> dict:
+def affected_block(base: dict, ref: dict) -> dict | None:
+    if not base["heads"]:
+        return None  # no head variables: an affected population is undefined
     changed = np.zeros(len(base["weight"]), dtype=bool)
     for v in base["heads"]:
         changed |= ~np.isclose(base["heads"][v], ref["heads"][v], rtol=0, atol=0.5)
@@ -530,11 +584,7 @@ def main(argv: list[str] | None = None) -> int:
     summary = {
         "selected": selected,
         "aliases": aliases,
-        "not_computable": sorted(
-            k
-            for k, m in index.items()
-            if m["computability"] in ("expressible", "partial") and k not in comp
-        ),
+        "not_computable": not_computable(index),
         "years": args.years,
     }
     if args.dry_run:
@@ -567,11 +617,19 @@ def main(argv: list[str] | None = None) -> int:
         {v for k in selected for v in (index[k].get("head_variables") or [])}
     )
     base_frames = {}
+    baseline_hashes = {}
     for year in args.years:
         t0 = time.perf_counter()
+        before = sha256_file(pre["artifact"])
         base = build_sim(None)
         base_frames[year] = household_frame(base, year, all_heads)
         del base
+        after = sha256_file(pre["artifact"])
+        if after != before or before != pre["sha256"]:
+            raise SystemExit(
+                "the certified artifact changed during a baseline simulation"
+            )
+        baseline_hashes[str(year)] = {"before": before, "after": after}
         print(
             f"[{year}] baseline frame extracted ({len(all_heads)} heads) in "
             f"{time.perf_counter() - t0:.0f}s",
@@ -609,6 +667,7 @@ def main(argv: list[str] | None = None) -> int:
         "engine_version": pre["engine_version"],
         "data_bundle": pre["revision"],
         "artifact_sha256": pre["sha256"],
+        "baseline_dataset_sha256": baseline_hashes,
         "years": args.years,
         "measures": done + selected,
         "resumed_measures": done,

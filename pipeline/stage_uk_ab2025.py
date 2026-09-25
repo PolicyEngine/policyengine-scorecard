@@ -101,18 +101,99 @@ def claims(conn: sqlite3.Connection) -> list[dict]:
 # --- shape mapping ------------------------------------------------------------
 
 
+class Unanswerable(LookupError):
+    """A claim shape no computed quantity answers: tallied with its reason,
+    never defaulted. A wrong sign or unit is worse than a gap."""
+
+
+# --- closed vocabularies -------------------------------------------------------
+# The sign convention a producer states, read against PE's own orientation
+# (a positive exchequer effect is a yield; a positive poverty change is more
+# people in poverty). Phrasings are matched as lower-case substrings of the
+# claim's `sign_convention`; anything outside the lists is UNANSWERABLE.
+YIELD_POSITIVE = (
+    "positive = yield to the exchequer",
+    "positive = revenue yield",
+    "positive = yield / reduction in borrowing",
+    "here we present higher taxes as positive numbers",
+    "positive = higher government revenue",
+    "positive = net gain to the exchequer",
+    "(positive = yield)",
+    "(positive = increase in yield)",
+    "(positive = reduction in borrowing)",
+    "(positive = reduction in welfare spending)",
+)
+COST_POSITIVE = (
+    "positive = cost to the exchequer",
+    "positive = increase in borrowing",
+    "a positive sign implies an increase in borrowing",
+    "a negative figure means a reduction in psnb",
+    "positive = cost / increase in borrowing",
+)
+# Component adjustments a static exchequer effect does not answer (a
+# reduction in a yield from a behavioural or timing adjustment, receipts
+# brought forward): recognised so the tally names them.
+ADJUSTMENT_PHRASINGS = (
+    "reduction in yield",
+    "reduction in the static yield",
+    "reduce the static costing",
+    "brought forward",
+)
+POVERTY_INCREASE_POSITIVE = (
+    "positive = more people in poverty",
+    "positive = additional children in poverty",
+    "positive = children in poverty because of",
+    "positive = children kept in poverty",
+)
+POVERTY_REDUCTION_POSITIVE = (
+    "lifted out of poverty",
+    "brought out of poverty",
+    "fewer children in poverty",
+    "prevented from being drawn into poverty",
+    "reduction in the child poverty rate",
+    "'lift ... out of poverty'",
+)
+POVERTY_LINES = {
+    "relative_60_median": "relative_60_median_moving",
+    "fixed_at_baseline": "relative_60_median_fixed_at_baseline",
+    "absolute_60_fye2011_median": "absolute",
+}
+INCOME_CHANGE_UNITS = {
+    "gbp": 1.0,
+    "gbp_per_household": 1.0,
+    "gbp_per_week": 1.0 / 52.0,
+    "gbp_per_month": 1.0 / 12.0,
+}
+
+
 def _sign(cond: dict) -> tuple[int, str]:
     text = (cond.get("sign_convention") or "").lower()
-    if "cost" in text and (
-        "positive = cost" in text
-        or "positive = a cost" in text
-        or "positive cost" in text
-    ):
-        return -1, "claim sign: positive = cost; PE oriented to it"
-    return (
-        1,
-        "claim sign: positive = yield to the Exchequer (default; HMT prints costs negative)",
-    )
+    if not text:
+        raise Unanswerable("no sign convention on the claim")
+    if any(k in text for k in ADJUSTMENT_PHRASINGS):
+        raise Unanswerable(
+            "claim is a component adjustment to a yield (reduction, timing), "
+            "not the measure's exchequer effect"
+        )
+    if any(k in text for k in COST_POSITIVE):
+        return (
+            -1,
+            "claim sign: positive = cost / increase in borrowing; PE oriented to it",
+        )
+    if any(k in text for k in YIELD_POSITIVE):
+        return 1, "claim sign: positive = yield to the Exchequer, PE's own orientation"
+    raise Unanswerable(f"sign convention not recognised: {text[:90]!r}")
+
+
+def _poverty_sign(cond: dict) -> tuple[int, str]:
+    text = (cond.get("sign_convention") or "").lower()
+    if not text:
+        raise Unanswerable("no sign convention on the poverty claim")
+    if any(k in text for k in POVERTY_INCREASE_POSITIVE):
+        return 1, "claim sign: positive = more in poverty, PE's own orientation"
+    if any(k in text for k in POVERTY_REDUCTION_POSITIVE):
+        return -1, "claim sign: positive = fewer in poverty; PE oriented to it"
+    raise Unanswerable(f"poverty sign convention not recognised: {text[:90]!r}")
 
 
 def _group(cond: dict) -> tuple[str, int | None]:
@@ -122,30 +203,35 @@ def _group(cond: dict) -> tuple[str, int | None]:
         return m.group(1), int(m.group(2))
     if g == "all":
         return "all", None
-    raise LookupError(f"income_group {g!r} is not a decile, vigintile or all")
+    raise Unanswerable(f"income_group {g!r} is not a decile, vigintile or all")
 
 
-def _basis(cond: dict, default: str) -> tuple[str, str]:
+def _basis(cond: dict, default: str | None) -> tuple[str, str]:
     hc = (cond.get("housing_costs") or "").lower()
     if hc in ("ahc", "bhc"):
         return hc, f"housing basis {hc.upper()} as the claim states"
     axis = (cond.get("income_axis") or "").lower()
     if "after housing" in axis or "ahc" in axis:
         return "ahc", "housing basis AHC from the claim's income axis"
+    if default is None:
+        raise Unanswerable("the claim states no housing basis")
     return (
         default,
         f"housing basis {default.upper()} ASSUMED (the claim does not state it)",
     )
 
 
-def _group_row(art: dict, cond: dict, default_basis: str):
+def _group_row(art: dict, cond: dict, default_basis: str | None):
     kind, n = _group(cond)
     basis, note = _basis(cond, default_basis)
     dist = art["distribution"]
-    if kind == "all":
-        return dist["all"], basis, note
-    rows = dist[f"{basis}_{kind}"]
-    return rows[n - 1], basis, note
+    row = dist["all"] if kind == "all" else dist[f"{basis}_{kind}"][n - 1]
+    undefined = row.get("undefined_change")
+    if undefined:
+        note += (
+            f"; {undefined:g} households with zero baseline income counted as unchanged"
+        )
+    return row, basis, note
 
 
 def _threshold(cond: dict) -> float:
@@ -155,26 +241,28 @@ def _threshold(cond: dict) -> float:
 
 
 def _poverty(art: dict, cond: dict, unit: str):
-    basis, bnote = _basis(cond, "ahc")
-    line = (cond.get("poverty_line") or "relative_60_median").lower()
-    if "absolute" in line:
-        key = f"absolute_{basis}"
-    elif (
-        "fixed" in line
-        or (cond.get("scenario") or "") == "reform_minus_baseline"
-        and "fixed" in json.dumps(cond).lower()
+    basis, bnote = _basis(cond, None)
+    line = cond.get("poverty_line")
+    if line not in POVERTY_LINES:
+        raise Unanswerable(
+            f"poverty line {line!r} is not one PE computed (60% lines only)"
+        )
+    key = f"{POVERTY_LINES[line]}_{basis}"
+    sub = (cond.get("unit_population") or cond.get("subgroup") or "").lower()
+    counted = unit in ("children", "children_under_18", "persons", "people")
+    if unit in ("children", "children_under_18") or sub.startswith("child"):
+        who = "children"
+    elif (counted and unit in ("persons", "people") or not counted) and sub in (
+        "",
+        "all",
+        "all people",
+        "persons",
     ):
-        key = f"relative_60_median_fixed_at_baseline_{basis}"
+        who = "people"  # a count in persons, or a rate with no subgroup
     else:
-        key = f"relative_60_median_moving_{basis}"
-    who = (
-        "children"
-        if unit in ("children", "children_under_18")
-        or (cond.get("unit_population") or cond.get("subgroup") or "")
-        .lower()
-        .startswith("child")
-        else "people"
-    )
+        raise Unanswerable(
+            f"poverty population {unit!r}/{sub!r} is not persons or children"
+        )
     b = art["poverty"][f"{key}__baseline"][who]
     r = art["poverty"][f"{key}__reform"][who]
     return b, r, who, f"{key} ({bnote})"
@@ -191,11 +279,11 @@ def map_claim(claim: dict, art: dict) -> tuple[float | None, list[str], str | No
     try:
         if metric == "revenue_change":
             if any(k in cond for k in ("tax_head", "spending_head", "line_item")):
-                return (
-                    None,
-                    [],
-                    "OBR head-level costing row: the OBR costings lane (#56) answers per head",
+                raise Unanswerable(
+                    "OBR head-level costing row: the OBR costings lane (#56) answers per head"
                 )
+            if unit != "gbp":
+                raise Unanswerable(f"unit {unit!r} for an exchequer effect")
             sign, snote = _sign(cond)
             eff = (T["reform"]["gov_tax"] - T["baseline"]["gov_tax"]) - (
                 T["reform"]["gov_spending"] - T["baseline"]["gov_spending"]
@@ -209,34 +297,37 @@ def map_claim(claim: dict, art: dict) -> tuple[float | None, list[str], str | No
                 None,
             )
         if metric in ("poverty_count_change", "poverty_rate_change"):
+            sign, snote = _poverty_sign(cond)
             b, r, who, note = _poverty(art, cond, unit)
             if metric == "poverty_count_change":
-                return r - b, [f"{who} in poverty, {note}"], None
+                return sign * (r - b), [f"{who} in poverty, {note}", snote], None
+            if unit != "percentage_points":
+                raise Unanswerable(f"unit {unit!r} for a poverty rate change")
             pop = (
                 T["baseline"]["children"]
                 if who == "children"
                 else T["baseline"]["people"]
             )
             return (
-                100.0 * (r - b) / pop,
-                [f"{who} poverty rate change in percentage points, {note}"],
+                sign * 100.0 * (r - b) / pop,
+                [f"{who} poverty rate change in percentage points, {note}", snote],
                 None,
             )
         if metric == "average_household_income_change":
+            if unit not in INCOME_CHANGE_UNITS:
+                raise Unanswerable(f"unit {unit!r} for an income change")
             row, basis, note = _group_row(art, cond, "bhc")
             per_hh = (row["hni_reform"] - row["hni_baseline"]) / row["households"]
-            if unit == "gbp_per_week":
-                per_hh /= 52.0
-            elif unit not in ("gbp", "gbp_per_household", ""):
-                return None, [], f"unit {unit!r} for an income change"
             return (
-                per_hh,
+                per_hh * INCOME_CHANGE_UNITS[unit],
                 [
                     f"mean change in household net income per household in the group ({note})"
                 ],
                 None,
             )
         if metric == "pct_change_after_tax_income":
+            if unit != "percent":
+                raise Unanswerable(f"unit {unit!r} for a per-cent income change")
             row, basis, note = _group_row(art, cond, "bhc")
             return (
                 100.0 * (row["hni_reform"] - row["hni_baseline"]) / row["hni_baseline"],
@@ -244,6 +335,8 @@ def map_claim(claim: dict, art: dict) -> tuple[float | None, list[str], str | No
                 None,
             )
         if metric in ("share_gaining", "share_losing", "share_no_change"):
+            if unit != "share":
+                raise Unanswerable(f"unit {unit!r} for a share of households")
             row, basis, note = _group_row(art, cond, "ahc")
             t = _threshold(cond)
             g = row[f"gaining_over_{t:g}"] / row["households"]
@@ -262,21 +355,53 @@ def map_claim(claim: dict, art: dict) -> tuple[float | None, list[str], str | No
             )
         if metric == "income_share":
             row, basis, note = _group_row(art, cond, "ahc")
-            world = "reform" if cond.get("scenario") == "reform" else "baseline"
-            return (
-                row[f"hni_{world}"] / art["distribution"]["all"][f"hni_{world}"],
-                [f"group share of household net income in the {world} world ({note})"],
-                None,
-            )
+            total = art["distribution"]["all"]
+            scenario = cond.get("scenario")
+            if unit == "share" and scenario in ("baseline", "reform"):
+                return (
+                    row[f"hni_{scenario}"] / total[f"hni_{scenario}"],
+                    [
+                        f"group share of household net income in the {scenario} world ({note})"
+                    ],
+                    None,
+                )
+            if unit == "percentage_points" and scenario == "reform_minus_baseline":
+                delta = (
+                    row["hni_reform"] / total["hni_reform"]
+                    - row["hni_baseline"] / total["hni_baseline"]
+                )
+                return (
+                    100.0 * delta,
+                    [
+                        f"change in the group's share of household net income, percentage points ({note})"
+                    ],
+                    None,
+                )
+            raise Unanswerable(f"income_share unit {unit!r} with scenario {scenario!r}")
         if metric == "affected_count":
-            who = "households" if unit == "households" else "people"
+            if not art.get("head_variables"):
+                raise Unanswerable(
+                    "the measure names no head variables, so the affected population is undefined"
+                )
+            who = {
+                "persons": "people",
+                "people": "people",
+                "households": "households",
+                "children": "children",
+            }.get(unit)
+            if who is None:
+                raise Unanswerable(
+                    f"affected population unit {unit!r} is not persons, households or children"
+                )
             return (
                 art["affected"][who],
                 [f"{who} whose head variables moved by more than 50p"],
                 None,
             )
-    except (KeyError, LookupError, ZeroDivisionError) as e:
+    except Unanswerable as e:
         return None, [], f"{metric}: {e}"
+    except (KeyError, ZeroDivisionError) as e:
+        return None, [], f"{metric}: artifact lacks {e}"
     return None, [], f"no counterpart shape for metric {metric!r}"
 
 
@@ -294,15 +419,32 @@ def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dic
     for c in claims(conn):
         key = c["conditions"]["measure_key"]
         target = alias.get(key, key)
-        art = artifacts.get((target, int(c["period"]) - 1))
         bm = tally["by_measure"].setdefault(
             key, {"claims": 0, "attached": 0, "no_artifact": 0, "unmapped": 0}
         )
         bm["claims"] += 1
+        # the claim's fiscal year picks the artifact (calendar year = FY
+        # start); a claim without one, or outside the run's years, is tallied
+        fy = c["conditions"].get("fy") or ""
+        m = re.fullmatch(r"(\d{4})-(\d{2})", fy)
+        if not m:
+            bm["unmapped"] += 1
+            reason = "no fiscal year on the claim"
+            tally["unmapped"][reason] = tally["unmapped"].get(reason, 0) + 1
+            continue
+        year = int(m.group(1))
+        art = artifacts.get((target, year))
         if art is None:
             bm["no_artifact"] += 1
+            reason = f"no artifact for the claim's fiscal year ({fy})"
+            tally["unmapped"][reason] = tally["unmapped"].get(reason, 0) + 1
             continue
         value, notes, reason = map_claim(c, art)
+        period_note = []
+        if c["period"] is None or int(c["period"]) != year + 1:
+            period_note = [
+                f"claim period {c['period']} is the FY START year (the known IFS/RF follow-up); matched on fy {fy}"
+            ]
         if reason:
             bm["unmapped"] += 1
             tally["unmapped"][reason] = tally["unmapped"].get(reason, 0) + 1
@@ -325,7 +467,8 @@ def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dic
                 "computed_at": art["computed_at"],
                 "run_id": art["run_id"],
                 "baseline_key": world,
-                "annotations": [
+                "annotations": period_note
+                + [
                     f"PE calendar year {art['year']} on the certified world proxies FY {art['fy_proxy']}; static, no behavioural response",
                     f"executed baseline: {art['baseline_world']['executed']}; the claim is scored against {claim_world}",
                     *notes,
