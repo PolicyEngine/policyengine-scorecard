@@ -167,6 +167,11 @@ class Metric(str, Enum):
     CPI_INFLATION_EFFECT = "cpi_inflation_effect"
     SUPPLY_SIDE_IMPACT = "supply_side_impact"
     DECISIONS_EFFECT_ON_BORROWING = "decisions_effect_on_borrowing"
+    # Fiscal headroom against the fiscal rules (GBP, at a horizon year):
+    # the quantity every bank, the OBR and the think tanks call at a
+    # fiscal event (#55, #136 tranche 4). A macro-fiscal aggregate the
+    # household model has no lever for; claims carry it out of scope.
+    FISCAL_HEADROOM = "fiscal_headroom"
     # Autumn Budget 2025 port (#136). HMRC's tax information and impact
     # notes, the IFS, CenTax and Onward all publish "individuals affected"
     # counts and shares for a measure (700,000 brought into income tax;

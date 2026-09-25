@@ -1,7 +1,7 @@
 {
  "read": 8757,
- "ingested": 7468,
- "dropped": 1289,
+ "ingested": 7480,
+ "dropped": 1277,
  "by_family": {
   "uk_hmt_costings": {
    "read": 699,
@@ -30,8 +30,8 @@
   },
   "uk_rf_ab2025": {
    "read": 1460,
-   "ingested": 1121,
-   "dropped": 339
+   "ingested": 1123,
+   "dropped": 337
   },
   "uk_jrf": {
    "read": 134,
@@ -40,8 +40,8 @@
   },
   "uk_ippr": {
    "read": 118,
-   "ingested": 76,
-   "dropped": 42
+   "ingested": 77,
+   "dropped": 41
   },
   "uk_cpag": {
    "read": 59,
@@ -125,8 +125,8 @@
   },
   "uk_niesr": {
    "read": 27,
-   "ingested": 9,
-   "dropped": 18
+   "ingested": 18,
+   "dropped": 9
   },
   "uk_cases_commercial": {
    "read": 121,
@@ -136,7 +136,7 @@
  },
  "drops": {
   "assumption_or_base_not_a_score": 104,
-  "macro_fiscal_or_out_of_scope": 139,
+  "macro_fiscal_or_out_of_scope": 127,
   "restated_official_figure": 342,
   "unit_no_household_concept": 46,
   "parameter_or_threshold_level": 53,

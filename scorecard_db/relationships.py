@@ -375,6 +375,41 @@ _AB2025_HELD: dict[str, tuple] = {
         "WPI Economics' severe-hardship projections for Trussell are on WPI's own definition; nothing is fitted to them"
         + _AB2025_SURFACES,
     ),
+    "capital_economics": (
+        CR.HELD_OUT,
+        "Capital Economics's macro calls on the Budget (tax-rise size, headroom, GDP, CPI, Bank Rate) are scored, never consumed"
+        + _AB2025_SURFACES,
+    ),
+    "goldman_sachs": (
+        CR.HELD_OUT,
+        "Goldman Sachs's macro calls on the Budget (tax-rise size, headroom, GDP, CPI, Bank Rate) are scored, never consumed"
+        + _AB2025_SURFACES,
+    ),
+    "deutsche_bank": (
+        CR.HELD_OUT,
+        "Deutsche Bank's macro calls on the Budget (tax-rise size, headroom, GDP, CPI, Bank Rate) are scored, never consumed"
+        + _AB2025_SURFACES,
+    ),
+    "barclays": (
+        CR.HELD_OUT,
+        "Barclays's macro calls on the Budget (tax-rise size, headroom, GDP, CPI, Bank Rate) are scored, never consumed"
+        + _AB2025_SURFACES,
+    ),
+    "societe_generale": (
+        CR.HELD_OUT,
+        "Societe Generale's macro calls on the Budget (tax-rise size, headroom, GDP, CPI, Bank Rate) are scored, never consumed"
+        + _AB2025_SURFACES,
+    ),
+    "oxford_economics": (
+        CR.HELD_OUT,
+        "Oxford Economics's macro calls on the Budget (tax-rise size, headroom, GDP, CPI, Bank Rate) are scored, never consumed"
+        + _AB2025_SURFACES,
+    ),
+    "ey_item_club": (
+        CR.HELD_OUT,
+        "Ey Item Club's macro calls on the Budget (tax-rise size, headroom, GDP, CPI, Bank Rate) are scored, never consumed"
+        + _AB2025_SURFACES,
+    ),
     "niesr": (
         CR.HELD_OUT,
         "NIESR's HBAI regressions and NiGEM scenarios are scored, never consumed"

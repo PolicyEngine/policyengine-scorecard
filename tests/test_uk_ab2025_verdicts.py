@@ -55,7 +55,9 @@ def test_every_gap_claim_gets_one_result_and_one_diagnosis(tmp_path):
         assert r["status"] == "pe_gap"
         assert r["computed_value"] is None
         assert r["computed_at"] == VERDICT_COMPUTED_AT
-        assert r["pe_construction"].startswith("pe_gap:not_expressible:ab2025")
+        assert r["pe_construction"].startswith(
+            ("pe_gap:not_expressible:ab2025", "pe_gap:not_expressible:macro")
+        )
         notes = json.loads(r["annotations"])
         assert len(notes) == 3 and "Parameters:" in notes[1]
     diags = conn.execute(
@@ -130,13 +132,22 @@ def test_verdict_rows_follow_the_registry(tmp_path):
     db = ScorecardDB(db_path)
     results, diagnoses = verdict_rows(db)
     db.close()
+    from scorecard_db.ingest_uk_ab2025 import MACRO_LINK
+
     keys = {r[5].split(":", 2)[2] for r in results}
-    for k in keys:
+    macro_keyed = {
+        k
+        for k in keys
+        if k != "macro" and REGISTRY[k]["computability"] != "not_expressible"
+    }
+    for k in keys - {"macro"} - macro_keyed:
         assert REGISTRY[k]["computability"] == "not_expressible", k
+    # a verdict on an expressible or partial measure is only ever a macro
+    # claim's own (#55), never the registry's
     links = {d[3] for d in diagnoses}
     assert links <= {
         m["action_link"] for m in REGISTRY.values() if m.get("action_link")
-    }
+    } | {MACRO_LINK}
 
 
 def test_lanes_advance_to_computed_only_when_a_counterpart_exists(tmp_path):
