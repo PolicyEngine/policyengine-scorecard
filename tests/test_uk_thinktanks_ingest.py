@@ -44,12 +44,12 @@ def _raw(family):
 
 
 def test_every_staged_row_is_ingested_or_tallied(staged):
-    """339 read = 314 ingested + 25 dropped. The 145 proposal-only rows
+    """339 read = 312 ingested + 27 dropped (two IFS deck rows re-attributed to the OBR under #136). The 145 proposal-only rows
     could have shrunk silently to zero and nobody would have seen it."""
     scores, acct = staged
     assert acct["read"] == 339
-    assert acct["ingested"] == len(scores) == 314
-    assert acct["dropped"] == 25
+    assert acct["ingested"] == len(scores) == 312
+    assert acct["dropped"] == 27
     assert acct["ingested"] + acct["dropped"] == acct["read"]
     check_accounting(acct)
 
@@ -144,11 +144,16 @@ def test_third_party_rows_are_not_staged_as_publisher_claims(staged):
     think tank, and a PE divergence would read as disagreement with a
     model that never produced it."""
     _, acct = staged
-    assert acct["drops"]["third_party_attribution"]["rows"] == 8
+    # 8 RF rows, plus the 2 IFS deck rows re-attributed to the OBR under
+    # #136 (5.2m / 4.8m taxpayers are EFO Box 3.3 counts)
+    assert acct["drops"]["third_party_attribution"]["rows"] == 10
     attributed = [r for r in _raw("uk_resolution_foundation") if r.get("attribution")]
     assert len(attributed) == 8
     assert any("HM Treasury" in r["attribution"] for r in attributed)
     assert any("Parliament" in r["attribution"] for r in attributed)
+    ifs_attributed = [r for r in _raw("uk_ifs") if r.get("attribution")]
+    assert len(ifs_attributed) == 2
+    assert all("OBR" in r["attribution"] for r in ifs_attributed)
 
 
 def test_attribution_is_checked_before_the_metric_disposition(staged):
@@ -314,13 +319,13 @@ def test_full_ingest_round_trip(tmp_path):
     db_path = tmp_path / "t.db"
     ScorecardDB(db_path).close()
     summary = ingest(db_path)
-    assert summary["claims"] == 314
+    assert summary["claims"] == 312
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     n = conn.execute(
         "SELECT COUNT(*) FROM external_scores WHERE source IN ('ifs','resolution_foundation')"
     ).fetchone()[0]
-    assert n == 314
+    assert n == 312
     consumed = conn.execute(
         "SELECT COUNT(*) FROM external_scores"
         " WHERE source IN ('ifs','resolution_foundation')"
@@ -332,7 +337,7 @@ def test_full_ingest_round_trip(tmp_path):
     ).fetchone()
     conn.close()
     assert lane["stage"] == "ingested"
-    assert "339 staged rows = 314 ingested + 25 tallied drops" in lane["detail"]
+    assert "339 staged rows = 312 ingested + 27 tallied drops" in lane["detail"]
 
 
 def test_ingest_is_idempotent(tmp_path):
@@ -345,7 +350,7 @@ def test_ingest_is_idempotent(tmp_path):
         "SELECT COUNT(*) FROM external_scores WHERE source IN ('ifs','resolution_foundation')"
     ).fetchone()[0]
     conn.close()
-    assert n == 314
+    assert n == 312
 
 
 def test_build_db_registers_the_step():
@@ -363,7 +368,7 @@ def test_the_lane_reaches_mission_control():
 
 
 def test_accounting_drift_raises():
-    bad = {"read": 339, "ingested": 313, "dropped": 26, "drops": _EXPECTED["drops"]}
+    bad = {"read": 339, "ingested": 311, "dropped": 28, "drops": _EXPECTED["drops"]}
     with pytest.raises(ValueError, match="accounting drifted"):
         check_accounting(
             {**bad, "drops": {k: {"rows": v} for k, v in bad["drops"].items()}}

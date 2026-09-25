@@ -493,6 +493,109 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "(4 Dec 2025); sources/harvest-uk-ab2025-2026-09-24/uk_cpag and "
         "uk_ippr NOTES.md.",
     ),
+    # --- Autumn Budget 2025 port (#136): worlds the producers defined --------
+    # Fourteen more counterfactuals quoted in the harvest as
+    # proposed_baseline; each is the producer's own definition, registered
+    # so the #13 gate lets its rows in and the comparisons view refuses to
+    # render a current-law PE result against them as plain agreement.
+    (
+        {"policy": "rf_previous_government_spending_plans_spring_2024"},
+        "rf_previous_government_spending_plans_spring_2024",
+        "Resolution Foundation's counterfactual for day-to-day public-service spending in England in 2028-29: the previous Government's Spring 2024 spending plans (Stairway to headroom, the RDEL comparison).",
+        "policy_ref",
+        "Stairway to headroom (27 Nov 2025) RDEL section; sources/harvest-uk-ab2025-2026-09-24/uk_rf_ab2025/NOTES.md (proposed_baseline).",
+    ),
+    (
+        {"policy": "obr_box_3_3_thresholds_indexed_with_inflation"},
+        "obr_box_3_3_thresholds_indexed_with_inflation",
+        "The OBR's Box 3.3 counterfactual for the personal tax threshold freezes: the personal allowance and higher-rate threshold moving in line with inflation ('Had the PA and HRT instead moved in line with inflation').",
+        "policy_ref",
+        "EFO November 2025 Box 3.3; sources/harvest-uk-ab2025-2026-09-24/uk_obr_tables/NOTES.md.",
+    ),
+    (
+        {"policy": "hmrc_tiin_iht_thresholds_cpi_indexed"},
+        "hmrc_tiin_iht_thresholds_cpi_indexed",
+        "HMRC's TIIN counterfactual for the inheritance-tax threshold freeze: nil-rate bands increased with CPI.",
+        "policy_ref",
+        "TIIN 'Inheritance Tax: maintaining thresholds' (26 Nov 2025); sources/harvest-uk-ab2025-2026-09-24/uk_hmrc_tiins/NOTES.md.",
+    ),
+    (
+        {"policy": "hmrc_tiin_thresholds_cpi_indexed_from_2028_29"},
+        "hmrc_tiin_thresholds_cpi_indexed_from_2028_29",
+        "HMRC's TIIN counterfactual for the personal tax threshold freeze: thresholds indexed with CPI from 2028-29 onwards.",
+        "policy_ref",
+        "TIIN 'Income Tax: maintaining the Personal Allowance and the basic rate limit ... until 5 April 2031' (26 Nov 2025); uk_hmrc_tiins/NOTES.md.",
+    ),
+    (
+        {"policy": "obr_fuel_duty_rpi_uprated_since_2010_11"},
+        "obr_fuel_duty_rpi_uprated_since_2010_11",
+        "The OBR's stated-policy counterfactual for fuel duty: rates uprated in line with RPI inflation every year since 2010-11 (the cumulative cost of the freezes).",
+        "policy_ref",
+        "EFO November 2025 fuel duty box; uk_obr_tables/NOTES.md.",
+    ),
+    (
+        {"policy": "rf_case_study_counterfactual_pre_ab2024_measures"},
+        "rf_case_study_counterfactual_pre_ab2024_measures",
+        "Resolution Foundation's case-study counterfactual: policy before the key measures announced since Autumn Budget 2024 (income tax thresholds, employer NICs, benefit changes), against which Stairway Table 1's ten specimen families are scored.",
+        "policy_ref",
+        "Stairway to headroom Table 1 note; uk_rf_ab2025/NOTES.md.",
+    ),
+    (
+        {"policy": "wpi_hunger_and_hardship_projection_2026_27"},
+        "wpi_hunger_and_hardship_projection_2026_27",
+        "WPI Economics' projection for Trussell of hunger and hardship to 2026/27 (Year 5) from a 2022/23 FRS base under policy as of the April 2025 report, the world its severe-hardship changes are measured from.",
+        "policy_ref",
+        "WPI Economics technical report (Tables 24a-28a) and Trussell's 26 Nov / 11 Dec 2025 releases; uk_trussell_wpi/NOTES.md.",
+    ),
+    (
+        {"policy": "jrf_post_ab2025_projection_obr_nov2025_central"},
+        "jrf_post_ab2025_projection_obr_nov2025_central",
+        "JRF's post-Budget projection: current policy after Autumn Budget 2025 on the OBR November 2025 EFO central scenario (IPPR tax-benefit model v02_90, FRS 2021-24, average of five model runs).",
+        "policy_ref",
+        "JRF 'This isn't what change feels like' (27 Jan 2026); uk_jrf/NOTES.md.",
+    ),
+    (
+        {"policy": "rf_current_policy_projection_2025_10_30"},
+        "rf_current_policy_projection_2025_10_30",
+        "Resolution Foundation's 'current policy' projection at 30 October 2025: pre-Budget policy including the free-school-meals extension and the UC standard-allowance over-indexation, excluding Scottish mitigation.",
+        "policy_ref",
+        "RF 'No half measures' (30 Oct 2025); uk_rf_ab2025/NOTES.md.",
+    ),
+    (
+        {"policy": "jrf_post_ab2025_projection_path_nov_to_nov"},
+        "jrf_post_ab2025_projection_path_nov_to_nov",
+        "JRF's post-Budget projection path: Autumn Budget 2025 policy on the OBR November 2025 forecast, household disposable income projected November to November.",
+        "policy_ref",
+        "JRF 'Scrapping two-child limit eases burden on families' (27 Nov 2025); uk_jrf/NOTES.md.",
+    ),
+    (
+        {"policy": "ifs_no_freezes_april_2021_thresholds_uprated"},
+        "ifs_no_freezes_april_2021_thresholds_uprated",
+        "The IFS 'no freezes at all' world: the April 2021 income tax and NICs thresholds uprated with inflation to 2029 (endnote 6 of the 14 Nov 2025 freeze analysis).",
+        "policy_ref",
+        "IFS 'How are frozen tax thresholds reshaping who pays personal taxes?' (14 Nov 2025); uk_ifs_ab2025/NOTES.md.",
+    ),
+    (
+        {"policy": "jrf_post_spring_forecast_2026_projection_path"},
+        "jrf_post_spring_forecast_2026_projection_path",
+        "JRF's post-Spring-Forecast-2026 projection path: current policy on the OBR's March 2026 forecasts (IPPR tax-benefit model v02_92, FRS 2023/24, April of each year, 2025/26 prices).",
+        "policy_ref",
+        "JRF 'Living standards challenge still acute' (3 Mar 2026); uk_jrf/NOTES.md.",
+    ),
+    (
+        {"policy": "rf_projection_without_child_poverty_strategy"},
+        "rf_projection_without_child_poverty_strategy",
+        "Resolution Foundation's projection without the Child Poverty Strategy policies (two-child limit repeal, free-school-meals expansion and the rest of the December 2025 package).",
+        "policy_ref",
+        "RF press release 'Rate of child poverty set to fall over the Parliament' (5 Dec 2025); uk_rf_ab2025/NOTES.md.",
+    ),
+    (
+        {"policy": "jrf_post_ab2025_two_child_limit_retained"},
+        "jrf_post_ab2025_two_child_limit_retained",
+        "JRF's post-Budget projection path with the two-child limit retained ('than if the policy was retained'), the counterfactual its 27 Nov 2025 child-poverty change is measured from.",
+        "policy_ref",
+        "JRF 27 Nov 2025 piece; uk_jrf/NOTES.md.",
+    ),
     (
         {"policy": "pre_ab2025"},
         "pre_ab2025",

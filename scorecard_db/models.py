@@ -178,6 +178,26 @@ class Metric(str, Enum):
     # rather than proposed.
     AFFECTED_COUNT = "affected_count"
     AFFECTED_SHARE = "affected_share"
+    # The same port, second pass over 8,194 staged rows. Each of these
+    # recurs across producers; single-row proposals stay tallied drops.
+    #   average_tax_change  — average change in a tax liability per unit
+    #                         (the GBP sibling of avg_tax_change_usd; IFS
+    #                         salary-sacrifice liabilities by earnings
+    #                         decile, HMRC TIIN per-claimant amounts)
+    #   share_no_change     — share of households whose income does not
+    #                         move under a reform (IFS, RF), the third
+    #                         leg beside share_gaining / share_losing
+    #   energy_bill_change  — change in an annual household energy bill
+    #                         from a policy (HMT red book, RF, NEF, IFS);
+    #                         bills are a household quantity the engine
+    #                         carries (domestic_energy_consumption)
+    #   revenue_share       — share of a measure's yield paid by a group
+    #                         (CenTax, IFS), the yield's distributional
+    #                         shape rather than its level
+    AVERAGE_TAX_CHANGE = "average_tax_change"
+    SHARE_NO_CHANGE = "share_no_change"
+    ENERGY_BILL_CHANGE = "energy_bill_change"
+    REVENUE_SHARE = "revenue_share"
 
 
 class UnitConcept(str, Enum):
@@ -251,6 +271,12 @@ class UnitConcept(str, Enum):
     PERCENT_OF_REAL_GDP = "percent_of_real_gdp"
     PERCENTAGE_POINTS = "percentage_points"
     PERCENT_OF_POTENTIAL_GDP = "percent_of_potential_gdp"
+    # Autumn Budget 2025 port (#136): counts of dwellings (the High Value
+    # Council Tax Surcharge base, OBR and Tax Policy Associates by
+    # constituency) and of estates (HMRC's inheritance-tax TIINs) recur
+    # across producers and are neither households nor persons.
+    PROPERTIES = "properties"
+    ESTATES = "estates"
 
 
 # Standardized conditions vocabulary (COLLATION worklist item 4).

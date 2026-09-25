@@ -251,3 +251,63 @@ Table B.1's nested rows keep the `aggregate_level`/`parent` guard the
 OBR welfare lines use, so no consumer summing borrowing effects by FY
 double-counts. PE counterparts are step 3 of #55 and are not computed
 here.
+
+## 2026-09-24 population: every Autumn Budget 2025 score (UK, #136)
+
+Twenty-five harvest families from 27 producers
+(`sources/harvest-uk-ab2025-2026-09-24/`), ingested by
+`ingest_uk_ab2025` (chain position: after `uk_policy_effects`, before the
+campaign attaches) with a second step, `ingest_uk_ab2025.ingest_verdicts`,
+after `campaign_uk`.
+
+```bash
+PYTHONPATH=. python -m scorecard_db.ingest_uk_ab2025 data/scorecard.db
+```
+
+8,194 staged rows = 6,985 claims + 1,209 tallied drops, pinned per family
+in `ingest_uk_ab2025_expected.json`. The drops are decisions with written
+reasons, never omissions: 342 re-published official figures (the #86
+rule; their originators' rows are in the same harvest), 221 single-
+household worked examples and specimen families (mode-3 material, #63),
+100 categorical uncertainty ratings, 104 behavioural parameters and
+non-monetary tax bases, 119 macro-fiscal aggregates (#55, tranche 4), 85
+benefits-in-kind readings (#61 decides how an in-kind series is carried),
+and the remainder ratios, threshold levels and single-row quantities with
+no registered metric. 28 twins (one statistic printed twice by one
+producer) are merged through `merge_republications`.
+
+**Three retrieval axes on every claim.** `source` is the producer;
+`conditions.measure_key` is the key in `data/uk/ab2025_measures.json`
+(shared across producers, so the two-child measure's rows from HM
+Treasury, the OBR, the IFS, RF, JRF, IPPR and CPAG join on one reform
+key per baseline world); `conditions.fiscal_event` is `autumn_budget_2025`.
+`conditions.benchmark_class` is set on every row — the first UK use of
+the cross-model epistemics ruling — and the Fabian Society's four
+PolicyEngine-computed rows are `same_assumptions`.
+
+**The verdict on the row.** Every keyed claim carries the registry's
+`pe_expressibility`, and a `not_expressible` one carries `pe_missing` and
+`action_link` (the ONS ETB pattern). The verdicts step then writes, for
+each such claim, a `pe_results` row with status `pe_gap` (no value, the
+certified pin as engine and bundle, the registry's `why` and name search
+as annotations) and a `diagnoses` row of class `pe_gap` carrying the
+link, so `SELECT COUNT(*) FROM comparisons WHERE pe_status='pe_gap' AND
+action_link=''` is zero by construction. Expressible and partial measures
+have no result row until the tranche-3 run attaches one.
+
+**Units and metrics minted** (recurring across producers only):
+`affected_count` / `affected_share`, `average_tax_change`,
+`share_no_change`, `energy_bill_change`, `revenue_share`; units
+`properties` and `estates`.
+
+**Visibility.** Every national-grain claim sets
+`publication.publish_without_result` so it reaches the page before a
+counterpart exists; the 2,991 constituency-grain Tax Policy Associates
+rows stay in the DB and out of `populations.json` until a constituency
+view exists.
+
+**Worlds.** Fourteen producer-defined counterfactuals quoted in the
+harvest as `proposed_baseline` are registered in `baselines.py` and mapped
+by their opening words in `_PROPOSED_BASELINE_PREFIXES`; a row on an
+unregistered world raises rather than defaulting to current law (#13).
+
