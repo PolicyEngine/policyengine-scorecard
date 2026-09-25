@@ -2,7 +2,7 @@
  "built": "2026-09-25",
  "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family; BE: JRC EUROMOD-BE claims with demo-grade Axiom concept-mismatch attachments and the 2026 PIT-reform scorekeeper claims; NZ: official budget scores). Claims explicitly opted into pre-result display remain in the feed with latest status not_computed and empty history. Recorded result statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
  "summary": {
-  "claims": 4782,
+  "claims": 4794,
   "multi_release_claims": 127,
   "by_source": {
    "az_admin": 1,
@@ -37,7 +37,7 @@
    "ifs": 803,
    "il_admin": 3,
    "in_admin": 1,
-   "ippr": 76,
+   "ippr": 77,
    "irs": 18,
    "irs_soi": 9,
    "jct": 45,
@@ -58,7 +58,7 @@
    "nd_fiscal_note": 1,
    "ne_admin": 1,
    "nef": 5,
-   "niesr": 9,
+   "niesr": 18,
    "nj_admin": 2,
    "nm_admin": 2,
    "ny_admin": 2,
@@ -74,7 +74,7 @@
    "policyengine": 5,
    "public_first": 11,
    "pwbm": 2,
-   "resolution_foundation": 1121,
+   "resolution_foundation": 1123,
    "ri_admin": 1,
    "sc_admin": 1,
    "scottish_fiscal_commission": 34,
@@ -98,8 +98,8 @@
    "comparable": 42,
    "concept_mismatch": 4,
    "constructed": 247,
-   "not_computed": 3655,
-   "pe_gap": 834
+   "not_computed": 3640,
+   "pe_gap": 861
   }
  },
  "rows": [
@@ -123521,7 +123521,86 @@
    "diagnosis": null
   },
   {
-   "claim_id": "c8dd352bca4fbdd0e4e2",
+   "claim_id": "927a23d52af37f5de9ad",
+   "source": "ippr",
+   "country": "UK",
+   "source_column": "",
+   "name": "Fairness first: How the budget can make life better and the economy stronger (Jung, Henry, Quilter-Pinner, Norris, Sriram, Narayanan, Hawkey, Ellis, Parkes)",
+   "window": "",
+   "publication_title": "Fairness first: How the budget can make life better and the economy stronger (Jung, Henry, Quilter-Pinner, Norris, Sriram, Narayanan, Hawkey, Ellis, Parkes)",
+   "url": "https://www.ippr.org/articles/fairness-first-how-the-budget-can-make-life-better-and-the-economy-stronger",
+   "metric": "fiscal_headroom",
+   "unit_concept": "gbp",
+   "value_kind": "point",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
+    "benchmark_class": "different_model",
+    "country": "UK",
+    "fiscal_event": "autumn_budget_2025",
+    "fy": "2029-30",
+    "geography": "UK",
+    "measure_type": "recommended additional headroom against the fiscal rules",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "value_verbatim": "an additional \u00a310 billion buffer"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 10000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": null,
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
+    "policyengine_variables": [],
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
+  },
+  {
+   "claim_id": "aad6b3155f96c0c1c48e",
    "source": "ippr",
    "country": "UK",
    "source_column": "",
@@ -123539,15 +123618,15 @@
    "geography": "England",
    "program": null,
    "conditions": {
-    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "benchmark_class": "different_model",
     "country": "UK",
     "fiscal_event": "autumn_budget_2025",
     "geography": "England",
     "measure_key": "ab2025_option__proportional_property_tax_on_values_over_2m",
     "origin": "IPPR 2021 'Pulling down the ladder' proportional property tax case study, not fresh modelling",
-    "pe_expressibility": "partial",
-    "pe_missing": "main_residence_value is on the bundle (WAS-imputed above GBP 2m, the same credibility annotation as the surcharge) and the surcharge formula is the template; a value-proportional charge is a construction on main_residence_value with no parameter.",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
     "prices": "2019 values",
     "reform_hint": "replacing council tax and SDLT with a proportional property tax (PPT), levied annually on up-to-date property values",
     "sign_convention": "positive = addition to GDP",
@@ -123560,21 +123639,47 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:ab2025_option__proportional_property_tax_on_values_over_2m",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:ab2025_option__proportional_property_tax_on_values_over_2m",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
    "claim_id": "0f30b0689b9e20b6a0b2",
@@ -142465,6 +142570,744 @@
    }
   },
   {
+   "claim_id": "f11eb1a13064883768da",
+   "source": "niesr",
+   "country": "UK",
+   "source_column": "",
+   "name": "Four Key Questions Ahead of the Autumn Budget",
+   "window": "",
+   "publication_title": "Four Key Questions Ahead of the Autumn Budget",
+   "url": "https://niesr.ac.uk/blog/four-key-questions-ahead-autumn-budget",
+   "metric": "fiscal_headroom",
+   "unit_concept": "gbp",
+   "value_kind": "point",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
+    "benchmark_class": "different_model",
+    "concept": "75% probability of meeting rule",
+    "country": "UK",
+    "fiscal_event": "autumn_budget_2025",
+    "fy": "2029-30",
+    "geography": "UK",
+    "method": "Debt-at-risk",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "value_verbatim": "around \u00a324 billion"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 24000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": null,
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
+    "policyengine_variables": [],
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
+  },
+  {
+   "claim_id": "0378c22ecbf953d0b60d",
+   "source": "niesr",
+   "country": "UK",
+   "source_column": "Implied buffer (\u00a3bn)",
+   "name": "UK Economic Outlook, Autumn 2025: Stability First",
+   "window": "",
+   "publication_title": "UK Economic Outlook, Autumn 2025: Stability First",
+   "url": "https://niesr.ac.uk/wp-content/uploads/2025/11/Economic-Outlook-Autumn-2025.pdf",
+   "metric": "fiscal_headroom",
+   "unit_concept": "gbp",
+   "value_kind": "point",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
+    "benchmark_class": "different_model",
+    "concept": "2 sigma",
+    "country": "UK",
+    "fiscal_event": "autumn_budget_2025",
+    "fy": "2029-30",
+    "geography": "UK",
+    "measure_type": "fiscal buffer against the stability rule (current budget)",
+    "method": "OBR forecast errors",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "price_basis": "today's prices",
+    "value_verbatim": "\u00a3134bn"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 134000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": null,
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
+    "policyengine_variables": [],
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
+  },
+  {
+   "claim_id": "30166fcf7602224f3dde",
+   "source": "niesr",
+   "country": "UK",
+   "source_column": "Implied buffer (\u00a3bn)",
+   "name": "UK Economic Outlook, Autumn 2025: Stability First",
+   "window": "",
+   "publication_title": "UK Economic Outlook, Autumn 2025: Stability First",
+   "url": "https://niesr.ac.uk/wp-content/uploads/2025/11/Economic-Outlook-Autumn-2025.pdf",
+   "metric": "fiscal_headroom",
+   "unit_concept": "gbp",
+   "value_kind": "point",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
+    "benchmark_class": "different_model",
+    "concept": "75% probability of meeting rule",
+    "country": "UK",
+    "estimation": "quantile regressions on UK data 1989-2025 (IMF-style debt-at-risk)",
+    "fiscal_event": "autumn_budget_2025",
+    "fy": "2029-30",
+    "geography": "UK",
+    "measure_type": "fiscal buffer against the stability rule (current budget)",
+    "method": "Debt-at-risk",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "price_basis": "today's prices",
+    "value_verbatim": "\u00a324bn"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 24000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": null,
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
+    "policyengine_variables": [],
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
+  },
+  {
+   "claim_id": "3ef8a2a139ec3e682ad1",
+   "source": "niesr",
+   "country": "UK",
+   "source_column": "Implied buffer (\u00a3bn)",
+   "name": "UK Economic Outlook, Autumn 2025: Stability First",
+   "window": "",
+   "publication_title": "UK Economic Outlook, Autumn 2025: Stability First",
+   "url": "https://niesr.ac.uk/wp-content/uploads/2025/11/Economic-Outlook-Autumn-2025.pdf",
+   "metric": "fiscal_headroom",
+   "unit_concept": "gbp",
+   "value_kind": "point",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
+    "benchmark_class": "different_model",
+    "concept": "1 sigma",
+    "country": "UK",
+    "fiscal_event": "autumn_budget_2025",
+    "fy": "2029-30",
+    "geography": "UK",
+    "measure_type": "fiscal buffer against the stability rule (current budget)",
+    "method": "OBR forecast errors (without GFC/COVID)",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "price_basis": "today's prices",
+    "value_verbatim": "\u00a331bn"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 31000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": null,
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
+    "policyengine_variables": [],
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
+  },
+  {
+   "claim_id": "4384c0fec1f280b75cbb",
+   "source": "niesr",
+   "country": "UK",
+   "source_column": "Implied buffer (\u00a3bn)",
+   "name": "UK Economic Outlook, Autumn 2025: Stability First",
+   "window": "",
+   "publication_title": "UK Economic Outlook, Autumn 2025: Stability First",
+   "url": "https://niesr.ac.uk/wp-content/uploads/2025/11/Economic-Outlook-Autumn-2025.pdf",
+   "metric": "fiscal_headroom",
+   "unit_concept": "gbp",
+   "value_kind": "point",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
+    "benchmark_class": "different_model",
+    "concept": "1 sigma",
+    "country": "UK",
+    "fiscal_event": "autumn_budget_2025",
+    "fy": "2029-30",
+    "geography": "UK",
+    "measure_type": "fiscal buffer against the stability rule (current budget)",
+    "method": "OBR forecast errors",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "price_basis": "today's prices",
+    "value_verbatim": "\u00a367bn"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 67000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": null,
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
+    "policyengine_variables": [],
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
+  },
+  {
+   "claim_id": "56b744f09630c04b7df8",
+   "source": "niesr",
+   "country": "UK",
+   "source_column": "Implied buffer (\u00a3bn)",
+   "name": "UK Economic Outlook, Autumn 2025: Stability First",
+   "window": "",
+   "publication_title": "UK Economic Outlook, Autumn 2025: Stability First",
+   "url": "https://niesr.ac.uk/wp-content/uploads/2025/11/Economic-Outlook-Autumn-2025.pdf",
+   "metric": "fiscal_headroom",
+   "unit_concept": "gbp",
+   "value_kind": "point",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
+    "benchmark_class": "different_model",
+    "concept": "95% probability of meeting rule",
+    "country": "UK",
+    "estimation": "quantile regressions on UK data 1989-2025 (IMF-style debt-at-risk)",
+    "fiscal_event": "autumn_budget_2025",
+    "fy": "2029-30",
+    "geography": "UK",
+    "measure_type": "fiscal buffer against the stability rule (current budget)",
+    "method": "Debt-at-risk",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "price_basis": "today's prices",
+    "value_verbatim": "\u00a360bn"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 60000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": null,
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
+    "policyengine_variables": [],
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
+  },
+  {
+   "claim_id": "7cdc3885cd8955873145",
+   "source": "niesr",
+   "country": "UK",
+   "source_column": "Implied buffer (\u00a3bn)",
+   "name": "UK Economic Outlook, Autumn 2025: Stability First",
+   "window": "",
+   "publication_title": "UK Economic Outlook, Autumn 2025: Stability First",
+   "url": "https://niesr.ac.uk/wp-content/uploads/2025/11/Economic-Outlook-Autumn-2025.pdf",
+   "metric": "fiscal_headroom",
+   "unit_concept": "gbp",
+   "value_kind": "point",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
+    "benchmark_class": "different_model",
+    "concept": "Mean (2010-2025)",
+    "country": "UK",
+    "fiscal_event": "autumn_budget_2025",
+    "fy": "2029-30",
+    "geography": "UK",
+    "measure_type": "fiscal buffer against the stability rule (current budget)",
+    "method": "Historical",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "price_basis": "today's prices",
+    "value_verbatim": "\u00a343bn"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 43000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": null,
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
+    "policyengine_variables": [],
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
+  },
+  {
+   "claim_id": "bd0ac2d40e1abeebc8ff",
+   "source": "niesr",
+   "country": "UK",
+   "source_column": "Implied buffer (\u00a3bn)",
+   "name": "UK Economic Outlook, Autumn 2025: Stability First",
+   "window": "",
+   "publication_title": "UK Economic Outlook, Autumn 2025: Stability First",
+   "url": "https://niesr.ac.uk/wp-content/uploads/2025/11/Economic-Outlook-Autumn-2025.pdf",
+   "metric": "fiscal_headroom",
+   "unit_concept": "gbp",
+   "value_kind": "point",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
+    "benchmark_class": "different_model",
+    "concept": "Median (2010-2025)",
+    "country": "UK",
+    "fiscal_event": "autumn_budget_2025",
+    "fy": "2029-30",
+    "geography": "UK",
+    "measure_type": "fiscal buffer against the stability rule (current budget)",
+    "method": "Historical",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "price_basis": "today's prices",
+    "value_verbatim": "\u00a333bn"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 33000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": null,
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
+    "policyengine_variables": [],
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
+  },
+  {
+   "claim_id": "deb19f7ebcf11de4fed4",
+   "source": "niesr",
+   "country": "UK",
+   "source_column": "Implied buffer (\u00a3bn)",
+   "name": "UK Economic Outlook, Autumn 2025: Stability First",
+   "window": "",
+   "publication_title": "UK Economic Outlook, Autumn 2025: Stability First",
+   "url": "https://niesr.ac.uk/wp-content/uploads/2025/11/Economic-Outlook-Autumn-2025.pdf",
+   "metric": "fiscal_headroom",
+   "unit_concept": "gbp",
+   "value_kind": "point",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
+    "benchmark_class": "different_model",
+    "concept": "2 sigma",
+    "country": "UK",
+    "fiscal_event": "autumn_budget_2025",
+    "fy": "2029-30",
+    "geography": "UK",
+    "measure_type": "fiscal buffer against the stability rule (current budget)",
+    "method": "OBR forecast errors (without GFC/COVID)",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "price_basis": "today's prices",
+    "value_verbatim": "\u00a361bn"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 61000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": null,
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
+    "policyengine_variables": [],
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
+  },
+  {
    "claim_id": "766c23db75a2b0062723",
    "source": "niesr",
    "country": "UK",
@@ -144810,7 +145653,7 @@
    }
   },
   {
-   "claim_id": "fb4f064ec1009049cb77",
+   "claim_id": "adff58f0379d7df32e50",
    "source": "obr_efo",
    "country": "UK",
    "source_column": "CPI peak effect 2026Q2",
@@ -144828,12 +145671,15 @@
    "geography": "UK",
    "program": null,
    "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "baseline_policy": "obr_pre_measures_autumn_budget_2025",
     "basis": "forecast",
     "benchmark_class": "different_model",
     "country": "UK",
     "fiscal_event": "autumn_budget_2025",
     "geography": "UK",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
     "period_detail": "second quarter of 2026 (peak)",
     "reform_hint": "Budget policies (energy bills, fuel duty freeze extension, rail fares freeze)",
     "sign_convention": "as worded: 'reduce CPI by' (positive = reduction in CPI inflation)",
@@ -144846,24 +145692,50 @@
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
-   "claim_id": "a4dcdb7ca1821e71a496",
+   "claim_id": "a51c4c7965a0a7460c3f",
    "source": "obr_efo",
    "country": "UK",
    "source_column": "CPI inflation 2026-27",
@@ -144881,6 +145753,7 @@
    "geography": "UK",
    "program": null,
    "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "baseline_policy": "obr_pre_measures_autumn_budget_2025",
     "basis": "forecast",
     "benchmark_class": "different_model",
@@ -144888,6 +145761,8 @@
     "fiscal_event": "autumn_budget_2025",
     "fy": "2026-27",
     "geography": "UK",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
     "reform_hint": "Budget policies affecting energy bills, the temporary extension of the fuel duty freeze and the one-year freeze to rail fares",
     "sign_convention": "as worded: 'reduce CPI inflation by' (positive = reduction in CPI inflation)",
     "value_verbatim": "0.4 percentage points"
@@ -144899,24 +145774,50 @@
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
-   "claim_id": "f52c8cae689bfd55abef",
+   "claim_id": "57cdf6e730ff32f16742",
    "source": "obr_efo",
    "country": "UK",
    "source_column": "CPI inflation 2027-28",
@@ -144934,6 +145835,7 @@
    "geography": "UK",
    "program": null,
    "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "baseline_policy": "obr_pre_measures_autumn_budget_2025",
     "basis": "forecast",
     "benchmark_class": "different_model",
@@ -144942,7 +145844,8 @@
     "fy": "2027-28",
     "geography": "UK",
     "measure_key": "ab2025__fuel_duty_freeze_extension_2026_27",
-    "pe_expressibility": "expressible",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
     "reform_hint": "Fuel duty freeze ends and uprating by RPI resumes",
     "sign_convention": "as worded: 'higher' (positive = increase in CPI inflation)",
     "value_verbatim": "0.1 percentage points higher"
@@ -144954,24 +145857,50 @@
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:ab2025__fuel_duty_freeze_extension_2026_27",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:ab2025__fuel_duty_freeze_extension_2026_27",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
-   "claim_id": "dc5a444571b21b461fa3",
+   "claim_id": "1bbfcf725aa33ecc7098",
    "source": "obr_efo",
    "country": "UK",
    "source_column": "CPI inflation 2028-29",
@@ -144989,7 +145918,7 @@
    "geography": "UK",
    "program": null,
    "conditions": {
-    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "baseline_policy": "obr_pre_measures_autumn_budget_2025",
     "basis": "forecast",
     "benchmark_class": "different_model",
@@ -144999,7 +145928,7 @@
     "geography": "UK",
     "measure_key": "ab2025__eved_mileage_supplement_electric_and_phev",
     "pe_expressibility": "not_expressible",
-    "pe_missing": "No mileage, no fuel-type split and no vehicle excise duty at the pin. The bundle carries num_vehicles and owns_vehicle (WAS-imputed, NTS-calibrated) but not whether a vehicle is electric or a plug-in hybrid, nor annual mileage, and there is no VED parameter tree to attach a per-mile supplement to. OBR's supplementary note (2 Apr 2026) sizes the base at 5.5m cars x 8,000 miles.",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
     "reform_hint": "Introduction of the mileage-based charge on electric cars",
     "sign_convention": "as worded: 'higher' (positive = increase in CPI inflation)",
     "value_verbatim": "0.1 percentage point higher"
@@ -145019,8 +145948,8 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-24T00:00:00+00:00",
     "annotations": [
-     "No mileage, no fuel-type split and no vehicle excise duty at the pin. The bundle carries num_vehicles and owns_vehicle (WAS-imputed, NTS-calibrated) but not whether a vehicle is electric or a plug-in hybrid, nor annual mileage, and there is no VED parameter tree to attach a per-mile supplement to. OBR's supplementary note (2 Apr 2026) sizes the base at 5.5m cars x 8,000 miles.",
-     "Searched BOTH the parameter tree and the VARIABLE list for /electric_vehicle|mileage|vehicle|excise|ved\\b|_ev_|per_mile/. Parameters: 1 node(s) ['gov.dwp.universal_credit.means_test.income_definitions.capital_derived']. Variables: 2 ['num_vehicles', 'owns_vehicle']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.89.2.",
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
     ],
     "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
@@ -145039,8 +145968,8 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-24T00:00:00+00:00",
      "annotations": [
-      "No mileage, no fuel-type split and no vehicle excise duty at the pin. The bundle carries num_vehicles and owns_vehicle (WAS-imputed, NTS-calibrated) but not whether a vehicle is electric or a plug-in hybrid, nor annual mileage, and there is no VED parameter tree to attach a per-mile supplement to. OBR's supplementary note (2 Apr 2026) sizes the base at 5.5m cars x 8,000 miles.",
-      "Searched BOTH the parameter tree and the VARIABLE list for /electric_vehicle|mileage|vehicle|excise|ved\\b|_ev_|per_mile/. Parameters: 1 node(s) ['gov.dwp.universal_credit.means_test.income_definitions.capital_derived']. Variables: 2 ['num_vehicles', 'owns_vehicle']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.89.2.",
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
       "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
      ],
      "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
@@ -145049,12 +145978,12 @@
    ],
    "diagnosis": {
     "class": "pe_gap",
-    "rationale": "No mileage, no fuel-type split and no vehicle excise duty at the pin. The bundle carries num_vehicles and owns_vehicle (WAS-imputed, NTS-calibrated) but not whether a vehicle is electric or a plug-in hybrid, nor annual mileage, and there is no VED parameter tree to attach a per-mile supplement to. OBR's supplementary note (2 Apr 2026) sizes the base at 5.5m cars x 8,000 miles.",
-    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136"
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
    }
   },
   {
-   "claim_id": "2773502b654ce29f7701",
+   "claim_id": "542f155fb9515b25bf9b",
    "source": "obr_efo",
    "country": "UK",
    "source_column": "average over the next two years",
@@ -145072,6 +146001,7 @@
    "geography": "UK",
    "program": null,
    "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "aggregation": "average over the next two years (2026-27 and 2027-28)",
     "baseline_policy": "obr_pre_measures_autumn_budget_2025",
     "basis": "forecast",
@@ -145080,6 +146010,8 @@
     "fiscal_event": "autumn_budget_2025",
     "fy": "2027-28",
     "geography": "UK",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
     "reform_hint": "Total Budget package",
     "sign_convention": "as worded: policy loosening (positive = increase in borrowing)",
     "value_verbatim": "\u00a37.5 billion"
@@ -145091,24 +146023,50 @@
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
-   "claim_id": "0cbdfa9e59ffd2bd7ee5",
+   "claim_id": "c32ad28c5a88e2fa812b",
    "source": "obr_efo",
    "country": "UK",
    "source_column": "average over the last two years",
@@ -145126,6 +146084,7 @@
    "geography": "UK",
    "program": null,
    "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "aggregation": "average over the last two years of the forecast (2029-30 and 2030-31)",
     "baseline_policy": "obr_pre_measures_autumn_budget_2025",
     "basis": "forecast",
@@ -145134,6 +146093,8 @@
     "fiscal_event": "autumn_budget_2025",
     "fy": "2030-31",
     "geography": "UK",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
     "reform_hint": "Total Budget package",
     "sign_convention": "as worded: policy tightening (positive = reduction in borrowing)",
     "value_verbatim": "\u00a312.8 billion"
@@ -145145,24 +146106,50 @@
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
-   "claim_id": "e1fe7406f55940bce050",
+   "claim_id": "262baab4e6adb60de590",
    "source": "obr_efo",
    "country": "UK",
    "source_column": "average per year, five-year forecast",
@@ -145180,6 +146167,7 @@
    "geography": "UK",
    "program": null,
    "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "aggregation": "average per year over the five years of the forecast",
     "baseline_policy": "obr_pre_measures_autumn_budget_2025",
     "basis": "forecast",
@@ -145189,6 +146177,8 @@
     "fy": "2030-31",
     "geography": "UK",
     "horizon": "2026-27 to 2030-31",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
     "reform_hint": "Total Budget package (all Government decisions since March)",
     "sign_convention": "as worded: net reduction in borrowing (positive = reduction in borrowing)",
     "value_verbatim": "\u00a32.0 billion"
@@ -145200,21 +146190,47 @@
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
    "claim_id": "164d8dcec9812351e620",
@@ -145562,7 +146578,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "411d487172ccba98bffc",
+   "claim_id": "e011389d3c2e86131c1c",
    "source": "obr_efo",
    "country": "UK",
    "source_column": "real GDP peak 2026-27",
@@ -145580,6 +146596,7 @@
    "geography": "UK",
    "program": null,
    "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "aggregation": "peak effect",
     "baseline_policy": "obr_pre_measures_autumn_budget_2025",
     "basis": "forecast",
@@ -145588,6 +146605,8 @@
     "fiscal_event": "autumn_budget_2025",
     "fy": "2026-27",
     "geography": "UK",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
     "reform_hint": "Initial fiscal loosening of the Budget package (temporary demand effect)",
     "sign_convention": "positive = higher real GDP",
     "value_verbatim": "0.1 per cent"
@@ -145599,21 +146618,47 @@
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
    "claim_id": "08f58d9e5a45ee0b66f2",
@@ -245443,62 +246488,7 @@
    "diagnosis": null
   },
   {
-   "claim_id": "017956b84f668019faed",
-   "source": "resolution_foundation",
-   "country": "UK",
-   "source_column": "",
-   "name": "Stairway to headroom: Putting the Autumn Budget 2025 decisions on tax, spending and borrowing into context",
-   "window": "",
-   "publication_title": "Stairway to headroom: Putting the Autumn Budget 2025 decisions on tax, spending and borrowing into context",
-   "url": "https://www.resolutionfoundation.org/app/uploads/2025/11/Stairway-to-headroom.pdf",
-   "metric": "cpi_inflation_effect",
-   "unit_concept": "percentage_points",
-   "value_kind": "point",
-   "period": 2027,
-   "time_basis": "fiscal_year",
-   "period_start": null,
-   "period_end": null,
-   "geography": "UK",
-   "program": null,
-   "conditions": {
-    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136",
-    "benchmark_class": "different_model",
-    "country": "UK",
-    "fiscal_event": "autumn_budget_2025",
-    "fy": "2026-27",
-    "geography": "UK",
-    "measure_key": "ab2025__renewables_obligation_exchequer_funded_75pct",
-    "pe_expressibility": "partial",
-    "pe_missing": "The Renewables Obligation share of an electricity bill is not a parameter. The engine has electricity_consumption (LCFS-imputed, NEED-calibrated) and a flat energy_bills_credit lever (gov.treasury.energy_bills_rebate.energy_bills_credit), so the measure is a CONSTRUCTION: bill x domestic RO share (~41%, HMT) x 75%, or the ~GBP 150 average as a flat credit. Either is stated as constructed, never comparable.",
-    "reform_hint": "energy bill measures",
-    "sign_convention": "positive = reduction in CPI inflation",
-    "value_verbatim": "reduce the headline rate of inflation by 0.25 percentage points in 2026-27"
-   },
-   "reform_framework": "policy_ref",
-   "reform_key": "9ca24eb4e469691a",
-   "external_value": 0.25,
-   "calibration_relationship": "held_out",
-   "claim_baseline": "current_law",
-   "latest": {
-    "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
-    "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
-    "ratio": null,
-    "delta": null
-   },
-   "results": [],
-   "diagnosis": null
-  },
-  {
-   "claim_id": "095ae65772b7a601625d",
+   "claim_id": "142dcbb7ee9047229d6a",
    "source": "resolution_foundation",
    "country": "UK",
    "source_column": "",
@@ -245508,7 +246498,7 @@
    "url": "https://www.resolutionfoundation.org/app/uploads/2025/11/Black-holes-and-consolidations.pdf",
    "metric": "cpi_inflation_effect",
    "unit_concept": "percentage_points",
-   "value_kind": "range_high",
+   "value_kind": "point",
    "period": 2027,
    "time_basis": "fiscal_year",
    "period_start": null,
@@ -245516,45 +246506,70 @@
    "geography": "GB",
    "program": null,
    "conditions": {
-    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "benchmark_class": "different_model",
     "country": "UK",
-    "estimate_kind": "range_high",
     "fiscal_event": "autumn_budget_2025",
     "fy": "2026-27",
     "geography": "GB",
-    "measure_key": "ab2025_option__nil_rate_vat_on_domestic_electricity",
-    "pe_expressibility": "partial",
-    "pe_missing": "gov.hmrc.vat.reduced_rate (5%) covers all reduced-rated consumption; a fuel-only zero rate needs the electricity_consumption / gas_consumption split applied by construction. The Ofgem-cap 0% VAT on electricity Oct 2026 - Mar 2027 is a later fact (chronicle #257), not this pin's baseline.",
-    "reform_hint": "nil-rate VAT on gas and electricity bills",
+    "measure_key": "ab2025_option__energy_levies_whd_eco_ro_fit_cps_off_bills",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "reform_hint": "WHD, ECO, RO and FiT off electricity bills and CPS axed",
     "sign_convention": "positive = reduction in CPI inflation",
-    "value_verbatim": "close to 0.2 percentage points"
+    "value_verbatim": "around 0.3 percentage points"
    },
    "reform_framework": "policy_ref",
-   "reform_key": "1d69ec7ecec99b9f",
-   "external_value": 0.2,
+   "reform_key": "772e36b38e65606f",
+   "external_value": 0.3,
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:ab2025_option__energy_levies_whd_eco_ro_fit_cps_off_bills",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:ab2025_option__energy_levies_whd_eco_ro_fit_cps_off_bills",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
-   "claim_id": "5a1cd6c0f3e21d0b5b08",
+   "claim_id": "315590faf1f5ef3d63cc",
    "source": "resolution_foundation",
    "country": "UK",
    "source_column": "",
@@ -245572,15 +246587,15 @@
    "geography": "GB",
    "program": null,
    "conditions": {
-    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "benchmark_class": "different_model",
     "country": "UK",
     "fiscal_event": "autumn_budget_2025",
     "fy": "2026-27",
     "geography": "GB",
     "measure_key": "ab2025_option__energy_levies_whd_eco_ro_fit_cps_off_bills",
-    "pe_expressibility": "partial",
-    "pe_missing": "Policy costs on bills are not parameters; the legs are constructions on electricity_consumption and gas_consumption (levy share x bill), the same shape as the announced RO measure.",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
     "reform_hint": "full package: WHD, ECO, RO, FiT off electricity bills and CPS scrapped",
     "sign_convention": "positive = reduction in CPI inflation",
     "value_verbatim": "around 0.3 percentage points"
@@ -245592,24 +246607,131 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:ab2025_option__energy_levies_whd_eco_ro_fit_cps_off_bills",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:ab2025_option__energy_levies_whd_eco_ro_fit_cps_off_bills",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
-   "claim_id": "997c8a15f42a64b1bc48",
+   "claim_id": "330101a104bcd7f7151a",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "",
+   "name": "Stairway to headroom: Putting the Autumn Budget 2025 decisions on tax, spending and borrowing into context",
+   "window": "",
+   "publication_title": "Stairway to headroom: Putting the Autumn Budget 2025 decisions on tax, spending and borrowing into context",
+   "url": "https://www.resolutionfoundation.org/app/uploads/2025/11/Stairway-to-headroom.pdf",
+   "metric": "cpi_inflation_effect",
+   "unit_concept": "percentage_points",
+   "value_kind": "point",
+   "period": 2027,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
+    "benchmark_class": "different_model",
+    "country": "UK",
+    "fiscal_event": "autumn_budget_2025",
+    "fy": "2026-27",
+    "geography": "UK",
+    "measure_key": "ab2025__renewables_obligation_exchequer_funded_75pct",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "reform_hint": "energy bill measures",
+    "sign_convention": "positive = reduction in CPI inflation",
+    "value_verbatim": "reduce the headline rate of inflation by 0.25 percentage points in 2026-27"
+   },
+   "reform_framework": "policy_ref",
+   "reform_key": "9ca24eb4e469691a",
+   "external_value": 0.25,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": null,
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:ab2025__renewables_obligation_exchequer_funded_75pct",
+    "policyengine_variables": [],
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:ab2025__renewables_obligation_exchequer_funded_75pct",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
+  },
+  {
+   "claim_id": "faa115b0f425e47136e2",
    "source": "resolution_foundation",
    "country": "UK",
    "source_column": "",
@@ -245619,7 +246741,7 @@
    "url": "https://www.resolutionfoundation.org/app/uploads/2025/11/Black-holes-and-consolidations.pdf",
    "metric": "cpi_inflation_effect",
    "unit_concept": "percentage_points",
-   "value_kind": "point",
+   "value_kind": "range_high",
    "period": 2027,
    "time_basis": "fiscal_year",
    "period_start": null,
@@ -245627,44 +246749,71 @@
    "geography": "GB",
    "program": null,
    "conditions": {
-    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "benchmark_class": "different_model",
     "country": "UK",
+    "estimate_kind": "range_high",
     "fiscal_event": "autumn_budget_2025",
     "fy": "2026-27",
     "geography": "GB",
-    "measure_key": "ab2025_option__energy_levies_whd_eco_ro_fit_cps_off_bills",
-    "pe_expressibility": "partial",
-    "pe_missing": "Policy costs on bills are not parameters; the legs are constructions on electricity_consumption and gas_consumption (levy share x bill), the same shape as the announced RO measure.",
-    "reform_hint": "WHD, ECO, RO and FiT off electricity bills and CPS axed",
+    "measure_key": "ab2025_option__nil_rate_vat_on_domestic_electricity",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "reform_hint": "nil-rate VAT on gas and electricity bills",
     "sign_convention": "positive = reduction in CPI inflation",
-    "value_verbatim": "around 0.3 percentage points"
+    "value_verbatim": "close to 0.2 percentage points"
    },
    "reform_framework": "policy_ref",
-   "reform_key": "772e36b38e65606f",
-   "external_value": 0.3,
+   "reform_key": "1d69ec7ecec99b9f",
+   "external_value": 0.2,
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:ab2025_option__nil_rate_vat_on_domestic_electricity",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:ab2025_option__nil_rate_vat_on_domestic_electricity",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
-   "claim_id": "3e39aeeca00c7331bd5b",
+   "claim_id": "e1752e27a5f761223765",
    "source": "resolution_foundation",
    "country": "UK",
    "source_column": "",
@@ -245682,7 +246831,7 @@
    "geography": "UK",
    "program": null,
    "conditions": {
-    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "benchmark_class": "different_model",
     "country": "UK",
     "fiscal_event": "autumn_budget_2025",
@@ -245690,8 +246839,8 @@
     "geography": "UK",
     "horizon": "average of 2026-27 to 2028-29",
     "measure_key": "ab2025__package_total_policy_decisions",
-    "pe_expressibility": "partial",
-    "pe_missing": "The package total sums measures the household model cannot express (business taxes, administrative yields, departmental spending). A PE package number is the sum of the expressible household legs only, stated as constructed with the omitted lines listed; it is never compared to the Table 4.1 total as if like-for-like.",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
     "reform_hint": "all Autumn Budget 2025 decisions",
     "sign_convention": "positive = increase in borrowing",
     "value_verbatim": "increased borrowing by \u00a31 billion on average in the first three years of the forecast (2026-27 to 2028-29)"
@@ -245703,24 +246852,50 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:ab2025__package_total_policy_decisions",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:ab2025__package_total_policy_decisions",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
-   "claim_id": "4879aecbfaad10d82efe",
+   "claim_id": "49c08eea4c99ec0c5b84",
    "source": "resolution_foundation",
    "country": "UK",
    "source_column": "",
@@ -245738,12 +246913,15 @@
    "geography": "UK",
    "program": null,
    "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "benchmark_class": "different_model",
     "component": "U-turns + RF forecast update + abolishing the two-child limit + energy-bill policy costs to general taxation",
     "country": "UK",
     "fiscal_event": "autumn_budget_2025",
     "fy": "2029-30",
     "geography": "UK",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
     "sign_convention": "positive = increase in borrowing",
     "value_verbatim": "a total increase in borrowing of around \u00a321 billion"
    },
@@ -245754,24 +246932,50 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
-   "claim_id": "9b70cfddf027a68306f6",
+   "claim_id": "66730e85d415a933fd53",
    "source": "resolution_foundation",
    "country": "UK",
    "source_column": "",
@@ -245789,7 +246993,7 @@
    "geography": "UK",
    "program": null,
    "conditions": {
-    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
     "benchmark_class": "different_model",
     "country": "UK",
     "fiscal_event": "autumn_budget_2025",
@@ -245797,8 +247001,8 @@
     "geography": "UK",
     "horizon": "average of 2029-30 and 2030-31",
     "measure_key": "ab2025__package_total_policy_decisions",
-    "pe_expressibility": "partial",
-    "pe_missing": "The package total sums measures the household model cannot express (business taxes, administrative yields, departmental spending). A PE package number is the sum of the expressible household legs only, stated as constructed with the omitted lines listed; it is never compared to the Table 4.1 total as if like-for-like.",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
     "reform_hint": "all Autumn Budget 2025 decisions",
     "sign_convention": "positive = increase in borrowing",
     "value_verbatim": "savings of \u00a324 billion on average in the final two (2029-30 to 2030-31)"
@@ -245810,21 +247014,47 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": null,
-    "status": "not_computed",
-    "engine_version": "",
-    "data_bundle": "",
-    "release": "",
-    "construction": "",
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:ab2025__package_total_policy_decisions",
     "policyengine_variables": [],
-    "computed_at": "",
-    "annotations": [],
-    "baseline": null,
-    "status_effective": "not_computed",
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
     "ratio": null,
     "delta": null
    },
-   "results": [],
-   "diagnosis": null
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:ab2025__package_total_policy_decisions",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
    "claim_id": "85b644a4a481a11094c9",
@@ -248473,6 +249703,166 @@
    },
    "results": [],
    "diagnosis": null
+  },
+  {
+   "claim_id": "3f627d86adcc569c8ca0",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "",
+   "name": "Black holes and consolidations: Previewing the key decisions for Budget 2025",
+   "window": "",
+   "publication_title": "Black holes and consolidations: Previewing the key decisions for Budget 2025",
+   "url": "https://www.resolutionfoundation.org/app/uploads/2025/11/Black-holes-and-consolidations.pdf",
+   "metric": "fiscal_headroom",
+   "unit_concept": "gbp",
+   "value_kind": "point",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
+    "benchmark_class": "different_model",
+    "country": "UK",
+    "fiscal_event": "autumn_budget_2025",
+    "fy": "2029-30",
+    "geography": "UK",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "rule": "current budget",
+    "scenario": "RF update scenario incl. U-turns",
+    "value_verbatim": "a fiscal black hole of around \u00a34 billion"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": -4000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": null,
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
+    "policyengine_variables": [],
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
+  },
+  {
+   "claim_id": "fa6fc2c0b2e85a007c8e",
+   "source": "resolution_foundation",
+   "country": "UK",
+   "source_column": "",
+   "name": "Stairway to headroom: Putting the Autumn Budget 2025 decisions on tax, spending and borrowing into context",
+   "window": "",
+   "publication_title": "Stairway to headroom: Putting the Autumn Budget 2025 decisions on tax, spending and borrowing into context",
+   "url": "https://www.resolutionfoundation.org/app/uploads/2025/11/Stairway-to-headroom.pdf",
+   "metric": "fiscal_headroom",
+   "unit_concept": "gbp",
+   "value_kind": "point",
+   "period": 2030,
+   "time_basis": "fiscal_year",
+   "period_start": null,
+   "period_end": null,
+   "geography": "UK",
+   "program": null,
+   "conditions": {
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55",
+    "benchmark_class": "different_model",
+    "country": "UK",
+    "fiscal_event": "autumn_budget_2025",
+    "fy": "2029-30",
+    "geography": "UK",
+    "pe_expressibility": "not_expressible",
+    "pe_missing": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "rule": "current budget",
+    "statistic": "average headroom since 2010",
+    "value_verbatim": "the \u00a329 billion average headroom held by previous Chancellors since 2010"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 29000000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": null,
+    "status": "pe_gap",
+    "engine_version": "2.89.2",
+    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+    "release": "8c73-4aa4b14",
+    "construction": "pe_gap:not_expressible:macro",
+    "policyengine_variables": [],
+    "computed_at": "2026-09-24T00:00:00+00:00",
+    "annotations": [
+     "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+     "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+     "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+    ],
+    "baseline": "current_law",
+    "status_effective": "pe_gap",
+    "ratio": null,
+    "delta": null
+   },
+   "results": [
+    {
+     "value": null,
+     "status": "pe_gap",
+     "engine_version": "2.89.2",
+     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "release": "8c73-4aa4b14",
+     "construction": "pe_gap:not_expressible:macro",
+     "policyengine_variables": [],
+     "computed_at": "2026-09-24T00:00:00+00:00",
+     "annotations": [
+      "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+      "Parameters: none searched \u2014 a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+      "no run executed: the verdict is the registry's, stated against the certified engine 2.89.2"
+     ],
+     "baseline": "current_law",
+     "status_effective": "pe_gap"
+    }
+   ],
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "macro-fiscal quantity: the household model has no forecast, no fiscal rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) answers it",
+    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+   }
   },
   {
    "claim_id": "00223c3f350796d37b33",
