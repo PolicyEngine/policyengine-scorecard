@@ -134,20 +134,32 @@ def test_verdict_rows_follow_the_registry(tmp_path):
     db.close()
     from scorecard_db.ingest_uk_ab2025 import MACRO_LINK
 
-    keys = {r[5].split(":", 2)[2] for r in results}
-    macro_keyed = {
-        k
-        for k in keys
-        if k != "macro" and REGISTRY[k]["computability"] != "not_expressible"
-    }
-    for k in keys - {"macro"} - macro_keyed:
-        assert REGISTRY[k]["computability"] == "not_expressible", k
     # a verdict on an expressible or partial measure is only ever a macro
-    # claim's own (#55), never the registry's
-    links = {d[3] for d in diagnoses}
-    assert links <= {
-        m["action_link"] for m in REGISTRY.values() if m.get("action_link")
-    } | {MACRO_LINK}
+    # claim's own (#55): every such verdict carries the macro link, and
+    # every verdict on a not_expressible measure carries the registry's
+    from scorecard_db.ingest_uk_ab2025 import MACRO_METRICS
+
+    macro_metrics = {m.value for m in MACRO_METRICS}
+    by_claim = {d[0]: d[3] for d in diagnoses}
+    db = ScorecardDB(db_path)
+    metric_of = dict(
+        db.conn.execute("SELECT claim_id, metric FROM external_scores").fetchall()
+    )
+    db.close()
+    macro_verdicts = 0
+    for r in results:
+        key = r[5].split(":", 2)[2]
+        link = by_claim[r[0]]
+        if metric_of[r[0]] in macro_metrics:
+            # a macro-fiscal call's verdict is the claim's own, whatever
+            # measure it is keyed to (an expressible one, or none)
+            macro_verdicts += 1
+            assert link == MACRO_LINK, (key, link)
+        else:
+            assert key != "macro"
+            assert REGISTRY[key]["computability"] == "not_expressible", key
+            assert link == REGISTRY[key]["action_link"], (key, link)
+    assert macro_verdicts > 0
 
 
 def test_lanes_advance_to_computed_only_when_a_counterpart_exists(tmp_path):

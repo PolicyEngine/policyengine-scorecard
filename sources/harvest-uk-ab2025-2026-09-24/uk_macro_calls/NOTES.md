@@ -317,3 +317,12 @@ revenue-calibration year, as `uk_niesr` did for "long run"); GS "over the coming
 ## Machine verbatim check
 
 Every row's `value_raw` and `quote` were searched in the extracted text of the primary it cites (by sha256), comparing with all whitespace removed (pypdf inserts spurious spaces inside words and numbers, e.g. "2029 -30"; the quotes are written as the sentence reads). Checked at staging (`stage_macro.py`, which refuses to write on a miss) and again by this generator reading `claims_staged.jsonl.gz` back: **248 strings checked, 0 not found** (124 rows × value_raw + quote). No row was dropped for a verbatim miss.
+
+## Timing on every row (2026-09-25, after review)
+89 rows carried `conditions.timing` from the primary's own framing (pre-Budget expectation |
+post-Budget assessment | pre-Budget expectation (superseded prior)). The 35 that did not (30
+NIESR, 4 EY ITEM Club, 1 Société Générale — forecast levels, the Fiscal Impact Measure rows
+and several headroom calls) now carry it by the publication date relative to Budget day,
+26 November 2025: before -> `pre-Budget expectation`, on or after -> `post-Budget
+assessment`. The rule is mechanical and stated here so a reader can tell a framed marker
+from a dated one; no row is unmarked.

@@ -397,7 +397,7 @@ _AB2025_HELD: dict[str, tuple] = {
     ),
     "societe_generale": (
         CR.HELD_OUT,
-        "Societe Generale's macro calls on the Budget (tax-rise size, headroom, GDP, CPI, Bank Rate) are scored, never consumed"
+        "Société Générale's macro calls on the Budget (tax-rise size, headroom, GDP, CPI, Bank Rate) are scored, never consumed"
         + _AB2025_SURFACES,
     ),
     "oxford_economics": (
@@ -407,7 +407,7 @@ _AB2025_HELD: dict[str, tuple] = {
     ),
     "ey_item_club": (
         CR.HELD_OUT,
-        "Ey Item Club's macro calls on the Budget (tax-rise size, headroom, GDP, CPI, Bank Rate) are scored, never consumed"
+        "EY ITEM Club's macro calls on the Budget (tax-rise size, headroom, GDP, CPI, Bank Rate) are scored, never consumed"
         + _AB2025_SURFACES,
     ),
     "niesr": (
