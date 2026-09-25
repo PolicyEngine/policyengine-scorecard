@@ -280,7 +280,17 @@ _identity("obr", "geography", ["UK", "GB"])
 # OBR's NI social-security rows are Northern Ireland — same geography as
 # HBAI's region label; one canonical name.
 _alias("obr", "geography", "NI", "Northern Ireland")
-_identity("ukmod", "geography", ["UK"])
+# CeMPA WP 3/26 (family uk_ukmod_ab2025, #136) reports by nation; its
+# fixed-line poverty counts hold the 2026 baseline line fixed.
+_identity(
+    "ukmod", "geography", ["UK", "England", "Scotland", "Wales", "Northern Ireland"]
+)
+_identity("ukmod", "poverty_line", ["fixed_at_baseline"])
+_identity(
+    "ukmod",
+    "income_group",
+    [f"decile_{i}" for i in range(1, 11)] + ["all"],
+)
 
 # --- subgroups ---------------------------------------------------------------
 _identity(
@@ -1056,6 +1066,14 @@ _identity(
 _identity("trussell_wpi", "poverty_measure", ["wpi_severe_hardship"])
 _identity("uk_hmrc", "geography", ["UK"])
 _identity("wbg", "geography", ["UK"])
+# the macro houses (#55 lane, tranche 4) call the UK aggregate only
+_identity("capital_economics", "geography", ["UK"])
+_identity("goldman_sachs", "geography", ["UK"])
+_identity("deutsche_bank", "geography", ["UK"])
+_identity("barclays", "geography", ["UK"])
+_identity("societe_generale", "geography", ["UK"])
+_identity("oxford_economics", "geography", ["UK"])
+_identity("ey_item_club", "geography", ["UK"])
 _identity("wbg", "poverty_line", ["relative_60_median"])
 _identity("which", "geography", ["UK"])
 # IPPR prints one region two ways (Table 1 vs Table 2 of Restoring security); one identity.

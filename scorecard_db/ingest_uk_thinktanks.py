@@ -262,6 +262,10 @@ def _metric_name(row: dict) -> str:
     return name
 
 
+_IFS_AB2025_PACKAGE_HINT = "Autumn Budget 2025 personal tax and benefit reforms package"
+_IFS_AB2025_PACKAGE_KEY = "ab2025__package_ifs_decile_chart_scope"
+
+
 def _reform(row: dict, source: str) -> ReformRef:
     """The world the row scores.
 
@@ -273,6 +277,12 @@ def _reform(row: dict, source: str) -> ReformRef:
         return ReformRef()
     baseline = None
     conditions = row.get("conditions") or {}
+    # The IFS's whole-package decile chart (27 Nov 2025, Flourish
+    # 26495404) scores the Autumn Budget 2025 package the #136 registry
+    # keys as ab2025__package_ifs_decile_chart_scope; every producer's
+    # rows on that package share the key (retrieval by measure).
+    if hint.startswith(_IFS_AB2025_PACKAGE_HINT):
+        return policy_ref(_IFS_AB2025_PACKAGE_KEY, baseline=baseline)
     # The IFS Green-Budget options are scored against a registered
     # non-current-law world (baselines.py), which the staging names in
     # its own conditions rather than in the hint.
@@ -413,6 +423,9 @@ def _score(row: dict, source: str, metric: Metric) -> ExternalScore:
 
     reform = _reform(row, source)
     with_baseline_condition(cond, reform)
+    if reform.reform and reform.reform.get("policy") == _IFS_AB2025_PACKAGE_KEY:
+        cond["measure_key"] = _IFS_AB2025_PACKAGE_KEY
+        cond["fiscal_event"] = "autumn_budget_2025"
     return ExternalScore(
         source=source,
         metric=metric,

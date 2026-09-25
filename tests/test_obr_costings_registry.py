@@ -2145,6 +2145,23 @@ def test_hicbc_uses_provisional_fixed_claiming_child_benefit_mapping():
     assert "reform-induced claiming" not in hicbc["notes"]
 
 
+def test_engine_version_must_match_the_bundle():
+    """A right artifact on a wrong engine is a wrong run: the bundle's
+    declared country-package version is the pin (#126), checked in
+    preflight before any simulation, against both the release bundle and
+    data/uk/certified_bundle.json."""
+    bundle = {"model_version": "2.89.2"}
+    assert compute.assert_engine_matches_bundle(bundle, installed="2.89.2") == "2.89.2"
+    with pytest.raises(RuntimeError, match="bundle-declared 2.89.2"):
+        compute.assert_engine_matches_bundle(bundle, installed="2.92.0")
+    with pytest.raises(RuntimeError, match="declares no engine version"):
+        compute.assert_engine_matches_bundle({}, installed="2.89.2")
+    with pytest.raises(RuntimeError, match="certified_bundle.json pins"):
+        compute.assert_engine_matches_bundle(
+            {"model_version": "2.92.0"}, installed="2.92.0"
+        )
+
+
 def test_bundle_mismatches_abort_before_artifact_staging(tmp_path, synthetic_measure):
     release_bundle = {
         "certified_data_build_id": "release-build",

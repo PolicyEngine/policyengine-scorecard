@@ -1,7 +1,7 @@
 {
- "read": 8194,
- "ingested": 6985,
- "dropped": 1209,
+ "read": 8881,
+ "ingested": 7519,
+ "dropped": 1362,
  "by_family": {
   "uk_hmt_costings": {
    "read": 699,
@@ -30,8 +30,8 @@
   },
   "uk_rf_ab2025": {
    "read": 1460,
-   "ingested": 1121,
-   "dropped": 339
+   "ingested": 1123,
+   "dropped": 337
   },
   "uk_jrf": {
    "read": 134,
@@ -40,8 +40,8 @@
   },
   "uk_ippr": {
    "read": 118,
-   "ingested": 76,
-   "dropped": 42
+   "ingested": 77,
+   "dropped": 41
   },
   "uk_cpag": {
    "read": 59,
@@ -57,6 +57,16 @@
    "read": 7,
    "ingested": 4,
    "dropped": 3
+  },
+  "uk_ukmod_ab2025": {
+   "read": 563,
+   "ingested": 483,
+   "dropped": 80
+  },
+  "uk_macro_calls": {
+   "read": 124,
+   "ingested": 39,
+   "dropped": 85
   },
   "uk_centax": {
    "read": 87,
@@ -120,8 +130,8 @@
   },
   "uk_niesr": {
    "read": 27,
-   "ingested": 9,
-   "dropped": 18
+   "ingested": 18,
+   "dropped": 9
   },
   "uk_cases_commercial": {
    "read": 121,
@@ -131,13 +141,13 @@
  },
  "drops": {
   "assumption_or_base_not_a_score": 104,
-  "macro_fiscal_or_out_of_scope": 119,
-  "restated_official_figure": 342,
+  "macro_fiscal_or_out_of_scope": 194,
+  "restated_official_figure": 359,
   "unit_no_household_concept": 46,
   "parameter_or_threshold_level": 53,
   "categorical_rating_not_a_value": 100,
   "mode3_specimen_household": 116,
-  "ratio_or_derived_quantity": 62,
+  "ratio_or_derived_quantity": 122,
   "share_level_no_registered_metric": 18,
   "energy_levy_level_no_metric": 2,
   "mtr_no_registered_metric": 7,
@@ -145,6 +155,6 @@
   "no_registered_metric": 2,
   "scheme_average_award_no_metric": 20,
   "mode3_worked_example": 105,
-  "republished_twin_merged": 28
+  "republished_twin_merged": 29
  }
 }

@@ -840,6 +840,41 @@ def ensure_writable_local_mirror(
     return mirror_path, created
 
 
+def assert_engine_matches_bundle(
+    release_bundle: dict[str, Any], installed: str | None = None
+) -> str:
+    """The certified bundle DECLARES the engine it was built for; a right
+    artifact on a wrong engine is still a wrong run (#126). The managed
+    release bundle names the country package version; the repository's
+    data/uk/certified_bundle.json pins the same version as a specifier, and
+    both must agree with the installed policyengine-uk."""
+    declared = release_bundle.get("model_version") or release_bundle.get(
+        "country_package_version"
+    )
+    if not isinstance(declared, str) or not declared:
+        raise RuntimeError("certified release bundle declares no engine version")
+    if installed is None:
+        try:
+            installed = version("policyengine-uk")
+        except PackageNotFoundError as exc:
+            raise RuntimeError("policyengine-uk is not installed") from exc
+    if installed != declared:
+        raise RuntimeError(
+            f"installed policyengine-uk {installed} != bundle-declared {declared}; "
+            "the bundle's compatibility statement is the pin, not the environment"
+        )
+    pinned = json.loads((ROOT / "data" / "uk" / "certified_bundle.json").read_text())
+    for spec in pinned.get("compatible_model_packages", []):
+        if spec.get("name") == "policyengine-uk":
+            want = str(spec.get("specifier", "")).lstrip("=")
+            if want and want != installed:
+                raise RuntimeError(
+                    f"data/uk/certified_bundle.json pins policyengine-uk =={want}, "
+                    f"installed {installed}"
+                )
+    return installed
+
+
 def preflight_certified_dataset() -> dict[str, Any]:
     """Prove that the bundled dataset is cached and matches its manifest hash."""
 
@@ -849,6 +884,7 @@ def preflight_certified_dataset() -> dict[str, Any]:
     from policyengine.provenance.dataset_sources import parse_hf_uri
 
     bundle = dict(pe.uk.uk_latest.release_bundle)
+    assert_engine_matches_bundle(bundle)
     dataset_uri = bundle.get("default_dataset_uri")
     expected_sha256 = bundle.get("certified_data_artifact_sha256")
     if not isinstance(dataset_uri, str) or not dataset_uri.startswith("hf://"):

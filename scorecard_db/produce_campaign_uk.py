@@ -119,8 +119,14 @@ BLOCKED = {
         "poverty_line); the RF reform_fiscal_cost row targets a claim "
         "#86 deliberately DROPS (an HM Treasury scorecard figure RF "
         "re-publishes), so there is no RF claim to attach to and there "
-        "should not be; and the ukmod row targets a REFORM claim while "
-        "the staged UKMOD family is baseline statistics only"
+        "should not be; and the ukmod row targets UKMOD's Autumn Budget "
+        "2025 PACKAGE claim (CeMPA WP 3/26 Table 2, staged since 2026-09-25 "
+        "as harvest family uk_ukmod_ab2025, keyed "
+        "ab2025__package_ukmod_wp3_26) with a two-child-only PE leg — the "
+        "concept_mismatch the campaign itself labelled it; attaching it "
+        "needs a descriptor translator (Aug-2 vocabulary: start-year "
+        "period, income_concept, poverty_line_type) and is a tranche-3 "
+        "resolution alongside the other UK campaign families"
     ),
     "uprating_april2026": (
         "4 rows = 3 resolution_foundation benefit_uprating_pct + 1 "

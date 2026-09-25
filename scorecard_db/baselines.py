@@ -1011,6 +1011,43 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "data/uk/obr_measure_reforms.yaml autumn_budget_2024__employer_nics_package pe_reform; executed by "
         "pipeline/compute_uk_obr_costings.py on the certified bundle.",
     ),
+    # --- #136 tranche 3: the pre-Budget worlds PE executes for the two
+    # computed PACKAGES (each component's pe_baseline_modifier composed).
+    (
+        {
+            "policy": "pre_ab2025__package_ifs_decile_chart_scope",
+            "measure": "ab2025__package_ifs_decile_chart_scope",
+        },
+        "pre_ab2025__package_ifs_decile_chart_scope",
+        "UK current law (the certified world) with every measure in the IFS 27 Nov 2025 decile-chart scope "
+        "reversed to its pre-Budget path at once: the pre-Budget world PE executes so the package is "
+        "measured as current law minus this world.",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__package_ifs_decile_chart_scope package_of, each component's "
+        "pe_baseline_modifier composed by pipeline/compute_uk_ab2025.py.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__package_ukmod_wp3_26",
+            "measure": "ab2025__package_ukmod_wp3_26",
+        },
+        "pre_ab2025__package_ukmod_wp3_26",
+        "UK current law (the certified world) with the three registry measures in UKMOD's WP 3/26 package "
+        "(threshold freezes, two-child limit removal, Winter Fuel Payment test) reversed at once; the paper's "
+        "Pension Credit leg is not a registry measure and is not reversed.",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__package_ukmod_wp3_26 package_of, composed by "
+        "pipeline/compute_uk_ab2025.py.",
+    ),
+    (
+        {"policy": "niesr_pre_measures_autumn_2025_outlook"},
+        "niesr_pre_measures_autumn_2025_outlook",
+        "NIESR's pre-measures forecast: the Autumn 2025 UK Economic Outlook (completed 27 Oct 2025) "
+        "with no changes to planned spending or tax rates in the Autumn Budget — the world NIESR's "
+        "NiGEM package effects and fiscal-stance calls are measured against.",
+        "policy_ref",
+        "sources/harvest-uk-ab2025-2026-09-24/uk_macro_calls/NOTES.md (proposed_baseline on the NiGEM rows).",
+    ),
 ]
 
 

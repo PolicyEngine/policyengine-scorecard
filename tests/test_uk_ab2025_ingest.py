@@ -165,10 +165,18 @@ def test_the_three_retrieval_axes_are_on_every_claim(staged):
 
 def test_keyed_rows_carry_the_registry_verdict(staged):
     scores, _ = staged
+    from scorecard_db.ingest_uk_ab2025 import MACRO_LINK, MACRO_METRICS
+
     keyed = [s for s in scores if "measure_key" in s.conditions]
     assert len(keyed) > 5000
     for s in keyed:
         m = REGISTRY[s.conditions["measure_key"]]
+        if s.metric in MACRO_METRICS:
+            # a macro-fiscal call carries the #55 lane's verdict whatever
+            # measure it is keyed to (the household model has no lever)
+            assert s.conditions["pe_expressibility"] == "not_expressible"
+            assert s.conditions["action_link"] == MACRO_LINK
+            continue
         assert s.conditions["pe_expressibility"] == m["computability"]
         if m["computability"] == "not_expressible":
             assert s.conditions["action_link"].startswith("https://")
@@ -362,6 +370,7 @@ def test_versioned_engine_spellings_are_recorded_releases(staged):
         ("cpag", "ukmod_b1.11"),
         ("cpag", "ukmod_b1.13"),
         ("wbg", "ukmod_b2025.08"),
+        ("ukmod", "ukmod_b2025.09"),
     }
     for source, model in versioned:
         assert known_release(source, model), (source, model)

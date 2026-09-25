@@ -94,7 +94,7 @@ Derived from `data/uk/ab2025_measures.json` (do not edit by hand; regenerate wit
 - `ab2025__package_total_tax_policy_decisions` | partial | Total tax policy decisions (Table 4.1)
 - `ab2025__package_total_spending_policy_decisions` | partial | Total spending policy decisions (Table 4.1)
 - `ab2025__package_ifs_decile_chart_scope` | partial | IFS 27 Nov 2025 decile chart package: the Budget's tax and benefit measures affecting household incomes, 2026-27 and 203
-- `ab2025__package_ukmod_six_measures` | partial | UKMOD (CeMPA WP 3/26) six-measure Autumn Budget 2025 package
+- `ab2025__package_ukmod_wp3_26` | partial | UKMOD (CeMPA WP 3/26) Autumn Budget 2025 package: income tax threshold freezes, UC two-child limit removal, Winter Fuel Allowance restrictions, Pension Credit reductions
 - `ab2025_option__income_tax_basic_rate_plus_1p` | expressible | Income tax basic rate 20% to 21%
 - `ab2025_option__income_tax_all_rates_plus_1p` | expressible | All income tax rates +1ppt (20/40/45 to 21/41/46)
 - `ab2025_option__income_tax_basic_rate_plus_2p` | expressible | Income tax basic rate 20% to 22%

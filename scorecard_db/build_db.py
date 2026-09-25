@@ -228,6 +228,9 @@ def build(db_path: Path) -> dict:
         # the registry's action_link, so the gap is a finding with somewhere
         # to go rather than a blank (#136, gate #9).
         ("uk_ab2025_verdicts", lambda: ingest_uk_ab2025.ingest_verdicts(db_path)),
+        # After the counterpart runs attach, a lane whose claims now carry a
+        # computed PE result reads "computed" rather than "ingested" (#136).
+        ("uk_ab2025_lanes", lambda: ingest_uk_ab2025.advance_lanes(db_path)),
         ("nz_budget_scores", lambda: ingest_official_budget_scores.ingest(db_path)),
         ("be_pit_reform", lambda: ingest_pit_reform_2026.ingest(db_path)),
         ("be_jrc", lambda: ingest_jrc_country_report.ingest(db_path)),

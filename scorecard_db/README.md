@@ -342,3 +342,10 @@ world PE EXECUTED (`baseline_key`: the registered pre-measure world for a
 reversal on the certified world); `campaign_uk_obr_costings` attaches it via
 `ingest_campaign`, which now honours a staged `baseline_key` and refuses an
 unregistered one.
+
+Ownership of overlapping measures (the #56 / #140 rule): a claim that carries
+`conditions.obr_measure_key` is in the OBR costings slice and is answered ONLY by
+this lane's compute (per OBR head, in OBR's conventions); every other claim on an
+`ab2025__` measure is answered ONLY by the AB2025 counterparts stager
+(`pipeline/stage_uk_ab2025.py`), which skips claims carrying `obr_measure_key`.
+One claim, one computed answer, never two.
