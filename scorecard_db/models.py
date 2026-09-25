@@ -340,6 +340,9 @@ class UnitConcept(str, Enum):
 STANDARD_CONDITIONS = frozenset(
     {
         "geography",
+        # when a macro house made its call relative to the fiscal event
+        # (pre-Budget expectation | post-Budget assessment), #55 lane
+        "timing",
         "program",
         "subgroup",
         "income_group",

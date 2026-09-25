@@ -127,6 +127,21 @@
    "jrf"
   ]
  },
+ "uk_macro_calls": {
+  "rows": 124,
+  "primaries": 20,
+  "claims_sha256": "8bdd932793763b0dcc7c39ed725efaf191b22da89b6f42a58f9f06459a651a3b",
+  "sources": [
+   "barclays",
+   "capital_economics",
+   "deutsche_bank",
+   "ey_item_club",
+   "goldman_sachs",
+   "niesr",
+   "oxford_economics",
+   "societe_generale"
+  ]
+ },
  "uk_nef": {
   "rows": 17,
   "primaries": 4,
@@ -231,9 +246,9 @@
   ]
  },
  "_totals": {
-  "rows": 8757,
-  "restated": 342,
-  "families": 26,
+  "rows": 8881,
+  "restated": 359,
+  "families": 27,
   "pinned_on": "2026-09-24"
  }
 }

@@ -132,6 +132,12 @@ LANES = {
         "mode": 2,
         "country": "UK",
     },
+    "uk-ab2025-macro": {
+        "source": "Capital Economics, Goldman Sachs, Deutsche Bank, Barclays, Société Générale, Oxford Economics, EY ITEM Club and NIESR NiGEM (Autumn Budget 2025)",
+        "area": "macro and fiscal-aggregate calls on the Budget package — the #55 lane, out of the household model's scope",
+        "mode": 2,
+        "country": "UK",
+    },
     "uk-ab2025-cases": {
         "source": "commercial firms and platforms (Autumn Budget 2025 worked examples)",
         "area": "single-household worked examples, staged for the mode-3 tally (#63)",
@@ -157,6 +163,21 @@ FAMILIES: dict[str, tuple[str, frozenset[str]]] = {
     ),
     "uk_wbg": ("uk-ab2025-microsim", frozenset({"wbg"})),
     "uk_ukmod_ab2025": ("uk-ab2025-microsim", frozenset({"ukmod"})),
+    "uk_macro_calls": (
+        "uk-ab2025-macro",
+        frozenset(
+            {
+                "barclays",
+                "capital_economics",
+                "deutsche_bank",
+                "ey_item_club",
+                "goldman_sachs",
+                "niesr",
+                "oxford_economics",
+                "societe_generale",
+            }
+        ),
+    ),
     "uk_centax": ("uk-ab2025-admin-other", frozenset({"centax"})),
     "uk_tpa": ("uk-ab2025-admin-other", frozenset({"tax_policy_associates"})),
     "uk_pip": ("uk-ab2025-admin-other", frozenset({"policy_in_practice"})),
@@ -249,6 +270,7 @@ DISPOSITIONS: dict[str, Metric] = {
     # scope on every claim (MACRO_METRICS), never a registry verdict.
     "fiscal_headroom": Metric.FISCAL_HEADROOM,
     "package_tax_rise_size": Metric.REVENUE_CHANGE,
+    "package_spending_change": Metric.REVENUE_CHANGE,
     # UKMOD's fiscal overview (CeMPA WP 3/26): the change in benefit
     # expenditure and the net fiscal impact (revenue change minus
     # expenditure change), the latter carried as an exchequer impact
@@ -440,6 +462,26 @@ _DROP_BY_NAME: dict[str, str] = {
     "motoring_externality_cost": "unit_no_household_concept",
     "debt_outcome_percentile_covered": "unit_no_household_concept",
     "bank_rate_level": "macro_fiscal_or_out_of_scope",
+    # uk_macro_calls (tranche 4): forecast LEVELS and forecast revisions the
+    # houses print beside their calls on the package (#55 answers the calls;
+    # the levels are context)
+    "gdp_growth": "macro_fiscal_or_out_of_scope",
+    "cpi_inflation": "macro_fiscal_or_out_of_scope",
+    "unemployment_rate": "macro_fiscal_or_out_of_scope",
+    "output_gap": "macro_fiscal_or_out_of_scope",
+    "gilt_yield_10y": "macro_fiscal_or_out_of_scope",
+    "bank_rate_change": "macro_fiscal_or_out_of_scope",
+    "gilt_remit_revision": "macro_fiscal_or_out_of_scope",
+    "fiscal_impulse": "macro_fiscal_or_out_of_scope",
+    "current_budget_balance_contribution": "macro_fiscal_or_out_of_scope",
+    "debt_interest_change": "macro_fiscal_or_out_of_scope",
+    "forecast_nominal_gdp_change": "macro_fiscal_or_out_of_scope",
+    "forecast_employment_change": "macro_fiscal_or_out_of_scope",
+    "forecast_participation_rate_change": "macro_fiscal_or_out_of_scope",
+    "psnd_share_of_gdp": "macro_fiscal_or_out_of_scope",
+    "psnfl_share_of_gdp": "macro_fiscal_or_out_of_scope",
+    "debt_ratio_effect": "macro_fiscal_or_out_of_scope",
+    "forecast_spending_change": "macro_fiscal_or_out_of_scope",
     "forecast_borrowing_change": "macro_fiscal_or_out_of_scope",
     "forecast_revenue_change": "macro_fiscal_or_out_of_scope",
     "revenue_level": "macro_fiscal_or_out_of_scope",
@@ -658,6 +700,7 @@ _PROPOSED_BASELINE_PREFIXES: dict[str, str] = {
     "JRF post-Spring-Forecast-2026 projection path": "jrf_post_spring_forecast_2026_projection_path",
     "RF projection without the Child Poverty Strategy policies": "rf_projection_without_child_poverty_strategy",
     "JRF post-Budget projection path with the two-child limit retained": "jrf_post_ab2025_two_child_limit_retained",
+    "NIESR pre-measures forecast (Autumn 2025 Outlook, completed 27 Oct 2025)": "niesr_pre_measures_autumn_2025_outlook",
 }
 
 
@@ -859,8 +902,11 @@ def _score(row: dict, family: str, source: str, metric: Metric) -> ExternalScore
         cond["pe_expressibility"] = "not_expressible"
         cond["pe_missing"] = MACRO_MISSING
         cond["action_link"] = MACRO_LINK
-    if row.get("proposed_metric") == "package_tax_rise_size":
-        cond["fiscal_measure"] = "package_tax_rise_size"
+    if row.get("proposed_metric") in (
+        "package_tax_rise_size",
+        "package_spending_change",
+    ):
+        cond["fiscal_measure"] = row["proposed_metric"]
 
     basis = TIME_BASES.get(row.get("time_basis"))
     if basis is None:
