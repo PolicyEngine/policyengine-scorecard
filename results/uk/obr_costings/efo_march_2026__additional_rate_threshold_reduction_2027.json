@@ -4,12 +4,60 @@
   "calendar_year_proxy": "PE calendar year 2027 proxies FY 2027-28.",
   "claims_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
   "computability": "expressible",
-  "computed_at": "2026-08-17T03:36:58.392901+00:00",
+  "computed_at": "2026-09-25T11:50:28.913606+00:00",
   "construction": "reversal_on_certified_world",
   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "dataset_sha256_after": {
+    "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+    "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+  },
+  "dataset_sha256_before": {
+    "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+    "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+  },
   "diagnostic_only": false,
   "engine_version": "2.89.2",
   "fiscal_event": "EFO March 2026 re-estimate",
+  "frozen_registry": {
+    "computability": "expressible",
+    "computability_overrides": {
+      "2024": {
+        "computability": "partial",
+        "note": "pe-uk 2.89.2 dividend band thresholds lag the main bands until 2026-04-06 (policyengine-uk#1822); dividend leg not assumption-matched for these years"
+      },
+      "2025": {
+        "computability": "partial",
+        "note": "pe-uk 2.89.2 dividend band thresholds lag the main bands until 2026-04-06 (policyengine-uk#1822); dividend leg not assumption-matched for these years"
+      }
+    },
+    "construction": "reversal_on_certified_world",
+    "external_metric": "revenue_change",
+    "fiscal_event": "EFO March 2026 re-estimate",
+    "heads": [
+      {
+        "channel": "tax",
+        "condition_key": null,
+        "obr_head": "Income tax",
+        "pe_variables": [
+          "income_tax"
+        ]
+      }
+    ],
+    "measure_key": "efo_march_2026__additional_rate_threshold_reduction",
+    "notes": "Reverses \u00a3125,140 to the previous \u00a3150,000 threshold. Both the main and dividend threshold paths are set because PE-UK 2.89.2 stores them separately.",
+    "obr_description": "Additional rate threshold: reduction",
+    "pe_reform": {
+      "gov.hmrc.income_tax.rates.dividends[2].threshold": {
+        "2024-01-01.2030-12-31": 150000
+      },
+      "gov.hmrc.income_tax.rates.uk[2].threshold": {
+        "2024-01-01.2030-12-31": 150000
+      }
+    },
+    "source_table": "3.17: 3.17",
+    "start_fy": 2023,
+    "unmapped_obr_heads": []
+  },
   "fy": "2027-28",
   "heads": [
     {
@@ -20,6 +68,8 @@
       "condition_key": null,
       "external_claim": {
         "calibration_relationship": "held_out",
+        "claim_ordinal": 566,
+        "claims_slice_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
         "conditions": {
           "basis": "unstated",
           "fy": "2027-28",
@@ -71,24 +121,24 @@
   "obr_description": "Additional rate threshold: reduction",
   "performance": {
     "baseline": {
-      "cleanup_seconds": 0.4939094170113094,
-      "end_rss_bytes": 22310191104,
-      "peak_rss_bytes": 22310191104,
-      "rss_after_gc_bytes": 1830535168,
+      "cleanup_seconds": 0.5796612501144409,
+      "end_rss_bytes": 7334248448,
+      "peak_rss_bytes": 11084578816,
+      "rss_after_gc_bytes": 1870381056,
       "rss_after_gc_method": "psutil_process_rss",
       "rss_method": "psutil_process_rss",
-      "start_rss_bytes": 1788067840,
-      "wall_seconds": 30.782723625015933
+      "start_rss_bytes": 998834176,
+      "wall_seconds": 36.99259883281775
     },
     "reform": {
-      "cleanup_seconds": 0.6647487499867566,
-      "end_rss_bytes": 34195767296,
-      "peak_rss_bytes": 34243198976,
-      "rss_after_gc_bytes": 1918107648,
+      "cleanup_seconds": 1.1228709158021957,
+      "end_rss_bytes": 2696200192,
+      "peak_rss_bytes": 11476123648,
+      "rss_after_gc_bytes": 1287716864,
       "rss_after_gc_method": "psutil_process_rss",
       "rss_method": "psutil_process_rss",
-      "start_rss_bytes": 1876115456,
-      "wall_seconds": 49.90964133304078
+      "start_rss_bytes": 1301282816,
+      "wall_seconds": 66.95976341608912
     }
   },
   "policyengine_bundles": {
@@ -111,7 +161,7 @@
       "model_version": "2.89.2",
       "policyengine_version": "5.0.2",
       "runtime_dataset": "populace_uk_2023",
-      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_source": "/Users/mariajuaristi/Desktop/PolicyEngine/repos/policyengine-scorecard/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
       "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
     },
     "reform": {
@@ -133,7 +183,7 @@
       "model_version": "2.89.2",
       "policyengine_version": "5.0.2",
       "runtime_dataset": "populace_uk_2023",
-      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_source": "/Users/mariajuaristi/Desktop/PolicyEngine/repos/policyengine-scorecard/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
       "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
     }
   },
@@ -154,7 +204,8 @@
       "2024-01-01.2030-12-31": 150000
     }
   },
-  "run_id": "campaign-20260816-obr-costings",
+  "registry_sha256": "84492e131a3227ccbe164cbe075cc6126e4fd8645e0dc3b2ed8a951a2648214c",
+  "run_id": "campaign-20260925-obr-costings",
   "schema_version": 1,
   "source_table": "3.17: 3.17",
   "variable_metadata": {

@@ -1,0 +1,319 @@
+{
+  "artifact": "results/uk/obr_costings/autumn_budget_2025__dividend_income_rate_increase_2026.json",
+  "benchmark_class": "different_model",
+  "calendar_year_proxy": "PE calendar year 2026 proxies FY 2026-27.",
+  "claims_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
+  "computability": "partial",
+  "computed_at": "2026-09-25T11:39:42.634830+00:00",
+  "construction": "reversal_on_certified_world",
+  "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "dataset_sha256_after": {
+    "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+    "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+  },
+  "dataset_sha256_before": {
+    "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+    "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+  },
+  "diagnostic_only": false,
+  "engine_version": "2.89.2",
+  "fiscal_event": "Autumn Budget 2025",
+  "frozen_registry": {
+    "computability": "partial",
+    "computability_overrides": {},
+    "construction": "reversal_on_certified_world",
+    "external_metric": "revenue_change",
+    "fiscal_event": "Autumn Budget 2025",
+    "heads": [
+      {
+        "channel": "tax",
+        "condition_key": "tax_head",
+        "obr_head": "Income tax",
+        "pe_variables": [
+          "income_tax"
+        ]
+      },
+      {
+        "channel": "tax",
+        "condition_key": "tax_head",
+        "obr_head": "NICs",
+        "pe_variables": [
+          "ni_class_1_employee",
+          "ni_class_1_employer",
+          "ni_class_4"
+        ]
+      }
+    ],
+    "measure_key": "autumn_budget_2025__dividend_income_rate_increase",
+    "notes": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+    "obr_description": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+    "pe_reform": {
+      "gov.hmrc.income_tax.rates.dividends[0].rate": {
+        "2026-01-01.2030-12-31": 0.0875
+      },
+      "gov.hmrc.income_tax.rates.dividends[1].rate": {
+        "2026-01-01.2030-12-31": 0.3375
+      }
+    },
+    "source_table": "Tax Measures (Policy measures database)",
+    "start_fy": 2026,
+    "unmapped_obr_heads": [
+      "Corporation tax (onshore)",
+      "Capital gains tax",
+      "PSCE in RDEL",
+      "Scottish BGA (current)"
+    ]
+  },
+  "fy": "2026-27",
+  "heads": [
+    {
+      "baseline_aggregates_gbp": {
+        "income_tax": 421891913533.19946
+      },
+      "channel": "tax",
+      "condition_key": "tax_head",
+      "external_claim": {
+        "calibration_relationship": "held_out",
+        "claim_ordinal": 271,
+        "claims_slice_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
+        "conditions": {
+          "basis": "forecast",
+          "costing_phase": "original_scorecard",
+          "fiscal_event": "Autumn Budget 2025",
+          "fy": "2026-27",
+          "geography": "UK",
+          "sign_convention": "positive_gain_to_exchequer",
+          "tax_head": "Income tax"
+        },
+        "metric": "revenue_change",
+        "normalization": "sheet value in GBP millions x 1e6 -> GBP",
+        "period": 2026,
+        "publication": {
+          "publication_url": "https://obr.uk/data/",
+          "publisher": "Office for Budget Responsibility",
+          "sign_convention": "positive = gain to the Exchequer (reduces borrowing); verbatim from Notes sheet",
+          "title": "Policy measures database (November 2025)",
+          "units_note": "All figures in GBP million; Treasury costings rounded to nearest GBP 5m (GBP 1m since Budget 2018)",
+          "url": "https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "vintage": "November 2025 (updated to Autumn Budget 2025)",
+          "wayback": "https://web.archive.org/web/20260102175529id_/https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "workbook": "Policy_measures_database_November_2025_.xlsx"
+        },
+        "reform_hint": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+        "source": "obr",
+        "source_column": "2026-27",
+        "source_metric_field": "metric",
+        "source_model": "hmt_scorecard_obr_database",
+        "source_table": "Tax Measures (Policy measures database)",
+        "status": "ok",
+        "time_basis": "fiscal_year",
+        "unit": "gbp",
+        "value_gbp": 335597518.39493275,
+        "value_raw": 335.59751839493276
+      },
+      "external_metric": "revenue_change",
+      "obr_head": "Income tax",
+      "pe_value": 892986096.3162842,
+      "pe_variables": [
+        "income_tax"
+      ],
+      "raw_reform_minus_baseline_gbp": -892986096.3162842,
+      "reform_aggregates_gbp": {
+        "income_tax": 420998927436.8832
+      },
+      "reversal_delta_exchequer_gain": -892986096.3162842,
+      "sign_convention": "positive_gain_to_exchequer",
+      "source_table": "Tax Measures (Policy measures database)"
+    },
+    {
+      "baseline_aggregates_gbp": {
+        "ni_class_1_employee": 57077663137.03293,
+        "ni_class_1_employer": 185481157065.2179,
+        "ni_class_4": 4372643327.084593
+      },
+      "channel": "tax",
+      "condition_key": "tax_head",
+      "external_claim": {
+        "calibration_relationship": "held_out",
+        "claim_ordinal": 283,
+        "claims_slice_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
+        "conditions": {
+          "basis": "forecast",
+          "costing_phase": "original_scorecard",
+          "fiscal_event": "Autumn Budget 2025",
+          "fy": "2026-27",
+          "geography": "UK",
+          "sign_convention": "positive_gain_to_exchequer",
+          "tax_head": "NICs"
+        },
+        "metric": "revenue_change",
+        "normalization": "sheet value in GBP millions x 1e6 -> GBP",
+        "period": 2026,
+        "publication": {
+          "publication_url": "https://obr.uk/data/",
+          "publisher": "Office for Budget Responsibility",
+          "sign_convention": "positive = gain to the Exchequer (reduces borrowing); verbatim from Notes sheet",
+          "title": "Policy measures database (November 2025)",
+          "units_note": "All figures in GBP million; Treasury costings rounded to nearest GBP 5m (GBP 1m since Budget 2018)",
+          "url": "https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "vintage": "November 2025 (updated to Autumn Budget 2025)",
+          "wayback": "https://web.archive.org/web/20260102175529id_/https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+          "workbook": "Policy_measures_database_November_2025_.xlsx"
+        },
+        "reform_hint": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+        "source": "obr",
+        "source_column": "2026-27",
+        "source_metric_field": "metric",
+        "source_model": "hmt_scorecard_obr_database",
+        "source_table": "Tax Measures (Policy measures database)",
+        "status": "ok",
+        "time_basis": "fiscal_year",
+        "unit": "gbp",
+        "value_gbp": 0.0,
+        "value_raw": 0.0
+      },
+      "external_metric": "revenue_change",
+      "obr_head": "NICs",
+      "pe_value": -0.0,
+      "pe_variables": [
+        "ni_class_1_employee",
+        "ni_class_1_employer",
+        "ni_class_4"
+      ],
+      "raw_reform_minus_baseline_gbp": 0.0,
+      "reform_aggregates_gbp": {
+        "ni_class_1_employee": 57077663137.03293,
+        "ni_class_1_employer": 185481157065.2179,
+        "ni_class_4": 4372643327.084593
+      },
+      "reversal_delta_exchequer_gain": 0.0,
+      "sign_convention": "positive_gain_to_exchequer",
+      "source_table": "Tax Measures (Policy measures database)"
+    }
+  ],
+  "measure_key": "autumn_budget_2025__dividend_income_rate_increase",
+  "notes": "Reverses the certified ordinary/basic and upper/higher dividend rates to 8.75% and 33.75%; the additional rate was not changed by this measure. PE maps Income Tax directly and retains the required broad NICs aggregate, but cross-tax, departmental-spending, and block-grant heads are outside this static construction.",
+  "obr_description": "Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026",
+  "performance": {
+    "baseline": {
+      "cleanup_seconds": 0.8463314580731094,
+      "end_rss_bytes": 906346496,
+      "peak_rss_bytes": 4661002240,
+      "rss_after_gc_bytes": 393412608,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 257753088,
+      "wall_seconds": 65.5979336251039
+    },
+    "reform": {
+      "cleanup_seconds": 0.8821403339970857,
+      "end_rss_bytes": 2873868288,
+      "peak_rss_bytes": 10614456320,
+      "rss_after_gc_bytes": 976535552,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 976732160,
+      "wall_seconds": 68.00289170793258
+    }
+  },
+  "policyengine_bundles": {
+    "baseline": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/mariajuaristi/Desktop/PolicyEngine/repos/policyengine-scorecard/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    },
+    "reform": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/mariajuaristi/Desktop/PolicyEngine/repos/policyengine-scorecard/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    }
+  },
+  "policyengine_version": "5.0.2",
+  "raw_aggregates": {
+    "baseline_gbp": {
+      "income_tax": 421891913533.19946,
+      "ni_class_1_employee": 57077663137.03293,
+      "ni_class_1_employer": 185481157065.2179,
+      "ni_class_4": 4372643327.084593
+    },
+    "reform_gbp": {
+      "income_tax": 420998927436.8832,
+      "ni_class_1_employee": 57077663137.03293,
+      "ni_class_1_employer": 185481157065.2179,
+      "ni_class_4": 4372643327.084593
+    }
+  },
+  "reform": {
+    "gov.hmrc.income_tax.rates.dividends[0].rate": {
+      "2026-01-01.2030-12-31": 0.0875
+    },
+    "gov.hmrc.income_tax.rates.dividends[1].rate": {
+      "2026-01-01.2030-12-31": 0.3375
+    }
+  },
+  "registry_sha256": "84492e131a3227ccbe164cbe075cc6126e4fd8645e0dc3b2ed8a951a2648214c",
+  "run_id": "campaign-20260925-obr-costings",
+  "schema_version": 1,
+  "source_table": "Tax Measures (Policy measures database)",
+  "variable_metadata": {
+    "income_tax": {
+      "definition_period": "year",
+      "entity": "person",
+      "label": "Income Tax",
+      "unit": "currency-GBP"
+    },
+    "ni_class_1_employee": {
+      "definition_period": "month",
+      "entity": "person",
+      "label": "NI Class 1 employee-side contributions",
+      "unit": "currency-GBP"
+    },
+    "ni_class_1_employer": {
+      "definition_period": "year",
+      "entity": "person",
+      "label": "NI Class 1 employer-side contributions",
+      "unit": "currency-GBP"
+    },
+    "ni_class_4": {
+      "definition_period": "year",
+      "entity": "person",
+      "label": "NI Class 4 main contributions",
+      "unit": "currency-GBP"
+    }
+  },
+  "year": 2026
+}

@@ -4,12 +4,65 @@
   "calendar_year_proxy": "PE calendar year 2026 proxies FY 2026-27.",
   "claims_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
   "computability": "partial",
-  "computed_at": "2026-08-17T03:32:42.850315+00:00",
+  "computed_at": "2026-09-25T11:38:33.651628+00:00",
   "construction": "reversal_on_certified_world",
   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "dataset_sha256_after": {
+    "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+    "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+  },
+  "dataset_sha256_before": {
+    "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+    "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+  },
   "diagnostic_only": false,
   "engine_version": "2.89.2",
   "fiscal_event": "Autumn Budget 2024",
+  "frozen_registry": {
+    "computability": "partial",
+    "computability_overrides": {},
+    "construction": "reversal_on_certified_world",
+    "external_metric": "revenue_change",
+    "fiscal_event": "Autumn Budget 2024",
+    "heads": [
+      {
+        "channel": "tax",
+        "condition_key": "tax_head",
+        "obr_head": "Income tax",
+        "pe_variables": [
+          "income_tax"
+        ]
+      },
+      {
+        "channel": "tax",
+        "condition_key": "tax_head",
+        "obr_head": "NICs",
+        "pe_variables": [
+          "ni_class_1_employee",
+          "ni_class_1_employer",
+          "ni_class_4"
+        ]
+      }
+    ],
+    "measure_key": "autumn_budget_2024__employer_nics_package",
+    "notes": "PE represents the employer rate and weekly secondary threshold (\u00a396 \u00d7 52 = \u00a34,992 in the installed model). It has no Employment Allowance or firm entity, so the allowance increase and \u00a3100,000 test removal are missing. policyengine_uk/parameters/gov/contrib/policyengine/employer_ni/employee_incidence.yaml sets gov.contrib.policyengine.employer_ni.employee_incidence to 1, and policyengine_uk/variables/contrib/policyengine/employer_ni/employer_ni_fixed_employer_cost_change.py adjusts wages holding employer cost fixed. The resulting wage change moves employee-side Income Tax and NICs, which is why the PE Income-tax head is non-zero.",
+    "obr_description": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+    "pe_reform": {
+      "gov.hmrc.national_insurance.class_1.rates.employer": {
+        "2025-01-01.2030-12-31": 0.138
+      },
+      "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+        "2025-01-01.2030-12-31": 175
+      }
+    },
+    "source_table": "Tax Measures (Policy measures database)",
+    "start_fy": 2025,
+    "unmapped_obr_heads": [
+      "Corporation tax (onshore)",
+      "PSCE in RDEL",
+      "Scottish BGA (current)"
+    ]
+  },
   "fy": "2026-27",
   "heads": [
     {
@@ -20,6 +73,8 @@
       "condition_key": "tax_head",
       "external_claim": {
         "calibration_relationship": "held_out",
+        "claim_ordinal": 182,
+        "claims_slice_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
         "conditions": {
           "basis": "forecast",
           "costing_phase": "original_scorecard",
@@ -79,6 +134,8 @@
       "condition_key": "tax_head",
       "external_claim": {
         "calibration_relationship": "held_out",
+        "claim_ordinal": 188,
+        "claims_slice_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
         "conditions": {
           "basis": "forecast",
           "costing_phase": "original_scorecard",
@@ -138,24 +195,24 @@
   "obr_description": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
   "performance": {
     "baseline": {
-      "cleanup_seconds": 0.49896574998274446,
-      "end_rss_bytes": 21935964160,
-      "peak_rss_bytes": 21935964160,
-      "rss_after_gc_bytes": 1431846912,
+      "cleanup_seconds": 0.8463314580731094,
+      "end_rss_bytes": 906346496,
+      "peak_rss_bytes": 4661002240,
+      "rss_after_gc_bytes": 393412608,
       "rss_after_gc_method": "psutil_process_rss",
       "rss_method": "psutil_process_rss",
-      "start_rss_bytes": 474726400,
-      "wall_seconds": 31.40236329199979
+      "start_rss_bytes": 257753088,
+      "wall_seconds": 65.5979336251039
     },
     "reform": {
-      "cleanup_seconds": 1.0417257089866325,
-      "end_rss_bytes": 25063456768,
-      "peak_rss_bytes": 28876472320,
-      "rss_after_gc_bytes": 1414168576,
+      "cleanup_seconds": 0.8350370000116527,
+      "end_rss_bytes": 3026010112,
+      "peak_rss_bytes": 11412111360,
+      "rss_after_gc_bytes": 975831040,
       "rss_after_gc_method": "psutil_process_rss",
       "rss_method": "psutil_process_rss",
-      "start_rss_bytes": 1225588736,
-      "wall_seconds": 56.375186041987035
+      "start_rss_bytes": 1074872320,
+      "wall_seconds": 64.64531649998389
     }
   },
   "policyengine_bundles": {
@@ -178,7 +235,7 @@
       "model_version": "2.89.2",
       "policyengine_version": "5.0.2",
       "runtime_dataset": "populace_uk_2023",
-      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_source": "/Users/mariajuaristi/Desktop/PolicyEngine/repos/policyengine-scorecard/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
       "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
     },
     "reform": {
@@ -200,7 +257,7 @@
       "model_version": "2.89.2",
       "policyengine_version": "5.0.2",
       "runtime_dataset": "populace_uk_2023",
-      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_source": "/Users/mariajuaristi/Desktop/PolicyEngine/repos/policyengine-scorecard/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
       "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
     }
   },
@@ -227,7 +284,8 @@
       "2025-01-01.2030-12-31": 175
     }
   },
-  "run_id": "campaign-20260816-obr-costings",
+  "registry_sha256": "84492e131a3227ccbe164cbe075cc6126e4fd8645e0dc3b2ed8a951a2648214c",
+  "run_id": "campaign-20260925-obr-costings",
   "schema_version": 1,
   "source_table": "Tax Measures (Policy measures database)",
   "variable_metadata": {

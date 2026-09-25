@@ -1,146 +1,389 @@
 {
   "artifact_sha256": {
-    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2026.json": "da9e834c2d804f37570b8e706228602c438f7b3a80c7fd92bad34cef16afd4e8",
-    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2027.json": "62393002f44620ee262721c58a54336560e11985aa72ad85ca25ccb99cd2cdb5",
-    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2026.json": "b4ce510b94b5def9bcceb8ee51665e41f29406821ece3f49978830ad17ad6a66",
-    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2027.json": "1e410f077ecec3cc14804e20e6d7840efdf4bf5476df0dac6307d7380ee7096b",
-    "results/uk/obr_costings/diagnostic__personal_allowance_plus_500_2026.json": "434410641e859dd2274e3e7885597a11e3b0d16ac0e784121f93f2a15c4bb3c6",
-    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2026.json": "582cc3560965fb4191a6294acfdd023549ddddf242a108c5a9af64d165499144",
-    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2027.json": "632994b1c8e459cc2f4a0fca12ac829683445f2f5e3b2367327eda8a4d1d486f",
-    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json": "a97aa125d2581581ed95d5acb8aa0cb5ecc850bc675959d557b58fc6fd7da3e1",
-    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2027.json": "3e0d1f215002200fd39db45c192bafc770680c7d0b22d791c3725fb518d40c8e",
-    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2026.json": "cf54a43f2a0cb7ba3387514cec361148a66da11ac0fc2be128ed2b4f3f94ab8e",
-    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2027.json": "7430b76c2615b4d2f4ab42ce0c8673857a357071896d3450f0efe8bdd32633cc",
-    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2026.json": "09dc31157507c47d16cdcc82717ae6ef2b89c4063c2bdad51ce31c322659b34e",
-    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2027.json": "8998a77546ab0329616b62f26ec70c4a5d06b60ae3a66da9e35fb5b30b355a68"
+    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2026.json": "3a33728e86d9f8b6f41b4e7dba59b1ebcce1506da6f03533c1e01d360ac1e172",
+    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2027.json": "c84ec3f1a37f47a867bac5516b3408b480f300d61a443302b39bcef1ca3db1e3",
+    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2028.json": "61f10975275d27f777d007dfbfb927b0c033b7ea7e0e46523a19214d4c25f55d",
+    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2029.json": "d48636661142230f95859640308641a853dcf157c0f366bc6b8b4af9fb54413a",
+    "results/uk/obr_costings/autumn_budget_2025__dividend_income_rate_increase_2026.json": "9e0438fe68eb2b0bddf114898c0875f198fc8c1b4090b19e3a7bcdabadd4d0a0",
+    "results/uk/obr_costings/autumn_budget_2025__dividend_income_rate_increase_2027.json": "2e2b6eba594d7d01190ae2ad7df6b2a48d100226e4301da2a4a9f9f7b2850317",
+    "results/uk/obr_costings/autumn_budget_2025__dividend_income_rate_increase_2028.json": "9daa71131e05cc5151c49141341b343a21612deaa36eacd59168a07d0d703787",
+    "results/uk/obr_costings/autumn_budget_2025__dividend_income_rate_increase_2029.json": "90594d0d28260706228d767330ab2ee956d041f1d0e8d3aafd56a111ca0e191d",
+    "results/uk/obr_costings/autumn_budget_2025__dividend_income_rate_increase_2030.json": "a048bcfa033d53b48a21b4ee68a3da87723255fc8e3ded865cee3f69466e6dd8",
+    "results/uk/obr_costings/autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension_2026.json": "a166523e085ae53656d5972ccbfd8936c2a03dfb7394aec632f70c0b402a4234",
+    "results/uk/obr_costings/autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension_2027.json": "43d41e363cc6ee12dd3f80d57b43305c67742f7fe162cd3bbf8774d69b99268f",
+    "results/uk/obr_costings/autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension_2028.json": "9ee286d4b85661a61a20e4a1af79e8937f46c2c0285e6488074a67fcd78d0c4b",
+    "results/uk/obr_costings/autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension_2029.json": "386fa37dfe18b1a9bba5e21d4b85fe520f52ae0ec6440a6938f59d74120a491b",
+    "results/uk/obr_costings/autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension_2030.json": "643b0239f4e63c7683c089e4893aeaf6e04a2c3d2abb2a309396fef760b328c4",
+    "results/uk/obr_costings/autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension_2026.json": "f7b67ddd9127490f43dfceceb81e27fce9f3bd576315c4dbd40b3157af7ad037",
+    "results/uk/obr_costings/autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension_2027.json": "bc76dc266347636d059732d8470c8d6ac8548ef2f17823701a6ea9d37e61bc9e",
+    "results/uk/obr_costings/autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension_2028.json": "a1cc90ceb924e5d46641e992e4dad8408f546c8b86c6b8e82e80c82c39308f22",
+    "results/uk/obr_costings/autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension_2029.json": "d12ab25dda2dbab026590febcf5e66f86e200cc147238316f2f378b3b80b64ea",
+    "results/uk/obr_costings/autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension_2030.json": "85e9c78f1c44c4d832555c52352f753f60c989db7304dca1b39aced1c4b0299d",
+    "results/uk/obr_costings/autumn_budget_2025__property_income_separate_rates_2026.json": "1d147aa9aaa83c1c0c31dda84a430d44b77eb9025e23a7044d5fa006916a4163",
+    "results/uk/obr_costings/autumn_budget_2025__property_income_separate_rates_2027.json": "7cae18d1b3d8165b43c080a9497b7df12d0874b70c04ba948e74db850d52308b",
+    "results/uk/obr_costings/autumn_budget_2025__property_income_separate_rates_2028.json": "37036c471a57e82e34c7ff8de837c2c6441ed8d89e52aeaf5fe9b63a8b9627b0",
+    "results/uk/obr_costings/autumn_budget_2025__property_income_separate_rates_2029.json": "3fc0b3311cacc27a6a37f4252e7b6eef3694fe04847be4461af0cc505a9ab6b3",
+    "results/uk/obr_costings/autumn_budget_2025__property_income_separate_rates_2030.json": "653099ff96f6a11b915a3b179060babbfb353a199db0f5a709417c9b59d709cb",
+    "results/uk/obr_costings/autumn_budget_2025__salary_sacrifice_pension_nics_cap_2026.json": "75d8aac79dfc0855c16eee4f068920092891e2c1863d2d076032de9293812945",
+    "results/uk/obr_costings/autumn_budget_2025__salary_sacrifice_pension_nics_cap_2027.json": "cc7aa9ea9520f143131f5b0ad09fd5780f9661c25d44dbe5d2b901d7178c4541",
+    "results/uk/obr_costings/autumn_budget_2025__salary_sacrifice_pension_nics_cap_2028.json": "998de39150fb352199fbd29b1d7b45527a8fbf4ab824b757ef68fc55cc387528",
+    "results/uk/obr_costings/autumn_budget_2025__salary_sacrifice_pension_nics_cap_2029.json": "ddf0e2df3d1af5f2ac4a06e52a2f1f662977c1d7948cad1b46e1fb5e0fb258dd",
+    "results/uk/obr_costings/autumn_budget_2025__salary_sacrifice_pension_nics_cap_2030.json": "7fbbab816683d9479d13be587b18a79b46b1565f9e9a44bd55a02ceb8f953d16",
+    "results/uk/obr_costings/autumn_budget_2025__savings_income_rates_and_starter_limit_2026.json": "fb4f2d16ab8baf1870d74d1da23d782c437af073578344952722f7b90686e7d8",
+    "results/uk/obr_costings/autumn_budget_2025__savings_income_rates_and_starter_limit_2027.json": "8572be2a6f166dc7017a71e8e9e7f4c49f6eef9ac7a5948871a82eebe276d1df",
+    "results/uk/obr_costings/autumn_budget_2025__savings_income_rates_and_starter_limit_2028.json": "7efd3b9aa7a38d28c530e839aec63ef6597e1dc74b882296c69d97c6ce1aad64",
+    "results/uk/obr_costings/autumn_budget_2025__savings_income_rates_and_starter_limit_2029.json": "6850959a064f2f006c296a506b61e9295eb5ec0b9e14136b64c6a2c5d53ebb9d",
+    "results/uk/obr_costings/autumn_budget_2025__savings_income_rates_and_starter_limit_2030.json": "20fa52ee147dc78330b7ffa8795d5644e8b5a71471e9b0036a50feae5248253d",
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2026.json": "529a959dc30ec9a82b563f7592ac3613e5273cf8f723cbfe7602cf014375ef7f",
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2027.json": "3a169ee43a8eb241f21ef91c520193352188b456004d01116e2b90c52e6fdc1c",
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2028.json": "2a878b0fb6ee77d79fb8a945314cb73d5a91c96e0ac7284c972444db61392b8b",
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2029.json": "57e74888926ea3b446c6ee5074affc222fc6475735244ac479a6aefd7019d8d1",
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2030.json": "63d63849661d1e414609060bca905509fa5fe173eb5e298345e1a596484ce7f5",
+    "results/uk/obr_costings/autumn_budget_2025__winter_fuel_payment_income_test_2026.json": "5aeb5abd0a1a919aeef7fce354b20037438a93c24af10381d9ea12a10c3b378d",
+    "results/uk/obr_costings/autumn_budget_2025__winter_fuel_payment_income_test_2027.json": "37b301f00d018f0f8dce34aa9715a754ce2166da4a2e25f8b184abb70b1fd4e6",
+    "results/uk/obr_costings/autumn_budget_2025__winter_fuel_payment_income_test_2028.json": "8450ba409037cce95c6cada9aac685f81a66c2436aff2477190c81fc500a7ef8",
+    "results/uk/obr_costings/autumn_budget_2025__winter_fuel_payment_income_test_2029.json": "32d98b5aba6fd704da2d54c9d8eb2915897ef5397c6003b0c4ed1a4e09ae8174",
+    "results/uk/obr_costings/autumn_budget_2025__winter_fuel_payment_income_test_2030.json": "32e98dbbaafcae3ea82afa26709a8424a870182ce84cdf83d88036ab3cb20f97",
+    "results/uk/obr_costings/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2026.json": "04ff00471095a3a8e26642c6f9555e40c516f785e39069917f3e6aa09f7484f4",
+    "results/uk/obr_costings/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2027.json": "aa0db95eedeba202c6360a58e63e67358ede6632a88c4af3473883caa91d9203",
+    "results/uk/obr_costings/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2028.json": "622452ebb34aa15bedc802ebece524740edecc0902df1ef907215b1a4c669e75",
+    "results/uk/obr_costings/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2026.json": "6073e840f418bcac2c4a9be11d2842491960291afae215ffccfe7fc161d8e7e1",
+    "results/uk/obr_costings/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2027.json": "f52c82f2c2c10aefb5fc1f09fcdbe4e56172d93eaeff69990c5469bd5e592ae2",
+    "results/uk/obr_costings/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2028.json": "ba70c278b762c244c5165d0fd13f3fc2293a1988fa050ea0d2c5ba5fe6663846",
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2026.json": "88cc8628e4639a6425044d5b7a3118ac3483df05da23d209da4e1110fb9a7658",
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2027.json": "2e774e93a559f75daca7c2d05152a1f57fdd6d88c2e0da64a931e6bad9e529be",
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2028.json": "fea8144e220f9bf5fc8457489e584b2c04bd645a076a1df1c0fe866743a1cceb",
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2029.json": "21400b5245915222f6e44e0e22b6cd151a1eb717aa83f16795b1fb312fa2de87",
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2030.json": "2d08ec47976c449d9ed20e1a56c81c0d2a6d9b3ad8db1c3daf9fe9e2f433061d",
+    "results/uk/obr_costings/efo_march_2026__autumn_budget_2024_employer_nics_rise_2026.json": "e3a32b5522d2134a9608511ce04022e0ec6d2ac4eb7c04ebcdbe7511286d6988",
+    "results/uk/obr_costings/efo_march_2026__autumn_budget_2024_employer_nics_rise_2027.json": "17aab07b12ba0d39e6dc585e096164f30d4be430b53ae934225bb6968bc23625",
+    "results/uk/obr_costings/efo_march_2026__autumn_budget_2024_employer_nics_rise_2028.json": "0ed6f6c6cc248c9f8382079d124d276452c2d5972a2d948a017d866c73d0c5e7",
+    "results/uk/obr_costings/efo_march_2026__autumn_budget_2024_employer_nics_rise_2029.json": "ae28167755434a8fb434f4565bd815eb0036c1511eb597a2db5a50dc0a933313",
+    "results/uk/obr_costings/efo_march_2026__autumn_budget_2024_employer_nics_rise_2030.json": "a034b4047bb8226bdcda66fe3d74b121a93190bcb4ce2938c225b1b08ae65b6a",
+    "results/uk/obr_costings/efo_march_2026__autumn_statement_2023_nics_reduction_2026.json": "7cd88c4dfef4d075c729f91c99e082b42e058c9dfe0e477346cfeb55c0f8bcb9",
+    "results/uk/obr_costings/efo_march_2026__autumn_statement_2023_nics_reduction_2027.json": "51f96b57c07e62a26ae69c63fe368b932a195250512dfbc1c3ab8cf01c329649",
+    "results/uk/obr_costings/efo_march_2026__autumn_statement_2023_nics_reduction_2028.json": "71749cffb7cb989eeff569e64443206d64334c72f0aad675a79cdbaf7a07b8e6",
+    "results/uk/obr_costings/efo_march_2026__autumn_statement_2023_nics_reduction_2029.json": "e0d75f9b7b40f93705e3ddfe0b8f149e75c6978bd8d95d37165ea19d4f377c00",
+    "results/uk/obr_costings/efo_march_2026__autumn_statement_2023_nics_reduction_2030.json": "0f84642f5384170c86a5fea8c9a69a48f5d7c2101403df6ae5ea61e25504aeff",
+    "results/uk/obr_costings/efo_march_2026__class_1_nics_threshold_freezes_2026.json": "1b39d53aee3817beb24d47e7ff4c8b04ee444620456a5dfcd5f2a015260e6838",
+    "results/uk/obr_costings/efo_march_2026__class_1_nics_threshold_freezes_2027.json": "40cf3f3c022a0d3e621cdaf877c17508c6b7382ebd4f0ca12762bb5aa602d888",
+    "results/uk/obr_costings/efo_march_2026__class_1_nics_threshold_freezes_2028.json": "aca8ed2aa3e98801d02273f3c392ca22fa55f5634af63b6ca4cb42663f355da5",
+    "results/uk/obr_costings/efo_march_2026__class_1_nics_threshold_freezes_2029.json": "7cd62f475490ec7f53725762c99eeed5a513ad7978e5df612b5ca4288736705b",
+    "results/uk/obr_costings/efo_march_2026__class_1_nics_threshold_freezes_2030.json": "f8d9f1658e26d5226ae8fe928151063ea398e03b11807e3cc73ca92622e805cc",
+    "results/uk/obr_costings/efo_march_2026__nics_rise_in_primary_threshold_2026.json": "da0239431cdcf0a85fadd8665b3563de7c5f68fadb9e378b9b6ad862588f30b9",
+    "results/uk/obr_costings/efo_march_2026__nics_rise_in_primary_threshold_2027.json": "60c502d92f523a03466bc97cfcad3267580380e27e6d0103e1b0cc82630fbb5f",
+    "results/uk/obr_costings/efo_march_2026__nics_rise_in_primary_threshold_2028.json": "6f9918c1fc54e4d36c92fcf2480b27376551fd82e42d897085aa469e72190f6f",
+    "results/uk/obr_costings/efo_march_2026__nics_rise_in_primary_threshold_2029.json": "dbd6d6c3cee280eada51f7bb9b23791686375942d03bbb0f116b84abda7d49d5",
+    "results/uk/obr_costings/efo_march_2026__nics_rise_in_primary_threshold_2030.json": "ee4a96c4ca83e8d4335d618784feb6d86f204c68ddf2af8450ad0a46a3c6a391",
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json": "ce8bd9fa6298bc6310d3d19fa640bf03f920ca15dbd011e66247b1d6586372c4",
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2027.json": "4c72c6ec4f96f178810ce7fb0b9b47f4d0a0d2db48b9c81ef9b41fe48a8dd7b8",
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2028.json": "4a8a83cbf73bdbc5dcbe5156a0896484808dd864d3745943953a9cabb40f3f09",
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2029.json": "97b62bf0ef746d569c998071c99481c66a789d1c49da82651edd64bfaff71fc9",
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2030.json": "13edeaaef1c73d72fec5d4d382afeea40959d1ed99fe888638047d0f0eb060bf",
+    "results/uk/obr_costings/efo_march_2026__spring_budget_2024_nics_reduction_2026.json": "3da1876ee587e7f913a965255869cbbb8b11633be4ab1f0e3280b8fd6d8be202",
+    "results/uk/obr_costings/efo_march_2026__spring_budget_2024_nics_reduction_2027.json": "88a0bbbc6f0555a8324281326fadc012a7d5e0dd30a37d9205e77736d559e504",
+    "results/uk/obr_costings/efo_march_2026__spring_budget_2024_nics_reduction_2028.json": "6a66d6ef2dd1de9c2d6402f7909a8a5d337abd2973a3ced514aa2a646d55b37d",
+    "results/uk/obr_costings/efo_march_2026__spring_budget_2024_nics_reduction_2029.json": "9c2f4655c116eb13dd0a18785ab26f8bdc2c3d037bf0d4f5357eb967581bdaea",
+    "results/uk/obr_costings/efo_march_2026__spring_budget_2024_nics_reduction_2030.json": "33775ba5240090f43d5e219b05a5963792b076bf7983283305da651a6f40291d",
+    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2026.json": "0391efc3f84c3fe880b918138d1a6f35a73f300c03ec067be49267e2cf4d8085",
+    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2027.json": "f82cbf097d8ebb0243c4f111f6274acd466f9896f6d0a70f17cc9595639db038",
+    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2028.json": "a1ee618c4edced30351860edae52faed2667edd573e54298049e5103614e84b1",
+    "results/uk/obr_costings/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2026.json": "3e2bbca0e5f168fef81d5986d212edfc750388082e6953b4dfe47465f1914da7",
+    "results/uk/obr_costings/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2027.json": "5064eee93299235ed5d2fdb4f4f72c507984c304864f99721bf9d009cfcebd58",
+    "results/uk/obr_costings/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2028.json": "9010a4818f53d1921f1e5f04c142493be87e3bfd8fad572b75e5c4b5f3bb2474",
+    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2026.json": "9fd077902f56452f0ce8e216595f3aaf0b64ee1f21eaac8dcf6148f10a5aff02",
+    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2027.json": "783da5490c8126897ae745be7f2887e8fdf7c12955af01d4a5f53c792cfa41b8",
+    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2028.json": "f1536d9c8acf1576e4ca453b0a5b0671cedd5a2d0ac8df18346af7e1bd5e111b"
   },
-  "artifactless_frozen_registry": {},
+  "artifactless_frozen_registry": {
+    "autumn_budget_2024__hmrc_5000_compliance_staff": {
+      "computability": "not_expressible",
+      "computability_overrides": {},
+      "construction": "forward_from_baseline",
+      "external_metric": "revenue_change",
+      "fiscal_event": "Autumn Budget 2024",
+      "heads": [],
+      "measure_key": "autumn_budget_2024__hmrc_5000_compliance_staff",
+      "notes": "Compliance staffing and collection yield are not microsimulation parameters.",
+      "obr_description": "Increased collection of tax due supported by investment in 5,000 additional HMRC compliance staff",
+      "pe_reform": null,
+      "source_table": "Tax Measures (Policy measures database)",
+      "start_fy": 2024,
+      "unmapped_obr_heads": [
+        "Income tax",
+        "NICs",
+        "Corporation tax (onshore)",
+        "Customs duty",
+        "Tobacco duty",
+        "Alcohol duty",
+        "VAT",
+        "PSCE in RDEL",
+        "Scottish BGA (current)"
+      ]
+    },
+    "autumn_budget_2024__non_dom_residence_based_regime": {
+      "computability": "not_expressible",
+      "computability_overrides": {},
+      "construction": "reversal_on_certified_world",
+      "external_metric": "revenue_change",
+      "fiscal_event": "Autumn Budget 2024",
+      "heads": [],
+      "measure_key": "autumn_budget_2024__non_dom_residence_based_regime",
+      "notes": "The residence history, foreign-income discount, CGT rebasing, IHT, and Temporary Repatriation Facility package is not a plain PE-UK parameter reform in this version.",
+      "obr_description": "Abolition of non-domicile tax status and introduction of a residence-based regime: remove the 50% discount on foreign income in 2025/26; apply inheritance tax; set Capital Gains Tax rebasing date at 5 April 2017; and extend the Temporary Repatriation Facility from two to three years",
+      "pe_reform": null,
+      "source_table": "Tax Measures (Policy measures database)",
+      "start_fy": 2025,
+      "unmapped_obr_heads": [
+        "Income tax",
+        "NICs",
+        "Capital gains tax",
+        "Inheritance tax",
+        "PSCE in RDEL",
+        "Scottish BGA (current)"
+      ]
+    },
+    "autumn_budget_2025__uc_standard_and_health_protections": {
+      "computability": "not_expressible",
+      "computability_overrides": {},
+      "construction": "reversal_on_certified_world",
+      "external_metric": "exchequer_impact",
+      "fiscal_event": "Autumn Budget 2025",
+      "heads": [],
+      "measure_key": "autumn_budget_2025__uc_standard_and_health_protections",
+      "notes": "PE's scenario layer randomly labels post-2025 claimants using hard-coded shares, does not test a Severe Conditions Criteria variable, and does not expose the full protection as a plain parameter dictionary. The available rebalancing uplift parameter is not referenced by a formula. No scalar proxy or inside/outside-cap allocation is assumed.",
+      "obr_description": "Universal Credit: Changes to the standard allowance and health element to protect existing claimants and new health element claimants who meet the Severe Conditions Criteria from April 2026",
+      "pe_reform": null,
+      "source_table": "Spending Measures (Policy measures database)",
+      "start_fy": 2026,
+      "unmapped_obr_heads": [
+        "Welfare inside cap",
+        "Welfare outside cap"
+      ]
+    },
+    "autumn_statement_2023__class_2_self_employed_nics_liability_abolition": {
+      "computability": "not_expressible",
+      "computability_overrides": {},
+      "construction": "reversal_on_certified_world",
+      "external_metric": "revenue_change",
+      "fiscal_event": "Autumn Statement 2023",
+      "heads": [],
+      "measure_key": "autumn_statement_2023__class_2_self_employed_nics_liability_abolition",
+      "notes": "PE's Class 2 flat-rate path records zero after abolition but does not store an indexed 2024+ counterfactual, and Class 2 is outside the lane's prescribed NICs aggregate. No reversal value is guessed.",
+      "obr_description": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+      "pe_reform": null,
+      "source_table": "Tax Measures (Policy measures database)",
+      "start_fy": 2024,
+      "unmapped_obr_heads": [
+        "Income tax",
+        "NICs",
+        "Corporation tax (onshore)",
+        "Capital gains tax",
+        "Welfare inside cap",
+        "PSCE in RDEL",
+        "Scottish BGA (current)"
+      ]
+    },
+    "efo_march_2026__class_2_nics_threshold_rise": {
+      "computability": "not_expressible",
+      "computability_overrides": {},
+      "construction": "reversal_on_certified_world",
+      "external_metric": "revenue_change",
+      "fiscal_event": "EFO March 2026 re-estimate",
+      "heads": [],
+      "measure_key": "efo_march_2026__class_2_nics_threshold_rise",
+      "notes": "The Class 2 parameters exist, but PE-UK does not retain the required indexed counterfactual path for this 3.17 re-estimate. Class 2 is also outside the lane brief's prescribed broad NICs aggregate. No mechanics are invented.",
+      "obr_description": "Class 2 NICs: threshold rise",
+      "pe_reform": null,
+      "source_table": "3.17: 3.17",
+      "start_fy": 2022,
+      "unmapped_obr_heads": [
+        "NICs"
+      ]
+    }
+  },
   "artifacts": [
     "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json",
     "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2026.json",
+    "results/uk/obr_costings/efo_march_2026__nics_rise_in_primary_threshold_2026.json",
+    "results/uk/obr_costings/efo_march_2026__class_1_nics_threshold_freezes_2026.json",
+    "results/uk/obr_costings/efo_march_2026__autumn_statement_2023_nics_reduction_2026.json",
+    "results/uk/obr_costings/efo_march_2026__spring_budget_2024_nics_reduction_2026.json",
+    "results/uk/obr_costings/efo_march_2026__autumn_budget_2024_employer_nics_rise_2026.json",
+    "results/uk/obr_costings/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2026.json",
+    "results/uk/obr_costings/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2026.json",
     "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2026.json",
+    "results/uk/obr_costings/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2026.json",
     "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2026.json",
     "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2026.json",
+    "results/uk/obr_costings/autumn_budget_2025__dividend_income_rate_increase_2026.json",
+    "results/uk/obr_costings/autumn_budget_2025__property_income_separate_rates_2026.json",
+    "results/uk/obr_costings/autumn_budget_2025__savings_income_rates_and_starter_limit_2026.json",
+    "results/uk/obr_costings/autumn_budget_2025__salary_sacrifice_pension_nics_cap_2026.json",
+    "results/uk/obr_costings/autumn_budget_2025__winter_fuel_payment_income_test_2026.json",
+    "results/uk/obr_costings/autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension_2026.json",
+    "results/uk/obr_costings/autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension_2026.json",
     "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2026.json",
-    "results/uk/obr_costings/diagnostic__personal_allowance_plus_500_2026.json",
     "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2027.json",
     "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2027.json",
+    "results/uk/obr_costings/efo_march_2026__nics_rise_in_primary_threshold_2027.json",
+    "results/uk/obr_costings/efo_march_2026__class_1_nics_threshold_freezes_2027.json",
+    "results/uk/obr_costings/efo_march_2026__autumn_statement_2023_nics_reduction_2027.json",
+    "results/uk/obr_costings/efo_march_2026__spring_budget_2024_nics_reduction_2027.json",
+    "results/uk/obr_costings/efo_march_2026__autumn_budget_2024_employer_nics_rise_2027.json",
+    "results/uk/obr_costings/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2027.json",
+    "results/uk/obr_costings/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2027.json",
     "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2027.json",
+    "results/uk/obr_costings/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2027.json",
     "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2027.json",
     "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2027.json",
-    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2027.json"
+    "results/uk/obr_costings/autumn_budget_2025__dividend_income_rate_increase_2027.json",
+    "results/uk/obr_costings/autumn_budget_2025__property_income_separate_rates_2027.json",
+    "results/uk/obr_costings/autumn_budget_2025__savings_income_rates_and_starter_limit_2027.json",
+    "results/uk/obr_costings/autumn_budget_2025__salary_sacrifice_pension_nics_cap_2027.json",
+    "results/uk/obr_costings/autumn_budget_2025__winter_fuel_payment_income_test_2027.json",
+    "results/uk/obr_costings/autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension_2027.json",
+    "results/uk/obr_costings/autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension_2027.json",
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2027.json",
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2028.json",
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2028.json",
+    "results/uk/obr_costings/efo_march_2026__nics_rise_in_primary_threshold_2028.json",
+    "results/uk/obr_costings/efo_march_2026__class_1_nics_threshold_freezes_2028.json",
+    "results/uk/obr_costings/efo_march_2026__autumn_statement_2023_nics_reduction_2028.json",
+    "results/uk/obr_costings/efo_march_2026__spring_budget_2024_nics_reduction_2028.json",
+    "results/uk/obr_costings/efo_march_2026__autumn_budget_2024_employer_nics_rise_2028.json",
+    "results/uk/obr_costings/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2028.json",
+    "results/uk/obr_costings/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2028.json",
+    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2028.json",
+    "results/uk/obr_costings/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2028.json",
+    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2028.json",
+    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2028.json",
+    "results/uk/obr_costings/autumn_budget_2025__dividend_income_rate_increase_2028.json",
+    "results/uk/obr_costings/autumn_budget_2025__property_income_separate_rates_2028.json",
+    "results/uk/obr_costings/autumn_budget_2025__savings_income_rates_and_starter_limit_2028.json",
+    "results/uk/obr_costings/autumn_budget_2025__salary_sacrifice_pension_nics_cap_2028.json",
+    "results/uk/obr_costings/autumn_budget_2025__winter_fuel_payment_income_test_2028.json",
+    "results/uk/obr_costings/autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension_2028.json",
+    "results/uk/obr_costings/autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension_2028.json",
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2028.json",
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2029.json",
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2029.json",
+    "results/uk/obr_costings/efo_march_2026__nics_rise_in_primary_threshold_2029.json",
+    "results/uk/obr_costings/efo_march_2026__class_1_nics_threshold_freezes_2029.json",
+    "results/uk/obr_costings/efo_march_2026__autumn_statement_2023_nics_reduction_2029.json",
+    "results/uk/obr_costings/efo_march_2026__spring_budget_2024_nics_reduction_2029.json",
+    "results/uk/obr_costings/efo_march_2026__autumn_budget_2024_employer_nics_rise_2029.json",
+    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2029.json",
+    "results/uk/obr_costings/autumn_budget_2025__dividend_income_rate_increase_2029.json",
+    "results/uk/obr_costings/autumn_budget_2025__property_income_separate_rates_2029.json",
+    "results/uk/obr_costings/autumn_budget_2025__savings_income_rates_and_starter_limit_2029.json",
+    "results/uk/obr_costings/autumn_budget_2025__salary_sacrifice_pension_nics_cap_2029.json",
+    "results/uk/obr_costings/autumn_budget_2025__winter_fuel_payment_income_test_2029.json",
+    "results/uk/obr_costings/autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension_2029.json",
+    "results/uk/obr_costings/autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension_2029.json",
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2029.json",
+    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2030.json",
+    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2030.json",
+    "results/uk/obr_costings/efo_march_2026__nics_rise_in_primary_threshold_2030.json",
+    "results/uk/obr_costings/efo_march_2026__class_1_nics_threshold_freezes_2030.json",
+    "results/uk/obr_costings/efo_march_2026__autumn_statement_2023_nics_reduction_2030.json",
+    "results/uk/obr_costings/efo_march_2026__spring_budget_2024_nics_reduction_2030.json",
+    "results/uk/obr_costings/efo_march_2026__autumn_budget_2024_employer_nics_rise_2030.json",
+    "results/uk/obr_costings/autumn_budget_2025__dividend_income_rate_increase_2030.json",
+    "results/uk/obr_costings/autumn_budget_2025__property_income_separate_rates_2030.json",
+    "results/uk/obr_costings/autumn_budget_2025__savings_income_rates_and_starter_limit_2030.json",
+    "results/uk/obr_costings/autumn_budget_2025__salary_sacrifice_pension_nics_cap_2030.json",
+    "results/uk/obr_costings/autumn_budget_2025__winter_fuel_payment_income_test_2030.json",
+    "results/uk/obr_costings/autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension_2030.json",
+    "results/uk/obr_costings/autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension_2030.json",
+    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2030.json"
   ],
-  "legacy_artifacts_without_dataset_hashes": [
-    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json",
-    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2026.json",
-    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2026.json",
-    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2026.json",
-    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2026.json",
-    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2026.json",
-    "results/uk/obr_costings/diagnostic__personal_allowance_plus_500_2026.json",
-    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2027.json",
-    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2027.json",
-    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2027.json",
-    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2027.json",
-    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2027.json",
-    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2027.json"
-  ],
-  "legacy_claim_ordinal_derivation": "six_key_descriptor_after_claims_sha256_verification",
-  "legacy_claim_ordinals": {
-    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2026.json": {
-      "0": 182,
-      "1": 188
-    },
-    "results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2027.json": {
-      "0": 183,
-      "1": 189
-    },
-    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2026.json": {
-      "0": 457
-    },
-    "results/uk/obr_costings/autumn_budget_2025__uc_child_element_remove_two_child_limit_2027.json": {
-      "0": 458
-    },
-    "results/uk/obr_costings/diagnostic__personal_allowance_plus_500_2026.json": {},
-    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2026.json": {
-      "0": 565
-    },
-    "results/uk/obr_costings/efo_march_2026__additional_rate_threshold_reduction_2027.json": {
-      "0": 566
-    },
-    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json": {
-      "0": 556
-    },
-    "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2027.json": {
-      "0": 557
-    },
-    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2026.json": {
-      "0": 75,
-      "1": 81,
-      "2": 381
-    },
-    "results/uk/obr_costings/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2027.json": {
-      "0": 76,
-      "1": 82,
-      "2": 382
-    },
-    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2026.json": {
-      "0": 111,
-      "1": 417
-    },
-    "results/uk/obr_costings/spring_budget_2024__hicbc_threshold_and_taper_2027.json": {
-      "0": 112,
-      "1": 418
-    }
-  },
   "baseline_by_year": {
     "2026": {
-      "aggregates_gbp": {
-        "child_benefit": 17434702263.490685,
-        "income_tax": 421891913533.19946,
-        "ni_class_1_employee": 57077663137.03293,
-        "ni_class_1_employer": 185481157065.2179,
-        "ni_class_4": 4372643327.084593,
-        "universal_credit": 39887838277.66961
-      },
       "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-      "performance": {
-        "cleanup_seconds": 0.49896574998274446,
-        "end_rss_bytes": 21935964160,
-        "peak_rss_bytes": 21935964160,
-        "rss_after_gc_bytes": 1431846912,
-        "rss_after_gc_method": "psutil_process_rss",
-        "rss_method": "psutil_process_rss",
-        "start_rss_bytes": 474726400,
-        "wall_seconds": 31.40236329199979
-      }
+      "dataset_sha256_after": {
+        "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+        "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+      },
+      "dataset_sha256_before": {
+        "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+        "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+      },
+      "raw_aggregate_keys": [
+        "baseline_gbp",
+        "reform_gbp"
+      ],
+      "reconstructed_from": "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json"
     },
     "2027": {
-      "aggregates_gbp": {
-        "child_benefit": 17901653521.40091,
-        "income_tax": 443671961318.895,
-        "ni_class_1_employee": 58663620767.67447,
-        "ni_class_1_employer": 191108230450.7594,
-        "ni_class_4": 3775642037.858,
-        "universal_credit": 40661555824.15493
-      },
       "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-      "performance": {
-        "cleanup_seconds": 0.4939094170113094,
-        "end_rss_bytes": 22310191104,
-        "peak_rss_bytes": 22310191104,
-        "rss_after_gc_bytes": 1830535168,
-        "rss_after_gc_method": "psutil_process_rss",
-        "rss_method": "psutil_process_rss",
-        "start_rss_bytes": 1788067840,
-        "wall_seconds": 30.782723625015933
-      }
+      "dataset_sha256_after": {
+        "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+        "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+      },
+      "dataset_sha256_before": {
+        "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+        "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+      },
+      "raw_aggregate_keys": [
+        "baseline_gbp",
+        "reform_gbp"
+      ],
+      "reconstructed_from": "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2027.json"
+    },
+    "2028": {
+      "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "dataset_sha256_after": {
+        "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+        "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+      },
+      "dataset_sha256_before": {
+        "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+        "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+      },
+      "raw_aggregate_keys": [
+        "baseline_gbp",
+        "reform_gbp"
+      ],
+      "reconstructed_from": "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2028.json"
+    },
+    "2029": {
+      "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "dataset_sha256_after": {
+        "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+        "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+      },
+      "dataset_sha256_before": {
+        "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+        "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+      },
+      "raw_aggregate_keys": [
+        "baseline_gbp",
+        "reform_gbp"
+      ],
+      "reconstructed_from": "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2029.json"
+    },
+    "2030": {
+      "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "dataset_sha256_after": {
+        "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+        "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+      },
+      "dataset_sha256_before": {
+        "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+        "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+      },
+      "raw_aggregate_keys": [
+        "baseline_gbp",
+        "reform_gbp"
+      ],
+      "reconstructed_from": "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2030.json"
     }
   },
   "certified_cache_preflight": {
     "cached_file": "populace_uk_2023.h5",
     "dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-    "hash_seconds": 1.0075166249880567,
+    "hash_seconds": 1.464447374921292,
     "local_files_only": true,
     "managed_local_mirror": "data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
     "managed_local_mirror_created": false,
@@ -162,35 +405,62 @@
       "model_version": "2.89.2",
       "policyengine_version": "5.0.2"
     },
+    "runtime_dataset_source": "/Users/mariajuaristi/Desktop/PolicyEngine/repos/policyengine-scorecard/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
     "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
   },
   "claims": "sources/harvest-20260802/uk_obr/obr_costings_claims.jsonl",
   "claims_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
-  "completed_at": "2026-08-17T03:40:32.997396+00:00",
   "engine_version": "2.89.2",
-  "pa_smoke_probe": true,
+  "legacy_artifacts_without_dataset_hashes": [],
+  "legacy_claim_ordinal_derivation": "six_key_descriptor_after_claims_sha256_verification",
+  "legacy_claim_ordinals": {},
+  "manifest_note": "Rebuilt 2026-09-25 from the run's artifacts and staged rows by scratchpad/rebuild_manifest56.py after the run's final comparison step failed on an import (the working tree was switched under the process); every artifact and the staging are the run's own bytes; --restage regenerated the comparison and this manifest.",
+  "pa_smoke_probe": false,
   "registry": "data/uk/obr_measure_reforms.yaml",
   "registry_sha256": "84492e131a3227ccbe164cbe075cc6126e4fd8645e0dc3b2ed8a951a2648214c",
-  "run_id": "campaign-20260816-obr-costings",
+  "run_id": "campaign-20260925-obr-costings",
   "schema_version": 1,
   "selected_measures": [
     "efo_march_2026__pa_and_hrt_freezes",
     "efo_march_2026__additional_rate_threshold_reduction",
+    "efo_march_2026__nics_rise_in_primary_threshold",
+    "efo_march_2026__class_2_nics_threshold_rise",
+    "efo_march_2026__class_1_nics_threshold_freezes",
+    "efo_march_2026__autumn_statement_2023_nics_reduction",
+    "efo_march_2026__spring_budget_2024_nics_reduction",
+    "efo_march_2026__autumn_budget_2024_employer_nics_rise",
+    "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+    "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+    "autumn_statement_2023__class_2_self_employed_nics_liability_abolition",
     "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
     "spring_budget_2024__hicbc_threshold_and_taper",
     "autumn_budget_2024__employer_nics_package",
+    "autumn_budget_2024__non_dom_residence_based_regime",
+    "autumn_budget_2024__hmrc_5000_compliance_staff",
+    "autumn_budget_2025__dividend_income_rate_increase",
+    "autumn_budget_2025__property_income_separate_rates",
+    "autumn_budget_2025__savings_income_rates_and_starter_limit",
+    "autumn_budget_2025__salary_sacrifice_pension_nics_cap",
+    "autumn_budget_2025__winter_fuel_payment_income_test",
+    "autumn_budget_2025__uc_standard_and_health_protections",
+    "autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension",
+    "autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension",
     "autumn_budget_2025__uc_child_element_remove_two_child_limit"
   ],
   "skipped": [],
   "staged": true,
   "staged_output": "results/uk/staged/obr_costings.jsonl",
-  "staged_rows": 20,
-  "staged_sha256": "45faa64afbfba976083d528a081646200e40c6932f19d07602fcb38cb741b6af",
-  "started_at": "2026-08-17T03:27:14.492984+00:00",
+  "staged_rows": 251,
+  "staged_sha256": "361d54b323187ce264ef0c430d1f9f55e033d82e733e2f774148003b8786bde0",
+  "started_at": "2026-09-25T11:20:16.661319+00:00",
   "years": [
     2026,
-    2027
+    2027,
+    2028,
+    2029,
+    2030
   ],
-  "comparison_csv_sha256": "3f8fe4c1aeb58c69966abc412792e6146fae9cc637ec29ee72780e9309e90457",
-  "comparison_md_sha256": "8c291b6bb3b0e68c9a3272ac44fad1fafb2161c4c4491351887fe9596cb43f00"
+  "comparison_csv_sha256": "4f795efd1e7156bf2d1f4549cc417bc649a25c7f67b7b9acebc48dd09ff5f9de",
+  "comparison_md_sha256": "657531042745c47a7b9476a812dfb293ffe0fe8ee4e92f8c0c2bb3a12ba4629d"
 }

@@ -894,9 +894,10 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
     rows = [json.loads(line) for line in SMOKE_STAGED.read_text().splitlines()]
     manifest = json.loads(SMOKE_MANIFEST.read_text())
 
-    assert len(rows) == manifest["staged_rows"] == 20
+    # the 2026-09-25 population run: 26 measures x 2026-2030, 94 artifacts
+    assert len(rows) == manifest["staged_rows"] == 251
     assert manifest["staged"] is True
-    assert manifest["run_id"] == "campaign-20260816-obr-costings"
+    assert manifest["run_id"] == "campaign-20260925-obr-costings"
     assert manifest["claims"] == (
         "sources/harvest-20260802/uk_obr/obr_costings_claims.jsonl"
     )
@@ -904,19 +905,23 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
     assert (
         manifest["staged_sha256"]
         == compute.sha256_file(SMOKE_STAGED)
-        == "45faa64afbfba976083d528a081646200e40c6932f19d07602fcb38cb741b6af"
+        == "361d54b323187ce264ef0c430d1f9f55e033d82e733e2f774148003b8786bde0"
     )
     assert manifest["comparison_csv_sha256"] == compute.sha256_file(SMOKE_COMPARISON)
     assert manifest["comparison_md_sha256"] == compute.sha256_file(
         SMOKE_COMPARISON.with_suffix(".md")
     )
-    assert len(manifest["artifacts"]) == 13
-    assert manifest["legacy_artifacts_without_dataset_hashes"] == manifest["artifacts"]
-    assert all(row["status"] == "constructed" for row in rows)
+    assert len(manifest["artifacts"]) == 94
+    assert manifest["legacy_artifacts_without_dataset_hashes"] == []
+    assert {row["status"] for row in rows} == {"constructed", "not_computed"}
 
     traced_artifacts = set()
     for row in rows:
         assert STAGED_REQUIRED_FIELDS <= set(row)
+        if row["status"] == "not_computed":
+            # a null-reform registry entry kept visible: no artifact, no value
+            assert row["pe_value"] is None and "artifact" not in row
+            continue
         assert set(row["external_claim_match"]) == {
             "source",
             "metric",
@@ -931,12 +936,12 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
         artifact = json.loads(artifact_path.read_text())
         traced_artifacts.add(row["artifact"])
 
-        assert "dataset_sha256_before" not in artifact
-        assert "dataset_sha256_after" not in artifact
+        # every artifact of the 2026-09-25 run carries its dataset hashes
+        assert artifact["dataset_sha256_before"] and artifact["dataset_sha256_after"]
         compute.validate_artifact_dataset_hash_fields(
             artifact,
             path=artifact_path,
-            allow_missing=True,
+            allow_missing=False,
         )
 
         assert artifact["artifact"] == row["artifact"]
@@ -981,42 +986,10 @@ def test_committed_smoke_rows_trace_to_certified_artifacts():
         assert measure_value == -literal_delta
         assert "forward_delta_exchequer_gain" not in artifact_head
 
-    # Six measures across two years are staged. The thirteenth manifest
-    # artifact is the separately requested PA +GBP 500 diagnostic.
-    assert len(traced_artifacts) == 12
-    diagnostic = json.loads(
-        (
-            ROOT
-            / "results"
-            / "uk"
-            / "obr_costings"
-            / "diagnostic__personal_allowance_plus_500_2026.json"
-        ).read_text()
-    )
-    assert "dataset_sha256_before" not in diagnostic
-    assert "dataset_sha256_after" not in diagnostic
-    compute.validate_artifact_dataset_hash_fields(
-        diagnostic,
-        path=(
-            ROOT
-            / "results"
-            / "uk"
-            / "obr_costings"
-            / "diagnostic__personal_allowance_plus_500_2026.json"
-        ),
-        allow_missing=True,
-    )
-    assert diagnostic["diagnostic_only"] is True
-    assert diagnostic["claims_sha256"] == manifest["claims_sha256"]
-    diagnostic_head = diagnostic["heads"][0]
-    assert (
-        diagnostic_head["forward_delta_exchequer_gain"] == (diagnostic_head["pe_value"])
-    )
-    assert "reversal_delta_exchequer_gain" not in diagnostic_head
-    assert round(diagnostic["heads"][0]["pe_value"] / 1e9, 2) == -4.48
-    assert round(
-        diagnostic["raw_aggregates"]["baseline_gbp"]["income_tax"] / 1e9, 1
-    ) == (421.9)
+    # Every artifact of the population run is traced by at least one staged
+    # row (the PA +GBP 500 diagnostic of the 2026-08-16 smoke run was not
+    # re-run and is no longer inventoried).
+    assert len(traced_artifacts) == len(manifest["artifacts"]) == 94
 
 
 def _copy_committed_replay_fixture(tmp_path):
@@ -1399,7 +1372,7 @@ def test_standalone_renderer_replays_verified_manifest_byte_exactly(tmp_path):
     csv_reference = "results/uk/obr_costings/COMPARISON.csv"
     markdown_reference = "results/uk/obr_costings/COMPARISON.md"
     with (output_dir / "COMPARISON.csv").open(newline="") as source:
-        assert len(list(csv.DictReader(source))) == 26
+        assert len(list(csv.DictReader(source))) == 295
     assert (output_dir / "COMPARISON.csv").read_bytes() == replay["tracked_bytes"][
         csv_reference
     ]
@@ -1493,7 +1466,10 @@ def test_standalone_renderer_requires_every_artifact_head_to_be_staged(tmp_path)
     manifest = json.loads(replay["manifest_path"].read_text())
     staged_path = replay["copied_paths"][manifest["staged_output"]]
     staged_rows = compute.load_claims(staged_path)
-    removed = staged_rows.pop(0)
+    first_computed = next(
+        i for i, row in enumerate(staged_rows) if row["pe_value"] is not None
+    )
+    removed = staged_rows.pop(first_computed)
     assert removed["pe_value"] is not None
     compute.write_jsonl(staged_path, staged_rows)
     manifest["staged_rows"] = len(staged_rows)
@@ -1524,8 +1500,7 @@ def test_standalone_renderer_binds_missing_pa_row_to_manifest_selection(tmp_path
     reference = "results/uk/obr_costings/efo_march_2026__pa_and_hrt_freezes_2026.json"
     manifest["artifacts"].remove(reference)
     manifest["artifact_sha256"].pop(reference)
-    manifest["legacy_artifacts_without_dataset_hashes"].remove(reference)
-    manifest["legacy_claim_ordinals"].pop(reference)
+    assert reference not in manifest["legacy_artifacts_without_dataset_hashes"]
     staged_path = replay["copied_paths"][manifest["staged_output"]]
     staged_rows = compute.load_claims(staged_path)
     staged_rows = [
@@ -1541,7 +1516,11 @@ def test_standalone_renderer_binds_missing_pa_row_to_manifest_selection(tmp_path
         manifest,
         staged_rows,
     )
-    assert len(attack_rows) == 25
+    with SMOKE_COMPARISON.open(newline="") as source:
+        committed = list(csv.DictReader(source))
+    assert len(attack_rows) == len(committed) - sum(
+        row["artifact"] == reference for row in committed
+    )
     output_dir = tmp_path / "missing-pa-render"
 
     with pytest.raises(compare.ComparisonError) as exc_info:
@@ -1583,15 +1562,28 @@ def test_standalone_renderer_rejects_valid_unselected_class_2_row(tmp_path):
         engine_version=manifest["engine_version"],
     )
     assert len(rows) == 1
+    # the population run selected every measure; make class 2 UNSELECTED
+    manifest["selected_measures"].remove(measure["measure_key"])
+    manifest["artifactless_frozen_registry"].pop(measure["measure_key"])
     staged_path = replay["copied_paths"][manifest["staged_output"]]
-    staged_rows = compute.load_claims(staged_path)
+    staged_rows = [
+        row
+        for row in compute.load_claims(staged_path)
+        if row["measure_key"] != measure["measure_key"]
+    ]
     staged_rows.extend(rows)
     attack_rows = _resign_staged_and_comparison_attack(
         replay,
         manifest,
         staged_rows,
     )
-    assert len(attack_rows) == 27
+    with SMOKE_COMPARISON.open(newline="") as source:
+        committed = list(csv.DictReader(source))
+    assert len(attack_rows) == (
+        len(committed)
+        - sum(row["measure_key"] == measure["measure_key"] for row in committed)
+        + 1
+    )
     output_dir = tmp_path / "unselected-class-2-render"
 
     with pytest.raises(compare.ComparisonError) as exc_info:
@@ -1625,7 +1617,6 @@ def test_standalone_renderer_binds_missing_employer_nics_head(tmp_path):
     assert len(artifact["heads"]) == 1
     compute.write_json(artifact_path, artifact)
     manifest["artifact_sha256"][reference] = compute.sha256_file(artifact_path)
-    manifest["legacy_claim_ordinals"][reference] = {"0": 188}
     staged_path = replay["copied_paths"][manifest["staged_output"]]
     staged_rows = compute.load_claims(staged_path)
     staged_rows = [
@@ -1642,8 +1633,14 @@ def test_standalone_renderer_binds_missing_employer_nics_head(tmp_path):
         manifest,
         staged_rows,
     )
-    assert len(attack_rows) == 24
-    assert sum(row["row_kind"] == "mapped_head_total" for row in attack_rows) == 5
+    with SMOKE_COMPARISON.open(newline="") as source:
+        committed = list(csv.DictReader(source))
+    # the Income-tax head row and that artifact's mapped_head_total both go
+    assert len(attack_rows) == len(committed) - 2
+    assert (
+        sum(row["row_kind"] == "mapped_head_total" for row in attack_rows)
+        == sum(row["row_kind"] == "mapped_head_total" for row in committed) - 1
+    )
     output_dir = tmp_path / "missing-employer-nics-head-render"
 
     with pytest.raises(compare.ComparisonError) as exc_info:
@@ -1672,9 +1669,24 @@ def test_committed_legacy_artifacts_use_manifest_ordinals_and_stay_byte_exact(
     claims = compute.load_claims(replay["copied_paths"][manifest["claims"]])
     legacy_references = manifest["legacy_artifacts_without_dataset_hashes"]
     ordinal_map = manifest["legacy_claim_ordinals"]
-    assert legacy_references == manifest["artifacts"]
+    # the 2026-09-25 run regenerated every artifact through the dataset-hash
+    # path (gate round 1, finding 6): nothing legacy is left to allow-list
+    assert legacy_references == []
+    assert ordinal_map == {}
     assert set(manifest["artifact_sha256"]) == set(manifest["artifacts"])
-    assert set(ordinal_map) == set(legacy_references)
+    assert len(manifest["artifacts"]) == 94
+    for reference in manifest["artifacts"]:
+        path = replay["copied_paths"][reference]
+        assert manifest["artifact_sha256"][reference] == compute.sha256_file(path)
+        artifact = json.loads(path.read_text())
+        assert artifact["registry_sha256"] == manifest["registry_sha256"]
+        assert artifact["frozen_registry"]
+        assert artifact["dataset_sha256_before"] and artifact["dataset_sha256_after"]
+        for head in artifact["heads"]:
+            snapshot = head.get("external_claim")
+            if isinstance(snapshot, dict):
+                assert snapshot["claims_slice_sha256"] == manifest["claims_sha256"]
+                assert isinstance(snapshot["claim_ordinal"], int)
     assert manifest["legacy_claim_ordinal_derivation"] == (
         compute.LEGACY_CLAIM_ORDINAL_DERIVATION
     )
@@ -1711,9 +1723,9 @@ def test_committed_legacy_artifacts_use_manifest_ordinals_and_stay_byte_exact(
         output_dir=replay["output_dir"],
         artifact_root=replay["artifact_root"],
     )
-    assert summary["artifacts"] == 13
-    assert summary["staged_rows"] == 20
-    assert summary["comparison_rows"] == 26
+    assert summary["artifacts"] == 94
+    assert summary["staged_rows"] == 251
+    assert summary["comparison_rows"] == 295
     assert {
         reference: path.read_bytes()
         for reference, path in replay["copied_paths"].items()
@@ -4293,13 +4305,13 @@ def test_committed_smoke_comparison_is_measure_oriented():
     with SMOKE_COMPARISON.open(newline="") as source:
         rows = list(csv.DictReader(source))
 
-    assert len(rows) == 26
-    assert sum(row["row_kind"] == "mapped_head_total" for row in rows) == 6
+    assert len(rows) == 295
+    assert sum(row["row_kind"] == "mapped_head_total" for row in rows) == 44
     assert {
         (row["measure_key"], row["year"], row["head"])
         for row in rows
         if row["ratio_bin"] == "pe_zero"
-    } == {
+    } >= {
         (
             "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
             "2026",
@@ -4338,9 +4350,13 @@ def test_committed_smoke_comparison_is_measure_oriented():
     summary_rows = [
         row
         for row in rows
-        if row["row_kind"] in {"total", "mapped_head_total"}
-        or row["measure_key"]
-        == "autumn_budget_2025__uc_child_element_remove_two_child_limit"
+        if row["year"] in {"2026", "2027"}
+        and row["measure_key"] in expected_summary_bins
+        and (
+            row["row_kind"] in {"total", "mapped_head_total"}
+            or row["measure_key"]
+            == "autumn_budget_2025__uc_child_element_remove_two_child_limit"
+        )
     ]
     assert len(summary_rows) == 12
     assert all(
@@ -4377,7 +4393,10 @@ def test_committed_rows_use_only_harvested_source_axes():
             if isinstance(row["annotations"], list)
             else row["annotations"]
         )
-        assert "PE: static microsimulation on the certified world" in annotations
+        if row["status"] == "not_computed":
+            assert "No PE value" in annotations
+        else:
+            assert "PE: static microsimulation on the certified world" in annotations
         assert not any(text in annotations for text in forbidden)
 
 
@@ -4392,7 +4411,7 @@ def test_employer_nics_income_tax_row_cites_incidence_mechanism():
         and row["head"] == "Income tax"
     ]
 
-    assert len(income_tax_rows) == 2
+    assert len(income_tax_rows) >= 2
     for row in income_tax_rows:
         assert float(row["pe_value_gbp"]) != 0
         assert (
@@ -4417,7 +4436,7 @@ def test_hicbc_welfare_rows_and_artifacts_keep_mapping_provisional():
         == "Welfare inside cap"
     ]
 
-    assert len(welfare_rows) == 2
+    assert len(welfare_rows) >= 2
     for row in welfare_rows:
         annotations = " ".join(row["annotations"])
         assert "PROVISIONAL PE head mapping" in annotations

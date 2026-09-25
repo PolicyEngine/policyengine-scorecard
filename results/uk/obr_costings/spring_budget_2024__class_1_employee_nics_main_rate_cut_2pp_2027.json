@@ -4,12 +4,72 @@
   "calendar_year_proxy": "PE calendar year 2027 proxies FY 2027-28.",
   "claims_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
   "computability": "partial",
-  "computed_at": "2026-08-17T03:37:50.749537+00:00",
+  "computed_at": "2026-09-25T11:59:47.891807+00:00",
   "construction": "reversal_on_certified_world",
   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "dataset_sha256_after": {
+    "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+    "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+  },
+  "dataset_sha256_before": {
+    "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+    "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+  },
   "diagnostic_only": false,
   "engine_version": "2.89.2",
   "fiscal_event": "Spring Budget 2024",
+  "frozen_registry": {
+    "computability": "partial",
+    "computability_overrides": {},
+    "construction": "reversal_on_certified_world",
+    "external_metric": "revenue_change",
+    "fiscal_event": "Spring Budget 2024",
+    "heads": [
+      {
+        "channel": "tax",
+        "condition_key": "tax_head",
+        "obr_head": "Income tax",
+        "pe_variables": [
+          "income_tax"
+        ]
+      },
+      {
+        "channel": "tax",
+        "condition_key": "tax_head",
+        "obr_head": "NICs",
+        "pe_variables": [
+          "ni_class_1_employee",
+          "ni_class_1_employer",
+          "ni_class_4"
+        ]
+      },
+      {
+        "channel": "spending",
+        "condition_key": "spending_head",
+        "external_metric": "exchequer_impact",
+        "obr_head": "Welfare inside cap",
+        "pe_variables": [
+          "universal_credit"
+        ],
+        "source_table": "Spending Measures (Policy measures database)"
+      }
+    ],
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "notes": "Direct Class 1 rate reversal; PE calendar 2024 proxies FY 2024-25. Welfare inside cap is represented only by universal_credit, not the full OBR welfare-head scope, and the named non-microsimulation heads are omitted.",
+    "obr_description": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 1 employee NICs from 6 April 2024",
+    "pe_reform": {
+      "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+        "2024-01-01.2030-12-31": 0.1
+      }
+    },
+    "source_table": "Tax Measures (Policy measures database)",
+    "start_fy": 2024,
+    "unmapped_obr_heads": [
+      "Corporation tax (onshore)",
+      "PSCE in RDEL",
+      "Scottish BGA (current)"
+    ]
+  },
   "fy": "2027-28",
   "heads": [
     {
@@ -20,6 +80,8 @@
       "condition_key": "tax_head",
       "external_claim": {
         "calibration_relationship": "held_out",
+        "claim_ordinal": 76,
+        "claims_slice_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
         "conditions": {
           "basis": "forecast",
           "costing_phase": "original_scorecard",
@@ -79,6 +141,8 @@
       "condition_key": "tax_head",
       "external_claim": {
         "calibration_relationship": "held_out",
+        "claim_ordinal": 82,
+        "claims_slice_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
         "conditions": {
           "basis": "forecast",
           "costing_phase": "original_scorecard",
@@ -140,6 +204,8 @@
       "condition_key": "spending_head",
       "external_claim": {
         "calibration_relationship": "held_out",
+        "claim_ordinal": 382,
+        "claims_slice_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
         "conditions": {
           "basis": "forecast",
           "costing_phase": "original_scorecard",
@@ -196,24 +262,24 @@
   "obr_description": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 1 employee NICs from 6 April 2024",
   "performance": {
     "baseline": {
-      "cleanup_seconds": 0.4939094170113094,
-      "end_rss_bytes": 22310191104,
-      "peak_rss_bytes": 22310191104,
-      "rss_after_gc_bytes": 1830535168,
+      "cleanup_seconds": 0.5796612501144409,
+      "end_rss_bytes": 7334248448,
+      "peak_rss_bytes": 11084578816,
+      "rss_after_gc_bytes": 1870381056,
       "rss_after_gc_method": "psutil_process_rss",
       "rss_method": "psutil_process_rss",
-      "start_rss_bytes": 1788067840,
-      "wall_seconds": 30.782723625015933
+      "start_rss_bytes": 998834176,
+      "wall_seconds": 36.99259883281775
     },
     "reform": {
-      "cleanup_seconds": 0.6610180420102552,
-      "end_rss_bytes": 35243933696,
-      "peak_rss_bytes": 35243933696,
-      "rss_after_gc_bytes": 1992441856,
+      "cleanup_seconds": 0.9827321660704911,
+      "end_rss_bytes": 2113077248,
+      "peak_rss_bytes": 11787829248,
+      "rss_after_gc_bytes": 1518256128,
       "rss_after_gc_method": "psutil_process_rss",
       "rss_method": "psutil_process_rss",
-      "start_rss_bytes": 1918124032,
-      "wall_seconds": 51.499392792000435
+      "start_rss_bytes": 1258487808,
+      "wall_seconds": 67.15908883302473
     }
   },
   "policyengine_bundles": {
@@ -236,7 +302,7 @@
       "model_version": "2.89.2",
       "policyengine_version": "5.0.2",
       "runtime_dataset": "populace_uk_2023",
-      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_source": "/Users/mariajuaristi/Desktop/PolicyEngine/repos/policyengine-scorecard/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
       "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
     },
     "reform": {
@@ -258,7 +324,7 @@
       "model_version": "2.89.2",
       "policyengine_version": "5.0.2",
       "runtime_dataset": "populace_uk_2023",
-      "runtime_dataset_source": "/Users/maxghenis/scorecard-lanes/obr-costings/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_source": "/Users/mariajuaristi/Desktop/PolicyEngine/repos/policyengine-scorecard/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
       "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
     }
   },
@@ -284,7 +350,8 @@
       "2024-01-01.2030-12-31": 0.1
     }
   },
-  "run_id": "campaign-20260816-obr-costings",
+  "registry_sha256": "84492e131a3227ccbe164cbe075cc6126e4fd8645e0dc3b2ed8a951a2648214c",
+  "run_id": "campaign-20260925-obr-costings",
   "schema_version": 1,
   "source_table": "Tax Measures (Policy measures database)",
   "variable_metadata": {
