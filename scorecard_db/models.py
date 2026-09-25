@@ -167,6 +167,17 @@ class Metric(str, Enum):
     CPI_INFLATION_EFFECT = "cpi_inflation_effect"
     SUPPLY_SIDE_IMPACT = "supply_side_impact"
     DECISIONS_EFFECT_ON_BORROWING = "decisions_effect_on_borrowing"
+    # Autumn Budget 2025 port (#136). HMRC's tax information and impact
+    # notes, the IFS, CenTax and Onward all publish "individuals affected"
+    # counts and shares for a measure (700,000 brought into income tax;
+    # 2.4m / 3.8m / 3.9m for the property / savings / dividend rate rises;
+    # the share of employees touched by the salary-sacrifice cap). They
+    # are neither taxpayer_count (a level) nor taxpayer_count_change (a
+    # net movement between statuses): an affected count is the population
+    # whose liability moves at all. Recurring across producers, so minted
+    # rather than proposed.
+    AFFECTED_COUNT = "affected_count"
+    AFFECTED_SHARE = "affected_share"
 
 
 class UnitConcept(str, Enum):
@@ -319,6 +330,22 @@ STANDARD_CONDITIONS = frozenset(
         # different_model, while the routed statistical rows carry
         # administrative_fact in Chronicle staging.
         "benchmark_class",
+        # Autumn Budget 2025 port (#136): retrieval by MEASURE across
+        # producers is a condition, not a reform key, because the same
+        # measure is scored on different baseline worlds and a reform_key
+        # necessarily differs across worlds. pe_expressibility / pe_missing /
+        # action_link travel on the claim (the ONS ETB pattern) so a row on
+        # a measure the engine cannot express says so on the row itself.
+        "measure_key",
+        "pe_expressibility",
+        "pe_missing",
+        "action_link",
+        "model_version",
+        "calibration",
+        "household_type",
+        "data_scope",
+        "poverty_measure",
+        "tax_year",
         # Source/report semantics used by the Belgium country-report lane.
         "series",
         "policy_system_year",
@@ -394,7 +421,7 @@ STANDARD_CONDITIONS = frozenset(
         #                 and it is identity-bearing: the same measure's
         #                 demand-inclusive path and supply-side scoring are
         #                 different quantities.
-        "scoring_method",
+        "scoring_method",  # post_behavioural | supply_side | static (#136: HMT costings publish both legs)
         # counterfactual  the KIND of world a baseline names, where a
         #                 source scores different measure types against
         #                 different counterfactuals: "policy_parameters"

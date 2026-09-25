@@ -23,6 +23,7 @@ on:
     paths:
       - "data/uk/baseline_integrity.json"
       - "data/uk/budget_2026_measures.json"
+      - "data/uk/ab2025_measures.json"
       - "data/uk/cgt_alignment_reform.json"
       - "pipeline/check_baseline_integrity.py"
       - "pipeline/validate_budget_2026_registry.py"
@@ -85,3 +86,10 @@ jobs:
             fi
           done
           echo "resolved $ran sibling registr(ies) against the pinned engine"
+
+      # The Autumn Budget 2025 measure registry (#136) is the same shape as
+      # the AB2026 one and is validated by the same script with --registry.
+      - name: AB2025 measure registry — resolve every delta and reversal path
+        env:
+          PYTHONPATH: .
+        run: python pipeline/validate_budget_2026_registry.py --registry data/uk/ab2025_measures.json --resolve

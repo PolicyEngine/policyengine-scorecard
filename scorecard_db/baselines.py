@@ -433,6 +433,66 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "that registry's charts[].baseline and is emitted into "
         "data/externals/hmt-distributional-meta.json.",
     ),
+    # --- Autumn Budget 2025 port (#136): the producers' own worlds --------
+    # Six counterfactual worlds appear in the AB2025 material and none is
+    # current law at the scoring date. Each is registered from the
+    # producer's own definition; a PE result computed against current law
+    # is `constructed` against them, never comparable, by the view's guard.
+    (
+        {"policy": "rf_permanent_measures_since_ab2024"},
+        "rf_permanent_measures_since_ab2024",
+        "Resolution Foundation's 'permanent measures announced since Autumn "
+        "Budget 2024' world, scored in 2029-30 across AHC income vigintiles "
+        "(Stairway to headroom, Figure 18).",
+        "policy_ref",
+        "Stairway to headroom (27 Nov 2025) Figure 18 source note; "
+        "sources/harvest-uk-ab2025-2026-09-24/uk_rf_ab2025/NOTES.md.",
+    ),
+    (
+        {"policy": "rf_start_of_parliament_policy"},
+        "rf_start_of_parliament_policy",
+        "Resolution Foundation's whole-parliament counterfactual: policy as "
+        "it stood at the start of the 2024 parliament, scored over the "
+        "parliament (Stairway to headroom, Figure 20).",
+        "policy_ref",
+        "Stairway to headroom (27 Nov 2025) Figure 20; "
+        "sources/harvest-uk-ab2025-2026-09-24/uk_rf_ab2025/NOTES.md.",
+    ),
+    (
+        {"policy": "jrf_pre_ab2025_projection_path"},
+        "jrf_pre_ab2025_projection_path",
+        "JRF's pre-Budget projection world: policy as legislated before "
+        "26 Nov 2025 (WFP and PIP reversals, the UC health cut) on JRF's "
+        "own OBR-March-2025 / BoE-August-2025 path, incomes projected to "
+        "September of each year (the 27 Nov post-Budget piece moves to a "
+        "November-to-November path), tertiles of equivalised AHC income.",
+        "policy_ref",
+        "JRF 'A decade of falling incomes?' (25 Sep 2025) and 'Two "
+        "policies' (30 Sep 2025), IPPR tax-benefit model v02_85; "
+        "sources/harvest-uk-ab2025-2026-09-24/uk_jrf/NOTES.md.",
+    ),
+    (
+        {"policy": "ukmod_b2025_09_fixed_baseline_line"},
+        "ukmod_b2025_09_fixed_baseline_line",
+        "UKMOD B2025.09 single-year statics against a fixed baseline "
+        "poverty line (CeMPA WP 3/26 on the Autumn Budget 2025 package).",
+        "policy_ref",
+        "CeMPA working paper 3/26; sources/ukmod-stats and "
+        "sources/harvest-uk-ab2025-2026-09-24/README.md.",
+    ),
+    (
+        {"policy": "end_of_parliament_pre_ab2025"},
+        "end_of_parliament_pre_ab2025",
+        "The 'end of parliament' (2029-30) world with pre-Budget policy, "
+        "as scored by CPAG (UKMOD B1.13) and IPPR (tax-benefit model "
+        "calibrated to the government's 450,000). One label, two engines: "
+        "the engine rides on the claim (source_model), the calibration in "
+        "conditions.",
+        "policy_ref",
+        "CPAG Budget submission (17 Oct 2025); IPPR 'Restoring security' "
+        "(4 Dec 2025); sources/harvest-uk-ab2025-2026-09-24/uk_cpag and "
+        "uk_ippr NOTES.md.",
+    ),
     (
         {"policy": "pre_ab2025"},
         "pre_ab2025",
@@ -445,6 +505,171 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "Campaign run results/uk/two_child_reinstate_2026.json "
         "(gov.dwp.universal_credit.elements.child.limit.child_count: "
         "inf -> 2); issue #13 grounding artifact.",
+    ),
+    # --- Autumn Budget 2025 port (#136): the pre-Budget worlds PE executes.
+    # A measure that is IN the certified baseline is scored by REVERSAL:
+    # PolicyEngine executes the pre-Budget world (data/uk/ab2025_measures.json
+    # pe_baseline_modifier) as the baseline and current law as the reform.
+    # A per-measure reversal is a different world per measure (#13), so each
+    # gets its own entry; pre_ab2025 (above) stays the two-child world the
+    # campaign already executed. Generated from the registry; the tranche-3
+    # run records which of these it actually executed.
+    (
+        {
+            "policy": "pre_ab2025__personal_tax_thresholds_freeze_to_2031",
+            "measure": "ab2025__personal_tax_thresholds_freeze_to_2031",
+        },
+        "pre_ab2025__personal_tax_thresholds_freeze_to_2031",
+        "UK current law with Personal Tax: Maintain the personal income tax and equivalent national insurance threshold… reversed to its "
+        "pre-Budget path (gov.hmrc.income_tax.allowances.personal_allowance.amount, gov.hmrc.income_tax.rates.uk[1].threshold, gov.hmrc.national_insurance.class_1.thresholds.primary_threshold, gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit, gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit, gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__personal_tax_thresholds_freeze_to_2031 pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+            "measure": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+        },
+        "pre_ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+        "UK current law with National Insurance: Maintain the secondary threshold for employer contributions at current… reversed to its "
+        "pre-Budget path (gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__employer_nics_secondary_threshold_freeze_to_2031 pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__student_loans_plan2_threshold_freeze",
+            "measure": "ab2025__student_loans_plan2_threshold_freeze",
+        },
+        "pre_ab2025__student_loans_plan2_threshold_freeze",
+        "UK current law with Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027… reversed to its "
+        "pre-Budget path (gov.hmrc.student_loans.thresholds.plan_2).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__student_loans_plan2_threshold_freeze pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__property_income_separate_rates",
+            "measure": "ab2025__property_income_separate_rates",
+        },
+        "pre_ab2025__property_income_separate_rates",
+        "UK current law with Property Income: Introduce separate tax rates for property income at 22% for the property… reversed to its "
+        "pre-Budget path (gov.hmrc.income_tax.rates.property.additional, gov.hmrc.income_tax.rates.property.basic, gov.hmrc.income_tax.rates.property.higher).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__property_income_separate_rates pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__dividend_rates_plus_2pp",
+            "measure": "ab2025__dividend_rates_plus_2pp",
+        },
+        "pre_ab2025__dividend_rates_plus_2pp",
+        "UK current law with Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper… reversed to its "
+        "pre-Budget path (gov.hmrc.income_tax.rates.dividends[0].rate, gov.hmrc.income_tax.rates.dividends[1].rate).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__dividend_rates_plus_2pp pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+            "measure": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+        },
+        "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+        "UK current law with Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and add… reversed to its "
+        "pre-Budget path (gov.hmrc.income_tax.rates.savings.additional, gov.hmrc.income_tax.rates.savings.basic, gov.hmrc.income_tax.rates.savings.higher).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__savings_rates_plus_2pp_and_starter_limit_held pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+            "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+        },
+        "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+        "UK current law with Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can rece… reversed to its "
+        "pre-Budget path (gov.hmrc.national_insurance.salary_sacrifice_pension_cap).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__salary_sacrifice_pension_nics_cap_2000 pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__high_value_council_tax_surcharge",
+            "measure": "ab2025__high_value_council_tax_surcharge",
+        },
+        "pre_ab2025__high_value_council_tax_surcharge",
+        "UK current law with High Value Council Tax Surcharge: Introduce a surcharge on owners of residential propertie… reversed to its "
+        "pre-Budget path (gov.hmrc.council_tax.high_value_surcharge.amount[1].amount, gov.hmrc.council_tax.high_value_surcharge.amount[2].amount, gov.hmrc.council_tax.high_value_surcharge.amount[3].amount, gov.hmrc.council_tax.high_value_surcharge.amount[4].amount).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__high_value_council_tax_surcharge pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__fuel_duty_freeze_extension_2026_27",
+            "measure": "ab2025__fuel_duty_freeze_extension_2026_27",
+        },
+        "pre_ab2025__fuel_duty_freeze_extension_2026_27",
+        "UK current law with Fuel Duty: Cancel uprating for 2026-27; extend the 5p cut in rates to 31 August 2026, then… reversed to its "
+        "pre-Budget path (gov.hmrc.fuel_duty.petrol_and_diesel).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__fuel_duty_freeze_extension_2026_27 pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__rail_fares_freeze_2026",
+            "measure": "ab2025__rail_fares_freeze_2026",
+        },
+        "pre_ab2025__rail_fares_freeze_2026",
+        "UK current law with Rail Fares: Freeze rail fares in England for one year from 1 March 2026… reversed to its "
+        "pre-Budget path (gov.dft.rail.fare_index).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__rail_fares_freeze_2026 pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__winter_fuel_payment_income_test_35000",
+            "measure": "ab2025__winter_fuel_payment_income_test_35000",
+        },
+        "pre_ab2025__winter_fuel_payment_income_test_35000",
+        "UK current law with Winter Fuel Payment: Target to pensioners with taxable income below or equal to £35,000 fr… reversed to its "
+        "pre-Budget path (gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__winter_fuel_payment_income_test_35000 pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__uc_standard_allowance_and_health_element_rebalancing",
+            "measure": "ab2025__uc_standard_allowance_and_health_element_rebalancing",
+        },
+        "pre_ab2025__uc_standard_allowance_and_health_element_rebalancing",
+        "UK current law with Universal Credit: Changes to the standard allowance and health element to protect existing… reversed to its "
+        "pre-Budget path (gov.dwp.universal_credit.rebalancing.active).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__uc_standard_allowance_and_health_element_rebalancing pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__package",
+            "measure": "ab2025__package_total_policy_decisions",
+        },
+        "pre_ab2025__package",
+        "UK current law with every expressible Autumn Budget 2025 household "
+        "measure reversed to its pre-Budget path at once (the package world).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json, every reversal_on_certified_world "
+        "measure's pe_baseline_modifier applied together; executed by the "
+        "#136 tranche-3 run.",
     ),
     (
         EUROMOD_BE_2022_WORLD,

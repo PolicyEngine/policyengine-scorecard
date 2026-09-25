@@ -75,3 +75,43 @@ def test_the_built_db_carries_engines_not_publishers():
     assert rows["resolution_foundation"] == "landman_ttm"
     for source, model in rows.items():
         assert model != source, f"{source}: source_model is the publisher"
+
+
+# --- one engine at several releases ---------------------------------------
+
+
+def test_the_release_ledger_names_registered_engines_and_shared_publishers():
+    for engine, by_source in engines.ENGINE_RELEASES.items():
+        assert engine in engines.ENGINES, engine
+        assert set(by_source) <= engines.SHARED_ENGINE[engine], engine
+
+
+def test_a_versioned_spelling_splits_into_engine_and_release():
+    assert engines.split_release("ukmod_b1.13") == ("ukmod", "b1.13")
+    assert engines.split_release("ukmod") == ("ukmod", None)
+    # a registered id is never read as a release of a shorter one
+    assert engines.split_release("ifs_taxben") == ("ifs_taxben", None)
+    assert engines.split_release("arithmetic") == ("arithmetic", None)
+
+
+def test_a_release_the_ledger_lacks_is_not_known():
+    assert engines.known_release("cpag", "ukmod_b1.13")
+    assert engines.known_release("fraser_of_allander", "ukmod")
+    assert engines.known_release("ifs", "arithmetic")
+    assert not engines.known_release("cpag", "ukmod_b9.99")
+    assert not engines.known_release("ifs", "ukmod_b1.13")
+
+
+def test_every_versioned_spelling_in_the_built_db_is_a_recorded_release():
+    """The ledger is consumed, not decorative: a claim may carry a release
+    only if the ledger records that publisher running it."""
+    conn = sqlite3.connect("data/scorecard.db")
+    rows = conn.execute(
+        "SELECT DISTINCT source, source_model FROM external_scores"
+        " WHERE source_model IS NOT NULL"
+    ).fetchall()
+    conn.close()
+    versioned = [(s, m) for s, m in rows if engines.split_release(m)[1] is not None]
+    assert ("ukmod", "ukmod_b2026.01") in versioned
+    for source, model in versioned:
+        assert engines.known_release(source, model), (source, model)

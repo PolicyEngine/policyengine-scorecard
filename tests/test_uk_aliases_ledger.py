@@ -83,6 +83,9 @@ def test_every_distinct_value_exists_on_its_own_side():
                 "poverty_line",
                 "housing_costs",
                 "sector",
+                # #136: WPI Economics' "severe hardship" is a poverty MEASURE, kept
+                # distinct from every HBAI poverty_line
+                "poverty_measure",
             )
             if not any(value in known(src, axis) for axis in axes):
                 missing.append(side)

@@ -133,7 +133,7 @@ def test_chart_omissions_are_exactly_tallied():
     # every (figure, group, series) is present exactly once
     keys = {(c["figure"], c["income_group"], c["series"]) for c in cells["cells"]}
     assert len(keys) == 132
-    # ...and the 30 policy components still reconcile (3+9+18 = 16+9+5)
+    # ...and the 30 policy components still reconcile (6+7+17 = 16+9+5)
     comp = meta["component_counts"]
     assert sum(comp["by_computability"].values()) == 30
     assert sum(comp["by_channel"].values()) == 30

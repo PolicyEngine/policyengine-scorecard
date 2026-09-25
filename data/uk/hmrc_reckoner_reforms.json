@@ -7,7 +7,7 @@
  "sign_convention": "magnitude_with_direction_in_label",
  "calendar_year_proxy": "PolicyEngine calendar year Y proxies HMRC FY Y-(Y+1).",
  "join_rule": "external rows join on (program, subgroup == hmrc_label verbatim); measure_key is reckoner_202506__<program>__slug(label) \u2014 the program prefix is mandatory because HMRC prints identical labels under different tax heads (VAT and IPT both print 'Change standard rate by 1 percentage point')",
- "parameter_path_verification": "policyengine-uk was not installed at authoring. paths_verified: true means every path in the measure was resolved by data/uk/obr_measure_reforms.yaml (obr-costings-mode2) against pe-uk 2.89.2; false means candidate paths (or null) that the pipeline's --dry-run must resolve on the managed environment before any sim. A measure whose paths fail to resolve is demoted to pe_gap, never computed against a guessed parameter.",
+ "parameter_path_verification": "policyengine-uk was not installed at authoring. paths_verified: true means every path in the measure was resolved against pe-uk 2.89.2 (originally via the obr_measure_reforms.yaml of PR #56, obr-costings-mode2; the merged registry of record is data/uk/ab2025_measures.json, #136); false means candidate paths (or null) that the pipeline's --dry-run must resolve on the managed environment before any sim. A measure whose paths fail to resolve is demoted to pe_gap, never computed against a guessed parameter.",
  "measures": [
   {
    "measure_key": "reckoner_202506__income_tax__change_starting_rate_for_savings_income_by_1p",

@@ -1,9 +1,14 @@
-"""Validate the Autumn Budget 2026 scoreability registry (#96).
+"""Validate a Budget scoreability registry (#96 for AB2026; #136 for AB2025).
 
 data/uk/budget_2026_measures.json records what each REPORTED Budget
 measure would be as a PolicyEngine-UK reform, and whether the certified
 engine can express it — so that on 28 October a counterpart can be
 computed immediately instead of the work starting then.
+data/uk/ab2025_measures.json is the same shape for the ANNOUNCED
+Autumn Budget 2025 measures and the options other producers costed for
+it: the key space every AB2025 claim carries in conditions.measure_key,
+and the verdict that decides whether a producer's row is compared to a
+PolicyEngine number or to a `pe_gap` finding with an action_link.
 
 It is a scoreability registry, NOT a claims lane. It stages no values.
 The revenue figures in circulation are journalism citing third parties,
@@ -29,6 +34,7 @@ Two things this validator enforces that prose cannot:
 Usage:
     python pipeline/validate_budget_2026_registry.py            # schema only
     .venv-pe/bin/python pipeline/validate_budget_2026_registry.py --resolve
+    python pipeline/validate_budget_2026_registry.py --registry data/uk/ab2025_measures.json --resolve
 """
 
 import argparse
@@ -47,7 +53,30 @@ REPORTED_STATUS = {
     "unlikely",
     "already_announced",
     "ruled_out_for_this_budget",
+    # past events (AB2025 registry): the measure was announced, or was an
+    # option a producer costed for that Budget
+    "announced",
+    "option_costed_by_others",
 }
+
+
+def key_prefix(reg):
+    """The measure_key prefix a registry's fiscal event implies.
+
+    autumn_budget_2026 -> ab2026__ ; autumn_budget_2025 -> ab2025__ (with the
+    ab2025_option__ sibling for options costed by others).
+    """
+    m = re.fullmatch(r"autumn_budget_(\d{4})", reg.get("fiscal_event", ""))
+    if not m:
+        raise ValueError(f"unrecognised fiscal_event {reg.get('fiscal_event')!r}")
+    return f"ab{m.group(1)}__"
+
+
+def _paths_of(m):
+    """Every parameter path a measure asks the engine for."""
+    return list((m.get("pe_reform_delta") or {}).keys()) + list(
+        (m.get("pe_baseline_modifier") or {}).keys()
+    )
 
 
 def load(path=REGISTRY):
@@ -63,8 +92,18 @@ def validate(reg):
         if k in seen:
             errors.append(f"duplicate measure_key {k}")
         seen.add(k)
-        if not k.startswith("ab2026__"):
+        prefix = key_prefix(reg)
+        option_prefix = prefix[:-2] + "_option__"
+        if not (k.startswith(prefix) or k.startswith(option_prefix)):
             errors.append(f"{k}: measure_key must carry its fiscal event prefix")
+        if m.get("reported_status") == "option_costed_by_others" and not k.startswith(
+            option_prefix
+        ):
+            errors.append(
+                f"{k}: an option costed by others carries the _option__ prefix"
+            )
+        if m.get("reported_status") == "announced" and not k.startswith(prefix):
+            errors.append(f"{k}: an announced measure carries the plain event prefix")
         if m.get("computability") not in COMPUTABILITY:
             errors.append(f"{k}: bad computability {m.get('computability')!r}")
         if m.get("reported_status") not in REPORTED_STATUS:
@@ -125,8 +164,23 @@ def validate(reg):
                     f"{k}: a not_expressible measure is either an upstream "
                     "development item or out of the model's scope; say which"
                 )
+            # A pe_gap row is "a finding with somewhere to go rather than a
+            # blank" (hmrc_reckoner_reforms.json gap_citation_rule, gate #9):
+            # every not_expressible verdict names the issue that owns it.
+            if not re.match(r"https://", m.get("action_link") or ""):
+                errors.append(
+                    f"{k}: not_expressible without an action_link URL — a gap "
+                    "with nowhere to go is a blank, not a finding"
+                )
         if m["computability"] == "partial" and not (m.get("missing") or "").strip():
             errors.append(f"{k}: partial without naming the missing legs")
+        if m.get("construction") == "reversal_on_certified_world" and not m.get(
+            "pe_baseline_modifier"
+        ):
+            errors.append(
+                f"{k}: a reversal_on_certified_world construction must record "
+                "the pre-measure world it executes as pe_baseline_modifier"
+            )
 
     # The whole reported package must be represented, including the parts
     # this model cannot touch — a registry that silently listed only the
@@ -174,7 +228,7 @@ def resolve_against_engine(reg, year=2026):
     params = policyengine_uk.CountryTaxBenefitSystem().parameters
     problems, checked = [], 0
     for m in reg["measures"]:
-        for path in m.get("pe_reform_delta") or {}:
+        for path in dict.fromkeys(_paths_of(m)):
             try:
                 node = _resolve(params, path)
             except AttributeError:
@@ -182,7 +236,17 @@ def resolve_against_engine(reg, year=2026):
                 continue
             checked += 1
             recorded = (m.get("engine_baseline_2026") or {}).get(path)
-            if isinstance(recorded, (int, float)):
+            if isinstance(recorded, bool):
+                try:
+                    live = bool(node(f"{year}-06-01"))
+                except Exception:
+                    continue
+                if live != recorded:
+                    problems.append(
+                        f"{m['measure_key']}: {path} baseline recorded "
+                        f"{recorded}, engine says {live}"
+                    )
+            elif isinstance(recorded, (int, float)):
                 try:
                     live = float(node(f"{year}-06-01"))
                 except Exception:
@@ -191,6 +255,17 @@ def resolve_against_engine(reg, year=2026):
                     problems.append(
                         f"{m['measure_key']}: {path} baseline recorded "
                         f"{recorded}, engine says {live}"
+                    )
+            elif recorded is None and path in (m.get("engine_baseline_2026") or {}):
+                # null records an uncapped (inf) parameter (uncapped_sentinel)
+                try:
+                    live = float(node(f"{year}-06-01"))
+                except Exception:
+                    continue
+                if live != float("inf"):
+                    problems.append(
+                        f"{m['measure_key']}: {path} recorded as uncapped (null), "
+                        f"engine says {live}"
                     )
     if problems:
         raise SystemExit(
@@ -202,8 +277,9 @@ def resolve_against_engine(reg, year=2026):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--resolve", action="store_true")
+    ap.add_argument("--registry", default=str(REGISTRY))
     args = ap.parse_args(argv)
-    reg = load()
+    reg = load(args.registry)
     n = validate(reg)
     print(f"registry valid: {n} measures")
     by = {}
