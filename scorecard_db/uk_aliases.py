@@ -280,7 +280,17 @@ _identity("obr", "geography", ["UK", "GB"])
 # OBR's NI social-security rows are Northern Ireland — same geography as
 # HBAI's region label; one canonical name.
 _alias("obr", "geography", "NI", "Northern Ireland")
-_identity("ukmod", "geography", ["UK"])
+# CeMPA WP 3/26 (family uk_ukmod_ab2025, #136) reports by nation; its
+# fixed-line poverty counts hold the 2026 baseline line fixed.
+_identity(
+    "ukmod", "geography", ["UK", "England", "Scotland", "Wales", "Northern Ireland"]
+)
+_identity("ukmod", "poverty_line", ["fixed_at_baseline"])
+_identity(
+    "ukmod",
+    "income_group",
+    [f"decile_{i}" for i in range(1, 11)] + ["all"],
+)
 
 # --- subgroups ---------------------------------------------------------------
 _identity(

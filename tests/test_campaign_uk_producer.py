@@ -181,6 +181,20 @@ def test_blocked_targets_have_no_claims_yet():
             "SELECT COUNT(*) FROM external_scores WHERE source='ukmod'"
             " AND metric='poverty_count_change'"
         )
+        > 0
+    )
+    # 4. UKMOD reform claims now exist (family uk_ukmod_ab2025, CeMPA WP
+    #    3/26) — every one scores the Budget PACKAGE, none the two-child
+    #    measure the archived PE leg computed, which is the precise
+    #    reason the family stays blocked (concept_mismatch until a
+    #    descriptor translator attaches it deliberately)
+    assert (
+        n(
+            "SELECT COUNT(*) FROM external_scores WHERE source='ukmod'"
+            " AND metric='poverty_count_change'"
+            " AND json_extract(conditions,'$.measure_key')"
+            " != 'ab2025__package_ukmod_wp3_26'"
+        )
         == 0
     )
     db.close()

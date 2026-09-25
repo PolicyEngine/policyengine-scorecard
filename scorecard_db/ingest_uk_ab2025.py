@@ -138,6 +138,7 @@ FAMILIES: dict[str, tuple[str, frozenset[str]]] = {
         frozenset({"fraser_of_allander", "scottish_fiscal_commission"}),
     ),
     "uk_wbg": ("uk-ab2025-microsim", frozenset({"wbg"})),
+    "uk_ukmod_ab2025": ("uk-ab2025-microsim", frozenset({"ukmod"})),
     "uk_centax": ("uk-ab2025-admin-other", frozenset({"centax"})),
     "uk_tpa": ("uk-ab2025-admin-other", frozenset({"tax_policy_associates"})),
     "uk_pip": ("uk-ab2025-admin-other", frozenset({"policy_in_practice"})),
@@ -225,6 +226,12 @@ DISPOSITIONS: dict[str, Metric] = {
     # scoring_method static; the published sign rides in conditions and
     # the value is NOT re-signed here
     "exchequer_impact_static": Metric.REVENUE_CHANGE,
+    # UKMOD's fiscal overview (CeMPA WP 3/26): the change in benefit
+    # expenditure and the net fiscal impact (revenue change minus
+    # expenditure change), the latter carried as an exchequer impact
+    # with the fiscal measure named on the claim
+    "expenditure_change": Metric.BENEFIT_COST_CHANGE,
+    "net_fiscal_impact": Metric.REVENUE_CHANGE,
     "levy_yield": Metric.REVENUE_CHANGE,
     "revenue_share": Metric.REVENUE_SHARE,
     # per-unit tax changes
@@ -413,6 +420,10 @@ _DROP_BY_NAME: dict[str, str] = {
     "forecast_borrowing_change": "macro_fiscal_or_out_of_scope",
     "forecast_revenue_change": "macro_fiscal_or_out_of_scope",
     "revenue_level": "macro_fiscal_or_out_of_scope",
+    # UKMOD WP 3/26 fiscal overview: total revenue / expenditure LEVELS of
+    # the baseline and reform worlds (the changes are staged)
+    "government_revenue": "macro_fiscal_or_out_of_scope",
+    "government_expenditure": "macro_fiscal_or_out_of_scope",
     "fiscal_consolidation_requirement": "macro_fiscal_or_out_of_scope",
     "policy_change_vs_previous_government_plans": "macro_fiscal_or_out_of_scope",
     "fiscal_gap": "macro_fiscal_or_out_of_scope",
@@ -473,6 +484,13 @@ _DROP_BY_NAME: dict[str, str] = {
     "in_kind_benefit_share_of_income": "in_kind_series_deferred",
     "average_award": "scheme_average_award_no_metric",
     "marginal_tax_rate": "mtr_no_registered_metric",
+    # UKMOD WP 3/26: per-capita net fiscal impact (net impact / population),
+    # the S80/S20 ratio and its change, and the Gini change — derived from
+    # or ratios of quantities that are staged as levels
+    "net_fiscal_impact_per_capita": "ratio_or_derived_quantity",
+    "s80_s20_ratio": "ratio_or_derived_quantity",
+    "s80_s20_ratio_change": "ratio_or_derived_quantity",
+    "gini_coefficient_change": "ratio_or_derived_quantity",
     "effective_tax_rate_change": "mtr_no_registered_metric",
     "marginal_effective_tax_rate_change": "mtr_no_registered_metric",
     "energy_tax_per_household": "energy_levy_level_no_metric",
@@ -796,6 +814,8 @@ def _score(row: dict, family: str, source: str, metric: Metric) -> ExternalScore
         cond["estimate_kind"] = row["value_kind"]
     if row.get("proposed_metric") == "exchequer_impact_static":
         cond.setdefault("scoring_method", "static")
+    if row.get("proposed_metric") == "net_fiscal_impact":
+        cond["fiscal_measure"] = "net_fiscal_impact"
     if row.get("proposed_metric") == "tax_base":
         cond["aggregate"] = "tax_base"
     if row.get("reform_hint"):

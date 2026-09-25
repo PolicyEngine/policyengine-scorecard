@@ -143,7 +143,8 @@ ENGINE_RELEASES: dict[str, dict[str, frozenset[str]]] = {
         # ingest_uk_externals). Its Autumn Budget 2025 brief (WP 3/26) ran
         # B2025.09 and is registered as the ukmod_b2025_09_fixed_baseline_line
         # world in baselines.py.
-        "ukmod": frozenset({"b2026.01"}),
+        # ... and CeMPA's Autumn Budget 2025 brief (WP 3/26) ran B2025.09.
+        "ukmod": frozenset({"b2025.09", "b2026.01"}),
         "cpag": frozenset({"b1.11", "b1.13"}),
         "wbg": frozenset({"b2025.08"}),
         # The FAI Budget note names UKMOD without a release; its claims

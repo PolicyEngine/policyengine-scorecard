@@ -1908,16 +1908,21 @@
    "obr_pmd_measure_key": null
   },
   {
-   "measure_key": "ab2025__package_ukmod_six_measures",
-   "title": "UKMOD (CeMPA WP 3/26) six-measure Autumn Budget 2025 package",
+   "measure_key": "ab2025__package_ukmod_wp3_26",
+   "title": "UKMOD (CeMPA WP 3/26) Autumn Budget 2025 package: income tax threshold freezes, UC two-child limit removal, Winter Fuel Allowance restrictions, Pension Credit reductions",
    "reported_status": "announced",
-   "source_note": "ISER CeMPA working paper 3/26 on UKMOD B2025.09; the six measures are listed in the paper and the ukmod-stats lane",
+   "source_note": "ISER CeMPA working paper 3/26 (Frimpong, 18 Feb 2026) on UKMOD B2025.09, FRS 2023-24: static scoring of the package over 2026-2030, fixed-line poverty; staged as harvest family uk_ukmod_ab2025",
    "program": "package",
    "computability": "partial",
    "pe_reform_delta": null,
    "construction": "package_of_registry_measures",
-   "package_of": "the six measures named in sources/ukmod-stats (two-child limit, threshold freeze, dividend/savings/property rates, salary sacrifice cap, WFP, UC rebalancing — confirmed at harvest)",
-   "missing": "Composition confirmed against the paper at harvest; UKMOD's fixed-line poverty statistics use its own baseline line (ukmod_b2025_09_fixed_baseline_line, #13).",
+   "package_of": [
+    "ab2025__personal_tax_thresholds_freeze_to_2031",
+    "ab2025__uc_child_element_remove_two_child_limit",
+    "ab2025__winter_fuel_payment_income_test_35000"
+   ],
+   "package_note": "The paper names four components; three are registry measures. Its 'Pension Credit reductions' has no Table 4.1 line and is carried in the paper's own words on every row (reform_hint), not as a registry measure.",
+   "missing": "The Pension Credit leg is not a registry measure; UKMOD's poverty statistics hold the 2026 baseline line fixed (ukmod_b2025_09_fixed_baseline_line, #13), so a PE counterpart states the line it used.",
    "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136",
    "obr_pmd_measure_key": null
   },
@@ -1943,6 +1948,9 @@
    },
    "head_variables": [
     "income_tax"
+   ],
+   "related_reckoner_reforms": [
+    "trr_income_tax_change_basic_rate_by_1p"
    ]
   },
   {
@@ -1970,7 +1978,12 @@
    "head_variables": [
     "income_tax"
    ],
-   "note": "IFS also costs the higher and additional rates alone; those are the [1]/[2] legs of this entry, staged with their own reform_hint."
+   "note": "IFS also costs the higher and additional rates alone; those are the [1]/[2] legs of this entry, staged with their own reform_hint.",
+   "related_reckoner_reforms": [
+    "trr_income_tax_change_basic_rate_by_1p",
+    "trr_income_tax_change_higher_rate_by_1p",
+    "trr_income_tax_increase_additional_rate_by_1p_yield"
+   ]
   },
   {
    "measure_key": "ab2025_option__income_tax_basic_rate_plus_2p",
@@ -2055,6 +2068,13 @@
    "head_variables": [
     "ni_class_1_employee",
     "ni_class_4"
+   ],
+   "related_reckoner_reforms": [
+    "trr_national_insurance_change_class_1_employee_main_rate_by_1_percentage_point",
+    "trr_national_insurance_change_class_1_employee_additional_rate_by_1_percentage_point",
+    "trr_national_insurance_change_class_4_main_rate_by_1_percentage_point",
+    "trr_national_insurance_change_class_4_additional_rate_by_1_percentage_point",
+    "trr_national_insurance_change_class_1_employer_rate_by_1_percentage_point"
    ]
   },
   {
@@ -2279,7 +2299,11 @@
    "head_variables": [
     "capital_gains_tax"
    ],
-   "behavioural_note": "gov.simulation.capital_gains_responses.elasticity is 0 at the pin (static); IFS's numbers include a realisations response, so the elasticity sweep in data/uk/cgt_alignment_reform.json is the comparable leg."
+   "behavioural_note": "gov.simulation.capital_gains_responses.elasticity is 0 at the pin (static); IFS's numbers include a realisations response, so the elasticity sweep in data/uk/cgt_alignment_reform.json is the comparable leg.",
+   "related_reckoner_reforms": [
+    "trr_capital_gains_tax_increase_higher_capital_gains_tax_rate_by_1_percentage_point",
+    "trr_capital_gains_tax_increase_higher_capital_gains_tax_rate_by_10_percentage_points"
+   ]
   },
   {
    "measure_key": "ab2025_option__cgt_equalise_with_income_tax_plus_investment_allowance",
@@ -2526,7 +2550,10 @@
    "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /inherit|estate|nil_rate|bequest|death/. Parameters: 0 node(s) []. Variables: 0 []. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.89.2.",
    "policyengine_uk_development_item": true,
    "upstream_item": "policyengine-uk: estates, bequests and inheritance tax (nil-rate bands, APR/BPR)",
-   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136"
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136",
+   "related_reckoner_reforms": [
+    "trr_inheritance_tax_increase_standard_rate_for_estates_left_on_death_by_1_percentage_point"
+   ]
   },
   {
    "measure_key": "ab2025_option__council_tax_double_bands_g_and_h_england",
@@ -2664,7 +2691,11 @@
    "head_variables": [
     "vat"
    ],
-   "note": "The zero-rated leg has no rate parameter (zero-rated consumption is the residual of full and reduced-rate consumption); expressed as a construction on the LCFS-imputed consumption categories. VAT incidence is the consumption module's imputation, stated on the row."
+   "note": "The zero-rated leg has no rate parameter (zero-rated consumption is the residual of full and reduced-rate consumption); expressed as a construction on the LCFS-imputed consumption categories. VAT incidence is the consumption module's imputation, stated on the row.",
+   "related_reckoner_reforms": [
+    "trr_vat_change_standard_rate_by_1_percentage_point",
+    "trr_vat_change_reduced_rate_by_1_percentage_point"
+   ]
   },
   {
    "measure_key": "ab2025_option__vat_registration_threshold_cut_to_30000",
@@ -2894,7 +2925,10 @@
    "why": "Corporation tax and the bank surcharge are business-side taxes outside a household microsimulation (the engine's business_rates incidence via shareholdings is the only corporate leg it holds).",
    "name_search": "Searched BOTH the parameter tree and the VARIABLE list for /corporation|bank_surcharge|surcharge|profits/. Parameters: 14 node(s) ['gov.hmrc.council_tax.high_value_surcharge.amount[0].threshold', 'gov.hmrc.council_tax.high_value_surcharge.amount[0].amount', 'gov.hmrc.council_tax.high_value_surcharge.amount[1].threshold', 'gov.hmrc.council_tax.high_value_surcharge.amount[1].amount', 'gov.hmrc.council_tax.high_value_surcharge.amount[2].threshold', 'gov.hmrc.council_tax.high_value_surcharge.amount[2].amount']. Variables: 1 ['high_value_council_tax_surcharge']. Both are searched because a parameter-only search misses a variable (#106). Re-run at policyengine-uk 2.89.2.",
    "out_of_model_scope": true,
-   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136"
+   "action_link": "https://github.com/PolicyEngine/policyengine-scorecard/issues/136",
+   "related_reckoner_reforms": [
+    "trr_corporation_tax_increase_corporation_tax_by_1_percentage_point"
+   ]
   },
   {
    "measure_key": "ab2025_option__boe_apf_indemnity_or_reserves_remuneration_reform",

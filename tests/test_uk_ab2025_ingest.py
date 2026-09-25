@@ -362,6 +362,7 @@ def test_versioned_engine_spellings_are_recorded_releases(staged):
         ("cpag", "ukmod_b1.11"),
         ("cpag", "ukmod_b1.13"),
         ("wbg", "ukmod_b2025.08"),
+        ("ukmod", "ukmod_b2025.09"),
     }
     for source, model in versioned:
         assert known_release(source, model), (source, model)
