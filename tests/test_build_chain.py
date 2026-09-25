@@ -43,6 +43,7 @@ STEPS = (
     "produce_uk",
     "campaign_uk",
     "uk_ab2025_verdicts",
+    "uk_ab2025_lanes",
     "nz_budget_scores",
     "be_pit_reform",
     "be_jrc",

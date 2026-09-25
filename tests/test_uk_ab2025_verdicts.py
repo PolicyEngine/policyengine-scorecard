@@ -137,3 +137,60 @@ def test_verdict_rows_follow_the_registry(tmp_path):
     assert links <= {
         m["action_link"] for m in REGISTRY.values() if m.get("action_link")
     }
+
+
+def test_lanes_advance_to_computed_only_when_a_counterpart_exists(tmp_path):
+    from scorecard_db.db import RESULTS_SQL
+    from scorecard_db.ingest_uk_ab2025 import LANES, advance_lanes
+    from scorecard_db.models import ComparisonStatus, PEResult
+
+    db_path = _fresh(tmp_path)
+    ingest_verdicts(db_path)  # pe_gap rows are verdicts, not counterparts
+    import shutil
+
+    feed = tmp_path / "lanes.json"  # a copy: never the committed feed
+    shutil.copy(ROOT / "data" / "lanes.json", feed)
+    before = advance_lanes(db_path, feed)
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    stages = {
+        r["lane"]: r["stage"] for r in conn.execute("SELECT lane, stage FROM lanes")
+    }
+    assert all(stages[lane] in ("ingested", "cataloged") for lane in LANES)
+    assert all(v["answered"] == 0 for v in before.values())
+    # one constructed counterpart on a microsim-lane claim
+    cid = conn.execute(
+        "SELECT claim_id FROM external_scores WHERE json_extract(publication, '$.family') = 'uk_ifs_ab2025' LIMIT 1"
+    ).fetchone()[0]
+    r = PEResult(
+        claim_id=cid,
+        computed_value=1.0,
+        status=ComparisonStatus.CONSTRUCTED,
+        engine_version="2.89.2",
+        data_bundle="populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+        pe_construction="test",
+        run_id="test-run",
+        computed_at="2026-09-25T00:00:00+00:00",
+        baseline_key=None,
+    )
+    conn.execute(RESULTS_SQL, ScorecardDB.result_row(r))
+    conn.commit()
+    conn.close()
+    after = advance_lanes(db_path, feed)
+    assert after["uk-ab2025-microsim"]["answered"] == 1
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    row = conn.execute(
+        "SELECT stage, detail FROM lanes WHERE lane = 'uk-ab2025-microsim'"
+    ).fetchone()
+    assert (
+        row["stage"] == "computed"
+        and "1 claims with a PolicyEngine counterpart" in row["detail"]
+    )
+    assert (
+        conn.execute(
+            "SELECT stage FROM lanes WHERE lane = 'uk-ab2025-official'"
+        ).fetchone()[0]
+        == "ingested"
+    )
+    conn.close()
