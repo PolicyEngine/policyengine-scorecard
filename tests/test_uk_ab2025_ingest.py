@@ -342,3 +342,40 @@ def test_accounting_drift_raises(staged):
     bad["dropped"] += 1
     with pytest.raises(ValueError, match="accounting drifted"):
         check_accounting(bad)
+
+
+# --- one engine at several releases ---------------------------------------
+
+
+def test_versioned_engine_spellings_are_recorded_releases(staged):
+    """The release rides on the claim (ukmod_b1.13) and the ledger says
+    which publisher ran which; the two must agree."""
+    from scorecard_db.engines import known_release, split_release
+
+    scores, _ = staged
+    versioned = {
+        (s.source, s.source_model)
+        for s in scores
+        if split_release(s.source_model)[1] is not None
+    }
+    assert versioned == {
+        ("cpag", "ukmod_b1.11"),
+        ("cpag", "ukmod_b1.13"),
+        ("wbg", "ukmod_b2025.08"),
+    }
+    for source, model in versioned:
+        assert known_release(source, model), (source, model)
+
+
+def test_a_release_the_ledger_lacks_raises():
+    from scorecard_db.ingest_uk_ab2025 import _source_model
+
+    assert _source_model("cpag", {"source_model": "ukmod_b1.13"}) == "ukmod_b1.13"
+    assert _source_model("cpag", {"source_model": None}) == "ukmod"
+    assert _source_model("fraser_of_allander", {"source_model": "ukmod"}) == "ukmod"
+    with pytest.raises(ValueError, match="does not record"):
+        _source_model("cpag", {"source_model": "ukmod_b9.99"})
+    with pytest.raises(ValueError, match="different engine"):
+        _source_model("cpag", {"source_model": "ifs_taxben"})
+    with pytest.raises(ValueError, match="no source_model"):
+        _source_model("fraser_of_allander", {"source_model": ""})

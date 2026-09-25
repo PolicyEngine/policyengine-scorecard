@@ -62,7 +62,7 @@ from pathlib import Path
 
 from .baselines import BASELINES
 from .db import DIAGNOSES_SQL, LANE_SQL, RESULTS_SQL, SCORES_SQL, ScorecardDB
-from .engines import ENGINES, engine_of
+from .engines import ENGINES, engine_of, known_release, split_release
 from .harvest import (
     REPO,
     finish,
@@ -731,22 +731,29 @@ def _source_model(source: str, row: dict) -> str:
     arithmetic on HMRC statistics, and the engines registry says the
     engine belongs on the claim for exactly that reason. What it may NOT
     do is name a DIFFERENT registered engine — that contradicts the
-    registry and raises. A source without a registered engine must say
-    what produced the number."""
+    registry and raises. A versioned spelling must be a release
+    ENGINE_RELEASES records for this publisher: one engine at several
+    releases is a fact the ledger holds, not one a row may introduce. A
+    source without a registered engine must say what produced the number."""
     declared = row.get("source_model")
     engine = engine_of(source)
-    if engine is not None:
-        if declared in (None, "", source):
-            return engine
-        if declared in ENGINES and not declared.startswith(engine):
-            raise ValueError(
-                f"{source}: staged source_model {declared!r} names a different "
-                f"engine from the registered {engine!r}"
-            )
-        return declared
-    if declared:
-        return declared
-    raise ValueError(f"{source}: no source_model declared and no engine registered")
+    if engine is not None and declared in (None, "", source):
+        return engine
+    if not declared:
+        raise ValueError(f"{source}: no source_model declared and no engine registered")
+    named, _release = split_release(declared)
+    if engine is not None and named in ENGINES and named != engine:
+        raise ValueError(
+            f"{source}: staged source_model {declared!r} names a different "
+            f"engine from the registered {engine!r}"
+        )
+    if not known_release(source, declared):
+        raise ValueError(
+            f"{source}: staged source_model {declared!r} names a release that "
+            "ENGINE_RELEASES does not record for this publisher — extend the "
+            "ledger deliberately rather than letting a row introduce one"
+        )
+    return declared
 
 
 def _relationship_kind(source: str) -> str | None:
