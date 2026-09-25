@@ -59,6 +59,7 @@ from . import (
     ingest_harvest,
     ingest_hmt_distributional,
     ingest_obr_divergence,
+    ingest_obr_costings,
     ingest_obr_policy_effects,
     ingest_platform,
     ingest_reform_validation,
@@ -72,6 +73,7 @@ from . import (
     ingest_ons_etb,
     ingest_urban,
     produce_campaign_uk,
+    produce_obr_costings,
 )
 
 
@@ -200,6 +202,11 @@ def build(db_path: Path) -> dict:
             "uk_policy_effects",
             lambda: ingest_obr_policy_effects.ingest(db_path),
         ),
+        # The OBR-certified costings PR #56's lane scores: 621 Policy
+        # Measures Database / EFO Table 3.17 rows keyed to
+        # data/uk/obr_measure_reforms.yaml, with announcement-time
+        # baselines (#13).
+        ("obr_costings", lambda: ingest_obr_costings.ingest(db_path)),
         # Every Autumn Budget 2025 score (#136): 25 harvest families from
         # 27 producers, keyed to data/uk/ab2025_measures.json, with exact
         # per-family accounting.
@@ -208,6 +215,13 @@ def build(db_path: Path) -> dict:
         (
             "campaign_uk",
             lambda: ingest_campaign.ingest(db_path, produce_campaign_uk.RESOLVED),
+        ),
+        # #56's computed counterparts: the compute staging resolved to
+        # claim ids and executed worlds, then attached like any campaign.
+        ("produce_uk_obr_costings", lambda: produce_obr_costings.produce(db_path)),
+        (
+            "campaign_uk_obr_costings",
+            lambda: ingest_campaign.ingest(db_path, produce_obr_costings.RESOLVED),
         ),
         # The pe_gap verdicts for AB2025 claims on measures the certified
         # engine cannot express: a result row AND a diagnosis row carrying

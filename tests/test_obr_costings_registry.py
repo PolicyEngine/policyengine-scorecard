@@ -11,6 +11,7 @@ from __future__ import annotations
 import builtins
 import copy
 import csv
+import gzip
 import hashlib
 import importlib.util
 import json
@@ -36,8 +37,10 @@ SMOKE_COMPARISON = ROOT / "results" / "uk" / "obr_costings" / "COMPARISON.csv"
 VENDORED_CLAIMS = (
     ROOT / "sources" / "harvest-20260802" / "uk_obr" / "obr_costings_claims.jsonl"
 )
+# The full OBR harvest the slice is cut from — the repository's own
+# vendored copy (sha256 in that family's manifest), not a file outside it.
 FULL_HARVEST_CLAIMS = (
-    Path.home() / "scorecard-harvest" / "uk_obr" / "claims_staged.jsonl"
+    ROOT / "sources" / "harvest-uk-2026-08-02" / "uk_obr" / "claims_staged.jsonl.gz"
 )
 STAGED_REQUIRED_FIELDS = {
     "external_claim_match",
@@ -2006,18 +2009,14 @@ def test_vendored_claims_are_complete_registry_measure_population():
     )
 
 
-@pytest.mark.skipif(
-    not FULL_HARVEST_CLAIMS.exists(),
-    reason="full ~/scorecard-harvest OBR claims file is unavailable",
-)
 def test_every_staged_descriptor_matches_one_full_harvest_claim():
     staged_rows = [json.loads(line) for line in SMOKE_STAGED.read_text().splitlines()]
-    full_claims = compute.load_claims(FULL_HARVEST_CLAIMS)
+    full_bytes = gzip.decompress(FULL_HARVEST_CLAIMS.read_bytes())
+    full_claims = [json.loads(line) for line in full_bytes.splitlines() if line.strip()]
 
     for row in staged_rows:
         assert len(_descriptor_hits(row["external_claim_match"], full_claims)) == 1
 
-    full_bytes = FULL_HARVEST_CLAIMS.read_bytes()
     assert hashlib.sha256(full_bytes).hexdigest() == (
         "46117d14c4de7ac10cbc9bc09acef6c5b5060db1605e02334d4a827cf420a3bd"
     )

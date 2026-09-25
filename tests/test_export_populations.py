@@ -252,8 +252,8 @@ def test_integration_committed_db(tmp_path):
     for r in payload["rows"]:
         dist[r["country"]] = dist.get(r["country"], 0) + 1
     # UK: 14 reckoner rows + 3,994 national-grain Autumn Budget 2025 claims
-    # opted into pre-result display (#136)
-    assert dist == {"US": 270, "UK": 4008, "BE": 9, "NZ": 12}
+    # opted into pre-result display (#136) + 621 OBR costings rows (#56)
+    assert dist == {"US": 270, "UK": 4629, "BE": 9, "NZ": 12}
     nz = [row for row in payload["rows"] if row["country"] == "NZ"]
     assert len(nz) == 12
     assert {row["source"] for row in nz} == {"nz_treasury"}

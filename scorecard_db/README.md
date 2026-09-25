@@ -311,3 +311,34 @@ harvest as `proposed_baseline` are registered in `baselines.py` and mapped
 by their opening words in `_PROPOSED_BASELINE_PREFIXES`; a row on an
 unregistered world raises rather than defaulting to current law (#13).
 
+
+## 2026-09-25 population: OBR-certified measure costings (UK, #54/#56)
+
+`ingest_obr_costings` (chain position: after `uk_policy_effects`, before
+`uk_ab2025`) ingests the 621-row slice of the OBR Policy Measures Database
+(November 2025 vintage, 552 rows, source `obr_pmd`) and the EFO March 2026
+Table 3.17 re-estimates (69 rows, source `obr_efo`) that
+`data/uk/obr_measure_reforms.yaml` scores. The slice is DERIVED from the
+vendored harvest by `pipeline/select_obr_costings_claims.py` (25,558 rows
+read = 621 selected + 24,937 outside the registry; `--check` is byte-exact),
+which also writes the JSON projection of the YAML registry the build reads.
+
+```
+PYTHONPATH=. uv run --with pyyaml python pipeline/select_obr_costings_claims.py --check
+PYTHONPATH=. python -m scorecard_db.ingest_obr_costings data/scorecard.db
+```
+
+Identity: every condition key is in `STANDARD_CONDITIONS`; claims key the
+FY END year; `exchequer_impact` rows carry `REVENUE_CHANGE` with
+`fiscal_measure = exchequer_impact`; every row names the registered world
+OBR scored it against (that round's `obr_pre_measures_<event>`, or the
+indexed-thresholds counterfactual for the March 2026 re-estimates) and, for
+the Autumn Budget 2025 measures, the #136 registry key so the OBR leg joins
+the other producers' rows on one reform key.
+
+Results: `produce_obr_costings` (after `campaign_uk`) resolves the compute
+staging `results/uk/staged/obr_costings.jsonl` to claim ids and stamps the
+world PE EXECUTED (`baseline_key`: the registered pre-measure world for a
+reversal on the certified world); `campaign_uk_obr_costings` attaches it via
+`ingest_campaign`, which now honours a staged `baseline_key` and refuses an
+unregistered one.

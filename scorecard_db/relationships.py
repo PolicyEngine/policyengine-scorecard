@@ -331,6 +331,20 @@ _OBR_POLICY_EFFECTS_HELD = (
     "with a consuming pin).",
 )
 
+# OBR Policy Measures Database costings (#56, mode 2): the certified
+# scorecard lines HM Treasury publishes at each fiscal event, held out
+# for the same reason as the EFO tables — policyengine-uk consumes the
+# OBR economy determinants and the welfare forecast lines, never a
+# measure's costing (consumption surfaces read 2026-08-19 at the
+# certified pins; targets/sources/obr.py in pe-uk-data@dd68c73).
+_OBR_PMD_HELD = (
+    CR.HELD_OUT,
+    "OBR-certified measure costings (Policy Measures Database, November "
+    "2025 vintage) are scored, never consumed: no pe-uk-data target and "
+    "no policyengine-uk parameter is fitted to a scorecard line "
+    "(consumption surfaces read 2026-08-19 at the certified pins).",
+)
+
 
 # Autumn Budget 2025 port (#136): every producer that scored the Budget,
 # assigned one by one. All held_out — nothing in pe-uk-data@dd68c73
@@ -553,6 +567,8 @@ def uk_relationship(source, metric, program=None, kind=None):
         return _HMT_DA_HELD
     if source == "hm_treasury":
         return (CR.HELD_OUT, "fiscal-event costings are scored, never consumed.")
+    if source == "obr_pmd":
+        return _OBR_PMD_HELD
     if source in _AB2025_HELD:
         return _AB2025_HELD[source]
     if source == "dwp":

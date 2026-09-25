@@ -851,6 +851,166 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "out/v05h/aged_results.json hashes pinned in "
         "sources/be-pit-reform-2026/manifest.jsonl.",
     ),
+    # --- #56 OBR costings lane: the pre-measure worlds PE executes by
+    # reversing each scored measure on the certified world (the
+    # Autumn Budget 2025 measures reuse the pre_ab2025__* worlds above;
+    # the PA/HRT re-estimate executes obr_announcement_baseline_efo_march_2026).
+    (
+        {
+            "policy": "pre_efo_march_2026__additional_rate_threshold_reduction",
+            "measure": "efo_march_2026__additional_rate_threshold_reduction",
+        },
+        "pre_efo_march_2026__additional_rate_threshold_reduction",
+        "UK current law (the certified world) with Additional rate threshold: reduction reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml efo_march_2026__additional_rate_threshold_reduction pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_efo_march_2026__nics_rise_in_primary_threshold",
+            "measure": "efo_march_2026__nics_rise_in_primary_threshold",
+        },
+        "pre_efo_march_2026__nics_rise_in_primary_threshold",
+        "UK current law (the certified world) with NICs: rise in primary threshold reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml efo_march_2026__nics_rise_in_primary_threshold pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_efo_march_2026__class_1_nics_threshold_freezes",
+            "measure": "efo_march_2026__class_1_nics_threshold_freezes",
+        },
+        "pre_efo_march_2026__class_1_nics_threshold_freezes",
+        "UK current law (the certified world) with Class 1 NICs: threshold freezes reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml efo_march_2026__class_1_nics_threshold_freezes pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_efo_march_2026__autumn_statement_2023_nics_reduction",
+            "measure": "efo_march_2026__autumn_statement_2023_nics_reduction",
+        },
+        "pre_efo_march_2026__autumn_statement_2023_nics_reduction",
+        "UK current law (the certified world) with Autumn Statement 2023 NICs reduction reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml efo_march_2026__autumn_statement_2023_nics_reduction pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_efo_march_2026__spring_budget_2024_nics_reduction",
+            "measure": "efo_march_2026__spring_budget_2024_nics_reduction",
+        },
+        "pre_efo_march_2026__spring_budget_2024_nics_reduction",
+        "UK current law (the certified world) with Spring Budget 2024 NICs reduction reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml efo_march_2026__spring_budget_2024_nics_reduction pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_efo_march_2026__autumn_budget_2024_employer_nics_rise",
+            "measure": "efo_march_2026__autumn_budget_2024_employer_nics_rise",
+        },
+        "pre_efo_march_2026__autumn_budget_2024_employer_nics_rise",
+        "UK current law (the certified world) with Autumn Budget 2024 employer NICs rise reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml efo_march_2026__autumn_budget_2024_employer_nics_rise pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+            "measure": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+        },
+        "pre_autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+        "UK current law (the certified world) with National Insurance contributions (NICs): 2p cut to the main rate of Class 1 employee NIC… reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+            "measure": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+        },
+        "pre_autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+        "UK current law (the certified world) with National Insurance contributions (NICs): 1p cut to the main rate of Class 4 self-employe… reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+            "measure": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+        },
+        "pre_spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+        "UK current law (the certified world) with National Insurance contributions (NICs): 2 percentage point cut to the main rate of Clas… reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+            "measure": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+        },
+        "pre_spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+        "UK current law (the certified world) with National Insurance contributions (NICs): 2 percentage point cut to the main rate of Clas… reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_spring_budget_2024__hicbc_threshold_and_taper",
+            "measure": "spring_budget_2024__hicbc_threshold_and_taper",
+        },
+        "pre_spring_budget_2024__hicbc_threshold_and_taper",
+        "UK current law (the certified world) with High Income Child Benefit Charge: increase income threshold to £60,000 and taper range t… reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml spring_budget_2024__hicbc_threshold_and_taper pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_autumn_budget_2024__employer_nics_package",
+            "measure": "autumn_budget_2024__employer_nics_package",
+        },
+        "pre_autumn_budget_2024__employer_nics_package",
+        "UK current law (the certified world) with Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Sec… reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml autumn_budget_2024__employer_nics_package pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
 ]
 
 

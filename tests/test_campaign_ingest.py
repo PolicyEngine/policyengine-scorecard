@@ -192,13 +192,23 @@ def test_reingest_idempotent(db_copy):
     again = ingest(db_copy)
     assert again == first
     conn = sqlite3.connect(db_copy)
+    # the run ids this ingest owns: the US staged files' own. Other
+    # campaign directories (the UK reckoner, the OBR costings lane) attach
+    # under their own run ids and must be untouched by a US re-ingest.
+    us_runs = sorted(
+        {
+            json.loads(line)["run_id"]
+            for path in STAGED_US.glob("*.jsonl")
+            for line in path.read_text().splitlines()
+            if line.strip()
+        }
+    )
+    marks = ",".join("?" * len(us_runs))
     n = conn.execute(
-        "SELECT COUNT(*) FROM pe_results WHERE run_id LIKE 'campaign-%'"
-        " AND run_id != ?",
-        (UK_RUN,),
+        f"SELECT COUNT(*) FROM pe_results WHERE run_id IN ({marks})", us_runs
     ).fetchone()[0]
     n_ex = conn.execute(
-        "SELECT COUNT(*) FROM pe_exhibits WHERE run_id LIKE 'campaign-%'"
+        f"SELECT COUNT(*) FROM pe_exhibits WHERE run_id IN ({marks})", us_runs
     ).fetchone()[0]
     # Deletion is scoped to the run_ids being re-ingested: the US
     # re-ingest must leave the committed UK reckoner family untouched.

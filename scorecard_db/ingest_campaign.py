@@ -109,6 +109,14 @@ def _normalize(family: str, match: dict) -> tuple[dict, str | None]:
     return cond, reform_policy
 
 
+def _executed_baseline(row: dict) -> str:
+    """The key of the world the run executed as its baseline. Absent on
+    the US campaign staging (every run there executed current law);
+    present on staging whose runs executed a registered pre-measure
+    world (produce_obr_costings). Never inferred from the claim."""
+    return row.get("baseline_key") or _CURRENT_LAW_KEY
+
+
 def _find_claim(db: ScorecardDB, family: str, match: dict) -> str:
     # Direct key: rows against claims already in the DB (the Urban
     # subgroup joins) name the claim_id itself — no descriptor
@@ -207,7 +215,7 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
                         "run_id": row["run_id"],
                         "computed_at": row["computed_at"],
                         "note": note,
-                        "baseline_key": _CURRENT_LAW_KEY,
+                        "baseline_key": _executed_baseline(row),
                     }
                 )
                 continue
@@ -228,13 +236,29 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
                     run_id=row["run_id"],
                     computed_at=row["computed_at"],
                     annotations=row.get("annotations", []),
-                    # every campaign run executed a current-law
-                    # baseline (reform side carries the option;
-                    # the jct expiry-reversal's negation is in
-                    # its construction)
-                    baseline_key=_CURRENT_LAW_KEY,
+                    # the world the run EXECUTED as its baseline: current
+                    # law unless the staging says otherwise (the US
+                    # campaign runs all executed current law; the UK OBR
+                    # costings lane executes registered pre-measure
+                    # worlds and stamps them, #13)
+                    baseline_key=_executed_baseline(row),
                 )
             )
+
+    # A staged executed world must be a registered one: an unregistered
+    # key would pass the FK-less insert and defeat the #13 guard.
+    registered = {
+        r[0] for r in db.conn.execute("SELECT baseline_key FROM baselines").fetchall()
+    }
+    staged_worlds = {r.baseline_key for r in results} | {
+        e["baseline_key"] for e in exhibits
+    }
+    unregistered = sorted(k for k in staged_worlds if k not in registered)
+    if unregistered:
+        raise ValueError(
+            f"staged baseline_key(s) {unregistered} are not registered worlds "
+            "(baselines.py) — register the executed world, never stamp a guess"
+        )
 
     # All parsing and matching done — one transaction, commit or nothing.
     # Deletion is scoped to the exact run_ids being re-ingested, never the
