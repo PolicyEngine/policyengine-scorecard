@@ -198,12 +198,17 @@ def announced(line, key, program, computability, **kw):
     return m
 
 
-# related_reckoner_reforms: the HMRC ready-reckoner lines (reform keys of the
-# uk_hmrc reckoner claims already in the DB, ingest_uk_externals) that score
-# the same lever. The IFS Green Budget Table 4.1 yields ARE those reckoner
-# numbers (restated, dropped under #86), so the option joins the reckoner
-# rows instead of re-staging them.
 def option(key, title, program, computability, producers, source_note, **kw):
+    """An option another producer costed for this Budget.
+
+    ``**kw`` carries the entry's optional fields (pe_reform_delta, delta_kind,
+    engine_baseline_2026, head_variables, note, …) and, on the IFS Green Budget
+    options, ``related_reckoner_reforms``: the HMRC ready-reckoner lines
+    (reform keys of the uk_hmrc reckoner claims already in the DB,
+    ingest_uk_externals) that score the same lever. The IFS Green Budget
+    Table 4.1 yields ARE those reckoner numbers (restated, dropped under #86),
+    so the option joins the reckoner rows instead of re-staging them.
+    """
     m = {
         "measure_key": f"ab2025_option__{key}",
         "title": title,

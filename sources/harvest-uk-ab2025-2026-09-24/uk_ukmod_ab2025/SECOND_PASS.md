@@ -1,10 +1,10 @@
 # CeMPA WP 3/26 (Frimpong, Feb 2026) — second-pass extraction notes
 
 Source: `cempa3-26.pdf`, sha256 `7c3f48bda8f213f933b153482c50be58c5e0d8a86b49257359876c64dec6097a`
-(verified). Text extracted with `pypdf` (35 PDF pages) to `cempa3-26.txt`; `pdftotext` is
-not installed. Extractor: `extract_second_pass.py` (re-runnable; asserts cell counts and
-re-runs the verbatim check). Output: `second_pass_rows.jsonl`, 302 rows, one per printed
-number, with exactly the 13 requested fields.
+(verified). Text is extracted with `pypdf` (35 PDF pages) by the vendored extractor
+`tools/extract_second_pass.py` (re-runnable: `uv run --with pypdf python tools/extract_second_pass.py <cempa3-26.pdf>`
+against the primary fetched from the manifest URL; it asserts the cell counts and re-runs the
+verbatim check). Output: 302 rows, one per printed number, converted into this family's rows.
 
 Printed page = PDF page - 2 (the cover and inner cover are unnumbered).
 
@@ -83,11 +83,9 @@ change columns are staged exactly as printed with `scenario = reform_minus_basel
 
 - `period` = FY END year per the task brief (paper "2026" = UK_2026 policy system =
   FY 2026-27 -> period 2027, `conditions.fy = "2026-27"`; "2030" -> 2031, "2030-31").
-  WARNING: the first pass staged this same paper (Tables 1-3 in
-  `sources/harvest-uk-2026-08-02/uk_ukmod_jrf/claims_staged.jsonl.gz`) with period = FY
-  START year (2026, `fy = "2026/27"`, `time_basis = fiscal_year`), matching the NOTES.md
-  convention for the UKMOD Country Report. Reconcile before merging; shifting these rows
-  is a mechanical map (period - 1, fy "YYYY-YY" -> "YYYY/YY").
+  The first pass staged this same paper's Tables 1-3 with FY START periods in
+  `sources/harvest-uk-2026-08-02/uk_ukmod_jrf/`; this family converts those rows to FY END
+  periods (NOTES.md, "Conversion"), so both passes agree here.
 - `geography`: "UK" for UK tables; "England" / "Scotland" / "Wales" / "Northern Ireland"
   for nation tables (first pass used lowercase "uk").
 - `income_group`: decile_1..decile_10, all, plus "poor" for Table 5's "Poor" row (not in
