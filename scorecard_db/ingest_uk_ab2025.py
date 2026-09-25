@@ -1056,6 +1056,49 @@ def ingest(db_path: Path) -> dict:
     }
 
 
+# --- lanes after the counterpart run (#136 tranche 3) -------------------------
+
+
+def advance_lanes(db_path: Path, feed_path: Path | None = None) -> dict:
+    """Move each AB2025 lane whose claims now carry a computed PolicyEngine
+    counterpart (a comparable or constructed result) from ``ingested`` to
+    ``computed``, naming how many claims are answered. A lane with no
+    counterpart yet keeps its stage; nothing here creates or removes a
+    lane, and the pe_gap verdict rows do not count as counterparts."""
+    from .ingest_harvest import sync_lane_feed
+
+    db = ScorecardDB(db_path)
+    out: dict = {}
+    with db.conn:
+        for lane in LANES:
+            fams = [f for f, (l, _) in FAMILIES.items() if l == lane]
+            marks = ",".join("?" * len(fams))
+            row = db.conn.execute(
+                "SELECT stage, detail FROM lanes WHERE lane = ?", (lane,)
+            ).fetchone()
+            if row is None:
+                continue
+            answered, claims = db.conn.execute(
+                "SELECT COUNT(DISTINCT r.claim_id), COUNT(DISTINCT s.claim_id)"
+                " FROM external_scores s LEFT JOIN pe_results r ON r.claim_id = s.claim_id"
+                " AND r.status IN ('comparable', 'constructed')"
+                " WHERE json_extract(s.publication, '$.registry') = ?"
+                f" AND json_extract(s.publication, '$.family') IN ({marks})",
+                (REGISTRY_MARK, *fams),
+            ).fetchone()
+            out[lane] = {"claims": claims, "answered": answered}
+            if not answered:
+                continue
+            base = row["detail"].split(" — ")[0]
+            detail = f"{base} — {answered} claims with a PolicyEngine counterpart on the certified bundle"
+            db.conn.execute(LANE_SQL, (lane, "computed", detail, LANE_UPDATED))
+    sync_lane_feed(
+        db, feed_path or REPO / "data" / "lanes.json", FEED_UPDATED, lanes=LANES
+    )
+    db.close()
+    return out
+
+
 # --- pe_gap verdicts ----------------------------------------------------------
 
 
