@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-09-24",
+ "updated": "2026-09-25",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -488,7 +488,7 @@
    "stage": "ingested",
    "running": false,
    "updated": "2026-09-24",
-   "note": "2163 claims from 7 families (2791 staged rows = 2163 ingested + 628 tallied drops)"
+   "note": "2646 claims from 8 families (3354 staged rows = 2646 ingested + 708 tallied drops)"
   },
   {
    "id": "uk-ab2025-admin-other",

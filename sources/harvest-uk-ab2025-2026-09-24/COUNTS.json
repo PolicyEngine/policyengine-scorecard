@@ -214,6 +214,14 @@
    "trussell_wpi"
   ]
  },
+ "uk_ukmod_ab2025": {
+  "rows": 563,
+  "primaries": 1,
+  "claims_sha256": "7dd50b61a6e90397c5afe9ef0fdac9708b704dc0238e357fdffac680b2da9dae",
+  "sources": [
+   "ukmod"
+  ]
+ },
  "uk_wbg": {
   "rows": 7,
   "primaries": 2,
@@ -223,9 +231,9 @@
   ]
  },
  "_totals": {
-  "rows": 8194,
+  "rows": 8757,
   "restated": 342,
-  "families": 25,
+  "families": 26,
   "pinned_on": "2026-09-24"
  }
 }

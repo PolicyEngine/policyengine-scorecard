@@ -198,6 +198,11 @@ def announced(line, key, program, computability, **kw):
     return m
 
 
+# related_reckoner_reforms: the HMRC ready-reckoner lines (reform keys of the
+# uk_hmrc reckoner claims already in the DB, ingest_uk_externals) that score
+# the same lever. The IFS Green Budget Table 4.1 yields ARE those reckoner
+# numbers (restated, dropped under #86), so the option joins the reckoner
+# rows instead of re-staging them.
 def option(key, title, program, computability, producers, source_note, **kw):
     m = {
         "measure_key": f"ab2025_option__{key}",
@@ -1399,16 +1404,21 @@ measures.append(
 )
 measures.append(
     {
-        "measure_key": "ab2025__package_ukmod_six_measures",
-        "title": "UKMOD (CeMPA WP 3/26) six-measure Autumn Budget 2025 package",
+        "measure_key": "ab2025__package_ukmod_wp3_26",
+        "title": "UKMOD (CeMPA WP 3/26) Autumn Budget 2025 package: income tax threshold freezes, UC two-child limit removal, Winter Fuel Allowance restrictions, Pension Credit reductions",
         "reported_status": "announced",
-        "source_note": "ISER CeMPA working paper 3/26 on UKMOD B2025.09; the six measures are listed in the paper and the ukmod-stats lane",
+        "source_note": "ISER CeMPA working paper 3/26 (Frimpong, 18 Feb 2026) on UKMOD B2025.09, FRS 2023-24: static scoring of the package over 2026-2030, fixed-line poverty; staged as harvest family uk_ukmod_ab2025",
         "program": "package",
         "computability": "partial",
         "pe_reform_delta": None,
         "construction": "package_of_registry_measures",
-        "package_of": "the six measures named in sources/ukmod-stats (two-child limit, threshold freeze, dividend/savings/property rates, salary sacrifice cap, WFP, UC rebalancing — confirmed at harvest)",
-        "missing": "Composition confirmed against the paper at harvest; UKMOD's fixed-line poverty statistics use its own baseline line (ukmod_b2025_09_fixed_baseline_line, #13).",
+        "package_of": [
+            "ab2025__personal_tax_thresholds_freeze_to_2031",
+            "ab2025__uc_child_element_remove_two_child_limit",
+            "ab2025__winter_fuel_payment_income_test_35000",
+        ],
+        "package_note": "The paper names four components; three are registry measures. Its 'Pension Credit reductions' has no Table 4.1 line and is carried in the paper's own words on every row (reform_hint), not as a registry measure.",
+        "missing": "The Pension Credit leg is not a registry measure; UKMOD's poverty statistics hold the 2026 baseline line fixed (ukmod_b2025_09_fixed_baseline_line, #13), so a PE counterpart states the line it used.",
         "action_link": ISSUE,
         "obr_pmd_measure_key": None,
     }
@@ -1437,6 +1447,7 @@ o(
     delta_kind="absolute_value",
     engine_baseline_2026={"gov.hmrc.income_tax.rates.uk[0].rate": 0.2},
     head_variables=["income_tax"],
+    related_reckoner_reforms=["trr_income_tax_change_basic_rate_by_1p"],
 )
 o(
     "income_tax_all_rates_plus_1p",
@@ -1458,6 +1469,11 @@ o(
     },
     head_variables=["income_tax"],
     note="IFS also costs the higher and additional rates alone; those are the [1]/[2] legs of this entry, staged with their own reform_hint.",
+    related_reckoner_reforms=[
+        "trr_income_tax_change_basic_rate_by_1p",
+        "trr_income_tax_change_higher_rate_by_1p",
+        "trr_income_tax_increase_additional_rate_by_1p_yield",
+    ],
 )
 o(
     "income_tax_basic_rate_plus_2p",
@@ -1517,6 +1533,13 @@ o(
         "gov.hmrc.national_insurance.class_4.rates.additional": 0.02,
     },
     head_variables=["ni_class_1_employee", "ni_class_4"],
+    related_reckoner_reforms=[
+        "trr_national_insurance_change_class_1_employee_main_rate_by_1_percentage_point",
+        "trr_national_insurance_change_class_1_employee_additional_rate_by_1_percentage_point",
+        "trr_national_insurance_change_class_4_main_rate_by_1_percentage_point",
+        "trr_national_insurance_change_class_4_additional_rate_by_1_percentage_point",
+        "trr_national_insurance_change_class_1_employer_rate_by_1_percentage_point",
+    ],
 )
 o(
     "nics_abolish_upper_earnings_and_profits_limits",
@@ -1662,6 +1685,10 @@ o(
     },
     head_variables=["capital_gains_tax"],
     behavioural_note="gov.simulation.capital_gains_responses.elasticity is 0 at the pin (static); IFS's numbers include a realisations response, so the elasticity sweep in data/uk/cgt_alignment_reform.json is the comparable leg.",
+    related_reckoner_reforms=[
+        "trr_capital_gains_tax_increase_higher_capital_gains_tax_rate_by_1_percentage_point",
+        "trr_capital_gains_tax_increase_higher_capital_gains_tax_rate_by_10_percentage_points",
+    ],
 )
 o(
     "cgt_equalise_with_income_tax_plus_investment_allowance",
@@ -1839,6 +1866,9 @@ o(
         r"inherit|estate|nil_rate|bequest|death",
         upstream="estates",
     ),
+    related_reckoner_reforms=[
+        "trr_inheritance_tax_increase_standard_rate_for_estates_left_on_death_by_1_percentage_point"
+    ],
 )
 
 # council tax and property
@@ -1940,6 +1970,10 @@ o(
     },
     head_variables=["vat"],
     note="The zero-rated leg has no rate parameter (zero-rated consumption is the residual of full and reduced-rate consumption); expressed as a construction on the LCFS-imputed consumption categories. VAT incidence is the consumption module's imputation, stated on the row.",
+    related_reckoner_reforms=[
+        "trr_vat_change_standard_rate_by_1_percentage_point",
+        "trr_vat_change_reduced_rate_by_1_percentage_point",
+    ],
 )
 o(
     "vat_registration_threshold_cut_to_30000",
@@ -2095,6 +2129,9 @@ o(
         "Corporation tax and the bank surcharge are business-side taxes outside a household microsimulation (the engine's business_rates incidence via shareholdings is the only corporate leg it holds).",
         r"corporation|bank_surcharge|surcharge|profits",
     ),
+    related_reckoner_reforms=[
+        "trr_corporation_tax_increase_corporation_tax_by_1_percentage_point"
+    ],
 )
 o(
     "boe_apf_indemnity_or_reserves_remuneration_reform",

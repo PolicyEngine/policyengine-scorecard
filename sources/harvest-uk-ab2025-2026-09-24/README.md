@@ -5,9 +5,10 @@ holding `NOTES.md` (access recipe, coverage tally, what was NOT staged and why),
 (one line per primary document with its sha256) and `claims_staged.jsonl.gz` (one line per
 claim). The seed for every family is the 24 Sep 2026 inventory in `SEED_INVENTORY/`
 (one bullet per claim: `[TAG] measure | metric type | value | basis | model/data | publication,
-date | URL`). The harvest is vendored data: no module ingests it until the tranche-2 ingest
-(`scorecard_db/ingest_uk_ab2025.py`) lands, and that ingest's exact accounting reads
-`read = ingested + dropped` against the row counts pinned here.
+date | URL`). The harvest is vendored data, ingested by `scorecard_db/ingest_uk_ab2025.py`
+(#138, merged 2026-09-25) whose exact accounting reads `read = ingested + dropped` against
+the row counts pinned here (`COUNTS.json`). Family `uk_ukmod_ab2025` was added on
+2026-09-25 (UKMOD's own Budget brief, CeMPA WP 3/26).
 
 ## Rules (from `sources/harvest-2026-08-02/README.md`, extended)
 
@@ -40,14 +41,16 @@ date | URL`). The harvest is vendored data: no module ingests it until the tranc
 8. **Primaries, not summaries.** Every publication in `manifest.jsonl` was fetched (directly,
    via the Wayback Machine, or as a Flourish data endpoint) and hashed. A figure whose primary
    could not be read is recorded in `NOTES.md` under "Not staged", never as a claim
-   (Policy Exchange's CAPTCHA-gated PDF is the standing example).
+   (the seed inventory expected Policy Exchange's PDF to be CAPTCHA-gated; the harvest read
+   the primary directly and staged 84 rows from it, see `uk_thinktank_misc/NOTES.md`).
 9. **HMT Figures 1.A/1.B bar readings are NOT staged** (`data/uk/hmt_da_packages.yaml`
    `value_availability_rule`, #61). Figure 1.C's table and Table 2.C are already in
    `sources/harvest-uk-2026-08-02/uk_hmt`, as is Table 4.1; do not re-stage them.
-10. **Worked examples and macro calls are staged for the tally**, not for comparison:
-    single-household examples (`proposed_metric: household_tax_change` etc.) are mode-3
-    material (#63) and bank macro calls are the #55 lane; the ingest drops both with a
-    tallied reason.
+10. **Worked examples are staged for the tally**, not for comparison: single-household
+    examples (`proposed_metric: household_tax_change` etc.) are mode-3 material (#63) and
+    the ingest drops them with a tallied reason. **Bank and City macro calls are NOT in
+    this harvest**: they are the #55 lane (`uk_macro_calls`, tranche 4), as are NIESR's
+    NiGEM rows; only NIESR's household/static rows are staged here (`uk_niesr/NOTES.md`).
 
 ## Row contract (`claims_staged.jsonl.gz`)
 
@@ -128,6 +131,7 @@ port (baselines.py, tranche 1): `rf_permanent_measures_since_ab2024`,
 | jrf | Joseph Rowntree Foundation | uk_jrf |
 | ippr | IPPR | uk_ippr |
 | cpag | Child Poverty Action Group | uk_cpag |
+| ukmod | UKMOD (CeMPA, ISER, University of Essex) — the Budget brief WP 3/26 | uk_ukmod_ab2025 |
 | policy_in_practice | Policy in Practice | uk_pip |
 | entitledto | entitledto | uk_entitledto |
 | trussell_wpi | Trussell / WPI Economics | uk_trussell_wpi |

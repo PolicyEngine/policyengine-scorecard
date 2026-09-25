@@ -1,7 +1,7 @@
 {
- "read": 8194,
- "ingested": 6985,
- "dropped": 1209,
+ "read": 8757,
+ "ingested": 7468,
+ "dropped": 1289,
  "by_family": {
   "uk_hmt_costings": {
    "read": 699,
@@ -57,6 +57,11 @@
    "read": 7,
    "ingested": 4,
    "dropped": 3
+  },
+  "uk_ukmod_ab2025": {
+   "read": 563,
+   "ingested": 483,
+   "dropped": 80
   },
   "uk_centax": {
    "read": 87,
@@ -131,13 +136,13 @@
  },
  "drops": {
   "assumption_or_base_not_a_score": 104,
-  "macro_fiscal_or_out_of_scope": 119,
+  "macro_fiscal_or_out_of_scope": 139,
   "restated_official_figure": 342,
   "unit_no_household_concept": 46,
   "parameter_or_threshold_level": 53,
   "categorical_rating_not_a_value": 100,
   "mode3_specimen_household": 116,
-  "ratio_or_derived_quantity": 62,
+  "ratio_or_derived_quantity": 122,
   "share_level_no_registered_metric": 18,
   "energy_levy_level_no_metric": 2,
   "mtr_no_registered_metric": 7,
