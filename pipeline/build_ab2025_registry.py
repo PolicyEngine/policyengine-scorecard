@@ -2508,7 +2508,7 @@ reg = {
     "verification_note": (
         "Every pe_reform_delta and pe_baseline_modifier path was RESOLVED against an installed policyengine-uk 2.89.2 on 2026-09-24 "
         "and engine_baseline_2026 records what that engine returns for 2026-06-01. Every not_expressible verdict carries a "
-        "name_search COMPUTED over the pinned engine's full parameter tree (2,246 nodes) and variable list (869), never typed: "
+        "name_search COMPUTED over the pinned engine's full parameter tree and variable list (869), never typed. The tree is counted as the search walks it: 2,246 leaves = 1,530 Parameter values + 716 bracket thresholds, rates and amounts across 70 scales; the 730 ParameterNode containers are searched by path but not counted, so a walk that counts every node gives 2,330. "
         "the AB2026 registry's v1 published two false gaps from guessed paths, and #106 nearly published a false bus gap from a "
         "parameter-only search. Year-dependent facts recorded at the pin: income tax thresholds frozen through 2030-31 and the NI "
         "thresholds NOT (primary threshold/UEL uprate from April 2028, class 4 limits from April 2027); the halved UC health "

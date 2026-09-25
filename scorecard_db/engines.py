@@ -124,9 +124,60 @@ SHARED_ENGINE: dict[str, frozenset[str]] = {
     # UKMOD is open and versioned, but four AB2025 producers ran it (CeMPA
     # B2025.09, CPAG B1.13, WBG B2025.08, Fraser of Allander): their
     # agreement on a two-child or benefit-cap figure is one engine reported
-    # several times, on different releases.
+    # several times, on different releases — which release each ran is
+    # ENGINE_RELEASES.
     "ukmod": frozenset({"ukmod", "cpag", "wbg", "fraser_of_allander"}),
 }
+
+# One engine at several RELEASES. Publishers of a shared engine ran it on
+# different releases, which is weaker corroboration than independence
+# (same code, same FRS input, same validation) but stronger than one run
+# reported twice (a release moves parameters, uprating and take-up
+# assumptions). So the release is recorded per publisher, spelled as the
+# claims spell it: source_model = "<engine>_<release>" (split_release).
+# A claim that names a release this ledger does not record is refused at
+# ingest (known_release) rather than read as a new engine.
+ENGINE_RELEASES: dict[str, dict[str, frozenset[str]]] = {
+    "ukmod": {
+        # CeMPA's own rows: the Country Report 2023-2030 (WP 8/26,
+        # ingest_uk_externals). Its Autumn Budget 2025 brief (WP 3/26) ran
+        # B2025.09 and is registered as the ukmod_b2025_09_fixed_baseline_line
+        # world in baselines.py.
+        "ukmod": frozenset({"b2026.01"}),
+        "cpag": frozenset({"b1.11", "b1.13"}),
+        "wbg": frozenset({"b2025.08"}),
+        # The FAI Budget note names UKMOD without a release; its claims
+        # carry the bare engine.
+        "fraser_of_allander": frozenset(),
+    },
+}
+
+
+def split_release(source_model: str) -> tuple[str, Optional[str]]:
+    """(engine, release) for a claim's source_model.
+
+    ``ukmod_b1.13`` -> ("ukmod", "b1.13"); ``ukmod`` -> ("ukmod", None);
+    a spelling no registered engine prefixes -> (source_model, None). The
+    longest registered id wins, so ``ifs_taxben`` is an engine, not a
+    release of anything.
+    """
+    if source_model in ENGINES:
+        return source_model, None
+    for engine in sorted(ENGINES, key=len, reverse=True):
+        if source_model.startswith(engine + "_"):
+            return engine, source_model[len(engine) + 1 :]
+    return source_model, None
+
+
+def known_release(source: str, source_model: str) -> bool:
+    """True for a bare spelling, or for a release ENGINE_RELEASES records
+    for that publisher. A versioned spelling the ledger lacks is False:
+    the ledger is the record, so the record is extended deliberately."""
+    engine, release = split_release(source_model)
+    if release is None:
+        return True
+    return release in ENGINE_RELEASES.get(engine, {}).get(source, frozenset())
+
 
 # Sources whose claims are model OUTPUT rather than administrative
 # fact, and the engine each one's modelled claims come from. A source
