@@ -72,6 +72,12 @@ THRESHOLDS = (0.0, 0.01, 0.05)
 def configure_offline() -> None:
     for k in ("HF_HUB_OFFLINE", "TRANSFORMERS_OFFLINE", "HF_DATASETS_OFFLINE"):
         os.environ[k] = "1"
+    # The certified artifact is opened read-only by every simulation; HDF5's
+    # advisory file lock makes a concurrent reader (a hash, a copy, another
+    # run's preflight) abort this one with errno 35, which killed a run
+    # after 12 measures. The artifact's integrity is asserted by sha256
+    # before and after every simulation, not by the lock.
+    os.environ.setdefault("HDF5_USE_FILE_LOCKING", "FALSE")
 
 
 def sha256_file(path: Path) -> str:
@@ -506,6 +512,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--run-id", default=f"campaign-{dt.date.today():%Y%m%d}-uk-ab2025")
     ap.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
+    ap.add_argument(
+        "--resume",
+        action="store_true",
+        help="skip measures whose artifacts for every requested year already exist under this run id",
+    )
     args = ap.parse_args(argv)
 
     index = load_registry()
@@ -567,6 +578,21 @@ def main(argv: list[str] | None = None) -> int:
             flush=True,
         )
     written = []
+    done = []
+    if args.resume:
+        for k in list(selected):
+            paths = [args.output_dir / f"{k}_{y}.json" for y in args.years]
+            if all(
+                p.exists() and json.loads(p.read_text()).get("run_id") == args.run_id
+                for p in paths
+            ):
+                done.append(k)
+                written += paths
+        selected = [k for k in selected if k not in done]
+        print(
+            f"resume: {len(done)} measures already complete, {len(selected)} to run",
+            flush=True,
+        )
     for k in selected:
         written += run_measure(
             k,
@@ -584,7 +610,8 @@ def main(argv: list[str] | None = None) -> int:
         "data_bundle": pre["revision"],
         "artifact_sha256": pre["sha256"],
         "years": args.years,
-        "measures": selected,
+        "measures": done + selected,
+        "resumed_measures": done,
         "aliases": aliases,
         "not_computable": summary["not_computable"],
         "artifacts": {str(p.relative_to(ROOT)): sha256_file(p) for p in written},
