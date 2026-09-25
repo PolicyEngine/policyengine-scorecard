@@ -985,3 +985,55 @@ class TestIdentityClosureAtTheEdges:
             CaseSpec(**case_kwargs(baseline={"policy": "a_world_nobody_named"}))
         # the registered reinstated-limit world is accepted
         CaseSpec(**case_kwargs(baseline={"policy": "pre_ab2025"}))
+
+
+# --- the Autumn Budget 2025 worked-example battery (#136 tranche 4) ----------
+
+AB2025_BATTERY = (
+    Path(__file__).parent.parent
+    / "sources/ukmod-cases/battery/ab2025_worked_examples.json"
+)
+
+
+class TestAB2025WorkedExamples:
+    def test_loads_through_the_same_loader(self):
+        cases = load_battery(AB2025_BATTERY)
+        assert len(cases) == 46
+        assert all(c.country == "UK" for c in cases)
+        assert all(c.case_id.startswith("uk-ab2025-") for c in cases)
+
+    def test_ids_are_unique_across_both_batteries(self):
+        ids = [c.case_id for c in load_battery(BATTERY)] + [
+            c.case_id for c in load_battery(AB2025_BATTERY)
+        ]
+        assert len(ids) == len(set(ids))
+
+    def test_every_case_cites_its_publication_and_names_its_world(self):
+        """Inputs only: the printed figure lives in the rationale as text,
+        with the primary's URL, never as a field; the world is a registered
+        descriptor (the loader refuses an unregistered one)."""
+        from scorecard_db.baselines import BASELINES
+        from scorecard_db.models import baseline_key
+
+        known = {baseline_key(d) for d, *_ in BASELINES}
+        raw = json.loads(AB2025_BATTERY.read_text())["cases"]
+        for c in raw:
+            assert "http" in c["rationale"], c["case_id"]
+            assert 2025 <= c["policy_year"] <= 2031, c["case_id"]
+            assert c["expected_focus"], c["case_id"]
+            if c.get("baseline") is not None:
+                assert baseline_key(c["baseline"]) in known, c["case_id"]
+            assert not any(k in c for k in ("expected", "oracle_value", "pe_value")), c[
+                "case_id"
+            ]
+
+    def test_the_worlds_are_the_measures_the_examples_compare(self):
+        raw = json.loads(AB2025_BATTERY.read_text())["cases"]
+        worlds = {json.dumps(c.get("baseline"), sort_keys=True) for c in raw}
+        assert any(
+            "pre_ab2025__salary_sacrifice_pension_nics_cap_2000" in w for w in worlds
+        )
+        assert any(
+            "pre_ab2025__personal_tax_thresholds_freeze_to_2031" in w for w in worlds
+        )
+        assert "null" in worlds  # current-law levels

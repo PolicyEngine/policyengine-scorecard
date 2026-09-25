@@ -132,6 +132,14 @@ port (baselines.py, tranche 1): `rf_permanent_measures_since_ab2024`,
 | ippr | IPPR | uk_ippr |
 | cpag | Child Poverty Action Group | uk_cpag |
 | ukmod | UKMOD (CeMPA, ISER, University of Essex) — the Budget brief WP 3/26 | uk_ukmod_ab2025 |
+| barclays | Barclays (macro calls on the Budget, #55 lane) | uk_macro_calls |
+| capital_economics | Capital Economics (macro calls on the Budget, #55 lane) | uk_macro_calls |
+| deutsche_bank | Deutsche Bank (macro calls on the Budget, #55 lane) | uk_macro_calls |
+| ey_item_club | Ey Item Club (macro calls on the Budget, #55 lane) | uk_macro_calls |
+| goldman_sachs | Goldman Sachs (macro calls on the Budget, #55 lane) | uk_macro_calls |
+| oxford_economics | Oxford Economics (macro calls on the Budget, #55 lane) | uk_macro_calls |
+| societe_generale | Societe Generale (macro calls on the Budget, #55 lane) | uk_macro_calls |
+| niesr | NIESR (NiGEM and fiscal-stance calls; household rows are in uk_niesr) | uk_macro_calls, uk_niesr |
 | policy_in_practice | Policy in Practice | uk_pip |
 | entitledto | entitledto | uk_entitledto |
 | trussell_wpi | Trussell / WPI Economics | uk_trussell_wpi |

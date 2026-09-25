@@ -95,6 +95,24 @@ LANE_UPDATED = "2026-09-24"
 VERDICT_RUN_ID = "ab2025-verdicts-2026-09-24"
 VERDICT_COMPUTED_AT = "2026-09-24T00:00:00+00:00"
 
+# Macro-fiscal claims (#55): whatever measure or package they are keyed to,
+# the household model has no lever for a headroom, GDP or CPI call, so the
+# claim carries its own out-of-scope verdict and the lane's link.
+MACRO_METRICS = frozenset(
+    {
+        Metric.FISCAL_HEADROOM,
+        Metric.GDP_LEVEL_EFFECT,
+        Metric.CPI_INFLATION_EFFECT,
+        Metric.DECISIONS_EFFECT_ON_BORROWING,
+    }
+)
+MACRO_LINK = "https://github.com/PolicyEngine/policyengine-scorecard/issues/55"
+MACRO_MISSING = (
+    "macro-fiscal quantity: the household model has no forecast, no fiscal "
+    "rule, no headroom and no GDP or CPI channel; the Macro entry point (#55) "
+    "answers it"
+)
+
 LANES = {
     "uk-ab2025-official": {
         "source": "HM Treasury, HMRC and OBR (Autumn Budget 2025 legs)",
@@ -111,6 +129,12 @@ LANES = {
     "uk-ab2025-admin-other": {
         "source": "CenTax, TPA, PiP, NEF, NIESR and the smaller shops (Autumn Budget 2025)",
         "area": "administrative-data and own-computation scores of the Budget's measures",
+        "mode": 2,
+        "country": "UK",
+    },
+    "uk-ab2025-macro": {
+        "source": "Capital Economics, Goldman Sachs, Deutsche Bank, Barclays, Société Générale, Oxford Economics, EY ITEM Club and NIESR NiGEM (Autumn Budget 2025)",
+        "area": "macro and fiscal-aggregate calls on the Budget package — the #55 lane, out of the household model's scope",
         "mode": 2,
         "country": "UK",
     },
@@ -139,6 +163,21 @@ FAMILIES: dict[str, tuple[str, frozenset[str]]] = {
     ),
     "uk_wbg": ("uk-ab2025-microsim", frozenset({"wbg"})),
     "uk_ukmod_ab2025": ("uk-ab2025-microsim", frozenset({"ukmod"})),
+    "uk_macro_calls": (
+        "uk-ab2025-macro",
+        frozenset(
+            {
+                "barclays",
+                "capital_economics",
+                "deutsche_bank",
+                "ey_item_club",
+                "goldman_sachs",
+                "niesr",
+                "oxford_economics",
+                "societe_generale",
+            }
+        ),
+    ),
     "uk_centax": ("uk-ab2025-admin-other", frozenset({"centax"})),
     "uk_tpa": ("uk-ab2025-admin-other", frozenset({"tax_policy_associates"})),
     "uk_pip": ("uk-ab2025-admin-other", frozenset({"policy_in_practice"})),
@@ -226,6 +265,12 @@ DISPOSITIONS: dict[str, Metric] = {
     # scoring_method static; the published sign rides in conditions and
     # the value is NOT re-signed here
     "exchequer_impact_static": Metric.REVENUE_CHANGE,
+    # The #55 lane (tranche 4): headroom calls and package-size calls from
+    # the banks, NIESR and the think tanks. Out of the household model's
+    # scope on every claim (MACRO_METRICS), never a registry verdict.
+    "fiscal_headroom": Metric.FISCAL_HEADROOM,
+    "package_tax_rise_size": Metric.REVENUE_CHANGE,
+    "package_spending_change": Metric.REVENUE_CHANGE,
     # UKMOD's fiscal overview (CeMPA WP 3/26): the change in benefit
     # expenditure and the net fiscal impact (revenue change minus
     # expenditure change), the latter carried as an exchequer impact
@@ -416,7 +461,27 @@ _DROP_BY_NAME: dict[str, str] = {
     "weekly_hours_at_minimum_wage_to_pay_income_tax": "unit_no_household_concept",
     "motoring_externality_cost": "unit_no_household_concept",
     "debt_outcome_percentile_covered": "unit_no_household_concept",
-    "fiscal_headroom": "macro_fiscal_or_out_of_scope",
+    "bank_rate_level": "macro_fiscal_or_out_of_scope",
+    # uk_macro_calls (tranche 4): forecast LEVELS and forecast revisions the
+    # houses print beside their calls on the package (#55 answers the calls;
+    # the levels are context)
+    "gdp_growth": "macro_fiscal_or_out_of_scope",
+    "cpi_inflation": "macro_fiscal_or_out_of_scope",
+    "unemployment_rate": "macro_fiscal_or_out_of_scope",
+    "output_gap": "macro_fiscal_or_out_of_scope",
+    "gilt_yield_10y": "macro_fiscal_or_out_of_scope",
+    "bank_rate_change": "macro_fiscal_or_out_of_scope",
+    "gilt_remit_revision": "macro_fiscal_or_out_of_scope",
+    "fiscal_impulse": "macro_fiscal_or_out_of_scope",
+    "current_budget_balance_contribution": "macro_fiscal_or_out_of_scope",
+    "debt_interest_change": "macro_fiscal_or_out_of_scope",
+    "forecast_nominal_gdp_change": "macro_fiscal_or_out_of_scope",
+    "forecast_employment_change": "macro_fiscal_or_out_of_scope",
+    "forecast_participation_rate_change": "macro_fiscal_or_out_of_scope",
+    "psnd_share_of_gdp": "macro_fiscal_or_out_of_scope",
+    "psnfl_share_of_gdp": "macro_fiscal_or_out_of_scope",
+    "debt_ratio_effect": "macro_fiscal_or_out_of_scope",
+    "forecast_spending_change": "macro_fiscal_or_out_of_scope",
     "forecast_borrowing_change": "macro_fiscal_or_out_of_scope",
     "forecast_revenue_change": "macro_fiscal_or_out_of_scope",
     "revenue_level": "macro_fiscal_or_out_of_scope",
@@ -635,6 +700,7 @@ _PROPOSED_BASELINE_PREFIXES: dict[str, str] = {
     "JRF post-Spring-Forecast-2026 projection path": "jrf_post_spring_forecast_2026_projection_path",
     "RF projection without the Child Poverty Strategy policies": "rf_projection_without_child_poverty_strategy",
     "JRF post-Budget projection path with the two-child limit retained": "jrf_post_ab2025_two_child_limit_retained",
+    "NIESR pre-measures forecast (Autumn 2025 Outlook, completed 27 Oct 2025)": "niesr_pre_measures_autumn_2025_outlook",
 }
 
 
@@ -832,6 +898,15 @@ def _score(row: dict, family: str, source: str, metric: Metric) -> ExternalScore
             cond["pe_missing"] = gap
         if m.get("action_link"):
             cond["action_link"] = m["action_link"]
+    if metric in MACRO_METRICS:
+        cond["pe_expressibility"] = "not_expressible"
+        cond["pe_missing"] = MACRO_MISSING
+        cond["action_link"] = MACRO_LINK
+    if row.get("proposed_metric") in (
+        "package_tax_rise_size",
+        "package_spending_change",
+    ):
+        cond["fiscal_measure"] = row["proposed_metric"]
 
     basis = TIME_BASES.get(row.get("time_basis"))
     if basis is None:
@@ -1106,19 +1181,35 @@ def verdict_rows(db: ScorecardDB) -> tuple[list[tuple], list[tuple]]:
     """One pe_gap result and one pe_gap diagnosis per AB2025 claim whose
     measure the certified engine cannot express, from the registry."""
     claims = db.conn.execute(
-        "SELECT claim_id, baseline_key,"
-        " json_extract(conditions, '$.measure_key') AS measure_key"
+        "SELECT claim_id, baseline_key, metric,"
+        " json_extract(conditions, '$.measure_key') AS measure_key,"
+        " json_extract(conditions, '$.pe_missing') AS pe_missing,"
+        " json_extract(conditions, '$.action_link') AS action_link"
         " FROM external_scores"
         " WHERE json_extract(publication, '$.registry') = ?"
-        "   AND json_extract(conditions, '$.measure_key') IS NOT NULL"
+        "   AND json_extract(conditions, '$.pe_expressibility') = 'not_expressible'"
         " ORDER BY claim_id",
         (REGISTRY_MARK,),
     ).fetchall()
     results, diagnoses = [], []
     for c in claims:
-        m = REGISTRY[c["measure_key"]]
-        if m["computability"] != "not_expressible":
-            continue
+        if c["metric"] in {m.value for m in MACRO_METRICS}:
+            # the claim's own verdict (#55): no registry lever exists for a
+            # macro-fiscal quantity, whatever measure it is keyed to
+            m = {
+                "why": c["pe_missing"],
+                "name_search": "Parameters: none searched — a macro-fiscal aggregate names no engine lever; the Macro entry point (#55) answers it",
+                "action_link": c["action_link"],
+            }
+            gap_key = c["measure_key"] or "macro"
+        else:
+            m = REGISTRY[c["measure_key"]]
+            gap_key = c["measure_key"]
+            if m["computability"] != "not_expressible":
+                raise ValueError(
+                    f"{c['claim_id']}: not_expressible on the claim but "
+                    f"{m['computability']} in the registry"
+                )
         results.append(
             ScorecardDB.result_row(
                 PEResult(
@@ -1127,7 +1218,7 @@ def verdict_rows(db: ScorecardDB) -> tuple[list[tuple], list[tuple]]:
                     status=ComparisonStatus.PE_GAP,
                     engine_version=ENGINE_PIN,
                     data_bundle=BUNDLE["revision"],
-                    pe_construction=f"pe_gap:not_expressible:{c['measure_key']}",
+                    pe_construction=f"pe_gap:not_expressible:{gap_key}",
                     run_id=VERDICT_RUN_ID,
                     computed_at=VERDICT_COMPUTED_AT,
                     annotations=[

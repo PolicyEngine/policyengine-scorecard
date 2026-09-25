@@ -66,6 +66,11 @@ class Oracle(str, Enum):
     POLICY_IN_PRACTICE_BOC = "policy_in_practice_boc"
     ENTITLEDTO = "entitledto"
     TURN2US = "turn2us"
+    # A producer's PRINTED worked example (#63, #136 tranche 4): the oracle
+    # is the publication itself — a case built from its stated inputs,
+    # the printed figure read as the oracle value, cited by the primary's
+    # sha256 (the harvest manifest) rather than a live reading.
+    PUBLISHED_WORKED_EXAMPLE = "published_worked_example"
 
 
 # Calculator oracles are live services with no release versioning, so a
@@ -179,6 +184,15 @@ ORACLE_BENCHMARK: dict[Oracle, tuple[BenchmarkClass, str, str]] = {
         "held_out",
         "GOV.UK lists Turn2us among INDEPENDENT benefits calculators; PE "
         "consumes none of it.",
+    ),
+    Oracle.PUBLISHED_WORKED_EXAMPLE: (
+        "different_model",
+        "held_out",
+        "A published worked example is the producer's own computation of a "
+        "hypothetical household (a firm's calculator, a think tank's specimen "
+        "family); the harvest cites the primary by sha256 and PE consumes none "
+        "of it. Agreement is descriptive — the example's inputs are the "
+        "producer's, and any it left unstated are recorded as assumptions.",
     ),
 }
 assert set(ORACLE_BENCHMARK) == set(Oracle), "every oracle needs a benchmark assignment"

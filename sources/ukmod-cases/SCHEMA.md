@@ -346,3 +346,14 @@ environment): map the vocabulary to UKMOD input variables, execute the
 battery on both engines, append `CaseResult` rows, publish the miss table,
 and advance the lane. Until then the battery is inputs + focus only, by
 design.
+
+### Published worked examples as oracles (#136 tranche 4)
+
+`Oracle.PUBLISHED_WORKED_EXAMPLE`: the oracle is a producer's printed worked
+example (AJ Bell, Hargreaves Lansdown, the IFS's specimen families, CPAG's
+benefit-cap cases…). The battery `ab2025_worked_examples.json` holds the
+INPUTS the producer stated, as CaseSpecs; the printed figure is read as the
+oracle value when results are recorded, and the row's `oracle_version` is the
+primary's sha256 from the harvest manifest (`sources/harvest-uk-ab2025-2026-09-24/`),
+with the publication named in `annotations`. Inputs the producer left unstated
+are recorded as assumptions in the case's `rationale`, never silently chosen.

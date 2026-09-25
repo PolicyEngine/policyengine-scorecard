@@ -879,6 +879,15 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "data/uk/ab2025_measures.json ab2025__package_ukmod_wp3_26 package_of, composed by "
         "pipeline/compute_uk_ab2025.py.",
     ),
+    (
+        {"policy": "niesr_pre_measures_autumn_2025_outlook"},
+        "niesr_pre_measures_autumn_2025_outlook",
+        "NIESR's pre-measures forecast: the Autumn 2025 UK Economic Outlook (completed 27 Oct 2025) "
+        "with no changes to planned spending or tax rates in the Autumn Budget — the world NIESR's "
+        "NiGEM package effects and fiscal-stance calls are measured against.",
+        "policy_ref",
+        "sources/harvest-uk-ab2025-2026-09-24/uk_macro_calls/NOTES.md (proposed_baseline on the NiGEM rows).",
+    ),
 ]
 
 
