@@ -1,6 +1,7 @@
 export type Status =
   | "comparable"
   | "constructed"
+  | "baseline_unvalidated"
   | "concept_mismatch"
   | "pe_gap"
   | "not_computed"
@@ -9,8 +10,39 @@ export type Status =
 export type CalibrationRelationship =
   "consumed_as_target" | "seed_source" | "held_out";
 
+/** The model instance a row or lane belongs to (issue #42). */
+export type Country = "US" | "UK" | "BE" | "NZ";
+
+export const COUNTRY_LABELS: Record<Country, string> = {
+  US: "United States",
+  UK: "United Kingdom",
+  BE: "Belgium",
+  NZ: "New Zealand",
+};
+
+/** A concept_mismatch attachment must never render a divergence or ratio:
+ * the comparison is declared not comparable (Belgium lane, PR #82). The
+ * fallback string is what the caller shows instead of a computed figure. */
+export function comparabilityFigure(
+  statusEffective: string,
+  fallback: string,
+  compute: () => string,
+): string {
+  return statusEffective === "concept_mismatch" ? fallback : compute();
+}
+
+/**
+ * Country of a row or lane. Historical US feeds predate the country key,
+ * so a missing country always means "US" — never drop a row over it.
+ */
+export function countryOf(r: { country?: Country }): Country {
+  return r.country ?? "US";
+}
+
 export interface Lane {
   id: string;
+  /** data/lanes.json carries this explicitly; absent means "US". */
+  country?: Country;
   source: string;
   area: string;
   mode: number;
@@ -27,6 +59,8 @@ export interface LanesFeed {
 
 export interface Row {
   source: string;
+  /** Absent on US-era exports; countryOf() defaults it to "US". */
+  country?: Country;
   program: string;
   metric: string;
   subgroup: string;
@@ -40,6 +74,8 @@ export interface Row {
   pe_period: string | null;
   status: Status;
   pe_construction: string | null;
+  /** Model variables the PE value was computed from; [] when there is no value. */
+  policyengine_variables?: string[];
   ratio: number | null;
   delta: number | null;
   annotations: string[];
@@ -110,11 +146,13 @@ export const METRIC_LABELS: Record<string, string> = {
   poverty_rate_fullpart: "Poverty rate, full participation",
   poverty_rate_relative_change_fullpart: "Poverty change, full participation",
   poverty_count_change_fullpart: "People lifted, full participation",
+  operating_cost_change: "Operating cost change",
 };
 
 export const STATUS_LABELS: Record<Status, string> = {
   comparable: "Comparable",
   constructed: "Constructed",
+  baseline_unvalidated: "Baseline unvalidated",
   concept_mismatch: "Concept mismatch",
   pe_gap: "Model gap",
   not_computed: "Not yet computed",
@@ -131,11 +169,15 @@ export interface ReleaseResult {
   construction: string;
   computed_at: string;
   annotations: string[];
+  baseline: string | null;
+  status_effective: Status;
 }
 
 /** A non-Urban claim from scorecard.db with its per-release history. */
 export interface PopulationRow {
   claim_id: string;
+  /** Absent on US-era exports; countryOf() defaults it to "US". */
+  country?: Country;
   source: string;
   source_column: string;
   name: string;
@@ -156,6 +198,8 @@ export interface PopulationRow {
   reform_key: string;
   external_value: number | null;
   calibration_relationship: CalibrationRelationship;
+  claim_baseline: string | null;
+  /** Synthetic not_computed snapshot when results is empty. */
   latest: ReleaseResult & { ratio: number | null; delta: number | null };
   results: ReleaseResult[];
   diagnosis: {

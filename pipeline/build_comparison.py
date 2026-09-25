@@ -423,6 +423,16 @@ CALIBRATION_RELATIONSHIP = {
 }
 
 
+def policyengine_variables(program_variables, program, pe_value):
+    """The model variables behind a row's PE value, as the machine-readable
+    counterpart of pe_construction. Empty when there is no PE value (a gap,
+    a suppressed cell, a not-yet-computed construction): nothing was
+    measured, so nothing can be matched to it."""
+    if pe_value is None:
+        return []
+    return list(program_variables.get(program, []))
+
+
 def calibration_relationship(program, metric):
     hit = CALIBRATION_RELATIONSHIP.get(
         (program, metric)
@@ -430,7 +440,14 @@ def calibration_relationship(program, metric):
     return hit if hit else ("held_out", "no PE consumption identified")
 
 
-INTERCHANGE = Path.home() / "populace-sotsn-takeup" / "comparison"
+# Vendored interchange (sources/populace-sotsn-comparison) — the original
+# clone is machine-local; the repo must be self-sufficient (#74). Missing
+# files fail loudly rather than building an empty comparison.
+INTERCHANGE = (
+    Path(__file__).resolve().parent.parent / "sources" / "populace-sotsn-comparison"
+)
+if not INTERCHANGE.exists():
+    raise FileNotFoundError(f"vendored interchange missing: {INTERCHANGE}")
 
 # Interchange (program, metric) -> platform (program, metric). Poverty maps
 # from A's base/fullpart pseudo-programs; fullpart 2026 rows are excluded
@@ -451,7 +468,9 @@ def load_2026():
 
     path = INTERCHANGE / "comparison.csv"
     if not path.exists():
-        return {}, {}
+        # a missing interchange file must never build an empty comparison
+        # (#74 gate: the silent {} made a gutted vendored dir look fine)
+        raise FileNotFoundError(f"vendored interchange file missing: {path}")
     v2026, v2024 = {}, {}
     with open(path) as f:
         for r in csv.DictReader(f):
@@ -510,11 +529,13 @@ def main():
     annotations = load_annotations()
     ic_2026, ic_2024 = load_2026()
     diagnoses = load_diagnoses()
-    externals = []
-    for f in sorted((DATA / "externals").glob("*.json")):
-        externals.extend(json.loads(f.read_text()))
+    # The comparison grid is the Urban SOTSN lane. data/externals/ has since
+    # grown UK lanes and a metadata dict that this join's row schema does
+    # not fit, so the builder reads its own lane's file, not the glob.
+    externals = json.loads((DATA / "externals" / "urban-sotsn.json").read_text())
 
     pe_meta = json.loads((DATA / "pe" / "pe_meta.json").read_text())
+    program_variables = pe_meta.get("program_variables", {})
 
     out_rows = []
     for ext in externals:
@@ -545,6 +566,9 @@ def main():
         row["pe_period"] = "2024 annual" if pe_value is not None else None
         row["status"] = status
         row["pe_construction"] = construction
+        row["policyengine_variables"] = policyengine_variables(
+            program_variables, ext["program"], pe_value
+        )
         # 2026 projection. Preferred source: our own 2026 grid (identical
         # constructions by definition — full subgroup/state coverage).
         # Fallback: the canonical interchange behind a 0.5%

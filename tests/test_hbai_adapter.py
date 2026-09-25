@@ -179,3 +179,95 @@ def test_schema_fields_and_domains(rows):
         assert (r["value"] is None) == (r["status"] == "suppressed")
         if r["metric"].endswith("_rate") and r["value"] is not None:
             assert 0 < r["value"] < 1
+
+
+# --- office:value precision (#44 follow-up, fixed 2026-08-19) --------------
+# The adapter reads the ODS office:value attribute — the UNROUNDED value the
+# workbook stores — keeping the display text only as a consistency check.
+
+_ADAPTER = ROOT / "sources" / "hbai-poverty" / "adapter.py"
+
+
+@pytest.fixture(scope="module")
+def adapter():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("hbai_adapter", _ADAPTER)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_parse_value_prefers_office_value(adapter):
+    cell = adapter.Cell("16", num=(15.911572126383566, "float"))
+    value, status = adapter.parse_value(cell, "rate")
+    assert status == "ok"
+    assert value == pytest.approx(0.15911572126383566)
+    # a count cell displayed in millions keeps its unrounded millions
+    cell = adapter.Cell("10.9", num=(10.859363, "float"))
+    value, _ = adapter.parse_value(cell, "count")
+    assert value == pytest.approx(10_859_363.0)
+
+
+def test_percentage_typed_cells_align_to_display_scale(adapter):
+    # ODS percentage cells store the FRACTION; the sheet displays the
+    # percent-scale number — parse must not divide twice.
+    cell = adapter.Cell("16", num=(0.15911572126383566, "percentage"))
+    value, _ = adapter.parse_value(cell, "rate")
+    assert value == pytest.approx(0.15911572126383566)
+
+
+def test_display_must_be_the_rounded_rendering(adapter):
+    # text "16" cannot belong to a stored 17.2 — a mispaired cell aborts
+    cell = adapter.Cell("16", num=(17.2, "float"))
+    with pytest.raises(ValueError, match="rounded rendering"):
+        adapter.parse_value(cell, "rate")
+    # ...but 16.4 rounds to 16 at the text's own precision: accepted
+    cell = adapter.Cell("16", num=(16.4, "float"))
+    value, _ = adapter.parse_value(cell, "rate")
+    assert value == pytest.approx(0.164)
+
+
+def test_text_only_cells_still_parse(adapter):
+    # suppression markers and label cells never carry num
+    assert adapter.parse_value(adapter.Cell("[x]"), "rate") == (None, "suppressed")
+    assert adapter.parse_value(adapter.Cell(""), "rate") == (None, "empty")
+    # a bare string (no office:value captured) falls back to the text
+    value, _ = adapter.parse_value(adapter.Cell("16"), "rate")
+    assert value == pytest.approx(0.16)
+
+
+def test_emitted_rates_carry_full_precision(rows):
+    """The emitted external is unrounded: in the FYE 2025 vintage zero of
+    the 6,528 rate values sit at exactly two decimals; a regression to
+    display-text parsing puts ALL of them there. Threshold well under
+    both: a future vintage may legitimately land a handful of exact
+    values, a text-parse regression cannot stay under it."""
+    rates = [
+        r["value"]
+        for r in rows
+        if r["metric"].endswith("_rate") and r["value"] is not None
+    ]
+    exactly_2dp = sum(1 for v in rates if v == round(v, 2))
+    assert len(rates) > 6000
+    assert exactly_2dp < len(rates) * 0.01, f"{exactly_2dp}/{len(rates)}"
+
+
+@pytest.mark.skipif(
+    not (ROOT / "sources" / "hbai-poverty" / "raw").exists(),
+    reason="vendored raw ODS files not present",
+)
+def test_vendored_workbook_carries_unrounded_values(adapter):
+    """One real cell from the vendored summary workbook: sheet 1_2a
+    displays '75.9' over a stored 75.875 (the probe that motivated the
+    fix). read_sheets must surface the stored value."""
+    sheets = adapter.read_sheets(
+        ROOT / "sources" / "hbai-poverty" / "raw" / adapter.SUMMARY_FILE, {"1_2a"}
+    )
+    nums = [
+        cell.num[0]
+        for row in sheets["1_2a"]
+        for cell in row
+        if cell.num is not None and cell.num[1] == "float"
+    ]
+    assert 75.875 in nums

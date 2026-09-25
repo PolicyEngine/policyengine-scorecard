@@ -104,6 +104,11 @@ PERMANENT_HOLDOUT_METRICS = frozenset(
         Metric.POVERTY_RATE,
         Metric.POVERTY_RATE_CHANGE,
         Metric.POVERTY_COUNT_CHANGE,
+        # A poverty COUNT is the same survey-derived quantity as a poverty
+        # rate with the denominator multiplied back in; the doctrine covers
+        # "anything derived from such". Added with the UK HBAI ingest (#33),
+        # which is the first population to carry poverty counts.
+        Metric.POVERTY_COUNT,
     }
 )
 PERMANENT_HOLDOUT_BASIS = (
@@ -128,3 +133,436 @@ def effective_relationship(program, metric):
     if hit is None:
         return CR.HELD_OUT, "no PE consumption identified"
     return hit
+
+
+# --- UK sources (#33) ----------------------------------------------------
+# Assigned from the LITERAL consumption surfaces, read at the certified
+# pins (2026-08-19): populace-uk-2023-dd68c73 embeds policyengine-uk-data
+# @ dd68c73, whose targets/sources/{obr,dwp,hmrc_spi}.py define the 149
+# consumed targets; engine-side take-up parameters read from
+# policyengine-uk (gov/dwp/*/takeup.yaml). consumed_as_target is claimed
+# ONLY where a row's quantity matches a named consumed line; everything
+# else is seed_source (shared base or parameter seeding, evidence named)
+# or held_out. Never family-wide defaults in either direction.
+
+# OBR EFO Table 4.9 welfare lines consumed by pe-uk-data@dd68c73
+# (targets/sources/obr.py::_parse_welfare row labels; March-2026 EFO,
+# forecast columns FY2024-25..2030-31 — the FY2024-25 OUTTURN column is
+# also read there, but outturn cells route to Chronicle, never to claims).
+# Stated in the ADAPTER's program vocabulary; the pe-uk-data label each
+# maps to is quoted (targets/sources/obr.py benefit_rows, verbatim).
+OBR_CONSUMED_WELFARE_PROGRAMS = frozenset(
+    {
+        "housing_benefit_not_jsa",  # "Housing benefit (not on JSA)"
+        "dla_and_pip",  # "Disability living allowance and personal indep…"
+        "incapacity_benefits",  # "Incapacity benefits"
+        "attendance_allowance",  # "Attendance allowance"
+        "pension_credit",  # "Pension credit"
+        "carers_allowance",  # "Carer's allowance"
+        "statutory_maternity_pay",  # "Statutory maternity pay"
+        "winter_fuel_payment",  # "Winter fuel payment"
+        "universal_credit",  # "Universal credit" (in-cap + outside-cap)
+        "child_benefit",  # "Child benefit"
+        "state_pension",  # "State pension"
+        "jobseekers_allowance",  # "Jobseeker's allowance"
+    }
+)
+_OBR_CONSUMED = (
+    CR.CONSUMED_AS_TARGET,
+    "pe-uk-data@dd68c73 targets/sources/obr.py::_parse_welfare consumes "
+    "this Table 4.9 line's March-2026 EFO forecast values as calibration "
+    "targets (read 2026-08-19).",
+)
+_OBR_UNCONSUMED = (
+    CR.HELD_OUT,
+    "Table 4.9 line NOT in pe-uk-data@dd68c73's consumed welfare set "
+    "(targets/sources/obr.py, read 2026-08-19); forecast-vs-forecast "
+    "comparison.",
+)
+
+# DWP income-related-benefits take-up (FYE 2024 publication, adapter #43).
+# Engine evidence (policyengine-uk, read 2026-08-19):
+#   gov/dwp/pension_credit/takeup.yaml = 0.7, citing the FYE-2020 edition
+#   of THIS series -> the parameter is seeded from an older edition;
+#   gov/dwp/housing_benefit/takeup.yaml = 1.0 "by definition ... only
+#   current claimants are eligible (no new claims)" -> a stated modeling
+#   choice, the live comparator for policyengine-uk#1813.
+# Administrative cells (recipient counts, amounts claimed) route to
+# Chronicle and never reach these claims.
+_PC_TAKEUP_SEED = (
+    CR.SEED_SOURCE,
+    "policyengine-uk pension_credit/takeup.yaml (0.7) cites the FYE-2020 "
+    "edition of this series — parameter seeding from an older edition, "
+    "not calibration to this one; edition mismatch (FYE-2024 here) is a "
+    "named axis. Modeled derivatives (entitled non-recipients, unclaimed "
+    "amounts) share the seeding series.",
+)
+_HB_TAKEUP_HELD = (
+    CR.HELD_OUT,
+    "policyengine-uk housing_benefit/takeup.yaml sets 1.0 by stated "
+    "design ('only current claimants are eligible — no new claims'); "
+    "nothing is fitted to this series. Live comparator for "
+    "policyengine-uk#1813.",
+)
+
+# HMRC liabilities (adapter #45): HMRC's liabilities statistics are SPI
+# projections; pe-uk-data@dd68c73 consumes SPI Tables 3.6/3.7 income-band
+# distributions (targets/sources/hmrc_spi.py) — a shared microdata base,
+# not these statistics themselves.
+_HMRC_SPI_SEED = (
+    CR.SEED_SOURCE,
+    "shared SPI base: pe-uk-data@dd68c73 consumes SPI Tables 3.6/3.7 "
+    "income-band distributions (targets/sources/hmrc_spi.py, read "
+    "2026-08-19); these liabilities tables are projections from the same "
+    "SPI microdata, not themselves consumed.",
+)
+_HMRC_RECKONER_HELD = (
+    CR.HELD_OUT,
+    "ready-reckoner rows are HMRC model claims (policy-change scores); "
+    "nothing in pe-uk-data consumes them.",
+)
+
+# DWP workplace pension participation (#98). ASHE-derived, like the LPC
+# lane, so the survey difference is the first divergence axis.
+_DWP_PENSIONS_HELD = (
+    CR.HELD_OUT,
+    "DWP's workplace pension participation estimates are derived from ONS "
+    "ASHE, an employer survey of jobs, where the certified "
+    "policyengine-uk world is FRS-based; no pe-uk-data target and no "
+    "policyengine-uk parameter is fitted to a participation rate "
+    "(consumption surfaces read 2026-08-25 at the certified pins). Note "
+    "the engine models pension contributions and their relief but has no "
+    "pension commencement lump sum at all, so the pensions question this "
+    "scorecard can ask is narrower than the pensions system.",
+)
+
+# Low Pay Commission (#88). Built on ASHE — an employer survey of JOBS —
+# where the certified PE-UK world is FRS-based, a household survey. That
+# difference is the first divergence axis, not an afterthought.
+_LPC_HELD = (
+    CR.HELD_OUT,
+    "Low Pay Commission coverage and bite estimates are built on the "
+    "Annual Survey of Hours and Earnings, an employer survey of jobs; the "
+    "certified policyengine-uk world is FRS-based, a household survey, "
+    "and no pe-uk-data target or policyengine-uk parameter is fitted to "
+    "an LPC statistic (consumption surfaces read 2026-08-24 at the "
+    "certified pins). The bite denominator is ASHE's own median hourly "
+    "wage, so a PE-vs-LPC bite gap is a survey-population difference "
+    "before it is an engine question.",
+)
+
+# HMT's Budget distributional analysis (#61). The resolver used to fail
+# closed on this source, which was correct but temporary — the entry is
+# made deliberately, with its evidence, BEFORE any numeric row can land,
+# so the first digitized decile does not arrive needing an emergency
+# relationship decision.
+_HMT_DA_HELD = (
+    CR.HELD_OUT,
+    "HM Treasury's distributional analysis is a closed departmental "
+    "microsimulation scored against HMT's own no-policy-change "
+    "counterfactual; no pe-uk-data target and no policyengine-uk "
+    "parameter is fitted to a decile impact from it (consumption "
+    "surfaces read 2026-08-19 at the certified pins — the only HMT "
+    "material with a consuming pin is the uk_hmt fiscal-event costings "
+    "family, which is itself held out). Its benefits-in-kind public-"
+    "services allocation has no PE counterpart at all, so a large part "
+    "of every bar is not_expressible rather than divergent.",
+)
+
+# ONS effects of taxes and benefits (#90). A national statistic built on
+# a DIFFERENT survey from the certified PE-UK world (HFS/LCFS vs FRS), so
+# it is neither a calibration target nor a shared-input tautology.
+_ONS_ETB_HELD = (
+    CR.HELD_OUT,
+    "ONS's Effects of Taxes and Benefits estimates are built on the "
+    "Household Finances Survey / Living Costs and Food Survey, not the "
+    "FRS the certified policyengine-uk world uses, and no pe-uk-data "
+    "target or policyengine-uk parameter is fitted to an ETB statistic "
+    "(consumption surfaces read 2026-08-24 at the certified pins). Its "
+    "benefits-in-kind allocation has no PE counterpart at all, so the "
+    "`final` income concept is a coverage gap rather than a divergence.",
+)
+
+# UK think tanks (#86). Both are INDEPENDENT models — which is precisely
+# why their rows are worth carrying: agreement is evidence rather than a
+# tautology. Verified at the certified pin before staging, per the #48
+# rule that a held-out claim states where it looked.
+_THINKTANK_HELD = {
+    "ifs": (
+        CR.HELD_OUT,
+        "TAXBEN is the IFS's own microsimulation model, maintained "
+        "independently of PolicyEngine; no pe-uk-data target and no "
+        "policyengine-uk parameter is fitted to an IFS output "
+        "(consumption surfaces read 2026-08-24 at the certified pins — "
+        "the only IFS material the repo previously referenced is the "
+        "Green-Budget options BASELINE world in baselines.py, which is a "
+        "counterfactual descriptor, not a calibration target).",
+    ),
+    "resolution_foundation": (
+        CR.HELD_OUT,
+        "Resolution Foundation's living-standards modelling is "
+        "independent of PolicyEngine and nothing in pe-uk-data or "
+        "policyengine-uk consumes it (surfaces read 2026-08-24 at the "
+        "certified pins). Note that RF itself re-publishes government "
+        "figures; those rows are dropped at ingest rather than carried "
+        "as RF claims, so this relationship covers RF's OWN outputs only.",
+    ),
+}
+
+_UKMOD_HELD = (
+    CR.HELD_OUT,
+    "UKMOD is a peer microsimulation, not a calibration source; no PE UK "
+    "parameter is fitted to its published statistics.",
+)
+
+# OBR published policy EFFECTS (#55): package impacts on GDP/CPI, the
+# per-measure supply-side scorings, and the decisions' effect on
+# borrowing. Distinct from the obr welfare-baseline source, whose
+# FY2024-25 outturn column pe-uk-data does consume: nothing in
+# pe-uk-data or policyengine-uk reads a macro-effect path — they are
+# what the Macro members are scored AGAINST.
+_OBR_POLICY_EFFECTS_HELD = (
+    CR.HELD_OUT,
+    "OBR macro/policy-effect estimates are scored, never consumed: no "
+    "pe-uk-data target and no policyengine-uk parameter is fitted to a "
+    "GDP/CPI impact path, a supply-side scoring, or the decisions' "
+    "effect on borrowing (consumption surfaces read 2026-08-19 at the "
+    "certified pins; the obr welfare source is the only OBR material "
+    "with a consuming pin).",
+)
+
+
+# Autumn Budget 2025 port (#136): every producer that scored the Budget,
+# assigned one by one. All held_out — nothing in pe-uk-data@dd68c73
+# (targets/sources/{obr,dwp,hmrc_spi}.py) or policyengine-uk 2.89.2
+# (takeup.yaml files, economic_assumptions) reads a think-tank, a
+# consultancy's or a commercial firm's Budget scoring; consumption surfaces
+# read 2026-09-24 at the certified pins. The one OBR caveat is stated on
+# its entry. Never family-wide defaults: a source absent here raises.
+_AB2025_SURFACES = (
+    " (consumption surfaces read 2026-09-24 at the certified pins: "
+    "pe-uk-data@dd68c73 targets and policyengine-uk 2.89.2 takeup and "
+    "economic_assumptions trees)."
+)
+_AB2025_HELD: dict[str, tuple] = {
+    "jrf": (
+        CR.HELD_OUT,
+        "JRF's projections run the shared Landman/IPPR tax-benefit model and its own HBAI work; neither is consumed"
+        + _AB2025_SURFACES,
+    ),
+    "ippr": (
+        CR.HELD_OUT,
+        "IPPR's tax-benefit model outputs and gambling/property arithmetic are scored, never consumed"
+        + _AB2025_SURFACES,
+    ),
+    "cpag": (
+        CR.HELD_OUT,
+        "CPAG's UKMOD B1.13 runs are a peer microsimulation's output, not a calibration source"
+        + _AB2025_SURFACES,
+    ),
+    "policy_in_practice": (
+        CR.HELD_OUT,
+        "Policy in Practice's local-authority UC administrative shares are held out: pe-uk-data's UC targets are DWP national caseload and expenditure, not PiP's council extracts"
+        + _AB2025_SURFACES,
+    ),
+    "entitledto": (
+        CR.HELD_OUT,
+        "entitledto's council tax reduction scheme survey is not a calibration source"
+        + _AB2025_SURFACES,
+    ),
+    "trussell_wpi": (
+        CR.HELD_OUT,
+        "WPI Economics' severe-hardship projections for Trussell are on WPI's own definition; nothing is fitted to them"
+        + _AB2025_SURFACES,
+    ),
+    "niesr": (
+        CR.HELD_OUT,
+        "NIESR's HBAI regressions and NiGEM scenarios are scored, never consumed"
+        + _AB2025_SURFACES,
+    ),
+    "centax": (
+        CR.HELD_OUT,
+        "CenTax's HMRC-microdata estimates are held out; the SPI targets pe-uk-data consumes are HMRC's own published statistics, not CenTax's derived figures"
+        + _AB2025_SURFACES,
+    ),
+    "tax_policy_associates": (
+        CR.HELD_OUT,
+        "Tax Policy Associates' open-source models and Land Registry tabulations are not consumed"
+        + _AB2025_SURFACES,
+    ),
+    "nef": (
+        CR.HELD_OUT,
+        "NEF's LCFS/SERL/EHS energy-levy incidence is not a calibration source (the consumption module's NEED calibration is administrative)"
+        + _AB2025_SURFACES,
+    ),
+    "fraser_of_allander": (
+        CR.HELD_OUT,
+        "Fraser of Allander's UKMOD runs and block-grant arithmetic are not consumed"
+        + _AB2025_SURFACES,
+    ),
+    "scottish_fiscal_commission": (
+        CR.HELD_OUT,
+        "SFC forecasts are not among the OBR determinants policyengine-uk uprates by; no pe-uk-data target reads them"
+        + _AB2025_SURFACES,
+    ),
+    "wbg": (
+        CR.HELD_OUT,
+        "WBG's UKMOD B2025.08 gender splits are peer-model output" + _AB2025_SURFACES,
+    ),
+    "cebr": (
+        CR.HELD_OUT,
+        "Cebr's freeze yield sits on Cebr's own earnings forecast (an assumptions-registry axis, #10), not on anything consumed"
+        + _AB2025_SURFACES,
+    ),
+    "smf": (
+        CR.HELD_OUT,
+        "SMF's fuel-duty and gambling estimates are not consumed" + _AB2025_SURFACES,
+    ),
+    "public_first": (
+        CR.HELD_OUT,
+        "Public First's FRS 2023-24 tabulations are the same survey pe-uk-data is built on but not a target: an independent tabulation, not a calibration"
+        + _AB2025_SURFACES,
+    ),
+    "demos": (
+        CR.HELD_OUT,
+        "Demos' static arithmetic (and CenTax's, where re-published) is not consumed"
+        + _AB2025_SURFACES,
+    ),
+    "fabian_society": (
+        CR.HELD_OUT,
+        "Nothing is fitted to the Fabian Society's figures. Its freeze-extension row was computed WITH PolicyEngine, which is benchmark_class same_assumptions on the claim, a different question from calibration"
+        + _AB2025_SURFACES,
+    ),
+    "taxpayers_alliance": (
+        CR.HELD_OUT,
+        "TaxPayers' Alliance tallies are sums of OBR figures (dropped as restated) or its own; neither is consumed"
+        + _AB2025_SURFACES,
+    ),
+    "cps": (
+        CR.HELD_OUT,
+        "CPS arithmetic on OBR paths is not consumed" + _AB2025_SURFACES,
+    ),
+    "onward": (
+        CR.HELD_OUT,
+        "Onward's FRS arithmetic is not consumed" + _AB2025_SURFACES,
+    ),
+    "tax_justice_uk": (
+        CR.HELD_OUT,
+        "Tax Justice UK's package inherits its components' yields; not consumed"
+        + _AB2025_SURFACES,
+    ),
+    "iea": (CR.HELD_OUT, "IEA fiscal arithmetic is not consumed" + _AB2025_SURFACES),
+    "policy_exchange": (
+        CR.HELD_OUT,
+        "Policy Exchange costings are not consumed (and not staged without the primary)"
+        + _AB2025_SURFACES,
+    ),
+    "ppi": (
+        CR.HELD_OUT,
+        "Pensions Policy Institute worked examples are arithmetic on stated rates"
+        + _AB2025_SURFACES,
+    ),
+    "loughborough_crsp": (
+        CR.HELD_OUT,
+        "Minimum Income Standard budgets are context benchmarks, not calibration targets"
+        + _AB2025_SURFACES,
+    ),
+    "obr_efo": (
+        CR.HELD_OUT,
+        "OBR EFO costings tables, boxes, uncertainty ratings and supplementary "
+        "costing notes are scored, never consumed. policyengine-uk DOES uprate "
+        "by the OBR economy determinants (gov.economic_assumptions.indices.obr.*) "
+        "— those forecast paths are deliberately NOT staged in this family, so "
+        "the caveat stays a statement rather than a row" + _AB2025_SURFACES,
+    ),
+}
+
+
+def uk_relationship(source, metric, program=None, kind=None):
+    """(CalibrationRelationship, basis) for a UK claim, keyed exactly.
+
+    ``program`` is the claim's program condition; ``kind`` disambiguates
+    within a source where the publication mixes products:
+      dwp_takeup: "takeup_rate" | "modeled_estimate" (ENR / unclaimed) |
+                  "average_award"
+      uk_hmrc:    "liabilities" | "reckoner"
+      obr:        forecast rows only (outturn cells route to Chronicle
+                  before relationships are assigned)
+    Unknown combinations raise — assignment is always deliberate.
+    """
+    if metric is not None and never_calibrate(metric):
+        return CR.HELD_OUT, PERMANENT_HOLDOUT_BASIS
+    if source == "dwp_takeup":
+        if program in ("housing_benefit_pensioners", "housing_benefit"):
+            return _HB_TAKEUP_HELD
+        if program in (
+            "pension_credit",
+            "guarantee_credit",
+            "savings_credit_only",
+        ):
+            if kind == "average_award":
+                return (
+                    CR.HELD_OUT,
+                    "average award amounts fall out of the modelled "
+                    "entitlement; not a seeding series input.",
+                )
+            return _PC_TAKEUP_SEED
+        raise ValueError(
+            f"dwp_takeup program {program!r} needs a deliberate relationship assignment"
+        )
+    if source == "uk_hmrc":
+        if kind == "reckoner":
+            return _HMRC_RECKONER_HELD
+        if kind == "liabilities":
+            return _HMRC_SPI_SEED
+        if kind == "tiin":
+            return (
+                CR.HELD_OUT,
+                "HMRC tax information and impact note counts (individuals "
+                "affected by a measure) are scored, never consumed: pe-uk-data's "
+                "SPI targets are the liabilities statistics, not TIIN impact "
+                "counts" + _AB2025_SURFACES,
+            )
+        raise ValueError(f"uk_hmrc kind {kind!r} needs a deliberate assignment")
+    if source == "obr":
+        if kind == "outturn":
+            raise ValueError(
+                "OBR outturn cells route to Chronicle before relationship "
+                "assignment — an outturn row must never become a claim"
+            )
+        if program in OBR_CONSUMED_WELFARE_PROGRAMS:
+            return _OBR_CONSUMED
+        return _OBR_UNCONSUMED
+    if source == "dwp_pensions":
+        return _DWP_PENSIONS_HELD
+    if source == "lpc":
+        return _LPC_HELD
+    if source == "ons_etb":
+        return _ONS_ETB_HELD
+    if source in ("ifs", "resolution_foundation"):
+        return _THINKTANK_HELD[source]
+    if source == "obr_policy_effects":
+        if kind not in ("post_behavioural", "supply_side"):
+            raise ValueError(
+                f"obr_policy_effects basis {kind!r} needs a deliberate assignment"
+            )
+        return _OBR_POLICY_EFFECTS_HELD
+    if source == "ukmod":
+        return _UKMOD_HELD
+    if source == "hmt_distributional":
+        return _HMT_DA_HELD
+    if source == "hm_treasury":
+        return (CR.HELD_OUT, "fiscal-event costings are scored, never consumed.")
+    if source in _AB2025_HELD:
+        return _AB2025_HELD[source]
+    if source == "dwp":
+        return (
+            CR.HELD_OUT,
+            "FRR impact statements are scored, never consumed; the DWP "
+            "quarterly deductions OUTTURN tables PE's parameters do "
+            "consume are deliberately not ingested as external scores.",
+        )
+    raise ValueError(
+        f"no UK calibration relationship for ({source!r}, {metric}, "
+        f"{program!r}, {kind!r}) — assign it here rather than defaulting"
+    )

@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "registry": "nz_official_budget_scores",
+  "claims": [
+    {
+      "id": "budget_2026_iwtc_fy2025_26",
+      "reform_policy": "nz_budget_2026_temporary_iwtc_increase",
+      "fiscal_event": "budget_2026",
+      "measure": "Increase to the In-Work Tax Credit in Response to the Conflict in the Middle East",
+      "fy": "2025-26",
+      "period": 2026,
+      "value_nzd_millions": 79.0,
+      "source_display": "79.000",
+      "source_pin": "budget_2026_summary_pdf"
+    },
+    {
+      "id": "budget_2026_iwtc_fy2026_27",
+      "reform_policy": "nz_budget_2026_temporary_iwtc_increase",
+      "fiscal_event": "budget_2026",
+      "measure": "Increase to the In-Work Tax Credit in Response to the Conflict in the Middle East",
+      "fy": "2026-27",
+      "period": 2027,
+      "value_nzd_millions": 264.0,
+      "source_display": "264.000",
+      "source_pin": "budget_2026_summary_pdf"
+    },
+    {
+      "id": "budget_2026_iwtc_fy2027_28",
+      "reform_policy": "nz_budget_2026_temporary_iwtc_increase",
+      "fiscal_event": "budget_2026",
+      "measure": "Increase to the In-Work Tax Credit in Response to the Conflict in the Middle East",
+      "fy": "2027-28",
+      "period": 2028,
+      "value_nzd_millions": 30.0,
+      "source_display": "30.000",
+      "source_pin": "budget_2026_summary_pdf"
+    },
+    {
+      "id": "budget_2026_iwtc_fy2028_29",
+      "reform_policy": "nz_budget_2026_temporary_iwtc_increase",
+      "fiscal_event": "budget_2026",
+      "measure": "Increase to the In-Work Tax Credit in Response to the Conflict in the Middle East",
+      "fy": "2028-29",
+      "period": 2029,
+      "value_nzd_millions": 0.0,
+      "source_display": "-",
+      "source_pin": "budget_2026_summary_pdf"
+    },
+    {
+      "id": "budget_2026_iwtc_fy2029_30",
+      "reform_policy": "nz_budget_2026_temporary_iwtc_increase",
+      "fiscal_event": "budget_2026",
+      "measure": "Increase to the In-Work Tax Credit in Response to the Conflict in the Middle East",
+      "fy": "2029-30",
+      "period": 2030,
+      "value_nzd_millions": 0.0,
+      "source_display": "-",
+      "source_pin": "budget_2026_summary_pdf"
+    },
+    {
+      "id": "budget_2026_iwtc_operating_total",
+      "reform_policy": "nz_budget_2026_temporary_iwtc_increase",
+      "fiscal_event": "budget_2026",
+      "measure": "Increase to the In-Work Tax Credit in Response to the Conflict in the Middle East",
+      "period": 2030,
+      "period_start": 2026,
+      "period_end": 2030,
+      "window": "FY2025-26 to FY2029-30 operating total",
+      "value_nzd_millions": 373.0,
+      "source_display": "373.000",
+      "source_pin": "budget_2026_summary_pdf"
+    },
+    {
+      "id": "budget_2025_wff_abatement_fy2024_25",
+      "reform_policy": "nz_budget_2025_wff_abatement_changes",
+      "fiscal_event": "budget_2025",
+      "measure": "Working for Families – Abatement Changes",
+      "fy": "2024-25",
+      "period": 2025,
+      "value_nzd_millions": 0.0,
+      "source_display": "-",
+      "source_pin": "budget_2025_summary_pdf"
+    },
+    {
+      "id": "budget_2025_wff_abatement_fy2025_26",
+      "reform_policy": "nz_budget_2025_wff_abatement_changes",
+      "fiscal_event": "budget_2025",
+      "measure": "Working for Families – Abatement Changes",
+      "fy": "2025-26",
+      "period": 2026,
+      "value_nzd_millions": 15.0,
+      "source_display": "15.000",
+      "source_pin": "budget_2025_summary_pdf"
+    },
+    {
+      "id": "budget_2025_wff_abatement_fy2026_27",
+      "reform_policy": "nz_budget_2025_wff_abatement_changes",
+      "fiscal_event": "budget_2025",
+      "measure": "Working for Families – Abatement Changes",
+      "fy": "2026-27",
+      "period": 2027,
+      "value_nzd_millions": 63.0,
+      "source_display": "63.000",
+      "source_pin": "budget_2025_summary_pdf"
+    },
+    {
+      "id": "budget_2025_wff_abatement_fy2027_28",
+      "reform_policy": "nz_budget_2025_wff_abatement_changes",
+      "fiscal_event": "budget_2025",
+      "measure": "Working for Families – Abatement Changes",
+      "fy": "2027-28",
+      "period": 2028,
+      "value_nzd_millions": 64.0,
+      "source_display": "64.000",
+      "source_pin": "budget_2025_summary_pdf"
+    },
+    {
+      "id": "budget_2025_wff_abatement_fy2028_29",
+      "reform_policy": "nz_budget_2025_wff_abatement_changes",
+      "fiscal_event": "budget_2025",
+      "measure": "Working for Families – Abatement Changes",
+      "fy": "2028-29",
+      "period": 2029,
+      "value_nzd_millions": 63.0,
+      "source_display": "63.000",
+      "source_pin": "budget_2025_summary_pdf"
+    },
+    {
+      "id": "budget_2025_wff_abatement_operating_total",
+      "reform_policy": "nz_budget_2025_wff_abatement_changes",
+      "fiscal_event": "budget_2025",
+      "measure": "Working for Families – Abatement Changes",
+      "period": 2029,
+      "period_start": 2025,
+      "period_end": 2029,
+      "window": "FY2024-25 to FY2028-29 operating total",
+      "value_nzd_millions": 205.0,
+      "source_display": "205.000",
+      "source_pin": "budget_2025_summary_pdf"
+    }
+  ]
+}

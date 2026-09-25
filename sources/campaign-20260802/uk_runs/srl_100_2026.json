@@ -1,0 +1,40 @@
+{
+ "reform_key": "srl_100",
+ "year": 2026,
+ "reform_hint": "Change starting rate limit for savings income by \u00a3100",
+ "pe_construction": "gov.hmrc.income_tax.rates.savings_starter_rate.allowance: 5000 -> 5100",
+ "reform_json": "{\"gov.hmrc.income_tax.rates.savings_starter_rate.allowance\": {\"2026-01-01.2028-12-31\": 5100}}",
+ "bundle": {
+  "bundle_id": "uk-5.0.1",
+  "country_id": "uk",
+  "policyengine_version": "5.0.1",
+  "model_package": "policyengine-uk",
+  "model_version": "2.89.2",
+  "data_package": "populace-data",
+  "data_version": "0.1.0",
+  "default_dataset": "populace_uk_2023",
+  "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+  "data_build_model_version": "2.89.2",
+  "data_build_model_git_sha": "None",
+  "data_build_fingerprint": "None",
+  "compatibility_basis": "exact_build_model_version",
+  "certified_by": "None",
+  "runtime_dataset": "populace_uk_2023",
+  "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-uk-private/snapshots/a75a9a831d6b07aaffbd09713f2a1124f5c0f08f/populace_uk_2023.h5",
+  "managed_by": "policyengine.py"
+ },
+ "aggregates_gbp": {
+  "income_tax": 421858524825.77234,
+  "national_insurance": 61450306465.09366,
+  "ni_employer": 185481157065.2179,
+  "child_benefit": 17434702263.490685,
+  "universal_credit": 39887838277.66961,
+  "vat": 219622883998.86896,
+  "household_net_income": 1791313552250.722,
+  "gov_tax": 1046770541970.1005,
+  "gov_spending": 485663250574.56665
+ }
+}

@@ -1,0 +1,231 @@
+{
+ "uk_cases_commercial": {
+  "rows": 121,
+  "primaries": 25,
+  "claims_sha256": "2b957fd3d3369007c0abaab443738f010c06b49dc4af3a6b8ca0dc0aa98bbbd7",
+  "sources": [
+   "aegon",
+   "aj_bell",
+   "blick_rothenberg",
+   "deloitte",
+   "evelyn_partners",
+   "ey",
+   "fidelity",
+   "hargreaves_lansdown",
+   "ig",
+   "investengine",
+   "moore_kingston_smith",
+   "quilter",
+   "rathbones",
+   "royal_london",
+   "rsm",
+   "which"
+  ]
+ },
+ "uk_cebr": {
+  "rows": 12,
+  "primaries": 2,
+  "claims_sha256": "800c636a24a4b3bafd0207547a358eef69992d339ea603e3410f449c32dec3a0",
+  "sources": [
+   "cebr"
+  ]
+ },
+ "uk_centax": {
+  "rows": 87,
+  "primaries": 4,
+  "claims_sha256": "5ca2d2bf8cffb71ee9a8d7ac289a086052323718680a83d322751db0e00c6ca0",
+  "sources": [
+   "centax"
+  ]
+ },
+ "uk_cpag": {
+  "rows": 59,
+  "primaries": 6,
+  "claims_sha256": "d491ac5c6f77b03819863d5e891845383f78c5c71d845a43f5f623da80a32732",
+  "sources": [
+   "cpag"
+  ]
+ },
+ "uk_demos": {
+  "rows": 15,
+  "primaries": 1,
+  "claims_sha256": "a08988accc0463213ac733eb387fdd0fa3deceb635f3c85fd2c0297e393256b7",
+  "sources": [
+   "demos"
+  ]
+ },
+ "uk_entitledto": {
+  "rows": 5,
+  "primaries": 1,
+  "claims_sha256": "53315447f85f659e7d666b5892c0cdc4c1056e914eacd9f51dea56bf97ea28ab",
+  "sources": [
+   "entitledto"
+  ]
+ },
+ "uk_fabians": {
+  "rows": 21,
+  "primaries": 2,
+  "claims_sha256": "6e2ca4e4d1281ecdd48af283b920acc70ab83e7aca19142ba0fa3673730f0b46",
+  "sources": [
+   "fabian_society"
+  ]
+ },
+ "uk_fai_sfc": {
+  "rows": 82,
+  "primaries": 5,
+  "claims_sha256": "be5d63efd5ed84a0cc233bf41a99128067edd64bcdf2f797411b1102299fa4fd",
+  "sources": [
+   "fraser_of_allander",
+   "scottish_fiscal_commission"
+  ]
+ },
+ "uk_hmrc_tiins": {
+  "rows": 65,
+  "primaries": 11,
+  "claims_sha256": "98b331f934376b05d99d319af20435146b4be0dee0f0b2d272f1ea15de92ff8b",
+  "sources": [
+   "uk_hmrc"
+  ]
+ },
+ "uk_hmt_costings": {
+  "rows": 699,
+  "primaries": 1,
+  "claims_sha256": "f6d131bffd92249a3219a13646077089af92dffdcbd20387e6917865de769b10",
+  "sources": [
+   "hm_treasury"
+  ]
+ },
+ "uk_hmt_redbook": {
+  "rows": 39,
+  "primaries": 2,
+  "claims_sha256": "bdd93f41570f566b9195f34f2cce62d4d43ab2f1d82e4b460953499bfa483423",
+  "sources": [
+   "hm_treasury"
+  ]
+ },
+ "uk_ifs_ab2025": {
+  "rows": 931,
+  "primaries": 23,
+  "claims_sha256": "375b6ceb8fd8c2ae7fa415014c0cbf60dce1fd26ec6ca5b27416a0b545b68cb1",
+  "sources": [
+   "ifs"
+  ]
+ },
+ "uk_ippr": {
+  "rows": 118,
+  "primaries": 11,
+  "claims_sha256": "9481cfcacddca572fd7fb8d45c52eb2a2458cef844f2d02c15946c8a93690cc3",
+  "sources": [
+   "ippr"
+  ]
+ },
+ "uk_jrf": {
+  "rows": 134,
+  "primaries": 7,
+  "claims_sha256": "c75ba596c5f3c2c7a0773330a74fccfc1753a094ec455bd64d6b70d98ea96dea",
+  "sources": [
+   "jrf"
+  ]
+ },
+ "uk_nef": {
+  "rows": 17,
+  "primaries": 4,
+  "claims_sha256": "6c81d22621111bc1d3b777cd6bc40a15939bb50f4ac1e9cc4720f6ebfcbf213d",
+  "sources": [
+   "nef"
+  ]
+ },
+ "uk_niesr": {
+  "rows": 27,
+  "primaries": 8,
+  "claims_sha256": "8c32dd8c9474e38115286810780f40ad945be5405059d405e50a2aa7c784cd17",
+  "sources": [
+   "niesr"
+  ]
+ },
+ "uk_obr_tables": {
+  "rows": 927,
+  "primaries": 6,
+  "claims_sha256": "2ee95b0520976420412637b38094d4c4cf016140062440539557726ec08fb666",
+  "sources": [
+   "obr_efo"
+  ]
+ },
+ "uk_pip": {
+  "rows": 36,
+  "primaries": 2,
+  "claims_sha256": "5f9d7685b610aedd7502ac7282c0ac557a1b5ddf28ec9a84e58dbb66db5d952a",
+  "sources": [
+   "policy_in_practice"
+  ]
+ },
+ "uk_publicfirst": {
+  "rows": 12,
+  "primaries": 1,
+  "claims_sha256": "017d96b403f329011de9d5394c09bb6b8203c3b007c1ea53dfefd917242d40e0",
+  "sources": [
+   "public_first"
+  ]
+ },
+ "uk_rf_ab2025": {
+  "rows": 1460,
+  "primaries": 20,
+  "claims_sha256": "900f059279302971c92887ca20146fe0e6cfb7f0daf206dabfb082015fc058f8",
+  "sources": [
+   "resolution_foundation"
+  ]
+ },
+ "uk_smf": {
+  "rows": 40,
+  "primaries": 3,
+  "claims_sha256": "a997ef19d40ccda04305882296a88111866a2eed2f41f26d42409e01d6a766d1",
+  "sources": [
+   "smf"
+  ]
+ },
+ "uk_thinktank_misc": {
+  "rows": 216,
+  "primaries": 14,
+  "claims_sha256": "ac661765f7dc8370bc07d87a4d5207aa618ccf3d9f77f433425df42ad40c36d1",
+  "sources": [
+   "cps",
+   "iea",
+   "loughborough_crsp",
+   "onward",
+   "policy_exchange",
+   "ppi",
+   "tax_justice_uk",
+   "taxpayers_alliance"
+  ]
+ },
+ "uk_tpa": {
+  "rows": 3008,
+  "primaries": 7,
+  "claims_sha256": "276c684a278cb0d317aaaf76c73b8272310231f81b2fd2cfb8d405bed2a0e39d",
+  "sources": [
+   "tax_policy_associates"
+  ]
+ },
+ "uk_trussell_wpi": {
+  "rows": 56,
+  "primaries": 3,
+  "claims_sha256": "be529a4da3b97a41cda294dc48709460b3d1961f96478dab91e1f74f3564cef6",
+  "sources": [
+   "trussell_wpi"
+  ]
+ },
+ "uk_wbg": {
+  "rows": 7,
+  "primaries": 2,
+  "claims_sha256": "6224856a27329fe9d2bc6b646c0b5c4160e396e02d80f1e8e956c6e3ffa42707",
+  "sources": [
+   "wbg"
+  ]
+ },
+ "_totals": {
+  "rows": 8194,
+  "restated": 342,
+  "families": 25,
+  "pinned_on": "2026-09-24"
+ }
+}

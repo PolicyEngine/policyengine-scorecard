@@ -1,0 +1,187 @@
+{
+ "_schema": {
+  "description": "Per-measure decomposition registry for the OBR costings divergences (#59). Consumed by pipeline/decompose_uk_obr_divergence.py together with results/uk/obr_costings/COMPARISON.csv (PR #56). Components decompose gap = PE - OBR in GBP under the announced-measure positive_gain_to_exchequer orientation, per FY. `residual` is NOT an axis: it was both a registry axis and the quantity the pipeline computes, so a component could be filed under the name of the thing it was meant to explain. Statuses: computed = the recipe is EXECUTED by the pipeline from the comparison rows on every run (no hard-coded value, so it cannot drift from the data it claims); sized = per-FY GBP values quoted VERBATIM from a fetched primary source (no arithmetic beyond unit scaling); derived = values computed from quoted numbers, with the derivation formula stated and its confounds named; unsized = sizing recipe only. The pipeline computes residual = gap - sum(sized + derived) and classifies every valued component by direction: explains_gap (same sign as the gap) or masks_gap (opposite sign - the axis hides part of a larger like-for-like disagreement, so the raw gap UNDERSTATES the divergence; the record then carries divergence_understated=true and like_for_like_gap_gbp). Any unsized component forces decomposition_status=partial and the remainder is residual_plus_unsized; explained_share is emitted only for complete decompositions with no masking components. JSON not YAML: CI installs pytest only.",
+  "axes": [
+   "behavioural_adjustment",
+   "baseline_vintage",
+   "cy_proxies_fy",
+   "head_scope",
+   "construction_scope",
+   "joint_behavioural_and_scope"
+  ],
+  "sign_convention": "component value = contribution to (PE - OBR); positive means the axis pushes PE above OBR"
+ },
+ "measures": {
+  "autumn_budget_2024__employer_nics_package": {
+   "comparison_row_kind": "mapped_head_total",
+   "components": [
+    {
+     "name": "employment_allowance_missing_construction",
+     "axis": "construction_scope",
+     "status": "derived",
+     "values_gbp": {
+      "2026-27": 4581000000,
+      "2027-28": 4631000000
+     },
+     "provenance": "OBR, 'Static costing of changes to Employer National Insurance Contributions', supplementary forecast information release, 8 May 2025, https://obr.uk/docs/dlm_uploads/Cosings-supp-NICs-AB24-1-1.pdf. Table 1.3 'Static costing of increasing the employment allowance to \u00a310,500': -3,353m (2026-27), -3,372m (2027-28). Table 1.4 'Static costing of removing the employment allowance threshold': -1,228m (2026-27), -1,259m (2027-28). PE has no Employment Allowance or firm entity (COMPARISON annotation), so both revenue-reducing elements are absent from the PE leg; their absence pushes PE above OBR by their published static magnitudes: +4,581m and +4,631m. HEAD ATTRIBUTION CAVEAT (review): the EA effect lands on the NICs head, where PE is only +831m above OBR (2026-27) - so if EA-absence alone contributes +4,581m there, offsetting NICs-base factors of ~-3,750m must exist on the same head; those are folded into the employee_incidence_and_base component's recipe, not assumed away. This component MASKS the gap (opposite sign): the observed -7.36bn total gap understates the like-for-like disagreement.",
+     "derivation": "Sum of TWO published OBR cells, not a single quoted figure: Table 1.3 (increase EA to \u00a310,500) 3,353m + Table 1.4 (remove the EA threshold) 1,228m = 4,581m (2026-27); 3,372m + 1,259m = 4,631m (2027-28). Arithmetic over quoted numbers is `derived`; calling it verbatim `sized` claimed a source that prints neither total."
+    },
+    {
+     "name": "static_vs_post_behavioural_joint",
+     "axis": "joint_behavioural_and_scope",
+     "status": "derived",
+     "values_gbp": {
+      "2026-27": 723000000,
+      "2027-28": 703000000
+     },
+     "derivation": "OBR FULL-MEASURE static total (Table 1.5) minus the certified MAPPED-HEAD post-behavioural PMD rows summed: 24,333m - 23,610m = +723m (2026-27); 24,730m - 24,027m = +703m (2027-28). The two sides differ in BOTH scope and basis, so the difference is a joint term and cannot be attributed to the behavioural response: labelling it `behavioural_adjustment` claimed an attribution the subtraction does not support.",
+     "provenance": "Same OBR release, Table 1.5 'Summary of static costing - including interactions': total static 24,333m (2026-27), 24,730m (2027-28). The comparison's OBR values are the certified post-behavioural per-head PMD rows summed (23,610m / 24,027m). The release itself says behavioural responses 'reduced significantly' the yield (to 16.1bn in 2029-30, para 1.7), so the pure behavioural axis at these FYs may be larger with an offsetting head-scope term. Best published joint sizing; carried as derived, not sized."
+    },
+    {
+     "name": "employee_incidence_and_base",
+     "axis": "construction_scope",
+     "status": "unsized",
+     "recipe": "The dominant driver of this measure's gap: PE sets gov.contrib.policyengine.employer_ni.employee_incidence = 1 (wages adjust holding employer cost fixed), pushing the PE Income-tax head to -8,508m against OBR's -313m (COMPARISON head rows). OBR DOES assume employer-NICs pass-through \u2014 the October 2024 EFO assumes 60% in 2025-26 rising to 76%, with the indirect effects reported separately from the measure's direct costing \u2014 so a PE incidence 1->0 pair sizes PE's WHOLE wage channel, not a PE-vs-OBR wedge. The wedge is (PE's channel) minus (OBR's separately-reported indirect effects at the same FYs), and both legs are needed before this component can be valued. The same paired run isolates the NICs-base offset the EA component's head-attribution caveat requires (PE class-1 base vs HMRC PTM Tables 1.1+1.2, 28,913m ex-EA in 2026-27)."
+    },
+    {
+     "name": "cy_proxies_fy",
+     "axis": "cy_proxies_fy",
+     "status": "computed",
+     "recipe": "Execute the adjacent-CY interpolation from the comparison rows: 0.25 * (PE CY(Y+1) - PE CY(Y)), the difference between an equal-accrual 3:1 FY blend and the single-CY proxy the PE leg uses. Equal accrual is an ASSUMPTION, not an engine fact, and is stated on every value. The FY label keys the END year in claim identity while the PE run's calendar year is the START year; both come from the comparison row.",
+     "executor": "cy_3_to_1_from_adjacent_runs"
+    }
+   ],
+   "note": "The remainder after the valued components is the pipeline's computed residual; it is not a registry component. Because the valued components MASK the gap, the like-for-like static disagreement is larger than the observed gap, and the incidence/base paired runs are what attribute it."
+  },
+  "efo_march_2026__pa_and_hrt_freezes": {
+   "comparison_row_kind": "total",
+   "components": [
+    {
+     "name": "behavioural_adjustment",
+     "axis": "behavioural_adjustment",
+     "status": "unsized",
+     "recipe": "EFO March 2026 Table 3.17 re-estimates are post-behavioural; PE is static. No published static leg was found for the freezes package. Size via the HMRC ready reckoner lane (#60): per-band threshold-change rows carry HMRC's post-behavioural convention and the reckoner's documented behavioural notes; alternatively request an OBR supplementary static release (precedent: the 8 May 2025 employer NICs release, issued on request)."
+    },
+    {
+     "name": "baseline_vintage",
+     "axis": "baseline_vintage",
+     "status": "unsized",
+     "recipe": "CAUTION (review): the earlier recipe proposed substituting the EFO March 2026 earnings determinants, which policyengine-uk 2.89.2 ALREADY uses for uprating \u2014 running it would have differenced a world against itself, and it conflated DATA uprating (the earnings path the certified world grows incomes along) with THRESHOLD indexation (the counterfactual the freeze is measured against). Those are two different legs. The live question is only the second: re-run the PE leg with the counterfactual threshold indexation OBR's re-estimate assumes, against the same certified data world, and difference the two PE legs. That counterfactual is the announcement-consistent world obr_announcement_baseline_efo_march_2026, now registered in scorecard_db/baselines.py \u2014 it was claimed as a baseline here while being registered nowhere."
+    },
+    {
+     "name": "cy_proxies_fy",
+     "axis": "cy_proxies_fy",
+     "status": "computed",
+     "recipe": "Execute the adjacent-CY interpolation from the comparison rows: 0.25 * (PE CY(Y+1) - PE CY(Y)), the difference between an equal-accrual 3:1 FY blend and the single-CY proxy the PE leg uses. Equal accrual is an ASSUMPTION, not an engine fact, and is stated on every value. The FY label keys the END year in claim identity while the PE run's calendar year is the START year; both come from the comparison row.",
+     "executor": "cy_3_to_1_from_adjacent_runs"
+    },
+    {
+     "name": "top_income_composition",
+     "axis": "construction_scope",
+     "status": "unsized",
+     "recipe": "Compare PE's count of taxpayers crossing PA/HRT boundaries under the freeze against HMRC ready reckoner taxpayer-count effects and SPI band counts (the #51 pipeline's per-band HMRC counterparts); a calibration excess of near-boundary incomes overstates freeze yield."
+    }
+   ]
+  },
+  "efo_march_2026__additional_rate_threshold_reduction": {
+   "comparison_row_kind": "total",
+   "components": [
+    {
+     "name": "behavioural_adjustment",
+     "axis": "behavioural_adjustment",
+     "status": "unsized",
+     "recipe": "Additional-rate costings carry the largest published behavioural offsets of any personal-tax measure (taxable income elasticities at the top). No fetched static leg for EFO 3.17's re-estimate. Size via the #60 reckoner lane's additional-rate rows (HMRC publishes those with behavioural notes) or an OBR supplementary request; the original AS2022 costing document is the other candidate source."
+    },
+    {
+     "name": "top_income_composition",
+     "axis": "construction_scope",
+     "status": "unsized",
+     "recipe": "PE at 1.96-1.99x OBR is consistent with the certified world over-representing income above \u00a3125,140 or omitting the behavioural offset entirely; separate the two by first sizing the behavioural axis, then comparing PE's above-threshold taxable income mass to SPI Table 3.x."
+    },
+    {
+     "name": "cy_proxies_fy",
+     "axis": "cy_proxies_fy",
+     "status": "computed",
+     "recipe": "Execute the adjacent-CY interpolation from the comparison rows: 0.25 * (PE CY(Y+1) - PE CY(Y)), the difference between an equal-accrual 3:1 FY blend and the single-CY proxy the PE leg uses. Equal accrual is an ASSUMPTION, not an engine fact, and is stated on every value. The FY label keys the END year in claim identity while the PE run's calendar year is the START year; both come from the comparison row.",
+     "executor": "cy_3_to_1_from_adjacent_runs"
+    }
+   ]
+  },
+  "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp": {
+   "comparison_row_kind": "mapped_head_total",
+   "components": [
+    {
+     "name": "behavioural_adjustment",
+     "axis": "behavioural_adjustment",
+     "status": "unsized",
+     "recipe": "HM Treasury, 'Spring Budget 2024 Policy Costings', March 2024, https://assets.publishing.service.gov.uk/media/65e7920c08eef600155a5617/Published_Costing_Document_Spring_Budget_2024_Final.pdf: final Exchequer impact -9,360m (2024-25) ... -9,490m (2026-27), -9,705m (2027-28), with 'The costing accounts for a behavioural response whereby higher take home earnings from this group has a small effect on earnings / employment' \u2014 described as small, no numeric split published. Sizing recipe: OBR supplementary request, or bound it by the stated 'small' response against the 1.25x PE/OBR ratio (behaviour alone cannot carry it; the NICs head gap is mostly elsewhere)."
+    },
+    {
+     "name": "cy_proxies_fy",
+     "axis": "cy_proxies_fy",
+     "status": "computed",
+     "recipe": "Execute the adjacent-CY interpolation from the comparison rows: 0.25 * (PE CY(Y+1) - PE CY(Y)), the difference between an equal-accrual 3:1 FY blend and the single-CY proxy the PE leg uses. Equal accrual is an ASSUMPTION, not an engine fact, and is stated on every value. The FY label keys the END year in claim identity while the PE run's calendar year is the START year; both come from the comparison row.",
+     "executor": "cy_3_to_1_from_adjacent_runs"
+    },
+    {
+     "name": "nics_base_gap",
+     "axis": "construction_scope",
+     "status": "unsized",
+     "recipe": "PE's class-1 employee NICs base vs HMRC PTM: compare PE aggregate employee NICs at baseline against the published NICs liabilities statistics (the #51 pipeline's national_insurance counterpart) before attributing the remainder."
+    }
+   ]
+  },
+  "spring_budget_2024__hicbc_threshold_and_taper": {
+   "comparison_row_kind": "mapped_head_total",
+   "components": [
+    {
+     "name": "behavioural_adjustment",
+     "axis": "behavioural_adjustment",
+     "status": "unsized",
+     "recipe": "Same SB2024 costings document: HICBC final Exchequer impact -540m (2024-25) ... -640m (2026-27), -645m (2027-28); 'The costing accounts for a behavioural response through an increase in take-up of Child Benefit payments' \u2014 no split published. PE's welfare-head zero (COMPARISON row) means the take-up response channel is entirely absent from the PE leg; size by a fullpart-style child-benefit take-up toggle run (#51 machinery) against the OBR welfare head -391m/-426m.",
+     "overlaps": [
+      "welfare_head_missing"
+     ]
+    },
+    {
+     "name": "welfare_head_missing",
+     "axis": "head_scope",
+     "status": "sized",
+     "values_gbp": {
+      "2026-27": 391000000,
+      "2027-28": 426000000
+     },
+     "provenance": "COMPARISON.csv rows spring_budget_2024__hicbc_threshold_and_taper / Welfare inside cap: OBR -391m (2026-27), -426m (2027-28); PE 0.0 with annotation that PE emits no welfare-head effect for this measure. The missing revenue-reducing head pushes PE above OBR by its full published magnitude: +391m / +426m. OVERLAP (review): this is a sign-adjusted head DIFFERENCE, and the same \u00a3391m/\u00a3426m welfare head is exactly what the unsized take-up behavioural axis would size \u2014 the two share a channel and are not additive. The pipeline records the overlap and withholds explained_share while both are present.",
+     "overlaps": [
+      "behavioural_adjustment"
+     ]
+    },
+    {
+     "name": "cy_proxies_fy",
+     "axis": "cy_proxies_fy",
+     "status": "computed",
+     "recipe": "Execute the adjacent-CY interpolation from the comparison rows: 0.25 * (PE CY(Y+1) - PE CY(Y)), the difference between an equal-accrual 3:1 FY blend and the single-CY proxy the PE leg uses. Equal accrual is an ASSUMPTION, not an engine fact, and is stated on every value. The FY label keys the END year in claim identity while the PE run's calendar year is the START year; both come from the comparison row.",
+     "executor": "cy_3_to_1_from_adjacent_runs"
+    }
+   ]
+  },
+  "autumn_budget_2025__uc_child_element_remove_two_child_limit": {
+   "comparison_row_kind": "head",
+   "components": [
+    {
+     "name": "uc_caseload_takeup",
+     "axis": "construction_scope",
+     "status": "unsized",
+     "recipe": "PE at 0.56-0.59x OBR on Welfare inside cap: decompose with the #51 fullpart machinery \u2014 baseline vs full-take-up runs split the shortfall between modelled UC take-up and affected-children caseload; compare the affected-household count against DWP's two-child-limit statistics release."
+    },
+    {
+     "name": "cy_proxies_fy",
+     "axis": "cy_proxies_fy",
+     "status": "computed",
+     "recipe": "Execute the adjacent-CY interpolation from the comparison rows: 0.25 * (PE CY(Y+1) - PE CY(Y)), the difference between an equal-accrual 3:1 FY blend and the single-CY proxy the PE leg uses. Equal accrual is an ASSUMPTION, not an engine fact, and is stated on every value. The FY label keys the END year in claim identity while the PE run's calendar year is the START year; both come from the comparison row.",
+     "executor": "cy_3_to_1_from_adjacent_runs"
+    }
+   ]
+  }
+ }
+}

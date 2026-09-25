@@ -1,0 +1,7 @@
+# Vendored primary artifacts are pinned by SHA-256, so their bytes must
+# survive checkout unchanged. Without this, a Windows checkout with
+# autocrlf on rewrites line endings in the text-shaped ones and every
+# SHA gate fails confusingly (reported in review of #92).
+*.csv -text
+*.csv-metadata.json -text
+*.jsonl -text

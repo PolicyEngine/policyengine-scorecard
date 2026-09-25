@@ -14,8 +14,14 @@ region/country series (timeseries tables 3.17-3.20, 4.16/17/22/23,
 and inequality tables are in the same raw files but not yet emitted.
 
 Value semantics:
-    - rates are integer percents -> fractions 0-1
-    - counts are millions (1 d.p.) -> raw persons
+    - numeric cells are read from the ODS office:value attribute — the
+      UNROUNDED value the workbook stores (e.g. 75.875 behind a
+      displayed "75.9") — with the display text kept as a consistency
+      check: the text must be the rounded rendering of the attribute,
+      or the cell pairing is wrong and the run aborts (#44 follow-up:
+      the adapter used to keep the rounded display text)
+    - rates are percent-scale numbers -> fractions 0-1
+    - counts are millions -> raw persons
     - '[x]' (not published, e.g. Northern Ireland before the FRS covered
       it), '[u]' (small sample) and '[low]' (rounds to zero at published
       precision, i.e. < 0.05 million) -> status 'suppressed'
@@ -48,6 +54,8 @@ PROGRAM = "hbai_low_income"
 
 TNS = "urn:oasis:names:tc:opendocument:xmlns:table:1.0"
 NS = {"table": TNS, "text": "urn:oasis:names:tc:opendocument:xmlns:text:1.0"}
+ONS = "urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+NUMERIC_TYPES = ("float", "percentage")
 
 SUMMARY_FILE = "summary-hbai-1994-95-2024-25-tables.ods"
 # sheet -> (subgroup, unit_concept, kind)
@@ -116,6 +124,20 @@ def metric_name(poverty_line, kind):
     return f"{poverty_line}_low_income_{kind}"
 
 
+class Cell(str):
+    """A sheet cell: the display text (str identity, so every label and
+    regex read stays unchanged) carrying the workbook's UNROUNDED
+    office:value when the cell is numeric. num is (value, value_type)
+    or None for label/empty cells."""
+
+    __slots__ = ("num",)
+
+    def __new__(cls, text, num=None):
+        cell = super().__new__(cls, text)
+        cell.num = num
+        return cell
+
+
 def read_sheets(path, wanted):
     with zipfile.ZipFile(path) as z:
         root = ET.fromstring(z.read("content.xml"))
@@ -132,7 +154,10 @@ def read_sheets(path, wanted):
                 txt = " ".join(
                     "".join(p.itertext()) for p in c.findall("text:p", NS)
                 ).strip()
-                row.extend([txt] * min(rep, 40))
+                vt = c.get(f"{{{ONS}}}value-type")
+                v = c.get(f"{{{ONS}}}value")
+                num = (float(v), vt) if v is not None and vt in NUMERIC_TYPES else None
+                row.extend([Cell(txt, num)] * min(rep, 40))
             while row and not row[-1]:
                 row.pop()
             rows.append(row)
@@ -143,12 +168,31 @@ def read_sheets(path, wanted):
     return out
 
 
-def parse_value(text, kind):
-    if text in SUPPRESSED:
+def parse_value(cell, kind):
+    if cell in SUPPRESSED:
         return None, "suppressed"
-    if not text or not re.match(r"^-?[\d,.]+$", text):
+    if not cell or not re.match(r"^-?[\d,.]+$", cell):
         return None, "empty"
-    v = float(text.replace(",", ""))
+    shown = float(cell.replace(",", ""))
+    num = getattr(cell, "num", None)
+    if num is None:
+        v = shown
+    else:
+        v, vtype = num
+        if vtype == "percentage":
+            # ODS percentage cells store the fraction; the sheet displays
+            # the percent-scale number — align to display scale so ONE
+            # kind conversion below applies to both cell types.
+            v *= 100
+        # The display text must be the rounded rendering of the stored
+        # value at the text's own precision; a mismatch means text and
+        # attribute came from different cells — abort, never emit.
+        dp = len(cell.split(".")[1]) if "." in cell else 0
+        if abs(v - shown) > 0.5 * 10**-dp + 1e-9:
+            raise ValueError(
+                f"cell text {str(cell)!r} is not the rounded rendering "
+                f"of its office:value {v!r}"
+            )
     return (v / 100 if kind == "rate" else v * 1_000_000), "ok"
 
 
@@ -473,7 +517,15 @@ def run():
     ]
     failed = False
     for label, got, want in checks:
-        ok = got is not None and abs(got - want) < 1e-9
+        # got carries the office:value precision; the publication's
+        # headline is its rounded rendering (rates to whole percents,
+        # counts to 0.1 million) — so validate rounds-to, not equality.
+        if got is None:
+            ok = False
+        elif want < 1:  # rate fraction
+            ok = abs(round(got, 2) - want) < 1e-9
+        else:  # person count, published to 0.1M
+            ok = abs(round(got / 100_000) * 100_000 - want) < 1e-6
         print(f"  {'OK ' if ok else 'FAIL'} {label}: {got}")
         failed = failed or not ok
     suppressed = sum(r["status"] == "suppressed" for r in rows)

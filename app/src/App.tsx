@@ -1,38 +1,59 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Comparison, LanesFeed, PopulationsFeed, Row } from "./types";
-import { PROGRAM_LABELS } from "./types";
+import {
+  PolicyEngineShell,
+  getPolicyEngineFooterLinks,
+  getPolicyEngineNavItems,
+  getPolicyEngineUrl,
+} from "@policyengine/ui-kit/layout";
+import {
+  SegmentedControl,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from "@policyengine/ui-kit/primitives";
+import type {
+  Comparison,
+  Country,
+  LanesFeed,
+  PopulationsFeed,
+  Row,
+} from "./types";
+import { COUNTRY_LABELS, countryOf } from "./types";
 import { bucketOf, type SpineBucket } from "./spine";
-import { CoverageSpine } from "./components/CoverageSpine";
+import { defaultFilters, type Filters } from "./filters";
+import { NavContext } from "./navigation";
+import { COUNTERPART } from "./copy";
 import { ComparisonTable } from "./components/ComparisonTable";
 import { DivergenceBoard } from "./components/DivergenceBoard";
 import { GapsView } from "./components/GapsView";
 import { AboutView } from "./components/AboutView";
-import { MissionControl } from "./components/MissionControl";
+import { Overview } from "./components/Overview";
+import { CountryEmptyState } from "./components/CountryEmptyState";
 import { ReformValidationView } from "./components/ReformValidationView";
+import { TABS, buildUrlQuery, parseUrlState, type TabId } from "./urlState";
+import { withBasePath } from "./basePath";
 
-const TABS = [
-  { id: "scorecard", label: "Scorecard" },
-  { id: "divergences", label: "Divergences" },
-  { id: "validation", label: "Reform validation" },
-  { id: "gaps", label: "Gaps" },
-  { id: "about", label: "Method" },
-] as const;
-type TabId = (typeof TABS)[number]["id"];
-
-export interface Filters {
-  program: string;
-  metric: string;
-  geography: string; // "US" | "states" | state code
-  subgroup: string; // "total" | "all" | slug
-  bucket: SpineBucket | null;
+function initialUrlState(): { country: Country; tab: TabId } {
+  return parseUrlState(window.location.search);
 }
 
-const DEFAULT_FILTERS: Filters = {
-  program: "all",
-  metric: "all",
-  geography: "US",
-  subgroup: "total",
-  bucket: null,
+function writeUrlState(country: Country, tab: TabId) {
+  const query = buildUrlQuery(window.location.search, country, tab);
+  window.history.replaceState(
+    null,
+    "",
+    (query ? `${window.location.pathname}?${query}` : window.location.pathname) +
+      window.location.hash,
+  );
+}
+
+const COUNTRIES = Object.keys(COUNTRY_LABELS) as Country[];
+
+const FLAGS: Record<Country, string> = {
+  US: "🇺🇸",
+  UK: "🇬🇧",
+  BE: "🇧🇪",
+  NZ: "🇳🇿",
 };
 
 export default function App() {
@@ -40,22 +61,29 @@ export default function App() {
   const [lanes, setLanes] = useState<LanesFeed | null>(null);
   const [populations, setPopulations] = useState<PopulationsFeed | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<TabId>("scorecard");
-  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
+  const [tab, setTab] = useState<TabId>(() => initialUrlState().tab);
+  const [filters, setFilters] = useState<Filters>(() =>
+    defaultFilters(initialUrlState().country),
+  );
+  const country = filters.country;
 
   useEffect(() => {
-    fetch("./data/comparison.json")
+    writeUrlState(country, tab);
+  }, [country, tab]);
+
+  useEffect(() => {
+    fetch(withBasePath("data/comparison.json"))
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
       })
       .then(setData)
       .catch((e) => setError(String(e)));
-    fetch("./data/lanes.json")
+    fetch(withBasePath("data/lanes.json"))
       .then((r) => (r.ok ? r.json() : null))
       .then(setLanes)
       .catch(() => setLanes(null));
-    fetch("./data/populations.json")
+    fetch(withBasePath("data/populations.json"))
       .then((r) => (r.ok ? r.json() : null))
       .then(setPopulations)
       .catch(() => setPopulations(null));
@@ -66,158 +94,165 @@ export default function App() {
     return new Map(data.rows.map((r) => [r, bucketOf(r)] as const));
   }, [data]);
 
-  if (error) {
-    return (
-      <div className="mx-auto max-w-content p-8">
-        <p className="text-destructive">
-          Could not load data/comparison.json ({error}). Run the pipeline, then
-          copy data into app/public/data/.
-        </p>
-      </div>
-    );
-  }
-  if (!data) {
-    return (
-      <div className="mx-auto max-w-content p-8 text-muted-foreground">
-        Loading comparison data…
-      </div>
-    );
-  }
+  // Country-scoped view of the comparison: rows without a country key are
+  // US-era exports (countryOf defaults them), so nothing is ever dropped.
+  const scoped = useMemo(() => {
+    if (!data) return null;
+    return {
+      ...data,
+      rows: data.rows.filter((r) => countryOf(r) === country),
+    };
+  }, [data, country]);
 
-  const b = data.pe_bundle;
-  const datasetId = (b.certified_data_build_id ?? "").split("-").slice(-2)[0];
+  // Switching country resets row filters: geography codes, buckets and
+  // subgroups don't carry across countries.
+  const selectCountry = (c: Country) => setFilters(defaultFilters(c));
 
-  return (
-    <div className="min-h-screen">
-      {/* provenance stamp */}
-      <div className="border-b border-border bg-muted/60">
-        <div className="mx-auto max-w-content px-4 py-1.5 fig text-[11px] leading-4 text-muted-foreground flex flex-wrap gap-x-4">
-          <span>
-            external · {data.source_meta.id} · fetched{" "}
-            {data.source_meta.fetched} · {data.source_meta.period}
-          </span>
-          <span>
-            policyengine · {b.runtime_dataset} @ {datasetId} · {b.model_package}{" "}
-            {b.model_version} · annual 2024
-          </span>
-          <span>built {data.built}</span>
-        </div>
-      </div>
-
-      <header className="mx-auto max-w-content px-4 pt-8 pb-2">
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-          Model validation · instance 1
-        </p>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight">
-          PolicyEngine scorecard{" "}
-          <span className="font-normal text-muted-foreground">
-            vs Urban Institute's State of the Safety Net
-          </span>
-        </h1>
-        <Headline data={data} buckets={buckets} />
-      </header>
-
-      <div className="mx-auto max-w-content px-4">
-        <CoverageSpine
-          rows={data.rows}
-          buckets={buckets}
-          active={filters.bucket}
-          onSelect={(bucket) => {
-            setFilters({ ...filters, bucket });
-            setTab("scorecard");
-          }}
-        />
-        <MissionControl data={data} lanes={lanes} />
-      </div>
-
-      <nav
-        className="mx-auto max-w-content px-4 mt-6 border-b border-border flex gap-1"
-        aria-label="Views"
-      >
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={
-              "px-4 py-2 text-sm rounded-t-md border border-b-0 " +
-              (tab === t.id
-                ? "border-border bg-background font-semibold text-primary -mb-px"
-                : "border-transparent text-muted-foreground hover:text-foreground")
-            }
-          >
-            {t.label}
-          </button>
-        ))}
-      </nav>
-
-      <main className="mx-auto max-w-content px-4 py-6">
-        {tab === "scorecard" && (
-          <ComparisonTable
-            data={data}
-            buckets={buckets}
-            filters={filters}
-            setFilters={setFilters}
-          />
-        )}
-        {tab === "divergences" && (
-          <DivergenceBoard data={data} buckets={buckets} />
-        )}
-        {tab === "validation" &&
-          (populations ? (
-            <ReformValidationView feed={populations} />
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              No populations feed — run scorecard_db.export_populations, then
-              copy data into app/public/data/.
-            </p>
-          ))}
-        {tab === "gaps" && <GapsView data={data} />}
-        {tab === "about" && <AboutView data={data} />}
-      </main>
-
-      <footer className="border-t border-border">
-        <div className="mx-auto max-w-content px-4 py-4 text-xs text-muted-foreground">
-          Every annotation traces to the replication assessment, engine
-          metadata, or a measured diagnostic — see the method tab. Misses stay
-          on the page.
-        </div>
-      </footer>
-    </div>
+  const nav = useMemo(
+    () => ({
+      go: (next: TabId, patch?: Partial<Filters>) => {
+        if (patch) setFilters((f) => ({ ...f, ...patch }));
+        setTab(next);
+        window.scrollTo({ top: 0 });
+      },
+    }),
+    [],
   );
-}
 
-function Headline({
-  data,
-  buckets,
-}: {
-  data: Comparison;
-  buckets: Map<Row, SpineBucket>;
-}) {
-  const counts: Record<string, number> = {};
-  for (const r of data.rows) {
-    const bucket = buckets.get(r)!;
-    counts[bucket] = (counts[bucket] ?? 0) + 1;
-  }
-  const compared =
-    (counts.close ?? 0) + (counts.moderate ?? 0) + (counts.far ?? 0);
-  const withValues = compared + (counts.concept_mismatch ?? 0);
-  const n = data.rows.length - (counts.suppressed ?? 0);
-  const programs = new Set(
-    data.rows.map((r) => r.program).filter((p) => p !== "spm_poverty"),
-  ).size;
+  // The shared PolicyEngine header/footer only know the site countries;
+  // BE and NZ instances borrow the US site chrome.
+  const siteCountry = country === "UK" ? "uk" : "us";
+  const hasRows = (scoped?.rows.length ?? 0) > 0;
+
   return (
-    <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-      Urban publishes{" "}
-      <b className="text-foreground fig">{n.toLocaleString()}</b> unsuppressed
-      cells across {programs} programs and the poverty counterfactual.
-      PolicyEngine currently produces a counterpart for{" "}
-      <b className="text-foreground fig">{withValues.toLocaleString()}</b> of
-      them ({Math.round((withValues / n) * 100)}%);{" "}
-      <b className="text-foreground fig">
-        {(counts.close ?? 0).toLocaleString()}
-      </b>{" "}
-      land within tolerance. {PROGRAM_LABELS.liheap} and {PROGRAM_LABELS.ccdf}{" "}
-      are honest gaps. Click a segment to filter.
-    </p>
+    <NavContext.Provider value={nav}>
+      <PolicyEngineShell
+        country={siteCountry}
+        mainClassName="bg-muted"
+        headerProps={{
+          navItems: getPolicyEngineNavItems(siteCountry),
+          logoHref: getPolicyEngineUrl(siteCountry),
+          countries: COUNTRIES.map((c) => ({
+            id: c.toLowerCase(),
+            label: COUNTRY_LABELS[c],
+            flagEmoji: FLAGS[c],
+          })),
+          onCountryChange: (id) => selectCountry(id.toUpperCase() as Country),
+        }}
+        footerProps={{ links: getPolicyEngineFooterLinks(siteCountry) }}
+      >
+        <div className="border-b border-border bg-background">
+          <div className="mx-auto max-w-[75rem] px-4 pt-6 sm:px-6">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight">Scorecard</h1>
+                <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+                  {COUNTERPART[country]}
+                </p>
+              </div>
+              <div className="max-w-full overflow-x-auto">
+                <SegmentedControl
+                  value={country}
+                  onValueChange={(v) => selectCountry(v as Country)}
+                  options={COUNTRIES.map((c) => ({
+                    value: c,
+                    label: COUNTRY_LABELS[c],
+                  }))}
+                />
+              </div>
+            </div>
+            <Tabs
+              value={tab}
+              onValueChange={(v) => nav.go(v as TabId)}
+              className="mt-5"
+            >
+              <TabsList
+                variant="line"
+                className="h-auto w-full justify-start gap-1 overflow-x-auto"
+                aria-label="Views"
+              >
+                {TABS.map((t) => (
+                  <TabsTrigger
+                    key={t.id}
+                    value={t.id}
+                    title={t.blurb}
+                    className="flex-none px-3 pb-2"
+                  >
+                    {t.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </div>
+        </div>
+
+        <div className="mx-auto max-w-[75rem] px-4 py-6 sm:px-6">
+          {error ? (
+            <p className="text-sm text-destructive">
+              Could not load data/comparison.json ({error}). Run the pipeline,
+              then copy data into app/public/data/.
+            </p>
+          ) : !data || !scoped ? (
+            <p className="text-sm text-muted-foreground">
+              Loading comparison data…
+            </p>
+          ) : (
+            <>
+              {tab === "overview" && (
+                <Overview
+                  data={data}
+                  scoped={scoped}
+                  buckets={buckets}
+                  lanes={lanes}
+                  populations={populations}
+                  country={country}
+                />
+              )}
+              {tab === "scorecard" &&
+                (hasRows ? (
+                  <ComparisonTable
+                    data={scoped}
+                    buckets={buckets}
+                    filters={filters}
+                    setFilters={setFilters}
+                  />
+                ) : (
+                  <CountryEmptyState country={country} lanes={lanes} />
+                ))}
+              {tab === "divergences" &&
+                (hasRows ? (
+                  <DivergenceBoard
+                    data={scoped}
+                    buckets={buckets}
+                    country={country}
+                  />
+                ) : (
+                  <CountryEmptyState country={country} lanes={lanes} />
+                ))}
+              {tab === "validation" &&
+                (populations ? (
+                  <ReformValidationView
+                    key={country}
+                    feed={populations}
+                    country={country}
+                  />
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    No populations feed — run scorecard_db.export_populations,
+                    then copy data into app/public/data/.
+                  </p>
+                ))}
+              {tab === "gaps" &&
+                (hasRows ? (
+                  <GapsView data={scoped} />
+                ) : (
+                  <CountryEmptyState country={country} lanes={lanes} />
+                ))}
+              {tab === "about" && <AboutView data={data} />}
+            </>
+          )}
+        </div>
+      </PolicyEngineShell>
+    </NavContext.Provider>
   );
 }

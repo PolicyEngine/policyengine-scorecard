@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "predev": "mkdir -p public/data && cp ../data/comparison.json ../data/lanes.json ../data/exhibits.json ../data/populations.json public/data/",
-    "prebuild": "mkdir -p public/data && cp ../data/comparison.json ../data/lanes.json ../data/exhibits.json ../data/populations.json public/data/"
+    "prebuild": "mkdir -p public/data && cp ../data/comparison.json ../data/lanes.json ../data/exhibits.json ../data/populations.json public/data/",
+    "test": "bun test src"
   },
   "dependencies": {
     "@policyengine/ui-kit": "^0.12.1",

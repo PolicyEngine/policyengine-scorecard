@@ -1,0 +1,40 @@
+{
+ "reform_key": "brl_1pct",
+ "year": 2026,
+ "reform_hint": "Change basic rate limit by 1%",
+ "pe_construction": "gov.hmrc.income_tax.rates.uk[1].threshold: 37700 -> 38077.0",
+ "reform_json": "{\"gov.hmrc.income_tax.rates.uk[1].threshold\": {\"2026-01-01.2028-12-31\": 38077.0}}",
+ "bundle": {
+  "bundle_id": "uk-5.0.1",
+  "country_id": "uk",
+  "policyengine_version": "5.0.1",
+  "model_package": "policyengine-uk",
+  "model_version": "2.89.2",
+  "data_package": "populace-data",
+  "data_version": "0.1.0",
+  "default_dataset": "populace_uk_2023",
+  "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+  "data_build_model_version": "2.89.2",
+  "data_build_model_git_sha": "None",
+  "data_build_fingerprint": "None",
+  "compatibility_basis": "exact_build_model_version",
+  "certified_by": "None",
+  "runtime_dataset": "populace_uk_2023",
+  "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-uk-private/snapshots/a75a9a831d6b07aaffbd09713f2a1124f5c0f08f/populace_uk_2023.h5",
+  "managed_by": "policyengine.py"
+ },
+ "aggregates_gbp": {
+  "income_tax": 421166867195.18976,
+  "national_insurance": 61450306465.09366,
+  "ni_employer": 185481157065.2179,
+  "child_benefit": 17434702263.490685,
+  "universal_credit": 39886998063.102234,
+  "vat": 219622883998.86896,
+  "household_net_income": 1792012959460.6045,
+  "gov_tax": 1046070293965.8806,
+  "gov_spending": 485662410359.99927
+ }
+}

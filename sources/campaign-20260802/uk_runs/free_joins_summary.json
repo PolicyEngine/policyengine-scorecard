@@ -1,0 +1,118 @@
+{
+ "computed": 16,
+ "skipped": 7,
+ "rows": [
+  {
+   "source": "uk_obr",
+   "label": "Income tax (gross of tax credits)",
+   "external_value": 359618867481.6865,
+   "pe_value": 421891913533.19946,
+   "ratio": 1.1731640124657368
+  },
+  {
+   "source": "uk_obr",
+   "label": "National insurance contributions",
+   "external_value": 211594391642.42764,
+   "pe_value": 246931463530.31155,
+   "ratio": 1.1670038209122284
+  },
+  {
+   "source": "uk_obr",
+   "label": "Class 1 Employee NICs",
+   "external_value": 51474273325.11673,
+   "pe_value": 61450306465.09366,
+   "ratio": 1.1938061966794031
+  },
+  {
+   "source": "uk_obr",
+   "label": "Class 1 Employer NICs",
+   "external_value": 150989275628.03833,
+   "pe_value": 185481157065.2179,
+   "ratio": 1.2284392801655015
+  },
+  {
+   "source": "uk_obr",
+   "label": "National insurance contributions",
+   "external_value": 210445437610.04147,
+   "pe_value": 246931463530.31155,
+   "ratio": 1.173375228917432
+  },
+  {
+   "source": "uk_obr",
+   "label": "Value added tax",
+   "external_value": 187704367258.10846,
+   "pe_value": 219622883998.86896,
+   "ratio": 1.1700467453528665
+  },
+  {
+   "source": "uk_obr",
+   "label": "Fuel duties",
+   "external_value": 24628571426.324806,
+   "pe_value": 12976906953.47097,
+   "ratio": 0.5269045747249599
+  },
+  {
+   "source": "uk_obr",
+   "label": "Capital gains tax",
+   "external_value": 20801165202.018173,
+   "pe_value": 24243246083.18426,
+   "ratio": 1.165475387928371
+  },
+  {
+   "source": "uk_obr",
+   "label": "Council tax",
+   "external_value": 52761337186.675934,
+   "pe_value": 60083773529.38769,
+   "ratio": 1.1387841312058506
+  },
+  {
+   "source": "uk_dwp",
+   "label": "state_pension",
+   "external_value": 146071196250.36,
+   "pe_value": 145097022169.8143,
+   "ratio": 0.9933308269833295
+  },
+  {
+   "source": "uk_dwp",
+   "label": "universal_credit",
+   "external_value": 79208239139.54,
+   "pe_value": 39887838277.66961,
+   "ratio": 0.5035819342909491
+  },
+  {
+   "source": "uk_dwp",
+   "label": "pension_credit",
+   "external_value": 6144472389.48,
+   "pe_value": 5725827904.638691,
+   "ratio": 0.9318664877462753
+  },
+  {
+   "source": "uk_dwp",
+   "label": "dla",
+   "external_value": 8289471895.17,
+   "pe_value": 6342775060.054455,
+   "ratio": 0.7651603311123087
+  },
+  {
+   "source": "uk_dwp",
+   "label": "pip",
+   "external_value": 28542217375.36,
+   "pe_value": 20593016304.099655,
+   "ratio": 0.7214932194398199
+  },
+  {
+   "source": "uk_dwp",
+   "label": "attendance_allowance",
+   "external_value": 8497187075.07,
+   "pe_value": 4733056192.259981,
+   "ratio": 0.5570144743719192
+  },
+  {
+   "source": "uk_dwp",
+   "label": "child_benefit",
+   "external_value": 12945231644.37,
+   "pe_value": 17434702263.490685,
+   "ratio": 1.3468049659098371
+  }
+ ]
+}

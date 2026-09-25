@@ -22,5 +22,8 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  // test files run under `bun test`, not the vite build graph (bun:test
+  // types aren't installed for tsc -b)
+  "exclude": ["src/**/*.test.ts"]
 }

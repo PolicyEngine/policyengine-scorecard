@@ -1,0 +1,165 @@
+# AB2025 registry keys
+
+Derived from `data/uk/ab2025_measures.json` (do not edit by hand; regenerate with the snippet in tests/test_uk_ab2025_harvest.py). One line per measure: key | computability | title.
+
+- `ab2025__personal_tax_thresholds_freeze_to_2031` | expressible | Personal Tax: Maintain the personal income tax and equivalent national insurance thresholds at current levels for a furt
+- `ab2025__employer_nics_secondary_threshold_freeze_to_2031` | expressible | National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three yea
+- `ab2025__student_loans_plan2_threshold_freeze` | expressible | Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027
+- `ab2025__property_income_separate_rates` | expressible | Property Income: Introduce separate tax rates for property income at 22% for the property basic rate, 42% for the proper
+- `ab2025__dividend_rates_plus_2pp` | expressible | Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper rate from 6 April 2026
+- `ab2025__savings_rates_plus_2pp_and_starter_limit_held` | expressible | Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and additional rate from 6 April 2027
+- `ab2025__salary_sacrifice_pension_nics_cap_2000` | expressible | Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs
+- `ab2025__high_value_council_tax_surcharge` | expressible | High Value Council Tax Surcharge: Introduce a surcharge on owners of residential properties valued over £2m in England f
+- `ab2025__uc_child_element_remove_two_child_limit` | expressible | Universal Credit Child Element: Remove the two child limit from April 2026, taking 450,000 children out of poverty
+- `ab2025__fuel_duty_freeze_extension_2026_27` | expressible | Fuel Duty: Cancel uprating for 2026-27; extend the 5p cut in rates to 31 August 2026, then increase by 1p from 1 Septemb
+- `ab2025__rail_fares_freeze_2026` | expressible | Rail Fares: Freeze rail fares in England for one year from 1 March 2026
+- `ab2025__winter_fuel_payment_income_test_35000` | expressible | Winter Fuel Payment: Target to pensioners with taxable income below or equal to £35,000 from Winter 2025
+- `ab2025__uc_standard_allowance_and_health_element_rebalancing` | partial | Universal Credit: Changes to the standard allowance and health element to protect existing claimants and new health elem
+- `ab2025__pip_not_proceeding_with_ss2025_eligibility_reforms` | partial | Personal Independence Payment: Not proceeding with Spring Statement 2025 reforms to eligibility
+- `ab2025__renewables_obligation_exchequer_funded_75pct` | partial | Renewables Obligation: Fund 75% of the domestic share of the Renewables Obligation via the Exchequer over the Spending R
+- `ab2025__warm_homes_plan_and_warm_home_discount_expansion` | partial | Warm Homes Plan: Increase funding for the Warm Homes Plan and expand the Warm Home Discount Scheme
+- `ab2025__eved_mileage_supplement_electric_and_phev` | not_expressible | Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 Apri
+- `ab2025__supporting_savers_help_to_save_and_cash_isa_limit` | not_expressible | Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at £20,000 with 
+- `ab2025__iht_nil_rate_bands_and_apr_bpr_allowance_frozen_to_2031` | not_expressible | Inheritance Tax: Maintain the nil-rate band, residence nil-rate band, and allowance for 100% rate of agricultural proper
+- `ab2025__apr_bpr_unused_allowance_transferable_between_spouses` | not_expressible | Agricultural Property Relief and Business Property Relief: Allow any unused allowance for the 100% rate of relief to be 
+- `ab2025__gambling_duties_rgd_40_remote_betting_25` | not_expressible | Gambling Duty: Increase Remote Gaming Duty to 40% from 1 April 2026, introduce a new Remote Betting Rate at 25% (excludi
+- `ab2025__motability_vat_on_advance_payments_and_ipt` | not_expressible | Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insuran
+- `ab2025__non_reimbursed_homeworking_expenses_relief_removed` | not_expressible | Non-reimbursed Homeworking Expenses: Remove the tax relief available from 6 April 2026
+- `ab2025__uc_surplus_earnings_threshold_2500_extended` | not_expressible | Universal Credit: Extend the £2,500 surplus earnings threshold for one year from 6 April 2026
+- `ab2025__child_benefit_16_19_illness_disability_12_hour_rule_exemption` | not_expressible | Child Benefit: Exempt 16–19-year-olds with an illness or disability from the 12-hour weekly rule and equalise the treatm
+- `ab2025__housing_benefit_cliff_edge_supported_and_temporary_accommodation` | not_expressible | Housing Benefit: Reduce the financial cliff edge for claimants in supported housing and temporary accommodation from Aut
+- `ab2025__carers_allowance_overpayments_review` | not_expressible | Carer’s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance
+- `ab2025__dwp_fraud_and_error_uc_targeted_case_review_extended` | not_expressible | DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31
+- `ab2025__dwp_fraud_and_error_pension_credit_accuracy_reviews` | not_expressible | DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026
+- `ab2025__health_and_disability_benefits_operations` | not_expressible | Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment c
+- `ab2025__hb_and_pension_credit_administration_brought_together` | not_expressible | Housing Benefit and Pension Credit Administration: Bring together the administration of pensioner Housing Benefit and Pe
+- `ab2025__nics_class_2_abroad_removed_and_class_3_residency_requirement` | not_expressible | National Insurance: Remove access to Class 2 National Insurance contributions (NICs) and increase the initial residency 
+- `ab2025__nhs_prescription_charges_frozen_2026` | not_expressible | Health and Social Care: Freeze NHS prescription charges in England for one year from 1 April 2026
+- `ab2025__cgt_employee_ownership_trust_relief_cut_to_50pct` | not_expressible | Capital Gains Tax: Reduce Capital Gains Tax relief on qualifying disposals to employee ownership trusts from 100% to 50%
+- `ab2025__trust_charges_cap_and_post_departure_trade_profits` | not_expressible | Cap trust charges at £5m for pre-30 October 2024 excluded property trusts for charges applying from 6 April 2025 and clo
+- `ab2025__vct_income_tax_relief_reduced` | not_expressible | Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026
+- `ab2025__vct_and_eis_investment_limits_increased` | not_expressible | Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annu
+- `ab2025__toms_private_hire_vehicles_excluded` | not_expressible | Tour Operators' Margin Scheme: Exclude Private Hire Vehicle Services from the scope of the scheme from 2 January 2026
+- `ab2025__expensive_car_supplement_threshold_for_zevs_50000` | not_expressible | Support for British automotive industry: Increase the Expensive Car Supplement threshold for zero emission vehicles to £
+- `ab2025__employee_car_ownership_schemes_bik_delayed` | not_expressible | Support for British automotive industry: Delay bringing Employee Car Ownership schemes within the Benefit in Kind rules 
+- `ab2025__phev_emissions_standard_and_bik_easement` | not_expressible | Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement
+- `ab2025__student_finance_lle_launch_and_loan_outlay` | not_expressible | Student Finance: Confirm policy detail for the Lifelong Learning Entitlement launch on 1 January 2027 and increase spend
+- `ab2025__ppf_and_fas_pre_1997_inflation_protection` | not_expressible | Defined Benefit Pensions: Provide inflation protection for pre-1997 pensions in the Pension Protection Fund (PPF) and Fi
+- `ab2025__british_coal_staff_superannuation_scheme_reserve_transfer` | not_expressible | British Coal Staff Superannuation Scheme: Transfer investment reserve to scheme members
+- `ab2025__db_pension_scheme_surplus_extraction` | not_expressible | Defined Benefit (DB) Pension Scheme Surplus Extraction: Introduce flexibilities for employers and direct payments to mem
+- `ab2025__loan_charge_review_response` | not_expressible | Loan Charge: Government response to the independent review
+- `ab2025__compensation_payments_post_office_capture_and_infected_blood` | not_expressible | Compensation Payments: Make compensation available to those affected by Post Office Capture IT software shortfalls and d
+- `ab2025__tariffs_changes_since_spring_2025` | not_expressible | Tariffs: Changes since Spring 2025
+- `ab2025__low_value_imports_customs_reform` | not_expressible | Low Value Imports: Reform the customs treatment of low value imports from March 2029
+- `ab2025__apd_higher_rate_extended_to_private_jets` | not_expressible | Air Passenger Duty: Extend the scope of the higher rate to cover all private jets over 5.7 tonnes from 1 April 2027
+- `ab2025__landfill_tax_lower_rate_increase` | not_expressible | Landfill Tax: Increase the lower rate by the cash increase of the standard rate from 1 April 2026 and in each year of th
+- `ab2025__sdil_threshold_cut_and_milk_based_drinks` | not_expressible | Soft Drink Industry Levy: Reduce the levy threshold from 5g to 4.5g/100ml and extend to milk-based drinks and milk subst
+- `ab2025__ets_expansion_to_international_maritime` | not_expressible | Emissions Trading Scheme (ETS): Expansion of the UK ETS to International Maritime Routes from 2028
+- `ab2025__cbam_indirect_emissions_removed` | not_expressible | Carbon Border Adjustment Mechanism (CBAM): Remove indirect emissions from scope of the CBAM from 1 January 2027
+- `ab2025__writing_down_allowances_14pct_and_40pct_fya` | not_expressible | Writing-down Allowances: Reduce the main rate writing-down allowance to 14% from April 2026 and introduce a new 40% firs
+- `ab2025__advanced_corporation_tax_shadow_act_abolished` | not_expressible | Advanced Corporation Tax (ACT) reform: Abolish shadow ACT restrictions to relax the limits on companies’ use of surplus 
+- `ab2025__emi_eligibility_extended_to_scale_ups` | not_expressible | Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the sch
+- `ab2025__uk_listing_relief_sdrt` | not_expressible | UK Listing Relief: Stamp Duty Reserve Tax relief for transfers of a company's securities for a three-year period from th
+- `ab2025__business_rates_transitional_relief_and_supplement` | not_expressible | Business Rates: Introduce both a three year Transitional Relief scheme, partially funded by a 1p Transitional Relief Sup
+- `ab2025__business_rates_rhl_lower_multipliers_and_high_value_multiplier` | not_expressible | Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a 
+- `ab2025__business_rates_retention_gla_and_pilots` | not_expressible | Business Rates Retention: Extend Greater London Authority enhanced business rates retention arrangements, and pilot Busi
+- `ab2025__vat_relief_business_donations_of_goods_to_charity` | not_expressible | VAT: Introduce a relief for business donations of goods to charity for onward distribution or use in the delivery of the
+- `ab2025__cross_border_vat_grouping_reverted` | not_expressible | Cross-border VAT Grouping: Revert to unconditional whole entity cross-border VAT grouping from 26 November 2025
+- `ab2025__hmrc_further_measures_to_close_the_tax_gap` | not_expressible | HMRC: Further measures to close the tax gap5
+- `ab2025__fya_zero_emission_cars_and_charge_points_extended` | not_expressible | Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle c
+- `ab2025__rebuilding_britain_capital_investment` | not_expressible | Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing
+- `ab2025__jobs_and_skills_youth_guarantee_and_levy` | not_expressible | Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support4
+- `ab2025__planning_capacity_and_capability` | not_expressible | Planning Capacity and Capability: Fund additional capacity in the planning system to get Britain building
+- `ab2025__british_business_bank_growth_guarantee_scheme` | not_expressible | British Business Bank: Expand the Growth Guarantee Scheme to support businesses impacted by changes in global tariffs
+- `ab2025__illegal_high_street_operations_taskforce` | not_expressible | Clamping Down on Illegal High Street Operations: Invest in a new cross-government taskforce, additional Insolvency Servi
+- `ab2025__national_level_regulation_food_businesses` | not_expressible | National Level Regulation: Provide funding to reduce regulatory burden for large food businesses
+- `ab2025__fisheries_and_coastal_growth_fund` | not_expressible | Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities
+- `ab2025__innovation_in_wales_semiconductor_cluster` | not_expressible | Innovation in Wales: Invest in a world-leading semiconductor technologies cluster
+- `ab2025__northern_ireland_post_brexit_trade_support` | not_expressible | Northern Ireland: Post-Brexit trade support
+- `ab2025__kernow_industrial_growth_fund` | not_expressible | Kernow Industrial Growth Fund: Provide funding to support growth in Cornwall
+- `ab2025__port_talbot_brownfield_remediation` | not_expressible | Port Talbot: Remediate contaminated brownfield land adjacent to the Celtic Freeport
+- `ab2025__rdel_efficiencies_and_savings` | not_expressible | RDEL: Go further on efficiencies and savings
+- `ab2025__nhs_england_abolition_funding_brought_forward` | not_expressible | Health and Social Care: Bringing forward SR25 funding to support the abolition of NHS England and unlock savings
+- `ab2025__nhs_technology_investment` | not_expressible | NHS: Investing in NHS technology to improve productivity
+- `ab2025__home_office_people_smuggling_funding` | not_expressible | Home Office: Provide additional funding to tackle people smuggling gangs
+- `ab2025__systems_and_compliance_investment_hmrc_dwp` | not_expressible | Systems & Compliance: Invest in HMRC, DWP and other departments to: reduce fraud and error in the welfare system & publi
+- `ab2025__national_year_of_reading_book_funding` | not_expressible | National Year of Reading: Fund state-funded secondary schools in England to increase book supplies
+- `ab2025__playground_refurbishment_funding` | not_expressible | Investing in Communities: Provide funding to refurbish and improve up to 200 playgrounds in England
+- `ab2025__environmental_regeneration_grant_scheme` | not_expressible | Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water c
+- `ab2025__uk_eu_sps_agreement_defra_costs` | not_expressible | UK-EU Deal: Fund DEFRA costs in 2025-26 for domestic implementation of UK-EU Sanitary and Phytosanitary Agreement
+- `ab2025__gambling_commission_illegal_market_funding` | not_expressible | Gambling Commission: Provide funding to tackle the illegal market
+- `ab2025__electric_car_grant_and_charging_infrastructure` | not_expressible | Support for British automotive industry: Provide additional Electric Car Grant funding & extend to 2029-30 and invest in
+- `ab2025__sizewell_c_rab_levy_reclassification` | not_expressible | Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy
+- `ab2025__package_total_policy_decisions` | partial | Total policy decisions (Table 4.1)
+- `ab2025__package_total_tax_policy_decisions` | partial | Total tax policy decisions (Table 4.1)
+- `ab2025__package_total_spending_policy_decisions` | partial | Total spending policy decisions (Table 4.1)
+- `ab2025__package_ifs_decile_chart_scope` | partial | IFS 27 Nov 2025 decile chart package: the Budget's tax and benefit measures affecting household incomes, 2026-27 and 203
+- `ab2025__package_ukmod_six_measures` | partial | UKMOD (CeMPA WP 3/26) six-measure Autumn Budget 2025 package
+- `ab2025_option__income_tax_basic_rate_plus_1p` | expressible | Income tax basic rate 20% to 21%
+- `ab2025_option__income_tax_all_rates_plus_1p` | expressible | All income tax rates +1ppt (20/40/45 to 21/41/46)
+- `ab2025_option__income_tax_basic_rate_plus_2p` | expressible | Income tax basic rate 20% to 22%
+- `ab2025_option__income_tax_plus_2p_employee_nics_minus_2p_switch` | expressible | 2p switch: all income tax rates +2p, employee NI main and additional rates -2p
+- `ab2025_option__nics_employee_and_self_employed_rates_plus_1p` | expressible | Employee NICs 8% to 9% and 2% to 3%; self-employed 6% to 7% and 2% to 3%
+- `ab2025_option__nics_abolish_upper_earnings_and_profits_limits` | expressible | Abolish the NICs upper earnings limit and upper profits limit (main rate all the way up)
+- `ab2025_option__nics_on_earnings_over_state_pension_age` | partial | Charge employee NICs on the earnings of people over State Pension age
+- `ab2025_option__personal_tax_threshold_freeze_two_more_years_to_2030` | expressible | Extend the income tax and NICs threshold freezes by two years to April 2030
+- `ab2025_option__hrt_and_uel_cut_to_46000_by_2029_30` | expressible | Cut the higher-rate threshold and NI upper earnings limit from GBP 50,270 to GBP 46,000 by 2029-30
+- `ab2025_option__dividend_rates_all_plus_1p` | expressible | All dividend tax rates +1ppt
+- `ab2025_option__dividend_basic_rate_to_16_5pct` | expressible | Raise the basic (ordinary) rate of dividend tax from 8.75% to 16.5%
+- `ab2025_option__savings_interest_rates_all_plus_1p` | expressible | All interest (savings) income tax rates +1ppt
+- `ab2025_option__cgt_higher_rate_plus_1p_and_plus_10p` | expressible | CGT higher rate +1ppt (24 to 25) and +10ppt (24 to 34)
+- `ab2025_option__cgt_equalise_with_income_tax_plus_investment_allowance` | partial | Equalise CGT rates with income tax, with a normal-return (investment) allowance
+- `ab2025_option__cgt_end_uplift_on_death` | not_expressible | End the CGT base-cost uplift on death
+- `ab2025_option__cgt_exit_tax_on_emigration` | not_expressible | CGT settling-up charge on emigration (rebasing on arrival, deemed disposal on departure)
+- `ab2025_option__abolish_business_asset_disposal_relief` | not_expressible | Abolish business asset disposal relief
+- `ab2025_option__pension_tax_relief_capped_at_basic_rate` | partial | Cap income tax relief on pension contributions at 20%
+- `ab2025_option__employer_nics_on_employer_pension_contributions` | expressible | Employer NICs on employer pension contributions (1% and full rate variants)
+- `ab2025_option__salary_sacrifice_employer_nics_at_half_rate` | partial | Employer NI on salary-sacrificed pension contributions at half the usual rate
+- `ab2025_option__salary_sacrifice_nics_cap_2000_rumoured` | expressible | Salary-sacrifice NICs cap of GBP 2,000 (pre-Budget, reported)
+- `ab2025_option__pension_tax_free_lump_sum_cut_to_100000` | not_expressible | Cut the pension tax-free lump sum from GBP 268,275 to about GBP 100,000
+- `ab2025_option__pension_annual_allowance_cut_to_40000` | expressible | Cut the pension annual allowance from GBP 60,000 to GBP 40,000
+- `ab2025_option__nics_equivalent_on_large_pension_incomes` | partial | NICs-equivalent charge on large private pension incomes
+- `ab2025_option__iht_rate_to_41pct_and_abolish_residence_nil_rate_band` | not_expressible | Inheritance tax rate 40% to 41%; abolish the residence nil-rate band
+- `ab2025_option__council_tax_double_bands_g_and_h_england` | partial | Double council tax bills for bands G and H in England
+- `ab2025_option__council_tax_bands_f_g_plus_50pct_h_plus_100pct_recycled_to_a_d` | partial | Council tax bands F and G +50%, H +100% of the band-D multiplier, recycling GBP 1bn to cut bands A-D by 2.7%
+- `ab2025_option__council_tax_plus_1pct_and_scotland_relativities` | partial | Council tax +1% on all bills; copy Scotland's 2017 higher-band relativities
+- `ab2025_option__proportional_property_tax_on_values_over_2m` | partial | Proportional property tax: 1% on value GBP 2m-3m and 2% above GBP 3m (Demos); full proportional property tax (IPPR, cite
+- `ab2025_option__non_uk_resident_sdlt_surcharge_2_to_6pct` | not_expressible | Non-UK-resident SDLT surcharge 2% to 6%
+- `ab2025_option__second_homes_200pct_premium_for_non_uk_residents` | not_expressible | Additional 200% council tax premium on second homes owned by non-UK residents
+- `ab2025_option__vat_main_rate_20_to_21_reduced_5_to_6_zero_rated_1pct` | expressible | VAT: main rate 20% to 21%; reduced rate 5% to 6%; 1% VAT on zero-rated products
+- `ab2025_option__vat_registration_threshold_cut_to_30000` | not_expressible | Cut the VAT registration threshold from GBP 90,000 to GBP 30,000 over four years
+- `ab2025_option__nil_rate_vat_on_domestic_electricity` | partial | Nil-rate VAT on domestic electricity (RF); remove VAT on domestic energy (NIESR)
+- `ab2025_option__fuel_duty_plus_10pct_or_freeze_to_2029_30` | expressible | Fuel duty +10% (to 65.65ppl in 2026-27), or freeze at current levels to 2029-30
+- `ab2025_option__fuel_duty_new_uprating_regime_3pct_quarterly` | expressible | New fuel duty uprating regime: fixed 3% a year in quarterly steps, 5p cut unwound over ~10 quarters
+- `ab2025_option__end_fuel_duty_freeze_and_start_road_pricing` | not_expressible | End the fuel duty freeze and introduce road pricing
+- `ab2025_option__ved_reform_for_evs_distance_and_weight_based` | not_expressible | Reform VED for future EVs (distance- and weight-based), end the 'pavement tax', cut public-charging VAT
+- `ab2025_option__gambling_duties_consolidated_or_raised` | not_expressible | Gambling duties: consolidate to a 25% rate (RF); RGD to 50%, GBD to 25% excl. horse racing, MGD to 50% (IPPR, Demos, SMF
+- `ab2025_option__sugar_and_salt_reformulation_tax` | not_expressible | Sugar and Salt Reformulation Tax (GBP 4/kg sugar, GBP 8/kg salt) replacing the Soft Drinks Industry Levy
+- `ab2025_option__uk_ets_extended_to_eu_scope_aviation_and_shipping` | not_expressible | Broaden the UK ETS to EU scope on aviation and shipping
+- `ab2025_option__alcohol_minimum_unit_tax` | not_expressible | Minimum unit tax on alcohol (36p MUT alongside 65p MUP; two-rate variant with 46p on spirits)
+- `ab2025_option__insurance_premium_tax_on_private_medical_insurance_20pct` | not_expressible | Insurance premium tax on private medical insurance 12% to 20%
+- `ab2025_option__corporation_tax_plus_1p_and_bank_surcharge` | not_expressible | Corporation tax main rate 25% to 26%; bank surcharge 3% to 4% (IFS) or restored to 8% (Fabians)
+- `ab2025_option__boe_apf_indemnity_or_reserves_remuneration_reform` | not_expressible | Renegotiate the Bank of England APF indemnity / QE loss-sharing; reserves levy or stop active QT
+- `ab2025_option__oil_and_gas_windfall_measures` | not_expressible | Oil and gas windfall measures
+- `ab2025_option__nics_on_partnership_income` | not_expressible | Employer-NICs equivalent on partnership profits (13.04% above a GBP 5,000 exempt amount; 'membership NI' for LLPs)
+- `ab2025_option__nics_on_rental_income` | partial | NICs on landlords' rental income (8% above GBP 50,270 with a mortgage-interest / investment allowance; RF 'special rates
+- `ab2025_option__self_employed_nics_main_rate_6_to_8pct` | expressible | Self-employed NICs main rate 6% to 8%
+- `ab2025_option__energy_levies_whd_eco_ro_fit_cps_off_bills` | partial | Move WHD, ECO, RO and FiT costs off electricity bills to general taxation and scrap Carbon Price Support (RF package and
+- `ab2025_option__scrap_two_child_limit` | expressible | Scrap the two-child limit entirely (pre-Budget scoring)
+- `ab2025_option__three_child_limit` | expressible | Replace the two-child limit with a three-child limit
+- `ab2025_option__two_child_limit_partial_child_element_for_third_plus_children` | partial | Reintroduce a child element for third and subsequent children at 50% (IFS) or two-thirds (RF) of the standard rate
+- `ab2025_option__two_child_limit_exempt_working_families` | partial | Exempt families with at least one parent in paid work (IFS; RF 16 hours at NLW variant)
+- `ab2025_option__two_child_limit_exempt_children_under_5_or_under_1` | partial | Exempt children under 5 (or under 1) from the two-child limit
+- `ab2025_option__remove_the_benefit_cap` | expressible | Remove the benefit cap
+- `ab2025_option__raise_the_benefit_cap_to_living_wage_equivalent` | expressible | Raise the benefit cap to a living-wage equivalent (GBP 29,000 London, GBP 26,000 outside)
+- `ab2025_option__relink_lha_to_30th_percentile_of_local_rents` | expressible | Relink Local Housing Allowance to the 30th percentile of local rents
+- `ab2025_option__uc_protected_minimum_floor_deductions_capped_at_15pct` | not_expressible | Protected minimum floor in UC: deductions capped at 15% of the standard allowance (JRF, Trussell/WPI)
+- `ab2025_option__fsm_extension_to_all_uc_families_england` | not_expressible | Extend free school meals to all Universal Credit families in England (Spending Review 2025; component of the RF/JRF base
+- `ab2025_option__nics_on_investment_income` | partial | National Insurance on investment income (dividends, interest, rental and pension income)
+- `ab2025_option__scottish_child_payment_increase` | expressible | Increase the Scottish Child Payment (to GBP 35 / GBP 37.50 / GBP 40 a week)
+- `ab2025_option__lha_freeze_maintained` | expressible | Local Housing Allowance rates kept frozen (the counterfactual to relinking; costs of the continued freeze)
+- `ab2025_option__niesr_30bn_tax_rise_scenarios` | partial | Raise GBP 30bn net by 2029-30 via income tax (+1pp average effective rate), VAT (+3pp) or corporation tax (+4.5pp); GBP 
+- `ab2025_option__triple_lock_replaced_with_double_lock` | expressible | Replace the State Pension triple lock with a double lock
+- `ab2025_option__hold_total_spending_growth_to_inflation` | not_expressible | Hold total spending growth to inflation until 2029-30
+- `ab2025_option__policy_exchange_beyond_our_means_savings_menu` | partial | 'Beyond Our Means' savings menu (pensions, uprating, LHA items)
+- `ab2025_option__housing_first_for_rough_sleepers` | not_expressible | Housing First for all rough sleepers in England

@@ -58,6 +58,9 @@ SNAP poverty effects, annual historical/anchored SPM rates.
   `us_38_states_without_refundable_state_ctc` — not PE-comparable without replicating the pool.
 
 ## Data quality flags
+
+### Erratum
+
 - **Erratum in "2024 Poverty Rates in Historical Perspective"**: Key Findings bullet says
   anchored-2022 SPM was "16.6% in 2024", but the body (Fig. 3 discussion) says 11.4% and the
   quoted 59% decline from 27.9% implies ~11.4%. Staged 11.4% (flagged in source_column);

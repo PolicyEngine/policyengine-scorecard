@@ -1,0 +1,47 @@
+{
+ "key": "class2_reinstate",
+ "year": 2026,
+ "measure_reversed": "Class 2 NICs abolition (AS2023) \u2014 REVERSED (flat rate reinstated)",
+ "pe_construction": "gov.hmrc.national_insurance.class_2.flat_rate: 0.0 -> 3.15 (tree's own 2023 value)",
+ "reform_json": "{\"gov.hmrc.national_insurance.class_2.flat_rate\": {\"2026-01-01.2028-12-31\": 3.15}}",
+ "baseline_for_delta": "results/uk/baseline_2026.json",
+ "conventions": [
+  "PE measure effect = MINUS the (this - baseline) delta",
+  "OBR costing scored vs OBR announcement-time baseline w/ behavioural adjustments; this is the parametric content on the certified 2026 world (baseline-vintage delta, named)",
+  "PE calendar-year vs OBR fiscal-year (named)"
+ ],
+ "bundle": {
+  "bundle_id": "uk-5.0.1",
+  "country_id": "uk",
+  "policyengine_version": "5.0.1",
+  "model_package": "policyengine-uk",
+  "model_version": "2.89.2",
+  "data_package": "populace-data",
+  "data_version": "0.1.0",
+  "default_dataset": "populace_uk_2023",
+  "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+  "data_build_model_version": "2.89.2",
+  "data_build_model_git_sha": "None",
+  "data_build_fingerprint": "None",
+  "compatibility_basis": "exact_build_model_version",
+  "certified_by": "None",
+  "runtime_dataset": "populace_uk_2023",
+  "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-uk-private/snapshots/a75a9a831d6b07aaffbd09713f2a1124f5c0f08f/populace_uk_2023.h5",
+  "managed_by": "policyengine.py"
+ },
+ "aggregates_gbp": {
+  "income_tax": 421891913533.19946,
+  "national_insurance": 62013334079.32899,
+  "ni_employer": 185481157065.2179,
+  "child_benefit": 17434702263.490685,
+  "universal_credit": 39900585645.060844,
+  "vat": 219622883998.86896,
+  "capital_gains_tax": 24243246083.18426,
+  "household_net_income": 1790730061170.91,
+  "gov_tax": 1047366958222.5403,
+  "gov_spending": 485676176862.0828
+ }
+}

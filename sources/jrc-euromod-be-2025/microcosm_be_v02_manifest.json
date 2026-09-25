@@ -1,0 +1,276 @@
+{
+  "schema_version": 1,
+  "lineage": "microcosm_be_v02",
+  "artifact_name": "microcosm_be_v02_2026",
+  "description": "demo-grade: US survey support records reweighted to Belgian administrative targets — not Belgian microdata.",
+  "created_at": "2026-08-21T02:42:13.977645+00:00",
+  "status": "demo-grade",
+  "year": 2026,
+  "runtime": {
+    "python": "3.14.4",
+    "machine": "arm64",
+    "packages": {
+      "policyengine": "4.18.8",
+      "policyengine-core": "3.28.0",
+      "policyengine-us": "1.752.2",
+      "numpy": "2.4.6",
+      "pandas": "3.0.3",
+      "tables": "3.11.1",
+      "h5py": "3.16.0",
+      "microunit": "0.1.0",
+      "populace-frame": "0.1.0",
+      "axiom-rules-engine": "0.1.0"
+    }
+  },
+  "source_revisions": {
+    "populace": "09f93ecb3e8f2ee6bb0f9365970f3c72dca4ecaf",
+    "policyengine": "2bebb239af59e4da226f5664ff7fbc57dedfa575",
+    "rulespec_be": "7c85808ae99f5731b21059e643e5e19b66438904",
+    "axiom_rules_engine": "c6cc389a8f5e7238019e4fa06849325fad9acd46",
+    "ledger_admin_target_object": "243c4af"
+  },
+  "donor": {
+    "path": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/14a2fb9d3b046322cfeb2bef1a4d4d94d512589e/populace_us_2024.h5",
+    "sha256": "c2065b642ab00da74746afdfd9f06890e5f32f9b10bd6610ff236452d40f39c5",
+    "households": 57240,
+    "persons": 166302,
+    "valuation_read": "policyengine_us.Microsimulation.calculate(variable, 2026)"
+  },
+  "demographic_targets": {
+    "path": "sources/statbel_2026_18cells.json",
+    "sha256": "cdac68801b81801455e1de2428be76b4ceaf04da19b9e5b0777af44bed5cdfc4",
+    "view_id": "30754598-f021-4274-a8f6-4e634fb7bb58",
+    "fetched": "2026-08-20",
+    "cells": 18,
+    "national_total": 11867634.0
+  },
+  "administrative_target_label": "July session lineage (2026-07-03), re-verification pending",
+  "calibration": {
+    "weight_entity": "household",
+    "region_assignment": "household draw, numpy default_rng seed 0, probabilities from fresh Statbel region totals; codes 1=Brussels, 2=Flanders, 3=Wallonia",
+    "destination_design_scale": 0.03433759336343103,
+    "weighted_us_persons_before_scale": 345616359.1429455,
+    "solver": "populace/packages/populace-calibrate at 09f93ecb3e8f2ee6bb0f9365970f3c72dca4ecaf",
+    "solver_options": {
+      "method": "adam",
+      "epochs": 2000,
+      "learning_rate": 0.1,
+      "max_weight_ratio": 50.0,
+      "seed": 0,
+      "target_loss_cap": 1000000.0,
+      "mass": "free"
+    },
+    "targets": [
+      {
+        "target": "statbel_population_be1_male_0_17@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Brussels-Capital region × Men × Less than 18 years",
+        "value": 134606.0,
+        "initial": 141404.7353606938,
+        "achieved": 134245.85381610744,
+        "relative_error": -0.0026755581764004626
+      },
+      {
+        "target": "statbel_population_be1_male_18_64@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Brussels-Capital region × Men × From 18 to 64 years",
+        "value": 409847.0,
+        "initial": 362464.89709365007,
+        "achieved": 415088.57426804415,
+        "relative_error": 0.012789100000839698
+      },
+      {
+        "target": "statbel_population_be1_male_65_plus@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Brussels-Capital region × Men × 65 years and more",
+        "value": 70555.0,
+        "initial": 114391.60738226892,
+        "achieved": 70357.29863494611,
+        "relative_error": -0.0028020886550051242
+      },
+      {
+        "target": "statbel_population_be1_female_0_17@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Brussels-Capital region × Women × Less than 18 years",
+        "value": 128848.0,
+        "initial": 137360.76050265328,
+        "achieved": 129287.3477734362,
+        "relative_error": 0.0034098144591782177
+      },
+      {
+        "target": "statbel_population_be1_female_18_64@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Brussels-Capital region × Women × From 18 to 64 years",
+        "value": 414803.0,
+        "initial": 410694.34093177435,
+        "achieved": 418615.2290405258,
+        "relative_error": 0.00919045677231311
+      },
+      {
+        "target": "statbel_population_be1_female_65_plus@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Brussels-Capital region × Women × 65 years and more",
+        "value": 97175.0,
+        "initial": 128227.47058000628,
+        "achieved": 97097.82888044999,
+        "relative_error": -0.0007941458147672775
+      },
+      {
+        "target": "statbel_population_be2_male_0_17@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Flanders region × Men × Less than 18 years",
+        "value": 671894.0,
+        "initial": 778874.3149723158,
+        "achieved": 683729.441247783,
+        "relative_error": 0.01761504232480573
+      },
+      {
+        "target": "statbel_population_be2_male_18_64@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Flanders region × Men × From 18 to 64 years",
+        "value": 2044718.0,
+        "initial": 2031528.493299985,
+        "achieved": 2030545.8578635897,
+        "relative_error": -0.0069310986338509
+      },
+      {
+        "target": "statbel_population_be2_male_65_plus@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Flanders region × Men × 65 years and more",
+        "value": 699970.0,
+        "initial": 581311.9767013388,
+        "achieved": 696447.236481685,
+        "relative_error": -0.00503273500052151
+      },
+      {
+        "target": "statbel_population_be2_female_0_17@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Flanders region × Women × Less than 18 years",
+        "value": 640343.0,
+        "initial": 747643.7215139831,
+        "achieved": 638716.205410711,
+        "relative_error": -0.0025405049938689085
+      },
+      {
+        "target": "statbel_population_be2_female_18_64@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Flanders region × Women × From 18 to 64 years",
+        "value": 2019877.0,
+        "initial": 2108734.2731949133,
+        "achieved": 2004438.9652102226,
+        "relative_error": -0.00764305687414499
+      },
+      {
+        "target": "statbel_population_be2_female_65_plus@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Flanders region × Women × 65 years and more",
+        "value": 821548.0,
+        "initial": 621059.0944785151,
+        "achieved": 814246.8785414305,
+        "relative_error": -0.008887029678813095
+      },
+      {
+        "target": "statbel_population_be3_male_0_17@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Walloon region × Men × Less than 18 years",
+        "value": 372680.0,
+        "initial": 421115.98254652205,
+        "achieved": 370412.6251187436,
+        "relative_error": -0.006083972526715605
+      },
+      {
+        "target": "statbel_population_be3_male_18_64@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Walloon region × Men × From 18 to 64 years",
+        "value": 1112066.0,
+        "initial": 1076942.5174839944,
+        "achieved": 1111419.3353742156,
+        "relative_error": -0.0005814984234608218
+      },
+      {
+        "target": "statbel_population_be3_male_65_plus@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Walloon region × Men × 65 years and more",
+        "value": 334821.0,
+        "initial": 332370.3642808606,
+        "achieved": 333684.21880039776,
+        "relative_error": -0.003395190861989647
+      },
+      {
+        "target": "statbel_population_be3_female_0_17@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Walloon region × Women × Less than 18 years",
+        "value": 356302.0,
+        "initial": 389953.1915416701,
+        "achieved": 359328.6313031027,
+        "relative_error": 0.008494567257839444
+      },
+      {
+        "target": "statbel_population_be3_female_18_64@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Walloon region × Women × From 18 to 64 years",
+        "value": 1108701.0,
+        "initial": 1126916.9922199782,
+        "achieved": 1110146.896307673,
+        "relative_error": 0.0013041354771692931
+      },
+      {
+        "target": "statbel_population_be3_female_65_plus@2026",
+        "source": "be.STAT view 30754598-f021-4274-a8f6-4e634fb7bb58, fetched 2026-08-20; Walloon region × Women × 65 years and more",
+        "value": 428880.0,
+        "initial": 356639.2659148797,
+        "achieved": 433749.25739251514,
+        "relative_error": 0.011353426115731993
+      },
+      {
+        "target": "statbel_fiscal_income_total@2023",
+        "source": "July session lineage (2026-07-03), re-verification pending; local Ledger 243c4af:db/data/statbel/fiscal_income_commune_2023_nis_2025/statbel_fiscal_income_commune_2023_nis_2025.csv",
+        "value": 274707991587.82,
+        "initial": 582707030350.9725,
+        "achieved": 275146073102.83435,
+        "relative_error": 0.0015947170392904104
+      },
+      {
+        "target": "onss_worker_contributions@2024",
+        "source": "July session lineage (2026-07-03), re-verification pending; local Ledger 243c4af:db/data/onss/contributions_2024/onss_worker_contributions_2024.csv",
+        "value": 20836582672.647,
+        "initial": 48435335827.54333,
+        "achieved": 20874276470.797768,
+        "relative_error": 0.0018090201614610446
+      },
+      {
+        "target": "onem_unemployment_recipients@2024",
+        "source": "July session lineage (2026-07-03), re-verification pending; total_complete_unemployment_2024 only; local Ledger 243c4af:db/data/onem_rva/unemployment_2024/onem_rva_unemployment_2024.csv",
+        "value": 323029.0,
+        "initial": 163882.94054831835,
+        "achieved": 325331.6458282976,
+        "relative_error": 0.00712829445126473
+      }
+    ],
+    "weight_statistics": {
+      "sum": 4380461.370026275,
+      "minimum": 1.0730545000114944e-05,
+      "maximum": 31641.853515625,
+      "max_ratio_to_destination_scaled_design": 8.625648794022824,
+      "effective_sample_size": 2138.5625769308667
+    }
+  },
+  "artifacts": {
+    "microcosm_be_v02_2026.h5": {
+      "sha256": "9164ef8cb267cc1f1be4fa3898d506416b04260dbf6aec8e373f5800db802d04",
+      "bytes": 13050682
+    },
+    "microcosm_be_v02_2026_weights.npz": {
+      "sha256": "0638513bab307a80003b45ea9883411eeeafa528e23661bfc3319186a3b45dc4",
+      "bytes": 794526
+    },
+    "microcosm_be_v02_calibration_inputs.npz": {
+      "sha256": "ae5eee1359ef488ddfed6101b1a2fa4807f4640d74c7f1c73c7f96c5b9d1ad76",
+      "bytes": 2125036
+    },
+    "microcosm_be_v02_calibration_diagnostics.json": {
+      "sha256": "6196a06600f9ec6d17b412ff65cee6a0aa21d4340c131ea0fe51ac95e8fc1688",
+      "bytes": 8407
+    }
+  },
+  "failures": [
+    {
+      "check": "import populace.calibrate in $RUN/.venv",
+      "result": "ModuleNotFoundError: No module named 'torch'",
+      "handling": "No install performed. The solve command used the existing py3.14 arm64 Torch environment listed in rerun_commands, with identical numpy/pandas versions and PYTHONPATH forced to the pinned $RUN populace source."
+    },
+    {
+      "check": "import policyengine in $RUN/.venv",
+      "result": "ModuleNotFoundError: No module named 'diskcache'",
+      "handling": "No install performed. The HDF5 contract was validated by pandas round-trip against pepy/.../be/datasets.py."
+    }
+  ],
+  "rerun_commands": [
+    "$RUN/.venv/bin/python $RUN/out/microcosm_be_v02_build.py prepare",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$RUN/populace/packages/populace-calibrate/src:$RUN/populace/packages/populace-frame/src /Users/maxghenis/PolicyEngine/_worktrees/populace-328/.venv/bin/python $RUN/out/microcosm_be_v02_build.py solve",
+    "$RUN/.venv/bin/python $RUN/out/microcosm_be_v02_build.py finalize"
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "reform": {
+    "policy": "be_pit_reform_2026_07_15",
+    "law": "loi_du_15_juillet_2026",
+    "moniteur_belge": "2026-07-29_p40196"
+  },
+  "claims": [
+    {
+      "id": "spf_finances_horizon_2030",
+      "source": "spf_finances",
+      "source_model": "SPF Finances internal model",
+      "period": 2030,
+      "value": -4000000000,
+      "basis": "forecast",
+      "period_basis": "horizon_2030_income_vs_assessment_year_unspecified",
+      "benchmark_class": "different_model",
+      "source_pins": [
+        "doc56_1243_004_pdf",
+        "doc56_1243_001_pdf"
+      ],
+      "quote": "diminution des recettes fiscales de 4 milliards d’euros à l’horizon 2030",
+      "methodology_note": "Internal model on assessment-year-2023 microdata per DOC 56 1243/001; methodology unpublished."
+    },
+    {
+      "id": "cour_des_comptes_horizon_2030",
+      "source": "cour_des_comptes",
+      "source_model": "Cour des comptes evaluation",
+      "period": 2030,
+      "value": -5000000000,
+      "basis": "forecast",
+      "period_basis": "horizon_2030_income_vs_assessment_year_unspecified",
+      "benchmark_class": "different_model",
+      "source_pins": [
+        "doc56_1243_004_pdf"
+      ],
+      "quote": "la Cour des comptes évalue celle-ci à près de 5 milliards d’euros à l’horizon 2030",
+      "methodology_note": "Secondary citation in DOC 56 1243/004; the Cour des comptes advice document is not pinned."
+    },
+    {
+      "id": "policyengine_income_2026_ay2027",
+      "source": "policyengine",
+      "source_model": "Axiom engine over Microcosm-BE v05h corrected aged run",
+      "period": 2026,
+      "assessment_year": 2027,
+      "value": -513450000,
+      "basis": "projection_conditioned_mechanics",
+      "period_basis": "income_year",
+      "benchmark_class": "same_assumptions",
+      "source_pins": [
+        "lane_aged3_report",
+        "v05h_aged_results"
+      ]
+    },
+    {
+      "id": "policyengine_income_2027_ay2028",
+      "source": "policyengine",
+      "source_model": "Axiom engine over Microcosm-BE v05h corrected aged run",
+      "period": 2027,
+      "assessment_year": 2028,
+      "value": -456510000,
+      "basis": "projection_conditioned_mechanics",
+      "period_basis": "income_year",
+      "benchmark_class": "same_assumptions",
+      "source_pins": [
+        "lane_aged3_report",
+        "v05h_aged_results"
+      ]
+    },
+    {
+      "id": "policyengine_income_2028_ay2029",
+      "source": "policyengine",
+      "source_model": "Axiom engine over Microcosm-BE v05h corrected aged run",
+      "period": 2028,
+      "assessment_year": 2029,
+      "value": -779680000,
+      "basis": "projection_conditioned_mechanics",
+      "period_basis": "income_year",
+      "benchmark_class": "same_assumptions",
+      "source_pins": [
+        "lane_aged3_report",
+        "v05h_aged_results"
+      ]
+    },
+    {
+      "id": "policyengine_income_2029_ay2030",
+      "source": "policyengine",
+      "source_model": "Axiom engine over Microcosm-BE v05h corrected aged run",
+      "period": 2029,
+      "assessment_year": 2030,
+      "value": -2457460000,
+      "basis": "projection_conditioned_mechanics",
+      "period_basis": "income_year",
+      "benchmark_class": "same_assumptions",
+      "source_pins": [
+        "lane_aged3_report",
+        "v05h_aged_results"
+      ]
+    },
+    {
+      "id": "policyengine_income_2030_ay2031",
+      "source": "policyengine",
+      "source_model": "Axiom engine over Microcosm-BE v05h corrected aged run",
+      "period": 2030,
+      "assessment_year": 2031,
+      "value": -4155520000,
+      "basis": "projection_conditioned_mechanics",
+      "period_basis": "income_year",
+      "benchmark_class": "same_assumptions",
+      "source_pins": [
+        "lane_aged3_report",
+        "v05h_aged_results"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+reform,pe_gbp_m,hmrc_gbp_m,ratio,note
+basic_rate_1p,7278,6900,1.05,
+higher_rate_1p,3230,1600,2.02,TIE (milder)
+additional_rate_1p,1869,145,12.89,"TIE: HMRC behavioural, PE static"
+pa_100,-899,-810,1.11,
+employee_ni_1pp,6034,5350,1.13,
+employer_ni_1pp,10661,11150,0.96,pe-uk wage incidence: IT+NI spillover -4450m
+class4_1pp,584,440,1.33,
+cb_first_1pw,-441,-335,1.32,
+vat_1pp,10813,8800,1.23,
+two_child_limit_removal_vs_preAB2025,1104,,,"children lifted 181,296; PE 2026 baseline already abolishes (AB2025 encoded)"

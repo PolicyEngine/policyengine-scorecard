@@ -48,7 +48,13 @@ the reconciliation:
    `pe_construction` recipe plus **annotation ids** resolving to a registry
    where every annotation has a `basis` (assessment doc §, engine metadata
    recorded at runtime, issue link, or measured diagnostic). That registry is
-   what enforces the no-fabricated-mechanisms rule at scale.
+   what enforces the no-fabricated-mechanisms rule at scale. Alongside the
+   prose recipe, every row with a PE value carries `policyengine_variables`:
+   the model variable names the value was computed from, recorded by the
+   grid run (`pe_meta.json` → `program_variables`). It is the join key a
+   consumer uses to match a reform, traced to the variables it moves, to
+   the claims that measure those variables — the same key the calibration
+   dashboard exposes per target. Rows without a PE value carry `[]`.
 
 8. **Counterfactual runs must log toggle verification.** The
    `would_claim_wic` bug (RECONCILIATION.md #2) was caught only because the
@@ -67,4 +73,4 @@ the reconciliation:
     and CBO/JCT-score sources), and a `composition` metric family for
     SNAP-QC-style caseload-share comparisons.
 
-11. **`source_measurement` typing on claims** (`administrative | survey | model`), so the never-calibrate rule ("no tax-benefit quantity from a survey, nor anything derived from such") can be enforced mechanically for any future source rather than per-metric: a claim that is BOTH a tax-benefit quantity AND survey/model-measured can never be referenced by a target profile. Natural home: the Ledger comparator catalog (#6) carries it per fact package; scorecard_db mirrors it.
+11. **`source_measurement` typing on claims** (`administrative | survey | model`), so the never-calibrate rule ("no tax-benefit quantity from a survey, nor anything derived from such") can be enforced mechanically for any future source rather than per-metric: a claim that is BOTH a tax-benefit quantity AND survey/model-measured can never be referenced by a target profile. Natural home: the Chronicle comparator catalog (#6) carries it per fact package; scorecard_db mirrors it.

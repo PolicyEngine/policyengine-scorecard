@@ -1,0 +1,232 @@
+"""Which ENGINE produced a claim, and which publishers share one (#132).
+
+`source_model` is documented as the model behind a claim. For most
+sources it holds one: ``ukmod_b2026.01``, ``ifs_taxben``,
+``EUROMOD BE (J1.0+)``. For ``resolution_foundation`` it held the
+PUBLISHER's own name, and the consequence was that a fact the harvest
+had already established went missing at ingest:
+
+    "Underlying engine for their distributional/projection work: the
+     IPPR Tax Benefit Model run on DWP FRS/HBAI microdata (every
+     distributional figure sources 'RF projections including use of the
+     IPPR Tax Benefit Model')."
+        -- sources/harvest-uk-2026-08-02/uk_resolution_foundation/NOTES.md
+
+WHY THIS IS NOT relationships.py. That registry answers "does
+PolicyEngine consume this?" — independence FROM the model under test,
+and it answers it well. This one answers "do two external sources share
+an engine?" — independence BETWEEN sources. Agreement between two
+publishers running one engine is not corroboration; it is one estimate
+reported twice.
+
+WHY IT IS CLAIM-LEVEL AND NOT SOURCE-LEVEL. JRF is the proof: its UK
+Poverty workbook is HBAI-derived and genuinely independent, while other
+JRF output is the shared engine. A source-level mapping would be wrong
+about half of it, so the engine belongs on the CLAIM and this module
+only says which engines exist and who shares them.
+"""
+
+from __future__ import annotations
+
+from typing import Optional
+
+# Engine id -> (display name, maintainer, note). Closed: an unknown
+# engine raises rather than being invented at a call site.
+ENGINES: dict[str, tuple[str, str, str]] = {
+    "ukmod": (
+        "UKMOD",
+        "CeMPA, University of Essex",
+        "EUROMOD platform, FRS input. Open code, open validation, "
+        "annual country report.",
+    ),
+    "ifs_taxben": (
+        "TAXBEN",
+        "Institute for Fiscal Studies",
+        "Proprietary; not available to outside researchers.",
+    ),
+    "euromod": (
+        "EUROMOD",
+        "JRC, European Commission",
+        "The EU platform UKMOD is built on; country models are separate.",
+    ),
+    "landman_ttm": (
+        "IPPR / Resolution Foundation / Landman Economics tax-transfer model",
+        "PERU, Manchester Metropolitan University",
+        "Written by Landman Economics (Howard Reed, 2008-09); licensed for "
+        "a fee; no public documentation, code, versioning or validation "
+        "report. SHARED — see SHARED_ENGINE.",
+    ),
+    "hmt_igotm": (
+        "IGOTM",
+        "HM Treasury",
+        "Government model; limited public information.",
+    ),
+    "dwp_psm": (
+        "Policy Simulation Model",
+        "Department for Work and Pensions",
+        "Government model; limited public information.",
+    ),
+    "axiom": (
+        "Axiom",
+        "PolicyEngine",
+        "Rules engine behind the Belgian lane.",
+    ),
+    # --- Autumn Budget 2025 port (#136) ---------------------------------
+    "hmrc_ptm": (
+        "Personal Tax Model",
+        "HM Revenue and Customs",
+        "Microsimulation on the Survey of Personal Incomes; the model "
+        "behind HMRC's personal-tax costings and TIIN counts. Government "
+        "model; limited public information.",
+    ),
+    "nigem": (
+        "NiGEM",
+        "National Institute of Economic and Social Research",
+        "Global macroeconometric model; the engine behind NIESR's fiscal "
+        "scenarios. Macro, not a household microsimulation: its rows are "
+        "the #55 lane, never a household counterpart.",
+    ),
+    "wpi_hardship_model": (
+        "WPI Economics severe-hardship model",
+        "WPI Economics, for Trussell",
+        "Projects a 'severe hardship' population from HBAI-derived inputs "
+        "on WPI's own definition; never unified with HBAI relative poverty "
+        "(uk_aliases DISTINCT).",
+    ),
+    "policyengine_uk": (
+        "PolicyEngine UK",
+        "PolicyEngine",
+        "The model under test. An external claim computed with it (the "
+        "Fabian Society's freeze-extension figure, Oct 2025) is "
+        "benchmark_class same_assumptions: agreement is a replication, not "
+        "evidence.",
+    ),
+}
+
+# Publishers that report results from the SAME engine. Recorded as an
+# audit ledger, the converse of uk_aliases.DISTINCT: those pairs must
+# never be UNIFIED, these must never be treated as INDEPENDENT.
+#
+# The hazard is visible inside a single document: IPPR's Annex 1
+# costings table attributes its two-child-limit row to "JRF analysis
+# using IPPR tax-benefit model and DWP 2025e" — one row, another
+# organisation's run of the shared engine.
+SHARED_ENGINE: dict[str, frozenset[str]] = {
+    "landman_ttm": frozenset(
+        {
+            "ippr",
+            "resolution_foundation",
+            "jrf",
+            "nef",
+            "legatum",
+        }
+    ),
+    # UKMOD is open and versioned, but four AB2025 producers ran it (CeMPA
+    # B2025.09, CPAG B1.13, WBG B2025.08, Fraser of Allander): their
+    # agreement on a two-child or benefit-cap figure is one engine reported
+    # several times, on different releases — which release each ran is
+    # ENGINE_RELEASES.
+    "ukmod": frozenset({"ukmod", "cpag", "wbg", "fraser_of_allander"}),
+}
+
+# One engine at several RELEASES. Publishers of a shared engine ran it on
+# different releases, which is weaker corroboration than independence
+# (same code, same FRS input, same validation) but stronger than one run
+# reported twice (a release moves parameters, uprating and take-up
+# assumptions). So the release is recorded per publisher, spelled as the
+# claims spell it: source_model = "<engine>_<release>" (split_release).
+# A claim that names a release this ledger does not record is refused at
+# ingest (known_release) rather than read as a new engine.
+ENGINE_RELEASES: dict[str, dict[str, frozenset[str]]] = {
+    "ukmod": {
+        # CeMPA's own rows: the Country Report 2023-2030 (WP 8/26,
+        # ingest_uk_externals). Its Autumn Budget 2025 brief (WP 3/26) ran
+        # B2025.09 and is registered as the ukmod_b2025_09_fixed_baseline_line
+        # world in baselines.py.
+        "ukmod": frozenset({"b2026.01"}),
+        "cpag": frozenset({"b1.11", "b1.13"}),
+        "wbg": frozenset({"b2025.08"}),
+        # The FAI Budget note names UKMOD without a release; its claims
+        # carry the bare engine.
+        "fraser_of_allander": frozenset(),
+    },
+}
+
+
+def split_release(source_model: str) -> tuple[str, Optional[str]]:
+    """(engine, release) for a claim's source_model.
+
+    ``ukmod_b1.13`` -> ("ukmod", "b1.13"); ``ukmod`` -> ("ukmod", None);
+    a spelling no registered engine prefixes -> (source_model, None). The
+    longest registered id wins, so ``ifs_taxben`` is an engine, not a
+    release of anything.
+    """
+    if source_model in ENGINES:
+        return source_model, None
+    for engine in sorted(ENGINES, key=len, reverse=True):
+        if source_model.startswith(engine + "_"):
+            return engine, source_model[len(engine) + 1 :]
+    return source_model, None
+
+
+def known_release(source: str, source_model: str) -> bool:
+    """True for a bare spelling, or for a release ENGINE_RELEASES records
+    for that publisher. A versioned spelling the ledger lacks is False:
+    the ledger is the record, so the record is extended deliberately."""
+    engine, release = split_release(source_model)
+    if release is None:
+        return True
+    return release in ENGINE_RELEASES.get(engine, {}).get(source, frozenset())
+
+
+# Sources whose claims are model OUTPUT rather than administrative
+# fact, and the engine each one's modelled claims come from. A source
+# absent here publishes administrative or survey fact, not simulation.
+MODEL_OUTPUT_SOURCES: dict[str, str] = {
+    "ukmod": "ukmod",
+    "ifs": "ifs_taxben",
+    "jrc_euromod": "euromod",
+    "resolution_foundation": "landman_ttm",
+    # #136. Source-level only where EVERY modelled claim of the source
+    # comes from one engine. jrf (HBAI workbook vs the shared model),
+    # fraser_of_allander (UKMOD vs block-grant arithmetic), niesr (NiGEM vs
+    # HBAI regressions) and fabian_society (one PolicyEngine row, the rest
+    # cited) are deliberately absent: their engine is on the claim.
+    "ippr": "landman_ttm",
+    "cpag": "ukmod",
+    "wbg": "ukmod",
+    "trussell_wpi": "wpi_hardship_model",
+}
+
+
+def engine_of(source: str) -> Optional[str]:
+    """Engine id for a source's MODELLED claims, or None if the source
+    publishes fact rather than simulation."""
+    return MODEL_OUTPUT_SOURCES.get(source)
+
+
+def describe(engine_id: str) -> tuple[str, str, str]:
+    if engine_id not in ENGINES:
+        raise ValueError(
+            f"unknown engine {engine_id!r} — add it to ENGINES with its "
+            "maintainer rather than naming an engine at a call site"
+        )
+    return ENGINES[engine_id]
+
+
+def shares_engine(a: str, b: str) -> Optional[str]:
+    """The engine two publishers share, or None.
+
+    Two sources that share an engine are not independent evidence about
+    each other. Agreement between them is one estimate reported twice.
+    """
+    if a == b:
+        return None
+    for engine, publishers in SHARED_ENGINE.items():
+        if a in publishers and b in publishers:
+            return engine
+    return None
+
+
+def independent(a: str, b: str) -> bool:
+    return shares_engine(a, b) is None

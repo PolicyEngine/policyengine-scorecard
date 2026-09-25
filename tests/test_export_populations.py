@@ -1,19 +1,21 @@
-"""The populations export: Urban exclusion, per-release ordering, ratio
-guards, lane sync, and an integration pass over the committed DB."""
+"""The populations export: Urban exclusion, uncomputed-claim retention,
+per-release ordering, ratio guards, lane sync, and committed-DB integration."""
 
 import json
-from pathlib import Path
+from dataclasses import replace
 
 import pytest
 
 from scorecard_db import ScorecardDB
 from scorecard_db.export_populations import REPO, export, release_label
+
 from scorecard_db.models import (
     BASELINE,
     ComparisonStatus,
     ExternalScore,
     Metric,
     PEResult,
+    ReformRef,
     TimeBasis,
     UnitConcept,
 )
@@ -33,7 +35,15 @@ def _claim(source, column, value, **kw):
         reform=BASELINE,
         calibration_relationship=kw.get("relationship", "held_out"),
         source_column=column,
-        publication={"name": kw.get("name", column), "window": "FY2026"},
+        publication={
+            "name": kw.get("name", column),
+            "window": "FY2026",
+            **(
+                {"publish_without_result": True}
+                if kw.get("publish_without_result")
+                else {}
+            ),
+        },
         value_kind="usd",
     )
 
@@ -65,8 +75,9 @@ def small_db(tmp_path):
     multi = _claim("jct", "multi", 2000.0)
     zero = _claim("cbo", "zero_external", 0.0)
     urban = _claim("urban_sotsn", "urban_row", 5.0)
-    uncomputed = _claim("obr", "no_results", 7.0)
-    db.upsert_scores([multi, zero, urban, uncomputed])
+    uncomputed = _claim("obr", "no_results", 7.0, publish_without_result=True)
+    hidden_uncomputed = _claim("tax_foundation", "hidden_no_results", 8.0)
+    db.upsert_scores([multi, zero, urban, uncomputed, hidden_uncomputed])
     db.add_results(
         [
             _result(
@@ -95,11 +106,11 @@ def test_export_shape_and_guards(tmp_path, small_db):
     db_path, multi_id = small_db
     out = tmp_path / "populations.json"
     stats = export(db_path, out_path=out, built="2026-08-05")
-    assert stats["rows"] == 2  # urban excluded, uncomputed excluded
+    assert stats["rows"] == 3  # urban + unopted uncomputed claims excluded
     payload = json.loads(out.read_text())
     assert payload["built"] == "2026-08-05"
     by_col = {r["source_column"]: r for r in payload["rows"]}
-    assert set(by_col) == {"multi", "zero_external"}
+    assert set(by_col) == {"multi", "zero_external", "no_results"}
 
     m = by_col["multi"]
     # Results ordered by computed_at; latest is the newest.
@@ -127,11 +138,40 @@ def test_export_shape_and_guards(tmp_path, small_db):
     assert z["latest"]["delta"] == pytest.approx(10.0)
     assert z["diagnosis"] is None
 
+    # Claims awaiting their first model run remain visible without inventing
+    # a result-history entry.
+    u = by_col["no_results"]
+    assert u["results"] == []
+    assert u["latest"] == {
+        "value": None,
+        "status": "not_computed",
+        "engine_version": "",
+        "data_bundle": "",
+        "release": "",
+        "construction": "",
+        "policyengine_variables": [],
+        "computed_at": "",
+        "annotations": [],
+        "baseline": None,
+        "status_effective": "not_computed",
+        "ratio": None,
+        "delta": None,
+    }
+    assert payload["summary"]["by_latest_status"]["not_computed"] == 1
+
 
 def test_lane_sync_merges_without_touching_other_lanes(tmp_path, small_db):
     db_path, _ = small_db
     db = ScorecardDB(db_path)
     db.set_lane("populace-reform-validation", "ingested", "205 claims", "2026-08-04")
+    # The UK lane is written by build_db's uk_reform_validation step —
+    # as ingested rows, or as an explicit awaiting-artifact row.
+    db.set_lane(
+        "populace-uk-reform-validation",
+        "registered",
+        "0 claims — awaiting issue #79's artifact",
+        "2026-08-17",
+    )
     db.close()
     feed = tmp_path / "lanes.json"
     feed.write_text(
@@ -156,7 +196,7 @@ def test_lane_sync_merges_without_touching_other_lanes(tmp_path, small_db):
     stats = export(
         db_path, out_path=tmp_path / "p.json", lanes_path=feed, built="2026-08-05"
     )
-    assert stats["lanes_synced"] == 1
+    assert stats["lanes_synced"] == 2
     out = json.loads(feed.read_text())
     lanes = {lane["id"]: lane for lane in out["lanes"]}
     assert lanes["other-lane"]["note"] == "untouched"
@@ -164,12 +204,30 @@ def test_lane_sync_merges_without_touching_other_lanes(tmp_path, small_db):
     assert rv["stage"] == "ingested"
     assert rv["source"] == "Populace releases"
     assert out["updated"] == "2026-08-05"
+    # The UK lane reaches mission control too, filed under UK — the feed
+    # used to list only the US lane, so both the tracked-feed count and
+    # the UK page silently lost it.
+    uk = lanes["populace-uk-reform-validation"]
+    assert uk["country"] == "UK"
+    assert uk["stage"] == "registered"
+
+    # An independently pinned older lane sync cannot make the feed look older.
+    export(
+        db_path,
+        out_path=tmp_path / "p-older.json",
+        lanes_path=feed,
+        built="2026-08-04",
+    )
+    assert json.loads(feed.read_text())["updated"] == "2026-08-05"
 
 
 def test_release_label():
     assert release_label("populace-us-2024-buildo-sparse-x") == "buildo"
     assert release_label("populace-us-2024-sparse-l0-refit-57k-x") == "l0-refit"
     assert release_label("populace-us-2024-f0af251-703bd81a565c-x") == "f0af251"
+    assert (
+        release_label("microcosm_be_v05h_corrected@f138697423c7") == "microcosm_be_v05h"
+    )
 
 
 @pytest.mark.skipif(not COMMITTED_DB.exists(), reason="no committed DB")
@@ -178,12 +236,51 @@ def test_integration_committed_db(tmp_path):
     payload = json.loads((tmp_path / "p.json").read_text())
     db = ScorecardDB(COMMITTED_DB)
     expected = db.conn.execute(
-        """SELECT COUNT(DISTINCT s.claim_id) FROM external_scores s
-           JOIN pe_results r ON r.claim_id = s.claim_id
-           WHERE s.source != 'urban_sotsn'"""
+        """SELECT COUNT(*) FROM external_scores s
+           WHERE source != 'urban_sotsn'
+             AND (EXISTS (SELECT 1 FROM pe_results r
+                          WHERE r.claim_id = s.claim_id)
+                  OR json_extract(s.publication,
+                                  '$.publish_without_result') = 1)"""
     ).fetchone()[0]
     db.close()
     assert stats["rows"] == expected == len(payload["rows"])
+    # Every row carries an explicit country (#42/#50 gate: 14 UK reckoner
+    # rows shipped into a feed the exporter never country-tagged, so the
+    # app's missing-key US default classified them all as US).
+    dist: dict = {}
+    for r in payload["rows"]:
+        dist[r["country"]] = dist.get(r["country"], 0) + 1
+    # UK: 14 reckoner rows + 3,994 national-grain Autumn Budget 2025 claims
+    # opted into pre-result display (#136)
+    assert dist == {"US": 270, "UK": 4008, "BE": 9, "NZ": 12}
+    nz = [row for row in payload["rows"] if row["country"] == "NZ"]
+    assert len(nz) == 12
+    assert {row["source"] for row in nz} == {"nz_treasury"}
+    assert all(row["results"] == [] for row in nz)
+    assert all(row["latest"]["status_effective"] == "not_computed" for row in nz)
+    be_pit = [
+        row
+        for row in payload["rows"]
+        if row["source"] in {"spf_finances", "cour_des_comptes", "policyengine"}
+    ]
+    assert len(be_pit) == 7
+    assert all(row["country"] == "BE" for row in be_pit)
+    assert {
+        source: sum(row["source"] == source for row in be_pit)
+        for source in ("spf_finances", "cour_des_comptes", "policyengine")
+    } == {"spf_finances": 1, "cour_des_comptes": 1, "policyengine": 5}
+    assert sorted(
+        (row["source"], row["period"], row["external_value"]) for row in be_pit
+    ) == [
+        ("cour_des_comptes", 2030, -5_000_000_000.0),
+        ("policyengine", 2026, -513_450_000.0),
+        ("policyengine", 2027, -456_510_000.0),
+        ("policyengine", 2028, -779_680_000.0),
+        ("policyengine", 2029, -2_457_460_000.0),
+        ("policyengine", 2030, -4_155_520_000.0),
+        ("spf_finances", 2030, -4_000_000_000.0),
+    ]
     # The committed deployment artifact must match a fresh export (modulo
     # the build date) — stale committed data can't pass CI.
     committed = json.loads((REPO / "data" / "populations.json").read_text())
@@ -192,10 +289,78 @@ def test_integration_committed_db(tmp_path):
     # The reform-validation registry is in there with its release history.
     rv_multi = [r for r in payload["rows"] if len(r["results"]) > 1]
     assert payload["summary"]["multi_release_claims"] == len(rv_multi) > 0
-    # Every row has at least one result and carries its relationship.
-    assert all(r["results"] for r in payload["rows"])
+    # Rows without results carry a synthetic latest status for filtering, but
+    # never a fabricated history entry.
+    for row in payload["rows"]:
+        if not row["results"]:
+            assert row["latest"]["status"] == "not_computed"
+            assert row["latest"]["status_effective"] == "not_computed"
+            assert row["latest"]["value"] is None
     assert all(
         r["calibration_relationship"]
         in ("consumed_as_target", "seed_source", "held_out")
         for r in payload["rows"]
     )
+
+
+def test_export_carries_effective_status_downgrades(tmp_path):
+    # The #13 guard end-to-end: a comparable result against a claim in a
+    # different world exports status_effective='constructed'; a legacy
+    # NULL result against a non-current-law world exports
+    # 'baseline_unvalidated'. Raw status is preserved alongside.
+    from scorecard_db.models import baseline_key as bk
+
+    db = ScorecardDB(tmp_path / "s.db")
+    world_ref = ReformRef(
+        framework="policy_ref",
+        reform={"policy": "opt"},
+        baseline={"policy": "tcja_extension"},
+    )
+    world = _claim("jct", "world_claim", 100.0)
+    world = ExternalScore(
+        source="jct",
+        metric=Metric.REVENUE_CHANGE,
+        unit_concept=UnitConcept.USD,
+        period=2026,
+        time_basis=TimeBasis.FISCAL_YEAR,
+        value=100.0,
+        conditions={"geography": "US"},
+        reform=world_ref,
+        calibration_relationship="held_out",
+        source_column="world_claim",
+        publication={"name": "w", "window": "FY2026"},
+        value_kind="usd",
+    )
+    db.upsert_scores([world])
+    cross = _result(
+        world.claim_id(),
+        90.0,
+        "populace-us-2024-buildo-x",
+        "2026-07-22",
+        status=ComparisonStatus.COMPARABLE,
+    )
+    cross = replace(cross, baseline_key=bk({"policy": "current_policy"}))
+    legacy = replace(
+        _result(
+            world.claim_id(),
+            91.0,
+            "populace-us-2024-buildp-x",
+            "2026-07-28",
+            status=ComparisonStatus.COMPARABLE,
+        ),
+    )
+    db.add_results([cross, legacy])
+    db.close()
+
+    out = tmp_path / "p.json"
+    export(tmp_path / "s.db", out_path=out, built="2026-08-19")
+    row = json.loads(out.read_text())["rows"][0]
+    statuses = {
+        r["data_bundle"]: (r["status"], r["status_effective"]) for r in row["results"]
+    }
+    assert statuses["populace-us-2024-buildo-x"] == ("comparable", "constructed")
+    assert statuses["populace-us-2024-buildp-x"] == (
+        "comparable",
+        "baseline_unvalidated",
+    )
+    assert row["latest"]["status_effective"] == "baseline_unvalidated"
