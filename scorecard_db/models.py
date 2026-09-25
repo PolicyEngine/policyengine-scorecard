@@ -340,6 +340,16 @@ class UnitConcept(str, Enum):
 STANDARD_CONDITIONS = frozenset(
     {
         "geography",
+        # OBR Policy Measures Database identity (#56): the head a costing
+        # line is booked to, its channel, its scorecard phase, and the
+        # EFO re-estimate line and note; obr_measure_reforms.yaml key.
+        "costing_phase",
+        "impact_channel",
+        "line_item",
+        "note",
+        "spending_head",
+        "tax_head",
+        "obr_measure_key",
         # when a macro house made its call relative to the fiscal event
         # (pre-Budget expectation | post-Budget assessment), #55 lane
         "timing",

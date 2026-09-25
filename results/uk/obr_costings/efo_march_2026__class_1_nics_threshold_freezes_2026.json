@@ -1,0 +1,259 @@
+{
+  "artifact": "results/uk/obr_costings/efo_march_2026__class_1_nics_threshold_freezes_2026.json",
+  "benchmark_class": "different_model",
+  "calendar_year_proxy": "PE calendar year 2026 proxies FY 2026-27.",
+  "claims_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
+  "computability": "partial",
+  "computed_at": "2026-09-25T11:28:12.922735+00:00",
+  "construction": "reversal_on_certified_world",
+  "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "dataset_sha256_after": {
+    "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+    "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+  },
+  "dataset_sha256_before": {
+    "baseline": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+    "reform": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+  },
+  "diagnostic_only": false,
+  "engine_version": "2.89.2",
+  "fiscal_event": "EFO March 2026 re-estimate",
+  "frozen_registry": {
+    "computability": "partial",
+    "computability_overrides": {},
+    "construction": "reversal_on_certified_world",
+    "external_metric": "revenue_change",
+    "fiscal_event": "EFO March 2026 re-estimate",
+    "heads": [
+      {
+        "channel": "tax",
+        "condition_key": null,
+        "obr_head": "NICs",
+        "pe_variables": [
+          "ni_class_1_employee",
+          "ni_class_1_employer",
+          "ni_class_4"
+        ]
+      }
+    ],
+    "measure_key": "efo_march_2026__class_1_nics_threshold_freezes",
+    "notes": "Uses Table 3.19's indexed UEL/UPL path (UEL divided by 52). The 3.17 plural line does not disclose a secondary-threshold counterfactual, so that component is missing and the construction is partial.",
+    "obr_description": "Class 1 NICs: threshold freezes",
+    "pe_reform": {
+      "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+        "2024-01-01.2024-12-31": 1173.4615384615,
+        "2025-01-01.2025-12-31": 1193.8461538462,
+        "2026-01-01.2026-12-31": 1239.8076923077,
+        "2027-01-01.2027-12-31": 1267.5,
+        "2028-01-01.2028-12-31": 1293.2692307692,
+        "2029-01-01.2029-12-31": 1320.9615384615,
+        "2030-01-01.2030-12-31": 1348.8461538462
+      },
+      "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+        "2024-01-01.2024-12-31": 61020,
+        "2025-01-01.2025-12-31": 62080,
+        "2026-01-01.2026-12-31": 64470,
+        "2027-01-01.2027-12-31": 65910,
+        "2028-01-01.2028-12-31": 67250,
+        "2029-01-01.2029-12-31": 68690,
+        "2030-01-01.2030-12-31": 70140
+      }
+    },
+    "source_table": "3.17: 3.17",
+    "start_fy": 2023,
+    "unmapped_obr_heads": []
+  },
+  "fy": "2026-27",
+  "heads": [
+    {
+      "baseline_aggregates_gbp": {
+        "ni_class_1_employee": 57077663137.03293,
+        "ni_class_1_employer": 185481157065.2179,
+        "ni_class_4": 4372643327.084593
+      },
+      "channel": "tax",
+      "condition_key": null,
+      "external_claim": {
+        "calibration_relationship": "held_out",
+        "claim_ordinal": 592,
+        "claims_slice_sha256": "bbb285705110779e1c5e31922e91e801279b03e7312670396612b8f817ad072f",
+        "conditions": {
+          "basis": "unstated",
+          "fy": "2026-27",
+          "geography": "UK",
+          "line_item": "Class 1 NICs: threshold freezes",
+          "note": "latest re-estimated yield of previously announced personal tax measures"
+        },
+        "metric": "revenue_change",
+        "normalization": "GBP billion x 1e9 -> GBP",
+        "period": 2026,
+        "publication": {
+          "publication_url": "https://obr.uk/efo/economic-and-fiscal-outlook-march-2026/",
+          "publisher": "Office for Budget Responsibility",
+          "title": "Economic and fiscal outlook March 2026 - detailed forecast tables: receipts",
+          "url": "https://obr.uk/docs/d055fbf02d5b3g6jq8l2/efo-march-2026-detailed-forecast-tables-receipts.xlsx",
+          "vintage": "March 2026 EFO",
+          "wayback": "https://web.archive.org/web/20260316163140id_/https://obr.uk/docs/d055fbf02d5b3g6jq8l2/efo-march-2026-detailed-forecast-tables-receipts.xlsx",
+          "workbook": "efo-march-2026-detailed-forecast-tables-receipts.xlsx"
+        },
+        "reform_hint": "Class 1 NICs: threshold freezes",
+        "source": "obr",
+        "source_column": "2026-27",
+        "source_metric_field": "metric",
+        "source_model": "obr_efo_forecast",
+        "source_table": "3.17: 3.17",
+        "status": "ok",
+        "time_basis": "fiscal_year",
+        "unit": "gbp",
+        "value_gbp": 10240000000.0,
+        "value_raw": 10.24
+      },
+      "external_metric": "revenue_change",
+      "obr_head": "NICs",
+      "pe_value": -5947314758.304188,
+      "pe_variables": [
+        "ni_class_1_employee",
+        "ni_class_1_employer",
+        "ni_class_4"
+      ],
+      "raw_reform_minus_baseline_gbp": 5947314758.304188,
+      "reform_aggregates_gbp": {
+        "ni_class_1_employee": 62704795152.44659,
+        "ni_class_1_employer": 185481157065.2179,
+        "ni_class_4": 4692826069.975122
+      },
+      "reversal_delta_exchequer_gain": 5947314758.304188,
+      "sign_convention": "positive_gain_to_exchequer",
+      "source_table": "3.17: 3.17"
+    }
+  ],
+  "measure_key": "efo_march_2026__class_1_nics_threshold_freezes",
+  "notes": "Uses Table 3.19's indexed UEL/UPL path (UEL divided by 52). The 3.17 plural line does not disclose a secondary-threshold counterfactual, so that component is missing and the construction is partial.",
+  "obr_description": "Class 1 NICs: threshold freezes",
+  "performance": {
+    "baseline": {
+      "cleanup_seconds": 0.8463314580731094,
+      "end_rss_bytes": 906346496,
+      "peak_rss_bytes": 4661002240,
+      "rss_after_gc_bytes": 393412608,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 257753088,
+      "wall_seconds": 65.5979336251039
+    },
+    "reform": {
+      "cleanup_seconds": 0.8264900830108672,
+      "end_rss_bytes": 3448864768,
+      "peak_rss_bytes": 10545774592,
+      "rss_after_gc_bytes": 901988352,
+      "rss_after_gc_method": "psutil_process_rss",
+      "rss_method": "psutil_process_rss",
+      "start_rss_bytes": 711671808,
+      "wall_seconds": 70.96520350011997
+    }
+  },
+  "policyengine_bundles": {
+    "baseline": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/mariajuaristi/Desktop/PolicyEngine/repos/policyengine-scorecard/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    },
+    "reform": {
+      "bundle_id": "uk-5.0.2",
+      "certified_by": "policyengine.py bundle certification",
+      "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "compatibility_basis": "built_with_model_package",
+      "country_id": "uk",
+      "data_build_fingerprint": null,
+      "data_build_model_git_sha": null,
+      "data_build_model_version": "2.89.2",
+      "data_package": "populace-data",
+      "data_version": "0.1.0",
+      "default_dataset": "populace_uk_2023",
+      "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "managed_by": "policyengine.py",
+      "model_package": "policyengine-uk",
+      "model_version": "2.89.2",
+      "policyengine_version": "5.0.2",
+      "runtime_dataset": "populace_uk_2023",
+      "runtime_dataset_source": "/Users/mariajuaristi/Desktop/PolicyEngine/repos/policyengine-scorecard/data/uk/policyengine-local/policyengine_uk_data/storage/populace_uk_2023.h5",
+      "runtime_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+    }
+  },
+  "policyengine_version": "5.0.2",
+  "raw_aggregates": {
+    "baseline_gbp": {
+      "ni_class_1_employee": 57077663137.03293,
+      "ni_class_1_employer": 185481157065.2179,
+      "ni_class_4": 4372643327.084593
+    },
+    "reform_gbp": {
+      "ni_class_1_employee": 62704795152.44659,
+      "ni_class_1_employer": 185481157065.2179,
+      "ni_class_4": 4692826069.975122
+    }
+  },
+  "reform": {
+    "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+      "2024-01-01.2024-12-31": 1173.4615384615,
+      "2025-01-01.2025-12-31": 1193.8461538462,
+      "2026-01-01.2026-12-31": 1239.8076923077,
+      "2027-01-01.2027-12-31": 1267.5,
+      "2028-01-01.2028-12-31": 1293.2692307692,
+      "2029-01-01.2029-12-31": 1320.9615384615,
+      "2030-01-01.2030-12-31": 1348.8461538462
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+      "2024-01-01.2024-12-31": 61020,
+      "2025-01-01.2025-12-31": 62080,
+      "2026-01-01.2026-12-31": 64470,
+      "2027-01-01.2027-12-31": 65910,
+      "2028-01-01.2028-12-31": 67250,
+      "2029-01-01.2029-12-31": 68690,
+      "2030-01-01.2030-12-31": 70140
+    }
+  },
+  "registry_sha256": "84492e131a3227ccbe164cbe075cc6126e4fd8645e0dc3b2ed8a951a2648214c",
+  "run_id": "campaign-20260925-obr-costings",
+  "schema_version": 1,
+  "source_table": "3.17: 3.17",
+  "variable_metadata": {
+    "ni_class_1_employee": {
+      "definition_period": "month",
+      "entity": "person",
+      "label": "NI Class 1 employee-side contributions",
+      "unit": "currency-GBP"
+    },
+    "ni_class_1_employer": {
+      "definition_period": "year",
+      "entity": "person",
+      "label": "NI Class 1 employer-side contributions",
+      "unit": "currency-GBP"
+    },
+    "ni_class_4": {
+      "definition_period": "year",
+      "entity": "person",
+      "label": "NI Class 4 main contributions",
+      "unit": "currency-GBP"
+    }
+  },
+  "year": 2026
+}

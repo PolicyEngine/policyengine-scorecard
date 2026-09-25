@@ -522,6 +522,17 @@
    "running": false,
    "updated": "2026-09-24",
    "note": "39 claims from 1 families (124 staged rows = 39 ingested + 85 tallied drops)"
+  },
+  {
+   "id": "uk-obr-costings",
+   "source": "OBR Policy Measures Database and EFO March 2026 Table 3.17",
+   "area": "OBR-certified costings of the measures data/uk/obr_measure_reforms.yaml scores (#56)",
+   "mode": 2,
+   "country": "UK",
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-09-25",
+   "note": "621 claims (552 Policy Measures Database rows + 69 EFO March 2026 Table 3.17 rows; 621 slice rows = 621 ingested)"
   }
  ]
 }

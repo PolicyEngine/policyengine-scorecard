@@ -480,20 +480,21 @@ def test_the_pa_hrt_baseline_recipe_is_not_redundant_and_names_a_world():
     assert "obr_announcement_baseline_efo_march_2026" in bv["recipe"]
 
 
-def test_the_tool_stands_alone_without_pr_56(tmp_path, capsys):
-    """Blocker 4: a clean invocation FileNotFoundError'd on #56's output,
-    which does not exist on this branch."""
-    from pipeline.decompose_uk_obr_divergence import (
-        FIXTURE_COMPARISON,
-        LIVE_COMPARISON,
-        choose_comparison,
-        main,
-    )
+def test_the_tool_names_which_comparison_it_decomposes(tmp_path, capsys, monkeypatch):
+    """Blocker 4: a clean invocation FileNotFoundError'd on #56's output.
+    With #56 merged the live output exists and is preferred; without it
+    (a checkout before #56, or its output deleted) the tool falls back
+    to the committed fixture and NAMES the fallback."""
+    from pipeline import decompose_uk_obr_divergence as tool
 
-    assert not LIVE_COMPARISON.exists()  # #56 has not merged
-    path, provenance = choose_comparison()
-    assert path == FIXTURE_COMPARISON and provenance == "fixture"
-    main(["--out", str(tmp_path)])
+    assert tool.LIVE_COMPARISON.exists()  # #56 merged
+    path, provenance = tool.choose_comparison()
+    assert path == tool.LIVE_COMPARISON and provenance == "live"
+
+    monkeypatch.setattr(tool, "LIVE_COMPARISON", tmp_path / "absent.csv")
+    path, provenance = tool.choose_comparison()
+    assert path == tool.FIXTURE_COMPARISON and provenance == "fixture"
+    tool.main(["--out", str(tmp_path)])
     out = capsys.readouterr().out
     assert "FROZEN FIXTURE" in out
     assert "snapshot, not live results" in out
