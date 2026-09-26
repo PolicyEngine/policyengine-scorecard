@@ -30,7 +30,7 @@ ROOT = Path(__file__).resolve().parent.parent
 def _fresh(tmp_path):
     db_path = tmp_path / "t.db"
     ScorecardDB(db_path).close()
-    ingest(db_path)
+    ingest(db_path, tmp_path / "lanes.json")  # never the committed feed
     return db_path
 
 
