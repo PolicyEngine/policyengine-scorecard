@@ -10,6 +10,7 @@ that puts national-grain rows on the page before a counterpart exists.
 
 import gzip
 import json
+import shutil
 import sqlite3
 from pathlib import Path
 
@@ -288,7 +289,9 @@ def test_unregistered_identity_raises(staged):
 def test_round_trip_and_lanes(tmp_path):
     db_path = tmp_path / "t.db"
     ScorecardDB(db_path).close()
-    summary = ingest(db_path, tmp_path / "lanes.json")  # never the committed feed
+    feed = tmp_path / "lanes.json"  # a copy: never the committed feed
+    shutil.copy(ROOT / "data" / "lanes.json", feed)
+    summary = ingest(db_path, feed)
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     n = conn.execute(
@@ -314,8 +317,10 @@ def test_round_trip_and_lanes(tmp_path):
 def test_ingest_is_idempotent_and_touches_only_its_own_rows(tmp_path):
     db_path = tmp_path / "t.db"
     ScorecardDB(db_path).close()
-    ingest(db_path, tmp_path / "lanes.json")
-    ingest(db_path, tmp_path / "lanes.json")
+    feed = tmp_path / "lanes.json"  # a copy: never the committed feed
+    shutil.copy(ROOT / "data" / "lanes.json", feed)
+    ingest(db_path, feed)
+    ingest(db_path, feed)
     conn = sqlite3.connect(db_path)
     n = conn.execute(
         "SELECT COUNT(*) FROM external_scores"

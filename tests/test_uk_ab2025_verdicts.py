@@ -10,6 +10,7 @@ action_link" is checked here as a fact of the DB.
 """
 
 import json
+import shutil
 import sqlite3
 from pathlib import Path
 
@@ -30,7 +31,9 @@ ROOT = Path(__file__).resolve().parent.parent
 def _fresh(tmp_path):
     db_path = tmp_path / "t.db"
     ScorecardDB(db_path).close()
-    ingest(db_path, tmp_path / "lanes.json")  # never the committed feed
+    feed = tmp_path / "lanes.json"  # a copy: never the committed feed
+    shutil.copy(ROOT / "data" / "lanes.json", feed)
+    ingest(db_path, feed)
     return db_path
 
 
