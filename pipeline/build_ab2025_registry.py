@@ -263,6 +263,15 @@ idx_uel = {str(y): round(966.73 * CPI[y] / CPI[2027], 2) for y in (2028, 2029, 2
 idx_lpl = {str(y): r10(12570 * CPI[y] / CPI[2027]) for y in (2028, 2029, 2030)}
 idx_upl = {str(y): r10(50270 * CPI[y] / CPI[2027]) for y in (2028, 2029, 2030)}
 idx_st = {str(y): round(96 * CPI[y] / CPI[2027], 2) for y in (2028, 2029, 2030)}
+# the two-year option's 2030-31 values: the 2027-28 level uprated ONCE by the
+# path's own 2030 step (April 2030 CPI / April 2029 CPI)
+_once = CPI[2030] / CPI[2029]
+once_pa = r10(12570 * _once)
+once_hrt = r10(37700 * _once)
+once_pt = round(241.73 * _once, 2)
+once_uel = round(966.73 * _once, 2)
+once_lpl = r10(12570 * _once)
+once_upl = r10(50270 * _once)
 
 announced(
     46,
@@ -1586,22 +1595,37 @@ o(
     ["ifs", "resolution_foundation", "ippr", "fabian_society", "rathbones", "cebr"],
     f"{ifs}; IFS 'How are frozen tax thresholds reshaping who pays personal taxes?' (14 Nov 2025); {rf_cod}; IPPR 'Fairness first'; Fabian Society (computed with PolicyEngine, Oct 2025); Rathbones; Cebr",
     construction="two_year_variant_of_ab2025__personal_tax_thresholds_freeze_to_2031",
+    # Executed as a delta on a MODIFIED baseline (both worlds simulated):
+    # the baseline world is the pre-Budget path (every threshold CPI-indexed
+    # from April 2028, as for the announced measure); the reform world holds
+    # the 2027-28 values through 2029-30 and uprates them once in 2030-31 by
+    # the path's own 2030 step. Current law (frozen to 2031) is neither world.
     pe_reform_delta={
-        pt_path: {"2028": 241.73, "2029": 241.73},
-        uel_path: {"2028": 966.73, "2029": 966.73},
+        pa_path: {"2028": 12570, "2029": 12570, "2030": once_pa},
+        hrt_path: {"2028": 37700, "2029": 37700, "2030": once_hrt},
+        pt_path: {"2028": 241.73, "2029": 241.73, "2030": once_pt},
+        uel_path: {"2028": 966.73, "2029": 966.73, "2030": once_uel},
+        lpl_path: {"2028": 12570, "2029": 12570, "2030": once_lpl},
+        upl_path: {"2028": 50270, "2029": 50270, "2030": once_upl},
     },
     delta_kind="absolute_value_by_year",
     pe_baseline_modifier={
         pa_path: {k: v for k, v in idx_pa.items()},
         hrt_path: {k: v for k, v in idx_hrt.items()},
+        pt_path: {k: v for k, v in idx_pt.items()},
+        uel_path: {k: v for k, v in idx_uel.items()},
+        lpl_path: {k: v for k, v in idx_lpl.items()},
+        upl_path: {k: v for k, v in idx_upl.items()},
     },
     engine_baseline_2026={
         pa_path: 12570,
         hrt_path: 37700,
         pt_path: 241.73,
         uel_path: 966.73,
+        lpl_path: 12570,
+        upl_path: 50270,
     },
-    note="The announced measure is three years (to April 2031). This option is the two-year variant every pre-Budget producer costed; IT legs are scored by reversal against the CPI-indexed path from April 2028 for 2028-29 and 2029-30 only, and 2030-31 stays indexed. The Fabian Society's GBP 11.7bn was computed with PolicyEngine (same_assumptions, not different_model).",
+    note="The announced measure is three years (to April 2031). This option is the two-year variant every pre-Budget producer costed. Scored as a delta on a modified baseline: the baseline world is the pre-Budget CPI-indexed path from April 2028 for all six IT/NI thresholds; the reform world holds them at 2027-28 values for 2028-29 and 2029-30 and uprates them once in 2030-31 (the path's own 2030 CPI step), so 2030-31 carries the level effect of the two frozen years, not a third frozen year. The Fabian Society's GBP 11.7bn was computed with PolicyEngine (same_assumptions, not different_model).",
     head_variables=["income_tax", "ni_class_1_employee", "ni_class_4"],
 )
 o(

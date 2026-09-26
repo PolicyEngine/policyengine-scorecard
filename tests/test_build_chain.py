@@ -43,6 +43,7 @@ STEPS = (
     "uk_ab2025",
     "produce_uk",
     "campaign_uk",
+    "campaign_uk_ab2025",
     "produce_uk_obr_costings",
     "campaign_uk_obr_costings",
     "uk_ab2025_verdicts",

@@ -2140,13 +2140,35 @@
    "obr_pmd_measure_key": null,
    "construction": "two_year_variant_of_ab2025__personal_tax_thresholds_freeze_to_2031",
    "pe_reform_delta": {
+    "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+     "2028": 12570,
+     "2029": 12570,
+     "2030": 12820
+    },
+    "gov.hmrc.income_tax.rates.uk[1].threshold": {
+     "2028": 37700,
+     "2029": 37700,
+     "2030": 38450
+    },
     "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
      "2028": 241.73,
-     "2029": 241.73
+     "2029": 241.73,
+     "2030": 246.56
     },
     "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
      "2028": 966.73,
-     "2029": 966.73
+     "2029": 966.73,
+     "2030": 986.06
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+     "2028": 12570,
+     "2029": 12570,
+     "2030": 12820
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+     "2028": 50270,
+     "2029": 50270,
+     "2030": 51280
     }
    },
    "delta_kind": "absolute_value_by_year",
@@ -2160,15 +2182,37 @@
      "2028": 38450,
      "2029": 39220,
      "2030": 40010
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
+     "2028": 246.56,
+     "2029": 251.5,
+     "2030": 256.53
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+     "2028": 986.06,
+     "2029": 1005.78,
+     "2030": 1025.9
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+     "2028": 12820,
+     "2029": 13080,
+     "2030": 13340
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+     "2028": 51280,
+     "2029": 52300,
+     "2030": 53350
     }
    },
    "engine_baseline_2026": {
     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700,
     "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": 241.73,
-    "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": 966.73
+    "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": 966.73,
+    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": 12570,
+    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": 50270
    },
-   "note": "The announced measure is three years (to April 2031). This option is the two-year variant every pre-Budget producer costed; IT legs are scored by reversal against the CPI-indexed path from April 2028 for 2028-29 and 2029-30 only, and 2030-31 stays indexed. The Fabian Society's GBP 11.7bn was computed with PolicyEngine (same_assumptions, not different_model).",
+   "note": "The announced measure is three years (to April 2031). This option is the two-year variant every pre-Budget producer costed. Scored as a delta on a modified baseline: the baseline world is the pre-Budget CPI-indexed path from April 2028 for all six IT/NI thresholds; the reform world holds them at 2027-28 values for 2028-29 and 2029-30 and uprates them once in 2030-31 (the path's own 2030 CPI step), so 2030-31 carries the level effect of the two frozen years, not a third frozen year. The Fabian Society's GBP 11.7bn was computed with PolicyEngine (same_assumptions, not different_model).",
    "head_variables": [
     "income_tax",
     "ni_class_1_employee",

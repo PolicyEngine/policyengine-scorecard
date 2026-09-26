@@ -216,6 +216,15 @@ def build(db_path: Path) -> dict:
             "campaign_uk",
             lambda: ingest_campaign.ingest(db_path, produce_campaign_uk.RESOLVED),
         ),
+        # The tranche-3 PolicyEngine counterparts for AB2025 claims (#136):
+        # computed on the certified bundle by pipeline/compute_uk_ab2025.py,
+        # staged claim_id-direct with the executed pre-Budget world stamped.
+        (
+            "campaign_uk_ab2025",
+            lambda: ingest_campaign.ingest(
+                db_path, ingest_uk_ab2025.STAGED_COUNTERPARTS
+            ),
+        ),
         # #56's computed counterparts: the compute staging resolved to
         # claim ids and executed worlds, then attached like any campaign.
         ("produce_uk_obr_costings", lambda: produce_obr_costings.produce(db_path)),
