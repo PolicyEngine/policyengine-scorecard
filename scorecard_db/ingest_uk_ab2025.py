@@ -87,6 +87,9 @@ REGISTRY_PATH = REPO / "data" / "uk" / "ab2025_measures.json"
 BUNDLE_PATH = REPO / "data" / "uk" / "certified_bundle.json"
 
 REGISTRY_MARK = "uk_ab2025"
+# The tranche-3 counterparts the campaign ingest attaches (#136): rows
+# pipeline/stage_uk_ab2025.py derives from results/uk/ab2025/ artifacts.
+STAGED_COUNTERPARTS = REPO / "results" / "uk" / "staged_ab2025"
 FISCAL_EVENT = "autumn_budget_2025"
 # The UK family's shared top-level feed literal (sync_lane_feed's
 # contract: every caller in a build passes the same one).

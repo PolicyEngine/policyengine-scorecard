@@ -494,3 +494,72 @@ def test_executed_worlds_are_registered():
     )
     with pytest.raises(ValueError, match="not registered"):
         stg.executed_world_key("ab2025__not_a_measure", art)
+    # a variant on another measure's pre-Budget path executes THAT world: the
+    # two-year option's modifier is the announced freeze's modifier verbatim
+    key = "ab2025_option__personal_tax_threshold_freeze_two_more_years_to_2030"
+    assert (
+        INDEX[key]["pe_baseline_modifier"]
+        == INDEX["ab2025__personal_tax_thresholds_freeze_to_2031"][
+            "pe_baseline_modifier"
+        ]
+    )
+    variant = {
+        **art,
+        "construction": "two_year_variant_of_ab2025__personal_tax_thresholds_freeze_to_2031",
+    }
+    assert (
+        stg.executed_world_key(key, variant)
+        == LABELS["pre_ab2025__personal_tax_thresholds_freeze_to_2031"]
+    )
+
+
+def test_a_claim_in_the_obr_costings_slice_is_owned_elsewhere():
+    """The #56 / #140 rule: obr_measure_key marks the OBR costings lane's
+    claims; the stager tallies them and never attaches, so no claim can
+    carry two computed answers."""
+    assert (
+        stg.owned_elsewhere({"measure_key": "ab2025__dividend_rates_plus_2pp"}) is None
+    )
+    assert "OBR costings lane" in stg.owned_elsewhere(
+        {
+            "measure_key": "ab2025__dividend_rates_plus_2pp",
+            "obr_measure_key": "autumn_budget_2025__dividend_income_rate_increase",
+        }
+    )
+
+
+def test_an_inert_lever_is_tallied_never_attached_as_a_zero():
+    """A reform world identical to its baseline world on every aggregate and
+    head says the lever did not bite on the certified engine and data; that
+    is a tally with a reason, not a zero counterpart."""
+    art = _artifact()
+    assert stg.inert(art) is None
+    dead = {
+        **art,
+        "totals": {
+            "baseline": art["totals"]["baseline"],
+            "reform": art["totals"]["baseline"],
+        },
+    }
+    assert "inert" in stg.inert(dead)
+    # a head that moved while the aggregates did not is NOT inert
+    b = {**art["totals"]["baseline"], "heads": {"scottish_child_payment": 1.0}}
+    r = {**art["totals"]["baseline"], "heads": {"scottish_child_payment": 2.0}}
+    assert stg.inert({**art, "totals": {"baseline": b, "reform": r}}) is None
+
+
+def test_an_exchequer_effect_needs_the_aggregates_to_carry_the_head():
+    """gov_tax and gov_spending unchanged while the measure's head moved: the
+    certified engine's aggregates do not carry that head (a devolved payment,
+    a loan repayment), so the aggregate exchequer effect is unanswerable."""
+    art = _artifact()
+    b = {**art["totals"]["baseline"], "heads": {"scottish_child_payment": 1.0}}
+    r = {**art["totals"]["baseline"], "heads": {"scottish_child_payment": 2.0}}
+    v, _, reason = stg.map_claim(
+        _claim("revenue_change", sign_convention=YIELD),
+        {**art, "totals": {"baseline": b, "reform": r}},
+    )
+    assert v is None and "aggregates do not carry" in reason
+    # aggregates that moved answer as before
+    v, _, reason = stg.map_claim(_claim("revenue_change", sign_convention=YIELD), art)
+    assert reason is None and v == (110.0 - 100.0) - (60.0 - 50.0)

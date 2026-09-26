@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-09-25",
+ "updated": "2026-09-26",
  "lanes": [
   {
    "id": "urban-sotsn",

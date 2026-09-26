@@ -12,7 +12,9 @@ the claim's fiscal year, PE is static where the producer may be
 behavioural, and a reversal executes a registered pre-measure world
 rather than the producer's counterfactual. The axes are named in
 `annotations`. A claim shape no computed quantity answers is tallied in
-STAGING_TALLY.json with its reason, never guessed.
+STAGING_TALLY.json with its reason, never guessed. A claim in the OBR costings
+slice (it carries ``obr_measure_key``) belongs to that lane's compute and is
+tallied ``owned_elsewhere`` here, never attached: one claim, one computed answer.
 
 Shapes answered (metric -> artifact quantity):
     revenue_change (geography UK, no OBR head)  -> Δ(gov_tax − gov_spending), oriented by the claim's sign_convention
@@ -58,8 +60,15 @@ def executed_world_key(measure_key: str, artifact: dict) -> str:
     """The registered world PE executed as the baseline for this artifact."""
     if artifact["baseline_world"]["reform_dict"] is None:
         return _CURRENT_LAW
+    construction = str(artifact.get("construction") or "")
     if measure_key in PACKAGE_WORLDS:
         label = PACKAGE_WORLDS[measure_key]
+    elif "_variant_of_" in construction:
+        # a variant scored on another measure's pre-Budget path (the two-year
+        # threshold freeze on the announced freeze's indexed path): the
+        # executed baseline IS that measure's registered world
+        base = construction.split("_variant_of_", 1)[1]
+        label = f"pre_ab2025__{base.removeprefix('ab2025__')}"
     else:
         slug = measure_key.removeprefix("ab2025__")
         label = f"pre_ab2025__{slug}"
@@ -288,6 +297,18 @@ def map_claim(claim: dict, art: dict) -> tuple[float | None, list[str], str | No
             eff = (T["reform"]["gov_tax"] - T["baseline"]["gov_tax"]) - (
                 T["reform"]["gov_spending"] - T["baseline"]["gov_spending"]
             )
+            heads_moved = any(
+                T["reform"]["heads"].get(h) != T["baseline"]["heads"].get(h)
+                for h in T["baseline"].get("heads", {})
+            )
+            if eff == 0 and heads_moved:
+                # the head moved but neither aggregate did: the certified
+                # engine's gov_tax / gov_spending do not carry this head
+                # (a devolved payment, a loan repayment), so the aggregate
+                # exchequer effect is not an answer for this measure
+                raise Unanswerable(
+                    "exchequer aggregates do not carry the measure's head variables on the certified engine (head moved, gov_tax and gov_spending did not)"
+                )
             return (
                 sign * eff,
                 [
@@ -405,6 +426,36 @@ def map_claim(claim: dict, art: dict) -> tuple[float | None, list[str], str | No
     return None, [], f"no counterpart shape for metric {metric!r}"
 
 
+def inert(art: dict) -> str | None:
+    """An artifact whose reform world is identical to its baseline world on
+    every aggregate and every head answers nothing: the lever did not bite on
+    the certified engine and data (a data-driven variable, a switch the engine
+    ignores, a world that is already current law). Tallied, never attached as
+    a zero — a zero counterpart is a claim about the measure, not about the
+    engine's reach."""
+    b, r = art["totals"]["baseline"], art["totals"]["reform"]
+    moved = any(
+        b.get(k) != r.get(k)
+        for k in ("gov_tax", "gov_spending", "household_net_income")
+    ) or any(
+        b.get("heads", {}).get(h) != r.get("heads", {}).get(h)
+        for h in b.get("heads", {})
+    )
+    if moved:
+        return None
+    return "lever inert on the certified world (reform world identical to the baseline world)"
+
+
+def owned_elsewhere(cond: dict) -> str | None:
+    """The #56 / #140 ownership rule: a claim carrying ``obr_measure_key`` is
+    in the OBR costings slice and is answered only by that lane's compute
+    (pipeline/compute_uk_obr_costings.py, per OBR head in OBR's conventions);
+    this stager never attaches to it, so no claim gets two computed answers."""
+    if cond.get("obr_measure_key"):
+        return "owned by the OBR costings lane (claim carries obr_measure_key)"
+    return None
+
+
 def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dict]:
     artifacts = artifacts or load_artifacts()
     index = {m["measure_key"]: m for m in json.loads(REGISTRY.read_text())["measures"]}
@@ -415,14 +466,31 @@ def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dic
     }
     conn = sqlite3.connect(db_path)
     rows = []
-    tally: dict = {"attached": 0, "unmapped": {}, "by_measure": {}}
+    tally: dict = {
+        "attached": 0,
+        "owned_elsewhere": 0,
+        "unmapped": {},
+        "by_measure": {},
+    }
     for c in claims(conn):
         key = c["conditions"]["measure_key"]
         target = alias.get(key, key)
         bm = tally["by_measure"].setdefault(
-            key, {"claims": 0, "attached": 0, "no_artifact": 0, "unmapped": 0}
+            key,
+            {
+                "claims": 0,
+                "attached": 0,
+                "no_artifact": 0,
+                "unmapped": 0,
+                "owned_elsewhere": 0,
+            },
         )
         bm["claims"] += 1
+        owner = owned_elsewhere(c["conditions"])
+        if owner:
+            bm["owned_elsewhere"] += 1
+            tally["owned_elsewhere"] += 1
+            continue
         # the claim's fiscal year picks the artifact (calendar year = FY
         # start); a claim without one, or outside the run's years, is tallied
         fy = c["conditions"].get("fy") or ""
@@ -438,6 +506,11 @@ def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dic
             bm["no_artifact"] += 1
             reason = f"no artifact for the claim's fiscal year ({fy})"
             tally["unmapped"][reason] = tally["unmapped"].get(reason, 0) + 1
+            continue
+        dead = inert(art)
+        if dead:
+            bm["unmapped"] += 1
+            tally["unmapped"][dead] = tally["unmapped"].get(dead, 0) + 1
             continue
         value, notes, reason = map_claim(c, art)
         period_note = []

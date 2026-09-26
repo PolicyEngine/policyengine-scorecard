@@ -215,6 +215,20 @@ def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
             "components": [key],
             "sentinels": sent,
         }
+    if modifier and delta:
+        # a variant scored against a modified pre-Budget path (the two-year
+        # threshold freeze): the modifier is the BASELINE world and the delta
+        # the REFORM world, both executed on the certified world; neither is
+        # current law, so both are simulated
+        mod, s1 = reform_dict(modifier)
+        rd, s2 = reform_dict(delta)
+        return {
+            "construction": construction or "delta_on_modified_baseline",
+            "baseline_reform": mod,
+            "reform_reform": rd,
+            "components": [key],
+            "sentinels": sorted(set(s1) | set(s2)),
+        }
     if delta:
         rd, sent = reform_dict(delta)
         return {
@@ -487,6 +501,9 @@ def run_measure(
     proc = psutil.Process()
     heads = list(measure.get("head_variables") or [])
     written = []
+    mixed = (
+        worlds["baseline_reform"] is not None and worlds["reform_reform"] is not None
+    )
     alt_reform = (
         worlds["baseline_reform"]
         if worlds["baseline_reform"]
@@ -495,14 +512,27 @@ def run_measure(
     alt_is_baseline = worlds["baseline_reform"] is not None
     t0 = time.perf_counter()
     before = sha256_file(pre["artifact"])
-    alt = build_sim(alt_reform)
+    mod_frames: dict[int, dict] = {}
+    if mixed:
+        # both worlds are modified: the modified baseline is simulated first
+        # (one simulation alive at a time), its frames kept, then the reform
+        mod = build_sim(worlds["baseline_reform"])
+        for year in years:
+            mod_frames[year] = household_frame(mod, year, heads)
+        del mod
+        alt = build_sim(worlds["reform_reform"])
+    else:
+        alt = build_sim(alt_reform)
     for year in years:
         fb = base_frames[year]
         if any(v not in fb["heads"] for v in heads):
             raise SystemExit(f"{key}: baseline frame for {year} lacks heads {heads}")
         fb = {**fb, "heads": {v: fb["heads"][v] for v in heads}}
         fa = household_frame(alt, year, heads)
-        base_frame, ref_frame = (fa, fb) if alt_is_baseline else (fb, fa)
+        if mixed:
+            base_frame, ref_frame = mod_frames[year], fa
+        else:
+            base_frame, ref_frame = (fa, fb) if alt_is_baseline else (fb, fa)
         artifact = {
             "measure_key": key,
             "year": year,
@@ -517,7 +547,7 @@ def run_measure(
             },
             "reform_world": {
                 "executed": "certified world as served (current law)"
-                if alt_is_baseline
+                if alt_is_baseline and not mixed
                 else "certified world with pe_reform_delta",
                 "reform_dict": worlds["reform_reform"],
             },
@@ -572,6 +602,10 @@ def main(argv: list[str] | None = None) -> int:
         help="skip measures whose artifacts for every requested year already exist under this run id",
     )
     args = ap.parse_args(argv)
+    # the manifest records artifact paths relative to the repository, so the
+    # output directory is resolved once here (a relative --output-dir broke
+    # the manifest step after a completed run)
+    args.output_dir = args.output_dir.resolve()
 
     index = load_registry()
     comp = computable(index)
