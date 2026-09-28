@@ -375,13 +375,20 @@ rules above, and the metric shapes the mapper has no counterpart for yet:
 ever carries two computed answers (a fact of the built database, checked in
 `tests/test_uk_ab2025_counterparts.py`).
 
-Known engine defect, not adjusted here: policyengine-uk 2.89.2's
-`ni_class_4_maximum` compares two algebraically equal amounts with a strict `>`
-when Class 1 and Class 2 are zero, so float rounding decides whether Class 4 is
-capped at the main band, dropping the 2% band above the upper profits limit for
-0.1m–0.55m self-employed people a year from 2027. Class 4 legs of any measure
-that moves the Class 4 thresholds (the threshold freeze: +£989m, +£14m, +£1,111m
-in 2028-29 to 2030-31) carry that noise.
+Known engine defects at the pin, not adjusted here (the bundle declares
+policyengine-uk ==2.89.2, and computing at a fixed engine needs a re-certified
+bundle, #126): PolicyEngine/policyengine-uk#1878 — `ni_class_4_maximum` compares
+two algebraically equal amounts with a strict `>` when Class 1 and Class 2 are
+zero, so float32 rounding decides whether Class 4 is capped at the main band,
+dropping the 2% band above the upper profits limit (on the certified bundle
+0.33m, 0.55m, 0.20m and 0.11m self-employed people a year in 2027–2030; fixed
+in 2.102.1); PolicyEngine/policyengine-uk#1885 — Class 4 profits had employee
+Class 1 deducted, which the law does not allow (fixed after 2.102.1); and
+PolicyEngine/policyengine-uk#1879 (open) — the engine uprates the NI thresholds
+before the Budget 2025 freeze ends, which is why the threshold freeze executes
+as a mixed construction here. Class 4 legs of any measure that moves the Class 4
+thresholds (the threshold freeze: +£989m, +£14m, +£1,111m in 2028-29 to 2030-31)
+carry the #1878 noise.
 
 Build step `campaign_uk_ab2025` attaches the staged rows through
 `ingest_campaign` (claim_id-direct, executed world stamped from the
