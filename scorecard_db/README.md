@@ -312,6 +312,86 @@ by their opening words in `_PROPOSED_BASELINE_PREFIXES`; a row on an
 unregistered world raises rather than defaulting to current law (#13).
 
 
+### Tranche 3 (2026-09-25, revised 2026-09-28): PolicyEngine counterparts on the certified bundle
+
+Run `campaign-20260925-uk-ab2025` (`pipeline/compute_uk_ab2025.py`, policyengine-uk
+2.89.2 on `populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z`, sha256 `f17306cc…`
+checked before every simulation; calendar years 2026–2030 proxy FY 2026-27 to
+2030-31; static, no behavioural response): 40 measures × 5 years = 200 artifacts
+under `results/uk/ab2025/`, plus `RUN_MANIFEST.json` (`certified_dataset_sha256`,
+the executed measures, the 24 expressible measures the runner refused with the
+reason for each, the two aliases, and every artifact's digest).
+
+Three constructions execute. A reversal simulates the pre-Budget world
+(`pe_baseline_modifier`) against current law; a forward delta simulates current
+law against the delta; a measure carrying BOTH outside a reversal
+(`delta_on_modified_baseline`) simulates both worlds, the modifier as the
+baseline and the delta as the reform, one simulation alive at a time. The
+announced threshold freeze is the last kind: at the pin the income tax
+thresholds are frozen to 2031 but the NI thresholds are not, so its IT legs are
+reversed and its NI legs applied (the pre-Budget world pins the class 4 limits
+in 2027-28, which pre-Budget law froze and the engine uprates); the two packages
+that contain it, and the two-year option scored on the same pre-Budget world,
+execute the same way.
+
+Two guards run before every run, in `--dry-run`, and in CI (`--guards`, in the
+baseline-probe workflow, against the pinned engine). `world_coverage_gaps`
+(engine-free): a year-keyed world that stops before the run ends reverts to
+current law there and would assert a zero, so every executed world must cover
+the run unless the registry records `effect_ends_fy` (it caught the plan-2
+student loan freeze, whose pre-Budget world stopped at 2029 while its effect
+runs on). `reversal_delta_mismatches`: a reversal never executes its
+`pe_reform_delta`, so the delta must be current law at some date of its window
+(deliberately some date: current law may uprate the announced level later in
+the window), or it is a reform leg the reversal would drop and the run refuses
+(it caught the threshold freeze's NI legs).
+
+`pipeline/stage_uk_ab2025.py` derives `results/uk/staged_ab2025/ab2025_counterparts.jsonl`
+from those artifacts against the built database — 1,008 counterparts on 23
+measures, every row `constructed` (the claim's own baseline and the executed
+pre-Budget world named in the annotations, with the period proxy and the sign
+orientation). A measure whose reform world equals its baseline world in EVERY
+year of the full run is inert — the lever did not bite on the certified engine
+and data — and its claims are tallied, never attached as zeros (four measures:
+the UC rebalancing switch, the triple lock, the LHA freeze and the rail fare
+index; 99 claims). Identical worlds in any single year assert a zero only when
+the year is before the measure's RECORDED commencement (`commences_fy`, from the
+HM Treasury Table 4.1 title, with its source): 88 rows attach as `not yet in
+force`; identical worlds in a year the measure is in force assert nothing (8
+claims, the savings measure's 2026-27, whose starting-rate leg is in force but
+not constructed). A year the registry marks non-comparable (`non_comparable_fys`:
+the student loan freeze's 2026-27 loan-book revaluation) is never answered (2
+claims). Where a measure's head moved while `gov_tax` and `gov_spending` did
+not, the aggregates do not carry that head and the exchequer effect is read from
+the head itself (`HEAD_SIDE`: student loan repayments a receipt, the Scottish
+child payment an outlay; 5 rows); a head with no recorded side is unanswerable.
+Every claim not answered is counted in `STAGING_TALLY.json` (by reason, overall
+and per measure) and listed, one line per claim, in `STAGING_UNANSWERED.jsonl`
+(5,691 lines: 3,318 sub-national, 1,133 on a fiscal year or measure without an
+artifact, 442 without a fiscal year, 222 owned by the OBR costings lane, the
+rules above, and the metric shapes the mapper has no counterpart for yet:
+`average_tax_change` 241, `affected_share` 61, `participation_rate` 45, …). The
+222 claims that carry `obr_measure_key` are the OBR costings lane's: no claim
+ever carries two computed answers (a fact of the built database, checked in
+`tests/test_uk_ab2025_counterparts.py`).
+
+Known engine defect, not adjusted here: policyengine-uk 2.89.2's
+`ni_class_4_maximum` compares two algebraically equal amounts with a strict `>`
+when Class 1 and Class 2 are zero, so float rounding decides whether Class 4 is
+capped at the main band, dropping the 2% band above the upper profits limit for
+0.1m–0.55m self-employed people a year from 2027. Class 4 legs of any measure
+that moves the Class 4 thresholds (the threshold freeze: +£989m, +£14m, +£1,111m
+in 2028-29 to 2030-31) carry that noise.
+
+Build step `campaign_uk_ab2025` attaches the staged rows through
+`ingest_campaign` (claim_id-direct, executed world stamped from the
+`pre_ab2025__*` registry, deletion scoped to this run_id); the lane advancer
+then reads `uk-ab2025-official` (363 claims answered), `uk-ab2025-microsim`
+(631), `uk-ab2025-admin-other` (13) and `uk-ab2025-macro` (1) as `computed`.
+Re-running the stager against the built database must reproduce the three
+committed files byte for byte; the runner's `--resume` picks up an interrupted
+run from its artifacts (one simulation at a time, `HDF5_USE_FILE_LOCKING=FALSE`).
+
 ## 2026-09-25 population: OBR-certified measure costings (UK, #54/#56)
 
 `ingest_obr_costings` (chain position: after `uk_policy_effects`, before

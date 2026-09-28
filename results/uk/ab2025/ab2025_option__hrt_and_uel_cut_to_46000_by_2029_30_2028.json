@@ -1,0 +1,924 @@
+{
+ "affected": {
+  "children": 6757225.175793804,
+  "households": 11077317.193335481,
+  "people": 29587271.387339793
+ },
+ "baseline_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "components": [
+  "ab2025_option__hrt_and_uel_cut_to_46000_by_2029_30"
+ ],
+ "computed_at": "2026-09-25T15:56:00.285394+00:00",
+ "construction": "forward_delta_on_certified_world",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "dataset_sha256_after": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "dataset_sha256_before": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "distribution": {
+  "ahc_decile": [
+   {
+    "gaining_over_0": 2894.522532224655,
+    "gaining_over_0.01": 271.6962993144989,
+    "gaining_over_0.05": 0.0,
+    "group": 1,
+    "hni_baseline": 60924122227.060486,
+    "hni_reform": 60906954828.64662,
+    "households": 3070721.625689432,
+    "losing_over_0": 49369.954427957535,
+    "losing_over_0.01": 9245.123255103827,
+    "losing_over_0.05": 0.0,
+    "people": 7047524.394276157
+   },
+   {
+    "gaining_over_0": 9836.308505535126,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 2,
+    "hni_baseline": 89181457092.04889,
+    "hni_reform": 89123582886.98811,
+    "households": 2861906.462554872,
+    "losing_over_0": 130301.62685132027,
+    "losing_over_0.01": 44925.15067815781,
+    "losing_over_0.05": 0.0,
+    "people": 7041897.505275488
+   },
+   {
+    "gaining_over_0": 59114.76720571518,
+    "gaining_over_0.01": 406.8315887451172,
+    "gaining_over_0.05": 0.0,
+    "group": 3,
+    "hni_baseline": 110670322914.74942,
+    "hni_reform": 110579328942.99817,
+    "households": 2881081.6680761725,
+    "losing_over_0": 202758.66054858267,
+    "losing_over_0.01": 48708.86950969696,
+    "losing_over_0.05": 0.0,
+    "people": 7053321.684319332
+   },
+   {
+    "gaining_over_0": 236576.41420066357,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 4,
+    "hni_baseline": 122127640306.2399,
+    "hni_reform": 122043328553.78055,
+    "households": 2551005.7202915996,
+    "losing_over_0": 264689.1477305442,
+    "losing_over_0.01": 78959.23976778984,
+    "losing_over_0.05": 0.0,
+    "people": 7047297.6268354505
+   },
+   {
+    "gaining_over_0": 88204.42824840546,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 5,
+    "hni_baseline": 143759900860.949,
+    "hni_reform": 143518270374.68784,
+    "households": 2830564.9999426454,
+    "losing_over_0": 483217.88621228933,
+    "losing_over_0.01": 94601.94988489151,
+    "losing_over_0.05": 0.0,
+    "people": 7047789.12474291
+   },
+   {
+    "gaining_over_0": 129231.08250543475,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 6,
+    "hni_baseline": 165757423895.36877,
+    "hni_reform": 165364296178.7257,
+    "households": 2993083.111851573,
+    "losing_over_0": 824392.1101224422,
+    "losing_over_0.01": 113771.2819634378,
+    "losing_over_0.05": 1133.4194898605347,
+    "people": 7047770.452316061
+   },
+   {
+    "gaining_over_0": 182586.12238880247,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 7,
+    "hni_baseline": 187292203564.6634,
+    "hni_reform": 186752149667.68295,
+    "households": 3021674.305809576,
+    "losing_over_0": 1036420.9202442616,
+    "losing_over_0.01": 229007.74407096207,
+    "losing_over_0.05": 0.0,
+    "people": 7042883.759060364
+   },
+   {
+    "gaining_over_0": 120381.80956721306,
+    "gaining_over_0.01": 182.97738760709763,
+    "gaining_over_0.05": 0.0,
+    "group": 8,
+    "hni_baseline": 216191059717.61145,
+    "hni_reform": 215229624437.66913,
+    "households": 2822075.4683214277,
+    "losing_over_0": 1665714.2140990645,
+    "losing_over_0.01": 466427.0813959539,
+    "losing_over_0.05": 619.8468887805939,
+    "people": 7052170.064615577
+   },
+   {
+    "gaining_over_0": 125351.84721559286,
+    "gaining_over_0.01": 22.960249483585358,
+    "gaining_over_0.05": 0.0,
+    "group": 9,
+    "hni_baseline": 266941174934.0158,
+    "hni_reform": 265250082102.11707,
+    "households": 3132209.5895423368,
+    "losing_over_0": 2537336.4247890934,
+    "losing_over_0.01": 859523.097373873,
+    "losing_over_0.05": 84720.0313770771,
+    "people": 7047457.477783002
+   },
+   {
+    "gaining_over_0": 50787.90630847216,
+    "gaining_over_0.01": 5.438193678855896,
+    "gaining_over_0.05": 0.0,
+    "group": 10,
+    "hni_baseline": 507316746122.7223,
+    "hni_reform": 504529378917.9676,
+    "households": 3533619.9131014347,
+    "losing_over_0": 3202470.0247421265,
+    "losing_over_0.01": 740221.6246501356,
+    "losing_over_0.05": 240.80808639526367,
+    "people": 7048022.3331914395
+   }
+  ],
+  "ahc_vigintile": [
+   {
+    "gaining_over_0": 2894.522532224655,
+    "gaining_over_0.01": 271.6962993144989,
+    "gaining_over_0.05": 0.0,
+    "group": 1,
+    "hni_baseline": 27145550320.287277,
+    "hni_reform": 27136435017.127163,
+    "households": 1679527.4513408989,
+    "losing_over_0": 22310.005068331957,
+    "losing_over_0.01": 6297.058279365301,
+    "losing_over_0.05": 0.0,
+    "people": 3523367.7022574693
+   },
+   {
+    "gaining_over_0": 0.0,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 2,
+    "hni_baseline": 33778571906.773205,
+    "hni_reform": 33770519811.519455,
+    "households": 1391194.1743485332,
+    "losing_over_0": 27059.949359625578,
+    "losing_over_0.01": 2948.0649757385254,
+    "losing_over_0.05": 0.0,
+    "people": 3524156.6920186877
+   },
+   {
+    "gaining_over_0": 5202.713429927826,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 3,
+    "hni_baseline": 41561489676.18038,
+    "hni_reform": 41536973428.08769,
+    "households": 1489867.4736555368,
+    "losing_over_0": 63371.003924191,
+    "losing_over_0.01": 14735.137243270874,
+    "losing_over_0.05": 0.0,
+    "people": 3523312.112483129
+   },
+   {
+    "gaining_over_0": 4633.5950756073,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 4,
+    "hni_baseline": 47619967415.868515,
+    "hni_reform": 47586609458.90044,
+    "households": 1372038.9888993353,
+    "losing_over_0": 66930.62292712927,
+    "losing_over_0.01": 30190.013434886932,
+    "losing_over_0.05": 0.0,
+    "people": 3518585.392792359
+   },
+   {
+    "gaining_over_0": 12577.125344276428,
+    "gaining_over_0.01": 406.8315887451172,
+    "gaining_over_0.05": 0.0,
+    "group": 5,
+    "hni_baseline": 52120208188.90578,
+    "hni_reform": 52087681959.96201,
+    "households": 1368508.6839159727,
+    "losing_over_0": 75044.2429188788,
+    "losing_over_0.01": 21004.759669303894,
+    "losing_over_0.05": 0.0,
+    "people": 3529591.3774627447
+   },
+   {
+    "gaining_over_0": 46537.64186143875,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 6,
+    "hni_baseline": 58550114725.84364,
+    "hni_reform": 58491646983.036156,
+    "households": 1512572.9841601998,
+    "losing_over_0": 127714.41762970388,
+    "losing_over_0.01": 27704.109840393066,
+    "losing_over_0.05": 0.0,
+    "people": 3523730.3068565875
+   },
+   {
+    "gaining_over_0": 146860.9404771328,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 7,
+    "hni_baseline": 57917148127.816055,
+    "hni_reform": 57900125594.36071,
+    "households": 1254325.506736517,
+    "losing_over_0": 108484.35860982537,
+    "losing_over_0.01": 23568.346705436707,
+    "losing_over_0.05": 0.0,
+    "people": 3428229.367825687
+   },
+   {
+    "gaining_over_0": 89715.47372353077,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 8,
+    "hni_baseline": 64210492178.423836,
+    "hni_reform": 64143202959.41983,
+    "households": 1296680.2135550827,
+    "losing_over_0": 156204.78912071884,
+    "losing_over_0.01": 55390.893062353134,
+    "losing_over_0.05": 0.0,
+    "people": 3619068.2590097636
+   },
+   {
+    "gaining_over_0": 37750.44604539871,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 9,
+    "hni_baseline": 68124081269.54208,
+    "hni_reform": 68013561893.51137,
+    "households": 1379325.7508913577,
+    "losing_over_0": 217515.7750838697,
+    "losing_over_0.01": 47646.93637728691,
+    "losing_over_0.05": 0.0,
+    "people": 3524061.5709706247
+   },
+   {
+    "gaining_over_0": 50453.982203006744,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 10,
+    "hni_baseline": 75635819591.40689,
+    "hni_reform": 75504708481.17644,
+    "households": 1451239.2490512878,
+    "losing_over_0": 265702.11112841964,
+    "losing_over_0.01": 46955.0135076046,
+    "losing_over_0.05": 0.0,
+    "people": 3523727.5537722856
+   },
+   {
+    "gaining_over_0": 38281.34182676673,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 11,
+    "hni_baseline": 79758895780.9841,
+    "hni_reform": 79591357226.03568,
+    "households": 1491206.3813027292,
+    "losing_over_0": 351648.548684448,
+    "losing_over_0.01": 51074.33490678668,
+    "losing_over_0.05": 0.0,
+    "people": 3518943.0422950387
+   },
+   {
+    "gaining_over_0": 90949.74067866802,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 12,
+    "hni_baseline": 85998528114.38467,
+    "hni_reform": 85772938952.69002,
+    "households": 1501876.7305488437,
+    "losing_over_0": 472743.56143799424,
+    "losing_over_0.01": 62696.947056651115,
+    "losing_over_0.05": 1133.4194898605347,
+    "people": 3528827.410021022
+   },
+   {
+    "gaining_over_0": 81465.18480863422,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 13,
+    "hni_baseline": 89866688035.82458,
+    "hni_reform": 89613642497.8695,
+    "households": 1535064.5290412344,
+    "losing_over_0": 507829.1606296301,
+    "losing_over_0.01": 101237.8994679451,
+    "losing_over_0.05": 0.0,
+    "people": 3523675.73702411
+   },
+   {
+    "gaining_over_0": 101120.93758016825,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 14,
+    "hni_baseline": 97425515528.83879,
+    "hni_reform": 97138507169.81346,
+    "households": 1486609.7767683417,
+    "losing_over_0": 528591.7596146315,
+    "losing_over_0.01": 127769.84460301697,
+    "losing_over_0.05": 0.0,
+    "people": 3519208.0220362544
+   },
+   {
+    "gaining_over_0": 63782.23975747824,
+    "gaining_over_0.01": 182.97738760709763,
+    "gaining_over_0.05": 0.0,
+    "group": 15,
+    "hni_baseline": 103491146199.96497,
+    "hni_reform": 103039010218.03534,
+    "households": 1407498.3855018914,
+    "losing_over_0": 813320.9827693403,
+    "losing_over_0.01": 198757.98358559608,
+    "losing_over_0.05": 550.3266191482544,
+    "people": 3528246.169135928
+   },
+   {
+    "gaining_over_0": 56599.56980973482,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 16,
+    "hni_baseline": 112699913517.64645,
+    "hni_reform": 112190614219.63377,
+    "households": 1414577.0828195363,
+    "losing_over_0": 852393.2313297242,
+    "losing_over_0.01": 267669.0978103578,
+    "losing_over_0.05": 69.52026963233948,
+    "people": 3523923.8954796493
+   },
+   {
+    "gaining_over_0": 46930.07802128792,
+    "gaining_over_0.01": 13.429185450077057,
+    "gaining_over_0.05": 0.0,
+    "group": 17,
+    "hni_baseline": 118343454940.5333,
+    "hni_reform": 117683166247.74634,
+    "households": 1449948.7228603438,
+    "losing_over_0": 1133658.9590316042,
+    "losing_over_0.01": 347691.3248178661,
+    "losing_over_0.05": 84706.99536323547,
+    "people": 3523103.863312967
+   },
+   {
+    "gaining_over_0": 78421.76919430494,
+    "gaining_over_0.01": 9.5310640335083,
+    "gaining_over_0.05": 0.0,
+    "group": 18,
+    "hni_baseline": 148597719993.4825,
+    "hni_reform": 147566915854.37073,
+    "households": 1682260.866681993,
+    "losing_over_0": 1403677.4657574892,
+    "losing_over_0.01": 511831.7725560069,
+    "losing_over_0.05": 13.036013841629028,
+    "people": 3524353.614470035
+   },
+   {
+    "gaining_over_0": 32716.848812401295,
+    "gaining_over_0.01": 5.438193678855896,
+    "gaining_over_0.05": 0.0,
+    "group": 19,
+    "hni_baseline": 176411574243.30035,
+    "hni_reform": 175191683430.39865,
+    "households": 1694748.0410929322,
+    "losing_over_0": 1480118.1036438346,
+    "losing_over_0.01": 346487.4730364233,
+    "losing_over_0.05": 240.80808639526367,
+    "people": 3524139.925497934
+   },
+   {
+    "gaining_over_0": 18071.05749607086,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 20,
+    "hni_baseline": 330905171879.4219,
+    "hni_reform": 329337695487.5689,
+    "households": 1838871.8720085025,
+    "losing_over_0": 1722351.9210982919,
+    "losing_over_0.01": 393734.1516137123,
+    "losing_over_0.05": 0.0,
+    "people": 3523882.4076935053
+   }
+  ],
+  "all": {
+   "gaining_over_0": 1004965.2086780593,
+   "gaining_over_0.01": 889.903718829155,
+   "gaining_over_0.05": 0.0,
+   "hni_baseline": 1870162051635.4292,
+   "hni_reform": 1863296996891.2637,
+   "households": 29697942.86518107,
+   "losing_over_0": 10396670.969767682,
+   "losing_over_0.01": 2685391.1625500023,
+   "losing_over_0.05": 86714.1058421135,
+   "people": 70476134.42241578
+  },
+  "bhc_decile": [
+   {
+    "gaining_over_0": 284.9743461608887,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 1,
+    "hni_baseline": 55106715485.16472,
+    "hni_reform": 55096059900.03783,
+    "households": 3048451.9186100215,
+    "losing_over_0": 43166.59870052338,
+    "losing_over_0.01": 30.21445021033287,
+    "losing_over_0.05": 0.0,
+    "people": 7046664.842239454
+   },
+   {
+    "gaining_over_0": 11489.339863061905,
+    "gaining_over_0.01": 678.5278880596161,
+    "gaining_over_0.05": 0.0,
+    "group": 2,
+    "hni_baseline": 93682861006.06879,
+    "hni_reform": 93660095067.5246,
+    "households": 3197873.1737951934,
+    "losing_over_0": 76101.40460833907,
+    "losing_over_0.01": 10000.030841827393,
+    "losing_over_0.05": 0.0,
+    "people": 7048345.424640864
+   },
+   {
+    "gaining_over_0": 29568.319885730743,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 3,
+    "hni_baseline": 111267129734.4826,
+    "hni_reform": 111201957114.37999,
+    "households": 2876791.533890873,
+    "losing_over_0": 147853.75393149257,
+    "losing_over_0.01": 42637.17077255249,
+    "losing_over_0.05": 0.0,
+    "people": 7047624.2231095135
+   },
+   {
+    "gaining_over_0": 258976.88121950626,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 4,
+    "hni_baseline": 123978133547.96048,
+    "hni_reform": 123932777587.61201,
+    "households": 2630157.173916012,
+    "losing_over_0": 191838.50774252415,
+    "losing_over_0.01": 73800.56647658348,
+    "losing_over_0.05": 0.0,
+    "people": 7047814.097690076
+   },
+   {
+    "gaining_over_0": 84263.03722256422,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 5,
+    "hni_baseline": 144032571067.90454,
+    "hni_reform": 143813353903.48633,
+    "households": 2957005.031845972,
+    "losing_over_0": 463688.74469676614,
+    "losing_over_0.01": 108305.62761053443,
+    "losing_over_0.05": 0.0,
+    "people": 7045148.602686092
+   },
+   {
+    "gaining_over_0": 122350.07808368653,
+    "gaining_over_0.01": 88.3414077758789,
+    "gaining_over_0.05": 0.0,
+    "group": 6,
+    "hni_baseline": 166863860554.38226,
+    "hni_reform": 166571452267.16718,
+    "households": 2998532.6755610295,
+    "losing_over_0": 606601.3937731534,
+    "losing_over_0.01": 116809.24829490483,
+    "losing_over_0.05": 0.0,
+    "people": 7046732.296498235
+   },
+   {
+    "gaining_over_0": 224559.81821984053,
+    "gaining_over_0.01": 94.63597983121872,
+    "gaining_over_0.05": 0.0,
+    "group": 7,
+    "hni_baseline": 185465975568.54538,
+    "hni_reform": 184776619768.44653,
+    "households": 2861336.192730911,
+    "losing_over_0": 1334615.4949814305,
+    "losing_over_0.01": 289298.4477818012,
+    "losing_over_0.05": 108.67761850357056,
+    "people": 7050615.264740802
+   },
+   {
+    "gaining_over_0": 111128.11425000429,
+    "gaining_over_0.01": 19.144327044487,
+    "gaining_over_0.05": 0.0,
+    "group": 8,
+    "hni_baseline": 215574528371.24478,
+    "hni_reform": 214544222702.14233,
+    "households": 2768306.2787541,
+    "losing_over_0": 1797272.4914258868,
+    "losing_over_0.01": 603845.7311064601,
+    "losing_over_0.05": 1209.86576795578,
+    "people": 7047916.678317219
+   },
+   {
+    "gaining_over_0": 107635.82576185465,
+    "gaining_over_0.01": 9.254116117954254,
+    "gaining_over_0.05": 0.0,
+    "group": 9,
+    "hni_baseline": 269323326007.60938,
+    "hni_reform": 267544787541.44196,
+    "households": 3088098.434956163,
+    "losing_over_0": 2679379.6511674225,
+    "losing_over_0.01": 837871.5116518885,
+    "losing_over_0.05": 85154.75436925888,
+    "people": 7047472.3677601665
+   },
+   {
+    "gaining_over_0": 54708.81982564926,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 10,
+    "hni_baseline": 504866950292.0664,
+    "hni_reform": 502155671039.02496,
+    "households": 3271390.451120794,
+    "losing_over_0": 3056152.928740144,
+    "losing_over_0.01": 602792.6135632396,
+    "losing_over_0.05": 240.80808639526367,
+    "people": 7047800.624733359
+   }
+  ],
+  "bhc_vigintile": [
+   {
+    "gaining_over_0": 0.0,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 1,
+    "hni_baseline": 20346673158.289856,
+    "hni_reform": 20343174939.42939,
+    "households": 1557231.7678865045,
+    "losing_over_0": 14177.658084660769,
+    "losing_over_0.01": 1.7548488080501556,
+    "losing_over_0.05": 0.0,
+    "people": 3523636.545660332
+   },
+   {
+    "gaining_over_0": 284.9743461608887,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 2,
+    "hni_baseline": 34760042326.87486,
+    "hni_reform": 34752884960.608444,
+    "households": 1491220.150723517,
+    "losing_over_0": 28988.940615862608,
+    "losing_over_0.01": 28.459601402282715,
+    "losing_over_0.05": 0.0,
+    "people": 3523028.2965791225
+   },
+   {
+    "gaining_over_0": 7280.509262084961,
+    "gaining_over_0.01": 406.8315887451172,
+    "gaining_over_0.05": 0.0,
+    "group": 3,
+    "hni_baseline": 44797417899.435104,
+    "hni_reform": 44789054902.32648,
+    "households": 1667602.9971064776,
+    "losing_over_0": 36563.55984646082,
+    "losing_over_0.01": 2055.6576538085938,
+    "losing_over_0.05": 0.0,
+    "people": 3524669.3911340386
+   },
+   {
+    "gaining_over_0": 4208.830600976944,
+    "gaining_over_0.01": 271.6962993144989,
+    "gaining_over_0.05": 0.0,
+    "group": 4,
+    "hni_baseline": 48885443106.63366,
+    "hni_reform": 48871040165.19812,
+    "households": 1530270.1766887158,
+    "losing_over_0": 39537.84476187825,
+    "losing_over_0.01": 7944.373188018799,
+    "losing_over_0.05": 0.0,
+    "people": 3523676.0335068256
+   },
+   {
+    "gaining_over_0": 11838.54014635086,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 5,
+    "hni_baseline": 51723090927.42211,
+    "hni_reform": 51695461854.39966,
+    "households": 1398413.9827886522,
+    "losing_over_0": 61895.115880697966,
+    "losing_over_0.01": 18910.73124885559,
+    "losing_over_0.05": 0.0,
+    "people": 3523527.3234977424
+   },
+   {
+    "gaining_over_0": 17729.779739379883,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 6,
+    "hni_baseline": 59544038807.06049,
+    "hni_reform": 59506495259.98033,
+    "households": 1478377.551102221,
+    "losing_over_0": 85958.6380507946,
+    "losing_over_0.01": 23726.4395236969,
+    "losing_over_0.05": 0.0,
+    "people": 3524096.899611771
+   },
+   {
+    "gaining_over_0": 190220.18045723438,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 7,
+    "hni_baseline": 59954296539.81021,
+    "hni_reform": 59977614203.409485,
+    "households": 1210800.447235331,
+    "losing_over_0": 51952.57158009708,
+    "losing_over_0.01": 16171.246482133865,
+    "losing_over_0.05": 0.0,
+    "people": 3523679.545925185
+   },
+   {
+    "gaining_over_0": 68756.70076227188,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 8,
+    "hni_baseline": 64023837008.15027,
+    "hni_reform": 63955163384.202515,
+    "households": 1419356.726680681,
+    "losing_over_0": 139885.93616242707,
+    "losing_over_0.01": 57629.319994449615,
+    "losing_over_0.05": 0.0,
+    "people": 3524134.5517648906
+   },
+   {
+    "gaining_over_0": 37707.041278123856,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 9,
+    "hni_baseline": 69483208227.7885,
+    "hni_reform": 69403120652.04283,
+    "households": 1487720.3721401691,
+    "losing_over_0": 174543.87913396955,
+    "losing_over_0.01": 55809.26401719451,
+    "losing_over_0.05": 0.0,
+    "people": 3523758.172708899
+   },
+   {
+    "gaining_over_0": 46555.995944440365,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 10,
+    "hni_baseline": 74549362840.11606,
+    "hni_reform": 74410233251.44348,
+    "households": 1469284.6597058028,
+    "losing_over_0": 289144.8655627966,
+    "losing_over_0.01": 52496.36359333992,
+    "losing_over_0.05": 0.0,
+    "people": 3521390.4299771935
+   },
+   {
+    "gaining_over_0": 62021.18402779102,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 11,
+    "hni_baseline": 79135731151.06065,
+    "hni_reform": 78988255380.60458,
+    "households": 1453962.3531731367,
+    "losing_over_0": 312105.2923464179,
+    "losing_over_0.01": 43132.77751684189,
+    "losing_over_0.05": 0.0,
+    "people": 3520044.6456632763
+   },
+   {
+    "gaining_over_0": 60328.89405589551,
+    "gaining_over_0.01": 88.3414077758789,
+    "gaining_over_0.05": 0.0,
+    "group": 12,
+    "hni_baseline": 87728129403.32161,
+    "hni_reform": 87583196886.56259,
+    "households": 1544570.3223878928,
+    "losing_over_0": 294496.1014267355,
+    "losing_over_0.01": 73676.47077806294,
+    "losing_over_0.05": 0.0,
+    "people": 3526687.650834959
+   },
+   {
+    "gaining_over_0": 123105.51247179508,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 13,
+    "hni_baseline": 88977103139.2151,
+    "hni_reform": 88685759799.3171,
+    "households": 1413665.415778786,
+    "losing_over_0": 566348.6816181242,
+    "losing_over_0.01": 110198.76092016697,
+    "losing_over_0.05": 28.684659004211426,
+    "people": 3526659.422567457
+   },
+   {
+    "gaining_over_0": 101454.30574804544,
+    "gaining_over_0.01": 94.63597983121872,
+    "gaining_over_0.05": 0.0,
+    "group": 14,
+    "hni_baseline": 96488872429.33028,
+    "hni_reform": 96090859969.12943,
+    "households": 1447670.7769521251,
+    "losing_over_0": 768266.8133633062,
+    "losing_over_0.01": 179099.68686163425,
+    "losing_over_0.05": 79.99295949935913,
+    "people": 3523955.8421733454
+   },
+   {
+    "gaining_over_0": 60345.474962592125,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 15,
+    "hni_baseline": 104810074768.64304,
+    "hni_reform": 104354556706.79828,
+    "households": 1336311.0278223008,
+    "losing_over_0": 796712.8682445139,
+    "losing_over_0.01": 291192.54231595993,
+    "losing_over_0.05": 1168.0162274837494,
+    "people": 3523578.7861757874
+   },
+   {
+    "gaining_over_0": 50782.63928741217,
+    "gaining_over_0.01": 19.144327044487,
+    "gaining_over_0.05": 0.0,
+    "group": 16,
+    "hni_baseline": 110764453602.60175,
+    "hni_reform": 110189665995.34409,
+    "households": 1431995.2509317994,
+    "losing_over_0": 1000559.6231813729,
+    "losing_over_0.01": 312653.18879050016,
+    "losing_over_0.05": 41.84954047203064,
+    "people": 3524337.8921414316
+   },
+   {
+    "gaining_over_0": 46398.272171616554,
+    "gaining_over_0.01": 3.815922439098358,
+    "gaining_over_0.05": 0.0,
+    "group": 17,
+    "hni_baseline": 120985894284.14352,
+    "hni_reform": 120164778134.91919,
+    "households": 1474028.4264854044,
+    "losing_over_0": 1287572.0246961564,
+    "losing_over_0.01": 507577.66301476955,
+    "losing_over_0.05": 85123.82228851318,
+    "people": 3523766.390100777
+   },
+   {
+    "gaining_over_0": 61237.553590238094,
+    "gaining_over_0.01": 5.438193678855896,
+    "gaining_over_0.05": 0.0,
+    "group": 18,
+    "hni_baseline": 148337431723.46582,
+    "hni_reform": 147380009406.5227,
+    "households": 1614070.0084707588,
+    "losing_over_0": 1391807.6264712662,
+    "losing_over_0.01": 330293.84863711894,
+    "losing_over_0.05": 30.93208074569702,
+    "people": 3523705.9776593894
+   },
+   {
+    "gaining_over_0": 37351.530458927155,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 19,
+    "hni_baseline": 176295918323.53156,
+    "hni_reform": 175151935003.37177,
+    "households": 1539160.4168685675,
+    "losing_over_0": 1390919.472664535,
+    "losing_over_0.01": 239056.98667138815,
+    "losing_over_0.05": 240.80808639526367,
+    "people": 3522334.963280469
+   },
+   {
+    "gaining_over_0": 17357.289366722107,
+    "gaining_over_0.01": 0.0,
+    "gaining_over_0.05": 0.0,
+    "group": 20,
+    "hni_baseline": 328571031968.5349,
+    "hni_reform": 327003736035.6532,
+    "households": 1732230.0342522264,
+    "losing_over_0": 1665233.4560756087,
+    "losing_over_0.01": 363735.6268918514,
+    "losing_over_0.05": 0.0,
+    "people": 3525465.6614528894
+   }
+  ]
+ },
+ "engine_version": "2.89.2",
+ "fy_proxy": "2028-29",
+ "head_variables": [
+  "income_tax",
+  "ni_class_1_employee"
+ ],
+ "income_group_rule": "person-weighted quantiles of the BASELINE world's equivalised HBAI household net income (bhc: equiv_hbai_household_net_income; ahc: equiv_hbai_household_net_income_ahc), held fixed for the reform world; gaining/losing thresholds are shares of the household's baseline household_net_income",
+ "measure_key": "ab2025_option__hrt_and_uel_cut_to_46000_by_2029_30",
+ "null_executed_as_no_limit": [],
+ "peak_rss_gib": 1.22,
+ "poverty": {
+  "absolute_ahc__baseline": {
+   "children": 4200626.183305621,
+   "people": 13319206.757627442
+  },
+  "absolute_ahc__reform": {
+   "children": 4232591.498695254,
+   "people": 13375043.266368821
+  },
+  "absolute_bhc__baseline": {
+   "children": 3063163.99837029,
+   "people": 10523827.990968078
+  },
+  "absolute_bhc__reform": {
+   "children": 3063163.99837029,
+   "people": 10523827.990968078
+  },
+  "relative_60_median_fixed_at_baseline_ahc__baseline": {
+   "children": 4883179.472704768,
+   "line_gbp_year": 21164.35078125,
+   "people": 16096921.98126559
+  },
+  "relative_60_median_fixed_at_baseline_ahc__reform": {
+   "children": 4892430.442133784,
+   "line_gbp_year": 21164.35078125,
+   "people": 16118146.703460261
+  },
+  "relative_60_median_fixed_at_baseline_bhc__baseline": {
+   "children": 4006607.8742616177,
+   "line_gbp_year": 25135.64765625,
+   "people": 13994971.465259373
+  },
+  "relative_60_median_fixed_at_baseline_bhc__reform": {
+   "children": 4012445.706903219,
+   "line_gbp_year": 25135.64765625,
+   "people": 14004701.18632871
+  },
+  "relative_60_median_moving_ahc__baseline": {
+   "children": 5232392.522710562,
+   "people": 17143007.353193954
+  },
+  "relative_60_median_moving_ahc__reform": {
+   "children": 5213501.786223888,
+   "people": 17071159.17916532
+  },
+  "relative_60_median_moving_bhc__baseline": {
+   "children": 4051586.082136512,
+   "people": 14149240.455913052
+  },
+  "relative_60_median_moving_bhc__reform": {
+   "children": 4056449.4567536116,
+   "people": 14148166.45301573
+  }
+ },
+ "reform_world": {
+  "executed": "certified world with pe_reform_delta",
+  "reform_dict": {
+   "gov.hmrc.income_tax.rates.uk[1].threshold": {
+    "2026-01-01.2035-12-31": 33430
+   },
+   "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+    "2026-01-01.2035-12-31": 884.62
+   }
+  }
+ },
+ "run_id": "campaign-20260925-uk-ab2025",
+ "totals": {
+  "baseline": {
+   "children": 15147897.611974962,
+   "gov_spending": 504606216699.1529,
+   "gov_tax": 1125627399884.0078,
+   "heads": {
+    "income_tax": 463005386300.64185,
+    "ni_class_1_employee": 60134584642.57681
+   },
+   "household_net_income": 1870162051635.4292,
+   "households": 29697942.86518107,
+   "people": 70476134.42241578
+  },
+  "reform": {
+   "children": 15147897.611974962,
+   "gov_spending": 504616423595.36865,
+   "gov_tax": 1132502665508.5151,
+   "heads": {
+    "income_tax": 472717144516.08984,
+    "ni_class_1_employee": 57193396947.01079
+   },
+   "household_net_income": 1863296996891.2637,
+   "households": 29697942.86518107,
+   "people": 70476134.42241578
+  }
+ },
+ "year": 2028
+}

@@ -28,6 +28,7 @@ on:
       - "pipeline/check_baseline_integrity.py"
       - "pipeline/validate_budget_2026_registry.py"
       - "pipeline/validate_cgt_reform_spec.py"
+      - "pipeline/compute_uk_ab2025.py"
       - ".github/workflows/baseline-probe.yml"
   schedule:
     # Weekly: the registries pin an engine version, and the point is to
@@ -93,3 +94,13 @@ jobs:
         env:
           PYTHONPATH: .
         run: python pipeline/validate_budget_2026_registry.py --registry data/uk/ab2025_measures.json --resolve
+
+      # The AB2025 runner's guards (#142): every executed world covers the
+      # run (a world that stops early asserts a false zero), and every
+      # reversal's delta restates current law at the pinned engine (a delta
+      # that does not is a reform leg the reversal would drop). The second
+      # needs the engine, so it runs here, for real, rather than stubbed.
+      - name: AB2025 runner guards — world coverage and reversal deltas
+        env:
+          PYTHONPATH: .
+        run: python pipeline/compute_uk_ab2025.py --guards

@@ -155,6 +155,141 @@ def _merge_reform(into: dict, add: dict, key: str, what: str) -> None:
         into[path] = periods
 
 
+def _resolve_parameter(params, path: str):
+    node = params
+    for part in path.split("."):
+        m = re.fullmatch(r"(.+)\[(\d+)\]", part)
+        node = (
+            getattr(node, m.group(1)).brackets[int(m.group(2))]
+            if m
+            else getattr(node, part)
+        )
+    return node
+
+
+def engine_resolver():
+    """path, date -> the certified engine's parameter value (None: no such path)."""
+    import policyengine_uk
+
+    params = policyengine_uk.CountryTaxBenefitSystem().parameters
+
+    def resolve(path: str, date: str):
+        try:
+            node = _resolve_parameter(params, path)
+        except AttributeError:
+            return None
+        return node(date)
+
+    return resolve
+
+
+def _candidate_dates(period: str) -> list[str]:
+    """The dates within a delta window, clipped to the run's years, at which
+    a restatement of current law is looked for: 1 January, 6 April and
+    31 December of each year the window touches."""
+    start, end = period.split(".")
+    out = []
+    for y in YEARS:
+        for d in (f"{y}-01-01", f"{y}-04-06", f"{y}-12-31"):
+            if start <= d <= end:
+                out.append(d)
+    return out
+
+
+def world_coverage_gaps(index: dict[str, dict]) -> list[str]:
+    """The mirror of reversal_delta_mismatches, and engine-free: a year-keyed
+    pe_baseline_modifier (or a mixed construction's year-keyed delta) that
+    stops before the run ends makes that world revert to current law in the
+    later years, so the two worlds coincide there and a zero is asserted for
+    a measure whose effect may persist (the plan-2 student loan freeze ended in
+    2029 while its effect runs on). Every year-keyed path of an executed world
+    must cover each run year from its first covered year to the last, unless
+    the registry records the effect's end (``effect_ends_fy``)."""
+    runnable = {k for k, w in computable(index).items() if "alias_of" not in w}
+    keys = set(runnable)
+    for k in runnable:
+        if index[k].get("construction") == "package_of_registry_measures":
+            keys |= set(index[k]["package_of"])
+    out = []
+    for key in sorted(keys):
+        m = index[key]
+        fields = ["pe_baseline_modifier"]
+        if (
+            m.get("pe_baseline_modifier")
+            and m.get("construction") != "reversal_on_certified_world"
+        ):
+            fields.append(
+                "pe_reform_delta"
+            )  # a mixed construction executes its delta too
+        ends = m.get("effect_ends_fy")
+        last = int(ends[:4]) if ends else YEARS[-1]
+        for field in fields:
+            for path, value in (m.get(field) or {}).items():
+                covered = set()
+                for period, _ in _windows(value):
+                    start, end = period.split(".")
+                    covered |= set(range(int(start[:4]), int(end[:4]) + 1))
+                run = [y for y in YEARS if y in covered]
+                if not run:
+                    continue
+                missing = [y for y in YEARS if run[0] <= y <= last and y not in covered]
+                if missing:
+                    out.append(
+                        f"{key}: {field} {path} stops before the run ends (no value for "
+                        f"{missing}): that world reverts to current law there and would "
+                        "assert a zero; extend it, or record effect_ends_fy"
+                    )
+    return out
+
+
+def reversal_delta_mismatches(index: dict[str, dict], resolve) -> list[str]:
+    """A reversal executes its pe_baseline_modifier as the baseline world and
+    current law as the reform world, so a pe_reform_delta on a reversal is
+    documentation of the announced values and MUST restate current law: at
+    some date of each delta window within the run, the certified engine must
+    hold the delta's value. "Some date", deliberately, not every date: a
+    delta records the announced level at commencement, and current law may
+    uprate it later in the same window (the surcharge's band amounts rise by
+    CPI from April 2029 while the delta records the 2028 schedule), which is
+    a restatement, not a dropped leg. A delta the engine never holds is a reform leg
+    the reversal would drop silently — a measure mislabelled
+    reversal_on_certified_world — so it is refused before any simulation.
+    `resolve(path, date)` is the engine (or a stub); None: no such path."""
+    out = []
+    for key, m in sorted(index.items()):
+        if m.get("construction") != "reversal_on_certified_world":
+            continue
+        for path, value in (m.get("pe_reform_delta") or {}).items():
+            for period, v in _windows(value):
+                want = float("inf") if v is None else v
+                seen = []
+                for d in _candidate_dates(period):
+                    live = resolve(path, d)
+                    if live is None:
+                        seen = None
+                        break
+                    if isinstance(want, bool) or not isinstance(want, (int, float)):
+                        same = live == want
+                    else:
+                        lv = float(live)
+                        same = lv == float(want) or abs(lv - float(want)) <= 1e-9 * max(
+                            1.0, abs(float(want))
+                        )
+                    if same:
+                        break
+                    seen.append(f"{d}: {live}")
+                else:
+                    out.append(
+                        f"{key}: reversal delta {path} = {v} is not current law at any "
+                        f"date of {period} ({'; '.join(seen)}): a reform leg would be "
+                        "dropped silently"
+                    )
+                    continue
+                if seen is None:
+                    out.append(f"{key}: reversal delta path {path} does not resolve")
+    return out
+
+
 def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
     """{'construction', 'baseline_reform', 'reform_reform', 'components'}:
     the reform dicts the baseline and reform worlds execute (None = the
@@ -188,11 +323,10 @@ def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
             if w.get("reform_reform"):
                 _merge_reform(merged_delta, w["reform_reform"], key, c)
             sentinels += w.get("sentinels", [])
-        if merged_mod and merged_delta:
-            raise ValueError(
-                f"{key}: package mixes reversals and forward deltas; one world cannot "
-                "execute both sides"
-            )
+        # a package whose components reverse (modifier) AND apply (delta)
+        # executes two modified worlds: the reversed baseline and the applied
+        # reform, so its effect is the sum of both sides (run_measure's mixed
+        # path); nothing is merged into one world
         if not merged_mod and not merged_delta:
             raise NotExecutable(f"{key}: no component has an executable leg")
         return {
@@ -207,6 +341,10 @@ def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
     if construction == "reversal_on_certified_world":
         if not modifier:
             raise ValueError(f"{key}: reversal without pe_baseline_modifier")
+        # a delta here is NOT executed: the reform world of a reversal is
+        # current law, which already contains the announced values; that the
+        # delta restates them is checked against the engine before any run
+        # (reversal_delta_mismatches), never assumed
         rd, sent = reform_dict(modifier)
         return {
             "construction": construction,
@@ -214,6 +352,20 @@ def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
             "reform_reform": None,
             "components": [key],
             "sentinels": sent,
+        }
+    if modifier and delta:
+        # a variant scored against a modified pre-Budget path (the two-year
+        # threshold freeze): the modifier is the BASELINE world and the delta
+        # the REFORM world, both executed on the certified world; neither is
+        # current law, so both are simulated
+        mod, s1 = reform_dict(modifier)
+        rd, s2 = reform_dict(delta)
+        return {
+            "construction": construction or "delta_on_modified_baseline",
+            "baseline_reform": mod,
+            "reform_reform": rd,
+            "components": [key],
+            "sentinels": sorted(set(s1) | set(s2)),
         }
     if delta:
         rd, sent = reform_dict(delta)
@@ -487,6 +639,9 @@ def run_measure(
     proc = psutil.Process()
     heads = list(measure.get("head_variables") or [])
     written = []
+    mixed = (
+        worlds["baseline_reform"] is not None and worlds["reform_reform"] is not None
+    )
     alt_reform = (
         worlds["baseline_reform"]
         if worlds["baseline_reform"]
@@ -495,14 +650,27 @@ def run_measure(
     alt_is_baseline = worlds["baseline_reform"] is not None
     t0 = time.perf_counter()
     before = sha256_file(pre["artifact"])
-    alt = build_sim(alt_reform)
+    mod_frames: dict[int, dict] = {}
+    if mixed:
+        # both worlds are modified: the modified baseline is simulated first
+        # (one simulation alive at a time), its frames kept, then the reform
+        mod = build_sim(worlds["baseline_reform"])
+        for year in years:
+            mod_frames[year] = household_frame(mod, year, heads)
+        del mod
+        alt = build_sim(worlds["reform_reform"])
+    else:
+        alt = build_sim(alt_reform)
     for year in years:
         fb = base_frames[year]
         if any(v not in fb["heads"] for v in heads):
             raise SystemExit(f"{key}: baseline frame for {year} lacks heads {heads}")
         fb = {**fb, "heads": {v: fb["heads"][v] for v in heads}}
         fa = household_frame(alt, year, heads)
-        base_frame, ref_frame = (fa, fb) if alt_is_baseline else (fb, fa)
+        if mixed:
+            base_frame, ref_frame = mod_frames[year], fa
+        else:
+            base_frame, ref_frame = (fa, fb) if alt_is_baseline else (fb, fa)
         artifact = {
             "measure_key": key,
             "year": year,
@@ -517,7 +685,7 @@ def run_measure(
             },
             "reform_world": {
                 "executed": "certified world as served (current law)"
-                if alt_is_baseline
+                if alt_is_baseline and not mixed
                 else "certified world with pe_reform_delta",
                 "reform_dict": worlds["reform_reform"],
             },
@@ -564,6 +732,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--measures", nargs="*")
     ap.add_argument("--years", nargs="*", type=int, default=list(YEARS))
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument(
+        "--guards",
+        action="store_true",
+        help="run the world-coverage and reversal-delta guards against the installed engine and exit (fails if the engine is absent)",
+    )
     ap.add_argument("--run-id", default=f"campaign-{dt.date.today():%Y%m%d}-uk-ab2025")
     ap.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
     ap.add_argument(
@@ -572,6 +745,10 @@ def main(argv: list[str] | None = None) -> int:
         help="skip measures whose artifacts for every requested year already exist under this run id",
     )
     args = ap.parse_args(argv)
+    # the manifest records artifact paths relative to the repository, so the
+    # output directory is resolved once here (a relative --output-dir broke
+    # the manifest step after a completed run)
+    args.output_dir = args.output_dir.resolve()
 
     index = load_registry()
     comp = computable(index)
@@ -587,7 +764,37 @@ def main(argv: list[str] | None = None) -> int:
         "not_computable": not_computable(index),
         "years": args.years,
     }
+    gaps = world_coverage_gaps(index)
+    if gaps:
+        raise SystemExit(
+            "executed worlds that stop before the run ends:\n  " + "\n  ".join(gaps)
+        )
+    if args.guards:
+        # CI (the baseline-probe workflow): both guards, the engine REQUIRED
+        bad = reversal_delta_mismatches(index, engine_resolver())
+        if bad:
+            raise SystemExit(
+                "reversal deltas that do not restate current law:\n  "
+                + "\n  ".join(bad)
+            )
+        print(
+            "guards: every executed world covers the run; every reversal's delta "
+            "restates current law at the pinned engine"
+        )
+        return 0
     if args.dry_run:
+        try:
+            resolve = engine_resolver()
+        except ImportError:
+            print("reversal-delta guard skipped: policyengine-uk not importable")
+        else:
+            bad = reversal_delta_mismatches(index, resolve)
+            if bad:
+                raise SystemExit(
+                    "reversal deltas that do not restate current law:\n  "
+                    + "\n  ".join(bad)
+                )
+            print("reversal-delta guard: every reversal's delta restates current law")
         for k in selected:
             w = runnable[k]
             print(
@@ -609,6 +816,11 @@ def main(argv: list[str] | None = None) -> int:
         f"certified artifact {pre['revision']} sha256 verified; engine {pre['engine_version']}",
         flush=True,
     )
+    bad = reversal_delta_mismatches(index, engine_resolver())
+    if bad:
+        raise SystemExit(
+            "reversal deltas that do not restate current law:\n  " + "\n  ".join(bad)
+        )
     args.output_dir.mkdir(parents=True, exist_ok=True)
     # One simulation alive at a time: each year's baseline FRAME is
     # extracted once (every head variable any selected measure names) and
@@ -666,7 +878,7 @@ def main(argv: list[str] | None = None) -> int:
         "run_id": args.run_id,
         "engine_version": pre["engine_version"],
         "data_bundle": pre["revision"],
-        "artifact_sha256": pre["sha256"],
+        "certified_dataset_sha256": pre["sha256"],
         "baseline_dataset_sha256": baseline_hashes,
         "years": args.years,
         "measures": done + selected,

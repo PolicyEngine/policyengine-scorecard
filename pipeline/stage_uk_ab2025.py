@@ -12,7 +12,13 @@ the claim's fiscal year, PE is static where the producer may be
 behavioural, and a reversal executes a registered pre-measure world
 rather than the producer's counterfactual. The axes are named in
 `annotations`. A claim shape no computed quantity answers is tallied in
-STAGING_TALLY.json with its reason, never guessed.
+STAGING_TALLY.json with its reason (and one receipt line per claim in
+STAGING_UNANSWERED.jsonl), never guessed. A claim in the OBR costings slice (it
+carries ``obr_measure_key``) belongs to that lane's compute and is tallied
+``owned_elsewhere`` here, never attached: one claim, one computed answer. A
+measure whose lever never bites in any year of the run is tallied inert; a year
+before a measure's RECORDED commencement (registry ``commences_fy``) attaches
+its real zero, annotated; identical worlds in any other year assert nothing.
 
 Shapes answered (metric -> artifact quantity):
     revenue_change (geography UK, no OBR head)  -> Δ(gov_tax − gov_spending), oriented by the claim's sign_convention
@@ -44,6 +50,9 @@ ARTIFACTS = ROOT / "results" / "uk" / "ab2025"
 STAGED_DIR = ROOT / "results" / "uk" / "staged_ab2025"
 STAGED = STAGED_DIR / "ab2025_counterparts.jsonl"
 TALLY = ARTIFACTS / "STAGING_TALLY.json"
+# one line per claim the stager did not answer, with its reason (the receipt
+# behind the tally's counts)
+UNANSWERED = ARTIFACTS / "STAGING_UNANSWERED.jsonl"
 REGISTRY = ROOT / "data" / "uk" / "ab2025_measures.json"
 
 _LABELS = {label: baseline_key(desc) for desc, label, *_ in BASELINES}
@@ -58,8 +67,15 @@ def executed_world_key(measure_key: str, artifact: dict) -> str:
     """The registered world PE executed as the baseline for this artifact."""
     if artifact["baseline_world"]["reform_dict"] is None:
         return _CURRENT_LAW
+    construction = str(artifact.get("construction") or "")
     if measure_key in PACKAGE_WORLDS:
         label = PACKAGE_WORLDS[measure_key]
+    elif "_variant_of_" in construction:
+        # a variant scored on another measure's pre-Budget path (the two-year
+        # threshold freeze on the announced freeze's indexed path): the
+        # executed baseline IS that measure's registered world
+        base = construction.split("_variant_of_", 1)[1]
+        label = f"pre_ab2025__{base.removeprefix('ab2025__')}"
     else:
         slug = measure_key.removeprefix("ab2025__")
         label = f"pre_ab2025__{slug}"
@@ -288,6 +304,39 @@ def map_claim(claim: dict, art: dict) -> tuple[float | None, list[str], str | No
             eff = (T["reform"]["gov_tax"] - T["baseline"]["gov_tax"]) - (
                 T["reform"]["gov_spending"] - T["baseline"]["gov_spending"]
             )
+            heads_moved = any(
+                T["reform"]["heads"].get(h) != T["baseline"]["heads"].get(h)
+                for h in T["baseline"].get("heads", {})
+            )
+            if eff == 0 and heads_moved:
+                # the head moved but neither aggregate did: the certified
+                # engine's gov_tax / gov_spending do not carry this head (a
+                # loan repayment, a devolved payment), so the exchequer effect
+                # is read from the head itself, receipts positive and outlays
+                # negative; a head with no recorded side is not guessed
+                moved = {
+                    h: T["reform"]["heads"][h] - T["baseline"]["heads"][h]
+                    for h in T["baseline"]["heads"]
+                    if T["reform"]["heads"].get(h) != T["baseline"]["heads"].get(h)
+                }
+                unknown = sorted(h for h in moved if h not in HEAD_SIDE)
+                if unknown:
+                    raise Unanswerable(
+                        f"exchequer aggregates do not carry the measure's head variables {unknown} on the certified engine, and the head's side (receipt or outlay) is not recorded"
+                    )
+                eff = sum(
+                    d if HEAD_SIDE[h] == "receipt" else -d for h, d in moved.items()
+                )
+                return (
+                    sign * eff,
+                    [
+                        "PE static exchequer effect read from the head variable(s) "
+                        + ", ".join(f"{h} ({HEAD_SIDE[h]})" for h in sorted(moved))
+                        + ", which gov_tax / gov_spending do not carry on the certified engine",
+                        snote,
+                    ],
+                    None,
+                )
             return (
                 sign * eff,
                 [
@@ -405,7 +454,106 @@ def map_claim(claim: dict, art: dict) -> tuple[float | None, list[str], str | No
     return None, [], f"no counterpart shape for metric {metric!r}"
 
 
-def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dict]:
+def identical_worlds(art: dict) -> bool:
+    """True when the artifact's reform world equals its baseline world on
+    gov_tax, gov_spending, household_net_income and every head variable (the
+    decile and poverty blocks are not compared: they are functions of the
+    same frames)."""
+    b, r = art["totals"]["baseline"], art["totals"]["reform"]
+    return all(
+        b.get(k) == r.get(k)
+        for k in ("gov_tax", "gov_spending", "household_net_income")
+    ) and all(
+        b.get("heads", {}).get(h) == r.get("heads", {}).get(h)
+        for h in b.get("heads", {})
+    )
+
+
+INERT = "lever inert on the certified world in every year of the run (reform world identical to the baseline world)"
+
+
+def inert_measures(
+    artifacts: dict[tuple[str, int], dict],
+    years: list[int],
+    commences: dict[str, str] | None = None,
+) -> set[str]:
+    """Measures whose reform world equals the baseline world in EVERY year of
+    the run: the lever did not bite on the certified engine and data (a switch
+    the engine ignores, a data-driven variable, a world that is already current
+    law). Their claims are tallied, never attached as zeros. Sound only over
+    the FULL run, so a measure whose artifacts do not cover every run year
+    raises (a --years subset would call the threshold freeze inert). A measure
+    identical in every year because it commences after the run is not inert."""
+    commences = commences or {}
+    by_key: dict[str, dict[int, bool]] = {}
+    for (key, year), art in artifacts.items():
+        by_key.setdefault(key, {})[year] = identical_worlds(art)
+    out = set()
+    for key, same in by_key.items():
+        if sorted(same) != sorted(years):
+            raise ValueError(
+                f"{key}: artifacts for {sorted(same)}, the run is {sorted(years)}: "
+                "inertness is only judged over the full run"
+            )
+        c = commences.get(key)
+        if c and int(c[:4]) > max(years):
+            continue
+        if all(same.values()):
+            out.add(key)
+    return out
+
+
+def identical_year_verdict(
+    fy: str, commences_fy: str | None
+) -> tuple[str | None, str | None]:
+    """(annotation, None) when identical worlds in ``fy`` are a real zero —
+    the year is before the measure's RECORDED commencement (registry
+    ``commences_fy``, from the HM Treasury Table 4.1 title) — else
+    (None, reason): identical worlds in a year the measure is in force, or
+    with no commencement on record, are a construction that does not carry
+    the measure, and no zero is asserted."""
+    if commences_fy and fy < commences_fy:
+        return (
+            f"not yet in force in FY {fy}: the measure commences in FY {commences_fy} "
+            "(registry commences_fy) and the reform and baseline worlds are identical "
+            "in this year; the counterpart is zero",
+            None,
+        )
+    if commences_fy:
+        return (
+            None,
+            f"reform and baseline worlds identical in FY {fy}, a year the measure is in "
+            f"force (commences FY {commences_fy}): the construction does not carry it "
+            "in this year, so no zero is asserted",
+        )
+    return (
+        None,
+        "reform and baseline worlds identical and no commencement on record: no zero is asserted",
+    )
+
+
+# heads the certified engine's gov_tax / gov_spending aggregates do NOT carry:
+# an exchequer effect for these measures is read from the head itself
+HEAD_SIDE = {
+    "student_loan_repayment": "receipt",
+    "scottish_child_payment": "outlay",
+}
+
+
+def owned_elsewhere(cond: dict) -> str | None:
+    """The #56 / #140 ownership rule: a claim carrying ``obr_measure_key`` is
+    in the OBR costings slice and is answered only by that lane's compute
+    (pipeline/compute_uk_obr_costings.py, per OBR head in OBR's conventions);
+    this stager never attaches to it, so no claim gets two computed answers."""
+    if cond.get("obr_measure_key"):
+        return "owned by the OBR costings lane (claim carries obr_measure_key)"
+    return None
+
+
+def stage(
+    db_path: Path, artifacts: dict | None = None, years: list[int] | None = None
+) -> tuple[list[dict], dict, list[dict]]:
+    from_disk = artifacts is None
     artifacts = artifacts or load_artifacts()
     index = {m["measure_key"]: m for m in json.loads(REGISTRY.read_text())["measures"]}
     alias = {
@@ -415,14 +563,60 @@ def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dic
     }
     conn = sqlite3.connect(db_path)
     rows = []
-    tally: dict = {"attached": 0, "unmapped": {}, "by_measure": {}}
+    if years is None:
+        years = (
+            json.loads((ARTIFACTS / "RUN_MANIFEST.json").read_text())["years"]
+            if from_disk
+            else sorted({y for _, y in artifacts})
+        )
+    commences = {
+        k: m["commences_fy"] for k, m in index.items() if m.get("commences_fy")
+    }
+    inert = inert_measures(artifacts, years, commences)
+    tally: dict = {
+        "attached": 0,
+        "owned_elsewhere": 0,
+        "unmapped": {},
+        "inert_measures": sorted(inert),
+        "by_measure": {},
+    }
+    unanswered: list[dict] = []
+
+    def receipt(c: dict, key: str, reason: str) -> None:
+        bm = tally["by_measure"][key]
+        bm["reasons"][reason] = bm["reasons"].get(reason, 0) + 1
+        unanswered.append(
+            {
+                "claim_id": c["claim_id"],
+                "measure_key": key,
+                "source": c["source"],
+                "metric": c["metric"],
+                "fy": c["conditions"].get("fy"),
+                "reason": reason,
+            }
+        )
+
     for c in claims(conn):
         key = c["conditions"]["measure_key"]
         target = alias.get(key, key)
         bm = tally["by_measure"].setdefault(
-            key, {"claims": 0, "attached": 0, "no_artifact": 0, "unmapped": 0}
+            key,
+            {
+                "claims": 0,
+                "attached": 0,
+                "no_artifact": 0,
+                "unmapped": 0,
+                "owned_elsewhere": 0,
+                "reasons": {},
+            },
         )
         bm["claims"] += 1
+        owner = owned_elsewhere(c["conditions"])
+        if owner:
+            bm["owned_elsewhere"] += 1
+            tally["owned_elsewhere"] += 1
+            receipt(c, key, owner)
+            continue
         # the claim's fiscal year picks the artifact (calendar year = FY
         # start); a claim without one, or outside the run's years, is tallied
         fy = c["conditions"].get("fy") or ""
@@ -431,14 +625,39 @@ def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dic
             bm["unmapped"] += 1
             reason = "no fiscal year on the claim"
             tally["unmapped"][reason] = tally["unmapped"].get(reason, 0) + 1
+            receipt(c, key, reason)
             continue
         year = int(m.group(1))
+        # a year the registry itself marks non-comparable (the claim measures
+        # something no household microsimulation carries) is never answered
+        nc = (index.get(target) or {}).get("non_comparable_fys", {}).get(fy)
+        if nc:
+            bm["unmapped"] += 1
+            reason = f"not comparable in FY {fy} per the registry: {nc}"
+            tally["unmapped"][reason] = tally["unmapped"].get(reason, 0) + 1
+            receipt(c, key, reason)
+            continue
         art = artifacts.get((target, year))
         if art is None:
             bm["no_artifact"] += 1
             reason = f"no artifact for the claim's fiscal year ({fy})"
             tally["unmapped"][reason] = tally["unmapped"].get(reason, 0) + 1
+            receipt(c, key, reason)
             continue
+        if target in inert:
+            bm["unmapped"] += 1
+            tally["unmapped"][INERT] = tally["unmapped"].get(INERT, 0) + 1
+            receipt(c, key, INERT)
+            continue
+        not_yet = []
+        if identical_worlds(art):
+            note, gap = identical_year_verdict(fy, commences.get(target))
+            if gap:
+                bm["unmapped"] += 1
+                tally["unmapped"][gap] = tally["unmapped"].get(gap, 0) + 1
+                receipt(c, key, gap)
+                continue
+            not_yet = [note]
         value, notes, reason = map_claim(c, art)
         period_note = []
         if c["period"] is None or int(c["period"]) != year + 1:
@@ -448,6 +667,7 @@ def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dic
         if reason:
             bm["unmapped"] += 1
             tally["unmapped"][reason] = tally["unmapped"].get(reason, 0) + 1
+            receipt(c, key, reason)
             continue
         bm["attached"] += 1
         tally["attached"] += 1
@@ -468,6 +688,7 @@ def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dic
                 "run_id": art["run_id"],
                 "baseline_key": world,
                 "annotations": period_note
+                + not_yet
                 + [
                     f"PE calendar year {art['year']} on the certified world proxies FY {art['fy_proxy']}; static, no behavioural response",
                     f"executed baseline: {art['baseline_world']['executed']}; the claim is scored against {claim_world}",
@@ -484,18 +705,23 @@ def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dic
         )
     conn.close()
     rows.sort(key=lambda r: (r["measure_key"], r["external_claim_match"]["claim_id"]))
-    return rows, tally
+    unanswered.sort(key=lambda r: (r["measure_key"], r["claim_id"]))
+    return rows, tally, unanswered
 
 
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     db = Path(argv[0] if argv else "data/scorecard.db")
-    rows, tally = stage(db)
+    rows, tally, unanswered = stage(db)
     STAGED_DIR.mkdir(parents=True, exist_ok=True)
     STAGED.write_text(
         "\n".join(json.dumps(r, sort_keys=True) for r in rows) + ("\n" if rows else "")
     )
     TALLY.write_text(json.dumps(tally, indent=1, sort_keys=True) + "\n")
+    UNANSWERED.write_text(
+        "\n".join(json.dumps(r, sort_keys=True) for r in unanswered)
+        + ("\n" if unanswered else "")
+    )
     print(
         json.dumps(
             {"attached": tally["attached"], "unmapped": tally["unmapped"]}, indent=1

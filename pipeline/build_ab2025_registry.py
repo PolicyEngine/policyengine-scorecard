@@ -263,14 +263,35 @@ idx_uel = {str(y): round(966.73 * CPI[y] / CPI[2027], 2) for y in (2028, 2029, 2
 idx_lpl = {str(y): r10(12570 * CPI[y] / CPI[2027]) for y in (2028, 2029, 2030)}
 idx_upl = {str(y): r10(50270 * CPI[y] / CPI[2027]) for y in (2028, 2029, 2030)}
 idx_st = {str(y): round(96 * CPI[y] / CPI[2027], 2) for y in (2028, 2029, 2030)}
+# The certified engine uprates the class 4 limits from April 2027, which
+# pre-Budget law did not (every NI threshold was frozen to April 2028): the
+# pre-Budget world pins them at the frozen 2027-28 values in 2027 and indexes
+# from April 2028, so a freeze's 2027-28 effect is the zero HMT scores, not the
+# engine's own uprating. Every world that reverses the freeze uses these.
+pre_lpl = {"2027": 12570, **idx_lpl}
+pre_upl = {"2027": 50270, **idx_upl}
+# the two-year option's 2030-31 values: the 2027-28 level uprated ONCE by the
+# path's own 2030 step (April 2030 CPI / April 2029 CPI)
+_once = CPI[2030] / CPI[2029]
+once_pa = r10(12570 * _once)
+once_hrt = r10(37700 * _once)
+once_pt = round(241.73 * _once, 2)
+once_uel = round(966.73 * _once, 2)
+once_lpl = r10(12570 * _once)
+once_upl = r10(50270 * _once)
 
 announced(
     46,
     "personal_tax_thresholds_freeze_to_2031",
     "income_tax",
     "expressible",
+    commences_fy="2028-29",
+    commences_source="Table 4.1 line 46 title: maintain the thresholds 'for a further three years until April 2031'; the pre-existing freeze runs to April 2028",
     obr_pmd_measure_key="autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension",
-    construction="reversal_on_certified_world",
+    # IT legs are in the certified world (reversed through the modifier); the
+    # NI legs are NOT (the certified engine indexes NI thresholds from April
+    # 2028), so they are a forward delta: both worlds are simulated
+    construction="delta_on_modified_baseline",
     pe_reform_delta={
         # NI legs: the certified engine uprates these from April 2028 (class 4 from
         # April 2027), so the measure's NI legs are a FORWARD delta, frozen at the
@@ -288,8 +309,8 @@ announced(
         hrt_path: idx_hrt,
         pt_path: idx_pt,
         uel_path: idx_uel,
-        lpl_path: idx_lpl,
-        upl_path: idx_upl,
+        lpl_path: pre_lpl,
+        upl_path: pre_upl,
     },
     engine_baseline_2026={
         pa_path: 12570,
@@ -309,7 +330,9 @@ announced(
         "MIXED. gov.hmrc.income_tax.* thresholds are frozen through 2030-31 at the pin (uprating resumes 2031-04-06), so the income "
         "tax legs are in the certified world and are scored by REVERSAL (pe_baseline_modifier indexes them by CPI from April 2028). "
         "The NI thresholds are NOT frozen at the pin: primary threshold and UEL uprate from April 2028 and the class 4 limits from "
-        "April 2027, so the NI legs are scored as a forward delta on the certified world. Rates of CPI indexation are the engine's own "
+        "April 2027, so the NI legs are scored as a forward delta on the certified world; the pre-Budget world pins the class 4 limits at "
+        "their frozen 2027-28 values in 2027 (pre-Budget law froze every NI threshold to April 2028; the engine's April 2027 uprating is "
+        "not a pre-Budget policy), so the measure's 2027-28 effect is the zero HMT scores. Rates of CPI indexation are the engine's own "
         "gov.economic_assumptions.indices.obr.consumer_price_index path (dashboard used cpih); thresholds rounded to GBP 10."
     ),
     head_variables=[
@@ -326,6 +349,8 @@ announced(
     "employer_nics_secondary_threshold_freeze_to_2031",
     "national_insurance",
     "expressible",
+    commences_fy="2028-29",
+    commences_source="Table 4.1 line 47 title: maintain the secondary threshold 'for a further three years until April 2031'; the pre-existing freeze runs to April 2028",
     obr_pmd_measure_key="autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension",
     construction="reversal_on_certified_world",
     pe_reform_delta={st_path: 96},
@@ -342,19 +367,25 @@ announced(
     "student_loans_plan2_threshold_freeze",
     "student_loans",
     "expressible",
+    commences_fy="2027-28",
+    commences_source="Table 4.1 line 48 title: 'for three years from 6 April 2027'; the effect persists after the freeze ends",
     construction="reversal_on_certified_world",
     pe_reform_delta={"gov.hmrc.student_loans.thresholds.plan_2": 29385},
     delta_kind="absolute_value",
     pe_baseline_modifier={
         "gov.hmrc.student_loans.thresholds.plan_2": {
-            str(y): int(round(29385 * RPI[y] / RPI[2026])) for y in (2027, 2028, 2029)
+            str(y): int(round(29385 * RPI[y] / RPI[2026]))
+            for y in (2027, 2028, 2029, 2030)
         }
     },
     engine_baseline_2026={"gov.hmrc.student_loans.thresholds.plan_2": 29385},
     already_in_baseline=True,
+    non_comparable_fys={
+        "2026-27": "HM Treasury's and the OBR's 2026-27 figures are the one-off loan-book revaluation of announcing the freeze, which no household microsimulation reproduces; only the repayment legs from 2027-28 are comparable",
+    },
     caveat="Engine-expressible (plan_2 threshold frozen 2027-2029 at the pin, uprating resumes 2030; student_loan_repayment has a formula). Coverage of student_loan_plan on the certified populace-uk bundle is confirmed at compute, not here. HMT's 2026-27 GBP 5,915m is the one-off loan-book revaluation, which no household microsimulation reproduces: only the repayment legs (2027-28 onward) are comparable.",
     head_variables=["student_loan_repayment"],
-    derivation="pre-Budget path = 29385 x RPI(April y)/RPI(April 2026), y = 2027..2029 (Plan 2 thresholds uprate by RPI)",
+    derivation="pre-Budget path = 29385 x RPI(April y)/RPI(April 2026), y = 2027..2030 (Plan 2 thresholds uprate by RPI). The freeze ends in April 2030 but its effect does not: current law then uprates the FROZEN level once, so the pre-Budget world stays three upratings ahead in 2030-31 and after (HMT scores GBP 380m in 2030-31); a pre-Budget world that stopped at 2029 would equal current law in 2030 and assert a false zero.",
 )
 
 announced(
@@ -362,6 +393,8 @@ announced(
     "property_income_separate_rates",
     "income_tax",
     "expressible",
+    commences_fy="2027-28",
+    commences_source="Table 4.1 line 49 title: 'from 6 April 2027'",
     obr_pmd_measure_key="autumn_budget_2025__property_income_separate_rates",
     construction="reversal_on_certified_world",
     pe_reform_delta={
@@ -434,6 +467,8 @@ announced(
     "savings_rates_plus_2pp_and_starter_limit_held",
     "income_tax",
     "expressible",
+    commences_fy="2026-27",
+    commences_source="Table 4.1 line 51 title: the Starting Rate for Savings limit is maintained 'from April 2026' (the rate legs from 6 April 2027); the construction carries the rate legs only, so an identical-worlds 2026-27 is a construction gap, not a zero",
     obr_pmd_measure_key="autumn_budget_2025__savings_income_rates_and_starter_limit",
     construction="reversal_on_certified_world",
     pe_reform_delta={
@@ -479,6 +514,8 @@ announced(
     "salary_sacrifice_pension_nics_cap_2000",
     "national_insurance",
     "expressible",
+    commences_fy="2029-30",
+    commences_source="Table 4.1 line 52 title: 'from 6 April 2029'",
     obr_pmd_measure_key="autumn_budget_2025__salary_sacrifice_pension_nics_cap",
     construction="reversal_on_certified_world",
     pe_reform_delta={"gov.hmrc.national_insurance.salary_sacrifice_pension_cap": 2000},
@@ -509,6 +546,8 @@ announced(
     "high_value_council_tax_surcharge",
     "council_tax",
     "expressible",
+    commences_fy="2028-29",
+    commences_source="Table 4.1 line 54 title: 'from 1 April 2028'",
     obr_pmd_measure_key="autumn_budget_2025__high_value_council_tax_surcharge",
     construction="reversal_on_certified_world",
     pe_reform_delta={
@@ -1585,23 +1624,42 @@ o(
     "expressible",
     ["ifs", "resolution_foundation", "ippr", "fabian_society", "rathbones", "cebr"],
     f"{ifs}; IFS 'How are frozen tax thresholds reshaping who pays personal taxes?' (14 Nov 2025); {rf_cod}; IPPR 'Fairness first'; Fabian Society (computed with PolicyEngine, Oct 2025); Rathbones; Cebr",
+    commences_fy="2028-29",
+    commences_source="the pre-existing freeze runs to April 2028; the option extends it 'by two years to April 2030' (title), so it is in force from 2028-29",
     construction="two_year_variant_of_ab2025__personal_tax_thresholds_freeze_to_2031",
+    # Executed as a delta on a MODIFIED baseline (both worlds simulated):
+    # the baseline world is the pre-Budget path (every threshold CPI-indexed
+    # from April 2028, as for the announced measure); the reform world holds
+    # the 2027-28 values through 2029-30 and uprates them once in 2030-31 by
+    # the path's own 2030 step. Current law (frozen to 2031) is neither world.
     pe_reform_delta={
-        pt_path: {"2028": 241.73, "2029": 241.73},
-        uel_path: {"2028": 966.73, "2029": 966.73},
+        pa_path: {"2028": 12570, "2029": 12570, "2030": once_pa},
+        hrt_path: {"2028": 37700, "2029": 37700, "2030": once_hrt},
+        pt_path: {"2028": 241.73, "2029": 241.73, "2030": once_pt},
+        uel_path: {"2028": 966.73, "2029": 966.73, "2030": once_uel},
+        lpl_path: {"2027": 12570, "2028": 12570, "2029": 12570, "2030": once_lpl},
+        upl_path: {"2027": 50270, "2028": 50270, "2029": 50270, "2030": once_upl},
     },
     delta_kind="absolute_value_by_year",
+    # the same pre-Budget world as the announced freeze (its registered
+    # pre_ab2025__ world is the executed baseline here)
     pe_baseline_modifier={
         pa_path: {k: v for k, v in idx_pa.items()},
         hrt_path: {k: v for k, v in idx_hrt.items()},
+        pt_path: {k: v for k, v in idx_pt.items()},
+        uel_path: {k: v for k, v in idx_uel.items()},
+        lpl_path: {k: v for k, v in pre_lpl.items()},
+        upl_path: {k: v for k, v in pre_upl.items()},
     },
     engine_baseline_2026={
         pa_path: 12570,
         hrt_path: 37700,
         pt_path: 241.73,
         uel_path: 966.73,
+        lpl_path: 12570,
+        upl_path: 50270,
     },
-    note="The announced measure is three years (to April 2031). This option is the two-year variant every pre-Budget producer costed; IT legs are scored by reversal against the CPI-indexed path from April 2028 for 2028-29 and 2029-30 only, and 2030-31 stays indexed. The Fabian Society's GBP 11.7bn was computed with PolicyEngine (same_assumptions, not different_model).",
+    note="The announced measure is three years (to April 2031). This option is the two-year variant every pre-Budget producer costed. Scored as a delta on a modified baseline: the baseline world is the pre-Budget CPI-indexed path from April 2028 for all six IT/NI thresholds; the reform world holds them at 2027-28 values for 2028-29 and 2029-30 and uprates them once in 2030-31 (the path's own 2030 CPI step), so 2030-31 carries the level effect of the two frozen years, not a third frozen year. The Fabian Society's GBP 11.7bn was computed with PolicyEngine (same_assumptions, not different_model).",
     head_variables=["income_tax", "ni_class_1_employee", "ni_class_4"],
 )
 o(

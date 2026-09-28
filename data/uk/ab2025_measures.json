@@ -55,7 +55,9 @@
    "program": "income_tax",
    "computability": "expressible",
    "obr_pmd_measure_key": "autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension",
-   "construction": "reversal_on_certified_world",
+   "commences_fy": "2028-29",
+   "commences_source": "Table 4.1 line 46 title: maintain the thresholds 'for a further three years until April 2031'; the pre-existing freeze runs to April 2028",
+   "construction": "delta_on_modified_baseline",
    "pe_reform_delta": {
     "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
      "2028": 241.73,
@@ -103,11 +105,13 @@
      "2030": 1025.9
     },
     "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+     "2027": 12570,
      "2028": 12820,
      "2029": 13080,
      "2030": 13340
     },
     "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+     "2027": 50270,
      "2028": 51280,
      "2029": 52300,
      "2030": 53350
@@ -127,7 +131,7 @@
     "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": "13077.80 in 2028; already 12821.38 in 2027 (uprated from April 2027, which also breaks the pre-existing freeze to April 2028)"
    },
    "already_in_baseline": "income tax legs only",
-   "baseline_integrity_note": "MIXED. gov.hmrc.income_tax.* thresholds are frozen through 2030-31 at the pin (uprating resumes 2031-04-06), so the income tax legs are in the certified world and are scored by REVERSAL (pe_baseline_modifier indexes them by CPI from April 2028). The NI thresholds are NOT frozen at the pin: primary threshold and UEL uprate from April 2028 and the class 4 limits from April 2027, so the NI legs are scored as a forward delta on the certified world. Rates of CPI indexation are the engine's own gov.economic_assumptions.indices.obr.consumer_price_index path (dashboard used cpih); thresholds rounded to GBP 10.",
+   "baseline_integrity_note": "MIXED. gov.hmrc.income_tax.* thresholds are frozen through 2030-31 at the pin (uprating resumes 2031-04-06), so the income tax legs are in the certified world and are scored by REVERSAL (pe_baseline_modifier indexes them by CPI from April 2028). The NI thresholds are NOT frozen at the pin: primary threshold and UEL uprate from April 2028 and the class 4 limits from April 2027, so the NI legs are scored as a forward delta on the certified world; the pre-Budget world pins the class 4 limits at their frozen 2027-28 values in 2027 (pre-Budget law froze every NI threshold to April 2028; the engine's April 2027 uprating is not a pre-Budget policy), so the measure's 2027-28 effect is the zero HMT scores. Rates of CPI indexation are the engine's own gov.economic_assumptions.indices.obr.consumer_price_index path (dashboard used cpih); thresholds rounded to GBP 10.",
    "head_variables": [
     "income_tax",
     "ni_class_1_employee",
@@ -146,6 +150,8 @@
    "program": "national_insurance",
    "computability": "expressible",
    "obr_pmd_measure_key": "autumn_budget_2025__employer_nics_secondary_threshold_freeze_extension",
+   "commences_fy": "2028-29",
+   "commences_source": "Table 4.1 line 47 title: maintain the secondary threshold 'for a further three years until April 2031'; the pre-existing freeze runs to April 2028",
    "construction": "reversal_on_certified_world",
    "pe_reform_delta": {
     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": 96
@@ -178,6 +184,8 @@
    "program": "student_loans",
    "computability": "expressible",
    "obr_pmd_measure_key": "autumn_budget_2025__student_loans_plan2_threshold_freeze",
+   "commences_fy": "2027-28",
+   "commences_source": "Table 4.1 line 48 title: 'for three years from 6 April 2027'; the effect persists after the freeze ends",
    "construction": "reversal_on_certified_world",
    "pe_reform_delta": {
     "gov.hmrc.student_loans.thresholds.plan_2": 29385
@@ -187,18 +195,22 @@
     "gov.hmrc.student_loans.thresholds.plan_2": {
      "2027": 30267,
      "2028": 31114,
-     "2029": 32016
+     "2029": 32016,
+     "2030": 32753
     }
    },
    "engine_baseline_2026": {
     "gov.hmrc.student_loans.thresholds.plan_2": 29385
    },
    "already_in_baseline": true,
+   "non_comparable_fys": {
+    "2026-27": "HM Treasury's and the OBR's 2026-27 figures are the one-off loan-book revaluation of announcing the freeze, which no household microsimulation reproduces; only the repayment legs from 2027-28 are comparable"
+   },
    "caveat": "Engine-expressible (plan_2 threshold frozen 2027-2029 at the pin, uprating resumes 2030; student_loan_repayment has a formula). Coverage of student_loan_plan on the certified populace-uk bundle is confirmed at compute, not here. HMT's 2026-27 GBP 5,915m is the one-off loan-book revaluation, which no household microsimulation reproduces: only the repayment legs (2027-28 onward) are comparable.",
    "head_variables": [
     "student_loan_repayment"
    ],
-   "derivation": "pre-Budget path = 29385 x RPI(April y)/RPI(April 2026), y = 2027..2029 (Plan 2 thresholds uprate by RPI)"
+   "derivation": "pre-Budget path = 29385 x RPI(April y)/RPI(April 2026), y = 2027..2030 (Plan 2 thresholds uprate by RPI). The freeze ends in April 2030 but its effect does not: current law then uprates the FROZEN level once, so the pre-Budget world stays three upratings ahead in 2030-31 and after (HMT scores GBP 380m in 2030-31); a pre-Budget world that stopped at 2029 would equal current law in 2030 and assert a false zero."
   },
   {
    "measure_key": "ab2025__property_income_separate_rates",
@@ -210,6 +222,8 @@
    "program": "income_tax",
    "computability": "expressible",
    "obr_pmd_measure_key": "autumn_budget_2025__property_income_separate_rates",
+   "commences_fy": "2027-28",
+   "commences_source": "Table 4.1 line 49 title: 'from 6 April 2027'",
    "construction": "reversal_on_certified_world",
    "pe_reform_delta": {
     "gov.hmrc.income_tax.rates.property.basic": 0.22,
@@ -301,6 +315,8 @@
    "program": "income_tax",
    "computability": "expressible",
    "obr_pmd_measure_key": "autumn_budget_2025__savings_income_rates_and_starter_limit",
+   "commences_fy": "2026-27",
+   "commences_source": "Table 4.1 line 51 title: the Starting Rate for Savings limit is maintained 'from April 2026' (the rate legs from 6 April 2027); the construction carries the rate legs only, so an identical-worlds 2026-27 is a construction gap, not a zero",
    "construction": "reversal_on_certified_world",
    "pe_reform_delta": {
     "gov.hmrc.income_tax.rates.savings.basic": 0.22,
@@ -352,6 +368,8 @@
    "program": "national_insurance",
    "computability": "expressible",
    "obr_pmd_measure_key": "autumn_budget_2025__salary_sacrifice_pension_nics_cap",
+   "commences_fy": "2029-30",
+   "commences_source": "Table 4.1 line 52 title: 'from 6 April 2029'",
    "construction": "reversal_on_certified_world",
    "pe_reform_delta": {
     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": 2000
@@ -387,6 +405,8 @@
    "program": "council_tax",
    "computability": "expressible",
    "obr_pmd_measure_key": "autumn_budget_2025__high_value_council_tax_surcharge",
+   "commences_fy": "2028-29",
+   "commences_source": "Table 4.1 line 54 title: 'from 1 April 2028'",
    "construction": "reversal_on_certified_world",
    "pe_reform_delta": {
     "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount": 2500
@@ -2138,15 +2158,41 @@
    "program": "income_tax",
    "computability": "expressible",
    "obr_pmd_measure_key": null,
+   "commences_fy": "2028-29",
+   "commences_source": "the pre-existing freeze runs to April 2028; the option extends it 'by two years to April 2030' (title), so it is in force from 2028-29",
    "construction": "two_year_variant_of_ab2025__personal_tax_thresholds_freeze_to_2031",
    "pe_reform_delta": {
+    "gov.hmrc.income_tax.allowances.personal_allowance.amount": {
+     "2028": 12570,
+     "2029": 12570,
+     "2030": 12820
+    },
+    "gov.hmrc.income_tax.rates.uk[1].threshold": {
+     "2028": 37700,
+     "2029": 37700,
+     "2030": 38450
+    },
     "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
      "2028": 241.73,
-     "2029": 241.73
+     "2029": 241.73,
+     "2030": 246.56
     },
     "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
      "2028": 966.73,
-     "2029": 966.73
+     "2029": 966.73,
+     "2030": 986.06
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+     "2027": 12570,
+     "2028": 12570,
+     "2029": 12570,
+     "2030": 12820
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+     "2027": 50270,
+     "2028": 50270,
+     "2029": 50270,
+     "2030": 51280
     }
    },
    "delta_kind": "absolute_value_by_year",
@@ -2160,15 +2206,39 @@
      "2028": 38450,
      "2029": 39220,
      "2030": 40010
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
+     "2028": 246.56,
+     "2029": 251.5,
+     "2030": 256.53
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+     "2028": 986.06,
+     "2029": 1005.78,
+     "2030": 1025.9
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+     "2027": 12570,
+     "2028": 12820,
+     "2029": 13080,
+     "2030": 13340
+    },
+    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+     "2027": 50270,
+     "2028": 51280,
+     "2029": 52300,
+     "2030": 53350
     }
    },
    "engine_baseline_2026": {
     "gov.hmrc.income_tax.allowances.personal_allowance.amount": 12570,
     "gov.hmrc.income_tax.rates.uk[1].threshold": 37700,
     "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": 241.73,
-    "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": 966.73
+    "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": 966.73,
+    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": 12570,
+    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": 50270
    },
-   "note": "The announced measure is three years (to April 2031). This option is the two-year variant every pre-Budget producer costed; IT legs are scored by reversal against the CPI-indexed path from April 2028 for 2028-29 and 2029-30 only, and 2030-31 stays indexed. The Fabian Society's GBP 11.7bn was computed with PolicyEngine (same_assumptions, not different_model).",
+   "note": "The announced measure is three years (to April 2031). This option is the two-year variant every pre-Budget producer costed. Scored as a delta on a modified baseline: the baseline world is the pre-Budget CPI-indexed path from April 2028 for all six IT/NI thresholds; the reform world holds them at 2027-28 values for 2028-29 and 2029-30 and uprates them once in 2030-31 (the path's own 2030 CPI step), so 2030-31 carries the level effect of the two frozen years, not a third frozen year. The Fabian Society's GBP 11.7bn was computed with PolicyEngine (same_assumptions, not different_model).",
    "head_variables": [
     "income_tax",
     "ni_class_1_employee",

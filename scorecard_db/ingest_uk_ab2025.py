@@ -87,6 +87,9 @@ REGISTRY_PATH = REPO / "data" / "uk" / "ab2025_measures.json"
 BUNDLE_PATH = REPO / "data" / "uk" / "certified_bundle.json"
 
 REGISTRY_MARK = "uk_ab2025"
+# The tranche-3 counterparts the campaign ingest attaches (#136): rows
+# pipeline/stage_uk_ab2025.py derives from results/uk/ab2025/ artifacts.
+STAGED_COUNTERPARTS = REPO / "results" / "uk" / "staged_ab2025"
 FISCAL_EVENT = "autumn_budget_2025"
 # The UK family's shared top-level feed literal (sync_lane_feed's
 # contract: every caller in a build passes the same one).
@@ -1089,7 +1092,7 @@ def check_accounting(acct: dict) -> None:
 ALL_SOURCES = frozenset(s for _, srcs in FAMILIES.values() for s in srcs)
 
 
-def ingest(db_path: Path) -> dict:
+def ingest(db_path: Path, feed_path: Path | None = None) -> dict:
     """Stage and validate first; then ONE transaction replaces every
     AB2025 claim wholesale (by registry mark, never by source: ifs,
     resolution_foundation, hm_treasury and uk_hmrc also carry other
@@ -1120,7 +1123,11 @@ def ingest(db_path: Path) -> dict:
                 f"{ing} ingested + {read - ing} tallied drops)"
             )
             db.conn.execute(LANE_SQL, (lane, stage_, detail, LANE_UPDATED))
-    sync_lane_feed(db, REPO / "data" / "lanes.json", FEED_UPDATED, lanes=LANES)
+    # the committed feed by default (the build); tests pass their own path so
+    # a fresh-database ingest never rewrites the committed lane stages
+    sync_lane_feed(
+        db, feed_path or REPO / "data" / "lanes.json", FEED_UPDATED, lanes=LANES
+    )
     db.close()
     return {
         "claims": len(rows),
