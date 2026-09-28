@@ -97,7 +97,7 @@ def test_every_expressible_measure_is_computable_or_listed():
         comp.worlds_for(bad["ab2025__broken"], bad)
 
 
-def test_a_package_refuses_conflicting_or_mixed_components():
+def test_a_package_refuses_conflicting_components_and_executes_mixed_ones():
     a = INDEX["ab2025__dividend_rates_plus_2pp"]
     b = {
         **a,
@@ -128,8 +128,10 @@ def test_a_package_refuses_conflicting_or_mixed_components():
             ],
         },
     }
-    with pytest.raises(ValueError, match="mixes"):
-        comp.worlds_for(mixed["pkg"], mixed)
+    # a package that reverses one component and applies another executes two
+    # modified worlds (the mixed path): both sides, never merged into one
+    w = comp.worlds_for(mixed["pkg"], mixed)
+    assert w["baseline_reform"] and w["reform_reform"]
 
 
 def test_weighted_quantile_groups_are_person_weighted():
@@ -528,38 +530,167 @@ def test_a_claim_in_the_obr_costings_slice_is_owned_elsewhere():
     )
 
 
-def test_an_inert_lever_is_tallied_never_attached_as_a_zero():
-    """A reform world identical to its baseline world on every aggregate and
-    head says the lever did not bite on the certified engine and data; that
-    is a tally with a reason, not a zero counterpart."""
+def test_only_a_lever_inert_in_every_year_is_inert():
+    """Identical worlds in every year of the run: the lever did not bite,
+    the measure is inert and its claims are tallied. Identical in some years
+    and moving in others: years before the measure commences, whose
+    counterpart is a real zero, attached and annotated."""
     art = _artifact()
-    assert stg.inert(art) is None
-    dead = {
+    same = {
         **art,
         "totals": {
             "baseline": art["totals"]["baseline"],
             "reform": art["totals"]["baseline"],
         },
     }
-    assert "inert" in stg.inert(dead)
-    # a head that moved while the aggregates did not is NOT inert
+    assert stg.identical_worlds(same) and not stg.identical_worlds(art)
+    # a head that moved while the aggregates did not is NOT identical
     b = {**art["totals"]["baseline"], "heads": {"scottish_child_payment": 1.0}}
     r = {**art["totals"]["baseline"], "heads": {"scottish_child_payment": 2.0}}
-    assert stg.inert({**art, "totals": {"baseline": b, "reform": r}}) is None
+    assert not stg.identical_worlds({**art, "totals": {"baseline": b, "reform": r}})
+    arts = {
+        ("dead", 2026): same,
+        ("dead", 2027): same,
+        ("later", 2026): same,
+        ("later", 2027): art,
+    }
+    assert stg.inert_measures(arts) == {"dead"}
 
 
-def test_an_exchequer_effect_needs_the_aggregates_to_carry_the_head():
+def test_an_exchequer_effect_reads_the_head_the_aggregates_do_not_carry():
     """gov_tax and gov_spending unchanged while the measure's head moved: the
-    certified engine's aggregates do not carry that head (a devolved payment,
-    a loan repayment), so the aggregate exchequer effect is unanswerable."""
+    certified engine's aggregates do not carry that head, so the exchequer
+    effect is read from the head — receipts positive, outlays negative — and
+    a head whose side is not recorded is unanswerable, never guessed."""
     art = _artifact()
-    b = {**art["totals"]["baseline"], "heads": {"scottish_child_payment": 1.0}}
-    r = {**art["totals"]["baseline"], "heads": {"scottish_child_payment": 2.0}}
-    v, _, reason = stg.map_claim(
-        _claim("revenue_change", sign_convention=YIELD),
-        {**art, "totals": {"baseline": b, "reform": r}},
-    )
-    assert v is None and "aggregates do not carry" in reason
+    base = art["totals"]["baseline"]
+
+    def with_head(name, delta):
+        b = {**base, "heads": {name: 1.0}}
+        r = {**base, "heads": {name: 1.0 + delta}}
+        return {**art, "totals": {"baseline": b, "reform": r}}
+
+    claim = _claim("revenue_change", sign_convention=YIELD)
+    v, notes, reason = stg.map_claim(claim, with_head("student_loan_repayment", 5.0))
+    assert reason is None and v == 5.0 and "read from the head" in notes[0]
+    v, _, reason = stg.map_claim(claim, with_head("scottish_child_payment", 5.0))
+    assert reason is None and v == -5.0
+    v, _, reason = stg.map_claim(claim, with_head("some_other_head", 5.0))
+    assert v is None and "side (receipt or outlay) is not recorded" in reason
     # aggregates that moved answer as before
-    v, _, reason = stg.map_claim(_claim("revenue_change", sign_convention=YIELD), art)
+    v, _, reason = stg.map_claim(claim, art)
     assert reason is None and v == (110.0 - 100.0) - (60.0 - 50.0)
+
+
+def test_a_reversal_delta_must_restate_current_law():
+    """A reversal never executes its pe_reform_delta (its reform world is
+    current law), so a delta that differs from current law at the end of its
+    window is a reform leg that would be dropped silently: refused."""
+    index = {
+        "ab2025__m": {
+            "measure_key": "ab2025__m",
+            "computability": "expressible",
+            "construction": "reversal_on_certified_world",
+            "pe_baseline_modifier": {"gov.a.b": {"2028": 1.0}},
+            "pe_reform_delta": {"gov.a.b": {"2028": 2.0}, "gov.c": 7, "gov.d": None},
+        }
+    }
+    # current law holds the announced level at commencement (6 April 2028)
+    # and uprates it afterwards: a restatement, not a reform leg
+    law = {"gov.a.b": {"2028-04-06": 2.0}, "gov.c": 7.0, "gov.d": float("inf")}
+
+    def resolve(path, date):
+        v = law.get(path)
+        if v is None:
+            return None
+        return v.get(date, 9.9) if isinstance(v, dict) else v
+
+    assert comp.reversal_delta_mismatches(index, resolve) == []
+    law["gov.a.b"] = {"2028-04-06": 1.5}  # never 2.0 at any date: a dropped leg
+    bad = comp.reversal_delta_mismatches(index, resolve)
+    assert len(bad) == 1 and "gov.a.b = 2.0" in bad[0] and "dropped silently" in bad[0]
+    del law["gov.c"]
+    assert any(
+        "does not resolve" in b for b in comp.reversal_delta_mismatches(index, resolve)
+    )
+    # every reversal in the registry restates current law at the pin: checked
+    # against the engine by the runner's preflight and --dry-run; here the
+    # shape is asserted: a reversal always carries its modifier
+    for m in INDEX.values():
+        if m.get("construction") == "reversal_on_certified_world":
+            assert m.get("pe_baseline_modifier")
+
+
+def test_a_mixed_construction_simulates_both_worlds_one_at_a_time(
+    tmp_path, monkeypatch
+):
+    """A measure with a modifier AND a delta outside a reversal executes the
+    modifier as the baseline world and the delta as the reform world, both
+    simulated, the modified baseline released before the reform is built."""
+    import weakref
+
+    key = "ab2025_option__personal_tax_threshold_freeze_two_more_years_to_2030"
+    worlds = comp.worlds_for(INDEX[key], INDEX)
+    assert worlds["baseline_reform"] and worlds["reform_reform"]
+
+    class Sim:
+        def __init__(self, reform):
+            self.reform = reform
+
+    built = []
+    alive = []
+
+    def build_sim(reform):
+        assert reform is not None, "a mixed construction never simulates current law"
+        if alive:
+            assert alive[-1]() is None, "two simulations alive at once"
+        sim = Sim(reform)
+        built.append(reform)
+        alive.append(weakref.ref(sim))
+        return sim
+
+    def household_frame(sim, year, heads):
+        scale = 1.0 if sim.reform is worlds["baseline_reform"] else 2.0
+        n = 3
+        return {
+            "weight": np.ones(n),
+            "people": np.ones(n),
+            "children": np.zeros(n),
+            "hni": np.full(n, 10.0 * scale),
+            "gov_tax": np.full(n, 5.0 * scale),
+            "gov_spending": np.zeros(n),
+            "heads": {h: np.full(n, scale) for h in heads},
+        }
+
+    monkeypatch.setattr(comp, "build_sim", build_sim)
+    monkeypatch.setattr(comp, "household_frame", household_frame)
+    monkeypatch.setattr(comp, "poverty_block", lambda b, r: {})
+    monkeypatch.setattr(comp, "distribution_block", lambda b, r: {})
+    monkeypatch.setattr(comp, "affected_block", lambda b, r: None)
+    monkeypatch.setattr(comp, "sha256_file", lambda p: "deadbeef")
+    heads = INDEX[key]["head_variables"]
+    base_frames = {
+        2029: {
+            "heads": {h: np.zeros(3) for h in heads},
+            "weight": np.ones(3),
+            "people": np.ones(3),
+            "children": np.zeros(3),
+            "hni": np.zeros(3),
+            "gov_tax": np.zeros(3),
+            "gov_spending": np.zeros(3),
+        }
+    }
+    pre = {"artifact": tmp_path / "x.h5", "engine_version": "2.89.2", "revision": "r"}
+    written = comp.run_measure(
+        key, worlds, INDEX[key], [2029], base_frames, pre, "t", tmp_path
+    )
+    assert built == [worlds["baseline_reform"], worlds["reform_reform"]]
+    art = json.loads(written[0].read_text())
+    assert (
+        art["baseline_world"]["executed"] == "certified world with pe_baseline_modifier"
+    )
+    assert art["reform_world"]["executed"] == "certified world with pe_reform_delta"
+    assert (
+        art["totals"]["baseline"]["gov_tax"] == 15.0
+        and art["totals"]["reform"]["gov_tax"] == 30.0
+    )

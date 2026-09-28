@@ -49,7 +49,7 @@ def test_the_run_is_the_certified_bundle_at_the_pinned_engine():
     ).lstrip("=")
     assert MANIFEST["engine_version"] == pin
     assert MANIFEST["data_bundle"] == CERTIFIED["revision"]
-    assert MANIFEST["artifact_sha256"] == CERTIFIED["sha256"]
+    assert MANIFEST["certified_dataset_sha256"] == CERTIFIED["sha256"]
     assert MANIFEST["years"] == [2026, 2027, 2028, 2029, 2030]
 
 
@@ -76,17 +76,49 @@ def test_every_artifact_hashes_to_the_manifest_and_names_the_same_run():
         assert (
             a["dataset_sha256_before"]
             == a["dataset_sha256_after"]
-            == MANIFEST["artifact_sha256"]
+            == MANIFEST["certified_dataset_sha256"]
         ), rel
 
 
 # --- the staging --------------------------------------------------------------
 
 
+UNANSWERED = [json.loads(line) for line in stg.UNANSWERED.read_text().splitlines()]
+
+
 def test_staging_reproduces_the_committed_counterparts_byte_for_byte():
-    rows, tally = stg.stage(DB)
+    rows, tally, unanswered = stg.stage(DB)
     assert rows == STAGED
     assert tally == TALLY
+    assert unanswered == UNANSWERED
+
+
+def test_every_unanswered_claim_has_one_receipt_and_the_tally_adds_up():
+    """The receipts are the tally: one line per claim not answered, whose
+    reasons sum to the tally's counts, per measure and overall; an attached
+    claim has no receipt; the inert measures are the ones identical in every
+    year of the run, and a pre-commencement zero is attached, annotated."""
+    attached = {r["external_claim_match"]["claim_id"] for r in STAGED}
+    ids = [u["claim_id"] for u in UNANSWERED]
+    assert len(ids) == len(set(ids)) and not attached & set(ids)
+    from collections import Counter
+
+    by_reason = Counter(u["reason"] for u in UNANSWERED)
+    assert by_reason[stg.INERT] == TALLY["unmapped"][stg.INERT]
+    assert (
+        sum(by_reason.values())
+        == sum(TALLY["unmapped"].values()) + TALLY["owned_elsewhere"]
+    )
+    for key, bm in TALLY["by_measure"].items():
+        assert sum(bm["reasons"].values()) == bm["claims"] - bm["attached"], key
+    arts = _artifacts()
+    assert set(TALLY["inert_measures"]) == stg.inert_measures(arts)
+    for key in TALLY["inert_measures"]:
+        assert all(stg.identical_worlds(a) for (k, _), a in arts.items() if k == key)
+    zeros = [
+        r for r in STAGED if any("not yet in force" in n for n in r["annotations"])
+    ]
+    assert zeros and all(r["measure_key"] not in TALLY["inert_measures"] for r in zeros)
 
 
 def test_every_counterpart_names_a_registered_executed_world_and_its_claim():
@@ -137,27 +169,40 @@ def test_no_claim_carries_two_computed_answers():
 
 
 def test_the_attached_rows_are_in_the_database_and_the_lanes_read_computed():
+    """Per lane: the claims answered by this run, counted from the database
+    through the lane's own families, equal the figure the lane's feed note
+    prints, and the lane reads computed."""
+    import re
+
+    from scorecard_db.ingest_uk_ab2025 import FAMILIES, LANES
+
     conn = sqlite3.connect(DB)
     n = conn.execute(
         "SELECT COUNT(*) FROM pe_results WHERE run_id = ?", (MANIFEST["run_id"],)
     ).fetchone()[0]
     assert n == len(STAGED) == TALLY["attached"]
-    answered = {
-        lane: conn.execute(
+    feed = {
+        lane["id"]: lane
+        for lane in json.loads((ROOT / "data" / "lanes.json").read_text())["lanes"]
+    }
+    checked = 0
+    for lane in LANES:
+        fams = [f for f, (l, _) in FAMILIES.items() if l == lane]
+        marks = ",".join("?" * len(fams))
+        answered = conn.execute(
             "SELECT COUNT(DISTINCT s.claim_id) FROM external_scores s"
             " JOIN pe_results r ON r.claim_id = s.claim_id AND r.run_id = ?"
-            " JOIN lanes l ON l.lane = ?"
-            " WHERE json_extract(s.publication, '$.registry') = 'uk_ab2025'",
-            (MANIFEST["run_id"], lane),
+            " WHERE json_extract(s.publication, '$.registry') = 'uk_ab2025'"
+            f" AND json_extract(s.publication, '$.family') IN ({marks})",
+            (MANIFEST["run_id"], *fams),
         ).fetchone()[0]
-        for lane in ("uk-ab2025-official", "uk-ab2025-microsim")
-    }
-    conn.close()
-    feed = {
-        l["id"]: l
-        for l in json.loads((ROOT / "data" / "lanes.json").read_text())["lanes"]
-    }
-    for lane, k in answered.items():
-        assert k > 0
+        note = feed[lane]["note"]
+        m = re.search(r"(\d+) claims with a PolicyEngine counterpart", note)
+        if answered == 0:
+            assert m is None and feed[lane]["stage"] != "computed", lane
+            continue
+        assert m and int(m.group(1)) == answered, (lane, note, answered)
         assert feed[lane]["stage"] == "computed", lane
-        assert "PolicyEngine counterpart" in feed[lane]["note"]
+        checked += 1
+    conn.close()
+    assert checked >= 2

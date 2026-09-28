@@ -28,11 +28,13 @@
     "2030-01-01.2030-12-31": 1025.9
    },
    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+    "2027-01-01.2027-12-31": 12570,
     "2028-01-01.2028-12-31": 12820,
     "2029-01-01.2029-12-31": 13080,
     "2030-01-01.2030-12-31": 13340
    },
    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+    "2027-01-01.2027-12-31": 50270,
     "2028-01-01.2028-12-31": 51280,
     "2029-01-01.2029-12-31": 52300,
     "2030-01-01.2030-12-31": 53350
@@ -42,7 +44,7 @@
  "components": [
   "ab2025_option__personal_tax_threshold_freeze_two_more_years_to_2030"
  ],
- "computed_at": "2026-09-25T17:02:39.082743+00:00",
+ "computed_at": "2026-09-28T11:00:04.828024+00:00",
  "construction": "two_year_variant_of_ab2025__personal_tax_thresholds_freeze_to_2031",
  "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
  "dataset_sha256_after": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
@@ -920,7 +922,7 @@
  "income_group_rule": "person-weighted quantiles of the BASELINE world's equivalised HBAI household net income (bhc: equiv_hbai_household_net_income; ahc: equiv_hbai_household_net_income_ahc), held fixed for the reform world; gaining/losing thresholds are shares of the household's baseline household_net_income",
  "measure_key": "ab2025_option__personal_tax_threshold_freeze_two_more_years_to_2030",
  "null_executed_as_no_limit": [],
- "peak_rss_gib": 3.18,
+ "peak_rss_gib": 2.14,
  "poverty": {
   "absolute_ahc__baseline": {
    "children": 4247668.016857505,
@@ -999,11 +1001,13 @@
     "2030-01-01.2030-12-31": 986.06
    },
    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+    "2027-01-01.2027-12-31": 12570,
     "2028-01-01.2028-12-31": 12570,
     "2029-01-01.2029-12-31": 12570,
     "2030-01-01.2030-12-31": 12820
    },
    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+    "2027-01-01.2027-12-31": 50270,
     "2028-01-01.2028-12-31": 50270,
     "2029-01-01.2029-12-31": 50270,
     "2030-01-01.2030-12-31": 51280

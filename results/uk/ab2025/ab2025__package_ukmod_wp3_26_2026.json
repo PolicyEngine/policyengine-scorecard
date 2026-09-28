@@ -1,9 +1,5 @@
 {
- "affected": {
-  "children": 0.0,
-  "households": 0.0,
-  "people": 0.0
- },
+ "affected": null,
  "baseline_world": {
   "executed": "certified world with pe_baseline_modifier",
   "reform_dict": {
@@ -50,11 +46,13 @@
     "2030-01-01.2030-12-31": 1025.9
    },
    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+    "2027-01-01.2027-12-31": 12570,
     "2028-01-01.2028-12-31": 12820,
     "2029-01-01.2029-12-31": 13080,
     "2030-01-01.2030-12-31": 13340
    },
    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+    "2027-01-01.2027-12-31": 50270,
     "2028-01-01.2028-12-31": 51280,
     "2029-01-01.2029-12-31": 52300,
     "2030-01-01.2030-12-31": 53350
@@ -66,7 +64,7 @@
   "ab2025__uc_child_element_remove_two_child_limit",
   "ab2025__winter_fuel_payment_income_test_35000"
  ],
- "computed_at": "2026-09-25T15:07:10.133605+00:00",
+ "computed_at": "2026-09-28T10:56:00.370623+00:00",
  "construction": "package_of_registry_measures",
  "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
  "dataset_sha256_after": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
@@ -84,7 +82,8 @@
     "losing_over_0": 1747.7769231796265,
     "losing_over_0.01": 1322.3983144760132,
     "losing_over_0.05": 1281.2303161621094,
-    "people": 6993650.516451567
+    "people": 6993650.516451567,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 727698.3897880316,
@@ -97,7 +96,8 @@
     "losing_over_0": 1294.0090441703796,
     "losing_over_0.01": 1294.0090441703796,
     "losing_over_0.05": 1257.232551574707,
-    "people": 6979912.241299778
+    "people": 6979912.241299778,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 941265.7510550618,
@@ -110,7 +110,8 @@
     "losing_over_0": 984.2447710037231,
     "losing_over_0.01": 984.2447710037231,
     "losing_over_0.05": 959.5180511474609,
-    "people": 7007304.137448266
+    "people": 7007304.137448266,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 709686.0005500317,
@@ -123,7 +124,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6992849.194372401
+    "people": 6992849.194372401,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 688093.4811263084,
@@ -136,7 +138,8 @@
     "losing_over_0": 439.0394103527069,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6994243.202729717
+    "people": 6994243.202729717,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 688799.1970897913,
@@ -149,7 +152,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6993723.891856477
+    "people": 6993723.891856477,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 758066.3882994652,
@@ -162,7 +166,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6993799.872985262
+    "people": 6993799.872985262,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 513438.9098370075,
@@ -175,7 +180,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6988494.664390042
+    "people": 6988494.664390042,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 395065.6142449379,
@@ -188,7 +194,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6998606.336750492
+    "people": 6998606.336750492,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 301029.26990151405,
@@ -201,7 +208,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6994003.5378189385
+    "people": 6994003.5378189385,
+    "undefined_change": 0.0
    }
   ],
   "ahc_vigintile": [
@@ -216,7 +224,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3495616.0699506104
+    "people": 3495616.0699506104,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 166787.75191426277,
@@ -229,7 +238,8 @@
     "losing_over_0": 1747.7769231796265,
     "losing_over_0.01": 1322.3983144760132,
     "losing_over_0.05": 1281.2303161621094,
-    "people": 3498034.446500957
+    "people": 3498034.446500957,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 324566.70031380653,
@@ -242,7 +252,8 @@
     "losing_over_0": 382.1149444580078,
     "losing_over_0.01": 382.1149444580078,
     "losing_over_0.05": 368.71204376220703,
-    "people": 3496729.4573644847
+    "people": 3496729.4573644847,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 403131.68947422504,
@@ -255,7 +266,8 @@
     "losing_over_0": 911.8940997123718,
     "losing_over_0.01": 911.8940997123718,
     "losing_over_0.05": 888.5205078125,
-    "people": 3483182.7839352936
+    "people": 3483182.7839352936,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 416181.4109067917,
@@ -268,7 +280,8 @@
     "losing_over_0": 984.2447710037231,
     "losing_over_0.01": 984.2447710037231,
     "losing_over_0.05": 959.5180511474609,
-    "people": 3509477.6870048344
+    "people": 3509477.6870048344,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 525084.3401482701,
@@ -281,7 +294,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3497826.4504434317
+    "people": 3497826.4504434317,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 269824.59115451574,
@@ -294,7 +308,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3496794.2943260074
+    "people": 3496794.2943260074,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 439861.4093955159,
@@ -307,7 +322,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3496054.9000463933
+    "people": 3496054.9000463933,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 396437.05397844315,
@@ -320,7 +336,8 @@
     "losing_over_0": 439.0394103527069,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3495915.017887607
+    "people": 3495915.017887607,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 291656.4271478653,
@@ -333,7 +350,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3498328.1848421097
+    "people": 3498328.1848421097,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 355823.7837051153,
@@ -346,7 +364,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3497014.4524760544
+    "people": 3497014.4524760544,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 332975.413384676,
@@ -359,7 +378,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3496709.4393804222
+    "people": 3496709.4393804222,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 420645.3474943638,
@@ -372,7 +392,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3496937.542793531
+    "people": 3496937.542793531,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 337421.0408051014,
@@ -385,7 +406,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3496862.3301917315
+    "people": 3496862.3301917315,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 274771.86013770103,
@@ -398,7 +420,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3495579.890467882
+    "people": 3495579.890467882,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 238667.0496993065,
@@ -411,7 +434,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3492914.7739221603
+    "people": 3492914.7739221603,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 105932.68507242203,
@@ -424,7 +448,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3501723.140436545
+    "people": 3501723.140436545,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 289132.92917251587,
@@ -437,7 +462,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3496883.1963139474
+    "people": 3496883.1963139474,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 275574.1287109852,
@@ -450,7 +476,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3496068.430365294
+    "people": 3496068.430365294,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 25455.14119052887,
@@ -463,7 +490,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3497935.1074536443
+    "people": 3497935.1074536443,
+    "undefined_change": 0.0
    }
   ],
   "all": {
@@ -476,7 +504,8 @@
    "losing_over_0": 4465.070148706436,
    "losing_over_0.01": 3600.652129650116,
    "losing_over_0.05": 3497.9809188842773,
-   "people": 69936587.59610294
+   "people": 69936587.59610294,
+   "undefined_change": 0.0
   },
   "bhc_decile": [
    {
@@ -490,7 +519,8 @@
     "losing_over_0": 1322.3983144760132,
     "losing_over_0.01": 1322.3983144760132,
     "losing_over_0.05": 1281.2303161621094,
-    "people": 6991916.949976563
+    "people": 6991916.949976563,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1049499.1177859902,
@@ -503,7 +533,8 @@
     "losing_over_0": 2703.632423877716,
     "losing_over_0.01": 2278.253815174103,
     "losing_over_0.05": 2216.750602722168,
-    "people": 6995075.61649929
+    "people": 6995075.61649929,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1105354.7819876075,
@@ -516,7 +547,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6993017.713129401
+    "people": 6993017.713129401,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 703572.620270431,
@@ -529,7 +561,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6992776.664556012
+    "people": 6992776.664556012,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 739563.0004045963,
@@ -542,7 +575,8 @@
     "losing_over_0": 439.0394103527069,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6995050.212039009
+    "people": 6995050.212039009,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 727420.9621739388,
@@ -555,7 +589,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6993322.668486688
+    "people": 6993322.668486688,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 357795.20313739777,
@@ -568,7 +603,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6992150.896660462
+    "people": 6992150.896660462,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 291979.05599474907,
@@ -581,7 +617,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6994142.280711487
+    "people": 6994142.280711487,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 503152.9629635811,
@@ -594,7 +631,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6995379.832524359
+    "people": 6995379.832524359,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 121785.87278366089,
@@ -607,7 +645,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 6993754.7615196705
+    "people": 6993754.7615196705,
+    "undefined_change": 0.0
    }
   ],
   "bhc_vigintile": [
@@ -622,7 +661,8 @@
     "losing_over_0": 1322.3983144760132,
     "losing_over_0.01": 1322.3983144760132,
     "losing_over_0.05": 1281.2303161621094,
-    "people": 3494716.8162166774
+    "people": 3494716.8162166774,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 313928.12774062157,
@@ -635,7 +675,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3497200.133759886
+    "people": 3497200.133759886,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 465242.84973526,
@@ -648,7 +689,8 @@
     "losing_over_0": 1719.387652873993,
     "losing_over_0.01": 1294.0090441703796,
     "losing_over_0.05": 1257.232551574707,
-    "people": 3493074.739002064
+    "people": 3493074.739002064,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 584256.2680507302,
@@ -661,7 +703,8 @@
     "losing_over_0": 984.2447710037231,
     "losing_over_0.01": 984.2447710037231,
     "losing_over_0.05": 959.5180511474609,
-    "people": 3502000.877497226
+    "people": 3502000.877497226,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 607694.9086744785,
@@ -674,7 +717,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3493503.0138896853
+    "people": 3493503.0138896853,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 497659.87331312895,
@@ -687,7 +731,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3499514.699239716
+    "people": 3499514.699239716,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 352367.5752354264,
@@ -700,7 +745,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3497684.8924615234
+    "people": 3497684.8924615234,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 351205.0450350046,
@@ -713,7 +759,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3495091.772094488
+    "people": 3495091.772094488,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 401325.5342075825,
@@ -726,7 +773,8 @@
     "losing_over_0": 439.0394103527069,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3498017.6652333587
+    "people": 3498017.6652333587,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 338237.46619701385,
@@ -739,7 +787,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3497032.54680565
+    "people": 3497032.54680565,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 389395.438837409,
@@ -752,7 +801,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3489671.548804775
+    "people": 3489671.548804775,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 338025.52333652973,
@@ -765,7 +815,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3503651.1196819134
+    "people": 3503651.1196819134,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 172717.8037290573,
@@ -778,7 +829,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3496944.0762242973
+    "people": 3496944.0762242973,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 185077.39940834045,
@@ -791,7 +843,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3495206.8204361647
+    "people": 3495206.8204361647,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 182167.24074602127,
@@ -804,7 +857,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3495991.6967865974
+    "people": 3495991.6967865974,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 109811.8152487278,
@@ -817,7 +871,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3498150.5839248896
+    "people": 3498150.5839248896,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 250736.01361334324,
@@ -830,7 +885,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3498101.7390110493
+    "people": 3498101.7390110493,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 252416.94935023785,
@@ -843,7 +899,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3497278.09351331
+    "people": 3497278.09351331,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 107005.3027510643,
@@ -856,7 +913,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3492158.46136117
+    "people": 3492158.46136117,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 14780.570032596588,
@@ -869,7 +927,8 @@
     "losing_over_0": 0.0,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3501596.3001585007
+    "people": 3501596.3001585007,
+    "undefined_change": 0.0
    }
   ]
  },
@@ -879,7 +938,7 @@
  "income_group_rule": "person-weighted quantiles of the BASELINE world's equivalised HBAI household net income (bhc: equiv_hbai_household_net_income; ahc: equiv_hbai_household_net_income_ahc), held fixed for the reform world; gaining/losing thresholds are shares of the household's baseline household_net_income",
  "measure_key": "ab2025__package_ukmod_wp3_26",
  "null_executed_as_no_limit": [],
- "peak_rss_gib": 0.87,
+ "peak_rss_gib": 1.99,
  "poverty": {
   "absolute_ahc__baseline": {
    "children": 4274117.985204399,
@@ -935,8 +994,31 @@
   }
  },
  "reform_world": {
-  "executed": "certified world as served (current law)",
-  "reform_dict": null
+  "executed": "certified world with pe_reform_delta",
+  "reform_dict": {
+   "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
+    "2028-01-01.2028-12-31": 241.73,
+    "2029-01-01.2029-12-31": 241.73,
+    "2030-01-01.2030-12-31": 241.73
+   },
+   "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+    "2028-01-01.2028-12-31": 966.73,
+    "2029-01-01.2029-12-31": 966.73,
+    "2030-01-01.2030-12-31": 966.73
+   },
+   "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+    "2027-01-01.2027-12-31": 12570,
+    "2028-01-01.2028-12-31": 12570,
+    "2029-01-01.2029-12-31": 12570,
+    "2030-01-01.2030-12-31": 12570
+   },
+   "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+    "2027-01-01.2027-12-31": 50270,
+    "2028-01-01.2028-12-31": 50270,
+    "2029-01-01.2029-12-31": 50270,
+    "2030-01-01.2030-12-31": 50270
+   }
+  }
  },
  "run_id": "campaign-20260925-uk-ab2025",
  "totals": {

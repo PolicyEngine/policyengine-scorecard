@@ -1,9 +1,5 @@
 {
- "affected": {
-  "children": 0.0,
-  "households": 0.0,
-  "people": 0.0
- },
+ "affected": null,
  "baseline_world": {
   "executed": "certified world with pe_baseline_modifier",
   "reform_dict": {
@@ -115,11 +111,13 @@
     "2030-01-01.2030-12-31": 1025.9
    },
    "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+    "2027-01-01.2027-12-31": 12570,
     "2028-01-01.2028-12-31": 12820,
     "2029-01-01.2029-12-31": 13080,
     "2030-01-01.2030-12-31": 13340
    },
    "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+    "2027-01-01.2027-12-31": 50270,
     "2028-01-01.2028-12-31": 51280,
     "2029-01-01.2029-12-31": 52300,
     "2030-01-01.2030-12-31": 53350
@@ -141,7 +139,7 @@
   "ab2025__winter_fuel_payment_income_test_35000",
   "ab2025__uc_standard_allowance_and_health_element_rebalancing"
  ],
- "computed_at": "2026-09-25T15:01:39.983169+00:00",
+ "computed_at": "2026-09-28T10:52:38.829303+00:00",
  "construction": "package_of_registry_measures",
  "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
  "dataset_sha256_after": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
@@ -159,7 +157,8 @@
     "losing_over_0": 44326.34088754654,
     "losing_over_0.01": 2608.33016872406,
     "losing_over_0.05": 1281.2303161621094,
-    "people": 6993650.516451567
+    "people": 6993650.516451567,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1509187.2350974977,
@@ -172,7 +171,8 @@
     "losing_over_0": 36062.44484424591,
     "losing_over_0.01": 2550.3771567344666,
     "losing_over_0.05": 1302.5467014312744,
-    "people": 6992351.397650868
+    "people": 6992351.397650868,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1635205.6605106145,
@@ -185,7 +185,8 @@
     "losing_over_0": 78259.74588513374,
     "losing_over_0.01": 17203.36541056633,
     "losing_over_0.05": 959.5180511474609,
-    "people": 6994864.981097177
+    "people": 6994864.981097177,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1539302.2860574126,
@@ -198,7 +199,8 @@
     "losing_over_0": 85606.8160328269,
     "losing_over_0.01": 4825.750124454498,
     "losing_over_0.05": 0.0,
-    "people": 6993713.194257483
+    "people": 6993713.194257483,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1594159.9582572281,
@@ -211,7 +213,8 @@
     "losing_over_0": 170896.81676089764,
     "losing_over_0.01": 23154.71737384796,
     "losing_over_0.05": 0.0,
-    "people": 6993625.839835539
+    "people": 6993625.839835539,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1669467.3075754344,
@@ -224,7 +227,8 @@
     "losing_over_0": 179473.92954999208,
     "losing_over_0.01": 22865.90852022171,
     "losing_over_0.05": 0.0,
-    "people": 6993737.749417111
+    "people": 6993737.749417111,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1685029.0675567947,
@@ -237,7 +241,8 @@
     "losing_over_0": 221248.30171573162,
     "losing_over_0.01": 9784.894441604614,
     "losing_over_0.05": 0.0,
-    "people": 6992035.979647983
+    "people": 6992035.979647983,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1549460.5624538064,
@@ -250,7 +255,8 @@
     "losing_over_0": 237768.6344178915,
     "losing_over_0.01": 26258.427396774292,
     "losing_over_0.05": 0.0,
-    "people": 6995214.039572939
+    "people": 6995214.039572939,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1460388.2292228192,
@@ -263,7 +269,8 @@
     "losing_over_0": 401618.9309375286,
     "losing_over_0.01": 40080.95512151718,
     "losing_over_0.05": 0.0,
-    "people": 6993692.987341747
+    "people": 6993692.987341747,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1296738.3043028414,
@@ -276,7 +283,8 @@
     "losing_over_0": 434466.1716527343,
     "losing_over_0.01": 96508.280107975,
     "losing_over_0.05": 0.0,
-    "people": 6993700.910830528
+    "people": 6993700.910830528,
+    "undefined_change": 0.0
    }
   ],
   "ahc_vigintile": [
@@ -291,7 +299,8 @@
     "losing_over_0": 28037.85363674164,
     "losing_over_0.01": 1285.9318542480469,
     "losing_over_0.05": 0.0,
-    "people": 3495616.0699506104
+    "people": 3495616.0699506104,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 623469.773820281,
@@ -304,7 +313,8 @@
     "losing_over_0": 16288.487250804901,
     "losing_over_0.01": 1322.3983144760132,
     "losing_over_0.05": 1281.2303161621094,
-    "people": 3498034.446500957
+    "people": 3498034.446500957,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 723300.0800721049,
@@ -317,7 +327,8 @@
     "losing_over_0": 15992.020516395569,
     "losing_over_0.01": 1407.3417377471924,
     "losing_over_0.05": 414.0261936187744,
-    "people": 3496585.66145961
+    "people": 3496585.66145961,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 785887.1550253928,
@@ -330,7 +341,8 @@
     "losing_over_0": 20070.42432785034,
     "losing_over_0.01": 1143.0354189872742,
     "losing_over_0.05": 888.5205078125,
-    "people": 3495765.736191258
+    "people": 3495765.736191258,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 749658.8634087443,
@@ -343,7 +355,8 @@
     "losing_over_0": 28469.27109450102,
     "losing_over_0.01": 2776.6868352890015,
     "losing_over_0.05": 959.5180511474609,
-    "people": 3498121.6870868504
+    "people": 3498121.6870868504,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 885546.7971018702,
@@ -356,7 +369,8 @@
     "losing_over_0": 49790.474790632725,
     "losing_over_0.01": 14426.678575277328,
     "losing_over_0.05": 0.0,
-    "people": 3496743.2940103263
+    "people": 3496743.2940103263,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 674639.7897773534,
@@ -369,7 +383,8 @@
     "losing_over_0": 29322.04464584589,
     "losing_over_0.01": 1902.8693389892578,
     "losing_over_0.05": 0.0,
-    "people": 3496794.2943260074
+    "people": 3496794.2943260074,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 864662.4962800592,
@@ -382,7 +397,8 @@
     "losing_over_0": 56284.77138698101,
     "losing_over_0.01": 2922.8807854652405,
     "losing_over_0.05": 0.0,
-    "people": 3496918.8999314755
+    "people": 3496918.8999314755,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 813543.0855024159,
@@ -395,7 +411,8 @@
     "losing_over_0": 113448.04224544764,
     "losing_over_0.01": 5638.516254425049,
     "losing_over_0.05": 0.0,
-    "people": 3492905.863192573
+    "people": 3492905.863192573,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 780616.8727548122,
@@ -408,7 +425,8 @@
     "losing_over_0": 57448.77451545,
     "losing_over_0.01": 17516.201119422913,
     "losing_over_0.05": 0.0,
-    "people": 3500719.9766429663
+    "people": 3500719.9766429663,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 797465.8293928951,
@@ -421,7 +439,8 @@
     "losing_over_0": 68552.6914486289,
     "losing_over_0.01": 16668.04935693741,
     "losing_over_0.05": 0.0,
-    "people": 3496884.128029734
+    "people": 3496884.128029734,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 872001.4781825393,
@@ -434,7 +453,8 @@
     "losing_over_0": 110921.23810136318,
     "losing_over_0.01": 6197.859163284302,
     "losing_over_0.05": 0.0,
-    "people": 3496853.6213873774
+    "people": 3496853.6213873774,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 910872.1059503816,
@@ -447,7 +467,8 @@
     "losing_over_0": 81018.55438446999,
     "losing_over_0.01": 2456.3034534454346,
     "losing_over_0.05": 0.0,
-    "people": 3496525.431976218
+    "people": 3496525.431976218,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 774156.9616064131,
@@ -460,7 +481,8 @@
     "losing_over_0": 140229.74733126163,
     "losing_over_0.01": 7328.59098815918,
     "losing_over_0.05": 0.0,
-    "people": 3495510.547671765
+    "people": 3495510.547671765,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 762751.6688661277,
@@ -473,7 +495,8 @@
     "losing_over_0": 107850.9613700509,
     "losing_over_0.01": 8721.4358959198,
     "losing_over_0.05": 0.0,
-    "people": 3487226.1801277697
+    "people": 3487226.1801277697,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 786708.8935876787,
@@ -486,7 +509,8 @@
     "losing_over_0": 129917.6730478406,
     "losing_over_0.01": 17536.991500854492,
     "losing_over_0.05": 0.0,
-    "people": 3507987.8594451696
+    "people": 3507987.8594451696,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 775065.4073093086,
@@ -499,7 +523,8 @@
     "losing_over_0": 205771.93639600277,
     "losing_over_0.01": 16769.46459889412,
     "losing_over_0.05": 0.0,
-    "people": 3496102.0821573883
+    "people": 3496102.0821573883,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 685322.8219135106,
@@ -512,7 +537,8 @@
     "losing_over_0": 195846.99454152584,
     "losing_over_0.01": 23311.490522623062,
     "losing_over_0.05": 0.0,
-    "people": 3497590.9051843584
+    "people": 3497590.9051843584,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 663199.072923392,
@@ -525,7 +551,8 @@
     "losing_over_0": 222697.85277432203,
     "losing_over_0.01": 32222.02779173851,
     "losing_over_0.05": 0.0,
-    "people": 3495404.290030092
+    "people": 3495404.290030092,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 633539.2313794494,
@@ -538,7 +565,8 @@
     "losing_over_0": 211768.31887841225,
     "losing_over_0.01": 64286.252316236496,
     "losing_over_0.05": 0.0,
-    "people": 3498296.6208004355
+    "people": 3498296.6208004355,
+    "undefined_change": 0.0
    }
   ],
   "all": {
@@ -551,7 +579,8 @@
    "losing_over_0": 1889728.1326845288,
    "losing_over_0.01": 245841.00582242012,
    "losing_over_0.05": 3543.2950687408447,
-   "people": 69936587.59610294
+   "people": 69936587.59610294,
+   "undefined_change": 0.0
   },
   "bhc_decile": [
    {
@@ -565,7 +594,8 @@
     "losing_over_0": 21834.982759952545,
     "losing_over_0.01": 1322.3983144760132,
     "losing_over_0.05": 1281.2303161621094,
-    "people": 6991916.949976563
+    "people": 6991916.949976563,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1791779.704943955,
@@ -578,7 +608,8 @@
     "losing_over_0": 64140.37894099951,
     "losing_over_0.01": 4347.401133775711,
     "losing_over_0.05": 2216.750602722168,
-    "people": 6995075.61649929
+    "people": 6995075.61649929,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1706733.872016564,
@@ -591,7 +622,8 @@
     "losing_over_0": 77793.33410930634,
     "losing_over_0.01": 14884.821200370789,
     "losing_over_0.05": 45.31414985656738,
-    "people": 6991576.011350036
+    "people": 6991576.011350036,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1577217.661052987,
@@ -604,7 +636,8 @@
     "losing_over_0": 142694.82059586048,
     "losing_over_0.01": 1915.4475402832031,
     "losing_over_0.05": 0.0,
-    "people": 6995835.033661291
+    "people": 6995835.033661291,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1681831.0559839606,
@@ -617,7 +650,8 @@
     "losing_over_0": 112765.29180973768,
     "losing_over_0.01": 18527.944028377533,
     "losing_over_0.05": 0.0,
-    "people": 6993444.307168558
+    "people": 6993444.307168558,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1712787.0226600282,
@@ -630,7 +664,8 @@
     "losing_over_0": 213166.72292935848,
     "losing_over_0.01": 32149.608125686646,
     "losing_over_0.05": 0.0,
-    "people": 6994016.410708997
+    "people": 6994016.410708997,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1344907.6963377148,
@@ -643,7 +678,8 @@
     "losing_over_0": 175004.72256821394,
     "losing_over_0.01": 16990.331661701202,
     "losing_over_0.05": 0.0,
-    "people": 6990994.955065504
+    "people": 6990994.955065504,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1439022.383586824,
@@ -656,7 +692,8 @@
     "losing_over_0": 311705.66500490904,
     "losing_over_0.01": 28125.681766867638,
     "losing_over_0.05": 0.0,
-    "people": 6996281.684965029
+    "people": 6996281.684965029,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1470689.7676833123,
@@ -669,7 +706,8 @@
     "losing_over_0": 339747.82813215256,
     "losing_over_0.01": 35885.90669810772,
     "losing_over_0.05": 0.0,
-    "people": 6993241.700101256
+    "people": 6993241.700101256,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 1101704.9389066547,
@@ -682,7 +720,8 @@
     "losing_over_0": 430874.38583403826,
     "losing_over_0.01": 91691.46535277367,
     "losing_over_0.05": 0.0,
-    "people": 6994204.926606417
+    "people": 6994204.926606417,
+    "undefined_change": 0.0
    }
   ],
   "bhc_vigintile": [
@@ -697,7 +736,8 @@
     "losing_over_0": 6428.144021034241,
     "losing_over_0.01": 1322.3983144760132,
     "losing_over_0.05": 1281.2303161621094,
-    "people": 3494716.8162166774
+    "people": 3494716.8162166774,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 760813.4043419957,
@@ -710,7 +750,8 @@
     "losing_over_0": 15406.838738918304,
     "losing_over_0.01": 0.0,
     "losing_over_0.05": 0.0,
-    "people": 3497200.133759886
+    "people": 3497200.133759886,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 837084.6402329803,
@@ -723,7 +764,8 @@
     "losing_over_0": 41200.28237789869,
     "losing_over_0.01": 3363.156362771988,
     "losing_over_0.05": 1257.232551574707,
-    "people": 3496886.5614479333
+    "people": 3496886.5614479333,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 954695.0647109747,
@@ -736,7 +778,8 @@
     "losing_over_0": 22940.096563100815,
     "losing_over_0.01": 984.2447710037231,
     "losing_over_0.05": 959.5180511474609,
-    "people": 3498189.0550513566
+    "people": 3498189.0550513566,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 881480.9526609182,
@@ -749,7 +792,8 @@
     "losing_over_0": 20617.069304287434,
     "losing_over_0.01": 788.7229776382446,
     "losing_over_0.05": 0.0,
-    "people": 3494182.6725832373
+    "people": 3494182.6725832373,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 825252.9193556458,
@@ -762,7 +806,8 @@
     "losing_over_0": 57176.2648050189,
     "losing_over_0.01": 14096.098222732544,
     "losing_over_0.05": 45.31414985656738,
-    "people": 3497393.3387667984
+    "people": 3497393.3387667984,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 793781.8918440789,
@@ -775,7 +820,8 @@
     "losing_over_0": 33748.77581071854,
     "losing_over_0.01": 1832.6118087768555,
     "losing_over_0.05": 0.0,
-    "people": 3497999.087746367
+    "people": 3497999.087746367,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 783435.7692089081,
@@ -788,7 +834,8 @@
     "losing_over_0": 108946.04478514194,
     "losing_over_0.01": 82.83573150634766,
     "losing_over_0.05": 0.0,
-    "people": 3497835.945914924
+    "people": 3497835.945914924,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 873241.9069864899,
@@ -801,7 +848,8 @@
     "losing_over_0": 43863.998664557934,
     "losing_over_0.01": 10661.698033809662,
     "losing_over_0.05": 0.0,
-    "people": 3495907.3339221925
+    "people": 3495907.3339221925,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 808589.1489974707,
@@ -814,7 +862,8 @@
     "losing_over_0": 68901.29314517975,
     "losing_over_0.01": 7866.245994567871,
     "losing_over_0.05": 0.0,
-    "people": 3497536.973246366
+    "people": 3497536.973246366,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 883971.9657527655,
@@ -827,7 +876,8 @@
     "losing_over_0": 76054.72233057022,
     "losing_over_0.01": 16958.901929855347,
     "losing_over_0.05": 0.0,
-    "people": 3495521.4903218895
+    "people": 3495521.4903218895,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 828815.0569072627,
@@ -840,7 +890,8 @@
     "losing_over_0": 137112.00059878826,
     "losing_over_0.01": 15190.706195831299,
     "losing_over_0.05": 0.0,
-    "people": 3498494.920387108
+    "people": 3498494.920387108,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 677376.1571635008,
@@ -853,7 +904,8 @@
     "losing_over_0": 58853.529692709446,
     "losing_over_0.01": 6657.532587051392,
     "losing_over_0.05": 0.0,
-    "people": 3496143.1268495023
+    "people": 3496143.1268495023,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 667531.539174214,
@@ -866,7 +918,8 @@
     "losing_over_0": 116151.1928755045,
     "losing_over_0.01": 10332.79907464981,
     "losing_over_0.05": 0.0,
-    "people": 3494851.8282160014
+    "people": 3494851.8282160014,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 676678.6425034106,
@@ -879,7 +932,8 @@
     "losing_over_0": 134980.08989214897,
     "losing_over_0.01": 12237.01948940754,
     "losing_over_0.05": 0.0,
-    "people": 3492510.561337188
+    "people": 3492510.561337188,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 762343.7410834134,
@@ -892,7 +946,8 @@
     "losing_over_0": 176725.57511276007,
     "losing_over_0.01": 15888.662277460098,
     "losing_over_0.05": 0.0,
-    "people": 3503771.1236278415
+    "people": 3503771.1236278415,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 881462.4955612123,
@@ -905,7 +960,8 @@
     "losing_over_0": 154407.11649292707,
     "losing_over_0.01": 14994.80189025402,
     "losing_over_0.05": 0.0,
-    "people": 3496171.7894254327
+    "people": 3496171.7894254327,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 589227.2721221,
@@ -918,7 +974,8 @@
     "losing_over_0": 185340.71163922548,
     "losing_over_0.01": 20891.1048078537,
     "losing_over_0.05": 0.0,
-    "people": 3497069.9106758237
+    "people": 3497069.9106758237,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 473247.9042696208,
@@ -931,7 +988,8 @@
     "losing_over_0": 317937.80588537455,
     "losing_over_0.01": 42121.359424591064,
     "losing_over_0.05": 0.0,
-    "people": 3492850.0519239902
+    "people": 3492850.0519239902,
+    "undefined_change": 0.0
    },
    {
     "gaining_over_0": 628457.0346370339,
@@ -944,7 +1002,8 @@
     "losing_over_0": 112936.57994866371,
     "losing_over_0.01": 49570.1059281826,
     "losing_over_0.05": 0.0,
-    "people": 3501354.8746824265
+    "people": 3501354.8746824265,
+    "undefined_change": 0.0
    }
   ]
  },
@@ -956,7 +1015,7 @@
  "null_executed_as_no_limit": [
   "gov.hmrc.national_insurance.salary_sacrifice_pension_cap"
  ],
- "peak_rss_gib": 0.22,
+ "peak_rss_gib": 3.41,
  "poverty": {
   "absolute_ahc__baseline": {
    "children": 4274117.985204399,
@@ -1012,8 +1071,31 @@
   }
  },
  "reform_world": {
-  "executed": "certified world as served (current law)",
-  "reform_dict": null
+  "executed": "certified world with pe_reform_delta",
+  "reform_dict": {
+   "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
+    "2028-01-01.2028-12-31": 241.73,
+    "2029-01-01.2029-12-31": 241.73,
+    "2030-01-01.2030-12-31": 241.73
+   },
+   "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit": {
+    "2028-01-01.2028-12-31": 966.73,
+    "2029-01-01.2029-12-31": 966.73,
+    "2030-01-01.2030-12-31": 966.73
+   },
+   "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+    "2027-01-01.2027-12-31": 12570,
+    "2028-01-01.2028-12-31": 12570,
+    "2029-01-01.2029-12-31": 12570,
+    "2030-01-01.2030-12-31": 12570
+   },
+   "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+    "2027-01-01.2027-12-31": 50270,
+    "2028-01-01.2028-12-31": 50270,
+    "2029-01-01.2029-12-31": 50270,
+    "2030-01-01.2030-12-31": 50270
+   }
+  }
  },
  "run_id": "campaign-20260925-uk-ab2025",
  "totals": {

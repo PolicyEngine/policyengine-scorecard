@@ -263,6 +263,13 @@ idx_uel = {str(y): round(966.73 * CPI[y] / CPI[2027], 2) for y in (2028, 2029, 2
 idx_lpl = {str(y): r10(12570 * CPI[y] / CPI[2027]) for y in (2028, 2029, 2030)}
 idx_upl = {str(y): r10(50270 * CPI[y] / CPI[2027]) for y in (2028, 2029, 2030)}
 idx_st = {str(y): round(96 * CPI[y] / CPI[2027], 2) for y in (2028, 2029, 2030)}
+# The certified engine uprates the class 4 limits from April 2027, which
+# pre-Budget law did not (every NI threshold was frozen to April 2028): the
+# pre-Budget world pins them at the frozen 2027-28 values in 2027 and indexes
+# from April 2028, so a freeze's 2027-28 effect is the zero HMT scores, not the
+# engine's own uprating. Every world that reverses the freeze uses these.
+pre_lpl = {"2027": 12570, **idx_lpl}
+pre_upl = {"2027": 50270, **idx_upl}
 # the two-year option's 2030-31 values: the 2027-28 level uprated ONCE by the
 # path's own 2030 step (April 2030 CPI / April 2029 CPI)
 _once = CPI[2030] / CPI[2029]
@@ -279,7 +286,10 @@ announced(
     "income_tax",
     "expressible",
     obr_pmd_measure_key="autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension",
-    construction="reversal_on_certified_world",
+    # IT legs are in the certified world (reversed through the modifier); the
+    # NI legs are NOT (the certified engine indexes NI thresholds from April
+    # 2028), so they are a forward delta: both worlds are simulated
+    construction="delta_on_modified_baseline",
     pe_reform_delta={
         # NI legs: the certified engine uprates these from April 2028 (class 4 from
         # April 2027), so the measure's NI legs are a FORWARD delta, frozen at the
@@ -297,8 +307,8 @@ announced(
         hrt_path: idx_hrt,
         pt_path: idx_pt,
         uel_path: idx_uel,
-        lpl_path: idx_lpl,
-        upl_path: idx_upl,
+        lpl_path: pre_lpl,
+        upl_path: pre_upl,
     },
     engine_baseline_2026={
         pa_path: 12570,
@@ -318,7 +328,9 @@ announced(
         "MIXED. gov.hmrc.income_tax.* thresholds are frozen through 2030-31 at the pin (uprating resumes 2031-04-06), so the income "
         "tax legs are in the certified world and are scored by REVERSAL (pe_baseline_modifier indexes them by CPI from April 2028). "
         "The NI thresholds are NOT frozen at the pin: primary threshold and UEL uprate from April 2028 and the class 4 limits from "
-        "April 2027, so the NI legs are scored as a forward delta on the certified world. Rates of CPI indexation are the engine's own "
+        "April 2027, so the NI legs are scored as a forward delta on the certified world; the pre-Budget world pins the class 4 limits at "
+        "their frozen 2027-28 values in 2027 (pre-Budget law froze every NI threshold to April 2028; the engine's April 2027 uprating is "
+        "not a pre-Budget policy), so the measure's 2027-28 effect is the zero HMT scores. Rates of CPI indexation are the engine's own "
         "gov.economic_assumptions.indices.obr.consumer_price_index path (dashboard used cpih); thresholds rounded to GBP 10."
     ),
     head_variables=[
@@ -1605,17 +1617,19 @@ o(
         hrt_path: {"2028": 37700, "2029": 37700, "2030": once_hrt},
         pt_path: {"2028": 241.73, "2029": 241.73, "2030": once_pt},
         uel_path: {"2028": 966.73, "2029": 966.73, "2030": once_uel},
-        lpl_path: {"2028": 12570, "2029": 12570, "2030": once_lpl},
-        upl_path: {"2028": 50270, "2029": 50270, "2030": once_upl},
+        lpl_path: {"2027": 12570, "2028": 12570, "2029": 12570, "2030": once_lpl},
+        upl_path: {"2027": 50270, "2028": 50270, "2029": 50270, "2030": once_upl},
     },
     delta_kind="absolute_value_by_year",
+    # the same pre-Budget world as the announced freeze (its registered
+    # pre_ab2025__ world is the executed baseline here)
     pe_baseline_modifier={
         pa_path: {k: v for k, v in idx_pa.items()},
         hrt_path: {k: v for k, v in idx_hrt.items()},
         pt_path: {k: v for k, v in idx_pt.items()},
         uel_path: {k: v for k, v in idx_uel.items()},
-        lpl_path: {k: v for k, v in idx_lpl.items()},
-        upl_path: {k: v for k, v in idx_upl.items()},
+        lpl_path: {k: v for k, v in pre_lpl.items()},
+        upl_path: {k: v for k, v in pre_upl.items()},
     },
     engine_baseline_2026={
         pa_path: 12570,

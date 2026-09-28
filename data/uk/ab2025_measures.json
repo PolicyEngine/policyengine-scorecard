@@ -55,7 +55,7 @@
    "program": "income_tax",
    "computability": "expressible",
    "obr_pmd_measure_key": "autumn_budget_2025__personal_tax_and_nics_threshold_freeze_extension",
-   "construction": "reversal_on_certified_world",
+   "construction": "delta_on_modified_baseline",
    "pe_reform_delta": {
     "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold": {
      "2028": 241.73,
@@ -103,11 +103,13 @@
      "2030": 1025.9
     },
     "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+     "2027": 12570,
      "2028": 12820,
      "2029": 13080,
      "2030": 13340
     },
     "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+     "2027": 50270,
      "2028": 51280,
      "2029": 52300,
      "2030": 53350
@@ -127,7 +129,7 @@
     "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": "13077.80 in 2028; already 12821.38 in 2027 (uprated from April 2027, which also breaks the pre-existing freeze to April 2028)"
    },
    "already_in_baseline": "income tax legs only",
-   "baseline_integrity_note": "MIXED. gov.hmrc.income_tax.* thresholds are frozen through 2030-31 at the pin (uprating resumes 2031-04-06), so the income tax legs are in the certified world and are scored by REVERSAL (pe_baseline_modifier indexes them by CPI from April 2028). The NI thresholds are NOT frozen at the pin: primary threshold and UEL uprate from April 2028 and the class 4 limits from April 2027, so the NI legs are scored as a forward delta on the certified world. Rates of CPI indexation are the engine's own gov.economic_assumptions.indices.obr.consumer_price_index path (dashboard used cpih); thresholds rounded to GBP 10.",
+   "baseline_integrity_note": "MIXED. gov.hmrc.income_tax.* thresholds are frozen through 2030-31 at the pin (uprating resumes 2031-04-06), so the income tax legs are in the certified world and are scored by REVERSAL (pe_baseline_modifier indexes them by CPI from April 2028). The NI thresholds are NOT frozen at the pin: primary threshold and UEL uprate from April 2028 and the class 4 limits from April 2027, so the NI legs are scored as a forward delta on the certified world; the pre-Budget world pins the class 4 limits at their frozen 2027-28 values in 2027 (pre-Budget law froze every NI threshold to April 2028; the engine's April 2027 uprating is not a pre-Budget policy), so the measure's 2027-28 effect is the zero HMT scores. Rates of CPI indexation are the engine's own gov.economic_assumptions.indices.obr.consumer_price_index path (dashboard used cpih); thresholds rounded to GBP 10.",
    "head_variables": [
     "income_tax",
     "ni_class_1_employee",
@@ -2161,11 +2163,13 @@
      "2030": 986.06
     },
     "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+     "2027": 12570,
      "2028": 12570,
      "2029": 12570,
      "2030": 12820
     },
     "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+     "2027": 50270,
      "2028": 50270,
      "2029": 50270,
      "2030": 51280
@@ -2194,11 +2198,13 @@
      "2030": 1025.9
     },
     "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit": {
+     "2027": 12570,
      "2028": 12820,
      "2029": 13080,
      "2030": 13340
     },
     "gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit": {
+     "2027": 50270,
      "2028": 51280,
      "2029": 52300,
      "2030": 53350

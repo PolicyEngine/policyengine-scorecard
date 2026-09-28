@@ -108,7 +108,12 @@ def test_the_nine_dashboard_measures_are_present_and_computable():
     for k in DASHBOARD_MEASURES:
         assert k in BY_KEY, k
         assert BY_KEY[k]["computability"] == "expressible", k
-        assert BY_KEY[k]["construction"] == "reversal_on_certified_world", k
+        # reversed out of the certified world, or — where a leg is NOT in the
+        # certified world — reversed on one side and applied on the other
+        assert BY_KEY[k]["construction"] in (
+            "reversal_on_certified_world",
+            "delta_on_modified_baseline",
+        ), k
 
 
 def test_the_threshold_freeze_states_its_mixed_baseline_honestly():
@@ -118,6 +123,9 @@ def test_the_threshold_freeze_states_its_mixed_baseline_honestly():
     would score the NI legs at zero."""
     m = BY_KEY["ab2025__personal_tax_thresholds_freeze_to_2031"]
     assert m["already_in_baseline"] == "income tax legs only"
+    # and executes as such: the IT legs reversed through the modifier, the NI
+    # legs applied as a delta — a plain reversal would drop the NI legs
+    assert m["construction"] == "delta_on_modified_baseline"
     assert (
         "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold"
         in m["pe_reform_delta"]
