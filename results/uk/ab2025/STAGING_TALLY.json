@@ -1,5 +1,5 @@
 {
- "attached": 1017,
+ "attached": 1008,
  "by_measure": {
   "ab2025__advanced_corporation_tax_shadow_act_abolished": {
    "attached": 0,
@@ -796,18 +796,19 @@
    "unmapped": 184
   },
   "ab2025__savings_rates_plus_2pp_and_starter_limit_held": {
-   "attached": 37,
+   "attached": 30,
    "claims": 51,
    "no_artifact": 1,
    "owned_elsewhere": 6,
    "reasons": {
     "no artifact for the claim's fiscal year (2025-26)": 1,
     "no counterpart shape for metric 'affected_share'": 1,
-    "no counterpart shape for metric 'income_aggregate'": 5,
+    "no counterpart shape for metric 'income_aggregate'": 4,
     "owned by the OBR costings lane (claim carries obr_measure_key)": 6,
+    "reform and baseline worlds identical in FY 2026-27, a year the measure is in force (commences FY 2026-27): the construction does not carry it in this year, so no zero is asserted": 8,
     "revenue_change: claim is a component adjustment to a yield (reduction, timing), not the measure's exchequer effect": 1
    },
-   "unmapped": 7
+   "unmapped": 14
   },
   "ab2025__sdil_threshold_cut_and_milk_based_drinks": {
    "attached": 0,
@@ -855,14 +856,15 @@
    "unmapped": 0
   },
   "ab2025__student_loans_plan2_threshold_freeze": {
-   "attached": 7,
+   "attached": 5,
    "claims": 8,
    "no_artifact": 1,
    "owned_elsewhere": 0,
    "reasons": {
-    "no artifact for the claim's fiscal year (2025-26)": 1
+    "no artifact for the claim's fiscal year (2025-26)": 1,
+    "not comparable in FY 2026-27 per the registry: HM Treasury's and the OBR's 2026-27 figures are the one-off loan-book revaluation of announcing the freeze, which no household microsimulation reproduces; only the repayment legs from 2027-28 are comparable": 2
    },
-   "unmapped": 0
+   "unmapped": 2
   },
   "ab2025__supporting_savers_help_to_save_and_cash_isa_limit": {
    "attached": 0,
@@ -1570,7 +1572,7 @@
   "no counterpart shape for metric 'cpi_inflation_effect'": 1,
   "no counterpart shape for metric 'gainer_count'": 3,
   "no counterpart shape for metric 'gini'": 10,
-  "no counterpart shape for metric 'income_aggregate'": 17,
+  "no counterpart shape for metric 'income_aggregate'": 16,
   "no counterpart shape for metric 'income_statistic'": 24,
   "no counterpart shape for metric 'participation_rate'": 45,
   "no counterpart shape for metric 'poverty_count'": 10,
@@ -1579,6 +1581,7 @@
   "no counterpart shape for metric 'taxpayer_count'": 3,
   "no counterpart shape for metric 'taxpayer_count_change'": 10,
   "no fiscal year on the claim": 442,
+  "not comparable in FY 2026-27 per the registry: HM Treasury's and the OBR's 2026-27 figures are the one-off loan-book revaluation of announcing the freeze, which no household microsimulation reproduces; only the repayment legs from 2027-28 are comparable": 2,
   "poverty_count_change: poverty population 'persons'/'adults' is not persons or children": 2,
   "poverty_count_change: poverty population 'persons'/'adults_in_work' is not persons or children": 2,
   "poverty_count_change: poverty population 'persons'/'elderly' is not persons or children": 2,
@@ -1588,6 +1591,7 @@
   "poverty_count_change: poverty sign convention not recognised: 'positive = people lifted out of severe hardship'": 1,
   "poverty_count_change: the claim states no housing basis": 1,
   "poverty_rate_change: poverty sign convention not recognised: 'positive = increase in the number expected to face hunger and hardship'": 2,
+  "reform and baseline worlds identical in FY 2026-27, a year the measure is in force (commences FY 2026-27): the construction does not carry it in this year, so no zero is asserted": 8,
   "revenue_change: claim is a component adjustment to a yield (reduction, timing), not the measure's exchequer effect": 3,
   "revenue_change: sign convention not recognised: 'positive = reduction in the \u00a38.3bn yield if the employer nics threshold freeze is excluded'": 1
  }

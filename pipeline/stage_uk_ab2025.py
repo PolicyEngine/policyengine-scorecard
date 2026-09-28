@@ -17,7 +17,8 @@ STAGING_UNANSWERED.jsonl), never guessed. A claim in the OBR costings slice (it
 carries ``obr_measure_key``) belongs to that lane's compute and is tallied
 ``owned_elsewhere`` here, never attached: one claim, one computed answer. A
 measure whose lever never bites in any year of the run is tallied inert; a year
-before a measure commences attaches its real zero, annotated.
+before a measure's RECORDED commencement (registry ``commences_fy``) attaches
+its real zero, annotated; identical worlds in any other year assert nothing.
 
 Shapes answered (metric -> artifact quantity):
     revenue_change (geography UK, no OBR head)  -> Δ(gov_tax − gov_spending), oriented by the claim's sign_convention
@@ -471,17 +472,64 @@ def identical_worlds(art: dict) -> bool:
 INERT = "lever inert on the certified world in every year of the run (reform world identical to the baseline world)"
 
 
-def inert_measures(artifacts: dict[tuple[str, int], dict]) -> set[str]:
+def inert_measures(
+    artifacts: dict[tuple[str, int], dict],
+    years: list[int],
+    commences: dict[str, str] | None = None,
+) -> set[str]:
     """Measures whose reform world equals the baseline world in EVERY year of
     the run: the lever did not bite on the certified engine and data (a switch
     the engine ignores, a data-driven variable, a world that is already current
-    law). Their claims are tallied, never attached as zeros. A measure whose
-    worlds are identical in some years and move in others is NOT inert: those
-    are years before it commences, and the counterpart there is a real zero."""
-    years: dict[str, list[bool]] = {}
-    for (key, _), art in artifacts.items():
-        years.setdefault(key, []).append(identical_worlds(art))
-    return {key for key, same in years.items() if all(same)}
+    law). Their claims are tallied, never attached as zeros. Sound only over
+    the FULL run, so a measure whose artifacts do not cover every run year
+    raises (a --years subset would call the threshold freeze inert). A measure
+    identical in every year because it commences after the run is not inert."""
+    commences = commences or {}
+    by_key: dict[str, dict[int, bool]] = {}
+    for (key, year), art in artifacts.items():
+        by_key.setdefault(key, {})[year] = identical_worlds(art)
+    out = set()
+    for key, same in by_key.items():
+        if sorted(same) != sorted(years):
+            raise ValueError(
+                f"{key}: artifacts for {sorted(same)}, the run is {sorted(years)}: "
+                "inertness is only judged over the full run"
+            )
+        c = commences.get(key)
+        if c and int(c[:4]) > max(years):
+            continue
+        if all(same.values()):
+            out.add(key)
+    return out
+
+
+def identical_year_verdict(
+    fy: str, commences_fy: str | None
+) -> tuple[str | None, str | None]:
+    """(annotation, None) when identical worlds in ``fy`` are a real zero —
+    the year is before the measure's RECORDED commencement (registry
+    ``commences_fy``, from the HM Treasury Table 4.1 title) — else
+    (None, reason): identical worlds in a year the measure is in force, or
+    with no commencement on record, are a construction that does not carry
+    the measure, and no zero is asserted."""
+    if commences_fy and fy < commences_fy:
+        return (
+            f"not yet in force in FY {fy}: the measure commences in FY {commences_fy} "
+            "(registry commences_fy) and the reform and baseline worlds are identical "
+            "in this year; the counterpart is zero",
+            None,
+        )
+    if commences_fy:
+        return (
+            None,
+            f"reform and baseline worlds identical in FY {fy}, a year the measure is in "
+            f"force (commences FY {commences_fy}): the construction does not carry it "
+            "in this year, so no zero is asserted",
+        )
+    return (
+        None,
+        "reform and baseline worlds identical and no commencement on record: no zero is asserted",
+    )
 
 
 # heads the certified engine's gov_tax / gov_spending aggregates do NOT carry:
@@ -502,7 +550,10 @@ def owned_elsewhere(cond: dict) -> str | None:
     return None
 
 
-def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dict]:
+def stage(
+    db_path: Path, artifacts: dict | None = None, years: list[int] | None = None
+) -> tuple[list[dict], dict, list[dict]]:
+    from_disk = artifacts is None
     artifacts = artifacts or load_artifacts()
     index = {m["measure_key"]: m for m in json.loads(REGISTRY.read_text())["measures"]}
     alias = {
@@ -512,7 +563,16 @@ def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dic
     }
     conn = sqlite3.connect(db_path)
     rows = []
-    inert = inert_measures(artifacts)
+    if years is None:
+        years = (
+            json.loads((ARTIFACTS / "RUN_MANIFEST.json").read_text())["years"]
+            if from_disk
+            else sorted({y for _, y in artifacts})
+        )
+    commences = {
+        k: m["commences_fy"] for k, m in index.items() if m.get("commences_fy")
+    }
+    inert = inert_measures(artifacts, years, commences)
     tally: dict = {
         "attached": 0,
         "owned_elsewhere": 0,
@@ -568,6 +628,15 @@ def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dic
             receipt(c, key, reason)
             continue
         year = int(m.group(1))
+        # a year the registry itself marks non-comparable (the claim measures
+        # something no household microsimulation carries) is never answered
+        nc = (index.get(target) or {}).get("non_comparable_fys", {}).get(fy)
+        if nc:
+            bm["unmapped"] += 1
+            reason = f"not comparable in FY {fy} per the registry: {nc}"
+            tally["unmapped"][reason] = tally["unmapped"].get(reason, 0) + 1
+            receipt(c, key, reason)
+            continue
         art = artifacts.get((target, year))
         if art is None:
             bm["no_artifact"] += 1
@@ -580,13 +649,15 @@ def stage(db_path: Path, artifacts: dict | None = None) -> tuple[list[dict], dic
             tally["unmapped"][INERT] = tally["unmapped"].get(INERT, 0) + 1
             receipt(c, key, INERT)
             continue
-        not_yet = (
-            [
-                f"not yet in force in FY {fy} on the certified world: reform and baseline worlds identical, the counterpart is zero"
-            ]
-            if identical_worlds(art)
-            else []
-        )
+        not_yet = []
+        if identical_worlds(art):
+            note, gap = identical_year_verdict(fy, commences.get(target))
+            if gap:
+                bm["unmapped"] += 1
+                tally["unmapped"][gap] = tally["unmapped"].get(gap, 0) + 1
+                receipt(c, key, gap)
+                continue
+            not_yet = [note]
         value, notes, reason = map_claim(c, art)
         period_note = []
         if c["period"] is None or int(c["period"]) != year + 1:

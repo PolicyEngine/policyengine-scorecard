@@ -112,7 +112,12 @@ def test_every_unanswered_claim_has_one_receipt_and_the_tally_adds_up():
     for key, bm in TALLY["by_measure"].items():
         assert sum(bm["reasons"].values()) == bm["claims"] - bm["attached"], key
     arts = _artifacts()
-    assert set(TALLY["inert_measures"]) == stg.inert_measures(arts)
+    commences = {
+        k: m["commences_fy"] for k, m in INDEX.items() if m.get("commences_fy")
+    }
+    assert set(TALLY["inert_measures"]) == stg.inert_measures(
+        arts, MANIFEST["years"], commences
+    )
     for key in TALLY["inert_measures"]:
         assert all(stg.identical_worlds(a) for (k, _), a in arts.items() if k == key)
     zeros = [
@@ -206,3 +211,47 @@ def test_the_attached_rows_are_in_the_database_and_the_lanes_read_computed():
         checked += 1
     conn.close()
     assert checked >= 2
+
+
+def test_a_zero_is_attached_only_before_a_recorded_commencement():
+    """Every attached counterpart whose worlds are identical sits in a fiscal
+    year before its measure's recorded commencement, and — the converse, a
+    fact of a static model — every year before a recorded commencement has
+    identical worlds (a difference there is a construction error, as the
+    engine's April 2027 class 4 uprating was before the pre-Budget world
+    pinned it)."""
+    arts = _artifacts()
+    alias = {
+        k: str(m["construction"]).removeprefix("same_lever_as_")
+        for k, m in INDEX.items()
+        if str(m.get("construction", "")).startswith("same_lever_as_")
+    }
+    conn = sqlite3.connect(DB)
+    fys = dict(
+        conn.execute(
+            "SELECT claim_id, json_extract(conditions, '$.fy') FROM external_scores"
+            " WHERE json_extract(conditions, '$.measure_key') LIKE 'ab2025%'"
+        ).fetchall()
+    )
+    conn.close()
+    zeros = 0
+    for r in STAGED:
+        target = alias.get(r["measure_key"], r["measure_key"])
+        fy = fys[r["external_claim_match"]["claim_id"]]
+        assert fy not in INDEX[target].get("non_comparable_fys", {}), (
+            r["measure_key"],
+            fy,
+        )
+        if stg.identical_worlds(arts[(target, int(fy[:4]))]):
+            c = INDEX[target].get("commences_fy")
+            assert c and fy < c, (r["measure_key"], fy, c)
+            assert any("not yet in force" in n for n in r["annotations"])
+            zeros += 1
+    assert zeros > 0
+    for key, m in INDEX.items():
+        c = m.get("commences_fy")
+        if not c or (key, MANIFEST["years"][0]) not in arts:
+            continue
+        for y in MANIFEST["years"]:
+            if f"{y}-{(y + 1) % 100:02d}" < c:
+                assert stg.identical_worlds(arts[(key, y)]), (key, y)

@@ -533,8 +533,8 @@ def test_a_claim_in_the_obr_costings_slice_is_owned_elsewhere():
 def test_only_a_lever_inert_in_every_year_is_inert():
     """Identical worlds in every year of the run: the lever did not bite,
     the measure is inert and its claims are tallied. Identical in some years
-    and moving in others: years before the measure commences, whose
-    counterpart is a real zero, attached and annotated."""
+    and moving in others is not inert; whether such a year is a real zero is
+    decided against the recorded commencement (next test)."""
     art = _artifact()
     same = {
         **art,
@@ -554,7 +554,49 @@ def test_only_a_lever_inert_in_every_year_is_inert():
         ("later", 2026): same,
         ("later", 2027): art,
     }
-    assert stg.inert_measures(arts) == {"dead"}
+    assert stg.inert_measures(arts, [2026, 2027]) == {"dead"}
+    # inertness is judged over the FULL run only: a --years subset raises
+    with pytest.raises(ValueError, match="full run"):
+        stg.inert_measures(arts, [2026, 2027, 2028])
+    # identical in every run year because it commences after the run: not inert
+    assert stg.inert_measures(arts, [2026, 2027], {"dead": "2031-32"}) == set()
+
+
+def test_identical_worlds_are_a_zero_only_before_the_recorded_commencement():
+    """'Not yet in force' is checked against the registry's commences_fy (from
+    the HM Treasury Table 4.1 title), never inferred from world identity:
+    identical worlds in a year the measure is in force, or with no recorded
+    commencement, assert nothing (the student-loan freeze's 2030-31 was such a
+    year before its pre-Budget world gained a 2030 leg)."""
+    note, gap = stg.identical_year_verdict("2027-28", "2028-29")
+    assert (
+        gap is None and "not yet in force in FY 2027-28" in note and "2028-29" in note
+    )
+    note, gap = stg.identical_year_verdict("2030-31", "2027-28")
+    assert note is None and "a year the measure is in force" in gap
+    note, gap = stg.identical_year_verdict("2026-27", None)
+    assert note is None and "no commencement on record" in gap
+
+
+def test_every_executed_world_covers_the_run():
+    """The mirror of the reversal guard, engine-free and so run in CI here: a
+    year-keyed world that stops before the run ends reverts to current law
+    and asserts a zero. The registry has no such world; a stub that stops
+    early is flagged, and a recorded effect_ends_fy is honoured."""
+    assert comp.world_coverage_gaps(INDEX) == []
+    stub = {
+        "m": {
+            "measure_key": "m",
+            "computability": "expressible",
+            "construction": "reversal_on_certified_world",
+            "pe_baseline_modifier": {"gov.a": {"2027": 1, "2028": 2, "2029": 3}},
+            "head_variables": [],
+        }
+    }
+    gaps = comp.world_coverage_gaps(stub)
+    assert len(gaps) == 1 and "[2030]" in gaps[0] and "gov.a" in gaps[0]
+    stub["m"]["effect_ends_fy"] = "2029-30"
+    assert comp.world_coverage_gaps(stub) == []
 
 
 def test_an_exchequer_effect_reads_the_head_the_aggregates_do_not_carry():

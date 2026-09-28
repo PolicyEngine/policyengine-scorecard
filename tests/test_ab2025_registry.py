@@ -219,3 +219,24 @@ def test_validate_rejects_a_mis_prefixed_option():
     m["measure_key"] = "ab2025__" + m["measure_key"].split("__", 1)[1]
     with pytest.raises(ValueError, match="_option__ prefix"):
         validate(bad)
+
+
+def test_recorded_commencements_are_fiscal_years_with_a_source():
+    """commences_fy is what the stager checks before asserting a zero, so it
+    is a fiscal year (YYYY-YY, consecutive) with the primary it comes from."""
+    dated = [m for m in REG["measures"] if "commences_fy" in m]
+    assert dated
+    for m in dated:
+        fy = m["commences_fy"]
+        assert re.fullmatch(r"\d{4}-\d{2}", fy), m["measure_key"]
+        assert int(fy[5:]) == (int(fy[:4]) + 1) % 100, m["measure_key"]
+        assert m.get("commences_source"), m["measure_key"]
+
+
+def test_non_comparable_years_are_fiscal_years_with_a_reason():
+    marked = [m for m in REG["measures"] if m.get("non_comparable_fys")]
+    assert marked
+    for m in marked:
+        for fy, why in m["non_comparable_fys"].items():
+            assert re.fullmatch(r"\d{4}-\d{2}", fy), m["measure_key"]
+            assert len(why) > 40, m["measure_key"]

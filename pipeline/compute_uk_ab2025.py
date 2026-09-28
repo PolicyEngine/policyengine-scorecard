@@ -196,13 +196,62 @@ def _candidate_dates(period: str) -> list[str]:
     return out
 
 
+def world_coverage_gaps(index: dict[str, dict]) -> list[str]:
+    """The mirror of reversal_delta_mismatches, and engine-free: a year-keyed
+    pe_baseline_modifier (or a mixed construction's year-keyed delta) that
+    stops before the run ends makes that world revert to current law in the
+    later years, so the two worlds coincide there and a zero is asserted for
+    a measure whose effect may persist (the plan-2 student loan freeze ended in
+    2029 while its effect runs on). Every year-keyed path of an executed world
+    must cover each run year from its first covered year to the last, unless
+    the registry records the effect's end (``effect_ends_fy``)."""
+    runnable = {k for k, w in computable(index).items() if "alias_of" not in w}
+    keys = set(runnable)
+    for k in runnable:
+        if index[k].get("construction") == "package_of_registry_measures":
+            keys |= set(index[k]["package_of"])
+    out = []
+    for key in sorted(keys):
+        m = index[key]
+        fields = ["pe_baseline_modifier"]
+        if (
+            m.get("pe_baseline_modifier")
+            and m.get("construction") != "reversal_on_certified_world"
+        ):
+            fields.append(
+                "pe_reform_delta"
+            )  # a mixed construction executes its delta too
+        ends = m.get("effect_ends_fy")
+        last = int(ends[:4]) if ends else YEARS[-1]
+        for field in fields:
+            for path, value in (m.get(field) or {}).items():
+                covered = set()
+                for period, _ in _windows(value):
+                    start, end = period.split(".")
+                    covered |= set(range(int(start[:4]), int(end[:4]) + 1))
+                run = [y for y in YEARS if y in covered]
+                if not run:
+                    continue
+                missing = [y for y in YEARS if run[0] <= y <= last and y not in covered]
+                if missing:
+                    out.append(
+                        f"{key}: {field} {path} stops before the run ends (no value for "
+                        f"{missing}): that world reverts to current law there and would "
+                        "assert a zero; extend it, or record effect_ends_fy"
+                    )
+    return out
+
+
 def reversal_delta_mismatches(index: dict[str, dict], resolve) -> list[str]:
     """A reversal executes its pe_baseline_modifier as the baseline world and
     current law as the reform world, so a pe_reform_delta on a reversal is
     documentation of the announced values and MUST restate current law: at
     some date of each delta window within the run, the certified engine must
-    hold the delta's value (the announced level at commencement; current law
-    may uprate it afterwards). A delta the engine never holds is a reform leg
+    hold the delta's value. "Some date", deliberately, not every date: a
+    delta records the announced level at commencement, and current law may
+    uprate it later in the same window (the surcharge's band amounts rise by
+    CPI from April 2029 while the delta records the 2028 schedule), which is
+    a restatement, not a dropped leg. A delta the engine never holds is a reform leg
     the reversal would drop silently — a measure mislabelled
     reversal_on_certified_world — so it is refused before any simulation.
     `resolve(path, date)` is the engine (or a stub); None: no such path."""
@@ -683,6 +732,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--measures", nargs="*")
     ap.add_argument("--years", nargs="*", type=int, default=list(YEARS))
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument(
+        "--guards",
+        action="store_true",
+        help="run the world-coverage and reversal-delta guards against the installed engine and exit (fails if the engine is absent)",
+    )
     ap.add_argument("--run-id", default=f"campaign-{dt.date.today():%Y%m%d}-uk-ab2025")
     ap.add_argument("--output-dir", type=Path, default=OUTPUT_DIR)
     ap.add_argument(
@@ -710,6 +764,24 @@ def main(argv: list[str] | None = None) -> int:
         "not_computable": not_computable(index),
         "years": args.years,
     }
+    gaps = world_coverage_gaps(index)
+    if gaps:
+        raise SystemExit(
+            "executed worlds that stop before the run ends:\n  " + "\n  ".join(gaps)
+        )
+    if args.guards:
+        # CI (the baseline-probe workflow): both guards, the engine REQUIRED
+        bad = reversal_delta_mismatches(index, engine_resolver())
+        if bad:
+            raise SystemExit(
+                "reversal deltas that do not restate current law:\n  "
+                + "\n  ".join(bad)
+            )
+        print(
+            "guards: every executed world covers the run; every reversal's delta "
+            "restates current law at the pinned engine"
+        )
+        return 0
     if args.dry_run:
         try:
             resolve = engine_resolver()

@@ -104,8 +104,8 @@
   "by_latest_status": {
    "comparable": 42,
    "concept_mismatch": 4,
-   "constructed": 1419,
-   "not_computed": 3100,
+   "constructed": 1410,
+   "not_computed": 3109,
    "pe_gap": 889
   }
  },
@@ -32570,7 +32570,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T13:57:47.607249+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -32592,7 +32592,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T13:57:47.607249+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -33066,7 +33066,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:17.919001+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -33088,7 +33088,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:17.919001+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -35434,47 +35434,21 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 0.0,
-    "status": "constructed",
-    "engine_version": "2.89.2",
-    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-    "release": "8c73-4aa4b14",
-    "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2026.json",
+    "value": null,
+    "status": "not_computed",
+    "engine_version": "",
+    "data_bundle": "",
+    "release": "",
+    "construction": "",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T13:59:27.822732+00:00",
-    "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-     "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-     "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
-     "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-     "claim sign: positive = yield to the Exchequer, PE's own orientation"
-    ],
-    "baseline": "pre_ab2025__student_loans_plan2_threshold_freeze",
-    "status_effective": "constructed",
-    "ratio": 0.0,
-    "delta": -5915000000.0
+    "computed_at": "",
+    "annotations": [],
+    "baseline": null,
+    "status_effective": "not_computed",
+    "ratio": null,
+    "delta": null
    },
-   "results": [
-    {
-     "value": 0.0,
-     "status": "constructed",
-     "engine_version": "2.89.2",
-     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-     "release": "8c73-4aa4b14",
-     "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2026.json",
-     "policyengine_variables": [],
-     "computed_at": "2026-09-25T13:59:27.822732+00:00",
-     "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
-      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-      "claim sign: positive = yield to the Exchequer, PE's own orientation"
-     ],
-     "baseline": "pre_ab2025__student_loans_plan2_threshold_freeze",
-     "status_effective": "constructed"
-    }
-   ],
+   "results": [],
    "diagnosis": null
   },
   {
@@ -36267,7 +36241,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:17.919001+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -36289,7 +36263,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:17.919001+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -38127,7 +38101,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:30.695473+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -38149,7 +38123,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:30.695473+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -38893,7 +38867,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:37.570545+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -38916,7 +38890,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:37.570545+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -39248,7 +39222,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:30.695473+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -39270,7 +39244,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:30.695473+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -39599,7 +39573,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:01:16.247077+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -39621,7 +39595,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:01:16.247077+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -39862,7 +39836,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:37.570545+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -39885,7 +39859,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:37.570545+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -40771,47 +40745,21 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 0.0,
-    "status": "constructed",
-    "engine_version": "2.89.2",
-    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-    "release": "8c73-4aa4b14",
-    "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
+    "value": null,
+    "status": "not_computed",
+    "engine_version": "",
+    "data_bundle": "",
+    "release": "",
+    "construction": "",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T14:04:37.845861+00:00",
-    "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-     "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-     "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
-     "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-     "claim sign: positive = yield to the Exchequer, PE's own orientation"
-    ],
-    "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-    "status_effective": "constructed",
-    "ratio": 0.0,
-    "delta": -5000000.0
+    "computed_at": "",
+    "annotations": [],
+    "baseline": null,
+    "status_effective": "not_computed",
+    "ratio": null,
+    "delta": null
    },
-   "results": [
-    {
-     "value": 0.0,
-     "status": "constructed",
-     "engine_version": "2.89.2",
-     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-     "release": "8c73-4aa4b14",
-     "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
-     "policyengine_variables": [],
-     "computed_at": "2026-09-25T14:04:37.845861+00:00",
-     "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
-      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-      "claim sign: positive = yield to the Exchequer, PE's own orientation"
-     ],
-     "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-     "status_effective": "constructed"
-    }
-   ],
+   "results": [],
    "diagnosis": null
   },
   {
@@ -42807,7 +42755,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T13:57:54.123054+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -42829,7 +42777,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T13:57:54.123054+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -43598,7 +43546,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:26.562649+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -43620,7 +43568,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:26.562649+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -43921,7 +43869,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:45.832745+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -43944,7 +43892,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:45.832745+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -44159,7 +44107,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:45.832745+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -44182,7 +44130,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:45.832745+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -46020,7 +45968,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:38.688067+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -46042,7 +45990,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:38.688067+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -46626,7 +46574,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:38.688067+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -46648,7 +46596,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:38.688067+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -46975,7 +46923,7 @@
     "release": "8c73-4aa4b14",
     "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2027.json",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T13:59:34.771761+00:00",
+    "computed_at": "2026-09-28T12:27:26.954763+00:00",
     "annotations": [
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
@@ -46996,7 +46944,7 @@
      "release": "8c73-4aa4b14",
      "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2027.json",
      "policyengine_variables": [],
-     "computed_at": "2026-09-25T13:59:34.771761+00:00",
+     "computed_at": "2026-09-28T12:27:26.954763+00:00",
      "annotations": [
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
@@ -47590,7 +47538,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:26.562649+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -47612,7 +47560,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:26.562649+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -51362,7 +51310,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:52.806915+00:00",
     "annotations": [
-     "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -51385,7 +51333,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:52.806915+00:00",
      "annotations": [
-      "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -55201,7 +55149,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:52.806915+00:00",
     "annotations": [
-     "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -55224,7 +55172,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:52.806915+00:00",
      "annotations": [
-      "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -56561,7 +56509,7 @@
     "release": "8c73-4aa4b14",
     "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2028.json",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T13:59:41.536336+00:00",
+    "computed_at": "2026-09-28T12:27:33.310135+00:00",
     "annotations": [
      "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
@@ -56582,7 +56530,7 @@
      "release": "8c73-4aa4b14",
      "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2028.json",
      "policyengine_variables": [],
-     "computed_at": "2026-09-25T13:59:41.536336+00:00",
+     "computed_at": "2026-09-28T12:27:33.310135+00:00",
      "annotations": [
       "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
@@ -64964,7 +64912,7 @@
     "release": "8c73-4aa4b14",
     "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2029.json",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T13:59:47.976580+00:00",
+    "computed_at": "2026-09-28T12:27:39.997445+00:00",
     "annotations": [
      "PE calendar year 2029 on the certified world proxies FY 2029-30; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
@@ -64985,7 +64933,7 @@
      "release": "8c73-4aa4b14",
      "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2029.json",
      "policyengine_variables": [],
-     "computed_at": "2026-09-25T13:59:47.976580+00:00",
+     "computed_at": "2026-09-28T12:27:39.997445+00:00",
      "annotations": [
       "PE calendar year 2029 on the certified world proxies FY 2029-30; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
@@ -73752,41 +73700,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 0.0,
+    "value": 496054954.00096226,
     "status": "constructed",
     "engine_version": "2.89.2",
     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
     "release": "8c73-4aa4b14",
     "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2030.json",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T13:59:54.833502+00:00",
+    "computed_at": "2026-09-28T12:27:46.465376+00:00",
     "annotations": [
-     "not yet in force in FY 2030-31 on the certified world: reform and baseline worlds identical, the counterpart is zero",
      "PE calendar year 2030 on the certified world proxies FY 2030-31; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
-     "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
+     "PE static exchequer effect read from the head variable(s) student_loan_repayment (receipt), which gov_tax / gov_spending do not carry on the certified engine",
      "claim sign: positive = yield to the Exchequer, PE's own orientation"
     ],
     "baseline": "pre_ab2025__student_loans_plan2_threshold_freeze",
     "status_effective": "constructed",
-    "ratio": 0.0,
-    "delta": -380000000.0
+    "ratio": 1.3054077736867429,
+    "delta": 116054954.00096226
    },
    "results": [
     {
-     "value": 0.0,
+     "value": 496054954.00096226,
      "status": "constructed",
      "engine_version": "2.89.2",
      "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
      "release": "8c73-4aa4b14",
      "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2030.json",
      "policyengine_variables": [],
-     "computed_at": "2026-09-25T13:59:54.833502+00:00",
+     "computed_at": "2026-09-28T12:27:46.465376+00:00",
      "annotations": [
-      "not yet in force in FY 2030-31 on the certified world: reform and baseline worlds identical, the counterpart is zero",
       "PE calendar year 2030 on the certified world proxies FY 2030-31; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against current_law",
-      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
+      "PE static exchequer effect read from the head variable(s) student_loan_repayment (receipt), which gov_tax / gov_spending do not carry on the certified engine",
       "claim sign: positive = yield to the Exchequer, PE's own orientation"
      ],
      "baseline": "pre_ab2025__student_loans_plan2_threshold_freeze",
@@ -161160,7 +161106,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:30.695473+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -161182,7 +161128,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:30.695473+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -161634,47 +161580,21 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
-    "value": 0.0,
-    "status": "constructed",
-    "engine_version": "2.89.2",
-    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-    "release": "8c73-4aa4b14",
-    "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
+    "value": null,
+    "status": "not_computed",
+    "engine_version": "",
+    "data_bundle": "",
+    "release": "",
+    "construction": "",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T14:04:37.845861+00:00",
-    "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-     "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-     "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-     "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-     "claim sign: positive = cost / increase in borrowing; PE oriented to it"
-    ],
-    "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-    "status_effective": "constructed",
+    "computed_at": "",
+    "annotations": [],
+    "baseline": null,
+    "status_effective": "not_computed",
     "ratio": null,
-    "delta": 0.0
+    "delta": null
    },
-   "results": [
-    {
-     "value": 0.0,
-     "status": "constructed",
-     "engine_version": "2.89.2",
-     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-     "release": "8c73-4aa4b14",
-     "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
-     "policyengine_variables": [],
-     "computed_at": "2026-09-25T14:04:37.845861+00:00",
-     "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-      "claim sign: positive = cost / increase in borrowing; PE oriented to it"
-     ],
-     "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-     "status_effective": "constructed"
-    }
-   ],
+   "results": [],
    "diagnosis": null
   },
   {
@@ -161887,47 +161807,21 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
-    "value": 0.0,
-    "status": "constructed",
-    "engine_version": "2.89.2",
-    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-    "release": "8c73-4aa4b14",
-    "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
+    "value": null,
+    "status": "not_computed",
+    "engine_version": "",
+    "data_bundle": "",
+    "release": "",
+    "construction": "",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T14:04:37.845861+00:00",
-    "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-     "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-     "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-     "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-     "claim sign: positive = cost / increase in borrowing; PE oriented to it"
-    ],
-    "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-    "status_effective": "constructed",
+    "computed_at": "",
+    "annotations": [],
+    "baseline": null,
+    "status_effective": "not_computed",
     "ratio": null,
-    "delta": 0.0
+    "delta": null
    },
-   "results": [
-    {
-     "value": 0.0,
-     "status": "constructed",
-     "engine_version": "2.89.2",
-     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-     "release": "8c73-4aa4b14",
-     "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
-     "policyengine_variables": [],
-     "computed_at": "2026-09-25T14:04:37.845861+00:00",
-     "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-      "claim sign: positive = cost / increase in borrowing; PE oriented to it"
-     ],
-     "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-     "status_effective": "constructed"
-    }
-   ],
+   "results": [],
    "diagnosis": null
   },
   {
@@ -161971,47 +161865,21 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
-    "value": 0.0,
-    "status": "constructed",
-    "engine_version": "2.89.2",
-    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-    "release": "8c73-4aa4b14",
-    "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
+    "value": null,
+    "status": "not_computed",
+    "engine_version": "",
+    "data_bundle": "",
+    "release": "",
+    "construction": "",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T14:04:37.845861+00:00",
-    "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-     "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-     "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-     "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-     "claim sign: positive = cost / increase in borrowing; PE oriented to it"
-    ],
-    "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-    "status_effective": "constructed",
+    "computed_at": "",
+    "annotations": [],
+    "baseline": null,
+    "status_effective": "not_computed",
     "ratio": null,
-    "delta": 0.0
+    "delta": null
    },
-   "results": [
-    {
-     "value": 0.0,
-     "status": "constructed",
-     "engine_version": "2.89.2",
-     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-     "release": "8c73-4aa4b14",
-     "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
-     "policyengine_variables": [],
-     "computed_at": "2026-09-25T14:04:37.845861+00:00",
-     "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-      "claim sign: positive = cost / increase in borrowing; PE oriented to it"
-     ],
-     "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-     "status_effective": "constructed"
-    }
-   ],
+   "results": [],
    "diagnosis": null
   },
   {
@@ -162401,7 +162269,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:17.919001+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -162423,7 +162291,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:17.919001+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -162484,7 +162352,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:01:16.247077+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -162506,7 +162374,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:01:16.247077+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -162713,7 +162581,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:30.695473+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -162735,7 +162603,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:30.695473+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -162796,7 +162664,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:01:16.247077+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -162818,7 +162686,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:01:16.247077+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -162960,7 +162828,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:01:16.247077+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -162982,7 +162850,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:01:16.247077+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -163128,7 +162996,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:37.570545+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -163151,7 +163019,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:37.570545+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -163215,7 +163083,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:30.695473+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -163237,7 +163105,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:30.695473+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -163299,7 +163167,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:01:16.247077+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -163321,7 +163189,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:01:16.247077+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -163639,7 +163507,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:37.570545+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -163662,7 +163530,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:37.570545+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -163811,7 +163679,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:01:16.247077+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -163833,7 +163701,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:01:16.247077+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -163895,7 +163763,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:37.570545+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -163918,7 +163786,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:37.570545+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -163970,47 +163838,21 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
-    "value": 0.0,
-    "status": "constructed",
-    "engine_version": "2.89.2",
-    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-    "release": "8c73-4aa4b14",
-    "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2026.json",
+    "value": null,
+    "status": "not_computed",
+    "engine_version": "",
+    "data_bundle": "",
+    "release": "",
+    "construction": "",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T13:59:27.822732+00:00",
-    "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-     "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-     "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-     "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-     "claim sign: positive = yield to the Exchequer, PE's own orientation"
-    ],
-    "baseline": "pre_ab2025__student_loans_plan2_threshold_freeze",
-    "status_effective": "constructed",
-    "ratio": 0.0,
-    "delta": -5600000000.0
+    "computed_at": "",
+    "annotations": [],
+    "baseline": null,
+    "status_effective": "not_computed",
+    "ratio": null,
+    "delta": null
    },
-   "results": [
-    {
-     "value": 0.0,
-     "status": "constructed",
-     "engine_version": "2.89.2",
-     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-     "release": "8c73-4aa4b14",
-     "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2026.json",
-     "policyengine_variables": [],
-     "computed_at": "2026-09-25T13:59:27.822732+00:00",
-     "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-      "claim sign: positive = yield to the Exchequer, PE's own orientation"
-     ],
-     "baseline": "pre_ab2025__student_loans_plan2_threshold_freeze",
-     "status_effective": "constructed"
-    }
-   ],
+   "results": [],
    "diagnosis": null
   },
   {
@@ -164118,7 +163960,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:01:16.247077+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -164140,7 +163982,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:01:16.247077+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -164418,7 +164260,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:01:16.247077+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -164440,7 +164282,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:01:16.247077+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -164588,7 +164430,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:17.919001+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -164610,7 +164452,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:17.919001+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -164838,7 +164680,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:30.695473+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -164860,7 +164702,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:30.695473+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -165510,7 +165352,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:17.919001+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -165532,7 +165374,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:17.919001+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -165594,7 +165436,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:01:16.247077+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -165616,7 +165458,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:01:16.247077+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -166229,7 +166071,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:17.919001+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -166251,7 +166093,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:17.919001+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -166396,7 +166238,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:30.695473+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -166418,7 +166260,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:30.695473+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -166924,7 +166766,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:01:16.247077+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -166946,7 +166788,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:01:16.247077+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -167007,7 +166849,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:37.570545+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -167030,7 +166872,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:37.570545+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -167175,7 +167017,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:30.695473+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -167197,7 +167039,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:30.695473+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -167430,7 +167272,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:01:16.247077+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -167452,7 +167294,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:01:16.247077+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -167708,7 +167550,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:30.695473+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -167730,7 +167572,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:30.695473+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -167782,47 +167624,21 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
-    "value": 0.0,
-    "status": "constructed",
-    "engine_version": "2.89.2",
-    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-    "release": "8c73-4aa4b14",
-    "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
+    "value": null,
+    "status": "not_computed",
+    "engine_version": "",
+    "data_bundle": "",
+    "release": "",
+    "construction": "",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T14:04:37.845861+00:00",
-    "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-     "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-     "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-     "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-     "claim sign: positive = cost / increase in borrowing; PE oriented to it"
-    ],
-    "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-    "status_effective": "constructed",
+    "computed_at": "",
+    "annotations": [],
+    "baseline": null,
+    "status_effective": "not_computed",
     "ratio": null,
-    "delta": 0.0
+    "delta": null
    },
-   "results": [
-    {
-     "value": 0.0,
-     "status": "constructed",
-     "engine_version": "2.89.2",
-     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-     "release": "8c73-4aa4b14",
-     "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
-     "policyengine_variables": [],
-     "computed_at": "2026-09-25T14:04:37.845861+00:00",
-     "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-      "claim sign: positive = cost / increase in borrowing; PE oriented to it"
-     ],
-     "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-     "status_effective": "constructed"
-    }
-   ],
+   "results": [],
    "diagnosis": null
   },
   {
@@ -168016,7 +167832,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:17.919001+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -168038,7 +167854,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:17.919001+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -168100,7 +167916,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:37.570545+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -168123,7 +167939,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:37.570545+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -168186,7 +168002,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:37.570545+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -168209,7 +168025,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:37.570545+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -168407,7 +168223,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:17.919001+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -168429,7 +168245,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:17.919001+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -169082,7 +168898,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:01:16.247077+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -169104,7 +168920,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:01:16.247077+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2027-28 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -169268,47 +169084,21 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
-    "value": 0.0,
-    "status": "constructed",
-    "engine_version": "2.89.2",
-    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-    "release": "8c73-4aa4b14",
-    "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
+    "value": null,
+    "status": "not_computed",
+    "engine_version": "",
+    "data_bundle": "",
+    "release": "",
+    "construction": "",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T14:04:37.845861+00:00",
-    "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-     "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-     "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-     "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-     "claim sign: positive = cost / increase in borrowing; PE oriented to it"
-    ],
-    "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-    "status_effective": "constructed",
+    "computed_at": "",
+    "annotations": [],
+    "baseline": null,
+    "status_effective": "not_computed",
     "ratio": null,
-    "delta": 0.0
+    "delta": null
    },
-   "results": [
-    {
-     "value": 0.0,
-     "status": "constructed",
-     "engine_version": "2.89.2",
-     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-     "release": "8c73-4aa4b14",
-     "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
-     "policyengine_variables": [],
-     "computed_at": "2026-09-25T14:04:37.845861+00:00",
-     "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-      "claim sign: positive = cost / increase in borrowing; PE oriented to it"
-     ],
-     "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-     "status_effective": "constructed"
-    }
-   ],
+   "results": [],
    "diagnosis": null
   },
   {
@@ -169360,7 +169150,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:17.919001+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -169382,7 +169172,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:17.919001+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -169587,7 +169377,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:30.695473+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -169609,7 +169399,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:30.695473+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -169756,7 +169546,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:30.695473+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -169778,7 +169568,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:30.695473+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -169840,7 +169630,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:37.570545+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -169863,7 +169653,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:37.570545+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -170069,7 +169859,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:30.695473+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -170091,7 +169881,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:30.695473+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -170153,7 +169943,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:37.570545+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -170176,7 +169966,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:37.570545+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -170314,47 +170104,21 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
-    "value": 0.0,
-    "status": "constructed",
-    "engine_version": "2.89.2",
-    "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-    "release": "8c73-4aa4b14",
-    "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
+    "value": null,
+    "status": "not_computed",
+    "engine_version": "",
+    "data_bundle": "",
+    "release": "",
+    "construction": "",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T14:04:37.845861+00:00",
-    "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-     "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-     "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-     "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-     "claim sign: positive = cost / increase in borrowing; PE oriented to it"
-    ],
-    "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-    "status_effective": "constructed",
+    "computed_at": "",
+    "annotations": [],
+    "baseline": null,
+    "status_effective": "not_computed",
     "ratio": null,
-    "delta": 0.0
+    "delta": null
    },
-   "results": [
-    {
-     "value": 0.0,
-     "status": "constructed",
-     "engine_version": "2.89.2",
-     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
-     "release": "8c73-4aa4b14",
-     "construction": "reversal_on_certified_world on the certified world (ab2025__savings_rates_plus_2pp_and_starter_limit_held); artifact results/uk/ab2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2026.json",
-     "policyengine_variables": [],
-     "computed_at": "2026-09-25T14:04:37.845861+00:00",
-     "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
-      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
-      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
-      "claim sign: positive = cost / increase in borrowing; PE oriented to it"
-     ],
-     "baseline": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
-     "status_effective": "constructed"
-    }
-   ],
+   "results": [],
    "diagnosis": null
   },
   {
@@ -170490,7 +170254,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:30.695473+00:00",
     "annotations": [
-     "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -170512,7 +170276,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:30.695473+00:00",
      "annotations": [
-      "not yet in force in FY 2026-27 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2026-27: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2026 on the certified world proxies FY 2026-27; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -170766,7 +170530,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:26.562649+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -170788,7 +170552,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:26.562649+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -171299,7 +171063,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:26.562649+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -171321,7 +171085,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:26.562649+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -171684,7 +171448,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:38.688067+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -171706,7 +171470,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:38.688067+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -171768,7 +171532,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:26.562649+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -171790,7 +171554,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:26.562649+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -172128,7 +171892,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:45.832745+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -172151,7 +171915,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:45.832745+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -172213,7 +171977,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:26.562649+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -172235,7 +171999,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:26.562649+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -172748,7 +172512,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:38.688067+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -172770,7 +172534,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:38.688067+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -173807,7 +173571,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:38.688067+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -173829,7 +173593,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:38.688067+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -173890,7 +173654,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:45.832745+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -173913,7 +173677,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:45.832745+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -174060,7 +173824,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:26.562649+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -174082,7 +173846,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:26.562649+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -174705,7 +174469,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:38.688067+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -174727,7 +174491,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:38.688067+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -174956,7 +174720,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:26.562649+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -174978,7 +174742,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:26.562649+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -175707,7 +175471,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:45.832745+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -175730,7 +175494,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:45.832745+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -175793,7 +175557,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:45.832745+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -175816,7 +175580,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:45.832745+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -176380,7 +176144,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:38.688067+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -176402,7 +176166,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:38.688067+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -177056,7 +176820,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:38.688067+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -177078,7 +176842,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:38.688067+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -177140,7 +176904,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:45.832745+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -177163,7 +176927,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:45.832745+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -177465,7 +177229,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-28T10:49:26.562649+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -177487,7 +177251,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-28T10:49:26.562649+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -177775,7 +177539,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:38.688067+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -177797,7 +177561,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:38.688067+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -177859,7 +177623,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:45.832745+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -177882,7 +177646,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:45.832745+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -177946,7 +177710,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:38.688067+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -177968,7 +177732,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:38.688067+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -178168,7 +177932,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:45.832745+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -178191,7 +177955,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:45.832745+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -178253,7 +178017,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:38.688067+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -178275,7 +178039,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:38.688067+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -178505,7 +178269,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:38.688067+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -178527,7 +178291,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:38.688067+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -179005,7 +178769,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:45.832745+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -179028,7 +178792,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:45.832745+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -179625,7 +179389,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:08:38.688067+00:00",
     "annotations": [
-     "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -179647,7 +179411,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:08:38.688067+00:00",
      "annotations": [
-      "not yet in force in FY 2027-28 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2027-28: the measure commences in FY 2028-29 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2027 on the certified world proxies FY 2027-28; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -180571,7 +180335,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:52.806915+00:00",
     "annotations": [
-     "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -180594,7 +180358,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:52.806915+00:00",
      "annotations": [
-      "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -181516,7 +181280,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:52.806915+00:00",
     "annotations": [
-     "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -181539,7 +181303,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:52.806915+00:00",
      "annotations": [
-      "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -183048,7 +182812,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:52.806915+00:00",
     "annotations": [
-     "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -183071,7 +182835,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:52.806915+00:00",
      "annotations": [
-      "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -183774,7 +183538,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:52.806915+00:00",
     "annotations": [
-     "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -183797,7 +183561,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:52.806915+00:00",
      "annotations": [
-      "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -183860,7 +183624,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:52.806915+00:00",
     "annotations": [
-     "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -183883,7 +183647,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:52.806915+00:00",
      "annotations": [
-      "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -184750,7 +184514,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:52.806915+00:00",
     "annotations": [
-     "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -184773,7 +184537,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:52.806915+00:00",
      "annotations": [
-      "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -187477,7 +187241,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:52.806915+00:00",
     "annotations": [
-     "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -187500,7 +187264,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:52.806915+00:00",
      "annotations": [
-      "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -189364,7 +189128,7 @@
     "policyengine_variables": [],
     "computed_at": "2026-09-25T14:06:52.806915+00:00",
     "annotations": [
-     "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+     "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
      "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -189387,7 +189151,7 @@
      "policyengine_variables": [],
      "computed_at": "2026-09-25T14:06:52.806915+00:00",
      "annotations": [
-      "not yet in force in FY 2028-29 on the certified world: reform and baseline worlds identical, the counterpart is zero",
+      "not yet in force in FY 2028-29: the measure commences in FY 2029-30 (registry commences_fy) and the reform and baseline worlds are identical in this year; the counterpart is zero",
       "PE calendar year 2028 on the certified world proxies FY 2028-29; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
       "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
@@ -210689,41 +210453,39 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "obr_pre_measures_autumn_budget_2025__policy_parameters",
    "latest": {
-    "value": 0.0,
+    "value": 496054954.00096226,
     "status": "constructed",
     "engine_version": "2.89.2",
     "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
     "release": "8c73-4aa4b14",
     "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2030.json",
     "policyengine_variables": [],
-    "computed_at": "2026-09-25T13:59:54.833502+00:00",
+    "computed_at": "2026-09-28T12:27:46.465376+00:00",
     "annotations": [
-     "not yet in force in FY 2030-31 on the certified world: reform and baseline worlds identical, the counterpart is zero",
      "PE calendar year 2030 on the certified world proxies FY 2030-31; static, no behavioural response",
      "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-     "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
+     "PE static exchequer effect read from the head variable(s) student_loan_repayment (receipt), which gov_tax / gov_spending do not carry on the certified engine",
      "claim sign: positive = yield to the Exchequer, PE's own orientation"
     ],
     "baseline": "pre_ab2025__student_loans_plan2_threshold_freeze",
     "status_effective": "constructed",
-    "ratio": 0.0,
-    "delta": -400000000.0
+    "ratio": 1.2401373850024056,
+    "delta": 96054954.00096226
    },
    "results": [
     {
-     "value": 0.0,
+     "value": 496054954.00096226,
      "status": "constructed",
      "engine_version": "2.89.2",
      "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
      "release": "8c73-4aa4b14",
      "construction": "reversal_on_certified_world on the certified world (ab2025__student_loans_plan2_threshold_freeze); artifact results/uk/ab2025/ab2025__student_loans_plan2_threshold_freeze_2030.json",
      "policyengine_variables": [],
-     "computed_at": "2026-09-25T13:59:54.833502+00:00",
+     "computed_at": "2026-09-28T12:27:46.465376+00:00",
      "annotations": [
-      "not yet in force in FY 2030-31 on the certified world: reform and baseline worlds identical, the counterpart is zero",
       "PE calendar year 2030 on the certified world proxies FY 2030-31; static, no behavioural response",
       "executed baseline: certified world with pe_baseline_modifier; the claim is scored against obr_pre_measures_autumn_budget_2025",
-      "PE static exchequer effect = \u0394gov_tax \u2212 \u0394gov_spending on the certified world",
+      "PE static exchequer effect read from the head variable(s) student_loan_repayment (receipt), which gov_tax / gov_spending do not carry on the certified engine",
       "claim sign: positive = yield to the Exchequer, PE's own orientation"
      ],
      "baseline": "pre_ab2025__student_loans_plan2_threshold_freeze",
