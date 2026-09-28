@@ -383,7 +383,7 @@ zero, so float32 rounding decides whether Class 4 is capped at the main band,
 dropping the 2% band above the upper profits limit (on the certified bundle
 0.33m, 0.55m, 0.20m and 0.11m self-employed people a year in 2027–2030; fixed
 in 2.102.1); PolicyEngine/policyengine-uk#1885 — Class 4 profits had employee
-Class 1 deducted, which the law does not allow (fixed after 2.102.1); and
+Class 1 deducted, which the law does not allow (fixed in 2.102.2); and
 PolicyEngine/policyengine-uk#1879 (open) — the engine uprates the NI thresholds
 before the Budget 2025 freeze ends, which is why the threshold freeze executes
 as a mixed construction here. Class 4 legs of any measure that moves the Class 4
