@@ -23,7 +23,7 @@ import type { SpineBucket } from "../spine";
 import { sourceLabel } from "../sourceLabels";
 import { useNav } from "../navigation";
 import { CoverageSpine } from "./CoverageSpine";
-import { LinkButton, Panel, Provenance, Stat, Tag } from "./ui";
+import { LinkButton, Panel, Provenance, Summary, Tag } from "./ui";
 
 /**
  * The landing view: what the instance covers, how the held-out record
@@ -128,69 +128,40 @@ export function Overview({
   return (
     <div className="space-y-4">
       {hasRows ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Stat
-            label="Published cells"
-            value={published.toLocaleString()}
-            sub={`${programs} programs${
-              country === "US" ? " and the poverty counterfactual" : ""
-            }`}
-          />
-          <Stat
-            label="With a PolicyEngine counterpart"
-            value={withValues.toLocaleString()}
-            unit={pct(withValues, published)}
-          />
-          <Stat
-            label="Within tolerance"
-            value={(counts.close ?? 0).toLocaleString()}
-            unit={pct(counts.close ?? 0, compared)}
-            sub="Of compared cells"
-          />
-          <Stat
-            label="Held-out within tolerance"
-            value={heldOutClose.toLocaleString()}
-            unit={`of ${heldOut.length.toLocaleString()}`}
-            sub="Cells PolicyEngine never calibrated toward"
-          />
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Stat
-            label="External claims"
-            value={claims.length.toLocaleString()}
-            sub="On reform validation"
-          />
-          <Stat
-            label="With a PolicyEngine result"
-            value={claimsWithResult.toLocaleString()}
-            unit={pct(claimsWithResult, claims.length)}
-          />
-          <Stat
-            label="Comparable or constructed"
-            value={(
-              (claimsByStatus.comparable ?? 0) +
-              (claimsByStatus.constructed ?? 0)
-            ).toLocaleString()}
-            sub={Object.entries(claimsByStatus)
-              .map(
-                ([s, n]) =>
-                  `${n} ${(STATUS_LABELS[s as keyof typeof STATUS_LABELS] ?? s).toLowerCase()}`,
-              )
-              .join(" · ")}
-          />
-          <Stat
-            label="Multi-release claims"
-            value={claimsMulti.toLocaleString()}
-          />
-        </div>
-      )}
-
-      {hasRows ? (
-        <Panel
-          title="Coverage"
-          description="Select a segment to open the comparison table filtered to it."
+        <Summary
+          figures={[
+            {
+              label: "Published cells",
+              value: published.toLocaleString(),
+              sub: `${programs} programs${
+                country === "US" ? " and the poverty counterfactual" : ""
+              }`,
+            },
+            {
+              label: "With a PolicyEngine counterpart",
+              value: withValues.toLocaleString(),
+              unit: pct(withValues, published),
+            },
+            {
+              label: "Within tolerance",
+              value: (counts.close ?? 0).toLocaleString(),
+              unit: pct(counts.close ?? 0, compared),
+              sub: "Of compared cells",
+            },
+            {
+              label: "Held-out within tolerance",
+              value: heldOutClose.toLocaleString(),
+              unit: `of ${heldOut.length.toLocaleString()}`,
+              sub: "Cells PolicyEngine never calibrated toward",
+            },
+          ]}
         >
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h2 className="text-base font-semibold">Coverage</h2>
+            <p className="text-xs text-muted-foreground">
+              Select a segment to open the comparison table filtered to it.
+            </p>
+          </div>
           <CoverageSpine
             rows={rows}
             buckets={buckets}
@@ -203,13 +174,46 @@ export function Overview({
               gaps: no PolicyEngine model consumes those cells today.
             </p>
           )}
-        </Panel>
+        </Summary>
       ) : (
-        <Panel title={`Where ${COUNTRY_LABELS[country]} stands`}>
-          <p className="text-sm leading-6 text-muted-foreground">
+        <Summary
+          figures={[
+            {
+              label: "External claims",
+              value: claims.length.toLocaleString(),
+              sub: "On reform validation",
+            },
+            {
+              label: "With a PolicyEngine result",
+              value: claimsWithResult.toLocaleString(),
+              unit: pct(claimsWithResult, claims.length),
+            },
+            {
+              label: "Comparable or constructed",
+              value: (
+                (claimsByStatus.comparable ?? 0) +
+                (claimsByStatus.constructed ?? 0)
+              ).toLocaleString(),
+              sub: Object.entries(claimsByStatus)
+                .map(
+                  ([s, n]) =>
+                    `${n} ${(STATUS_LABELS[s as keyof typeof STATUS_LABELS] ?? s).toLowerCase()}`,
+                )
+                .join(" · "),
+            },
+            {
+              label: "Multi-release claims",
+              value: claimsMulti.toLocaleString(),
+            },
+          ]}
+        >
+          <h2 className="text-base font-semibold">
+            Where {COUNTRY_LABELS[country]} stands
+          </h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
             <CountryScopeNote country={country} laneCount={countryLanes.length} />
           </p>
-        </Panel>
+        </Summary>
       )}
 
       <div className="grid gap-4 lg:grid-cols-3">
@@ -360,24 +364,23 @@ export function Overview({
               </p>
             </>
           )}
+          <Provenance
+            className="mt-3 flex-col border-t border-border pt-3"
+            items={
+              country === "US"
+                ? [
+                    `${data.source_meta.id} · fetched ${data.source_meta.fetched} · ${data.source_meta.period}`,
+                    `${b.runtime_dataset} @ ${datasetId} · ${b.model_package} ${b.model_version} · annual 2024`,
+                    `built ${data.built}`,
+                  ]
+                : [
+                    `populations feed built ${populations?.built ?? "—"}`,
+                    `lanes updated ${lanes?.updated ?? "—"}`,
+                  ]
+            }
+          />
         </Panel>
       </div>
-
-      <Provenance
-        className="px-1"
-        items={
-          country === "US"
-            ? [
-                `${data.source_meta.id} · fetched ${data.source_meta.fetched} · ${data.source_meta.period}`,
-                `${b.runtime_dataset} @ ${datasetId} · ${b.model_package} ${b.model_version} · annual 2024`,
-                `built ${data.built}`,
-              ]
-            : [
-                `populations feed built ${populations?.built ?? "—"}`,
-                `lanes updated ${lanes?.updated ?? "—"}`,
-              ]
-        }
-      />
     </div>
   );
 }

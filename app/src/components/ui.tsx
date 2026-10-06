@@ -28,38 +28,95 @@ export function Kicker({
 }
 
 /**
- * A headline number with its label and one line of context — the same
- * shape as ui-kit's MetricCard, but with a mono tabular figure and a
- * free-form value so ratios ("1,031 / 4,792") render as one unit.
+ * A headline number with its label and one line of context: a mono tabular
+ * figure and a free-form value, so ratios ("1,031 of 4,792") render as one
+ * unit.
  */
-export function Stat({
-  label,
-  value,
-  unit,
-  sub,
-}: {
+export interface Figure {
   label: string;
   value: string;
   unit?: string;
   sub?: ReactNode;
+}
+
+// Hairline dividers come from the gap showing the border colour through, so
+// every count lays out as complete rows (no empty divider cell).
+const FIGURE_COLS: Record<number, string> = {
+  1: "grid-cols-1",
+  2: "grid-cols-2",
+  3: "grid-cols-1 sm:grid-cols-3",
+  4: "grid-cols-2 lg:grid-cols-4",
+};
+
+/**
+ * A view's opening panel: optional intro, a row of key figures and the
+ * view's main visual, in one card instead of a stack of separate boxes.
+ */
+export function Summary({
+  intro,
+  figures = [],
+  children,
+}: {
+  intro?: ReactNode;
+  figures?: Figure[];
+  children?: ReactNode;
 }) {
   return (
-    <Card className="gap-0 rounded-lg py-4 shadow-none">
-      <CardContent className="px-4">
-        <p className="fig text-3xl font-semibold leading-9 tracking-tight">
-          {value}
-          {unit && (
-            <span className="ml-1.5 text-base font-normal text-muted-foreground">
-              {unit}
-            </span>
-          )}
-        </p>
-        <p className="mt-1 text-sm text-foreground">{label}</p>
-        {sub && (
-          <p className="mt-0.5 text-xs leading-4 text-muted-foreground">{sub}</p>
-        )}
-      </CardContent>
-    </Card>
+    <section className="overflow-hidden rounded-lg border border-border bg-card">
+      {intro && (
+        <div
+          className={
+            "px-4 py-3 text-sm leading-6 text-muted-foreground " +
+            (figures.length > 0 || children ? "border-b border-border" : "")
+          }
+        >
+          <div className="max-w-3xl">{intro}</div>
+        </div>
+      )}
+      {figures.length > 0 && (
+        <div className={"grid gap-px bg-border " + FIGURE_COLS[figures.length]}>
+          {figures.map((f) => (
+            <div key={f.label} className="bg-card px-4 py-4">
+              <p className="fig text-3xl font-semibold leading-9 tracking-tight">
+                {f.value}
+                {f.unit && (
+                  <span className="ml-1.5 text-base font-normal text-muted-foreground">
+                    {f.unit}
+                  </span>
+                )}
+              </p>
+              <p className="mt-1 text-sm text-foreground">{f.label}</p>
+              {f.sub && (
+                <p className="mt-0.5 text-xs leading-4 text-muted-foreground">
+                  {f.sub}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+      {children && (
+        <div className={"px-4 py-4 " + (figures.length > 0 ? "border-t border-border" : "")}>
+          {children}
+        </div>
+      )}
+    </section>
+  );
+}
+
+/** Filters and the table they drive, in one card: the toolbar sits on top. */
+export function TableCard({
+  toolbar,
+  children,
+}: {
+  toolbar: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <section className="overflow-hidden rounded-lg border border-border bg-card">
+      <div className="border-b border-border p-4">{toolbar}</div>
+      <div className="overflow-x-auto">{children}</div>
+    </section>
   );
 }
 
@@ -188,9 +245,9 @@ const STATUS_SWATCH: Record<Status, string> = {
   constructed: "bg-chart-3",
   baseline_unvalidated: "bg-warning",
   concept_mismatch: "bg-chart-4",
-  pe_gap: "bg-gray-600",
+  pe_gap: "bg-gray-400",
   not_computed: "bg-gray-300",
-  suppressed: "bg-gray-100",
+  suppressed: "swatch-hatch",
 };
 
 /**
