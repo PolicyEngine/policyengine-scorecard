@@ -941,13 +941,22 @@ def _obbba_results(
     return results
 
 
-# IRS SOI rows that no calibration target consumes (diagnosis batch 2, B7):
-# none of the spm-20260915 release's 5,659 target names covers AMT or the
-# education credits, and both rows are in_sample=false. Other SOI rows
-# (refundable CTC, net income tax) do have matching targets and stay
-# consumed; nonrefundable CTC, NIIT, SE tax and the saver's credit also
-# match no target name and await the same check.
-SOI_HELD_OUT = {"soi_amt", "soi_education_credits"}
+# IRS SOI rows whose quantity no calibration target consumes (diagnosis
+# batch 2, B7, extended 2026-10-06). None of the spm-20260915 release's
+# 5,659 targets names AMT, education credits, NIIT, self-employment tax or
+# the saver's credit in any field, and there is no self-employment-income
+# target either; their inputs are disciplined only indirectly through
+# income margins, which the doctrine (relationships.py) labels held_out.
+# Nonrefundable CTC stays consumed: non_refundable_ctc = ctc -
+# refundable_ctc, and both ctc_amount and actc_amount are targets; so do
+# refundable CTC and net income tax.
+SOI_HELD_OUT = {
+    "soi_amt",
+    "soi_education_credits",
+    "soi_niit",
+    "soi_savers_credit",
+    "soi_se_tax",
+}
 
 _EFFECTIVE: dict[str, str] | None = None
 

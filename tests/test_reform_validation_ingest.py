@@ -448,11 +448,18 @@ def test_soi_and_jct_te_targets_marked_consumed(conn):
     ).fetchall()
     assert rows
     for column, relationship in rows:
-        # AMT and education credits match no calibration target
-        # (diagnosis batch 2, B7): held out; every other row is consumed.
+        # SOI rows whose quantity no calibration target consumes are held
+        # out (diagnosis batch 2, B7); every other row is consumed.
         expected = "held_out" if column in SOI_HELD_OUT else "consumed_as_target"
         assert relationship == expected, column
     assert {r[0] for r in rows} >= SOI_HELD_OUT
+    # Targeted SOI quantities stay consumed: nonrefundable CTC is ctc minus
+    # refundable_ctc, both calibration targets.
+    assert not SOI_HELD_OUT & {
+        "soi_ctc_nonrefundable",
+        "soi_ctc_refundable",
+        "soi_income_tax_net",
+    }
 
 
 def test_fy2026_onset_obbba_results_are_timing_mismatches(conn):
