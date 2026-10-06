@@ -10,7 +10,14 @@ import {
   countryOf,
 } from "../types";
 import { sourceLabel } from "../sourceLabels";
-import { LabeledSelect, Provenance, Stat, StatusPill, Tag } from "./ui";
+import {
+  LabeledSelect,
+  Provenance,
+  StatusPill,
+  Summary,
+  TableCard,
+  Tag,
+} from "./ui";
 
 /**
  * The reform-validation registry (issue #20): every non-Urban claim with a PE
@@ -140,115 +147,121 @@ export function ReformValidationView({
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Stat
-          label="External claims"
-          value={inCountry.length.toLocaleString()}
-          sub={`${COUNTRY_LABELS[country]} reform scores and references beyond the main comparison`}
-        />
-        <Stat
-          label="With a PolicyEngine result"
-          value={withResult.toLocaleString()}
-          sub="Each result carries its certified release's exact engine pins"
-        />
-        <Stat
-          label="Multi-release claims"
-          value={multiRelease.toLocaleString()}
-          sub="Drift across releases is queryable; a scoring-construction change is labeled, not read as drift"
-        />
-      </div>
+      <Summary
+        figures={[
+          {
+            label: "External claims",
+            value: inCountry.length.toLocaleString(),
+            sub: `${COUNTRY_LABELS[country]} reform scores and references beyond the main comparison`,
+          },
+          {
+            label: "With a PolicyEngine result",
+            value: withResult.toLocaleString(),
+            sub: "Each result carries its certified release's exact engine pins",
+          },
+          {
+            label: "Multi-release claims",
+            value: multiRelease.toLocaleString(),
+            sub: "Drift across releases is queryable; a scoring-construction change is labeled, not read as drift",
+          },
+        ]}
+      >
+        <details className="text-sm">
+          <summary className="cursor-pointer font-medium">
+            Scope and method note for {COUNTRY_LABELS[country]}
+          </summary>
+          <p className="mt-2 max-w-3xl leading-6 text-muted-foreground">
+            This registry covers {SCOPE_COPY[country]}. Nothing here is a
+            pass/fail grade: statuses and calibration relationships label, never
+            grade.
+          </p>
+          <Provenance
+            className="mt-2"
+            items={[
+              "populations feed · exported from scorecard.db",
+              `built ${feed.built}`,
+              `scope: ${COUNTRY_LABELS[country]} (the country selector owns it)`,
+              "per-release results carry their own engine and data-bundle provenance",
+            ]}
+          />
+        </details>
+      </Summary>
 
-      <details className="rounded-lg border border-border bg-card px-4 py-3 text-sm">
-        <summary className="cursor-pointer font-medium">
-          Scope and method note for {COUNTRY_LABELS[country]}
-        </summary>
-        <p className="mt-2 max-w-3xl leading-6 text-muted-foreground">
-          This registry covers {SCOPE_COPY[country]}. Nothing here is a
-          pass/fail grade: statuses and calibration relationships label, never
-          grade.
-        </p>
-        <Provenance
-          className="mt-2"
-          items={[
-            "populations feed · exported from scorecard.db",
-            `built ${feed.built}`,
-            `scope: ${COUNTRY_LABELS[country]} (the country selector owns it)`,
-            "per-release results carry their own engine and data-bundle provenance",
-          ]}
-        />
-      </details>
-
-      <div className="rounded-lg border border-border bg-card p-4">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
-          <LabeledSelect
-            label="Source"
-            value={source}
-            onChange={setSource}
-            options={[
-              { value: "all", label: "All sources" },
-              ...sources.map((s) => ({
-                value: s,
-                label: `${sourceLabel(s)} (${bySource[s]})`,
-              })),
-            ]}
-          />
-          <LabeledSelect
-            label="Latest status"
-            value={status}
-            onChange={setStatus}
-            options={[
-              { value: "all", label: "All statuses" },
-              ...Object.entries(byStatus).map(([s, n]) => ({
-                value: s,
-                label: `${STATUS_LABELS[s as keyof typeof STATUS_LABELS] ?? s} (${n})`,
-              })),
-            ]}
-          />
-          <LabeledSelect
-            label="Fiscal event"
-            value={fiscalEvent}
-            onChange={setFiscalEvent}
-            options={[
-              { value: "all", label: "All events" },
-              ...Object.entries(byEvent)
-                .sort()
-                .map(([v, n]) => ({
-                  value: v,
-                  label: `${v === "" ? "(none recorded)" : v.replace(/_/g, " ")} (${n})`,
-                })),
-            ]}
-          />
-          <LabeledSelect
-            label="Benchmark class"
-            value={benchmarkClass}
-            onChange={setBenchmarkClass}
-            options={[
-              { value: "all", label: "All classes" },
-              ...Object.entries(byClass)
-                .sort()
-                .map(([v, n]) => ({
-                  value: v,
-                  label: `${v === "" ? "(none recorded)" : v.replace(/_/g, " ")} (${n})`,
-                })),
-            ]}
-          />
-          <div className="flex items-end gap-2 pb-1">
-            <Switch
-              id="multi-release"
-              checked={releasesOnly}
-              onCheckedChange={setReleasesOnly}
-            />
-            <Label htmlFor="multi-release" className="text-sm">
-              Multi-release only
-            </Label>
-          </div>
-          <span className="fig self-end pb-1 text-xs text-muted-foreground sm:text-right">
-            {rows.length.toLocaleString()} claims
-          </span>
-        </div>
-      </div>
-
-      <div className="overflow-x-auto rounded-lg border border-border bg-card">
+      <TableCard
+        toolbar={
+          <>
+            <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+              <LabeledSelect
+                label="Source"
+                value={source}
+                onChange={setSource}
+                options={[
+                  { value: "all", label: "All sources" },
+                  ...sources.map((s) => ({
+                    value: s,
+                    label: `${sourceLabel(s)} (${bySource[s]})`,
+                  })),
+                ]}
+              />
+              <LabeledSelect
+                label="Latest status"
+                value={status}
+                onChange={setStatus}
+                options={[
+                  { value: "all", label: "All statuses" },
+                  ...Object.entries(byStatus).map(([s, n]) => ({
+                    value: s,
+                    label: `${STATUS_LABELS[s as keyof typeof STATUS_LABELS] ?? s} (${n})`,
+                  })),
+                ]}
+              />
+              <LabeledSelect
+                label="Fiscal event"
+                value={fiscalEvent}
+                onChange={setFiscalEvent}
+                options={[
+                  { value: "all", label: "All events" },
+                  ...Object.entries(byEvent)
+                    .sort()
+                    .map(([v, n]) => ({
+                      value: v,
+                      label: `${v === "" ? "(none recorded)" : v.replace(/_/g, " ")} (${n})`,
+                    })),
+                ]}
+              />
+              <LabeledSelect
+                label="Benchmark class"
+                value={benchmarkClass}
+                onChange={setBenchmarkClass}
+                options={[
+                  { value: "all", label: "All classes" },
+                  ...Object.entries(byClass)
+                    .sort()
+                    .map(([v, n]) => ({
+                      value: v,
+                      label: `${v === "" ? "(none recorded)" : v.replace(/_/g, " ")} (${n})`,
+                    })),
+                ]}
+              />
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-3">
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="multi-release"
+                  checked={releasesOnly}
+                  onCheckedChange={setReleasesOnly}
+                />
+                <Label htmlFor="multi-release" className="text-sm">
+                  Multi-release only
+                </Label>
+              </div>
+              <span className="fig ml-auto text-xs text-muted-foreground">
+                {rows.length.toLocaleString()} claims
+              </span>
+            </div>
+          </>
+        }
+      >
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-border bg-muted text-left text-xs text-muted-foreground">
@@ -358,7 +371,7 @@ export function ReformValidationView({
             ))}
           </tbody>
         </table>
-      </div>
+      </TableCard>
     </div>
   );
 }

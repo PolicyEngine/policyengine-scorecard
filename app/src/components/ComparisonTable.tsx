@@ -10,7 +10,7 @@ import {
 import type { Comparison, Row } from "../types";
 import { METRIC_LABELS, PROGRAM_LABELS } from "../types";
 import { SPINE_META, SPINE_ORDER, type SpineBucket } from "../spine";
-import { LabeledSelect, StatusBadge, Tag } from "./ui";
+import { LabeledSelect, StatusBadge, TableCard, Tag } from "./ui";
 
 const PROGRAM_ORDER = [
   "snap", "ssi", "tanf", "wic", "ccdf", "housing", "liheap", "eitc",
@@ -84,99 +84,101 @@ export function ComparisonTable({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-border bg-card p-4">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          <LabeledSelect
-            label="Program"
-            value={filters.program}
-            onChange={(program) => setFilters({ ...filters, program })}
-            options={[
-              { value: "all", label: "All programs" },
-              ...PROGRAM_ORDER.map((p) => ({
-                value: p,
-                label: PROGRAM_LABELS[p] ?? p,
-              })),
-            ]}
-          />
-          <LabeledSelect
-            label="Metric"
-            value={filters.metric}
-            onChange={(metric) => setFilters({ ...filters, metric })}
-            options={[
-              { value: "all", label: "All metrics" },
-              ...METRIC_ORDER.map((m) => ({
-                value: m,
-                label: METRIC_LABELS[m] ?? m,
-              })),
-            ]}
-          />
-          <LabeledSelect
-            label="Geography"
-            value={filters.geography}
-            onChange={(geography) => setFilters({ ...filters, geography })}
-            options={[
-              { value: national, label: "National" },
-              { value: "states", label: "All states" },
-              ...states.map((s) => ({ value: s, label: s })),
-            ]}
-          />
-          <LabeledSelect
-            label="Subgroup"
-            value={filters.subgroup}
-            onChange={(subgroup) => setFilters({ ...filters, subgroup })}
-            options={[
-              { value: "total", label: "Total only" },
-              { value: "all", label: "All subgroups" },
-              ...subgroups
-                .filter((s) => s !== "total")
-                .map((s) => ({ value: s, label: s })),
-            ]}
-          />
-          <LabeledSelect
-            label="Status"
-            value={filters.bucket ?? "all"}
-            onChange={(v) =>
-              setFilters({
-                ...filters,
-                bucket: v === "all" ? null : (v as SpineBucket),
-              })
-            }
-            options={[
-              { value: "all", label: "All statuses" },
-              ...SPINE_ORDER.map((b) => ({
-                value: b,
-                label: SPINE_META[b].label,
-              })),
-            ]}
-          />
-        </div>
-        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-3">
-          <div className="flex items-center gap-2">
-            <Switch
-              id="sort-divergence"
-              checked={sortByDivergence}
-              onCheckedChange={setSortByDivergence}
-            />
-            <Label htmlFor="sort-divergence" className="text-sm">
-              Sort by divergence
-            </Label>
-          </div>
-          {hasActiveFilters(filters) && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setFilters(defaultFilters(filters.country))}
-            >
-              Reset filters
-            </Button>
-          )}
-          <span className="fig ml-auto text-xs text-muted-foreground">
-            {filtered.length.toLocaleString()} rows
-          </span>
-        </div>
-      </div>
-
-      <div className="overflow-x-auto rounded-lg border border-border bg-card">
+      <TableCard
+        toolbar={
+          <>
+            <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-5">
+              <LabeledSelect
+                label="Program"
+                value={filters.program}
+                onChange={(program) => setFilters({ ...filters, program })}
+                options={[
+                  { value: "all", label: "All programs" },
+                  ...PROGRAM_ORDER.map((p) => ({
+                    value: p,
+                    label: PROGRAM_LABELS[p] ?? p,
+                  })),
+                ]}
+              />
+              <LabeledSelect
+                label="Metric"
+                value={filters.metric}
+                onChange={(metric) => setFilters({ ...filters, metric })}
+                options={[
+                  { value: "all", label: "All metrics" },
+                  ...METRIC_ORDER.map((m) => ({
+                    value: m,
+                    label: METRIC_LABELS[m] ?? m,
+                  })),
+                ]}
+              />
+              <LabeledSelect
+                label="Geography"
+                value={filters.geography}
+                onChange={(geography) => setFilters({ ...filters, geography })}
+                options={[
+                  { value: national, label: "National" },
+                  { value: "states", label: "All states" },
+                  ...states.map((s) => ({ value: s, label: s })),
+                ]}
+              />
+              <LabeledSelect
+                label="Subgroup"
+                value={filters.subgroup}
+                onChange={(subgroup) => setFilters({ ...filters, subgroup })}
+                options={[
+                  { value: "total", label: "Total only" },
+                  { value: "all", label: "All subgroups" },
+                  ...subgroups
+                    .filter((s) => s !== "total")
+                    .map((s) => ({ value: s, label: s })),
+                ]}
+              />
+              <LabeledSelect
+                label="Status"
+                value={filters.bucket ?? "all"}
+                onChange={(v) =>
+                  setFilters({
+                    ...filters,
+                    bucket: v === "all" ? null : (v as SpineBucket),
+                  })
+                }
+                options={[
+                  { value: "all", label: "All statuses" },
+                  ...SPINE_ORDER.map((b) => ({
+                    value: b,
+                    label: SPINE_META[b].label,
+                  })),
+                ]}
+              />
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-3">
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="sort-divergence"
+                  checked={sortByDivergence}
+                  onCheckedChange={setSortByDivergence}
+                />
+                <Label htmlFor="sort-divergence" className="text-sm">
+                  Sort by divergence
+                </Label>
+              </div>
+              {hasActiveFilters(filters) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setFilters(defaultFilters(filters.country))}
+                >
+                  Reset filters
+                </Button>
+              )}
+              <span className="fig ml-auto text-xs text-muted-foreground">
+                {filtered.length.toLocaleString()} rows
+              </span>
+            </div>
+          </>
+        }
+      >
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-border bg-muted text-left text-xs text-muted-foreground">
@@ -237,7 +239,7 @@ export function ComparisonTable({
             the rest.
           </p>
         )}
-      </div>
+      </TableCard>
     </div>
   );
 }

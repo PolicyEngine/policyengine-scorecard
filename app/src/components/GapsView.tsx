@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { Comparison, Row } from "../types";
 import { PROGRAM_LABELS } from "../types";
 import { useNav } from "../navigation";
-import { LinkButton, Stat, Tag } from "./ui";
+import { LinkButton, Summary, Tag } from "./ui";
 
 /** Where PolicyEngine cannot yet see: gaps grouped by what closes them. */
 export function GapsView({ data }: { data: Comparison }) {
@@ -30,42 +30,46 @@ export function GapsView({ data }: { data: Comparison }) {
 
   return (
     <div className="space-y-4">
-      <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
-        Cells the source publishes that PolicyEngine does not yet produce.
-        Model gaps need engine or data work; not-yet-computed cells need only
-        pipeline work. Each group names what closes it.
-      </p>
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Stat
-          label="Model gap"
-          value={modelGap.toLocaleString()}
-          sub={
-            <LinkButton
-              className="text-xs"
-              onClick={() => nav.go("scorecard", { bucket: "pe_gap" })}
-            >
-              Show these cells
-            </LinkButton>
-          }
-        />
-        <Stat
-          label="Not yet computed"
-          value={backlog.toLocaleString()}
-          sub={
-            <LinkButton
-              className="text-xs"
-              onClick={() => nav.go("scorecard", { bucket: "not_computed" })}
-            >
-              Show these cells
-            </LinkButton>
-          }
-        />
-        <Stat
-          label="Suppressed by source"
-          value={suppressed.toLocaleString()}
-          sub="Mostly metro/non-metro splits at the national level and small-state subgroup cells"
-        />
-      </div>
+      <Summary
+        intro={
+          <>
+            Cells the source publishes that PolicyEngine does not yet produce.
+            Model gaps need engine or data work; not-yet-computed cells need
+            only pipeline work. Each group names what closes it.
+          </>
+        }
+        figures={[
+          {
+            label: "Model gap",
+            value: modelGap.toLocaleString(),
+            sub: (
+              <LinkButton
+                className="text-xs"
+                onClick={() => nav.go("scorecard", { bucket: "pe_gap" })}
+              >
+                Show these cells
+              </LinkButton>
+            ),
+          },
+          {
+            label: "Not yet computed",
+            value: backlog.toLocaleString(),
+            sub: (
+              <LinkButton
+                className="text-xs"
+                onClick={() => nav.go("scorecard", { bucket: "not_computed" })}
+              >
+                Show these cells
+              </LinkButton>
+            ),
+          },
+          {
+            label: "Suppressed by source",
+            value: suppressed.toLocaleString(),
+            sub: "Mostly metro/non-metro splits at the national level and small-state subgroup cells",
+          },
+        ]}
+      />
       <div className="grid gap-4 md:grid-cols-2">
         {groups.map(([key, g]) => {
           const r0 = g.rows[0];
