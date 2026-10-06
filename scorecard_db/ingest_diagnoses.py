@@ -4,6 +4,11 @@ Each queue item anchors to a primary claim (the national/state row it is
 about); the full memo lives at diagnosis/DIAGNOSES.md and the
 machine-readable batch at diagnosis/diagnoses.json. Also emits
 data/diagnoses_rows.json for the app (row-key -> diagnosis chip).
+
+Batch 2 (the US reform-validation registry) anchors by claim_id instead:
+each diagnosis/batch2/<cluster>.json item lists the claims it covers,
+and the memo is diagnosis/batch2/<cluster>.md. Those diagnoses reach the
+app through the populations feed (export_populations joins diagnoses).
 """
 
 from __future__ import annotations
@@ -11,7 +16,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .db import ScorecardDB
+from .db import DIAGNOSES_SQL, ScorecardDB
 from .ingest_platform import _probe
 
 REPO = Path(__file__).resolve().parent.parent
@@ -38,6 +43,16 @@ CLASS_MAP = {
     "data_vintage": "vintage",
     "vintage": "vintage",
 }
+
+# Batch-2 classes -> DB enum. A construction_issue is a defect in our own
+# comparison construction (the PE side), so it is gated like pe_gap; an
+# unadjudicated item stays undiagnosed.
+BATCH2_CLASS_MAP = {
+    **CLASS_MAP,
+    "construction_issue": "pe_gap",
+    "open": "undiagnosed",
+}
+BATCH2_DIR = REPO / "diagnosis" / "batch2"
 
 UNIT_FOR = {
     ("snap", "participation_rate"): "persons",
@@ -90,6 +105,7 @@ def ingest(db_path: Path) -> dict:
                 "action_link": item.get("action_link"),
             }
         )
+    batch2 = _ingest_batch2(db)
     db.set_lane(
         "diagnosis-batch-1",
         "computed",
@@ -100,7 +116,43 @@ def ingest(db_path: Path) -> dict:
     db.close()
     out = REPO / "data" / "diagnoses_rows.json"
     out.write_text(json.dumps(app_rows))
-    return {"diagnosed": len(app_rows)}
+    return {"diagnosed": len(app_rows), "batch2_claims": batch2}
+
+
+def _ingest_batch2(db: ScorecardDB) -> int:
+    """Attach batch-2 items to their claims; returns claims diagnosed."""
+    files = sorted(BATCH2_DIR.glob("*.json"))
+    if not files:
+        return 0
+    known = {r[0] for r in db.conn.execute("SELECT claim_id FROM external_scores")}
+    rows = []
+    counts: dict[str, int] = {}
+    for path in files:
+        cluster = path.stem
+        for n, item in enumerate(json.loads(path.read_text()), start=1):
+            cls = BATCH2_CLASS_MAP[item["classification"]]
+            missing = [c for c in item["claim_ids"] if c not in known]
+            if missing:
+                raise ValueError(f"batch2 {cluster}{n}: unknown claim_ids {missing}")
+            rationale = (
+                f"[batch2 {cluster}{n}, confidence {item['confidence']}] "
+                f"{item['title']}"
+            )
+            link = item.get("action_link") or f"diagnosis/batch2/{cluster}.md"
+            for cid in item["claim_ids"]:
+                rows.append(db.diagnosis_row(cid, cls, rationale, link))
+            counts[cls] = counts.get(cls, 0) + len(item["claim_ids"])
+    with db.conn:
+        db.conn.executemany(DIAGNOSES_SQL, rows)
+    detail = ", ".join(f"{n} {c}" for c, n in sorted(counts.items()))
+    db.set_lane(
+        "diagnosis-batch-2",
+        "computed",
+        f"{len(rows)} reform-validation claims adjudicated ({detail}); "
+        "memos in diagnosis/batch2/",
+        "2026-10-06T23:59:00",
+    )
+    return len(rows)
 
 
 if __name__ == "__main__":

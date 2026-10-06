@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-09-28",
+ "updated": "2026-10-06",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -37,7 +37,18 @@
    "stage": "published",
    "running": false,
    "updated": "2026-08-07",
-   "note": "10/10 adjudicated; 6 pe_gap issues filed as microcosm#643-648; 1 external memo + 3 annotations in diagnosis/DIAGNOSES.md"
+   "note": "10/10 adjudicated; 6 pe_gap issues filed as microcosm#643-648 (re-measured on us-6.2.1, 2026-10-06); 1 external memo + 3 annotations in diagnosis/DIAGNOSES.md, shipped with concept-mismatch statuses 2026-10-06"
+  },
+  {
+   "id": "diagnosis-batch-2",
+   "country": "US",
+   "source": "Populace releases",
+   "area": "reform-validation divergence diagnosis (46 claims)",
+   "mode": 2,
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-06",
+   "note": "46 claims in 23 items on spm-20260915: 18 pe_gap, 20 construction issues, 5 concept mismatch, 3 open; FY2026 timing and SOI labels fixed in the ingest; memos in diagnosis/batch2/, upstream issues not yet filed"
   },
   {
    "id": "urban-sotsn-solo-attribution",
@@ -212,8 +223,8 @@
    "mode": 2,
    "stage": "computed",
    "running": false,
-   "updated": "2026-08-03",
-   "note": "45 of 6780 claims computed \u2014 6771 claims across 7 JCX conventional tables (per-provision \u00d7 FY2025-34; JCX-29/30 vs current-policy baseline); JCX-45-25 tax-expenditure report pending coordinate-aware parser"
+   "updated": "2026-10-06",
+   "note": "51 of 6786 claims computed \u2014 6771 claims across 7 JCX conventional tables (per-provision \u00d7 FY2025-34; JCX-29/30 vs current-policy baseline); JCX-45-25 tax-expenditure report pending coordinate-aware parser"
   },
   {
    "id": "cbo-cost-estimates",
@@ -223,7 +234,7 @@
    "mode": 2,
    "stage": "computed",
    "running": false,
-   "updated": "2026-07-22",
+   "updated": "2026-09-15",
    "note": "1 of 2 claims computed \u2014 1 single-year claims from the PL 119-21 SNAP supplement (61367, Jan-2025 baseline vintage); OBBBA cost-estimate PDFs are period-ranged verbatim pointers pending period-window staging"
   },
   {
@@ -234,7 +245,7 @@
    "mode": 2,
    "stage": "computed",
    "running": false,
-   "updated": "2026-08-02",
+   "updated": "2026-10-06",
    "note": "10 of 1057 claims computed \u2014 1057 claims from 31 T-series tables (Senate-OBBBA distributions, OBBBA-by-race, CTC/AFA/WPTRA sets, tariffs); dropped: 468 tax-benefit-family rows (beyond vocab); T26-0009 re-staged per-sheet after the harvest parse defect (race as subgroup condition); T26-0010 page/file mismatch keyed off workbook-internal table (external-issue seed)"
   },
   {
@@ -278,7 +289,7 @@
    "mode": 1,
    "stage": "computed",
    "running": false,
-   "updated": "2026-08-07",
+   "updated": "2026-10-06",
    "note": "9 of 930 claims computed \u2014 930 Feb-2026 outlook claims (Medicaid/SSI/SNAP/UI/CHIP + 330-row IIT walk); 317 consumed_as_target (pre-verified vs pe-us calibration/gov/cbo); June-2026 spending refresh + 4 more artifacts pending browser fetch"
   },
   {
@@ -289,7 +300,7 @@
    "mode": 2,
    "stage": "computed",
    "running": false,
-   "updated": "2026-08-02",
+   "updated": "2026-10-06",
    "note": "2 of 717 claims computed \u2014 717 claims: OBBBA signed/House (incl. primary-deficit Table 3), SS-benefit-tax elimination, KYPA/WATCA, TCJA-extension-baseline option sets; distribution income concept is after-tax-and-transfer"
   },
   {
@@ -322,7 +333,7 @@
    "mode": 1,
    "stage": "computed",
    "running": false,
-   "updated": "2026-08-02",
+   "updated": "2026-10-06",
    "note": "8 of 1033 claims computed \u2014 1033 claims: monthly SPM 2024-01\u21922025-12 (final series \u2014 project ended Dec 2025), CTC counterfactuals 2023/2024 at 100% take-up, state refundable-CTC designs, SNAP TFP-revocation state tables (TRIM3 2015-19 base); annual-SPM\u2248Census reviewed \u2192 held_out (no poverty targets in pe-us calibration); 16.6-vs-11.4 erratum diagnosed external_issue"
   },
   {

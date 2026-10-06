@@ -114,6 +114,11 @@ from .models import (
 
 REPO = Path(__file__).resolve().parent.parent
 RAW = REPO / "sources" / "populace-reform-validation" / "raw"
+# JCX-35-25's Effective column, verbatim (pdftotext -layout, re-grepped):
+# the harvest staging carries it per provision row.
+JCX_35_25_STAGED = (
+    REPO / "sources" / "harvest-2026-08-02" / "jct" / "claims_staged.jsonl"
+)
 RUN_PREFIX = "populace-rv-"
 REGISTRY_MARK = "populace_reform_validation"
 
@@ -187,6 +192,10 @@ COUNTRIES = {
             "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z": "1.764.6",
             "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z": "1.764.6",
             "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z": "1.764.6",
+            # Certified with policyengine.py 6.2.1 (bundle us-6.2.1); produced
+            # locally by microcosm's post-export probe — see the raw file's
+            # provenance note.
+            "populace-us-2024-spm-20260915": "2.2.1",
         },
     },
     "UK": {
@@ -327,6 +336,7 @@ OBBBA_SCORING_MODE = {
     "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z": "jcx_stacked",
     "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z": "jcx_stacked",
     "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z": "jcx_stacked",
+    "populace-us-2024-spm-20260915": "jcx_stacked",
 }
 
 # Registry OBBBA row id -> the JCX-35-25 provision label the harvest keyed
@@ -449,10 +459,19 @@ _SOI_TAXES = {
 }
 
 
+def _pe_block(row: dict) -> dict:
+    """The row's PE block. The producer keyed it "populace" until the repo
+    became microcosm; releases from then on key it "microcosm"."""
+    block = row.get("populace", row.get("microcosm"))
+    if block is None:
+        raise KeyError(f"{row['id']}: no populace/microcosm PE block")
+    return block
+
+
 def _state_of(row: dict) -> str | None:
     """State code from the row's measure or id prefix, else None."""
     for token in (
-        (row["populace"].get("measure") or "").split("_")[0],
+        (_pe_block(row).get("measure") or "").split("_")[0],
         row["id"]
         .removeprefix("state_repeal_")
         .removeprefix("state_")
@@ -605,7 +624,7 @@ def _map_row(
     if value is None:
         return None
     cat = row["category"]
-    measure = row["populace"].get("measure") or ""
+    measure = _pe_block(row).get("measure") or ""
     window = row["jct"].get("window")
     period_start = period_end = window_kind = None
     if country == "US":
@@ -707,7 +726,10 @@ def _map_row(
 
     conditions.update(ROW_CONDITIONS.get(row["id"], {}))
     relationship = "held_out"
-    if cat in ("JCT tax expenditure", "IRS SOI actual"):
+    if (
+        cat in ("JCT tax expenditure", "IRS SOI actual")
+        and row["id"] not in SOI_HELD_OUT
+    ):
         relationship = "consumed_as_target"
 
     return (
@@ -745,7 +767,7 @@ def _pe_value(row: dict, construction: str) -> float:
     before) which wrote the level into budget_effect; deltas always live in
     budget_effect. A mapped row without a value is a producer bug — fail.
     """
-    pop = row["populace"]
+    pop = _pe_block(row)
     if construction.startswith("level:"):
         value = pop.get("baseline_total")
         if value is None:
@@ -767,7 +789,7 @@ def _status(row: dict, claim: ExternalScore, construction: str) -> ComparisonSta
     """
     if row["id"] in STATUS_OVERRIDES:
         return STATUS_OVERRIDES[row["id"]]
-    sim_period = row["populace"].get("period") or row["period"]
+    sim_period = _pe_block(row).get("period") or row["period"]
     if (
         row["jct"].get("score_type") in ("approximation", "tax_expenditure")
         # MI HB4170's window is "annual (approximate)" with a fiscal_note
@@ -835,7 +857,7 @@ def _obbba_results(
     provision = OBBBA_PROVISIONS.get(row["id"])
     if provision is None:
         raise ValueError(f"OBBBA row {row['id']} missing from OBBBA_PROVISIONS")
-    measure = row["populace"].get("measure") or ""
+    measure = _pe_block(row).get("measure") or ""
     mode = OBBBA_SCORING_MODE[release_id]
     pe_value = _pe_value(row, f"reform_delta:{measure}")
     results = []
@@ -893,11 +915,17 @@ def _obbba_results(
             # FY2027 3,398M pre-audit vs 3,110M). The value isn't part of
             # claim_id, so overwriting keeps the id stable.
             claims[cid] = claim
+        status, note = ComparisonStatus.CONSTRUCTED, None
+        if fy == 2026:
+            status, note = _fy2026_timing(
+                provision, row["jct"].get("score"), row["jct"].get("score_fy2027")
+            )
         results.append(
             PEResult(
                 claim_id=cid,
                 computed_value=pe_value,
-                status=ComparisonStatus.CONSTRUCTED,
+                status=status,
+                annotations=[note] if note else [],
                 engine_version=engine,
                 data_bundle=release_id,
                 pe_construction=(
@@ -911,6 +939,66 @@ def _obbba_results(
             )
         )
     return results
+
+
+# IRS SOI rows that no calibration target consumes (diagnosis batch 2, B7):
+# none of the spm-20260915 release's 5,659 target names covers AMT or the
+# education credits, and both rows are in_sample=false. Other SOI rows
+# (refundable CTC, net income tax) do have matching targets and stay
+# consumed; nonrefundable CTC, NIIT, SE tax and the saver's credit also
+# match no target name and await the same check.
+SOI_HELD_OUT = {"soi_amt", "soi_education_credits"}
+
+_EFFECTIVE: dict[str, str] | None = None
+
+
+def _jcx_effective(provision: str) -> str:
+    """JCX-35-25's verbatim Effective entry for a provision ("" if absent)."""
+    global _EFFECTIVE
+    if _EFFECTIVE is None:
+        _EFFECTIVE = {}
+        if JCX_35_25_STAGED.exists():
+            for line in JCX_35_25_STAGED.read_text().splitlines():
+                r = json.loads(line)
+                c = r.get("conditions") or {}
+                if (
+                    c.get("bill_version") == "JCX-35-25"
+                    and r.get("row_kind") == "provision"
+                ):
+                    _EFFECTIVE[c["provision"]] = r.get("effective_verbatim") or ""
+    return _EFFECTIVE.get(provision, "")
+
+
+def _fy2026_timing(provision: str, score_fy2026, score_fy2027):
+    """(status, annotation) for a calendar-2026 liability set against
+    JCT's FY2026 receipts (diagnosis batch 2, item A1).
+
+    A provision first applying to taxable years beginning after 12/31/2025
+    (or decedents/gifts after it) reaches FY2026 (Oct 2025-Sep 2026) only
+    through the TY2026 withholding year, so JCT's FY2026 value is a partial
+    ramp and the full-year CY2026 liability is not the same quantity: a
+    concept mismatch, compared on FY2027 instead. A provision effective
+    from TY2025 mixes the TY2025 settlement with TY2026 withholding in
+    FY2026: still constructed, annotated."""
+    effective = _jcx_effective(provision)
+    share = ""
+    if score_fy2026 and score_fy2027:
+        share = f" JCT's own FY2026 value is {score_fy2026 / score_fy2027:.0%} of its FY2027 value."
+    if effective.endswith("12/31/25"):
+        return ComparisonStatus.CONCEPT_MISMATCH, (
+            f"JCX-35-25 reports fiscal-year receipts. This provision is effective "
+            f"'{effective}', so FY2026 (Oct 2025-Sep 2026) holds only the "
+            f"withholding-year part of the TY2026 effect.{share} PolicyEngine "
+            "reports one full calendar-2026 liability change: compare with the "
+            "FY2027 claim."
+        )
+    if effective:
+        return ComparisonStatus.CONSTRUCTED, (
+            f"JCX-35-25 reports fiscal-year receipts. This provision is effective "
+            f"'{effective}', so FY2026 mixes the TY2025 settlement with TY2026 "
+            "withholding; PolicyEngine reports the calendar-2026 liability change."
+        )
+    return ComparisonStatus.CONSTRUCTED, None
 
 
 def ingest_uk(db_path: Path, raw_dir: Path | None = None) -> dict:

@@ -157,6 +157,10 @@ def build(db_path: Path) -> dict:
         ("diagnoses", lambda: ingest_diagnoses.ingest(db_path)),
         ("campaign_us", lambda: ingest_campaign.ingest(db_path)),
         (
+            "campaign_us_20261006",
+            lambda: ingest_campaign.ingest(db_path, ingest_campaign.STAGED_US_20261006),
+        ),
+        (
             "harvest_lane_stages",
             lambda: ingest_harvest.advance_computed_lanes(db_path),
         ),

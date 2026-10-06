@@ -37,7 +37,7 @@
       "id": "tanf-payable-denominator",
       "applies_to": {"program": "tanf", "metrics": ["eligible_count", "eligibility_rate", "participation_rate", "participation_gap_count"]},
       "severity": "construction",
-      "text": "PolicyEngine has no national income-tested TANF eligibility variable (state-by-state machinery only). The scorecard uses persons in units where TANF pays > 0 under forced take-up as the income-eligible counterpart. TANF dollars on Build P miss the ACF admin total by −36%, so treat TANF comparisons as provisional.",
+      "text": "PolicyEngine has no national income-tested TANF eligibility variable (state-by-state machinery only). The scorecard uses persons in units where TANF pays > 0 under forced take-up as the income-eligible counterpart. TANF dollars miss the ACF FY2024 admin total ($7.788B) by −36% on Build P and −35% on the spm-20260915 build, so treat TANF comparisons as provisional.",
       "basis": "docs/replication-assessment.md §2, §5, §7 item 1"
     },
     {
@@ -58,7 +58,7 @@
       "id": "wic-untargeted",
       "applies_to": {"program": "wic", "metrics": ["participation_rate"]},
       "severity": "caution",
-      "text": "WIC has zero calibration targets on Build P; the seeded legacy gate floats free. The close match to Urban's national rate (52.8% vs 53.5% in the replication assessment) is coincidence, not anchoring — FNS WIC targets are on the build list.",
+      "text": "WIC has zero calibration targets on the certified artifact (Build P; 0 of 5,659 on the spm-20260915 build); the seeded legacy gate floats free. The close match to Urban's national rate (52.8% vs 53.5% in the replication assessment) is coincidence, not anchoring — FNS WIC targets are on the build list.",
       "basis": "docs/replication-assessment.md §3, §6, §7 item 2"
     },
     {
@@ -79,7 +79,7 @@
       "id": "ctc-claims-calibrated",
       "applies_to": {"program": "ctc_refund", "metrics": ["eligible_count", "eligibility_rate"]},
       "severity": "construction",
-      "text": "Build P stores no CTC take-up flag; refundable CTC > 0 is the formula outcome with claims and dollars calibrated to SOI. The count is closer to 'claims' than to a pure eligibility simulation.",
+      "text": "The certified artifact (Build P and the spm-20260915 build) stores no CTC take-up flag; refundable CTC > 0 is the formula outcome with claims and dollars calibrated to SOI. The count is closer to 'claims' than to a pure eligibility simulation.",
       "basis": "docs/replication-assessment.md §3, §5; data/pe/pe_meta.json (no takes_up flag for CTC among stored inputs)"
     },
     {
@@ -165,6 +165,27 @@
       "severity": "gap",
       "text": "Earner-presence and citizenship subgroups are computable from the artifact but not yet included in the scorecard pipeline (v1 backlog).",
       "basis": "v1 scope decision; see pipeline/compute_counterparts.py"
+    },
+    {
+      "id": "snap-rate-not-like-for-like",
+      "applies_to": {"program": "snap", "metrics": ["participation_rate", "participation_gap_count"]},
+      "severity": "definitional",
+      "text": "Not a like-for-like rate, so this row is a concept mismatch. PolicyEngine counts every member of an SPM unit receiving SNAP at any time in the year over annual eligible persons; Urban divides FNS average-month persons by ATTIS eligibles. Calibration matches FNS at household grain, so a person-level gap here measures the grain and period bridge, not the eligibility rules. In the batch-1 diagnosis (August 2026), replacing PolicyEngine's annual person count with FNS average-month persons removed 82–84% of the national gap; the remainder needs a matched eligibility period and Urban's exact numerator before attribution.",
+      "basis": "diagnosis/DIAGNOSES.md, 'Annotate the national SNAP rate instead of treating it as a model contest' (batch 1, 2026-08-07)"
+    },
+    {
+      "id": "ctc-claims-vs-eligibility",
+      "applies_to": {"program": "ctc_refund", "metrics": ["eligible_count", "eligibility_rate"]},
+      "severity": "definitional",
+      "text": "Claims versus modeled eligibility, so this row is a concept mismatch. PolicyEngine's count is calibrated to SOI refundable-CTC claims and has no ACTC filing or take-up flag; Urban reports modeled eligibility. Agreement or disagreement here is not evidence about statutory eligibility; a forced-filing statutory ACTC eligibility metric is needed before this is a same-concept comparison.",
+      "basis": "diagnosis/DIAGNOSES.md, 'Refundable CTC: compare eligibility with eligibility' (batch 1, 2026-08-07)"
+    },
+    {
+      "id": "fullpart-nonreplication",
+      "applies_to": {"program": "spm_poverty", "metrics": ["poverty_rate_fullpart", "poverty_rate_relative_change_fullpart", "poverty_count_change_fullpart"]},
+      "severity": "definitional",
+      "text": "A non-replication, so these rows are a concept mismatch. The two counterfactuals force different program sets: PolicyEngine's all-flags run includes health programs (ACA, Medicaid, Medicare) and Head Start but cannot force LIHEAP, CCDF or ACTC, while Urban's covers nine safety-net programs. Forcing health take-up can also add premiums to SPM medical expenses and lower resources, which is why the Urban-six variant moves poverty more than all-flags. Read the two numbers as different experiments, not as a model contest.",
+      "basis": "diagnosis/DIAGNOSES.md, 'Correct the full-participation comparison before interpreting headroom' (batch 1, 2026-08-07); both runs in data/pe/pe_meta.json"
     }
   ]
 }

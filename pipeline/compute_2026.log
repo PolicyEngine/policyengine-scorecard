@@ -1,40 +1,42 @@
 [    0.0s] === run baseline: constructing sim ===
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[   16.5s] === run baseline: sim ready ===
-[   17.0s] denominators done
-[  149.7s] snap done
-[  150.0s] ssi done
-[  150.6s] tanf done
-[  157.8s] wic done
-[  157.8s] eitc/ctc done
-[  157.8s] housing done
-[  186.7s] poverty done (var=spm_unit_is_in_spm_poverty)
-[  186.7s] === run baseline complete: 9838 cumulative rows ===
-[  188.1s] persisted 9838 rows after baseline
-[  188.1s] === run fullpart_all: constructing sim ===
-[  193.6s]   flag means after set: {'takes_up_aca_if_eligible': 1.0, 'takes_up_eitc': 1.0, 'takes_up_head_start_if_eligible': 1.0, 'takes_up_housing_assistance_if_eligible': 1.0, 'takes_up_medicaid_if_eligible': 1.0, 'takes_up_medicare_if_eligible': 1.0, 'takes_up_snap_if_eligible': 1.0, 'takes_up_ssi_if_eligible': 1.0, 'takes_up_tanf_if_eligible': 1.0, 'would_claim_wic': 1.0}
-[  193.6s] === run fullpart_all: sim ready ===
-[  193.9s] denominators done
-[  330.2s] snap done
-[  330.7s] ssi done
-[  331.4s] tanf done
-[  341.2s] wic done
-[  341.3s] eitc/ctc done
-[  341.3s] housing done
-[  359.5s] poverty done (var=spm_unit_is_in_spm_poverty)
-[  359.5s] === run fullpart_all complete: 19676 cumulative rows ===
-[  362.5s] persisted 19676 rows after fullpart_all
-[  362.5s] === run fullpart_urban6: constructing sim ===
-[  371.0s]   flag means after set: {'takes_up_snap_if_eligible': 1.0, 'takes_up_ssi_if_eligible': 1.0, 'takes_up_tanf_if_eligible': 1.0, 'takes_up_housing_assistance_if_eligible': 1.0, 'takes_up_eitc': 1.0, 'would_claim_wic': 1.0}
-[  371.0s] === run fullpart_urban6: sim ready ===
-[  371.3s] denominators done
-[  629.4s] snap done
-[  629.7s] ssi done
-[  630.2s] tanf done
-[  642.6s] wic done
-[  643.2s] eitc/ctc done
-[  644.3s] housing done
-[  692.6s] poverty done (var=spm_unit_is_in_spm_poverty)
-[  692.6s] === run fullpart_urban6 complete: 29514 cumulative rows ===
-[  703.5s] persisted 29514 rows after fullpart_urban6
-[  703.5s] DONE: 29514 rows -> /Users/maxghenis/PolicyEngine/policyengine-scorecard/data/pe
+WARNING:root:The dataset contains 189 column(s) that do not match any variable in the tax-benefit system and were ignored: ACTC_CRD, AGI, ANN_VAL, A_AGE, A_ENRLW, A_EXPRRP, A_FAMREL, A_FAMTYP, A_FNLWGT, A_FTPT, … (179 more)
+[   12.4s] === run baseline: sim ready ===
+[   12.8s] denominators done
+[  149.8s] snap done
+[  150.1s] ssi done
+[  150.5s] tanf done
+[  161.6s] wic done
+[  161.7s] eitc/ctc done
+[  161.9s] housing done
+[  238.5s] poverty done (var=spm_unit_is_in_spm_poverty)
+[  238.5s] === run baseline complete: 9838 cumulative rows ===
+[  239.5s] persisted 9838 rows after baseline
+[  239.5s] === run fullpart_all: constructing sim ===
+WARNING:root:The dataset contains 189 column(s) that do not match any variable in the tax-benefit system and were ignored: ACTC_CRD, AGI, ANN_VAL, A_AGE, A_ENRLW, A_EXPRRP, A_FAMREL, A_FAMTYP, A_FNLWGT, A_FTPT, … (179 more)
+[  241.4s]   flag means after set: {'takes_up_aca_if_eligible': 1.0, 'takes_up_dc_ptc': 1.0, 'takes_up_early_head_start_if_eligible': 1.0, 'takes_up_eitc': 1.0, 'takes_up_head_start_if_eligible': 1.0, 'takes_up_housing_assistance_if_eligible': 1.0, 'takes_up_medicaid_if_eligible': 1.0, 'takes_up_medicare_if_eligible': 1.0, 'takes_up_snap_if_eligible': 1.0, 'takes_up_ssi_if_eligible': 1.0, 'takes_up_tanf_if_eligible': 1.0, 'takes_up_wic_if_eligible': 1.0}
+[  241.4s] === run fullpart_all: sim ready ===
+[  241.7s] denominators done
+[  366.5s] snap done
+[  366.8s] ssi done
+[  367.3s] tanf done
+[  373.8s] wic done
+[  373.9s] eitc/ctc done
+[  373.9s] housing done
+[  453.2s] poverty done (var=spm_unit_is_in_spm_poverty)
+[  453.2s] === run fullpart_all complete: 19676 cumulative rows ===
+[  453.9s] persisted 19676 rows after fullpart_all
+[  453.9s] === run fullpart_urban6: constructing sim ===
+WARNING:root:The dataset contains 189 column(s) that do not match any variable in the tax-benefit system and were ignored: ACTC_CRD, AGI, ANN_VAL, A_AGE, A_ENRLW, A_EXPRRP, A_FAMREL, A_FAMTYP, A_FNLWGT, A_FTPT, … (179 more)
+[  456.0s]   flag means after set: {'takes_up_snap_if_eligible': 1.0, 'takes_up_ssi_if_eligible': 1.0, 'takes_up_tanf_if_eligible': 1.0, 'takes_up_housing_assistance_if_eligible': 1.0, 'takes_up_eitc': 1.0, 'takes_up_wic_if_eligible': 1.0}
+[  456.0s] === run fullpart_urban6: sim ready ===
+[  456.3s] denominators done
+[  594.8s] snap done
+[  595.1s] ssi done
+[  595.7s] tanf done
+[  611.0s] wic done
+[  611.1s] eitc/ctc done
+[  611.2s] housing done
+[  765.5s] poverty done (var=spm_unit_is_in_spm_poverty)
+[  765.5s] === run fullpart_urban6 complete: 29514 cumulative rows ===
+[  766.2s] persisted 29514 rows after fullpart_urban6
+[  766.2s] DONE: 29514 rows -> /Users/pavelmakarchuk/policyengine-scorecard/data/pe

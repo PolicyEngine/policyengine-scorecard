@@ -107,6 +107,8 @@ def test_full_attach_on_committed_db(db_copy):
             "1.764.6",
             "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
         ),
+        # The us-6.2.1 recompute (sources/campaign-20261006/us).
+        ("2.2.1", "populace-us-2024-spm-20260915"),
         (
             "2.89.2",
             "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
@@ -125,13 +127,14 @@ def test_full_attach_on_committed_db(db_copy):
     assert row["value"] == pytest.approx(0.133)
     assert row["computed_value"] == pytest.approx(0.16771, abs=1e-4)
     # The JCT provision-4 claim now stacks the campaign's last-in-stack
-    # construction on top of the five per-release RV results.
+    # construction (August and its us-6.2.1 recompute) on top of the six
+    # per-release RV results.
     n = conn.execute(
         """SELECT COUNT(*) FROM pe_results WHERE claim_id IN
            (SELECT claim_id FROM pe_results
             WHERE run_id = 'campaign-20260802-obbba')"""
     ).fetchone()[0]
-    assert n == 6
+    assert n == 8
     # Sign convention: the claim scores the forward extension (negative);
     # the campaign scored the expiry reversal and negated it (exact for
     # the same static world pair). Ratio 1.87 = the known last-in-stack
@@ -169,6 +172,8 @@ def test_full_attach_on_committed_db(db_copy):
     ex = conn.execute(
         "SELECT reform_key, value, conditions, note FROM pe_exhibits"
         " WHERE exhibit = 'campaign:tpc_t25_0209_t26_0029'"
+        # the August run; its us-6.2.1 recompute carries the same four keys
+        " AND run_id LIKE 'campaign-20260802-%'"
         " ORDER BY reform_key"
     ).fetchall()
     assert [r["reform_key"] for r in ex] == [
@@ -239,8 +244,10 @@ def test_metaless_exhibit_defers(db_copy, tmp_path):
     assert len(summary["exhibits_deferred"]) == 1
     assert "marginal increment" in summary["exhibits_deferred"][0]
     conn = sqlite3.connect(db_copy)
+    # Scoped to the re-ingested August runs: the us-6.2.1 recompute's own
+    # exhibits (campaign-20261006-*) are a different run set.
     n = conn.execute(
-        "SELECT COUNT(*) FROM pe_exhibits WHERE run_id LIKE 'campaign-%'"
+        "SELECT COUNT(*) FROM pe_exhibits WHERE run_id LIKE 'campaign-20260802-%'"
     ).fetchone()[0]
     conn.close()
     assert n == 3  # the stripped row's prior exhibit did not linger

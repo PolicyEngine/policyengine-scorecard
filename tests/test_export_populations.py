@@ -225,6 +225,7 @@ def test_release_label():
     assert release_label("populace-us-2024-buildo-sparse-x") == "buildo"
     assert release_label("populace-us-2024-sparse-l0-refit-57k-x") == "l0-refit"
     assert release_label("populace-us-2024-f0af251-703bd81a565c-x") == "f0af251"
+    assert release_label("populace-us-2024-spm-20260915") == "spm-20260915"
     assert (
         release_label("microcosm_be_v05h_corrected@f138697423c7") == "microcosm_be_v05h"
     )
@@ -254,7 +255,11 @@ def test_integration_committed_db(tmp_path):
     # UK: 14 reckoner rows + 3,994 national-grain Autumn Budget 2025 claims
     # opted into pre-result display (#136) + 483 UKMOD WP 3/26 rows (uk_ukmod_ab2025)
     # + 12 fiscal-headroom calls and 39 macro-house calls (#55 lane, tranche 4)
-    assert dist == {"US": 270, "UK": 5163, "BE": 9, "NZ": 12}
+    # US: 270 + 6 JCT tax-expenditure rows first scored by the
+    # populace-us-2024-spm-20260915 release (SE health insurance, HSA,
+    # student-loan interest, SE pension, traditional IRA, CDCC + employer
+    # child care).
+    assert dist == {"US": 276, "UK": 5163, "BE": 9, "NZ": 12}
     nz = [row for row in payload["rows"] if row["country"] == "NZ"]
     assert len(nz) == 12
     assert {row["source"] for row in nz} == {"nz_treasury"}

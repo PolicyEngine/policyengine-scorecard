@@ -13,6 +13,7 @@ from scorecard_db.ingest_reform_validation import (
     OBBBA_PROVISIONS,
     RAW,
     RUN_PREFIX,
+    SOI_HELD_OUT,
     ingest,
 )
 from scorecard_db.models import (
@@ -26,16 +27,18 @@ from scorecard_db.models import (
 L0 = "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701"
 BUILDO = "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z"
 
-# The five artifacts hold 640 rows total; the ingest must account for every
-# one: 90 scored OBBBA rows (x2 results, FY2026+FY2027), 495 other results,
-# 44 repeal constructions superseded by their direct-level twins, and 11
-# null-benchmark skips.
-TOTAL_ROWS = 640
+# The six artifacts hold 882 rows total; the ingest must account for every
+# one: 108 scored OBBBA rows (x2 results, FY2026+FY2027), 706 other results,
+# 55 repeal constructions superseded by their direct-level twins, and 13
+# null-benchmark skips. (The sixth, populace-us-2024-spm-20260915, added 242
+# rows: 18 OBBBA, 11 superseded repeals, 2 skips, and 6 first-scored JCT
+# tax-expenditure claims among its results.)
+TOTAL_ROWS = 882
 EXPECTED = {
-    "releases": 5,
-    "results": 675,
-    "skipped": 11,
-    "superseded_repeal_constructions": 44,
+    "releases": 6,
+    "results": 922,
+    "skipped": 13,
+    "superseded_repeal_constructions": 55,
 }
 
 
@@ -61,8 +64,10 @@ def test_exact_row_accounting(summary_and_db):
     # fallback claim — 18 provisions x 2 fiscal years.
     assert summary["obbba_attached_results"] == 0
     assert summary["obbba_fallback_claims"] == 36
-    assert summary["claims_upserted"] == 205 + 36
-    obbba_results = 180  # 90 scored rows x (FY2026 + FY2027)
+    # 205 registry claims + 6 tax-expenditure claims first scored by
+    # spm-20260915, plus the 36 OBBBA fallbacks.
+    assert summary["claims_upserted"] == 211 + 36
+    obbba_results = 216  # 108 scored rows x (FY2026 + FY2027)
     obbba_rows = obbba_results // 2
     assert (summary["results"] - obbba_results) + obbba_rows + summary[
         "superseded_repeal_constructions"
@@ -214,9 +219,9 @@ def test_obbba_results_attach_to_harvest_claims(tmp_path):
     assert len(planted) == 36  # 18 provisions x 2 fiscal years
 
     summary = ingest(path)
-    assert summary["obbba_attached_results"] == 180  # 90 scored rows x 2
+    assert summary["obbba_attached_results"] == 216  # 108 scored rows x 2
     assert summary["obbba_fallback_claims"] == 0
-    assert summary["claims_upserted"] == 205
+    assert summary["claims_upserted"] == 211  # 205 + 6 spm-20260915 TE claims
 
     conn = sqlite3.connect(path)
     for fy in (2026, 2027):
@@ -226,13 +231,14 @@ def test_obbba_results_attach_to_harvest_claims(tmp_path):
             " ORDER BY computed_at",
             (cid,),
         ).fetchall()
-        assert len(rows) == 5
+        assert len(rows) == 6
         modes = [r[0].split(":")[2] for r in rows]
         # f0af251's own totals chain (a stack of its own construction);
         # l0-refit scored in isolation; buildi onward stack per JCX.
         assert modes == [
             "stacked_chained",
             "isolated",
+            "jcx_stacked",
             "jcx_stacked",
             "jcx_stacked",
             "jcx_stacked",
@@ -349,7 +355,7 @@ def test_il_repeal_bundle_is_its_own_claim(conn):
         "SELECT status, pe_construction FROM pe_results WHERE claim_id = ?",
         (claims["il_eitc+il_ctc"]["claim_id"],),
     ).fetchall()
-    assert len(rows) == 4  # l0-refit + buildi/j/o carry the repeal suite
+    assert len(rows) == 5  # l0-refit + buildi/j/o + spm-20260915 carry the repeal suite
     assert all(
         r["status"] == "constructed"
         and r["pe_construction"].startswith("repeal_delta:")
@@ -375,7 +381,7 @@ def test_ut_ctc_is_a_concept_flag(conn):
            FROM pe_results r JOIN external_scores s USING (claim_id)
            WHERE s.source = 'ut_admin' AND s.program = 'ut_ctc'""",
     ).fetchall()
-    assert len(rows) == 4  # l0-refit + buildi/j/o
+    assert len(rows) == 5  # l0-refit + buildi/j/o + spm-20260915
     assert all(
         r["status"] == "concept_mismatch" and r["bc"] == "amount_claimed_pre_offset"
         for r in rows
@@ -390,7 +396,7 @@ def test_approximate_windows_are_constructed(conn):
            JOIN external_scores s USING (claim_id)
            WHERE s.source_column = 'state.mi.hb4170'""",
     ).fetchall()
-    assert len(rows) == 4
+    assert len(rows) == 5
     assert all(r[0] == "constructed" for r in rows)
 
 
@@ -411,7 +417,7 @@ def test_matching_repeal_constructions_superseded_by_levels(conn):
            JOIN pe_results r USING (claim_id)
            WHERE s.program = 'ca_eitc' AND s.source = 'ca_admin'""",
     ).fetchall()
-    assert len(rows) == 4  # one per release that scored it, no duplicates
+    assert len(rows) == 5  # one per release that scored it, no duplicates
     assert all(r[0].startswith("level:") for r in rows)
 
 
@@ -436,11 +442,35 @@ def test_census_spm_held_out(conn):
 
 def test_soi_and_jct_te_targets_marked_consumed(conn):
     rows = conn.execute(
-        "SELECT calibration_relationship FROM external_scores"
+        "SELECT source_column, calibration_relationship FROM external_scores"
         " WHERE source = 'irs_soi'"
         " OR source_column LIKE 'jct.tax_expenditures%'"
     ).fetchall()
-    assert rows and all(r[0] == "consumed_as_target" for r in rows)
+    assert rows
+    for column, relationship in rows:
+        # AMT and education credits match no calibration target
+        # (diagnosis batch 2, B7): held out; every other row is consumed.
+        expected = "held_out" if column in SOI_HELD_OUT else "consumed_as_target"
+        assert relationship == expected, column
+    assert {r[0] for r in rows} >= SOI_HELD_OUT
+
+
+def test_fy2026_onset_obbba_results_are_timing_mismatches(conn):
+    """Diagnosis batch 2, A1: a TY2026-onset provision's calendar-2026
+    liability is not JCT's partial FY2026 receipts — concept mismatch,
+    annotated; FY2027 stays constructed."""
+    rows = conn.execute(
+        "SELECT pe_construction, status, annotations FROM pe_results"
+        " WHERE pe_construction LIKE 'reform_delta:%:cy2026_for_fy%'"
+        " AND pe_construction LIKE '%income_tax%'"
+    ).fetchall()
+    assert rows
+    by_fy = {}
+    for construction, status, annotations in rows:
+        by_fy.setdefault(construction[-4:], set()).add(status)
+    assert by_fy["2027"] == {"constructed"}
+    assert "concept_mismatch" in by_fy["2026"]
+    assert any("tyba 12/31/25" in (a or "") for _, _, a in rows)
 
 
 def test_cbo_option_declares_pre_obbba_baseline(conn):
@@ -458,8 +488,11 @@ def test_tax_expenditure_metric_populated(conn):
         "SELECT COUNT(*) FROM external_scores WHERE metric = 'tax_expenditure'"
     ).fetchone()[0]
     # 5 jct.tax_expenditures.* targets + te_* holdouts minus the two
-    # unscoreable expenditures (standard deduction, itemized total)
-    assert n == 8
+    # unscoreable expenditures (standard deduction, itemized total), plus 6
+    # targets first scored by spm-20260915 (SE health insurance, HSA,
+    # student-loan interest, SE pension, traditional IRA, CDCC + employer
+    # child care)
+    assert n == 14
 
 
 def test_reingest_idempotent(summary_and_db):
@@ -507,10 +540,10 @@ def test_results_carry_executed_baselines_per_mode(summary_and_db):
     )
     conn.close()
     assert by_key[_ISOLATED_KEY] == 36
-    assert by_key[_CURRENT_LAW_KEY] == 675 - 180
+    assert by_key[_CURRENT_LAW_KEY] == 922 - 216
     # Stacked runs: one distinct executed world per (chain, provision) —
     # f0af251's chain carries 2 results per provision (both FYs), the
-    # buildi+ producer chain 6 (3 releases x 2 FYs). Never a collapsed
+    # buildi+ producer chain 8 (4 releases x 2 FYs). Never a collapsed
     # family key.
     f0_keys = {
         _obbba_baseline_key("stacked_chained", pid): pid for pid in OBBBA_PROVISIONS
@@ -519,13 +552,13 @@ def test_results_carry_executed_baselines_per_mode(summary_and_db):
         _obbba_baseline_key("jcx_stacked", pid): pid for pid in OBBBA_PROVISIONS
     }
     assert all(by_key[k] == 2 for k in f0_keys)
-    assert all(by_key[k] == 6 for k in producer_keys)
+    assert all(by_key[k] == 8 for k in producer_keys)
     assert (
         36
-        + (675 - 180)
+        + (922 - 216)
         + sum(by_key[k] for k in f0_keys)
         + sum(by_key[k] for k in producer_keys)
-        == 675
+        == 922
     )
 
 
@@ -579,8 +612,21 @@ def test_us_claim_id_set_is_byte_stable(conn):
     import hashlib
 
     ids = sorted(r[0] for r in conn.execute("SELECT claim_id FROM external_scores"))
-    assert len(ids) == 241
-    digest = hashlib.sha256("\n".join(ids).encode()).hexdigest()
+    assert len(ids) == 247
+    # The six JCT tax-expenditure claims first scored by spm-20260915 are
+    # pinned by id; every pre-existing id is still byte-stable against the
+    # original digest.
+    added = {
+        "000c6065155be0232de2",  # health_savings_account_deduction
+        "0bd035cc14714f0a289a",  # self_employed_health_insurance_deduction
+        "4c1e51a09563b19229d8",  # self_employed_pension_contribution_deduction
+        "7a634e994e5093a3f217",  # cdcc_and_employer_child_care_exclusion
+        "a889b811d384ca656878",  # student_loan_interest_deduction
+        "db63c233d9e3d2e33f86",  # traditional_ira_deduction
+    }
+    assert added <= set(ids)
+    prior = [i for i in ids if i not in added]
+    digest = hashlib.sha256("\n".join(prior).encode()).hexdigest()
     assert digest == "288326d738e9e7a84c90949d3210f0b00d5d6e0ab8c4b3407a48aceab263378b"
 
 

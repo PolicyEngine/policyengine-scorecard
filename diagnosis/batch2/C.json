@@ -1,0 +1,131 @@
+[
+ {
+  "item": "C-1",
+  "claim_ids": [
+   "bd4ea8335108373296f7",
+   "0679c495803fff9001ca",
+   "2a005f05a8f1ab16c446",
+   "c89efbc4ffd24fb15cf3"
+  ],
+  "secondary_claim_ids": [
+   "fba997fbb6cfd6c39c4e",
+   "8896cdbb8213f271fcc1",
+   "01b883e821e73bbef43d",
+   "64058ab1b6764c42b03b",
+   "5be90ddb7e953a22fe29",
+   "51fa48d774c937b2e09f",
+   "e4a68546c4be960ea5d1",
+   "5af425967764dab64322",
+   "84359f336a5104b0d41d",
+   "0e68641d4fe06928f3ed"
+  ],
+  "title": "Pooled 2022-2024 ASEC incomes stay in nominal own-year dollars but are tested against 2024 SPM thresholds (largest #646 component)",
+  "classification": "pe_gap",
+  "split": {
+   "pe_gap": "H5 dollar vintage: 2022/2023 income-year records are not aged to 2024, so every threshold-based 2024 output is biased upward",
+   "construction_issue": "for the 2022-2024 three-year rows, a like-for-like construction would test each record against its own source-year threshold"
+  },
+  "confidence": "high (mechanism); medium (magnitude: first-order counterfactual)",
+  "evidence": [
+   "microcosm docs/us-asec-source-pins.md:216-220: the pooled person tables carry nominal dollars of each income year; no base-build stage restates them by source year",
+   "microcosm docs/us-spm-role-stage.md:144: Build P vintages are income years 2022-2024",
+   "computed: on ASEC-channel units, median PE (market_income+SS+SSI+UC)/Census SPM_TOTVAL = 1.0000 / 0.9999 / 0.9999 for source years 2022/2023/2024; wage inputs equal WSAL_VAL for 100% of ASEC-channel and 99.9% of PUF-clone adults",
+   "computed: child-weighted median PE threshold / Census SPM_POVTHRESHOLD = 1.137 / 1.058 / 1.004 by source year; geographic factor ratio 0.997 / 0.997 / 1.000 (county geography matches Census); 2A2C renter base 39,220 (PE, all records) vs Census 34,518 / 37,482 / 39,430",
+   "computed: PE child rate by source year 17.2 / 14.6 / 15.6 vs Census SPM_POOR on the same records 15.4 / 17.5 / 16.6; child weight shares 34.1% / 31.8% / 34.1%",
+   "computed: own-year-threshold counterfactual moves national child 15.83% to 13.24% and total 13.06% to 11.48%; per queued state 0-5.5 pp (MA 4.4, NE 5.5, WA 2.5, NH 3.8, TN 4.3, RI 3.6, FL 3.1, UT 2.4, ME 2.3, VA 2.2, OR 2.0, DE 1.7); in ME all PE-only-poor children (6.7 pp) are in 2022-source records",
+   "engine: policyengine_us/spm.py:251-252 (county thresholds from household county_fips); microcosm reform_validation.py:672-684 (US_RELEASE_SPM_SELECTION county), :933-982 (_person_rate)"
+  ],
+  "fix_type": "pe_issue",
+  "fix_draft": "microcosm issue (link from PolicyEngine/microcosm#646): 'Pooled ASEC income years enter the US H5 at nominal own-year dollars; SPM poverty tests them against 2024 thresholds'. Cite the doc lines, the income/SPM_TOTVAL ratios (~1.000 every year) and threshold ratios (1.137/1.058/1.004), and the counterfactual (national child -2.59 pp, total -1.58 pp). Note that a pool whose mean income year equals the target year (the new 2023-2025 default) still biases threshold-based rates. Options: (a) age pooled-year dollar inputs to the target year at build; (b) for the 3-year state backtest rows, evaluate SPM status against source-year thresholds. Test against an external ground truth: Census SPM_POOR on ASEC-channel records by source year."
+ },
+ {
+  "item": "C-2",
+  "claim_ids": [
+   "fba997fbb6cfd6c39c4e"
+  ],
+  "secondary_claim_ids": [
+   "bd4ea8335108373296f7",
+   "01b883e821e73bbef43d",
+   "0679c495803fff9001ca",
+   "84359f336a5104b0d41d",
+   "2a005f05a8f1ab16c446",
+   "5be90ddb7e953a22fe29",
+   "e4a68546c4be960ea5d1",
+   "5af425967764dab64322"
+  ],
+  "title": "SPM resources leave out partnership/S-corp income (and farm rent, non-Schedule-D gains) but subtract the federal and SE tax on it",
+  "classification": "pe_gap",
+  "split": null,
+  "confidence": "high",
+  "evidence": [
+   "engine: variables/household/income/person/general/market_income.py:13-29 (COMPONENTS omit partnership_s_corp_income, farm_rent_income, non_sch_d_capital_gains)",
+   "engine: parameters/gov/irs/gross_income/sources.yaml:7,9,12 (all three are IRS gross-income sources); partnership_s_corp_income.py:11 (adds partnership_income, s_corp_income)",
+   "engine: spm_unit_net_income.py:11-18 (market income + benefits - spm_unit_taxes - expenses); spm_unit_taxes.py:11-17; spm_unit_federal_tax.py:11-12 (sums income_tax)",
+   "computed (TN PUF clones): hh 1031181 partnership_income $341,300, PE federal tax $68,920 on $110,802 market income, SPM resources $7,634 vs Census $107,498 for the source family; hh 1030751 partnership_income $287,010, SPM taxes $51,891 on $11,408 market income, resources -$17,378; hh 1087066 partnership_income $99,700",
+   "computed: adding the positive omitted income to resources moves national child 15.83% to 14.52% (total 13.06% to 12.18%); all in the PUF-clone channel (clone children 13.10% to 10.87%, ASEC unchanged); TN -5.6 pp (5.6 pp of TN child weight flips); with C-1 too, TN = 11.2% = Census flag on the same weighted records (11.2%), residual +3.0 pp vs 8.2% within PE SE 4.9 pp"
+  ],
+  "fix_type": "pe_issue",
+  "fix_draft": "policyengine-us issue: 'SPM net income subtracts tax on partnership/S-corp, farm rent and non-Schedule-D gains but never adds the income'. Cite market_income.py:13-29, gross_income/sources.yaml:7,9,12, spm_unit_net_income.py:11-18, spm_unit_taxes.py:11-17, spm_unit_federal_tax.py:11-12, with the household examples. Change: add partnership_s_corp_income (and review farm_rent_income, non_sch_d_capital_gains) to market_income, or only to spm_unit_market_income if other market_income consumers must stay unchanged; list every consumer in the PR. Test: a household with only partnership income gets SPM resources equal to income minus the computed taxes. Search existing issues before filing."
+ },
+ {
+  "item": "C-3",
+  "claim_ids": [
+   "8896cdbb8213f271fcc1",
+   "01b883e821e73bbef43d",
+   "64058ab1b6764c42b03b",
+   "55715497136e3eb9c9dc",
+   "5be90ddb7e953a22fe29",
+   "84359f336a5104b0d41d",
+   "51fa48d774c937b2e09f",
+   "e4a68546c4be960ea5d1",
+   "5af425967764dab64322"
+  ],
+  "secondary_claim_ids": [
+   "fba997fbb6cfd6c39c4e",
+   "bd4ea8335108373296f7",
+   "0679c495803fff9001ca",
+   "2a005f05a8f1ab16c446",
+   "c89efbc4ffd24fb15cf3"
+  ],
+  "title": "Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
+  "classification": "construction_issue",
+  "split": {
+   "construction_issue": "the registry reports a 26-155-effective-household subgroup rate with no uncertainty, and the |ratio-1|>=50% queue rule selects on noise in low-rate states",
+   "pe_gap": "data: sparse per-state sample; the populace weighting puts more child weight on Census-poor records than the CPS (Census SPM_POOR on populace weights 16.5% child / 14.0% total vs published 13.4% / 12.9%)"
+  },
+  "confidence": "high (FL medium)",
+  "evidence": [
+   "computed: queued child rows have Kish effective child households 26-149 (ME 26, RI 39, VT 42, NH 43, DE 45, NE 51, WV 55, WA 68, TN 74, UT 78, MA 83, VA 83, FL 149); the 10 largest households hold 15-48% of child weight; household-cluster linearized PE SEs 3.7-7.1 pp (OR total: 155, 11%, 3.0 pp)",
+   "computed: centred on the national bias (+2.43 pp child, +0.16 pp total), 12 of 14 high-side rows have |z|<2 (TN 2.14, FL 2.05); child chi2 99.4/50 incl. MT, 59.1/49 excl. MT (p=0.15); total chi2 78.7/50 (Census SE 0) and 51.7/50 (Census SE 1.5 pp); OR z=1.84",
+   "computed: weighting component (Census SPM_POOR on populace weights minus published) is +3.1 pp nationally (child) and consistent with noise across states (chi2 53.7/50, p=0.33); it is the largest component for RI (+11.2), VT (+9.3), VA (+10.4), FL (+13.3), OR total (+7.6), where the engine is below the Census flag on the same records (-0.9 to -3.6 pp)",
+   "computed: FL ASEC-channel children carry 39% of FL child weight with a Census SPM_POOR rate of 40.3% (populace weights) / 37.5% (A_FNLWGT): the sparse selection kept a very poor FL subset",
+   "registry: microcosm state_spm_poverty_levels.json:2 (comment: single-state gaps of a couple of points are noise; the systematic pattern is the signal); reform_validation.py:933-982 (_person_rate emits no SE)",
+   "data/populations.json: every high state except MT was also high under Build O (e.g. TN 19.1, DE 22.7, VT 19.7, VA 20.1)"
+  ],
+  "fix_type": "construction_fix",
+  "fix_draft": "(a) microcosm reform_validation.py _person_rate: emit the household-cluster linearized SE and the effective household count with each statistic='rate' row; the scorecard queues state rate rows on |z| (centred on the national gap) instead of |ratio-1|>=50%. (b) Annotation for these rows until then: 'PE's state SPM rate rests on about N effective households (PE SE about X pp). After the national shift tracked in #646, the gap is within sampling error; Census's own SPM flag on the same weighted records is Y%. Not a state-specific model defect.'"
+ },
+ {
+  "item": "C-4",
+  "claim_ids": [
+   "0e68641d4fe06928f3ed"
+  ],
+  "secondary_claim_ids": [],
+  "title": "Montana child SPM 0.31x: three cloned source families on about 52 effective households; one is a Census negative-resources artifact",
+  "classification": "construction_issue",
+  "split": {
+   "construction_issue": "the MT child rate rests on about 52 effective households; 22 PE-poor child households; the value moved 11.0% (Build O) to 2.5%",
+   "concept_mismatch": "4.6 pp of the Census-flag mass is a family with topcoded capital gains (CAP_VAL 999,999) whose Census SPM resources are -$47,552 because taxes exceed money income; Census counts it as poor, PE (capital gains in market income, net income $945k) does not"
+  },
+  "confidence": "high",
+  "evidence": [
+   "computed: Census SPM_POOR on the MT populace-weighted records = 17.5% (published 8.1%); Census-poor child weight comes from 20 source families; three of them, each as an ASEC record plus a PUF clone, hold 14.75 pp, and PE flags none as poor",
+   "computed: SPM_ID 101735 (2023, 9 persons, 7 children; hh 96756 and 1096756; 8.6 pp): Census resources $49,516 < $51,674; PE net income $62,912 > $55,110, mainly PE-modeled SNAP $18,828 vs $9,276 reported and school meals $5,175 vs $4,110",
+   "computed: SPM_ID 160075 (2024; hh 40642 and 1040642; 4.6 pp): Census SPM_TOTVAL $356,550, SPM_FEDTAX $315,555, SPM_STTAX $60,061, SPM_RESOURCES -$47,552, CAP_VAL 999,999; PE market income $1.33M including $1.0M capital gains",
+   "computed: SPM_ID 160106 (PUF clone 1040672; 1.5 pp): clone market income $124k vs $78k for the source",
+   "computed: C-1 and C-2 move MT by only 0.5 and 0.6 pp; data/populations.json Build O value 0.1099 vs spm-20260915 0.0253"
+  ],
+  "fix_type": "annotation",
+  "fix_draft": "Annotation: 'Montana's PE child SPM rate (2.5%) rests on about 52 effective households. Three source families hold 14.75 pp of MT child weight. Census flags them as poor and PE does not: one through PE's modeled SNAP, and one whose Census SPM resources are negative because taxes on topcoded capital gains exceed money income. The value moved from 11.0% (Build O) to 2.5% between releases. Treat it as sampling-limited, not as an MT-specific model gap.' Covered structurally by the C-3 construction fix (SE/effective n on rate rows)."
+ }
+]

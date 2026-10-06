@@ -49,6 +49,7 @@ _RELEASE_TOKEN = (
     "buildj",
     "buildo",
     "buildp",
+    "spm-20260915",
     "f0af251",
     "microcosm_be_v02",
     "microcosm_be_v05h",
