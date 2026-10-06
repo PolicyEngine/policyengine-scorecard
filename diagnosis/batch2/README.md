@@ -20,7 +20,15 @@ fiscal year.
 | A1 | `ingest_reform_validation._fy2026_timing`: FY2026 results of provisions effective `tyba 12/31/25` (JCX-35-25's Effective column, from the harvest staging) are `concept_mismatch` with a timing annotation; FY2027 stays the headline comparison. TY2025-onset provisions keep `constructed` with an annotation. |
 | B7 | `SOI_HELD_OUT`: the AMT and education-credit SOI rows match no calibration target and are relabeled `held_out` (other SOI rows unchanged pending the same check). |
 
-## Routed upstream (drafts in the memos; not yet filed)
+## Routed upstream (filed 2026-10-06)
+
+Filed from [ISSUE_DRAFTS.md](ISSUE_DRAFTS.md) after a duplicate search of open and closed issues and PRs:
+PolicyEngine/policyengine-us#9919 (C2), #9920 (A5), #9921 (D4);
+PolicyEngine/microcosm#1116 (D1–D3, D5, C3), #1117 (tracker for A2–A4, B1, B2, B5, B6, linking the
+existing #505, #252, #586, #579, #253, #958, #254); C1 posted as a comment on microcosm#944 (same root
+cause) with a decomposition pointer on #646. A6's engine half was already fixed upstream by
+PolicyEngine/policyengine-us#9577 (merged 2026-10-03, released in 2.23.2); its data half (no estate
+inputs) remains. Each item's `action_link` in `<cluster>.json` points at its issue.
 
 | Item | Claims | Class | Route | Finding |
 |---|---:|---|---|---|
@@ -30,7 +38,7 @@ fiscal year.
 | A3 | 2 | pe_gap | microcosm | Car-loan interest proxy uses one year of loan issuance as the TY2026 stock (residual open) |
 | A4 | 1 | pe_gap | microcosm | Non-itemizer cash giving imputed from TY2015 Schedule A misses non-itemizer donors |
 | A5 | 2 | pe_gap | policyengine-us + microcosm | Engine zeroes all casualty losses (no declared-disaster carve-out); input rests on 33 records |
-| A6 | 2 | pe_gap | policyengine-us (+ annotation) | No estate inputs (PE = 0 by construction); `estate_tax_credit` returns the exclusion amount, not the tentative tax on it |
+| A6 | 2 | pe_gap | annotation (engine half fixed by policyengine-us#9577) | No estate inputs (PE = 0 by construction); `estate_tax_credit` returned the exclusion amount, not the tentative tax on it, until policyengine-us 2.23.2 |
 | B1 | 1 | pe_gap | microcosm | SE (Keogh) pension contributions ~3% of SOI |
 | B2 | 1 | pe_gap | microcosm | SE health insurance: right claimant count, half the SOI amount, missing at AGI $200K+ |
 | B5 | 1 | pe_gap | microcosm | Education credits 10% of SOI: LLC structurally zero, thin AOTC student pool |

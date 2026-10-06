@@ -36,7 +36,8 @@
    "engine: policyengine_us/spm.py:251-252 (county thresholds from household county_fips); microcosm reform_validation.py:672-684 (US_RELEASE_SPM_SELECTION county), :933-982 (_person_rate)"
   ],
   "fix_type": "pe_issue",
-  "fix_draft": "microcosm issue (link from PolicyEngine/microcosm#646): 'Pooled ASEC income years enter the US H5 at nominal own-year dollars; SPM poverty tests them against 2024 thresholds'. Cite the doc lines, the income/SPM_TOTVAL ratios (~1.000 every year) and threshold ratios (1.137/1.058/1.004), and the counterfactual (national child -2.59 pp, total -1.58 pp). Note that a pool whose mean income year equals the target year (the new 2023-2025 default) still biases threshold-based rates. Options: (a) age pooled-year dollar inputs to the target year at build; (b) for the 3-year state backtest rows, evaluate SPM status against source-year thresholds. Test against an external ground truth: Census SPM_POOR on ASEC-channel records by source year."
+  "fix_draft": "microcosm issue (link from PolicyEngine/microcosm#646): 'Pooled ASEC income years enter the US H5 at nominal own-year dollars; SPM poverty tests them against 2024 thresholds'. Cite the doc lines, the income/SPM_TOTVAL ratios (~1.000 every year) and threshold ratios (1.137/1.058/1.004), and the counterfactual (national child -2.59 pp, total -1.58 pp). Note that a pool whose mean income year equals the target year (the new 2023-2025 default) still biases threshold-based rates. Options: (a) age pooled-year dollar inputs to the target year at build; (b) for the 3-year state backtest rows, evaluate SPM status against source-year thresholds. Test against an external ground truth: Census SPM_POOR on ASEC-channel records by source year.",
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/944"
  },
  {
   "item": "C-2",
@@ -65,7 +66,8 @@
    "computed: adding the positive omitted income to resources moves national child 15.83% to 14.52% (total 13.06% to 12.18%); all in the PUF-clone channel (clone children 13.10% to 10.87%, ASEC unchanged); TN -5.6 pp (5.6 pp of TN child weight flips); with C-1 too, TN = 11.2% = Census flag on the same weighted records (11.2%), residual +3.0 pp vs 8.2% within PE SE 4.9 pp"
   ],
   "fix_type": "pe_issue",
-  "fix_draft": "policyengine-us issue: 'SPM net income subtracts tax on partnership/S-corp, farm rent and non-Schedule-D gains but never adds the income'. Cite market_income.py:13-29, gross_income/sources.yaml:7,9,12, spm_unit_net_income.py:11-18, spm_unit_taxes.py:11-17, spm_unit_federal_tax.py:11-12, with the household examples. Change: add partnership_s_corp_income (and review farm_rent_income, non_sch_d_capital_gains) to market_income, or only to spm_unit_market_income if other market_income consumers must stay unchanged; list every consumer in the PR. Test: a household with only partnership income gets SPM resources equal to income minus the computed taxes. Search existing issues before filing."
+  "fix_draft": "policyengine-us issue: 'SPM net income subtracts tax on partnership/S-corp, farm rent and non-Schedule-D gains but never adds the income'. Cite market_income.py:13-29, gross_income/sources.yaml:7,9,12, spm_unit_net_income.py:11-18, spm_unit_taxes.py:11-17, spm_unit_federal_tax.py:11-12, with the household examples. Change: add partnership_s_corp_income (and review farm_rent_income, non_sch_d_capital_gains) to market_income, or only to spm_unit_market_income if other market_income consumers must stay unchanged; list every consumer in the PR. Test: a household with only partnership income gets SPM resources equal to income minus the computed taxes. Search existing issues before filing.",
+  "action_link": "https://github.com/PolicyEngine/policyengine-us/issues/9919"
  },
  {
   "item": "C-3",
@@ -103,7 +105,8 @@
    "data/populations.json: every high state except MT was also high under Build O (e.g. TN 19.1, DE 22.7, VT 19.7, VA 20.1)"
   ],
   "fix_type": "construction_fix",
-  "fix_draft": "(a) microcosm reform_validation.py _person_rate: emit the household-cluster linearized SE and the effective household count with each statistic='rate' row; the scorecard queues state rate rows on |z| (centred on the national gap) instead of |ratio-1|>=50%. (b) Annotation for these rows until then: 'PE's state SPM rate rests on about N effective households (PE SE about X pp). After the national shift tracked in #646, the gap is within sampling error; Census's own SPM flag on the same weighted records is Y%. Not a state-specific model defect.'"
+  "fix_draft": "(a) microcosm reform_validation.py _person_rate: emit the household-cluster linearized SE and the effective household count with each statistic='rate' row; the scorecard queues state rate rows on |z| (centred on the national gap) instead of |ratio-1|>=50%. (b) Annotation for these rows until then: 'PE's state SPM rate rests on about N effective households (PE SE about X pp). After the national shift tracked in #646, the gap is within sampling error; Census's own SPM flag on the same weighted records is Y%. Not a state-specific model defect.'",
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
  },
  {
   "item": "C-4",

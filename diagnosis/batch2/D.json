@@ -17,7 +17,8 @@
    "Residual 1.35 open: PE 2025 baseline ia_cdcc $19.4M vs IDR CDC claims '$11.0 million in FY 2024' (fiscal note background); PE keys on taxable income, the note on net income; nonresidents are 5.2% of the note's decreases."
   ],
   "fix_type": "construction_fix",
-  "fix_draft": "microcosm us/state_reforms.json, state.ia.hf1020: add \"gov.states.ia.tax.income.credits.child_care.fraction[7].amount\": {\"2025-01-01.2100-12-31\": 0.5}. Add a unit test that loads the pinned engine and asserts fraction thresholds [4..7] == 35000/40000/45000/90000 for 2025, so any future bracket re-indexing fails the build instead of silently rescoring a different bill. Expected new PE value about -$24.0M (ratio 1.35 vs -$17.7M)."
+  "fix_draft": "microcosm us/state_reforms.json, state.ia.hf1020: add \"gov.states.ia.tax.income.credits.child_care.fraction[7].amount\": {\"2025-01-01.2100-12-31\": 0.5}. Add a unit test that loads the pinned engine and asserts fraction thresholds [4..7] == 35000/40000/45000/90000 for 2025, so any future bracket re-indexing fails the build instead of silently rescoring a different bill. Expected new PE value about -$24.0M (ratio 1.35 vs -$17.7M).",
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
  },
  {
   "claim_ids": [
@@ -40,7 +41,8 @@
    "Spillover: policyengine-us 2.2.1 at .venv-pe/lib/python3.12/site-packages/policyengine_us/variables/gov/states/mn/tax/income/credits/taxsim_mn_child_tax_credit_component.py:13-15 subtracts legacy mn_wfc from the 2023+ combined credit; policyengine-taxsim config/variable_mappings.yaml:681 and core/state_output_resolver.py:54,268-279 also read mn_wfc."
   ],
   "fix_type": "construction_fix",
-  "fix_draft": "Retire state_mn_wfc, or replace it with a clean official row: 'MN child+WFC credits, childless returns' = $89.6M (301,500 returns, House Research May 2026 p.1) against PE mn_child_and_working_families_credits summed over tax units with no qualifying child (current PE $165.5M, 1.85, open). Keep state_mn_cwfc as the primary MN row. Separate small PE issue: limit mn_wfc to <=2022 (or redefine it as the 2023+ WFC component of the combined credit) and fix taxsim_mn_child_tax_credit_component for 2023+."
+  "fix_draft": "Retire state_mn_wfc, or replace it with a clean official row: 'MN child+WFC credits, childless returns' = $89.6M (301,500 returns, House Research May 2026 p.1) against PE mn_child_and_working_families_credits summed over tax units with no qualifying child (current PE $165.5M, 1.85, open). Keep state_mn_cwfc as the primary MN row. Separate small PE issue: limit mn_wfc to <=2022 (or redefine it as the 2023+ WFC component of the combined credit) and fix taxsim_mn_child_tax_credit_component for 2023+.",
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
  },
  {
   "claim_ids": [
@@ -60,7 +62,8 @@
    "Computation (probe_d): uncapped $96.66M (471.5k children, 239.7k units); capped (id_non_refundable_credits) $73.24M, ratio 1.145; 58.6k units with zero Idaho liability carry $22.3M uncapped; 357 sample records."
   ],
   "fix_type": "construction_fix",
-  "fix_draft": "microcosm us/state_program_levels.json state_id_ctc: set variable to id_non_refundable_credits (equals the applied CTC while id_ctc is the only listed credit, through 2025), or add cap_variable: id_income_tax_before_non_refundable_credits. Expected PE value $73.2M (ratio 1.145)."
+  "fix_draft": "microcosm us/state_program_levels.json state_id_ctc: set variable to id_non_refundable_credits (equals the applied CTC while id_ctc is the only listed credit, through 2025), or add cap_variable: id_income_tax_before_non_refundable_credits. Expected PE value $73.2M (ratio 1.145).",
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
  },
  {
   "claim_ids": [
@@ -82,7 +85,8 @@
    "Benchmark is an ODT estimate labeled approximation in the registry row; the TER PDF could not be extracted this session (TLS error)."
   ],
   "fix_type": "pe_issue",
-  "fix_draft": "policyengine-us issue: 'Ohio nonrefundable credit order puts the EITC first (TY2023+)'. Body: R.C. 5747.71 limits the EITC to tax after the credits that precede it under R.C. 5747.98; the 2024 Schedule of Credits applies retirement (2), lump sum retirement (3), senior (4), lump sum distribution (5), CDCC (6), displaced worker (7), campaign (8), exemption (9), then joint filing on line 11 (12), then EITC (13). gov.states.oh.tax.income.credits.non_refundable (2023-01-01) lists oh_eitc first. Proposed: reorder to oh_retirement_credit, oh_senior_citizen_credit, oh_cdcc, oh_exemption_credit, oh_joint_filing_credit, oh_eitc, oh_non_public_school_credits; verify oh_joint_filing_credit_potential uses tax after lines 2-9; add a YAML test with illustrative values (joint filers with a small Ohio liability, an exemption credit and a joint filing credit, and an EITC potential larger than the remaining tax -> EITC applied equals the tax left after the preceding credits). On us-6.2.1 this lowers oh_eitc from $108.9M to about $95.9M. Annotate the scorecard row that the remaining 1.62 is unexplained."
+  "fix_draft": "policyengine-us issue: 'Ohio nonrefundable credit order puts the EITC first (TY2023+)'. Body: R.C. 5747.71 limits the EITC to tax after the credits that precede it under R.C. 5747.98; the 2024 Schedule of Credits applies retirement (2), lump sum retirement (3), senior (4), lump sum distribution (5), CDCC (6), displaced worker (7), campaign (8), exemption (9), then joint filing on line 11 (12), then EITC (13). gov.states.oh.tax.income.credits.non_refundable (2023-01-01) lists oh_eitc first. Proposed: reorder to oh_retirement_credit, oh_senior_citizen_credit, oh_cdcc, oh_exemption_credit, oh_joint_filing_credit, oh_eitc, oh_non_public_school_credits; verify oh_joint_filing_credit_potential uses tax after lines 2-9; add a YAML test with illustrative values (joint filers with a small Ohio liability, an exemption credit and a joint filing credit, and an EITC potential larger than the remaining tax -> EITC applied equals the tax left after the preceding credits). On us-6.2.1 this lowers oh_eitc from $108.9M to about $95.9M. Annotate the scorecard row that the remaining 1.62 is unexplained.",
+  "action_link": "https://github.com/PolicyEngine/policyengine-us/issues/9921"
  },
  {
   "claim_ids": [
@@ -103,7 +107,8 @@
    "data/populations.json results: l0-refit $116.25M, buildi $183.51M, buildj $185.49M, buildo $203.54M, spm $200.92M; the registry description's 'reproduces the DOR actual to the dollar' was measured on l0-refit and does not hold on spm-20260915."
   ],
   "fix_type": "construction_fix",
-  "fix_draft": "Replace the TY2023 benchmark with CO DOR TY2024 CTC actuals when published (or score the row under TY2023 law). Now: correct the registry row description and annotate: 'The benchmark is TY2023 (percentage-of-federal-CTC law); PE simulates TY2024 flat-amount law (HB23-1112). Re-running TY2023 law on the same data gives $167.9M (1.88), so law vintage explains only about 30% of the gap on this release; the remainder is unattributed (no claim gate; Colorado young-child composition).'"
+  "fix_draft": "Replace the TY2023 benchmark with CO DOR TY2024 CTC actuals when published (or score the row under TY2023 law). Now: correct the registry row description and annotate: 'The benchmark is TY2023 (percentage-of-federal-CTC law); PE simulates TY2024 flat-amount law (HB23-1112). Re-running TY2023 law on the same data gives $167.9M (1.88), so law vintage explains only about 30% of the gap on this release; the remainder is unattributed (no claim gate; Colorado young-child composition).'",
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
  },
  {
   "claim_ids": [

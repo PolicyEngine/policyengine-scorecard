@@ -30,7 +30,8 @@
       "repo": "PolicyEngine/microcosm",
       "title": "Self-employed pension contributions are ~3% of SOI Keogh payments (max $1,771/person)",
       "body": "The retirement_contributions stage (us/spec/sources.yaml:458-530) allocates ASEC RETCB_VAL and QRF-imputes it onto the PUF half, so PUF tax-form Keogh/SEP/SIMPLE deduction amounts never reach self_employed_pension_contributions_desired. Released populace-us-2024-spm-20260915: $1.37B on 5.4M persons (max $1,771) vs IRS SOI TY2023 Table 1.4 'Payments to a Keogh plan' $30.13B on 946K returns ($24.3B at AGI $200K+). The JCT Keogh calibration target sits at -98.8% and cannot move under max_weight_ratio 5. Proposed: source the PUF half from the PUF Keogh-deduction field (verify field ID against the PUF codebook) and/or add SOI Table 1.4 Keogh returns/amount targets. Keep the JCT row as a broad-fit anchor only: JCX-48-24 measures a net exclusion of contributions and earnings."
-    }
+    },
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
   },
   {
     "claim_ids": [
@@ -60,7 +61,8 @@
       "repo": "PolicyEngine/microcosm",
       "title": "SE health insurance deduction is 48% of SOI TY2023 at the right claimant count; high-AGI claimants missing",
       "body": "Released H5 at policyengine-us 2.2.1: self_employed_health_insurance_ald $14.84B on 3.69M tax units vs SOI TY2023 Table 1.4 $31.23B on 3.60M returns. Below $200K AGI PE matches SOI (12.6 vs 14.5B); at $200K+ PE has $2.25B vs SOI $16.73B. The JCT target (8.4B) sits at -72%. Candidates to test (unverified): CPS premium under-report for high earners, the Medicare-proxy exclusion (65+/SSDI), premiums assigned to one person per unit. Add SOI Table 1.4 SEHI returns/amount (ideally by AGI class) as calibration targets."
-    }
+    },
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
   },
   {
     "claim_ids": [
@@ -143,7 +145,8 @@
       "repo": "PolicyEngine/microcosm",
       "title": "Education credits at 10% of SOI: LLC structurally zero, AOTC pool 1.18M students",
       "body": "On populace-us-2024-spm-20260915 at policyengine-us 2.2.1, education_tax_credits = $0.78B (all nonrefundable AOTC) vs SOI TY2023 Table 3.3 $7.55B on 7.21M returns. (1) LLC is zero: no stage produces attends_eligible_educational_institution_for_lifetime_learning_credit or has_lifetime_learning_credit_1098_t_or_exception, and setting them on the AOTC mask would not help because LLC excludes AOTC-eligible students — an LLC-expense population (graduate, part-time, non-degree) is needed. (2) qualified_tuition_expenses covers 1.18M students / $4.4B (426 records); the nonrefundable AOTC ceiling from that input is $2.64B. (3) Register the two LLC leaves in US_VALIDATION_PROVISION_INPUT_LEAVES (validation_input_coverage.py:106). (4) Add SOI Table 3.3 education-credit returns/amount targets."
-    }
+    },
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
   },
   {
     "claim_ids": [
@@ -169,6 +172,7 @@
       "repo": "PolicyEngine/microcosm",
       "title": "Top-tail compression: 3x SOI returns at AGI $1-2M, ~0 above $10M; AMT 1.6x SOI from 70 records",
       "body": "On populace-us-2024-spm-20260915 at policyengine-us 2.2.1, filers with AGI $1-1.5M = 1.20M (SOI TY2023 369K), $1.5-2M = 326K (147K), $5-10M = 12K (49K), $10M+ ~0 (30K); total $1M+ AGI matches SOI ($2.61T vs $2.54T). AMT ($4.39B vs SOI $2.75B) comes from 70 records, 43 of them at $1-2M AGI with weights 10-30K. The only $1M+ AGI-class targets (TY2022 taxable interest) miss by +65% (returns) and -39% (amount). Proposed: add SOI Table 1.4 AGI-class return counts and AGI amounts for the $500K+ classes; investigate why the Forbes-backed top tail gets ~zero weight; optionally add SOI AMT returns/amount. Annotation for the scorecard: AMT is a top-tail statistic resting on 70 records and has moved $1.1B-$4.4B across releases."
-    }
+    },
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
   }
 ]
