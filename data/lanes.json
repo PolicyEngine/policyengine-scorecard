@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-09-28",
+ "updated": "2026-10-06",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -212,8 +212,8 @@
    "mode": 2,
    "stage": "computed",
    "running": false,
-   "updated": "2026-08-03",
-   "note": "45 of 6780 claims computed \u2014 6771 claims across 7 JCX conventional tables (per-provision \u00d7 FY2025-34; JCX-29/30 vs current-policy baseline); JCX-45-25 tax-expenditure report pending coordinate-aware parser"
+   "updated": "2026-09-15",
+   "note": "51 of 6786 claims computed \u2014 6771 claims across 7 JCX conventional tables (per-provision \u00d7 FY2025-34; JCX-29/30 vs current-policy baseline); JCX-45-25 tax-expenditure report pending coordinate-aware parser"
   },
   {
    "id": "cbo-cost-estimates",
@@ -223,7 +223,7 @@
    "mode": 2,
    "stage": "computed",
    "running": false,
-   "updated": "2026-07-22",
+   "updated": "2026-09-15",
    "note": "1 of 2 claims computed \u2014 1 single-year claims from the PL 119-21 SNAP supplement (61367, Jan-2025 baseline vintage); OBBBA cost-estimate PDFs are period-ranged verbatim pointers pending period-window staging"
   },
   {

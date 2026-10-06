@@ -187,6 +187,10 @@ COUNTRIES = {
             "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z": "1.764.6",
             "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z": "1.764.6",
             "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z": "1.764.6",
+            # Certified with policyengine.py 6.2.1 (bundle us-6.2.1); produced
+            # locally by microcosm's post-export probe — see the raw file's
+            # provenance note.
+            "populace-us-2024-spm-20260915": "2.2.1",
         },
     },
     "UK": {
@@ -327,6 +331,7 @@ OBBBA_SCORING_MODE = {
     "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z": "jcx_stacked",
     "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z": "jcx_stacked",
     "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z": "jcx_stacked",
+    "populace-us-2024-spm-20260915": "jcx_stacked",
 }
 
 # Registry OBBBA row id -> the JCX-35-25 provision label the harvest keyed
@@ -449,10 +454,19 @@ _SOI_TAXES = {
 }
 
 
+def _pe_block(row: dict) -> dict:
+    """The row's PE block. The producer keyed it "populace" until the repo
+    became microcosm; releases from then on key it "microcosm"."""
+    block = row.get("populace", row.get("microcosm"))
+    if block is None:
+        raise KeyError(f"{row['id']}: no populace/microcosm PE block")
+    return block
+
+
 def _state_of(row: dict) -> str | None:
     """State code from the row's measure or id prefix, else None."""
     for token in (
-        (row["populace"].get("measure") or "").split("_")[0],
+        (_pe_block(row).get("measure") or "").split("_")[0],
         row["id"]
         .removeprefix("state_repeal_")
         .removeprefix("state_")
@@ -605,7 +619,7 @@ def _map_row(
     if value is None:
         return None
     cat = row["category"]
-    measure = row["populace"].get("measure") or ""
+    measure = _pe_block(row).get("measure") or ""
     window = row["jct"].get("window")
     period_start = period_end = window_kind = None
     if country == "US":
@@ -745,7 +759,7 @@ def _pe_value(row: dict, construction: str) -> float:
     before) which wrote the level into budget_effect; deltas always live in
     budget_effect. A mapped row without a value is a producer bug — fail.
     """
-    pop = row["populace"]
+    pop = _pe_block(row)
     if construction.startswith("level:"):
         value = pop.get("baseline_total")
         if value is None:
@@ -767,7 +781,7 @@ def _status(row: dict, claim: ExternalScore, construction: str) -> ComparisonSta
     """
     if row["id"] in STATUS_OVERRIDES:
         return STATUS_OVERRIDES[row["id"]]
-    sim_period = row["populace"].get("period") or row["period"]
+    sim_period = _pe_block(row).get("period") or row["period"]
     if (
         row["jct"].get("score_type") in ("approximation", "tax_expenditure")
         # MI HB4170's window is "annual (approximate)" with a fiscal_note
@@ -835,7 +849,7 @@ def _obbba_results(
     provision = OBBBA_PROVISIONS.get(row["id"])
     if provision is None:
         raise ValueError(f"OBBBA row {row['id']} missing from OBBBA_PROVISIONS")
-    measure = row["populace"].get("measure") or ""
+    measure = _pe_block(row).get("measure") or ""
     mode = OBBBA_SCORING_MODE[release_id]
     pe_value = _pe_value(row, f"reform_delta:{measure}")
     results = []

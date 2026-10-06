@@ -125,13 +125,13 @@ def test_full_attach_on_committed_db(db_copy):
     assert row["value"] == pytest.approx(0.133)
     assert row["computed_value"] == pytest.approx(0.16771, abs=1e-4)
     # The JCT provision-4 claim now stacks the campaign's last-in-stack
-    # construction on top of the five per-release RV results.
+    # construction on top of the six per-release RV results.
     n = conn.execute(
         """SELECT COUNT(*) FROM pe_results WHERE claim_id IN
            (SELECT claim_id FROM pe_results
             WHERE run_id = 'campaign-20260802-obbba')"""
     ).fetchone()[0]
-    assert n == 6
+    assert n == 7
     # Sign convention: the claim scores the forward extension (negative);
     # the campaign scored the expiry reversal and negated it (exact for
     # the same static world pair). Ratio 1.87 = the known last-in-stack
