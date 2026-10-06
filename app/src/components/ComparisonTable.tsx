@@ -1,5 +1,5 @@
-import { Fragment, useMemo, useState } from "react";
-import { Button, Label, Switch } from "@policyengine/ui-kit/primitives";
+import { Fragment, useMemo, useState, type ReactNode } from "react";
+import { Button } from "@policyengine/ui-kit/primitives";
 import { defaultFilters, hasActiveFilters, type Filters } from "../filters";
 import {
   divergenceScore,
@@ -10,6 +10,13 @@ import {
 import type { Comparison, Row } from "../types";
 import { METRIC_LABELS, PROGRAM_LABELS } from "../types";
 import { SPINE_META, SPINE_ORDER, type SpineBucket } from "../spine";
+import {
+  nextSort,
+  sortRows,
+  type SortDir,
+  type SortState,
+  type SortValue,
+} from "../tableSort";
 import { LabeledSelect, StatusBadge, TableCard, Tag } from "./ui";
 
 const PROGRAM_ORDER = [
@@ -23,6 +30,35 @@ const METRIC_ORDER = [
 ];
 const MAX_RENDER = 600;
 
+/**
+ * Sortable columns, in table order. Δ sorts by the size of the gap
+ * (divergenceScore), so rates and counts rank together; status sorts in
+ * coverage order (close → suppressed). Text starts A→Z, numbers largest
+ * first.
+ */
+type ColKey =
+  | "program"
+  | "metric"
+  | "subgroup"
+  | "geography"
+  | "external"
+  | "pe"
+  | "delta"
+  | "pe2026"
+  | "status";
+
+const FIRST_DIR: Record<ColKey, SortDir> = {
+  program: "asc",
+  metric: "asc",
+  subgroup: "asc",
+  geography: "asc",
+  external: "desc",
+  pe: "desc",
+  delta: "desc",
+  pe2026: "desc",
+  status: "asc",
+};
+
 export function ComparisonTable({
   data,
   buckets,
@@ -34,7 +70,8 @@ export function ComparisonTable({
   filters: Filters;
   setFilters: (f: Filters) => void;
 }) {
-  const [sortByDivergence, setSortByDivergence] = useState(false);
+  const [sort, setSort] = useState<SortState<ColKey> | null>(null);
+  const onSort = (key: ColKey) => setSort((s) => nextSort(s, key, FIRST_DIR[key]));
   const [expanded, setExpanded] = useState<Row | null>(null);
   const externalLabel = filters.country === "US" ? "Urban" : "External";
 
@@ -70,17 +107,36 @@ export function ComparisonTable({
       PROGRAM_ORDER.indexOf(r.program) * 100 +
       METRIC_ORDER.indexOf(r.metric) * 2 +
       (r.variant ? 1 : 0);
-    rows = rows.sort((a, b) =>
-      sortByDivergence
-        ? divergenceScore(b) - divergenceScore(a)
-        : key(a) - key(b) ||
-          a.subgroup.localeCompare(b.subgroup) ||
-          a.geography.localeCompare(b.geography),
+    rows = rows.sort(
+      (a, b) =>
+        key(a) - key(b) ||
+        a.subgroup.localeCompare(b.subgroup) ||
+        a.geography.localeCompare(b.geography),
     );
-    return rows;
-  }, [data, filters, buckets, sortByDivergence, national]);
-
-  const th = "px-3 py-2 font-medium";
+    const value = (r: Row, col: ColKey): SortValue => {
+      switch (col) {
+        case "program":
+          return PROGRAM_LABELS[r.program] ?? r.program;
+        case "metric":
+          return METRIC_LABELS[r.metric] ?? r.metric;
+        case "subgroup":
+          return r.subgroup;
+        case "geography":
+          return r.geography;
+        case "external":
+          return r.external_value;
+        case "pe":
+          return r.pe_value;
+        case "delta":
+          return fmtDivergence(r) === "" ? null : divergenceScore(r);
+        case "pe2026":
+          return r.pe_value_2026;
+        case "status":
+          return SPINE_ORDER.indexOf(buckets.get(r)!);
+      }
+    };
+    return sortRows(rows, sort, value);
+  }, [data, filters, buckets, sort, national]);
 
   return (
     <div className="space-y-4">
@@ -152,54 +208,80 @@ export function ComparisonTable({
                 ]}
               />
             </div>
-            <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-3">
-              <div className="flex items-center gap-2">
-                <Switch
-                  id="sort-divergence"
-                  checked={sortByDivergence}
-                  onCheckedChange={setSortByDivergence}
-                />
-                <Label htmlFor="sort-divergence" className="text-sm">
-                  Sort by divergence
-                </Label>
+            {(hasActiveFilters(filters) || sort) && (
+              <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3">
+                {hasActiveFilters(filters) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setFilters(defaultFilters(filters.country))}
+                  >
+                    Reset filters
+                  </Button>
+                )}
+                {sort && (
+                  <Button variant="ghost" size="sm" onClick={() => setSort(null)}>
+                    Default order
+                  </Button>
+                )}
               </div>
-              {hasActiveFilters(filters) && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setFilters(defaultFilters(filters.country))}
-                >
-                  Reset filters
-                </Button>
-              )}
-              <span className="fig ml-auto text-xs text-muted-foreground">
-                {filtered.length.toLocaleString()} rows
-              </span>
-            </div>
+            )}
           </>
         }
       >
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-border bg-muted text-left text-xs text-muted-foreground">
-              <th className={th}>Program</th>
-              <th className={th}>Metric</th>
-              <th className={th}>Subgroup</th>
-              <th className={th}>Geo</th>
-              <th className={th + " text-right"}>
+              <SortHeader col="program" sort={sort} onSort={onSort}>
+                Program
+              </SortHeader>
+              <SortHeader col="metric" sort={sort} onSort={onSort}>
+                Metric
+              </SortHeader>
+              <SortHeader col="subgroup" sort={sort} onSort={onSort}>
+                Subgroup
+              </SortHeader>
+              <SortHeader col="geography" sort={sort} onSort={onSort}>
+                Geo
+              </SortHeader>
+              <SortHeader
+                col="external"
+                sort={sort}
+                onSort={onSort}
+                right
+                sub="2023 avg month"
+              >
                 {externalLabel}
-                <span className="block font-normal">2023 avg month</span>
-              </th>
-              <th className={th + " text-right"}>
+              </SortHeader>
+              <SortHeader
+                col="pe"
+                sort={sort}
+                onSort={onSort}
+                right
+                sub="2024 calibrated"
+              >
                 PolicyEngine
-                <span className="block font-normal">2024 calibrated</span>
-              </th>
-              <th className={th + " text-right"}>Δ</th>
-              <th className={th + " text-right"}>
+              </SortHeader>
+              <SortHeader
+                col="delta"
+                sort={sort}
+                onSort={onSort}
+                right
+              >
+                Δ
+              </SortHeader>
+              <SortHeader
+                col="pe2026"
+                sort={sort}
+                onSort={onSort}
+                right
+                sub="2026"
+              >
                 Projected
-                <span className="block font-normal">2026</span>
-              </th>
-              <th className={th}>Status</th>
+              </SortHeader>
+              <SortHeader col="status" sort={sort} onSort={onSort}>
+                Status
+              </SortHeader>
             </tr>
           </thead>
           <tbody>
@@ -241,6 +323,73 @@ export function ComparisonTable({
         )}
       </TableCard>
     </div>
+  );
+}
+
+/**
+ * A column header that sorts the table. Label and sub-label each stay on
+ * one line and headers sit on the row's baseline, so the labels line up
+ * with their column. The arrow lives in the cell padding (a CSS glyph, so
+ * it takes no width and stays out of copied text): faint on hover, solid
+ * on the active column.
+ */
+function SortHeader({
+  col,
+  sort,
+  onSort,
+  right = false,
+  sub,
+  children,
+}: {
+  col: ColKey;
+  sort: SortState<ColKey> | null;
+  onSort: (col: ColKey) => void;
+  right?: boolean;
+  sub?: string;
+  children: ReactNode;
+}) {
+  const dir = sort?.key === col ? sort.dir : null;
+  return (
+    <th
+      className={
+        "whitespace-nowrap px-3 py-2 align-bottom font-medium " +
+        (right ? "text-right" : "text-left")
+      }
+      aria-sort={
+        dir === "asc" ? "ascending" : dir === "desc" ? "descending" : undefined
+      }
+    >
+      <button
+        type="button"
+        onClick={() => onSort(col)}
+        className={
+          "group cursor-pointer font-medium hover:text-foreground " +
+          (right ? "text-right " : "text-left ") +
+          (dir ? "text-foreground" : "")
+        }
+      >
+        <span className="relative">
+          {children}
+          <span
+            aria-hidden
+            className={
+              "pointer-events-none absolute top-0 w-3 text-center " +
+              (right ? "-left-3.5 " : "-right-3.5 ") +
+              (dir === "asc"
+                ? "after:content-['↑']"
+                : dir === "desc"
+                  ? "after:content-['↓']"
+                  : "opacity-0 group-hover:opacity-60 after:content-['↕']")
+            }
+          />
+        </span>
+        {sub && (
+          <span className="block text-[11px] font-normal text-muted-foreground">
+            {sub}
+          </span>
+        )}
+      </button>
+    </th>
   );
 }
 
