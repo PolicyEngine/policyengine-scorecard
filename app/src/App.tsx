@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   PolicyEngineShell,
   getPolicyEngineFooterLinks,
@@ -20,7 +20,7 @@ import type {
 } from "./types";
 import { COUNTRY_LABELS, countryOf } from "./types";
 import { bucketOf, type SpineBucket } from "./spine";
-import { defaultFilters, type Filters } from "./filters";
+import { defaultFilters, restoreFilters, type Filters } from "./filters";
 import { NavContext } from "./navigation";
 import { COUNTERPART } from "./copy";
 import { ComparisonTable } from "./components/ComparisonTable";
@@ -37,14 +37,24 @@ function initialUrlState(): { country: Country; tab: TabId } {
   return parseUrlState(window.location.search);
 }
 
-function writeUrlState(country: Country, tab: TabId) {
+/**
+ * Write the view into the address bar. A new view or country is a new
+ * history entry, so the browser's back button returns to the previous view;
+ * a filter change on the same view only updates the current entry. Each
+ * entry carries its filters, so back/forward restores the exact table.
+ */
+function writeUrlState(
+  country: Country,
+  tab: TabId,
+  filters: Filters,
+  mode: "push" | "replace",
+) {
   const query = buildUrlQuery(window.location.search, country, tab);
-  window.history.replaceState(
-    null,
-    "",
+  const url =
     (query ? `${window.location.pathname}?${query}` : window.location.pathname) +
-      window.location.hash,
-  );
+    window.location.hash;
+  if (mode === "push") window.history.pushState({ filters }, "", url);
+  else window.history.replaceState({ filters }, "", url);
 }
 
 const COUNTRIES = Object.keys(COUNTRY_LABELS) as Country[];
@@ -63,13 +73,39 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<TabId>(() => initialUrlState().tab);
   const [filters, setFilters] = useState<Filters>(() =>
-    defaultFilters(initialUrlState().country),
+    restoreFilters(window.history.state?.filters, initialUrlState().country),
   );
   const country = filters.country;
 
+  // The view last written to the address bar (null before the first write),
+  // and whether the pending render comes from the back/forward buttons —
+  // that render must not push a new entry on top of the one just restored.
+  const written = useRef<{ country: Country; tab: TabId } | null>(null);
+  const fromHistory = useRef(false);
+
   useEffect(() => {
-    writeUrlState(country, tab);
-  }, [country, tab]);
+    const prev = written.current;
+    const sameView = prev?.country === country && prev?.tab === tab;
+    writeUrlState(
+      country,
+      tab,
+      filters,
+      prev === null || sameView || fromHistory.current ? "replace" : "push",
+    );
+    written.current = { country, tab };
+    fromHistory.current = false;
+  }, [country, tab, filters]);
+
+  useEffect(() => {
+    const onPopState = (e: PopStateEvent) => {
+      const next = parseUrlState(window.location.search);
+      fromHistory.current = true;
+      setFilters(restoreFilters(e.state?.filters, next.country));
+      setTab(next.tab);
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   useEffect(() => {
     fetch(withBasePath("data/comparison.json"))
