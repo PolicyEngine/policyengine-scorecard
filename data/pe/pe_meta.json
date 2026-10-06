@@ -8,6 +8,8 @@
     "fullpart_all": {
       "flags_set_true": [
         "takes_up_aca_if_eligible",
+        "takes_up_dc_ptc",
+        "takes_up_early_head_start_if_eligible",
         "takes_up_eitc",
         "takes_up_head_start_if_eligible",
         "takes_up_housing_assistance_if_eligible",
@@ -16,10 +18,12 @@
         "takes_up_snap_if_eligible",
         "takes_up_ssi_if_eligible",
         "takes_up_tanf_if_eligible",
-        "would_claim_wic (12 months)"
+        "takes_up_wic_if_eligible (12 months)"
       ],
       "flag_means_after": {
         "takes_up_aca_if_eligible": 1.0,
+        "takes_up_dc_ptc": 1.0,
+        "takes_up_early_head_start_if_eligible": 1.0,
         "takes_up_eitc": 1.0,
         "takes_up_head_start_if_eligible": 1.0,
         "takes_up_housing_assistance_if_eligible": 1.0,
@@ -28,7 +32,7 @@
         "takes_up_snap_if_eligible": 1.0,
         "takes_up_ssi_if_eligible": 1.0,
         "takes_up_tanf_if_eligible": 1.0,
-        "would_claim_wic": 1.0
+        "takes_up_wic_if_eligible": 1.0
       }
     },
     "fullpart_urban6": {
@@ -38,7 +42,7 @@
         "takes_up_tanf_if_eligible",
         "takes_up_housing_assistance_if_eligible",
         "takes_up_eitc",
-        "would_claim_wic (12 months)"
+        "takes_up_wic_if_eligible (12 months)"
       ],
       "flag_means_after": {
         "takes_up_snap_if_eligible": 1.0,
@@ -46,7 +50,7 @@
         "takes_up_tanf_if_eligible": 1.0,
         "takes_up_housing_assistance_if_eligible": 1.0,
         "takes_up_eitc": 1.0,
-        "would_claim_wic": 1.0
+        "takes_up_wic_if_eligible": 1.0
       }
     }
   },
@@ -111,8 +115,8 @@
       "definition_period": "month",
       "documentation": "Is eligible for the Special Supplemental Nutrition Program for Women, Infants and Children (WIC)"
     },
-    "would_claim_wic": {
-      "label": "Would claim WIC",
+    "takes_up_wic_if_eligible": {
+      "label": "Whether an eligible person takes up WIC",
       "entity": "person",
       "definition_period": "month",
       "documentation": null
@@ -139,7 +143,7 @@
       "label": "Housing assistance",
       "entity": "spm_unit",
       "definition_period": "year",
-      "documentation": "Housing assistance"
+      "documentation": "\nHousing assistance the model computes for this unit: HUD's housing\nassistance payment where the unit is eligible and takes up.\n\nEligibility is `receives_housing_assistance | (is_renter &\nis_income_eligible)` and take-up defaults to true, so this is a modelled\namount rather than a report of receipt.\n"
     },
     "is_eligible_for_housing_assistance": {
       "label": "Is eligible for HUD voucher",
@@ -154,34 +158,6 @@
       "documentation": null
     }
   },
-  "bundle": {
-    "bundle_id": "us-5.0.1",
-    "country_id": "us",
-    "policyengine_version": "5.0.1",
-    "model_package": "policyengine-us",
-    "model_version": "1.764.6",
-    "data_package": "populace-data",
-    "data_version": "0.1.0",
-    "default_dataset": "populace_us_2024",
-    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
-    "data_build_model_version": "1.764.6",
-    "data_build_model_git_sha": "None",
-    "data_build_fingerprint": "None",
-    "compatibility_basis": "exact_build_model_version",
-    "certified_by": "None",
-    "runtime_dataset": "populace_us_2024",
-    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "runtime_dataset_source": "/Users/maxghenis/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
-    "managed_by": "policyengine.py"
-  },
-  "race_categories_on_artifact": [
-    "BLACK",
-    "HISPANIC",
-    "OTHER",
-    "WHITE"
-  ],
   "program_variables": {
     "snap": [
       "snap",
@@ -213,5 +189,39 @@
     "spm_poverty": [
       "spm_unit_is_in_spm_poverty"
     ]
-  }
+  },
+  "bundle": {
+    "bundle_id": "us-6.2.1",
+    "country_id": "us",
+    "policyengine_version": "6.2.1",
+    "model_package": "policyengine-us",
+    "model_version": "2.2.1",
+    "data_package": "microcosm-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "certified_data_build_id": "populace-us-2024-spm-20260915",
+    "certified_data_artifact_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "data_build_model_version": "2.2.1",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "managed_by": "policyengine.py",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "runtime_dataset_source": "data/populace_us_2024.h5",
+    "runtime_dataset_data_package": "microcosm-data",
+    "runtime_dataset_repo_type": "dataset",
+    "runtime_dataset_revision": "populace-us-2024-spm-20260915",
+    "runtime_dataset_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "spm": "{'forecast_content_sha256': '3d86d5c4c0423480e6b69b75d222ffa4a7a2639e4094df5ba2504af01be17173', 'scenario': 'ce_trend', 'geography_kind': 'county', 'geography_id': None, 'county_vintage': '2020', 'as_of': None}",
+    "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+  },
+  "race_categories_on_artifact": [
+    "BLACK",
+    "HISPANIC",
+    "OTHER",
+    "WHITE"
+  ]
 }

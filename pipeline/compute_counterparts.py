@@ -2,7 +2,8 @@
 
 Three sequential runs via policyengine.py managed_microsimulation() (Build P):
   1. baseline        — as-served artifact (seeded + calibrated take-up)
-  2. fullpart_all    — every stored takes_up_* flag True + would_claim_wic True
+  2. fullpart_all    — every stored takes_up_* flag True + the WIC gate True
+                       (would_claim_wic; takes_up_wic_if_eligible in PE-US 2.x)
   3. fullpart_urban6 — only the flags matching Urban SotSN programs
                        (SNAP, SSI, TANF, housing, EITC, WIC gate)
 
@@ -54,6 +55,8 @@ URBAN6_FLAGS = [
 ]
 ALL_FLAGS = [
     "takes_up_aca_if_eligible",
+    "takes_up_dc_ptc",
+    "takes_up_early_head_start_if_eligible",
     "takes_up_eitc",
     "takes_up_head_start_if_eligible",
     "takes_up_housing_assistance_if_eligible",
@@ -64,6 +67,18 @@ ALL_FLAGS = [
     "takes_up_tanf_if_eligible",
 ]
 WIC_GATE = "would_claim_wic"
+# policyengine-us 2.x renamed the WIC gate; policyengine.py maps the stored
+# legacy column onto the live name (policyengine_bundle
+# ["legacy_input_renames"]), so set whichever name the pinned engine defines.
+WIC_GATE_NAMES = ["takes_up_wic_if_eligible", WIC_GATE]
+
+
+def live_flag(vs, f):
+    """The pinned engine's name for a take-up flag (handles the WIC rename)."""
+    if f == WIC_GATE:
+        return next((n for n in WIC_GATE_NAMES if n in vs), f)
+    return f
+
 
 rows = []
 meta = {"year": YEAR, "runs": {}, "variables": {}, "program_variables": {}}
@@ -118,11 +133,13 @@ def build_sim(run_name, flags_true):
     sim = pe.us.managed_microsimulation()
     vs = sim.tax_benefit_system.variables
     run_meta = {"flags_set_true": [], "flag_means_after": {}}
+    flags_true = [live_flag(vs, f) for f in flags_true]
+    # A flag the engine does not define would silently leave that program at
+    # baseline take-up in a "full participation" run: fail instead.
+    missing = [f for f in flags_true if f not in vs]
+    if missing:
+        raise RuntimeError(f"take-up flags not in the pinned engine: {missing}")
     for f in flags_true:
-        if f not in vs:
-            run_meta.setdefault("flags_missing", []).append(f)
-            log(f"  WARNING: flag {f} not in variables")
-            continue
         entity = vs[f].entity.key
         n = sim.populations[entity].count
         arr = np.ones(n, dtype=bool)
@@ -143,6 +160,8 @@ def build_sim(run_name, flags_true):
             except Exception:
                 log(f"  ERROR setting {f}:\n{traceback.format_exc(limit=2)}")
                 run_meta.setdefault("flags_failed", []).append(f)
+    if run_meta.get("flags_failed"):
+        raise RuntimeError(f"could not set take-up flags: {run_meta['flags_failed']}")
     for f in flags_true:
         if f in vs:
             try:
@@ -379,7 +398,7 @@ def analyze(run_name, flags_true):
 
     # --- WIC (universe = children 0-4; Urban's concept) ---
     try:
-        for v in ["wic", "is_wic_eligible", WIC_GATE]:
+        for v in ["wic", "is_wic_eligible", live_flag(vs, WIC_GATE)]:
             record_var(vs, v)
         record_program_vars("wic", "wic", "is_wic_eligible")
         wic_amt = sim.calculate("wic", YEAR)
