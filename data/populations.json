@@ -103,8 +103,8 @@
   },
   "by_latest_status": {
    "comparable": 42,
-   "concept_mismatch": 4,
-   "constructed": 1416,
+   "concept_mismatch": 16,
+   "constructed": 1404,
    "not_computed": 3109,
    "pe_gap": 889
   }
@@ -528,7 +528,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "concept_mismatch",
+    "rationale": "[batch2 D6, confidence medium] Flat refundable child credits (CA YCTC, CO FAC, MD CTC): PE pays full entitlement to every eligible unit, benchmarks count claims",
+    "action_link": "diagnosis/batch2/D.md"
+   }
   },
   {
    "claim_id": "c9b762228722c8e68305",
@@ -2664,7 +2668,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "e4a68546c4be960ea5d1",
@@ -2737,7 +2745,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "ae7020f71018aa71e13b",
@@ -3467,7 +3479,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C1, confidence high (mechanism); medium (magnitude: first-order counterfactual)] Pooled 2022-2024 ASEC incomes stay in nominal own-year dollars but are tested against 2024 SPM thresholds (largest #646 component)",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "fee6a482e8ac1fc33989",
@@ -3613,7 +3629,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "ee8a446834a4da49903b",
@@ -3978,7 +3998,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C4, confidence high] Montana child SPM 0.31x: three cloned source families on about 52 effective households; one is a Census negative-resources artifact",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "8e871b8216783c3198e1",
@@ -4197,7 +4221,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C1, confidence high (mechanism); medium (magnitude: first-order counterfactual)] Pooled 2022-2024 ASEC incomes stay in nominal own-year dollars but are tested against 2024 SPM thresholds (largest #646 component)",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "c89efbc4ffd24fb15cf3",
@@ -4270,7 +4298,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C1, confidence high (mechanism); medium (magnitude: first-order counterfactual)] Pooled 2022-2024 ASEC incomes stay in nominal own-year dollars but are tested against 2024 SPM thresholds (largest #646 component)",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "f4182a5794922259b4ce",
@@ -4927,7 +4959,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "f9d02a7845633c2b4268",
@@ -5146,7 +5182,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C2, confidence high] SPM resources leave out partnership/S-corp income (and farm rent, non-Schedule-D gains) but subtract the federal and SE tax on it",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "114bc2d1f77f3b6e9d05",
@@ -5364,7 +5404,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "51fa48d774c937b2e09f",
@@ -5437,7 +5481,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "55715497136e3eb9c9dc",
@@ -5510,7 +5558,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "2a005f05a8f1ab16c446",
@@ -5583,7 +5635,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C1, confidence high (mechanism); medium (magnitude: first-order counterfactual)] Pooled 2022-2024 ASEC incomes stay in nominal own-year dollars but are tested against 2024 SPM thresholds (largest #646 component)",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "1b88ee46c23451091857",
@@ -5729,7 +5785,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "fe35a5d003686d2a4980",
@@ -8538,7 +8598,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
+    "action_link": "diagnosis/batch2/C.md"
+   }
   },
   {
    "claim_id": "ce996b3e88742c0f0c37",
@@ -15323,7 +15387,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "undiagnosed",
+    "rationale": "[batch2 D5, confidence medium] Colorado CTC: TY2024-law simulation vs TY2023 actual; the law change explains only ~30% of the gap on this release",
+    "action_link": "diagnosis/batch2/D.md"
+   }
   },
   {
    "claim_id": "96f0b26b18d8c5097d7f",
@@ -15545,7 +15613,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "concept_mismatch",
+    "rationale": "[batch2 D6, confidence medium] Flat refundable child credits (CA YCTC, CO FAC, MD CTC): PE pays full entitlement to every eligible unit, benchmarks count claims",
+    "action_link": "diagnosis/batch2/D.md"
+   }
   },
   {
    "claim_id": "2c00aa7f5501d732d67e",
@@ -79735,7 +79807,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 D1, confidence high] IA HF1020: the registry reform's bracket indices moved under policyengine-us 2.2.1, so the $90k+ expansion is no longer scored",
+    "action_link": "diagnosis/batch2/D.md"
+   }
   },
   {
    "claim_id": "bd2894a6bf3d1e1eda0d",
@@ -79846,7 +79922,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 D3, confidence high] Idaho CTC: the row sums the uncapped nonrefundable credit; the benchmark is foregone revenue",
+    "action_link": "diagnosis/batch2/D.md"
+   }
   },
   {
    "claim_id": "cc1f77e73de5a803ff54",
@@ -129807,7 +129887,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "undiagnosed",
+    "rationale": "[batch2 D7, confidence low] Illinois CTC: benchmark is a pre-enactment first-year cost estimate; PE inherits an IL EITC that runs 1.20x the TY2023 actual",
+    "action_link": "diagnosis/batch2/D.md"
+   }
   },
   {
    "claim_id": "78dbc6fc468ac60b2a5e",
@@ -137363,7 +137447,7 @@
    "reform_framework": "baseline",
    "reform_key": "03395a10966bb849",
    "external_value": 7554668000.0,
-   "calibration_relationship": "consumed_as_target",
+   "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
     "value": 780248561.2064885,
@@ -137460,7 +137544,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 B5, confidence high] Education credits at 10% of SOI: LLC structurally zero, AOTC student pool 1.18M with $4.4B expenses",
+    "action_link": "diagnosis/batch2/B.md"
+   }
   },
   {
    "claim_id": "1dba5bf211130e2ed566",
@@ -137611,7 +137699,7 @@
    "reform_framework": "baseline",
    "reform_key": "03395a10966bb849",
    "external_value": 2752164000.0,
-   "calibration_relationship": "consumed_as_target",
+   "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
     "value": 4393969176.950291,
@@ -137708,7 +137796,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 B6, confidence medium] AMT 1.6x SOI from 70 records: top-tail compression puts 3x SOI's returns at AGI $1-2M and ~none above $10M",
+    "action_link": "diagnosis/batch2/B.md"
+   }
   },
   {
    "claim_id": "dd2ee41fc22c32eee812",
@@ -138256,97 +138348,111 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": -214811237870.97168,
-    "status": "constructed",
+    "status": "concept_mismatch",
     "engine_version": "2.2.1",
     "data_bundle": "populace-us-2024-spm-20260915",
     "release": "spm-20260915",
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos01:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 66% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_reduced_rates",
-    "status_effective": "constructed",
+    "status_effective": "concept_mismatch",
     "ratio": 1.4545821536641748,
     "delta": -67132237870.97168
    },
    "results": [
     {
      "value": -195573235348.0337,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.729.0",
      "data_bundle": "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z",
      "release": "f0af251",
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos01:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 66% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_reduced_rates",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -190571706172.3506,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.752.2",
      "data_bundle": "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701",
      "release": "l0-refit",
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 66% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "pre_obbba_expiry_2026",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -219237808210.38477,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z",
      "release": "buildi",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos01:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 66% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_reduced_rates",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -217988675767.25195,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z",
      "release": "buildj",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos01:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 66% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_reduced_rates",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -205264659779.85547,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z",
      "release": "buildo",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos01:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 66% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_reduced_rates",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -214811237870.97168,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "2.2.1",
      "data_bundle": "populace-us-2024-spm-20260915",
      "release": "spm-20260915",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos01:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 66% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_reduced_rates",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     }
    ],
    "diagnosis": null
@@ -138390,7 +138496,9 @@
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos13:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_no_tax_on_tips",
     "status_effective": "constructed",
     "ratio": 0.19062223832491115,
@@ -138406,7 +138514,9 @@
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos13:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_no_tax_on_tips",
      "status_effective": "constructed"
     },
@@ -138419,7 +138529,9 @@
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "pre_obbba_expiry_2026",
      "status_effective": "constructed"
     },
@@ -138432,7 +138544,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos13:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_no_tax_on_tips",
      "status_effective": "constructed"
     },
@@ -138445,7 +138559,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos13:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_no_tax_on_tips",
      "status_effective": "constructed"
     },
@@ -138458,7 +138574,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos13:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_no_tax_on_tips",
      "status_effective": "constructed"
     },
@@ -138471,12 +138589,18 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos13:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_no_tax_on_tips",
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A2, confidence medium] No tax on tips: SIPP-QRF tip imputation leaves ~93% of listed-occupation workers (incl. waitstaff) with zero tips",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "8879d6dd6ecc11bdf607",
@@ -138510,97 +138634,111 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": 14975612826.955566,
-    "status": "constructed",
+    "status": "concept_mismatch",
     "engine_version": "2.2.1",
     "data_bundle": "populace-us-2024-spm-20260915",
     "release": "spm-20260915",
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos10:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 57% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_misc_itemized_deductions",
-    "status_effective": "constructed",
+    "status_effective": "concept_mismatch",
     "ratio": 1.1160006577953325,
     "delta": 1556612826.9555664
    },
    "results": [
     {
      "value": 16987843852.270508,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.729.0",
      "data_bundle": "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z",
      "release": "f0af251",
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos10:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 57% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_misc_itemized_deductions",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 0.0,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.752.2",
      "data_bundle": "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701",
      "release": "l0-refit",
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 57% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "pre_obbba_expiry_2026",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 0.0,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z",
      "release": "buildi",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos10:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 57% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_misc_itemized_deductions",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 0.0,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z",
      "release": "buildj",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos10:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 57% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_misc_itemized_deductions",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 15174625541.742188,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z",
      "release": "buildo",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos10:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 57% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_misc_itemized_deductions",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 14975612826.955566,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "2.2.1",
      "data_bundle": "populace-us-2024-spm-20260915",
      "release": "spm-20260915",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos10:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 57% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_misc_itemized_deductions",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     }
    ],
    "diagnosis": null
@@ -138637,97 +138775,111 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": -19069538729.546387,
-    "status": "constructed",
+    "status": "concept_mismatch",
     "engine_version": "2.2.1",
     "data_bundle": "populace-us-2024-spm-20260915",
     "release": "spm-20260915",
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos11:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 61% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_itemized_tax_benefit_limit",
-    "status_effective": "constructed",
+    "status_effective": "concept_mismatch",
     "ratio": 1.1888739856325679,
     "delta": -3029538729.5463867
    },
    "results": [
     {
      "value": -22060108416.086426,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.729.0",
      "data_bundle": "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z",
      "release": "f0af251",
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos11:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 61% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_itemized_tax_benefit_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -19245750592.199707,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.752.2",
      "data_bundle": "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701",
      "release": "l0-refit",
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 61% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "pre_obbba_expiry_2026",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -20350960759.769043,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z",
      "release": "buildi",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos11:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 61% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_itemized_tax_benefit_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -20271905932.697266,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z",
      "release": "buildj",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos11:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 61% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_itemized_tax_benefit_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -19565645365.34619,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z",
      "release": "buildo",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos11:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 61% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_itemized_tax_benefit_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -19069538729.546387,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "2.2.1",
      "data_bundle": "populace-us-2024-spm-20260915",
      "release": "spm-20260915",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos11:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 61% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_itemized_tax_benefit_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     }
    ],
    "diagnosis": null
@@ -138771,7 +138923,9 @@
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos02:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_standard_deduction",
     "status_effective": "constructed",
     "ratio": 1.4637197777521034,
@@ -138787,7 +138941,9 @@
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos02:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_standard_deduction",
      "status_effective": "constructed"
     },
@@ -138800,7 +138956,9 @@
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "pre_obbba_expiry_2026",
      "status_effective": "constructed"
     },
@@ -138813,7 +138971,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos02:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_standard_deduction",
      "status_effective": "constructed"
     },
@@ -138826,7 +138986,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos02:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_standard_deduction",
      "status_effective": "constructed"
     },
@@ -138839,7 +139001,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos02:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_standard_deduction",
      "status_effective": "constructed"
     },
@@ -138852,7 +139016,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos02:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_standard_deduction",
      "status_effective": "constructed"
     }
@@ -138898,7 +139064,9 @@
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos14:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_no_tax_on_overtime",
     "status_effective": "constructed",
     "ratio": 0.6791287673995777,
@@ -138914,7 +139082,9 @@
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos14:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_no_tax_on_overtime",
      "status_effective": "constructed"
     },
@@ -138927,7 +139097,9 @@
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "pre_obbba_expiry_2026",
      "status_effective": "constructed"
     },
@@ -138940,7 +139112,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos14:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_no_tax_on_overtime",
      "status_effective": "constructed"
     },
@@ -138953,7 +139127,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos14:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_no_tax_on_overtime",
      "status_effective": "constructed"
     },
@@ -138966,7 +139142,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos14:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_no_tax_on_overtime",
      "status_effective": "constructed"
     },
@@ -138979,7 +139157,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos14:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_no_tax_on_overtime",
      "status_effective": "constructed"
     }
@@ -139025,7 +139205,9 @@
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos12:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_salt_limit",
     "status_effective": "constructed",
     "ratio": 1.960262627616228,
@@ -139041,7 +139223,9 @@
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos12:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_salt_limit",
      "status_effective": "constructed"
     },
@@ -139054,7 +139238,9 @@
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "pre_obbba_expiry_2026",
      "status_effective": "constructed"
     },
@@ -139067,7 +139253,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos12:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_salt_limit",
      "status_effective": "constructed"
     },
@@ -139080,7 +139268,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos12:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_salt_limit",
      "status_effective": "constructed"
     },
@@ -139093,7 +139283,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos12:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_salt_limit",
      "status_effective": "constructed"
     },
@@ -139106,12 +139298,18 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos12:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'yba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_salt_limit",
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A1, confidence high] FY2026 claims compared with a full calendar-2026 liability (TY2026-onset provisions ramp into FY2027)",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "17ba03f21f372df6c315",
@@ -139152,7 +139350,9 @@
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos15:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'iia 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_auto_loan_interest",
     "status_effective": "constructed",
     "ratio": 0.20058524914026332,
@@ -139168,7 +139368,9 @@
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos15:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'iia 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_auto_loan_interest",
      "status_effective": "constructed"
     },
@@ -139181,7 +139383,9 @@
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'iia 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "pre_obbba_expiry_2026",
      "status_effective": "constructed"
     },
@@ -139194,7 +139398,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos15:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'iia 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_auto_loan_interest",
      "status_effective": "constructed"
     },
@@ -139207,7 +139413,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos15:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'iia 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_auto_loan_interest",
      "status_effective": "constructed"
     },
@@ -139220,7 +139428,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos15:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'iia 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_auto_loan_interest",
      "status_effective": "constructed"
     },
@@ -139233,12 +139443,18 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos15:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'iia 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_auto_loan_interest",
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A3, confidence medium] No tax on car loan interest: qualified-interest proxy uses one year of loan issuance as the TY2026 stock (explains ~15% of the gap; residual open)",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "104dc5af09aca30514e5",
@@ -139279,7 +139495,9 @@
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos03:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_personal_exemption_termination",
     "status_effective": "constructed",
     "ratio": 1.255829935882883,
@@ -139295,7 +139513,9 @@
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos03:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_personal_exemption_termination",
      "status_effective": "constructed"
     },
@@ -139308,7 +139528,9 @@
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "pre_obbba_expiry_2026",
      "status_effective": "constructed"
     },
@@ -139321,7 +139543,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos03:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_personal_exemption_termination",
      "status_effective": "constructed"
     },
@@ -139334,7 +139558,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos03:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_personal_exemption_termination",
      "status_effective": "constructed"
     },
@@ -139347,7 +139573,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos03:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_personal_exemption_termination",
      "status_effective": "constructed"
     },
@@ -139360,7 +139588,9 @@
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos03:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/24', so FY2026 mixes the TY2025 settlement with TY2026 withholding; PolicyEngine reports the calendar-2026 liability change."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_personal_exemption_termination",
      "status_effective": "constructed"
     }
@@ -139399,84 +139629,96 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": -89808470353.02002,
-    "status": "constructed",
+    "status": "concept_mismatch",
     "engine_version": "2.2.1",
     "data_bundle": "populace-us-2024-spm-20260915",
     "release": "spm-20260915",
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos04:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_child_tax_credit",
-    "status_effective": "constructed",
+    "status_effective": "concept_mismatch",
     "ratio": 1.8415073172101133,
     "delta": -41039470353.02002
    },
    "results": [
     {
      "value": -85642146969.64697,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.729.0",
      "data_bundle": "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z",
      "release": "f0af251",
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos04:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_child_tax_credit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -85857310019.36963,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.752.2",
      "data_bundle": "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701",
      "release": "l0-refit",
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "pre_obbba_expiry_2026",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -90628266316.41602,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z",
      "release": "buildi",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos04:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_child_tax_credit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -88750704657.55127,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z",
      "release": "buildj",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos04:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_child_tax_credit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -89064547927.9414,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z",
      "release": "buildo",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos04:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_child_tax_credit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -91169531318.0,
@@ -139496,19 +139738,25 @@
     },
     {
      "value": -89808470353.02002,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "2.2.1",
      "data_bundle": "populace-us-2024-spm-20260915",
      "release": "spm-20260915",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos04:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_child_tax_credit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A1, confidence high] FY2026 claims compared with a full calendar-2026 liability (TY2026-onset provisions ramp into FY2027)",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "1cb8833f070d370af65f",
@@ -139542,100 +139790,118 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": -3516129025.402832,
-    "status": "constructed",
+    "status": "concept_mismatch",
     "engine_version": "2.2.1",
     "data_bundle": "populace-us-2024-spm-20260915",
     "release": "spm-20260915",
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos17:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 20% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_charitable_nonitemizer_deduction",
-    "status_effective": "constructed",
+    "status_effective": "concept_mismatch",
     "ratio": 2.278761520027759,
     "delta": -1973129025.402832
    },
    "results": [
     {
      "value": -2948014748.9399414,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.729.0",
      "data_bundle": "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z",
      "release": "f0af251",
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos18:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 20% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_charitable_nonitemizer_deduction",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -875131720.0639648,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.752.2",
      "data_bundle": "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701",
      "release": "l0-refit",
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 20% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "pre_obbba_expiry_2026",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -3336161996.835449,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z",
      "release": "buildi",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos17:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 20% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_charitable_nonitemizer_deduction",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -3364235878.944336,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z",
      "release": "buildj",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos17:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 20% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_charitable_nonitemizer_deduction",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -3484539280.26709,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z",
      "release": "buildo",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos17:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 20% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_charitable_nonitemizer_deduction",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -3516129025.402832,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "2.2.1",
      "data_bundle": "populace-us-2024-spm-20260915",
      "release": "spm-20260915",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos17:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 20% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_charitable_nonitemizer_deduction",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A1, confidence high] FY2026 claims compared with a full calendar-2026 liability (TY2026-onset provisions ramp into FY2027)",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "ecb717a9acc4a1b38078",
@@ -139669,100 +139935,118 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": 7439574304.04248,
-    "status": "constructed",
+    "status": "concept_mismatch",
     "engine_version": "2.2.1",
     "data_bundle": "populace-us-2024-spm-20260915",
     "release": "spm-20260915",
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos18:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 19% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_charitable_floor",
-    "status_effective": "constructed",
+    "status_effective": "concept_mismatch",
     "ratio": 5.5271725884416645,
     "delta": 6093574304.04248
    },
    "results": [
     {
      "value": 7150150930.540527,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.729.0",
      "data_bundle": "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z",
      "release": "f0af251",
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos19:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 19% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_charitable_floor",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 9426686209.288086,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.752.2",
      "data_bundle": "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701",
      "release": "l0-refit",
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 19% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "pre_obbba_expiry_2026",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 7358650871.935059,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z",
      "release": "buildi",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos18:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 19% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_charitable_floor",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 7379699120.913574,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z",
      "release": "buildj",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos18:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 19% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_charitable_floor",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 7188068518.41748,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z",
      "release": "buildo",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos18:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 19% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_charitable_floor",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 7439574304.04248,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "2.2.1",
      "data_bundle": "populace-us-2024-spm-20260915",
      "release": "spm-20260915",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos18:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 19% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_charitable_floor",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A1, confidence high] FY2026 claims compared with a full calendar-2026 liability (TY2026-onset provisions ramp into FY2027)",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "0b9f7c2b76e0753b5f75",
@@ -139796,100 +140080,118 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": -1548151923.0507812,
-    "status": "constructed",
+    "status": "concept_mismatch",
     "engine_version": "2.2.1",
     "data_bundle": "populace-us-2024-spm-20260915",
     "release": "spm-20260915",
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos16:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 34% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_cdcc",
-    "status_effective": "constructed",
+    "status_effective": "concept_mismatch",
     "ratio": 3.7852125257965312,
     "delta": -1139151923.0507812
    },
    "results": [
     {
      "value": -1042680280.1430664,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.729.0",
      "data_bundle": "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z",
      "release": "f0af251",
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos17:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 34% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_cdcc",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 0.0,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.752.2",
      "data_bundle": "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701",
      "release": "l0-refit",
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 34% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "pre_obbba_expiry_2026",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -1278566201.8041992,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z",
      "release": "buildi",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos16:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 34% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_cdcc",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -1150076776.0532227,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z",
      "release": "buildj",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos16:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 34% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_cdcc",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -1101576259.472168,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z",
      "release": "buildo",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos16:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 34% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_cdcc",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -1548151923.0507812,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "2.2.1",
      "data_bundle": "populace-us-2024-spm-20260915",
      "release": "spm-20260915",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos16:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 34% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_cdcc",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A1, confidence high] FY2026 claims compared with a full calendar-2026 liability (TY2026-onset provisions ramp into FY2027)",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "111a9e17fdff31b80598",
@@ -139923,97 +140225,111 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": -62680231938.038574,
-    "status": "constructed",
+    "status": "concept_mismatch",
     "engine_version": "2.2.1",
     "data_bundle": "populace-us-2024-spm-20260915",
     "release": "spm-20260915",
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos05:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 59% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_qbi_deduction",
-    "status_effective": "constructed",
+    "status_effective": "concept_mismatch",
     "ratio": 1.4139142346899138,
     "delta": -18349231938.038574
    },
    "results": [
     {
      "value": -48232133814.86182,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.729.0",
      "data_bundle": "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z",
      "release": "f0af251",
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos05:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 59% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_qbi_deduction",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -59498745641.17236,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.752.2",
      "data_bundle": "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701",
      "release": "l0-refit",
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 59% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "pre_obbba_expiry_2026",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -40950689192.69287,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z",
      "release": "buildi",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos05:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 59% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_qbi_deduction",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -41065161630.41113,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z",
      "release": "buildj",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos05:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 59% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_qbi_deduction",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -58686170864.458496,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z",
      "release": "buildo",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos05:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 59% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_qbi_deduction",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -62680231938.038574,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "2.2.1",
      "data_bundle": "populace-us-2024-spm-20260915",
      "release": "spm-20260915",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos05:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 59% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_qbi_deduction",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     }
    ],
    "diagnosis": null
@@ -140050,100 +140366,118 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": 0.0,
-    "status": "constructed",
+    "status": "concept_mismatch",
     "engine_version": "2.2.1",
     "data_bundle": "populace-us-2024-spm-20260915",
     "release": "spm-20260915",
     "construction": "reform_delta:estate_tax:jcx_stacked:chain_pos06:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'dda & gma 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 18% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_estate_gift_exemption",
-    "status_effective": "constructed",
+    "status_effective": "concept_mismatch",
     "ratio": -0.0,
     "delta": 3672000000.0
    },
    "results": [
     {
      "value": 0.0,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.729.0",
      "data_bundle": "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z",
      "release": "f0af251",
      "construction": "reform_delta:estate_tax:stacked_chained:chain_pos06:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'dda & gma 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 18% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_estate_gift_exemption",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 0.0,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.752.2",
      "data_bundle": "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701",
      "release": "l0-refit",
      "construction": "reform_delta:estate_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'dda & gma 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 18% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "pre_obbba_expiry_2026",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 0.0,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z",
      "release": "buildi",
      "construction": "reform_delta:estate_tax:jcx_stacked:chain_pos06:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'dda & gma 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 18% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_estate_gift_exemption",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 0.0,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z",
      "release": "buildj",
      "construction": "reform_delta:estate_tax:jcx_stacked:chain_pos06:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'dda & gma 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 18% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_estate_gift_exemption",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 0.0,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z",
      "release": "buildo",
      "construction": "reform_delta:estate_tax:jcx_stacked:chain_pos06:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'dda & gma 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 18% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_estate_gift_exemption",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 0.0,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "2.2.1",
      "data_bundle": "populace-us-2024-spm-20260915",
      "release": "spm-20260915",
      "construction": "reform_delta:estate_tax:jcx_stacked:chain_pos06:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'dda & gma 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 18% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_estate_gift_exemption",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A6, confidence high] Estate and gift exemption: no estate inputs in the H5 (PE = 0 by construction); engine credit also uses the exclusion amount instead of the tentative tax",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "3dd3cd4f14af2d46bd66",
@@ -140177,100 +140511,118 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": -142087792132.45605,
-    "status": "constructed",
+    "status": "concept_mismatch",
     "engine_version": "2.2.1",
     "data_bundle": "populace-us-2024-spm-20260915",
     "release": "spm-20260915",
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos07:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_amt",
-    "status_effective": "constructed",
+    "status_effective": "concept_mismatch",
     "ratio": 1.8492586989322062,
     "delta": -65252792132.456055
    },
    "results": [
     {
      "value": -101486827382.99512,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.729.0",
      "data_bundle": "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z",
      "release": "f0af251",
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos07:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_amt",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -37879993092.05762,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.752.2",
      "data_bundle": "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701",
      "release": "l0-refit",
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "pre_obbba_expiry_2026",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -136022121556.41162,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z",
      "release": "buildi",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos07:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_amt",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -139259932897.04346,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z",
      "release": "buildj",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos07:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_amt",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -147669921815.1162,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z",
      "release": "buildo",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos07:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_amt",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": -142087792132.45605,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "2.2.1",
      "data_bundle": "populace-us-2024-spm-20260915",
      "release": "spm-20260915",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos07:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_amt",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A1, confidence high] FY2026 claims compared with a full calendar-2026 liability (TY2026-onset provisions ramp into FY2027)",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "8c39fd4f728cdc2a89f9",
@@ -140304,100 +140656,118 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": 4091553617.4296875,
-    "status": "constructed",
+    "status": "concept_mismatch",
     "engine_version": "2.2.1",
     "data_bundle": "populace-us-2024-spm-20260915",
     "release": "spm-20260915",
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos08:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 53% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_mortgage_interest_limit",
-    "status_effective": "constructed",
+    "status_effective": "concept_mismatch",
     "ratio": 2.496371944740505,
     "delta": 2452553617.4296875
    },
    "results": [
     {
      "value": 500400830.5161133,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.729.0",
      "data_bundle": "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z",
      "release": "f0af251",
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos08:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 48% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_mortgage_interest_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 3315852895.907715,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.752.2",
      "data_bundle": "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701",
      "release": "l0-refit",
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 53% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "pre_obbba_expiry_2026",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 4390148036.187988,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z",
      "release": "buildi",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos08:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 53% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_mortgage_interest_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 4460545552.770508,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z",
      "release": "buildj",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos08:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 53% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_mortgage_interest_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 3241442519.493164,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z",
      "release": "buildo",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos08:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 53% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_mortgage_interest_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 4091553617.4296875,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "2.2.1",
      "data_bundle": "populace-us-2024-spm-20260915",
      "release": "spm-20260915",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos08:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 53% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_mortgage_interest_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A1, confidence high] FY2026 claims compared with a full calendar-2026 liability (TY2026-onset provisions ramp into FY2027)",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "2b90f7cd21917bcf9730",
@@ -140431,100 +140801,118 @@
    "claim_baseline": "current_law",
    "latest": {
     "value": 290097725.640625,
-    "status": "constructed",
+    "status": "concept_mismatch",
     "engine_version": "2.2.1",
     "data_bundle": "populace-us-2024-spm-20260915",
     "release": "spm-20260915",
     "construction": "reform_delta:income_tax:jcx_stacked:chain_pos09:cy2026_for_fy2026",
     "policyengine_variables": [],
     "computed_at": "2026-09-15T00:00:00",
-    "annotations": [],
+    "annotations": [
+     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 67% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+    ],
     "baseline": "obbba_stack_below__jcx_producer__obbba_casualty_loss_limit",
-    "status_effective": "constructed",
+    "status_effective": "concept_mismatch",
     "ratio": 3.373229367914244,
     "delta": 204097725.640625
    },
    "results": [
     {
      "value": 662376582.5058594,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.729.0",
      "data_bundle": "populace-us-2024-f0af251-703bd81a565c-20260620T201958Z",
      "release": "f0af251",
      "construction": "reform_delta:income_tax:stacked_chained:chain_pos09:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-06-20T20:19:58",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 67% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__f0af251__obbba_casualty_loss_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 0.0,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.752.2",
      "data_bundle": "populace-us-2024-sparse-l0-refit-57k-71a0887-national-only-20260701",
      "release": "l0-refit",
      "construction": "reform_delta:income_tax:isolated:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-01T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 67% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "pre_obbba_expiry_2026",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 0.0,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildi-sparse-rmloss100-6e8e929-20260709T034135Z",
      "release": "buildi",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos09:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-09T03:41:35",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 67% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_casualty_loss_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 0.0,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildj-sparse-rmloss100-75d5add-20260710T094201Z",
      "release": "buildj",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos09:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-10T09:42:01",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 67% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_casualty_loss_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 427209320.93066406,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "1.764.6",
      "data_bundle": "populace-us-2024-buildo-sparse-rmloss100-22bd902-20260722T232627Z",
      "release": "buildo",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos09:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-07-22T23:26:27",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 67% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_casualty_loss_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     },
     {
      "value": 290097725.640625,
-     "status": "constructed",
+     "status": "concept_mismatch",
      "engine_version": "2.2.1",
      "data_bundle": "populace-us-2024-spm-20260915",
      "release": "spm-20260915",
      "construction": "reform_delta:income_tax:jcx_stacked:chain_pos09:cy2026_for_fy2026",
      "policyengine_variables": [],
      "computed_at": "2026-09-15T00:00:00",
-     "annotations": [],
+     "annotations": [
+      "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 67% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_casualty_loss_limit",
-     "status_effective": "constructed"
+     "status_effective": "concept_mismatch"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A5, confidence medium] Casualty loss limitation: engine zeroes all casualty losses (no declared-disaster carve-out) and the input rests on 33 records",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "f61517861ecfa27f64ef",
@@ -140778,7 +141166,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A2, confidence medium] No tax on tips: SIPP-QRF tip imputation leaves ~93% of listed-occupation workers (incl. waitstaff) with zero tips",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "7bd53e20cde8c5e5fbcc",
@@ -141540,7 +141932,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A3, confidence medium] No tax on car loan interest: qualified-interest proxy uses one year of loan issuance as the TY2026 stock (explains ~15% of the gap; residual open)",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "d6a87ab3ab17fc42ccd4",
@@ -141921,7 +142317,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A4, confidence medium] Non-itemizer charitable deduction (FY2027 0.45x): cash giving imputed from TY2015 Schedule A misses non-itemizer donors",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "19e20ef16966af3f35fd",
@@ -142429,7 +142829,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A6, confidence high] Estate and gift exemption: no estate inputs in the H5 (PE = 0 by construction); engine credit also uses the exclusion amount instead of the tentative tax",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "83486ec6135bb120a563",
@@ -142810,7 +143214,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 A5, confidence medium] Casualty loss limitation: engine zeroes all casualty losses (no declared-disaster carve-out) and the input rests on 33 records",
+    "action_link": "diagnosis/batch2/A.md"
+   }
   },
   {
    "claim_id": "7a634e994e5093a3f217",
@@ -143176,7 +143584,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "concept_mismatch",
+    "rationale": "[batch2 B3, confidence high] HSA: JCT line includes employer cafeteria-plan contributions; PE repeals only the individual deduction (PE deduction is 1.8x SOI)",
+    "action_link": "diagnosis/batch2/B.md"
+   }
   },
   {
    "claim_id": "b426ce869163f8cc6a7c",
@@ -143607,7 +144019,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 B2, confidence high] SE health insurance deduction: right claimant count, half the SOI amount, missing at AGI $200K+",
+    "action_link": "diagnosis/batch2/B.md"
+   }
   },
   {
    "claim_id": "4c1e51a09563b19229d8",
@@ -143666,7 +144082,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 B1, confidence high] Self-employed pension (Keogh) contributions are ~3% of SOI; JCT line is also a net exclusion incl. earnings",
+    "action_link": "diagnosis/batch2/B.md"
+   }
   },
   {
    "claim_id": "a889b811d384ca656878",
@@ -143784,7 +144204,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "concept_mismatch",
+    "rationale": "[batch2 B4, confidence medium] Traditional IRA: PE deduction base matches SOI; JCT's IRA line values more than the deduction",
+    "action_link": "diagnosis/batch2/B.md"
+   }
   },
   {
    "claim_id": "3fa14ae8e6b1a2b1213c",
@@ -150085,7 +150509,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "concept_mismatch",
+    "rationale": "[batch2 D6, confidence medium] Flat refundable child credits (CA YCTC, CO FAC, MD CTC): PE pays full entitlement to every eligible unit, benchmarks count claims",
+    "action_link": "diagnosis/batch2/D.md"
+   }
   },
   {
    "claim_id": "a0fc12d9e7bbddfdc301",
@@ -150860,7 +151288,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch2 D2, confidence high] MN Working Family Credit: the row measures mn_wfc, a pre-2023 (repealed-law) variable that is not in the TY2024 tax calculation",
+    "action_link": "diagnosis/batch2/D.md"
+   }
   },
   {
    "claim_id": "8f5824730b4189c3cbd5",
@@ -252210,7 +252642,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "undiagnosed",
+    "rationale": "[batch2 D4, confidence medium] Ohio EITC: the engine orders the EITC first among nonrefundable credits; law and the 2024 form put it after CDCC, exemption and joint filing credits",
+    "action_link": "diagnosis/batch2/D.md"
+   }
   },
   {
    "claim_id": "2ccca369cb658b2b2818",

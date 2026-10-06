@@ -1,0 +1,144 @@
+[
+ {
+  "claim_ids": [
+   "e3eb837aef9d9269a700"
+  ],
+  "title": "IA HF1020: the registry reform's bracket indices moved under policyengine-us 2.2.1, so the $90k+ expansion is no longer scored",
+  "classification": "construction_issue",
+  "split": null,
+  "confidence": "high",
+  "evidence": [
+   "microcosm@581b569 packages/microcosm-build/src/microcosm/build/us/state_reforms.json:177-185 sets child_care.fraction[4],[5],[6].amount = 0.5 from 2025.",
+   "policyengine-us 1.764.6 (.venv-pe501/.../parameters/gov/states/ia/tax/income/credits/child_care/fraction.yaml): 7 brackets; [4]=35k 0.40, [5]=40k 0.30, [6]=90k 0.0, so [4..6] covered $35k and up.",
+   "policyengine-us 2.2.1 at .venv-pe/lib/python3.12/site-packages/policyengine_us/parameters/gov/states/ia/tax/income/credits/child_care/fraction.yaml:47-61: a 45k bracket was inserted (40k 0.30; 45k 0.30 from 2021; 90k 0.0), so [4..6] now cover only $35k-90k and [7] ($90k+) stays 0.",
+   "Iowa LSA Fiscal Note HF 1020 (Doc ID 1526230, 2025-04-22), p.1: 'allows any taxpayer with Iowa net income equal to or exceeding $25,000 to qualify for the refundable tax credit of up to 50.0% of the federal Child and Dependent Care Credit.' p.2: '1040 filers with an AGI of $90,000 or more will be able to access the State CDC Tax Credit due to the Bill'. p.3: 'FY 2026 = $17.7 million'.",
+   "Computation (probe_d3, analytic on the 2025 baseline, ia_cdcc = cdcc_potential x fraction(ia_taxable_income_consolidated), policyengine-us 2.2.1 at .venv-pe/lib/python3.12/site-packages/policyengine_us/variables/gov/states/ia/tax/income/credits/ia_cdcc.py:28-37; ia_cdcc refundable): registry construction -$1,835,913 (equals the registry row exactly); bill-text construction (>= $25k -> 50% incl. $90k+) -$23.97M, ratio 1.35; $90k+ band alone -$22.14M on 40.8k units.",
+   "data/populations.json results: buildi/buildj/buildo (engine 1.764.6) -$21.71M/-$22.73M/-$27.64M; spm-20260915 (engine 2.2.1) -$1.84M.",
+   "Residual 1.35 open: PE 2025 baseline ia_cdcc $19.4M vs IDR CDC claims '$11.0 million in FY 2024' (fiscal note background); PE keys on taxable income, the note on net income; nonresidents are 5.2% of the note's decreases."
+  ],
+  "fix_type": "construction_fix",
+  "fix_draft": "microcosm us/state_reforms.json, state.ia.hf1020: add \"gov.states.ia.tax.income.credits.child_care.fraction[7].amount\": {\"2025-01-01.2100-12-31\": 0.5}. Add a unit test that loads the pinned engine and asserts fraction thresholds [4..7] == 35000/40000/45000/90000 for 2025, so any future bracket re-indexing fails the build instead of silently rescoring a different bill. Expected new PE value about -$24.0M (ratio 1.35 vs -$17.7M)."
+ },
+ {
+  "claim_ids": [
+   "901232245430396bdea5"
+  ],
+  "title": "MN Working Family Credit: the row measures mn_wfc, a pre-2023 (repealed-law) variable that is not in the TY2024 tax calculation",
+  "classification": "construction_issue",
+  "split": {
+   "construction_issue": 0.52,
+   "open": 0.48
+  },
+  "confidence": "high",
+  "evidence": [
+   "microcosm us/state_program_levels.json:110-112 measures variable mn_wfc for state_mn_wfc.",
+   "policyengine-us 2.2.1 at .venv-pe/lib/python3.12/site-packages/policyengine_us/variables/gov/states/mn/tax/income/credits/mn_wfc.py:16-42 computes the WFC from p.wfc.pre_cwfc_legislation.* (phase-in up to 12.5% on $21,170 with 2022 values carried forward).",
+   "policyengine-us 2.2.1 at .venv-pe/lib/python3.12/site-packages/policyengine_us/parameters/gov/states/mn/tax/income/credits/refundable.yaml:8-14: the 2023 and 2024 refundable lists contain mn_child_and_working_families_credits, not mn_wfc.",
+   "MN House Research, 'Minnesota's Child Credit and Working Family Credit' (May 2026), p.1: TY2024 combined cost about $755.5 million; 'about 76 percent of credits before the phaseout were young child credits, 20 percent were working family credits, and 4 percent were credits for older children'; 'About 301,500 childless returns claimed about $89.6 million in credits, for an average credit of $297.'",
+   "Computation (probe_d): PE pre-phaseout WFC+older share 23.5% ($292.2M of $1,245.3M) vs House Research 24%; proportional post-phaseout WFC+older component $238.5M (1.25 vs derived $191.5M); construction explains $51.1M of the $98.1M excess.",
+   "Computation (probe_d, probe_d2): PE childless units $165.5M on 453.0k units vs official $89.6M on 301.5k returns (1.85); head 19-24 $66.1M/179.3k units, 25-64 $101.6M/287.9k; not required to file $20.5M. With-children $694.0M/274.1k vs $665.9M/240.1k (1.04). Gating the combined credit by takes_up_eitc would lower it only from $859.5M to $825.6M.",
+   "Spillover: policyengine-us 2.2.1 at .venv-pe/lib/python3.12/site-packages/policyengine_us/variables/gov/states/mn/tax/income/credits/taxsim_mn_child_tax_credit_component.py:13-15 subtracts legacy mn_wfc from the 2023+ combined credit; policyengine-taxsim config/variable_mappings.yaml:681 and core/state_output_resolver.py:54,268-279 also read mn_wfc."
+  ],
+  "fix_type": "construction_fix",
+  "fix_draft": "Retire state_mn_wfc, or replace it with a clean official row: 'MN child+WFC credits, childless returns' = $89.6M (301,500 returns, House Research May 2026 p.1) against PE mn_child_and_working_families_credits summed over tax units with no qualifying child (current PE $165.5M, 1.85, open). Keep state_mn_cwfc as the primary MN row. Separate small PE issue: limit mn_wfc to <=2022 (or redefine it as the 2023+ WFC component of the combined credit) and fix taxsim_mn_child_tax_credit_component for 2023+."
+ },
+ {
+  "claim_ids": [
+   "bd2894a6bf3d1e1eda0d"
+  ],
+  "title": "Idaho CTC: the row sums the uncapped nonrefundable credit; the benchmark is foregone revenue",
+  "classification": "construction_issue",
+  "split": {
+   "construction_issue": 0.72,
+   "open": 0.28
+  },
+  "confidence": "high",
+  "evidence": [
+   "microcosm us/state_program_levels.json:610-612 measures id_ctc with no cap_variable; us_runtime/reform_validation.py:984-1004 caps only when cap_variable is set (lines 465-469, 997-1001).",
+   "policyengine-us 2.2.1 at .venv-pe/lib/python3.12/site-packages/policyengine_us/variables/gov/states/id/tax/income/credits/id_ctc.py:12-19: $205 x ctc_qualifying_children, no liability cap; the cap is in variables/gov/states/id/tax/income/id_non_refundable_credits.py:15-24; id_ctc is the only 2024 Idaho nonrefundable credit (parameters/gov/states/id/tax/income/credits/non_refundable.yaml:17-20).",
+   "Idaho DFM General Fund Revenue Book Jan 2026, p.21 table row '63-3029L Child Income Tax Credit $ 65,539 63,427 63,962 64,768 65,412 0 0' (thousands, 2022-2028); description: 'The state provides a nonrefundable $205 individual income tax credit per qualifying child of the taxpayer.' p.18: estimates 'likely to be upper bounds'.",
+   "Computation (probe_d): uncapped $96.66M (471.5k children, 239.7k units); capped (id_non_refundable_credits) $73.24M, ratio 1.145; 58.6k units with zero Idaho liability carry $22.3M uncapped; 357 sample records."
+  ],
+  "fix_type": "construction_fix",
+  "fix_draft": "microcosm us/state_program_levels.json state_id_ctc: set variable to id_non_refundable_credits (equals the applied CTC while id_ctc is the only listed credit, through 2025), or add cap_variable: id_income_tax_before_non_refundable_credits. Expected PE value $73.2M (ratio 1.145)."
+ },
+ {
+  "claim_ids": [
+   "4bac6a16f6267328daf0"
+  ],
+  "title": "Ohio EITC: the engine orders the EITC first among nonrefundable credits; law and the 2024 form put it after CDCC, exemption and joint filing credits",
+  "classification": "open",
+  "split": {
+   "pe_gap": 0.26,
+   "open": 0.74
+  },
+  "confidence": "medium",
+  "evidence": [
+   "policyengine-us 2.2.1 at .venv-pe/lib/python3.12/site-packages/policyengine_us/variables/gov/states/oh/tax/income/credits/oh_eitc.py:19-30 applies the credit via variables/gov/states/tax/income/non_refundable_credit_cap.py:31-43,46-63 (capped at liability remaining at its turn).",
+   "policyengine-us 2.2.1 at .venv-pe/lib/python3.12/site-packages/policyengine_us/parameters/gov/states/oh/tax/income/credits/non_refundable.yaml:12-19: 2023+ order starts with oh_eitc.",
+   "R.C. 5747.71 (effective 2019-07-03): 'The credit shall not exceed the aggregate amount of tax otherwise due ... after deducting any other nonrefundable credits that precede the credit allowed under this section in the order prescribed by section 5747.98'.",
+   "2024 Ohio Schedule of Credits (pdftotext): lines 2 Retirement income credit, 4 Senior citizen credit, 6 Child care & dependent care credit, 9 Exemption credit, 11 Tax less credits, 12 Joint filing credit '% times line 11, up to $650', 13 Earned income credit.",
+   "Computation (probe_d3): potential $695.0M; statute-order EITC $95.9M vs engine $108.9M (CDCC -$5.4M, exemption -$4.1M, joint filing -$3.4M); ordering explains $13.0M of the $49.6M excess; residual ratio 1.62 open; 93 sample records; EITC path already take-up gated (OH seed 76.9%).",
+   "Benchmark is an ODT estimate labeled approximation in the registry row; the TER PDF could not be extracted this session (TLS error)."
+  ],
+  "fix_type": "pe_issue",
+  "fix_draft": "policyengine-us issue: 'Ohio nonrefundable credit order puts the EITC first (TY2023+)'. Body: R.C. 5747.71 limits the EITC to tax after the credits that precede it under R.C. 5747.98; the 2024 Schedule of Credits applies retirement (2), lump sum retirement (3), senior (4), lump sum distribution (5), CDCC (6), displaced worker (7), campaign (8), exemption (9), then joint filing on line 11 (12), then EITC (13). gov.states.oh.tax.income.credits.non_refundable (2023-01-01) lists oh_eitc first. Proposed: reorder to oh_retirement_credit, oh_senior_citizen_credit, oh_cdcc, oh_exemption_credit, oh_joint_filing_credit, oh_eitc, oh_non_public_school_credits; verify oh_joint_filing_credit_potential uses tax after lines 2-9; add a YAML test with illustrative values (joint filers with a small Ohio liability, an exemption credit and a joint filing credit, and an EITC potential larger than the remaining tax -> EITC applied equals the tax left after the preceding credits). On us-6.2.1 this lowers oh_eitc from $108.9M to about $95.9M. Annotate the scorecard row that the remaining 1.62 is unexplained."
+ },
+ {
+  "claim_ids": [
+   "03d666ddda6fe83bd6f4"
+  ],
+  "title": "Colorado CTC: TY2024-law simulation vs TY2023 actual; the law change explains only ~30% of the gap on this release",
+  "classification": "open",
+  "split": {
+   "construction_issue": 0.3,
+   "open": 0.7
+  },
+  "confidence": "medium",
+  "evidence": [
+   "microcosm us/state_program_levels.json:71-73: co_ctc at period 2024 against CO DOR TY2023 $89,158,930.",
+   "HB23-1112 (signed), C.R.S. 39-22-129, pp.4-5: (3)(a) pre-2024 credit for 'a resident individual who claims a federal child tax credit for an eligible child'; (4.5)(a)(I) from TY2024 'ONE THOUSAND TWO HUNDRED DOLLARS IF THE INDIVIDUAL'S FEDERAL ADJUSTED GROSS INCOME IS TWENTY-FIVE THOUSAND DOLLARS OR LESS' (and $600/$200 tiers; joint $35k/$60k/$85k).",
+   "policyengine-us 2.2.1 at .venv-pe/lib/python3.12/site-packages/policyengine_us/variables/gov/states/co/tax/income/credits/ctc/co_ctc.py:27-45 (percentage of federal CTC) and 46-70 (flat amounts); parameters/gov/states/co/tax/income/credits/ctc/ctc_matched_federal_credit.yaml true 2022 / false 2024; amount/single.yaml and amount/joint.yaml match the statute.",
+   "Computation (probe_d3): TY2023 rule on the same data = $167.9M on 198.3k units (avg $847) vs DOR $89.16M on 130,188 claims (avg $685): 1.88; engine co_federal_ctc variant $179.1M (2.01). Law change = $33.0M of the $111.8M excess. TY2024-law: $18.2M to zero earners, $81.6M to units not required to file (probe_d). 100 sample records.",
+   "data/populations.json results: l0-refit $116.25M, buildi $183.51M, buildj $185.49M, buildo $203.54M, spm $200.92M; the registry description's 'reproduces the DOR actual to the dollar' was measured on l0-refit and does not hold on spm-20260915."
+  ],
+  "fix_type": "construction_fix",
+  "fix_draft": "Replace the TY2023 benchmark with CO DOR TY2024 CTC actuals when published (or score the row under TY2023 law). Now: correct the registry row description and annotate: 'The benchmark is TY2023 (percentage-of-federal-CTC law); PE simulates TY2024 flat-amount law (HB23-1112). Re-running TY2023 law on the same data gives $167.9M (1.88), so law vintage explains only about 30% of the gap on this release; the remainder is unattributed (no claim gate; Colorado young-child composition).'"
+ },
+ {
+  "claim_ids": [
+   "9eda40b94ca5ce924e04",
+   "a4ac9f4bd35f476eee27",
+   "e598532e06e1a4b95e8f"
+  ],
+  "title": "Flat refundable child credits (CA YCTC, CO FAC, MD CTC): PE pays full entitlement to every eligible unit, benchmarks count claims",
+  "classification": "concept_mismatch",
+  "split": null,
+  "confidence": "medium",
+  "evidence": [
+   "No take-up or filer variable in the formulas: policyengine-us 2.2.1 at .venv-pe/lib/python3.12/site-packages/policyengine_us/variables/gov/states/ca/tax/income/credits/young_child/ca_yctc.py:34-59 and earned_income/ca_eitc_eligible.py:36-40; variables/gov/states/co/tax/income/credits/family_affordability/co_family_affordability_credit.py:15-27; variables/gov/states/md/tax/income/credits/ctc/md_ctc.py:18-49, md_ctc_eligible.py:36-38. By contrast the federal EITC (variables/gov/irs/credits/earned_income/eitc.py:14,25-31) and helper-based state EITCs (tools/state_eitc_helpers.py:128-139) are gated by takes_up_eitc and a filer test; would_file_if_eligible_for_refundable_credit defaults True (variables/gov/irs/would_file_if_eligible_for_refundable_credit.py:17) and is not in the release H5.",
+   "CA YCTC (probe_d): TY2023 parameters on the same data $595.7M (-4.2% vintage; amount.yaml 1,117->1,154, phase_out/start.yaml 25,775->26,626); after vintage 1.44; units 545.1k vs 398,059 (1.37); TY2023-law avg $1,093 vs $1,037; 64.8% of dollars ($403.3M, 354.3k units) to units not required to file; zero-earnings loss path $31.0M; applying takes_up_eitc would remove only 6.3%; implied claim rate 0.73; 90 sample records. FTB figures from the registry row (FTB site returned 403).",
+   "CO FAC: HB24-1311 Final Fiscal Note (2024-08-05) p.4: '370,333 tax returns remitted for tax year 2019 that would have qualified'; 'It assumes 75 percent utilization for the credit in tax year 2024'; 'If 100 percent of eligible taxpayers claim the credit ... about $880 million annually.' PE $1,151.5M = 1.31 of the 100% figure; 314.0k units, avg $3,667 vs ~$2,380; units not required to file $446.9M on 89.0k units; zero earners $105.2M; release history $1,020M-$1,396M; 225 sample units.",
+   "MD CTC: MD DBM Tax Expenditures Report FY2024 pp.16, 40: 'Individual income child tax credit 0.1 0.2 0.2 13.8' (FY2021-FY2024, $M); reporting law: 'statement of the estimated amount'. PE $24.08M, 37.0k units, 48.2k children under 6; 53.6% to units not required to file; implied 0.57 claim ratio; only 13 sample records; release history $11.4M-$24.6M (sampling noise).",
+   "microcosm#341 (open, read this session) documents the same take-up exposure class on the l0-refit release."
+  ],
+  "fix_type": "annotation",
+  "fix_draft": "Annotation (all three rows): 'PolicyEngine pays this flat refundable credit to every eligible unit, including units not required to file (CA YCTC 65% of dollars, CO FAC 39%, MD CTC 54%); the benchmark counts claims. No state-credit take-up is modeled.' CO FAC: add 'Like-for-like is the fiscal note's 100%-utilization estimate (~$880M, 2019 filer base): PE is 1.31x.' CA YCTC: add 'TY2023 law on the same data is $595.7M (1.44x); per-unit amounts agree within 5%, the excess is claimant count.' MD CTC: add 'Small cell (13 sample records); level varies +/-35% across releases.' Mechanism (follow-up on microcosm#341, not filed): add a claim gate for flat state child credits (reuse takes_up_eitc/filing flags or seed a state-credit take-up) and calibrate it to FTB YCTC returns, CO DOR claim counts and MN childless returns."
+ },
+ {
+  "claim_ids": [
+   "e053f2018d75bd10cecc"
+  ],
+  "title": "Illinois CTC: benchmark is a pre-enactment first-year cost estimate; PE inherits an IL EITC that runs 1.20x the TY2023 actual",
+  "classification": "open",
+  "split": null,
+  "confidence": "low",
+  "evidence": [
+   "policyengine-us 2.2.1 at .venv-pe/lib/python3.12/site-packages/policyengine_us/variables/gov/states/il/tax/income/credits/il_ctc.py:13-23 (20% of il_eitc if a qualifying child under 12; parameters/gov/states/il/tax/income/credits/ctc/rate.yaml 0.2 for 2024); il_eitc.py:41-50 uses tools/state_eitc_helpers.py:128-139 (take-up and filer gated).",
+   "Computation (probe_d): il_ctc $79.4M on 432.6k units (avg $184) = 15.1% of PE il_eitc $525.6M; registry state_il_eitc row PE/actual 1.20 (TY2023 $437.4M); scaled to the actual IL EITC the CTC would be $66.1M (1.32 vs $50M); 154 sample records.",
+   "Registry row: score_type approximation, 'GOMB statewide estimate - no official actuals or claim counts published yet'. Capitol News Illinois (2024-06-13): 'In its first year, the program is expected to cost the state $50 million'. The GOMB FY2027 budget book could not be extracted this session (over the fetch size limit)."
+  ],
+  "fix_type": "annotation",
+  "fix_draft": "Annotation: 'Benchmark is a pre-enactment first-year cost estimate, not an actual. PE's IL CTC is 20% of PE's IL EITC for families with a child under 12, and PE's IL EITC runs 1.20x the TY2023 actual; scaled to that actual the CTC would be about $66M.' Replace with IDOR TY2024 IL CTC claims when published."
+ }
+]

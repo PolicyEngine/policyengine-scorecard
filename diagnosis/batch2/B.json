@@ -1,0 +1,174 @@
+[
+  {
+    "claim_ids": [
+      "4c1e51a09563b19229d8"
+    ],
+    "title": "Self-employed pension (Keogh) contributions are ~3% of SOI; JCT line is also a net exclusion incl. earnings",
+    "classification": "pe_gap",
+    "split": {
+      "pe_gap": 0.75,
+      "concept_mismatch": 0.25
+    },
+    "confidence": "high",
+    "evidence": [
+      "sources/populace-reform-validation/raw/populace-us-2024-spm-20260915.json: row in_sample=true, microcosm.baseline_total=null, reform_total=null (value not simulated by the probe)",
+      "microcosm@581b569:packages/microcosm-build/src/microcosm/build/us_runtime/reform_validation.py:862-863 in-sample rows take effect = in_sample_estimates[spec.id]; :870-871 JCT figure = calibration target",
+      "microcosm@581b569:tools/probe_us_post_export.py:2261-2280,896-915 in-sample estimates = calibration_diagnostics.json final_estimate",
+      "Computation this session (sim_te.py, managed sim on data/populace_us_2024.h5 at 2.2.1, income_tax(neutralize X) - baseline): SE pension $206,887,009; trad IRA $3,133,821,110; HSA $3,126,553,667; SEHI $2,380,337,324 — all within 0.06% of calibration final_estimate, so the in-sample shortcut is not a construction defect",
+      "calibration_diagnostics (calib_spm.json) options.max_weight_ratio=5.0; no SOI Keogh/IRA-payment/SEHI/HSA targets among 5,659 targets",
+      "calib_spm.json: target 16.6e9, initial_estimate 214,346,507, final_estimate 206,886,799 (rel -0.988)",
+      "policyengine_us 2.2.1:variables/gov/irs/income/taxable_income/adjusted_gross_income/above_the_line_deductions/self_employed_pension_contribution_ald_person.py:13-16 min(SE earnings, self_employed_pension_contributions); household/expense/retirement/self_employed_pension_contributions.py:16-19 min(desired, limit); self_employed_pension_contributions_desired.py:4-12 pure input",
+      "H5 data/populace_us_2024.h5 (h5_totals.py): self_employed_pension_contributions_desired $1.373B, 5.38M persons, 1,654 records, max $1,771/person; PUF channel $0.71B, ASEC channel $0.66B",
+      "sim_b.py: self_employed_pension_contribution_ald $1.013B, 5.33M tax units, mean $190",
+      "IRS SOI Pub 1304 TY2023 Table 1.4 (23in14ar.xls, All returns, cols 115-116) 'Payments to a Keogh plan': 946,019 returns, $30,130,848K; $24.3B of it at AGI $200K+ vs PE $0.23B (sim_agi.py)",
+      "microcosm@581b569:packages/microcosm-build/src/microcosm/build/us/spec/sources.yaml:458-530 retirement_contributions stage: ASEC RETCB_VAL allocation, QRF-imputed onto the PUF half (notes :524-530)",
+      "JCX-48-24 Table 1 (pdftotext): 'Net exclusion of pension contributions and earnings: Plans covering partners and sole proprietors (sometimes referred to as \"Keogh plans\")' 16.6 (FY2024 individuals); Part I text: computed as 'income taxes forgone on current tax-excluded pension contributions and earnings less the income taxes paid on current pension distributions'",
+      "microcosm@581b569:packages/microcosm-build/src/microcosm/build/us/fiscal_target_references.json:255 concept_note (ledger#118) already flags the net-exclusion concept"
+    ],
+    "fix_type": "pe_issue",
+    "fix_draft": {
+      "repo": "PolicyEngine/microcosm",
+      "title": "Self-employed pension contributions are ~3% of SOI Keogh payments (max $1,771/person)",
+      "body": "The retirement_contributions stage (us/spec/sources.yaml:458-530) allocates ASEC RETCB_VAL and QRF-imputes it onto the PUF half, so PUF tax-form Keogh/SEP/SIMPLE deduction amounts never reach self_employed_pension_contributions_desired. Released populace-us-2024-spm-20260915: $1.37B on 5.4M persons (max $1,771) vs IRS SOI TY2023 Table 1.4 'Payments to a Keogh plan' $30.13B on 946K returns ($24.3B at AGI $200K+). The JCT Keogh calibration target sits at -98.8% and cannot move under max_weight_ratio 5. Proposed: source the PUF half from the PUF Keogh-deduction field (verify field ID against the PUF codebook) and/or add SOI Table 1.4 Keogh returns/amount targets. Keep the JCT row as a broad-fit anchor only: JCX-48-24 measures a net exclusion of contributions and earnings."
+    }
+  },
+  {
+    "claim_ids": [
+      "0bd035cc14714f0a289a"
+    ],
+    "title": "SE health insurance deduction: right claimant count, half the SOI amount, missing at AGI $200K+",
+    "classification": "pe_gap",
+    "split": null,
+    "confidence": "high",
+    "evidence": [
+      "sources/populace-reform-validation/raw/populace-us-2024-spm-20260915.json: row in_sample=true, microcosm.baseline_total=null, reform_total=null (value not simulated by the probe)",
+      "microcosm@581b569:packages/microcosm-build/src/microcosm/build/us_runtime/reform_validation.py:862-863 in-sample rows take effect = in_sample_estimates[spec.id]; :870-871 JCT figure = calibration target",
+      "microcosm@581b569:tools/probe_us_post_export.py:2261-2280,896-915 in-sample estimates = calibration_diagnostics.json final_estimate",
+      "Computation this session (sim_te.py, managed sim on data/populace_us_2024.h5 at 2.2.1, income_tax(neutralize X) - baseline): SE pension $206,887,009; trad IRA $3,133,821,110; HSA $3,126,553,667; SEHI $2,380,337,324 — all within 0.06% of calibration final_estimate, so the in-sample shortcut is not a construction defect",
+      "calibration_diagnostics (calib_spm.json) options.max_weight_ratio=5.0; no SOI Keogh/IRA-payment/SEHI/HSA targets among 5,659 targets",
+      "calib_spm.json: target 8.4e9, initial 2,363,214,807, final 2,379,089,842 (rel -0.717)",
+      "JCX-48-24 Table 1 (Health): 'Deduction for health insurance premiums and long-term care insurance premiums by the self-employed' 8.4 — same concept as the engine ALD",
+      "policyengine_us 2.2.1:above_the_line_deductions/self_employed_health_insurance_ald_person.py:13-16; household/expense/health/self_employed_health_insurance_premiums.py:11-12 (defined_for is_self_employed, adds health_insurance_premiums)",
+      "sim_b.py: self_employed_health_insurance_ald $14.840B, 3.688M tax units, mean $4,024",
+      "IRS SOI TY2023 Table 1.4 cols 117-118 'Self-employed health insurance deduction': 3,595,764 returns, $31,232,604K (count ratio 1.03, amount ratio 0.475)",
+      "sim_agi.py vs SOI col 118 by AGI: below $200K PE $12.59B vs SOI $14.51B; $200K+ PE $2.25B vs SOI $16.73B (0.13)",
+      "Revenue per deduction dollar: PE 2.379/14.84 = 16.0% vs JCT/SOI 8.4/31.23 = 26.9%; 0.475 x 0.60 = 0.28 = observed ratio",
+      "microcosm@581b569:packages/microcosm-build/src/microcosm/build/us/spec/sources.yaml:2847-2927 attribute_self_employed_health_premiums (ASEC PHIP_VAL onto Schedule C persons outside ESI and Medicare proxy); notes cite the SOI anchor (:2926-2927, ledger#105) but no target ships"
+    ],
+    "fix_type": "pe_issue",
+    "fix_draft": {
+      "repo": "PolicyEngine/microcosm",
+      "title": "SE health insurance deduction is 48% of SOI TY2023 at the right claimant count; high-AGI claimants missing",
+      "body": "Released H5 at policyengine-us 2.2.1: self_employed_health_insurance_ald $14.84B on 3.69M tax units vs SOI TY2023 Table 1.4 $31.23B on 3.60M returns. Below $200K AGI PE matches SOI (12.6 vs 14.5B); at $200K+ PE has $2.25B vs SOI $16.73B. The JCT target (8.4B) sits at -72%. Candidates to test (unverified): CPS premium under-report for high earners, the Medicare-proxy exclusion (65+/SSDI), premiums assigned to one person per unit. Add SOI Table 1.4 SEHI returns/amount (ideally by AGI class) as calibration targets."
+    }
+  },
+  {
+    "claim_ids": [
+      "000c6065155be0232de2"
+    ],
+    "title": "HSA: JCT line includes employer cafeteria-plan contributions; PE repeals only the individual deduction (PE deduction is 1.8x SOI)",
+    "classification": "concept_mismatch",
+    "split": null,
+    "confidence": "high",
+    "evidence": [
+      "sources/populace-reform-validation/raw/populace-us-2024-spm-20260915.json: row in_sample=true, microcosm.baseline_total=null, reform_total=null (value not simulated by the probe)",
+      "microcosm@581b569:packages/microcosm-build/src/microcosm/build/us_runtime/reform_validation.py:862-863 in-sample rows take effect = in_sample_estimates[spec.id]; :870-871 JCT figure = calibration target",
+      "microcosm@581b569:tools/probe_us_post_export.py:2261-2280,896-915 in-sample estimates = calibration_diagnostics.json final_estimate",
+      "Computation this session (sim_te.py, managed sim on data/populace_us_2024.h5 at 2.2.1, income_tax(neutralize X) - baseline): SE pension $206,887,009; trad IRA $3,133,821,110; HSA $3,126,553,667; SEHI $2,380,337,324 — all within 0.06% of calibration final_estimate, so the in-sample shortcut is not a construction defect",
+      "calibration_diagnostics (calib_spm.json) options.max_weight_ratio=5.0; no SOI Keogh/IRA-payment/SEHI/HSA targets among 5,659 targets",
+      "calib_spm.json: target 12.2e9, initial 2,244,208,304, final 3,124,787,666 (rel -0.744)",
+      "JCX-48-24 Table 1 (Health): 'Health savings accounts [14]' 12.2; footnote [14] verbatim: 'Estimate includes employer contributions made through cafeteria plans to health savings accounts, which are also included in other line items on this table.'",
+      "policyengine_us 2.2.1:above_the_line_deductions/health_savings_account_ald.py:4-11 pure TaxUnit input; household/expense/health/health_savings_account_contributions.py:4-12 health_savings_account_payroll_contributions is separate and absent from the H5",
+      "sim_b.py: health_savings_account_ald $11.463B, 2.001M tax units, mean $5,728",
+      "IRS SOI TY2023 Table 1.4 cols 109-110 'Health savings account deduction': 2,012,002 returns, $6,334,546K (count 0.99, amount 1.81 — PE over, not under)",
+      "sim_agi.py vs SOI col 110: AGI $200K+ PE $7.17B vs SOI $2.80B"
+    ],
+    "fix_type": "annotation",
+    "fix_draft": {
+      "title": "JCT HSA line includes employer cafeteria-plan contributions",
+      "body": "JCT's HSA tax expenditure includes employer contributions made through cafeteria plans (JCX-48-24 Table 1 fn 14). PolicyEngine's row repeals only the individual HSA deduction (health_savings_account_ald), so a ratio well below 1 is expected. PolicyEngine's HSA deduction input ($11.5B) is 1.8x SOI TY2023's $6.3B, so the deduction itself is not under-covered. (Secondary microcosm note: the PUF-sourced HSA deduction is 1.8x SOI and skewed to AGI $200K+; consider an SOI Table 1.4 HSA target.)"
+    }
+  },
+  {
+    "claim_ids": [
+      "db63c233d9e3d2e33f86"
+    ],
+    "title": "Traditional IRA: PE deduction base matches SOI; JCT's IRA line values more than the deduction",
+    "classification": "concept_mismatch",
+    "split": null,
+    "confidence": "medium",
+    "evidence": [
+      "sources/populace-reform-validation/raw/populace-us-2024-spm-20260915.json: row in_sample=true, microcosm.baseline_total=null, reform_total=null (value not simulated by the probe)",
+      "microcosm@581b569:packages/microcosm-build/src/microcosm/build/us_runtime/reform_validation.py:862-863 in-sample rows take effect = in_sample_estimates[spec.id]; :870-871 JCT figure = calibration target",
+      "microcosm@581b569:tools/probe_us_post_export.py:2261-2280,896-915 in-sample estimates = calibration_diagnostics.json final_estimate",
+      "Computation this session (sim_te.py, managed sim on data/populace_us_2024.h5 at 2.2.1, income_tax(neutralize X) - baseline): SE pension $206,887,009; trad IRA $3,133,821,110; HSA $3,126,553,667; SEHI $2,380,337,324 — all within 0.06% of calibration final_estimate, so the in-sample shortcut is not a construction defect",
+      "calibration_diagnostics (calib_spm.json) options.max_weight_ratio=5.0; no SOI Keogh/IRA-payment/SEHI/HSA targets among 5,659 targets",
+      "calib_spm.json: target 16.0e9, initial 4,118,239,461, final 3,133,393,778 (rel -0.804; fit moved away from target)",
+      "policyengine_us 2.2.1:parameters/gov/irs/ald/deductions.yaml:15,31,46,61 list traditional_ira_contributions as the ALD; household/expense/retirement/traditional_ira_contributions.py:19-22 desired*scale; no §219(g) active-participant reduction in the engine (grep '219#g'/'active_participant' empty)",
+      "sim_b.py: traditional_ira_contributions $14.730B, 47.49M tax units, mean $310",
+      "IRS SOI TY2023 Table 1.4 cols 123-124 'IRA payments': 2,503,934 returns, $13,771,289K (amount 1.07, holders 19x)",
+      "sim_agi.py vs SOI col 124: AGI $200K+ PE $5.24B vs SOI $2.10B; below $50K PE $1.29B vs SOI $2.90B — PE-side issues push PE revenue up, not down",
+      "JCX-48-24 Table 1: 'Individual retirement arrangements: Traditional IRAs' 16.0; 'Roth IRAs' 14.9 (no IRA method text in JCX-48-24)",
+      "26 U.S.C. 408A(c)(1) (Cornell LII, verbatim): 'No deduction shall be allowed under section 219 for a contribution to a Roth IRA.'; 408A(d)(1): 'Any qualified distribution from a Roth IRA shall not be includible in gross income.' — so JCT's positive Roth line comes from the earnings side (inference)",
+      "microcosm@581b569:packages/microcosm-build/src/microcosm/build/us/fiscal_target_references.json:273 concept_note (ledger#118): net exclusion, broad-fit anchor only"
+    ],
+    "fix_type": "annotation",
+    "fix_draft": {
+      "title": "JCT traditional-IRA line is broader than the contribution deduction",
+      "body": "JCT's Traditional-IRA line (JCX-48-24 Table 1) values the IRA regime, not only the contribution deduction: the parallel Roth line is $14.9B although §408A(c)(1) allows no deduction for Roth contributions. PolicyEngine repeals only the deduction. PolicyEngine's deduction base ($14.7B) matches SOI TY2023 IRA payments ($13.8B). Secondary (not the cause of the low ratio): contributions reach 47.5M tax units at $310 mean vs SOI 2.5M returns at $5,500, and policyengine-us 2.2.1 has no §219(g) active-participant phase-out."
+    }
+  },
+  {
+    "claim_ids": [
+      "788712a4db74edbd1398"
+    ],
+    "title": "Education credits at 10% of SOI: LLC structurally zero, AOTC student pool 1.18M with $4.4B expenses",
+    "classification": "pe_gap",
+    "split": null,
+    "confidence": "high",
+    "evidence": [
+      "sources/populace-reform-validation/raw/populace-us-2024-spm-20260915.json: soi_education_credits in_sample=false, measure education_tax_credits, budget_effect 780,248,561",
+      "microcosm@581b569:packages/microcosm-build/src/microcosm/build/us_runtime/reform_validation.py:984-1001 _level_total (capped by income_tax_before_credits per soi_baseline_levels.json cap_variable)",
+      "policyengine_us 2.2.1:variables/gov/irs/credits/education/education_tax_credits.py:13-16 (nonrefundable AOTC + LLC); is_eligible_for_lifetime_learning_credit.py:29-47 requires attends_eligible_educational_institution_for_lifetime_learning_credit and has_lifetime_learning_credit_1098_t_or_exception (parameters/.../lifetime_learning_credit/eligibility/requires_1098_t_or_exception.yaml true from 2016); both bool inputs, no default_value, absent from the H5",
+      "sim_b.py: lifetime_learning_credit 0 (0 eligible records); education_tax_credits = nonrefundable AOTC $0.780B, 0.785M tax units; AOTC total $1.727B (0.894M), refundable $0.691B",
+      "H5: qualified_tuition_expenses $4.401B, 1.18M persons, 426 records; all five AOTC flags true on exactly those 426 records (microcosm@581b569:packages/microcosm-build/src/microcosm/build/us/spec/sources.yaml:441-456 derive_education_inputs notes)",
+      "policyengine_us 2.2.1:parameters/gov/irs/credits/education/american_opportunity_credit/amount.yaml (100% of first $2,000, 25% of next $2,000) and refundability.yaml (0.4) → nonrefundable AOTC <= 0.6 x $4.40B = $2.64B even before the liability cap; lifetime_learning_credit_potential.py:19-23 excludes AOTC-eligible students, so LLC flags on the same mask add nothing",
+      "IRS SOI TY2023 Table 3.3 (23in33ar.xls, downloaded this session): 'Nonrefundable education credit' 7,211,349 returns, $7,554,668K; 'American opportunity credit' (refundable section) 5,821,688 returns, $5,090,364K",
+      "JCX-48-24 Table 3 (2024 law/income) 'Education Credits': 9,894 thousand returns, $14,796 million",
+      "data/populations.json results: f0af251 (1.729.0) $4.557B; l0-refit/buildi/buildj $0; buildo $0.798B; spm $0.780B. LLC gate present at 1.764.6 (uv-cache policyengine_us 1.764.6 lifetime_learning_credit_potential.py:17-23)",
+      "microcosm@581b569:packages/microcosm-build/src/microcosm/build/us_runtime/validation_input_coverage.py:12-15 (structural zero, microcosm#253) and :122-125 (only qualified_tuition_expenses registered for soi_education_credits)"
+    ],
+    "fix_type": "pe_issue",
+    "fix_draft": {
+      "repo": "PolicyEngine/microcosm",
+      "title": "Education credits at 10% of SOI: LLC structurally zero, AOTC pool 1.18M students",
+      "body": "On populace-us-2024-spm-20260915 at policyengine-us 2.2.1, education_tax_credits = $0.78B (all nonrefundable AOTC) vs SOI TY2023 Table 3.3 $7.55B on 7.21M returns. (1) LLC is zero: no stage produces attends_eligible_educational_institution_for_lifetime_learning_credit or has_lifetime_learning_credit_1098_t_or_exception, and setting them on the AOTC mask would not help because LLC excludes AOTC-eligible students — an LLC-expense population (graduate, part-time, non-degree) is needed. (2) qualified_tuition_expenses covers 1.18M students / $4.4B (426 records); the nonrefundable AOTC ceiling from that input is $2.64B. (3) Register the two LLC leaves in US_VALIDATION_PROVISION_INPUT_LEAVES (validation_input_coverage.py:106). (4) Add SOI Table 3.3 education-credit returns/amount targets."
+    }
+  },
+  {
+    "claim_ids": [
+      "705dc2ffcbb72e8915a0"
+    ],
+    "title": "AMT 1.6x SOI from 70 records: top-tail compression puts 3x SOI's returns at AGI $1-2M and ~none above $10M",
+    "classification": "pe_gap",
+    "split": null,
+    "confidence": "medium",
+    "evidence": [
+      "sources/populace-reform-validation/raw/populace-us-2024-spm-20260915.json: soi_amt in_sample=false, measure alternative_minimum_tax, budget_effect 4,393,969,177",
+      "sim_b.py: AMT $4.394B, 241K weighted payers from 70 records (SOI 150,167 returns); top 10 records = 87% of AMT dollars, weights 6.5K-25.8K, AGI $0.9-2.9M",
+      "sim_amt.py: AMT payers' QDCG = 71% of AGI; policyengine_us 2.2.1:variables/gov/irs/tax/federal_income/alternative_minimum_tax/amt_tax_including_cg.py:15-35, alternative_minimum_tax.py:21-43",
+      "sim_amt.py vs IRS SOI TY2023 Table 1.4 (col 1 returns; cols 143-144 AMT): AGI $1-1.5M PE 1.20M filers vs SOI 368,931; $1.5-2M 326K vs 147,290; $5-10M 12K vs 49,262; $10M+ ~0 (3 records) vs 30,382; AMT at $1-2M PE 169K payers/$2.65B vs SOI 35,173/$0.585B; PE $0 AMT at $200-500K vs SOI 29,331/$0.354B and $0 above $5M vs SOI $0.443B",
+      "Total AGI at $1M+: PE $2.61T vs SOI $2.54T — aggregate matched by compressing the tail into $1-2M",
+      "calib_spm.json: irs_soi.ty2022.historic_table_2.us.1m_plus.taxable_interest_returns target 838,400 final 1,387,000 (+65%); ...1m_plus.taxable_interest_amount target $160.3B final $97.6B (-39%); no other $1M+ AGI-class target",
+      "sim_amt.py: AGI $1-2M band 1.53M weighted filers, median record weight 0.008, max 31,876",
+      "data/populations.json results: f0af251 $1.129B, l0-refit $1.699B, buildi $2.770B, buildj $2.561B, buildo $4.247B, spm $4.394B (buildj->buildo +66% at fixed engine 1.764.6 => data/weights)",
+      "microcosm@581b569:packages/microcosm-build/src/microcosm/build/us/spec/sources.yaml:157 forbes_top_tail_enabled: true (yet $10M+ ends with ~zero weight)"
+    ],
+    "fix_type": "pe_issue",
+    "fix_draft": {
+      "repo": "PolicyEngine/microcosm",
+      "title": "Top-tail compression: 3x SOI returns at AGI $1-2M, ~0 above $10M; AMT 1.6x SOI from 70 records",
+      "body": "On populace-us-2024-spm-20260915 at policyengine-us 2.2.1, filers with AGI $1-1.5M = 1.20M (SOI TY2023 369K), $1.5-2M = 326K (147K), $5-10M = 12K (49K), $10M+ ~0 (30K); total $1M+ AGI matches SOI ($2.61T vs $2.54T). AMT ($4.39B vs SOI $2.75B) comes from 70 records, 43 of them at $1-2M AGI with weights 10-30K. The only $1M+ AGI-class targets (TY2022 taxable interest) miss by +65% (returns) and -39% (amount). Proposed: add SOI Table 1.4 AGI-class return counts and AGI amounts for the $500K+ classes; investigate why the Forbes-backed top tail gets ~zero weight; optionally add SOI AMT returns/amount. Annotation for the scorecard: AMT is a top-tail statistic resting on 70 records and has moved $1.1B-$4.4B across releases."
+    }
+  }
+]

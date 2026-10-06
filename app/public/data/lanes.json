@@ -37,7 +37,18 @@
    "stage": "published",
    "running": false,
    "updated": "2026-08-07",
-   "note": "10/10 adjudicated; 6 pe_gap issues filed as microcosm#643-648; 1 external memo + 3 annotations in diagnosis/DIAGNOSES.md"
+   "note": "10/10 adjudicated; 6 pe_gap issues filed as microcosm#643-648 (re-measured on us-6.2.1, 2026-10-06); 1 external memo + 3 annotations in diagnosis/DIAGNOSES.md, shipped with concept-mismatch statuses 2026-10-06"
+  },
+  {
+   "id": "diagnosis-batch-2",
+   "country": "US",
+   "source": "Populace releases",
+   "area": "reform-validation divergence diagnosis (46 claims)",
+   "mode": 2,
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-06",
+   "note": "46 claims in 23 items on spm-20260915: 18 pe_gap, 20 construction issues, 5 concept mismatch, 3 open; FY2026 timing and SOI labels fixed in the ingest; memos in diagnosis/batch2/, upstream issues not yet filed"
   },
   {
    "id": "urban-sotsn-solo-attribution",

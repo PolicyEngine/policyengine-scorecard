@@ -13,6 +13,7 @@ from scorecard_db.ingest_reform_validation import (
     OBBBA_PROVISIONS,
     RAW,
     RUN_PREFIX,
+    SOI_HELD_OUT,
     ingest,
 )
 from scorecard_db.models import (
@@ -441,11 +442,35 @@ def test_census_spm_held_out(conn):
 
 def test_soi_and_jct_te_targets_marked_consumed(conn):
     rows = conn.execute(
-        "SELECT calibration_relationship FROM external_scores"
+        "SELECT source_column, calibration_relationship FROM external_scores"
         " WHERE source = 'irs_soi'"
         " OR source_column LIKE 'jct.tax_expenditures%'"
     ).fetchall()
-    assert rows and all(r[0] == "consumed_as_target" for r in rows)
+    assert rows
+    for column, relationship in rows:
+        # AMT and education credits match no calibration target
+        # (diagnosis batch 2, B7): held out; every other row is consumed.
+        expected = "held_out" if column in SOI_HELD_OUT else "consumed_as_target"
+        assert relationship == expected, column
+    assert {r[0] for r in rows} >= SOI_HELD_OUT
+
+
+def test_fy2026_onset_obbba_results_are_timing_mismatches(conn):
+    """Diagnosis batch 2, A1: a TY2026-onset provision's calendar-2026
+    liability is not JCT's partial FY2026 receipts — concept mismatch,
+    annotated; FY2027 stays constructed."""
+    rows = conn.execute(
+        "SELECT pe_construction, status, annotations FROM pe_results"
+        " WHERE pe_construction LIKE 'reform_delta:%:cy2026_for_fy%'"
+        " AND pe_construction LIKE '%income_tax%'"
+    ).fetchall()
+    assert rows
+    by_fy = {}
+    for construction, status, annotations in rows:
+        by_fy.setdefault(construction[-4:], set()).add(status)
+    assert by_fy["2027"] == {"constructed"}
+    assert "concept_mismatch" in by_fy["2026"]
+    assert any("tyba 12/31/25" in (a or "") for _, _, a in rows)
 
 
 def test_cbo_option_declares_pre_obbba_baseline(conn):
