@@ -2788,7 +2788,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
    }
   },
   {
@@ -2865,7 +2865,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
    }
   },
   {
@@ -3599,7 +3599,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C1, confidence high (mechanism); medium (magnitude: first-order counterfactual)] Pooled 2022-2024 ASEC incomes stay in nominal own-year dollars but are tested against 2024 SPM thresholds (largest #646 component)",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/944"
    }
   },
   {
@@ -3749,7 +3749,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
    }
   },
   {
@@ -4341,7 +4341,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C1, confidence high (mechanism); medium (magnitude: first-order counterfactual)] Pooled 2022-2024 ASEC incomes stay in nominal own-year dollars but are tested against 2024 SPM thresholds (largest #646 component)",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/944"
    }
   },
   {
@@ -4418,7 +4418,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C1, confidence high (mechanism); medium (magnitude: first-order counterfactual)] Pooled 2022-2024 ASEC incomes stay in nominal own-year dollars but are tested against 2024 SPM thresholds (largest #646 component)",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/944"
    }
   },
   {
@@ -5079,7 +5079,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
    }
   },
   {
@@ -5302,7 +5302,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C2, confidence high] SPM resources leave out partnership/S-corp income (and farm rent, non-Schedule-D gains) but subtract the federal and SE tax on it",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/policyengine-us/issues/9919"
    }
   },
   {
@@ -5524,7 +5524,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
    }
   },
   {
@@ -5601,7 +5601,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
    }
   },
   {
@@ -5678,7 +5678,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
    }
   },
   {
@@ -5755,7 +5755,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C1, confidence high (mechanism); medium (magnitude: first-order counterfactual)] Pooled 2022-2024 ASEC incomes stay in nominal own-year dollars but are tested against 2024 SPM thresholds (largest #646 component)",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/944"
    }
   },
   {
@@ -5905,7 +5905,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
    }
   },
   {
@@ -8718,7 +8718,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 C3, confidence high (FL medium)] Thin state samples around a common national shift: the state gaps are within PE's own sampling error; no state-specific defect",
-    "action_link": "diagnosis/batch2/C.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
    }
   },
   {
@@ -15507,7 +15507,7 @@
    "diagnosis": {
     "class": "undiagnosed",
     "rationale": "[batch2 D5, confidence medium] Colorado CTC: TY2024-law simulation vs TY2023 actual; the law change explains only ~30% of the gap on this release",
-    "action_link": "diagnosis/batch2/D.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
    }
   },
   {
@@ -80069,7 +80069,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 D1, confidence high] IA HF1020: the registry reform's bracket indices moved under policyengine-us 2.2.1, so the $90k+ expansion is no longer scored",
-    "action_link": "diagnosis/batch2/D.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
    }
   },
   {
@@ -80184,7 +80184,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 D3, confidence high] Idaho CTC: the row sums the uncapped nonrefundable credit; the benchmark is foregone revenue",
-    "action_link": "diagnosis/batch2/D.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
    }
   },
   {
@@ -137806,7 +137806,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 B5, confidence high] Education credits at 10% of SOI: LLC structurally zero, AOTC student pool 1.18M with $4.4B expenses",
-    "action_link": "diagnosis/batch2/B.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
    }
   },
   {
@@ -138058,7 +138058,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 B6, confidence medium] AMT 1.6x SOI from 70 records: top-tail compression puts 3x SOI's returns at AGI $1-2M and ~none above $10M",
-    "action_link": "diagnosis/batch2/B.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
    }
   },
   {
@@ -138858,7 +138858,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 A2, confidence medium] No tax on tips: SIPP-QRF tip imputation leaves ~93% of listed-occupation workers (incl. waitstaff) with zero tips",
-    "action_link": "diagnosis/batch2/A.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
    }
   },
   {
@@ -139712,7 +139712,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 A3, confidence medium] No tax on car loan interest: qualified-interest proxy uses one year of loan issuance as the TY2026 stock (explains ~15% of the gap; residual open)",
-    "action_link": "diagnosis/batch2/A.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
    }
   },
   {
@@ -141187,7 +141187,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 A5, confidence medium] Casualty loss limitation: engine zeroes all casualty losses (no declared-disaster carve-out) and the input rests on 33 records",
-    "action_link": "diagnosis/batch2/A.md"
+    "action_link": "https://github.com/PolicyEngine/policyengine-us/issues/9920"
    }
   },
   {
@@ -141445,7 +141445,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 A2, confidence medium] No tax on tips: SIPP-QRF tip imputation leaves ~93% of listed-occupation workers (incl. waitstaff) with zero tips",
-    "action_link": "diagnosis/batch2/A.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
    }
   },
   {
@@ -142211,7 +142211,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 A3, confidence medium] No tax on car loan interest: qualified-interest proxy uses one year of loan issuance as the TY2026 stock (explains ~15% of the gap; residual open)",
-    "action_link": "diagnosis/batch2/A.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
    }
   },
   {
@@ -142596,7 +142596,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 A4, confidence medium] Non-itemizer charitable deduction (FY2027 0.45x): cash giving imputed from TY2015 Schedule A misses non-itemizer donors",
-    "action_link": "diagnosis/batch2/A.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
    }
   },
   {
@@ -143493,7 +143493,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 A5, confidence medium] Casualty loss limitation: engine zeroes all casualty losses (no declared-disaster carve-out) and the input rests on 33 records",
-    "action_link": "diagnosis/batch2/A.md"
+    "action_link": "https://github.com/PolicyEngine/policyengine-us/issues/9920"
    }
   },
   {
@@ -144298,7 +144298,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 B2, confidence high] SE health insurance deduction: right claimant count, half the SOI amount, missing at AGI $200K+",
-    "action_link": "diagnosis/batch2/B.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
    }
   },
   {
@@ -144361,7 +144361,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 B1, confidence high] Self-employed pension (Keogh) contributions are ~3% of SOI; JCT line is also a net exclusion incl. earnings",
-    "action_link": "diagnosis/batch2/B.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
    }
   },
   {
@@ -151567,7 +151567,7 @@
    "diagnosis": {
     "class": "pe_gap",
     "rationale": "[batch2 D2, confidence high] MN Working Family Credit: the row measures mn_wfc, a pre-2023 (repealed-law) variable that is not in the TY2024 tax calculation",
-    "action_link": "diagnosis/batch2/D.md"
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1116"
    }
   },
   {
@@ -252921,7 +252921,7 @@
    "diagnosis": {
     "class": "undiagnosed",
     "rationale": "[batch2 D4, confidence medium] Ohio EITC: the engine orders the EITC first among nonrefundable credits; law and the 2024 form put it after CDCC, exemption and joint filing credits",
-    "action_link": "diagnosis/batch2/D.md"
+    "action_link": "https://github.com/PolicyEngine/policyengine-us/issues/9921"
    }
   },
   {

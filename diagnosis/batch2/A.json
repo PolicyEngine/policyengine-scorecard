@@ -45,7 +45,8 @@
    "Fiscal-year timing does not explain the gap: FY2027 ratio 0.25."
   ],
   "fix_type": "pe_issue",
-  "fix_draft": "PolicyEngine/microcosm issue -- 'SIPP tip imputation: only 7% of CPS waitstaff receive tips'. Body: H5 incidence table (TTOC 101-104 and all listed occupations); the JCX-35-25 comparison (PE -1.93B vs JCT FY2027 -7.66B). Proposal: (1) two-stage incidence x amount model conditional on listed occupation; (2) stratified sampling of donor positives instead of a uniform 10K cap; (3) add a gate on within-occupation incidence (e.g. >=50% for TTOC 101-104); (4) once an IRS reported-tips total (W-2 box 7 / Form 4137) is sourced, add it as a calibration target. Do not file until the IRS total is extracted (evidence rule 1)."
+  "fix_draft": "PolicyEngine/microcosm issue -- 'SIPP tip imputation: only 7% of CPS waitstaff receive tips'. Body: H5 incidence table (TTOC 101-104 and all listed occupations); the JCX-35-25 comparison (PE -1.93B vs JCT FY2027 -7.66B). Proposal: (1) two-stage incidence x amount model conditional on listed occupation; (2) stratified sampling of donor positives instead of a uniform 10K cap; (3) add a gate on within-occupation incidence (e.g. >=50% for TTOC 101-104); (4) once an IRS reported-tips total (W-2 box 7 / Form 4137) is sourced, add it as a calibration target. Do not file until the IRS total is extracted (evidence rule 1).",
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
  },
  {
   "claim_ids": [
@@ -70,7 +71,8 @@
    "policyengine_core 3.32.10 commons/formulas.py:189-194: household-to-tax-unit add() splits by person share (no double count). PE -1.08B / 10.8B deducted = ~10% per deducted dollar; JCT FY2027 -8.07B at that rate needs ~$80B of deductions, more than all H5 auto-loan interest in 2026 ($75.6B)."
   ],
   "fix_type": "pe_issue",
-  "fix_draft": "PolicyEngine/microcosm issue -- 'Qualified car-loan interest proxy uses one year of loan issuance as the TY2026 loan stock'. Proposal: replace the flow share with a vintage-stock share for the target year (sum over vintages since 2025 of 6M x survival), or move a year-indexed qualifying share into the engine; benchmark total auto_loan_interest (SCF 2022, original financed amount x rate) against an external household auto-debt series before scaling. Expected size: about 2x on TY2026 (PE ~-2.2B, 0.27x FY2027); the remaining gap (JCT implies more qualifying interest than all auto-loan interest in the H5 at PE's implied tax rate) stays open -- candidates: small H5 auto-interest pool, JCT behavioral response, larger new-vehicle loans."
+  "fix_draft": "PolicyEngine/microcosm issue -- 'Qualified car-loan interest proxy uses one year of loan issuance as the TY2026 loan stock'. Proposal: replace the flow share with a vintage-stock share for the target year (sum over vintages since 2025 of 6M x survival), or move a year-indexed qualifying share into the engine; benchmark total auto_loan_interest (SCF 2022, original financed amount x rate) against an external household auto-debt series before scaling. Expected size: about 2x on TY2026 (PE ~-2.2B, 0.27x FY2027); the remaining gap (JCT implies more qualifying interest than all auto-loan interest in the H5 at PE's implied tax rate) stays open -- candidates: small H5 auto-interest pool, JCT behavioral response, larger new-vehicle loans.",
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
  },
  {
   "claim_ids": [
@@ -91,7 +93,8 @@
    "Lilly Family School of Philanthropy news release, 24 Oct 2024 (Philanthropy Panel Study within PSID): 'The share of Americans who give to charity declined from 50.9% in 2018 to 46.9% in 2020' (PPS counts all forms of giving; H5 any-donation household share 25.5%)."
   ],
   "fix_type": "pe_issue",
-  "fix_draft": "PolicyEngine/microcosm issue -- 'Cash charitable giving is imputed from TY2015 Schedule A, so non-itemizer donors are missing'. Proposal: impute giving incidence/amount for all households from a source that observes non-itemizers (PSID Philanthropy Panel Study, CE Survey cash contributions), or add a calibration target on SOI TY2021 Form 1040 line 12b ($300/$600 non-itemizer deduction) returns and amount -- source that series first."
+  "fix_draft": "PolicyEngine/microcosm issue -- 'Cash charitable giving is imputed from TY2015 Schedule A, so non-itemizer donors are missing'. Proposal: impute giving incidence/amount for all households from a source that observes non-itemizers (PSID Philanthropy Panel Study, CE Survey cash contributions), or add a calibration target on SOI TY2021 Form 1040 line 12b ($300/$600 non-itemizer deduction) returns and amount -- source that series first.",
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/1117"
  },
  {
   "claim_ids": [
@@ -112,7 +115,8 @@
    "sources/harvest-2026-08-02/jct/claims_staged.jsonl (JCX-35-25 rows, pdftotext-layout + checksum-validated): 'Ch.1 9. Extension and modification of limitation on casualty loss deduction [1]', effective 'tyba 12/31/25'; FY2026 86, FY2027 128 ($M). FY timing explains x1.49 of the FY2026 ratio; FY2027 residual 2.27x."
   ],
   "fix_type": "pe_issue",
-  "fix_draft": "PolicyEngine/policyengine-us issue -- 'Casualty loss deduction is zero from 2018 on, but section 165(h)(5) keeps declared-disaster losses'. Add a person input casualty_loss_attributable_to_declared_disaster and apply active=false only to the remainder; cite 165(h)(5)(A). Plus registry annotation: 'PE's value rests on 33 PUF-derived records, one of which carries about half of the weighted losses; treat the comparison as indicative only.' Open: whether PUF E20500 is pre- or post-floor (post-floor would mean a double 10% floor, which lowers PE)."
+  "fix_draft": "PolicyEngine/policyengine-us issue -- 'Casualty loss deduction is zero from 2018 on, but section 165(h)(5) keeps declared-disaster losses'. Add a person input casualty_loss_attributable_to_declared_disaster and apply active=false only to the remainder; cite 165(h)(5)(A). Plus registry annotation: 'PE's value rests on 33 PUF-derived records, one of which carries about half of the weighted losses; treat the comparison as indicative only.' Open: whether PUF E20500 is pre- or post-floor (post-floor would mean a double 10% floor, which lowers PE).",
+  "action_link": "https://github.com/PolicyEngine/policyengine-us/issues/9920"
  },
  {
   "claim_ids": [
