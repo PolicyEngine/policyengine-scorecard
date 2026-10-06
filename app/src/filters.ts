@@ -1,4 +1,4 @@
-import type { SpineBucket } from "./spine";
+import { SPINE_ORDER, type SpineBucket } from "./spine";
 import type { Country } from "./types";
 
 export interface Filters {
@@ -31,4 +31,28 @@ export function hasActiveFilters(f: Filters): boolean {
     f.subgroup !== d.subgroup ||
     f.bucket !== d.bucket
   );
+}
+
+/**
+ * Filters saved in a browser history entry (back/forward, reload) for the
+ * given country. history.state is untyped, so anything that is not this
+ * app's own shape for this country falls back to the country's defaults.
+ */
+export function restoreFilters(saved: unknown, country: Country): Filters {
+  const d = defaultFilters(country);
+  if (typeof saved !== "object" || saved === null) return d;
+  const f = saved as Record<string, unknown>;
+  if (f.country !== country) return d;
+  const str = (v: unknown, fallback: string) =>
+    typeof v === "string" && v !== "" ? v : fallback;
+  return {
+    country,
+    program: str(f.program, d.program),
+    metric: str(f.metric, d.metric),
+    geography: str(f.geography, d.geography),
+    subgroup: str(f.subgroup, d.subgroup),
+    bucket: SPINE_ORDER.includes(f.bucket as SpineBucket)
+      ? (f.bucket as SpineBucket)
+      : null,
+  };
 }
