@@ -7,7 +7,10 @@ Status taxonomy (honesty made structural — misses stay on the page):
   comparable       PE measures the same concept (annotations may still apply)
   constructed      PE approximates Urban's concept via a documented
                    construction (e.g. payable-under-forced-take-up denominators)
-  concept_mismatch PE value exists but measures a different concept (housing)
+  concept_mismatch PE value exists but measures a different concept (housing;
+                   and, per diagnosis batch 1, the SNAP person rate/gap, the
+                   refundable-CTC claims count and the full-participation
+                   poverty counterfactual — see their annotations)
   pe_gap           the model/artifact cannot produce this today (LIHEAP, CCDF,
                    metro/non-metro)
   not_computed     producible but not yet in the pipeline (v1 backlog)
@@ -126,16 +129,22 @@ def counterpart(pe, program, metric, subgroup, variant, geo, unit_concept):
                 "comparable",
                 "baseline is_snap_eligible→person ÷ persons",
             )
+        # Annual mapped-person rate vs Urban's average-month admin numerator:
+        # not like-for-like (diagnosis batch 1; snap-rate-not-like-for-like).
         if metric == "participation_rate":
             return (
                 ratio(both, elig),
-                "comparable",
+                "concept_mismatch",
                 "baseline snap>0 & eligible, ÷ eligible (persons)",
             )
         if metric == "participation_gap_count":
             if elig is None or both is None:
                 return None, "not_computed", None
-            return elig - both, "comparable", "eligible − participating & eligible"
+            return (
+                elig - both,
+                "concept_mismatch",
+                "eligible − participating & eligible",
+            )
 
     if program == "ssi":
         if subgroup not in SSI_SUBS:
@@ -248,12 +257,14 @@ def counterpart(pe, program, metric, subgroup, variant, geo, unit_concept):
             return None, "not_computed", None
         claims = g("baseline", "ctc_refund", "participant_count", "total", geo)
         recipe = "baseline refundable_ctc>0 (claims-calibrated; no take-up flag)"
+        # Claims-shaped count vs Urban's modeled eligibility (diagnosis
+        # batch 1; ctc-claims-vs-eligibility).
         if metric == "eligible_count":
-            return claims, "constructed", recipe
+            return claims, "concept_mismatch", recipe
         if metric == "eligibility_rate":
             return (
                 ratio(claims, g("baseline", "_tax_units", "count", "total", geo)),
-                "constructed",
+                "concept_mismatch",
                 recipe + " ÷ tax units",
             )
 
@@ -297,21 +308,24 @@ def counterpart(pe, program, metric, subgroup, variant, geo, unit_concept):
         f_poor, f_pop = pov("fullpart_all")
         if metric == "poverty_rate":
             return ratio(b_poor, b_pop), "comparable", "baseline SPM poverty"
+        # The fullpart counterfactuals force different program sets on the
+        # two sides: a non-replication (diagnosis batch 1;
+        # fullpart-nonreplication).
         if metric == "poverty_rate_fullpart":
             return (
                 ratio(f_poor, f_pop),
-                "constructed",
+                "concept_mismatch",
                 "all stored take-up flags True + WIC gate (see pe_meta runs)",
             )
         if metric == "poverty_rate_relative_change_fullpart":
             br, fr = ratio(b_poor, b_pop), ratio(f_poor, f_pop)
             if br in (None, 0) or fr is None:
                 return None, "not_computed", None
-            return (fr - br) / br, "constructed", "(fullpart − base) ÷ base"
+            return (fr - br) / br, "concept_mismatch", "(fullpart − base) ÷ base"
         if metric == "poverty_count_change_fullpart":
             if b_poor is None or f_poor is None:
                 return None, "not_computed", None
-            return f_poor - b_poor, "constructed", "fullpart poor − base poor"
+            return f_poor - b_poor, "concept_mismatch", "fullpart poor − base poor"
 
     return None, "not_computed", None
 
