@@ -1,16 +1,11 @@
 import type { Row } from "../types";
-import {
-  SPINE_GROUPS,
-  SPINE_META,
-  SPINE_ORDER,
-  type SpineBucket,
-} from "../spine";
+import { SPINE_GROUPS, SPINE_META, type SpineBucket } from "../spine";
 
 /**
- * The signature element: one full-width stacked bar in which every published
- * cell appears, bucketed by how well PolicyEngine sees it. The gray segments
- * (gaps) are structurally inseparable from the teal ones — honesty as layout.
- * Clicking a segment filters the comparison table.
+ * The signature element: every published cell, counted by how well
+ * PolicyEngine sees it, as one horizontal bar per bucket on a shared scale.
+ * The gap buckets sit beside the compared ones at the same scale — honesty
+ * as layout. Clicking a bar filters the comparison table.
  */
 export function CoverageSpine({
   rows,
@@ -28,100 +23,89 @@ export function CoverageSpine({
     const b = buckets.get(r)!;
     counts.set(b, (counts.get(b) ?? 0) + 1);
   }
-  const total = rows.length || 1;
-  // The first non-empty segment of the second group gets a wider gap, so the
-  // bar splits visibly into "both values" and "a value missing".
-  const groupStart = SPINE_GROUPS[1].buckets.find((b) => counts.get(b));
-  const hasFirstGroup = SPINE_GROUPS[0].buckets.some((b) => counts.get(b));
+  // One scale for every bar, so a gap bucket and a compared bucket of the
+  // same size draw the same length.
+  const max = Math.max(1, ...counts.values());
 
   return (
-    <figure aria-label="Coverage of published cells by comparison status">
-      <div className="flex h-6 w-full gap-0.5 overflow-hidden rounded-md">
-        {SPINE_ORDER.map((b) => {
-          const n = counts.get(b) ?? 0;
-          if (!n) return null;
-          const meta = SPINE_META[b];
-          const pct = (n / total) * 100;
-          const dimmed = active !== null && active !== b;
-          return (
-            <button
-              key={b}
-              type="button"
-              title={`${meta.label}: ${n.toLocaleString()} cells — ${meta.text}`}
-              aria-label={`${meta.label}: ${n.toLocaleString()} cells`}
-              aria-pressed={active === b}
-              onClick={() => onSelect(active === b ? null : b)}
-              className={
-                "h-full transition-opacity hover:opacity-80 " +
-                meta.swatch +
-                (b === groupStart && hasFirstGroup ? " ml-1" : "")
-              }
-              style={{
-                width: `${pct}%`,
-                opacity: dimmed ? 0.25 : undefined,
-                minWidth: 3,
-              }}
-            />
-          );
-        })}
-      </div>
-      <figcaption className="mt-3 space-y-1.5">
+    <figure aria-label="Published cells by comparison status">
+      <div className="grid gap-x-10 gap-y-5 md:grid-cols-2">
         {SPINE_GROUPS.map((g) => {
           const present = g.buckets.filter((b) => counts.get(b));
           if (!present.length) return null;
           const sum = present.reduce((s, b) => s + (counts.get(b) ?? 0), 0);
           return (
-            <div
-              key={g.label}
-              className="flex flex-wrap items-center gap-x-4 gap-y-1"
-            >
-              <span className="w-full text-xs font-medium text-foreground sm:w-36">
-                {g.label}{" "}
-                <span className="fig font-normal text-muted-foreground">
-                  {sum.toLocaleString()}
-                </span>
-              </span>
-              {present.map((b) => {
-                const meta = SPINE_META[b];
-                return (
-                  <button
-                    key={b}
-                    type="button"
-                    onClick={() => onSelect(active === b ? null : b)}
-                    title={meta.text}
-                    className={
-                      "flex items-center gap-1.5 text-xs " +
-                      (active === b
-                        ? "font-semibold text-foreground"
-                        : "text-muted-foreground hover:text-foreground")
-                    }
-                  >
-                    <span
-                      aria-hidden
-                      className={
-                        "inline-block h-2.5 w-2.5 rounded-[2px] " + meta.swatch
-                      }
-                    />
-                    {meta.label}
-                    <span className="fig">
-                      {(counts.get(b) ?? 0).toLocaleString()}
-                    </span>
-                  </button>
-                );
-              })}
+            <div key={g.label}>
+              <div className="mb-1.5 border-b border-border pb-1.5">
+                <p className="flex items-baseline justify-between gap-3 text-xs">
+                  <span className="font-medium text-foreground">{g.label}</span>
+                  <span className="fig text-muted-foreground">
+                    {sum.toLocaleString()}
+                  </span>
+                </p>
+                <p className="mt-0.5 text-[11px] leading-4 text-muted-foreground">
+                  {g.note}
+                </p>
+              </div>
+              <ul>
+                {present.map((b) => {
+                  const n = counts.get(b) ?? 0;
+                  const meta = SPINE_META[b];
+                  const dimmed = active !== null && active !== b;
+                  return (
+                    <li key={b}>
+                      <button
+                        type="button"
+                        aria-label={`${meta.label}: ${n.toLocaleString()} cells. ${meta.text}`}
+                        aria-pressed={active === b}
+                        onClick={() => onSelect(active === b ? null : b)}
+                        className="group grid w-full grid-cols-[7.5rem_1fr_3.75rem] items-center gap-x-3 gap-y-0.5 rounded-sm py-1.5 text-left text-xs transition-opacity hover:bg-muted/60"
+                        style={{ opacity: dimmed ? 0.35 : undefined }}
+                      >
+                        <span
+                          className={
+                            active === b
+                              ? "font-semibold text-foreground"
+                              : "text-muted-foreground group-hover:text-foreground"
+                          }
+                        >
+                          {meta.label}
+                        </span>
+                        <span className="block h-3 border-l border-border-dark">
+                          <span
+                            className={
+                              "block h-full rounded-r-[4px] " + meta.swatch
+                            }
+                            style={{
+                              width: `${(n / max) * 100}%`,
+                              minWidth: 2,
+                            }}
+                          />
+                        </span>
+                        <span className="fig text-right text-foreground">
+                          {n.toLocaleString()}
+                        </span>
+                        <span className="col-span-3 text-[11px] leading-4 text-muted-foreground">
+                          {meta.text}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           );
         })}
-        {active && (
-          <button
-            type="button"
-            onClick={() => onSelect(null)}
-            className="text-xs text-primary underline underline-offset-2"
-          >
-            Clear
-          </button>
-        )}
-      </figcaption>
+      </div>
+      {active && (
+        <button
+          type="button"
+          onClick={() => onSelect(null)}
+          className="mt-2 text-xs text-primary underline underline-offset-2"
+        >
+          Clear
+        </button>
+      )}
     </figure>
   );
 }

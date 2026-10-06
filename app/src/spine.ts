@@ -38,45 +38,58 @@ export const SPINE_META: Record<
   close: {
     label: "Close",
     swatch: "bg-teal-900",
-    text: "Computed counterpart within descriptive tolerance (2.5pp / 10%)",
+    text: "Less than 2.5 points apart (rates) or 10% apart (counts)",
   },
   moderate: {
     label: "Diverging",
     swatch: "bg-teal-600",
-    text: "Within 10pp / 30% — worth a look",
+    text: "2.5 to 10 points apart (rates) or 10% to 30% (counts)",
   },
   far: {
     label: "Far apart",
     swatch: "bg-teal-400",
-    text: "Beyond 10pp / 30% — diagnosis candidates",
+    text: "10 points or more apart (rates) or 30% or more (counts)",
   },
   concept_mismatch: {
     label: "Concept mismatch",
     swatch: "bg-chart-4",
-    text: "Values exist but measure different concepts",
+    text: "Both values exist but measure different things, so they are not compared",
   },
   pe_gap: {
     label: "Model gap",
     swatch: "bg-gray-400",
-    text: "PolicyEngine cannot produce this today",
+    text: "PolicyEngine cannot produce this value today",
   },
   not_computed: {
     label: "Not yet computed",
     swatch: "bg-gray-300",
-    text: "Producible, not yet in the pipeline",
+    text: "PolicyEngine can produce this value but has not run it yet",
   },
   suppressed: {
     label: "Suppressed",
     swatch: "swatch-hatch",
-    text: "The source suppressed the cell",
+    text: "The source did not publish this value",
   },
 };
 
-/** The bar's two halves, in SPINE_ORDER: both values exist, or one is
- *  missing (no PolicyEngine value yet, or none published by the source). */
-export const SPINE_GROUPS: { label: string; buckets: SpineBucket[] }[] = [
-  { label: "Both values", buckets: ["close", "moderate", "far", "concept_mismatch"] },
-  { label: "A value missing", buckets: ["pe_gap", "not_computed", "suppressed"] },
+/** The chart's two groups, in SPINE_ORDER: both values exist, or one is
+ *  missing (no PolicyEngine value yet, or none published by the source).
+ *  The note says how the first group's gaps are measured (see closeness). */
+export const SPINE_GROUPS: {
+  label: string;
+  note: string;
+  buckets: SpineBucket[];
+}[] = [
+  {
+    label: "Both values",
+    note: "Gap between PolicyEngine and the source: percentage points for rates, percent difference for counts",
+    buckets: ["close", "moderate", "far", "concept_mismatch"],
+  },
+  {
+    label: "A value missing",
+    note: "PolicyEngine or the source has no value to compare",
+    buckets: ["pe_gap", "not_computed", "suppressed"],
+  },
 ];
 
 export function bucketOf(row: Row): SpineBucket {

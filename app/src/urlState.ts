@@ -3,8 +3,9 @@ import { COUNTRY_LABELS } from "./types";
 
 /**
  * Deep links (issue-free share URLs): ?country=be&view=validation.
- * App.tsx reads once on load and writes back with replaceState as the
- * view nav and country selector change; defaults stay out of the URL so
+ * App.tsx reads on load and on back/forward, and writes back as the
+ * view nav and country selector change (a new history entry per view, so
+ * the browser's back button works); defaults stay out of the URL so
  * the bare origin remains canonical. Pure over strings — no window.
  *
  * View ids are stable URL vocabulary: "scorecard" keeps its id for
