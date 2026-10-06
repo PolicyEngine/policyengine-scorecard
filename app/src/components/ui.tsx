@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@policyengine/ui-kit/primitives";
+import { fromSelectValue, toSelectValue } from "../selectValue";
 import { SPINE_META, type SpineBucket } from "../spine";
 import { STATUS_LABELS, type Status } from "../types";
 
@@ -123,7 +124,8 @@ export interface SelectOption {
   label: string;
 }
 
-/** Labelled ui-kit Select for the filter bars. */
+/** Labelled ui-kit Select for the filter bars. An option value of "" is
+ *  allowed (see selectValue.ts). */
 export function LabeledSelect({
   label,
   value,
@@ -140,13 +142,16 @@ export function LabeledSelect({
   return (
     <div className={"flex flex-col gap-1 " + className}>
       <Label className="text-xs text-muted-foreground">{label}</Label>
-      <Select value={value} onValueChange={onChange}>
+      <Select
+        value={toSelectValue(value)}
+        onValueChange={(v) => onChange(fromSelectValue(v))}
+      >
         <SelectTrigger size="sm" className="w-full min-w-36" aria-label={label}>
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
           {options.map((o) => (
-            <SelectItem key={o.value} value={o.value}>
+            <SelectItem key={o.value} value={toSelectValue(o.value)}>
               {o.label}
             </SelectItem>
           ))}
