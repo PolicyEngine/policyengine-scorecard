@@ -159,7 +159,7 @@ export function Overview({
           <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <h2 className="text-base font-semibold">Coverage</h2>
             <p className="text-xs text-muted-foreground">
-              Select a segment to open the comparison table filtered to it.
+              Select a bar to open the comparison table filtered to it.
             </p>
           </div>
           <CoverageSpine
