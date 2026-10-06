@@ -9,7 +9,8 @@ descriptor naming the harvested claim it compares against — either a
 family-vocabulary descriptor (translated below) or, for claims already in
 the DB (the Urban subgroup joins), the claim_id directly.
 
-US families attach from sources/campaign-20260802/us. UK families
+US families attach from sources/campaign-20260802/us, and their us-6.2.1
+recompute from sources/campaign-20261006/us (pipeline/campaign_us/). UK families
 attach from sources/campaign-20260802/uk_resolved — the DERIVED staging
 produce_campaign_uk builds from the frozen uk/ archive by resolving
 each row to a claim_id against the ingested UK claims (today:
@@ -54,6 +55,13 @@ from .models import BASELINE, ComparisonStatus, PEResult
 
 REPO = Path(__file__).resolve().parent.parent
 STAGED_US = REPO / "sources" / "campaign-20260802" / "us"
+# The same US families recomputed on bundle us-6.2.1 (policyengine-us 2.2.1
+# + populace-us-2024-spm-20260915) by pipeline/campaign_us/, after every
+# row reproduced the August value exactly on us-5.0.1
+# (pipeline/campaign_us/VALIDATION.md). Same descriptors and file names,
+# new run_ids (campaign-20261006-*), so ingesting it adds a second
+# per-release result without touching the August ones.
+STAGED_US_20261006 = REPO / "sources" / "campaign-20261006" / "us"
 
 _CURRENT_LAW_KEY = BASELINE.baseline_key()
 

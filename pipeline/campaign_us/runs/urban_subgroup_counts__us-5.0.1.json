@@ -1,0 +1,695 @@
+{
+ "provenance": {
+  "engine_version": "1.764.6",
+  "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "bundle_id": "us-5.0.1",
+  "policyengine_version": "5.0.1",
+  "legacy_input_renames": null
+ },
+ "jobs": [
+  {
+   "label": "urban subgroups CY2024",
+   "values": {
+    "snap|elig|age_0thr17": 25771914.43600233,
+    "snap|elig|age_18plus": 40591712.34620607,
+    "snap|elig|age_0thr3": 5541992.410992522,
+    "snap|elig|age_4thr5": 3456082.6153860027,
+    "snap|elig|age_6thr17": 16773839.409623807,
+    "snap|elig|age_18thr24": 4292171.891385524,
+    "snap|elig|age_25thr59": 24033494.773293305,
+    "snap|elig|age_60thr64": 3198855.3844467634,
+    "snap|elig|age_65plus": 9067190.297080481,
+    "snap|elig|age_4": 1831754.1999008355,
+    "snap|elig|age_1thr4": 6341129.76895497,
+    "snap|elig|race_hispanic": 16156937.853201158,
+    "snap|elig|race_white": 31750916.651471216,
+    "snap|elig|race_black": 12046858.976300113,
+    "snap|elig|race_aapi": 3011605.027005623,
+    "snap|elig|race_multi_other": 3397308.274230294,
+    "snap|elig|disability_yes": 9377700.976331472,
+    "snap|elig|disability_no": 56985925.80587693,
+    "snap|elig|status_citizen": 61911983.94236635,
+    "snap|elig|status_noncitizen": 4451642.839842062,
+    "snap|elig|fam_earners_yes": 55703715.794630766,
+    "snap|elig|fam_earners_no": 10659910.98757764,
+    "housing|elig|age_0thr17": 21281753.989775736,
+    "housing|part|age_0thr17": 612838.0762643951,
+    "housing|elig|age_18plus": 40267851.01138936,
+    "housing|part|age_18plus": 1167824.1870533926,
+    "housing|elig|age_0thr3": 4611625.737238209,
+    "housing|part|age_0thr3": 171266.60132822325,
+    "housing|elig|age_4thr5": 2706714.782933711,
+    "housing|part|age_4thr5": 70799.06302121287,
+    "housing|elig|age_6thr17": 13963413.469603814,
+    "housing|part|age_6thr17": 370772.4119149591,
+    "housing|elig|age_18thr24": 6674558.974203659,
+    "housing|part|age_18thr24": 305191.0836269432,
+    "housing|elig|age_25thr59": 27427424.08912877,
+    "housing|part|age_25thr59": 614664.9581414326,
+    "housing|elig|age_60thr64": 1877264.4167838881,
+    "housing|part|age_60thr64": 56613.55962661427,
+    "housing|elig|age_65plus": 4288603.531273039,
+    "housing|part|age_65plus": 191354.5856584026,
+    "housing|elig|age_4": 1379760.7127924114,
+    "housing|part|age_4": 44580.49958762975,
+    "housing|elig|age_1thr4": 5154718.0445531,
+    "housing|part|age_1thr4": 185295.56342410645,
+    "housing|elig|race_hispanic": 18967044.82003126,
+    "housing|part|race_hispanic": 590395.774841734,
+    "housing|elig|race_white": 23455580.98405631,
+    "housing|part|race_white": 470175.3254157294,
+    "housing|elig|race_black": 13184139.367871832,
+    "housing|part|race_black": 582826.0200446958,
+    "housing|elig|race_aapi": 3405428.360889555,
+    "housing|part|race_aapi": 62966.62305990374,
+    "housing|elig|race_multi_other": 2537411.4683161364,
+    "housing|part|race_multi_other": 74298.519955725,
+    "housing|elig|disability_yes": 7184385.337087834,
+    "housing|part|disability_yes": 285908.7571585572,
+    "housing|elig|disability_no": 54365219.66407726,
+    "housing|part|disability_no": 1494753.5061592306,
+    "housing|elig|status_citizen": 54143438.54357303,
+    "housing|part|status_citizen": 1649944.9663922573,
+    "housing|elig|status_noncitizen": 7406166.4575920645,
+    "housing|part|status_noncitizen": 130717.29692553089,
+    "housing|elig|fam_earners_yes": 56374269.46802755,
+    "housing|part|fam_earners_yes": 1527024.7896719566,
+    "housing|elig|fam_earners_no": 5175335.533137547,
+    "housing|part|fam_earners_no": 253637.47364583152,
+    "ssi_person|elig|age_0thr17": 302332.86049937166,
+    "ssi_person|elig|age_18plus": 34137362.408079416,
+    "ssi_person|elig|age_0thr3": 0.0,
+    "ssi_person|elig|age_4thr5": 0.0,
+    "ssi_person|elig|age_6thr17": 302332.86049937166,
+    "ssi_person|elig|age_18thr24": 1865019.9240377345,
+    "ssi_person|elig|age_25thr59": 6969485.651084051,
+    "ssi_person|elig|age_60thr64": 475763.9908947969,
+    "ssi_person|elig|age_65plus": 24827092.842062827,
+    "ssi_person|elig|age_4": 0.0,
+    "ssi_person|elig|age_1thr4": 0.0,
+    "ssi_person|elig|race_hispanic": 4694069.617960848,
+    "ssi_person|elig|race_white": 22443713.972624555,
+    "ssi_person|elig|race_black": 4202935.320641894,
+    "ssi_person|elig|race_aapi": 2367942.6619954873,
+    "ssi_person|elig|race_multi_other": 731033.6953559958,
+    "ssi_person|elig|disability_yes": 15516025.139368994,
+    "ssi_person|elig|disability_no": 18923670.129209787,
+    "ssi_person|elig|status_citizen": 32759709.52071333,
+    "ssi_person|elig|status_noncitizen": 1679985.7478654564,
+    "ssi_person|elig|fam_earners_yes": 17078188.72193758,
+    "ssi_person|elig|fam_earners_no": 17361506.5466412,
+    "ssi_unit|elig|age_0thr17": 7868270.067471616,
+    "ssi_unit|elig|age_18plus": 60649061.91881612,
+    "ssi_unit|elig|age_0thr3": 1236670.8398187165,
+    "ssi_unit|elig|age_4thr5": 800919.1974385354,
+    "ssi_unit|elig|age_6thr17": 5830680.030214364,
+    "ssi_unit|elig|age_18thr24": 5007288.396771833,
+    "ssi_unit|elig|age_25thr59": 23418420.988559507,
+    "ssi_unit|elig|age_60thr64": 5122155.982314286,
+    "ssi_unit|elig|age_65plus": 27101196.55117049,
+    "ssi_unit|elig|age_4": 414968.5966915137,
+    "ssi_unit|elig|age_1thr4": 1407395.0976860356,
+    "ssi_unit|elig|race_hispanic": 11869872.944059476,
+    "ssi_unit|elig|race_white": 40196661.245621316,
+    "ssi_unit|elig|race_black": 8846436.781740535,
+    "ssi_unit|elig|race_aapi": 5702705.064743541,
+    "ssi_unit|elig|race_multi_other": 1901655.950122865,
+    "ssi_unit|elig|disability_yes": 19550647.17934207,
+    "ssi_unit|elig|disability_no": 48966684.80694567,
+    "ssi_unit|elig|status_citizen": 64776125.54803641,
+    "ssi_unit|elig|status_noncitizen": 3741206.438251321,
+    "ssi_unit|elig|fam_earners_yes": 46040743.44005497,
+    "ssi_unit|elig|fam_earners_no": 22476588.54623276,
+    "tanf|elig|age_0thr17": 76683005.28060344,
+    "tanf|elig|age_18plus": 92252460.34249024,
+    "tanf|elig|age_0thr3": 14243938.341811018,
+    "tanf|elig|age_4thr5": 8454002.315251462,
+    "tanf|elig|age_6thr17": 53985064.62354096,
+    "tanf|elig|age_18thr24": 11022577.36859894,
+    "tanf|elig|age_25thr59": 73886447.33736789,
+    "tanf|elig|age_60thr64": 2552992.383174577,
+    "tanf|elig|age_65plus": 4790443.253348842,
+    "tanf|elig|age_4": 4358831.589876598,
+    "tanf|elig|age_1thr4": 15852069.079392169,
+    "tanf|elig|race_hispanic": 40688385.16330762,
+    "tanf|elig|race_white": 87803561.59234017,
+    "tanf|elig|race_black": 22370367.55127074,
+    "tanf|elig|race_aapi": 10729258.042481288,
+    "tanf|elig|race_multi_other": 7343893.273693869,
+    "tanf|elig|disability_yes": 9362529.60552847,
+    "tanf|elig|disability_no": 159572936.0175652,
+    "tanf|elig|status_citizen": 157713785.66068548,
+    "tanf|elig|status_noncitizen": 11221679.962408207,
+    "tanf|elig|fam_earners_yes": 160894704.03805104,
+    "tanf|elig|fam_earners_no": 8040761.585042641,
+    "wic|elig|age_0thr17": 9574308.314488804,
+    "wic|part|age_0thr17": 4941559.166745083,
+    "wic|elig|age_18plus": 3081049.254168756,
+    "wic|part|age_18plus": 1739979.2979029522,
+    "wic|elig|age_0thr3": 7019257.1931956895,
+    "wic|part|age_0thr3": 3805786.2412084783,
+    "wic|elig|age_4thr5": 2348042.07218254,
+    "wic|part|age_4thr5": 1010159.2189642157,
+    "wic|elig|age_6thr17": 207009.04911057436,
+    "wic|part|age_6thr17": 125613.70657238999,
+    "wic|elig|age_18thr24": 658751.7057230492,
+    "wic|part|age_18thr24": 316849.2684066334,
+    "wic|elig|age_25thr59": 2333935.387575972,
+    "wic|part|age_25thr59": 1343968.9402511034,
+    "wic|elig|age_60thr64": 20103.457794647416,
+    "wic|part|age_60thr64": 10923.833833425306,
+    "wic|elig|age_65plus": 68258.70307508716,
+    "wic|part|age_65plus": 68237.25541178999,
+    "wic|elig|age_4": 2348042.07218254,
+    "wic|part|age_4": 1010159.2189642157,
+    "wic|elig|age_1thr4": 7973256.276278211,
+    "wic|part|age_1thr4": 3679527.1798816603,
+    "wic|elig|race_hispanic": 3567694.1530835093,
+    "wic|part|race_hispanic": 1915219.5332486327,
+    "wic|elig|race_white": 5456319.745918056,
+    "wic|part|race_white": 3004672.9525895817,
+    "wic|elig|race_black": 2309349.2576827216,
+    "wic|part|race_black": 1210912.8473289534,
+    "wic|elig|race_aapi": 420135.51249284437,
+    "wic|part|race_aapi": 178670.3423176105,
+    "wic|elig|race_multi_other": 901858.899480428,
+    "wic|part|race_multi_other": 372062.78916325775,
+    "wic|elig|disability_yes": 309392.9141782459,
+    "wic|part|disability_yes": 182439.25053386993,
+    "wic|elig|disability_no": 12345964.654479314,
+    "wic|part|disability_no": 6499099.214114167,
+    "wic|elig|status_citizen": 12191988.923697732,
+    "wic|part|status_citizen": 6426762.393638523,
+    "wic|elig|status_noncitizen": 463368.64495982707,
+    "wic|part|status_noncitizen": 254776.0710095133,
+    "wic|elig|fam_earners_yes": 12026881.485200334,
+    "wic|part|fam_earners_yes": 6266344.502348663,
+    "wic|elig|fam_earners_no": 628476.0834572258,
+    "wic|part|fam_earners_no": 415193.96229937254,
+    "snap|elig|fam_earners_yes_anymember": 57251633.91302782,
+    "tanf|elig|fam_earners_yes_anymember": 162376679.72982466,
+    "housing|elig|fam_earners_yes_anymember": 56944252.60433902
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": null,
+   "reform_checked": {},
+   "inputs_set": [],
+   "seconds": 126.0,
+   "maxrss_gb": 39.48
+  }
+ ],
+ "ssi_reading": "person",
+ "family": "urban_subgroup_counts",
+ "rows": [
+  {
+   "pe_value": 21281753.989775736,
+   "match": {
+    "claim_id": "6447f789574d90d43db2"
+   }
+  },
+  {
+   "pe_value": 4611625.737238209,
+   "match": {
+    "claim_id": "3ff62f5226f0bf90c9f0"
+   }
+  },
+  {
+   "pe_value": 2706714.782933711,
+   "match": {
+    "claim_id": "1ada7614f8924309f9c8"
+   }
+  },
+  {
+   "pe_value": 13963413.469603814,
+   "match": {
+    "claim_id": "b5d9ffbff88a57cd1da7"
+   }
+  },
+  {
+   "pe_value": 6674558.974203659,
+   "match": {
+    "claim_id": "c9093a4a186d9be218d9"
+   }
+  },
+  {
+   "pe_value": 27427424.08912877,
+   "match": {
+    "claim_id": "9efba3fb797a12c480c5"
+   }
+  },
+  {
+   "pe_value": 3405428.360889555,
+   "match": {
+    "claim_id": "480a692ec3d87a67e646"
+   }
+  },
+  {
+   "pe_value": 13184139.367871832,
+   "match": {
+    "claim_id": "8204e971dd256e187e9f"
+   }
+  },
+  {
+   "pe_value": 18967044.82003126,
+   "match": {
+    "claim_id": "35d2dfab8926737f96af"
+   }
+  },
+  {
+   "pe_value": 23455580.98405631,
+   "match": {
+    "claim_id": "92d84366f9d06ef52ae2"
+   }
+  },
+  {
+   "pe_value": 2537411.4683161364,
+   "match": {
+    "claim_id": "9350e1e11bdef30d0bfa"
+   }
+  },
+  {
+   "pe_value": 7184385.337087834,
+   "match": {
+    "claim_id": "4c7373a00d57e5b22b8c"
+   }
+  },
+  {
+   "pe_value": 54365219.66407726,
+   "match": {
+    "claim_id": "8f2550e81b3df5ee699e"
+   }
+  },
+  {
+   "pe_value": 54143438.54357303,
+   "match": {
+    "claim_id": "86739b581abb822b0b77"
+   }
+  },
+  {
+   "pe_value": 7406166.4575920645,
+   "match": {
+    "claim_id": "ccde4898b54fe93643b7"
+   }
+  },
+  {
+   "pe_value": 56374269.46802755,
+   "match": {
+    "claim_id": "77c1719980eb2e7dcdcb"
+   }
+  },
+  {
+   "pe_value": 5175335.533137547,
+   "match": {
+    "claim_id": "e4e1fcfb390973dd18ef"
+   }
+  },
+  {
+   "pe_value": 3342461.737829651,
+   "match": {
+    "claim_id": "49b81ec743d82176b7a7"
+   }
+  },
+  {
+   "pe_value": 12601313.347827137,
+   "match": {
+    "claim_id": "b670317b61b233b37bf9"
+   }
+  },
+  {
+   "pe_value": 18376649.045189526,
+   "match": {
+    "claim_id": "3a08443a63e8ec1a58fc"
+   }
+  },
+  {
+   "pe_value": 22985405.65864058,
+   "match": {
+    "claim_id": "35366d5f3fbebecc9477"
+   }
+  },
+  {
+   "pe_value": 25771914.43600233,
+   "match": {
+    "claim_id": "e8e5d0b1c0d75bedc5d6"
+   }
+  },
+  {
+   "pe_value": 40591712.34620607,
+   "match": {
+    "claim_id": "4cb70669e6fc54f7cc19"
+   }
+  },
+  {
+   "pe_value": 5541992.410992522,
+   "match": {
+    "claim_id": "dd989b8e67c53bb3e769"
+   }
+  },
+  {
+   "pe_value": 3456082.6153860027,
+   "match": {
+    "claim_id": "c60af358830cb6252b9d"
+   }
+  },
+  {
+   "pe_value": 16773839.409623807,
+   "match": {
+    "claim_id": "08fe5f8882cd2bcb87d0"
+   }
+  },
+  {
+   "pe_value": 4292171.891385524,
+   "match": {
+    "claim_id": "b53baa41f78b5252ffa4"
+   }
+  },
+  {
+   "pe_value": 24033494.773293305,
+   "match": {
+    "claim_id": "c89fc693bda40211bee7"
+   }
+  },
+  {
+   "pe_value": 3198855.3844467634,
+   "match": {
+    "claim_id": "17611500c31a50d00073"
+   }
+  },
+  {
+   "pe_value": 9067190.297080481,
+   "match": {
+    "claim_id": "cae1dcd6da190310a80f"
+   }
+  },
+  {
+   "pe_value": 3011605.027005623,
+   "match": {
+    "claim_id": "b6669fe9866d766629c2"
+   }
+  },
+  {
+   "pe_value": 12046858.976300113,
+   "match": {
+    "claim_id": "aa01e6a3b8ef4093aeb9"
+   }
+  },
+  {
+   "pe_value": 16156937.853201158,
+   "match": {
+    "claim_id": "07d6e0d9f78a886b0770"
+   }
+  },
+  {
+   "pe_value": 31750916.651471216,
+   "match": {
+    "claim_id": "a1ea1368d68983aef790"
+   }
+  },
+  {
+   "pe_value": 3397308.274230294,
+   "match": {
+    "claim_id": "6ce727a9db2dc0772e01"
+   }
+  },
+  {
+   "pe_value": 9377700.976331472,
+   "match": {
+    "claim_id": "43fa866df2bd63174afc"
+   }
+  },
+  {
+   "pe_value": 56985925.80587693,
+   "match": {
+    "claim_id": "cee96cbb60f4755e29b4"
+   }
+  },
+  {
+   "pe_value": 61911983.94236635,
+   "match": {
+    "claim_id": "9af7e8ddc84597e33f65"
+   }
+  },
+  {
+   "pe_value": 4451642.839842062,
+   "match": {
+    "claim_id": "62edbb18407f3844a044"
+   }
+  },
+  {
+   "pe_value": 10659910.98757764,
+   "match": {
+    "claim_id": "9abb058ca2a4828d5489"
+   }
+  },
+  {
+   "pe_value": 55703715.794630766,
+   "match": {
+    "claim_id": "e1eae55364677a8d15e5"
+   }
+  },
+  {
+   "pe_value": 1865019.9240377345,
+   "match": {
+    "claim_id": "ac45f06409c1ca976dd1"
+   }
+  },
+  {
+   "pe_value": 6969485.651084051,
+   "match": {
+    "claim_id": "cfc3d5fd8d06f927ad33"
+   }
+  },
+  {
+   "pe_value": 475763.9908947969,
+   "match": {
+    "claim_id": "2a30c3e4a13c0cfa4a0c"
+   }
+  },
+  {
+   "pe_value": 24827092.842062827,
+   "match": {
+    "claim_id": "43e7c7f7bf368f79c1a4"
+   }
+  },
+  {
+   "pe_value": 2367942.6619954873,
+   "match": {
+    "claim_id": "ee0334f0cb3b17851414"
+   }
+  },
+  {
+   "pe_value": 4202935.320641894,
+   "match": {
+    "claim_id": "bd58a981db6391fbfee7"
+   }
+  },
+  {
+   "pe_value": 4694069.617960848,
+   "match": {
+    "claim_id": "d9993c0651e2776000d5"
+   }
+  },
+  {
+   "pe_value": 22443713.972624555,
+   "match": {
+    "claim_id": "27464c35d442c4277ce7"
+   }
+  },
+  {
+   "pe_value": 731033.6953559958,
+   "match": {
+    "claim_id": "d9a3129a77914df92a00"
+   }
+  },
+  {
+   "pe_value": 32759709.52071333,
+   "match": {
+    "claim_id": "613fd9c0daa39cbf4748"
+   }
+  },
+  {
+   "pe_value": 1679985.7478654564,
+   "match": {
+    "claim_id": "fa0333164c09f1b57005"
+   }
+  },
+  {
+   "pe_value": 76683005.28060344,
+   "match": {
+    "claim_id": "1253eb2b24b308efccba"
+   }
+  },
+  {
+   "pe_value": 92252460.34249024,
+   "match": {
+    "claim_id": "0b917d2b18a2365345fd"
+   }
+  },
+  {
+   "pe_value": 14243938.341811018,
+   "match": {
+    "claim_id": "340dfb8da12c16a6fa88"
+   }
+  },
+  {
+   "pe_value": 8454002.315251462,
+   "match": {
+    "claim_id": "4510653dd654ee2ab85a"
+   }
+  },
+  {
+   "pe_value": 53985064.62354096,
+   "match": {
+    "claim_id": "9edfd55dcaf005f12148"
+   }
+  },
+  {
+   "pe_value": 11022577.36859894,
+   "match": {
+    "claim_id": "c19582a5fb59ef7ac3a9"
+   }
+  },
+  {
+   "pe_value": 73886447.33736789,
+   "match": {
+    "claim_id": "d0f657f33feb3b0114c3"
+   }
+  },
+  {
+   "pe_value": 2552992.383174577,
+   "match": {
+    "claim_id": "17261e1dd99765c99652"
+   }
+  },
+  {
+   "pe_value": 4790443.253348842,
+   "match": {
+    "claim_id": "74a309678ad820aaae72"
+   }
+  },
+  {
+   "pe_value": 10729258.042481288,
+   "match": {
+    "claim_id": "9736841c4f6b0f8aa462"
+   }
+  },
+  {
+   "pe_value": 22370367.55127074,
+   "match": {
+    "claim_id": "6332745f08b65d136acf"
+   }
+  },
+  {
+   "pe_value": 40688385.16330762,
+   "match": {
+    "claim_id": "335cc0e56d438dedc2da"
+   }
+  },
+  {
+   "pe_value": 87803561.59234017,
+   "match": {
+    "claim_id": "85b4394097f79c4b290e"
+   }
+  },
+  {
+   "pe_value": 7343893.273693869,
+   "match": {
+    "claim_id": "6c71471f20ad1a35ba52"
+   }
+  },
+  {
+   "pe_value": 9362529.60552847,
+   "match": {
+    "claim_id": "42c8336af7bb63aa38ea"
+   }
+  },
+  {
+   "pe_value": 159572936.0175652,
+   "match": {
+    "claim_id": "8f6ab540110c4d3f8ff5"
+   }
+  },
+  {
+   "pe_value": 157713785.66068548,
+   "match": {
+    "claim_id": "5aea010ba512b3f4784b"
+   }
+  },
+  {
+   "pe_value": 11221679.962408207,
+   "match": {
+    "claim_id": "dec9adf49bff95877f33"
+   }
+  },
+  {
+   "pe_value": 8040761.585042641,
+   "match": {
+    "claim_id": "db9d8df9c0d985394b1c"
+   }
+  },
+  {
+   "pe_value": 160894704.03805104,
+   "match": {
+    "claim_id": "2fd9975531633b1b995f"
+   }
+  },
+  {
+   "pe_value": 7019257.1931956895,
+   "match": {
+    "claim_id": "19c4437d63229b51f30b"
+   }
+  },
+  {
+   "pe_value": 2348042.07218254,
+   "match": {
+    "claim_id": "666f3ca7886b7c656bf1"
+   }
+  },
+  {
+   "pe_value": 7973256.276278211,
+   "match": {
+    "claim_id": "3141e4d5c8ff66b43c01"
+   }
+  },
+  {
+   "pe_value": 3213470.951987211,
+   "match": {
+    "claim_id": "6c3efbba00a61df63318"
+   }
+  },
+  {
+   "pe_value": 1337882.853218324,
+   "match": {
+    "claim_id": "1459c0cb07814b7e4970"
+   }
+  },
+  {
+   "pe_value": 4293729.096396551,
+   "match": {
+    "claim_id": "d29a3eae8b93e6fd20c8"
+   }
+  }
+ ],
+ "wall_seconds": 127.7
+}

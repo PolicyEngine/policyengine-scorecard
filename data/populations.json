@@ -3,7 +3,7 @@
  "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family; BE: JRC EUROMOD-BE claims with demo-grade Axiom concept-mismatch attachments and the 2026 PIT-reform scorekeeper claims; NZ: official budget scores). Claims explicitly opted into pre-result display remain in the feed with latest status not_computed and empty history. Recorded result statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
  "summary": {
   "claims": 5460,
-  "multi_release_claims": 241,
+  "multi_release_claims": 270,
   "by_source": {
    "az_admin": 1,
    "barclays": 1,
@@ -103,8 +103,8 @@
   },
   "by_latest_status": {
    "comparable": 42,
-   "concept_mismatch": 16,
-   "constructed": 1404,
+   "concept_mismatch": 15,
+   "constructed": 1405,
    "not_computed": 3109,
    "pe_gap": 889
   }
@@ -793,19 +793,19 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 789.3138964940113,
+    "value": 789.2905812238647,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "pass2 ssi dollars / year-grid part_pop / 12 (per annual-ever person-month) | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta); denominator concept differs -> ratio inherits caseload delta",
     "policyengine_variables": [],
-    "computed_at": "2026-08-07T02:24:55.382758+00:00",
+    "computed_at": "2026-10-06T16:06:30.161645+00:00",
     "annotations": [],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.0510171724287767,
-    "delta": 38.31389649401126
+    "ratio": 1.0509861267960914,
+    "delta": 38.290581223864706
    },
    "results": [
     {
@@ -817,6 +817,19 @@
      "construction": "pass2 ssi dollars / year-grid part_pop / 12 (per annual-ever person-month) | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta); denominator concept differs -> ratio inherits caseload delta",
      "policyengine_variables": [],
      "computed_at": "2026-08-07T02:24:55.382758+00:00",
+     "annotations": [],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 789.2905812238647,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "pass2 ssi dollars / year-grid part_pop / 12 (per annual-ever person-month) | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta); denominator concept differs -> ratio inherits caseload delta",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T16:06:30.161645+00:00",
      "annotations": [],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -853,19 +866,19 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 129.7045752084306,
+    "value": 134.25440536253626,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "pass2 snap dollars / year-grid part_pop / 12 (per annual-ever person-month) | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta); denominator concept differs -> ratio inherits caseload delta",
     "policyengine_variables": [],
-    "computed_at": "2026-08-07T02:24:55.382758+00:00",
+    "computed_at": "2026-10-06T16:06:30.161645+00:00",
     "annotations": [],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 0.695094186540357,
-    "delta": -56.89542479156938
+    "ratio": 0.7194769847938707,
+    "delta": -52.34559463746373
    },
    "results": [
     {
@@ -877,6 +890,19 @@
      "construction": "pass2 snap dollars / year-grid part_pop / 12 (per annual-ever person-month) | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta); denominator concept differs -> ratio inherits caseload delta",
      "policyengine_variables": [],
      "computed_at": "2026-08-07T02:24:55.382758+00:00",
+     "annotations": [],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 134.25440536253626,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "pass2 snap dollars / year-grid part_pop / 12 (per annual-ever person-month) | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta); denominator concept differs -> ratio inherits caseload delta",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T16:06:30.161645+00:00",
      "annotations": [],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -915,19 +941,19 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 109071629469.4516,
+    "value": 108835815944.9657,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "eitc+refundable_ctc CY2026 (composite; CBO line includes 'other credits' \u2014 scope note) | CBO federal fiscal year vs PE calendar year (named delta); CBO composite line broader than EITC+ACTC (named scope delta)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-07T02:24:55.382758+00:00",
+    "computed_at": "2026-10-06T16:06:30.161645+00:00",
     "annotations": [],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.0436078369352584,
-    "delta": 4557629469.451599
+    "ratio": 1.041351550461811,
+    "delta": 4321815944.965698
    },
    "results": [
     {
@@ -939,6 +965,19 @@
      "construction": "eitc+refundable_ctc CY2026 (composite; CBO line includes 'other credits' \u2014 scope note) | CBO federal fiscal year vs PE calendar year (named delta); CBO composite line broader than EITC+ACTC (named scope delta)",
      "policyengine_variables": [],
      "computed_at": "2026-08-07T02:24:55.382758+00:00",
+     "annotations": [],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 108835815944.9657,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "eitc+refundable_ctc CY2026 (composite; CBO line includes 'other credits' \u2014 scope note) | CBO federal fiscal year vs PE calendar year (named delta); CBO composite line broader than EITC+ACTC (named scope delta)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T16:06:30.161645+00:00",
      "annotations": [],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -977,19 +1016,19 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 109071629469.4516,
+    "value": 108835815944.9657,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "eitc+refundable_ctc CY2026 (composite; CBO line includes 'other credits' \u2014 scope note) | CBO federal fiscal year vs PE calendar year (named delta); CBO composite line broader than EITC+ACTC (named scope delta)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-07T02:24:55.382758+00:00",
+    "computed_at": "2026-10-06T16:06:30.161645+00:00",
     "annotations": [],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.0436078369352584,
-    "delta": 4557629469.451599
+    "ratio": 1.041351550461811,
+    "delta": 4321815944.965698
    },
    "results": [
     {
@@ -1001,6 +1040,19 @@
      "construction": "eitc+refundable_ctc CY2026 (composite; CBO line includes 'other credits' \u2014 scope note) | CBO federal fiscal year vs PE calendar year (named delta); CBO composite line broader than EITC+ACTC (named scope delta)",
      "policyengine_variables": [],
      "computed_at": "2026-08-07T02:24:55.382758+00:00",
+     "annotations": [],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 108835815944.9657,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "eitc+refundable_ctc CY2026 (composite; CBO line includes 'other credits' \u2014 scope note) | CBO federal fiscal year vs PE calendar year (named delta); CBO composite line broader than EITC+ACTC (named scope delta)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T16:06:30.161645+00:00",
      "annotations": [],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -1038,19 +1090,19 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 90927596849.523,
+    "value": 100265316841.38287,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "pass2 aggregate snap total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO row is BUDGET AUTHORITY (FY); PE totals are accrual entitlement dollars (named concept + timing deltas)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-07T02:24:55.382758+00:00",
+    "computed_at": "2026-10-06T16:06:30.161645+00:00",
     "annotations": [],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 0.9239201021137327,
-    "delta": -7487403150.477005
+    "ratio": 1.0188011669093417,
+    "delta": 1850316841.3828735
    },
    "results": [
     {
@@ -1062,6 +1114,19 @@
      "construction": "pass2 aggregate snap total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO row is BUDGET AUTHORITY (FY); PE totals are accrual entitlement dollars (named concept + timing deltas)",
      "policyengine_variables": [],
      "computed_at": "2026-08-07T02:24:55.382758+00:00",
+     "annotations": [],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 100265316841.38287,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "pass2 aggregate snap total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO row is BUDGET AUTHORITY (FY); PE totals are accrual entitlement dollars (named concept + timing deltas)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T16:06:30.161645+00:00",
      "annotations": [],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -1099,19 +1164,19 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 4936866453.148398,
+    "value": 5045530740.344602,
     "status": "concept_mismatch",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "pass2 aggregate tanf total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO row is outlays (Estimated Outlays), cash FY; PE totals are accrual entitlement dollars (named deltas); CBO TANF outlays = full block grant (incl. non-cash state uses); PE models cash assistance only (~quarter of block-grant spending) \u2014 named scope delta",
     "policyengine_variables": [],
-    "computed_at": "2026-08-07T02:24:55.382758+00:00",
+    "computed_at": "2026-10-06T16:06:30.161645+00:00",
     "annotations": [],
     "baseline": "current_law",
     "status_effective": "concept_mismatch",
-    "ratio": 0.29095158257593107,
-    "delta": -12031133546.8516
+    "ratio": 0.297355654192869,
+    "delta": -11922469259.6554
    },
    "results": [
     {
@@ -1123,6 +1188,19 @@
      "construction": "pass2 aggregate tanf total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO row is outlays (Estimated Outlays), cash FY; PE totals are accrual entitlement dollars (named deltas); CBO TANF outlays = full block grant (incl. non-cash state uses); PE models cash assistance only (~quarter of block-grant spending) \u2014 named scope delta",
      "policyengine_variables": [],
      "computed_at": "2026-08-07T02:24:55.382758+00:00",
+     "annotations": [],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    },
+    {
+     "value": 5045530740.344602,
+     "status": "concept_mismatch",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "pass2 aggregate tanf total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO row is outlays (Estimated Outlays), cash FY; PE totals are accrual entitlement dollars (named deltas); CBO TANF outlays = full block grant (incl. non-cash state uses); PE models cash assistance only (~quarter of block-grant spending) \u2014 named scope delta",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T16:06:30.161645+00:00",
      "annotations": [],
      "baseline": "current_law",
      "status_effective": "concept_mismatch"
@@ -1159,19 +1237,19 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 57857268951.65666,
+    "value": 57855559925.80327,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "pass2 aggregate ssi total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO row is outlays (Total Outlays, Adjusted for Date of Payment Shiftb), cash FY; PE totals are accrual entitlement dollars (named deltas)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-07T02:24:55.382758+00:00",
+    "computed_at": "2026-10-06T16:06:30.161645+00:00",
     "annotations": [],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 0.8700341195737844,
-    "delta": -8642731048.343338
+    "ratio": 0.8700084199368913,
+    "delta": -8644440074.196732
    },
    "results": [
     {
@@ -1183,6 +1261,19 @@
      "construction": "pass2 aggregate ssi total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO row is outlays (Total Outlays, Adjusted for Date of Payment Shiftb), cash FY; PE totals are accrual entitlement dollars (named deltas)",
      "policyengine_variables": [],
      "computed_at": "2026-08-07T02:24:55.382758+00:00",
+     "annotations": [],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 57855559925.80327,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "pass2 aggregate ssi total_usd CY2026 | CBO federal fiscal year vs PE calendar year (named delta); CBO row is outlays (Total Outlays, Adjusted for Date of Payment Shiftb), cash FY; PE totals are accrual entitlement dollars (named deltas)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T16:06:30.161645+00:00",
      "annotations": [],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -1220,12 +1311,12 @@
    "latest": {
     "value": 6108392.492163988,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "year-grid ssi part_pop US CY2026 | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-07T02:24:55.382758+00:00",
+    "computed_at": "2026-10-06T16:06:30.161645+00:00",
     "annotations": [],
     "baseline": "current_law",
     "status_effective": "constructed",
@@ -1242,6 +1333,19 @@
      "construction": "year-grid ssi part_pop US CY2026 | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta)",
      "policyengine_variables": [],
      "computed_at": "2026-08-07T02:24:55.382758+00:00",
+     "annotations": [],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 6108392.492163988,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "year-grid ssi part_pop US CY2026 | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T16:06:30.161645+00:00",
      "annotations": [],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -1277,19 +1381,19 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 58419679.68580754,
+    "value": 62235894.96041095,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "year-grid snap part_pop US CY2026 | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-07T02:24:55.382758+00:00",
+    "computed_at": "2026-10-06T16:06:30.161645+00:00",
     "annotations": [],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.4865058444225838,
-    "delta": 19119679.68580754
+    "ratio": 1.5836105587890827,
+    "delta": 22935894.960410953
    },
    "results": [
     {
@@ -1301,6 +1405,19 @@
      "construction": "year-grid snap part_pop US CY2026 | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta)",
      "policyengine_variables": [],
      "computed_at": "2026-08-07T02:24:55.382758+00:00",
+     "annotations": [],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 62235894.96041095,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "year-grid snap part_pop US CY2026 | CBO federal fiscal year vs PE calendar year (named delta); PE annual-ever persons in units with benefit>0 vs CBO avg-monthly participation (named delta)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T16:06:30.161645+00:00",
      "annotations": [],
      "baseline": "current_law",
      "status_effective": "constructed"
@@ -17444,14 +17561,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 0.11520327849739191,
+    "value": 0.10973610363060084,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "arpa u6 4197.04 / 6-17 3497.53; first-tier {'JOINT': 145730.6, 'SURVIVING_SPOUSE': 145730.6, 'SINGLE': 72865.3, 'SEPARATE': 72865.3, 'HEAD_OF_HOUSEHOLD': 109297.95}; qualifying age -> 18; fully refundable",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T19:08:17.213636+00:00",
+    "computed_at": "2026-10-06T18:16:08.985012+00:00",
     "annotations": [
      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17461,8 +17578,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.2387449300794828,
-    "delta": 0.0222032784973919
+    "ratio": 1.1799581035548476,
+    "delta": 0.016736103630600824
    },
    "results": [
     {
@@ -17474,6 +17591,25 @@
      "construction": "arpa u6 4197.04 / 6-17 3497.53; first-tier {'JOINT': 145730.6, 'SURVIVING_SPOUSE': 145730.6, 'SINGLE': 72865.3, 'SEPARATE': 72865.3, 'HEAD_OF_HOUSEHOLD': 109297.95}; qualifying age -> 18; fully refundable",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T19:08:17.213636+00:00",
+     "annotations": [
+      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
+      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
+      "pe_gap component: populace#593 (EHS at 100% take-up inside household_net_income)",
+      "2025-statute parameters deflated to 2024 dollars per CPSP (CPI ratio 0.97154; 2025-CPI-vintage assumption)",
+      "named deltas: newborn payment omitted; birth-month proration; refundable-ODC kept non-refundable"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 0.10973610363060084,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "arpa u6 4197.04 / 6-17 3497.53; first-tier {'JOINT': 145730.6, 'SURVIVING_SPOUSE': 145730.6, 'SINGLE': 72865.3, 'SEPARATE': 72865.3, 'HEAD_OF_HOUSEHOLD': 109297.95}; qualifying age -> 18; fully refundable",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T18:16:08.985012+00:00",
      "annotations": [
       "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
       "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17515,14 +17651,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 0.10654836093217117,
+    "value": 0.09845928376601065,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "arpa u6 4197.04 / 6-17 3497.53; first-tier {'JOINT': 145730.6, 'SURVIVING_SPOUSE': 145730.6, 'SINGLE': 72865.3, 'SEPARATE': 72865.3, 'HEAD_OF_HOUSEHOLD': 109297.95}; qualifying age -> 18; fully refundable",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T19:08:17.213636+00:00",
+    "computed_at": "2026-10-06T18:16:08.985012+00:00",
     "annotations": [
      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17532,8 +17668,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.2107768287746723,
-    "delta": 0.01854836093217116
+    "ratio": 1.11885549734103,
+    "delta": 0.010459283766010644
    },
    "results": [
     {
@@ -17545,6 +17681,25 @@
      "construction": "arpa u6 4197.04 / 6-17 3497.53; first-tier {'JOINT': 145730.6, 'SURVIVING_SPOUSE': 145730.6, 'SINGLE': 72865.3, 'SEPARATE': 72865.3, 'HEAD_OF_HOUSEHOLD': 109297.95}; qualifying age -> 18; fully refundable",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T19:08:17.213636+00:00",
+     "annotations": [
+      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
+      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
+      "pe_gap component: populace#593 (EHS at 100% take-up inside household_net_income)",
+      "2025-statute parameters deflated to 2024 dollars per CPSP (CPI ratio 0.97154; 2025-CPI-vintage assumption)",
+      "named deltas: newborn payment omitted; birth-month proration; refundable-ODC kept non-refundable"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 0.09845928376601065,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "arpa u6 4197.04 / 6-17 3497.53; first-tier {'JOINT': 145730.6, 'SURVIVING_SPOUSE': 145730.6, 'SINGLE': 72865.3, 'SEPARATE': 72865.3, 'HEAD_OF_HOUSEHOLD': 109297.95}; qualifying age -> 18; fully refundable",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T18:16:08.985012+00:00",
      "annotations": [
       "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
       "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17586,14 +17741,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 0.2115468145577173,
+    "value": 0.2072585640684601,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "base[0].amount 2000 -> 0; adult_dependent 500 -> 0",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T17:58:33.662382+00:00",
+    "computed_at": "2026-10-06T18:16:08.985012+00:00",
     "annotations": [
      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17601,8 +17756,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.274378400950104,
-    "delta": 0.04554681455771728
+    "ratio": 1.2485455666774705,
+    "delta": 0.041258564068460096
    },
    "results": [
     {
@@ -17614,6 +17769,23 @@
      "construction": "base[0].amount 2000 -> 0; adult_dependent 500 -> 0",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T17:58:33.662382+00:00",
+     "annotations": [
+      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
+      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
+      "pe_gap component: populace#593 (EHS at 100% take-up inside household_net_income)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 0.2072585640684601,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "base[0].amount 2000 -> 0; adult_dependent 500 -> 0",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T18:16:08.985012+00:00",
      "annotations": [
       "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
       "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17653,14 +17825,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 0.22737614889930013,
+    "value": 0.22288045276198565,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "base[0].amount 2000 -> 0; adult_dependent 500 -> 0",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T17:58:33.662382+00:00",
+    "computed_at": "2026-10-06T18:16:08.985012+00:00",
     "annotations": [
      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17668,8 +17840,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.2773940949398883,
-    "delta": 0.049376148899300115
+    "ratio": 1.252137375067335,
+    "delta": 0.04488045276198563
    },
    "results": [
     {
@@ -17681,6 +17853,23 @@
      "construction": "base[0].amount 2000 -> 0; adult_dependent 500 -> 0",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T17:58:33.662382+00:00",
+     "annotations": [
+      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
+      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
+      "pe_gap component: populace#593 (EHS at 100% take-up inside household_net_income)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 0.22288045276198565,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "base[0].amount 2000 -> 0; adult_dependent 500 -> 0",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T18:16:08.985012+00:00",
      "annotations": [
       "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
       "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17720,14 +17909,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 0.16740114539030831,
+    "value": 0.1557756270633141,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "base 2000 -> 2137.38; refundable cap 1700 -> 1651.61; phase-in threshold 2500 -> 2428.84; thresholds x0.97154",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T18:04:44.216480+00:00",
+    "computed_at": "2026-10-06T18:16:08.985012+00:00",
     "annotations": [
      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17736,8 +17925,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.2586552284985586,
-    "delta": 0.03440114539030831
+    "ratio": 1.1712453162655194,
+    "delta": 0.022775627063314097
    },
    "results": [
     {
@@ -17749,6 +17938,24 @@
      "construction": "base 2000 -> 2137.38; refundable cap 1700 -> 1651.61; phase-in threshold 2500 -> 2428.84; thresholds x0.97154",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T18:04:44.216480+00:00",
+     "annotations": [
+      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
+      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
+      "pe_gap component: populace#593 (EHS at 100% take-up inside household_net_income)",
+      "2025-statute parameters deflated to 2024 dollars per CPSP (CPI ratio 0.97154; 2025-CPI-vintage assumption)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 0.1557756270633141,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "base 2000 -> 2137.38; refundable cap 1700 -> 1651.61; phase-in threshold 2500 -> 2428.84; thresholds x0.97154",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T18:16:08.985012+00:00",
      "annotations": [
       "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
       "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17789,14 +17996,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 0.1780928937346883,
+    "value": 0.1694395205689077,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "base 2000 -> 2137.38; refundable cap 1700 -> 1651.61; phase-in threshold 2500 -> 2428.84; thresholds x0.97154",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T18:04:44.216480+00:00",
+    "computed_at": "2026-10-06T18:16:08.985012+00:00",
     "annotations": [
      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17805,8 +18012,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.236756206490891,
-    "delta": 0.034092893734688295
+    "ratio": 1.1766633372840811,
+    "delta": 0.025439520568907692
    },
    "results": [
     {
@@ -17818,6 +18025,24 @@
      "construction": "base 2000 -> 2137.38; refundable cap 1700 -> 1651.61; phase-in threshold 2500 -> 2428.84; thresholds x0.97154",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T18:04:44.216480+00:00",
+     "annotations": [
+      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
+      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
+      "pe_gap component: populace#593 (EHS at 100% take-up inside household_net_income)",
+      "2025-statute parameters deflated to 2024 dollars per CPSP (CPI ratio 0.97154; 2025-CPI-vintage assumption)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 0.1694395205689077,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "base 2000 -> 2137.38; refundable cap 1700 -> 1651.61; phase-in threshold 2500 -> 2428.84; thresholds x0.97154",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T18:16:08.985012+00:00",
      "annotations": [
       "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
       "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17858,14 +18083,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 0.17791888414943094,
+    "value": 0.1700923800124657,
     "status": "comparable",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T19:36:06.431196+00:00",
+    "computed_at": "2026-10-06T18:16:08.985012+00:00",
     "annotations": [
      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17873,8 +18098,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "comparable",
-    "ratio": 1.2270267872374547,
-    "delta": 0.03291888414943095
+    "ratio": 1.1730508966376947,
+    "delta": 0.02509238001246572
    },
    "results": [
     {
@@ -17886,6 +18111,23 @@
      "construction": "",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T19:36:06.431196+00:00",
+     "annotations": [
+      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
+      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
+      "pe_gap component: populace#593 (EHS at 100% take-up inside household_net_income)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    },
+    {
+     "value": 0.1700923800124657,
+     "status": "comparable",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T18:16:08.985012+00:00",
      "annotations": [
       "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
       "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17925,14 +18167,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": 0.1677105433364713,
+    "value": 0.15612592696989697,
     "status": "comparable",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T19:36:06.431196+00:00",
+    "computed_at": "2026-10-06T18:16:08.985012+00:00",
     "annotations": [
      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -17940,8 +18182,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "comparable",
-    "ratio": 1.260981528845649,
-    "delta": 0.034710543336471306
+    "ratio": 1.173879150149601,
+    "delta": 0.02312592696989696
    },
    "results": [
     {
@@ -17953,6 +18195,23 @@
      "construction": "",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T19:36:06.431196+00:00",
+     "annotations": [
+      "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
+      "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
+      "pe_gap component: populace#593 (EHS at 100% take-up inside household_net_income)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "comparable"
+    },
+    {
+     "value": 0.15612592696989697,
+     "status": "comparable",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T18:16:08.985012+00:00",
      "annotations": [
       "takeup: credit take-up/filing flags forced (CPSP ASEC basis); benefit take-up calibrated",
       "levels vs ASEC-anchored series = methodological_difference (SPM_NOTES.md)",
@@ -139628,21 +139887,22 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": -89808470353.02002,
-    "status": "concept_mismatch",
+    "value": -91195453103.0,
+    "status": "constructed",
     "engine_version": "2.2.1",
     "data_bundle": "populace-us-2024-spm-20260915",
     "release": "spm-20260915",
-    "construction": "reform_delta:income_tax:jcx_stacked:chain_pos04:cy2026_for_fy2026",
+    "construction": "scored as expiry reversal from enacted law; negated (exact for the same static world pair) | gov.irs.credits.ctc.amount.base[0].amount: -> 1000; gov.irs.credits.ctc.amount.adult_dependent: -> 0; gov.irs.credits.ctc.refundable.individual_max: -> 1000; gov.irs.credits.ctc.refundable.phase_in.threshold: -> 3000; gov.irs.credits.ctc.phase_out.threshold.JOINT: -> 110000; gov.irs.credits.ctc.phase_out.threshold.SINGLE: -> 75000; gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD: -> 75000; gov.irs.credits.ctc.phase_out.threshold.SURVIVING_SPOUSE: -> 75000; gov.irs.credits.ctc.phase_out.threshold.SEPARATE: -> 55000 | RESOLVED AS BASELINE DEFINITION (Max 8/2, issue #13): JCT's provision-4 baseline = expiry world + provisions 1-3 (a constructible ReformRef), not an inherent convention gap. This run scores provision 4 LAST-IN-STACK (vs full current law) \u2014 a different, well-defined baseline. The 1.87 ratio vs JCT's stack position is dominated by interactions with the provisions that differ between the two baselines \u2014 chiefly personal exemptions (present on JCT's expiry side until provision 3 terminates them) and the expiry-side AMT/QBI/SALT rules shaping the liability that limits the nonrefundable CTC. UNBLOCK: build baseline_k ReformRefs from CBO Jan-2025 Tax Parameters expiry projections (source already cited in the contrib bracket yaml); registered in RUNNABILITY.md.",
     "policyengine_variables": [],
-    "computed_at": "2026-09-15T00:00:00",
+    "computed_at": "2026-10-06T16:22:20.935490+00:00",
     "annotations": [
-     "JCX-35-25 reports fiscal-year receipts. This provision is effective 'tyba 12/31/25', so FY2026 (Oct 2025-Sep 2026) holds only the withholding-year part of the TY2026 effect. JCT's own FY2026 value is 56% of its FY2027 value. PolicyEngine reports one full calendar-2026 liability change: compare with the FY2027 claim."
+     "LAST-IN-STACK baseline (vs full current law); JCT scores at stack position 4 (expiry + provisions 1-3) \u2014 baseline_k ReformRef build registered",
+     "PE CY2026 vs JCT FY2026"
     ],
-    "baseline": "obbba_stack_below__jcx_producer__obbba_child_tax_credit",
-    "status_effective": "concept_mismatch",
-    "ratio": 1.8415073172101133,
-    "delta": -41039470353.02002
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.869947161167955,
+    "delta": -42426453103.0
    },
    "results": [
     {
@@ -139750,6 +140010,22 @@
      ],
      "baseline": "obbba_stack_below__jcx_producer__obbba_child_tax_credit",
      "status_effective": "concept_mismatch"
+    },
+    {
+     "value": -91195453103.0,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "scored as expiry reversal from enacted law; negated (exact for the same static world pair) | gov.irs.credits.ctc.amount.base[0].amount: -> 1000; gov.irs.credits.ctc.amount.adult_dependent: -> 0; gov.irs.credits.ctc.refundable.individual_max: -> 1000; gov.irs.credits.ctc.refundable.phase_in.threshold: -> 3000; gov.irs.credits.ctc.phase_out.threshold.JOINT: -> 110000; gov.irs.credits.ctc.phase_out.threshold.SINGLE: -> 75000; gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD: -> 75000; gov.irs.credits.ctc.phase_out.threshold.SURVIVING_SPOUSE: -> 75000; gov.irs.credits.ctc.phase_out.threshold.SEPARATE: -> 55000 | RESOLVED AS BASELINE DEFINITION (Max 8/2, issue #13): JCT's provision-4 baseline = expiry world + provisions 1-3 (a constructible ReformRef), not an inherent convention gap. This run scores provision 4 LAST-IN-STACK (vs full current law) \u2014 a different, well-defined baseline. The 1.87 ratio vs JCT's stack position is dominated by interactions with the provisions that differ between the two baselines \u2014 chiefly personal exemptions (present on JCT's expiry side until provision 3 terminates them) and the expiry-side AMT/QBI/SALT rules shaping the liability that limits the nonrefundable CTC. UNBLOCK: build baseline_k ReformRefs from CBO Jan-2025 Tax Parameters expiry projections (source already cited in the contrib bracket yaml); registered in RUNNABILITY.md.",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T16:22:20.935490+00:00",
+     "annotations": [
+      "LAST-IN-STACK baseline (vs full current law); JCT scores at stack position 4 (expiry + provisions 1-3) \u2014 baseline_k ReformRef build registered",
+      "PE CY2026 vs JCT FY2026"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
     }
    ],
    "diagnosis": {
@@ -261241,14 +261517,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": -102121875631.0,
+    "value": -102370343777.0,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "gov.irs.social_security.taxability.rate.base.excess: 0.5 -> 0; gov.irs.social_security.taxability.rate.base.benefit_cap: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.bracket: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.excess: 0.85 -> 0; gov.irs.social_security.taxability.rate.additional.benefit_cap: 0.85 -> 0",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T19:21:19.569897+00:00",
+    "computed_at": "2026-10-06T16:17:17.885050+00:00",
     "annotations": [
      "PE CY liability vs PWBM FY cash (FY2025 is partial-first-year)",
      "construction verified: taxable_social_security = 0.0 exactly",
@@ -261256,8 +261532,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.7020312605166668,
-    "delta": -42121875631.0
+    "ratio": 1.7061723962833333,
+    "delta": -42370343777.0
    },
    "results": [
     {
@@ -261269,6 +261545,23 @@
      "construction": "gov.irs.social_security.taxability.rate.base.excess: 0.5 -> 0; gov.irs.social_security.taxability.rate.base.benefit_cap: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.bracket: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.excess: 0.85 -> 0; gov.irs.social_security.taxability.rate.additional.benefit_cap: 0.85 -> 0",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T19:21:19.569897+00:00",
+     "annotations": [
+      "PE CY liability vs PWBM FY cash (FY2025 is partial-first-year)",
+      "construction verified: taxable_social_security = 0.0 exactly",
+      "PE 2025 baseline includes OBBBA senior deduction; PWBM publication vintage may predate (named axis)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": -102370343777.0,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "gov.irs.social_security.taxability.rate.base.excess: 0.5 -> 0; gov.irs.social_security.taxability.rate.base.benefit_cap: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.bracket: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.excess: 0.85 -> 0; gov.irs.social_security.taxability.rate.additional.benefit_cap: 0.85 -> 0",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T16:17:17.885050+00:00",
      "annotations": [
       "PE CY liability vs PWBM FY cash (FY2025 is partial-first-year)",
       "construction verified: taxable_social_security = 0.0 exactly",
@@ -261309,14 +261602,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": -114046325481.0,
+    "value": -114313256644.0,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "gov.irs.social_security.taxability.rate.base.excess: 0.5 -> 0; gov.irs.social_security.taxability.rate.base.benefit_cap: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.bracket: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.excess: 0.85 -> 0; gov.irs.social_security.taxability.rate.additional.benefit_cap: 0.85 -> 0",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T19:51:42.666209+00:00",
+    "computed_at": "2026-10-06T16:17:17.885050+00:00",
     "annotations": [
      "PE CY liability vs PWBM FY cash (FY2025 is partial-first-year)",
      "construction verified: taxable_social_security = 0.0 exactly",
@@ -261324,8 +261617,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 0.9831579782844827,
-    "delta": 1953674519.0
+    "ratio": 0.985459109,
+    "delta": 1686743356.0
    },
    "results": [
     {
@@ -261337,6 +261630,23 @@
      "construction": "gov.irs.social_security.taxability.rate.base.excess: 0.5 -> 0; gov.irs.social_security.taxability.rate.base.benefit_cap: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.bracket: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.excess: 0.85 -> 0; gov.irs.social_security.taxability.rate.additional.benefit_cap: 0.85 -> 0",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T19:51:42.666209+00:00",
+     "annotations": [
+      "PE CY liability vs PWBM FY cash (FY2025 is partial-first-year)",
+      "construction verified: taxable_social_security = 0.0 exactly",
+      "PE 2025 baseline includes OBBBA senior deduction; PWBM publication vintage may predate (named axis)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": -114313256644.0,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "gov.irs.social_security.taxability.rate.base.excess: 0.5 -> 0; gov.irs.social_security.taxability.rate.base.benefit_cap: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.bracket: 0.5 -> 0; gov.irs.social_security.taxability.rate.additional.excess: 0.85 -> 0; gov.irs.social_security.taxability.rate.additional.benefit_cap: 0.85 -> 0",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T16:17:17.885050+00:00",
      "annotations": [
       "PE CY liability vs PWBM FY cash (FY2025 is partial-first-year)",
       "construction verified: taxable_social_security = 0.0 exactly",
@@ -343282,14 +343592,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law_plus_senate_obbba_title_vii",
    "latest": {
-    "value": 3560167298.0,
+    "value": 3558368808.0,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "additional 39.6% bracket above {'JOINT': 1720000, 'SINGLE': 1528875, 'HEAD_OF_HOUSEHOLD': 1624400, 'SEPARATE': 860000.0, 'SURVIVING_SPOUSE': 1720000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T18:09:43.741622+00:00",
+    "computed_at": "2026-10-06T19:06:34.538539+00:00",
     "annotations": [
      "PE calendar-year 2026 liability vs TPC FY2026 cash",
      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343297,8 +343607,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 0.29181699163934427,
-    "delta": -8639832702.0
+    "ratio": 0.2916695744262295,
+    "delta": -8641631192.0
    },
    "results": [
     {
@@ -343310,6 +343620,23 @@
      "construction": "additional 39.6% bracket above {'JOINT': 1720000, 'SINGLE': 1528875, 'HEAD_OF_HOUSEHOLD': 1624400, 'SEPARATE': 860000.0, 'SURVIVING_SPOUSE': 1720000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T18:09:43.741622+00:00",
+     "annotations": [
+      "PE calendar-year 2026 liability vs TPC FY2026 cash",
+      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
+      "toprate via gov.contrib.additional_tax_bracket structural reform; SEPARATE=joint/2 and SURVIVING=joint assumed (table states 3 statuses)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 3558368808.0,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "additional 39.6% bracket above {'JOINT': 1720000, 'SINGLE': 1528875, 'HEAD_OF_HOUSEHOLD': 1624400, 'SEPARATE': 860000.0, 'SURVIVING_SPOUSE': 1720000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T19:06:34.538539+00:00",
      "annotations": [
       "PE calendar-year 2026 liability vs TPC FY2026 cash",
       "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343351,14 +343678,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law_plus_senate_obbba_title_vii",
    "latest": {
-    "value": -12413332840.0,
+    "value": -12422174012.0,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T19:43:41.798101+00:00",
+    "computed_at": "2026-10-06T19:06:34.538539+00:00",
     "annotations": [
      "PE calendar-year 2026 liability vs TPC FY2026 cash",
      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343366,8 +343693,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 0.6709909643243244,
-    "delta": 6086667160.0
+    "ratio": 0.6714688655135135,
+    "delta": 6077825988.0
    },
    "results": [
     {
@@ -343379,6 +343706,23 @@
      "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding)",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T19:43:41.798101+00:00",
+     "annotations": [
+      "PE calendar-year 2026 liability vs TPC FY2026 cash",
+      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
+      "CY2025 variant: -12.3B"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": -12422174012.0,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T19:06:34.538539+00:00",
      "annotations": [
       "PE calendar-year 2026 liability vs TPC FY2026 cash",
       "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343420,14 +343764,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law_plus_senate_obbba_title_vii",
    "latest": {
-    "value": -11841396313.0,
+    "value": -11840038880.0,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; additional 39.6% bracket above {'JOINT': 1720000, 'SINGLE': 1528875, 'HEAD_OF_HOUSEHOLD': 1624400, 'SEPARATE': 860000.0, 'SURVIVING_SPOUSE': 1720000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T18:23:24.922763+00:00",
+    "computed_at": "2026-10-06T19:06:34.538539+00:00",
     "annotations": [
      "PE calendar-year 2026 liability vs TPC FY2026 cash",
      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343435,8 +343779,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.1171128597169808,
-    "delta": -1241396312.999998
+    "ratio": 1.1169847999999998,
+    "delta": -1240038879.999998
    },
    "results": [
     {
@@ -343448,6 +343792,23 @@
      "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; additional 39.6% bracket above {'JOINT': 1720000, 'SINGLE': 1528875, 'HEAD_OF_HOUSEHOLD': 1624400, 'SEPARATE': 860000.0, 'SURVIVING_SPOUSE': 1720000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T18:23:24.922763+00:00",
+     "annotations": [
+      "PE calendar-year 2026 liability vs TPC FY2026 cash",
+      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
+      "toprate via gov.contrib.additional_tax_bracket structural reform; SEPARATE=joint/2 and SURVIVING=joint assumed (table states 3 statuses)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": -11840038880.0,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; additional 39.6% bracket above {'JOINT': 1720000, 'SINGLE': 1528875, 'HEAD_OF_HOUSEHOLD': 1624400, 'SEPARATE': 860000.0, 'SURVIVING_SPOUSE': 1720000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T19:06:34.538539+00:00",
      "annotations": [
       "PE calendar-year 2026 liability vs TPC FY2026 cash",
       "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343489,14 +343850,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law_plus_senate_obbba_title_vii",
    "latest": {
-    "value": -15401563611.0,
+    "value": -15398407688.0,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T18:36:03.633487+00:00",
+    "computed_at": "2026-10-06T19:06:34.538539+00:00",
     "annotations": [
      "PE calendar-year 2026 liability vs TPC FY2026 cash",
      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343504,8 +343865,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 0.6755071759210526,
-    "delta": 7398436389.0
+    "ratio": 0.675368758245614,
+    "delta": 7401592312.0
    },
    "results": [
     {
@@ -343517,6 +343878,23 @@
      "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T18:36:03.633487+00:00",
+     "annotations": [
+      "PE calendar-year 2026 liability vs TPC FY2026 cash",
+      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
+      "CY2025 variant: -15.1B"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": -15398407688.0,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T19:06:34.538539+00:00",
      "annotations": [
       "PE calendar-year 2026 liability vs TPC FY2026 cash",
       "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343558,14 +343936,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law_plus_senate_obbba_title_vii",
    "latest": {
-    "value": -10520644600.0,
+    "value": -10531277994.0,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); additional 39.6% bracket above {'JOINT': 2120000, 'SINGLE': 1884425, 'HEAD_OF_HOUSEHOLD': 2002200, 'SEPARATE': 1060000.0, 'SURVIVING_SPOUSE': 2120000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T19:03:50.001776+00:00",
+    "computed_at": "2026-10-06T19:06:34.538539+00:00",
     "annotations": [
      "PE calendar-year 2026 liability vs TPC FY2026 cash",
      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343573,8 +343951,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.298845012345679,
-    "delta": -2420644600.0
+    "ratio": 1.300157777037037,
+    "delta": -2431277994.0
    },
    "results": [
     {
@@ -343586,6 +343964,23 @@
      "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); additional 39.6% bracket above {'JOINT': 2120000, 'SINGLE': 1884425, 'HEAD_OF_HOUSEHOLD': 2002200, 'SEPARATE': 1060000.0, 'SURVIVING_SPOUSE': 2120000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T19:03:50.001776+00:00",
+     "annotations": [
+      "PE calendar-year 2026 liability vs TPC FY2026 cash",
+      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
+      "toprate via gov.contrib.additional_tax_bracket structural reform; SEPARATE=joint/2 and SURVIVING=joint assumed (table states 3 statuses)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": -10531277994.0,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); additional 39.6% bracket above {'JOINT': 2120000, 'SINGLE': 1884425, 'HEAD_OF_HOUSEHOLD': 2002200, 'SEPARATE': 1060000.0, 'SURVIVING_SPOUSE': 2120000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T19:06:34.538539+00:00",
      "annotations": [
       "PE calendar-year 2026 liability vs TPC FY2026 cash",
       "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343625,24 +344020,24 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law",
    "latest": {
-    "value": -132466602193.0,
+    "value": -132327788230.0,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "AFA-2025 statute: arpa 4320/3600, fully refundable, age<18, second-tier HoH 300k; newborn $2,400 payment omitted (named delta); mid-tier floor kept at OBBBA $2,200 (AFA-onto-current-law)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T18:17:00.163564+00:00",
+    "computed_at": "2026-10-06T19:06:34.538539+00:00",
     "annotations": [
      "TPC includes microdynamic behavioral response; PE static",
-     "floor-construction bound: bill-text $2,000 floor gives -130.7B (width 1.8B)",
+     "floor-construction bound: bill-text $2,000 floor gives -130.6B (width 1.8B)",
      "newborn $2,400 payment omitted (named delta)",
      "PE CY2026 vs TPC FY2026"
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 0.9892285223024593,
-    "delta": 1442397806.9999847
+    "ratio": 0.9881918932259969,
+    "delta": 1581211769.9999847
    },
    "results": [
     {
@@ -343657,6 +344052,24 @@
      "annotations": [
       "TPC includes microdynamic behavioral response; PE static",
       "floor-construction bound: bill-text $2,000 floor gives -130.7B (width 1.8B)",
+      "newborn $2,400 payment omitted (named delta)",
+      "PE CY2026 vs TPC FY2026"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": -132327788230.0,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "AFA-2025 statute: arpa 4320/3600, fully refundable, age<18, second-tier HoH 300k; newborn $2,400 payment omitted (named delta); mid-tier floor kept at OBBBA $2,200 (AFA-onto-current-law)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T19:06:34.538539+00:00",
+     "annotations": [
+      "TPC includes microdynamic behavioral response; PE static",
+      "floor-construction bound: bill-text $2,000 floor gives -130.6B (width 1.8B)",
       "newborn $2,400 payment omitted (named delta)",
       "PE CY2026 vs TPC FY2026"
      ],
@@ -343696,14 +344109,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law_plus_senate_obbba_title_vii",
    "latest": {
-    "value": -17771840580.0,
+    "value": -17764929017.0,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; phase-in from first dollar of earnings (threshold 2500 -> 0)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T19:56:36.792890+00:00",
+    "computed_at": "2026-10-06T19:06:34.538539+00:00",
     "annotations": [
      "PE calendar-year 2026 liability vs TPC FY2026 cash",
      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343711,8 +344124,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 0.7052317690476191,
-    "delta": 7428159420.0
+    "ratio": 0.7049575006746032,
+    "delta": 7435070983.0
    },
    "results": [
     {
@@ -343724,6 +344137,23 @@
      "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; phase-in from first dollar of earnings (threshold 2500 -> 0)",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T19:56:36.792890+00:00",
+     "annotations": [
+      "PE calendar-year 2026 liability vs TPC FY2026 cash",
+      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
+      "CY2025 variant: -17.6B"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": -17764929017.0,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; phase-in from first dollar of earnings (threshold 2500 -> 0)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T19:06:34.538539+00:00",
      "annotations": [
       "PE calendar-year 2026 liability vs TPC FY2026 cash",
       "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343765,14 +344195,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law_plus_senate_obbba_title_vii",
    "latest": {
-    "value": -13358690967.0,
+    "value": -13353577403.0,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; phase-in from first dollar of earnings (threshold 2500 -> 0); additional 39.6% bracket above {'JOINT': 1562500, 'SINGLE': 1388875, 'HEAD_OF_HOUSEHOLD': 1475650, 'SEPARATE': 781250.0, 'SURVIVING_SPOUSE': 1562500} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T19:08:40.026085+00:00",
+    "computed_at": "2026-10-06T19:06:34.538539+00:00",
     "annotations": [
      "PE calendar-year 2026 liability vs TPC FY2026 cash",
      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343780,8 +344210,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 1.1040240468595042,
-    "delta": -1258690967.0
+    "ratio": 1.1036014382644628,
+    "delta": -1253577403.0
    },
    "results": [
     {
@@ -343793,6 +344223,23 @@
      "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; phase-in from first dollar of earnings (threshold 2500 -> 0); additional 39.6% bracket above {'JOINT': 1562500, 'SINGLE': 1388875, 'HEAD_OF_HOUSEHOLD': 1475650, 'SEPARATE': 781250.0, 'SURVIVING_SPOUSE': 1562500} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T19:08:40.026085+00:00",
+     "annotations": [
+      "PE calendar-year 2026 liability vs TPC FY2026 cash",
+      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
+      "toprate via gov.contrib.additional_tax_bracket structural reform; SEPARATE=joint/2 and SURVIVING=joint assumed (table states 3 statuses)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": -13353577403.0,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "CTC base 2200 -> 2500 (statute; indexed-after-2025 rounds to no change at 2026 under $100-downward rounding); refundable max 1700 -> 2000; phase-in from first dollar of earnings (threshold 2500 -> 0); additional 39.6% bracket above {'JOINT': 1562500, 'SINGLE': 1388875, 'HEAD_OF_HOUSEHOLD': 1475650, 'SEPARATE': 781250.0, 'SURVIVING_SPOUSE': 1562500} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T19:06:34.538539+00:00",
      "annotations": [
       "PE calendar-year 2026 liability vs TPC FY2026 cash",
       "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343834,14 +344281,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law_plus_senate_obbba_title_vii",
    "latest": {
-    "value": 1892688240.0,
+    "value": 1890896018.0,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "additional 39.6% bracket above {'JOINT': 2120000, 'SINGLE': 1884425, 'HEAD_OF_HOUSEHOLD': 2002200, 'SEPARATE': 1060000.0, 'SURVIVING_SPOUSE': 2120000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T19:40:19.766783+00:00",
+    "computed_at": "2026-10-06T19:06:34.538539+00:00",
     "annotations": [
      "PE calendar-year 2026 liability vs TPC FY2026 cash",
      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343849,8 +344296,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 0.18198925384615386,
-    "delta": -8507311760.0
+    "ratio": 0.18181692480769232,
+    "delta": -8509103982.0
    },
    "results": [
     {
@@ -343862,6 +344309,23 @@
      "construction": "additional 39.6% bracket above {'JOINT': 2120000, 'SINGLE': 1884425, 'HEAD_OF_HOUSEHOLD': 2002200, 'SEPARATE': 1060000.0, 'SURVIVING_SPOUSE': 2120000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T19:40:19.766783+00:00",
+     "annotations": [
+      "PE calendar-year 2026 liability vs TPC FY2026 cash",
+      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
+      "toprate via gov.contrib.additional_tax_bracket structural reform; SEPARATE=joint/2 and SURVIVING=joint assumed (table states 3 statuses)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 1890896018.0,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "additional 39.6% bracket above {'JOINT': 2120000, 'SINGLE': 1884425, 'HEAD_OF_HOUSEHOLD': 2002200, 'SEPARATE': 1060000.0, 'SURVIVING_SPOUSE': 2120000} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T19:06:34.538539+00:00",
      "annotations": [
       "PE calendar-year 2026 liability vs TPC FY2026 cash",
       "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343903,14 +344367,14 @@
    "calibration_relationship": "held_out",
    "claim_baseline": "current_law_plus_senate_obbba_title_vii",
    "latest": {
-    "value": 4413149613.0,
+    "value": 4411351614.0,
     "status": "constructed",
-    "engine_version": "1.764.6",
-    "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
-    "release": "buildp",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
     "construction": "additional 39.6% bracket above {'JOINT': 1562500, 'SINGLE': 1388875, 'HEAD_OF_HOUSEHOLD': 1475650, 'SEPARATE': 781250.0, 'SURVIVING_SPOUSE': 1562500} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
     "policyengine_variables": [],
-    "computed_at": "2026-08-02T18:13:07.929713+00:00",
+    "computed_at": "2026-10-06T19:06:34.538539+00:00",
     "annotations": [
      "PE calendar-year 2026 liability vs TPC FY2026 cash",
      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
@@ -343918,8 +344382,8 @@
     ],
     "baseline": "current_law",
     "status_effective": "constructed",
-    "ratio": 0.33688164984732827,
-    "delta": -8686850387.0
+    "ratio": 0.3367443980152672,
+    "delta": -8688648386.0
    },
    "results": [
     {
@@ -343931,6 +344395,23 @@
      "construction": "additional 39.6% bracket above {'JOINT': 1562500, 'SINGLE': 1388875, 'HEAD_OF_HOUSEHOLD': 1475650, 'SEPARATE': 781250.0, 'SURVIVING_SPOUSE': 1562500} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
      "policyengine_variables": [],
      "computed_at": "2026-08-02T18:13:07.929713+00:00",
+     "annotations": [
+      "PE calendar-year 2026 liability vs TPC FY2026 cash",
+      "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",
+      "toprate via gov.contrib.additional_tax_bracket structural reform; SEPARATE=joint/2 and SURVIVING=joint assumed (table states 3 statuses)"
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    },
+    {
+     "value": 4411351614.0,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "additional 39.6% bracket above {'JOINT': 1562500, 'SINGLE': 1388875, 'HEAD_OF_HOUSEHOLD': 1475650, 'SEPARATE': 781250.0, 'SURVIVING_SPOUSE': 1562500} (contrib additional_tax_bracket structural reform; slots 1-7 mirrored from current-law tree at runtime)",
+     "policyengine_variables": [],
+     "computed_at": "2026-10-06T19:06:34.538539+00:00",
      "annotations": [
       "PE calendar-year 2026 liability vs TPC FY2026 cash",
       "baseline: PE enacted-OBBBA current law vs TPC Senate-draft Title VII (draft~enacted for these provisions)",

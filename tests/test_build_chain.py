@@ -28,6 +28,7 @@ STEPS = (
     "solo",
     "diagnoses",
     "campaign_us",
+    "campaign_us_20261006",
     "harvest_lane_stages",
     "uk_externals",
     "uk_deductions",
