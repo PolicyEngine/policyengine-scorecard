@@ -137,6 +137,33 @@ class TestDB:
         assert row["delta"] == pytest.approx(-50.0)
         assert row["ratio"] == pytest.approx(0.95)
 
+    def test_platform_grid_wins_within_the_newest_bundle(self, db):
+        """On one data bundle the canonical grid (what the app ships) beats a
+        later run of another construction; a newer bundle still wins."""
+        s = score()
+        db.upsert_scores([s])
+        cid = s.claim_id()
+        mk = lambda v, bundle, run, t: PEResult(  # noqa: E731
+            claim_id=cid,
+            computed_value=v,
+            status="comparable",
+            engine_version="2.2.1",
+            data_bundle=bundle,
+            run_id=run,
+            computed_at=t,
+        )
+        db.add_results(
+            [
+                mk(900.0, "spm", "platform-grid-2024", "2026-10-06T12:00:00"),
+                mk(950.0, "spm", "campaign-20261006-subgroups", "2026-10-06T18:19:03"),
+            ]
+        )
+        assert db.comparisons(source="urban_sotsn")[0]["pe_value"] == 900.0
+        db.add_results(
+            [mk(990.0, "next", "campaign-20261101-subgroups", "2026-11-01T00:00:00")]
+        )
+        assert db.comparisons(source="urban_sotsn")[0]["pe_value"] == 990.0
+
     def test_held_out_filter(self, db):
         consumed = score(
             conditions={"geography": "US", "program": "eitc"},
