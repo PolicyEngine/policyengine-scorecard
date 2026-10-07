@@ -28,6 +28,8 @@ independent evidence to them.
 
 ## Upstream
 
-Comment drafts for microcosm#647, #643 and #644 are in
-[COMMENT_DRAFTS.md](COMMENT_DRAFTS.md); none is posted without approval.
+Posted 2026-10-07 from [COMMENT_DRAFTS.md](COMMENT_DRAFTS.md):
+[microcosm#647](https://github.com/PolicyEngine/microcosm/issues/647#issuecomment-6040889778),
+[microcosm#643](https://github.com/PolicyEngine/microcosm/issues/643#issuecomment-6040891162),
+[microcosm#644](https://github.com/PolicyEngine/microcosm/issues/644#issuecomment-6040892484).
 microcosm#1133 (filed 2026-10-07) already carries E1's evidence.
