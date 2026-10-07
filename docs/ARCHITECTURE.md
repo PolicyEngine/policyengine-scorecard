@@ -198,6 +198,13 @@ with deterministic fact ids and the consuming pin (if any), never to
   and 2025 in `data/ledger/us_admin_outturns.jsonl`, written by
   `scorecard_db/ingest_us_admin_outturns.py`. us-6.2.1 has no housing
   targets, so `consumed_by` is null.
+- **SNAP QC household characteristics, FY 2023** (`sources/snap-qc-characteristics/`,
+  lane `snap-qc`, stage `cataloged`): Tables B.1-B.2 by State — households,
+  participants, benefits, and the caseload's average size, income,
+  deductions and certification period (540 facts). The QC rebuilds B.2's
+  household size and benefit from B.1's counts. us-6.2.1 targets FY 2024
+  households and benefits but no person counts — the gap behind the FNS
+  lane's 2.7 people per participating SPM unit (QC: 1.9).
 
 ### Designed-for future sources (not yet built)
 

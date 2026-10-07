@@ -89,10 +89,10 @@
    "source": "SNAP QC",
    "area": "caseload composition",
    "mode": 1,
-   "stage": "registered",
+   "stage": "cataloged",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "Needs composition metric family (#2)"
+   "updated": "2026-10-07",
+   "note": "540 administrative facts staged for Chronicle (data/ledger/us_admin_outturns.jsonl; FY 2023 SNAP QC Tables B.1-B.2 by State: households, participants, benefits, average household size and income) \u2014 caseload composition is calibration material, not scorecard claims (boundary rule 2026-08-02); us-6.2.1 targets FY 2024 households and benefits, nothing on participants or household size"
   },
   {
    "id": "aspe-welfare-indicators",
@@ -147,7 +147,7 @@
    "stage": "cataloged",
    "running": false,
    "updated": "2026-10-06",
-   "note": "10398 administrative facts staged for Chronicle (data/ledger/us_admin_outturns.jsonl; 31 Dec 2024 and 2025, State and U.S.) \u2014 admin outturns are calibration material, not scorecard claims (boundary rule 2026-08-02); us-6.2.1 consumes none (no housing targets)"
+   "note": "10938 administrative facts staged for Chronicle (data/ledger/us_admin_outturns.jsonl; 31 Dec 2024 and 2025, State and U.S.) \u2014 admin outturns are calibration material, not scorecard claims (boundary rule 2026-08-02); us-6.2.1 consumes none (no housing targets)"
   },
   {
    "id": "trim3-tables",

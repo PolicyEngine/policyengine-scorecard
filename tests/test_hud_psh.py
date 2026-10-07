@@ -97,7 +97,11 @@ def test_facts_route_to_chronicle_not_claims():
         for line in staging.LEDGER_PATH.read_text().splitlines()
         if line
     ]
-    assert committed == sorted(facts, key=lambda f: f["fact_id"])
+    # the staging file also carries the other US admin sources
+    hud_ids = {f["fact_id"] for f in facts}
+    assert [f for f in committed if f["fact_id"] in hud_ids] == sorted(
+        facts, key=lambda f: f["fact_id"]
+    )
 
 
 def test_no_hud_claims_in_the_scorecard_db():
