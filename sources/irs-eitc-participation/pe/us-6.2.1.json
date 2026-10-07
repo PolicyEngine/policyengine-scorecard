@@ -1,0 +1,430 @@
+{
+ "family": "irs_eitc_participation",
+ "run_id": "irs-eitc-participation-20261006",
+ "computed_at": "2026-10-07T00:25:46.293924+00:00",
+ "period": 2024,
+ "time_basis": "annual",
+ "provenance": {
+  "engine_version": "2.2.1",
+  "data_bundle": "populace-us-2024-spm-20260915",
+  "bundle_id": "us-6.2.1",
+  "policyengine_version": "6.2.1",
+  "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+ },
+ "policyengine_variables": [
+  "eitc",
+  "takes_up_eitc",
+  "would_file_if_eligible_for_refundable_credit",
+  "eitc_eligible",
+  "eitc_maximum",
+  "eitc_phased_in",
+  "eitc_reduction",
+  "eitc_child_count",
+  "is_tax_unit_head",
+  "state_code_str"
+ ],
+ "pe_construction": "CY2024 tax units, counted through is_tax_unit_head: participants = units with eitc > 0 as served; eligible_tax_units = units with eitc > 0 when takes_up_eitc and would_file_if_eligible_for_refundable_credit are forced True (filers and non-filers); participation_rate = participants / eligible_tax_units. entitled_flag_off / entitled_flag_on_not_paid split the entitled non-participants as served (take-up flag off; flag on but not a filer).",
+ "toggle_check": {
+  "forced": {
+   "takes_up_eitc": 1.0,
+   "would_file": 1.0
+  },
+  "baseline": {
+   "takes_up_eitc": 0.7078148395133184,
+   "would_file": 1.0
+  },
+  "forced_eligible_vs_rebuilt_entitlement_gap": 0.0
+ },
+ "geographies": {
+  "US": {
+   "eligible_tax_units": 26823672.362131707,
+   "participants": 23608311.498645686,
+   "entitled_flag_off": 3215360.863486023,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8801297294390866
+  },
+  "AL": {
+   "eligible_tax_units": 505788.32420359174,
+   "participants": 440660.58114095376,
+   "entitled_flag_off": 65127.74306263798,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8712351789354028
+  },
+  "AK": {
+   "eligible_tax_units": 45881.15434575459,
+   "participants": 38661.95832027444,
+   "entitled_flag_off": 7219.1960254801525,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8426544377877417
+  },
+  "AZ": {
+   "eligible_tax_units": 614740.3155122435,
+   "participants": 515910.14389208576,
+   "entitled_flag_off": 98830.17162015775,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8392326497444604
+  },
+  "AR": {
+   "eligible_tax_units": 306696.9930677011,
+   "participants": 266992.91547454137,
+   "entitled_flag_off": 39704.077593159745,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8705429838224877
+  },
+  "CA": {
+   "eligible_tax_units": 2831847.9686032673,
+   "participants": 2489848.754425932,
+   "entitled_flag_off": 341999.21417733456,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8792310823288946
+  },
+  "CO": {
+   "eligible_tax_units": 345150.1584388823,
+   "participants": 302357.4686830391,
+   "entitled_flag_off": 42792.689755843254,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8760171806109114
+  },
+  "CT": {
+   "eligible_tax_units": 298638.368168651,
+   "participants": 201015.7401834455,
+   "entitled_flag_off": 97622.6279852055,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.673107549495868
+  },
+  "DE": {
+   "eligible_tax_units": 78925.58996377685,
+   "participants": 68476.16622942343,
+   "entitled_flag_off": 10449.423734353419,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8676041099072023
+  },
+  "DC": {
+   "eligible_tax_units": 51366.58855308593,
+   "participants": 45216.348927168,
+   "entitled_flag_off": 6150.2396259179295,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8802677032063005
+  },
+  "FL": {
+   "eligible_tax_units": 2178750.1081091827,
+   "participants": 2036386.365235941,
+   "entitled_flag_off": 142363.74287324148,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.9346580673279731
+  },
+  "GA": {
+   "eligible_tax_units": 1070920.543314282,
+   "participants": 1009864.3229944096,
+   "entitled_flag_off": 61056.22031987249,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.9429871611847916
+  },
+  "HI": {
+   "eligible_tax_units": 101418.47145799316,
+   "participants": 84980.44163405355,
+   "entitled_flag_off": 16438.029823939607,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8379187776385673
+  },
+  "ID": {
+   "eligible_tax_units": 133612.25317266356,
+   "participants": 107605.38159784448,
+   "entitled_flag_off": 26006.871574819073,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8053556394920525
+  },
+  "IL": {
+   "eligible_tax_units": 929702.3980086264,
+   "participants": 823054.7996508712,
+   "entitled_flag_off": 106647.59835775517,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8852884551161869
+  },
+  "IN": {
+   "eligible_tax_units": 575555.5405302433,
+   "participants": 470065.27724961744,
+   "entitled_flag_off": 105490.26328062586,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8167157539940618
+  },
+  "IA": {
+   "eligible_tax_units": 228564.5755911651,
+   "participants": 177498.6174941368,
+   "entitled_flag_off": 51065.95809702831,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.7765797347863288
+  },
+  "KS": {
+   "eligible_tax_units": 202184.39790041608,
+   "participants": 176427.64877670462,
+   "entitled_flag_off": 25756.74912371146,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8726076324821181
+  },
+  "KY": {
+   "eligible_tax_units": 416334.0870435557,
+   "participants": 354350.2976699488,
+   "entitled_flag_off": 61983.78937360691,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8511200708696179
+  },
+  "LA": {
+   "eligible_tax_units": 534941.0934499034,
+   "participants": 471333.92464841536,
+   "entitled_flag_off": 63607.16880148809,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8810950035801562
+  },
+  "ME": {
+   "eligible_tax_units": 99573.69158454484,
+   "participants": 81618.70250658729,
+   "entitled_flag_off": 17954.98907795755,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8196813958362431
+  },
+  "MD": {
+   "eligible_tax_units": 432553.4839163339,
+   "participants": 379114.9697616857,
+   "entitled_flag_off": 53438.514154648175,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8764580193163247
+  },
+  "MA": {
+   "eligible_tax_units": 409244.6797462633,
+   "participants": 334829.2778912134,
+   "entitled_flag_off": 74415.40185504989,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8181640335527677
+  },
+  "MI": {
+   "eligible_tax_units": 723213.2261297561,
+   "participants": 695803.5959590394,
+   "entitled_flag_off": 27409.63017071673,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.9621002089281496
+  },
+  "MN": {
+   "eligible_tax_units": 287443.61583878443,
+   "participants": 287430.16298915294,
+   "entitled_flag_off": 13.452849631488789,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.9999531983008486
+  },
+  "MS": {
+   "eligible_tax_units": 345021.4145638353,
+   "participants": 331449.7811432864,
+   "entitled_flag_off": 13571.63342054897,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.9606643737238578
+  },
+  "MO": {
+   "eligible_tax_units": 492064.7053554512,
+   "participants": 421296.73250030156,
+   "entitled_flag_off": 70767.97285514965,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8561815710719808
+  },
+  "MT": {
+   "eligible_tax_units": 81040.14536632528,
+   "participants": 67045.90934803407,
+   "entitled_flag_off": 13994.236018291209,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8273172394369094
+  },
+  "NE": {
+   "eligible_tax_units": 122741.76297585835,
+   "participants": 112738.41037504043,
+   "entitled_flag_off": 10003.352600817918,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.9185008235315518
+  },
+  "NV": {
+   "eligible_tax_units": 276247.0508718772,
+   "participants": 246380.93746303392,
+   "entitled_flag_off": 29866.11340884326,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8918862180986862
+  },
+  "NH": {
+   "eligible_tax_units": 75388.57418774675,
+   "participants": 59287.30525598122,
+   "entitled_flag_off": 16101.268931765531,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.7864229546022832
+  },
+  "NJ": {
+   "eligible_tax_units": 658737.6464765363,
+   "participants": 546153.1175976039,
+   "entitled_flag_off": 112584.52887893235,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8290904892393416
+  },
+  "NM": {
+   "eligible_tax_units": 229871.75292649827,
+   "participants": 184997.73934633058,
+   "entitled_flag_off": 44874.013580167695,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8047867430039731
+  },
+  "NY": {
+   "eligible_tax_units": 1725898.2497984604,
+   "participants": 1452115.3780915586,
+   "entitled_flag_off": 273782.8717069018,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8413678953907784
+  },
+  "NC": {
+   "eligible_tax_units": 905419.460753099,
+   "participants": 822189.2048884698,
+   "entitled_flag_off": 83230.25586462911,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.9080754727809794
+  },
+  "ND": {
+   "eligible_tax_units": 51160.16922978652,
+   "participants": 39112.81069167335,
+   "entitled_flag_off": 12047.35853811317,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.7645168356656071
+  },
+  "OH": {
+   "eligible_tax_units": 969362.1732876145,
+   "participants": 818575.0068359685,
+   "entitled_flag_off": 150787.16645164602,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8444470285649296
+  },
+  "OK": {
+   "eligible_tax_units": 342168.5275732079,
+   "participants": 322561.32302344136,
+   "entitled_flag_off": 19607.204549766553,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.9426972296697523
+  },
+  "OR": {
+   "eligible_tax_units": 288908.03236074914,
+   "participants": 229074.09640825284,
+   "entitled_flag_off": 59833.93595249631,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.7928962533039448
+  },
+  "PA": {
+   "eligible_tax_units": 998212.2584307,
+   "participants": 813902.3752445001,
+   "entitled_flag_off": 184309.88318619988,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8153600282609679
+  },
+  "RI": {
+   "eligible_tax_units": 88819.44463139577,
+   "participants": 69887.32467811095,
+   "entitled_flag_off": 18932.119953284826,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.7868471252904825
+  },
+  "SC": {
+   "eligible_tax_units": 468120.4347397065,
+   "participants": 443065.99358916294,
+   "entitled_flag_off": 25054.44115054357,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.9464786424790987
+  },
+  "SD": {
+   "eligible_tax_units": 65129.68498501036,
+   "participants": 52578.74276701518,
+   "entitled_flag_off": 12550.94221799518,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8072930612072853
+  },
+  "TN": {
+   "eligible_tax_units": 586901.7789360601,
+   "participants": 558276.7332807763,
+   "entitled_flag_off": 28625.045655283844,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.9512268548458389
+  },
+  "TX": {
+   "eligible_tax_units": 2858259.755026133,
+   "participants": 2590317.9756163247,
+   "entitled_flag_off": 267941.7794098082,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.906257022673099
+  },
+  "UT": {
+   "eligible_tax_units": 179123.69596354675,
+   "participants": 161248.06118145614,
+   "entitled_flag_off": 17875.63478209061,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.9002050807073093
+  },
+  "VT": {
+   "eligible_tax_units": 39179.87195761013,
+   "participants": 35070.622768837056,
+   "entitled_flag_off": 4109.249188773072,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8951183609477082
+  },
+  "VA": {
+   "eligible_tax_units": 564044.7654450323,
+   "participants": 536054.6035335863,
+   "entitled_flag_off": 27990.16191144602,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.9503759920733211
+  },
+  "WA": {
+   "eligible_tax_units": 426855.7665220404,
+   "participants": 368952.4037337259,
+   "entitled_flag_off": 57903.362788314524,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.864349114315351
+  },
+  "WV": {
+   "eligible_tax_units": 145840.42999061185,
+   "participants": 129587.64972731503,
+   "entitled_flag_off": 16252.780263296823,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8885577869981386
+  },
+  "WI": {
+   "eligible_tax_units": 396542.1879518746,
+   "participants": 304300.10475685494,
+   "entitled_flag_off": 92242.08319501969,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.7673839354358573
+  },
+  "WY": {
+   "eligible_tax_units": 39564.99517427078,
+   "participants": 32587.291462556124,
+   "entitled_flag_off": 6977.703711714654,
+   "entitled_flag_on_not_paid": 0.0,
+   "participation_rate": 0.8236394651135387
+  }
+ },
+ "national_by_children": {
+  "0": {
+   "eligible_tax_units": 9032846.975414962,
+   "participants": 6678571.426231327,
+   "participation_rate": 0.7393650578171693,
+   "entitled_flag_off": 2354275.5491836336
+  },
+  "1": {
+   "eligible_tax_units": 8714063.685503917,
+   "participants": 8332217.183669543,
+   "participation_rate": 0.9561804325036566,
+   "entitled_flag_off": 381846.5018343729
+  },
+  "2": {
+   "eligible_tax_units": 5818809.653291541,
+   "participants": 5511782.785796636,
+   "participation_rate": 0.9472354509274541,
+   "entitled_flag_off": 307026.86749490484
+  },
+  "3+": {
+   "eligible_tax_units": 3257952.0479212888,
+   "participants": 3085740.1029481767,
+   "participation_rate": 0.9471410436863272,
+   "entitled_flag_off": 172211.94497311185
+  }
+ }
+}

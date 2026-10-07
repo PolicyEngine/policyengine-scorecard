@@ -164,6 +164,16 @@ Operating rules for the agent stage:
   BBCE-off world (`is_tanf_non_cash_eligible` forced False) and averages
   the twelve months. The rate's numerator class is a calibration target;
   the eligible count is the held-out signal.
+- **IRS/Census EITC participation** (`sources/irs-eitc-participation/`,
+  lane `nta-eitc`, issue #2): the ACS-based State table (TY2014-2022) and
+  the CPS-based national series (CES-WP-24-75). The QC checks the current
+  table against its May 2024 edition cell for cell and recomputes the
+  Census paper's non-claimants and unclaimed dollars from its rates.
+  Counterparts come from `pipeline/campaign_us/irs_eitc_participation.py`
+  (eligibility = take-up and filing forced on). The relationship is
+  source-keyed in `relationships.us_source_relationship`: us-6.2.1 targets
+  SOI State EITC claims by number of children, so the rate's numerator is
+  consumed; eligibility is held out.
 
 ### Designed-for future sources (not yet built)
 

@@ -20,6 +20,7 @@ Chain order is dependency order and is part of the contract:
     harvest_lane_stages  harvest lanes ingested -> computed where results
                 attached (derived from the DB, so the feed can't drift)
     fns_snap_rates  FNS state SNAP participation rates + PE counterparts
+    irs_eitc_participation  IRS/Census EITC participation + PE counterparts
     uk_externals five UK primary-source families + Chronicle staging
     uk_deductions FRR family
     dwp_pensions  workplace pension participation (ASHE, GB)
@@ -60,6 +61,7 @@ from . import (
     ingest_fns_snap_rates,
     ingest_harvest,
     ingest_hmt_distributional,
+    ingest_irs_eitc_participation,
     ingest_obr_divergence,
     ingest_obr_costings,
     ingest_obr_policy_effects,
@@ -169,6 +171,11 @@ def build(db_path: Path) -> dict:
         # FNS state SNAP participation rates (#2): the first US mode-1
         # source after Urban; claims + federal-rules PE counterparts.
         ("fns_snap_rates", lambda: ingest_fns_snap_rates.ingest(db_path)),
+        # IRS/Census EITC participation rates (#2, lane nta-eitc).
+        (
+            "irs_eitc_participation",
+            lambda: ingest_irs_eitc_participation.ingest(db_path),
+        ),
         ("uk_externals", lambda: ingest_uk_externals.ingest(db_path)),
         ("uk_deductions", lambda: ingest_uk_deductions.ingest(db_path)),
         # DWP workplace pension participation (#98): the first external

@@ -135,6 +135,64 @@ def effective_relationship(program, metric):
     return hit
 
 
+# --- US sources with a source-keyed rule ----------------------------------
+# effective_relationship is the US default, keyed on (program, metric). A
+# source whose quantities need a per-source reading of the certified
+# target surface is assigned here instead. Unknown combinations raise.
+#
+# IRS/Census EITC participation (lane nta-eitc), read 2026-10-06 from the
+# us-6.2.1 release's calibration_diagnostics.json (5,659 targets): SOI
+# Historic Table 2 TY2022 State EITC claims and amounts, by number of
+# children, are targets for all 51 jurisdictions (claims within 0.22%,
+# by-children claims within 1.7%), as are SOI TY2024 national EITC
+# returns (by AGI band) and amount. microcosm's federal_eitc_by_state.json
+# comment ("EITC is calibrated nationally, not per state") predates this.
+# The participation rate's numerator is therefore the targeted admin
+# claims class — the SNAP precedent (_FNS) — and the take-up flag beneath
+# it is seeded from an older edition of this very series (NTA 2020 Report,
+# Vol. 3, Fig. A.7, TY2016). Eligibility has no target.
+_IRS_EITC_CONSUMED = (
+    CR.CONSUMED_AS_TARGET,
+    "us-6.2.1 calibration targets SOI TY2022 State EITC claims and amounts "
+    "by number of children (51 jurisdictions; claims within 0.22%) and SOI "
+    "TY2024 national EITC returns and amount — the rate's numerator class; "
+    "takes_up_eitc is seeded from the NTA 2020 Report (TY2016 IRS-Census "
+    "participation by children). Non-claimants and unclaimed dollars "
+    "derive from the same numerator.",
+)
+_IRS_EITC_HELD = (
+    CR.HELD_OUT,
+    "modeled EITC eligibility (units, and dollars at full take-up): no "
+    "eligibility target in the us-6.2.1 calibration; the State and "
+    "national EITC targets fit claims, not the eligible population",
+)
+
+
+def us_source_relationship(source, program, metric):
+    """(CalibrationRelationship, basis) for a US claim whose source has a
+    source-keyed rule; every other source takes effective_relationship."""
+    if metric is not None and never_calibrate(metric):
+        return CR.HELD_OUT, PERMANENT_HOLDOUT_BASIS
+    if source == "irs_eitc_participation":
+        metric = Metric(metric)
+        if program == "eitc" and metric in (
+            Metric.PARTICIPATION_RATE,
+            Metric.PARTICIPATION_GAP_COUNT,
+            Metric.UNCLAIMED_BENEFIT_AMOUNT,
+        ):
+            return _IRS_EITC_CONSUMED
+        if program == "eitc" and metric in (
+            Metric.ELIGIBLE_COUNT,
+            Metric.BENEFIT_COST,
+        ):
+            return _IRS_EITC_HELD
+        raise ValueError(
+            f"irs_eitc_participation {program}/{metric.value} needs a "
+            "deliberate relationship assignment"
+        )
+    return effective_relationship(program, metric)
+
+
 # --- UK sources (#33) ----------------------------------------------------
 # Assigned from the LITERAL consumption surfaces, read at the certified
 # pins (2026-08-19): populace-uk-2023-dd68c73 embeds policyengine-uk-data
