@@ -175,6 +175,16 @@ Operating rules for the agent stage:
   SOI State EITC claims by number of children, so the rate's numerator is
   consumed; eligibility is held out.
 
+- **ASPE Welfare Indicators, Indicator 4** (`sources/aspe-welfare-indicators/`,
+  lane `aspe-welfare-indicators`): TANF families and SSI adult units
+  (TRIM3) and SNAP households (FNS series), participation among the
+  eligible. The QC recomputes every rate from its counts and checks the
+  24th and 25th editions cell for cell. SNAP participating households are
+  program-operations counts and are dropped (boundary rule). TANF take-up
+  is seeded from this table, so the TANF rate is `seed_source`; PE's TANF
+  counts are any-time-in-year (State programs mix periods) and are marked
+  `concept_mismatch`.
+
 ### Staged for Chronicle, not claims
 
 Administrative outturn tables (caseloads, units, spending) are calibration

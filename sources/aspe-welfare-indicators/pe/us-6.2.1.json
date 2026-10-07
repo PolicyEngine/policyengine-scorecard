@@ -1,0 +1,74 @@
+{
+ "family": "aspe_welfare_indicators",
+ "run_id": "aspe-welfare-indicators-20261007",
+ "computed_at": "2026-10-07T14:26:55.913867+00:00",
+ "period": 2024,
+ "provenance": {
+  "engine_version": "2.2.1",
+  "data_bundle": "populace-us-2024-spm-20260915",
+  "bundle_id": "us-6.2.1",
+  "policyengine_version": "6.2.1",
+  "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+ },
+ "policyengine_variables": [
+  "tanf",
+  "tanf_if_takes_up",
+  "takes_up_tanf_if_eligible",
+  "ssi",
+  "ssi_if_takes_up",
+  "ssi_claim_is_joint",
+  "age",
+  "is_snap_eligible",
+  "snap",
+  "is_tanf_non_cash_eligible"
+ ],
+ "pe_construction": {
+  "tanf": "CY2024 SPM units with tanf_if_takes_up > 0 (eligible) and tanf > 0 (participating) over the year \u2014 any-time-in-year counts: State TANF programs mix YEAR and MONTH periods, so no average-month count exists.",
+  "snap": "Average of the 12 months of CY2024: SPM units with is_snap_eligible (eligible) and snap > 0 (participating) in the federal-rules world (is_tanf_non_cash_eligible forced False every month).",
+  "ssi": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled."
+ },
+ "toggle_check": {
+  "federal_bbce_input_mean": {
+   "2024-01": 0.0,
+   "2024-02": 0.0,
+   "2024-03": 0.0,
+   "2024-04": 0.0,
+   "2024-05": 0.0,
+   "2024-06": 0.0,
+   "2024-07": 0.0,
+   "2024-08": 0.0,
+   "2024-09": 0.0,
+   "2024-10": 0.0,
+   "2024-11": 0.0,
+   "2024-12": 0.0
+  }
+ },
+ "series": {
+  "tanf": {
+   "eligible_count": 2212880.636212305,
+   "participant_count": 911040.7938822575,
+   "participation_rate": 0.41169902206819786,
+   "takeup_flag_mean_among_eligible": 0.23815620998719592
+  },
+  "snap": {
+   "eligible_count": 14047342.312254211,
+   "participant_count": 13549225.845587488,
+   "participation_rate": 0.9645401631430174
+  },
+  "ssi_aged": {
+   "eligible_count": 2878936.1930724904,
+   "participant_count": 1725869.1833555384,
+   "participation_rate": 0.5994815680557467
+  },
+  "ssi_disabled": {
+   "eligible_count": 5122302.070181623,
+   "participant_count": 3801304.244073983,
+   "participation_rate": 0.7421085660298044
+  },
+  "ssi_couples": {
+   "eligible_count": 995648.5666392413,
+   "participant_count": 416988.0796007731,
+   "participation_rate": 0.41881050560670635
+  }
+ }
+}
