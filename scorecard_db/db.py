@@ -13,7 +13,8 @@ One file (`scorecard.db`), five tables:
                    citable known issue in action_link)
 - lanes          — live mission-control status per (source × area) lane
 
-`comparisons` is a VIEW joining each claim to its latest PE result. Common
+`comparisons` is a VIEW joining each claim to its latest PE result (newest
+data bundle first; within it the canonical platform grid). Common
 conditions (geography, program) are extracted into indexed columns; the full
 conditions mapping stays canonical JSON queryable via json_extract.
 """
@@ -190,10 +191,24 @@ SELECT
     d.rationale AS diagnosis_rationale,
     d.action_link
 FROM external_scores s
+-- Latest result: the newest result's data bundle first; within that
+-- bundle the canonical Urban grid (platform-grid-*, what the app ships in
+-- data/comparison.json) beats any other run on the same data — e.g. the
+-- compute campaign's Urban subgroup rows, which overlap 44 claims — so the
+-- pick never depends on the hour each job happened to run; then newest.
 LEFT JOIN pe_results r ON r.id = (
-    SELECT id FROM pe_results
-    WHERE claim_id = s.claim_id
-    ORDER BY computed_at DESC, id DESC LIMIT 1
+    SELECT p.id FROM pe_results p
+    WHERE p.claim_id = s.claim_id
+    ORDER BY
+        p.data_bundle = (
+            SELECT q.data_bundle FROM pe_results q
+            WHERE q.claim_id = p.claim_id
+            ORDER BY q.computed_at DESC, q.id DESC LIMIT 1
+        ) DESC,
+        p.run_id LIKE 'platform-grid-%' DESC,
+        p.computed_at DESC,
+        p.id DESC
+    LIMIT 1
 )
 LEFT JOIN diagnoses d ON d.claim_id = s.claim_id
 LEFT JOIN baselines bc ON bc.baseline_key = s.baseline_key
