@@ -33,6 +33,7 @@ STEPS = (
     "fns_snap_rates",
     "irs_eitc_participation",
     "aspe_welfare_indicators",
+    "diagnoses_batch3",
     "us_admin_outturns",
     "uk_externals",
     "uk_deductions",

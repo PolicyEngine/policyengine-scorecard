@@ -1,0 +1,46 @@
+# Batch 3, cluster A: ASPE Welfare Indicators, Indicator 4
+
+Lane `aspe-welfare-indicators`, source `aspe_welfare_indicators`. Generated from `A.json` (the ingested record); evidence cites the files and releases named in each bullet.
+
+## A1. TANF rate: the 21.9% seed becomes 41.2% after calibration to ACF dollar targets
+
+- **Class:** `pe_gap` (confidence high); **claims:** 1; **route:** https://github.com/PolicyEngine/microcosm/issues/643
+
+**Evidence**
+
+- microcosm us/spec/take_up.yaml: takes_up_tanf_if_eligible seeded at 0.219 from the 24th report's Table 10 (this series).
+- sources/aspe-welfare-indicators/pe/us-6.2.1.json: the flag is on for 23.8% of PE's eligible units (unweighted); the weighted rate is 41.2% (911k of 2.21M SPM units, any time in 2024) against ASPE's 22.1% (0.857M of 3.870M families, 2023).
+- us-6.2.1 calibration_diagnostics.json: 23 hhs_acf_tanf.fy2024.cash_assistance targets (national and 22 States); the national target is missed by 36.1%.
+- PE's eligible units (2.21M, any time in the year) are well below TRIM3's average-month 3.87M families, so eligibility is low as well (microcosm#643's 'payable eligibility' finding).
+
+**Fix (upstream_issue):** Comment on microcosm#643 with the measured seed-to-weighted drift and the TRIM3 eligible comparison.
+
+## A2. SSI: PE's payable eligibility is low for aged and disabled individuals, so rates run high
+
+- **Class:** `pe_gap` (confidence high); **claims:** 5; **route:** https://github.com/PolicyEngine/microcosm/issues/644
+
+**Evidence**
+
+- sources/aspe-welfare-indicators/pe/us-6.2.1.json against ASPE Table 12 (2023): aged individuals eligible 2.88M vs 4.2M (-31.5%), participating 1.73M vs 2.1M, rate 60.0% vs 49.9%; disabled individuals eligible 5.12M vs 6.3M (-18.7%), participating 3.80M vs 3.9M, rate 74.2% vs 62.1%.
+- PE's SSI recipients are calibrated to SSA counts (relationships.py _SSA), so participants sit near the admin level and the eligible shortfall shows up as high rates.
+- Same finding as batch 1's SSI item (microcosm#644: payable eligibility low and misallocated within adult age bands), now against TRIM3 instead of ATTIS.
+
+**Fix (upstream_issue):** Comment on microcosm#644 with the TRIM3 comparison by unit type.
+
+## A3. SSI couples: PE has twice TRIM3's participating couple units
+
+- **Class:** `open` (confidence low); **claims:** 2
+
+**Evidence**
+
+- PE 0.42M participating couple units (joint claims, persons / 2) vs TRIM3 0.2M (+108%), with equal eligible units (1.00M vs 1.0M), so the rate is 41.9% vs 22.7%.
+- PE counts a joint claim when both members of a marital unit are aged, blind or disabled heads or spouses (ssi_claim_is_joint); TRIM3's couple-unit definition is not published in the report. The cause is not identified.
+
+## A4. SNAP households: PE SPM units are fewer and larger than FNS SNAP households
+
+- **Class:** `concept_mismatch` (confidence high); **claims:** 2
+
+**Evidence**
+
+- PE 14.0M federally eligible SPM units vs FNS 19.4M eligible households (FY 2022, ASPE Table 11); rate 96.5% vs 91.6%.
+- SNAP households average 1.9 people (FY 2023 QC Table B.2) while PE's participating SPM units average 2.7: a unit-definition difference, already annotated on these results (aspe-snap-federal-households).

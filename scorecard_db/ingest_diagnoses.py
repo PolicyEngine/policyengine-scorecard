@@ -53,6 +53,7 @@ BATCH2_CLASS_MAP = {
     "open": "undiagnosed",
 }
 BATCH2_DIR = REPO / "diagnosis" / "batch2"
+BATCH3_DIR = REPO / "diagnosis" / "batch3"
 
 UNIT_FOR = {
     ("snap", "participation_rate"): "persons",
@@ -119,11 +120,17 @@ def ingest(db_path: Path) -> dict:
     return {"diagnosed": len(app_rows), "batch2_claims": batch2}
 
 
-def _ingest_batch2(db: ScorecardDB) -> int:
-    """Attach batch-2 items to their claims; returns claims diagnosed."""
-    files = sorted(BATCH2_DIR.glob("*.json"))
+def _ingest_batch(
+    db: ScorecardDB, batch_dir: Path, tag: str, require_links: bool = False
+) -> tuple[int, dict]:
+    """Attach a batch's items to their claims (one diagnosis per claim).
+    Returns (claims diagnosed, claims per DB class). With require_links, a
+    pe_gap or external issue must name its action_link (batch 2 predates
+    the rule: its in-repo construction fixes link their memo instead). An
+    open item stays undiagnosed."""
+    files = sorted(batch_dir.glob("*.json"))
     if not files:
-        return 0
+        return 0, {}
     known = {r[0] for r in db.conn.execute("SELECT claim_id FROM external_scores")}
     rows = []
     counts: dict[str, int] = {}
@@ -133,26 +140,57 @@ def _ingest_batch2(db: ScorecardDB) -> int:
             cls = BATCH2_CLASS_MAP[item["classification"]]
             missing = [c for c in item["claim_ids"] if c not in known]
             if missing:
-                raise ValueError(f"batch2 {cluster}{n}: unknown claim_ids {missing}")
+                raise ValueError(f"{tag} {cluster}{n}: unknown claim_ids {missing}")
+            needs_link = cls in ("pe_gap", "external_issue")
+            if require_links and needs_link and not item.get("action_link"):
+                raise ValueError(f"{tag} {cluster}{n}: {cls} needs an action_link")
             rationale = (
-                f"[batch2 {cluster}{n}, confidence {item['confidence']}] "
-                f"{item['title']}"
+                f"[{tag} {cluster}{n}, confidence {item['confidence']}] {item['title']}"
             )
-            link = item.get("action_link") or f"diagnosis/batch2/{cluster}.md"
+            link = item.get("action_link") or f"diagnosis/{tag}/{cluster}.md"
             for cid in item["claim_ids"]:
                 rows.append(db.diagnosis_row(cid, cls, rationale, link))
             counts[cls] = counts.get(cls, 0) + len(item["claim_ids"])
+    ids = [r[0] for r in rows]
+    if len(ids) != len(set(ids)):
+        raise ValueError(f"{tag}: a claim is diagnosed twice")
     with db.conn:
         db.conn.executemany(DIAGNOSES_SQL, rows)
-    detail = ", ".join(f"{n} {c}" for c, n in sorted(counts.items()))
+    return len(rows), counts
+
+
+def _ingest_batch2(db: ScorecardDB) -> int:
+    """Attach batch-2 items to their claims; returns claims diagnosed."""
+    n, counts = _ingest_batch(db, BATCH2_DIR, "batch2")
+    if not n:
+        return 0
+    detail = ", ".join(f"{k} {c}" for c, k in sorted(counts.items()))
     db.set_lane(
         "diagnosis-batch-2",
         "computed",
-        f"{len(rows)} reform-validation claims adjudicated ({detail}); "
+        f"{n} reform-validation claims adjudicated ({detail}); "
         "memos in diagnosis/batch2/",
         "2026-10-06T23:59:00",
     )
-    return len(rows)
+    return n
+
+
+def ingest_batch3(db_path: Path) -> dict:
+    """Batch 3 (2026-10-07): the FNS, IRS/Census EITC and ASPE lanes. Runs
+    after those lanes' ingests (build step diagnoses_batch3), because its
+    claims do not exist when the batch-1/2 step runs."""
+    db = ScorecardDB(db_path)
+    n, counts = _ingest_batch(db, BATCH3_DIR, "batch3", require_links=True)
+    detail = ", ".join(f"{k} {c}" for c, k in sorted(counts.items()))
+    db.set_lane(
+        "diagnosis-batch-3",
+        "computed",
+        f"{n} claims from the FNS, EITC and ASPE lanes adjudicated ({detail}); "
+        "memos in diagnosis/batch3/",
+        "2026-10-07T23:59:00",
+    )
+    db.close()
+    return {"batch3_claims": n, "by_class": dict(sorted(counts.items()))}
 
 
 if __name__ == "__main__":

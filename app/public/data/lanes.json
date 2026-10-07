@@ -51,6 +51,17 @@
    "note": "46 claims in 23 items on spm-20260915: 18 pe_gap, 20 construction issues, 5 concept mismatch, 3 open; FY2026 timing and SOI labels fixed in the ingest; memos in diagnosis/batch2/; filed as policyengine-us#9919-9921, microcosm#1116-1117 (+ microcosm#944 comment)"
   },
   {
+   "id": "diagnosis-batch-3",
+   "country": "US",
+   "source": "FNS, IRS/Census, ASPE lanes",
+   "area": "new-lane divergence diagnosis (57 claims)",
+   "mode": 1,
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-07",
+   "note": "57 claims in 9 items: 50 pe_gap (SNAP saturation and person grain -> microcosm#647; no EITC non-filers -> microcosm#1133; TANF seed drift -> microcosm#643; SSI payable eligibility -> microcosm#644), 2 concept mismatch (SNAP households vs SPM units), 5 open (IA/WI SNAP, CT EITC, SSI couples); memos in diagnosis/batch3/"
+  },
+  {
    "id": "urban-sotsn-solo-attribution",
    "country": "US",
    "source": "Urban SotSN",

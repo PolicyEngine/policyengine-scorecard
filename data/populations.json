@@ -199,7 +199,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "concept_mismatch",
+    "rationale": "[batch3 A4, confidence high] SNAP households: PE SPM units are fewer and larger than FNS SNAP households",
+    "action_link": "diagnosis/batch3/A.md"
+   }
   },
   {
    "claim_id": "2eed4d168d9d386cd57f",
@@ -374,7 +378,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 A2, confidence high] SSI: PE's payable eligibility is low for aged and disabled individuals, so rates run high",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/644"
+   }
   },
   {
    "claim_id": "87166869af304dad43b8",
@@ -550,7 +558,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 A2, confidence high] SSI: PE's payable eligibility is low for aged and disabled individuals, so rates run high",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/644"
+   }
   },
   {
    "claim_id": "81d8f3c5e1aa27758ad1",
@@ -727,7 +739,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 A2, confidence high] SSI: PE's payable eligibility is low for aged and disabled individuals, so rates run high",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/644"
+   }
   },
   {
    "claim_id": "9a270b168e1af27db400",
@@ -817,7 +833,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "undiagnosed",
+    "rationale": "[batch3 A3, confidence low] SSI couples: PE has twice TRIM3's participating couple units",
+    "action_link": "diagnosis/batch3/A.md"
+   }
   },
   {
    "claim_id": "3d1a1df908d4c11d00de",
@@ -998,7 +1018,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "concept_mismatch",
+    "rationale": "[batch3 A4, confidence high] SNAP households: PE SPM units are fewer and larger than FNS SNAP households",
+    "action_link": "diagnosis/batch3/A.md"
+   }
   },
   {
    "claim_id": "90476087446a6d8c192f",
@@ -1088,7 +1112,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 A1, confidence high] TANF rate: the 21.9% seed becomes 41.2% after calibration to ACF dollar targets",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/643"
+   }
   },
   {
    "claim_id": "8050bfbfe32384dbb775",
@@ -1179,7 +1207,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 A2, confidence high] SSI: PE's payable eligibility is low for aged and disabled individuals, so rates run high",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/644"
+   }
   },
   {
    "claim_id": "ed80074897225e861cc2",
@@ -1270,7 +1302,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "undiagnosed",
+    "rationale": "[batch3 A3, confidence low] SSI couples: PE has twice TRIM3's participating couple units",
+    "action_link": "diagnosis/batch3/A.md"
+   }
   },
   {
    "claim_id": "1c9c60dcf56f22e9a6e5",
@@ -1361,7 +1397,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 A2, confidence high] SSI: PE's payable eligibility is low for aged and disabled individuals, so rates run high",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/644"
+   }
   },
   {
    "claim_id": "53568d369f3081628b2d",
@@ -22663,7 +22703,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F2, confidence medium] State SNAP eligible-count gaps follow PE's participant scale (person grain), not the eligibility rules",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "d8333a50a82d3ba7f047",
@@ -23281,7 +23325,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F2, confidence medium] State SNAP eligible-count gaps follow PE's participant scale (person grain), not the eligibility rules",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "e49b1e2aad2626811155",
@@ -23545,7 +23593,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F2, confidence medium] State SNAP eligible-count gaps follow PE's participant scale (person grain), not the eligibility rules",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "e070cbe11d3e9a922544",
@@ -23811,7 +23863,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F2, confidence medium] State SNAP eligible-count gaps follow PE's participant scale (person grain), not the eligibility rules",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "87453cdea716ae97b617",
@@ -24251,7 +24307,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F2, confidence medium] State SNAP eligible-count gaps follow PE's participant scale (person grain), not the eligibility rules",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "d892dd3e17ef36e48218",
@@ -24339,7 +24399,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F2, confidence medium] State SNAP eligible-count gaps follow PE's participant scale (person grain), not the eligibility rules",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "2005cb4df9f0f9b0b41a",
@@ -24871,7 +24935,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F2, confidence medium] State SNAP eligible-count gaps follow PE's participant scale (person grain), not the eligibility rules",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "0b2761ae8fb1eb1bc627",
@@ -25047,7 +25115,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F2, confidence medium] State SNAP eligible-count gaps follow PE's participant scale (person grain), not the eligibility rules",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "80c2ff6ca97e136b46d0",
@@ -26463,7 +26535,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F2, confidence medium] State SNAP eligible-count gaps follow PE's participant scale (person grain), not the eligibility rules",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "6626c874e7c1f9a072d4",
@@ -26551,7 +26627,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F2, confidence medium] State SNAP eligible-count gaps follow PE's participant scale (person grain), not the eligibility rules",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "7e9a8c954846a4aed2f7",
@@ -27088,7 +27168,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "07d5bc2e1ecac424c0cc",
@@ -27179,7 +27263,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "e21605083047c2bffd29",
@@ -27363,7 +27451,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "a15ff9fa6bce63b17141",
@@ -27456,7 +27548,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "6a648bc113028180fa9a",
@@ -27917,7 +28013,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "f4f137aa027f76b177a1",
@@ -28103,7 +28203,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "e48647585b666b7a0b2c",
@@ -28196,7 +28300,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "e6dcf3763a5e4a55f84b",
@@ -28384,7 +28492,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "cfdbc229ee38dfa0dd36",
@@ -28475,7 +28587,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "undiagnosed",
+    "rationale": "[batch3 F3, confidence low] Iowa and Wisconsin: PE rates 13-14 points below FNS with matching participants",
+    "action_link": "diagnosis/batch3/F.md"
+   }
   },
   {
    "claim_id": "c11411f927de86a2ba08",
@@ -29304,7 +29420,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "0f4a45b96862062535d0",
@@ -30226,7 +30346,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "50402beab2223d6c3bdb",
@@ -30790,7 +30914,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "d16d6436f18261518b6c",
@@ -30881,7 +31009,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "939a4137a0fb23f648ab",
@@ -30974,7 +31106,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "ca30f0b063b953fab0db",
@@ -31067,7 +31203,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "573ae00af9b91d404df3",
@@ -31160,7 +31300,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "69fac806b8f77b0fede3",
@@ -31623,7 +31767,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "undiagnosed",
+    "rationale": "[batch3 F3, confidence low] Iowa and Wisconsin: PE rates 13-14 points below FNS with matching participants",
+    "action_link": "diagnosis/batch3/F.md"
+   }
   },
   {
    "claim_id": "6fd802d6a401b05b7a2a",
@@ -31716,7 +31864,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "fa0c5ddc7678f32e806a",
@@ -31807,7 +31959,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 F1, confidence high] SNAP State rates of 96-100% are saturation, not take-up: every federally eligible unit carries the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
+   }
   },
   {
    "claim_id": "a3fb00c32b54b6618cf2",
@@ -148453,7 +148609,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "8fe6e6be2dd2e9e5189a",
@@ -148550,7 +148710,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "33c0b11211972fff26ce",
@@ -148647,7 +148811,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "undiagnosed",
+    "rationale": "[batch3 E2, confidence low] Connecticut: PE EITC participation 15 points below IRS",
+    "action_link": "diagnosis/batch3/E.md"
+   }
   },
   {
    "claim_id": "24384f97d32b17341e5f",
@@ -148841,7 +149009,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "92aa1caec795252eb72d",
@@ -148938,7 +149110,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "38e29938c27e9b529c51",
@@ -149035,7 +149211,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "45dd8ea5b64d47413a04",
@@ -150199,7 +150379,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "de7cfb4f8a2900da6951",
@@ -150296,7 +150480,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "39eb5b816ef4b45388ec",
@@ -150393,7 +150581,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "739c67477a871d4460a2",
@@ -150684,7 +150876,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "b82aa1cbd9e59212ad21",
@@ -151363,7 +151559,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "994af2a774851789aa81",
@@ -151654,7 +151854,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "c9a8d2bed3f8bca36cd9",
@@ -152042,7 +152246,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "a14c6fbdcd94d72cf723",
@@ -152236,7 +152444,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "1d6fdb20253e0df807a1",
@@ -152333,7 +152545,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "44c58f4dc8e208cea168",
@@ -152430,7 +152646,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "0d4d28d94447970126ef",
@@ -152624,7 +152844,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "912a800ca185c084a571",
@@ -153109,7 +153333,11 @@
      "status_effective": "constructed"
     }
    ],
-   "diagnosis": null
+   "diagnosis": {
+    "class": "pe_gap",
+    "rationale": "[batch3 E1, confidence medium] PE EITC participation runs high because PE has no EITC non-filers",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+   }
   },
   {
    "claim_id": "a30038fadf850d62d6f5",
