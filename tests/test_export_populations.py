@@ -258,8 +258,9 @@ def test_integration_committed_db(tmp_path):
     # US: 270 + 6 JCT tax-expenditure rows first scored by the
     # populace-us-2024-spm-20260915 release (SE health insurance, HSA,
     # student-loan interest, SE pension, traditional IRA, CDCC + employer
-    # child care).
-    assert dist == {"US": 276, "UK": 5163, "BE": 9, "NZ": 12}
+    # child care) + 104 FY 2022 FNS state SNAP claims (52 rates, 52
+    # eligible counts) with federal-rules PE counterparts (#2).
+    assert dist == {"US": 380, "UK": 5163, "BE": 9, "NZ": 12}
     nz = [row for row in payload["rows"] if row["country"] == "NZ"]
     assert len(nz) == 12
     assert {row["source"] for row in nz} == {"nz_treasury"}
