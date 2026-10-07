@@ -21,6 +21,7 @@ Chain order is dependency order and is part of the contract:
                 attached (derived from the DB, so the feed can't drift)
     fns_snap_rates  FNS state SNAP participation rates + PE counterparts
     irs_eitc_participation  IRS/Census EITC participation + PE counterparts
+    us_admin_outturns  US admin outturns -> data/ledger (Chronicle; no claims)
     uk_externals five UK primary-source families + Chronicle staging
     uk_deductions FRR family
     dwp_pensions  workplace pension participation (ASHE, GB)
@@ -74,6 +75,7 @@ from . import (
     ingest_lpc_minimum_wage,
     ingest_uk_ab2025,
     ingest_uk_thinktanks,
+    ingest_us_admin_outturns,
     ingest_ons_etb,
     ingest_urban,
     produce_campaign_uk,
@@ -176,6 +178,9 @@ def build(db_path: Path) -> dict:
             "irs_eitc_participation",
             lambda: ingest_irs_eitc_participation.ingest(db_path),
         ),
+        # US administrative outturns staged for Chronicle (boundary rule
+        # 2026-08-02): HUD Picture of Subsidized Households. No claims.
+        ("us_admin_outturns", lambda: ingest_us_admin_outturns.ingest(db_path)),
         ("uk_externals", lambda: ingest_uk_externals.ingest(db_path)),
         ("uk_deductions", lambda: ingest_uk_deductions.ingest(db_path)),
         # DWP workplace pension participation (#98): the first external
