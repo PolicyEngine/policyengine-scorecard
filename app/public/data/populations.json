@@ -1,10 +1,11 @@
 {
- "built": "2026-10-06",
+ "built": "2026-10-07",
  "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family; BE: JRC EUROMOD-BE claims with demo-grade Axiom concept-mismatch attachments and the 2026 PIT-reform scorekeeper claims; NZ: official budget scores). Claims explicitly opted into pre-result display remain in the feed with latest status not_computed and empty history. Recorded result statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
  "summary": {
-  "claims": 5617,
+  "claims": 5631,
   "multi_release_claims": 270,
   "by_source": {
+   "aspe_welfare_indicators": 14,
    "az_admin": 1,
    "barclays": 1,
    "ca_admin": 2,
@@ -105,13 +106,1263 @@
   },
   "by_latest_status": {
    "comparable": 42,
-   "concept_mismatch": 15,
-   "constructed": 1562,
+   "concept_mismatch": 17,
+   "constructed": 1574,
    "not_computed": 3109,
    "pe_gap": 889
   }
  },
  "rows": [
+  {
+   "claim_id": "4290148a46a76bfa6ffa",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 11: Fiscal Year 2022, eligible",
+   "name": "SNAP households eligible",
+   "window": "FY 2022",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "eligible_count",
+   "unit_concept": "households",
+   "value_kind": "count",
+   "period": 2022,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "snap",
+   "conditions": {
+    "geography": "US",
+    "program": "snap",
+    "year_basis": "federal_fiscal_year"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 19400000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 14047342.312254211,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "Average of the 12 months of CY2024: SPM units with is_snap_eligible (eligible) and snap > 0 (participating) in the federal-rules world (is_tanf_non_cash_eligible forced False every month).",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "ASPE republishes FNS's national household series: households eligible under federal rules, average month of the fiscal year. PolicyEngine counts SPM units in the same federal-rules world as the FNS State lane (BBCE turned off every month), averaged over 2024."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 0.7240898099100108,
+    "delta": -5352657.687745789
+   },
+   "results": [
+    {
+     "value": 14047342.312254211,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "Average of the 12 months of CY2024: SPM units with is_snap_eligible (eligible) and snap > 0 (participating) in the federal-rules world (is_tanf_non_cash_eligible forced False every month).",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "ASPE republishes FNS's national household series: households eligible under federal rules, average month of the fiscal year. PolicyEngine counts SPM units in the same federal-rules world as the FNS State lane (BBCE turned off every month), averaged over 2024."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "2eed4d168d9d386cd57f",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 10: 2023, eligible",
+   "name": "TANF families eligible",
+   "window": "2023",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "eligible_count",
+   "unit_concept": "families",
+   "value_kind": "count",
+   "period": 2023,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "tanf",
+   "conditions": {
+    "geography": "US",
+    "program": "tanf"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 3870000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 2212880.636212305,
+    "status": "concept_mismatch",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "CY2024 SPM units with tanf_if_takes_up > 0 (eligible) and tanf > 0 (participating) over the year \u2014 any-time-in-year counts: State TANF programs mix YEAR and MONTH periods, so no average-month count exists.",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "PolicyEngine counts SPM units with a TANF entitlement (and a payment) at any time in 2024, because its State TANF programs mix yearly and monthly periods; ASPE counts TRIM3 assistance units in an average month. Any-time counts run above average-month counts, so only the rate is compared as a like quantity."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": 0.5718037819670039,
+    "delta": -1657119.3637876948
+   },
+   "results": [
+    {
+     "value": 2212880.636212305,
+     "status": "concept_mismatch",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "CY2024 SPM units with tanf_if_takes_up > 0 (eligible) and tanf > 0 (participating) over the year \u2014 any-time-in-year counts: State TANF programs mix YEAR and MONTH periods, so no average-month count exists.",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "PolicyEngine counts SPM units with a TANF entitlement (and a payment) at any time in 2024, because its State TANF programs mix yearly and monthly periods; ASPE counts TRIM3 assistance units in an average month. Any-time counts run above average-month counts, so only the rate is compared as a like quantity."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "2e9fb0844f9d189c9205",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 12: 2023, eligible (aged_65plus_individuals)",
+   "name": "SSI units eligible, aged 65+ individuals",
+   "window": "2023",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "eligible_count",
+   "unit_concept": "benefit_units",
+   "value_kind": "count",
+   "period": 2023,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "ssi",
+   "conditions": {
+    "geography": "US",
+    "program": "ssi",
+    "subgroup": "aged_65plus_individuals"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 4200000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 2878936.1930724904,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 0.6854609983505929,
+    "delta": -1321063.8069275096
+   },
+   "results": [
+    {
+     "value": 2878936.1930724904,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "87166869af304dad43b8",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 12: 2023, eligible (couples)",
+   "name": "SSI units eligible, married couples",
+   "window": "2023",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "eligible_count",
+   "unit_concept": "benefit_units",
+   "value_kind": "count",
+   "period": 2023,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "ssi",
+   "conditions": {
+    "geography": "US",
+    "program": "ssi",
+    "subgroup": "couples"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 1000000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 995648.5666392413,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 0.9956485666392413,
+    "delta": -4351.433360758703
+   },
+   "results": [
+    {
+     "value": 995648.5666392413,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "79f68f111b51bc20c1f6",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 12: 2023, eligible (disabled_individuals)",
+   "name": "SSI units eligible, disabled individuals",
+   "window": "2023",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "eligible_count",
+   "unit_concept": "benefit_units",
+   "value_kind": "count",
+   "period": 2023,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "ssi",
+   "conditions": {
+    "geography": "US",
+    "program": "ssi",
+    "subgroup": "disabled_individuals"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 6300000.0,
+   "calibration_relationship": "held_out",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 5122302.070181623,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 0.8130638206637497,
+    "delta": -1177697.929818377
+   },
+   "results": [
+    {
+     "value": 5122302.070181623,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "81d8f3c5e1aa27758ad1",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 10: 2023, participating",
+   "name": "TANF families participating",
+   "window": "2023",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "participant_count",
+   "unit_concept": "families",
+   "value_kind": "count",
+   "period": 2023,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "tanf",
+   "conditions": {
+    "geography": "US",
+    "program": "tanf"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 857000.0,
+   "calibration_relationship": "seed_source",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 911040.7938822575,
+    "status": "concept_mismatch",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "CY2024 SPM units with tanf_if_takes_up > 0 (eligible) and tanf > 0 (participating) over the year \u2014 any-time-in-year counts: State TANF programs mix YEAR and MONTH periods, so no average-month count exists.",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "PolicyEngine counts SPM units with a TANF entitlement (and a payment) at any time in 2024, because its State TANF programs mix yearly and monthly periods; ASPE counts TRIM3 assistance units in an average month. Any-time counts run above average-month counts, so only the rate is compared as a like quantity."
+    ],
+    "baseline": "current_law",
+    "status_effective": "concept_mismatch",
+    "ratio": 1.0630581025463914,
+    "delta": 54040.79388225754
+   },
+   "results": [
+    {
+     "value": 911040.7938822575,
+     "status": "concept_mismatch",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "CY2024 SPM units with tanf_if_takes_up > 0 (eligible) and tanf > 0 (participating) over the year \u2014 any-time-in-year counts: State TANF programs mix YEAR and MONTH periods, so no average-month count exists.",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "PolicyEngine counts SPM units with a TANF entitlement (and a payment) at any time in 2024, because its State TANF programs mix yearly and monthly periods; ASPE counts TRIM3 assistance units in an average month. Any-time counts run above average-month counts, so only the rate is compared as a like quantity."
+     ],
+     "baseline": "current_law",
+     "status_effective": "concept_mismatch"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "1612891431432cd4b731",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 12: 2023, participating (aged_65plus_individuals)",
+   "name": "SSI units participating, aged 65+ individuals",
+   "window": "2023",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "participant_count",
+   "unit_concept": "benefit_units",
+   "value_kind": "count",
+   "period": 2023,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "ssi",
+   "conditions": {
+    "geography": "US",
+    "program": "ssi",
+    "subgroup": "aged_65plus_individuals"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 2100000.0,
+   "calibration_relationship": "consumed_as_target",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 1725869.1833555384,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65.",
+     "PolicyEngine's SSI recipients are calibrated to SSA recipient counts and payments, so participants agree largely by construction; the eligible count is the out-of-sample part."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 0.8218424682645421,
+    "delta": -374130.8166444616
+   },
+   "results": [
+    {
+     "value": 1725869.1833555384,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65.",
+      "PolicyEngine's SSI recipients are calibrated to SSA recipient counts and payments, so participants agree largely by construction; the eligible count is the out-of-sample part."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "9a270b168e1af27db400",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 12: 2023, participating (couples)",
+   "name": "SSI units participating, married couples",
+   "window": "2023",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "participant_count",
+   "unit_concept": "benefit_units",
+   "value_kind": "count",
+   "period": 2023,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "ssi",
+   "conditions": {
+    "geography": "US",
+    "program": "ssi",
+    "subgroup": "couples"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 200000.0,
+   "calibration_relationship": "consumed_as_target",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 416988.0796007731,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65.",
+     "PolicyEngine's SSI recipients are calibrated to SSA recipient counts and payments, so participants agree largely by construction; the eligible count is the out-of-sample part."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 2.0849403980038654,
+    "delta": 216988.0796007731
+   },
+   "results": [
+    {
+     "value": 416988.0796007731,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65.",
+      "PolicyEngine's SSI recipients are calibrated to SSA recipient counts and payments, so participants agree largely by construction; the eligible count is the out-of-sample part."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "3d1a1df908d4c11d00de",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 12: 2023, participating (disabled_individuals)",
+   "name": "SSI units participating, disabled individuals",
+   "window": "2023",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "participant_count",
+   "unit_concept": "benefit_units",
+   "value_kind": "count",
+   "period": 2023,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "ssi",
+   "conditions": {
+    "geography": "US",
+    "program": "ssi",
+    "subgroup": "disabled_individuals"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 3900000.0,
+   "calibration_relationship": "consumed_as_target",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 3801304.244073983,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65.",
+     "PolicyEngine's SSI recipients are calibrated to SSA recipient counts and payments, so participants agree largely by construction; the eligible count is the out-of-sample part."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 0.9746933959164058,
+    "delta": -98695.75592601718
+   },
+   "results": [
+    {
+     "value": 3801304.244073983,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65.",
+      "PolicyEngine's SSI recipients are calibrated to SSA recipient counts and payments, so participants agree largely by construction; the eligible count is the out-of-sample part."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "e789ba9012b6a7736830",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 11: Fiscal Year 2022, rate",
+   "name": "SNAP participation rate (households)",
+   "window": "FY 2022",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "participation_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2022,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "snap",
+   "conditions": {
+    "geography": "US",
+    "program": "snap",
+    "rate_unit": "households",
+    "year_basis": "federal_fiscal_year"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.916,
+   "calibration_relationship": "consumed_as_target",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.9645401631430174,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "Average of the 12 months of CY2024: SPM units with is_snap_eligible (eligible) and snap > 0 (participating) in the federal-rules world (is_tanf_non_cash_eligible forced False every month).",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "ASPE republishes FNS's national household series: households eligible under federal rules, average month of the fiscal year. PolicyEngine counts SPM units in the same federal-rules world as the FNS State lane (BBCE turned off every month), averaged over 2024.",
+     "PolicyEngine's SNAP participating units are calibrated to FNS household counts, so the rate's numerator agrees by construction; the eligible count is the out-of-sample part."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.0529914444792765,
+    "delta": 0.048540163143017345
+   },
+   "results": [
+    {
+     "value": 0.9645401631430174,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "Average of the 12 months of CY2024: SPM units with is_snap_eligible (eligible) and snap > 0 (participating) in the federal-rules world (is_tanf_non_cash_eligible forced False every month).",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "ASPE republishes FNS's national household series: households eligible under federal rules, average month of the fiscal year. PolicyEngine counts SPM units in the same federal-rules world as the FNS State lane (BBCE turned off every month), averaged over 2024.",
+      "PolicyEngine's SNAP participating units are calibrated to FNS household counts, so the rate's numerator agrees by construction; the eligible count is the out-of-sample part."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "90476087446a6d8c192f",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 10: 2023, rate",
+   "name": "TANF participation rate (families)",
+   "window": "2023",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "participation_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2023,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "tanf",
+   "conditions": {
+    "geography": "US",
+    "program": "tanf",
+    "rate_unit": "families"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.221,
+   "calibration_relationship": "seed_source",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.41169902206819786,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "CY2024 SPM units with tanf_if_takes_up > 0 (eligible) and tanf > 0 (participating) over the year \u2014 any-time-in-year counts: State TANF programs mix YEAR and MONTH periods, so no average-month count exists.",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "PolicyEngine's TANF take-up flag is seeded at 21.9%, the 2022 value of this very table in the 24th report. Calibration then reweights units toward ACF TANF cash-assistance dollar targets (national and 22 States; the national target is missed by 36%), so the weighted rate does not stay at the seed. Measured: the flag is on for 23.8% of PolicyEngine's eligible units (unweighted); the weighted rate is 41.2%.",
+     "PolicyEngine counts SPM units with a TANF entitlement (and a payment) at any time in 2024, because its State TANF programs mix yearly and monthly periods; ASPE counts TRIM3 assistance units in an average month. Any-time counts run above average-month counts, so only the rate is compared as a like quantity."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.862891502571031,
+    "delta": 0.19069902206819786
+   },
+   "results": [
+    {
+     "value": 0.41169902206819786,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "CY2024 SPM units with tanf_if_takes_up > 0 (eligible) and tanf > 0 (participating) over the year \u2014 any-time-in-year counts: State TANF programs mix YEAR and MONTH periods, so no average-month count exists.",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "PolicyEngine's TANF take-up flag is seeded at 21.9%, the 2022 value of this very table in the 24th report. Calibration then reweights units toward ACF TANF cash-assistance dollar targets (national and 22 States; the national target is missed by 36%), so the weighted rate does not stay at the seed. Measured: the flag is on for 23.8% of PolicyEngine's eligible units (unweighted); the weighted rate is 41.2%.",
+      "PolicyEngine counts SPM units with a TANF entitlement (and a payment) at any time in 2024, because its State TANF programs mix yearly and monthly periods; ASPE counts TRIM3 assistance units in an average month. Any-time counts run above average-month counts, so only the rate is compared as a like quantity."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "8050bfbfe32384dbb775",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 12: 2023, rate (aged_65plus_individuals)",
+   "name": "SSI participation rate (units), aged 65+ individuals",
+   "window": "2023",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "participation_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2023,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "ssi",
+   "conditions": {
+    "geography": "US",
+    "program": "ssi",
+    "rate_unit": "benefit_units",
+    "subgroup": "aged_65plus_individuals"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.499,
+   "calibration_relationship": "consumed_as_target",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.5994815680557467,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65.",
+     "PolicyEngine's SSI recipients are calibrated to SSA recipient counts and payments, so participants agree largely by construction; the eligible count is the out-of-sample part."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.2013658678471877,
+    "delta": 0.1004815680557467
+   },
+   "results": [
+    {
+     "value": 0.5994815680557467,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65.",
+      "PolicyEngine's SSI recipients are calibrated to SSA recipient counts and payments, so participants agree largely by construction; the eligible count is the out-of-sample part."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "ed80074897225e861cc2",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 12: 2023, rate (couples)",
+   "name": "SSI participation rate (units), married couples",
+   "window": "2023",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "participation_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2023,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "ssi",
+   "conditions": {
+    "geography": "US",
+    "program": "ssi",
+    "rate_unit": "benefit_units",
+    "subgroup": "couples"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.227,
+   "calibration_relationship": "consumed_as_target",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.41881050560670635,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65.",
+     "PolicyEngine's SSI recipients are calibrated to SSA recipient counts and payments, so participants agree largely by construction; the eligible count is the out-of-sample part."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.8449802009106007,
+    "delta": 0.19181050560670634
+   },
+   "results": [
+    {
+     "value": 0.41881050560670635,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65.",
+      "PolicyEngine's SSI recipients are calibrated to SSA recipient counts and payments, so participants agree largely by construction; the eligible count is the out-of-sample part."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
+  {
+   "claim_id": "1c9c60dcf56f22e9a6e5",
+   "source": "aspe_welfare_indicators",
+   "country": "US",
+   "source_column": "25th report, Appendix Table 12: 2023, rate (disabled_individuals)",
+   "name": "SSI participation rate (units), disabled individuals",
+   "window": "2023",
+   "publication_title": "Welfare Indicators and Risk Factors: 25th Report to Congress",
+   "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+   "metric": "participation_rate",
+   "unit_concept": "share",
+   "value_kind": "share",
+   "period": 2023,
+   "time_basis": "average_month",
+   "period_start": null,
+   "period_end": null,
+   "geography": "US",
+   "program": "ssi",
+   "conditions": {
+    "geography": "US",
+    "program": "ssi",
+    "rate_unit": "benefit_units",
+    "subgroup": "disabled_individuals"
+   },
+   "reform_framework": "baseline",
+   "reform_key": "03395a10966bb849",
+   "external_value": 0.621,
+   "calibration_relationship": "consumed_as_target",
+   "claim_baseline": "current_law",
+   "latest": {
+    "value": 0.7421085660298044,
+    "status": "constructed",
+    "engine_version": "2.2.1",
+    "data_bundle": "populace-us-2024-spm-20260915",
+    "release": "spm-20260915",
+    "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+    "policyengine_variables": [
+     "tanf",
+     "tanf_if_takes_up",
+     "takes_up_tanf_if_eligible",
+     "ssi",
+     "ssi_if_takes_up",
+     "ssi_claim_is_joint",
+     "age",
+     "is_snap_eligible",
+     "snap",
+     "is_tanf_non_cash_eligible"
+    ],
+    "computed_at": "2026-10-07T14:26:55.913867+00:00",
+    "annotations": [
+     "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+     "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65.",
+     "PolicyEngine's SSI recipients are calibrated to SSA recipient counts and payments, so participants agree largely by construction; the eligible count is the out-of-sample part."
+    ],
+    "baseline": "current_law",
+    "status_effective": "constructed",
+    "ratio": 1.1950218454586221,
+    "delta": 0.12110856602980435
+   },
+   "results": [
+    {
+     "value": 0.7421085660298044,
+     "status": "constructed",
+     "engine_version": "2.2.1",
+     "data_bundle": "populace-us-2024-spm-20260915",
+     "release": "spm-20260915",
+     "construction": "Average of the 12 months of CY2024: adults 18+ with ssi_if_takes_up > 0 (eligible for a payment) and ssi > 0 (participating); joint claims (ssi_claim_is_joint) are couple units (persons / 2), others one-person units, aged if 65+ else disabled.",
+     "policyengine_variables": [
+      "tanf",
+      "tanf_if_takes_up",
+      "takes_up_tanf_if_eligible",
+      "ssi",
+      "ssi_if_takes_up",
+      "ssi_claim_is_joint",
+      "age",
+      "is_snap_eligible",
+      "snap",
+      "is_tanf_non_cash_eligible"
+     ],
+     "computed_at": "2026-10-07T14:26:55.913867+00:00",
+     "annotations": [
+      "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65.",
+      "PolicyEngine's SSI recipients are calibrated to SSA recipient counts and payments, so participants agree largely by construction; the eligible count is the out-of-sample part."
+     ],
+     "baseline": "current_law",
+     "status_effective": "constructed"
+    }
+   ],
+   "diagnosis": null
+  },
   {
    "claim_id": "53568d369f3081628b2d",
    "source": "az_admin",

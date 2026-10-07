@@ -11,6 +11,7 @@ const SOURCE_SPECIAL: Record<string, string> = {
   cpsp: "Columbia CPSP",
   fns_snap_rates: "FNS SNAP rates",
   irs_eitc_participation: "IRS EITC participation",
+  aspe_welfare_indicators: "ASPE welfare indicators",
   budget_lab: "Budget Lab",
   tax_foundation: "Tax Foundation",
   obr: "OBR",

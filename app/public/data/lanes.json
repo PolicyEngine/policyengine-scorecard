@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-10-06",
+ "updated": "2026-10-07",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -100,10 +100,10 @@
    "source": "ASPE",
    "area": "TANF/SSI recipiency",
    "mode": 1,
-   "stage": "registered",
+   "stage": "computed",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "Our TANF seed's source \u2014 seed_source relationship structural (#2)"
+   "updated": "2026-10-07",
+   "note": "14 of 476 claims computed \u2014 ASPE Indicator 4: TANF families 1981-2023 and SSI adult units 1993-2023 (TRIM3), SNAP households 1976-FY2022 (FNS series); latest periods compared with PE CY2024 on us-6.2.1; rates recomputed from counts and the 24th/25th editions agree"
   },
   {
    "id": "nta-eitc",

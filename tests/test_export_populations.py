@@ -260,8 +260,9 @@ def test_integration_committed_db(tmp_path):
     # student-loan interest, SE pension, traditional IRA, CDCC + employer
     # child care) + 104 FY 2022 FNS state SNAP claims (52 rates, 52
     # eligible counts) with federal-rules PE counterparts (#2) + 53 TY2022
-    # IRS/Census EITC participation rates (52 ACS, 1 CPS headline) (#2).
-    assert dist == {"US": 433, "UK": 5163, "BE": 9, "NZ": 12}
+    # IRS/Census EITC participation rates (52 ACS, 1 CPS headline) (#2) +
+    # 14 ASPE Indicator 4 claims at their latest period (TANF, SNAP, SSI).
+    assert dist == {"US": 447, "UK": 5163, "BE": 9, "NZ": 12}
     nz = [row for row in payload["rows"] if row["country"] == "NZ"]
     assert len(nz) == 12
     assert {row["source"] for row in nz} == {"nz_treasury"}

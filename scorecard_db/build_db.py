@@ -21,6 +21,7 @@ Chain order is dependency order and is part of the contract:
                 attached (derived from the DB, so the feed can't drift)
     fns_snap_rates  FNS state SNAP participation rates + PE counterparts
     irs_eitc_participation  IRS/Census EITC participation + PE counterparts
+    aspe_welfare_indicators  ASPE Indicator 4 (TRIM3/FNS) + PE counterparts
     us_admin_outturns  US admin outturns -> data/ledger (Chronicle; no claims)
     uk_externals five UK primary-source families + Chronicle staging
     uk_deductions FRR family
@@ -57,6 +58,7 @@ from be import ingest_jrc_country_report, ingest_pit_reform_2026
 from nz import ingest_official_budget_scores
 
 from . import (
+    ingest_aspe_welfare_indicators,
     ingest_campaign,
     ingest_diagnoses,
     ingest_fns_snap_rates,
@@ -177,6 +179,12 @@ def build(db_path: Path) -> dict:
         (
             "irs_eitc_participation",
             lambda: ingest_irs_eitc_participation.ingest(db_path),
+        ),
+        # ASPE Welfare Indicators, Indicator 4 (#2): TANF/SNAP/SSI
+        # participation among the eligible (TRIM3 + FNS series).
+        (
+            "aspe_welfare_indicators",
+            lambda: ingest_aspe_welfare_indicators.ingest(db_path),
         ),
         # US administrative outturns staged for Chronicle (boundary rule
         # 2026-08-02): HUD Picture of Subsidized Households. No claims.

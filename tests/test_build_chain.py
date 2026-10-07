@@ -32,6 +32,7 @@ STEPS = (
     "harvest_lane_stages",
     "fns_snap_rates",
     "irs_eitc_participation",
+    "aspe_welfare_indicators",
     "us_admin_outturns",
     "uk_externals",
     "uk_deductions",
