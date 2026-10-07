@@ -1,0 +1,51 @@
+{
+  "_schema": {
+    "applies_to": "matcher on {program, metrics}; null = any",
+    "severity": "period | definitional | construction | caution | gap",
+    "basis": "traceability: the IRS page or the Census paper in raw/, engine metadata or measurements recorded in pe/<bundle>.json, the us-6.2.1 calibration diagnostics, or microcosm's take-up spec"
+  },
+  "annotations": [
+    {
+      "id": "eitc-period-vintage",
+      "applies_to": {"program": "eitc", "metrics": null},
+      "severity": "period",
+      "text": "PolicyEngine values are calendar 2024 on the certified data; the IRS State series ends at tax year 2022. Level differences can come from the two-year gap as well as from the models.",
+      "basis": "IRS EITC participation rates by state (raw/, fetched 2026-10-06); sources/irs-eitc-participation/pe/us-6.2.1.json (period)"
+    },
+    {
+      "id": "eitc-eligibility-model",
+      "applies_to": {"program": "eitc", "metrics": null},
+      "severity": "definitional",
+      "text": "IRS models eligibility from survey income and family data (ACS for States, CPS for the national headline) and reads receipt from IRS records; eligible people include non-filers. PolicyEngine's eligible count is every tax unit with a positive federal EITC when take-up and filing are forced on; its participants are tax units with a positive EITC as served.",
+      "basis": "IRS page footnote 1; CES-WP-24-75 methodology; pe_construction in sources/irs-eitc-participation/pe/us-6.2.1.json"
+    },
+    {
+      "id": "eitc-numerator-calibrated",
+      "applies_to": {"program": "eitc", "metrics": ["participation_rate"]},
+      "severity": "construction",
+      "text": "PolicyEngine's EITC claims are calibrated to IRS SOI TY2022 State claims by number of children and to TY2024 national claims, so the rate's numerator agrees by construction. The eligible count is the out-of-sample part of this comparison.",
+      "basis": "us-6.2.1 calibration_diagnostics.json (irs_soi.ty2022.historic_table_2.state_eitc.* and irs_soi.ty2024.filing_season_week47.eitc_* targets); scorecard_db/relationships.py _IRS_EITC_CONSUMED"
+    },
+    {
+      "id": "eitc-takeup-seed",
+      "applies_to": {"program": "eitc", "metrics": ["participation_rate"]},
+      "severity": "construction",
+      "text": "PolicyEngine's take-up flag is seeded from the National Taxpayer Advocate's TY2016 rates by number of children (65%, 86%, 85% and 82% for none, one, two, three or more), the same in every State, and calibration then reweights the units.",
+      "basis": "microcosm packages/microcosm-build/src/microcosm/build/us/spec/take_up.yaml (eitc); the ingest appends the measured post-calibration rates from national_by_children in pe/us-6.2.1.json"
+    },
+    {
+      "id": "eitc-no-nonfilers",
+      "applies_to": {"program": "eitc", "metrics": null},
+      "severity": "construction",
+      "text": "The certified data stores would_file_if_eligible_for_refundable_credit as true for every tax unit, so no entitled PolicyEngine unit misses the EITC by not filing; every PolicyEngine non-participant is a unit whose take-up flag is off. IRS counts eligible non-filers as non-participants: 4.6 million of the 5.7 million eligible non-claimants in tax year 2021.",
+      "basis": "toggle_check.baseline.would_file = 1.0 in sources/irs-eitc-participation/pe/us-6.2.1.json; CES-WP-24-75 Table 2"
+    },
+    {
+      "id": "eitc-acs-vs-cps",
+      "applies_to": {"program": "eitc", "metrics": ["participation_rate"]},
+      "severity": "caution",
+      "text": "The State table is ACS-based and its national row reads 80.8% for tax year 2022; IRS calls the CPS-based 78% the reported national estimate for that year. The two national figures differ by method, not by year.",
+      "basis": "IRS page footnote 2"
+    }
+  ]
+}

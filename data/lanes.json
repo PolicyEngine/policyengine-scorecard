@@ -108,13 +108,13 @@
   {
    "id": "nta-eitc",
    "country": "US",
-   "source": "IRS/NTA",
-   "area": "EITC participation by children",
+   "source": "IRS/Census",
+   "area": "EITC participation",
    "mode": 1,
-   "stage": "registered",
+   "stage": "computed",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "EITC seed source (#2)"
+   "updated": "2026-10-06",
+   "note": "53 of 502 claims computed \u2014 IRS/Census EITC participation: ACS State table TY2014-2022 and the CPS national series (TY2022 headline; CES-WP-24-75 TY2019-2021 eligibility, non-claimants, unclaimed dollars); TY2022 rates compared with PE CY2024 on us-6.2.1; numerator calibrated (SOI State claims by children), eligibility held out"
   },
   {
    "id": "census-spm",

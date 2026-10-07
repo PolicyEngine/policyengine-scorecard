@@ -729,7 +729,7 @@ def _map_row(
     if (
         cat in ("JCT tax expenditure", "IRS SOI actual")
         and row["id"] not in SOI_HELD_OUT
-    ):
+    ) or cat in IN_SAMPLE_CATEGORIES:
         relationship = "consumed_as_target"
 
     return (
@@ -957,6 +957,16 @@ SOI_HELD_OUT = {
     "soi_savers_credit",
     "soi_se_tax",
 }
+
+# Registry categories whose quantity the release calibrates although the
+# registry exports the rows with in_sample=false. "Federal EITC by state"
+# (18 rows, IRS EITC Central TY2024 State totals): the spm-20260915
+# release targets SOI Historic Table 2 TY2022 State EITC claims and
+# amounts, by number of children, for all 51 jurisdictions (510 targets;
+# fed_eitc_ny's PE value $3,870,160,244 is the calibrated
+# ...state_eitc.ny.ny.eitc_amount estimate). The row measures vintage
+# drift, not out-of-sample geography (lane nta-eitc, 2026-10-06).
+IN_SAMPLE_CATEGORIES = {"Federal EITC by state"}
 
 _EFFECTIVE: dict[str, str] | None = None
 

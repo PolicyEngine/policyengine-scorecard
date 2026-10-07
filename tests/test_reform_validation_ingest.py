@@ -440,6 +440,17 @@ def test_census_spm_held_out(conn):
     assert rows and all(r[0] == "held_out" for r in rows)
 
 
+def test_federal_eitc_by_state_rows_marked_consumed(conn):
+    # in_sample=false in the registry, but the release targets SOI TY2022
+    # State EITC claims and amounts (IN_SAMPLE_CATEGORIES)
+    rows = conn.execute(
+        "SELECT calibration_relationship FROM external_scores"
+        " WHERE source_column LIKE 'fed_eitc_%'"
+    ).fetchall()
+    assert len(rows) == 18
+    assert {r[0] for r in rows} == {"consumed_as_target"}
+
+
 def test_soi_and_jct_te_targets_marked_consumed(conn):
     rows = conn.execute(
         "SELECT source_column, calibration_relationship FROM external_scores"
