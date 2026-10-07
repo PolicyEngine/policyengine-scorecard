@@ -30,6 +30,7 @@ STEPS = (
     "campaign_us",
     "campaign_us_20261006",
     "harvest_lane_stages",
+    "fns_snap_rates",
     "uk_externals",
     "uk_deductions",
     "dwp_pensions",

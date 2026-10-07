@@ -78,10 +78,10 @@
    "source": "FNS",
    "area": "official SNAP state participation rates",
    "mode": 1,
-   "stage": "registered",
+   "stage": "computed",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "Natural held-out validation for SNAP (#2)"
+   "updated": "2026-10-06",
+   "note": "104 of 208 claims computed \u2014 FY 2020 and FY 2022 State, DC and national rates and eligible counts (federal rules, average month; Mathematica shrinkage); FY 2022 compared with PE CY2024 on us-6.2.1 in a BBCE-off world; adapter QC recomputes every rate from its published parts"
   },
   {
    "id": "snap-qc",

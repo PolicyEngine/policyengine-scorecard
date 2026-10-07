@@ -9,6 +9,7 @@ const SOURCE_SPECIAL: Record<string, string> = {
   tpc: "TPC",
   pwbm: "PWBM",
   cpsp: "Columbia CPSP",
+  fns_snap_rates: "FNS SNAP rates",
   budget_lab: "Budget Lab",
   tax_foundation: "Tax Foundation",
   obr: "OBR",

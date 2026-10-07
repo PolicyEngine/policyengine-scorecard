@@ -153,12 +153,23 @@ Operating rules for the agent stage:
    work beyond labels.
 4. Run the diagnosis stage on the new divergence queue.
 
+### Built after Urban
+
+- **FNS state SNAP participation rates** (`sources/fns-snap-rates/`, lane
+  `fns-snap-rates`, issue #2): a PDF table adapter with an
+  independent-recompute QC (every published rate is rebuilt from its
+  published parts), claims through `scorecard_db/ingest_fns_snap_rates.py`,
+  and PE counterparts from `pipeline/campaign_us/fns_snap_rates.py`. FNS
+  counts only federal-rules eligibility, so the counterpart runs in a
+  BBCE-off world (`is_tanf_non_cash_eligible` forced False) and averages
+  the twelve months. The rate's numerator class is a calibration target;
+  the eligible count is the held-out signal.
+
 ### Designed-for future sources (not yet built)
 
 | source | comparison unit | adapter shape | notes |
 |---|---|---|---|
 | TAXSIM (NBER) | record-level tax liability | run policyengine-taxsim on shared records; rows = aggregate match rates + named mismatch clusters | open source → upstream PRs possible; policyengine-taxsim already exists |
-| FNS official SNAP state participation rates | state × year rates | direct table adapter | the natural held-out validation for SNAP (FNS state rates are not consumed by calibration) |
 | SNAP QC | caseload composition | distributional rows (shares by hh type/income band) | needs a composition metric family |
 | ASPE welfare indicators | TANF/SSI recipiency rates | direct table adapter | TRIM3-based — same family as Urban's TANF seed source |
 | Census SPM reports | poverty rates by state/group | direct table adapter | anchors the poverty side independently of Urban |
