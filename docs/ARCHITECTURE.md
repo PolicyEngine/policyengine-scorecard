@@ -175,6 +175,20 @@ Operating rules for the agent stage:
   SOI State EITC claims by number of children, so the rate's numerator is
   consumed; eligibility is held out.
 
+### Staged for Chronicle, not claims
+
+Administrative outturn tables (caseloads, units, spending) are calibration
+material under the 2026-08-02 boundary ruling (issue #6). They are parsed
+and QC'd like any source, then written to `data/ledger/*_admin_outturns.jsonl`
+with deterministic fact ids and the consuming pin (if any), never to
+`external_scores`.
+
+- **HUD Picture of Subsidized Households** (`sources/hud-psh/`, lane
+  `hud-psh`, stage `cataloged`): 10,398 State and U.S. facts for 31 Dec 2024
+  and 2025 in `data/ledger/us_admin_outturns.jsonl`, written by
+  `scorecard_db/ingest_us_admin_outturns.py`. us-6.2.1 has no housing
+  targets, so `consumed_by` is null.
+
 ### Designed-for future sources (not yet built)
 
 | source | comparison unit | adapter shape | notes |

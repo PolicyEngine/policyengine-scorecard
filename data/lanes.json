@@ -144,10 +144,10 @@
    "source": "HUD",
    "area": "Picture of Subsidized Households",
    "mode": 1,
-   "stage": "registered",
+   "stage": "cataloged",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "Housing count targets candidate (#2)"
+   "updated": "2026-10-06",
+   "note": "10398 administrative facts staged for Chronicle (data/ledger/us_admin_outturns.jsonl; 31 Dec 2024 and 2025, State and U.S.) \u2014 admin outturns are calibration material, not scorecard claims (boundary rule 2026-08-02); us-6.2.1 consumes none (no housing targets)"
   },
   {
    "id": "trim3-tables",
