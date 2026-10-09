@@ -239,7 +239,16 @@ def stage_event(
             }
             artifact_key = (key, year)
             artifact = artifacts.get(artifact_key)
-            if classification in ("not_expressible", "out_of_household_scope"):
+            if classification == "out_of_household_scope":
+                row["reason"] = (
+                    source.get("scope_reason")
+                    or source.get("classification_reason")
+                    or source.get("pe_gap")
+                    or measure.get("scope_reason")
+                    or measure.get("pe_gap")
+                    or classification
+                )
+            elif classification == "not_expressible":
                 row["reason"] = (
                     source.get("pe_gap")
                     or source.get("scope_reason")

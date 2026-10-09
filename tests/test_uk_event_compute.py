@@ -327,6 +327,71 @@ def test_no_digest_no_simulation(tmp_path, monkeypatch):
     assert not called
 
 
+@pytest.mark.parametrize(
+    ("classification", "head", "scope_reason"),
+    [
+        ("partial", "Scottish BGA", None),
+        ("not_expressible", "Corporation tax", None),
+        (
+            "partial",
+            "Scottish BGA",
+            "A devolved block-grant adjustment is outside household scope.",
+        ),
+    ],
+)
+def test_outside_heads_keep_source_reason_within_mixed_packages(
+    classification, head, scope_reason, tmp_path, monkeypatch
+):
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    m = measure()
+    m["computability"] = classification
+    m["pe_gap"] = "The household package is missing an unported leg."
+    source_reason = f"{head} is outside the household fiscal-head model."
+    m["source_rows"].append(
+        {
+            "source_row_id": "outside",
+            "fy": "2024-25",
+            "metric": "exchequer_impact"
+            if head == "Scottish BGA"
+            else "revenue_change",
+            "tax_head": head,
+            "value_gbp": 4,
+            "classification": "out_of_household_scope",
+            "classification_reason": source_reason,
+            "scope_reason": scope_reason,
+            "pe_gap": "A generic package gap must not mask source-head scope.",
+        }
+    )
+    manifest = None
+    if classification == "partial":
+        payload = compute.canonical_bytes(
+            artifact(simulation(900, 1000), simulation(1000, 1030))
+        )
+        (tmp_path / "measure.json").write_bytes(payload)
+        manifest = {
+            "registry_sha256": "b" * 64,
+            "certified_dataset_sha256": "a" * 64,
+            "artifacts": {"measure.json": hashlib.sha256(payload).hexdigest()},
+        }
+    rows, tally = stage.stage_event(
+        {"event": "test_event", "calendar_years": [2024], "measures": [m]},
+        manifest,
+        artifact_dir=tmp_path,
+        registry_sha256="b" * 64,
+    )
+    by_id = {row["source_row_id"]: row for row in rows}
+    assert by_id["outside"]["reason"] == (scope_reason or source_reason)
+    assert by_id["outside"]["pe_value"] is None
+    assert by_id["outside"]["computability"] == "out_of_household_scope"
+    if classification == "partial":
+        assert by_id["tax"]["pe_value"] == 100
+        assert by_id["benefit"]["pe_value"] == -30
+    else:
+        assert by_id["tax"]["reason"] == m["pe_gap"]
+    assert tally["source_rows"] == tally["staged_rows"] == 3
+    assert tally["source_value_gbp"] == 74
+
+
 def test_staging_rejects_duplicate_source_rows_without_artifacts(tmp_path):
     m = measure()
     m["source_rows"].append(copy.deepcopy(m["source_rows"][0]))

@@ -223,6 +223,22 @@ snapshot remains unchanged. In processed 2024, the employee NICs rate is
 Keep the source FY and the calendar proxy visible and tag the timing axis.
 Do not silently move the source claim to a different year.
 
+Full artifact-grid coverage and staged numerical head/FY rows are separate.
+The inherited `stage_uk_ab2025.identical_year_verdict` asserts a zero for
+identical computed worlds only when the source FY precedes the registry's
+recorded `commences_fy`. At or after commencement, or without a recorded
+commencement, staging retains the source row without a numeric counterpart
+and explains why the construction does not carry that year. In Autumn Budget
+2024, identical 2024 employer-NIC worlds precede recorded FY2025–26 and can
+produce annotated zeros. Annual 2024 VAT, SDLT and CGT zeros occur within
+their recorded FY2024–25 commencement, so those artifacts remain visible but
+their FY2024–25 source-head counterparts stay unasserted. The annual April
+snapshot cannot stand in for the part-year policy change. Unsupported heads
+within partial packages likewise remain without numerical counterparts.
+Report completed measure-year artifacts alongside the staged constructed
+head/FY count and gap inventory; a complete artifact grid does not assert
+every published source number.
+
 ## Axis tagging and explained share
 
 Every source comparison row tags `population_vintage`: OBR used the forecast
@@ -476,14 +492,18 @@ ingested claim ids and registered descriptors for the executed worlds; this
 track's registry and artifact identities remain available for that work.
 
 `pipeline/diagnose_uk_event_models.py` records small pinned reproductions of
-specific model investigation candidates. It uses a two-person synthetic
-Carer's Allowance example and direct parameter/formula inspection; it does
+specific model investigation candidates. It uses small synthetic
+households and direct parameter/formula inspection; it does
 not run a national population simulation or claim to size a national gap.
 Run it with `--output results/uk/events/MODEL_DIAGNOSTICS.json`, or use
 `--case <diagnostic_id>` to print one candidate's evidence. Distinguish those
 measured encoding findings from the largest raw unexplained national gaps.
-The Carer's Allowance and UC cases each use a small synthetic simulation;
-respect the same two-simulation concurrency limit when running them. Other
-`--case` selections inspect only parameters and formula metadata.
+The Carer's Allowance, UC, employer-NIC pension-age and two pension-allowance
+cases each use a small synthetic simulation; respect the same two-simulation
+concurrency limit when running them. The runner releases each synthetic world
+before constructing the next. Other `--case` selections inspect only parameters
+and formula metadata. The saved ten candidates include one unresolved UC
+protection investigation. Their national contributions remain unsized;
+they are not ten attributed national costing differences.
 `--from-json results/uk/events/MODEL_DIAGNOSTICS.json --report docs/uk_replay/MODEL_INVESTIGATIONS.md`
 renders a report from saved observations without any engine calculation.
