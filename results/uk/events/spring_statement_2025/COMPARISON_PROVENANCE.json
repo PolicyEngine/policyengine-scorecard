@@ -1,0 +1,71 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_statement_2025",
+ "outputs_sha256": {
+  "COMPARISON.csv": "84173de975986f7f46a43d6506618d840d818f6d1bca3c6e5a116c3c9ceec9b3",
+  "COMPARISON.json": "4638d91c31d70c459c63e7c08f437c993bec03a7d80bb4d8c1e977cc51a8700e",
+  "COMPARISON.md": "0956e0d30191f06cdac5977c0b480e9a2f72acead1de7f22514a07ebe8a17db2"
+ },
+ "registry_path": "data/uk/events/spring_statement_2025_measures.json",
+ "registry_sha256": "4ee750cbd1c1e88551ea68d3fae2462c2edb5ff62665ca5b355f60d2e255ca4a",
+ "replay_grid": {
+  "computed_measure_years": 0,
+  "full_event_complete": false,
+  "full_event_grid_size": 12,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2024
+   },
+   {
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2025
+   },
+   {
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2026
+   },
+   {
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2027
+   },
+   {
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2028
+   },
+   {
+    "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+    "year": 2029
+   },
+   {
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2024
+   },
+   {
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2025
+   },
+   {
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2026
+   },
+   {
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2027
+   },
+   {
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2028
+   },
+   {
+    "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+    "year": 2029
+   }
+  ]
+ },
+ "source_rows": 498,
+ "staged_path": "results/uk/events/spring_statement_2025/STAGED.jsonl",
+ "staged_sha256": "5b5e9a54a684b5f33c8d3024416f35a4d5b42f224d5bbc7bb8694a1bfa50350e",
+ "staging_manifest_path": "results/uk/events/spring_statement_2025/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "65c212b58de31bb2ca4778f603a9499f9948160c289002844b5d75912f6d9909"
+}

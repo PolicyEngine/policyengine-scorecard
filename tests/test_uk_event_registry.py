@@ -28,6 +28,127 @@ def row(identity, value, fy="2024-25", classification="partial"):
     }
 
 
+@pytest.mark.parametrize(
+    "title, program",
+    [
+        ("Savings: Adult ISAs and Junior ISAs", "savings"),
+        ("Individual Savings Accounts: subscription limits", "savings"),
+        ("Help to Save: extend the scheme", "savings"),
+        ("VAT: revise a sector rate", "indirect_tax"),
+        ("NICs: revise a contribution threshold", "tax_benefit"),
+        ("Universal Credit: managed migration", "welfare"),
+    ],
+)
+def test_gap_keywords_keep_standalone_acronyms_and_policy_phrases(title, program):
+    assert registry.gap_reason(title, [row("one", "0")])[2] == program
+
+
+@pytest.mark.parametrize(
+    "title, program",
+    [
+        (
+            "Universal Credit: Amending Severe Disability Premium transitional protection regulations",
+            "welfare",
+        ),
+        (
+            "Home office fees: increase in visa fees and immigration health surcharge",
+            "other",
+        ),
+        ("DWP: employment programme for disabled people", "other"),
+        ("Increased capacity for processing disability benefits", "welfare"),
+        (
+            "Support for Local Government: capitalisation directions and precept flexibilities",
+            "other",
+        ),
+        (
+            "Private Intermittent Securities and Capital Exchange System (PISCES): Exempt transfers of shares from Stamp Taxes on Shares",
+            "other",
+        ),
+        ("Technical adjustment to a transaction rule", "other"),
+    ],
+)
+def test_gap_keywords_do_not_match_inside_unrelated_words(title, program):
+    assert registry.gap_reason(title, [row("one", "0")])[2] == program
+
+
+@pytest.mark.parametrize(
+    "acronym, program",
+    [
+        ("ISA", "savings"),
+        ("ISAs", "savings"),
+        ("VAT", "indirect_tax"),
+        ("NIC", "tax_benefit"),
+        ("NICs", "tax_benefit"),
+    ],
+)
+@given(
+    prefix=st.text(alphabet="qxz", min_size=1, max_size=20),
+    suffix=st.text(alphabet="qxz", min_size=1, max_size=20),
+)
+@settings(deadline=None)
+def test_embedded_acronyms_never_select_their_gap_category(
+    acronym, program, prefix, suffix
+):
+    assert (
+        registry.gap_reason(f"{prefix}{acronym}{suffix}", [row("one", "0")])[2]
+        != program
+    )
+
+
+@pytest.mark.parametrize("head", ["Scottish AME (capital) ", " Scottish AME (current)"])
+def test_public_budget_scope_lookup_preserves_padded_source_labels(head):
+    source = {**row("one", "0"), "tax_head": head}
+    assert registry.is_non_household_head(head)
+    classification, reason, program, _ = registry.gap_reason(
+        "Capital Investment: growth-enhancing investment and defence innovation",
+        [source],
+    )
+    assert classification == "out_of_household_scope"
+    assert program == "scope"
+    assert "public-budget" in reason
+    assert source["tax_head"] == head
+
+
+def test_send_accounts_scope_does_not_generalize_other_ame_cash_payments():
+    source = {**row("one", "0"), "tax_head": "Other AME (current)"}
+    classification, reason, _, _ = registry.gap_reason(
+        "Special Education Needs and Disabilities: Reduction in Local Authority SEND deficits as a result of additional DEL funding",
+        [source],
+    )
+    assert classification == "out_of_household_scope"
+    assert "local-authority SEND deficits" in reason
+    assert (
+        registry.gap_reason("Cash payment to eligible households", [source])[0]
+        == "not_expressible"
+    )
+    assert (
+        registry.gap_reason(
+            "Special Education Needs and Disabilities: Household disability grant paid directly to eligible families",
+            [source],
+        )[0]
+        == "not_expressible"
+    )
+
+
+def test_registry_search_metadata_does_not_depend_on_engine_mapping_order(monkeypatch):
+    source = {
+        **row("one", "0"),
+        "title": "Transaction mechanism",
+        "fiscal_event": "Audit Event",
+    }
+    monkeypatch.setattr(registry, "source_rows", lambda _: [source])
+    parameters = {"gov.z.transaction": 0, "gov.a.transaction": 1}
+    variables = {"z_transaction": {}, "a_transaction": {}}
+    forward = registry.build_registry("audit_event", parameters, variables, None)
+    reverse = registry.build_registry(
+        "audit_event",
+        dict(reversed(list(parameters.items()))),
+        dict(reversed(list(variables.items()))),
+        None,
+    )
+    assert registry.canonical_bytes(forward) == registry.canonical_bytes(reverse)
+
+
 @given(st.lists(st.integers(-(10**12), 10**12), min_size=1, max_size=80), st.data())
 @settings(deadline=None)
 def test_accounting_preserves_rows_and_signed_and_absolute_pounds(values, data):

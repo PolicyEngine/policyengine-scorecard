@@ -2,15 +2,15 @@
 
 The inventories use the pinned populace-uk-2023 bundle definition with policyengine-uk 2.89.2. A seeded registry does not establish a completed numerical replay. Available comparisons use one source head and fiscal year per row.
 
-Numerical comparison outputs available: 1. Registry inventories available: 5.
+Numerical comparison outputs available: 0. Registry inventories available: 5.
 
 | Event | Replay state | Measures | Source rows | Computed rows | Computed FYs |
 |---|---|---:|---:|---:|---|
-| [autumn_budget_2024](autumn_budget_2024/COMPARISON.md) | Numerical comparison available; replay grid incomplete (5/30) | 74 | 1134 | 6 | 2026-27 |
-| autumn_statement_2023 | Registry seeded; numerical replay incomplete | 77 | 1116 | 0 | — |
-| spring_budget_2023 | Registry seeded; numerical replay incomplete | 89 | 1020 | 0 | — |
-| spring_budget_2024 | Registry seeded; numerical replay incomplete | 49 | 816 | 0 | — |
-| spring_statement_2025 | Registry seeded; numerical replay incomplete | 32 | 498 | 0 | — |
+| [autumn_budget_2024](autumn_budget_2024/COMPARISON.md) | Registry seeded; numerical replay incomplete | 74 | 1134 | 0 | — |
+| [autumn_statement_2023](autumn_statement_2023/COMPARISON.md) | Registry seeded; numerical replay incomplete | 77 | 1116 | 0 | — |
+| [spring_budget_2023](spring_budget_2023/COMPARISON.md) | Registry seeded; numerical replay incomplete | 89 | 1020 | 0 | — |
+| [spring_budget_2024](spring_budget_2024/COMPARISON.md) | Registry seeded; numerical replay incomplete | 49 | 816 | 0 | — |
+| [spring_statement_2025](spring_statement_2025/COMPARISON.md) | Registry seeded; numerical replay incomplete | 32 | 498 | 0 | — |
 
 ## Source inventory accounting
 
@@ -20,8 +20,8 @@ These amounts sum all source heads and costing years, including zero cells. They
 |---|---:|---:|---:|---:|
 | autumn_budget_2024 / expressible | 0 | 0 | 0.000 | 0.000 |
 | autumn_budget_2024 / partial | 5 | 60 | 148.279 | 152.288 |
-| autumn_budget_2024 / not_expressible | 44 | 444 | 43.030 | 71.961 |
-| autumn_budget_2024 / out_of_household_scope | 25 | 630 | -381.473 | 476.418 |
+| autumn_budget_2024 / not_expressible | 43 | 438 | 42.163 | 71.094 |
+| autumn_budget_2024 / out_of_household_scope | 26 | 636 | -380.606 | 477.285 |
 | autumn_statement_2023 / expressible | 0 | 0 | 0.000 | 0.000 |
 | autumn_statement_2023 / partial | 2 | 48 | -46.340 | 55.824 |
 | autumn_statement_2023 / not_expressible | 37 | 354 | 7.094 | 31.444 |
@@ -36,66 +36,12 @@ These amounts sum all source heads and costing years, including zero cells. They
 | spring_budget_2024 / out_of_household_scope | 20 | 492 | -1.255 | 25.416 |
 | spring_statement_2025 / expressible | 0 | 0 | 0.000 | 0.000 |
 | spring_statement_2025 / partial | 2 | 18 | 2.365 | 13.031 |
-| spring_statement_2025 / not_expressible | 22 | 204 | 13.741 | 24.364 |
-| spring_statement_2025 / out_of_household_scope | 8 | 276 | -10.530 | 37.584 |
+| spring_statement_2025 / not_expressible | 17 | 156 | 13.906 | 22.174 |
+| spring_statement_2025 / out_of_household_scope | 13 | 324 | -10.696 | 39.774 |
 
 ## Agreement profile
 
-| Tax head | Source-row ratio bins |
-|---|---|
-| Air passenger duty | not_available: 6 |
-| Alcohol duty | not_available: 12 |
-| Business rates | not_available: 18 |
-| CBAM | not_available: 6 |
-| Capital gains tax | not_available: 35, same_sign_ratio_at_least_2: 1 |
-| Climate change levy | not_available: 12 |
-| Corporation tax (onshore) | not_available: 66 |
-| Customs duty | not_available: 12 |
-| Energy profits levy | not_available: 6 |
-| Fuel duty | not_available: 6 |
-| Income tax | not_available: 149, same_sign_ratio_at_least_2: 1 |
-| Inheritance tax | not_available: 36 |
-| Interest and dividend receipts | not_available: 12 |
-| Locally-financed capital expenditure | not_available: 18 |
-| Locally-financed current expenditure | not_available: 36 |
-| NICs | not_available: 59, same_sign_ratio_0.8_to_1.25: 1 |
-| North sea taxes | not_available: 6 |
-| Other AME (current) | not_available: 36 |
-| Other departmental expenditure (capital) | not_available: 24 |
-| PSCE in RDEL | not_available: 174 |
-| PSGI in CDEL | not_available: 42 |
-| Scottish BGA (capital) | not_available: 6 |
-| Scottish BGA (current) | not_available: 138 |
-| Soft drinks Levy | not_available: 6 |
-| Stamp duty | not_available: 29, same_sign_ratio_at_least_2: 1 |
-| Student loans | not_available: 6 |
-| Tobacco duty | not_available: 18 |
-| VAT | not_available: 41, same_sign_ratio_0.8_to_1.25: 1 |
-| VAT refunds | not_available: 12 |
-| Vaping duty | not_available: 12 |
-| Vehicle excise duty | not_available: 6 |
-| Welfare inside cap | not_available: 59, same_sign_ratio_below_0.5: 1 |
-| Welfare outside cap | not_available: 24 |
-
-| Measure type | Source-row ratio bins |
-|---|---|
-| administration | not_available: 288 |
-| business_tax | not_available: 192 |
-| capital_gains_tax | not_available: 71, same_sign_ratio_at_least_2: 1 |
-| carers_allowance | not_available: 12 |
-| fuel_duty | not_available: 6 |
-| indirect_tax | not_available: 42 |
-| inheritance_tax | not_available: 54 |
-| national_insurance | not_available: 28, same_sign_ratio_0.8_to_1.25: 1, same_sign_ratio_at_least_2: 1 |
-| other | not_available: 84 |
-| savings | not_available: 24 |
-| scope | not_available: 156 |
-| stamp_duty_land_tax | not_available: 29, same_sign_ratio_at_least_2: 1 |
-| tax_benefit | not_available: 12 |
-| transport | not_available: 84 |
-| value_added_tax | not_available: 17, same_sign_ratio_0.8_to_1.25: 1 |
-| welfare | not_available: 18 |
-| winter_fuel_payment | not_available: 11, same_sign_ratio_below_0.5: 1 |
+Unavailable: no completed numerical comparison rows have been published. Registry coverage does not supply a PE/OBR agreement profile.
 
 ## Named axes and explained share
 
@@ -103,7 +49,7 @@ population_vintage tags every row: the fiscal event's OBR forecast differs from 
 
 Pinned employer-NIC incidence assigns the wage adjustment fully to employees while holding employer cost fixed. OBR's direct per-head costings exclude separately reported macroeconomic indirect effects. This construction/head_scope difference is named, but its contribution to the raw gaps remains unsized.
 
-Axis-tagged coverage: 6 computed rows, £16.813bn of absolute raw gap. Explained share is available on 0 rows; relevant unsized axes withhold it on the rest. These are different quantities.
+National gaps and explained share are unavailable until numerical comparisons exist.
 
 ## Largest unexplained divergences
 
@@ -111,11 +57,7 @@ The queue below is ranked by absolute residual_plus_unsized, after any evidence-
 
 | Event / measure | FY / head | Residual £bn | Variables | Evidence / diagnosis | Minimal replay |
 |---|---|---:|---|---|---|
-| autumn_budget_2024 / Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to £5,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to £10,500, remove the £100,000 Employment Allowance eligibility threshold | 2026-27 / Income tax | -8.195 | income_tax | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --measures autumn_budget_2024__employer_nics_package --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2026` |
-| autumn_budget_2024 / Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026 | 2026-27 / Capital gains tax | 4.698 | capital_gains_tax | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --measures autumn_budget_2024__capital_gains_main_rates_and_reliefs --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2026` |
-| autumn_budget_2024 / Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024 | 2026-27 / Stamp duty | 1.772 | stamp_duty_land_tax | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --measures autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2026` |
-| autumn_budget_2024 / Winter Fuel Payments: Target payments at recipients of Pension Credit and certain other means-tested benefits from winter 2024-25 | 2026-27 / Welfare inside cap | -1.052 | winter_fuel_allowance | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --measures autumn_budget_2024__winter_fuel_means_test --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/autumn_budget_2024/autumn_budget_2024__winter_fuel_means_test_2026` |
-| autumn_budget_2024 / VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025 | 2026-27 / VAT | -0.265 | private_school_vat | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --measures autumn_budget_2024__private_school_vat_20pct --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2026` |
+| No computed divergences | — | — | — | — | — |
 
 Evidence-backed PolicyEngine issue candidates recorded: 6. No upstream issues were filed by this replay lane.
 

@@ -72,6 +72,8 @@ NON_HOUSEHOLD_HEADS = {
     "PSGI in CDEL",
     "Scottish BGA (current)",
     "Scottish BGA (capital)",
+    "Scottish AME (current)",
+    "Scottish AME (capital)",
     "Welsh BGA (current)",
     "Welsh BGA (capital)",
     "VAT refunds",
@@ -83,6 +85,11 @@ NON_HOUSEHOLD_HEADS = {
     "Student loans",
     "Net public service pension payments",
 }
+
+
+def is_non_household_head(head):
+    """Ignore label padding for scope lookup; retain the source label verbatim."""
+    return head.strip() in NON_HOUSEHOLD_HEADS
 
 
 def canonical_bytes(value):
@@ -359,7 +366,7 @@ def authored_construction(event_slug, title, resolve):
             [_head("Capital gains tax", ["capital_gains_tax"])],
             partial=[
                 "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.",
-                "The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30; annual formulas sample the period start. No onset repair is applied.",
+                "The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.",
                 "CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
             ],
             note="A literal pre-announcement main-rate reversal, not a repair of the certified world's delayed rate onset or gains composition. Receipt timing and realisations responses remain divergence axes.",
@@ -384,7 +391,7 @@ def authored_construction(event_slug, title, resolve):
                 "The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
             ],
             "commences_fy": "2024-25",
-            "note": "The pin still has the 3% surcharge scale, so the announcement is a forward 2pp increase to every marginal bracket. The date-keyed onset makes CY2024 inert under annual period-start sampling. Main-home rates and thresholds are retained.",
+            "note": "The pin still has the 3% surcharge scale, so the announcement is a forward 2pp increase to every marginal bracket. Government parameter processing samples 30 April and applies that value across each annual period; the October2024 onset is therefore absent from processed 2024 and present throughout processed 2025. Main-home rates and thresholds are retained.",
         }
     if event_slug == "autumn_budget_2024" and title.startswith(
         "Winter Fuel Payments: Target payments"
@@ -519,6 +526,18 @@ def authored_construction(event_slug, title, resolve):
 
 def gap_reason(title, rows):
     low = title.lower()
+    if (
+        low.startswith("special education needs and disabilities:")
+        and "local authority send deficits" in low
+        and "del funding" in low
+        and all(r["tax_head"].strip() == "Other AME (current)" for r in rows)
+    ):
+        return (
+            "out_of_household_scope",
+            "The PMD title identifies local-authority SEND deficits reduced by additional DEL funding, with only the Other AME (current) head. These are local-government accounts, not a household cash entitlement or liability.",
+            "local_government_finance",
+            r"local_authority|send|department",
+        )
     if re.match(
         r"business rates|capital allowances|r&d|research and development|energy profits levy|electricity generator levy|creative reliefs|cultural reliefs|audio.visual|orchestra|visual effects|gaming duty|carbon border|carbon price|climate change|re.insurance|implement the oecd",
         low,
@@ -529,10 +548,15 @@ def gap_reason(title, rows):
             "business_tax",
             r"corporation|business|research|firm",
         )
-    if all(r["tax_head"] in NON_HOUSEHOLD_HEADS for r in rows):
+    if all(is_non_household_head(r["tax_head"]) for r in rows):
+        why = (
+            "PSGI in CDEL and Scottish AME capital/current are public-budget and devolved-government accounts, not household cash entitlements or liabilities. Scope lookup ignores outer label padding while retaining the original PMD label."
+            if any(r["tax_head"].strip().startswith("Scottish AME") for r in rows)
+            else "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads."
+        )
         return (
             "out_of_household_scope",
-            "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+            why,
             "scope",
             r"firm|corporation|department|block_grant",
         )
@@ -562,7 +586,7 @@ def gap_reason(title, rows):
             r"carried_interest|partnership|liquidat|llp",
         ),
         (
-            r"isa|savings accounts|child trust|help to save",
+            r"\bisas?\b|savings accounts|child trust|help to save",
             "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
             "savings",
             r"isa|subscription|help_to_save|child_trust",
@@ -586,7 +610,7 @@ def gap_reason(title, rows):
             r"vehicle|company_car|van_benefit|air_passenger",
         ),
         (
-            r"surplus earnings|transitional|migration|severe disability|minimum income floor|assessment|descriptor|reassessment|award review|capacity for processing|take.up|conditionality|sanctions|administrative earnings",
+            r"surplus earnings|transitional|\bmigration\b|severe disability|minimum income floor|assessment|descriptor|reassessment|award review|capacity for processing|take.up|conditionality|sanctions|administrative earnings",
             "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
             "welfare",
             r"surplus|transitional|claim_history|descriptor|assessment|deduction",
@@ -610,13 +634,13 @@ def gap_reason(title, rows):
             r"fuel_duty|petrol|diesel",
         ),
         (
-            r"alcohol|tobacco|vaping|soft drinks|vat|carbon|levy|tariff",
+            r"alcohol|tobacco|vaping|soft drinks|\bvat\b|carbon|levy|tariff",
             "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
             "indirect_tax",
             r"alcohol|tobacco|vaping|vat|levy",
         ),
         (
-            r"childcare|housing allowance|pensions|allowance|savings|national insurance|nic",
+            r"childcare|housing allowance|pensions|allowance|savings|national insurance|\bnics?\b",
             "The relevant liability exists, but this announcement's counterfactual path or targeted eligibility has not been established on the certified population; no guessed parameter or baseline.",
             "tax_benefit",
             r"childcare|lha|pension|allowance|national_insurance",
@@ -685,12 +709,12 @@ def build_registry(event_slug, engine_parameters, engine_variables, resolve):
                 else "model_or_data_gap"
             )
         rx = re.compile(search, re.IGNORECASE)
-        ph = [
+        ph = sorted(
             p
             for p in engine_parameters
             if rx.search(p) and not p.startswith("baseline.")
-        ]
-        vh = [v for v in engine_variables if rx.search(v)]
+        )
+        vh = sorted(v for v in engine_variables if rx.search(v))
         m.update(
             {
                 "measure_key": f"{event_slug}__{key}",
@@ -714,9 +738,8 @@ def build_registry(event_slug, engine_parameters, engine_variables, resolve):
         m["unmapped_obr_heads"] = sorted({r["tax_head"] for r in rs} - mapped)
         for row in rs:
             r = dict(row)
-            if (
-                classification == "out_of_household_scope"
-                or r["tax_head"] in NON_HOUSEHOLD_HEADS
+            if classification == "out_of_household_scope" or is_non_household_head(
+                r["tax_head"]
             ):
                 r["classification"] = "out_of_household_scope"
                 r["classification_reason"] = (

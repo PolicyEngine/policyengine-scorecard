@@ -1,9 +1,8 @@
 {
  "by_status": {
-  "constructed": 6,
-  "not_computed": 1128
+  "not_computed": 1134
  },
- "computed_measure_years": 5,
+ "computed_measure_years": 0,
  "event": "autumn_budget_2024",
  "full_event_complete": false,
  "full_event_grid_size": 30,
@@ -18,6 +17,10 @@
   },
   {
    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
    "year": 2027
   },
   {
@@ -38,6 +41,10 @@
   },
   {
    "measure_key": "autumn_budget_2024__employer_nics_package",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_budget_2024__employer_nics_package",
    "year": 2027
   },
   {
@@ -58,6 +65,10 @@
   },
   {
    "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
    "year": 2027
   },
   {
@@ -78,6 +89,10 @@
   },
   {
    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
    "year": 2027
   },
   {
@@ -95,6 +110,10 @@
   {
    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
    "year": 2025
+  },
+  {
+   "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+   "year": 2026
   },
   {
    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
@@ -109,12 +128,12 @@
    "year": 2029
   }
  ],
- "registry_sha256": "77b9087c3aeb9858f53dbb965d6e59632b5e75e5f05ff74774eec95e026b5d8b",
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
  "source_rows": 1134,
  "source_value_gbp": -190164695347.9921,
  "source_value_gbp_decimal": "-190164695347.9920989661272",
  "staged_path": "results/uk/events/autumn_budget_2024/STAGED.jsonl",
  "staged_rows": 1134,
- "staged_sha256": "99f9197a18acca4cbbbd68a5d461d57346b9e828adf42ad70b0697ff1a4f7644",
+ "staged_sha256": "8786551b3d8f26d560a4110fccdf6d12ec2edfacd410dbf2e069617a77c81d21",
  "staged_value_gbp_decimal": "-190164695347.9920989661272"
 }

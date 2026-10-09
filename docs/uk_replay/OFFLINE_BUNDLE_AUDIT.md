@@ -17,3 +17,11 @@ Only these HF cache entries are required, under `datasets--policyengine--populac
 | `blobs/f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833` | Required only when retaining that symlink |
 
 Exclude `refs/main`, other revisions, calibration artifacts, other dataset repositories, and token/configuration files. The installed package supplies its own bundled manifest; changing that manifest would change the inspected source identity.
+
+The subsequent Modal preflight exercised this offline path with runtime
+network blocked. It confirmed the exact certified build, dataset URI,
+digest and three package pins, with `compatibility_basis=built_with_model_package`
+and `certified_by=policyengine.py bundle certification`. The first nonzero
+private-school VAT 2026 artifact matched the local artifact byte-for-byte;
+the separate [determinism evidence](DETERMINISM.md) records that measured
+check. The JSON receipt above remains the original engine-free source audit.

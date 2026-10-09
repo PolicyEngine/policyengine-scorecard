@@ -1,0 +1,67 @@
+{
+ "by_status": {
+  "not_computed": 1116
+ },
+ "computed_measure_years": 0,
+ "event": "autumn_statement_2023",
+ "full_event_complete": false,
+ "full_event_grid_size": 12,
+ "missing_measure_years": [
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2023
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2023
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2028
+  }
+ ],
+ "registry_sha256": "a6b08eb4873fb598434afcb0385fea9fff88c382287d625dd0718e0acc602fba",
+ "source_rows": 1116,
+ "source_value_gbp": -106739601405.0282,
+ "source_value_gbp_decimal": "-106739601405.02819512486489776",
+ "staged_path": "results/uk/events/autumn_statement_2023/STAGED.jsonl",
+ "staged_rows": 1116,
+ "staged_sha256": "081f78d816886d7da92d7fcd8e440f86f41b8c22b9fa6ca246f83ae31795e80e",
+ "staged_value_gbp_decimal": "-106739601405.02819512486489776"
+}

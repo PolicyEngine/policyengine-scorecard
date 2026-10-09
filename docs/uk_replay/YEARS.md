@@ -50,6 +50,16 @@ processed values rather than infer monthly effects from raw YAML dates.
 Every staged comparison therefore retains
 `cy_proxies_fy`, `baseline_vintage` and `population_vintage` tags.
 
+The isolated Modal worker has now passed the existing managed-bundle
+preflight and executed a nonzero private-school VAT replay for CY 2026.
+Its artifact is byte-identical to the local CY 2026 artifact on the same
+certified build and digest, despite Linux Python 3.12.13 versus local macOS
+Python 3.12.14; see [the saved determinism evidence](DETERMINISM.md).
+That observation confirms the managed projection path for this measure-year.
+The supported 2023–2030 window still rests on the dataset metadata and engine
+extension evidence above. Full Autumn Budget 2024 coverage requires its
+complete 30-pair manifest; the focused check alone supplies one pair.
+
 To inspect the evidence in a rebuilt pinned environment:
 
 ```bash

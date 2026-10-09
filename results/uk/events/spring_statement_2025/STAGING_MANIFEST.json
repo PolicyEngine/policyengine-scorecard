@@ -1,0 +1,67 @@
+{
+ "by_status": {
+  "not_computed": 498
+ },
+ "computed_measure_years": 0,
+ "event": "spring_statement_2025",
+ "full_event_complete": false,
+ "full_event_grid_size": 12,
+ "missing_measure_years": [
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2029
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2029
+  }
+ ],
+ "registry_sha256": "4ee750cbd1c1e88551ea68d3fae2462c2edb5ff62665ca5b355f60d2e255ca4a",
+ "source_rows": 498,
+ "source_value_gbp": 5575279133.025794,
+ "source_value_gbp_decimal": "5575279133.02579407146152",
+ "staged_path": "results/uk/events/spring_statement_2025/STAGED.jsonl",
+ "staged_rows": 498,
+ "staged_sha256": "5b5e9a54a684b5f33c8d3024416f35a4d5b42f224d5bbc7bb8694a1bfa50350e",
+ "staged_value_gbp_decimal": "5575279133.02579407146152"
+}

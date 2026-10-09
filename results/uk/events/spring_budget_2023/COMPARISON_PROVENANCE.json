@@ -1,0 +1,43 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "99541c605aab24e68992d734478a292a0c22908b5452e3c3aa1aaf015af6057f",
+  "COMPARISON.json": "90d2c361e3a0aa3b43160a9662ce125600c231ff2bc8cfdcda312f3343e90338",
+  "COMPARISON.md": "401848633e9ed4fabebd7ac495f4aa04d470224788a3720ed94653434041a526"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "1b6f738faafd9e441e2bd1e2ccb1db198837c551c0fc8279536e3a63bf345393",
+ "replay_grid": {
+  "computed_measure_years": 0,
+  "full_event_complete": false,
+  "full_event_grid_size": 5,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2024
+   },
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2025
+   },
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2026
+   },
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2027
+   }
+  ]
+ },
+ "source_rows": 1020,
+ "staged_path": "results/uk/events/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "7e13f704e79e2ea91a6c2e2317a72d4d753b3f566559b669d90eaf3088fe5523",
+ "staging_manifest_path": "results/uk/events/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "a577595a00e5398d52e4953a3041b9b11902711f2cb8c2b9a82caf367ca2cef8"
+}

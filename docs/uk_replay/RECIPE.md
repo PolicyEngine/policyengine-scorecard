@@ -48,6 +48,20 @@ For `not_expressible`, distinguish an evidenced missing mechanism from a
 lane has not established an executable construction; it does not establish
 that the engine lacks the underlying liability model.
 
+Title keywords need token boundaries: ISA/ISAs, VAT and NIC/NICs must not
+match disability, private, innovation or technical. Likewise, immigration
+is not UC migration. The registry tests cover these cases and generated
+embedded acronyms. Scope lookup strips only outer head-label whitespace;
+the source label itself remains unchanged for accounting and provenance.
+
+Read ambiguous spending heads in the context of the source title. Autumn
+Budget 2024's SEND-deficit reduction is local-authority finance funded by
+additional DEL, recorded only under `Other AME (current)`, so it is outside
+household scope. That does not make every Other AME payment outside scope.
+Spring Statement 2025's capital-investment package uses `PSGI in CDEL` and
+`Scottish AME (capital) `, both public-budget accounts; the trailing space
+does not create a household counterpart.
+
 Autumn Budget 2024 examples:
 
 * Employer NICs: reverse the rate increase and secondary-threshold reduction
@@ -285,8 +299,12 @@ UV_CACHE_DIR=.venv-uv-cache uv pip install --python .venv-replay/bin/python 'pol
 Force `HF_HUB_OFFLINE=1`,
 `HF_DATASETS_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1` before importing the engine.
 The scripts also force those settings. They resolve the managed release from
-the local `datasets--policyengine--populace-uk-private` Hugging Face cache and
-hash the HDF5 before and after simulations. No matching digest means no run.
+the installed loader's bundled UK manifest, then find the pinned HDF5 in the
+local `datasets--policyengine--populace-uk-private` Hugging Face cache and
+hash it before and after simulations. No matching digest means no run.
+The loader's separate release-metadata request does not obey those offline
+flags; the Modal adapter blocks runtime network so it uses the audited
+packaged certification fallback.
 Use a writable uv cache within the workspace if the default cache is outside
 the sandbox.
 
@@ -336,15 +354,20 @@ The medians summarize the checked-in mode-2 artifacts' `performance` fields,
 deduplicating five baseline records and using 94 alternate records. Six
 baselines plus thirty alternates suggest roughly
 40 minutes on a quiet host, excluding preflight overhead; this is a historical
-planning estimate, not an ETA for the current run. The current shared host
-took about twenty minutes for preflight alone, and its initial two-worker
-launch required retrying with one worker. Actual full-event wall time remains
-pending. Exact observed baseline and measure seconds are saved in each event's
-`RUN_LOG.json`; use those measured timings for the next lane. Registry accounting, staging
+planning estimate. The current shared host took about twenty minutes for
+preflight alone, and the replay moved to Modal after the local two-worker
+launch required retrying with one worker. The first Modal private-school VAT
+2026 replay recorded a 70.739s certified baseline, a 124.811s alternate,
+208.145s in the generic CLI, and 212.351s across the remote worker. Those are
+one measure-year's observations, not a full-event ETA. Actual full-event
+wall time remains pending. Exact observed baseline and measure seconds are
+saved in each event's `RUN_LOG.json`; use those measured timings for the next
+lane. Registry accounting, staging
 and comparison are engine-free; the builder validates parameters and variables
 against the pinned engine.
 
-This replay uses the local managed runner. The inspected [Modal runner in
+This replay now uses the isolated UK Modal adapter after its offline
+preflight and first numerical check completed. The inspected [Modal runner in
 PR #53](https://github.com/PolicyEngine/policyengine-scorecard/pull/53), at
 head `50b426055049cb42105200c268ca9ea46075f544`, is open and US-specific:
 its [backfill driver](https://github.com/PolicyEngine/policyengine-scorecard/blob/50b426055049cb42105200c268ca9ea46075f544/tools/reform_validation/backfill.py)
@@ -355,12 +378,19 @@ selects US releases. Its
 hash verification protects that US artifact, but it has no UK event/bundle
 interface, pinned UK environment or Hugging Face offline setup, and it fetches
 remote metadata and data. The isolated `pipeline/modal_uk_event.py` adapter
-uses the unchanged UK replay CLI instead. Remote compatibility and actual
-runtime remain pending until its preflight and focused repeat produce
-reviewed receipts; no full remote event is established by the implementation
-or its engine-free transport tests.
+uses the unchanged UK replay CLI instead. Its actual preflight verified the
+complete pinned environment, exact certified build and digest, and packaged
+certification with runtime network blocked. Its first nonzero private-school
+VAT 2026 artifact is byte-identical to the local artifact, SHA-256
+`48666307c1ff045f07b39510c1dc22ab46cbd4d814320c34572d69e0a55ea931`.
+Its second fresh remote repeat produced the same bytes. See
+[the determinism evidence](DETERMINISM.md) for the saved receipts and the
+scope of that check. Both repeats bind the original uploaded registry;
+subsequent classification corrections change artifact metadata hashes and
+require new receipts. A focused result does not establish full event
+completion; that requires the full thirty-pair manifest.
 
-The optional adapter needs a separate control environment because its
+The adapter needs a separate control environment because its
 serialized function must use the remote SDK interpreter's Python 3.12 minor
 version. The local compute and control environments use Python 3.12.14;
 the remote uv venv pins Python 3.12.13, available as a Linux x86_64 GNU
@@ -368,10 +398,13 @@ download in uv's catalog. `UV_CACHE_DIR=.venv-uv-cache uv python list 3.12 --all
 --all-arches --only-downloads --show-urls --offline` records that distinction;
 the [standalone Python download](https://releases.astral.sh/github/python-build-standalone/releases/download/20260414/cpython-3.12.13%2B20260414-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
 is explicit. The wrapper's runtime receipt records the actual patch and
-platform. The remote venv installs the complete checked-in `requirements.txt`
-freeze; the model, numerical dependencies and certified data pins are unchanged.
+platform. The actual Linux 3.12.13 VAT artifact matched the local macOS
+3.12.14 artifact byte-for-byte. This establishes the observed measure-year,
+not a blanket guarantee for every platform or measure. The remote venv
+installs the complete checked-in `requirements.txt` freeze; the model,
+numerical dependencies and certified data pins are unchanged.
 Its one container has two
-CPUs, 32GiB memory, a 3,600-second timeout, one input and one replay worker.
+CPUs, 32GiB memory, a 10,800-second timeout, one input and one replay worker.
 Only allowlisted source files, the certified H5 and its single HF revision
 ref are mounted. Runtime network is blocked, Hugging Face offline mode is
 forced, no credentials are forwarded, and the existing managed loader's
@@ -413,10 +446,12 @@ and preserves canonical path strings in receipts. The wrapper never writes
 local canonical results. Validate downloaded input identities, artifact
 hashes and staging invariants, then adopt the returned relative files
 atomically only after the local event run has stopped. Keep raw receipts
-for provenance. Run only one Modal invocation at a time and count it with
-local simulations toward the overall maximum of two. Remote wall time is
-recorded separately in the Modal receipt; measure it before treating Modal
-as the next lane's compute route.
+for provenance. Each Modal invocation uses one replay worker. Count every
+active invocation and local simulation toward the overall maximum of two;
+separate invocations do not share a global concurrency gate. A full event
+plus one focused repeat uses both slots. Remote wall time is recorded
+separately in `MODAL_RECEIPT.json`; use the completed event's observed timings
+when planning the next lane.
 
 Each event writes deterministic numerical artifacts, `RUN_MANIFEST.json`,
 `STAGED.jsonl`, `STAGING_MANIFEST.json`, `COMPARISON.csv`, `COMPARISON.json`,

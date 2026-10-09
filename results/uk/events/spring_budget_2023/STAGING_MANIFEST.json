@@ -1,0 +1,39 @@
+{
+ "by_status": {
+  "not_computed": 1020
+ },
+ "computed_measure_years": 0,
+ "event": "spring_budget_2023",
+ "full_event_complete": false,
+ "full_event_grid_size": 5,
+ "missing_measure_years": [
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2023
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "year": 2027
+  }
+ ],
+ "registry_sha256": "1b6f738faafd9e441e2bd1e2ccb1db198837c551c0fc8279536e3a63bf345393",
+ "source_rows": 1020,
+ "source_value_gbp": -88049522115.94942,
+ "source_value_gbp_decimal": "-88049522115.949411543823814",
+ "staged_path": "results/uk/events/spring_budget_2023/STAGED.jsonl",
+ "staged_rows": 1020,
+ "staged_sha256": "7e13f704e79e2ea91a6c2e2317a72d4d753b3f566559b669d90eaf3088fe5523",
+ "staged_value_gbp_decimal": "-88049522115.949411543823814"
+}
