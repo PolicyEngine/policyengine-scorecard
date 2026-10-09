@@ -37,8 +37,10 @@ The engine also contains longer-run economic assumptions, but its ordinary
 single-year dataset extension ends at 2030. A formula returning a number
 outside that range would not establish supported population inputs.
 `compute_uk_event.validate_years` therefore rejects 2022 and 2031, even if
-an event registry mistakenly includes them. Historical events beginning
-before 2023–24 require track 2's historical rules and per-year populations.
+an event registry mistakenly includes them. Costing years before 2023–24
+require track 2's historical rules and per-year populations. They stay in
+the source inventory: Spring Budget 2023 retains 170 FY2022–23 cells while
+its executable window begins in CY 2023.
 
 The annual calculation uses the requested population-input year explicitly,
 while processed government policy parameters use the engine's 30 April

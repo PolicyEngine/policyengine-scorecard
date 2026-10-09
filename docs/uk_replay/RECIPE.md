@@ -17,8 +17,9 @@ or classify an unexplained gap as an engine defect without evidence.
 Group the exact source titles within the chosen `conditions.fiscal_event`.
 Keep each source head and FY as its own `source_rows` entry, including zero
 cells. The source-row id includes the snapshot position and the source line's
-digest. The original `reform_hint`, `tax_head` or spending head, FY, table,
-column, metric and gain-to-Exchequer value remain attached.
+digest. The harvested `reform_hint` is stored as the whitespace-trimmed
+`title`; the original tax or spending head, FY, table, column, metric and
+gain-to-Exchequer value remain attached.
 
 Assign every source row exactly one of these classes:
 
@@ -308,9 +309,14 @@ Build a Python 3.12 uv environment in the assigned workspace and install the
 managed runner with these exact compatibility pins:
 
 ```bash
-UV_CACHE_DIR=.venv-uv-cache uv venv --python 3.12 .venv-replay
-UV_CACHE_DIR=.venv-uv-cache uv pip install --python .venv-replay/bin/python 'policyengine==5.0.2' 'policyengine-uk==2.89.2' 'policyengine-core==3.27.1' pytest hypothesis pyyaml
+UV_CACHE_DIR=.venv-uv-cache uv venv --python 3.12.14 .venv-replay
+UV_CACHE_DIR=.venv-uv-cache uv pip install --python .venv-replay/bin/python -r docs/uk_replay/requirements.txt
 ```
+
+The freeze includes `policyengine==5.0.2`, `policyengine-uk==2.89.2`,
+`policyengine-core==3.27.1`, and the exact numerical dependencies used for
+this replay. Pinning only the three PolicyEngine packages would leave the
+numerical environment unconstrained.
 
 Force `HF_HUB_OFFLINE=1`,
 `HF_DATASETS_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1` before importing the engine.
@@ -459,10 +465,33 @@ The download prefix receives the returned ROOT-relative paths, so this
 command writes locally under
 `.venv-replay-checks/modal-downloads/full_ab24/results/uk/events/autumn_budget_2024/`
 and preserves canonical path strings in receipts. The wrapper never writes
-local canonical results. Validate downloaded input identities, artifact
-hashes and staging invariants, then adopt the returned relative files
-atomically only after the local event run has stopped. Keep raw receipts
-for provenance. Each Modal invocation uses one replay worker. Count every
+local canonical results. Inspect the returned bundle with the engine-free
+adoption CLI. Its default command is read-only: it validates the current
+uploaded-input commitments, runtime pins, exact source accounting, artifact
+hashes, head orientation, complete event grid and per-year progress receipts.
+
+```bash
+PYTHONPATH=. .venv-replay/bin/python -m pipeline.adopt_uk_event --event autumn_budget_2024 --download-root .venv-replay-checks/modal-downloads/full_ab24 > .venv-replay-checks/full_ab24_adoption_report.json
+```
+
+After reviewing that report and stopping the local event run, adopt the
+complete canonical bundle. Input, download and destination identities are
+checked again before the first write. Replaced bytes are preserved under an
+empty ignored backup prefix; each file is replaced atomically and
+`RUN_MANIFEST.json` is installed last.
+
+```bash
+PYTHONPATH=. .venv-replay/bin/python -m pipeline.adopt_uk_event --event autumn_budget_2024 --download-root .venv-replay-checks/modal-downloads/full_ab24 --adopt --local-run-stopped --backup-root .venv-replay-checks/modal-adoption-backups/full_ab24
+PYTHONPATH=. .venv-replay/bin/python pipeline/stage_uk_event.py --event autumn_budget_2024
+PYTHONPATH=. .venv-replay/bin/python pipeline/compare_uk_event.py --event autumn_budget_2024 --summary
+```
+
+If existing numerical bytes differ, adoption stops and lists the changed
+fields and head effects. `--allow-changed-existing` permits replacement only
+after that report has been reviewed; original bytes remain in the backup.
+`--allow-partial` permits read-only inspection of a focused download, but
+partial or noncanonical outputs cannot be adopted. Keep raw receipts for
+provenance. Each Modal invocation uses one replay worker. Count every
 active invocation and local simulation toward the overall maximum of two;
 separate invocations do not share a global concurrency gate. A full event
 plus one focused repeat uses both slots. Remote wall time is recorded
