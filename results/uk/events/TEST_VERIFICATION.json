@@ -1,5 +1,5 @@
 {
- "actual_national_determinism": "pending separate rerun of a completed measure/year",
+ "actual_national_determinism": "Original local VAT2026 plus two fresh offline Modal runs byte-identical on frozen registry77b9087c; immutable artifact and full receipts in DETERMINISM_VERIFICATION.json. Fresh final-registry run differs only in registry SHA; final full-grid byte check pending.",
  "consolidated_pytest": {
   "environment": "Python 3.12.14 with CI test dependencies; no policyengine-uk installed, so no additional engine systems or simulations",
   "log": ".venv-replay-checks/full-replay-tests.log",
@@ -12,6 +12,20 @@
   "passed": 334,
   "reason": "Two existing mode-2 dry-run subprocesses exceeded their 60 second limits under heavy shared-host contention.",
   "subprocess_startup_timeouts": 2
+ },
+ "final_post_classification_pytest": {
+  "environment": "Python 3.12.14 with test dependencies and no policyengine-uk installed; engine-optional tests skipped",
+  "log": ".venv-replay-checks/final-post-classifier-tests.log",
+  "passed": 385,
+  "scope": "11 event, Modal, AB2025 and mode-2 registry/staging/decomposition regression test files",
+  "seconds": 403.27,
+  "skipped": 9
+ },
+ "later_focused_checks": {
+  "actual_repeat_provenance_checks_passed": 2,
+  "classification_suite_passed": 40,
+  "ignored_adoption_guard_checks_passed": 3,
+  "modal_adapter_passed": 23
  },
  "legacy_proof": "LEGACY_VERIFICATION.json",
  "pinned_environment": {
