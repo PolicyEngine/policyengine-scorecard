@@ -80,7 +80,7 @@ REPOSITORY_FILES = (
 RESOURCE_LIMITS = {
     "cpu": 2,
     "memory_mib": 32768,
-    "timeout_seconds": 3600,
+    "timeout_seconds": 10800,
     "max_containers": 1,
     "max_inputs": 1,
     "workers": 1,
@@ -479,7 +479,7 @@ def modal_function(mounts: dict[str, Path]):
         include_source=False,
         cpu=(2, 2),
         memory=(32768, 32768),
-        timeout=3600,
+        timeout=10800,
         max_containers=1,
         retries=0,
         block_network=True,
@@ -640,8 +640,12 @@ def main(argv: list[str] | None = None) -> int:
     if target.exists() and any(target.iterdir()):
         raise ValueError("choose an empty download prefix before a remote run")
     modal, app, replay = modal_function(mounts)
+    response = None
     with modal.enable_output(), app.run():
         response = replay.remote(payload)
+    if response is None:
+        print("Modal run interrupted; no output downloaded", file=sys.stderr)
+        return 130
     paths = save_download(response, payload, args.download_root)
     print(
         f"verified and downloaded {len(paths)} small replay files under {args.download_root}"

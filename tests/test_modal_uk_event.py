@@ -3,6 +3,7 @@
 import hashlib
 import json
 import sys
+from contextlib import nullcontext
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -251,6 +252,42 @@ def test_provider_serialization_requires_matching_python_minor(monkeypatch):
             runner.modal_function({})
 
 
+def test_interrupted_modal_context_returns_130_without_downloading(
+    monkeypatch, tmp_path, capsys
+):
+    class SuppressInterrupt:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, kind, value, traceback):
+            return kind is KeyboardInterrupt
+
+    def interrupted_remote(payload):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(runner, "validate_selection", lambda request: None)
+    monkeypatch.setattr(
+        runner, "input_manifest", lambda event, hf_cache=None: ({"event": event}, {})
+    )
+    monkeypatch.setattr(runner, "download_prefix", lambda value: tmp_path / "download")
+    monkeypatch.setattr(
+        runner,
+        "modal_function",
+        lambda mounts: (
+            SimpleNamespace(enable_output=nullcontext),
+            SimpleNamespace(run=SuppressInterrupt),
+            SimpleNamespace(remote=interrupted_remote),
+        ),
+    )
+    monkeypatch.setattr(
+        runner,
+        "save_download",
+        lambda *args: pytest.fail("interrupted run must not download"),
+    )
+    assert runner.main(["--event", "autumn_budget_2024", "--execute"]) == 130
+    assert "interrupted; no output downloaded" in capsys.readouterr().err
+
+
 def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
     monkeypatch, inputs
 ):
@@ -300,7 +337,9 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
     configuration = recorded["function"]
     assert configuration["cpu"] == (2, 2)
     assert configuration["memory"] == (32768, 32768)
-    assert configuration["timeout"] == 3600
+    assert (
+        configuration["timeout"] == runner.RESOURCE_LIMITS["timeout_seconds"] == 10800
+    )
     assert configuration["max_containers"] == 1
     assert configuration["block_network"] is True
     assert configuration["include_source"] is False
