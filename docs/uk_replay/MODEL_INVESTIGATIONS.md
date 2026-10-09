@@ -11,7 +11,7 @@ The formula uses care hours or reported receipt and no earnings test. The AB2024
 Evidence: `variables/gov/dwp/carers_allowance.py`; source SHA-256 `92657ce086a44f8fc7c1991167b23c9e088e53a5ae32163d4f46fb5ebda7db5a`. Full source and measured observations are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`.
 
 ```bash
-.venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case carers_allowance_earnings_test_absent
+PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case carers_allowance_earnings_test_absent
 ```
 
 Observed:
@@ -46,7 +46,7 @@ The harvested AB2024 title specifies 30 October 2024, while the raw main-rate sc
 Evidence: `parameters/gov/hmrc/cgt/basic_rate.yaml`; source SHA-256 `0a1896eb3f2007ca95811765e8eabcf526af7831897a5d105d8b18c6c9fe58ed`. Full source and measured observations are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`.
 
 ```bash
-.venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case cgt_main_rate_commencement
+PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case cgt_main_rate_commencement
 ```
 
 Observed:
@@ -80,7 +80,7 @@ The source title raises HRAD from 3% to 5% on 31 October 2024. The pinned additi
 Evidence: `parameters/gov/hmrc/stamp_duty/residential/purchase/additional/rate.yaml`; source SHA-256 `0467640e77930ae05b3f923d8ed85eb37f634200e225a49766ec971785c48fb6`. Full source and measured observations are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`.
 
 ```bash
-.venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case sdlt_additional_home_hike_absent
+PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case sdlt_additional_home_hike_absent
 ```
 
 Observed:
@@ -127,7 +127,7 @@ The harvested AB2024 title applies 20% VAT to private-school education and board
 Evidence: `parameters/gov/contrib/labour/private_school_vat.yaml`; source SHA-256 `d108161e9d328757f935e0149c27fb06ead467d2e16f359a4b79ff65b8c26633`. Full source and measured observations are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`.
 
 ```bash
-.venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case private_school_vat_current_law_lever_zero
+PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case private_school_vat_current_law_lever_zero
 ```
 
 Observed:
@@ -149,7 +149,7 @@ The existing mode-2 registry records the dividend thresholds lagging the main ba
 Evidence: `parameters/gov/hmrc/income_tax/rates/dividends.yaml`; source SHA-256 `d3bcbc7fec39442b8313401c9c84f9fe7d704abf070e9a91a4d01478b54f8244`. Full source and measured observations are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`.
 
 ```bash
-.venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case dividend_band_threshold_lag
+PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case dividend_band_threshold_lag
 ```
 
 Observed:
@@ -186,7 +186,7 @@ The existing AB2025 baseline integrity assessment states the prior-law Class 4 f
 Evidence: `parameters/gov/hmrc/national_insurance/class_4/thresholds/lower_profits_limit.yaml`; source SHA-256 `22412335d15673fd57fe56d9a9989675c02cc3ed64fce33ca3b57f6906d90dd5`. Full source and measured observations are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`.
 
 ```bash
-.venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case class4_threshold_indexation_from_2027
+PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case class4_threshold_indexation_from_2027
 ```
 
 Observed:
@@ -217,7 +217,7 @@ The default Simulation constructor executes a deterministic UC modifier. It prot
 Evidence: `scenarios/uc_reform.py`; source SHA-256 `5f139b8af2579099d1842c86ad5c4de8fc1984d6adb77ed9ce25dbfebd4e9eec`. Full source and measured observations are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`.
 
 ```bash
-.venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case uc_lcwra_protection_stops_at_2030
+PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case uc_lcwra_protection_stops_at_2030
 ```
 
 Observed:

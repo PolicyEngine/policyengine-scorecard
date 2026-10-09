@@ -35,6 +35,11 @@ the measure's summary class must not silently override them. A tax that exists
 in the engine is not enough to express a measure: the targeted population and
 the event's counterfactual also need to be established.
 
+For `not_expressible`, distinguish an evidenced missing mechanism from a
+`construction_pending` decision in `gap_kind`. The latter means that this
+lane has not established an executable construction; it does not establish
+that the engine lacks the underlying liability model.
+
 Autumn Budget 2024 examples:
 
 * Employer NICs: reverse the rate increase and secondary-threshold reduction
@@ -47,10 +52,12 @@ Autumn Budget 2024 examples:
   no earnings limit. The diagnostic script demonstrates the missing test
   using two carers with identical care hours and different earnings.
 * CGT main-rate increases can be a `partial` reversal from 2025 onward. The
-  parameter change is dated April 2025 rather than the announced October 2024;
+  raw parameter change is dated April 2025 rather than the announced October 2024;
   BADR and Investors' Relief histories remain omitted. The pin labels these
   rate parameters as under active development, which must travel into the
-  construction's caveat.
+  construction's caveat. The April-snapshot conversion implies that the
+  April 2025 rate applies throughout annual 2025: the first higher processed
+  year is 2025, rather than 2026.
 * SDLT's additional-home 2pp increase requires a forward delta: the pinned
   additional-home scale still has its old rates, so reversing certified law
   would score the wrong world. The event's source head includes other stamp
@@ -75,6 +82,19 @@ per week from calendar 2025. £175/week corresponds to the pre-announcement
 £9,100/year threshold; the pin's £96/week corresponds to £4,992/year and is a
 recorded approximation to the announced £5,000/year threshold. Date windows
 are explicit, and years before commencement retain their real zero effects.
+
+Winter Fuel Payment illustrates a partial certified-world reversal. In
+`policyengine_uk/variables/gov/dwp/winter_fuel_allowance.py`, eligibility is
+qualifying-benefit receipt OR `require_benefits=false` OR an income passport.
+From 2025 the passport admits England/Wales households with any state-pension-age
+member whose `total_income` is below £35,000; Northern Ireland has no passport
+and this variable excludes Scotland. Setting `require_benefits=false` therefore
+restores eligibility only for the remaining non-passported households, a
+narrower future-year effect than the original benefit-only restriction costed
+by OBR. This is `partial` and tags `baseline_vintage`. The registry's
+"recovery" shorthand refers to this eligibility rule; the engine does not
+implement it as a separate HMRC recovery charge. Do not assume its residual
+national effect is zero.
 
 For a reversal, the executed alternate world is the reversal. Preserve its
 literal delta against the certified world, and score the announced measure as
@@ -114,7 +134,7 @@ the later loader's bundle registry can select a different dataset. Its identity 
 `data/uk/certified_bundle.json`. It is not a collection of independently
 certified historical or future populations.
 
-Use the start year Y of a source FY Y–(Y+1) as the calendar simulation year.
+Use the start year Y of a source FY Y–(Y+1) as the population-input year.
 Keep source FYs before 2023–24 in the registry accounting, but leave them
 uncomputed on this track. Do not infer support from successful parameter
 lookup alone. Read the managed loader, dataset time periods, income and
@@ -137,8 +157,18 @@ It does not reproduce the event-vintage OBR world. Each registry's
 outside that window.
 
 Use every supported costing year, even if the first year's effect is zero.
+Government policy parameters undergo the pinned engine's fiscal conversion:
+after uprating and backdating, `convert_to_fiscal_year_parameters` samples
+each parameter at 30 April of Y and applies that value across annual period
+Y. Parameter reforms undergo the same processing. Thus the model combines
+calendar-year population inputs with an April policy snapshot. Inspect the
+processed tax-benefit system or simulation; raw YAML date schedules alone
+do not establish the executed policy.
+
 Annual modelling can miss part-year commencement: Autumn Statement 2023's
-January 2024 NICs cut falls in FY 2023–24 while CY 2023 remains unchanged.
+January 2024 NICs cut falls in FY 2023–24 while the processed April 2023
+snapshot remains unchanged. In processed 2024, the employee NICs rate is
+8% throughout the annual period, reflecting the later April 2024 cut.
 Keep the source FY and the calendar proxy visible and tag the timing axis.
 Do not silently move the source claim to a different year.
 
@@ -198,7 +228,7 @@ Run the engine-free tests and the pinned integration checks:
 
 ```bash
 .venv-replay/bin/python -m pytest tests/test_uk_event_registry.py tests/test_uk_event_compute.py tests/test_uk_event_comparison.py tests/test_uk_replay_legacy.py
-.venv-replay/bin/python pipeline/build_uk_event_registry.py --event autumn_budget_2024 --check
+PYTHONPATH=. .venv-replay/bin/python pipeline/build_uk_event_registry.py --event autumn_budget_2024 --check
 ```
 
 The properties include row/GBP conservation, ratio scale and sign invariance,
@@ -228,36 +258,70 @@ For one event:
 ```bash
 PYTHONPATH=. .venv-replay/bin/python pipeline/build_uk_event_registry.py --event autumn_budget_2024
 PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --dry-run
-PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024
+PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --workers 1
 PYTHONPATH=. .venv-replay/bin/python pipeline/stage_uk_event.py --event autumn_budget_2024
 PYTHONPATH=. .venv-replay/bin/python pipeline/compare_uk_event.py --event autumn_budget_2024 --summary
 ```
 
 Use `--measures <measure_key> --years <Y>` for a minimal reproducer or a
-determinism check. `--resume` keeps artifacts only when their registry and
-certified-dataset identities still match. Run no more than two simulations
-concurrently on the shared Mac. One event compute process executes one live
-simulation at a time and reuses one certified baseline extraction per year
-across measures. Keep independently launched event processes within that same
-two-simulation cap. Follow the requested event order: Autumn Budget 2024,
+determinism check, with a separate output directory so the canonical event
+receipts stay intact. For example:
+
+```bash
+PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --measures autumn_budget_2024__private_school_vat_20pct --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/autumn_budget_2024/private_school_vat_2026
+```
+
+Compare the new artifact's SHA-256 with the same measure-year file in the
+event directory. Per-year progress receipts bind each completed artifact's
+SHA after it is written. `--resume` can retain those verified pairs even if an
+interrupted run did not finish `RUN_MANIFEST.json`; it ignores unreceipted
+files. Their registry and certified-dataset identities must still match.
+A focused rerun without `--resume` recomputes the requested pairs and preserves
+other SHA-bound completed pairs. Run no more than two simulations
+concurrently on the shared Mac, counting national and synthetic diagnostic
+runs together. Start with `--workers 1` on the shared host; use `--workers 2`
+only when the host has capacity and no other lane is simulating. Each worker
+holds one live managed simulation and reuses one certified baseline
+extraction per year across measures. Keep independently launched event
+processes within that same global two-simulation cap. Follow the requested event order: Autumn Budget 2024,
 Autumn Statement 2023, Spring Budget 2024, Spring Statement 2025, then Spring
 Budget 2023.
 
 Expected run time is proportional to supported years times changed worlds,
-plus one baseline per year. Exact observed baseline and measure seconds are
+plus one baseline per year. A reliable wall-time estimate is pending the
+first completed run on this shared host; concurrent host load already required
+retrying the initial two-worker launch with one worker. Exact observed baseline and measure seconds are
 saved in each event's `RUN_LOG.json`; use those measured timings for the next
-lane's estimate rather than a guessed benchmark. The pipeline itself is
-engine-free at registry-accounting, staging and comparison time except for
-the builder's parameter/variable validation. Modal deployment is appropriate
-only if its volume contains this exact SHA-verified bundle and pinned engine;
-record the runner used in the event log.
+lane's estimate rather than a guessed benchmark. Registry accounting, staging
+and comparison are engine-free; the builder validates parameters and variables
+against the pinned engine.
+
+This replay uses the local managed runner. The inspected [Modal runner in
+PR #53](https://github.com/PolicyEngine/policyengine-scorecard/pull/53), at
+head `50b426055049cb42105200c268ca9ea46075f544`, is open and US-specific:
+its [backfill driver](https://github.com/PolicyEngine/policyengine-scorecard/blob/50b426055049cb42105200c268ca9ea46075f544/tools/reform_validation/backfill.py)
+hardcodes the populace-us repository and 2024 period and loads a
+`USSingleYearDataset`; the [Modal app](https://github.com/PolicyEngine/policyengine-scorecard/blob/50b426055049cb42105200c268ca9ea46075f544/tools/reform_validation/modal_backfill_app.py)
+installs the US engine from its manifest, and the [workflow](https://github.com/PolicyEngine/policyengine-scorecard/blob/50b426055049cb42105200c268ca9ea46075f544/.github/workflows/reform-validation-backfill.yml)
+selects US releases. Its
+hash verification protects that US artifact, but it has no UK event/bundle
+interface, pinned UK environment or Hugging Face offline setup, and it fetches
+remote metadata and data. No UK Modal adaptation or deployment was completed
+in this lane. A future remote run needs the same UK pin, offline cache and
+certified SHA gate before it can replace the local runner.
 
 Each event writes deterministic numerical artifacts, `RUN_MANIFEST.json`,
 `STAGED.jsonl`, `STAGING_MANIFEST.json`, `COMPARISON.csv`, `COMPARISON.json`,
 `COMPARISON.md` and `COMPARISON_PROVENANCE.json` under
-`results/uk/events/<slug>/`. `--summary` aggregates completed comparison files
-into `results/uk/events/SUMMARY.md` by tax head and measure type and lists the
-largest unexplained rows with variables and minimal replay commands. Add
+`results/uk/events/<slug>/`. Staging and comparison report the complete
+executable measure-year grid, completed pair count and missing pairs; a
+partial selection does not establish a completed event replay. `--summary`
+checks comparison output hashes against their provenance, current registry
+and axes hashes, staging receipts and numerical artifacts before aggregation.
+Stale receipts stop summary generation. It writes
+`results/uk/events/SUMMARY.md` by tax head and measure type and lists the
+largest unexplained rows with variables and minimal replay commands. Registry-only
+events stay visible with numerical replay marked incomplete. Add
 engine-issue diagnoses only with runtime metadata, a checked-in assessment,
 an existing issue, or a measured diagnostic. Leave issue filing to the main
 session.

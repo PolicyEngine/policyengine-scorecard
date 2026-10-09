@@ -17,13 +17,15 @@ import json
 import math
 import sys
 from collections import Counter, defaultdict
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from pipeline.compare_uk_obr_costings import ratio_and_bin
+from pipeline.build_uk_event_registry import _sum as source_gbp_sum
+from pipeline.compare_uk_obr_costings import atomic_write_bytes, ratio_and_bin
 
 AXES_PATH = ROOT / "data" / "uk" / "obr_divergence_axes.json"
 CSV_FIELDS = [
@@ -39,6 +41,7 @@ CSV_FIELDS = [
     "source_table",
     "source_column",
     "obr_value_gbp",
+    "obr_value_gbp_decimal",
     "pe_value_gbp",
     "gap_gbp",
     "pe_to_obr_ratio",
@@ -66,6 +69,12 @@ DEFAULT_AXES = (
     "baseline_vintage",
     "cy_proxies_fy",
     "head_scope",
+)
+GRID_FIELDS = (
+    "computed_measure_years",
+    "full_event_grid_size",
+    "full_event_complete",
+    "missing_measure_years",
 )
 
 
@@ -105,6 +114,20 @@ def _same(left: float, right: float, context: str) -> None:
     # comparison tolerance.
     if not math.isclose(left, right, abs_tol=0.01, rel_tol=1e-12):
         raise EventComparisonError(f"{context}: {left} differs from {right}")
+
+
+def _decimal(value: Any, context: str) -> Decimal:
+    if not isinstance(value, str):
+        raise EventComparisonError(
+            f"{context}: exact source amount must be a decimal string"
+        )
+    try:
+        result = Decimal(value)
+    except InvalidOperation as exc:
+        raise EventComparisonError(f"{context}: invalid decimal amount") from exc
+    if not result.is_finite():
+        raise EventComparisonError(f"{context}: decimal amount must be finite")
+    return result
 
 
 def validate_artifact(artifact: dict, context: str) -> None:
@@ -190,7 +213,14 @@ def describe_decomposition(
     observed gap before an explained share can be quoted.
     """
     valued = []
+    names = set()
     for component in components:
+        name = component.get("name")
+        if not isinstance(name, str) or not name or name in names:
+            raise EventComparisonError(
+                "valued components require unique nonempty names"
+            )
+        names.add(name)
         if component.get("axis") not in axes:
             raise EventComparisonError("valued component has an untagged axis")
         if component.get("status") not in ("computed", "sized", "derived"):
@@ -290,11 +320,18 @@ def build_comparison_rows(
                     f"{key}: staged {field} differs from registry"
                 )
         obr = _finite(source["value_gbp"], f"{key}/OBR")
-        _same(
-            _finite(row.get("external_value_gbp"), f"{key}/staged OBR"),
-            obr,
-            f"{key}: source £ accounting",
-        )
+        source_decimal = source.get("value_gbp_decimal", str(source["value_gbp"]))
+        exact_source = _decimal(source_decimal, f"{key}/source")
+        staged_decimal = row.get("external_value_gbp_decimal")
+        if staged_decimal is None and "value_gbp_decimal" not in source:
+            staged_decimal = str(row.get("external_value_gbp"))
+        if _decimal(staged_decimal, f"{key}/staged") != exact_source:
+            raise EventComparisonError(f"{key}: exact source £ accounting differs")
+        staged_number = _finite(row.get("external_value_gbp"), f"{key}/staged OBR")
+        if staged_number != obr or obr != float(exact_source):
+            raise EventComparisonError(
+                f"{key}: numerical source amount differs from decimal commitment"
+            )
         pe = row.get("pe_value")
         variables = row.get("head_variables", [])
         reference = row.get("artifact_path")
@@ -390,6 +427,7 @@ def build_comparison_rows(
             "source_table": source.get("source_table"),
             "source_column": source.get("source_column"),
             "obr_value_gbp": obr,
+            "obr_value_gbp_decimal": source_decimal,
             "pe_value_gbp": pe,
             "gap_gbp": gap,
             "pe_to_obr_ratio": ratio,
@@ -453,15 +491,18 @@ def profile(rows: list[dict], field: str) -> list[tuple[str, dict[str, int]]]:
     ]
 
 
-def render_markdown(registry: dict, rows: list[dict]) -> str:
+def render_markdown(
+    registry: dict, rows: list[dict], replay_grid: dict | None = None
+) -> str:
     computed = [r for r in rows if r["pe_value_gbp"] is not None]
     lines = [
         f"# {registry.get('event_name', registry['event_slug'])}: descriptive replay",
         "",
         (
             "Positive GBP means a gain to the Exchequer. PolicyEngine is the pinned "
-            "certified 2023 population uprated to calendar year Y; that calendar year "
-            "proxies OBR FY Y–(Y+1). OBR's announcement forecast and behavioural "
+            "certified 2023 population uprated to calendar year Y, with government "
+            "policy parameters annualized from the engine's 30 April snapshot. "
+            "These calendar population inputs proxy OBR FY Y–(Y+1). OBR's announcement forecast and behavioural "
             "costings remain distinct from this construction."
         ),
         "",
@@ -471,6 +512,18 @@ def render_markdown(registry: dict, rows: list[dict]) -> str:
             "is treated as a separately published OBR claim."
         ),
         "",
+    ]
+    if replay_grid and not replay_grid.get("full_event_complete"):
+        lines += [
+            (
+                f"Numerical replay grid incomplete: {replay_grid.get('computed_measure_years', 0)} "
+                f"of {replay_grid.get('full_event_grid_size', 'unspecified')} executable "
+                "measure-year pairs have artifacts. Rows without counterparts remain visible; "
+                "this report does not establish a completed event replay."
+            ),
+            "",
+        ]
+    lines += [
         "## Accounting",
         "",
         "| Classification | Measures | Source rows | Net OBR £bn | Absolute OBR £bn |",
@@ -483,16 +536,30 @@ def render_markdown(registry: dict, rows: list[dict]) -> str:
         "out_of_household_scope",
     ):
         selected = [r for r in rows if r["classification"] == classification]
+        account = registry.get("accounting", {}).get("by_class", {}).get(classification)
+        measure_count = (
+            account["measures"]
+            if account
+            else sum(
+                measure.get("classification", measure.get("computability"))
+                == classification
+                for measure in registry["measures"]
+            )
+        )
+        exact_values = [
+            {"value_gbp_decimal": row["obr_value_gbp_decimal"]} for row in selected
+        ]
         lines.append(
-            f"| {classification} | {len({r['measure_key'] for r in selected})} | {len(selected)} | "
-            f"{sum(r['obr_value_gbp'] for r in selected) / 1e9:,.3f} | "
-            f"{sum(abs(r['obr_value_gbp']) for r in selected) / 1e9:,.3f} |"
+            f"| {classification} | {measure_count} | {len(selected)} | "
+            f"{Decimal(source_gbp_sum(exact_values)) / Decimal(10**9):,.3f} | "
+            f"{Decimal(source_gbp_sum(exact_values, absolute=True)) / Decimal(10**9):,.3f} |"
         )
     lines += [
         "",
         (
             "Net and absolute £ sum source-row values across the costing years; "
-            "they are accounting amounts, not a single-year event total."
+            "they are accounting amounts, not a single-year event total. Measure counts "
+            "use each measure's registry class; source-row classes may differ for non-household heads."
         ),
         "",
         "## Agreement profile",
@@ -500,7 +567,9 @@ def render_markdown(registry: dict, rows: list[dict]) -> str:
         "The bins describe PE/OBR on each source head and year. They do not define a quality gate.",
         "",
     ]
-    for field, label in (("tax_head", "Tax head"), ("measure_type", "Measure type")):
+    for field, label in (
+        (("tax_head", "Tax head"), ("measure_type", "Measure type")) if computed else ()
+    ):
         lines += [f"| {label} | Source-row ratio bins |", "|---|---|"]
         lines += [
             f"| {_md(key)} | {_md(', '.join(f'{k}: {v}' for k, v in counts.items()))} |"
@@ -521,7 +590,7 @@ def render_markdown(registry: dict, rows: list[dict]) -> str:
         ),
         "",
         (
-            f"Tagged coverage: {len(computed)}/{len(computed)} computed rows and "
+            f"Tagged coverage: {len(computed)} computed rows and "
             f"£{gap_mass / 1e9:,.3f}bn of absolute raw gap have named axes. "
             "Tagged coverage does not size their effects."
         ),
@@ -573,6 +642,66 @@ def render_markdown(registry: dict, rows: list[dict]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _relative_receipt(path: Path, artifact_root: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(artifact_root.resolve()))
+    except ValueError as exc:
+        raise EventComparisonError("comparison input escapes artifact root") from exc
+
+
+def _receipt_path(reference: Any, artifact_root: Path) -> Path:
+    if not isinstance(reference, str) or Path(reference).is_absolute():
+        raise EventComparisonError("receipt path must be relative to artifact root")
+    result = (artifact_root / reference).resolve()
+    _relative_receipt(result, artifact_root)
+    return result
+
+
+def _verify_staging(
+    registry_path: Path, staged_path: Path, *, artifact_root: Path
+) -> tuple[dict, list[dict], Path]:
+    registry = _json(registry_path)
+    manifest_path = staged_path.parent / "STAGING_MANIFEST.json"
+    if not manifest_path.exists():
+        raise EventComparisonError("comparison requires STAGING_MANIFEST.json")
+    manifest = _json(manifest_path)
+    if manifest.get("registry_sha256") != _sha256(registry_path):
+        raise EventComparisonError("registry SHA-256 differs from staging manifest")
+    if manifest.get("staged_sha256") != _sha256(staged_path):
+        raise EventComparisonError("staged SHA-256 differs from staging manifest")
+    rows = build_comparison_rows(
+        registry, load_jsonl(staged_path), artifact_root=artifact_root
+    )
+    if manifest.get("staged_rows") != len(rows):
+        raise EventComparisonError("staging manifest row count differs")
+    total = Decimal(
+        source_gbp_sum(
+            {"value_gbp_decimal": row["obr_value_gbp_decimal"]} for row in rows
+        )
+    )
+    exact_required = any(
+        "value_gbp_decimal" in source
+        for measure in registry["measures"]
+        for source in measure["source_rows"]
+    )
+    for field in ("source_value_gbp_decimal", "staged_value_gbp_decimal"):
+        if (exact_required or field in manifest) and _decimal(
+            manifest.get(field), f"staging manifest/{field}"
+        ) != total:
+            raise EventComparisonError("staging manifest exact £ total differs")
+    accounting = registry.get("accounting", {})
+    if (
+        "net_gbp_in_decimal" in accounting
+        and _decimal(accounting["net_gbp_in_decimal"], "registry/net GBP") != total
+    ):
+        raise EventComparisonError("registry exact £ total differs")
+    return registry, rows, manifest_path
+
+
 def write_comparison(
     event: str,
     *,
@@ -587,79 +716,144 @@ def write_comparison(
     )
     output_dir = output_dir or artifact_root / "results" / "uk" / "events" / event
     staged_path = staged_path or output_dir / "STAGED.jsonl"
-    registry = _json(registry_path)
+    registry, rows, staging_manifest_path = _verify_staging(
+        registry_path, staged_path, artifact_root=artifact_root
+    )
     if registry.get("event_slug") != event:
         raise EventComparisonError("registry event differs from --event")
-    staging_manifest_path = staged_path.parent / "STAGING_MANIFEST.json"
-    if not staging_manifest_path.exists():
-        raise EventComparisonError("comparison requires STAGING_MANIFEST.json")
-    staging_manifest = _json(staging_manifest_path)
-    if (
-        staging_manifest.get("registry_sha256")
-        != hashlib.sha256(registry_path.read_bytes()).hexdigest()
-    ):
-        raise EventComparisonError("registry SHA-256 differs from staging manifest")
-    if (
-        staging_manifest.get("staged_sha256")
-        != hashlib.sha256(staged_path.read_bytes()).hexdigest()
-    ):
-        raise EventComparisonError("staged SHA-256 differs from staging manifest")
-    rows = build_comparison_rows(
-        registry, load_jsonl(staged_path), artifact_root=artifact_root
-    )
-    if staging_manifest.get("staged_rows") != len(rows):
-        raise EventComparisonError("staging manifest row count differs")
     output_dir.mkdir(parents=True, exist_ok=True)
+    staging_manifest = _json(staging_manifest_path)
+    replay_grid = {
+        field: staging_manifest[field]
+        for field in GRID_FIELDS
+        if field in staging_manifest
+    }
     payloads = {
         "COMPARISON.csv": render_csv(rows),
-        "COMPARISON.md": render_markdown(registry, rows),
+        "COMPARISON.md": render_markdown(registry, rows, replay_grid),
         "COMPARISON.json": json.dumps(rows, indent=1, sort_keys=True, allow_nan=False)
         + "\n",
     }
     for filename, payload in payloads.items():
-        (output_dir / filename).write_text(payload)
+        atomic_write_bytes(output_dir / filename, payload.encode())
     provenance = {
         "event_slug": event,
-        "registry_sha256": hashlib.sha256(registry_path.read_bytes()).hexdigest(),
-        "staged_sha256": hashlib.sha256(staged_path.read_bytes()).hexdigest(),
-        "axes_sha256": hashlib.sha256(AXES_PATH.read_bytes()).hexdigest(),
+        "registry_path": _relative_receipt(registry_path, artifact_root),
+        "registry_sha256": _sha256(registry_path),
+        "staged_path": _relative_receipt(staged_path, artifact_root),
+        "staged_sha256": _sha256(staged_path),
+        "staging_manifest_path": _relative_receipt(
+            staging_manifest_path, artifact_root
+        ),
+        "staging_manifest_sha256": _sha256(staging_manifest_path),
+        "axes_sha256": _sha256(AXES_PATH),
         "source_rows": len(rows),
+        "replay_grid": replay_grid,
         "outputs_sha256": {
             name: hashlib.sha256(payload.encode()).hexdigest()
             for name, payload in payloads.items()
         },
     }
-    (output_dir / "COMPARISON_PROVENANCE.json").write_text(
-        json.dumps(provenance, indent=1, sort_keys=True) + "\n"
+    atomic_write_bytes(
+        output_dir / "COMPARISON_PROVENANCE.json",
+        (json.dumps(provenance, indent=1, sort_keys=True) + "\n").encode(),
     )
     return rows
 
 
 def render_summary(
-    events: dict[str, list[dict]], diagnostics: list[dict] | None = None
+    events: dict[str, list[dict]],
+    diagnostics: list[dict] | None = None,
+    registries: dict[str, dict] | None = None,
+    replay_grids: dict[str, dict] | None = None,
 ) -> str:
     rows = [row for event_rows in events.values() for row in event_rows]
     computed = [r for r in rows if r["pe_value_gbp"] is not None]
+    registries = registries or {}
+    replay_grids = replay_grids or {}
     lines = [
         "# Recent OBR fiscal-event replays",
         "",
         (
-            "These are descriptive comparisons on the SHA-verified populace-uk-2023 "
-            "bundle with policyengine-uk 2.89.2. Every registry source row is retained; "
-            "one source head and fiscal year is one comparison row."
+            "The inventories use the pinned populace-uk-2023 bundle definition with "
+            "policyengine-uk 2.89.2. A seeded registry does not establish a completed "
+            "numerical replay. Available comparisons use one source head and fiscal "
+            "year per row."
         ),
         "",
-        "| Event | Source rows | Computed rows | Computed FYs |",
-        "|---|---:|---:|---|",
+        (
+            f"Numerical comparison outputs available: {sum(any(r['pe_value_gbp'] is not None for r in event_rows) for event_rows in events.values())}. "
+            f"Registry inventories available: {len(registries)}."
+        ),
+        "",
+        "| Event | Replay state | Measures | Source rows | Computed rows | Computed FYs |",
+        "|---|---|---:|---:|---:|---|",
     ]
-    for event, event_rows in sorted(events.items()):
+    for event in sorted(set(events) | set(registries)):
+        event_rows = events.get(event, [])
+        registry = registries.get(event)
         years = sorted({r["fy"] for r in event_rows if r["pe_value_gbp"] is not None})
-        lines.append(
-            f"| [{event}]({event}/COMPARISON.md) | {len(event_rows)} | "
-            f"{sum(r['pe_value_gbp'] is not None for r in event_rows)} | {', '.join(years)} |"
+        computed_count = sum(r["pe_value_gbp"] is not None for r in event_rows)
+        source_count = (
+            registry["accounting"]["rows_in"] if registry else len(event_rows)
         )
+        measure_count = (
+            len(registry["measures"])
+            if registry
+            else len({r["measure_key"] for r in event_rows})
+        )
+        state = (
+            "Numerical comparison available"
+            if computed_count
+            else "Registry seeded; numerical replay incomplete"
+        )
+        replay_grid = replay_grids.get(event)
+        if computed_count and replay_grid:
+            state = (
+                "Numerical replay complete"
+                if replay_grid.get("full_event_complete")
+                else (
+                    "Numerical comparison available; replay grid incomplete "
+                    f"({replay_grid.get('computed_measure_years', 0)}/"
+                    f"{replay_grid.get('full_event_grid_size', 'unspecified')})"
+                )
+            )
+        label = f"[{event}]({event}/COMPARISON.md)" if event_rows else event
+        lines.append(
+            f"| {label} | {state} | {measure_count} | {source_count} | {computed_count} | {', '.join(years) or '—'} |"
+        )
+    if registries:
+        lines += [
+            "",
+            "## Source inventory accounting",
+            "",
+            (
+                "These amounts sum all source heads and costing years, including zero cells. "
+                "They are inventory totals, not one-year event costings or numerical agreement statistics."
+            ),
+            "",
+            "| Event / class | Measures | Source rows | Net OBR £bn | Absolute OBR £bn |",
+            "|---|---:|---:|---:|---:|",
+        ]
+        for event, registry in sorted(registries.items()):
+            for classification, account in registry["accounting"]["by_class"].items():
+                lines.append(
+                    f"| {event} / {classification} | {account['measures']} | {account['rows']} | "
+                    f"{Decimal(account['net_gbp_decimal']) / Decimal(10**9):,.3f} | "
+                    f"{Decimal(account['absolute_gbp_decimal']) / Decimal(10**9):,.3f} |"
+                )
     lines += ["", "## Agreement profile", ""]
-    for field, label in (("tax_head", "Tax head"), ("measure_type", "Measure type")):
+    if not computed:
+        lines += [
+            (
+                "Unavailable: no completed numerical comparison rows have been published. "
+                "Registry coverage does not supply a PE/OBR agreement profile."
+            ),
+            "",
+        ]
+    for field, label in (
+        (("tax_head", "Tax head"), ("measure_type", "Measure type")) if computed else ()
+    ):
         lines += [f"| {label} | Source-row ratio bins |", "|---|---|"]
         lines += [
             f"| {_md(key)} | {_md(', '.join(f'{k}: {v}' for k, v in counts.items()))} |"
@@ -683,7 +877,9 @@ def render_summary(
             f"£{sum(abs(r['gap_gbp']) for r in computed) / 1e9:,.3f}bn of absolute raw gap. "
             f"Explained share is available on {len(explained)} rows; relevant unsized axes "
             "withhold it on the rest. These are different quantities."
-        ),
+        )
+        if computed
+        else "National gaps and explained share are unavailable until numerical comparisons exist.",
         "",
         "## Largest unexplained divergences",
         "",
@@ -706,8 +902,9 @@ def render_summary(
         diagnostic = row.get("diagnosis") or {}
         evidence = diagnostic.get("evidence", "Open: relevant axes unsized")
         command = (
-            f".venv-replay/bin/python pipeline/compute_uk_event.py --event {row['event_slug']} "
-            f"--measures {row['measure_key']} --years {row['year']}"
+            f"PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event {row['event_slug']} "
+            f"--measures {row['measure_key']} --years {row['year']} --workers 1 "
+            f"--output-dir .venv-replay-checks/reproductions/{row['event_slug']}/{row['measure_key']}_{row['year']}"
         )
         lines.append(
             f"| {_md(row['event_slug'] + ' / ' + row['title'])} | "
@@ -722,7 +919,7 @@ def render_summary(
         r for r in computed if (r.get("diagnosis") or {}).get("class") == "pe_gap"
     ]
     diagnostics = diagnostics or []
-    active_events = set(events)
+    active_events = set(events) | set(registries)
     relevant = [d for d in diagnostics if set(d.get("events", [])) & active_events]
     concrete = [d for d in relevant if d.get("class") == "pe_gap"]
     lines += [
@@ -748,7 +945,7 @@ def render_summary(
         ]
         for diagnostic in relevant:
             command = (
-                ".venv-replay/bin/python pipeline/diagnose_uk_event_models.py "
+                "PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py "
                 + diagnostic["reproducer"]
             )
             lines.append(
@@ -760,16 +957,79 @@ def render_summary(
     return "\n".join(lines)
 
 
-def write_summary(events_root: Path) -> None:
+def load_verified_comparison(path: Path, *, artifact_root: Path = ROOT) -> list[dict]:
+    """Bind summary-only reads to current source, stage, axes and artifact bytes."""
+    provenance_path = path.parent / "COMPARISON_PROVENANCE.json"
+    if not provenance_path.exists():
+        raise EventComparisonError("summary requires COMPARISON_PROVENANCE.json")
+    provenance = _json(provenance_path)
+    if provenance.get("event_slug") != path.parent.name:
+        raise EventComparisonError("comparison provenance event differs")
+    if provenance.get("axes_sha256") != _sha256(AXES_PATH):
+        raise EventComparisonError("comparison axes SHA-256 is stale")
+    outputs = provenance.get("outputs_sha256", {})
+    if set(outputs) != {"COMPARISON.json", "COMPARISON.csv", "COMPARISON.md"}:
+        raise EventComparisonError("comparison output receipt is incomplete")
+    for name, digest in outputs.items():
+        if _sha256(path.parent / name) != digest:
+            raise EventComparisonError(f"comparison output SHA-256 differs: {name}")
+    paths = {}
+    for label in ("registry", "staged", "staging_manifest"):
+        receipt = _receipt_path(provenance.get(f"{label}_path"), artifact_root)
+        if _sha256(receipt) != provenance.get(f"{label}_sha256"):
+            raise EventComparisonError(f"comparison {label} SHA-256 is stale")
+        paths[label] = receipt
+    registry, verified_rows, manifest_path = _verify_staging(
+        paths["registry"], paths["staged"], artifact_root=artifact_root
+    )
+    if manifest_path != paths["staging_manifest"]:
+        raise EventComparisonError("comparison staging manifest path differs")
+    manifest = _json(manifest_path)
+    grid = {field: manifest[field] for field in GRID_FIELDS if field in manifest}
+    if provenance.get("replay_grid") != grid:
+        raise EventComparisonError("comparison replay-grid receipt differs")
+    if registry.get("event_slug") != path.parent.name:
+        raise EventComparisonError("summary registry event differs")
+    canonical_registry = (
+        artifact_root / "data" / "uk" / "events" / f"{path.parent.name}_measures.json"
+    )
+    if (
+        canonical_registry.exists()
+        and _sha256(canonical_registry) != provenance["registry_sha256"]
+    ):
+        raise EventComparisonError("comparison differs from current event registry")
+    rows = json.loads(path.read_text())
+    if rows != verified_rows or provenance.get("source_rows") != len(rows):
+        raise EventComparisonError("comparison rows differ from verified staging")
+    return rows
+
+
+def write_summary(events_root: Path, *, artifact_root: Path = ROOT) -> None:
     events = {
-        path.parent.name: json.loads(path.read_text())
+        path.parent.name: load_verified_comparison(path, artifact_root=artifact_root)
+        for path in sorted(events_root.glob("*/COMPARISON.json"))
+    }
+    replay_grids = {
+        path.parent.name: _json(path.parent / "COMPARISON_PROVENANCE.json")[
+            "replay_grid"
+        ]
         for path in sorted(events_root.glob("*/COMPARISON.json"))
     }
     diagnostic_path = events_root / "MODEL_DIAGNOSTICS.json"
     diagnostics = (
         json.loads(diagnostic_path.read_text()) if diagnostic_path.exists() else []
     )
-    (events_root / "SUMMARY.md").write_text(render_summary(events, diagnostics))
+    registries = {
+        path.stem.removesuffix("_measures"): _json(path)
+        for path in sorted(
+            (artifact_root / "data" / "uk" / "events").glob("*_measures.json")
+        )
+    }
+    events_root.mkdir(parents=True, exist_ok=True)
+    atomic_write_bytes(
+        events_root / "SUMMARY.md",
+        render_summary(events, diagnostics, registries, replay_grids).encode(),
+    )
 
 
 def main(argv: list[str] | None = None) -> int:

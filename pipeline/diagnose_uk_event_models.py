@@ -356,7 +356,7 @@ def main(argv: list[str] | None = None) -> int:
                 ),
                 "",
                 "```bash",
-                ".venv-replay/bin/python pipeline/diagnose_uk_event_models.py "
+                "PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py "
                 + result["reproducer"],
                 "```",
                 "",

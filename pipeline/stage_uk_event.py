@@ -35,6 +35,8 @@ def mapped_variables(source: dict, measure: dict) -> list[str]:
     """Match the literal OBR head to one registered head mapping."""
     explicit = source.get("pe_variables")
     if explicit:
+        if len(explicit) != len(set(explicit)):
+            raise ValueError("source head mapping repeats a variable")
         return list(explicit)
     candidates = [
         head
@@ -93,6 +95,9 @@ def stage_event(
     artifacts = {}
     paths = {}
     if manifest is not None:
+        event = registry.get("event_slug", registry.get("event"))
+        if event is not None and manifest.get("event", event) != event:
+            raise ValueError("compute manifest event differs from registry")
         if manifest["registry_sha256"] != registry_sha256:
             raise ValueError("registry bytes changed after compute")
         for relative, digest in manifest["artifacts"].items():
@@ -116,6 +121,9 @@ def stage_event(
     for (key, year), artifact in artifacts.items():
         if key not in index:
             raise ValueError("manifest contains a measure outside the registry")
+        event = registry.get("event_slug", registry.get("event"))
+        if event is not None and artifact.get("event") != event:
+            raise ValueError("artifact event differs from registry")
         validate_artifact(
             artifact,
             index[key],
@@ -123,11 +131,63 @@ def stage_event(
             registry_sha256,
             manifest["certified_dataset_sha256"],
         )
+    planned = compute.worlds.computable(index, years=registry["calendar_years"])
+    full_pairs = {
+        (key, year)
+        for key, world in planned.items()
+        if "alias_of" not in world
+        for year in registry["calendar_years"]
+    }
+    computed_pairs = set(artifacts)
+    if computed_pairs - full_pairs:
+        raise ValueError(
+            "committed artifact is outside the event's executable measure/year grid"
+        )
+    if manifest is not None:
+
+        def declared_pairs(field):
+            rows = manifest[field]
+            pairs = {(row["measure_key"], row["year"]) for row in rows}
+            if len(pairs) != len(rows):
+                raise ValueError(f"compute manifest repeats a pair in {field}")
+            return pairs
+
+        if "artifact_grid" in manifest:
+            if declared_pairs("artifact_grid") != computed_pairs:
+                raise ValueError(
+                    "compute manifest grid differs from committed artifacts"
+                )
+            if declared_pairs("requested_grid") - computed_pairs:
+                raise ValueError(
+                    "compute manifest is missing requested measure/year artifacts"
+                )
+            if declared_pairs("full_event_grid") != full_pairs:
+                raise ValueError(
+                    "compute manifest full grid differs from the event registry"
+                )
+            if manifest["full_event_complete"] != (full_pairs <= computed_pairs):
+                raise ValueError(
+                    "compute manifest full-event completeness is inaccurate"
+                )
+        elif "measures" in manifest and "years" in manifest:
+            requested = {
+                (key, year)
+                for key in manifest["measures"]
+                for year in manifest["years"]
+            }
+            if requested != computed_pairs:
+                raise ValueError(
+                    "compute manifest is missing requested measure/year artifacts"
+                )
     rows = []
     seen = set()
+    mapped_heads = {}
     for measure in registry["measures"]:
         key = measure["measure_key"]
         for source in measure["source_rows"]:
+            explicit = source.get("pe_variables") or []
+            if len(explicit) != len(set(explicit)):
+                raise ValueError("source head mapping repeats a variable")
             classification = source.get("classification", measure["computability"])
             identity = source["source_row_id"]
             if identity in seen:
@@ -154,6 +214,9 @@ def stage_event(
                 "tax_head": source.get("tax_head"),
                 "head_kind": source.get("head_kind"),
                 "external_value_gbp": source["value_gbp"],
+                "external_value_gbp_decimal": source.get(
+                    "value_gbp_decimal", str(source["value_gbp"])
+                ),
                 "computability": classification,
                 "construction": measure.get("construction"),
                 "head_variables": [],
@@ -214,6 +277,14 @@ def stage_event(
                         elif note:
                             row["annotations"].append(note)
                     if row["reason"] is None:
+                        for variable in variables:
+                            mapping = (key, year, variable)
+                            if mapping in mapped_heads:
+                                raise ValueError(
+                                    f"{key} {year}: {variable} mapped to multiple source rows "
+                                    f"({mapped_heads[mapping]}, {identity}); an explicit component allocation is required"
+                                )
+                            mapped_heads[mapping] = identity
                         row["head_variables"] = variables
                         row["head_effects"] = {
                             v: artifact["head_effects"][v] for v in variables
@@ -235,17 +306,33 @@ def stage_event(
             rows.append(row)
     rows.sort(key=lambda row: str(row["source_row_id"]))
     counts = Counter(row["status"] for row in rows)
+    source_total = compute.registry_builder._sum(
+        {"value_gbp_decimal": source.get("value_gbp_decimal", str(source["value_gbp"]))}
+        for measure in registry["measures"]
+        for source in measure["source_rows"]
+    )
+    staged_total = compute.registry_builder._sum(
+        {"value_gbp_decimal": row["external_value_gbp_decimal"]} for row in rows
+    )
     tally = {
         "source_rows": len(seen),
         "staged_rows": len(rows),
         "by_status": dict(sorted(counts.items())),
         "source_value_gbp": sum(row["external_value_gbp"] for row in rows),
+        "source_value_gbp_decimal": source_total,
+        "staged_value_gbp_decimal": staged_total,
+        "computed_measure_years": len(computed_pairs),
+        "full_event_grid_size": len(full_pairs),
+        "full_event_complete": full_pairs <= computed_pairs,
+        "missing_measure_years": compute.grid_rows(full_pairs - computed_pairs),
         "registry_sha256": registry_sha256,
     }
     if tally["source_rows"] != tally["staged_rows"]:
         raise ValueError(
             "staging inventory does not preserve the source-row accounting identity"
         )
+    if source_total != staged_total:
+        raise ValueError("staging does not preserve the exact source GBP total")
     return rows, tally
 
 
@@ -266,6 +353,7 @@ def main(argv: list[str] | None = None) -> int:
         json.loads(manifest_path.read_bytes()) if manifest_path.exists() else None
     )
     registry = json.loads(payload)
+    compute.validate_event_identity(registry, args.event)
     compute.registry_builder.validate_registry(registry)
     rows, tally = stage_event(
         registry, manifest, artifact_dir=artifact_dir, registry_sha256=registry_sha256

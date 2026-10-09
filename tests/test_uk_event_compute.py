@@ -3,6 +3,7 @@
 import copy
 import hashlib
 import json
+from types import SimpleNamespace
 
 import pytest
 from hypothesis import given, settings
@@ -11,6 +12,72 @@ from hypothesis import strategies as st
 from pipeline import compute_uk_ab2025 as ab
 from pipeline import compute_uk_event as compute
 from pipeline import stage_uk_event as stage
+
+
+def test_optional_engine_provenance_preserves_legacy_metadata(monkeypatch):
+    variable = SimpleNamespace(
+        label="Income tax",
+        entity=SimpleNamespace(key="person"),
+        definition_period="year",
+        unit="currency-GBP",
+        documentation="The tax formula.",
+    )
+    system = SimpleNamespace(variables={"income_tax": variable})
+    monkeypatch.setattr(
+        compute.fiscal.inspect,
+        "getsourcefile",
+        lambda cls: "/venv/policyengine_uk/variables/income_tax.py",
+    )
+    legacy = compute.fiscal.variable_metadata(system, ["income_tax"])
+    assert legacy == {
+        "income_tax": {
+            "label": "Income tax",
+            "entity": "person",
+            "definition_period": "year",
+            "unit": "currency-GBP",
+        }
+    }
+    enriched = compute.fiscal.variable_metadata(
+        system, ["income_tax"], include_engine_provenance=True
+    )
+    assert enriched == {
+        "income_tax": {
+            **legacy["income_tax"],
+            "documentation": "The tax formula.",
+            "engine_source": "policyengine_uk/variables/income_tax.py",
+        }
+    }
+
+
+def test_worker_interrupt_terminates_owned_children_before_shutdown(monkeypatch):
+    calls = []
+
+    class Process:
+        def is_alive(self):
+            return True
+
+        def terminate(self):
+            calls.append("terminate")
+
+    class Executor:
+        def __init__(self, **kwargs):
+            assert kwargs["max_workers"] == 2
+            self._processes = {1: Process(), 2: Process()}
+
+        def map(self, *args):
+            raise KeyboardInterrupt
+
+        def shutdown(self, **kwargs):
+            calls.append(("shutdown", kwargs))
+
+    monkeypatch.setattr(compute, "ProcessPoolExecutor", Executor)
+    with pytest.raises(KeyboardInterrupt):
+        list(compute.parallel_year_results([{}], 2))
+    assert calls == [
+        "terminate",
+        "terminate",
+        ("shutdown", {"wait": True, "cancel_futures": True}),
+    ]
 
 
 def measure(construction="reversal_on_certified_world"):
@@ -213,6 +280,27 @@ def test_stage_exact_inventory_oriented_heads_and_row_classification(
     )
     assert compute.canonical_bytes(rows) == compute.canonical_bytes(second_rows)
     assert tally == second_tally
+    duplicate = copy.deepcopy(registry)
+    row = copy.deepcopy(duplicate["measures"][0]["source_rows"][0])
+    row["source_row_id"] = "duplicate_tax_head"
+    duplicate["measures"][0]["source_rows"].append(row)
+    with pytest.raises(ValueError, match="mapped to multiple source rows"):
+        stage.stage_event(duplicate, manifest, artifact_dir=d, registry_sha256="b" * 64)
+    incomplete = copy.deepcopy(manifest)
+    incomplete.update({"measures": [m["measure_key"]], "years": [2024, 2025]})
+    with pytest.raises(ValueError, match="missing requested"):
+        stage.stage_event(
+            registry, incomplete, artifact_dir=d, registry_sha256="b" * 64
+        )
+    explicit_duplicate = copy.deepcopy(registry)
+    explicit_duplicate["measures"][0]["source_rows"][0]["pe_variables"] = [
+        "income_tax",
+        "income_tax",
+    ]
+    with pytest.raises(ValueError, match="mapping repeats"):
+        stage.stage_event(
+            explicit_duplicate, manifest, artifact_dir=d, registry_sha256="b" * 64
+        )
     (d / "measure.json").write_text("{}")
     with pytest.raises(ValueError, match="bytes differ"):
         stage.stage_event(registry, manifest, artifact_dir=d, registry_sha256="b" * 64)
@@ -249,6 +337,34 @@ def test_staging_rejects_duplicate_source_rows_without_artifacts(tmp_path):
             artifact_dir=tmp_path,
             registry_sha256="b" * 64,
         )
+
+
+def test_staging_preserves_fractional_source_gbp_beside_large_values(tmp_path):
+    m = measure()
+    m["source_rows"] = [
+        {
+            "source_row_id": str(i),
+            "fy": "2024-25",
+            "metric": "revenue_change",
+            "tax_head": "Income tax",
+            "value_gbp": float(value),
+            "value_gbp_decimal": value,
+        }
+        for i, value in enumerate(["1000000000000000000000000000000", "0.1", "0.2"])
+    ]
+    rows, tally = stage.stage_event(
+        {"calendar_years": [2024], "measures": [m]},
+        None,
+        artifact_dir=tmp_path,
+        registry_sha256="b" * 64,
+    )
+    assert tally["source_value_gbp_decimal"] == "1000000000000000000000000000000.3"
+    assert tally["source_value_gbp_decimal"] == tally["staged_value_gbp_decimal"]
+    assert [row["external_value_gbp_decimal"] for row in rows] == [
+        "1000000000000000000000000000000",
+        "0.1",
+        "0.2",
+    ]
 
 
 def test_changed_registry_refused_before_preflight(tmp_path, monkeypatch):
@@ -324,10 +440,131 @@ def test_compute_reuses_baselines_and_reruns_produce_identical_bytes(
     assert compute.main(args + ["--resume"]) == 0
     assert len(calls) == 12
     assert numerical == {name: (output / name).read_bytes() for name in numerical}
+    (output / "RUN_MANIFEST.json").unlink()
+    assert compute.main(args + ["--resume"]) == 0
+    assert len(calls) == 12
+    assert numerical == {name: (output / name).read_bytes() for name in numerical}
+    assert (
+        compute.main(args + ["--measures", first["measure_key"], "--years", "2024"])
+        == 0
+    )
+    assert len(calls) == 14
+    manifest = json.loads((output / "RUN_MANIFEST.json").read_bytes())
+    assert len(manifest["artifacts"]) == len(manifest["artifact_grid"]) == 4
+    assert len(manifest["requested_grid"]) == 1
+    assert manifest["full_event_complete"] is True
+    assert (
+        numerical[f"{first['measure_key']}_2024.json"]
+        == (output / f"{first['measure_key']}_2024.json").read_bytes()
+    )
     (output / f"{first['measure_key']}_2024.json").write_text("{}")
     with pytest.raises(ValueError, match="retained artifact bytes"):
         compute.main(args + ["--resume"])
-    assert len(calls) == 12
+    assert len(calls) == 14
+
+
+def test_cli_event_identity_checked_before_preflight(tmp_path, monkeypatch):
+    path = tmp_path / "registry.json"
+    path.write_text(json.dumps({"event_slug": "another_event"}))
+    monkeypatch.setattr(
+        compute,
+        "preflight",
+        lambda: (_ for _ in ()).throw(AssertionError("preflight must not run")),
+    )
+    with pytest.raises(ValueError, match="event identity"):
+        compute.main(["--event", "test_event", "--registry", str(path)])
+    with pytest.raises(ValueError, match="event identity"):
+        stage.main(["--event", "test_event", "--registry", str(path)])
+
+
+def test_focused_default_rerun_guard_precedes_preflight(tmp_path, monkeypatch):
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    registry, output = compute.event_paths("test_event")
+    registry.parent.mkdir(parents=True)
+    registry.write_text(json.dumps({"calendar_years": [2024], "measures": [measure()]}))
+    output.mkdir(parents=True)
+    (output / "RUN_MANIFEST.json").write_text("{}")
+    monkeypatch.setattr(
+        compute.registry_builder, "validate_registry", lambda document: None
+    )
+    monkeypatch.setattr(
+        compute,
+        "preflight",
+        lambda: (_ for _ in ()).throw(AssertionError("preflight reached")),
+    )
+    args = ["--event", "test_event", "--measures", measure()["measure_key"]]
+    with pytest.raises(ValueError, match="focused reruns"):
+        compute.main(args)
+    with pytest.raises(AssertionError, match="preflight reached"):
+        compute.main(args + ["--resume"])
+    with pytest.raises(AssertionError, match="preflight reached"):
+        compute.main(args + ["--output-dir", str(tmp_path / "alternative")])
+
+
+def test_interrupted_compute_resumes_only_receipted_artifacts(tmp_path, monkeypatch):
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    first = measure()
+    second = copy.deepcopy(first)
+    second["measure_key"] = "test_event__second_measure"
+    registry = tmp_path / "registry.json"
+    registry.write_text(
+        json.dumps({"calendar_years": [2024], "measures": [first, second]})
+    )
+    monkeypatch.setattr(
+        compute.registry_builder, "validate_registry", lambda document: None
+    )
+    monkeypatch.setattr(
+        compute.worlds, "engine_resolver", lambda: lambda path, date: None
+    )
+    monkeypatch.setattr(
+        compute,
+        "preflight",
+        lambda: {
+            "sha256": "a" * 64,
+            "release_bundle": {"certified_data_build_id": "certified-test"},
+        },
+    )
+    calls = []
+
+    def interrupted(year, variables, reform, pre):
+        calls.append(reform)
+        if len(calls) == 3:
+            raise KeyboardInterrupt
+        return simulation(900, 1000) if reform else simulation(1000, 1030)
+
+    monkeypatch.setattr(compute, "run_sim", interrupted)
+    output = tmp_path / "results"
+    args = [
+        "--event",
+        "test_event",
+        "--registry",
+        str(registry),
+        "--output-dir",
+        str(output),
+    ]
+    with pytest.raises(KeyboardInterrupt):
+        compute.main(args)
+    assert not (output / "RUN_MANIFEST.json").exists()
+    receipt = json.loads((output / "RUN_PROGRESS_2024.json").read_bytes())
+    assert len(receipt["artifacts"]) == 1
+    first_path = output / f"{first['measure_key']}_2024.json"
+    first_bytes = first_path.read_bytes()
+    unreceipted = output / f"{second['measure_key']}_2024.json"
+    unreceipted.write_bytes(b"uncommitted interrupted output")
+    calls.clear()
+
+    def resumed(year, variables, reform, pre):
+        calls.append(reform)
+        return simulation(900, 1000) if reform else simulation(1000, 1030)
+
+    monkeypatch.setattr(compute, "run_sim", resumed)
+    assert compute.main(args + ["--resume"]) == 0
+    assert len(calls) == 2  # One new baseline and the unfinished alternate only.
+    assert first_path.read_bytes() == first_bytes
+    assert json.loads(unreceipted.read_bytes())["measure_key"] == second["measure_key"]
+    manifest = json.loads((output / "RUN_MANIFEST.json").read_bytes())
+    assert manifest["full_event_complete"] is True
+    assert len(manifest["artifact_grid"]) == 2
 
 
 def test_supported_years_require_documented_event_window():

@@ -9,9 +9,10 @@ and keeps timings outside the deterministic numerical artifacts.
 from __future__ import annotations
 
 import argparse
-import inspect
+import gc
 import json
 import math
+import os
 import re
 import sys
 import time
@@ -35,6 +36,12 @@ def event_paths(event: str) -> tuple[Path, Path]:
         ROOT / "data" / "uk" / "events" / f"{event}_measures.json",
         ROOT / "results" / "uk" / "events" / event,
     )
+
+
+def validate_event_identity(registry: dict, event: str) -> None:
+    identity = registry.get("event_slug", registry.get("event"))
+    if identity is not None and identity != event:
+        raise ValueError("registry event identity differs from --event")
 
 
 def canonical_bytes(value: object) -> bytes:
@@ -223,29 +230,10 @@ def run_sim(year: int, variables: list[str], reform: dict | None, pre: dict) -> 
         reform=reform,
         runtime_dataset_source=Path(pre["runtime_dataset_source"]),
         expected_dataset_sha256=pre["sha256"],
+        include_engine_provenance=True,
     )
     fiscal.assert_managed_bundle(result["policyengine_bundle"], pre["release_bundle"])
-    definitions = engine_variables()
-    for name in variables:
-        variable = definitions[name]
-        source = inspect.getsourcefile(type(variable))
-        result["variable_metadata"][name].update(
-            {
-                "documentation": getattr(variable, "documentation", None),
-                "engine_source": "policyengine_uk/"
-                + source.split("/policyengine_uk/", 1)[1]
-                if source and "/policyengine_uk/" in source
-                else None,
-            }
-        )
     return result
-
-
-@lru_cache(maxsize=1)
-def engine_variables() -> dict:
-    import policyengine_uk
-
-    return policyengine_uk.CountryTaxBenefitSystem().variables
 
 
 def run_year_job(job: dict) -> dict:
@@ -253,6 +241,10 @@ def run_year_job(job: dict) -> dict:
     year = job["year"]
     pre = job["pre"]
     started = time.perf_counter()
+    print(
+        f"[pid {os.getpid()} year {year}] starting certified baseline ({len(job['variables'])} heads)",
+        flush=True,
+    )
     baseline = run_sim(year, job["variables"], None, pre)
     timings = [
         {
@@ -263,25 +255,30 @@ def run_year_job(job: dict) -> dict:
         }
     ]
     print(
-        f"[{year}] certified baseline extracted once ({len(job['variables'])} heads)",
+        f"[pid {os.getpid()} year {year}] certified baseline extracted once in {time.perf_counter() - started:.1f}s",
         flush=True,
     )
     artifacts = {}
+    progress_artifacts = dict(job.get("retained_artifacts", {}))
     for key in job["selected"]:
         world = job["runnable"][key]
         measure = job["index"][key]
         variables = list(variable_channels(measure))
         started = time.perf_counter()
-        base = (
-            run_sim(year, variables, world["baseline_reform"], pre)
-            if world["baseline_reform"]
-            else baseline
-        )
-        reform = (
-            run_sim(year, variables, world["reform_reform"], pre)
-            if world["reform_reform"]
-            else baseline
-        )
+        base = baseline
+        if world["baseline_reform"]:
+            print(
+                f"[pid {os.getpid()} year {year}] starting {key} baseline modifier ({world['construction']})",
+                flush=True,
+            )
+            base = run_sim(year, variables, world["baseline_reform"], pre)
+        reform = baseline
+        if world["reform_reform"]:
+            print(
+                f"[pid {os.getpid()} year {year}] starting {key} reform delta ({world['construction']})",
+                flush=True,
+            )
+            reform = run_sim(year, variables, world["reform_reform"], pre)
         artifact = build_artifact(
             measure=measure,
             world=world,
@@ -294,7 +291,13 @@ def run_year_job(job: dict) -> dict:
         )
         path = job["output_dir"] / f"{key}_{year}.json"
         fiscal.atomic_write_bytes(path, canonical_bytes(artifact))
-        artifacts[str(path.relative_to(ROOT))] = fiscal.sha256_file(path)
+        relative = str(path.relative_to(ROOT))
+        artifacts[relative] = fiscal.sha256_file(path)
+        progress_artifacts[relative] = artifacts[relative]
+        fiscal.atomic_write_bytes(
+            job["output_dir"] / f"RUN_PROGRESS_{year}.json",
+            canonical_bytes(progress_receipt(job, progress_artifacts)),
+        )
         timings.append(
             {"measure_key": key, "year": year, "seconds": time.perf_counter() - started}
         )
@@ -303,6 +306,79 @@ def run_year_job(job: dict) -> dict:
             flush=True,
         )
     return {"artifacts": artifacts, "timings": timings}
+
+
+def progress_receipt(job: dict, artifacts: dict[str, str]) -> dict:
+    """Commit completed artifact bytes before the next simulation begins."""
+    return {
+        "schema_version": 1,
+        "receipt_kind": "completed_event_artifacts",
+        "event": job["event"],
+        "year": job["year"],
+        "registry_sha256": job["registry_sha256"],
+        "certified_dataset_sha256": job["pre"]["sha256"],
+        "data_bundle": fiscal.data_bundle_id(job["pre"]["release_bundle"]),
+        "engine_version": fiscal.package_version("policyengine-uk"),
+        **runtime_versions(),
+        "artifacts": artifacts,
+    }
+
+
+def retained_artifact_digests(
+    output_dir: Path,
+    *,
+    event: str,
+    years: list[int],
+    registry_sha256: str,
+    pre: dict,
+) -> dict[str, str]:
+    """Read only SHA-bound completed outputs; unreceipted files are ignored."""
+    receipts = []
+    manifest_path = output_dir / "RUN_MANIFEST.json"
+    if manifest_path.exists():
+        manifest = json.loads(manifest_path.read_bytes())
+        if (
+            manifest.get("event") == event
+            and manifest.get("registry_sha256") == registry_sha256
+            and manifest.get("certified_dataset_sha256") == pre["sha256"]
+        ):
+            receipts.append(manifest)
+    for year in years:
+        path = output_dir / f"RUN_PROGRESS_{year}.json"
+        if not path.exists():
+            continue
+        receipt = json.loads(path.read_bytes())
+        expected = progress_receipt(
+            {
+                "event": event,
+                "year": year,
+                "registry_sha256": registry_sha256,
+                "pre": pre,
+            },
+            {},
+        )
+        if all(
+            receipt.get(field) == value
+            for field, value in expected.items()
+            if field != "artifacts"
+        ):
+            receipts.append(receipt)
+    digests = {}
+    for receipt in receipts:
+        for relative, digest in receipt["artifacts"].items():
+            if relative in digests and digests[relative] != digest:
+                raise ValueError(f"conflicting completed-artifact receipts: {relative}")
+            path = (ROOT / relative).resolve()
+            if not path.is_relative_to(output_dir.resolve()):
+                raise ValueError(
+                    "retained receipt names an artifact outside this event directory"
+                )
+            digests[relative] = digest
+    return digests
+
+
+def grid_rows(pairs) -> list[dict]:
+    return [{"measure_key": key, "year": year} for key, year in sorted(pairs)]
 
 
 def validate_years(requested: list[int], registry: dict) -> list[int]:
@@ -326,6 +402,30 @@ def verify_registry_identity(path: Path, expected_sha256: str) -> None:
         raise ValueError(
             "registry bytes changed after planning; refusing simulation or publication"
         )
+
+
+def parallel_year_results(jobs: list[dict], workers: int):
+    """Stop this runner's child simulations when interrupted or a job fails.
+
+    Python 3.12 has no public executor termination API. Retain the executor's
+    owned Process objects so their public terminate methods can stop running
+    simulations before shutdown waits for completion.
+    """
+    pool = ProcessPoolExecutor(max_workers=workers, mp_context=get_context("spawn"))
+    try:
+        yield from pool.map(run_year_job, jobs)
+    except BaseException:
+        print(
+            f"[pid {os.getpid()}] stopping owned year workers after interruption or job failure",
+            flush=True,
+        )
+        for process in list(pool._processes.values()):
+            if process.is_alive():
+                process.terminate()
+        pool.shutdown(wait=True, cancel_futures=True)
+        raise
+    else:
+        pool.shutdown(wait=True)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -353,7 +453,19 @@ def main(argv: list[str] | None = None) -> int:
     output_dir = (args.output_dir or default_output).resolve()
     registry_payload = registry_path.read_bytes()
     registry = json.loads(registry_payload)
+    validate_event_identity(registry, args.event)
     registry_builder.validate_registry(registry)
+    if (
+        not (args.dry_run or args.guards)
+        and (args.measures or args.years)
+        and args.output_dir is None
+        and not args.resume
+        and (output_dir / "RUN_MANIFEST.json").exists()
+    ):
+        raise ValueError(
+            "focused reruns with an existing default manifest require --resume "
+            "or an explicit --output-dir"
+        )
     registry_sha256 = fiscal.hashlib.sha256(registry_payload).hexdigest()
     years = validate_years(args.years or [], registry)
     index = {measure["measure_key"]: measure for measure in registry["measures"]}
@@ -395,54 +507,76 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     started = time.perf_counter()
     verify_registry_identity(registry_path, registry_sha256)
+    print(f"[pid {os.getpid()}] starting offline bundle preflight", flush=True)
     pre = preflight()
+    print(
+        f"[pid {os.getpid()}] offline bundle preflight complete; starting processed-world reversal guard",
+        flush=True,
+    )
     gaps = worlds.reversal_delta_mismatches(
         index, worlds.engine_resolver(), years=years
     )
+    gc.collect()
     if gaps:
         raise ValueError("\n".join(gaps))
+    print(f"[pid {os.getpid()}] processed-world reversal guard complete", flush=True)
     verify_registry_identity(registry_path, registry_sha256)
     output_dir.mkdir(parents=True, exist_ok=True)
-    previous_manifest_path = output_dir / "RUN_MANIFEST.json"
-    previous_manifest = (
-        json.loads(previous_manifest_path.read_bytes())
-        if args.resume and previous_manifest_path.exists()
-        else {}
+    previous_digests = retained_artifact_digests(
+        output_dir,
+        event=args.event,
+        years=registry["calendar_years"],
+        registry_sha256=registry_sha256,
+        pre=pre,
     )
-    if (
-        previous_manifest.get("registry_sha256") != registry_sha256
-        or previous_manifest.get("certified_dataset_sha256") != pre["sha256"]
-    ):
-        previous_manifest = {}
-    retained = {}
-    if args.resume:
-        for key in selected:
-            for year in years:
-                path = output_dir / f"{key}_{year}.json"
-                relative = str(path.relative_to(ROOT))
-                digest = previous_manifest.get("artifacts", {}).get(relative)
-                if digest is None or not path.exists():
-                    continue
-                if fiscal.sha256_file(path) != digest:
-                    raise ValueError(
-                        f"retained artifact bytes differ from manifest: {relative}"
-                    )
-                previous = json.loads(path.read_bytes())
-                if (
-                    previous.get("registry_sha256") != registry_sha256
-                    or previous.get("certified_dataset_sha256") != pre["sha256"]
-                ):
-                    raise ValueError(
-                        "retained artifact identity differs from the retained manifest"
-                    )
-                retained[(key, year)] = digest
+    requested_pairs = {(key, year) for key in selected for year in years}
+    full_pairs = {
+        (key, year) for key in runnable for year in registry["calendar_years"]
+    }
+    expected_paths = {
+        str((output_dir / f"{key}_{year}.json").relative_to(ROOT)): (key, year)
+        for key, year in full_pairs
+    }
+    committed = {}
+    for relative, digest in previous_digests.items():
+        if relative not in expected_paths:
+            raise ValueError(
+                "retained receipt names a measure/year outside the event grid"
+            )
+        key, year = expected_paths[relative]
+        if not args.resume and (key, year) in requested_pairs:
+            continue
+        path = ROOT / relative
+        if not path.exists():
+            continue
+        if fiscal.sha256_file(path) != digest:
+            raise ValueError(
+                f"retained artifact bytes differ from manifest: {relative}"
+            )
+        previous = json.loads(path.read_bytes())
+        if (
+            previous.get("registry_sha256") != registry_sha256
+            or previous.get("certified_dataset_sha256") != pre["sha256"]
+            or previous.get("event") != args.event
+            or previous.get("measure_key") != key
+            or previous.get("year") != year
+            or any(
+                previous.get(field) != value
+                for field, value in runtime_versions().items()
+            )
+        ):
+            raise ValueError("retained artifact identity differs from its receipt")
+        committed[(key, year)] = digest
+    retained = {
+        pair: digest for pair, digest in committed.items() if pair in requested_pairs
+    }
     variables = sorted(
         {variable for key in selected for variable in variable_channels(index[key])}
     )
     timings = []
     artifacts = {
         str((output_dir / f"{key}_{year}.json").relative_to(ROOT)): digest
-        for (key, year), digest in retained.items()
+        for (key, year), digest in committed.items()
     }
     jobs = []
     for year in years:
@@ -459,6 +593,13 @@ def main(argv: list[str] | None = None) -> int:
                     "registry_sha256": registry_sha256,
                     "event": args.event,
                     "output_dir": output_dir,
+                    "retained_artifacts": {
+                        str(
+                            (output_dir / f"{key}_{year}.json").relative_to(ROOT)
+                        ): digest
+                        for (key, retained_year), digest in committed.items()
+                        if retained_year == year
+                    },
                 }
             )
     if args.workers == 1:
@@ -467,24 +608,33 @@ def main(argv: list[str] | None = None) -> int:
             artifacts.update(result["artifacts"])
             timings.extend(result["timings"])
     elif jobs:
-        with ProcessPoolExecutor(
-            max_workers=args.workers, mp_context=get_context("spawn")
-        ) as pool:
-            for result in pool.map(run_year_job, jobs):
-                artifacts.update(result["artifacts"])
-                timings.extend(result["timings"])
+        for result in parallel_year_results(jobs, args.workers):
+            artifacts.update(result["artifacts"])
+            timings.extend(result["timings"])
     verify_registry_identity(registry_path, registry_sha256)
+    artifact_pairs = {expected_paths[relative] for relative in artifacts}
+    if requested_pairs - artifact_pairs:
+        raise ValueError(
+            "requested measure/year grid is incomplete; refusing final manifest"
+        )
     manifest = {
         "schema_version": 1,
         "event": args.event,
         "registry_path": fiscal.relative_to_root(registry_path),
         "registry_sha256": registry_sha256,
-        "years": years,
-        "measures": selected,
+        "years": sorted({year for _, year in artifact_pairs}),
+        "measures": sorted({key for key, _ in artifact_pairs}),
+        "requested_years": years,
+        "requested_measures": selected,
+        "requested_grid": grid_rows(requested_pairs),
+        "artifact_grid": grid_rows(artifact_pairs),
+        "full_event_grid": grid_rows(full_pairs),
+        "full_event_complete": full_pairs <= artifact_pairs,
         "artifacts": artifacts,
         "certified_dataset_sha256": pre["sha256"],
         "data_bundle": fiscal.data_bundle_id(pre["release_bundle"]),
         "engine_version": fiscal.package_version("policyengine-uk"),
+        **runtime_versions(),
         "not_computable": worlds.not_computable(index, years=years),
     }
     fiscal.atomic_write_bytes(

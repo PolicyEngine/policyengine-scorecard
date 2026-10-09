@@ -8,15 +8,19 @@ import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
+from pipeline import compare_uk_event as comparison
 from pipeline.compare_uk_event import (
     DEFAULT_AXES,
     EventComparisonError,
     build_comparison_rows,
     describe_decomposition,
+    load_verified_comparison,
     render_csv,
     render_markdown,
+    render_summary,
     validate_artifact,
     write_comparison,
+    write_summary,
 )
 from pipeline.compare_uk_obr_costings import ratio_and_bin
 
@@ -62,6 +66,7 @@ def inputs(tmp_path):
                         "fy": "2024-25",
                         "tax_head": "Income tax",
                         "value_gbp": 90.0,
+                        "value_gbp_decimal": "90.0",
                     }
                 ],
             }
@@ -74,6 +79,7 @@ def inputs(tmp_path):
             "fy": "2024-25",
             "tax_head": "Income tax",
             "external_value_gbp": 90.0,
+            "external_value_gbp_decimal": "90.0",
             "pe_value": 100.0,
             "head_variables": ["income_tax"],
             "artifact_path": "artifact.json",
@@ -89,6 +95,7 @@ def test_source_rows_preserved_and_artifact_verified(inputs):
     rows = build_comparison_rows(registry, staged, artifact_root=root)
     assert len(rows) == 1
     assert rows[0]["pe_value_gbp"] == 100
+    assert rows[0]["obr_value_gbp_decimal"] == "90.0"
     assert set(DEFAULT_AXES) <= set(rows[0]["axes"])
     assert rows[0]["explained_share"] is None
     assert rows[0]["residual_label"] == "residual_plus_unsized"
@@ -143,6 +150,49 @@ def test_uncomputed_source_rows_stay_in_comparison(inputs):
     assert "population_vintage" in row["axes"]
 
 
+@pytest.mark.parametrize("changed", ["decimal", "number", "missing", "nonfinite"])
+def test_exact_source_accounting_rejects_subpenny_drift(inputs, changed):
+    registry, staged, root = inputs
+    if changed == "decimal":
+        staged[0]["external_value_gbp_decimal"] = "90.000000000000000000000001"
+    elif changed == "number":
+        staged[0]["external_value_gbp"] = 90.0001
+    elif changed == "missing":
+        staged[0].pop("external_value_gbp_decimal")
+    else:
+        staged[0]["external_value_gbp_decimal"] = "NaN"
+    with pytest.raises(EventComparisonError):
+        build_comparison_rows(registry, staged, artifact_root=root)
+
+
+def test_decimal_commitment_retains_precision_beyond_float(inputs):
+    registry, staged, root = inputs
+    value = "90.000000000000000000000001"
+    registry["measures"][0]["source_rows"][0]["value_gbp_decimal"] = value
+    staged[0]["external_value_gbp_decimal"] = value
+    rows = build_comparison_rows(registry, staged, artifact_root=root)
+    assert rows[0]["obr_value_gbp_decimal"] == value
+    assert value in render_csv(rows)
+
+
+def test_legacy_sources_without_decimal_fields_remain_supported(inputs):
+    registry, staged, root = inputs
+    registry["measures"][0]["source_rows"][0].pop("value_gbp_decimal")
+    staged[0].pop("external_value_gbp_decimal")
+    assert build_comparison_rows(registry, staged, artifact_root=root)
+
+
+def test_measure_class_counts_do_not_overlap_across_source_heads(inputs):
+    registry, staged, root = inputs
+    registry["measures"][0]["source_rows"][0]["classification"] = (
+        "out_of_household_scope"
+    )
+    rows = build_comparison_rows(registry, staged, artifact_root=root)
+    markdown = render_markdown(registry, rows)
+    assert "| expressible | 1 | 0 |" in markdown
+    assert "| out_of_household_scope | 0 | 1 |" in markdown
+
+
 def test_partial_construction_warnings_remain_visible(inputs):
     registry, staged, root = inputs
     measure = registry["measures"][0]
@@ -190,9 +240,30 @@ def _save_staging(inputs):
         "registry_sha256": hashlib.sha256(registry_path.read_bytes()).hexdigest(),
         "staged_sha256": hashlib.sha256(staged_path.read_bytes()).hexdigest(),
         "staged_rows": len(staged),
+        "source_value_gbp_decimal": "90.0",
+        "staged_value_gbp_decimal": "90.0",
     }
     (root / "STAGING_MANIFEST.json").write_text(json.dumps(manifest))
     return registry_path, staged_path, root
+
+
+@pytest.mark.parametrize(
+    "field", ["source_value_gbp_decimal", "staged_value_gbp_decimal"]
+)
+def test_manifest_exact_total_is_checked(inputs, field):
+    registry_path, staged_path, root = _save_staging(inputs)
+    path = root / "STAGING_MANIFEST.json"
+    manifest = json.loads(path.read_text())
+    manifest[field] = "90.000000000000000000000001"
+    path.write_text(json.dumps(manifest))
+    with pytest.raises(EventComparisonError, match="exact £ total"):
+        write_comparison(
+            "event",
+            registry_path=registry_path,
+            staged_path=staged_path,
+            output_dir=root / "output",
+            artifact_root=root,
+        )
 
 
 def test_manifest_bound_comparison_outputs_are_byte_identical(inputs):
@@ -222,6 +293,99 @@ def test_manifest_rejects_changed_input_bytes(inputs, changed):
             output_dir=root / "output",
             artifact_root=root,
         )
+
+
+def _save_comparison(inputs):
+    registry_path, staged_path, root = _save_staging(inputs)
+    output = root / "results" / "uk" / "events" / "event"
+    rows = write_comparison(
+        "event",
+        registry_path=registry_path,
+        staged_path=staged_path,
+        output_dir=output,
+        artifact_root=root,
+    )
+    return rows, output, root
+
+
+def test_summary_verifies_receipts_before_aggregation(inputs):
+    rows, output, root = _save_comparison(inputs)
+    assert (
+        load_verified_comparison(output / "COMPARISON.json", artifact_root=root) == rows
+    )
+    write_summary(output.parent, artifact_root=root)
+    summary = (output.parent / "SUMMARY.md").read_text()
+    assert "Numerical comparison outputs available: 1" in summary
+    assert (
+        "PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py" in summary
+    )
+    assert (
+        "--output-dir .venv-replay-checks/reproductions/event/event__tax_2024"
+        in summary
+    )
+
+
+@pytest.mark.parametrize(
+    "changed",
+    ["registry", "staged", "staging_manifest", "json", "csv", "md", "artifact", "axes"],
+)
+def test_summary_rejects_stale_or_modified_comparisons(inputs, changed, monkeypatch):
+    _, output, root = _save_comparison(inputs)
+    paths = {
+        "registry": root / "registry.json",
+        "staged": root / "STAGED.jsonl",
+        "staging_manifest": root / "STAGING_MANIFEST.json",
+        "json": output / "COMPARISON.json",
+        "csv": output / "COMPARISON.csv",
+        "md": output / "COMPARISON.md",
+        "artifact": root / "artifact.json",
+    }
+    if changed == "axes":
+        altered = root / "axes.json"
+        altered.write_bytes(comparison.AXES_PATH.read_bytes() + b"\n")
+        monkeypatch.setattr(comparison, "AXES_PATH", altered)
+    else:
+        path = paths[changed]
+        path.write_bytes(path.read_bytes() + b"\n")
+    with pytest.raises(EventComparisonError, match="SHA-256"):
+        write_summary(output.parent, artifact_root=root)
+    assert not (output.parent / "SUMMARY.md").exists()
+
+
+def test_summary_rejects_changed_canonical_event_registry(inputs):
+    _, output, root = _save_comparison(inputs)
+    canonical = root / "data" / "uk" / "events" / "event_measures.json"
+    canonical.parent.mkdir(parents=True)
+    canonical.write_bytes((root / "registry.json").read_bytes() + b"\n")
+    with pytest.raises(EventComparisonError, match="current event registry"):
+        write_summary(output.parent, artifact_root=root)
+
+
+def test_incomplete_grid_is_visible_in_event_and_summary(inputs):
+    registry_path, staged_path, root = _save_staging(inputs)
+    manifest_path = root / "STAGING_MANIFEST.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest.update(
+        computed_measure_years=1,
+        full_event_grid_size=6,
+        full_event_complete=False,
+        missing_measure_years=[{"year": 2025}],
+    )
+    manifest_path.write_text(json.dumps(manifest))
+    output = root / "results" / "uk" / "events" / "event"
+    write_comparison(
+        "event",
+        registry_path=registry_path,
+        staged_path=staged_path,
+        output_dir=output,
+        artifact_root=root,
+    )
+    write_summary(output.parent, artifact_root=root)
+    assert (
+        "Numerical replay grid incomplete: 1 of 6"
+        in (output / "COMPARISON.md").read_text()
+    )
+    assert "replay grid incomplete (1/6)" in (output.parent / "SUMMARY.md").read_text()
 
 
 @given(st.integers(1, 10**9), st.integers(-(10**9), 10**9), st.integers(1, 10**6))
@@ -279,6 +443,31 @@ def test_decomposition_refuses_unsupported_provenance():
     value.pop("provenance")
     with pytest.raises(EventComparisonError, match="provenance"):
         describe_decomposition(100, ["head_scope"], [value])
+
+
+def test_decomposition_rejects_duplicate_components():
+    with pytest.raises(EventComparisonError, match="unique"):
+        describe_decomposition(100, ["head_scope"], [component(25), component(25)])
+
+
+def test_inventory_summary_does_not_claim_completed_replays(inputs):
+    registry, _, _ = inputs
+    registry["accounting"] = {
+        "rows_in": 1,
+        "by_class": {
+            "expressible": {
+                "measures": 1,
+                "rows": 1,
+                "net_gbp_decimal": "90",
+                "absolute_gbp_decimal": "90",
+            }
+        },
+    }
+    summary = render_summary({}, registries={"event": registry})
+    assert "Numerical comparison outputs available: 0" in summary
+    assert "Registry seeded; numerical replay incomplete" in summary
+    assert "Registry coverage does not supply a PE/OBR agreement profile" in summary
+    assert "event / expressible" in summary
 
 
 @given(st.integers(-(10**9), 10**9), st.integers(-(10**9), 10**9))
