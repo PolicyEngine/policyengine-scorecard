@@ -1,0 +1,282 @@
+# Replaying an OBR fiscal event on the certified bundle
+
+Each event lane builds its registry, runs the executable household legs, stages
+every source row, and writes descriptive comparisons. The input is the OBR
+Policy measures database harvested in `~/scorecard-harvest/uk_obr/`, frozen as
+the gzip snapshot named in `sources/uk_replay/source.json`. The source manifest
+pins both compressed and uncompressed SHA-256 values. A registry build refuses
+different bytes.
+
+Read `docs/AI_GUIDANCE.md` and `docs/ARCHITECTURE.md` first. Work on the assigned
+event branch. The replay must not change calibration targets to fit the OBR,
+update the certified pin, infer a behavioural adjustment from a raw difference,
+or classify an unexplained gap as an engine defect without evidence.
+
+## Classifying measures
+
+Group the exact source titles within the chosen `conditions.fiscal_event`.
+Keep each source head and FY as its own `source_rows` entry, including zero
+cells. The source-row id includes the snapshot position and the source line's
+digest. The original `reform_hint`, `tax_head` or spending head, FY, table,
+column, metric and gain-to-Exchequer value remain attached.
+
+Assign every source row exactly one of these classes:
+
+| Class | Required record |
+|---|---|
+| `expressible` | Resolved parameter or input construction, a `pe_reform_delta`, a `pe_baseline_modifier`, or a package; a dated policy schedule; and explicit source-head mappings with tax/spending channels. |
+| `partial` | An executable household leg, the exact omitted legs in `missing_legs`, and the resulting scope limits. Unmapped source heads remain uncomputed. |
+| `not_expressible` | A `pe_gap` that names the missing tax base, entitlement, history, data input or counterfactual world. Record a search over both the pinned engine's full parameter tree and variable list; a search result alone does not demonstrate a mechanism. |
+| `out_of_household_scope` | A business, departmental, local-government, financing or other non-household account, with the scope reason. Corporation tax, bank levy and business rates belong here. |
+
+A measure can have source rows outside household scope while its household
+heads are expressible or partial. Source-row classes determine the accounting;
+the measure's summary class must not silently override them. A tax that exists
+in the engine is not enough to express a measure: the targeted population and
+the event's counterfactual also need to be established.
+
+Autumn Budget 2024 examples:
+
+* Employer NICs: reverse the rate increase and secondary-threshold reduction
+  on the certified world. The Employment Allowance increase and eligibility
+  expansion require firm information that the household model does not
+  represent, so the package is `partial`.
+* Carer's Allowance earnings-limit increase is `not_expressible`: the pinned
+  `carers_allowance` formula tests care hours or reported receipt and never
+  tests earnings. Its parameter node has the rate and minimum care hours, but
+  no earnings limit. The diagnostic script demonstrates the missing test
+  using two carers with identical care hours and different earnings.
+* CGT main-rate increases can be a `partial` reversal from 2025 onward. The
+  parameter change is dated April 2025 rather than the announced October 2024;
+  BADR and Investors' Relief histories remain omitted. The pin labels these
+  rate parameters as under active development, which must travel into the
+  construction's caveat.
+* SDLT's additional-home 2pp increase requires a forward delta: the pinned
+  additional-home scale still has its old rates, so reversing certified law
+  would score the wrong world. The event's source head includes other stamp
+  taxes; retain that scope limitation.
+* Removing private schools' business-rates charitable relief is
+  `out_of_household_scope`. The private-school VAT leg is `partial`: execute
+  the dedicated `gov.contrib.labour.private_school_vat` lever at 20% from
+  January 2025 on imputed attendance and average fees. Input-VAT recovery,
+  school spending responses, boarding detail and attendance or fee behaviour
+  remain absent; a generic VAT rate is not a substitute for this construction.
+* Abolishing the non-dom regime needs residence and foreign-income history;
+  a main income-tax rate change cannot stand in for that package.
+
+## Construction patterns
+
+`reversal_on_certified_world` is used when a measure is already present in the
+pinned current law. For the Autumn Budget 2024 employer NICs package, the
+mode-2 construction restores
+`gov.hmrc.national_insurance.class_1.rates.employer` to 0.138 and
+`gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold` to £175
+per week from calendar 2025. £175/week corresponds to the pre-announcement
+£9,100/year threshold; the pin's £96/week corresponds to £4,992/year and is a
+recorded approximation to the announced £5,000/year threshold. Date windows
+are explicit, and years before commencement retain their real zero effects.
+
+For a reversal, the executed alternate world is the reversal. Preserve its
+literal delta against the certified world, and score the announced measure as
+its negative:
+
+```text
+literal = gain_to_exchequer(reversal - certified)
+announced_effect = -literal
+```
+
+The saved `totals.baseline` and `totals.reform` are in announcement order:
+pre-measure world, then certified current law. The literal reversal delta is
+kept separately in `literal_reform_minus_baseline` and
+`literal_reversal_minus_certified_gbp`.
+
+A forward `pe_reform_delta` applies an announced change absent from the
+certified world. A `delta_on_modified_baseline` executes an explicit
+`pe_baseline_modifier` and `pe_reform_delta` for mixed worlds. A package
+composes registered legs, checking that overlapping paths specify the same
+values. Its source rows still occur once: components do not get duplicate
+claims or contribute a synthetic OBR total.
+
+Positive effects mean gains to the Exchequer. A tax head uses
+`reform - baseline`; a spending head uses its negative. Record each head's
+variables and fiscal channel explicitly. The measure total is the sum of its
+declared head effects; it is not automatically the complete published Budget
+costing. Employer NICs also changes wages at the pinned incidence setting,
+so the Income Tax channel can move. That is a construction scope difference,
+not proof that OBR omitted wage incidence.
+
+## Years and worlds
+
+The bundle is one `populace_uk_2023.h5` population, compatible with
+`policyengine-uk ==2.89.2` and `policyengine-core ==3.27.1`. Use the managed
+loader version `policyengine ==5.0.2` recorded in the existing mode-2 artifacts;
+the later loader's bundle registry can select a different dataset. Its identity and size are fixed in
+`data/uk/certified_bundle.json`. It is not a collection of independently
+certified historical or future populations.
+
+Use the start year Y of a source FY Y–(Y+1) as the calendar simulation year.
+Keep source FYs before 2023–24 in the registry accounting, but leave them
+uncomputed on this track. Do not infer support from successful parameter
+lookup alone. Read the managed loader, dataset time periods, income and
+weight uprating, and the engine's parameter and formula histories; retain
+those findings in [YEARS.md](YEARS.md). A future-year simulation projects
+the certified 2023 records using the pinned engine's later targets and rules.
+The pinned `policyengine_uk/data/economic_assumptions.py` extends a single-year
+dataset from its base year through 2030, retaining the same population and
+applying the indices in `uprating_indices.yaml`. The legacy managed-loader
+conversion uses the HDF5's first time period, then invokes that extension.
+`build_from_multi_year_dataset` loads each extended year's inputs explicitly.
+The pin's `parameters/gov/economic_assumptions/yoy_growth.yaml` uses outturn
+through 2024 and March 2026 OBR forecast growth for 2025–2030. The usable
+projection window for this 2023 bundle is therefore CY 2023–2030; earlier and
+later years are outside this track's supported data window. These projected
+years remain subject to the population-vintage limitation.
+
+It does not reproduce the event-vintage OBR world. Each registry's
+`calendar_years` is the permitted execution window; compute rejects requests
+outside that window.
+
+Use every supported costing year, even if the first year's effect is zero.
+Annual modelling can miss part-year commencement: Autumn Statement 2023's
+January 2024 NICs cut falls in FY 2023–24 while CY 2023 remains unchanged.
+Keep the source FY and the calendar proxy visible and tag the timing axis.
+Do not silently move the source claim to a different year.
+
+## Axis tagging and explained share
+
+Every source comparison row tags `population_vintage`: OBR used the forecast
+available at that event; the certified 2023 population is calibrated to later
+targets and then uprated. This axis is named, not repaired in track 1.
+`baseline_vintage` separately names certified-world versus announcement-policy
+baseline differences. The other standard tags are `behavioural_adjustment`
+(static versus behavioural), `cy_proxies_fy`, and `head_scope`. Partial legs
+also carry `construction_scope`. Definitions and evidence pointers live in
+`data/uk/obr_divergence_axes.json`; the six existing mode-2 component records
+are preserved.
+
+The comparison reports signed PE/OBR bins: both zero, OBR zero, PE zero,
+opposite sign, or same-sign ratios below 0.5, 0.5–0.8, 0.8–1.25, 1.25–2,
+and at least 2. These are descriptions, not success criteria.
+
+Axis-tagged coverage is the count or absolute gap amount carrying relevant
+tags. Explained share needs evidence-backed, additive, sized components that
+cover every relevant axis. The event pipeline withholds it while any relevant
+axis is unsized, any component masks the gap, components overlap, the gap is
+zero, or the implied share lies outside [0, 1]. Component status `sized` means
+a verbatim primary-source cell; arithmetic over quoted cells is `derived` and
+must retain its formula. A computed component retains its executor's
+derivation and provenance. Without a complete decomposition the remainder is
+`residual_plus_unsized`, which is an investigation queue, not an engine-error
+estimate.
+
+## Accounting and verification
+
+Test these identities across the event and within every FY:
+
+```text
+multiset(source-row ids in) = multiset(source-row ids classified), once each
+rows in = rows classified
+net GBP in = net GBP classified
+absolute GBP in = absolute GBP classified
+```
+
+The builder uses `Decimal` from the original source value strings to avoid
+cancellation concealing a dropped cell. Each class's measure count, source-row
+count, net GBP and absolute GBP are retained. Across all heads and costing
+years, those amounts are accounting quantities, not an annual Budget total.
+
+Staging verifies raw head aggregates, literal reversal orientation, head
+sums, registry identity and certified digest against the compute manifest.
+Comparison verifies the complete staged source-row universe, source values,
+the staging manifest, artifact digests and head effects again. Deterministic
+numerical artifacts contain no timestamps, elapsed seconds or process memory;
+those operational facts belong in `RUN_LOG.json`. Repeat one real
+(measure, year) run and compare SHA-256 values. Existing AB2025 registry,
+dry-run and staging outputs must remain byte-identical after shared-code edits.
+
+Run the engine-free tests and the pinned integration checks:
+
+```bash
+.venv-replay/bin/python -m pytest tests/test_uk_event_registry.py tests/test_uk_event_compute.py tests/test_uk_event_comparison.py tests/test_uk_replay_legacy.py
+.venv-replay/bin/python pipeline/build_uk_event_registry.py --event autumn_budget_2024 --check
+```
+
+The properties include row/GBP conservation, ratio scale and sign invariance,
+reversal sign involution, head sums, residual accounting and deterministic
+serialization. The legacy AB2025 regression tests remain part of the check.
+
+## Commands and compute budget
+
+Build a Python 3.12 uv environment in the assigned workspace and install the
+managed runner with these exact compatibility pins:
+
+```bash
+UV_CACHE_DIR=.venv-uv-cache uv venv --python 3.12 .venv-replay
+UV_CACHE_DIR=.venv-uv-cache uv pip install --python .venv-replay/bin/python 'policyengine==5.0.2' 'policyengine-uk==2.89.2' 'policyengine-core==3.27.1' pytest hypothesis pyyaml
+```
+
+Force `HF_HUB_OFFLINE=1`,
+`HF_DATASETS_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1` before importing the engine.
+The scripts also force those settings. They resolve the managed release from
+the local `datasets--policyengine--populace-uk-private` Hugging Face cache and
+hash the HDF5 before and after simulations. No matching digest means no run.
+Use a writable uv cache within the workspace if the default cache is outside
+the sandbox.
+
+For one event:
+
+```bash
+PYTHONPATH=. .venv-replay/bin/python pipeline/build_uk_event_registry.py --event autumn_budget_2024
+PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --dry-run
+PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024
+PYTHONPATH=. .venv-replay/bin/python pipeline/stage_uk_event.py --event autumn_budget_2024
+PYTHONPATH=. .venv-replay/bin/python pipeline/compare_uk_event.py --event autumn_budget_2024 --summary
+```
+
+Use `--measures <measure_key> --years <Y>` for a minimal reproducer or a
+determinism check. `--resume` keeps artifacts only when their registry and
+certified-dataset identities still match. Run no more than two simulations
+concurrently on the shared Mac. One event compute process executes one live
+simulation at a time and reuses one certified baseline extraction per year
+across measures. Keep independently launched event processes within that same
+two-simulation cap. Follow the requested event order: Autumn Budget 2024,
+Autumn Statement 2023, Spring Budget 2024, Spring Statement 2025, then Spring
+Budget 2023.
+
+Expected run time is proportional to supported years times changed worlds,
+plus one baseline per year. Exact observed baseline and measure seconds are
+saved in each event's `RUN_LOG.json`; use those measured timings for the next
+lane's estimate rather than a guessed benchmark. The pipeline itself is
+engine-free at registry-accounting, staging and comparison time except for
+the builder's parameter/variable validation. Modal deployment is appropriate
+only if its volume contains this exact SHA-verified bundle and pinned engine;
+record the runner used in the event log.
+
+Each event writes deterministic numerical artifacts, `RUN_MANIFEST.json`,
+`STAGED.jsonl`, `STAGING_MANIFEST.json`, `COMPARISON.csv`, `COMPARISON.json`,
+`COMPARISON.md` and `COMPARISON_PROVENANCE.json` under
+`results/uk/events/<slug>/`. `--summary` aggregates completed comparison files
+into `results/uk/events/SUMMARY.md` by tax head and measure type and lists the
+largest unexplained rows with variables and minimal replay commands. Add
+engine-issue diagnoses only with runtime metadata, a checked-in assessment,
+an existing issue, or a measured diagnostic. Leave issue filing to the main
+session.
+
+These event staging files are standalone comparison receipts. They preserve
+the source-row inventory and do not attach counterparts to the app's
+`external_scores` through `ingest_campaign`. That future integration requires
+ingested claim ids and registered descriptors for the executed worlds; this
+track's registry and artifact identities remain available for that work.
+
+`pipeline/diagnose_uk_event_models.py` records small pinned reproductions of
+specific model investigation candidates. It uses a two-person synthetic
+Carer's Allowance example and direct parameter/formula inspection; it does
+not run a national population simulation or claim to size a national gap.
+Run it with `--output results/uk/events/MODEL_DIAGNOSTICS.json`, or use
+`--case <diagnostic_id>` to print one candidate's evidence. Distinguish those
+measured encoding findings from the largest raw unexplained national gaps.
+The Carer's Allowance and UC cases each use a small synthetic simulation;
+respect the same two-simulation concurrency limit when running them. Other
+`--case` selections inspect only parameters and formula metadata.
+`--from-json results/uk/events/MODEL_DIAGNOSTICS.json --report docs/uk_replay/MODEL_INVESTIGATIONS.md`
+renders a report from saved observations without any engine calculation.

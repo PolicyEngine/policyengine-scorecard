@@ -2,6 +2,7 @@
  "_schema": {
   "description": "Per-measure decomposition registry for the OBR costings divergences (#59). Consumed by pipeline/decompose_uk_obr_divergence.py together with results/uk/obr_costings/COMPARISON.csv (PR #56). Components decompose gap = PE - OBR in GBP under the announced-measure positive_gain_to_exchequer orientation, per FY. `residual` is NOT an axis: it was both a registry axis and the quantity the pipeline computes, so a component could be filed under the name of the thing it was meant to explain. Statuses: computed = the recipe is EXECUTED by the pipeline from the comparison rows on every run (no hard-coded value, so it cannot drift from the data it claims); sized = per-FY GBP values quoted VERBATIM from a fetched primary source (no arithmetic beyond unit scaling); derived = values computed from quoted numbers, with the derivation formula stated and its confounds named; unsized = sizing recipe only. The pipeline computes residual = gap - sum(sized + derived) and classifies every valued component by direction: explains_gap (same sign as the gap) or masks_gap (opposite sign - the axis hides part of a larger like-for-like disagreement, so the raw gap UNDERSTATES the divergence; the record then carries divergence_understated=true and like_for_like_gap_gbp). Any unsized component forces decomposition_status=partial and the remainder is residual_plus_unsized; explained_share is emitted only for complete decompositions with no masking components. JSON not YAML: CI installs pytest only.",
   "axes": [
+   "population_vintage",
    "behavioural_adjustment",
    "baseline_vintage",
    "cy_proxies_fy",
@@ -9,7 +10,35 @@
    "construction_scope",
    "joint_behavioural_and_scope"
   ],
-  "sign_convention": "component value = contribution to (PE - OBR); positive means the axis pushes PE above OBR"
+  "sign_convention": "component value = contribution to (PE - OBR); positive means the axis pushes PE above OBR",
+  "event_replay_axes": {
+   "population_vintage": {
+    "description": "OBR costed a measure using the forecast and population assumptions at its fiscal event. The certified replay uses one populace-uk-2023 population calibrated to later targets, uprated by policyengine-uk 2.89.2. This axis is distinct from the policy counterfactual in baseline_vintage.",
+    "status": "unsized",
+    "basis": "data/uk/certified_bundle.json; docs/uk_replay/RECIPE.md, Years and worlds",
+    "recipe": "Track 2 requires independently certified event-vintage rules and per-year populations. Track 1 tags this axis on every source comparison row and does not estimate or repair it. A tag is not a sized explanation."
+   },
+   "baseline_vintage": {
+    "description": "A reversal or delta is executed relative to the certified engine's world, whereas OBR costed against the event's announcement counterfactual.",
+    "status": "unsized",
+    "basis": "pipeline/compute_uk_event.py; each saved artifact baseline_world and reform_world"
+   },
+   "behavioural_adjustment": {
+    "description": "The replay reports static household effects; published OBR measures may include behavioural responses and macro feedback.",
+    "status": "unsized",
+    "basis": "pipeline/compute_uk_event.py; docs/uk_replay/RECIPE.md, Axis tagging"
+   },
+   "cy_proxies_fy": {
+    "description": "The replay's calendar year Y is a proxy for the published fiscal year Y-(Y+1), including possible part-year commencement differences.",
+    "status": "unsized",
+    "basis": "pipeline/compute_uk_event.py; source_rows.fy in data/uk/events/*_measures.json"
+   },
+   "head_scope": {
+    "description": "The row's mapped household variables are a documented counterpart to the OBR head, whose other channels or tax units may differ.",
+    "status": "unsized",
+    "basis": "pipeline/stage_uk_event.py; each source row's head_variables and artifact head_effects"
+   }
+  }
  },
  "measures": {
   "autumn_budget_2024__employer_nics_package": {
