@@ -2,142 +2,21 @@
  "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
  "event_slug": "autumn_budget_2024",
  "outputs_sha256": {
-  "COMPARISON.csv": "52ad00766bf371d7444cdfefcc40599713816aff9d37433b9a9b3809bbdfa417",
-  "COMPARISON.json": "428e77cc692fa90e8a8e371ff7b799f6e2775d7fb919bc465386a584214970a3",
-  "COMPARISON.md": "7464fe52828907ccb199aefe082b86300ebbe5d67a3fa5658e7b7e4b31bc70ba"
+  "COMPARISON.csv": "5454de63fe0eddfa044508ba5e2a618f138894bdc7c6b230fcda22a8541f8f44",
+  "COMPARISON.json": "add458e6d3ec5504a8fbd35cb076f58058f4b16204483cf2938e374b39a04a10",
+  "COMPARISON.md": "3e8555bc82b1babe8f2917cb62fa73fc571ececebb160de09b7f18e283c40946"
  },
  "registry_path": "data/uk/events/autumn_budget_2024_measures.json",
  "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
  "replay_grid": {
-  "computed_measure_years": 0,
-  "full_event_complete": false,
+  "computed_measure_years": 30,
+  "full_event_complete": true,
   "full_event_grid_size": 30,
-  "missing_measure_years": [
-   {
-    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
-    "year": 2024
-   },
-   {
-    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
-    "year": 2025
-   },
-   {
-    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
-    "year": 2026
-   },
-   {
-    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
-    "year": 2027
-   },
-   {
-    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
-    "year": 2028
-   },
-   {
-    "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
-    "year": 2029
-   },
-   {
-    "measure_key": "autumn_budget_2024__employer_nics_package",
-    "year": 2024
-   },
-   {
-    "measure_key": "autumn_budget_2024__employer_nics_package",
-    "year": 2025
-   },
-   {
-    "measure_key": "autumn_budget_2024__employer_nics_package",
-    "year": 2026
-   },
-   {
-    "measure_key": "autumn_budget_2024__employer_nics_package",
-    "year": 2027
-   },
-   {
-    "measure_key": "autumn_budget_2024__employer_nics_package",
-    "year": 2028
-   },
-   {
-    "measure_key": "autumn_budget_2024__employer_nics_package",
-    "year": 2029
-   },
-   {
-    "measure_key": "autumn_budget_2024__private_school_vat_20pct",
-    "year": 2024
-   },
-   {
-    "measure_key": "autumn_budget_2024__private_school_vat_20pct",
-    "year": 2025
-   },
-   {
-    "measure_key": "autumn_budget_2024__private_school_vat_20pct",
-    "year": 2026
-   },
-   {
-    "measure_key": "autumn_budget_2024__private_school_vat_20pct",
-    "year": 2027
-   },
-   {
-    "measure_key": "autumn_budget_2024__private_school_vat_20pct",
-    "year": 2028
-   },
-   {
-    "measure_key": "autumn_budget_2024__private_school_vat_20pct",
-    "year": 2029
-   },
-   {
-    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
-    "year": 2024
-   },
-   {
-    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
-    "year": 2025
-   },
-   {
-    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
-    "year": 2026
-   },
-   {
-    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
-    "year": 2027
-   },
-   {
-    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
-    "year": 2028
-   },
-   {
-    "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
-    "year": 2029
-   },
-   {
-    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
-    "year": 2024
-   },
-   {
-    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
-    "year": 2025
-   },
-   {
-    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
-    "year": 2026
-   },
-   {
-    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
-    "year": 2027
-   },
-   {
-    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
-    "year": 2028
-   },
-   {
-    "measure_key": "autumn_budget_2024__winter_fuel_means_test",
-    "year": 2029
-   }
-  ]
+  "missing_measure_years": []
  },
  "source_rows": 1134,
  "staged_path": "results/uk/events/autumn_budget_2024/STAGED.jsonl",
- "staged_sha256": "c6ae4706a2c220df9fe56370f03ee09a391d5b643d6c11226cd699860bbcb46b",
+ "staged_sha256": "122bd4643eb17dae6d6d980e120cf89561510dfa4910ecc3c79f22f73a67633c",
  "staging_manifest_path": "results/uk/events/autumn_budget_2024/STAGING_MANIFEST.json",
- "staging_manifest_sha256": "e2afd886e320e7427e2b06d0631d10c4944d1b916e292d92890ab28800ebae02"
+ "staging_manifest_sha256": "8e32b12a704fe36cf2177059d0b2f2036d05c17f059f72dcf65d46e9a8edc12f"
 }
