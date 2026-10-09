@@ -536,3 +536,8 @@ protection investigation. Their national contributions remain unsized;
 they are not ten attributed national costing differences.
 `--from-json results/uk/events/MODEL_DIAGNOSTICS.json --report docs/uk_replay/MODEL_INVESTIGATIONS.md`
 renders a report from saved observations without any engine calculation.
+
+The [construction audit](CONSTRUCTION_AUDIT.md) records the certified
+SDLT purchase-price proxy and pooled CGT gains, with a hash-guarded inspection
+command. These data-flow limits remain separate from model-error diagnoses;
+their national contributions are unsized.
