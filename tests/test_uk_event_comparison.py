@@ -567,6 +567,45 @@ def test_actual_fresh_repeat_receipt_binds_canonical_bytes_and_coverage(run_id):
     validate_artifact(artifact_value, "recorded actual replay")
 
 
+def test_current_registry_receipt_retains_numeric_identity_and_honest_coverage():
+    proof = json.loads(
+        (
+            comparison.ROOT / "results/uk/events/DETERMINISM_CURRENT_REGISTRY.json"
+        ).read_bytes()
+    )
+    current_path = comparison.ROOT / proof["frozen_artifact_copy"]["path"]
+    current_bytes = current_path.read_bytes()
+    current = json.loads(current_bytes)
+    historic = json.loads(
+        (comparison.ROOT / proof["compared_historic_artifact"]["path"]).read_bytes()
+    )
+    assert hashlib.sha256(current_bytes).hexdigest() == proof["artifact_sha256"]
+    assert current["registry_sha256"] == proof["registry_sha256"]
+    differences = [key for key in current if current[key] != historic[key]]
+    assert differences == ["registry_sha256"]
+    assert proof["numeric_values_identical_to_historic"] is True
+    assert proof["byte_identical_to_historic"] is False
+    assert proof["computed_measure_years"] == 1
+    assert proof["full_event_grid_size"] == 30
+    assert proof["full_event_complete"] is False
+    manifest = proof["run_manifest"]
+    assert manifest["requested_grid"] == manifest["artifact_grid"]
+    assert len(manifest["artifact_grid"]) == 1
+    assert manifest["registry_sha256"] == current["registry_sha256"]
+    assert list(manifest["artifacts"].values()) == [proof["artifact_sha256"]]
+    inputs_bytes = (
+        json.dumps(proof["input_manifest"], indent=1, sort_keys=True, allow_nan=False)
+        + "\n"
+    ).encode()
+    assert (
+        hashlib.sha256(inputs_bytes).hexdigest()
+        == proof["receipt"]["input_manifest_sha256"]
+    )
+    assert proof["receipt"]["runtime"]["block_network"] is True
+    assert proof["receipt"]["runtime"]["workers"] == 1
+    validate_artifact(current, "current-registry actual focused replay")
+
+
 @given(st.integers(-(10**9), 10**9), st.integers(-(10**9), 10**9))
 @settings(deadline=None)
 def test_residual_accounting_is_conserved(gap, amount):

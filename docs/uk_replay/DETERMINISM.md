@@ -59,3 +59,22 @@ using the same registry identity and frozen environment. For the original
 registry recorded here, use the immutable artifact copy linked above.
 Keep operational run logs and receipts separate from the deterministic
 numerical artifact.
+
+## Current registry execution
+
+A fresh third Modal execution uses the corrected registry SHA-256
+`89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34`.
+Its [receipt](../../results/uk/events/DETERMINISM_CURRENT_REGISTRY.json) and
+[immutable artifact](../../results/uk/events/determinism/private_school_vat_2026_registry_89784d34.json)
+preserve artifact SHA-256
+`4aa3bc9f868865aa47e5d5f384930e74fde425e0dd443ab3e2ad4354b7943fc9`.
+The only field differing from the historic artifact is `registry_sha256`;
+every numerical field remains identical. No rounding or normalization was
+used, and all returned-file, request and input-manifest hashes were checked.
+
+This request again covers one of thirty pairs and records
+`full_event_complete=false`. Baseline extraction took 77.743541202 seconds,
+the alternate took 133.628836524 seconds, and the inner runner took
+224.84171834 seconds. A second fresh execution under these same current inputs
+is still required for a current-registry byte-determinism observation; the
+full-event run is tracked separately until its artifacts return.
