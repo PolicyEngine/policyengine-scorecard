@@ -45,3 +45,62 @@ The source notes establish:
 The employer-NIC Income Tax ratio compares a small direct source channel with a model channel that changes wages under the pinned employer-incidence setting. The source notes establish the direct/macro scope distinction, but do not quantify its contribution. SDLT compares the literal Stamp duty head; its behavioural and transaction-population differences remain unsized. The CGT ratio compares only the small CGT head within a package whose larger Income Tax channel is uncomputed. These facts limit interpretation of the large raw ratios.
 
 No engine was imported or simulation run for this audit. Registry bytes were not changed. The JSON receipt retains source ids, ordinals, full descriptions, fiscal-event cells, raw numeric strings, neighboring rows and source-note text.
+
+## Original costing basis and forecast horizon
+
+The November 2025 filename identifies the database collection, rather than a
+new forecast for every historical measure. Workbook Notes D27 says it retains
+original policy costings and excludes later revisions. Notes D20 says the
+individual tax and spending heads sum to the costing at announcement. Notes
+D23 identifies GBP million and the positive-gain convention. These are nominal
+cash amounts; they are not GDP-normalized. The workbook core metadata records
+modification on 9 December 2025. The pinned workbook hash binds that collection
+version. [OBR Policy measures database](https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx).
+
+GDP growth appears in a separate extrapolation rule. Notes D11–D12 describes
+extensions beyond the original scorecard horizon; Notes C11 is the blue fill
+key (`fillId=5`, RGB `FFE1E9EE`). For the CGT row, Tax Measures BG2401 through
+BL2401 cover 2024–25 through 2029–30 and use `fillId=3`. BM2401, 2030–31, uses
+the blue extension fill. None of the six AB2024 replay years is that extension.
+The JSON supplement preserves these exact note cells and styles.
+
+The original Treasury scorecard's Table 5.1 row 27 reports the whole
+main-rate/BADR/IR measure, rather than its CGT head alone. Summing all source
+heads gives the following amounts; each rounds to the published figure at
+£5 million presentation precision. No source amount has been replaced or
+rounded in the registry. [Original Autumn Budget 2024 scorecard](https://www.gov.uk/government/publications/autumn-budget-2024/autumn-budget-2024-html).
+
+| FY | PMD all-head subtotal £m | Published row 27 £m |
+|---|---:|---:|
+| 2024–25 | 87.9853755302114704 | 90 |
+| 2025–26 | 1439.8254271181382028 | 1440 |
+| 2026–27 | 1372.060472970589792 | 1370 |
+| 2027–28 | 1349.996174751429901 | 1350 |
+| 2028–29 | 2178.645564281470559 | 2180 |
+| 2029–30 | 2491.31428843609079 | 2490 |
+
+Thus the £95.779 million CGT cell in 2026–27 is one head within an original
+£1.37 billion announcement costing, including the £1.262 billion Income Tax
+head. A CGT-only PolicyEngine counterpart remains a partial construction.
+Comparing it with the small literal CGT head does not compare whole packages.
+The original costings document uses the OBR CGT forecast to project eligible
+assets and includes behavioural responses such as disposal timing. It does
+not size the Income Tax head's mechanism here; the head, behaviour and vintage
+contributions remain unsized. [Original policy costings, printed page 39](https://assets.publishing.service.gov.uk/media/6721d2c54da1c0d41942a8d2/Policy_Costing_Document_-_Autumn_Budget_2024.pdf#page=39).
+
+The five registries retain these original scorecard windows:
+
+| Event | Original scorecard and harvested FY range |
+|---|---|
+| [Autumn Budget 2024, Table 5.1](https://www.gov.uk/government/publications/autumn-budget-2024/autumn-budget-2024-html) | 2024–25 through 2029–30 |
+| [Autumn Statement 2023, Table 5.1](https://www.gov.uk/government/publications/autumn-statement-2023/autumn-statement-2023-html) | 2023–24 through 2028–29 |
+| [Spring Budget 2024, Table 5.1](https://www.gov.uk/government/publications/spring-budget-2024/spring-budget-2024-html) | 2023–24 through 2028–29 |
+| [Spring Statement 2025, Table 3.1](https://www.gov.uk/government/publications/spring-statement-2025-document/spring-statement-2025-html) | 2024–25 through 2029–30 |
+| [Spring Budget 2023, Table 4.1](https://www.gov.uk/government/publications/spring-budget-2023/spring-budget-2023-html) | 2022–23 through 2027–28 |
+
+Spring Budget 2023's 2022–23 cells remain in the source accounting, with no
+counterpart asserted from the 2023 population. Original-event forecast wording
+for `population_vintage` is supported for the scoring years in this lane. A
+future event replay using years beyond its original scorecard horizon needs
+an explicit PMD GDP-extension caveat. Collection publication vintage and the
+forecast vintage of a costing are separate facts.
