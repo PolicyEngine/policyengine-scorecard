@@ -2,13 +2,14 @@
 
 These record engine observations, not a claim that their effects explain a
 specified fraction of a national OBR difference. No issue is filed. The
-synthetic Carer's Allowance calculation uses two people rather than loading
-or simulating the certified national population.
+synthetic checks use one or two people rather than loading or simulating the
+certified national population, and release each world before the next.
 """
 
 from __future__ import annotations
 
 import argparse
+import gc
 import hashlib
 import importlib.metadata
 import inspect
@@ -40,6 +41,129 @@ def _source(package_root: Path, relative: str) -> dict:
         "sha256": hashlib.sha256(payload).hexdigest(),
         "source": payload.decode(),
     }
+
+
+def _additional_model_checks(package_root: Path, simulation_type, case: str | None):
+    """Run each small diagnostic sequentially, retaining no live prior world."""
+    specifications = [
+        (
+            "employer_nics_state_pension_age_exemption",
+            2026,
+            {
+                name: {
+                    "age": {"2026": age},
+                    "employment_income": {"2026": 50000},
+                    "ni_class_1_income": {"2026": 50000},
+                }
+                for name, age in (("working_age", 45), ("pension_age", 70))
+            },
+            ["ni_liable", "ni_class_1_employer", "ni_class_1_employee"],
+            "variables/gov/hmrc/national_insurance/class_1/ni_class_1_employer.py",
+            ["variables/gov/hmrc/national_insurance/class_1/ni_liable.py"],
+            "https://www.gov.uk/employee-reaches-state-pension-age",
+            "Employers continue paying National Insurance after employees reach State Pension age.",
+            "The employer formula uses the same ni_liable age mask as employee contributions. For otherwise identical £50,000 earnings, employer NICs falls to zero at age 70. HMRC states employer contributions continue after State Pension age. This is an employer-liability encoding concern; its national contribution to the NICs replay difference remains unsized.",
+            ["autumn_budget_2024"],
+        ),
+        (
+            "pension_taper_omits_employer_contributions",
+            2024,
+            {
+                "worker": {
+                    "age": {"2024": 45},
+                    "employment_income": {"2024": 240000},
+                    "employer_pension_contributions": {"2024": 50000},
+                    "personal_pension_contributions": {"2024": 0},
+                }
+            },
+            ["adjusted_net_income", "pension_annual_allowance"],
+            "variables/gov/hmrc/income_tax/allowances/pension_annual_allowance.py",
+            [
+                "variables/gov/hmrc/income_tax/adjusted_net_income.py",
+                "parameters/gov/hmrc/income_tax/adjusted_net_income_components.yaml",
+                "parameters/gov/hmrc/income_tax/allowances/annual_allowance/taper.yaml",
+                "parameters/gov/hmrc/income_tax/allowances/annual_allowance/default.yaml",
+            ],
+            "https://www.gov.uk/guidance/pension-schemes-work-out-your-tapered-annual-allowance",
+            "Threshold income must exceed £200,000, and adjusted income adds employer pension contributions; the taper starts above £260,000.",
+            "The pension taper uses adjusted_net_income, which excludes employer pension contributions, and omits the separate threshold-income gate. With £240,000 salary and £50,000 employer contributions it returns the full £60,000 allowance. HMRC's adjusted-income rule gives £290,000 and a £45,000 allowance for this controlled case. The national contribution to pension or Income Tax costing differences remains unsized.",
+            ["spring_budget_2023", "autumn_budget_2024"],
+        ),
+        (
+            "annual_allowance_charge_single_marginal_rate",
+            2024,
+            {
+                "worker": {
+                    "age": {"2024": 45},
+                    "taxed_income": {"2024": 30000},
+                    "pension_contributions_for_annual_allowance": {"2024": 80000},
+                    "pension_annual_allowance": {"2024": 60000},
+                }
+            },
+            ["personal_pension_contributions_tax"],
+            "variables/gov/hmrc/pensions/private_pension_contributions_tax.py",
+            ["parameters/gov/hmrc/income_tax/rates/uk.yaml"],
+            "https://www.gov.uk/hmrc-internal-manuals/pensions-tax-manual/ptm056110",
+            "The annual-allowance charge uses the rates that apply if the excess is added to taxable income, including bands crossed by that excess.",
+            "The annual-allowance charge applies one marginal rate at taxed_income to the entire excess. Controlled intermediate inputs of £30,000 taxed income and £20,000 excess produce £4,000. HMRC's band-crossing rule gives £6,460 (£7,700 at 20% and £12,300 at 40%). Intermediate overrides isolate this formula rather than claim a complete household contribution history. The national contribution remains unsized.",
+            ["spring_budget_2023", "autumn_budget_2024"],
+        ),
+    ]
+    results = []
+    for (
+        identifier,
+        year,
+        people,
+        variables,
+        evidence_path,
+        supporting_paths,
+        primary_url,
+        primary_rule,
+        interpretation,
+        events,
+    ) in specifications:
+        if case is not None and case != identifier:
+            continue
+        situation = {
+            "people": people,
+            "benunits": {name: {"members": [name]} for name in people},
+            "households": {
+                name: {"members": [name], "region": {str(year): "LONDON"}}
+                for name in people
+            },
+        }
+        simulation = simulation_type(situation=situation)
+        try:
+            observation = {
+                name: simulation.calculate(name, year).tolist() for name in variables
+            }
+        finally:
+            del simulation
+            gc.collect()
+        results.append(
+            {
+                "id": identifier,
+                "class": "pe_gap",
+                "events": events,
+                "variables": variables,
+                "observation": observation,
+                "situation": situation,
+                "year": year,
+                "evidence": _source(package_root, evidence_path),
+                "supporting_evidence": [
+                    _source(package_root, path) for path in supporting_paths
+                ],
+                "primary_source": {
+                    "url": primary_url,
+                    "checked_date": "2026-10-09",
+                    "rule": primary_rule,
+                },
+                "interpretation": interpretation,
+                "national_effect": "unsized",
+                "reproducer": f"--case {identifier}",
+            }
+        )
+    return results
 
 
 def investigate(case: str | None = None) -> list[dict]:
@@ -87,6 +211,8 @@ def investigate(case: str | None = None) -> list[dict]:
             }
         )
         allowance = sim.calculate("carers_allowance", 2025).tolist()
+        del sim
+        gc.collect()
     results.append(
         {
             "id": "carers_allowance_earnings_test_absent",
@@ -230,6 +356,13 @@ def investigate(case: str | None = None) -> list[dict]:
             ),
             "interpretation": "The existing AB2025 baseline integrity assessment states the prior-law Class 4 freeze runs to April 2028 while the pin resumes uprating in April 2027. This changes the marginal tax base in 2027; no fraction of a replay gap is attributed without a paired run.",
             "assessment": "data/uk/ab2025_measures.json: personal_tax_thresholds_freeze_to_2031.baseline_integrity_note",
+            "primary_source": {
+                "url": "https://www.gov.uk/government/publications/autumn-statement-2022-documents/autumn-statement-2022-html",
+                "title": "Autumn Statement 2022 tax section",
+                "checked_date": "2026-10-09",
+                "rule": "The Class 4 Lower Profits Limit of £12,570 and Upper Profits Limit of £50,270 were frozen until April 2028.",
+            },
+            "national_effect": "unsized",
             "reproducer": "--case class4_threshold_indexation_from_2027",
         }
     )
@@ -292,6 +425,10 @@ def investigate(case: str | None = None) -> list[dict]:
             "reproducer": "--case uc_lcwra_protection_stops_at_2030",
         }
     )
+    if uc_sim is not None:
+        del uc_sim
+        gc.collect()
+    results.extend(_additional_model_checks(package_root, Simulation, case))
     for result in results:
         result["engine_version"] = version
         absent = set(result["variables"]) - set(system.variables)
@@ -334,12 +471,20 @@ def main(argv: list[str] | None = None) -> int:
                 "These small reproductions inspect policyengine-uk 2.89.2. They identify "
                 "specific encoding or parameter concerns, independently of the national "
                 "OBR differences. Their national effect is unsized; no issue has been filed. "
-                "Fewer than ten observations are reported because the lane does not invent "
-                "mechanisms to fill a requested list."
+                "These are model investigation candidates, not ten sized explanations "
+                "of national differences."
+            ),
+            "",
+            (
+                "An [integrated execution receipt](../../results/uk/events/MODEL_DIAGNOSTICS_VERIFICATION.json) "
+                "binds the [preserved fresh output](../../results/uk/events/diagnostics/integrated_run_20261009.json) "
+                "to these observations. The Class 4 primary citation was added afterward; "
+                "the receipt distinguishes that metadata addition from engine results."
             ),
             "",
         ]
         for result in results:
+            primary = result.get("primary_source")
             lines += [
                 f"## {result['id']}",
                 "",
@@ -355,6 +500,18 @@ def main(argv: list[str] | None = None) -> int:
                     "are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`."
                 ),
                 "",
+                *(
+                    [
+                        (
+                            f"Primary rule (checked {primary['checked_date']}): "
+                            f"{primary['rule']} "
+                            f"[{primary.get('title', 'HMRC guidance')}]({primary['url']})."
+                        ),
+                        "",
+                    ]
+                    if primary
+                    else []
+                ),
                 "```bash",
                 "PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py "
                 + result["reproducer"],

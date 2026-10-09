@@ -1,6 +1,8 @@
 # Measured UK replay model investigation candidates
 
-These small reproductions inspect policyengine-uk 2.89.2. They identify specific encoding or parameter concerns, independently of the national OBR differences. Their national effect is unsized; no issue has been filed. Fewer than ten observations are reported because the lane does not invent mechanisms to fill a requested list.
+These small reproductions inspect policyengine-uk 2.89.2. They identify specific encoding or parameter concerns, independently of the national OBR differences. Their national effect is unsized; no issue has been filed. These are model investigation candidates, not ten sized explanations of national differences.
+
+An [integrated execution receipt](../../results/uk/events/MODEL_DIAGNOSTICS_VERIFICATION.json) binds the [preserved fresh output](../../results/uk/events/diagnostics/integrated_run_20261009.json) to these observations. The Class 4 primary citation was added afterward; the receipt distinguishes that metadata addition from engine results.
 
 ## carers_allowance_earnings_test_absent
 
@@ -185,6 +187,8 @@ The existing AB2025 baseline integrity assessment states the prior-law Class 4 f
 
 Evidence: `parameters/gov/hmrc/national_insurance/class_4/thresholds/lower_profits_limit.yaml`; source SHA-256 `22412335d15673fd57fe56d9a9989675c02cc3ed64fce33ca3b57f6906d90dd5`. Full source and measured observations are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`.
 
+Primary rule (checked 2026-10-09): The Class 4 Lower Profits Limit of £12,570 and Upper Profits Limit of £50,270 were frozen until April 2028. [Autumn Statement 2022 tax section](https://www.gov.uk/government/publications/autumn-statement-2022-documents/autumn-statement-2022-html).
+
 ```bash
 PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case class4_threshold_indexation_from_2027
 ```
@@ -238,5 +242,89 @@ Observed:
   "2026-06-01": 217.26,
   "2030-06-01": 235.85927653841142
  }
+}
+```
+
+## employer_nics_state_pension_age_exemption
+
+Class: `pe_gap`. Variables: `ni_liable`, `ni_class_1_employer`, `ni_class_1_employee`.
+
+The employer formula uses the same ni_liable age mask as employee contributions. For otherwise identical £50,000 earnings, employer NICs falls to zero at age 70. HMRC states employer contributions continue after State Pension age. This is an employer-liability encoding concern; its national contribution to the NICs replay difference remains unsized.
+
+Evidence: `variables/gov/hmrc/national_insurance/class_1/ni_class_1_employer.py`; source SHA-256 `1327631826a869fbaa5f236ad7089e7dea6254c0d9502e2a10d344e308478008`. Full source and measured observations are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`.
+
+Primary rule (checked 2026-10-09): Employers continue paying National Insurance after employees reach State Pension age. [HMRC guidance](https://www.gov.uk/employee-reaches-state-pension-age).
+
+```bash
+PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case employer_nics_state_pension_age_exemption
+```
+
+Observed:
+
+```json
+{
+ "ni_class_1_employee": [
+  2994.4033203125,
+  0.0
+ ],
+ "ni_class_1_employer": [
+  6751.2001953125,
+  0.0
+ ],
+ "ni_liable": [
+  true,
+  false
+ ]
+}
+```
+
+## pension_taper_omits_employer_contributions
+
+Class: `pe_gap`. Variables: `adjusted_net_income`, `pension_annual_allowance`.
+
+The pension taper uses adjusted_net_income, which excludes employer pension contributions, and omits the separate threshold-income gate. With £240,000 salary and £50,000 employer contributions it returns the full £60,000 allowance. HMRC's adjusted-income rule gives £290,000 and a £45,000 allowance for this controlled case. The national contribution to pension or Income Tax costing differences remains unsized.
+
+Evidence: `variables/gov/hmrc/income_tax/allowances/pension_annual_allowance.py`; source SHA-256 `086e8e8b7da2d5c8693e9f6ce5cb67d6535fbac9b9c619adbe3bab872bad78c2`. Full source and measured observations are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`.
+
+Primary rule (checked 2026-10-09): Threshold income must exceed £200,000, and adjusted income adds employer pension contributions; the taper starts above £260,000. [HMRC guidance](https://www.gov.uk/guidance/pension-schemes-work-out-your-tapered-annual-allowance).
+
+```bash
+PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case pension_taper_omits_employer_contributions
+```
+
+Observed:
+
+```json
+{
+ "adjusted_net_income": [
+  240000.0
+ ],
+ "pension_annual_allowance": [
+  60000.0
+ ]
+}
+```
+
+## annual_allowance_charge_single_marginal_rate
+
+Class: `pe_gap`. Variables: `personal_pension_contributions_tax`.
+
+The annual-allowance charge applies one marginal rate at taxed_income to the entire excess. Controlled intermediate inputs of £30,000 taxed income and £20,000 excess produce £4,000. HMRC's band-crossing rule gives £6,460 (£7,700 at 20% and £12,300 at 40%). Intermediate overrides isolate this formula rather than claim a complete household contribution history. The national contribution remains unsized.
+
+Evidence: `variables/gov/hmrc/pensions/private_pension_contributions_tax.py`; source SHA-256 `eb27b9fc08eb6a6db2d12ea6b7b3e41e620687caa723bb5f9cb0f93661cfdae3`. Full source and measured observations are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`.
+
+Primary rule (checked 2026-10-09): The annual-allowance charge uses the rates that apply if the excess is added to taxable income, including bands crossed by that excess. [HMRC guidance](https://www.gov.uk/hmrc-internal-manuals/pensions-tax-manual/ptm056110).
+
+```bash
+PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case annual_allowance_charge_single_marginal_rate
+```
+
+Observed:
+
+```json
+{
+ "personal_pension_contributions_tax": [
+  4000.0
+ ]
 }
 ```

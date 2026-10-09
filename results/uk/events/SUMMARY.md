@@ -59,7 +59,7 @@ The queue below is ranked by absolute residual_plus_unsized, after any evidence-
 |---|---|---:|---|---|---|
 | No computed divergences | — | — | — | — | — |
 
-Evidence-backed PolicyEngine issue candidates recorded: 6. No upstream issues were filed by this replay lane.
+Evidence-backed PolicyEngine issue candidates recorded: 9. No upstream issues were filed by this replay lane.
 
 ## Measured model investigation candidates
 
@@ -74,3 +74,6 @@ These are engine observations reproduced separately from the national costing. T
 | dividend_band_threshold_lag | pe_gap | dividend_income_tax, income_tax | parameters/gov/hmrc/income_tax/rates/dividends.yaml (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case dividend_band_threshold_lag` |
 | class4_threshold_indexation_from_2027 | pe_gap | ni_class_4 | parameters/gov/hmrc/national_insurance/class_4/thresholds/lower_profits_limit.yaml (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case class4_threshold_indexation_from_2027` |
 | uc_lcwra_protection_stops_at_2030 | investigation | uc_LCWRA_element | scenarios/uc_reform.py (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case uc_lcwra_protection_stops_at_2030` |
+| employer_nics_state_pension_age_exemption | pe_gap | ni_liable, ni_class_1_employer, ni_class_1_employee | variables/gov/hmrc/national_insurance/class_1/ni_class_1_employer.py (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case employer_nics_state_pension_age_exemption` |
+| pension_taper_omits_employer_contributions | pe_gap | adjusted_net_income, pension_annual_allowance | variables/gov/hmrc/income_tax/allowances/pension_annual_allowance.py (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case pension_taper_omits_employer_contributions` |
+| annual_allowance_charge_single_marginal_rate | pe_gap | personal_pension_contributions_tax | variables/gov/hmrc/pensions/private_pension_contributions_tax.py (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --case annual_allowance_charge_single_marginal_rate` |

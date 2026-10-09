@@ -199,7 +199,6 @@
   },
   "id": "class4_threshold_indexation_from_2027",
   "interpretation": "The existing AB2025 baseline integrity assessment states the prior-law Class 4 freeze runs to April 2028 while the pin resumes uprating in April 2027. This changes the marginal tax base in 2027; no fraction of a replay gap is attributed without a paired run.",
-  "national_effect": "unsized",
   "observation": {
    "2026-06-01": {
     "lower_profits_limit": 12570,
@@ -213,12 +212,6 @@
     "lower_profits_limit": 13077.795560896562,
     "upper_profits_limit": 52300.77826939301
    }
-  },
-  "primary_source": {
-   "checked_date": "2026-10-09",
-   "rule": "The Class 4 Lower Profits Limit of \u00a312,570 and Upper Profits Limit of \u00a350,270 were frozen until April 2028.",
-   "title": "Autumn Statement 2022 tax section",
-   "url": "https://www.gov.uk/government/publications/autumn-statement-2022-documents/autumn-statement-2022-html"
   },
   "reproducer": "--case class4_threshold_indexation_from_2027",
   "variables": [
@@ -286,11 +279,6 @@
     true,
     false
    ]
-  },
-  "observation_provenance": {
-   "execution": "One authorized process, sequential synthetic situations with del and gc.collect between worlds; no national dataset loaded.",
-   "recorded_date": "2026-10-09",
-   "source_receipt": ".venv-replay-checks/candidate-audit/MEASURED_OBSERVATIONS.json"
   },
   "primary_source": {
    "checked_date": "2026-10-09",
@@ -391,11 +379,6 @@
     60000.0
    ]
   },
-  "observation_provenance": {
-   "execution": "One authorized process, sequential synthetic situations with del and gc.collect between worlds; no national dataset loaded.",
-   "recorded_date": "2026-10-09",
-   "source_receipt": ".venv-replay-checks/candidate-audit/MEASURED_OBSERVATIONS.json"
-  },
   "primary_source": {
    "checked_date": "2026-10-09",
    "rule": "Threshold income must exceed \u00a3200,000, and adjusted income adds employer pension contributions; the taper starts above \u00a3260,000.",
@@ -484,11 +467,6 @@
    "personal_pension_contributions_tax": [
     4000.0
    ]
-  },
-  "observation_provenance": {
-   "execution": "One authorized process, sequential synthetic situations with del and gc.collect between worlds; no national dataset loaded.",
-   "recorded_date": "2026-10-09",
-   "source_receipt": ".venv-replay-checks/candidate-audit/MEASURED_OBSERVATIONS.json"
   },
   "primary_source": {
    "checked_date": "2026-10-09",
