@@ -41,7 +41,7 @@ Observed:
 
 Class: `pe_gap`. Variables: `capital_gains_tax`.
 
-The harvested AB2024 source title specifies 30 October 2024, but the pinned main-rate parameter change starts 6 April 2025. CY2024 therefore cannot carry the announced main-rate commencement. The parameter description also warns that it is under active development.
+The harvested AB2024 title specifies 30 October 2024, while the raw main-rate schedule starts 6 April 2025. CountryTaxBenefitSystem annualizes government policy from the 30 April snapshot. The first higher processed year, 2025, is inferred from that conversion rule and the recorded April 2025 values. This records a missing part-year 2024 commencement, not an additional delay to 2026. The parameter description also warns that it is under active development. The national timing contribution remains unsized.
 
 Evidence: `parameters/gov/hmrc/cgt/basic_rate.yaml`; source SHA-256 `0a1896eb3f2007ca95811765e8eabcf526af7831897a5d105d8b18c6c9fe58ed`. Full source and measured observations are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`.
 

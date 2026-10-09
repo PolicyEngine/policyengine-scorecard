@@ -29,7 +29,7 @@
     "basis": "pipeline/compute_uk_event.py; docs/uk_replay/RECIPE.md, Axis tagging"
    },
    "cy_proxies_fy": {
-    "description": "The replay's calendar year Y is a proxy for the published fiscal year Y-(Y+1), including possible part-year commencement differences.",
+    "description": "The replay combines calendar-year Y population inputs with government policy parameters annualized from the pinned engine's 30 April snapshot, as a proxy for published fiscal year Y-(Y+1). This does not reconstruct fiscal-year population inputs or part-year commencements after that policy snapshot.",
     "status": "unsized",
     "basis": "pipeline/compute_uk_event.py; source_rows.fy in data/uk/events/*_measures.json"
    },

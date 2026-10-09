@@ -276,18 +276,12 @@ def authored_construction(event_slug, title, resolve):
             if event_slug == "autumn_statement_2023"
             else "class_1_employee_nics_main_rate_cut_2pp",
             "national_insurance",
-            {
-                rate1: (
-                    {"2024-01-01": 0.12, "2024-04-01": 0.10}
-                    if event_slug == "autumn_statement_2023"
-                    else {"2024-01-01": 0.10}
-                )
-            },
+            {rate1: {"2024-01-01": 0.10}},
             tax_nic_heads,
             partial=common_missing,
             start=2023 if event_slug == "autumn_statement_2023" else 2024,
             note=(
-                "Employee NICs are monthly. Reverse the 2pp AS2023 cut with 12% for January-March2024 (certified10%), then 10% from April2024 (certified8%); later SB2024 policy is retained. CY2023 is zero because commencement was January2024; CY-proxies-FY explicitly misses the January-MarchFY2023-24 leg."
+                "The pinned engine samples government parameters on 30 April and applies that fiscal policy value to the whole nominal year. Its processed employee NICs main rate is 8% throughout 2024, so the 2pp marginal AS2023 reversal is 10% throughout 2024, retaining the later SB2024 cut. Although the liability variable is monthly, raw January-March rates do not survive parameter preprocessing. Nominal 2023 is unchanged, so the original January-March FY2023-24 costing leg is omitted by this annual fiscal policy snapshot and remains a named period/construction divergence."
                 if event_slug == "autumn_statement_2023"
                 else "The 2pp marginal reversal on the certified 8% world is 10%. For AS2023, CY2023 has zero because commencement was January 2024; CY-proxies-FY explicitly misses the January-March FY2023-24 leg. Later SB2024 cuts are retained in the certified world."
             ),

@@ -169,7 +169,7 @@ def test_calendar_year_rule_accounts_earlier_fys_without_running_them():
     assert d["calendar_years"] == [2023, 2024, 2025, 2026, 2027]
 
 
-def test_as2023_marginal_reversal_retains_later_cut_for_each_month():
+def test_as2023_reversal_matches_measured_processed_fiscal_parameters():
     d = json.loads(
         (ROOT / "data/uk/events/autumn_statement_2023_measures.json").read_text()
     )
@@ -181,11 +181,18 @@ def test_as2023_marginal_reversal_retains_later_cut_for_each_month():
     rates = m["pe_baseline_modifier"][
         "gov.hmrc.national_insurance.class_1.rates.employee.main"
     ]
-    # The source announces 2p, so repeal must add 2p to every affected
-    # month's actual certified rate, including the pre-SB2024 quarter.
-    for year in range(2024, 2029):
-        for month in range(1, 13):
-            date = f"{year}-{month:02d}-01"
-            certified_rate = 0.10 if date < "2024-04-01" else 0.08
-            reversed_rate = rates[max(k for k in rates if k <= date)]
-            assert reversed_rate - certified_rate == pytest.approx(0.02)
+    probe = json.loads(
+        (ROOT / "tests/fixtures/uk_replay_processed_employee_nics.json").read_text()
+    )
+    assert probe["engine_version"] == "2.89.2"
+    assert probe["parameter"] in m["engine_baseline_by_year"]["2024"]
+    assert m["engine_baseline_by_year"]["2024"][probe["parameter"]] == 0.08
+    assert probe["observed_values_list_2024"] == [
+        {"instant_str": "2024-01-01", "value": 0.08}
+    ]
+    # Compare against the measured processed engine, not a raw-YAML
+    # January/April schedule that the fiscal-year conversion discards.
+    for date, certified_rate in probe["observed_current_law_2024"].items():
+        reversed_rate = rates[max(k for k in rates if k <= date)]
+        assert reversed_rate - certified_rate == pytest.approx(0.02)
+    assert "raw January-March rates do not survive" in m["note"]

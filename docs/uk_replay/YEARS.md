@@ -29,6 +29,9 @@ wheel, read before setting the year window:
 | Same file, lines 471–503 | The extended dataset establishes the entity structure from its first year and loads each year's columns as explicit year inputs using `set_input`. |
 | `policyengine_uk/data/uprating_indices.yaml` | Earnings use average-earnings growth, self-employment income uses per-capita mixed-income growth, many other incomes use per-capita GDP, and household weights use the population index. This creates projected inputs from the original records. |
 | `policyengine_uk/parameters/gov/economic_assumptions/yoy_growth.yaml`, header and 2025–2030 blocks | Historical growth through 2024 is outturn; 2025–2030 growth uses the **March 2026** OBR forecast. The announcement forecast is not reconstructed. |
+| `policyengine_uk/tax_benefit_system.py`, lines 81–109 | The parameter-processing pipeline converts government parameters to fiscal-year values after uprating and backdating. |
+| `policyengine_uk/utils/parameters.py`, lines 26–47 | `convert_to_fiscal_year_parameters` samples each government `Parameter` at 30 April of year Y and writes that value over the entire annual period Y, for 2015–2040. Raw YAML change dates alone therefore do not establish the processed world's effective dates. |
+| `policyengine_uk/simulation.py`, lines 230–248 | Parameter changes reload the raw parameter tree, apply the reform, and then run the same parameter-processing pipeline. Dated reform schedules also undergo fiscal-year conversion. |
 
 The engine also contains longer-run economic assumptions, but its ordinary
 single-year dataset extension ends at 2030. A formula returning a number
@@ -37,12 +40,14 @@ outside that range would not establish supported population inputs.
 an event registry mistakenly includes them. Historical events beginning
 before 2023–24 require track 2's historical rules and per-year populations.
 
-The annual calculation uses the requested year explicitly. Some parameters
-change on 6 April within a calendar year; the construction guard samples
-1 January, 6 April and 31 December of each requested year to check that
-documented announcement values occur in certified current law. That guard
-checks the executed policy world. It does not transform a calendar-year
-total into a fiscal-year total. Every staged comparison therefore retains
+The annual calculation uses the requested population-input year explicitly,
+while processed government policy parameters use the engine's 30 April
+snapshot for that year. This is a calendar-year population and fiscal-year
+policy combination; it does not reconstruct income and household records
+from 6 April to 5 April. The construction guard samples 1 January, 6 April
+and 31 December in the processed current-law tree. Authors must inspect
+processed values rather than infer monthly effects from raw YAML dates.
+Every staged comparison therefore retains
 `cy_proxies_fy`, `baseline_vintage` and `population_vintage` tags.
 
 To inspect the evidence in a rebuilt pinned environment:
@@ -52,8 +57,10 @@ To inspect the evidence in a rebuilt pinned environment:
 import inspect
 from policyengine_uk.data.economic_assumptions import extend_single_year_dataset
 from policyengine_uk.simulation import Simulation
+from policyengine_uk.utils.parameters import convert_to_fiscal_year_parameters
 print(inspect.getsource(extend_single_year_dataset))
 print(inspect.getsource(Simulation.build_from_dataset))
 print(inspect.getsource(Simulation.build_from_multi_year_dataset))
+print(inspect.getsource(convert_to_fiscal_year_parameters))
 PY
 ```

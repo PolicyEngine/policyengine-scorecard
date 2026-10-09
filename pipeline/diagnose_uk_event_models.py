@@ -124,7 +124,7 @@ def investigate(case: str | None = None) -> list[dict]:
             "evidence": _source(
                 package_root, "parameters/gov/hmrc/cgt/basic_rate.yaml"
             ),
-            "interpretation": "The harvested AB2024 source title specifies 30 October 2024, but the pinned main-rate parameter change starts 6 April 2025. CY2024 therefore cannot carry the announced main-rate commencement. The parameter description also warns that it is under active development.",
+            "interpretation": "The harvested AB2024 title specifies 30 October 2024, while the raw main-rate schedule starts 6 April 2025. CountryTaxBenefitSystem annualizes government policy from the 30 April snapshot. The first higher processed year, 2025, is inferred from that conversion rule and the recorded April 2025 values. This records a missing part-year 2024 commencement, not an additional delay to 2026. The parameter description also warns that it is under active development. The national timing contribution remains unsized.",
             "reproducer": "--case cgt_main_rate_commencement",
         }
     )
