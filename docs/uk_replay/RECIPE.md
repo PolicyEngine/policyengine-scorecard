@@ -24,7 +24,7 @@ Assign every source row exactly one of these classes:
 
 | Class | Required record |
 |---|---|
-| `expressible` | Resolved parameter or input construction, a `pe_reform_delta`, a `pe_baseline_modifier`, or a package; a dated policy schedule; and explicit source-head mappings with tax/spending channels. |
+| `expressible` | Resolved parameter construction, a `pe_reform_delta`, a `pe_baseline_modifier`, or a package; a dated policy schedule; and explicit source-head mappings with tax/spending channels. |
 | `partial` | An executable household leg, the exact omitted legs in `missing_legs`, and the resulting scope limits. Unmapped source heads remain uncomputed. |
 | `not_expressible` | A `pe_gap` that names the missing tax base, entitlement, history, data input or counterfactual world. Record a search over both the pinned engine's full parameter tree and variable list; a search result alone does not demonstrate a mechanism. |
 | `out_of_household_scope` | A business, departmental, local-government, financing or other non-household account, with the scope reason. Corporation tax, bank levy and business rates belong here. |
@@ -34,6 +34,14 @@ heads are expressible or partial. Source-row classes determine the accounting;
 the measure's summary class must not silently override them. A tax that exists
 in the engine is not enough to express a measure: the targeted population and
 the event's counterfactual also need to be established.
+Measure counts use each measure's single summary class; row counts and £ use
+each source row's class. Outside-scope £ can therefore include business or
+departmental heads belonging to a partial household measure.
+
+The current executor accepts parameter dictionaries. An input-changing
+construction needs an executor extension, including variable-period input
+setting before calculation and a measured check that the toggle took effect;
+documenting an input idea alone does not make it executable.
 
 For `not_expressible`, distinguish an evidenced missing mechanism from a
 `construction_pending` decision in `gap_kind`. The latter means that this
@@ -124,6 +132,35 @@ declared head effects; it is not automatically the complete published Budget
 costing. Employer NICs also changes wages at the pinned incidence setting,
 so the Income Tax channel can move. That is a construction scope difference,
 not proof that OBR omitted wage incidence.
+
+For employer NICs, `gov.contrib.policyengine.employer_ni.employee_incidence=1`
+assigns the full wage adjustment to employees holding employer cost fixed.
+Thus "static" here retains this pinned rule; it does not mean fixed wages.
+The existing `employee_incidence_and_base` recipe in
+`obr_divergence_axes.json` distinguishes this whole PE wage channel from the
+PE–OBR incidence difference. OBR's database notes report direct measure
+costings and exclude separately reported indirect macroeconomic effects.
+Tag the construction and `head_scope` difference without attributing an
+unsized percentage of the gap to it.
+
+The [source-head audit](../../results/uk/events/SOURCE_HEAD_AUDIT.md) checked
+the original workbook's titles, tax heads, FY columns and units. Its real
+FY 2026–27 cells illustrate why a head comparison is not a package total:
+
+| Package / head | Workbook cell | OBR £m |
+|---|---|---:|
+| CGT main rates and reliefs / Capital gains tax | BI2401 | 95.778978 |
+| Same CGT package / Income tax | BI2403 | 1,262.326238 |
+| Same CGT package / Stamp duty | BI2402 | -65.673195 |
+| SDLT additional-home surcharge / Stamp duty | BI2395 | 334.228735 |
+| Employer NICs package / Income tax | BI2398 | -312.921791 |
+
+All cells are GBP millions, converted once to GBP. The £95.8m CGT cell is a
+genuine tax-head costing; its package also has separate Income Tax and Stamp
+Duty effects. The PE CGT leg pools gain types and leaves those source heads
+uncomputed. The SDLT leg omits the source package's CGT/IHT interactions,
+corporate purchasers and transactions response. These are explicit partial
+scope limits, not evidence that the large raw ratios are engine defects.
 
 ## Years and worlds
 
@@ -276,8 +313,10 @@ event directory. Per-year progress receipts bind each completed artifact's
 SHA after it is written. `--resume` can retain those verified pairs even if an
 interrupted run did not finish `RUN_MANIFEST.json`; it ignores unreceipted
 files. Their registry and certified-dataset identities must still match.
-A focused rerun without `--resume` recomputes the requested pairs and preserves
-other SHA-bound completed pairs. Run no more than two simulations
+A focused rerun without `--resume` uses an explicit separate output directory
+and recomputes the requested pairs. When a default-directory manifest already
+exists, focused selection requires `--resume` or an explicit output directory;
+`--resume` retains other SHA-bound completed pairs. Run no more than two simulations
 concurrently on the shared Mac, counting national and synthetic diagnostic
 runs together. Start with `--workers 1` on the shared host; use `--workers 2`
 only when the host has capacity and no other lane is simulating. Each worker
@@ -288,11 +327,20 @@ Autumn Statement 2023, Spring Budget 2024, Spring Statement 2025, then Spring
 Budget 2023.
 
 Expected run time is proportional to supported years times changed worlds,
-plus one baseline per year. A reliable wall-time estimate is pending the
-first completed run on this shared host; concurrent host load already required
-retrying the initial two-worker launch with one worker. Exact observed baseline and measure seconds are
-saved in each event's `RUN_LOG.json`; use those measured timings for the next
-lane's estimate rather than a guessed benchmark. Registry accounting, staging
+plus one baseline per year. Historical mode-2 runs recorded a 36.99s median
+baseline and a 68.03s median alternate (60.73–260.95s range). The historical
+Autumn Budget 2024 NICs 2026 baseline took 65.60s at 4.34GiB, and its alternate
+took 64.65s at 10.63GiB, recorded in the
+[mode-2 artifact](../../results/uk/obr_costings/autumn_budget_2024__employer_nics_package_2026.json).
+The medians summarize the checked-in mode-2 artifacts' `performance` fields,
+deduplicating five baseline records and using 94 alternate records. Six
+baselines plus thirty alternates suggest roughly
+40 minutes on a quiet host, excluding preflight overhead; this is a historical
+planning estimate, not an ETA for the current run. The current shared host
+took about twenty minutes for preflight alone, and its initial two-worker
+launch required retrying with one worker. Actual full-event wall time remains
+pending. Exact observed baseline and measure seconds are saved in each event's
+`RUN_LOG.json`; use those measured timings for the next lane. Registry accounting, staging
 and comparison are engine-free; the builder validates parameters and variables
 against the pinned engine.
 

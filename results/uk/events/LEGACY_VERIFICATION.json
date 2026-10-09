@@ -1,0 +1,15 @@
+{
+  "dry_run_stdout_sha256": "373698e28b6b45b0ee1e3593cb932d8b2ead12be6f6c07f28ee1b6129f49d830",
+  "staging_before_and_after_sha256": "9d5c4657e35e3dc30ad97f75541130bfbe7be8a6245b0ef00ba758e98c816881",
+  "staged_rows": 1008,
+  "base_commit": "99f1cc1",
+  "ab2025_unchanged_artifact_count": 205,
+  "fixtures": [
+    "tests/fixtures/uk_replay_ab2025_hashes.json",
+    "tests/fixtures/uk_replay_ab2025_dry_run.txt"
+  ],
+  "staging_database_logical_content_hash": "ac4c0ffbc71bac27c9fb73cebd768bf4c38a5a0661bdfeb3bf4e5fb016cdaf7c",
+  "method": "Executed original source read from base commit and refactored source with identical registry/artifact/database inputs; dry-run uses the same engine-unavailable stub to isolate construction planning.",
+  "pinned_engine_dry_run_stdout_sha256": "4983b37b1ae6c9c098c2f8cb1dcda3cb452c9868815e2ecff39a3dfd467ce7ac",
+  "engine_guard_verified": "policyengine-uk 2.89.2, policyengine-core 3.27.1; both originals and refactored defaults use the same live pinned-parameter resolver"
+}

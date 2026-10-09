@@ -1,0 +1,33 @@
+{
+ "actual_national_determinism": "pending separate rerun of a completed measure/year",
+ "consolidated_pytest": {
+  "environment": "Python 3.12.14 with CI test dependencies; no policyengine-uk installed, so no additional engine systems or simulations",
+  "log": ".venv-replay-checks/full-replay-tests.log",
+  "passed": 431,
+  "seconds": 2229.52,
+  "skipped": 9
+ },
+ "earlier_pinned_broad_attempt": {
+  "interrupted_before_completion": true,
+  "passed": 334,
+  "reason": "Two existing mode-2 dry-run subprocesses exceeded their 60 second limits under heavy shared-host contention.",
+  "subprocess_startup_timeouts": 2
+ },
+ "legacy_proof": "LEGACY_VERIFICATION.json",
+ "pinned_environment": {
+  "comparison_tests_passed": 46,
+  "compute_stage_tests_passed": 18,
+  "offline_actual_ab2025_guards": "original and refactored output byte-identical; see LEGACY_VERIFICATION.json",
+  "policyengine": "5.0.2",
+  "policyengine-core": "3.27.1",
+  "policyengine-uk": "2.89.2",
+  "registry_tests_passed": 18
+ },
+ "property_checks": [
+  "exact signed and absolute source-pound accounting",
+  "Exchequer orientation and reversal involution",
+  "head effects sum to declared measure total",
+  "signed ratio bins invariant under scaling",
+  "deterministic artifact and staged/comparison rendering"
+ ]
+}

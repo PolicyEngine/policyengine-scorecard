@@ -24,9 +24,9 @@
     "basis": "pipeline/compute_uk_event.py; each saved artifact baseline_world and reform_world"
    },
    "behavioural_adjustment": {
-    "description": "The replay reports static household effects; published OBR measures may include behavioural responses and macro feedback.",
+    "description": "Static versus behavioural costing differences remain unsized. The replay retains the pinned employer-NIC employee_incidence=1 wage adjustment holding employer cost fixed; it is not a fixed-wage static costing. Published OBR direct measure costings can include behavioural responses but exclude separately reported indirect macroeconomic effects; incidence and head scope must be distinguished.",
     "status": "unsized",
-    "basis": "pipeline/compute_uk_event.py; docs/uk_replay/RECIPE.md, Axis tagging"
+    "basis": "pipeline/compute_uk_event.py; docs/uk_replay/RECIPE.md, Axis tagging; results/uk/events/SOURCE_HEAD_AUDIT.md; existing employer-NIC employee_incidence_and_base component"
    },
    "cy_proxies_fy": {
     "description": "The replay combines calendar-year Y population inputs with government policy parameters annualized from the pinned engine's 30 April snapshot, as a proxy for published fiscal year Y-(Y+1). This does not reconstruct fiscal-year population inputs or part-year commencements after that policy snapshot.",

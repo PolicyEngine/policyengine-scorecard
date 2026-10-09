@@ -590,6 +590,15 @@ def render_markdown(
         ),
         "",
         (
+            "The replay retains pinned incidence rules: employer_ni.employee_incidence=1 "
+            "changes wages holding employer cost fixed, so its Income Tax effect is not "
+            "a fixed-wage static costing. The OBR database reports direct measure effects "
+            "and excludes separately reported indirect macroeconomic effects. Scope and "
+            "incidence therefore require head_scope/construction_scope notes; neither "
+            "a raw head gap nor the static label sizes a behavioural explanation."
+        ),
+        "",
+        (
             f"Tagged coverage: {len(computed)} computed rows and "
             f"£{gap_mass / 1e9:,.3f}bn of absolute raw gap have named axes. "
             "Tagged coverage does not size their effects."
@@ -870,6 +879,13 @@ def render_summary(
             "behavioural_adjustment, baseline_vintage, cy_proxies_fy and head_scope "
             "describe the other construction differences. construction_scope identifies "
             "partial measures. The pipeline does not adjust the population vintage."
+        ),
+        "",
+        (
+            "Pinned employer-NIC incidence assigns the wage adjustment fully to employees "
+            "while holding employer cost fixed. OBR's direct per-head costings exclude "
+            "separately reported macroeconomic indirect effects. This construction/head_scope "
+            "difference is named, but its contribution to the raw gaps remains unsized."
         ),
         "",
         (
