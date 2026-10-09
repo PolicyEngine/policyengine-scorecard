@@ -1,5 +1,5 @@
 {
- "actual_determinism_repeat": "pending separate one-pair rerun",
+ "actual_determinism_repeat": "Two fresh offline Modal VAT2026 executions are byte-identical to the recovered local artifact; see DETERMINISM_VERIFICATION.json.",
  "artifacts": {
   "results/uk/events/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2026.json": "4a764671e22c7693bff3a5b0bc4c3ce220744e43897b3a1c82629305f54e416d",
   "results/uk/events/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2026.json": "dd0c67e0cb468b0e7e1b6fc7fdb9b279bcfcba6b3cec8c7ecc6a267e09b7d917",
@@ -17,6 +17,8 @@
  ],
  "engine_version": "2.89.2",
  "event": "autumn_budget_2024",
+ "evidence_scope": "Historical pre-classification-fix registry. Artifact paths name files in commit 09a9a85; current event results are recomputed from the corrected registry.",
+ "historical_results_commit": "09a9a85",
  "origin": "Original offline managed run, interrupted before parent manifest publication. All owning processes exited before recovery.",
  "policyengine_core_version": "3.27.1",
  "policyengine_version": "5.0.2",

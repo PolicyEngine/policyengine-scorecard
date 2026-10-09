@@ -515,6 +515,58 @@ def test_inventory_summary_does_not_claim_completed_replays(inputs):
     assert "event / expressible" in summary
 
 
+@pytest.mark.parametrize("run_id", ["modal_repeat_1", "modal_repeat_2"])
+def test_actual_fresh_repeat_receipt_binds_canonical_bytes_and_coverage(run_id):
+    proof = json.loads(
+        (
+            comparison.ROOT / "results/uk/events/DETERMINISM_VERIFICATION.json"
+        ).read_bytes()
+    )
+    artifact_path = comparison.ROOT / proof["frozen_artifact_copy"]["path"]
+    digest = hashlib.sha256(artifact_path.read_bytes()).hexdigest()
+    repeat = next(run for run in proof["runs"] if run["run_id"] == run_id)
+    assert digest == proof["frozen_artifact_copy"]["sha256"]
+    assert digest == proof["canonical_artifact"]["sha256"]
+    assert digest == proof["initial_local_observation"]["artifact_sha256"]
+    assert digest == repeat["artifact_sha256"]
+    assert repeat["byte_identical_to_initial_and_canonical"] is True
+    assert repeat["field_differences"] == []
+    receipt = repeat["receipt"]
+    assert receipt["request"]["preflight_only"] is False
+    assert receipt["runtime"]["block_network"] is True
+    assert receipt["runtime"]["workers"] == 1
+    serialized_inputs = (
+        json.dumps(repeat["input_manifest"], indent=1, sort_keys=True, allow_nan=False)
+        + "\n"
+    ).encode()
+    assert (
+        receipt["input_manifest_sha256"]
+        == hashlib.sha256(serialized_inputs).hexdigest()
+    )
+    serialized_request = (
+        json.dumps(receipt["request"], indent=1, sort_keys=True, allow_nan=False) + "\n"
+    ).encode()
+    assert receipt["request_sha256"] == hashlib.sha256(serialized_request).hexdigest()
+    serialized_receipt = (
+        json.dumps(receipt, indent=1, sort_keys=True, allow_nan=False) + "\n"
+    ).encode()
+    assert repeat["receipt_sha256"] == hashlib.sha256(serialized_receipt).hexdigest()
+    manifest = repeat["run_manifest"]
+    selected = [{"measure_key": proof["measure_key"], "year": proof["year"]}]
+    assert manifest["requested_grid"] == manifest["artifact_grid"] == selected
+    assert list(manifest["artifacts"].values()) == [digest]
+    assert manifest["registry_sha256"] == proof["registry_sha256"]
+    assert repeat["full_event_grid_size"] == 30
+    assert manifest["full_event_complete"] is False
+    artifact_value = json.loads(artifact_path.read_bytes())
+    assert repeat["measure_total_gbp"] == artifact_value["measure_total_gbp"]
+    assert (
+        manifest["certified_dataset_sha256"]
+        == artifact_value["certified_dataset_sha256"]
+    )
+    validate_artifact(artifact_value, "recorded actual replay")
+
+
 @given(st.integers(-(10**9), 10**9), st.integers(-(10**9), 10**9))
 @settings(deadline=None)
 def test_residual_accounting_is_conserved(gap, amount):

@@ -1,0 +1,29 @@
+{
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "computed": false,
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "engine_version": "2.89.2",
+ "event": "autumn_budget_2024",
+ "input_manifest_sha256": "f608f3dbf4f3bb53c3e66847a96a225557d0efd80a0eebc11b355de64bd24130",
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "registry_sha256": "77b9087c3aeb9858f53dbb965d6e59632b5e75e5f05ff74774eec95e026b5d8b",
+ "release_bundle": {
+  "bundle_id": "uk-5.0.2",
+  "certified_by": "policyengine.py bundle certification",
+  "certified_data_artifact_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+  "certified_data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "compatibility_basis": "built_with_model_package",
+  "country_id": "uk",
+  "data_build_fingerprint": null,
+  "data_build_model_git_sha": null,
+  "data_build_model_version": "2.89.2",
+  "data_package": "populace-data",
+  "data_version": "0.1.0",
+  "default_dataset": "populace_uk_2023",
+  "default_dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "model_package": "policyengine-uk",
+  "model_version": "2.89.2",
+  "policyengine_version": "5.0.2"
+ }
+}
