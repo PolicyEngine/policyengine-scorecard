@@ -10,6 +10,10 @@ Provider execution needs a separate Python 3.12 control environment::
     UV_CACHE_DIR=.venv-uv-cache uv pip install \
         --python .venv-replay-checks/modal-control/bin/python 'modal==1.3.2'
 
+Local compute/control uses 3.12.14; the remote uv venv pins Linux-available
+3.12.13. The model, numerical dependency and data pins remain identical,
+and the remote receipt records its actual Python patch and platform.
+
 After reviewing that plan, verify the remote environment without simulation::
 
     .venv-replay-checks/modal-control/bin/python -m pipeline.modal_uk_event \
@@ -41,7 +45,7 @@ from pathlib import Path, PurePosixPath
 ROOT = Path(__file__).resolve().parent.parent
 REMOTE_ROOT = "/replay"
 REMOTE_PYTHON = "/opt/replay-venv/bin/python"
-PYTHON_VERSION = "3.12.14"
+PYTHON_VERSION = "3.12.13"
 MODAL_VERSION = "1.3.2"
 UV_VERSION = "0.11.21"
 HF_COMMIT = "a75a9a831d6b07aaffbd09713f2a1124f5c0f08f"

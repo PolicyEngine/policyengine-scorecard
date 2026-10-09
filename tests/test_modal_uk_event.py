@@ -306,8 +306,8 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
     assert configuration["include_source"] is False
     assert configuration["serialized"] is True
     assert recorded["concurrent"] == {"max_inputs": 1}
-    assert recorded["commands"][0] == "uv python install 3.12.14"
-    assert "uv venv --python 3.12.14 /opt/replay-venv" in recorded["commands"]
+    assert recorded["commands"][0] == "uv python install 3.12.13"
+    assert "uv venv --python 3.12.13 /opt/replay-venv" in recorded["commands"]
     assert any(
         "--requirements /opt/replay-requirements.txt" in command
         for command in recorded["commands"]

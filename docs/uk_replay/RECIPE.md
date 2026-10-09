@@ -362,8 +362,15 @@ or its engine-free transport tests.
 
 The optional adapter needs a separate control environment because its
 serialized function must use the remote SDK interpreter's Python 3.12 minor
-version. It builds an exact Python 3.12.14 uv venv remotely and installs the
-complete checked-in `requirements.txt` freeze. Its one container has two
+version. The local compute and control environments use Python 3.12.14;
+the remote uv venv pins Python 3.12.13, available as a Linux x86_64 GNU
+download in uv's catalog. `UV_CACHE_DIR=.venv-uv-cache uv python list 3.12 --all-versions --all-platforms
+--all-arches --only-downloads --show-urls --offline` records that distinction;
+the [standalone Python download](https://releases.astral.sh/github/python-build-standalone/releases/download/20260414/cpython-3.12.13%2B20260414-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz)
+is explicit. The wrapper's runtime receipt records the actual patch and
+platform. The remote venv installs the complete checked-in `requirements.txt`
+freeze; the model, numerical dependencies and certified data pins are unchanged.
+Its one container has two
 CPUs, 32GiB memory, a 3,600-second timeout, one input and one replay worker.
 Only allowlisted source files, the certified H5 and its single HF revision
 ref are mounted. Runtime network is blocked, Hugging Face offline mode is
