@@ -1,0 +1,19 @@
+{
+ "artifacts": {
+  "results/uk/events/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2026.json": "83898bfb4e09e3a135aa520dfd87a2b9f196c51a98c92e7f955f98db141d7e8d",
+  "results/uk/events/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2026.json": "6e42825fd8a34899580c52fef565374a05406652556e75d8ae04b89edaefd322",
+  "results/uk/events/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2026.json": "4aa3bc9f868865aa47e5d5f384930e74fde425e0dd443ab3e2ad4354b7943fc9",
+  "results/uk/events/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2026.json": "1192b5ea36fcd245eb8a54400f77c9005fddb7ec31387e7fa5f1a0530f6faae3",
+  "results/uk/events/autumn_budget_2024/autumn_budget_2024__winter_fuel_means_test_2026.json": "d922c443a06b28350c40a8835f34dd5f8e0884d030da1eed8b26d875c781a680"
+ },
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "engine_version": "2.89.2",
+ "event": "autumn_budget_2024",
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "schema_version": 1,
+ "year": 2026
+}
