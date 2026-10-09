@@ -354,9 +354,62 @@ installs the US engine from its manifest, and the [workflow](https://github.com/
 selects US releases. Its
 hash verification protects that US artifact, but it has no UK event/bundle
 interface, pinned UK environment or Hugging Face offline setup, and it fetches
-remote metadata and data. No UK Modal adaptation or deployment was completed
-in this lane. A future remote run needs the same UK pin, offline cache and
-certified SHA gate before it can replace the local runner.
+remote metadata and data. The isolated `pipeline/modal_uk_event.py` adapter
+uses the unchanged UK replay CLI instead. Remote compatibility and actual
+runtime remain pending until its preflight and focused repeat produce
+reviewed receipts; no full remote event is established by the implementation
+or its engine-free transport tests.
+
+The optional adapter needs a separate control environment because its
+serialized function must use the remote SDK interpreter's Python 3.12 minor
+version. It builds an exact Python 3.12.14 uv venv remotely and installs the
+complete checked-in `requirements.txt` freeze. Its one container has two
+CPUs, 32GiB memory, a 3,600-second timeout, one input and one replay worker.
+Only allowlisted source files, the certified H5 and its single HF revision
+ref are mounted. Runtime network is blocked, Hugging Face offline mode is
+forced, no credentials are forwarded, and the existing managed loader's
+release identity and pre/post simulation hash gates remain binding. See
+[the offline cache audit](OFFLINE_BUNDLE_AUDIT.md) for the packaged
+certification fallback.
+
+Inspect the input plan and then run preflight without simulation:
+
+```bash
+UV_CACHE_DIR=.venv-uv-cache uv venv --python 3.12.14 .venv-replay-checks/modal-control
+UV_CACHE_DIR=.venv-uv-cache uv pip install --python .venv-replay-checks/modal-control/bin/python 'modal==1.3.2'
+python3 -m pipeline.modal_uk_event --event autumn_budget_2024 --plan
+.venv-replay-checks/modal-control/bin/python -m pipeline.modal_uk_event --event autumn_budget_2024 --preflight-only --output-dir .venv-replay-checks/modal/ab24/preflight --download-root .venv-replay-checks/modal-downloads/preflight --execute
+```
+
+After validating that preflight receipt, recompute one real measure-year
+twice in separate directories. Compare the numerical artifact bytes, while
+keeping observational `RUN_LOG.json` and `MODAL_RECEIPT.json` outside that
+determinism comparison:
+
+```bash
+.venv-replay-checks/modal-control/bin/python -m pipeline.modal_uk_event --event autumn_budget_2024 --measures autumn_budget_2024__private_school_vat_20pct --years 2026 --output-dir .venv-replay-checks/modal/ab24/vat2026_repeat_a --download-root .venv-replay-checks/modal-downloads/repeat_a --execute
+.venv-replay-checks/modal-control/bin/python -m pipeline.modal_uk_event --event autumn_budget_2024 --measures autumn_budget_2024__private_school_vat_20pct --years 2026 --output-dir .venv-replay-checks/modal/ab24/vat2026_repeat_b --download-root .venv-replay-checks/modal-downloads/repeat_b --execute
+```
+
+Compare the same measure-year with local artifacts as a separate platform
+provenance check; retain any differences for investigation. After those
+checks, a full event uses canonical paths inside the remote workspace:
+
+```bash
+.venv-replay-checks/modal-control/bin/python -m pipeline.modal_uk_event --event autumn_budget_2024 --download-root .venv-replay-checks/modal-downloads/full_ab24 --execute
+```
+
+The download prefix receives the returned ROOT-relative paths, so this
+command writes locally under
+`.venv-replay-checks/modal-downloads/full_ab24/results/uk/events/autumn_budget_2024/`
+and preserves canonical path strings in receipts. The wrapper never writes
+local canonical results. Validate downloaded input identities, artifact
+hashes and staging invariants, then adopt the returned relative files
+atomically only after the local event run has stopped. Keep raw receipts
+for provenance. Run only one Modal invocation at a time and count it with
+local simulations toward the overall maximum of two. Remote wall time is
+recorded separately in the Modal receipt; measure it before treating Modal
+as the next lane's compute route.
 
 Each event writes deterministic numerical artifacts, `RUN_MANIFEST.json`,
 `STAGED.jsonl`, `STAGING_MANIFEST.json`, `COMPARISON.csv`, `COMPARISON.json`,
