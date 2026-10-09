@@ -410,6 +410,12 @@ def build_comparison_rows(
             measure.get("classification", measure.get("computability")),
         )
         reason = row.get("reason") or ""
+        if classification == "out_of_household_scope":
+            reason = (
+                source.get("scope_reason")
+                or source.get("classification_reason")
+                or reason
+            )
         if not reason and classification == "partial":
             reason = "; ".join(measure.get("missing_legs", []))
         record = {

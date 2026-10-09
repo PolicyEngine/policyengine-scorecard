@@ -193,6 +193,46 @@ def test_measure_class_counts_do_not_overlap_across_source_heads(inputs):
     assert "| out_of_household_scope | 0 | 1 |" in markdown
 
 
+@pytest.mark.parametrize("reason_field", ["scope_reason", "classification_reason"])
+def test_outside_source_heads_use_their_account_scope_reason(inputs, reason_field):
+    registry, staged, root = inputs
+    measure = registry["measures"][0]
+    measure["classification"] = "partial"
+    measure["missing_legs"] = ["Household eligibility history is unavailable"]
+    source = {
+        "source_row_id": "departmental",
+        "fy": "2024-25",
+        "tax_head": "PSCE in RDEL",
+        "value_gbp": -100.0,
+        "value_gbp_decimal": "-100.0",
+        "classification": "out_of_household_scope",
+        reason_field: "Departmental expenditure is outside household tax-benefit scope",
+    }
+    measure["source_rows"].append(source)
+    staged.append(
+        {
+            "source_row_id": "departmental",
+            "measure_key": measure["measure_key"],
+            "fy": "2024-25",
+            "tax_head": "PSCE in RDEL",
+            "external_value_gbp": -100.0,
+            "external_value_gbp_decimal": "-100.0",
+            "pe_value": None,
+            "head_variables": [],
+            "status": "not_computed",
+            "reason": "Household eligibility history is unavailable",
+        }
+    )
+    rows = build_comparison_rows(registry, staged, artifact_root=root)
+    household = next(row for row in rows if row["source_row_id"] == "row")
+    departmental = next(row for row in rows if row["source_row_id"] == "departmental")
+    assert household["reason"] == measure["missing_legs"][0]
+    assert departmental["reason"] == source[reason_field]
+    assert departmental["classification"] == "out_of_household_scope"
+    assert "Departmental expenditure is outside" in render_csv(rows)
+    assert "Departmental expenditure is outside" in render_markdown(registry, rows)
+
+
 def test_partial_construction_warnings_remain_visible(inputs):
     registry, staged, root = inputs
     measure = registry["measures"][0]
