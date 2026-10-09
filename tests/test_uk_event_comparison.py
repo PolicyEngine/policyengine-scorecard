@@ -208,6 +208,9 @@ def test_partial_construction_warnings_remain_visible(inputs):
     markdown = render_markdown(registry, rows)
     assert "under active development" in markdown
     assert "delays commencement" in markdown
+    assert "employer_ni.employee_incidence=1" in markdown
+    assert "not a fixed-wage static costing" in markdown
+    assert "indirect macroeconomic effects" in markdown
 
 
 @pytest.mark.parametrize("reversal", [True, False])
@@ -323,6 +326,8 @@ def test_summary_verifies_receipts_before_aggregation(inputs):
         "--output-dir .venv-replay-checks/reproductions/event/event__tax_2024"
         in summary
     )
+    assert "construction/head_scope" in summary
+    assert "raw gaps remains unsized" in summary
 
 
 @pytest.mark.parametrize(
