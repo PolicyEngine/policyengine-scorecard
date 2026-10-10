@@ -659,3 +659,79 @@ def test_computed_and_paired_proofs_cannot_size_the_same_head(tmp_path):
             artifact_root=tmp_path,
             verified_artifacts=receipts,
         )
+
+
+def with_intermediate(old, mid, new):
+    values = inputs(old, new)
+    rows = compare(values)
+    middle = inputs(mid, mid)
+    return engines.add_intermediate(rows, middle[0], middle[2]), rows
+
+
+@given(
+    st.tuples(st.integers(-(10**9), 10**9), st.integers(-(10**9), 10**9)),
+    st.tuples(st.integers(-(10**9), 10**9), st.integers(-(10**9), 10**9)),
+    st.tuples(st.integers(-(10**9), 10**9), st.integers(-(10**9), 10**9)),
+)
+@settings(deadline=None)
+def test_intermediate_bundle_splits_every_change_exactly(old, mid, new):
+    """base to intermediate plus intermediate to new is the whole change."""
+    rows, original = with_intermediate(old, mid, new)
+    assert [row["source_row_id"] for row in rows] == [
+        row["source_row_id"] for row in original
+    ]
+    for row, before in zip(rows, original):
+        # Adding the intermediate value changes nothing already compared.
+        assert {key: row[key] for key in before if "mid" not in key} == {
+            key: before[key] for key in before if "mid" not in key
+        }
+        if row["pe_mid_million_gbp"] is None:
+            assert row["change_base_to_mid_million_gbp"] is None
+            assert row["change_mid_to_new_million_gbp"] is None
+        else:
+            assert row["change_base_to_mid_million_gbp"] + row[
+                "change_mid_to_new_million_gbp"
+            ] == pytest.approx(row["change_million_gbp"], abs=1e-6)
+
+
+@pytest.mark.parametrize("change", ["drop", "value", "fy"])
+def test_intermediate_bundle_must_hold_the_same_source_rows(change):
+    values = inputs()
+    rows = compare(values)
+    middle = inputs()
+    registry, mid_rows = middle[0], middle[2]
+    if change == "drop":
+        mid_rows.pop()
+    elif change == "value":
+        registry["measures"][0]["source_rows"][0]["value_gbp"] = 91.0
+    else:
+        registry["measures"][0]["source_rows"][0]["fy"] = "2025-26"
+    with pytest.raises(engines.EngineComparisonError, match="intermediate bundle"):
+        engines.add_intermediate(rows, registry, mid_rows)
+
+
+def test_measure_year_table_sums_only_the_computed_heads():
+    rows, _ = with_intermediate((100, -20), (110, -22), (120, -25))
+    (line,) = engines.measure_year_table(rows)
+    assert (line["measure_key"], line["fy"]) == ("event__tax", "2024-25")
+    assert line["obr_million_gbp"] == pytest.approx((90 - 15) / 1e6)
+    assert line["pe_base_million_gbp"] == pytest.approx(80 / 1e6)
+    assert line["pe_mid_million_gbp"] == pytest.approx(88 / 1e6)
+    assert line["pe_new_million_gbp"] == pytest.approx(95 / 1e6)
+    assert line["change_million_gbp"] == pytest.approx(15 / 1e6)
+    # Head lines sum to the measure line, for every bundle.
+    for field in ("pe_base_million_gbp", "pe_mid_million_gbp", "pe_new_million_gbp"):
+        assert line[field] == pytest.approx(
+            sum(row[field] for row in rows if row[field] is not None)
+        )
+
+
+def test_markdown_details_computed_rows_and_only_counts_the_rest():
+    rows, _ = with_intermediate((100, -20), (110, -22), (120, -25))
+    text = engines.render_markdown("base", "new", rows, "mid")
+    assert "Intermediate: `mid`" in text and "PE intermediate" in text
+    assert text.count("`tax`") == 1 + 1 + 2  # index, measure line, two head lines
+    assert "`gap`" not in text  # never computed: counted, not listed
+    assert "1 rows have no PolicyEngine value" in text
+    assert "| event | not_computed | not_computed | 1 |" in text
+    assert "PE intermediate" not in engines.render_markdown("base", "new", rows)

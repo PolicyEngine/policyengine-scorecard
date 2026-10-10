@@ -60,12 +60,16 @@ CSV_FIELDS = (
     "tax_head",
     "obr_million_gbp",
     "pe_base_million_gbp",
+    "pe_mid_million_gbp",
     "pe_new_million_gbp",
     "change_million_gbp",
+    "change_base_to_mid_million_gbp",
+    "change_mid_to_new_million_gbp",
     "base_ratio_bin",
     "new_ratio_bin",
     "status",
     "base_status",
+    "mid_status",
     "new_status",
     "base_construction_sha256",
     "new_construction_sha256",
@@ -597,12 +601,16 @@ def build_engine_rows(
                 "tax_head": old_source.get("tax_head"),
                 "obr_million_gbp": obr / 1e6,
                 "pe_base_million_gbp": None if old is None else old / 1e6,
+                "pe_mid_million_gbp": None,
                 "pe_new_million_gbp": None if latest is None else latest / 1e6,
                 "change_million_gbp": None if change is None else change / 1e6,
+                "change_base_to_mid_million_gbp": None,
+                "change_mid_to_new_million_gbp": None,
                 "base_ratio_bin": ratio_and_bin(obr, old)[1],
                 "new_ratio_bin": ratio_and_bin(obr, latest)[1],
                 "status": status,
                 "base_status": before.get("status"),
+                "mid_status": None,
                 "new_status": after.get("status"),
                 "base_construction_sha256": old_digest,
                 "new_construction_sha256": new_digest,
@@ -664,60 +672,259 @@ def render_csv(rows: list[dict]) -> str:
     return stream.getvalue()
 
 
-def render_markdown(base: str, new: str, rows: list[dict]) -> str:
-    number = lambda value: "—" if value is None else f"{value:,.3f}"
+def add_intermediate(
+    rows: list[dict], mid_registry: dict, mid_rows: list[dict]
+) -> list[dict]:
+    """Add an intermediate bundle's value to rows already joined base to new.
+
+    The intermediate bundle must hold the same OBR source rows. Its value
+    splits each change in two: base to intermediate, then intermediate to new.
+    """
+    inventory = _inventory(mid_registry)
+    index = _comparison_index(mid_rows)
+    event = mid_registry["event_slug"]
+    expected = {row["source_row_id"] for row in rows if row["event"] == event}
+    if set(inventory) != expected or set(index) != expected:
+        raise EngineComparisonError(
+            "source-row multiset differs in the intermediate bundle"
+        )
+    out = []
+    for row in rows:
+        if row["event"] != event:
+            out.append(row)
+            continue
+        _measure, source = inventory[row["source_row_id"]]
+        if (
+            source["value_gbp"] / 1e6 != row["obr_million_gbp"]
+            or source["fy"] != (row["fy"])
+        ):
+            raise EngineComparisonError("OBR source differs in the intermediate bundle")
+        middle = index[row["source_row_id"]]
+        value = middle["pe_value_gbp"]
+        mid = None if value is None else value / 1e6
+        base, new = row["pe_base_million_gbp"], row["pe_new_million_gbp"]
+        out.append(
+            {
+                **row,
+                "pe_mid_million_gbp": mid,
+                "change_base_to_mid_million_gbp": None
+                if mid is None or base is None
+                else mid - base,
+                "change_mid_to_new_million_gbp": None
+                if mid is None or new is None
+                else new - mid,
+                "mid_status": middle.get("status"),
+            }
+        )
+    return out
+
+
+def _is_computed(row: dict) -> bool:
+    return any(
+        row[field] is not None
+        for field in ("pe_base_million_gbp", "pe_mid_million_gbp", "pe_new_million_gbp")
+    )
+
+
+def _short(measure_key: str) -> str:
+    """The measure key without its event prefix, as inline code."""
+    return "`" + measure_key.split("__", 1)[-1] + "`"
+
+
+def _driver_text(drivers: list[dict]) -> str:
+    return ", ".join(
+        driver["driver"]
+        + (
+            f" (sized, £{driver['value_gbp'] / 1e6:,.1f}m)"
+            if driver["sized"]
+            else " (unsized)"
+        )
+        for driver in drivers
+    )
+
+
+def measure_year_table(rows: list[dict]) -> list[dict]:
+    """One line per computed measure and source FY, summing its computed heads.
+
+    OBR is summed over the same heads PolicyEngine computed in any bundle, so
+    heads of a partial measure that no bundle computes stay out of both sides.
+    A bundle's value is absent when it computed none of those heads.
+    """
+    groups: dict[tuple, list[dict]] = {}
+    for row in rows:
+        if _is_computed(row):
+            groups.setdefault((row["event"], row["measure_key"], row["fy"]), []).append(
+                row
+            )
+
+    def total(group, field):
+        values = [row[field] for row in group if row[field] is not None]
+        return sum(values) if values else None
+
+    out = []
+    for (event, measure_key, fy), group in sorted(groups.items()):
+        base, mid, new = (
+            total(group, field)
+            for field in (
+                "pe_base_million_gbp",
+                "pe_mid_million_gbp",
+                "pe_new_million_gbp",
+            )
+        )
+        drivers: dict[str, dict] = {}
+        for row in group:
+            for driver in row["attribution"]:
+                drivers.setdefault(driver["driver"], driver)
+        out.append(
+            {
+                "event": event,
+                "measure_key": measure_key,
+                "title": group[0]["title"],
+                "fy": fy,
+                "obr_million_gbp": sum(row["obr_million_gbp"] for row in group),
+                "pe_base_million_gbp": base,
+                "pe_mid_million_gbp": mid,
+                "pe_new_million_gbp": new,
+                "change_million_gbp": None
+                if base is None or new is None
+                else new - base,
+                "statuses": sorted({row["status"] for row in group}),
+                "drivers": [drivers[name] for name in sorted(drivers)],
+            }
+        )
+    return out
+
+
+def render_markdown(
+    base: str, new: str, rows: list[dict], mid: str | None = None
+) -> str:
+    number = lambda value: "—" if value is None else f"{value:,.1f}"
+    ratio = lambda value: "—" if value is None else f"{value:,.2f}"
     md = event_comparison._md
     counts = Counter(row["status"] for row in rows)
+    computed = [row for row in rows if _is_computed(row)]
     lines = [
         "# UK replay engine comparison",
         "",
-        f"Base: `{base}`. New: `{new}`.",
+        f"Base: `{base}`. "
+        + (f"Intermediate: `{mid}`. " if mid else "")
+        + f"New: `{new}`.",
         "",
         (
-            "Amounts are £m, positive for gain to the Exchequer. Ratios and bins are descriptive. "
-            "The certified head aggregate ratio shows how the fiscal base moved alongside the measure ratio. "
-            "A changed construction is listed separately from a change on the same construction. "
-            "Attribution comes only from the authored evidence file; unsized drivers withhold explained share."
+            "Amounts are £m, positive for a gain to the Exchequer. Calendar year Y "
+            "proxies fiscal year Y–(Y+1). Ratios and bins are descriptive, not a "
+            "score. Attribution comes only from the authored evidence file: a sized "
+            "driver cites a computed run, and an unsized one names a mechanism "
+            "without a number."
         ),
         "",
-        ", ".join(f"{key}: {value}" for key, value in sorted(counts.items())) + ".",
+        f"{len(rows)} OBR source rows: "
+        + ", ".join(f"{value} {key}" for key, value in sorted(counts.items()))
+        + ".",
         "",
-        "| Event / measure | FY / head | OBR £m | PE base £m | PE new £m | Change £m | Base bin | New bin | Status | Head base ratio | Measure ratio | Attribution |",
-        "|---|---|---:|---:|---:|---:|---|---|---|---:|---:|---|",
+        "## Measures computed in at least one bundle",
+        "",
+        "| Event | Measure | OBR title |",
+        "|---|---|---|",
+        *(
+            f"| {event} | {_short(key)} | {md(title)} |"
+            for event, key, title in sorted(
+                {(row["event"], row["measure_key"], row["title"]) for row in computed}
+            )
+        ),
+        "",
+        "## Computed measures by fiscal year",
+        "",
+        (
+            "Each line sums a measure's computed heads for one source FY. OBR is "
+            "summed over the same heads. Change is new minus base."
+        ),
+        "",
+        "| Event | Measure | FY | OBR | PE base | "
+        + ("PE intermediate | " if mid else "")
+        + "PE new | Change | Status | Drivers |",
+        "|---|---|---|---:|---:|" + ("---:|" if mid else "") + "---:|---:|---|---|",
     ]
-    for row in rows:
+    for line in measure_year_table(rows):
         lines.append(
             "| "
             + " | ".join(
                 [
-                    md(row["event"] + " / " + row["title"]),
-                    md(row["fy"] + " / " + str(row["tax_head"])),
-                    *(
-                        number(row[field])
-                        for field in (
-                            "obr_million_gbp",
-                            "pe_base_million_gbp",
-                            "pe_new_million_gbp",
-                            "change_million_gbp",
-                        )
-                    ),
-                    row["base_ratio_bin"],
-                    row["new_ratio_bin"],
-                    row["status"],
-                    number(row["head_certified_aggregate_new_to_base_ratio"]),
-                    number(row["measure_new_to_base_ratio"]),
-                    md(
-                        ", ".join(
-                            driver["driver"]
-                            + (" (sized)" if driver["sized"] else " (unsized)")
-                            for driver in row["attribution"]
-                        )
-                        or "unchanged"
-                    ),
+                    line["event"],
+                    _short(line["measure_key"]),
+                    line["fy"],
+                    number(line["obr_million_gbp"]),
+                    number(line["pe_base_million_gbp"]),
+                    *([number(line["pe_mid_million_gbp"])] if mid else []),
+                    number(line["pe_new_million_gbp"]),
+                    number(line["change_million_gbp"]),
+                    ", ".join(line["statuses"]),
+                    md(_driver_text(line["drivers"]) or "unchanged"),
                 ]
             )
             + " |"
         )
+    lines += [
+        "",
+        "## Computed source rows",
+        "",
+        (
+            "One line per OBR head and FY. The base ratio is the new-to-base ratio "
+            "of the head's certified aggregate (how the tax or spending base "
+            "moved); the measure ratio is the same ratio for the measure's effect."
+        ),
+        "",
+        "| Event | Measure | FY / head | OBR | PE base | "
+        + ("PE intermediate | " if mid else "")
+        + "PE new | Change | Base bin | New bin | Status | Base ratio | Measure ratio |",
+        "|---|---|---|---:|---:|"
+        + ("---:|" if mid else "")
+        + "---:|---:|---|---|---|---:|---:|",
+    ]
+    for row in computed:
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    row["event"],
+                    _short(row["measure_key"]),
+                    md(row["fy"] + " / " + str(row["tax_head"])),
+                    number(row["obr_million_gbp"]),
+                    number(row["pe_base_million_gbp"]),
+                    *([number(row["pe_mid_million_gbp"])] if mid else []),
+                    number(row["pe_new_million_gbp"]),
+                    number(row["change_million_gbp"]),
+                    row["base_ratio_bin"],
+                    row["new_ratio_bin"],
+                    row["status"],
+                    ratio(row["head_certified_aggregate_new_to_base_ratio"]),
+                    ratio(row["measure_new_to_base_ratio"]),
+                ]
+            )
+            + " |"
+        )
+    uncomputed = Counter(
+        (row["event"], row["base_status"], row["new_status"])
+        for row in rows
+        if not _is_computed(row)
+    )
+    lines += [
+        "",
+        "## Source rows not computed in any bundle",
+        "",
+        (
+            f"{sum(uncomputed.values())} rows have no PolicyEngine value in any "
+            "bundle. They are counted here by status and listed in full in "
+            "`ENGINE_COMPARISON.csv` and `ENGINE_COMPARISON.json`."
+        ),
+        "",
+        "| Event | Base status | New status | Rows |",
+        "|---|---|---|---:|",
+    ]
+    for (event, before, after), count in sorted(
+        uncomputed.items(), key=lambda item: tuple(str(part) for part in item[0])
+    ):
+        lines.append(f"| {event} | {before} | {after} | {count} |")
     return "\n".join(lines) + "\n"
 
 
@@ -827,6 +1034,7 @@ def write_engine_comparison(
     base: str,
     new: str,
     *,
+    mid: str | None = None,
     attribution_path: Path | None = None,
     output_dir: Path | None = None,
     artifact_root: Path = ROOT,
@@ -834,8 +1042,11 @@ def write_engine_comparison(
     """Verify both comparison receipt chains and bind every used input hash."""
     output_dir = output_dir or artifact_root / "results/uk/events"
     validate_output_dir(output_dir, artifact_root)
-    bundles.load_bundle(base, root=artifact_root)
-    bundles.load_bundle(new, root=artifact_root)
+    if mid in (base, new):
+        raise EngineComparisonError("intermediate bundle must differ from base and new")
+    keys = (base, new) if mid is None else (base, new, mid)
+    for key in keys:
+        bundles.load_bundle(key, root=artifact_root)
     attribution_path = (
         attribution_path
         or artifact_root / "data/uk/events/engine_attribution" / f"{base}__{new}.json"
@@ -856,14 +1067,14 @@ def write_engine_comparison(
         return reference
 
     commit(attribution_path)
-    for key in (base, new):
+    for key in keys:
         commit(bundles.bundle_pin_path(key, root=artifact_root))
         pin = bundles.load_bundle(key, root=artifact_root)
         for label in ("requirements_freeze", "offline_audit"):
             commit(artifact_root / pin[label])
     commit(bundles.bundle_index_path(root=artifact_root))
     commit(_path_at_root(event_comparison.AXES_PATH, artifact_root))
-    roots = {key: bundles.results_root(key, root=artifact_root) for key in (base, new)}
+    roots = {key: bundles.results_root(key, root=artifact_root) for key in keys}
     event_sets = {
         key: {p.parent.name for p in root.glob("*/COMPARISON.json")}
         for key, root in roots.items()
@@ -875,13 +1086,11 @@ def write_engine_comparison(
                 "event", key, root=artifact_root
             ).parent.glob("*_measures.json")
         }
-        for key in (base, new)
+        for key in keys
     }
-    if (
-        not event_sets[base]
-        or event_sets[base] != event_sets[new]
-        or registry_events[base] != registry_events[new]
-        or event_sets[base] != registry_events[base]
+    if not event_sets[base] or any(
+        event_sets[key] != event_sets[base] or registry_events[key] != event_sets[base]
+        for key in keys
     ):
         raise EngineComparisonError(
             "both bundles require comparisons for every event in the same nonempty registry inventory"
@@ -892,7 +1101,7 @@ def write_engine_comparison(
     loaded = {}
     for event in sorted(event_sets[base]):
         registries, comparisons, artifacts = {}, {}, {}
-        for key in (base, new):
+        for key in keys:
             directory = roots[key] / event
             path = directory / "COMPARISON.json"
             comparisons[key] = event_comparison.load_verified_comparison(
@@ -954,10 +1163,12 @@ def write_engine_comparison(
                 verified_artifacts=verified_artifacts,
             )
         )
+        if mid is not None:
+            rows = add_intermediate(rows, registries[mid], comparisons[mid])
     payloads = {
         "ENGINE_COMPARISON.json": canonical_bytes(rows),
         "ENGINE_COMPARISON.csv": render_csv(rows).encode(),
-        "ENGINE_COMPARISON.md": render_markdown(base, new, rows).encode(),
+        "ENGINE_COMPARISON.md": render_markdown(base, new, rows, mid).encode(),
     }
     # Catch concurrent changes before any output write.
     for reference, digest in inputs.items():
@@ -970,6 +1181,7 @@ def write_engine_comparison(
         "schema_version": 1,
         "base": base,
         "new": new,
+        **({"mid": mid} if mid is not None else {}),
         "source_rows": len(rows),
         "inputs_sha256": dict(sorted(inputs.items())),
         "outputs_sha256": {
@@ -987,12 +1199,17 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base", required=True)
     parser.add_argument("--new", required=True)
+    parser.add_argument(
+        "--mid",
+        help="Optional intermediate bundle shown between base and new",
+    )
     parser.add_argument("--attribution", type=Path)
     parser.add_argument("--output-dir", type=Path)
     args = parser.parse_args(argv)
     rows = write_engine_comparison(
         args.base,
         args.new,
+        mid=args.mid,
         attribution_path=args.attribution,
         output_dir=args.output_dir,
     )

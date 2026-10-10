@@ -352,6 +352,72 @@ def test_diagnostic_destinations_cannot_overwrite_another_bundles_outputs(
         assert destination.read_text() == "the default bundle's file"
 
 
+def register_staged_bundle(pinned_stage, key, filename, data_year):
+    """Register another development bundle, then stage and compare the event."""
+    registry, _manifest, _registry_path, _output, root = pinned_stage
+    pin = bundles.load_bundle(DEV, root=root)
+    pin.update(
+        bundle_key=key,
+        data_year=data_year,
+        supported_calendar_years=[data_year, 2030],
+    )
+    pin_path = root / "data/uk/certified_bundles" / filename
+    pin_path.write_text(json.dumps(pin))
+    index_path = bundles.bundle_index_path(root=root)
+    index = json.loads(index_path.read_text())
+    index["bundles"][key] = str(pin_path.relative_to(root))
+    index_path.write_text(json.dumps(index))
+    identity = bundles.bundle_identity(key, root=root)
+    bundle_registry = {
+        **registry,
+        **identity,
+        "bundle": pin,
+        "calendar_years": [data_year],
+    }
+    bundle_registry_path = bundles.registry_path("event", key, root=root)
+    bundle_registry_path.parent.mkdir(parents=True)
+    bundle_registry_path.write_text(json.dumps(bundle_registry))
+    bundle_output = bundles.event_output_dir("event", key, root=root)
+    bundle_output.mkdir(parents=True)
+    manifest = {
+        **identity,
+        "event": "event",
+        "artifacts": {},
+        "registry_sha256": hashlib.sha256(
+            bundle_registry_path.read_bytes()
+        ).hexdigest(),
+    }
+    (bundle_output / "RUN_MANIFEST.json").write_text(json.dumps(manifest))
+    rows, tally = staging.stage_event(
+        bundle_registry,
+        manifest,
+        artifact_dir=bundle_output,
+        registry_sha256=manifest["registry_sha256"],
+        bundle=key,
+        bundle_root=root,
+    )
+    staged = bundle_output / "STAGED.jsonl"
+    staged.write_text("".join(json.dumps(row) + "\n" for row in rows))
+    (bundle_output / "STAGING_MANIFEST.json").write_text(
+        json.dumps(
+            {
+                **tally,
+                "event": "event",
+                "staged_sha256": hashlib.sha256(staged.read_bytes()).hexdigest(),
+            }
+        )
+    )
+    comparison.write_comparison(
+        "event",
+        registry_path=bundle_registry_path,
+        staged_path=staged,
+        output_dir=bundle_output,
+        artifact_root=root,
+        bundle=key,
+    )
+    return pin, pin_path, bundle_registry_path, bundle_output
+
+
 def two_bundle_comparison(pinned_stage):
     """Stage and compare one event under DEV and a second development bundle."""
     registry, _manifest, registry_path, output, root = pinned_stage
@@ -365,60 +431,10 @@ def two_bundle_comparison(pinned_stage):
         bundle=DEV,
     )
     other = "test-other-development-bundle"
-    pin = bundles.load_bundle(DEV, root=root)
-    pin.update(bundle_key=other, data_year=2025, supported_calendar_years=[2025, 2030])
-    other_pin_path = root / "data/uk/certified_bundles/other.json"
-    other_pin_path.write_text(json.dumps(pin))
+    pin, other_pin_path, other_registry_path, other_output = register_staged_bundle(
+        pinned_stage, other, "other.json", 2025
+    )
     index_path = bundles.bundle_index_path(root=root)
-    index = json.loads(index_path.read_text())
-    index["bundles"][other] = str(other_pin_path.relative_to(root))
-    index_path.write_text(json.dumps(index))
-    other_identity = bundles.bundle_identity(other, root=root)
-    other_registry = {
-        **registry,
-        **other_identity,
-        "bundle": pin,
-        "calendar_years": [2025],
-    }
-    other_registry_path = bundles.registry_path("event", other, root=root)
-    other_registry_path.parent.mkdir(parents=True)
-    other_registry_path.write_text(json.dumps(other_registry))
-    other_output = bundles.event_output_dir("event", other, root=root)
-    other_output.mkdir(parents=True)
-    other_manifest = {
-        **other_identity,
-        "event": "event",
-        "artifacts": {},
-        "registry_sha256": hashlib.sha256(other_registry_path.read_bytes()).hexdigest(),
-    }
-    (other_output / "RUN_MANIFEST.json").write_text(json.dumps(other_manifest))
-    other_rows, tally = staging.stage_event(
-        other_registry,
-        other_manifest,
-        artifact_dir=other_output,
-        registry_sha256=other_manifest["registry_sha256"],
-        bundle=other,
-        bundle_root=root,
-    )
-    other_staged = other_output / "STAGED.jsonl"
-    other_staged.write_text("".join(json.dumps(row) + "\n" for row in other_rows))
-    (other_output / "STAGING_MANIFEST.json").write_text(
-        json.dumps(
-            {
-                **tally,
-                "event": "event",
-                "staged_sha256": hashlib.sha256(other_staged.read_bytes()).hexdigest(),
-            }
-        )
-    )
-    comparison.write_comparison(
-        "event",
-        registry_path=other_registry_path,
-        staged_path=other_staged,
-        output_dir=other_output,
-        artifact_root=root,
-        bundle=other,
-    )
     axes = root / "data/uk/obr_divergence_axes.json"
     axes.write_bytes(comparison.AXES_PATH.read_bytes())
     attribution_path = root / "data/uk/events/engine_attribution/example.json"
@@ -546,6 +562,65 @@ def test_engine_generator_binds_every_input_and_writes_deterministically(pinned_
     assert before == {
         path.name: path.read_bytes() for path in directory.glob("ENGINE_COMPARISON*")
     }
+
+
+def test_engine_generator_adds_a_verified_intermediate_bundle(pinned_stage):
+    """A third bundle's receipts are verified and bound like the other two."""
+    from pipeline import compare_uk_engines as engines
+
+    setup = two_bundle_comparison(pinned_stage)
+    root, other = setup["root"], setup["other"]
+    third = "test-third-development-bundle"
+    _, third_pin_path, third_registry_path, third_output = register_staged_bundle(
+        pinned_stage, third, "third.json", 2026
+    )
+    attribution = json.loads(setup["attribution_path"].read_text())
+    attribution["new"] = third
+    setup["attribution_path"].write_text(json.dumps(attribution))
+    with pytest.raises(engines.EngineComparisonError, match="must differ"):
+        engines.write_engine_comparison(
+            DEV,
+            third,
+            mid=DEV,
+            attribution_path=setup["attribution_path"],
+            artifact_root=root,
+        )
+    rows = engines.write_engine_comparison(
+        DEV,
+        third,
+        mid=other,
+        attribution_path=setup["attribution_path"],
+        artifact_root=root,
+    )
+    assert {row["mid_status"] for row in rows} == {"outside_bundle_window"}
+    directory = root / "results/uk/events"
+    provenance = json.loads(
+        (directory / "ENGINE_COMPARISON_PROVENANCE.json").read_text()
+    )
+    assert provenance["mid"] == other
+    for path in (
+        setup["other_pin_path"],
+        setup["other_registry_path"],
+        setup["other_output"] / "RUN_MANIFEST.json",
+        third_pin_path,
+        third_registry_path,
+        third_output / "RUN_MANIFEST.json",
+    ):
+        assert str(path.relative_to(root)) in provenance["inputs_sha256"]
+    assert "Intermediate: `" + other in (directory / "ENGINE_COMPARISON.md").read_text()
+    # A changed intermediate receipt stops the write.
+    staged = setup["other_output"] / "STAGED.jsonl"
+    staged.write_bytes(staged.read_bytes() + b"\n")
+    before = (directory / "ENGINE_COMPARISON.json").read_bytes()
+    with pytest.raises(comparison.EventComparisonError, match="SHA-256"):
+        engines.write_engine_comparison(
+            DEV,
+            third,
+            mid=other,
+            attribution_path=setup["attribution_path"],
+            artifact_root=root,
+        )
+    assert (directory / "ENGINE_COMPARISON.json").read_bytes() == before
 
 
 def test_engine_generator_reads_bundle_identity_from_the_modal_request(pinned_stage):
