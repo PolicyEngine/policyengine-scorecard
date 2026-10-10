@@ -24,6 +24,15 @@ HARVEST = Path.home() / "scorecard-harvest"
 OUT = Path(__file__).with_name("population_receipts.json")
 
 
+def display_path(path):
+    """Home-relative path for receipts, so committed evidence carries no local username."""
+    path = Path(path)
+    try:
+        return "~/" + str(path.resolve().relative_to(Path.home().resolve()))
+    except ValueError:
+        return str(path)
+
+
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -128,7 +137,7 @@ def collect():
         selected = ["IT", "SA IT", "PAYE IT", "NICS", "HSC", "VAT", "Fuel", "CGT", "IHT", "PTT", "Council", "Total welfare",
                     "Welfare in", "Welfare out", "CPI", "RPI", "Earnings", "Wages&Salaries", "Empl", "Unemplrate", "Houseprices", "CC"]
         available = [name for name in selected if name in extracted]
-        receipt["hofd"][edition] = {"file": str(file), "sha256": digest(file), "sheet_count": len(wb.sheetnames),
+        receipt["hofd"][edition] = {"file": display_path(file), "sha256": digest(file), "sheet_count": len(wb.sheetnames),
                                     "data_sheet_count": len(sheets), "contents_B3": wb["Contents"]["B3"].value,
                                     "target_sheets": {name: extracted[name] for name in available},
                                     "all_sheets": list(extracted), "all_cells": extracted}
@@ -161,11 +170,11 @@ def collect():
     for file in sorted((HARVEST / "uk_obr/downloads").glob("*.xlsx")):
         if not any(prefix in file.name.lower() for prefix in ["receipts", "expenditure", "ready_reckoner"]):
             continue
-        if str(file) in prior_detailed and digest(file) == prior_detailed[str(file)]["sha256"]:
-            receipt["detailed_workbooks"].append(prior_detailed[str(file)])
+        if display_path(file) in prior_detailed and digest(file) == prior_detailed[display_path(file)]["sha256"]:
+            receipt["detailed_workbooks"].append(prior_detailed[display_path(file)])
             continue
         wb = openpyxl.load_workbook(file, data_only=True, read_only=True)
-        evidence = {"file": str(file), "sha256": digest(file), "sheets": wb.sheetnames, "samples": []}
+        evidence = {"file": display_path(file), "sha256": digest(file), "sheets": wb.sheetnames, "samples": []}
         for ws in wb:
             title = str(ws["B2"].value)
             rows_to_keep = []
