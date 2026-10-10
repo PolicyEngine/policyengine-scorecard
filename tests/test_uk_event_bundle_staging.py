@@ -819,3 +819,145 @@ def test_engine_comparison_output_cannot_enter_a_registry_or_bundle_namespace(
         artifact_root=root,
     )
     assert (scratch / "ENGINE_COMPARISON.md").exists()
+
+
+def executed_artifact(root, bundle, heads, year=2024):
+    """Write a minimal executed artifact in a bundle's canonical results."""
+    path = (
+        bundles.event_output_dir("event", bundle, root=root) / f"event__tax_{year}.json"
+    )
+    path.write_text(
+        json.dumps(
+            {
+                **bundles.bundle_identity(bundle, root=root),
+                "event": "event",
+                "measure_key": "event__tax",
+                "year": year,
+                "construction": "forward_delta_on_certified_world",
+                "head_effects": heads,
+                "head_channels": {head: "tax" for head in heads},
+                "totals": {
+                    "baseline": {"heads": {head: 0 for head in heads}},
+                    "reform": {"heads": heads},
+                },
+                "literal_reform_minus_baseline": heads,
+                "measure_total_gbp": sum(heads.values()),
+            }
+        )
+    )
+    return str(path.relative_to(root))
+
+
+@pytest.mark.parametrize(
+    "old, new",
+    [
+        ({"a": 100, "b": -20}, {"a": 120, "b": -25}),
+        ({"a": -786, "b": -552}, {"a": 0, "b": -462}),
+        ({"a": 0, "b": 0}, {"a": 0, "b": 0}),
+    ],
+)
+def test_paired_run_is_antisymmetric_and_additive_over_heads(pinned_stage, old, new):
+    from pipeline import write_uk_paired_run as pairs
+
+    setup = two_bundle_comparison(pinned_stage)
+    root, other = setup["root"], setup["other"]
+    executed_artifact(root, DEV, old)
+    executed_artifact(root, other, new)
+    forward = pairs.paired_run("event", "event__tax", 2024, DEV, other, root=root)
+    backward = pairs.paired_run("event", "event__tax", 2024, other, DEV, root=root)
+    assert forward["effect_gbp"] == sum(new.values()) - sum(old.values())
+    assert backward["effect_gbp"] == -forward["effect_gbp"]
+    by_head = [
+        pairs.paired_run(
+            "event", "event__tax", 2024, DEV, other, heads=[head], root=root
+        )["effect_gbp"]
+        for head in old
+    ]
+    assert sum(by_head) == forward["effect_gbp"]
+    # Deterministic bytes, and each endpoint bound by path and digest.
+    assert pairs.canonical_bytes(forward) == pairs.canonical_bytes(
+        pairs.paired_run("event", "event__tax", 2024, DEV, other, root=root)
+    )
+    for side in ("base", "new"):
+        reference = forward[side + "_artifact"]
+        assert (
+            hashlib.sha256((root / reference["path"]).read_bytes()).hexdigest()
+            == reference["sha256"]
+        )
+
+
+def test_paired_run_refuses_unexecuted_foreign_or_same_bundle_endpoints(pinned_stage):
+    from pipeline import write_uk_paired_run as pairs
+
+    setup = two_bundle_comparison(pinned_stage)
+    root, other = setup["root"], setup["other"]
+    executed_artifact(root, DEV, {"a": 1.0})
+    with pytest.raises(ValueError, match="no executed artifact"):
+        pairs.paired_run("event", "event__tax", 2024, DEV, other, root=root)
+    with pytest.raises(ValueError, match="two different bundles"):
+        pairs.paired_run("event", "event__tax", 2024, DEV, DEV, root=root)
+    # An artifact carrying another bundle's identity can't stand in.
+    foreign = (
+        bundles.event_output_dir("event", other, root=root) / "event__tax_2024.json"
+    )
+    foreign.write_bytes(
+        (
+            bundles.event_output_dir("event", DEV, root=root) / "event__tax_2024.json"
+        ).read_bytes()
+    )
+    with pytest.raises(ValueError, match="bundle identity mismatch"):
+        pairs.paired_run("event", "event__tax", 2024, DEV, other, root=root)
+    executed_artifact(root, other, {"a": 3.0})
+    with pytest.raises(ValueError, match="lacks head"):
+        pairs.paired_run(
+            "event", "event__tax", 2024, DEV, other, heads=["missing"], root=root
+        )
+
+
+def test_written_paired_run_sizes_attribution_only_with_verified_endpoints(
+    pinned_stage,
+):
+    from pipeline import compare_uk_engines as engines
+    from pipeline import write_uk_paired_run as pairs
+
+    setup = two_bundle_comparison(pinned_stage)
+    root, other = setup["root"], setup["other"]
+    base_reference = executed_artifact(root, DEV, {"a": 100.0, "b": -20.0})
+    new_reference = executed_artifact(root, other, {"a": 120.0, "b": -25.0})
+    document = pairs.paired_run(
+        "event", "event__tax", 2024, DEV, other, heads=["a"], root=root
+    )
+    output = pairs.default_output(document, root=root)
+    output.parent.mkdir(parents=True)
+    output.write_bytes(pairs.canonical_bytes(document))
+    reference = str(output.relative_to(root))
+    attribution = {
+        "schema_version": 1,
+        "entries": [
+            {
+                "event": "event",
+                "measure_key": "event__tax",
+                "fy": "2024-25",
+                "drivers": [
+                    {
+                        "driver": "other_engine_change",
+                        "sized": True,
+                        "value_gbp": 20.0,
+                        "evidence": [{"kind": "paired_run", "reference": reference}],
+                        "artifact": {
+                            "path": reference,
+                            "sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
+                            "value_path": ["effect_gbp"],
+                        },
+                    }
+                ],
+            }
+        ],
+    }
+    engines.validate_attribution(
+        attribution,
+        artifact_root=root,
+        verified_artifacts={base_reference: DEV, new_reference: other},
+    )
+    with pytest.raises(engines.EngineComparisonError, match="verified run manifest"):
+        engines.validate_attribution(attribution, artifact_root=root)
