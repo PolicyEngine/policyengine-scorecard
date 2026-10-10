@@ -31,7 +31,7 @@ Line numbers refer to `site-packages` in an environment built from `docs/uk_repl
 
 ## Construction consequences on this bundle
 
-The registry rebuild applies the rulings in the main session's construction decisions for #156. Briefly:
+The registry rebuild keeps each construction as it was at 2.89.2 unless the engine makes that invalid, so that the engine comparison isn't confounded by construction changes:
 - every construction is byte-identical to 2.89.2 except where the engine requires otherwise;
 - AB2024 CGT gets a data-driven `cgt_fiscal_year_blend_annual_reversal`, because processed CY2024 already blends in the 30 October 2024 increase;
 - AS2023 Class 2 keeps its `small_profits_threshold = 12570` override unchanged. It is now dormant: at 2.125.1, `policyengine_uk/utils/class_2.py:44–49` tests profits strictly above the lower profits threshold whenever `lower_profits_threshold_applies` is true, which it is from 2022-04-06. Keeping it avoids a construction change with no numerical effect.

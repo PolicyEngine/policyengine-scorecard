@@ -781,3 +781,43 @@ the signed PE change, construction/window status, and the head's certified
 aggregate ratio beside its measure-effect ratio. Ratios and named axes are
 descriptive; the generator does not infer drivers or compute replication
 rates. Construction changes and unavailable population years remain visible.
+
+`ENGINE_COMPARISON.md` leads with one line per computed measure and source
+FY, then lists each driver's evidence, then gives per-head detail for the
+computed rows. Rows that no bundle computes are counted by status; the CSV
+and JSON hold every row.
+
+Sized evidence must come from a verified run. A sized driver cites either a
+computed artifact from one of the compared bundles, or a paired-run document
+written from two of them:
+
+```bash
+"$NEXT_PYTHON" -m pipeline.write_uk_paired_run --event "$EVENT" --measure "$MEASURE" --years "$YEAR" --base-bundle "$BASE_KEY" --new-bundle "$BUNDLE_KEY" --heads "$HEAD_VARIABLE"
+```
+
+It writes `results/uk/events/engine_pairs/<base>__<new>/` and computes
+nothing new: it subtracts two executed artifacts and binds both by hash.
+Omit `--heads` for the whole measure. Use a head only where the mechanism
+makes that head's change independent of the population, and say so in the
+driver's evidence.
+
+When three certified bundles exist, pass the middle one as `--mid`:
+
+```bash
+"$NEXT_PYTHON" -m pipeline.compare_uk_engines --base populace-uk-2023__pe-uk-2.89.2 --mid "$MID_KEY" --new "$BUNDLE_KEY"
+```
+
+Its value appears between base and new, and its receipts are verified and
+hash-bound like the other two. Two bundles that share a dataset differ only
+by engine, so a paired run between them sizes an engine change directly.
+
+### Observed timings on uk-data 1.58.0
+
+The 1.58.0 dataset is about a tenth the size of populace-uk-2023. On
+policyengine 6.2.6 a certified baseline took about 13 seconds and an
+alternate world about 20 seconds on Modal, with peak memory near 2 GiB
+(against about 71 seconds, 125 seconds and 10 GiB on the 2.89.2 bundle). A
+full event took 4 to 12 minutes. Keep the two-invocation cap. Count live
+clients before each launch: background jobs in a non-interactive shell are
+not visible to `jobs`, and a runner that relied on it started all five
+events at once on 2026-10-10.
