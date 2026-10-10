@@ -795,6 +795,65 @@ def measure_year_table(rows: list[dict]) -> list[dict]:
     return out
 
 
+def evidence_sections(lines: list[dict]) -> list[str]:
+    """Each measure's drivers with their authored evidence, by FY range.
+
+    Consecutive fiscal years with the same drivers and evidence share one
+    block. A sized driver's amount differs by year and is in the table above.
+    """
+
+    def signature(line):
+        return json.dumps(
+            [
+                [
+                    driver["driver"],
+                    driver["sized"],
+                    [
+                        item["reference"]
+                        for item in driver["evidence"]
+                        if item["kind"] != "paired_run"
+                    ],
+                    driver.get("note"),
+                ]
+                for driver in line["drivers"]
+            ],
+            sort_keys=True,
+        )
+
+    md = event_comparison._md
+    out: list[str] = []
+    by_measure: dict[tuple, list[dict]] = {}
+    for line in lines:
+        if line["drivers"]:
+            by_measure.setdefault((line["event"], line["measure_key"]), []).append(line)
+    for (event, measure_key), measure_lines in sorted(by_measure.items()):
+        out += ["", f"### {_short(measure_key)} ({event})"]
+        blocks: list[list[dict]] = []
+        for line in sorted(measure_lines, key=lambda item: item["fy"]):
+            if blocks and signature(blocks[-1][0]) == signature(line):
+                blocks[-1].append(line)
+            else:
+                blocks.append([line])
+        for block in blocks:
+            first, last = block[0]["fy"], block[-1]["fy"]
+            out += [
+                "",
+                f"FY {first}" + ("" if first == last else f" to {last}") + ":",
+                "",
+            ]
+            for driver in block[0]["drivers"]:
+                out.append(
+                    f"- **{driver['driver']}** ("
+                    + ("sized in the table above" if driver["sized"] else "unsized")
+                    + ")"
+                )
+                for item in driver["evidence"]:
+                    out.append(f"  - {md(item['reference'])}")
+                if driver.get("note"):
+                    out.append(f"  - Note: {md(driver['note'])}")
+    return out
+
+
 def render_markdown(
     base: str, new: str, rows: list[dict], mid: str | None = None
 ) -> str:
@@ -845,7 +904,8 @@ def render_markdown(
         + "PE new | Change | Status | Drivers |",
         "|---|---|---|---:|---:|" + ("---:|" if mid else "") + "---:|---:|---|---|",
     ]
-    for line in measure_year_table(rows):
+    table = measure_year_table(rows)
+    for line in table:
         lines.append(
             "| "
             + " | ".join(
@@ -864,6 +924,16 @@ def render_markdown(
             )
             + " |"
         )
+    lines += [
+        "",
+        "## Attribution evidence",
+        "",
+        (
+            "Why each driver is named. A paired-run or computed artifact behind "
+            "a sized driver is bound by hash in the attribution file."
+        ),
+        *evidence_sections(table),
+    ]
     lines += [
         "",
         "## Computed source rows",

@@ -730,8 +730,54 @@ def test_markdown_details_computed_rows_and_only_counts_the_rest():
     rows, _ = with_intermediate((100, -20), (110, -22), (120, -25))
     text = engines.render_markdown("base", "new", rows, "mid")
     assert "Intermediate: `mid`" in text and "PE intermediate" in text
-    assert text.count("`tax`") == 1 + 1 + 2  # index, measure line, two head lines
+    # index, measure line, evidence heading, two head lines
+    assert text.count("`tax`") == 1 + 1 + 1 + 2
     assert "`gap`" not in text  # never computed: counted, not listed
     assert "1 rows have no PolicyEngine value" in text
     assert "| event | not_computed | not_computed | 1 |" in text
     assert "PE intermediate" not in engines.render_markdown("base", "new", rows)
+
+
+def test_evidence_section_groups_years_and_lists_every_authored_reference():
+    line = {
+        "event": "event",
+        "measure_key": "event__tax",
+        "drivers": [
+            {
+                "driver": "data_release",
+                "sized": False,
+                "evidence": [{"kind": "diagnostic", "reference": "population changed"}],
+            },
+            {
+                "driver": "other_engine_change",
+                "sized": True,
+                "value_gbp": 5.0,
+                "evidence": [
+                    {"kind": "paired_run", "reference": "pairs/2024.json"},
+                    {"kind": "pr", "reference": "repo#1: a fix"},
+                ],
+                "note": "one head only",
+            },
+        ],
+    }
+    later = json.loads(json.dumps(line))
+    later["drivers"][1]["evidence"][0]["reference"] = "pairs/2025.json"
+    later["drivers"][1]["value_gbp"] = 7.0
+    other = {**json.loads(json.dumps(line)), "drivers": line["drivers"][:1]}
+    unchanged = {**line, "drivers": []}
+    text = "\n".join(
+        engines.evidence_sections(
+            [
+                {**line, "fy": "2024-25"},
+                {**later, "fy": "2025-26"},
+                {**other, "fy": "2026-27"},
+                {**unchanged, "fy": "2027-28"},
+            ]
+        )
+    )
+    # Same drivers and evidence in 2024-25 and 2025-26: one block for both.
+    assert "FY 2024-25 to 2025-26:" in text and "FY 2026-27:" in text
+    assert "2027-28" not in text
+    assert text.count("repo#1: a fix") == 1 and text.count("one head only") == 1
+    assert text.count("population changed") == 2
+    assert "sized in the table above" in text and "(unsized)" in text
