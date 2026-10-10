@@ -1,0 +1,119 @@
+[
+ {
+  "assessment": null,
+  "class": "paired_dev_observation",
+  "engine_version": "2.89.2",
+  "evidence": {
+   "engine_file": "variables/gov/hmrc/child_benefit.py",
+   "sha256": "b74c3afa7eadcb157a0f76cada8b5529f923d1958da8597f70a0a4ffb7cdf4d2",
+   "source": "from policyengine_uk.model_api import *\n\n\nclass child_benefit(Variable):\n    label = \"Child Benefit\"\n    documentation = \"Total Child Benefit for the benefit unit\"\n    entity = BenUnit\n    definition_period = YEAR\n    value_type = float\n    unit = GBP\n    category = BENEFIT\n    defined_for = \"would_claim_child_benefit\"\n    adds = [\"child_benefit_entitlement\"]\n"
+  },
+  "existing_issue": null,
+  "id": "hicbc_opt_out",
+  "interpretation": "Controlled synthetic observations for descriptive engine comparison. Compare the same inputs at each certified pin; this run does not size or attribute a national difference.",
+  "national_effect": "unsized",
+  "observation": {
+   "2025": {
+    "CB_HITC": [
+     1354.5997314453125,
+     0.0,
+     1354.5997314453125,
+     0.0
+    ],
+    "child_benefit": [
+     1354.5997314453125,
+     1354.5997314453125
+    ],
+    "child_benefit_less_tax_charge": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "reproducer": "--case hicbc_opt_out",
+  "situation": {
+   "benunits": {
+    "opt_out_false": {
+     "child_benefit_opts_out": {
+      "2025": false
+     },
+     "members": [
+      "opt_out_false_adult",
+      "opt_out_false_child"
+     ],
+     "would_claim_child_benefit": {
+      "2025": true
+     }
+    },
+    "opt_out_true": {
+     "child_benefit_opts_out": {
+      "2025": true
+     },
+     "members": [
+      "opt_out_true_adult",
+      "opt_out_true_child"
+     ],
+     "would_claim_child_benefit": {
+      "2025": true
+     }
+    }
+   },
+   "households": {
+    "opt_out_false": {
+     "members": [
+      "opt_out_false_adult",
+      "opt_out_false_child"
+     ],
+     "region": {
+      "2025": "LONDON"
+     }
+    },
+    "opt_out_true": {
+     "members": [
+      "opt_out_true_adult",
+      "opt_out_true_child"
+     ],
+     "region": {
+      "2025": "LONDON"
+     }
+    }
+   },
+   "people": {
+    "opt_out_false_adult": {
+     "age": {
+      "2025": 45
+     },
+     "employment_income": {
+      "2025": 100000
+     }
+    },
+    "opt_out_false_child": {
+     "age": {
+      "2025": 8
+     }
+    },
+    "opt_out_true_adult": {
+     "age": {
+      "2025": 45
+     },
+     "employment_income": {
+      "2025": 100000
+     }
+    },
+    "opt_out_true_child": {
+     "age": {
+      "2025": 8
+     }
+    }
+   }
+  },
+  "variables": [
+   "child_benefit",
+   "CB_HITC",
+   "child_benefit_less_tax_charge"
+  ],
+  "years": [
+   2025
+  ]
+ }
+]

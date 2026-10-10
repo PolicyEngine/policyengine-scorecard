@@ -1,0 +1,115 @@
+[
+ {
+  "assessment": "docs/uk_replay/MODEL_INVESTIGATIONS.md: class4_threshold_indexation_from_2027",
+  "class": "paired_dev_observation",
+  "engine_version": "2.89.2",
+  "evidence": {
+   "engine_file": "parameters/gov/hmrc/national_insurance/class_4/thresholds/lower_profits_limit.yaml",
+   "sha256": "22412335d15673fd57fe56d9a9989675c02cc3ed64fce33ca3b57f6906d90dd5",
+   "source": "description: The Lower Profits Limit is the threshold at which self-employed earners pay the main Class 4 National Insurance rate.\nvalues:\n  2015-04-06: 8_060\n  2017-04-06: 8_164\n  2018-04-06: 8_424\n  2019-04-06: 8_632\n  2020-04-06: 9_500\n  2021-04-06: 9_568\n  2022-04-06:\n    value: 11_908\n    metadata:\n      reference:\n        - title: National Insurance Contributions (Increase of Thresholds) Act 2022\n          href: https://www.legislation.gov.uk/ukpga/2022/16/section/2/enacted\n  2024-01-01:\n    value: 12_570\n    metadata:\n      reference:\n        - title: National Insurance Contributions (Increase of Thresholds) Act 2022\n          href: https://www.legislation.gov.uk/ukpga/2022/16/section/2/enacted\n  2026-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: \"GOV.UK | Rates and allowances: National Insurance contributions\"\n          href: https://www.gov.uk/government/publications/rates-and-allowances-national-insurance-contributions/rates-and-allowances-national-insurance-contributions\nmetadata:\n  label: NI lower profits limit\n  unit: currency-GBP\n  period: year\n  uprating: gov.economic_assumptions.indices.obr.consumer_price_index\n  reference:\n    - https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/882271/Table-a4.pdf\n    - https://www.gov.uk/government/publications/rates-and-allowances-national-insurance-contributions/rates-and-allowances-national-insurance-contributions\n"
+  },
+  "existing_issue": null,
+  "id": "nics_threshold_freeze_end_date",
+  "interpretation": "Controlled synthetic observations for descriptive engine comparison. Compare the same inputs at each certified pin; this run does not size or attribute a national difference.",
+  "national_effect": "unsized",
+  "observation": {
+   "2026": {
+    "class4_thresholds": {
+     "lower_profits_limit": 12570,
+     "upper_profits_limit": 50270
+    },
+    "ni_class_4": [
+     1045.7999267578125
+    ]
+   },
+   "2027": {
+    "class4_thresholds": {
+     "lower_profits_limit": 12821.380164235901,
+     "upper_profits_limit": 51275.32067272385
+    },
+    "ni_class_4": [
+     1030.71728515625
+    ]
+   },
+   "2028": {
+    "class4_thresholds": {
+     "lower_profits_limit": 13077.795560896562,
+     "upper_profits_limit": 52300.77826939301
+    },
+    "ni_class_4": [
+     1015.3321533203125
+    ]
+   },
+   "2029": {
+    "class4_thresholds": {
+     "lower_profits_limit": 13339.32248138235,
+     "upper_profits_limit": 53346.67789491573
+    },
+    "ni_class_4": [
+     999.640625
+    ]
+   },
+   "2030": {
+    "class4_thresholds": {
+     "lower_profits_limit": 13606.113508494018,
+     "upper_profits_limit": 54413.62975910853
+    },
+    "ni_class_4": [
+     983.6331787109375
+    ]
+   }
+  },
+  "reproducer": "--case nics_threshold_freeze_end_date",
+  "situation": {
+   "benunits": {
+    "unit": {
+     "members": [
+      "worker"
+     ]
+    }
+   },
+   "households": {
+    "household": {
+     "members": [
+      "worker"
+     ],
+     "region": {
+      "2026": "LONDON",
+      "2027": "LONDON",
+      "2028": "LONDON",
+      "2029": "LONDON",
+      "2030": "LONDON"
+     }
+    }
+   },
+   "people": {
+    "worker": {
+     "age": {
+      "2026": 45,
+      "2027": 45,
+      "2028": 45,
+      "2029": 45,
+      "2030": 45
+     },
+     "self_employment_income": {
+      "2026": 30000,
+      "2027": 30000,
+      "2028": 30000,
+      "2029": 30000,
+      "2030": 30000
+     }
+    }
+   }
+  },
+  "variables": [
+   "ni_class_4"
+  ],
+  "years": [
+   2026,
+   2027,
+   2028,
+   2029,
+   2030
+  ]
+ }
+]

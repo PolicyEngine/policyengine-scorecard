@@ -1,0 +1,96 @@
+[
+ {
+  "assessment": null,
+  "class": "paired_dev_observation",
+  "engine_version": "2.89.2",
+  "evidence": {
+   "engine_file": "variables/gov/dwp/universal_credit/standard_allowance/uc_standard_allowance.py",
+   "sha256": "67b30e31f4c48fcad0732687bb97cbd9ea95238362b5f40cdfb7480d3e540861",
+   "source": "from policyengine_uk.model_api import *\n\n\nclass uc_standard_allowance(Variable):\n    value_type = float\n    entity = BenUnit\n    label = \"Universal Credit standard allowance\"\n    definition_period = YEAR\n    unit = GBP\n\n    def formula(benunit, period, parameters):\n        p = parameters(period).gov.dwp.universal_credit.standard_allowance\n        claimant_type = benunit(\"uc_standard_allowance_claimant_type\", period)\n        return p.amount[claimant_type] * MONTHS_IN_YEAR\n"
+  },
+  "existing_issue": "https://github.com/PolicyEngine/policyengine-uk/issues/2239",
+  "id": "uc_standard_allowance_2027_2030_pe_uk_2239",
+  "interpretation": "Controlled synthetic observations for descriptive engine comparison. Compare the same inputs at each certified pin; this run does not size or attribute a national difference.",
+  "national_effect": "unsized",
+  "observation": {
+   "2025": {
+    "uc_standard_allowance": [
+     4801.68017578125
+    ]
+   },
+   "2026": {
+    "uc_standard_allowance": [
+     5098.7998046875
+    ]
+   },
+   "2027": {
+    "uc_standard_allowance": [
+     5216.06103515625
+    ]
+   },
+   "2028": {
+    "uc_standard_allowance": [
+     5320.3740234375
+    ]
+   },
+   "2029": {
+    "uc_standard_allowance": [
+     5426.7763671875
+    ]
+   },
+   "2030": {
+    "uc_standard_allowance": [
+     5535.2998046875
+    ]
+   }
+  },
+  "reproducer": "--case uc_standard_allowance_2027_2030_pe_uk_2239",
+  "situation": {
+   "benunits": {
+    "unit": {
+     "members": [
+      "claimant"
+     ]
+    }
+   },
+   "households": {
+    "household": {
+     "members": [
+      "claimant"
+     ],
+     "region": {
+      "2025": "LONDON",
+      "2026": "LONDON",
+      "2027": "LONDON",
+      "2028": "LONDON",
+      "2029": "LONDON",
+      "2030": "LONDON"
+     }
+    }
+   },
+   "people": {
+    "claimant": {
+     "age": {
+      "2025": 30,
+      "2026": 30,
+      "2027": 30,
+      "2028": 30,
+      "2029": 30,
+      "2030": 30
+     }
+    }
+   }
+  },
+  "variables": [
+   "uc_standard_allowance"
+  ],
+  "years": [
+   2025,
+   2026,
+   2027,
+   2028,
+   2029,
+   2030
+  ]
+ }
+]

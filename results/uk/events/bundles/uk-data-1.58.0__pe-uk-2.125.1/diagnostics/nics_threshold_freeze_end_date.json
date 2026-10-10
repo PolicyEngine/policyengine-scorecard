@@ -1,0 +1,127 @@
+[
+ {
+  "assessment": "docs/uk_replay/MODEL_INVESTIGATIONS.md: class4_threshold_indexation_from_2027",
+  "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+  "bundle_pin_sha256": "45c3adf7d2b4e74b39f5b8b6ebafd370256ec656b1b66eed76dbb6cd2628f9ad",
+  "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+  "class": "paired_dev_observation",
+  "engine_version": "2.125.1",
+  "engine_versions": {
+   "policyengine": "6.2.6",
+   "policyengine-core": "3.33.0",
+   "policyengine-uk": "2.125.1"
+  },
+  "evidence": {
+   "engine_file": "parameters/gov/hmrc/national_insurance/class_4/thresholds/lower_profits_limit.yaml",
+   "sha256": "a97c7fafd284942b70979f6285dcfe7d3e2d92badb770929fa7144787bac7e6d",
+   "source": "description: The Lower Profits Limit is the threshold at which self-employed earners pay the main Class 4 National Insurance rate.\n# Legal status: \u00a312,570 is the standing figure in SSCBA 1992 s.15(3)(a), which\n# stays until altered by order under SSAA 1992 s.141. Budget 2025 commits to\n# keeping it until April 2031. CPI uprating from 2031-32 is a modelling\n# assumption.\nvalues:\n  2015-04-06:\n    value: 8_060\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Re-rating and National Insurance Funds Payments) Order 2015 art 3(a)\n          href: https://www.legislation.gov.uk/uksi/2015/588/article/3/made\n        - title: Social Security Contributions and Benefits Act 1992 s 15(3)(a) (as at 6 April 2016, unchanged for 2016-17)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15/2016-04-06\n  2017-04-06:\n    value: 8_164\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2017 reg 5(a)\n          href: https://www.legislation.gov.uk/uksi/2017/415/regulation/5/made\n  2018-04-06:\n    value: 8_424\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2018 reg 5(a)\n          href: https://www.legislation.gov.uk/uksi/2018/337/regulation/5/made\n  2019-04-06:\n    value: 8_632\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2019 reg 5(a)\n          href: https://www.legislation.gov.uk/uksi/2019/262/regulation/5/made\n  2020-04-06:\n    value: 9_500\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2020 reg 5\n          href: https://www.legislation.gov.uk/uksi/2020/299/regulation/5/made\n  2021-04-06:\n    value: 9_568\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2021 reg 5(1)\n          href: https://www.legislation.gov.uk/uksi/2021/157/regulation/5/made\n  # SI 2022/232 reg 5 first set \u00a39,880 for 2022-23; the 2022 Act replaced it\n  # with \u00a311,908 for the whole year.\n  2022-04-06:\n    value: 11_908\n    metadata:\n      reference:\n        - title: National Insurance Contributions (Increase of Thresholds) Act 2022 s 2(1) and (2)\n          href: https://www.legislation.gov.uk/ukpga/2022/16/section/2/enacted\n  2023-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: National Insurance Contributions (Increase of Thresholds) Act 2022 s 2(3) and (4)\n          href: https://www.legislation.gov.uk/ukpga/2022/16/section/2/enacted\n        - title: Social Security Contributions and Benefits Act 1992 s 15(3)(a) (as at 6 April 2023)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15/2023-04-06\n  2026-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(a)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n  2027-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(a)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n        - title: \"HMRC: Income Tax Personal Allowance and the basic rate limit, and certain National Insurance contributions thresholds from 6 April 2026 to 5 April 2028 (Autumn Statement 2022)\"\n          href: https://www.gov.uk/government/publications/the-personal-allowance-and-basic-rate-limit-for-income-tax-and-certain-national-insurance-contributions-nics-thresholds-from-6-april-2026-to-5-apr/income-tax-personal-allowance-and-the-basic-rate-limit-and-certain-national-insurance-contributions-thresholds-from-6-april-2026-to-5-april-2028\n  2028-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(a)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n        - title: Budget 2025 (HC 1492) para 4.111\n          href: https://assets.publishing.service.gov.uk/media/6929b353345e31ab14ecf735/E03444720_Budget_2025_Web_Accessible.pdf#page=113\n        - title: \"HMRC: Maintaining Income Tax and equivalent National Insurance contributions thresholds until 5 April 2031\"\n          href: https://www.gov.uk/government/publications/maintaining-income-tax-and-equivalent-national-insurance-contributions-thresholds-until-5-april-2031/income-tax-maintaining-the-personal-allowance-and-the-basic-rate-limit-for-income-tax-and-equivalent-national-insurance-contributions-thresholds-unt\n        - title: Explanatory Memorandum to SI 2026/231 para 5.25\n          href: https://www.legislation.gov.uk/uksi/2026/231/pdfs/uksiem_20260231_en_001.pdf\n  2029-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(a)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n        - title: Budget 2025 (HC 1492) para 4.111\n          href: https://assets.publishing.service.gov.uk/media/6929b353345e31ab14ecf735/E03444720_Budget_2025_Web_Accessible.pdf#page=113\n        - title: \"HMRC: Maintaining Income Tax and equivalent National Insurance contributions thresholds until 5 April 2031\"\n          href: https://www.gov.uk/government/publications/maintaining-income-tax-and-equivalent-national-insurance-contributions-thresholds-until-5-april-2031/income-tax-maintaining-the-personal-allowance-and-the-basic-rate-limit-for-income-tax-and-equivalent-national-insurance-contributions-thresholds-unt\n        - title: Explanatory Memorandum to SI 2026/231 para 5.25\n          href: https://www.legislation.gov.uk/uksi/2026/231/pdfs/uksiem_20260231_en_001.pdf\n  2030-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(a)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n        - title: Budget 2025 (HC 1492) para 4.111\n          href: https://assets.publishing.service.gov.uk/media/6929b353345e31ab14ecf735/E03444720_Budget_2025_Web_Accessible.pdf#page=113\n        - title: \"HMRC: Maintaining Income Tax and equivalent National Insurance contributions thresholds until 5 April 2031\"\n          href: https://www.gov.uk/government/publications/maintaining-income-tax-and-equivalent-national-insurance-contributions-thresholds-until-5-april-2031/income-tax-maintaining-the-personal-allowance-and-the-basic-rate-limit-for-income-tax-and-equivalent-national-insurance-contributions-thresholds-unt\n        - title: Explanatory Memorandum to SI 2026/231 para 5.25\n          href: https://www.legislation.gov.uk/uksi/2026/231/pdfs/uksiem_20260231_en_001.pdf\nmetadata:\n  label: NI lower profits limit\n  unit: currency-GBP\n  period: year\n  uprating: gov.economic_assumptions.indices.obr.consumer_price_index\n  reference:\n    - https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/882271/Table-a4.pdf\n    - https://www.gov.uk/government/publications/rates-and-allowances-national-insurance-contributions/rates-and-allowances-national-insurance-contributions\n"
+  },
+  "existing_issue": null,
+  "id": "nics_threshold_freeze_end_date",
+  "interpretation": "Controlled synthetic observations for descriptive engine comparison. Compare the same inputs at each certified pin; this run does not size or attribute a national difference.",
+  "national_effect": "unsized",
+  "observation": {
+   "2026": {
+    "class4_thresholds": {
+     "lower_profits_limit": 12570,
+     "upper_profits_limit": 50270
+    },
+    "ni_class_4": [
+     1045.7999267578125
+    ]
+   },
+   "2027": {
+    "class4_thresholds": {
+     "lower_profits_limit": 12570,
+     "upper_profits_limit": 50270
+    },
+    "ni_class_4": [
+     1045.7999267578125
+    ]
+   },
+   "2028": {
+    "class4_thresholds": {
+     "lower_profits_limit": 12570,
+     "upper_profits_limit": 50270
+    },
+    "ni_class_4": [
+     1045.7999267578125
+    ]
+   },
+   "2029": {
+    "class4_thresholds": {
+     "lower_profits_limit": 12570,
+     "upper_profits_limit": 50270
+    },
+    "ni_class_4": [
+     1045.7999267578125
+    ]
+   },
+   "2030": {
+    "class4_thresholds": {
+     "lower_profits_limit": 12570,
+     "upper_profits_limit": 50270
+    },
+    "ni_class_4": [
+     1045.7999267578125
+    ]
+   }
+  },
+  "reproducer": "--case nics_threshold_freeze_end_date",
+  "situation": {
+   "benunits": {
+    "unit": {
+     "members": [
+      "worker"
+     ]
+    }
+   },
+   "households": {
+    "household": {
+     "members": [
+      "worker"
+     ],
+     "region": {
+      "2026": "LONDON",
+      "2027": "LONDON",
+      "2028": "LONDON",
+      "2029": "LONDON",
+      "2030": "LONDON"
+     }
+    }
+   },
+   "people": {
+    "worker": {
+     "age": {
+      "2026": 45,
+      "2027": 45,
+      "2028": 45,
+      "2029": 45,
+      "2030": 45
+     },
+     "self_employment_income": {
+      "2026": 30000,
+      "2027": 30000,
+      "2028": 30000,
+      "2029": 30000,
+      "2030": 30000
+     }
+    }
+   }
+  },
+  "supported_calendar_years": [
+   2024,
+   2030
+  ],
+  "variables": [
+   "ni_class_4"
+  ],
+  "years": [
+   2026,
+   2027,
+   2028,
+   2029,
+   2030
+  ]
+ }
+]

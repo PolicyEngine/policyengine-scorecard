@@ -1,0 +1,104 @@
+[
+ {
+  "assessment": null,
+  "class": "paired_dev_observation",
+  "engine_version": "2.89.2",
+  "evidence": {
+   "engine_file": "variables/household/consumption/additional_residential_property_purchased.py",
+   "sha256": "9547795632c1da3cacba2f11b8b109082e02e18c74cc35e5a726cb504507ba25",
+   "source": "from policyengine_uk.model_api import *\n\n\nclass additional_residential_property_purchased(Variable):\n    label = \"Residential property bought (additional)\"\n    documentation = \"The price paid for the purchase of a residential property in the year, for use as a second home or another non-main-residence purpose. Only include the value of a single purchase.\"\n    entity = Household\n    definition_period = YEAR\n    value_type = float\n    unit = GBP\n\n    def formula(household, period):\n        property_purchased = household(\"property_purchased\", period)\n        other_residential_property_value = household(\n            \"other_residential_property_value\", period\n        )\n        return other_residential_property_value * property_purchased\n"
+  },
+  "existing_issue": "https://github.com/PolicyEngine/policyengine-uk/issues/2238",
+  "id": "sdlt_additional_purchase_stock_pe_uk_2238",
+  "interpretation": "Controlled synthetic observations for descriptive engine comparison. Compare the same inputs at each certified pin; this run does not size or attribute a national difference.",
+  "national_effect": "unsized",
+  "observation": {
+   "2025": {
+    "additional_residential_property_purchased": [
+     0.0,
+     2000000.0
+    ],
+    "stamp_duty_land_tax": [
+     0.0,
+     233750.0
+    ]
+   }
+  },
+  "reproducer": "--case sdlt_additional_purchase_stock_pe_uk_2238",
+  "situation": {
+   "benunits": {
+    "purchase_false": {
+     "members": [
+      "purchase_false"
+     ]
+    },
+    "purchase_true": {
+     "members": [
+      "purchase_true"
+     ]
+    }
+   },
+   "households": {
+    "purchase_false": {
+     "main_residence_value": {
+      "2025": 600000
+     },
+     "members": [
+      "purchase_false"
+     ],
+     "other_residential_property_value": {
+      "2025": 2000000
+     },
+     "property_purchased": {
+      "2025": false
+     },
+     "region": {
+      "2025": "LONDON"
+     }
+    },
+    "purchase_true": {
+     "main_residence_value": {
+      "2025": 600000
+     },
+     "members": [
+      "purchase_true"
+     ],
+     "other_residential_property_value": {
+      "2025": 2000000
+     },
+     "property_purchased": {
+      "2025": true
+     },
+     "region": {
+      "2025": "LONDON"
+     }
+    }
+   },
+   "people": {
+    "purchase_false": {
+     "age": {
+      "2025": 45
+     },
+     "employment_income": {
+      "2025": 80000
+     }
+    },
+    "purchase_true": {
+     "age": {
+      "2025": 45
+     },
+     "employment_income": {
+      "2025": 80000
+     }
+    }
+   }
+  },
+  "variables": [
+   "additional_residential_property_purchased",
+   "stamp_duty_land_tax"
+  ],
+  "years": [
+   2025
+  ]
+ }
+]

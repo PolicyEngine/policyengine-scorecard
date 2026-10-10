@@ -1,0 +1,21 @@
+{
+ "artifact_type": "paired_run",
+ "base_artifact": {
+  "path": "results/uk/events/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2028.json",
+  "sha256": "666c062067b3a8634c74b548da1bdd77ab06b0f24a0465fac2fb6e903e8acae1"
+ },
+ "base_bundle": "populace-uk-2023__pe-uk-2.89.2",
+ "effect_gbp": 495875053.47705746,
+ "event": "autumn_statement_2023",
+ "head_variables": [
+  "ni_class_4"
+ ],
+ "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+ "new_artifact": {
+  "path": "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2028.json",
+  "sha256": "ed04661a56e4c8f32136080fb4f832c409e470c0dd6997f317ea584b7b2c9e36"
+ },
+ "new_bundle": "uk-data-1.58.0__pe-uk-2.125.1",
+ "status": "computed",
+ "year": 2028
+}

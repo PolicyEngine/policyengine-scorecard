@@ -1,0 +1,109 @@
+[
+ {
+  "assessment": null,
+  "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+  "bundle_pin_sha256": "45c3adf7d2b4e74b39f5b8b6ebafd370256ec656b1b66eed76dbb6cd2628f9ad",
+  "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+  "class": "paired_dev_observation",
+  "engine_version": "2.125.1",
+  "engine_versions": {
+   "policyengine": "6.2.6",
+   "policyengine-core": "3.33.0",
+   "policyengine-uk": "2.125.1"
+  },
+  "evidence": {
+   "engine_file": "variables/gov/hmrc/pensions/pension_contributions_relief.py",
+   "sha256": "e973788e4ee97971bf15647abce96000ae918b2615b39b40044787af8ac77d1a",
+   "source": "from policyengine_uk.model_api import *\n\n\nclass pension_contributions_relief(Variable):\n    value_type = float\n    entity = Person\n    label = \"Reduction in taxable income from pension contributions\"\n    definition_period = YEAR\n    reference = dict(\n        title=\"Finance Act 2004 s. 188-194\",\n        href=\"https://www.legislation.gov.uk/ukpga/2004/12/section/188\",\n    )\n    unit = GBP\n\n    def formula(person, period, parameters):\n        contributions = person(\"pension_contributions\", period)\n        pension_allowance = person(\"pension_annual_allowance\", period)\n        age_limit = parameters(\n            period\n        ).gov.hmrc.pensions.pension_contributions_relief_age_limit\n        income = add(person, period, [\"employment_income\", \"self_employment_income\"])\n        under_age_limit = person(\"age\", period) < age_limit\n        basic_amount = parameters(\n            period\n        ).gov.hmrc.income_tax.reliefs.pension_contribution.basic_amount\n        tax_relief = min_(income, contributions) * under_age_limit\n        max_pension_relief = max_(basic_amount, pension_allowance)\n\n        return min_(tax_relief, max_pension_relief)\n"
+  },
+  "existing_issue": "https://github.com/PolicyEngine/policyengine-uk/issues/2237",
+  "id": "annual_allowance_relief_and_charge_pe_uk_2237",
+  "interpretation": "Controlled synthetic observations for descriptive engine comparison. Compare the same inputs at each certified pin; this run does not size or attribute a national difference.",
+  "national_effect": "unsized",
+  "observation": {
+   "2024": {
+    "income_tax": [
+     28460.0,
+     36460.0
+    ],
+    "pension_contributions_relief": [
+     60000.0,
+     60000.0
+    ],
+    "personal_pension_contributions_tax": [
+     0.0,
+     8000.0
+    ]
+   }
+  },
+  "reproducer": "--case annual_allowance_relief_and_charge_pe_uk_2237",
+  "situation": {
+   "benunits": {
+    "contributions_60000": {
+     "members": [
+      "contributions_60000"
+     ]
+    },
+    "contributions_80000": {
+     "members": [
+      "contributions_80000"
+     ]
+    }
+   },
+   "households": {
+    "contributions_60000": {
+     "members": [
+      "contributions_60000"
+     ],
+     "region": {
+      "2024": "LONDON"
+     }
+    },
+    "contributions_80000": {
+     "members": [
+      "contributions_80000"
+     ],
+     "region": {
+      "2024": "LONDON"
+     }
+    }
+   },
+   "people": {
+    "contributions_60000": {
+     "age": {
+      "2024": 45
+     },
+     "employment_income": {
+      "2024": 150000
+     },
+     "personal_pension_contributions": {
+      "2024": 60000
+     }
+    },
+    "contributions_80000": {
+     "age": {
+      "2024": 45
+     },
+     "employment_income": {
+      "2024": 150000
+     },
+     "personal_pension_contributions": {
+      "2024": 80000
+     }
+    }
+   }
+  },
+  "supported_calendar_years": [
+   2024,
+   2030
+  ],
+  "variables": [
+   "pension_contributions_relief",
+   "personal_pension_contributions_tax",
+   "income_tax"
+  ],
+  "years": [
+   2024
+  ]
+ }
+]
