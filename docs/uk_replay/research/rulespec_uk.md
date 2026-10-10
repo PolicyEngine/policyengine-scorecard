@@ -128,7 +128,7 @@ Example: `uk/statutes/ukpga/2007/3/35.yaml`, the personal allowance.
 - **Consequence:**
   - A sentinel (`0001-01-01`) single version returns today's value for 2010.
   - A single version dated in 2024 errors for 2010–2023.
-  - No rule changes value between 2010 and 2025.
+  - No rule in the files sampled here changes value between 2010 and 2025, apart from the company and GDPR exceptions noted above (see HISTORICAL_RULES.md for the qualified statement).
 
 **Distribution over the 600 `uk/` parameter rules, by earliest version date**
 

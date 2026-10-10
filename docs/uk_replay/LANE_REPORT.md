@@ -56,7 +56,7 @@ Validation:
 - No simulations, population builds, datasets or new virtual environments.
 
 Git delivery is blocked by the sandbox: `git add` cannot create
-`/Users/maxghenis/PolicyEngine/policyengine-scorecard/.git/worktrees/scorecard-replay-inventory/index.lock`
+`~/PolicyEngine/policyengine-scorecard/.git/worktrees/scorecard-replay-inventory/index.lock`
 (`Operation not permitted`). The branch remains `replay/inventory` at the
 pre-existing e93cfa6. No new commit, push or draft PR was made; no merge or contact
 was attempted. Final files are left for the main session to commit, push and

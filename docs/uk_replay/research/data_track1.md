@@ -8,13 +8,13 @@ Every claim below cites a file:line read in this task, or a computation run in t
 | Source | Version | Path |
 |---|---|---|
 | policyengine.py | 393762b (2026-10-09), bundle 6.2.4 | `/tmp/uk-replay-scope/policyengine.py` |
-| policyengine.py, the loader track 1 uses | 5.0.2 | `/Users/maxghenis/PolicyEngine/_worktrees/scorecard-replay-pilot/.venv-replay/lib/python3.12/site-packages/policyengine` |
+| policyengine.py, the loader track 1 uses | 5.0.2 | `~/PolicyEngine/_worktrees/scorecard-replay-pilot/.venv-replay/lib/python3.12/site-packages/policyengine` |
 | policyengine-uk (installed) | 2.124.0, with policyengine-core 3.32.29 | `/tmp/uk-replay-scope/venv/lib/python3.12/site-packages/policyengine_uk` |
 | policyengine-uk (the certified bundle's declared pin) | 2.89.2, with policyengine-core 3.27.1 | `…/scorecard-replay-pilot/.venv-replay/lib/python3.12/site-packages/policyengine_uk` |
 | policyengine-uk-data | 0dc9ef2 | `/tmp/uk-replay-scope/policyengine-uk-data` |
 | populace-uk release (cached, not downloaded) | revision `populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z` | `~/.cache/huggingface/hub/datasets--policyengine--populace-uk-private/snapshots/a75a9a83…/releases/populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/{release_manifest.json,calibration_diagnostics.json}`; artifact blob `…/blobs/f17306cc…` (sha matches `data/uk/certified_bundle.json:7`) |
-| scorecard | main at 99f1cc1 (this worktree) | `/Users/maxghenis/PolicyEngine/_worktrees/scorecard-replay-inventory` |
-| track 1 | **`origin/replay/pilot` does not exist** (`git fetch origin replay/pilot` → "couldn't find remote ref"). Track 1's work is uncommitted in the local worktree `/Users/maxghenis/PolicyEngine/_worktrees/scorecard-replay-pilot` (branch `replay/pilot` at 99f1cc1 + untracked files). I read those files without changing them. | |
+| scorecard | main at 99f1cc1 (this worktree) | `~/PolicyEngine/_worktrees/scorecard-replay-inventory` |
+| track 1 | **`origin/replay/pilot` does not exist** (`git fetch origin replay/pilot` → "couldn't find remote ref"). Track 1's work is uncommitted in the local worktree `~/PolicyEngine/_worktrees/scorecard-replay-pilot` (branch `replay/pilot` at 99f1cc1 + untracked files). I read those files without changing them. | |
 
 Computations run (all read-only; the outputs are in `/tmp/uk-replay-scope/agents/`):
 - `data_track1_probe.py` → `data_track1_probe_2.124.0.json` and `data_track1_probe_2.89.2.json`. This is a synthetic 1-household `UKSingleYearDataset` with `fiscal_year=2023`, calculated for 2012, 2017, 2022, 2023, 2024, 2026, 2030 and 2031 under both engine pins. It uses no survey data.

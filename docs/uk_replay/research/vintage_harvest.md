@@ -284,7 +284,7 @@ Computed by `_hofd_diff.py` and `_hofd_diff2.py`:
 * **Historic vintage rows are frozen**: 24,913 shared forecast cells were compared and exactly **1 differs**. That cell is `Empl`, "March 2024" row, CY 2022: 32.929 in m25, blank in s26 (s26 `Empl!A33` starts at 2023).
 * **Outturn rows were revised and extended**: 1,099 of 1,782 overlapping outturn cells changed (e.g. `£PSNB` 1970-71 outturn -3.947 to -0.323). Outturn was extended one year (IT, NICS, VAT and Total welfare to 2024-25; CPI to 2025). Outturn rows are "as available at last forecast", so they are not vintage targets.
 * **Format regressions in s26**: 14 sheets with datetime-typed labels, plus "March2026" (`Empl`, `Govtinv`) and "#REF!" (`NGDP (2)`, `UKGDP (2)`). Parsers must normalise labels.
-* **Effect on the replay**: s26 strictly supersedes m25 for the 32 events. m25 lacks only the Autumn Budget 2025 vintage.
+* **Effect on the replay**: s26 supersedes m25 for the 32 events except for one cell present in m25 and removed in s26 (see POPULATIONS_AND_VINTAGES.md). m25 lacks only the Autumn Budget 2025 vintage.
 
 ## 3. Other harvested EFO and OBR tables: which event, and what is calibration-relevant
 

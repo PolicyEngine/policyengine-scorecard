@@ -23,7 +23,7 @@ anyone relies on them.
 
 ## Bottom line
 
-1. **No year before 2015 can be simulated.** A household simulation for 2010, 2012 or 2014 raises
+1. **No year before 2015 could be simulated in the three probes run here** (narrower than a general claim; see HISTORICAL_RULES.md for the qualified statement). A household simulation for 2010, 2012 or 2014 raises
    `ParameterNotFoundError` on every headline output: income tax, NI, Child Benefit, net income, tax credits and UC
    (probe `sim_2010`, `sim_2012`, `sim_2014`). The first failure is
    `gov.simulation.labour_supply_responses.income_elasticity`. Its earliest key is 2020-01-01
