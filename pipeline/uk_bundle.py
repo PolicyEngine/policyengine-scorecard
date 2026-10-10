@@ -209,22 +209,35 @@ def validate_runtime_bundle(document, key=DEFAULT_BUNDLE, *, root=ROOT):
     return identity
 
 
+PROTECTED_TREES = {"registry": "data/uk/events", "results": "results/uk/events"}
+
+
 def validate_bundle_path(path, key=DEFAULT_BUNDLE, *, kind, root=ROOT):
+    """Refuse any path inside a protected tree that isn't this bundle's namespace.
+
+    Both canonical trees are checked whatever ``kind`` is, so an output can't
+    land in the registry tree (or another bundle's results) just because it
+    lies outside its own kind's root.
+    """
     _key(key)
-    canonical = Path(root) / (
-        "data/uk/events" if kind == "registry" else "results/uk/events"
-    )
-    if kind not in ("registry", "results"):
+    if kind not in PROTECTED_TREES:
         raise ValueError("invalid bundle path kind")
-    try:
-        relative = Path(path).resolve().relative_to(canonical.resolve())
-    except ValueError:
-        return Path(path)  # Explicit development or determinism-check directory.
-    parts = relative.parts
-    actual = parts[1] if len(parts) > 1 and parts[0] == "bundles" else DEFAULT_BUNDLE
-    if actual != key:
-        raise ValueError("path belongs to another bundle")
-    return Path(path)
+    resolved = Path(path).resolve()
+    for owner, tree in PROTECTED_TREES.items():
+        try:
+            relative = resolved.relative_to((Path(root) / tree).resolve())
+        except ValueError:
+            continue
+        if owner != kind:
+            raise ValueError(f"{kind} path lies inside the protected {owner} tree")
+        parts = relative.parts
+        actual = (
+            parts[1] if len(parts) > 1 and parts[0] == "bundles" else DEFAULT_BUNDLE
+        )
+        if actual != key:
+            raise ValueError("path belongs to another bundle")
+        return Path(path)
+    return Path(path)  # Explicit development or determinism-check directory.
 
 
 def validate_registry_bundle(registry, key=DEFAULT_BUNDLE, *, root=ROOT):

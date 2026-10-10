@@ -621,6 +621,9 @@ def investigate(case: str | None = None, bundle=DEFAULT_BUNDLE) -> list[dict]:
     return results
 
 
+DEFAULT_REPORT = Path("docs/uk_replay/MODEL_INVESTIGATIONS.md")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--case")
@@ -633,6 +636,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path)
     parser.add_argument("--report", type=Path)
     args = parser.parse_args(argv)
+    # Check both destinations before any engine work or write.
+    for destination in (args.output, args.report):
+        if destination is not None:
+            validate_bundle_path(destination, args.bundle, kind="results")
+    if (
+        args.report is not None
+        and args.bundle != DEFAULT_BUNDLE
+        and args.report.resolve() == (ROOT / DEFAULT_REPORT).resolve()
+    ):
+        parser.error("the default bundle's investigation report is not writable here")
     results = (
         json.loads(args.from_json.read_text())
         if args.from_json
@@ -647,7 +660,6 @@ def main(argv: list[str] | None = None) -> int:
             parser.error("unknown diagnostic case")
     payload = json.dumps(results, indent=1, sort_keys=True, allow_nan=False) + "\n"
     if args.output:
-        validate_bundle_path(args.output, args.bundle, kind="results")
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(payload)
     else:

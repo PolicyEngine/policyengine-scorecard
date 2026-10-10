@@ -292,6 +292,49 @@ def test_path_selection_rejects_other_bundles_including_default(pinned_stage, ki
         )
 
 
+@pytest.mark.parametrize("key", [DEV, bundles.DEFAULT_BUNDLE])
+def test_paths_cannot_enter_the_other_protected_tree(pinned_stage, key):
+    """A results output can't overwrite a registry, whichever bundle it names."""
+    _, _, _, _, root = pinned_stage
+    for owner in (DEV, bundles.DEFAULT_BUNDLE):
+        registry = bundles.registry_path("event", owner, root=root)
+        with pytest.raises(ValueError, match="protected registry tree"):
+            bundles.validate_bundle_path(registry, key, kind="results", root=root)
+        results = bundles.event_output_dir("event", owner, root=root) / "x.json"
+        with pytest.raises(ValueError, match="protected results tree"):
+            bundles.validate_bundle_path(results, key, kind="registry", root=root)
+    own = bundles.event_output_dir("event", key, root=root) / "STAGED.jsonl"
+    assert bundles.validate_bundle_path(own, key, kind="results", root=root) == own
+    scratch = root / ".venv-replay-checks/anywhere.json"
+    assert (
+        bundles.validate_bundle_path(scratch, key, kind="results", root=root) == scratch
+    )
+
+
+def test_diagnostic_report_cannot_overwrite_another_bundles_outputs(tmp_path):
+    from pipeline import diagnose_uk_event_models as diagnose
+
+    saved = tmp_path / "observations.json"
+    saved.write_text("[]")
+    for report in (
+        diagnose.ROOT / "results/uk/events/SUMMARY.md",
+        diagnose.ROOT / diagnose.DEFAULT_REPORT,
+    ):
+        before = report.read_bytes() if report.exists() else None
+        with pytest.raises((ValueError, SystemExit)):
+            diagnose.main(
+                [
+                    "--bundle",
+                    "some-other-bundle",
+                    "--from-json",
+                    str(saved),
+                    "--report",
+                    str(report),
+                ]
+            )
+        assert (report.read_bytes() if report.exists() else None) == before
+
+
 def two_bundle_comparison(pinned_stage):
     """Stage and compare one event under DEV and a second development bundle."""
     registry, _manifest, registry_path, output, root = pinned_stage
