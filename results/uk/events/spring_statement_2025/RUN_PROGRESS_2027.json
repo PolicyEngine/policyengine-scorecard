@@ -1,7 +1,7 @@
 {
  "artifacts": {
-  "results/uk/events/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2027.json": "a4a92bd2254b519af3033f49f60f1506eeb38db027ef63ca59a1f97f2fe56a14",
-  "results/uk/events/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2027.json": "dd3839ef487621cce0593caa0875d36fe153d63343144b516b06400da9501d62"
+  "results/uk/events/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2027.json": "e4498a6ffb5ce844af7ccb47c3e7d25d8b2458f098a3a97b7b9998391931155b",
+  "results/uk/events/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2027.json": "6f47a7fe1b09a531640bd4ed65f0cd76fb1bc5f67e24ef439b258cf715192332"
  },
  "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
  "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
@@ -10,7 +10,7 @@
  "policyengine_core_version": "3.27.1",
  "policyengine_version": "5.0.2",
  "receipt_kind": "completed_event_artifacts",
- "registry_sha256": "4ee750cbd1c1e88551ea68d3fae2462c2edb5ff62665ca5b355f60d2e255ca4a",
+ "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
  "schema_version": 1,
  "year": 2027
 }

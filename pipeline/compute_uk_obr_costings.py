@@ -1024,8 +1024,12 @@ def run_managed_simulation(
     runtime_dataset_source: Path,
     expected_dataset_sha256: str,
     include_engine_provenance: bool = False,
+    scenario: Any = None,
 ) -> dict[str, Any]:
     """Run, aggregate, delete, and collect exactly one managed sim."""
+
+    if scenario is not None and reform is not None:
+        raise ValueError("pass either reform or scenario, not both")
 
     configure_offline()
     import policyengine as pe
@@ -1040,7 +1044,9 @@ def run_managed_simulation(
                 phase="immediately before simulation construction",
             )
             sim = (
-                pe.uk.managed_microsimulation()
+                pe.uk.managed_microsimulation(scenario=scenario)
+                if scenario is not None
+                else pe.uk.managed_microsimulation()
                 if reform is None
                 else pe.uk.managed_microsimulation(reform=reform)
             )

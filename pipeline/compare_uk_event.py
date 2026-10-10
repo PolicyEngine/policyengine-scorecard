@@ -34,6 +34,7 @@ CSV_FIELDS = [
     "measure_key",
     "title",
     "classification",
+    "gap_kind",
     "measure_type",
     "fy",
     "year",
@@ -75,7 +76,262 @@ GRID_FIELDS = (
     "full_event_grid_size",
     "full_event_complete",
     "missing_measure_years",
+    "inert_measure_years",
 )
+
+
+def review_diagnosis(measure_key: str, year: int, tax_head: str = "") -> dict:
+    """Retain the review's source-level diagnoses without sizing national terms.
+
+    These observations concern the certified 2.89.2 pin. An upstream issue or
+    later fix does not change the executed model, population or decomposition.
+    """
+    suffix = measure_key.partition("__")[2]
+    issue = None
+    if suffix == "pension_annual_allowance_package":
+        cause = "PE model issue; construction scope"
+        issue = "policyengine-uk#2237"
+        evidence = (
+            "pension_contributions_relief caps relief at the Annual Allowance while "
+            "private_pension_contributions_tax.py also charges the excess; both enter "
+            "Income Tax. The charge base includes employer contributions and no "
+            "carry-forward is represented. policyengine-uk#2237. The separately "
+            "measured omitted-employer-contributions taper and single-marginal-rate "
+            "charge diagnostics both reduce the charge in their controlled cases: "
+            "they push opposite to the observed excessive PE tax reduction and do "
+            "not explain that excess. National contributions remain unsized."
+        )
+        engine_files = [
+            "variables/gov/hmrc/pensions/pension_contributions_relief.py",
+            "variables/gov/hmrc/pensions/private_pension_contributions_tax.py",
+            "variables/gov/hmrc/pensions/pension_contributions_for_annual_allowance.py",
+        ]
+    elif suffix == "hicbc_threshold_and_taper":
+        cause = "PE model issue, fixed on main after the certified pin"
+        evidence = (
+            "The pinned child_benefit and child_benefit_respective_amount formulas "
+            "ignore child_benefit_opts_out: opted-out families can be charged HICBC "
+            "and the reform cannot induce their claims. The review records the "
+            "opts_out/remains_opted_out fix on main after 2.89.2; this certified "
+            "replay retains the earlier formulas. Welfare's zero counterpart and "
+            "the Income Tax excess therefore have a known model diagnosis."
+        )
+        engine_files = [
+            "variables/gov/hmrc/child_benefit.py",
+            "variables/gov/hmrc/child_benefit_respective_amount.py",
+        ]
+    elif suffix.startswith("class_1_employee_nics_main_rate_cut_"):
+        cause = "Data level and population vintage; behavioural adjustment"
+        evidence = (
+            "The certified employee-NIC base is about 15–20% above the OBR forecast: "
+            "PE £51.7bn in CY2024 and £57.1bn in CY2026 versus £43.9bn and £47.6bn "
+            "in the OBR March2024 forecast. This broadly follows the effect ratios. "
+            "OBR's positive Income Tax cells also identify a labour-supply offset. "
+            "The review's uk-data#537 observation is only about a 1.2% fit change "
+            "and does not explain this base difference. AS2023 and SB2024 both "
+            "execute the same certified 10%→8% world; AS2023's PE number is not "
+            "an isolated 12%→10% costing. The employer-NIC pension-age exemption "
+            "reduces that different tax base, so a closer employer match does not "
+            "validate the employee base."
+        )
+        engine_files = [
+            "variables/gov/hmrc/national_insurance/class_1/ni_class_1_employee.py"
+        ]
+    elif suffix == "sdlt_additional_dwelling_surcharge_2pp":
+        cause = "PE model/data issue; behavioural adjustment and head scope"
+        issue = "policyengine-uk#2238"
+        evidence = (
+            "additional_residential_property_purchased multiplies the household's "
+            "whole other-property stock by property_purchased, the all-property "
+            "purchase flag. The audited flagged stock is £94.7bn; 2pp of that is "
+            "about £1.9bn, consistent with the large PE effect. "
+            "policyengine-uk#2238. Transactions behaviour, corporate purchasers "
+            "and other stamp-tax interactions remain separate unsized scope terms."
+        )
+        engine_files = [
+            "variables/household/consumption/additional_residential_property_purchased.py"
+        ]
+    elif suffix == "capital_gains_main_rates_and_reliefs":
+        cause = "Construction scope; behavioural adjustment and head scope"
+        evidence = (
+            "The gains input pools asset types. Reversing all pooled gains to "
+            "10%/20% also lowers residential gains that were already taxed at "
+            "18%/24% before AB2024, overstating the announced main-rate tax gain. "
+            "The pinned gains elasticity is zero and the OBR package has separate "
+            "Income Tax and Stamp Duty heads. Certified CGT is £23.4bn versus "
+            "£18.7bn in the reversal world in CY2025; the review does not establish "
+            "that this baseline level is an engine defect."
+        )
+        engine_files = ["variables/gov/hmrc/capital_gains_tax/capital_gains_tax.py"]
+    elif suffix == "winter_fuel_means_test":
+        cause = "Baseline vintage"
+        evidence = (
+            "From 2025 the pinned £35,000 income passport is an alternative "
+            "eligibility route, so require_benefits=False reaches only households "
+            "still excluded after that later reversal. This explains the narrower "
+            "future-year construction. PE excludes Scotland, which reduces "
+            "spending and pushes opposite to the excessive PE restriction saving "
+            "in FY2024–25; Pension Credit take-up and behaviour remain unsized."
+        )
+        engine_files = ["variables/gov/dwp/winter_fuel_allowance.py"]
+    elif suffix == "uc_standard_allowance_above_inflation":
+        cause = "PE model issue; index and baseline vintage; head scope"
+        evidence = (
+            "The 2026 counterfactual uses the legislated amount's September2025 "
+            "CPI of 3.8%, removing the former 3.4% forecast-index mismatch. Later "
+            "counterfactual years continue on the certified CPI path. Raising "
+            "the counterfactual reduces the scored allowance cost, moving PE's "
+            "cost magnitude further below OBR's; the earlier index mismatch pushed opposite to "
+            "the observed cost shortfall. The pin "
+            "hardcodes the 2026 allowance and then applies plain CPI; "
+            "uc_standard_allowance never reads standard_allowance_uplift, whose "
+            "2027–2029 values are 3.1%, 4.0% and 4.8%. The Welfare outside cap "
+            "source head remains uncomputed. The missing legislated 2027–2029 "
+            "uplifts are policyengine-uk#2239."
+        )
+        if 2027 <= year <= 2029:
+            issue = "policyengine-uk#2239"
+        engine_files = [
+            "variables/gov/dwp/universal_credit/standard_allowance/uc_standard_allowance.py",
+            "parameters/gov/dwp/universal_credit/rebalancing/standard_allowance_uplift.yaml",
+        ]
+    elif suffix == "employer_nics_package":
+        cause = "Construction and head scope; wage incidence"
+        evidence = (
+            "employee_incidence=1 holds employer cost fixed relative to the "
+            "certified simulation baseline. The lower employer-NIC reversal "
+            "therefore raises wages, making the announced Income Tax effect "
+            "about −£8bn to −£9bn, versus OBR's roughly −£0.1bn to −£0.3bn direct "
+            "head costing. CY2026 also has a −£1.26bn employee-NIC channel. This "
+            "is the pinned wage-incidence construction, with its contribution "
+            "to the PE–OBR difference unsized."
+        )
+        engine_files = [
+            "variables/contrib/policyengine/employer_ni/employer_ni_fixed_employer_cost_change.py"
+        ]
+    elif suffix == "class_2_self_employed_nics_abolition":
+        cause = "PE model issue; Class 2/Class 4 cap interaction"
+        evidence = (
+            "The FY2027–28 announced artifact records −£552.039m in ni_class_2 "
+            "and −£786.808m in ni_class_4, alongside +£11.933m in Universal "
+            "Credit. Later-year totals therefore include the pinned Class 4 "
+            "cap interaction alongside direct Class 2 cash liability. A "
+            "controlled 2027 calculation with £143,750 self-employment income "
+            "and zero employee NICs reproduces a £1,849.49 Class 4 increase "
+            "when Class 2 is restored. In ni_class_4_maximum, a strict branch "
+            "comparison at a mathematically equal boundary is sensitive to "
+            "floating-point subtraction of uprated thresholds. This points "
+            "to a pinned cap-formula issue; the artifact quantifies the "
+            "national Class 4 head, while a full household trace would be "
+            "needed to attribute that entire head to the reproduced instability."
+        )
+        engine_files = [
+            "variables/gov/hmrc/national_insurance/class_4/ni_class_4_maximum.py"
+        ]
+    else:
+        return {}
+    return {
+        "class": "pe_gap" if issue else "review_diagnosis",
+        "cause_class": cause,
+        "evidence": evidence,
+        "engine_files": engine_files,
+        "engine_version": "2.89.2",
+        "issues": [issue] if issue else [],
+        "national_effect": "unsized",
+    }
+
+
+def construction_note(measure: dict) -> str:
+    """Correct descriptive notes without invalidating unchanged result receipts."""
+    key = measure["measure_key"]
+    note = measure.get("note", "")
+    if key == "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp":
+        return (
+            "The pin still has the 3% surcharge scale, so apply a forward 2pp "
+            "increase to every marginal bracket. The dict reform updates the "
+            "already-processed tree without a new 30 April conversion; annual "
+            "lookups resolve at 1 January. The raw October2024 policy onset is "
+            "therefore absent from annual 2024 and present throughout annual "
+            "2025. Main-home rates and thresholds are retained."
+        )
+    if key == "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp":
+        return (
+            "The SB2024 2pp marginal reversal on the certified 8% world is 10% "
+            "from annual 2024. The April2024 announcement is represented by the "
+            "January annual proxy. AS2023 and SB2024 employee-NIC figures use "
+            "the identical 10%→8% world; the AS2023 figure therefore retains "
+            "the later SB2024 cut rather than isolating 12%→10%."
+        )
+    if (
+        key == "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p"
+        and "AS2023 and SB2024" not in note
+    ):
+        note += (
+            " AS2023 and SB2024 employee-NIC figures are the same 10%→8% "
+            "world; the AS2023 figure does not isolate its announced 12%→10% cut."
+        )
+    if key == "autumn_budget_2024__capital_gains_main_rates_and_reliefs":
+        note += (
+            " Pooled gains include residential gains already taxed at 18%/24% "
+            "before AB2024. Restoring the pooled input to 10%/20% also cuts "
+            "those gains, so the construction overstates the announced "
+            "main-rate tax gain. Certified policy is annualized from its raw "
+            "30 April schedule; the October-dated dict reversal updates the "
+            "processed tree, with its first annual lookup at January2025."
+        )
+    if "class_2" in key and "abol" in key and "#1887" not in note:
+        note += (
+            " The pin's CY2023 Class 2 flat rate is £3.15/week versus the "
+            "actual £3.45; the upstream rate history was later fixed in "
+            "policyengine-uk#1887. This replay retains the certified pin."
+        )
+    if key == "autumn_statement_2023__class_2_self_employed_nics_abolition":
+        note += (
+            " Later-year totals include a pinned Class 4 cap interaction "
+            "alongside direct Class 2 cash liability. In FY2027–28 the "
+            "announced artifact has −£552.039m in ni_class_2 and −£786.808m "
+            "in ni_class_4, with +£11.933m in Universal Credit. A controlled "
+            "formula calculation reproduces sensitivity of ni_class_4_maximum's "
+            "strict branch comparison to floating-point uprated-threshold "
+            "subtraction. That points to a pinned model issue; only the "
+            "artifact head amounts are quantified nationally, and the full "
+            "Class 4 amount has not been causally traced to this instability."
+        )
+    if "class_2" in key and "abol" in key:
+        note += (
+            " The retained pinned formula uses profits >= £12,570, whereas "
+            "compulsory cash liability required profits > £12,570. At exactly "
+            "the threshold this can overstate counterfactual liability and "
+            "the announced abolition cost; the national contribution is unsized."
+        )
+    return note
+
+
+def gap_accounts(registry: dict) -> list[tuple[str, dict]]:
+    """Split unconstructed measures while retaining source-row classifications."""
+    groups = defaultdict(lambda: {"measures": 0, "sources": []})
+    for measure in registry["measures"]:
+        classification = measure.get("classification", measure.get("computability"))
+        kind = measure.get("gap_kind", "unspecified")
+        if classification == "not_expressible":
+            groups[kind]["measures"] += 1
+        for source in measure["source_rows"]:
+            if source.get("classification", classification) == "not_expressible":
+                groups[source.get("gap_kind", kind)]["sources"].append(source)
+    return [
+        (kind, groups[kind])
+        for kind in ("construction_pending", "model_or_data_gap", "unspecified")
+        if kind in groups or kind != "unspecified"
+    ]
+
+
+def gap_account_lines(registry: dict, prefix: str = "") -> list[str]:
+    return [
+        f"| {prefix}{kind} | {account['measures']} | {len(account['sources'])} | "
+        f"{Decimal(source_gbp_sum(account['sources'])) / Decimal(10**9):,.3f} | "
+        f"{Decimal(source_gbp_sum(account['sources'], absolute=True)) / Decimal(10**9):,.3f} |"
+        for kind, account in gap_accounts(registry)
+    ]
 
 
 class EventComparisonError(ValueError):
@@ -336,6 +592,10 @@ def build_comparison_rows(
         variables = row.get("head_variables", [])
         reference = row.get("artifact_path")
         digest = row.get("artifact_sha256")
+        if row.get("status") == "inert_construction" and pe is not None:
+            raise EventComparisonError(
+                f"{key}: inert construction cannot assert a numeric counterpart"
+            )
         if pe is not None:
             pe = _finite(pe, f"{key}/PE")
             if not reference or not digest:
@@ -424,6 +684,11 @@ def build_comparison_rows(
             "measure_key": measure["measure_key"],
             "title": measure["title"],
             "classification": classification,
+            "gap_kind": (
+                source.get("gap_kind", measure.get("gap_kind", "unspecified"))
+                if classification == "not_expressible"
+                else None
+            ),
             "measure_type": measure.get(
                 "measure_type", measure.get("program", "unspecified")
             ),
@@ -440,13 +705,18 @@ def build_comparison_rows(
             "ratio_bin": bin_name,
             "status": row.get("status"),
             "reason": reason,
-            "construction_note": measure.get("note", ""),
+            "construction_note": construction_note(measure),
             "missing_legs": measure.get("missing_legs", []),
             "head_variables": variables,
             "artifact": reference,
             "artifact_sha256": digest,
             "axes": axes,
-            "diagnosis": row.get("diagnosis", {}),
+            "diagnosis": {
+                **(row.get("diagnosis") or {}),
+                **review_diagnosis(
+                    measure["measure_key"], int(source["fy"][:4]), source.get("tax_head", "")
+                ),
+            },
             **describe_decomposition(gap, axes, components),
         }
         out.append(record)
@@ -507,7 +777,9 @@ def render_markdown(
         (
             "Positive GBP means a gain to the Exchequer. PolicyEngine is the pinned "
             "certified 2023 population uprated to calendar year Y, with government "
-            "policy parameters annualized from the engine's 30 April snapshot. "
+            "baseline policy parameters annualized from the engine's 30 April snapshot. "
+            "Dict reforms directly update that processed tree and use explicit "
+            "1 January dates for annual lookups; they do not repeat fiscal conversion. "
             "These calendar population inputs proxy OBR FY Y–(Y+1). OBR's announcement forecast and behavioural "
             "costings remain distinct from this construction."
         ),
@@ -519,7 +791,20 @@ def render_markdown(
         ),
         "",
     ]
-    if replay_grid and not replay_grid.get("full_event_complete"):
+    inert_count = sum(r.get("status") == "inert_construction" for r in rows)
+    if inert_count or (replay_grid or {}).get("inert_measure_years"):
+        lines += [
+            (
+                f"Numerical replay blocked: {inert_count} source rows have an inert_construction "
+                "in an in-force year. A complete artifact grid does not establish successful execution."
+            ),
+            "",
+        ]
+    if (
+        replay_grid
+        and not replay_grid.get("full_event_complete")
+        and not (inert_count or replay_grid.get("inert_measure_years"))
+    ):
         lines += [
             (
                 f"Numerical replay grid incomplete: {replay_grid.get('computed_measure_years', 0)} "
@@ -567,6 +852,17 @@ def render_markdown(
             "they are accounting amounts, not a single-year event total. Measure counts "
             "use each measure's registry class; source-row classes may differ for non-household heads."
         ),
+        "",
+        "### Not-expressible gap split",
+        "",
+        (
+            "construction_pending names an unestablished replay construction; model_or_data_gap "
+            "names an evidenced engine or data limitation. Both retain their not_expressible accounting class."
+        ),
+        "",
+        "| Gap kind | Measures | Source rows | Net OBR £bn | Absolute OBR £bn |",
+        "|---|---:|---:|---:|---:|",
+        *gap_account_lines(registry),
         "",
         "## Agreement profile",
         "",
@@ -619,7 +915,7 @@ def render_markdown(
         "",
         "## Source rows",
         "",
-        "| Measure | FY | Head | Class | OBR £bn | PE £bn | PE/OBR | Bin | Status / reason |",
+        "| Measure | FY | Head | Class / gap kind | OBR £bn | PE £bn | PE/OBR | Bin | Status / reason |",
         "|---|---|---|---|---:|---:|---:|---|---|",
     ]
     for row in rows:
@@ -633,12 +929,20 @@ def render_markdown(
                     _md(row["title"]),
                     row["fy"],
                     _md(row["tax_head"]),
-                    row["classification"],
+                    row["classification"]
+                    + (f" / {row['gap_kind']}" if row.get("gap_kind") else ""),
                     _billions(row["obr_value_gbp"]),
                     _billions(row["pe_value_gbp"]),
                     ratio,
                     row["ratio_bin"],
-                    _md(f"{row['status']}: {row['reason']}"),
+                    _md(
+                        f"{row['status']}: {row['reason']}"
+                        + (
+                            "; " + ", ".join(row["diagnosis"]["issues"])
+                            if (row.get("diagnosis") or {}).get("issues")
+                            else ""
+                        )
+                    ),
                 ]
             )
             + " |"
@@ -646,14 +950,25 @@ def render_markdown(
     caveats = [
         measure
         for measure in registry["measures"]
-        if measure.get("note")
+        if construction_note(measure)
         and measure.get("classification", measure.get("computability"))
         in ("expressible", "partial")
     ]
     if caveats:
         lines += ["", "## Construction caveats", ""]
         for measure in caveats:
-            lines.append(f"* `{measure['measure_key']}`: {measure['note']}")
+            lines.append(f"* `{measure['measure_key']}`: {construction_note(measure)}")
+    diagnosed = {}
+    for row in rows:
+        diagnosis = row.get("diagnosis") or {}
+        if diagnosis.get("cause_class"):
+            diagnosed.setdefault(row["measure_key"], diagnosis)
+    if diagnosed:
+        lines += ["", "## Review diagnoses", ""]
+        for key, diagnosis in diagnosed.items():
+            lines.append(
+                f"* `{key}` — {diagnosis['cause_class']}: {diagnosis['evidence']}"
+            )
     return "\n".join(lines) + "\n"
 
 
@@ -823,6 +1138,7 @@ def render_summary(
             else "Registry seeded; numerical replay incomplete"
         )
         replay_grid = replay_grids.get(event)
+        inert_count = sum(r.get("status") == "inert_construction" for r in event_rows)
         if computed_count and replay_grid:
             state = (
                 "Numerical replay complete"
@@ -833,6 +1149,8 @@ def render_summary(
                     f"{replay_grid.get('full_event_grid_size', 'unspecified')})"
                 )
             )
+        if inert_count or (replay_grid or {}).get("inert_measure_years"):
+            state = f"Numerical replay blocked: inert_construction ({inert_count} source rows)"
         label = f"[{event}]({event}/COMPARISON.md)" if event_rows else event
         lines.append(
             f"| {label} | {state} | {measure_count} | {source_count} | {computed_count} | {', '.join(years) or '—'} |"
@@ -857,6 +1175,20 @@ def render_summary(
                     f"{Decimal(account['net_gbp_decimal']) / Decimal(10**9):,.3f} | "
                     f"{Decimal(account['absolute_gbp_decimal']) / Decimal(10**9):,.3f} |"
                 )
+        lines += [
+            "",
+            "### Not-expressible gap split",
+            "",
+            (
+                "construction_pending identifies unfinished replay constructions; "
+                "model_or_data_gap identifies evidenced model or data limitations."
+            ),
+            "",
+            "| Event / gap kind | Measures | Source rows | Net OBR £bn | Absolute OBR £bn |",
+            "|---|---:|---:|---:|---:|",
+        ]
+        for event, registry in sorted(registries.items()):
+            lines += gap_account_lines(registry, f"{event} / ")
     lines += ["", "## Agreement profile", ""]
     if not computed:
         lines += [
@@ -913,8 +1245,8 @@ def render_summary(
             "measure share a potential mechanism, so the queue selects one row per measure."
         ),
         "",
-        "| Event / measure | FY / head | Residual £bn | Variables | Evidence / diagnosis | Minimal replay |",
-        "|---|---|---:|---|---|---|",
+        "| Event / measure | FY / head | Residual £bn | Variables | Cause class | Evidence / diagnosis | Minimal replay |",
+        "|---|---|---:|---|---|---|---|",
     ]
     seen = set()
     for row in sorted(computed, key=lambda r: -abs(r["residual_gbp"])):
@@ -922,6 +1254,10 @@ def render_summary(
             continue
         seen.add(row["measure_key"])
         diagnostic = row.get("diagnosis") or {}
+        diagnostic = {
+            **diagnostic,
+            **review_diagnosis(row["measure_key"], row["year"], row.get("tax_head", "")),
+        }
         evidence = diagnostic.get("evidence", "Open: relevant axes unsized")
         command = (
             f"PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event {row['event_slug']} "
@@ -931,12 +1267,12 @@ def render_summary(
         lines.append(
             f"| {_md(row['event_slug'] + ' / ' + row['title'])} | "
             f"{row['fy']} / {_md(row['tax_head'])} | {_billions(row['residual_gbp'])} | "
-            f"{_md(', '.join(row['head_variables']))} | {_md(evidence)} | `{command}` |"
+            f"{_md(', '.join(row['head_variables']))} | "
+            f"{_md(diagnostic.get('cause_class', diagnostic.get('class', 'Open: relevant axes unsized')))} | "
+            f"{_md(evidence)} | `{command}` |"
         )
-        if len(seen) == 10:
-            break
     if not seen:
-        lines.append("| No computed divergences | — | — | — | — | — |")
+        lines.append("| No computed divergences | — | — | — | — | — | — |")
     diagnosed = [
         r for r in computed if (r.get("diagnosis") or {}).get("class") == "pe_gap"
     ]

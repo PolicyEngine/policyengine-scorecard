@@ -17,6 +17,7 @@ import re
 import sys
 import time
 from concurrent.futures import ProcessPoolExecutor
+from datetime import date
 from functools import lru_cache
 from multiprocessing import get_context
 from pathlib import Path
@@ -27,6 +28,66 @@ from pipeline import compute_uk_obr_costings as fiscal
 
 ROOT = worlds.ROOT
 EVENT_PATTERN = re.compile(r"^[a-z0-9]+(?:_[a-z0-9]+)*$")
+UC_HEALTH_ELEMENT_PARAMETER = (
+    "gov.dwp.universal_credit.rebalancing.new_claimant_health_element"
+)
+
+
+def annual_reform(reform: dict | None) -> dict | None:
+    """Make the managed dict pathway's January annual lookup explicit.
+
+    The pinned Scenario.from_reform updates an already-processed parameter
+    tree, without the raw-tree April fiscal conversion. An October start is
+    therefore first visible in the following annual calculation. Preserve
+    exactly the January lookups in each authored window; never silently
+    assign a part-year reform to the same fiscal-year proxy.
+    """
+    if reform is None:
+        return None
+    normalized = {}
+    for path, windows in reform.items():
+        if not isinstance(windows, dict):
+            raise TypeError(f"{path}: executor requires explicit dated reform windows")
+        normalized[path] = {}
+        for window, value in windows.items():
+            try:
+                start_text, stop_text = window.split(".")
+                start, stop = date.fromisoformat(start_text), date.fromisoformat(stop_text)
+            except (AttributeError, ValueError) as exc:
+                raise ValueError(f"{path}: invalid dated reform window {window!r}") from exc
+            first_year = start.year + ((start.month, start.day) != (1, 1))
+            last_year = stop.year
+            if first_year > last_year or start > stop:
+                raise ValueError(
+                    f"{path}: reform window {window} contains no 1 January annual lookup"
+                )
+            annual_window = f"{first_year}-01-01.{last_year}-12-31"
+            if annual_window in normalized[path] and normalized[path][annual_window] != value:
+                raise ValueError(f"{path}: conflicting annual reform windows")
+            normalized[path][annual_window] = value
+    return normalized
+
+
+def uc_health_scenario(reform: dict):
+    """Refresh the pinned UC inputs after changing its new-claimant rate.
+
+    The default UK modifier has already fixed uc_LCWRA_element before a
+    managed dict reform runs. Reapply the same seeded modifier after the
+    parameter update, so both worlds retain the same cohort assignment and
+    existing-claimant protections. Other measures keep the ordinary dict
+    pathway and its baseline/input behavior.
+    """
+    from policyengine_uk.scenarios.uc_reform import add_universal_credit_reform
+    from policyengine_uk.utils.scenario import Scenario
+
+    parameter_scenario = Scenario.from_reform(reform)
+
+    def apply_and_refresh(sim):
+        parameter_scenario.simulation_modifier(sim)
+        sim.tax_benefit_system.reset_parameter_caches()
+        add_universal_credit_reform(sim)
+
+    return Scenario(simulation_modifier=apply_and_refresh)
 
 
 def event_paths(event: str) -> tuple[Path, Path]:
@@ -224,13 +285,21 @@ def preflight() -> dict:
 
 
 def run_sim(year: int, variables: list[str], reform: dict | None, pre: dict) -> dict:
+    reform = annual_reform(reform)
+    scenario = (
+        uc_health_scenario(reform)
+        if reform and UC_HEALTH_ELEMENT_PARAMETER in reform
+        else None
+    )
+    scenario_kwargs = {"scenario": scenario} if scenario is not None else {}
     result = fiscal.run_managed_simulation(
         year=year,
         variables=variables,
-        reform=reform,
+        reform=None if scenario is not None else reform,
         runtime_dataset_source=Path(pre["runtime_dataset_source"]),
         expected_dataset_sha256=pre["sha256"],
         include_engine_provenance=True,
+        **scenario_kwargs,
     )
     fiscal.assert_managed_bundle(result["policyengine_bundle"], pre["release_bundle"])
     return result
@@ -476,6 +545,8 @@ def main(argv: list[str] | None = None) -> int:
         raise ValueError(f"not executable: {sorted(set(selected) - set(runnable))}")
     for key in selected:
         variable_channels(index[key])
+        annual_reform(runnable[key]["baseline_reform"])
+        annual_reform(runnable[key]["reform_reform"])
     coverage = worlds.world_coverage_gaps(index, years=years)
     if coverage:
         raise ValueError("\n".join(coverage))
@@ -499,6 +570,13 @@ def main(argv: list[str] | None = None) -> int:
                     "selected": selected,
                     "not_computable": worlds.not_computable(index, years=years),
                     "guard": guard,
+                    "annual_lookup_reforms": {
+                        key: {
+                            field: annual_reform(runnable[key][field])
+                            for field in ("baseline_reform", "reform_reform")
+                        }
+                        for key in selected
+                    },
                 },
                 indent=1,
                 sort_keys=True,

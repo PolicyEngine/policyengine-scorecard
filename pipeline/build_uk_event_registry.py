@@ -274,6 +274,65 @@ def authored_construction(event_slug, title, resolve):
     common_missing = [
         "Static Universal Credit represents only part of the Welfare inside cap head; behavioural earnings, company-tax and departmental channels are absent."
     ]
+    if event_slug == "autumn_statement_2023" and title.startswith(
+        "Local Housing Allowance (LHA): set to the 30th percentile"
+    ):
+        return _construct(
+            "lha_reset_to_30th_percentile",
+            "housing_benefit",
+            {"gov.dwp.LHA.freeze": {"2024-01-01": True}},
+            [_head("Welfare inside cap", ["housing_benefit", "universal_credit"], "spending")],
+            partial=[
+                "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.",
+                "Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
+            ],
+            note="Restore LHA.freeze=True from annual2024, removing the pinned April2024 reset to the default 30th BRMA rent percentile. The engine's find_freeze_start then preserves the continuous 2020 freeze rather than the certified new freeze from2025. Uses the installed rent list, with no dataset download.",
+        )
+    if event_slug == "autumn_statement_2023" and "abolish Class 2 self-employed NICs liability" in title:
+        return _construct(
+            "class_2_self_employed_nics_abolition",
+            "national_insurance",
+            {
+                "gov.hmrc.national_insurance.class_2.flat_rate": {"2024-01-01": 3.70},
+                "gov.hmrc.national_insurance.class_2.small_profits_threshold": {"2024-01-01": 12570},
+            },
+            tax_nic_heads,
+            partial=common_missing + [
+                "Restores only compulsory cash liability at the documented April2024 £3.70 weekly rate above £12,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
+            ],
+            note="Reverse the certified zero Class2 compulsory liability from annual2024 to the documented £3.70/week that was due from April2024 without abolition, with a £12,570 cash-liability threshold. The pinned formula otherwise charges above the small-profits threshold, although profits £6,725-£12,570 were already credited without paying. This threshold substitution isolates compulsory cash payments; voluntary contributions and benefit credits are not modelled. The pin incorrectly uses £3.15 for2023-24 against the actual £3.45 (later fixed upstream in #1887); nominal2023 remains that certified world and is before abolition. Later years keep £3.70 in cash terms and omit hypothetical later compulsory-rate uprating. Source: https://www.gov.uk/government/publications/autumn-statement-2023/autumn-statement-2023-html",
+        )
+    if event_slug == "spring_budget_2023" and title.startswith(
+        "DWP: increase the maximum support available in Universal Credit for childcare costs"
+    ):
+        prefix = "gov.dwp.universal_credit.elements.childcare.cap"
+        old_caps = {"1": 646.35, "2": 1108.04}
+        new_caps = {"1": 951, "2": 1630}
+        spec = {
+            f"{prefix}.{count}": {
+                str(y): round(old * resolve(f"{prefix}.{count}", f"{y}-04-06") / new_caps[count], 2)
+                for y in range(2023, 2028)
+            }
+            for count, old in old_caps.items()
+        }
+        m = _construct(
+            "uc_childcare_cap_increase",
+            "universal_credit",
+            spec,
+            [_head("Welfare inside cap", ["universal_credit"], "spending")],
+            start=2023,
+            partial=[
+                "Annual2023 applies the cap change throughout the year; the announced June2023 commencement is not apportioned.",
+                "Claiming, childcare spending and labour-supply responses, and separate upfront-payment and free-hours measures, are omitted.",
+            ],
+            note="Restore the pre-increase monthly caps £646.35/£1,108.04 for one/two-or-more children from annual2023, against certified £951/£1,630. Later old-cap counterfactuals use the same proportional uprating as each certified cap, retaining later inflation policy. The engine caps the covered annual childcare element at twelve monthly caps; PSCE administration rows remain outside household scope.",
+        )
+        m["counterfactual_derivation"] = {
+            "formula": "round(old_monthly_cap * certified_cap_year / new_monthly_cap_2023, 2)",
+            "old_monthly_caps": old_caps,
+            "new_monthly_caps_2023": new_caps,
+        }
+        return m
     if (
         event_slug in {"autumn_statement_2023", "spring_budget_2024"}
         and "main rate of Class 1 employee NICs" in title
@@ -290,7 +349,7 @@ def authored_construction(event_slug, title, resolve):
             note=(
                 "The pinned engine samples government parameters on 30 April and applies that fiscal policy value to the whole nominal year. Its processed employee NICs main rate is 8% throughout 2024, so the 2pp marginal AS2023 reversal is 10% throughout 2024, retaining the later SB2024 cut. Although the liability variable is monthly, raw January-March rates do not survive parameter preprocessing. Nominal 2023 is unchanged, so the original January-March FY2023-24 costing leg is omitted by this annual fiscal policy snapshot and remains a named period/construction divergence."
                 if event_slug == "autumn_statement_2023"
-                else "The 2pp marginal reversal on the certified 8% world is 10%. For AS2023, CY2023 has zero because commencement was January 2024; CY-proxies-FY explicitly misses the January-March FY2023-24 leg. Later SB2024 cuts are retained in the certified world."
+                else "The SB2024 2pp marginal reversal on the certified 8% world is 10% from annual 2024. AS2023 and SB2024 therefore execute the same 10% to 8% world and have identical PolicyEngine head effects; AS2023 does not reproduce the original 12% to 10% cut."
             ),
         )
     if (
@@ -366,10 +425,10 @@ def authored_construction(event_slug, title, resolve):
             [_head("Capital gains tax", ["capital_gains_tax"])],
             partial=[
                 "Business Asset Disposal Relief and Investors' Relief rates/qualifying gains are not separately represented.",
-                "The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied.",
+                "The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Current law is processed at 30 April, so its first higher annual year is 2025. The October dictionary reversal updates the processed tree without reprocessing and is first selected at the January 2025 annual lookup. No onset repair is applied.",
                 "CGT aggregates do not distinguish residential, BADR, IR or other gain types; the engine parameter descriptions mark CGT as under active development.",
             ],
-            note="A literal pre-announcement main-rate reversal, not a repair of the certified world's delayed rate onset or gains composition. Receipt timing and realisations responses remain divergence axes.",
+            note="A literal pre-announcement main-rate reversal, not a repair of the certified world's delayed rate onset or gains composition. Pooled gains include residential gains already taxed at 18%/24% before AB2024; reversing those to 10%/20% lowers the counterfactual too far and biases the announced revenue gain upward. Receipt timing and realisations responses remain divergence axes.",
         )
     if event_slug == "autumn_budget_2024" and title.startswith(
         "Stamp Duty Land Tax (SDLT): Increase the Higher Rate"
@@ -391,7 +450,7 @@ def authored_construction(event_slug, title, resolve):
                 "The certified population must contain additional-home purchase values; absence yields an inert leg rather than an inferred national tax base.",
             ],
             "commences_fy": "2024-25",
-            "note": "The pin still has the 3% surcharge scale, so the announcement is a forward 2pp increase to every marginal bracket. Government parameter processing samples 30 April and applies that value across each annual period; the October2024 onset is therefore absent from processed 2024 and present throughout processed 2025. Main-home rates and thresholds are retained.",
+            "note": "The pin still has the 3% surcharge scale, so the announcement is a forward 2pp increase to every marginal bracket. Dictionary reforms update the already processed tree without 30 April reprocessing: the October2024 start is absent at the January 2024 annual lookup and first selected in January 2025. Main-home rates and thresholds are retained.",
         }
     if event_slug == "autumn_budget_2024" and title.startswith(
         "Winter Fuel Payments: Target payments"
@@ -438,9 +497,9 @@ def authored_construction(event_slug, title, resolve):
             "pension_annual_allowance_package",
             "income_tax",
             {
-                f"{prefix}.default": {"2023-04-06": 40000},
-                f"{prefix}.minimum": {"2023-04-06": 4000},
-                f"{prefix}.taper": {"2023-04-06": 240000},
+                f"{prefix}.default": {"2023-01-01": 40000},
+                f"{prefix}.minimum": {"2023-01-01": 4000},
+                f"{prefix}.taper": {"2023-01-01": 240000},
             },
             [_head("Income tax", ["income_tax"]), _head("NICs", NIC_VARIABLES)],
             start=2023,
@@ -448,7 +507,7 @@ def authored_construction(event_slug, title, resolve):
                 "Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.",
                 "Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg.",
             ],
-            note="Restore £40,000 default, £4,000 tapered minimum and £240,000 adjusted-income taper. These three old/new values are encoded at the pin; the separate MPAA measure is not treated as the minimum tapered annual allowance.",
+            note="Restore £40,000 default, £4,000 tapered minimum and £240,000 adjusted-income taper from January2023 so annual FY2023-24 is computed. Dictionary reforms do not repeat fiscal-year conversion. These three old/new values are encoded at the pin; the separate MPAA measure is not treated as the minimum tapered annual allowance. The pinned relief cap plus excess-contribution charge is diagnosed in policyengine-uk#2237.",
         )
     if event_slug == "spring_statement_2025" and title.startswith(
         "Universal Credit Standard Allowance:"
@@ -459,10 +518,13 @@ def authored_construction(event_slug, title, resolve):
             t: resolve(f"{prefix}.{t}", "2025-04-06")
             for t in ("SINGLE_YOUNG", "SINGLE_OLD", "COUPLE_YOUNG", "COUPLE_OLD")
         }
-        base_index = resolve(index_path, "2025-04-06")
+        base_index = resolve(index_path, "2026-04-06")
+        # Match the September 2025 CPI used in the legislated 2026 amount;
+        # the pin's 2025-to-2026 benefit-CPI growth is only 3.4%.
+        inflation_2026 = 1.038
         spec = {
             f"{prefix}.{t}": {
-                str(y): round(v * resolve(index_path, f"{y}-04-06") / base_index, 2)
+                str(y): round(v * inflation_2026 * resolve(index_path, f"{y}-04-06") / base_index, 2)
                 for y in range(2026, 2030)
             }
             for t, v in old.items()
@@ -479,14 +541,17 @@ def authored_construction(event_slug, title, resolve):
             partial=[
                 "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.",
                 "OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.",
+                "policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
             ],
-            note="Counterfactual is the four 2025-26 monthly allowances uprated by the certified benefit-CPI index each April, without the additional announced uplift. This is an explicit later-vintage indexed baseline, not the March2025 forecast path.",
+            note="Counterfactual uses the four 2025-26 monthly allowances times actual September2025 CPI growth of 3.8% for 2026, matching the CPI behind the legislated amount; later years use the certified benefit-CPI growth from that 2026 anchor. This removes the prior 3.4% versus 3.8% index mismatch. The certified 2027-29 above-inflation uplifts remain missing (policyengine-uk#2239); the counterfactual is a later-vintage path, not the March2025 forecast.",
         )
         m["heads"] = [h for h in m["heads"] if h["pe_variables"]]
         m["counterfactual_derivation"] = {
-            "formula": "round(monthly_amount_2025_26 * benefit_CPI_April_year / benefit_CPI_April_2025, 2)",
+            "formula": "round(monthly_amount_2025_26 * 1.038 * benefit_CPI_April_year / benefit_CPI_April_2026, 2)",
             "amounts_2025_26": old,
             "index_parameter": index_path,
+            "september_2025_cpi_growth": 0.038,
+            "cpi_source": "https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/consumerpriceinflation/september2025",
         }
         return m
     if event_slug == "spring_statement_2025" and title.startswith(
@@ -513,7 +578,7 @@ def authored_construction(event_slug, title, resolve):
                 "The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.",
                 "Later legislated protections and rate paths differ from the original March2025 announcement.",
             ],
-            note="Restore new_claimant_health_element to the 2025-26 monthly amount uprated by the certified benefit-CPI path. The default uc_reform.py simulation modifier applies that amount to its seeded new-claimant cohort; existing-claimant protections remain. Reversing disabled.amount alone would be overridden by this modifier and would not isolate the measure.",
+            note="Restore new_claimant_health_element to the 2025-26 monthly amount uprated by the certified benefit-CPI path. The executor re-runs uc_reform.py after applying the dictionary reform, replacing its previously fixed LCWRA inputs for the same seeded new-claimant cohort; existing-claimant protections remain. Reversing disabled.amount alone would be overridden by this modifier and would not isolate the measure.",
         )
         m["counterfactual_derivation"] = {
             "formula": "round(monthly_health_amount_2025_26 * benefit_CPI_April_year / benefit_CPI_April_2025, 2)",

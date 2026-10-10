@@ -39,19 +39,19 @@
   }
  ],
  "head_effects": {
-  "universal_credit": -0.0
+  "universal_credit": 436340777.1042633
  },
  "head_variables": [
   "universal_credit"
  ],
  "literal_reform_minus_baseline": {
-  "universal_credit": 0.0
+  "universal_credit": -436340777.1042633
  },
  "literal_reversal_minus_certified_gbp": {
-  "universal_credit": 0.0
+  "universal_credit": -436340777.1042633
  },
  "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
- "measure_total_gbp": 0.0,
+ "measure_total_gbp": 436340777.1042633,
  "null_executed_as_no_limit": [],
  "policyengine_core_version": "3.27.1",
  "policyengine_version": "5.0.2",
@@ -59,14 +59,14 @@
   "executed": "certified world as served (current law)",
   "reform_dict": null
  },
- "registry_sha256": "4ee750cbd1c1e88551ea68d3fae2462c2edb5ff62665ca5b355f60d2e255ca4a",
+ "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
  "schema_version": 1,
  "scope": "sum of declared fiscal heads; static household microsimulation",
  "sign_convention": "positive_gain_to_exchequer",
  "totals": {
   "baseline": {
    "heads": {
-    "universal_credit": 41265285840.954895
+    "universal_credit": 41701626618.05916
    }
   },
   "reform": {

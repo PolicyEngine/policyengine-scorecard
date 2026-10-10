@@ -8696,7 +8696,7 @@
         "The original existing-claimant rate freeze is not reversed: later legislated combined-award protections remain in the certified world.",
         "Later legislated protections and rate paths differ from the original March2025 announcement."
       ],
-      "note": "Restore new_claimant_health_element to the 2025-26 monthly amount uprated by the certified benefit-CPI path. The default uc_reform.py simulation modifier applies that amount to its seeded new-claimant cohort; existing-claimant protections remain. Reversing disabled.amount alone would be overridden by this modifier and would not isolate the measure.",
+      "note": "Restore new_claimant_health_element to the 2025-26 monthly amount uprated by the certified benefit-CPI path. The executor re-runs uc_reform.py after applying the dictionary reform, replacing its previously fixed LCWRA inputs for the same seeded new-claimant cohort; existing-claimant protections remain. Reversing disabled.amount alone would be overridden by this modifier and would not isolate the measure.",
       "commences_fy": "2026-27",
       "counterfactual_derivation": {
         "formula": "round(monthly_health_amount_2025_26 * benefit_CPI_April_year / benefit_CPI_April_2025, 2)",
@@ -8968,28 +8968,28 @@
       "construction": "reversal_on_certified_world",
       "pe_baseline_modifier": {
         "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
-          "2026": 327.76,
-          "2027": 335.3,
-          "2028": 342.0,
-          "2029": 348.84
+          "2026": 329.03,
+          "2027": 336.59,
+          "2028": 343.32,
+          "2029": 350.19
         },
         "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
-          "2026": 413.74,
-          "2027": 423.26,
-          "2028": 431.72,
-          "2029": 440.36
+          "2026": 415.35,
+          "2027": 424.9,
+          "2028": 433.39,
+          "2029": 442.06
         },
         "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
-          "2026": 514.47,
-          "2027": 526.3,
-          "2028": 536.82,
-          "2029": 547.56
+          "2026": 516.46,
+          "2027": 528.33,
+          "2028": 538.9,
+          "2029": 549.68
         },
         "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
-          "2026": 649.46,
-          "2027": 664.39,
-          "2028": 677.68,
-          "2029": 691.23
+          "2026": 651.97,
+          "2027": 666.96,
+          "2028": 680.3,
+          "2029": 693.91
         }
       },
       "heads": [
@@ -9003,21 +9003,24 @@
       ],
       "missing_legs": [
         "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.",
-        "OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+        "OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.",
+        "policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
       ],
-      "note": "Counterfactual is the four 2025-26 monthly allowances uprated by the certified benefit-CPI index each April, without the additional announced uplift. This is an explicit later-vintage indexed baseline, not the March2025 forecast path.",
+      "note": "Counterfactual uses the four 2025-26 monthly allowances times actual September2025 CPI growth of 3.8% for 2026, matching the CPI behind the legislated amount; later years use the certified benefit-CPI growth from that 2026 anchor. This removes the prior 3.4% versus 3.8% index mismatch. The certified 2027-29 above-inflation uplifts remain missing (policyengine-uk#2239); the counterfactual is a later-vintage path, not the March2025 forecast.",
       "commences_fy": "2026-27",
       "counterfactual_derivation": {
-        "formula": "round(monthly_amount_2025_26 * benefit_CPI_April_year / benefit_CPI_April_2025, 2)",
+        "formula": "round(monthly_amount_2025_26 * 1.038 * benefit_CPI_April_year / benefit_CPI_April_2026, 2)",
         "amounts_2025_26": {
           "SINGLE_YOUNG": 316.98,
           "SINGLE_OLD": 400.14,
           "COUPLE_YOUNG": 497.55,
           "COUPLE_OLD": 628.1
         },
-        "index_parameter": "gov.benefit_uprating_cpi"
+        "index_parameter": "gov.benefit_uprating_cpi",
+        "september_2025_cpi_growth": 0.038,
+        "cpi_source": "https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/consumerpriceinflation/september2025"
       },
-      "pe_gap": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.",
+      "pe_gap": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation.",
       "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
       "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth £106 per week in 2029-30",
       "reported_status": "announced",
@@ -9040,7 +9043,7 @@
           "source_column": "2024-25",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "partial",
-          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23328:9e2ff9fa4bd2cc0b",
@@ -9057,7 +9060,7 @@
           "source_column": "2025-26",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "partial",
-          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23329:e052a44f1c2e1bfc",
@@ -9074,7 +9077,7 @@
           "source_column": "2026-27",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "partial",
-          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23330:9881d3a86b7a4bbc",
@@ -9091,7 +9094,7 @@
           "source_column": "2027-28",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "partial",
-          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23331:f2f010bd76ffdb79",
@@ -9108,7 +9111,7 @@
           "source_column": "2028-29",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "partial",
-          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23332:5c8171523fd97b4c",
@@ -9125,7 +9128,7 @@
           "source_column": "2029-30",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "partial",
-          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23333:02e7e4599be46f65",
@@ -9142,7 +9145,7 @@
           "source_column": "2024-25",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "partial",
-          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23334:4a49d693d727a3b2",
@@ -9159,7 +9162,7 @@
           "source_column": "2025-26",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "partial",
-          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23335:7e9f9d66b5194ff6",
@@ -9176,7 +9179,7 @@
           "source_column": "2026-27",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "partial",
-          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23336:5d8fea1a1f3c86d6",
@@ -9193,7 +9196,7 @@
           "source_column": "2027-28",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "partial",
-          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23337:31f0f1693e3bba3c",
@@ -9210,7 +9213,7 @@
           "source_column": "2028-29",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "partial",
-          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23338:27e34c93a163b4f0",
@@ -9227,7 +9230,7 @@
           "source_column": "2029-30",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "partial",
-          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping."
+          "classification_reason": "Existing/new-claimant health-element protections interact with the allowance change; this leg holds the certified health world fixed.; OBR Welfare outside cap is not separately identified by the annual UC liability; it has no invented mapping.; policyengine-uk#2239: the certified world omits legislated 2027-29 above-inflation uplifts; standard_allowance_uplift is unused. Later-year effects retain that model limitation."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23339:4a2ccb6ceb96c0f8",

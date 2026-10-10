@@ -253,6 +253,172 @@ def test_partial_construction_warnings_remain_visible(inputs):
     assert "indirect macroeconomic effects" in markdown
 
 
+def test_gap_kind_split_preserves_row_scope_and_exact_amounts(inputs):
+    registry, staged, root = inputs
+    measure = registry["measures"][0]
+    measure.update(classification="not_expressible", gap_kind="construction_pending")
+    staged[0].update(pe_value=None, artifact_path=None, artifact_sha256=None)
+    second = copy.deepcopy(measure)
+    second.update(measure_key="event__missing_model", gap_kind="model_or_data_gap")
+    second["source_rows"][0].update(
+        source_row_id="model", value_gbp=-10.0, value_gbp_decimal="-10.0"
+    )
+    outside = copy.deepcopy(second["source_rows"][0])
+    outside.update(source_row_id="outside", classification="out_of_household_scope")
+    second["source_rows"].append(outside)
+    registry["measures"].append(second)
+    for source in second["source_rows"]:
+        staged.append(
+            {
+                **staged[0],
+                "source_row_id": source["source_row_id"],
+                "measure_key": second["measure_key"],
+                "external_value_gbp": source["value_gbp"],
+                "external_value_gbp_decimal": source["value_gbp_decimal"],
+            }
+        )
+    rows = build_comparison_rows(registry, staged, artifact_root=root)
+    assert [r["gap_kind"] for r in rows] == [
+        "model_or_data_gap",
+        None,
+        "construction_pending",
+    ]
+    markdown = render_markdown(registry, rows)
+    assert "| construction_pending | 1 | 1 |" in markdown
+    assert "| model_or_data_gap | 1 | 1 |" in markdown
+    assert "not_expressible / construction_pending" in markdown
+    assert "gap_kind" in render_csv(rows).splitlines()[0]
+    registry["accounting"] = {"rows_in": 3, "by_class": {}}
+    summary = render_summary({"event": rows}, registries={"event": registry})
+    assert "| event / construction_pending | 1 | 1 |" in summary
+    assert "| event / model_or_data_gap | 1 | 1 |" in summary
+
+
+def test_inert_construction_blocks_complete_summary_and_numeric_assertions(inputs):
+    registry, staged, root = inputs
+    staged[0]["status"] = "inert_construction"
+    with pytest.raises(
+        EventComparisonError, match="cannot assert a numeric counterpart"
+    ):
+        build_comparison_rows(registry, staged, artifact_root=root)
+    staged[0].update(
+        pe_value=None,
+        artifact_path=None,
+        artifact_sha256=None,
+        reason="identical worlds in an in-force year",
+    )
+    rows = build_comparison_rows(registry, staged, artifact_root=root)
+    grid = {
+        "full_event_complete": True,
+        "computed_measure_years": 1,
+        "full_event_grid_size": 1,
+    }
+    assert "Numerical replay blocked" in render_markdown(registry, rows, grid)
+    summary = render_summary({"event": rows}, replay_grids={"event": grid})
+    assert "inert_construction (1 source rows)" in summary
+    assert "Numerical replay complete" not in summary
+
+
+def test_review_diagnoses_retain_causes_issues_and_opposite_direction(inputs):
+    registry, staged, root = inputs
+    base = build_comparison_rows(registry, staged, artifact_root=root)[0]
+    keys = [
+        "spring_budget_2023__pension_annual_allowance_package",
+        "spring_budget_2024__hicbc_threshold_and_taper",
+        "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+        "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+        "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+        "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+        "autumn_budget_2024__winter_fuel_means_test",
+        "autumn_budget_2024__employer_nics_package",
+        "event__first_extra",
+        "event__second_extra",
+        "spring_statement_2025__uc_standard_allowance_above_inflation",
+    ]
+    rows = [
+        {
+            **base,
+            "measure_key": key,
+            "title": key,
+            "year": 2029,
+            "residual_gbp": 1000.0 - number,
+        }
+        for number, key in enumerate(keys)
+    ]
+    summary = render_summary({"event": rows})
+    for issue in (
+        "policyengine-uk#2237",
+        "policyengine-uk#2238",
+        "policyengine-uk#2239",
+    ):
+        assert issue in summary
+    assert "fixed on main after the certified pin" in summary
+    assert "15–20% above the OBR forecast" in summary
+    assert "both reduce the charge" in summary
+    assert "opposite to the observed excessive PE tax reduction" in summary
+    assert "overstating the announced main-rate tax gain" in summary
+    assert "pinned wage-incidence construction" in summary
+    assert "Baseline vintage" in summary
+    assert "| Cause class |" in summary
+    # Reviewed causes remain visible below the first ten rows.
+    assert keys[-1] in summary
+    diagnosis = comparison.review_diagnosis(keys[-1], 2027)
+    assert diagnosis["issues"] == ["policyengine-uk#2239"]
+    assert comparison.review_diagnosis(keys[-1], 2026)["issues"] == []
+
+
+def test_corrected_construction_notes_travel_to_comparison():
+    for key in (
+        "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+        "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    ):
+        note = comparison.construction_note({"measure_key": key, "note": ""})
+        assert "10%→8%" in note
+        assert "12%→10%" in note
+    cgt = comparison.construction_note(
+        {
+            "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+            "note": "",
+        }
+    )
+    assert "overstates the announced main-rate tax gain" in cgt
+    sdlt = comparison.construction_note(
+        {
+            "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+            "note": "",
+        }
+    )
+    assert "without a new 30 April conversion" in sdlt
+    assert "annual lookups resolve at 1 January" in sdlt
+    class_2 = comparison.construction_note(
+        {
+            "measure_key": "autumn_statement_2023__class_2_abolition",
+            "note": "",
+        }
+    )
+    assert "£3.15/week versus the actual £3.45" in class_2
+    assert "policyengine-uk#1887" in class_2
+    assert "profits >= £12,570" in class_2
+
+
+def test_class_2_comparison_preserves_class_4_interaction_attribution_limit():
+    measure = {
+        "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+        "note": "Restore compulsory Class 2 cash liability.",
+    }
+    note = comparison.construction_note(measure)
+    diagnosis = comparison.review_diagnosis(measure["measure_key"], 2027)
+    for text in (note, diagnosis["evidence"]):
+        assert "−£552.039m in ni_class_2" in text
+        assert "−£786.808m in ni_class_4" in text
+        assert "pinned" in text
+        assert "floating-point" in text
+    assert "has not been causally traced" in note
+    assert "a full household trace" in diagnosis["evidence"]
+    assert "£1,849.49" in diagnosis["evidence"]
+    assert diagnosis["issues"] == []
+
+
 @pytest.mark.parametrize("reversal", [True, False])
 def test_literal_delta_sign_and_head_total(reversal):
     value = artifact(reversal)

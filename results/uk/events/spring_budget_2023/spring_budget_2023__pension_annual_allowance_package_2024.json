@@ -3,13 +3,13 @@
   "executed": "certified world with pe_baseline_modifier",
   "reform_dict": {
    "gov.hmrc.income_tax.allowances.annual_allowance.default": {
-    "2023-04-06.2035-12-31": 40000
+    "2023-01-01.2035-12-31": 40000
    },
    "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
-    "2023-04-06.2035-12-31": 4000
+    "2023-01-01.2035-12-31": 4000
    },
    "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
-    "2023-04-06.2035-12-31": 240000
+    "2023-01-01.2035-12-31": 240000
    }
   }
  },
@@ -96,7 +96,7 @@
   "executed": "certified world as served (current law)",
   "reform_dict": null
  },
- "registry_sha256": "1b6f738faafd9e441e2bd1e2ccb1db198837c551c0fc8279536e3a63bf345393",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
  "schema_version": 1,
  "scope": "sum of declared fiscal heads; static household microsimulation",
  "sign_convention": "positive_gain_to_exchequer",

@@ -31,7 +31,9 @@ wheel, read before setting the year window:
 | `policyengine_uk/parameters/gov/economic_assumptions/yoy_growth.yaml`, header and 2025–2030 blocks | Historical growth through 2024 is outturn; 2025–2030 growth uses the **March 2026** OBR forecast. The announcement forecast is not reconstructed. |
 | `policyengine_uk/tax_benefit_system.py`, lines 81–109 | The parameter-processing pipeline converts government parameters to fiscal-year values after uprating and backdating. |
 | `policyengine_uk/utils/parameters.py`, lines 26–47 | `convert_to_fiscal_year_parameters` samples each government `Parameter` at 30 April of year Y and writes that value over the entire annual period Y, for 2015–2040. Raw YAML change dates alone therefore do not establish the processed world's effective dates. |
-| `policyengine_uk/simulation.py`, lines 230–248 | Parameter changes reload the raw parameter tree, apply the reform, and then run the same parameter-processing pipeline. Dated reform schedules also undergo fiscal-year conversion. |
+| `policyengine_uk/simulation.py`, lines 230–248 | `apply_parameter_changes` reloads the raw parameter tree, applies changes and reprocesses it, including fiscal-year conversion. This is a different path from a managed `reform=dict`. |
+| `policyengine_uk/simulation.py`, lines 131–134 and 212–216; `policyengine_uk/utils/scenario.py`, lines 113–151 | A managed `reform=dict` becomes a `Scenario` simulation modifier. It updates the already-processed parameter tree after data load, without fiscal-year reprocessing. |
+| `policyengine_uk/scenarios/uc_reform.py`, lines 69–93; `policyengine_uk/simulation.py`, lines 173–177 | The default UC modifier reads the rebalancing parameters and fixes annual `uc_LCWRA_element` inputs before the later dictionary reform modifier runs. A health-element parameter reform needs an explicit executor treatment of that ordering. |
 
 The engine also contains longer-run economic assumptions, but its ordinary
 single-year dataset extension ends at 2030. A formula returning a number
@@ -42,15 +44,32 @@ require track 2's historical rules and per-year populations. They stay in
 the source inventory: Spring Budget 2023 retains 170 FY2022–23 cells while
 its executable window begins in CY 2023.
 
-The annual calculation uses the requested population-input year explicitly,
-while processed government policy parameters use the engine's 30 April
-snapshot for that year. This is a calendar-year population and fiscal-year
-policy combination; it does not reconstruct income and household records
-from 6 April to 5 April. The construction guard samples 1 January, 6 April
-and 31 December in the processed current-law tree. Authors must inspect
-processed values rather than infer monthly effects from raw YAML dates.
-Every staged comparison therefore retains
-`cy_proxies_fy`, `baseline_vintage` and `population_vintage` tags.
+The annual calculation uses the requested population-input year explicitly.
+Processed current-law government parameters use the engine's 30 April
+snapshot for that year. Dictionary reforms update that processed tree directly;
+an annual parameter lookup resolves at 1 January, without another 30 April
+sample. A change beginning after 1 January therefore does not affect annual
+Y, even when its raw date precedes 30 April. The executor explicitly converts
+dictionary date windows to the annual years whose 1 January falls in the
+window and rejects windows containing no such year. A start after 1 January
+moves to the following 1 January; documented part-year measures retain an
+explicit timing limitation. The Spring Budget 2023 Annual Allowance reversal
+starts on `2023-01-01` so that the CY2023 proxy computes FY2023–24.
+
+This is a calendar-year population and fiscal-year policy combination; it
+does not reconstruct income and household records from 6 April to 5 April.
+The construction guard samples 1 January, 6 April and 31 December in the
+processed current-law tree. Authors must inspect processed values and the
+actual reform path rather than infer monthly effects from raw YAML dates.
+Every staged comparison therefore retains `cy_proxies_fy`,
+`baseline_vintage` and `population_vintage` tags.
+
+For the UC health-element reversal, the executor applies the normalized
+dictionary updates and then re-runs the pinned UC simulation modifier.
+This rebuilds the fixed `uc_LCWRA_element` inputs using the changed
+parameters; it does not reload or fiscally reprocess the raw tree. The
+default modifier's initial run alone would leave the later parameter
+reversal inert.
 
 The isolated Modal worker has now passed the existing managed-bundle
 preflight and executed a nonzero private-school VAT replay for CY 2026.

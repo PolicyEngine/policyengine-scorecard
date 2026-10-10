@@ -317,3 +317,84 @@ def test_as2023_reversal_matches_measured_processed_fiscal_parameters():
         reversed_rate = rates[max(k for k in rates if k <= date)]
         assert reversed_rate - certified_rate == pytest.approx(0.02)
     assert "raw January-March rates do not survive" in m["note"]
+
+
+def test_annual_allowance_modifier_covers_january_2023_lookup():
+    m = registry.authored_construction(
+        "spring_budget_2023", "Annual Allowance (AA): increase", None
+    )
+    assert all(
+        list(schedule) == ["2023-01-01"]
+        for schedule in m["pe_baseline_modifier"].values()
+    )
+
+
+def test_standard_allowance_counterfactual_matches_legislated_cpi_anchor():
+    def resolve(path, date):
+        if path == "gov.benefit_uprating_cpi":
+            return {
+                "2026-04-06": 413.74,
+                "2027-04-06": 422.0148,
+                "2028-04-06": 430.455096,
+                "2029-04-06": 439.06419792,
+            }[date]
+        return 400.14
+
+    m = registry.authored_construction(
+        "spring_statement_2025", "Universal Credit Standard Allowance:", resolve
+    )
+    schedule = m["pe_baseline_modifier"][
+        "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD"
+    ]
+    assert schedule["2026"] == 415.35
+    assert schedule["2027"] == round(400.14 * 1.038 * 1.02, 2)
+    assert "policyengine-uk#2239" in m["note"]
+
+
+@pytest.mark.parametrize(
+    "event,title,path,value",
+    [
+        (
+            "autumn_statement_2023",
+            "Local Housing Allowance (LHA): set to the 30th percentile from April 2024",
+            "gov.dwp.LHA.freeze",
+            True,
+        ),
+        (
+            "autumn_statement_2023",
+            "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+            "gov.hmrc.national_insurance.class_2.flat_rate",
+            3.70,
+        ),
+    ],
+)
+def test_new_reversals_are_executable_and_explicit_about_scope(
+    event, title, path, value
+):
+    m = registry.authored_construction(event, title, None)
+    assert m["classification"] == "partial"
+    assert m["pe_baseline_modifier"][path] == {"2024-01-01": value}
+    assert m["heads"] and m["missing_legs"]
+    if path.endswith("class_2.flat_rate"):
+        assert m["pe_baseline_modifier"][
+            "gov.hmrc.national_insurance.class_2.small_profits_threshold"
+        ] == {"2024-01-01": 12570}
+
+
+def test_childcare_old_caps_preserve_subsequent_certified_uprating():
+    def resolve(path, date):
+        base = 951 if path.endswith(".1") else 1630
+        return base * 1.05 ** (int(date[:4]) - 2023)
+
+    m = registry.authored_construction(
+        "spring_budget_2023",
+        "DWP: increase the maximum support available in Universal Credit for childcare costs",
+        resolve,
+    )
+    spec = m["pe_baseline_modifier"]
+    assert spec["gov.dwp.universal_credit.elements.childcare.cap.1"]["2023"] == 646.35
+    assert spec["gov.dwp.universal_credit.elements.childcare.cap.2"]["2023"] == 1108.04
+    assert spec["gov.dwp.universal_credit.elements.childcare.cap.1"]["2024"] == round(
+        646.35 * 1.05, 2
+    )
+    assert "June2023" in m["missing_legs"][0]

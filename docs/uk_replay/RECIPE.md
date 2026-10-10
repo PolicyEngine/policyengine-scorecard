@@ -47,7 +47,9 @@ documenting an input idea alone does not make it executable.
 For `not_expressible`, distinguish an evidenced missing mechanism from a
 `construction_pending` decision in `gap_kind`. The latter means that this
 lane has not established an executable construction; it does not establish
-that the engine lacks the underlying liability model.
+that the engine lacks the underlying liability model. Show the
+`construction_pending` and `model_or_data_gap` measure/row counts separately
+in every event comparison and the cross-event summary.
 
 Title keywords need token boundaries: ISA/ISAs, VAT and NIC/NICs must not
 match disability, private, innovation or technical. Likewise, immigration
@@ -78,13 +80,19 @@ Autumn Budget 2024 examples:
   raw parameter change is dated April 2025 rather than the announced October 2024;
   BADR and Investors' Relief histories remain omitted. The pin labels these
   rate parameters as under active development, which must travel into the
-  construction's caveat. The April-snapshot conversion implies that the
-  April 2025 rate applies throughout annual 2025: the first higher processed
-  year is 2025, rather than 2026.
+  construction's caveat. Current-law processing samples the April 2025 rate
+  and applies it throughout annual 2025. The dictionary reversal starts on
+  1 January 2025 in that processed tree; it does not undergo another April
+  sample. The first higher processed year is 2025, rather than 2026.
+  Reversing pooled gains also lowers residential gains, whose pre-event
+  rates were already 18%/24%. That overstates the announced revenue increase
+  attributable to the main-rate change.
 * SDLT's additional-home 2pp increase requires a forward delta: the pinned
   additional-home scale still has its old rates, so reversing certified law
   would score the wrong world. The event's source head includes other stamp
-  taxes; retain that scope limitation.
+  taxes; retain that scope limitation. Its annual construction starts on
+  1 January 2025. An October 2024 dictionary date would leave the annual
+  1 January 2024 lookup unchanged; no fiscal-year reprocessing occurs.
 * Removing private schools' business-rates charitable relief is
   `out_of_household_scope`. The private-school VAT leg is `partial`: execute
   the dedicated `gov.contrib.labour.private_school_vat` lever at 20% from
@@ -133,12 +141,52 @@ pre-measure world, then certified current law. The literal reversal delta is
 kept separately in `literal_reform_minus_baseline` and
 `literal_reversal_minus_certified_gbp`.
 
+The Spring Statement 2025 UC standard-allowance counterfactual starts with
+the 2025 rates and uses the actual September 2025 CPI increase of 3.8% for
+the 2026 increase, as published by [ONS](https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/consumerpriceinflation/september2025).
+For example, the single-25-or-over counterfactual is £400.14 × 1.038,
+compared with the legislated £424.90 after the additional 2.3% uplift.
+Later counterfactual years follow the pinned benefit-CPI growth from this
+2026 anchor. The certified standard allowance omits the further 2027–2029
+uplifts of 3.1%, 4.0% and 4.8% in [Universal Credit Act 2025, section 1](https://www.legislation.gov.uk/ukpga/2025/22/section/1/2026-04-06).
+Affected comparisons name `policyengine-uk#2239`; those missing certified-law
+uplifts remain a model limitation of this reversal.
+
 A forward `pe_reform_delta` applies an announced change absent from the
 certified world. A `delta_on_modified_baseline` executes an explicit
 `pe_baseline_modifier` and `pe_reform_delta` for mixed worlds. A package
 composes registered legs, checking that overlapping paths specify the same
 values. Its source rows still occur once: components do not get duplicate
 claims or contribute a synthetic OBR total.
+
+The UC health-element reversal needs an additional ordering step. At the
+pin, `scenarios/uc_reform.py` fixes `uc_LCWRA_element` inputs before a managed
+dictionary reform updates the parameters. For this construction the executor
+uses an explicit scenario modifier that applies the dictionary changes and
+then re-runs the UC modifier. It retains the pinned deterministic claimant
+assignment and computes the health-element inputs from the changed schedule.
+A parameter-only update after the original UC modifier leaves the fixed
+inputs unchanged and is an inert construction. Verify a nonzero in-force
+measure/year effect before counting the construction as executed.
+
+Three previously pending constructions now have executable reversals:
+
+* AS2023 LHA resets: set `gov.dwp.LHA.freeze=true` from 1 January 2024 to
+  remove the certified reset to the 30th percentile. Combine UC and Housing
+  Benefit changes for `Welfare inside cap`; the outside-cap head remains
+  uncomputed.
+* SB2023 UC childcare caps: restore £646.35/£1,108.04 against the certified
+  2023 new caps of £951/£1,630, then scale each old cap by the corresponding
+  certified cap's later growth. The annual 2023 construction applies the
+  reversal for the whole proxy year, although the announced increase began
+  in June; retain that timing caveat.
+* AS2023 Class 2 abolition: restore the compulsory £3.70/week cash liability
+  due from April 2024, as recorded in the [Autumn Statement](https://www.gov.uk/government/publications/autumn-statement-2023/autumn-statement-2023-html),
+  and set the formula's threshold to £12,570. The pinned formula otherwise
+  charges at the £6,725 small-profits threshold, including people who were
+  already credited without paying. Keep £3.70 in cash terms for later years;
+  later hypothetical uprating, voluntary contributions and entitlement
+  responses remain outside this construction.
 
 Positive effects mean gains to the Exchequer. A tax head uses
 `reform - baseline`; a spending head uses its negative. Record each head's
@@ -209,36 +257,85 @@ It does not reproduce the event-vintage OBR world. Each registry's
 outside that window.
 
 Use every supported costing year, even if the first year's effect is zero.
-Government policy parameters undergo the pinned engine's fiscal conversion:
+Current-law government parameters undergo the pinned engine's fiscal conversion:
 after uprating and backdating, `convert_to_fiscal_year_parameters` samples
 each parameter at 30 April of Y and applies that value across annual period
-Y. Parameter reforms undergo the same processing. Thus the model combines
-calendar-year population inputs with an April policy snapshot. Inspect the
-processed tax-benefit system or simulation; raw YAML date schedules alone
-do not establish the executed policy.
+Y. Managed `reform=dict` calls take a different path: `Scenario.from_reform`
+updates the already-processed tree after data load, without reprocessing.
+Annual formulas look up parameters at 1 January. The executor explicitly
+converts dictionary date windows to the annual years whose 1 January falls
+in the window: a later start moves to the following 1 January, and a window
+containing no annual lookup is rejected. The dry run records the resulting
+windows in `annual_lookup_reforms`. The Annual Allowance reversal starts
+on `2023-01-01` to compute FY2023–24; a 6 April start would miss that annual
+proxy year. `apply_parameter_changes`
+does reload and process the raw tree, but that method is not the managed
+dictionary reform path used here. Inspect the processed tax-benefit system
+and the actual scenario path; raw YAML date schedules alone do not establish
+the executed policy.
 
 Annual modelling can miss part-year commencement: Autumn Statement 2023's
 January 2024 NICs cut falls in FY 2023–24 while the processed April 2023
 snapshot remains unchanged. In processed 2024, the employee NICs rate is
 8% throughout the annual period, reflecting the later April 2024 cut.
+Consequently AS2023 and SB2024 both compare the same 10%→8% annual employee
+NICs worlds and return the same PE figures. AS2023's annual counterpart
+does not recover its announced 12%→10% part-year cut.
 Keep the source FY and the calendar proxy visible and tag the timing axis.
 Do not silently move the source claim to a different year.
+
+The Class 2 annual flat rate at the certified pin is £3.15/week for
+FY2023–24, against the actual £3.45/week. The upstream correction landed
+later in [policyengine-uk#1887](https://github.com/PolicyEngine/policyengine-uk/issues/1887).
+The AS2023 abolition reversal uses the documented £3.70/week compulsory
+counterfactual from annual 2024, rather than the £3.45 rate frozen for
+voluntary payers. It applies only above £12,570; profits from £6,725 to
+£12,570 were already treated as paid without cash liability. The historical
+CY2023 pin limitation remains in the construction note.
+The retained formula uses `profits >= 12570`, while compulsory liability
+required profits strictly above £12,570. It therefore charges at exactly the
+threshold in the counterfactual, potentially overstating the liability and
+the abolition's cost for those records. That national contribution remains
+unsized; this boundary limitation is carried in the comparison note.
+
+The Class 2 reversal also changes the pinned Class 4 maximum, which depends
+on both the Class 2 flat rate and the calculated payment. Its mapped NICs
+head therefore includes a Class 4 effect of -£786.808m in FY2027–28 and
+-£495.875m in FY2028–29, alongside direct Class 2 effects of -£552.039m and
+-£558.681m. A pure pinned-formula example in 2027 shows sensitivity to the
+cap's strict comparison between mathematically equal quantities after
+floating-point rounding: restoring Class 2 switches the branch and increases
+Class 4 for that example. This does not establish how much of the national
+Class 4 effect that rounding mechanism explains. Retain the Class 4
+contribution and this limitation when interpreting the headline as an
+abolition costing; the direct Class 2 cash effect is available separately.
 
 Full artifact-grid coverage and staged numerical head/FY rows are separate.
 The inherited `stage_uk_ab2025.identical_year_verdict` asserts a zero for
 identical computed worlds only when the source FY precedes the registry's
-recorded `commences_fy`. At or after commencement, or without a recorded
-commencement, staging retains the source row without a numeric counterpart
-and explains why the construction does not carry that year. In Autumn Budget
-2024, identical 2024 employer-NIC worlds precede recorded FY2025–26 and can
-produce annotated zeros. Annual 2024 VAT, SDLT and CGT zeros occur within
-their recorded FY2024–25 commencement, so those artifacts remain visible but
-their FY2024–25 source-head counterparts stay unasserted. The annual April
-snapshot cannot stand in for the part-year policy change. Unsupported heads
-within partial packages likewise remain without numerical counterparts.
-Report completed measure-year artifacts alongside the staged constructed
-head/FY count and gap inventory; a complete artifact grid does not assert
-every published source number.
+recorded `commences_fy`. Identical worlds during an active annual construction
+are `inert_construction`, retain no numeric counterpart and block
+"Numerical replay complete" even if every planned artifact exists. Tests
+inject the UC modifier-ordering defect to check that it cannot be hidden as
+an ordinary uncomputed row. `STAGING_MANIFEST.json` sets
+`full_event_complete=false` and records the affected `inert_measure_years`.
+
+A documented delayed annual activation is a separate timing gap. Staging
+permits only the recorded AB2024 CGT/SDLT/VAT and AS2023 employee-NIC
+timing cases, or a measure's explicit `annual_activation_fy` matching its
+first annual reform window. An arbitrary late date cannot create that
+exception; an injected 6 April Annual Allowance start blocks completion.
+In Autumn
+Budget 2024, identical 2024 employer-NIC worlds precede recorded FY2025–26
+and can produce annotated zeros. Annual 2024 VAT, SDLT and CGT zeros occur
+within their recorded FY2024–25 announcement commencement but precede the
+construction's explicit first annual 1 January lookup. Those artifacts
+remain visible and their FY2024–25 source-head counterparts stay unasserted
+as timing gaps. The annual policy proxy cannot represent their part-year
+changes. Unsupported heads within partial packages likewise remain without
+numerical counterparts. Report completed measure-year artifacts alongside
+the staged constructed head/FY count and gap inventory; a complete artifact
+grid does not assert every published source number.
 
 ## Axis tagging and explained share
 
@@ -296,17 +393,27 @@ Run the engine-free tests and the pinned integration checks:
 
 ```bash
 .venv-replay/bin/python -m pytest tests/test_uk_event_registry.py tests/test_uk_event_compute.py tests/test_uk_event_comparison.py tests/test_uk_replay_legacy.py
-PYTHONPATH=. .venv-replay/bin/python pipeline/build_uk_event_registry.py --event autumn_budget_2024 --check
+UK_REPLAY_ENGINE_TESTS=1 .venv-replay/bin/python -m pytest tests/test_uk_event_compute.py -k uc_health_modifier_refresh
+PYTHONPATH=. .venv-replay/bin/python pipeline/build_uk_event_registry.py --event spring_budget_2023 --check
 ```
 
 The properties include row/GBP conservation, ratio scale and sign invariance,
 reversal sign involution, head sums, residual accounting and deterministic
 serialization. The legacy AB2025 regression tests remain part of the check.
+For the PR #157 review fixes, Spring Budget 2023, Autumn Statement 2023 and
+Spring Statement 2025 are rebuilt and replayed. Autumn Budget 2024 and
+Spring Budget 2024 retain the original registry bytes bound by their run
+receipts; corrected construction explanations are supplied by this recipe
+and comparison annotations. A current-builder `--check` applies to a rebuilt
+event registry, rather than regenerating those preserved input receipts.
 
 ## Commands and compute budget
 
-Build a Python 3.12 uv environment in the assigned workspace and install the
-managed runner with these exact compatibility pins:
+Use the existing `.venv-replay` and `.venv-replay-checks/modal-control` for
+the PR #157 review fixes. Create no new environments or worktrees and
+download no datasets. For an initial setup only, build a Python 3.12 uv
+environment in the assigned workspace and install the managed runner with
+these exact compatibility pins:
 
 ```bash
 UV_CACHE_DIR=.venv-uv-cache uv venv --python 3.12.14 .venv-replay

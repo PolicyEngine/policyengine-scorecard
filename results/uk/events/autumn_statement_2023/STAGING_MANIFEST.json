@@ -1,19 +1,19 @@
 {
  "by_status": {
-  "constructed": 33,
-  "not_computed": 1083
+  "constructed": 57,
+  "not_computed": 1059
  },
- "computed_measure_years": 12,
+ "computed_measure_years": 24,
  "event": "autumn_statement_2023",
  "full_event_complete": true,
- "full_event_grid_size": 12,
+ "full_event_grid_size": 24,
  "missing_measure_years": [],
- "registry_sha256": "a6b08eb4873fb598434afcb0385fea9fff88c382287d625dd0718e0acc602fba",
+ "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
  "source_rows": 1116,
  "source_value_gbp": -106739601405.0282,
  "source_value_gbp_decimal": "-106739601405.02819512486489776",
  "staged_path": "results/uk/events/autumn_statement_2023/STAGED.jsonl",
  "staged_rows": 1116,
- "staged_sha256": "e8928809876fc41cf2cffbfd9b12cd8916f97d6333deb62303798db025f62726",
+ "staged_sha256": "b9921bf78cbef9cbc04726f956f5235826642d2eb417d863a9d1dda3eb236377",
  "staged_value_gbp_decimal": "-106739601405.02819512486489776"
 }

@@ -1,6 +1,7 @@
 {
  "artifacts": {
-  "results/uk/events/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2025.json": "d355fcf5c0096f789e122507d6b826f78e5fe135ff984a5cf17eab35967c3919"
+  "results/uk/events/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2025.json": "64dba3c5fb37101d55915559ede077a03a75dcfb37be9d135a228205f8432598",
+  "results/uk/events/spring_budget_2023/spring_budget_2023__uc_childcare_cap_increase_2025.json": "d269d29a7d160f2075655e1c5e66835b505d5bf86fb7fa88e36e5787f056fa1f"
  },
  "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
  "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
@@ -9,7 +10,7 @@
  "policyengine_core_version": "3.27.1",
  "policyengine_version": "5.0.2",
  "receipt_kind": "completed_event_artifacts",
- "registry_sha256": "1b6f738faafd9e441e2bd1e2ccb1db198837c551c0fc8279536e3a63bf345393",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
  "schema_version": 1,
  "year": 2025
 }

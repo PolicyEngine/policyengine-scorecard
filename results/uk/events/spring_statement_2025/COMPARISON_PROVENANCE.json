@@ -2,12 +2,12 @@
  "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
  "event_slug": "spring_statement_2025",
  "outputs_sha256": {
-  "COMPARISON.csv": "0db5327a2067242f365601524480c8f8a9c46707ff573e3dbda4ea4f06cb18e0",
-  "COMPARISON.json": "5aad344ecaaee7699fad8066c20484a070ad76467495033819e9943a456085eb",
-  "COMPARISON.md": "364b43096a4b575abf7d8d63e0e3d16022d19119d5ea370a66989766ee8d89ee"
+  "COMPARISON.csv": "5748f0521bc22fd80424772430bdf609bf30f1a145d9c7db79011328f0ebc6f0",
+  "COMPARISON.json": "faaaa0bfe63f23b6e35f7f2324928e64481bde5233eee0d2fc470860530de0c0",
+  "COMPARISON.md": "20f8b35ac6151d10642aad47d3a10d9d2276a791a00d0166c5239ab7d30d7a5f"
  },
  "registry_path": "data/uk/events/spring_statement_2025_measures.json",
- "registry_sha256": "4ee750cbd1c1e88551ea68d3fae2462c2edb5ff62665ca5b355f60d2e255ca4a",
+ "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
  "replay_grid": {
   "computed_measure_years": 12,
   "full_event_complete": true,
@@ -16,7 +16,7 @@
  },
  "source_rows": 498,
  "staged_path": "results/uk/events/spring_statement_2025/STAGED.jsonl",
- "staged_sha256": "21637bdf8cb0147be11b2ebc434da1443ff5c5d85194c32cd275a435dd134767",
+ "staged_sha256": "3885c3dcfc33bf5dbaa6fa147710f79cd2b626596dee46c2e7828e355ca4b4b6",
  "staging_manifest_path": "results/uk/events/spring_statement_2025/STAGING_MANIFEST.json",
- "staging_manifest_sha256": "c0212bdb09f6c767e7ef3a9ffca1b1e642e55419888db7a59de2d91707c12bc9"
+ "staging_manifest_sha256": "6be85d0a57d2b67e2d1093f709b0fd46f9c72b509f5359e52197b0780b237c2c"
 }

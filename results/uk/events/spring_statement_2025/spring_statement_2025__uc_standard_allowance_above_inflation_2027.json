@@ -3,28 +3,28 @@
   "executed": "certified world with pe_baseline_modifier",
   "reform_dict": {
    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
-    "2026-01-01.2026-12-31": 649.46,
-    "2027-01-01.2027-12-31": 664.39,
-    "2028-01-01.2028-12-31": 677.68,
-    "2029-01-01.2029-12-31": 691.23
+    "2026-01-01.2026-12-31": 651.97,
+    "2027-01-01.2027-12-31": 666.96,
+    "2028-01-01.2028-12-31": 680.3,
+    "2029-01-01.2029-12-31": 693.91
    },
    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
-    "2026-01-01.2026-12-31": 514.47,
-    "2027-01-01.2027-12-31": 526.3,
-    "2028-01-01.2028-12-31": 536.82,
-    "2029-01-01.2029-12-31": 547.56
+    "2026-01-01.2026-12-31": 516.46,
+    "2027-01-01.2027-12-31": 528.33,
+    "2028-01-01.2028-12-31": 538.9,
+    "2029-01-01.2029-12-31": 549.68
    },
    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
-    "2026-01-01.2026-12-31": 413.74,
-    "2027-01-01.2027-12-31": 423.26,
-    "2028-01-01.2028-12-31": 431.72,
-    "2029-01-01.2029-12-31": 440.36
+    "2026-01-01.2026-12-31": 415.35,
+    "2027-01-01.2027-12-31": 424.9,
+    "2028-01-01.2028-12-31": 433.39,
+    "2029-01-01.2029-12-31": 442.06
    },
    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
-    "2026-01-01.2026-12-31": 327.76,
-    "2027-01-01.2027-12-31": 335.3,
-    "2028-01-01.2028-12-31": 342.0,
-    "2029-01-01.2029-12-31": 348.84
+    "2026-01-01.2026-12-31": 329.03,
+    "2027-01-01.2027-12-31": 336.59,
+    "2028-01-01.2028-12-31": 343.32,
+    "2029-01-01.2029-12-31": 350.19
    }
   }
  },
@@ -57,19 +57,19 @@
   }
  ],
  "head_effects": {
-  "universal_credit": -476169901.9299164
+  "universal_credit": -409490512.0053253
  },
  "head_variables": [
   "universal_credit"
  ],
  "literal_reform_minus_baseline": {
-  "universal_credit": 476169901.9299164
+  "universal_credit": 409490512.0053253
  },
  "literal_reversal_minus_certified_gbp": {
-  "universal_credit": 476169901.9299164
+  "universal_credit": 409490512.0053253
  },
  "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
- "measure_total_gbp": -476169901.9299164,
+ "measure_total_gbp": -409490512.0053253,
  "null_executed_as_no_limit": [],
  "policyengine_core_version": "3.27.1",
  "policyengine_version": "5.0.2",
@@ -77,14 +77,14 @@
   "executed": "certified world as served (current law)",
   "reform_dict": null
  },
- "registry_sha256": "4ee750cbd1c1e88551ea68d3fae2462c2edb5ff62665ca5b355f60d2e255ca4a",
+ "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
  "schema_version": 1,
  "scope": "sum of declared fiscal heads; static household microsimulation",
  "sign_convention": "positive_gain_to_exchequer",
  "totals": {
   "baseline": {
    "heads": {
-    "universal_credit": 40185385922.22501
+    "universal_credit": 40252065312.149605
    }
   },
   "reform": {

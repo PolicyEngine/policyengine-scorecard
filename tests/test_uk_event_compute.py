@@ -3,6 +3,8 @@
 import copy
 import hashlib
 import json
+import os
+import sys
 from types import SimpleNamespace
 
 import pytest
@@ -214,6 +216,128 @@ def test_shared_ab2025_world_defaults_and_explicit_old_window_identical():
         ab._windows({"2024-04-06.2023-04-05": 0.21})
 
 
+def test_non_january_reform_dates_are_handled_by_explicit_annual_lookup():
+    dated = {"gov.tax.rate": {"2023-04-06.2025-04-05": 0.21}}
+    assert compute.annual_reform(dated) == {
+        "gov.tax.rate": {"2024-01-01.2025-12-31": 0.21}
+    }
+    # A mid-year start does not acquire an effect in that same FY proxy.
+    with pytest.raises(ValueError, match="no 1 January annual lookup"):
+        compute.annual_reform({"gov.tax.rate": {"2023-04-06.2023-12-31": 0.21}})
+    january = {"gov.tax.rate": {"2023-01-01.2025-12-31": 0.21}}
+    assert compute.annual_reform(january) == january
+    with pytest.raises(TypeError, match="explicit dated reform windows"):
+        compute.annual_reform({"gov.tax.rate": 0.21})
+
+
+def test_uc_health_reform_uses_managed_scenario_and_other_dicts_keep_path(monkeypatch):
+    health = {compute.UC_HEALTH_ELEMENT_PARAMETER: {"2026-01-01.2029-12-31": 437.66}}
+    scenario = object()
+    monkeypatch.setattr(compute, "uc_health_scenario", lambda reform: scenario)
+    calls = []
+
+    def managed(**kwargs):
+        calls.append(kwargs)
+        return simulation()
+
+    monkeypatch.setattr(compute.fiscal, "run_managed_simulation", managed)
+    monkeypatch.setattr(compute.fiscal, "assert_managed_bundle", lambda *args: None)
+    pre = {
+        "runtime_dataset_source": "/certified.h5",
+        "sha256": "a" * 64,
+        "release_bundle": {},
+    }
+    compute.run_sim(2026, ["universal_credit"], health, pre)
+    assert calls[0]["reform"] is None
+    assert calls[0]["scenario"] is scenario
+    tax = {"gov.tax.rate": {"2024-10-30.2035-12-31": 0.21}}
+    compute.run_sim(2026, ["income_tax"], tax, pre)
+    assert calls[1]["reform"] == {"gov.tax.rate": {"2025-01-01.2035-12-31": 0.21}}
+    assert "scenario" not in calls[1]
+
+
+def test_uc_health_scenario_updates_parameters_before_refreshing_fixed_inputs(
+    monkeypatch,
+):
+    calls = []
+    sim = SimpleNamespace(
+        health_parameter=217.26,
+        fixed_health_input=217.26 * 12,
+        tax_benefit_system=SimpleNamespace(
+            reset_parameter_caches=lambda: calls.append("reset")
+        ),
+    )
+
+    class Scenario:
+        def __init__(self, *, simulation_modifier):
+            self.simulation_modifier = simulation_modifier
+
+        @classmethod
+        def from_reform(cls, reform):
+            def update(simulation):
+                calls.append("parameter_update")
+                simulation.health_parameter = reform[
+                    compute.UC_HEALTH_ELEMENT_PARAMETER
+                ]["2026-01-01.2029-12-31"]
+
+            return cls(simulation_modifier=update)
+
+    def uc_modifier(simulation):
+        calls.append("uc_modifier")
+        simulation.fixed_health_input = simulation.health_parameter * 12
+
+    monkeypatch.setitem(
+        sys.modules,
+        "policyengine_uk.scenarios.uc_reform",
+        SimpleNamespace(add_universal_credit_reform=uc_modifier),
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "policyengine_uk.utils.scenario",
+        SimpleNamespace(Scenario=Scenario),
+    )
+    reform = {compute.UC_HEALTH_ELEMENT_PARAMETER: {"2026-01-01.2029-12-31": 437.66}}
+    compute.uc_health_scenario(reform).simulation_modifier(sim)
+    assert calls == ["parameter_update", "reset", "uc_modifier"]
+    assert sim.fixed_health_input == 437.66 * 12
+
+
+@pytest.mark.skipif(
+    os.environ.get("UK_REPLAY_ENGINE_TESTS") != "1",
+    reason="set UK_REPLAY_ENGINE_TESTS=1 for the pinned synthetic-household integration check",
+)
+def test_uc_health_modifier_refresh_changes_awards_without_changing_cohorts():
+    uk = pytest.importorskip("policyengine_uk")
+    import numpy as np
+
+    # The pinned seed assigns some of these otherwise identical claimants
+    # to the new-claimant cohort. No population file is needed.
+    situation = {"people": {}, "benunits": {}, "households": {}}
+    for i in range(10):
+        person = f"p{i}"
+        situation["people"][person] = {
+            "age": {"2026": 40},
+            "uc_limited_capability_for_WRA": {str(y): True for y in range(2026, 2030)},
+        }
+        situation["benunits"][f"b{i}"] = {"members": [person]}
+        situation["households"][f"h{i}"] = {"members": [person]}
+    reform = {compute.UC_HEALTH_ELEMENT_PARAMETER: {"2026-01-01.2029-12-31": 437.66}}
+    certified = uk.Simulation(situation=situation)
+    broken = uk.Simulation(situation=situation, reform=reform)
+    fixed = uk.Simulation(
+        situation=situation, scenario=compute.uc_health_scenario(reform)
+    )
+    baseline_awards = certified.calculate("uc_LCWRA_element", 2026)
+    assert np.array_equal(broken.calculate("uc_LCWRA_element", 2026), baseline_awards)
+    fixed_awards = fixed.calculate("uc_LCWRA_element", 2026)
+    changed = fixed_awards != baseline_awards
+    assert np.array_equal(changed, np.random.default_rng(43).random(10) < 0.11)
+    assert (
+        fixed.calculate("universal_credit", 2026).sum()
+        > certified.calculate("universal_credit", 2026).sum()
+    )
+
+
 def test_artifact_rejects_different_worlds_and_mutated_dataset():
     b, r = simulation(), simulation()
     r["dataset_sha256_after"] = "c" * 64
@@ -304,6 +428,117 @@ def test_stage_exact_inventory_oriented_heads_and_row_classification(
     (d / "measure.json").write_text("{}")
     with pytest.raises(ValueError, match="bytes differ"):
         stage.stage_event(registry, manifest, artifact_dir=d, registry_sha256="b" * 64)
+
+
+def test_injected_b1_identical_health_worlds_block_numerical_replay(
+    tmp_path, monkeypatch
+):
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    m = measure()
+    m.update(
+        measure_key="spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+        commences_fy="2026-27",
+        pe_baseline_modifier={compute.UC_HEALTH_ELEMENT_PARAMETER: {"2026": 437.66}},
+    )
+    for source in m["source_rows"]:
+        source["fy"] = "2026-27"
+    world = ab.worlds_for(m, {m["measure_key"]: m}, years=[2026])
+    # Inject B1's observable defect: the dict changed, but fixed health inputs
+    # make every fiscal aggregate identical in the two constructed worlds.
+    a = compute.build_artifact(
+        measure=m,
+        world=world,
+        year=2026,
+        baseline=simulation(),
+        reform=simulation(),
+        certified=simulation(),
+        registry_sha256="b" * 64,
+        event="test_event",
+    )
+    payload = compute.canonical_bytes(a)
+    (tmp_path / "health.json").write_bytes(payload)
+    manifest = {
+        "registry_sha256": "b" * 64,
+        "certified_dataset_sha256": "a" * 64,
+        "artifacts": {"health.json": hashlib.sha256(payload).hexdigest()},
+    }
+    registry = {"event": "test_event", "calendar_years": [2026], "measures": [m]}
+    rows, tally = stage.stage_event(
+        registry, manifest, artifact_dir=tmp_path, registry_sha256="b" * 64
+    )
+    assert {row["status"] for row in rows} == {"inert_construction"}
+    assert all(row["pe_value"] is None for row in rows)
+    assert tally["full_event_complete"] is False
+    assert tally["inert_measure_years"] == [
+        {"measure_key": m["measure_key"], "year": 2026}
+    ]
+
+
+def test_explicit_delayed_january_activation_keeps_timing_gap(tmp_path, monkeypatch):
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    m = measure()
+    m["pe_baseline_modifier"] = {"gov.tax.rate": {"2024-10-30": 0.2}}
+    m["annual_activation_fy"] = "2025-26"
+    a = artifact(simulation(), simulation())
+    payload = compute.canonical_bytes(a)
+    (tmp_path / "timing.json").write_bytes(payload)
+    manifest = {
+        "registry_sha256": "b" * 64,
+        "certified_dataset_sha256": "a" * 64,
+        "artifacts": {"timing.json": hashlib.sha256(payload).hexdigest()},
+    }
+    rows, tally = stage.stage_event(
+        {"event": "test_event", "calendar_years": [2024], "measures": [m]},
+        manifest,
+        artifact_dir=tmp_path,
+        registry_sha256="b" * 64,
+    )
+    assert {row["status"] for row in rows} == {"not_computed"}
+    assert tally["full_event_complete"] is True
+    assert "inert_measure_years" not in tally
+
+
+def test_injected_original_aa_april_start_blocks_numerical_replay(tmp_path, monkeypatch):
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    m = measure()
+    m.update(
+        measure_key="spring_budget_2023__pension_annual_allowance_package",
+        commences_fy="2023-24",
+        pe_baseline_modifier={
+            "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+                "2023-04-06": 40000
+            }
+        },
+    )
+    for source in m["source_rows"]:
+        source["fy"] = "2023-24"
+    world = ab.worlds_for(m, {m["measure_key"]: m}, years=[2023])
+    a = compute.build_artifact(
+        measure=m,
+        world=world,
+        year=2023,
+        baseline=simulation(),
+        reform=simulation(),
+        certified=simulation(),
+        registry_sha256="b" * 64,
+        event="test_event",
+    )
+    payload = compute.canonical_bytes(a)
+    (tmp_path / "aa.json").write_bytes(payload)
+    rows, tally = stage.stage_event(
+        {"event": "test_event", "calendar_years": [2023], "measures": [m]},
+        {
+            "registry_sha256": "b" * 64,
+            "certified_dataset_sha256": "a" * 64,
+            "artifacts": {"aa.json": hashlib.sha256(payload).hexdigest()},
+        },
+        artifact_dir=tmp_path,
+        registry_sha256="b" * 64,
+    )
+    assert {row["status"] for row in rows} == {"inert_construction"}
+    assert all(row["pe_value"] is None for row in rows)
+    assert tally["full_event_complete"] is False
+    assert tally["inert_measure_years"] == [{"measure_key": m["measure_key"], "year": 2023}]
 
 
 def test_no_digest_no_simulation(tmp_path, monkeypatch):

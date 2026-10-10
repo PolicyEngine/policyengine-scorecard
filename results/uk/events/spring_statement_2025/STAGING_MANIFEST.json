@@ -1,19 +1,19 @@
 {
  "by_status": {
-  "constructed": 8,
-  "not_computed": 490
+  "constructed": 12,
+  "not_computed": 486
  },
  "computed_measure_years": 12,
  "event": "spring_statement_2025",
  "full_event_complete": true,
  "full_event_grid_size": 12,
  "missing_measure_years": [],
- "registry_sha256": "4ee750cbd1c1e88551ea68d3fae2462c2edb5ff62665ca5b355f60d2e255ca4a",
+ "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
  "source_rows": 498,
  "source_value_gbp": 5575279133.025794,
  "source_value_gbp_decimal": "5575279133.02579407146152",
  "staged_path": "results/uk/events/spring_statement_2025/STAGED.jsonl",
  "staged_rows": 498,
- "staged_sha256": "21637bdf8cb0147be11b2ebc434da1443ff5c5d85194c32cd275a435dd134767",
+ "staged_sha256": "3885c3dcfc33bf5dbaa6fa147710f79cd2b626596dee46c2e7828e355ca4b4b6",
  "staged_value_gbp_decimal": "5575279133.02579407146152"
 }

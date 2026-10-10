@@ -3,13 +3,13 @@
   "executed": "certified world with pe_baseline_modifier",
   "reform_dict": {
    "gov.hmrc.income_tax.allowances.annual_allowance.default": {
-    "2023-04-06.2035-12-31": 40000
+    "2023-01-01.2035-12-31": 40000
    },
    "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
-    "2023-04-06.2035-12-31": 4000
+    "2023-01-01.2035-12-31": 4000
    },
    "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
-    "2023-04-06.2035-12-31": 240000
+    "2023-01-01.2035-12-31": 240000
    }
   }
  },
@@ -60,7 +60,7 @@
   }
  ],
  "head_effects": {
-  "income_tax": 0.0,
+  "income_tax": -3693209247.487488,
   "ni_class_1_employee": 0.0,
   "ni_class_1_employer": 0.0,
   "ni_class_2": 0.0,
@@ -74,21 +74,21 @@
   "ni_class_4"
  ],
  "literal_reform_minus_baseline": {
-  "income_tax": -0.0,
+  "income_tax": 3693209247.487488,
   "ni_class_1_employee": -0.0,
   "ni_class_1_employer": -0.0,
   "ni_class_2": -0.0,
   "ni_class_4": -0.0
  },
  "literal_reversal_minus_certified_gbp": {
-  "income_tax": -0.0,
+  "income_tax": 3693209247.487488,
   "ni_class_1_employee": -0.0,
   "ni_class_1_employer": -0.0,
   "ni_class_2": -0.0,
   "ni_class_4": -0.0
  },
  "measure_key": "spring_budget_2023__pension_annual_allowance_package",
- "measure_total_gbp": 0.0,
+ "measure_total_gbp": -3693209247.487488,
  "null_executed_as_no_limit": [],
  "policyengine_core_version": "3.27.1",
  "policyengine_version": "5.0.2",
@@ -96,14 +96,14 @@
   "executed": "certified world as served (current law)",
   "reform_dict": null
  },
- "registry_sha256": "1b6f738faafd9e441e2bd1e2ccb1db198837c551c0fc8279536e3a63bf345393",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
  "schema_version": 1,
  "scope": "sum of declared fiscal heads; static household microsimulation",
  "sign_convention": "positive_gain_to_exchequer",
  "totals": {
   "baseline": {
    "heads": {
-    "income_tax": 334629047521.71484,
+    "income_tax": 338322256769.20233,
     "ni_class_1_employee": 73590920028.98312,
     "ni_class_1_employer": 129405331149.09933,
     "ni_class_2": 545282224.0653527,

@@ -26,6 +26,17 @@ AXES = [
     "population_vintage",
 ]
 
+# Existing frozen registries predate an explicit annual_activation_fy field.
+# These specific, documented constructions intentionally omit an earlier
+# partial fiscal year. A late date alone must never excuse an inert lever:
+# that would hide the original FY2023 Annual Allowance execution defect.
+DOCUMENTED_ANNUAL_ACTIVATIONS = {
+    "autumn_budget_2024__capital_gains_main_rates_and_reliefs": "2025-26",
+    "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp": "2025-26",
+    "autumn_budget_2024__private_school_vat_20pct": "2025-26",
+    "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p": "2024-25",
+}
+
 
 def _head_key(value: str) -> str:
     return " ".join(str(value).casefold().replace("_", " ").split())
@@ -143,6 +154,43 @@ def stage_event(
         raise ValueError(
             "committed artifact is outside the event's executable measure/year grid"
         )
+    inert_pairs = set()
+    for pair, artifact in artifacts.items():
+        key, year = pair
+        if not ab_stage.identical_worlds(artifact):
+            continue
+        commencement = index[key].get("commences_fy")
+        if commencement and year < int(commencement[:4]):
+            continue
+        # Only a declared intentional annual activation can excuse an
+        # identical in-force year. Inferring intent from a later start date
+        # would hide a wrongly dated construction, such as the original AA.
+        world = planned[key]
+        first_years = [
+            int(window[:4])
+            for field in ("baseline_reform", "reform_reform")
+            for windows in (compute.annual_reform(world[field]) or {}).values()
+            for window in windows
+        ]
+        activation_fy = index[key].get("annual_activation_fy") or (
+            DOCUMENTED_ANNUAL_ACTIVATIONS.get(key)
+        )
+        if activation_fy is not None:
+            try:
+                activation_year = int(activation_fy[:4])
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"{key}: invalid annual_activation_fy") from exc
+            if (
+                activation_fy != fiscal.fy_label(activation_year)
+                or not first_years
+                or activation_year != min(first_years)
+            ):
+                raise ValueError(
+                    f"{key}: annual_activation_fy differs from the authored annual reform start"
+                )
+            if year < activation_year:
+                continue
+        inert_pairs.add(pair)
     if manifest is not None:
 
         def declared_pairs(field):
@@ -283,6 +331,12 @@ def stage_event(
                         )
                         if gap:
                             row["reason"] = gap
+                            if artifact_key in inert_pairs:
+                                row["status"] = "inert_construction"
+                                row["reason"] = (
+                                    f"inert construction: reform and baseline worlds identical in FY {fy} "
+                                    "while the measure is in force; numerical replay is blocked"
+                                )
                         elif note:
                             row["annotations"].append(note)
                     if row["reason"] is None:
@@ -332,10 +386,12 @@ def stage_event(
         "staged_value_gbp_decimal": staged_total,
         "computed_measure_years": len(computed_pairs),
         "full_event_grid_size": len(full_pairs),
-        "full_event_complete": full_pairs <= computed_pairs,
+        "full_event_complete": full_pairs <= computed_pairs and not inert_pairs,
         "missing_measure_years": compute.grid_rows(full_pairs - computed_pairs),
         "registry_sha256": registry_sha256,
     }
+    if inert_pairs:
+        tally["inert_measure_years"] = compute.grid_rows(inert_pairs)
     if tally["source_rows"] != tally["staged_rows"]:
         raise ValueError(
             "staging inventory does not preserve the source-row accounting identity"
