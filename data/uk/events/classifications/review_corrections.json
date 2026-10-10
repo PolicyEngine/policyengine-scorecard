@@ -1,0 +1,698 @@
+{
+  "engine": "policyengine-uk 2.125.0",
+  "review_type": "targeted survivor-dispute and material-row source audit; no simulations",
+  "corrections": [
+    {
+      "row_id": "autumn_2012:tax:010",
+      "measure": "Personal allowance: increase by \u00a3235 to \u00a39,440 in 2013-14, with equal gains to higher rate taxpayers",
+      "scope": "in",
+      "out_reason": null,
+      "area": "income_tax",
+      "scope_note": "Personal allowance increase with an offsetting basic-rate-limit cut so higher-rate taxpayers gain equally.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount",
+        "gov.hmrc.income_tax.rates.uk[1].threshold"
+      ],
+      "variables": [
+        "personal_allowance",
+        "income_tax"
+      ],
+      "missing_machinery": "No age/date-of-birth-related personal allowances or their separate income taper: personal_allowance computes one common amount and the GBP 100,000 ANI taper. Older taxpayers affected differently before 2016 cannot be represented by the common allowance reform.",
+      "expressibility_note": "Raise personal_allowance.amount by \u00a3235 for 2013-14 and cut the basic rate limit (rates.uk[1].threshold, which is the band width after allowances) by \u00a3235 so the higher-rate threshold is unchanged; reversal construction. Both parameters start in 2015, so 2013-14 values must be added. Partial: separate age-related allowance machinery is absent (personal_allowance.py); this affects the tax change and downstream benefit response, beyond the separate dated-parameter gap.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "budget_2013:tax:039",
+      "measure": "Personal allowance: increase by an additional \u00a3560 to \u00a310,000 in 2014-15",
+      "scope": "in",
+      "out_reason": null,
+      "area": "income_tax",
+      "scope_note": "Personal allowance raised to \u00a310,000 in 2014-15.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount",
+        "gov.hmrc.income_tax.rates.uk[1].threshold"
+      ],
+      "variables": [
+        "personal_allowance",
+        "income_tax"
+      ],
+      "missing_machinery": "No age/date-of-birth-related personal allowances or their separate income taper: personal_allowance computes one common amount and the GBP 100,000 ANI taper. Older taxpayers affected differently before 2016 cannot be represented by the common allowance reform.",
+      "expressibility_note": "Set personal_allowance.amount to \u00a310,000 for 2014-15 and the basic rate limit (rates.uk[1].threshold) to keep the higher-rate threshold path; reversal construction. Both parameters start in 2015, so a 2014-15 value must be added. Partial: separate age-related allowance machinery is absent (personal_allowance.py); this affects the tax change and downstream benefit response, beyond the separate dated-parameter gap.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "budget_2014:tax:001",
+      "measure": "Personal allowance: increase to \u00a310,500 in 2015-16 with equal gains to higher rate taxpayers",
+      "scope": "in",
+      "out_reason": null,
+      "area": "income_tax",
+      "scope_note": "Personal allowance and basic rate limit are statutory income tax parameters on individuals.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount",
+        "gov.hmrc.income_tax.rates.uk[1].threshold"
+      ],
+      "variables": [
+        "personal_allowance",
+        "income_tax"
+      ],
+      "missing_machinery": "No age/date-of-birth-related personal allowances or their separate income taper: personal_allowance computes one common amount and the GBP 100,000 ANI taper. Older taxpayers affected differently before 2016 cannot be represented by the common allowance reform.",
+      "expressibility_note": "Reform sets the PA to GBP 10,500 for 2015-16 and the basic rate limit so higher-rate payers gain the same cash as basic-rate payers, against a pre-Budget indexed baseline. The PA parameter starts 2015-04-06 at 10,600 (the later Autumn 2014 value), so both baseline and reform 2015-16 values have to be supplied. Partial: separate age-related allowance machinery is absent (personal_allowance.py); this affects the tax change and downstream benefit response, beyond the separate dated-parameter gap.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "autumn_2014:tax:001",
+      "measure": "Personal Allowance: increase to \u00a310,600 in 2015-16 with full gains to higher rate taxpayers",
+      "scope": "in",
+      "out_reason": null,
+      "area": "income_tax",
+      "scope_note": "Personal allowance and basic rate limit are statutory income tax parameters on individuals.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount",
+        "gov.hmrc.income_tax.rates.uk[1].threshold"
+      ],
+      "variables": [
+        "personal_allowance",
+        "income_tax"
+      ],
+      "missing_machinery": "No age/date-of-birth-related personal allowances or their separate income taper: personal_allowance computes one common amount and the GBP 100,000 ANI taper. Older taxpayers affected differently before 2016 cannot be represented by the common allowance reform.",
+      "expressibility_note": "Reform sets the PA to GBP 10,600 for 2015-16 with the higher-rate threshold rising by the full PA increase (basic rate limit held), against the Budget 2014 baseline (GBP 10,500). The PA parameter's first key (2015-04-06: 10,600) is this measure's value, so the baseline value has to be supplied. Partial: separate age-related allowance machinery is absent (personal_allowance.py); this affects the tax change and downstream benefit response, beyond the separate dated-parameter gap.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "autumn_2012:spending:017",
+      "measure": "Personal allowance: increase by \u00a3235 to \u00a39,440 in 2013-14, with equal gains to higher rate taxpayers",
+      "scope": "in",
+      "out_reason": null,
+      "area": "housing_benefit",
+      "scope_note": "Means-tested benefit knock-on of the personal allowance rise (benefits assessed on post-tax earnings).",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount",
+        "gov.hmrc.income_tax.rates.uk[1].threshold"
+      ],
+      "variables": [
+        "housing_benefit_net_earnings",
+        "uc_income_tax_on_earnings",
+        "housing_benefit"
+      ],
+      "missing_machinery": "No age/date-of-birth-related personal allowances or their separate income taper: personal_allowance computes one common amount and the GBP 100,000 ANI taper. Older taxpayers affected differently before 2016 cannot be represented by the common allowance reform.",
+      "expressibility_note": "Falls out of the personal allowance reform: housing_benefit_net_earnings and uc_income_tax_on_earnings deduct income tax, so a higher allowance lowers HB/UC. Working-age HB caseload is reported-anchored. Partial: separate age-related allowance machinery is absent (personal_allowance.py); this affects the tax change and downstream benefit response, beyond the separate dated-parameter gap.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "budget_2013:spending:025",
+      "measure": "Personal allowance: increase by an additional \u00a3560 to \u00a310,000 in 2014-15",
+      "scope": "in",
+      "out_reason": null,
+      "area": "housing_benefit",
+      "scope_note": "Means-tested benefit knock-on of the personal allowance rise to \u00a310,000.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount",
+        "gov.hmrc.income_tax.rates.uk[1].threshold"
+      ],
+      "variables": [
+        "housing_benefit_net_earnings",
+        "uc_income_tax_on_earnings",
+        "housing_benefit"
+      ],
+      "missing_machinery": "No age/date-of-birth-related personal allowances or their separate income taper: personal_allowance computes one common amount and the GBP 100,000 ANI taper. Older taxpayers affected differently before 2016 cannot be represented by the common allowance reform.",
+      "expressibility_note": "Falls out of the personal allowance reform: housing_benefit_net_earnings and uc_income_tax_on_earnings deduct income tax. Working-age HB caseload is reported-anchored. Partial: separate age-related allowance machinery is absent (personal_allowance.py); this affects the tax change and downstream benefit response, beyond the separate dated-parameter gap.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "budget_2014:spending:003",
+      "measure": "Personal allowance: increase to \u00a310,500 in 2015-16 with equal gains to higher rate taxpayers",
+      "scope": "in",
+      "out_reason": null,
+      "area": "housing_benefit",
+      "scope_note": "Knock-on of the PA rise on income-related benefits assessed on post-tax income: household entitlements.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.hmrc.income_tax.allowances.personal_allowance.amount"
+      ],
+      "variables": [
+        "housing_benefit",
+        "universal_credit",
+        "pension_credit"
+      ],
+      "missing_machinery": "No age/date-of-birth-related personal allowances or their separate income taper: personal_allowance computes one common amount and the GBP 100,000 ANI taper. Older taxpayers affected differently before 2016 cannot be represented by the common allowance reform.",
+      "expressibility_note": "housing_benefit_applicable_income nets off income_tax and national_insurance, and UC and Pension Credit income definitions read income tax, so the PA reform flows through without extra construction. HB parameters start 2015 and working-age HB is reported-anchored. Partial: separate age-related allowance machinery is absent (personal_allowance.py); this affects the tax change and downstream benefit response, beyond the separate dated-parameter gap.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "autumn_budget_2024:spending:044",
+      "measure": "Winter Fuel Payments: Target payments at recipients of Pension Credit and certain other means-tested benefits from winter 2024-25",
+      "scope": "in",
+      "out_reason": null,
+      "area": "energy_and_cost_of_living_payments",
+      "scope_note": "Winter Fuel Payment, a household cash entitlement, restricted to means-tested-benefit recipients.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.dwp.winter_fuel_payment.eligibility.require_benefits"
+      ],
+      "variables": [
+        "winter_fuel_allowance"
+      ],
+      "missing_machinery": "winter_fuel_allowance on_mtb omits Universal Credit and tax credits from the statutory qualifying benefits and cannot reproduce the full eligibility population; Scotland is excluded and England/Wales eligibility is not explicitly enforced for the benefit passport.",
+      "expressibility_note": "Reversal: require_benefits false (installed true from 2024-01-01), read by winter_fuel_allowance. PE's qualifying-benefit test is pension_credit, income_support, esa_income and jsa_income (no UC or tax credits), Scotland is zeroed by the formula, and calendar 2024 proxies winter 2024-25; Pension Credit take-up responses in the costing are not modelled. Partial because UC/tax-credit passports in the 2024 regulations are absent, rather than solely a timing or behavioural discrepancy.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "autumn_budget_2025:spending:110",
+      "measure": "Winter Fuel Payment: Target to pensioners with taxable income below or equal to \u00a335,000 from Winter 2025",
+      "scope": "in",
+      "out_reason": null,
+      "area": "energy_and_cost_of_living_payments",
+      "scope_note": "Restores Winter Fuel Payment to pensioners with taxable income up to GBP 35,000.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income",
+        "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income"
+      ],
+      "variables": [
+        "winter_fuel_allowance"
+      ],
+      "missing_machinery": "winter_fuel_allowance is a household eligibility payment using household.any of age and income; no individual Winter Fuel Payment allocation and tax recovery charge, so mixed-income pensioner couples cannot be represented faithfully. UC and tax-credit benefit passports are also absent; the threshold uses strict less-than.",
+      "expressibility_note": "Reversal construction (registry): pre-measure world sets use_maximum_taxable_income false (means-tested-benefit passport only). The engine applies the GBP 35,000 test as eligibility (on total_income, England and Wales), whereas HMRC pays and claws back through income tax, so the PMD welfare and income-tax rows are netted in winter_fuel_allowance. Partial: the household income-passport shortcut omits individual split payments/recovery and the full benefit passport list.",
+      "existing_registry_key": "ab2025__winter_fuel_payment_income_test_35000"
+    },
+    {
+      "row_id": "budget_2020:tax:041",
+      "measure": "Capital Gains Tax: reduce the lifetime limit in entrepreneurs' relief to \u00a31,000,000",
+      "scope": "in",
+      "out_reason": null,
+      "area": "capital_gains_tax",
+      "scope_note": "Capital gains tax relief on individuals' business disposals.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.hmrc.cgt.badr.lifetime_limit"
+      ],
+      "variables": [
+        "capital_gains_tax",
+        "capital_gains_badr"
+      ],
+      "missing_machinery": "No cumulative prior Business Asset Disposal/Entrepreneurs Relief usage input or formula: capital_gains_tax caps the current year relief gains at the lifetime limit as if none had been used before.",
+      "expressibility_note": "The parameter already carries \u00a310m to \u00a31m on 2020-03-11 (FA 2020 Sch. 3); the reversal holds \u00a310m. capital_gains_tax applies the limit to the year's capital_gains_badr as if none of it was used earlier, so lifetime-usage history is approximated. Forestalling and realisation responses in the costing are behavioural. Partial because changing a lifetime limit requires prior usage, not just the current annual relief-gains input.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "autumn_statement_2022:tax:083",
+      "measure": "National Insurance: reverse temporary 1.25pp increase in NICs rates from November 2022, and cancel the Health and Social Care Levy",
+      "scope": "in",
+      "out_reason": null,
+      "area": "health_and_social_care_levy",
+      "scope_note": "Income tax knock-on of the NICs reversal and levy cancellation (employer NIC cut passed into pay); a household-tax consequence of an in-scope measure, mirroring autumn_budget_2021:tax:004.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.contrib.policyengine.employer_ni.employee_incidence",
+        "gov.hmrc.national_insurance.class_1.rates.employer"
+      ],
+      "variables": [
+        "income_tax",
+        "employer_ni_fixed_employer_cost_change"
+      ],
+      "missing_machinery": "Only the employer-NIC pay pass-through channel exists (employer_ni_fixed_employer_cost_change, 100% immediate employee incidence by default, zero for earners below the secondary threshold); OBR's gradual incidence path, the deductibility of employer NICs for unincorporated employers (higher profits, more income tax) and the levy's over-SPA leg are not represented.",
+      "expressibility_note": "Reversal construction as for tax:082/tax:084 (pre-measure world adds 1.25pp to the employer rate from 2022-11-06 and approximates the levy from 2023-24 as +1.25pp); in that scenario employer_ni_fixed_employer_cost_change lowers employment_income against the current-law baseline, so income_tax differs. Size rests on the incidence parameter, not OBR's assumption; annual processing samples the employer rate at the start of the period.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "autumn_budget_2025:tax:045",
+      "measure": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029 ",
+      "scope": "in",
+      "out_reason": null,
+      "area": "nics_class_1_employer",
+      "scope_note": "Income tax head of the salary-sacrifice NICs cap: employers recouping the extra NICs through pay lowers taxable earnings; a household-tax consequence of an in-scope measure.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.salary_sacrifice_pension_cap",
+        "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate"
+      ],
+      "variables": [
+        "income_tax",
+        "salary_sacrifice_broad_base_haircut",
+        "salary_sacrifice_returned_to_income"
+      ],
+      "missing_machinery": "PE's only channel is a uniform 0.16% employment-income haircut on all workers (PE's own calibration, not OBR's incidence); the PMD's 2029-30 +1,390 followed by -714 in 2030-31 implies further first-year or timing effects that PE has no machinery for.",
+      "expressibility_note": "Reversal construction (cap inf in the pre-measure world, 2,000 from 2029-04-06 at 2.125.0): with the cap finite, salary_sacrifice_broad_base_haircut cuts employment_income by 0.16% for everyone, so income_tax falls; the redirected excess is relieved through pension_contributions_relief. Magnitude rests on the haircut parameter.",
+      "existing_registry_key": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+    },
+    {
+      "row_id": "autumn_statement_2022:tax:018",
+      "measure": "National Insurance: maintain employer secondary threshold at current level from April 2023 until April 2028",
+      "scope": "in",
+      "out_reason": null,
+      "area": "nics_class_1_employer",
+      "scope_note": "Income-tax head of an employer NIC threshold freeze; the engine contains an explicit employer-cost-to-pay channel.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold",
+        "gov.contrib.policyengine.employer_ni.employee_incidence"
+      ],
+      "variables": [
+        "income_tax",
+        "employer_ni_fixed_employer_cost_change"
+      ],
+      "missing_machinery": "The employer-NI fixed-cost pay response is an immediate uniform incidence assumption (default 100%); the OBR gradual incidence path and unincorporated employers profits/deductibility channel are absent.",
+      "expressibility_note": "Secondary threshold changes trigger employer_ni_fixed_employer_cost_change, included in employment_income. A reversal can change income_tax through pay, conditional on the incidence assumption; this does not reproduce every OBR cross-head channel.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "autumn_budget_2025:tax:031",
+      "measure": "National Insurance: Maintain the secondary threshold for employer contributions at current level for a further three years until April 2031",
+      "scope": "in",
+      "out_reason": null,
+      "area": "nics_class_1_employer",
+      "scope_note": "Income-tax head of an employer NIC threshold freeze; the engine contains an explicit employer-cost-to-pay channel.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold",
+        "gov.contrib.policyengine.employer_ni.employee_incidence"
+      ],
+      "variables": [
+        "income_tax",
+        "employer_ni_fixed_employer_cost_change"
+      ],
+      "missing_machinery": "The employer-NI fixed-cost pay response is an immediate uniform incidence assumption (default 100%); the OBR gradual incidence path and unincorporated employers profits/deductibility channel are absent.",
+      "expressibility_note": "Secondary threshold changes trigger employer_ni_fixed_employer_cost_change, included in employment_income. A reversal can change income_tax through pay, conditional on the incidence assumption; this does not reproduce every OBR cross-head channel.",
+      "existing_registry_key": "ab2025__employer_nics_secondary_threshold_freeze_to_2031"
+    },
+    {
+      "row_id": "autumn_statement_2023:tax:001",
+      "measure": "National Insurance contributions (NICs): 2p cut to the main rate of Class 1 employee NICs from January 2024",
+      "scope": "in",
+      "out_reason": null,
+      "area": "nics_class_1_employee",
+      "scope_note": "Income-tax head of an employee NICs cut, with labour-supply and incorporation responses identified in the primary AS2023 policy costing.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_1.rates.employee.main",
+        "gov.simulation.labour_supply_responses"
+      ],
+      "variables": [
+        "income_tax",
+        "employment_income_behavioral_response"
+      ],
+      "missing_machinery": "Only an optional earnings labour-supply response exists (elasticities default zero); no extensive-margin employment/entry or incorporation/remuneration-choice machinery.",
+      "expressibility_note": "AS2023 policy costings p9 includes employment, working-hours and future-incorporation responses. PE can change earnings through its optional labour-supply response, which then changes income tax; the full OBR head cannot be represented. Harmonised with spring_budget_2024:tax:001.",
+      "existing_registry_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p"
+    },
+    {
+      "row_id": "budget_2016:tax:034",
+      "measure": "Capital Gains Tax: reduce basic rate to 10% and main rate to 20% excluding residential property and carried interest",
+      "scope": "in",
+      "out_reason": null,
+      "area": "capital_gains_tax",
+      "scope_note": "Income-tax head of a household CGT reform; scope describes the fiscal head, separately from whether its channel is available.",
+      "expressibility": "not",
+      "parameter_paths": [],
+      "variables": [
+        "income_tax"
+      ],
+      "missing_machinery": "No CGT-to-income-tax base shifting or incorporation/remuneration-choice mechanism. The detailed OBR decomposition of this income-tax head is unknown from the PMD row.",
+      "expressibility_note": "Changing CGT parameters cannot directly change statutory income tax on a fixed income base. A generic optional labour-supply response is not an identified construction of this OBR head; its detailed mechanism remains unknown.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "autumn_statement_2022:tax:014",
+      "measure": "Capital Gains Tax: reduce the annual exempt amount from \u00a312,300 to \u00a36,000 from April 2023 then \u00a33,000 from April 2024",
+      "scope": "in",
+      "out_reason": null,
+      "area": "capital_gains_tax",
+      "scope_note": "Income-tax head of a household CGT reform; scope describes the fiscal head, separately from whether its channel is available.",
+      "expressibility": "not",
+      "parameter_paths": [],
+      "variables": [
+        "income_tax"
+      ],
+      "missing_machinery": "No CGT-to-income-tax base shifting or incorporation/remuneration-choice mechanism. The detailed OBR decomposition of this income-tax head is unknown from the PMD row.",
+      "expressibility_note": "Changing CGT parameters cannot directly change statutory income tax on a fixed income base. A generic optional labour-supply response is not an identified construction of this OBR head; its detailed mechanism remains unknown.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "spring_budget_2021:tax:035",
+      "measure": "Capital Gains Tax: maintain the Annual Exempt Amount at \u00a312,300 up to and including 2025-26",
+      "scope": "in",
+      "out_reason": null,
+      "area": "capital_gains_tax",
+      "scope_note": "Income-tax head of a household CGT reform; scope describes the fiscal head, separately from whether its channel is available.",
+      "expressibility": "not",
+      "parameter_paths": [],
+      "variables": [
+        "income_tax"
+      ],
+      "missing_machinery": "No CGT-to-income-tax base shifting or incorporation/remuneration-choice mechanism. The detailed OBR decomposition of this income-tax head is unknown from the PMD row.",
+      "expressibility_note": "Changing CGT parameters cannot directly change statutory income tax on a fixed income base. A generic optional labour-supply response is not an identified construction of this OBR head; its detailed mechanism remains unknown.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "spending_review_2020:spending:007",
+      "measure": "Coronavirus job retention scheme",
+      "scope": "in",
+      "out_reason": null,
+      "area": "other_household",
+      "scope_note": "Per-employee furlough wage support, or its direct payroll-tax head. Scope judgement includes employee-linked income support; the grant is paid to the employer and includes employer NIC/pension reimbursement.",
+      "expressibility": "not",
+      "parameter_paths": [],
+      "variables": [
+        "employment_income"
+      ],
+      "missing_machinery": "No CJRS grant formula, furlough status/hours, reference-pay input, phase-specific government contribution rule or no-support employment counterfactual. Payroll taxes exist but the scheme-driven earnings base does not.",
+      "expressibility_note": "Treasury Direction 15 April 2020 paras 2.2 and 8.1 links reimbursement to specified employees pay and employer NIC/pension costs. Classify as household-relevant wage support, with the employer composite noted; existing annual employment-income inputs alone cannot construct the scheme.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "spring_budget_2021:spending:001",
+      "measure": "Coronavirus Job Retention Scheme (CJRS): extension to September 2021",
+      "scope": "in",
+      "out_reason": null,
+      "area": "other_household",
+      "scope_note": "Per-employee furlough wage support, or its direct payroll-tax head. Scope judgement includes employee-linked income support; the grant is paid to the employer and includes employer NIC/pension reimbursement.",
+      "expressibility": "not",
+      "parameter_paths": [],
+      "variables": [
+        "employment_income"
+      ],
+      "missing_machinery": "No CJRS grant formula, furlough status/hours, reference-pay input, phase-specific government contribution rule or no-support employment counterfactual. Payroll taxes exist but the scheme-driven earnings base does not.",
+      "expressibility_note": "Treasury Direction 15 April 2020 paras 2.2 and 8.1 links reimbursement to specified employees pay and employer NIC/pension costs. Classify as household-relevant wage support, with the employer composite noted; existing annual employment-income inputs alone cannot construct the scheme.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "spring_budget_2021:spending:060",
+      "measure": "CJRS: extension to April 2021",
+      "scope": "in",
+      "out_reason": null,
+      "area": "other_household",
+      "scope_note": "Per-employee furlough wage support, or its direct payroll-tax head. Scope judgement includes employee-linked income support; the grant is paid to the employer and includes employer NIC/pension reimbursement.",
+      "expressibility": "not",
+      "parameter_paths": [],
+      "variables": [
+        "employment_income"
+      ],
+      "missing_machinery": "No CJRS grant formula, furlough status/hours, reference-pay input, phase-specific government contribution rule or no-support employment counterfactual. Payroll taxes exist but the scheme-driven earnings base does not.",
+      "expressibility_note": "Treasury Direction 15 April 2020 paras 2.2 and 8.1 links reimbursement to specified employees pay and employer NIC/pension costs. Classify as household-relevant wage support, with the employer composite noted; existing annual employment-income inputs alone cannot construct the scheme.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "spending_review_2020:tax:001",
+      "measure": "Coronavirus job retention scheme",
+      "scope": "in",
+      "out_reason": null,
+      "area": "other_household",
+      "scope_note": "Per-employee furlough wage support, or its direct payroll-tax head. Scope judgement includes employee-linked income support; the grant is paid to the employer and includes employer NIC/pension reimbursement.",
+      "expressibility": "not",
+      "parameter_paths": [],
+      "variables": [
+        "employment_income"
+      ],
+      "missing_machinery": "No CJRS grant formula, furlough status/hours, reference-pay input, phase-specific government contribution rule or no-support employment counterfactual. Payroll taxes exist but the scheme-driven earnings base does not.",
+      "expressibility_note": "Treasury Direction 15 April 2020 paras 2.2 and 8.1 links reimbursement to specified employees pay and employer NIC/pension costs. Classify as household-relevant wage support, with the employer composite noted; existing annual employment-income inputs alone cannot construct the scheme.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "spending_review_2020:tax:002",
+      "measure": "Coronavirus job retention scheme",
+      "scope": "in",
+      "out_reason": null,
+      "area": "other_household",
+      "scope_note": "Per-employee furlough wage support, or its direct payroll-tax head. Scope judgement includes employee-linked income support; the grant is paid to the employer and includes employer NIC/pension reimbursement.",
+      "expressibility": "not",
+      "parameter_paths": [],
+      "variables": [
+        "employment_income"
+      ],
+      "missing_machinery": "No CJRS grant formula, furlough status/hours, reference-pay input, phase-specific government contribution rule or no-support employment counterfactual. Payroll taxes exist but the scheme-driven earnings base does not.",
+      "expressibility_note": "Treasury Direction 15 April 2020 paras 2.2 and 8.1 links reimbursement to specified employees pay and employer NIC/pension costs. Classify as household-relevant wage support, with the employer composite noted; existing annual employment-income inputs alone cannot construct the scheme.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "spring_budget_2021:tax:001",
+      "measure": "Coronavirus Job Retention Scheme (CJRS): extension to September 2021",
+      "scope": "in",
+      "out_reason": null,
+      "area": "other_household",
+      "scope_note": "Per-employee furlough wage support, or its direct payroll-tax head. Scope judgement includes employee-linked income support; the grant is paid to the employer and includes employer NIC/pension reimbursement.",
+      "expressibility": "not",
+      "parameter_paths": [],
+      "variables": [
+        "employment_income"
+      ],
+      "missing_machinery": "No CJRS grant formula, furlough status/hours, reference-pay input, phase-specific government contribution rule or no-support employment counterfactual. Payroll taxes exist but the scheme-driven earnings base does not.",
+      "expressibility_note": "Treasury Direction 15 April 2020 paras 2.2 and 8.1 links reimbursement to specified employees pay and employer NIC/pension costs. Classify as household-relevant wage support, with the employer composite noted; existing annual employment-income inputs alone cannot construct the scheme.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "spring_budget_2021:tax:002",
+      "measure": "Coronavirus Job Retention Scheme (CJRS): extension to September 2021",
+      "scope": "in",
+      "out_reason": null,
+      "area": "other_household",
+      "scope_note": "Per-employee furlough wage support, or its direct payroll-tax head. Scope judgement includes employee-linked income support; the grant is paid to the employer and includes employer NIC/pension reimbursement.",
+      "expressibility": "not",
+      "parameter_paths": [],
+      "variables": [
+        "employment_income"
+      ],
+      "missing_machinery": "No CJRS grant formula, furlough status/hours, reference-pay input, phase-specific government contribution rule or no-support employment counterfactual. Payroll taxes exist but the scheme-driven earnings base does not.",
+      "expressibility_note": "Treasury Direction 15 April 2020 paras 2.2 and 8.1 links reimbursement to specified employees pay and employer NIC/pension costs. Classify as household-relevant wage support, with the employer composite noted; existing annual employment-income inputs alone cannot construct the scheme.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "spring_budget_2021:tax:065",
+      "measure": "CJRS: extension to April 2021",
+      "scope": "in",
+      "out_reason": null,
+      "area": "other_household",
+      "scope_note": "Per-employee furlough wage support, or its direct payroll-tax head. Scope judgement includes employee-linked income support; the grant is paid to the employer and includes employer NIC/pension reimbursement.",
+      "expressibility": "not",
+      "parameter_paths": [],
+      "variables": [
+        "employment_income"
+      ],
+      "missing_machinery": "No CJRS grant formula, furlough status/hours, reference-pay input, phase-specific government contribution rule or no-support employment counterfactual. Payroll taxes exist but the scheme-driven earnings base does not.",
+      "expressibility_note": "Treasury Direction 15 April 2020 paras 2.2 and 8.1 links reimbursement to specified employees pay and employer NIC/pension costs. Classify as household-relevant wage support, with the employer composite noted; existing annual employment-income inputs alone cannot construct the scheme.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "spring_budget_2021:tax:066",
+      "measure": "CJRS: extension to April 2021",
+      "scope": "in",
+      "out_reason": null,
+      "area": "other_household",
+      "scope_note": "Per-employee furlough wage support, or its direct payroll-tax head. Scope judgement includes employee-linked income support; the grant is paid to the employer and includes employer NIC/pension reimbursement.",
+      "expressibility": "not",
+      "parameter_paths": [],
+      "variables": [
+        "employment_income"
+      ],
+      "missing_machinery": "No CJRS grant formula, furlough status/hours, reference-pay input, phase-specific government contribution rule or no-support employment counterfactual. Payroll taxes exist but the scheme-driven earnings base does not.",
+      "expressibility_note": "Treasury Direction 15 April 2020 paras 2.2 and 8.1 links reimbursement to specified employees pay and employer NIC/pension costs. Classify as household-relevant wage support, with the employer composite noted; existing annual employment-income inputs alone cannot construct the scheme.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "budget_2015_2:tax:061",
+      "measure": "Reduce social sector rents by 1% each year for 4 years from 2016-17",
+      "scope": "in",
+      "out_reason": null,
+      "area": "other_household",
+      "scope_note": "Lower rents paid by social-tenant households, or the resulting household housing-benefit saving. The receipts head also includes the public landlords side.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.economic_assumptions.yoy_growth.obr.social_rent"
+      ],
+      "variables": [
+        "rent",
+        "tenure_type"
+      ],
+      "missing_machinery": "Only a UK-wide social-rent projection index exists, applied to non-private-rented households before data load; no English social-landlord rent-setting rule. uprate_rent hard-skips years before 2022, so a 2016 replay additionally needs a formula guard change and historical indices. Public landlords receipts are not a PE government fiscal variable.",
+      "expressibility_note": "Todays uprate_rent reads social_rent growth for non-private tenures. This provides a partial future-year level proxy; it cannot perform the 2016-19 reform dates as shipped because of the pre-2022 guard, nor target English providers. Historical readiness remains blocked.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "budget_2015_2:spending:025",
+      "measure": "Reduce social sector rents by 1% each year for 4 years from 2016-17",
+      "scope": "in",
+      "out_reason": null,
+      "area": "housing_benefit",
+      "scope_note": "Lower rents paid by social-tenant households, or the resulting household housing-benefit saving. The receipts head also includes the public landlords side.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.economic_assumptions.yoy_growth.obr.social_rent"
+      ],
+      "variables": [
+        "rent",
+        "tenure_type",
+        "housing_benefit",
+        "uc_housing_costs_element"
+      ],
+      "missing_machinery": "Only a UK-wide social-rent projection index exists, applied to non-private-rented households before data load; no English social-landlord rent-setting rule. uprate_rent hard-skips years before 2022, so a 2016 replay additionally needs a formula guard change and historical indices. Public landlords receipts are not a PE government fiscal variable.",
+      "expressibility_note": "Todays uprate_rent reads social_rent growth for non-private tenures. This provides a partial future-year level proxy; it cannot perform the 2016-19 reform dates as shipped because of the pre-2022 guard, nor target English providers. Historical readiness remains blocked.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "budget_2015_2:spending:026",
+      "measure": "Reduce social sector rents by 1% each year for 4 years from 2016-17",
+      "scope": "in",
+      "out_reason": null,
+      "area": "housing_benefit",
+      "scope_note": "Lower rents paid by social-tenant households, or the resulting household housing-benefit saving. The receipts head also includes the public landlords side.",
+      "expressibility": "partial",
+      "parameter_paths": [
+        "gov.economic_assumptions.yoy_growth.obr.social_rent"
+      ],
+      "variables": [
+        "rent",
+        "tenure_type",
+        "housing_benefit",
+        "uc_housing_costs_element"
+      ],
+      "missing_machinery": "Only a UK-wide social-rent projection index exists, applied to non-private-rented households before data load; no English social-landlord rent-setting rule. uprate_rent hard-skips years before 2022, so a 2016 replay additionally needs a formula guard change and historical indices. Public landlords receipts are not a PE government fiscal variable.",
+      "expressibility_note": "Todays uprate_rent reads social_rent growth for non-private tenures. This provides a partial future-year level proxy; it cannot perform the 2016-19 reform dates as shipped because of the pre-2022 guard, nor target English providers. Historical readiness remains blocked.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "spending_review_2020:spending:069",
+      "measure": "Student loans: freeze repayment threshold for 2021-22",
+      "scope": "out",
+      "out_reason": "student_loans",
+      "area": null,
+      "scope_note": "Loan-book/RAB valuation or accrued-interest fiscal account of a repayment-terms reform. The underlying graduate cash-repayment rule is household-relevant but this row is a different fiscal concept.",
+      "expressibility": "not_applicable",
+      "parameter_paths": [],
+      "variables": [],
+      "missing_machinery": null,
+      "expressibility_note": "The engine student_loan_repayment formula calculates one years cash payment from income, plan and optional balance; it does not calculate the public loan books lifetime valuation or accrued receipts. Keep graduate-repayment sibling rows in scope.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "autumn_budget_2025:spending:075",
+      "measure": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+      "scope": "out",
+      "out_reason": "student_loans",
+      "area": null,
+      "scope_note": "Loan-book/RAB valuation or accrued-interest fiscal account of a repayment-terms reform. The underlying graduate cash-repayment rule is household-relevant but this row is a different fiscal concept.",
+      "expressibility": "not_applicable",
+      "parameter_paths": [],
+      "variables": [],
+      "missing_machinery": null,
+      "expressibility_note": "The engine student_loan_repayment formula calculates one years cash payment from income, plan and optional balance; it does not calculate the public loan books lifetime valuation or accrued receipts. Keep graduate-repayment sibling rows in scope.",
+      "existing_registry_key": "ab2025__student_loans_plan2_threshold_freeze"
+    },
+    {
+      "row_id": "autumn_budget_2025:tax:034",
+      "measure": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+      "scope": "out",
+      "out_reason": "student_loans",
+      "area": null,
+      "scope_note": "Loan-book/RAB valuation or accrued-interest fiscal account of a repayment-terms reform. The underlying graduate cash-repayment rule is household-relevant but this row is a different fiscal concept.",
+      "expressibility": "not_applicable",
+      "parameter_paths": [],
+      "variables": [],
+      "missing_machinery": null,
+      "expressibility_note": "The engine student_loan_repayment formula calculates one years cash payment from income, plan and optional balance; it does not calculate the public loan books lifetime valuation or accrued receipts. Keep graduate-repayment sibling rows in scope.",
+      "existing_registry_key": "ab2025__student_loans_plan2_threshold_freeze"
+    },
+    {
+      "row_id": "spring_budget_2024:tax:053",
+      "measure": "Tariff changes since Autumn Budget 2023",
+      "scope": "out",
+      "out_reason": "other_non_household",
+      "area": null,
+      "scope_note": "Customs-duty receipts from importers and trade policy; a household consumer-price component is unknown. General price incidence alone does not turn an importer fiscal base into a household statutory tax.",
+      "expressibility": "not_applicable",
+      "parameter_paths": [],
+      "variables": [],
+      "missing_machinery": null,
+      "expressibility_note": "Harmonised with the other general tariff rows. No customs/import-content machinery was found; household pass-through, if studied, requires a separately specified incidence model.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "autumn_budget_2024:tax:086",
+      "measure": "Tariff Changes since Spring Budget 2024",
+      "scope": "out",
+      "out_reason": "other_non_household",
+      "area": null,
+      "scope_note": "Customs-duty receipts from importers and trade policy; a household consumer-price component is unknown. General price incidence alone does not turn an importer fiscal base into a household statutory tax.",
+      "expressibility": "not_applicable",
+      "parameter_paths": [],
+      "variables": [],
+      "missing_machinery": null,
+      "expressibility_note": "Harmonised with the other general tariff rows. No customs/import-content machinery was found; household pass-through, if studied, requires a separately specified incidence model.",
+      "existing_registry_key": null
+    },
+    {
+      "row_id": "autumn_budget_2025:tax:046",
+      "measure": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029 ",
+      "scope": "in",
+      "out_reason": null,
+      "area": "nics_class_1_employer",
+      "scope_note": "Caps NICs-free salary-sacrificed pension contributions at GBP 2,000 (employee and employer NICs; employer share dominates).",
+      "expressibility": "expressible",
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.salary_sacrifice_pension_cap"
+      ],
+      "variables": [
+        "salary_sacrifice_pension_ni_employee",
+        "salary_sacrifice_pension_ni_employer"
+      ],
+      "missing_machinery": null,
+      "expressibility_note": "Reversal construction: cap 2,000 from 2029-04-06 at 2.125.0, inf before; pre-measure world keeps inf. The broad-base earnings haircut defaults to 0.0016 when the cap is finite; other response parameters must be checked separately.",
+      "existing_registry_key": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+    },
+    {
+      "row_id": "autumn_budget_2021:spending:027",
+      "measure": "Business Rates: freezing the multiplier in 2022-23",
+      "scope": "out",
+      "out_reason": "local_government_finance",
+      "area": null,
+      "scope_note": "Locally-financed current-expenditure head of a business-rates multiplier freeze; a council-finance fiscal account, outside household liabilities.",
+      "expressibility": "not_applicable",
+      "parameter_paths": [],
+      "variables": [],
+      "missing_machinery": null,
+      "expressibility_note": "Out of household-model scope; no construction attempted.",
+      "existing_registry_key": null
+    }
+  ],
+  "decisions": [
+    {
+      "proposal": "C0 student-loan spending032/033 in/expressible or partial",
+      "decision": "reject",
+      "reason": "Rubric excludes loan-book/RAB/outlay fiscal rows; preserve the separate household repayment-rule siblings."
+    },
+    {
+      "proposal": "C0 CJRS spending rows in/not",
+      "decision": "accept and extend to direct Income tax/NICs payroll heads",
+      "reason": "Explicit per-employee wage-support judgement; employer grant composite and absent furlough machinery are stated."
+    },
+    {
+      "proposal": "C1 AS2023 income tax in/not",
+      "decision": "accept scope; partial rather than not",
+      "reason": "Primary costing includes hours/employment as well as incorporation; an optional earnings LSR exists."
+    },
+    {
+      "proposal": "C1 customs rows in/not",
+      "decision": "reject and harmonise in rows to out",
+      "reason": "Importer account; general consumer price incidence alone would improperly widen all business-tax scope. Household component unknown."
+    },
+    {
+      "proposal": "C1 social-rent receipts in/partial",
+      "decision": "accept with guard limitation; harmonise HB siblings",
+      "reason": "Existing projection lever is partial machinery today, but hard-coded pre2022 exclusion blocks historical dates."
+    },
+    {
+      "proposal": "C1 WHD supplier funding levy in",
+      "decision": "retain out per rubric, flag incidence concept",
+      "reason": "Environmental supplier levy; household rebate is the separate in-scope spending row."
+    },
+    {
+      "proposal": "C0 AB2017 supported-housing RDEL out_reason local_government_finance",
+      "decision": "do not amend",
+      "reason": "Proposed local-grant identity inferred from profiles, not established by PMD text."
+    }
+  ]
+}
