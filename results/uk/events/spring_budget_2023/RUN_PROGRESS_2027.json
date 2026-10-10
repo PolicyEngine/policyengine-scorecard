@@ -1,0 +1,16 @@
+{
+ "artifacts": {
+  "results/uk/events/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2027.json": "9c9841153c4428a32d89d9cadfd4939de234c3c1602ed6e1f092deed6fee9503",
+  "results/uk/events/spring_budget_2023/spring_budget_2023__uc_childcare_cap_increase_2027.json": "e0384d3ab333f6497892de425f25858a4e0ac4652f2f650e5d94da9b1894deed"
+ },
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "engine_version": "2.89.2",
+ "event": "spring_budget_2023",
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "schema_version": 1,
+ "year": 2027
+}

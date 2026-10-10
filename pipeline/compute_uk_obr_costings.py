@@ -19,6 +19,7 @@ import argparse
 import copy
 import gc
 import hashlib
+import inspect
 import json
 import math
 import os
@@ -987,7 +988,10 @@ class PeakRSSSampler:
 
 
 def variable_metadata(
-    tax_benefit_system: Any, variables: Iterable[str]
+    tax_benefit_system: Any,
+    variables: Iterable[str],
+    *,
+    include_engine_provenance: bool = False,
 ) -> dict[str, Any]:
     metadata: dict[str, Any] = {}
     for name in variables:
@@ -998,6 +1002,17 @@ def variable_metadata(
             "definition_period": str(getattr(variable, "definition_period", None)),
             "unit": str(getattr(variable, "unit", None)),
         }
+        if include_engine_provenance:
+            source = inspect.getsourcefile(type(variable))
+            metadata[name].update(
+                {
+                    "documentation": getattr(variable, "documentation", None),
+                    "engine_source": "policyengine_uk/"
+                    + source.split("/policyengine_uk/", 1)[1]
+                    if source and "/policyengine_uk/" in source
+                    else None,
+                }
+            )
     return metadata
 
 
@@ -1008,8 +1023,13 @@ def run_managed_simulation(
     reform: dict[str, Any] | None,
     runtime_dataset_source: Path,
     expected_dataset_sha256: str,
+    include_engine_provenance: bool = False,
+    scenario: Any = None,
 ) -> dict[str, Any]:
     """Run, aggregate, delete, and collect exactly one managed sim."""
+
+    if scenario is not None and reform is not None:
+        raise ValueError("pass either reform or scenario, not both")
 
     configure_offline()
     import policyengine as pe
@@ -1024,7 +1044,9 @@ def run_managed_simulation(
                 phase="immediately before simulation construction",
             )
             sim = (
-                pe.uk.managed_microsimulation()
+                pe.uk.managed_microsimulation(scenario=scenario)
+                if scenario is not None
+                else pe.uk.managed_microsimulation()
                 if reform is None
                 else pe.uk.managed_microsimulation(reform=reform)
             )
@@ -1062,7 +1084,11 @@ def run_managed_simulation(
                 phase="immediately after aggregate reads",
                 before_sha256=dataset_sha256_before,
             )
-            metadata = variable_metadata(sim.tax_benefit_system, variables)
+            metadata = variable_metadata(
+                sim.tax_benefit_system,
+                variables,
+                include_engine_provenance=include_engine_provenance,
+            )
             wall_seconds = time.perf_counter() - started
     except BaseException:
         sim = None

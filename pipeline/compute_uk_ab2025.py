@@ -96,16 +96,24 @@ def load_registry() -> dict[str, dict]:
 # --- reform dictionaries -------------------------------------------------------
 
 
-def _windows(value) -> list[tuple[str, object]]:
+def _windows(
+    value, *, years: list[int] | tuple[int, ...] | None = None
+) -> list[tuple[str, object]]:
     """A registry value -> [(period, value)]. Scalars cover the whole run
     window; year-keyed maps cover each calendar year; date-keyed maps run
     from each date to the day before the next."""
+    years = YEARS if years is None else years
     if not isinstance(value, dict):
-        return [(f"{YEARS[0]}-01-01.{WINDOW_END}", value)]
+        return [(f"{years[0]}-01-01.{WINDOW_END}", value)]
     keys = sorted(value)
     out = []
     for i, k in enumerate(keys):
-        if re.fullmatch(r"\d{4}", k):
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}\.\d{4}-\d{2}-\d{2}", k):
+            start, end = k.split(".")
+            if dt.date.fromisoformat(start) > dt.date.fromisoformat(end):
+                raise ValueError(f"reversed period window {k!r}")
+            out.append((k, value[k]))
+        elif re.fullmatch(r"\d{4}", k):
             out.append((f"{k}-01-01.{k}-12-31", value[k]))
         elif re.fullmatch(r"\d{4}-\d{2}-\d{2}", k):
             if i + 1 < len(keys):
@@ -126,13 +134,15 @@ def _windows(value) -> list[tuple[str, object]]:
 NO_LIMIT = 1e100
 
 
-def reform_dict(spec: dict) -> tuple[dict, list[str]]:
+def reform_dict(
+    spec: dict, *, years: list[int] | tuple[int, ...] | None = None
+) -> tuple[dict, list[str]]:
     """(policyengine-core reform dict, paths where a null executed as
     NO_LIMIT) from a registry parameter map."""
     out: dict = {}
     sentinels: list[str] = []
     for path, value in spec.items():
-        windows = _windows(value)
+        windows = _windows(value, years=years)
         if any(v is None for _, v in windows):
             sentinels.append(path)
         out[path] = {period: (NO_LIMIT if v is None else v) for period, v in windows}
@@ -183,20 +193,24 @@ def engine_resolver():
     return resolve
 
 
-def _candidate_dates(period: str) -> list[str]:
+def _candidate_dates(
+    period: str, *, years: list[int] | tuple[int, ...] | None = None
+) -> list[str]:
     """The dates within a delta window, clipped to the run's years, at which
     a restatement of current law is looked for: 1 January, 6 April and
     31 December of each year the window touches."""
     start, end = period.split(".")
     out = []
-    for y in YEARS:
+    for y in YEARS if years is None else years:
         for d in (f"{y}-01-01", f"{y}-04-06", f"{y}-12-31"):
             if start <= d <= end:
                 out.append(d)
     return out
 
 
-def world_coverage_gaps(index: dict[str, dict]) -> list[str]:
+def world_coverage_gaps(
+    index: dict[str, dict], *, years: list[int] | tuple[int, ...] | None = None
+) -> list[str]:
     """The mirror of reversal_delta_mismatches, and engine-free: a year-keyed
     pe_baseline_modifier (or a mixed construction's year-keyed delta) that
     stops before the run ends makes that world revert to current law in the
@@ -205,7 +219,10 @@ def world_coverage_gaps(index: dict[str, dict]) -> list[str]:
     2029 while its effect runs on). Every year-keyed path of an executed world
     must cover each run year from its first covered year to the last, unless
     the registry records the effect's end (``effect_ends_fy``)."""
-    runnable = {k for k, w in computable(index).items() if "alias_of" not in w}
+    years = YEARS if years is None else years
+    runnable = {
+        k for k, w in computable(index, years=years).items() if "alias_of" not in w
+    }
     keys = set(runnable)
     for k in runnable:
         if index[k].get("construction") == "package_of_registry_measures":
@@ -222,17 +239,17 @@ def world_coverage_gaps(index: dict[str, dict]) -> list[str]:
                 "pe_reform_delta"
             )  # a mixed construction executes its delta too
         ends = m.get("effect_ends_fy")
-        last = int(ends[:4]) if ends else YEARS[-1]
+        last = int(ends[:4]) if ends else years[-1]
         for field in fields:
             for path, value in (m.get(field) or {}).items():
                 covered = set()
-                for period, _ in _windows(value):
+                for period, _ in _windows(value, years=years):
                     start, end = period.split(".")
                     covered |= set(range(int(start[:4]), int(end[:4]) + 1))
-                run = [y for y in YEARS if y in covered]
+                run = [y for y in years if y in covered]
                 if not run:
                     continue
-                missing = [y for y in YEARS if run[0] <= y <= last and y not in covered]
+                missing = [y for y in years if run[0] <= y <= last and y not in covered]
                 if missing:
                     out.append(
                         f"{key}: {field} {path} stops before the run ends (no value for "
@@ -242,7 +259,9 @@ def world_coverage_gaps(index: dict[str, dict]) -> list[str]:
     return out
 
 
-def reversal_delta_mismatches(index: dict[str, dict], resolve) -> list[str]:
+def reversal_delta_mismatches(
+    index: dict[str, dict], resolve, *, years: list[int] | tuple[int, ...] | None = None
+) -> list[str]:
     """A reversal executes its pe_baseline_modifier as the baseline world and
     current law as the reform world, so a pe_reform_delta on a reversal is
     documentation of the announced values and MUST restate current law: at
@@ -260,10 +279,10 @@ def reversal_delta_mismatches(index: dict[str, dict], resolve) -> list[str]:
         if m.get("construction") != "reversal_on_certified_world":
             continue
         for path, value in (m.get("pe_reform_delta") or {}).items():
-            for period, v in _windows(value):
+            for period, v in _windows(value, years=years):
                 want = float("inf") if v is None else v
                 seen = []
-                for d in _candidate_dates(period):
+                for d in _candidate_dates(period, years=years):
                     live = resolve(path, d)
                     if live is None:
                         seen = None
@@ -290,7 +309,12 @@ def reversal_delta_mismatches(index: dict[str, dict], resolve) -> list[str]:
     return out
 
 
-def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
+def worlds_for(
+    measure: dict,
+    index: dict[str, dict],
+    *,
+    years: list[int] | tuple[int, ...] | None = None,
+) -> dict:
     """{'construction', 'baseline_reform', 'reform_reform', 'components'}:
     the reform dicts the baseline and reform worlds execute (None = the
     certified world as served)."""
@@ -315,9 +339,9 @@ def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
         for c in comps:
             if c not in index:
                 raise ValueError(f"{key}: package_of names an unknown measure {c!r}")
-            w = worlds_for(index[c], index)
+            w = worlds_for(index[c], index, years=years)
             if "alias_of" in w:
-                w = worlds_for(index[w["alias_of"]], index)
+                w = worlds_for(index[w["alias_of"]], index, years=years)
             if w.get("baseline_reform"):
                 _merge_reform(merged_mod, w["baseline_reform"], key, c)
             if w.get("reform_reform"):
@@ -345,7 +369,7 @@ def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
         # current law, which already contains the announced values; that the
         # delta restates them is checked against the engine before any run
         # (reversal_delta_mismatches), never assumed
-        rd, sent = reform_dict(modifier)
+        rd, sent = reform_dict(modifier, years=years)
         return {
             "construction": construction,
             "baseline_reform": rd,
@@ -358,8 +382,8 @@ def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
         # threshold freeze): the modifier is the BASELINE world and the delta
         # the REFORM world, both executed on the certified world; neither is
         # current law, so both are simulated
-        mod, s1 = reform_dict(modifier)
-        rd, s2 = reform_dict(delta)
+        mod, s1 = reform_dict(modifier, years=years)
+        rd, s2 = reform_dict(delta, years=years)
         return {
             "construction": construction or "delta_on_modified_baseline",
             "baseline_reform": mod,
@@ -368,7 +392,7 @@ def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
             "sentinels": sorted(set(s1) | set(s2)),
         }
     if delta:
-        rd, sent = reform_dict(delta)
+        rd, sent = reform_dict(delta, years=years)
         return {
             "construction": construction or "forward_delta_on_certified_world",
             "baseline_reform": None,
@@ -381,7 +405,9 @@ def worlds_for(measure: dict, index: dict[str, dict]) -> dict:
     raise ValueError(f"{key}: not expressible")
 
 
-def computable(index: dict[str, dict]) -> dict[str, dict]:
+def computable(
+    index: dict[str, dict], *, years: list[int] | tuple[int, ...] | None = None
+) -> dict[str, dict]:
     """Executable worlds for every expressible or partial measure. A measure
     with nothing to execute by design is left out (see not_computable); a
     malformed entry raises — the two are never one list."""
@@ -390,20 +416,22 @@ def computable(index: dict[str, dict]) -> dict[str, dict]:
         if m["computability"] not in ("expressible", "partial"):
             continue
         try:
-            out[key] = worlds_for(m, index)
+            out[key] = worlds_for(m, index, years=years)
         except NotExecutable:
             continue
     return out
 
 
-def not_computable(index: dict[str, dict]) -> dict[str, str]:
+def not_computable(
+    index: dict[str, dict], *, years: list[int] | tuple[int, ...] | None = None
+) -> dict[str, str]:
     """measure -> why it has nothing to execute (by design)."""
     out = {}
     for key, m in index.items():
         if m["computability"] not in ("expressible", "partial"):
             continue
         try:
-            worlds_for(m, index)
+            worlds_for(m, index, years=years)
         except NotExecutable as e:
             out[key] = str(e).split(": ", 1)[1]
     return out

@@ -1,0 +1,95 @@
+{
+ "baseline_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "calendar_year_proxy": "PE calendar year 2028 proxies FY 2028-29.",
+ "certified_aggregates_gbp": {
+  "stamp_duty_land_tax": 12745210882.590805
+ },
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "components": [
+  "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp"
+ ],
+ "construction": "forward_delta_on_certified_world",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "dataset_sha256_after": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "dataset_sha256_before": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "engine_version": "2.89.2",
+ "event": "autumn_budget_2024",
+ "fiscal_event": "Autumn Budget 2024",
+ "fy_proxy": "2028-29",
+ "head_channels": {
+  "stamp_duty_land_tax": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Stamp duty",
+   "pe_variables": [
+    "stamp_duty_land_tax"
+   ]
+  }
+ ],
+ "head_effects": {
+  "stamp_duty_land_tax": 2259267108.0862694
+ },
+ "head_variables": [
+  "stamp_duty_land_tax"
+ ],
+ "literal_reform_minus_baseline": {
+  "stamp_duty_land_tax": 2259267108.0862694
+ },
+ "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+ "measure_total_gbp": 2259267108.0862694,
+ "null_executed_as_no_limit": [],
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "reform_world": {
+  "executed": "certified world with pe_reform_delta",
+  "reform_dict": {
+   "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+    "2024-10-31.2035-12-31": 0.05
+   },
+   "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+    "2024-10-31.2035-12-31": 0.07
+   },
+   "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+    "2024-10-31.2035-12-31": 0.1
+   },
+   "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+    "2024-10-31.2035-12-31": 0.15
+   },
+   "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+    "2024-10-31.2035-12-31": 0.17
+   }
+  }
+ },
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "stamp_duty_land_tax": 12745210882.590805
+   }
+  },
+  "reform": {
+   "heads": {
+    "stamp_duty_land_tax": 15004477990.677074
+   }
+  }
+ },
+ "variable_metadata": {
+  "stamp_duty_land_tax": {
+   "definition_period": "year",
+   "documentation": "Total tax liability for Stamp Duty Land Tax",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/stamp_duty_land_tax.py",
+   "entity": "household",
+   "label": "Stamp Duty Land Tax",
+   "unit": "currency-GBP"
+  }
+ },
+ "year": 2028
+}

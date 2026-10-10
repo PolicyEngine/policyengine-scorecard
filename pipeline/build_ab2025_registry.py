@@ -25,9 +25,7 @@ collapsed fuel-duty path) were read at the pin on 2026-09-24.
 """
 
 import gzip
-import importlib.metadata
 import json
-import math
 import re
 import sys
 from pathlib import Path
@@ -40,54 +38,11 @@ OUT = REPO / "data/uk/ab2025_measures.json"
 DATES = [f"{y}-06-01" for y in range(2025, 2032)]
 
 
-def _engine_dumps():
-    """(parameter path -> 2026 value, variable name -> info, year probe)."""
-    import policyengine_uk
-    from policyengine_core.parameters import Parameter, ParameterNode, ParameterScale
-
-    installed = importlib.metadata.version("policyengine-uk")
-    if installed != PIN:
-        raise SystemExit(
-            f"policyengine-uk {installed} installed, registry pinned to {PIN}"
-        )
-    system = policyengine_uk.CountryTaxBenefitSystem()
-    params = {}
-
-    def leaf(node, d="2026-06-01"):
-        try:
-            v = node(d)
-        except Exception:
-            return None
-        if isinstance(v, float) and math.isinf(v):
-            return "inf"
-        if isinstance(v, float) and math.isnan(v):
-            return None
-        return v if isinstance(v, (int, float, str, bool)) else type(v).__name__
-
-    def walk(node, prefix=""):
-        if isinstance(node, ParameterScale):
-            for i, b in enumerate(node.brackets):
-                for attr in ("threshold", "rate", "amount"):
-                    p = getattr(b, attr, None)
-                    if p is not None:
-                        params[f"{prefix}[{i}].{attr}"] = leaf(p)
-            return
-        if isinstance(node, Parameter):
-            params[prefix] = leaf(node)
-            return
-        if isinstance(node, ParameterNode):
-            for k in node.children:
-                walk(node.children[k], f"{prefix}.{k}" if prefix else k)
-
-    walk(system.parameters)
-    variables = {
-        n: {
-            "entity": v.entity.key,
-            "doc": (v.documentation or v.label or "")[:160],
-        }
-        for n, v in system.variables.items()
-    }
-    return params, variables
+# Keep the pinned traversal shared with the event-parametrised replay builder.
+try:
+    from pipeline.uk_engine_registry import engine_dumps as _engine_dumps
+except ModuleNotFoundError:  # direct script invocation without PYTHONPATH
+    from uk_engine_registry import engine_dumps as _engine_dumps
 
 
 def _t41_lines():

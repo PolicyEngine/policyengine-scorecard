@@ -1,0 +1,22 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "autumn_statement_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "4ef229291a6e6eca5ae1c3a9f308caf0a556cca5db3ddc3168fa60ea1b22f672",
+  "COMPARISON.json": "b78e1ac7454671fbb10eabd254088f09c95058ea86633ad85e0f4f1ce703df81",
+  "COMPARISON.md": "4cb6f5c4b99099efc0c3377ec65662a15653135895fed7062616dd500a88745a"
+ },
+ "registry_path": "data/uk/events/autumn_statement_2023_measures.json",
+ "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+ "replay_grid": {
+  "computed_measure_years": 24,
+  "full_event_complete": true,
+  "full_event_grid_size": 24,
+  "missing_measure_years": []
+ },
+ "source_rows": 1116,
+ "staged_path": "results/uk/events/autumn_statement_2023/STAGED.jsonl",
+ "staged_sha256": "b9921bf78cbef9cbc04726f956f5235826642d2eb417d863a9d1dda3eb236377",
+ "staging_manifest_path": "results/uk/events/autumn_statement_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "3557210b2bdf4b90570ac90c37f35e0da69d7e64fe1010c127daec227cc7d2e3"
+}
