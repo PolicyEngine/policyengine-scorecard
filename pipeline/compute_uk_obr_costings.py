@@ -31,12 +31,19 @@ import threading
 import time
 import unicodedata
 from collections import Counter
+from collections.abc import Iterable
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 import yaml
+
+if __package__ in (None, ""):
+    # Preserve the historical direct-file CLI as well as ``python -m``.
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from pipeline import uk_bundle as certified_bundles
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_REGISTRY = ROOT / "data" / "uk" / "obr_measure_reforms.yaml"
@@ -842,7 +849,9 @@ def ensure_writable_local_mirror(
 
 
 def assert_engine_matches_bundle(
-    release_bundle: dict[str, Any], installed: str | None = None
+    release_bundle: dict[str, Any],
+    installed: str | None = None,
+    bundle_key: str = certified_bundles.DEFAULT_BUNDLE,
 ) -> str:
     """The certified bundle DECLARES the engine it was built for; a right
     artifact on a wrong engine is still a wrong run (#126). The managed
@@ -864,7 +873,7 @@ def assert_engine_matches_bundle(
             f"installed policyengine-uk {installed} != bundle-declared {declared}; "
             "the bundle's compatibility statement is the pin, not the environment"
         )
-    pinned = json.loads((ROOT / "data" / "uk" / "certified_bundle.json").read_text())
+    pinned = certified_bundles.load_bundle(bundle_key)
     for spec in pinned.get("compatible_model_packages", []):
         if spec.get("name") == "policyengine-uk":
             want = str(spec.get("specifier", "")).lstrip("=")
@@ -876,10 +885,134 @@ def assert_engine_matches_bundle(
     return installed
 
 
-def preflight_certified_dataset() -> dict[str, Any]:
+# Name resolution and datagram sends happen before (or without) a connect,
+# so blocking connect alone still let DNS lookups and UDP traffic through.
+BLOCKED_SOCKET_EVENTS = frozenset(
+    {
+        "socket.connect",
+        "socket.getaddrinfo",
+        "socket.gethostbyname",
+        "socket.gethostbyaddr",
+        "socket.getnameinfo",
+        "socket.sendto",
+        "socket.sendmsg",
+    }
+)
+
+
+def block_runtime_network() -> None:
+    """Make the packaged certification fallback mandatory in this process."""
+
+    def deny_network(event, args):
+        if event in BLOCKED_SOCKET_EVENTS:
+            raise OSError("certified replay runtime network is blocked")
+
+    sys.addaudithook(deny_network)
+
+
+@contextmanager
+def managed_dataset_directory(runtime_dataset_source: Path, bundle_key: str):
+    """6.x materializes into ./data; isolate that directory for each pin."""
+    original = Path.cwd()
+    if bundle_key != certified_bundles.DEFAULT_BUNDLE:
+        os.chdir(runtime_dataset_source.parent.parent)
+    try:
+        yield
+    finally:
+        os.chdir(original)
+
+
+def _preflight_materialized_dataset(bundle_key: str) -> dict[str, Any]:
+    """Seed 6.x's local materializer from certified cached bytes, offline."""
+    pin = certified_bundles.load_bundle(bundle_key)
+    block_runtime_network()
+    import policyengine as pe
+    from huggingface_hub import hf_hub_download
+
+    bundle = dict(pe.uk.uk_latest.release_bundle)
+    assert_engine_matches_bundle(bundle, bundle_key=bundle_key)
+    for package, expected in certified_bundles.bundle_identity(bundle_key)[
+        "engine_versions"
+    ].items():
+        if package_version(package) != expected:
+            raise RuntimeError(
+                f"{package} installed version differs from selected bundle pin"
+            )
+    expected_uri = f"hf://{pin['repo_id']}/{pin['artifact']}@{pin['revision']}"
+    if (
+        bundle.get("default_dataset_uri") != expected_uri
+        or bundle.get("certified_data_artifact_sha256") != pin["sha256"]
+        or bundle.get("certified_data_build_id")
+        != pin.get("data_build_id", pin["revision"])
+    ):
+        raise RuntimeError("managed release differs from selected certified bundle")
+    if bundle.get("compatibility_basis", "").startswith("unverified"):
+        raise RuntimeError("managed release lacks packaged compatibility certification")
+    cached = Path(
+        hf_hub_download(
+            repo_id=pin["repo_id"],
+            repo_type=pin["repo_type"],
+            filename=pin["artifact"],
+            revision=pin["resolved_hf_commit"],
+            local_files_only=True,
+        )
+    )
+    started = time.perf_counter()
+    digest = sha256_file(cached)
+    if digest != pin["sha256"] or cached.stat().st_size != pin["size_bytes"]:
+        raise RuntimeError("cached artifact digest or size differs from certified pin")
+    import pandas as pd
+
+    periods = pd.read_hdf(cached, "time_period").tolist()
+    if len(periods) != 1 or int(periods[0]) != pin["data_year"]:
+        raise RuntimeError("cached artifact data year differs from certified pin")
+    # UKSingleYearDataset uses HDFStore(mode='r') in 6.x. A symlink avoids a
+    # second dataset copy while giving materialize_dataset its required path.
+    runtime = (
+        LOCAL_DATA_MIRROR_ROOT
+        / "bundles"
+        / bundle_key
+        / "data"
+        / Path(pin["artifact"]).name
+    )
+    runtime.parent.mkdir(parents=True, exist_ok=True)
+    created = not runtime.exists()
+    if created:
+        runtime.symlink_to(cached.resolve())
+    verify_runtime_dataset_sha256(runtime, pin["sha256"], phase="materializer seed")
+    from policyengine.provenance.dataset_materialization import materialize_dataset
+
+    with managed_dataset_directory(runtime, bundle_key):
+        source = materialize_dataset("uk")
+        if Path(source.path).resolve() != runtime.resolve():
+            raise RuntimeError(
+                "materializer source differs from exact hash-verified file"
+            )
+    return {
+        "release_bundle": bundle,
+        "dataset_uri": expected_uri,
+        "cached_file": cached.name,
+        "sha256": digest,
+        "hash_seconds": time.perf_counter() - started,
+        "local_files_only": True,
+        "runtime_network_blocked": True,
+        "managed_local_mirror": relative_to_root(runtime),
+        "managed_local_mirror_created": created,
+        # Preserve the isolated materialization path; resolve for hash equality
+        # only, since its parent determines the 6.x loader's working directory.
+        "runtime_dataset_source": str(runtime.absolute()),
+        **certified_bundles.bundle_identity(bundle_key),
+    }
+
+
+def preflight_certified_dataset(
+    bundle_key: str = certified_bundles.DEFAULT_BUNDLE,
+) -> dict[str, Any]:
     """Prove that the bundled dataset is cached and matches its manifest hash."""
 
     configure_offline()
+    if bundle_key != certified_bundles.DEFAULT_BUNDLE:
+        return _preflight_materialized_dataset(bundle_key)
     import policyengine as pe
     from huggingface_hub import hf_hub_download
     from policyengine.provenance.dataset_sources import parse_hf_uri
@@ -964,7 +1097,7 @@ class PeakRSSSampler:
             rss, _ = current_rss_bytes()
             self.peak_rss_bytes = max(self.peak_rss_bytes, rss)
 
-    def __enter__(self) -> "PeakRSSSampler":
+    def __enter__(self) -> PeakRSSSampler:
         self.start_rss_bytes, self.method = current_rss_bytes()
         self.peak_rss_bytes = self.start_rss_bytes
         self.thread = threading.Thread(target=self._sample, daemon=True)
@@ -1025,6 +1158,7 @@ def run_managed_simulation(
     expected_dataset_sha256: str,
     include_engine_provenance: bool = False,
     scenario: Any = None,
+    bundle_key: str = certified_bundles.DEFAULT_BUNDLE,
 ) -> dict[str, Any]:
     """Run, aggregate, delete, and collect exactly one managed sim."""
 
@@ -1032,12 +1166,30 @@ def run_managed_simulation(
         raise ValueError("pass either reform or scenario, not both")
 
     configure_offline()
+    if bundle_key != certified_bundles.DEFAULT_BUNDLE:
+        block_runtime_network()
+        pin = certified_bundles.load_bundle(bundle_key)
+        for package, expected in certified_bundles.bundle_identity(bundle_key)[
+            "engine_versions"
+        ].items():
+            if package_version(package) != expected:
+                raise RuntimeError(
+                    f"{package} installed version differs from selected bundle pin"
+                )
+        first, last = certified_bundles.bundle_window(pin)
+        if not first <= year <= last:
+            raise ValueError("requested year is outside the certified bundle window")
+        if expected_dataset_sha256 != pin["sha256"]:
+            raise RuntimeError("requested dataset digest differs from selected bundle")
     import policyengine as pe
 
     started = time.perf_counter()
     sim = None
     try:
-        with PeakRSSSampler() as memory:
+        with (
+            managed_dataset_directory(runtime_dataset_source, bundle_key),
+            PeakRSSSampler() as memory,
+        ):
             dataset_sha256_before = verify_runtime_dataset_sha256(
                 runtime_dataset_source,
                 expected_dataset_sha256,
@@ -1063,6 +1215,26 @@ def run_managed_simulation(
                     "managed sim runtime_dataset_source differs from the exact "
                     f"file hashed before construction: {reported_source!r}"
                 )
+            if bundle_key != certified_bundles.DEFAULT_BUNDLE:
+                assert_engine_matches_bundle(bundle, bundle_key=bundle_key)
+                expected_uri = (
+                    f"hf://{pin['repo_id']}/{pin['artifact']}@{pin['revision']}"
+                )
+                if (
+                    data_bundle_id(bundle) != pin["data_build_id"]
+                    or bundle.get("default_dataset_uri") != expected_uri
+                    or bundle.get("certified_data_artifact_sha256") != pin["sha256"]
+                ):
+                    raise RuntimeError(
+                        "managed run release differs from selected certified pin"
+                    )
+                if (
+                    min(sim.dataset.years) != pin["data_year"]
+                    or year not in sim.dataset.years
+                ):
+                    raise RuntimeError(
+                        "managed simulation did not project the pinned data year"
+                    )
             missing = [
                 name
                 for name in variables

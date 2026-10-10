@@ -19,6 +19,7 @@ from pathlib import Path, PurePosixPath
 from pipeline import compute_uk_event as compute
 from pipeline import modal_uk_event as modal_runner
 from pipeline import stage_uk_event as stage
+from pipeline import uk_bundle
 
 ROOT = modal_runner.ROOT
 
@@ -30,14 +31,28 @@ def read_json(path):
     return json.loads(path.read_bytes(), parse_constant=reject)
 
 
-def current_input_digest(event):
-    inputs, _ = modal_runner.input_manifest(event, root=ROOT)
+def current_input_digest(event, bundle=uk_bundle.DEFAULT_BUNDLE):
+    inputs, _ = modal_runner.input_manifest(event, bundle=bundle, root=ROOT)
     return modal_runner.digest_bytes(modal_runner.canonical_bytes(inputs))
 
 
-def validate(event, download_root, remote_output=None, allow_partial=False):
+def validate(
+    event,
+    download_root,
+    remote_output=None,
+    allow_partial=False,
+    *,
+    bundle=uk_bundle.DEFAULT_BUNDLE,
+):
+    # Validation must stay engine-free. Compare against the modules already
+    # loaded, so an engine imported elsewhere in the process doesn't trip it.
+    engine_modules_before = {
+        name for name in sys.modules if name.startswith("policyengine")
+    }
     prefix = modal_runner.download_prefix(download_root, root=ROOT)
-    remote_output = remote_output or f"results/uk/events/{event}"
+    remote_output = remote_output or modal_runner.bundle_relative(
+        uk_bundle.event_output_dir(event, bundle, root=ROOT), ROOT
+    )
     modal_runner.relative_path(remote_output)
     directory = prefix / remote_output
     if not directory.resolve().is_relative_to(prefix.resolve()):
@@ -51,21 +66,29 @@ def validate(event, download_root, remote_output=None, allow_partial=False):
         measures=request["measures"],
         output_dir=remote_output,
         preflight_only=False,
+        bundle=bundle,
+        root=ROOT,
     )
     if request != expected_request or receipt[
         "request_sha256"
     ] != modal_runner.digest_bytes(modal_runner.canonical_bytes(request)):
         raise ValueError("Modal request identity does not match this adoption")
     modal_runner.validate_selection(request, root=ROOT)
-    if receipt["input_manifest_sha256"] != current_input_digest(event):
+    if receipt["input_manifest_sha256"] != current_input_digest(event, bundle):
         raise ValueError(
             "Modal input commitment differs from current allowlisted inputs"
         )
     runtime = receipt["runtime"]
     pins = modal_runner.requirements_pins(
-        (ROOT / "docs/uk_replay/requirements.txt").read_text()
+        (
+            ROOT / modal_runner.bundle_file(bundle, "requirements_freeze", root=ROOT)
+        ).read_text(),
+        bundle,
+        root=ROOT,
     )
-    audit = read_json(ROOT / "docs/uk_replay/OFFLINE_BUNDLE_AUDIT.json")
+    audit = read_json(
+        ROOT / modal_runner.bundle_file(bundle, "offline_audit", root=ROOT)
+    )
     if (
         runtime["python"] != modal_runner.PYTHON_VERSION
         or runtime["installed_packages"] != pins
@@ -105,11 +128,14 @@ def validate(event, download_root, remote_output=None, allow_partial=False):
         <= manifest.keys()
     ):
         raise ValueError("compute manifest lacks explicit event-grid commitments")
-    registry_path, _ = compute.event_paths(event)
+    registry_path = uk_bundle.registry_path(event, bundle, root=ROOT)
     registry = read_json(registry_path)
     compute.registry_builder.validate_registry(registry)
+    uk_bundle.validate_registry_bundle(registry, bundle, root=ROOT)
     registry_sha = modal_runner.sha256_file(registry_path)
-    cert = modal_runner.certified_pin(ROOT)
+    cert = modal_runner.certified_pin(ROOT, bundle)
+    config = uk_bundle.load_bundle(bundle, root=ROOT)
+    data_build_id = config["data_build_id"]
     versions = {
         "engine_version": pins["policyengine-uk"],
         "policyengine_version": pins["policyengine"],
@@ -119,16 +145,18 @@ def validate(event, download_root, remote_output=None, allow_partial=False):
         manifest["event"] != event
         or manifest["registry_sha256"] != registry_sha
         or manifest["certified_dataset_sha256"] != cert["sha256"]
-        or manifest["data_bundle"] != cert["revision"]
+        or manifest["data_bundle"] != data_build_id
         or any(manifest.get(key) != value for key, value in versions.items())
     ):
         raise ValueError(
             "compute manifest identity does not match the certified registry/runtime"
         )
+    uk_bundle.validate_bundle_identity(manifest, bundle, root=ROOT)
     for relative, digest in manifest["artifacts"].items():
         if receipt["files"].get(relative) != digest:
             raise ValueError("compute and Modal artifact commitments disagree")
         artifact = read_json(prefix / relative)
+        uk_bundle.validate_bundle_identity(artifact, bundle, root=ROOT)
         if any(artifact.get(key) != value for key, value in versions.items()):
             raise ValueError("numerical artifact uses another engine runtime")
         if not math.isfinite(artifact["measure_total_gbp"]):
@@ -136,7 +164,7 @@ def validate(event, download_root, remote_output=None, allow_partial=False):
         if (
             artifact.get("dataset_sha256_before") != cert["sha256"]
             or artifact.get("dataset_sha256_after") != cert["sha256"]
-            or artifact.get("data_bundle") != cert["revision"]
+            or artifact.get("data_bundle") != data_build_id
         ):
             raise ValueError(
                 "numerical artifact does not retain the certified file identity"
@@ -147,7 +175,12 @@ def validate(event, download_root, remote_output=None, allow_partial=False):
         # resolving untouched canonical receipt paths inside the download.
         compute.ROOT = prefix
         _, tally = stage.stage_event(
-            registry, manifest, artifact_dir=directory, registry_sha256=registry_sha
+            registry,
+            manifest,
+            artifact_dir=directory,
+            registry_sha256=registry_sha,
+            bundle=bundle,
+            bundle_root=ROOT,
         )
     finally:
         compute.ROOT = original_root
@@ -169,9 +202,14 @@ def validate(event, download_root, remote_output=None, allow_partial=False):
             "year": year,
             "registry_sha256": registry_sha,
             "certified_dataset_sha256": cert["sha256"],
-            "data_bundle": cert["revision"],
+            "data_bundle": data_build_id,
             **versions,
             "artifacts": expected_artifacts,
+            **(
+                uk_bundle.bundle_identity(bundle, root=ROOT)
+                if bundle != uk_bundle.DEFAULT_BUNDLE
+                else {}
+            ),
         }
         if progress != expected_progress:
             raise ValueError(
@@ -209,7 +247,9 @@ def validate(event, download_root, remote_output=None, allow_partial=False):
         )
         row["old_head_effects"] = old["head_effects"]
         row["new_head_effects"] = new["head_effects"]
-    if any(name.startswith("policyengine") for name in sys.modules):
+    if {
+        name for name in sys.modules if name.startswith("policyengine")
+    } - engine_modules_before:
         raise AssertionError("validation unexpectedly imported an engine")
     return {
         "event": event,
@@ -221,25 +261,39 @@ def validate(event, download_root, remote_output=None, allow_partial=False):
         "staging_tally": tally,
         "files": changes,
         "changed_existing_numerical_artifacts": numerical_changes,
+        **(
+            uk_bundle.bundle_identity(bundle, root=ROOT)
+            if bundle != uk_bundle.DEFAULT_BUNDLE
+            else {}
+        ),
     }
 
 
-def adopt(report, *, backup_root, local_run_stopped, allow_changed_existing=False):
+def adopt(
+    report,
+    *,
+    backup_root,
+    local_run_stopped,
+    allow_changed_existing=False,
+    bundle=uk_bundle.DEFAULT_BUNDLE,
+):
     event = report["event"]
+    uk_bundle.validate_bundle_identity(report, bundle, root=ROOT)
     if not local_run_stopped:
         raise ValueError(
             "adoption requires explicit confirmation that the local event run stopped"
         )
-    if (
-        not report["full_event_complete"]
-        or report["remote_output"] != f"results/uk/events/{event}"
+    if not report["full_event_complete"] or report[
+        "remote_output"
+    ] != modal_runner.bundle_relative(
+        uk_bundle.event_output_dir(event, bundle, root=ROOT), ROOT
     ):
         raise ValueError("only a complete canonical remote output can be adopted")
     if report["changed_existing_numerical_artifacts"] and not allow_changed_existing:
         raise ValueError(
             "existing numerical bytes differ; review the report before authorizing replacement"
         )
-    if report["input_manifest_sha256"] != current_input_digest(event):
+    if report["input_manifest_sha256"] != current_input_digest(event, bundle):
         raise ValueError("allowlisted inputs changed after validation")
     expected_directory = PurePosixPath(report["remote_output"])
     paths = [row["path"] for row in report["files"]]
@@ -307,6 +361,7 @@ def adopt(report, *, backup_root, local_run_stopped, allow_changed_existing=Fals
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--event", default="autumn_budget_2024")
+    parser.add_argument("--bundle", default=uk_bundle.DEFAULT_BUNDLE)
     parser.add_argument("--download-root", required=True)
     parser.add_argument("--remote-output")
     parser.add_argument("--allow-partial", action="store_true")
@@ -318,7 +373,11 @@ def main():
     )
     args = parser.parse_args()
     report = validate(
-        args.event, args.download_root, args.remote_output, args.allow_partial
+        args.event,
+        args.download_root,
+        args.remote_output,
+        args.allow_partial,
+        bundle=args.bundle,
     )
     print(modal_runner.canonical_bytes(report).decode(), end="")
     if args.adopt:
@@ -327,6 +386,7 @@ def main():
             backup_root=args.backup_root,
             local_run_stopped=args.local_run_stopped,
             allow_changed_existing=args.allow_changed_existing,
+            bundle=args.bundle,
         )
 
 

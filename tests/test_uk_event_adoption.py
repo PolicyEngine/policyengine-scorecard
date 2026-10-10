@@ -1,5 +1,7 @@
 """Offline validation and mutation guards for canonical event adoption."""
 
+import sys
+import types
 from pathlib import Path
 
 import pytest
@@ -14,8 +16,13 @@ def helper():
 
 @pytest.fixture
 def adoption(helper, monkeypatch, tmp_path):
+    pin_path = tmp_path / "data/uk/certified_bundle.json"
+    pin_path.parent.mkdir(parents=True)
+    pin_path.write_bytes(
+        (helper.modal_runner.ROOT / "data/uk/certified_bundle.json").read_bytes()
+    )
     monkeypatch.setattr(helper, "ROOT", tmp_path)
-    monkeypatch.setattr(helper, "current_input_digest", lambda event: "a" * 64)
+    monkeypatch.setattr(helper, "current_input_digest", lambda event, bundle: "a" * 64)
     output = "results/uk/events/autumn_budget_2024"
     download = ".venv-replay-checks/download"
     paths = [output + "/measure_2026.json", output + "/RUN_MANIFEST.json"]
@@ -105,6 +112,95 @@ def test_adoption_preserves_originals_and_installs_manifest_last(
         ).read_bytes()
 
 
+@pytest.fixture
+def other_bundle_adoption(helper, adoption):
+    root, report = adoption
+    key = "development-isolation-fixture"
+    pin = helper.uk_bundle.load_bundle(root=root)
+    pin["bundle_key"] = key
+    pin["development_bundle"] = True
+    pin_relative = "data/uk/certified_bundles/development.json"
+    (root / pin_relative).parent.mkdir(parents=True)
+    (root / pin_relative).write_bytes(helper.modal_runner.canonical_bytes(pin))
+    (root / "data/uk/certified_bundles/index.json").write_bytes(
+        helper.modal_runner.canonical_bytes(
+            {
+                "schema_version": 1,
+                "default_bundle": helper.uk_bundle.DEFAULT_BUNDLE,
+                "bundles": {
+                    helper.uk_bundle.DEFAULT_BUNDLE: "data/uk/certified_bundle.json",
+                    key: pin_relative,
+                },
+            }
+        )
+    )
+    original_paths = [row["path"] for row in report["files"]]
+    old_output = report["remote_output"]
+    output = f"results/uk/events/bundles/{key}/{report['event']}"
+    for row in report["files"]:
+        old_relative = row["path"]
+        new_relative = old_relative.replace(old_output, output)
+        for prefix in (root, root / report["download_root"]):
+            path = prefix / new_relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes((prefix / old_relative).read_bytes())
+        row["path"] = new_relative
+    report["remote_output"] = output
+    report.update(helper.uk_bundle.bundle_identity(key, root=root))
+    return root, key, report, original_paths
+
+
+def test_adoption_isolated_bundle_preserves_default_bytes(
+    helper, other_bundle_adoption
+):
+    root, key, report, default_paths = other_bundle_adoption
+    before = {relative: (root / relative).read_bytes() for relative in default_paths}
+    helper.adopt(
+        report,
+        bundle=key,
+        backup_root=".venv-replay-checks/backup",
+        local_run_stopped=True,
+        allow_changed_existing=True,
+    )
+    assert all(
+        (root / relative).read_bytes() == payload
+        for relative, payload in before.items()
+    )
+    assert (root / report["files"][0]["path"]).read_bytes() == (
+        root / report["download_root"] / report["files"][0]["path"]
+    ).read_bytes()
+
+
+def test_adoption_rejects_report_from_another_bundle_before_writes(
+    helper, other_bundle_adoption
+):
+    root, _, report, _ = other_bundle_adoption
+    with pytest.raises(ValueError, match="bundle identity mismatch"):
+        helper.adopt(
+            report,
+            backup_root=".venv-replay-checks/backup",
+            local_run_stopped=True,
+            allow_changed_existing=True,
+        )
+    assert not (root / ".venv-replay-checks/backup").exists()
+
+
+def test_adoption_rejects_default_destination_for_other_bundle(
+    helper, other_bundle_adoption
+):
+    root, key, report, _ = other_bundle_adoption
+    report["remote_output"] = f"results/uk/events/{report['event']}"
+    with pytest.raises(ValueError, match="complete canonical"):
+        helper.adopt(
+            report,
+            bundle=key,
+            backup_root=".venv-replay-checks/backup",
+            local_run_stopped=True,
+            allow_changed_existing=True,
+        )
+    assert not (root / ".venv-replay-checks/backup").exists()
+
+
 def test_download_drift_blocks_all_writes_before_backup(helper, adoption):
     root, report = adoption
     originals = {
@@ -129,7 +225,7 @@ def test_download_drift_blocks_all_writes_before_backup(helper, adoption):
 
 def test_input_drift_after_validation_blocks_adoption(helper, adoption, monkeypatch):
     root, report = adoption
-    monkeypatch.setattr(helper, "current_input_digest", lambda event: "b" * 64)
+    monkeypatch.setattr(helper, "current_input_digest", lambda event, bundle: "b" * 64)
     with pytest.raises(ValueError, match="inputs changed after validation"):
         helper.adopt(
             report,
@@ -209,6 +305,15 @@ def downloaded_event(helper, monkeypatch, tmp_path):
         path = tmp_path / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(b"{}")
+    (tmp_path / "data/uk/certified_bundles/index.json").write_bytes(
+        runner.canonical_bytes(
+            {
+                "schema_version": 1,
+                "default_bundle": runner.DEFAULT_BUNDLE,
+                "bundles": {runner.DEFAULT_BUNDLE: "data/uk/certified_bundle.json"},
+            }
+        )
+    )
     (tmp_path / "data/uk/certified_bundle.json").write_bytes(
         runner.canonical_bytes(cert)
     )
@@ -230,7 +335,9 @@ def downloaded_event(helper, monkeypatch, tmp_path):
     monkeypatch.setattr(
         runner,
         "input_manifest",
-        lambda event, root: actual_inputs(event, root=root, hf_cache=hf_cache),
+        lambda event, root, **kwargs: actual_inputs(
+            event, root=root, hf_cache=hf_cache, **kwargs
+        ),
     )
     source = {
         "source_row_id": "tax",
@@ -257,6 +364,7 @@ def downloaded_event(helper, monkeypatch, tmp_path):
     }
     registry = {
         "event_slug": event,
+        "bundle": cert,
         "calendar_years": [2026],
         "measures": [measure],
         "accounting": helper.compute.registry_builder.accounting([source], [measure]),
@@ -382,6 +490,35 @@ def test_read_only_validation_runs_real_inventory_grid_and_orientation_guards(
     assert not (fixture["root"] / "results").exists()
 
 
+def test_validation_tolerates_an_engine_imported_before_it_runs(
+    helper, downloaded_event, monkeypatch
+):
+    """A full suite in an engine-equipped venv imports policyengine first."""
+    fixture = downloaded_event
+    monkeypatch.setitem(
+        sys.modules, "policyengine_preloaded_elsewhere", types.ModuleType("x")
+    )
+    report = helper.validate(fixture["event"], fixture["download"])
+    assert report["full_event_complete"]
+
+
+def test_validation_rejects_an_engine_imported_during_validation(
+    helper, downloaded_event, monkeypatch
+):
+    fixture = downloaded_event
+    read_json = helper.read_json
+
+    def read_json_importing_engine(path):
+        monkeypatch.setitem(
+            sys.modules, "policyengine_imported_by_validation", types.ModuleType("x")
+        )
+        return read_json(path)
+
+    monkeypatch.setattr(helper, "read_json", read_json_importing_engine)
+    with pytest.raises(AssertionError, match="unexpectedly imported an engine"):
+        helper.validate(fixture["event"], fixture["download"])
+
+
 def test_validation_rejects_changed_current_allowlisted_input(helper, downloaded_event):
     fixture = downloaded_event
     (fixture["root"] / "pipeline/compute_uk_event.py").write_bytes(b"different inputs")
@@ -427,4 +564,19 @@ def test_validation_rejects_unreceipted_output_files(helper, downloaded_event):
     fixture = downloaded_event
     (fixture["directory"] / "uncommitted.json").write_bytes(b"{}")
     with pytest.raises(ValueError, match="missing or unreceipted files"):
+        helper.validate(fixture["event"], fixture["download"])
+
+
+@pytest.mark.parametrize("target", ["request", "manifest", "artifact"])
+def test_validation_rejects_foreign_bundle_receipts(helper, downloaded_event, target):
+    fixture = downloaded_event
+    if target == "request":
+        fixture["receipt"]["request"]["bundle_key"] = "foreign-bundle"
+        fixture["receipt"]["request_sha256"] = helper.modal_runner.digest_bytes(
+            helper.modal_runner.canonical_bytes(fixture["receipt"]["request"])
+        )
+    else:
+        fixture[target]["bundle_key"] = "foreign-bundle"
+    fixture["refresh"]()
+    with pytest.raises(ValueError, match="identity"):
         helper.validate(fixture["event"], fixture["download"])

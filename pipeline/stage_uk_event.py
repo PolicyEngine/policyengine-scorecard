@@ -17,6 +17,7 @@ from pathlib import Path
 from pipeline import compute_uk_event as compute
 from pipeline import compute_uk_obr_costings as fiscal
 from pipeline import stage_uk_ab2025 as ab_stage
+from pipeline import uk_bundle as bundles
 
 AXES = [
     "behavioural_adjustment",
@@ -100,12 +101,26 @@ def validate_artifact(
 
 
 def stage_event(
-    registry: dict, manifest: dict | None, *, artifact_dir: Path, registry_sha256: str
+    registry: dict,
+    manifest: dict | None,
+    *,
+    artifact_dir: Path,
+    registry_sha256: str,
+    bundle: str | None = None,
+    bundle_root: Path = bundles.ROOT,
 ) -> tuple[list[dict], dict]:
     """Engine-free staging; missing measures and unsupported FYs stay visible."""
+    selected = bundle or bundles.DEFAULT_BUNDLE
+    verify_bundle = (
+        bundle is not None or "bundle" in registry or "bundle_key" in registry
+    )
+    if verify_bundle:
+        bundles.validate_registry_bundle(registry, selected, root=bundle_root)
     artifacts = {}
     paths = {}
     if manifest is not None:
+        if verify_bundle:
+            bundles.validate_runtime_bundle(manifest, selected, root=bundle_root)
         event = registry.get("event_slug", registry.get("event"))
         if event is not None and manifest.get("event", event) != event:
             raise ValueError("compute manifest event differs from registry")
@@ -130,6 +145,11 @@ def stage_event(
             paths[key] = (relative, digest)
     index = {measure["measure_key"]: measure for measure in registry["measures"]}
     for (key, year), artifact in artifacts.items():
+        if verify_bundle:
+            bundles.validate_runtime_bundle(artifact, selected, root=bundle_root)
+            start, end = bundles.bundle_window(selected, root=bundle_root)
+            if not start <= year <= end:
+                raise ValueError("artifact year is outside selected bundle window")
         if key not in index:
             raise ValueError("manifest contains a measure outside the registry")
         event = registry.get("event_slug", registry.get("event"))
@@ -285,9 +305,23 @@ def stage_event(
                     "PE calendar-year totals proxy fiscal-year totals; PE is static and its certified policy world differs from the announcement baseline.",
                 ],
             }
+            if selected != bundles.DEFAULT_BUNDLE:
+                row["annotations"][0] = (
+                    f"OBR uses the forecast available at announcement; PE uses a single certified {bundles.bundle_window(selected, root=bundle_root)[0]} population with later calibration and uprating targets."
+                )
             artifact_key = (key, year)
             artifact = artifacts.get(artifact_key)
-            if classification == "out_of_household_scope":
+            if (
+                selected != bundles.DEFAULT_BUNDLE
+                and not bundles.bundle_window(selected, root=bundle_root)[0]
+                <= year
+                <= bundles.bundle_window(selected, root=bundle_root)[1]
+            ):
+                row["status"] = "outside_bundle_window"
+                row["reason"] = (
+                    "FY start outside the selected certified bundle's supported calendar-year window"
+                )
+            elif classification == "out_of_household_scope":
                 row["reason"] = (
                     source.get("scope_reason")
                     or source.get("classification_reason")
@@ -390,6 +424,8 @@ def stage_event(
         "missing_measure_years": compute.grid_rows(full_pairs - computed_pairs),
         "registry_sha256": registry_sha256,
     }
+    if selected != bundles.DEFAULT_BUNDLE:
+        tally.update(bundles.bundle_identity(selected, root=bundle_root))
     if inert_pairs:
         tally["inert_measure_years"] = compute.grid_rows(inert_pairs)
     if tally["source_rows"] != tally["staged_rows"]:
@@ -404,13 +440,17 @@ def stage_event(
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--event", required=True)
+    ap.add_argument("--bundle", default=bundles.DEFAULT_BUNDLE)
     ap.add_argument("--registry", type=Path)
     ap.add_argument("--artifact-dir", type=Path)
     ap.add_argument("--output", type=Path)
     args = ap.parse_args(argv)
-    default_registry, default_artifacts = compute.event_paths(args.event)
+    default_registry = bundles.registry_path(args.event, args.bundle)
+    default_artifacts = bundles.event_output_dir(args.event, args.bundle)
     registry_path = args.registry or default_registry
     artifact_dir = args.artifact_dir or default_artifacts
+    bundles.validate_bundle_path(registry_path, args.bundle, kind="registry")
+    bundles.validate_bundle_path(artifact_dir, args.bundle, kind="results")
     payload = registry_path.read_bytes()
     registry_sha256 = fiscal.hashlib.sha256(payload).hexdigest()
     manifest_path = artifact_dir / "RUN_MANIFEST.json"
@@ -418,13 +458,18 @@ def main(argv: list[str] | None = None) -> int:
         json.loads(manifest_path.read_bytes()) if manifest_path.exists() else None
     )
     registry = json.loads(payload)
-    compute.validate_event_identity(registry, args.event)
+    compute.validate_event_identity(registry, args.event, args.bundle)
     compute.registry_builder.validate_registry(registry)
     rows, tally = stage_event(
-        registry, manifest, artifact_dir=artifact_dir, registry_sha256=registry_sha256
+        registry,
+        manifest,
+        artifact_dir=artifact_dir,
+        registry_sha256=registry_sha256,
+        bundle=args.bundle,
     )
     compute.verify_registry_identity(registry_path, registry_sha256)
     output = args.output or artifact_dir / "STAGED.jsonl"
+    bundles.validate_bundle_path(output, args.bundle, kind="results")
     output.parent.mkdir(parents=True, exist_ok=True)
     staged_payload = b"".join(
         (json.dumps(row, sort_keys=True, allow_nan=False) + "\n").encode()

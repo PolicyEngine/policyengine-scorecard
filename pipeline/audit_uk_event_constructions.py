@@ -12,6 +12,15 @@ import json
 import sysconfig
 from pathlib import Path
 
+from pipeline.uk_bundle import (
+    DEFAULT_BUNDLE,
+    bundle_document,
+    bundle_identity,
+    load_bundle,
+    results_root,
+    validate_bundle_path,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_RANGES = {
     "policyengine_uk/variables/gov/hmrc/sdlt_on_residential_property_transactions.py": [
@@ -81,11 +90,15 @@ def package_version(site_packages: Path, distribution: str) -> str:
     raise ValueError(f"missing {distribution} version metadata")
 
 
-def source_evidence(site_packages: Path) -> list[dict]:
+def source_evidence(site_packages: Path, *, legacy=True) -> list[dict]:
     evidence = []
     for relative, ranges in SOURCE_RANGES.items():
         path = site_packages / relative
+        if not legacy and not path.exists():
+            continue
         raw = path.read_bytes()
+        if not legacy:
+            ranges = [(1, len(raw.decode().splitlines()))]
         source = raw.decode()
         lines = source.splitlines(keepends=True)
         evidence.append(
@@ -123,7 +136,8 @@ def inspect_h5(path: Path) -> dict:
             "household_weight",
             "household_is_capital_gains_clone",
         ]
-        values = household.fields(fields)[()]
+        available = [name for name in fields if name in household.dtype.names]
+        values = household.fields(available)[()]
         purchased = values["property_purchased"].astype(bool)
         stock = values["other_residential_property_value"]
         weights = values["household_weight"]
@@ -144,6 +158,8 @@ def inspect_h5(path: Path) -> dict:
             "other_property_nonfinite_rows": int((~np.isfinite(stock)).sum()),
             "capital_gains_clone_household_rows": int(
                 values["household_is_capital_gains_clone"].sum()
+                if "household_is_capital_gains_clone" in available
+                else 0
             ),
         }
         del values
@@ -161,19 +177,141 @@ def inspect_h5(path: Path) -> dict:
         }
 
 
+GAIN_SUBTYPE_INPUTS = (
+    "capital_gains_badr",
+    "capital_gains_residential_property",
+    "capital_gains_carried_interest",
+)
+CGT_FORMULA = (
+    "policyengine_uk/variables/gov/hmrc/capital_gains_tax/capital_gains_tax.py"
+)
+ADDITIONAL_PURCHASE = "policyengine_uk/variables/household/consumption/additional_residential_property_purchased.py"
+
+
+def legacy_construction_limits() -> list[dict]:
+    """The 2.89.2 audit's findings, kept verbatim for the historical bundle."""
+    return [
+        {
+            "id": "sdlt_flagged_stock_transaction_proxy",
+            "variables": [
+                "property_purchased",
+                "other_residential_property_value",
+                "additional_residential_property_purchased",
+            ],
+            "finding": "The bundle supplies property stock and a purchase flag, but no direct main/additional purchase prices. Additional purchase price is stock multiplied by that flag. This is a transaction-price proxy; full stock is not taxed unconditionally.",
+            "annual_projection": "Population extension copies the purchase flag; per-capita GDP uprating grows property values. There is no annual purchaser resampling in this path.",
+            "aggregate_scope": "Base-year raw input aggregates precede SDLT geography, minimum-price thresholds, annual uprating and reform aggregation. Raw row counts include capital-gains clones.",
+            "divergence_axes": [
+                "construction_scope",
+                "head_scope",
+                "population_vintage",
+            ],
+            "national_contribution": "unsized",
+        },
+        {
+            "id": "cgt_pooled_gain_types_and_zero_elasticity",
+            "variables": [
+                "capital_gains",
+                "capital_gains_before_response",
+                "capital_gains_behavioural_response",
+                "capital_gains_tax",
+            ],
+            "finding": "The tax formula applies the main CGT rate schedule to one pooled gains amount, with no asset-type, BADR, Investors' Relief or carried-interest branch. The bundle has one capital_gains input. The loader moves it to before_response; the default zero elasticity makes the response formula return zero.",
+            "annual_projection": "Both capital_gains and capital_gains_before_response are uprated by per-capita GDP. No gain-type allocation is supplied by this path.",
+            "divergence_axes": [
+                "construction_scope",
+                "head_scope",
+                "behavioural_adjustment",
+                "population_vintage",
+            ],
+            "national_contribution": "unsized",
+        },
+    ]
+
+
+def engine_construction_limits(site_packages: Path, observations: dict) -> list[dict]:
+    """Derive each statement from this engine's source and this dataset's columns.
+
+    The formula's capability and the population's inputs are reported
+    separately: a branch the engine implements can still be inert because the
+    dataset doesn't supply its input.
+    """
+    columns = observations["input_columns"]
+    supplied = set(columns["household"]) | set(columns["person"])
+    cgt_source = (site_packages / CGT_FORMULA).read_text()
+    formula_reads = [name for name in GAIN_SUBTYPE_INPUTS if f'"{name}"' in cgt_source]
+    dataset_has = [name for name in formula_reads if name in supplied]
+    missing = [name for name in formula_reads if name not in supplied]
+    if not formula_reads:
+        cgt_finding = "The tax formula reads one pooled capital_gains amount and no separate gain-type input."
+    elif missing:
+        cgt_finding = (
+            "The tax formula reads separate gain-type inputs ("
+            + ", ".join(formula_reads)
+            + "). The certified dataset does not supply "
+            + ", ".join(missing)
+            + ", so those branches take their default and the corresponding gains are taxed from the pooled capital_gains input."
+        )
+    else:
+        cgt_finding = (
+            "The tax formula reads separate gain-type inputs ("
+            + ", ".join(formula_reads)
+            + ") and the certified dataset supplies all of them."
+        )
+    purchase_source = (site_packages / ADDITIONAL_PURCHASE).read_text()
+    derived = "def formula" in purchase_source
+    has_purchase_input = "additional_residential_property_purchased" in supplied
+    if derived:
+        sdlt_finding = "additional_residential_property_purchased has a formula in this engine; it is derived, not read from the dataset."
+    elif has_purchase_input:
+        sdlt_finding = "additional_residential_property_purchased is an input in this engine and the certified dataset supplies it."
+    else:
+        sdlt_finding = "additional_residential_property_purchased is an input in this engine and the certified dataset does not supply it, so it takes its default."
+    return [
+        {
+            "id": "sdlt_flagged_stock_transaction_proxy",
+            "variables": [
+                "property_purchased",
+                "other_residential_property_value",
+                "additional_residential_property_purchased",
+            ],
+            "finding": sdlt_finding,
+            "additional_purchase_is_derived": derived,
+            "dataset_supplies_additional_purchase": has_purchase_input,
+            "source_file": ADDITIONAL_PURCHASE,
+            "national_contribution": "unsized",
+        },
+        {
+            "id": "cgt_pooled_gain_types_and_zero_elasticity",
+            "variables": ["capital_gains", *GAIN_SUBTYPE_INPUTS, "capital_gains_tax"],
+            "finding": cgt_finding,
+            "formula_reads_gain_types": formula_reads,
+            "dataset_supplies_gain_types": dataset_has,
+            "source_file": CGT_FORMULA,
+            "national_contribution": "unsized",
+        },
+    ]
+
+
 def collect_audit(dataset: Path, site_packages: Path, bundle: dict) -> dict:
     identity = verify_dataset(dataset, bundle)
     versions = {
         package: package_version(site_packages, package)
         for package in ("policyengine", "policyengine-uk", "policyengine-core")
     }
-    if versions != {
-        "policyengine": "5.0.2",
-        "policyengine-uk": "2.89.2",
-        "policyengine-core": "3.27.1",
-    }:
+    key = bundle.get("bundle_key", DEFAULT_BUNDLE)
+    expected = (
+        bundle_identity(key)["engine_versions"]
+        if key != DEFAULT_BUNDLE
+        else {
+            "policyengine": "5.0.2",
+            "policyengine-uk": "2.89.2",
+            "policyengine-core": "3.27.1",
+        }
+    )
+    if versions != expected:
         raise ValueError("construction audit requires the pinned replay packages")
-    evidence = source_evidence(site_packages)
+    evidence = source_evidence(site_packages, legacy=key == DEFAULT_BUNDLE)
     observations = inspect_h5(dataset)
     return {
         "schema_version": 1,
@@ -183,52 +321,20 @@ def collect_audit(dataset: Path, site_packages: Path, bundle: dict) -> dict:
             "sha256": sha256_file(Path(__file__)),
         },
         "packages": versions,
+        **(bundle_identity(key) if key != DEFAULT_BUNDLE else {}),
         "certified_dataset": identity,
         "observations": observations,
         "source_evidence": evidence,
-        "construction_limits": [
-            {
-                "id": "sdlt_flagged_stock_transaction_proxy",
-                "variables": [
-                    "property_purchased",
-                    "other_residential_property_value",
-                    "additional_residential_property_purchased",
-                ],
-                "finding": "The bundle supplies property stock and a purchase flag, but no direct main/additional purchase prices. Additional purchase price is stock multiplied by that flag. This is a transaction-price proxy; full stock is not taxed unconditionally.",
-                "annual_projection": "Population extension copies the purchase flag; per-capita GDP uprating grows property values. There is no annual purchaser resampling in this path.",
-                "aggregate_scope": "Base-year raw input aggregates precede SDLT geography, minimum-price thresholds, annual uprating and reform aggregation. Raw row counts include capital-gains clones.",
-                "divergence_axes": [
-                    "construction_scope",
-                    "head_scope",
-                    "population_vintage",
-                ],
-                "national_contribution": "unsized",
-            },
-            {
-                "id": "cgt_pooled_gain_types_and_zero_elasticity",
-                "variables": [
-                    "capital_gains",
-                    "capital_gains_before_response",
-                    "capital_gains_behavioural_response",
-                    "capital_gains_tax",
-                ],
-                "finding": "The tax formula applies the main CGT rate schedule to one pooled gains amount, with no asset-type, BADR, Investors' Relief or carried-interest branch. The bundle has one capital_gains input. The loader moves it to before_response; the default zero elasticity makes the response formula return zero.",
-                "annual_projection": "Both capital_gains and capital_gains_before_response are uprated by per-capita GDP. No gain-type allocation is supplied by this path.",
-                "divergence_axes": [
-                    "construction_scope",
-                    "head_scope",
-                    "behavioural_adjustment",
-                    "population_vintage",
-                ],
-                "national_contribution": "unsized",
-            },
-        ],
+        "construction_limits": legacy_construction_limits()
+        if key == DEFAULT_BUNDLE
+        else engine_construction_limits(site_packages, observations),
         "interpretation": "These observations document construction and data-flow limits. They do not establish national model errors, causal residual amounts or an explained share. No new model diagnostic is asserted.",
     }
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--bundle", default=DEFAULT_BUNDLE)
     parser.add_argument("--dataset", required=True, type=Path)
     parser.add_argument(
         "--site-packages", type=Path, default=Path(sysconfig.get_paths()["purelib"])
@@ -236,11 +342,17 @@ def main() -> None:
     parser.add_argument(
         "--output",
         type=Path,
-        default=ROOT / "results/uk/events/CONSTRUCTION_AUDIT.json",
+        default=None,
     )
     args = parser.parse_args()
-    bundle = json.loads((ROOT / "data/uk/certified_bundle.json").read_text())
+    bundle = (
+        load_bundle(args.bundle)
+        if args.bundle != DEFAULT_BUNDLE
+        else bundle_document(args.bundle)
+    )
     audit = collect_audit(args.dataset, args.site_packages, bundle)
+    args.output = args.output or results_root(args.bundle) / "CONSTRUCTION_AUDIT.json"
+    validate_bundle_path(args.output, args.bundle, kind="results")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(audit, indent=1, sort_keys=True, allow_nan=False) + "\n"

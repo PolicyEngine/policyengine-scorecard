@@ -31,6 +31,7 @@ network is blocked, and no credential or provider Secret is sent to it.
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import importlib.metadata
 import json
@@ -41,6 +42,10 @@ import sys
 import tempfile
 import time
 from pathlib import Path, PurePosixPath
+
+from pipeline import uk_bundle
+
+DEFAULT_BUNDLE = uk_bundle.DEFAULT_BUNDLE
 
 ROOT = Path(__file__).resolve().parent.parent
 REMOTE_ROOT = "/replay"
@@ -71,9 +76,7 @@ REPOSITORY_FILES = (
     "pipeline/compute_uk_obr_costings.py",
     "pipeline/build_uk_event_registry.py",
     "pipeline/uk_engine_registry.py",
-    "data/uk/certified_bundle.json",
-    "docs/uk_replay/requirements.txt",
-    "docs/uk_replay/OFFLINE_BUNDLE_AUDIT.json",
+    "pipeline/uk_bundle.py",
     "sources/uk_replay/source.json",
     "sources/harvest-uk-2026-08-02/uk_obr/claims_staged.jsonl.gz",
 )
@@ -131,80 +134,268 @@ def relative_path(value: str) -> str:
     return value
 
 
-def repository_files(event: str) -> tuple[str, ...]:
+def bundle_relative(path: Path, root: Path) -> str:
+    """Only workspace-owned files may be selected by the bundle registry."""
+    return relative_path(str(path.resolve().relative_to(root.resolve())))
+
+
+def bundle_index_relative(root: Path) -> str:
+    value = os.environ.get("UK_BUNDLE_INDEX", "data/uk/certified_bundles/index.json")
+    path = Path(value)
+    return bundle_relative(path if path.is_absolute() else root / path, root)
+
+
+def selected_index_bytes(bundle: str = DEFAULT_BUNDLE, *, root: Path = ROOT) -> bytes:
+    """The index entries this run needs, serialized as registration writes them.
+
+    Mounting and hashing the whole shared index would let registering an
+    unrelated bundle change every earlier run's input commitment. Only the
+    default mapping and the selected bundle's mapping are kept.
+    """
+    path = uk_bundle.bundle_index_path(root=root)
+    index = (
+        json.loads(path.read_text())
+        if path.exists()
+        else {
+            "schema_version": 1,
+            "default_bundle": DEFAULT_BUNDLE,
+            "bundles": {DEFAULT_BUNDLE: "data/uk/certified_bundle.json"},
+        }
+    )
+    if bundle not in index["bundles"]:
+        raise ValueError(f"unregistered UK bundle: {bundle}")
+    selected = {
+        "schema_version": index["schema_version"],
+        "default_bundle": index["default_bundle"],
+        "bundles": {
+            key: value
+            for key, value in index["bundles"].items()
+            if key in (DEFAULT_BUNDLE, bundle)
+        },
+    }
+    return (json.dumps(selected, indent=2, sort_keys=True) + "\n").encode()
+
+
+def bundle_file(bundle: str, field: str, *, root: Path = ROOT) -> str:
+    return relative_path(uk_bundle.load_bundle(bundle, root=root)[field])
+
+
+def repository_files(
+    event: str, bundle: str = DEFAULT_BUNDLE, *, root: Path = ROOT
+) -> tuple[str, ...]:
     if event not in EVENTS:
         raise ValueError(f"unsupported fiscal event: {event}")
-    return (*REPOSITORY_FILES, f"data/uk/events/{event}_measures.json")
+    return (
+        *REPOSITORY_FILES,
+        bundle_index_relative(root),
+        bundle_relative(uk_bundle.bundle_pin_path(bundle, root=root), root),
+        bundle_file(bundle, "requirements_freeze", root=root),
+        bundle_file(bundle, "offline_audit", root=root),
+        bundle_relative(uk_bundle.registry_path(event, bundle, root=root), root),
+    )
 
 
-def requirements_pins(text: str) -> dict[str, str]:
+def engine_pins(bundle: str = DEFAULT_BUNDLE, *, root: Path = ROOT) -> dict[str, str]:
+    if bundle == DEFAULT_BUNDLE:
+        return ENGINE_PINS.copy()
+    pin = uk_bundle.load_bundle(bundle, root=root)
+    pins = {"policyengine": pin["managed_loader_version"]}
+    for field in ("compatible_model_packages", "compatible_core_packages"):
+        for package in pin[field]:
+            if not re.fullmatch(r"==[A-Za-z0-9_.+!-]+", package["specifier"]):
+                raise ValueError("remote engine packages require exact certified pins")
+            pins[package["name"]] = package["specifier"][2:]
+    if not {"policyengine", "policyengine-uk", "policyengine-core"} <= pins.keys():
+        raise ValueError("bundle omits a certified engine package")
+    return pins
+
+
+def hf_identity(bundle: str, *, root: Path = ROOT) -> tuple[str, str]:
+    pin = uk_bundle.load_bundle(bundle, root=root)
+    kind = {"dataset": "datasets", "model": "models"}.get(pin["repo_type"])
+    if kind is None:
+        raise ValueError("unsupported certified Hugging Face repository type")
+    return f"{kind}--{pin['repo_id'].replace('/', '--')}", pin["resolved_hf_commit"]
+
+
+def remote_marker_applies(expression: str) -> bool:
+    """Evaluate the freeze's PEP 508 markers for the pinned Linux interpreter.
+
+    The lightweight control environment has no packaging dependency. Restrict
+    evaluation to marker names, string constants and comparison/boolean nodes;
+    never execute a requirements expression as Python code.
+    """
+    environment = {
+        "implementation_name": "cpython",
+        "implementation_version": PYTHON_VERSION,
+        "os_name": "posix",
+        "sys_platform": "linux",
+        "platform_machine": "x86_64",
+        "platform_system": "Linux",
+        "platform_python_implementation": "CPython",
+        "python_version": ".".join(PYTHON_VERSION.split(".")[:2]),
+        "python_full_version": PYTHON_VERSION,
+        "extra": "",
+    }
+
+    def operand(node):
+        if isinstance(node, ast.Name) and node.id in environment:
+            return environment[node.id]
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            return node.value
+        raise ValueError("unsupported requirements environment marker")
+
+    def evaluate(node):
+        if isinstance(node, ast.BoolOp) and isinstance(node.op, (ast.And, ast.Or)):
+            values = [evaluate(child) for child in node.values]
+            return all(values) if isinstance(node.op, ast.And) else any(values)
+        if not isinstance(node, ast.Compare) or len(node.ops) != 1:
+            raise ValueError("unsupported requirements environment marker")
+        left, right = operand(node.left), operand(node.comparators[0])
+        operation = node.ops[0]
+        version_names = {
+            "python_version",
+            "python_full_version",
+            "implementation_version",
+        }
+        if any(
+            isinstance(item, ast.Name) and item.id in version_names
+            for item in (node.left, node.comparators[0])
+        ):
+            if not all(
+                re.fullmatch(r"[0-9]+(?:\.[0-9]+)*", value) for value in (left, right)
+            ):
+                raise ValueError("version markers must use numeric release versions")
+            # Pad release segments so 3.12 and 3.12.0 compare equally.
+            values = [tuple(map(int, value.split("."))) for value in (left, right)]
+            length = max(map(len, values))
+            left, right = (value + (0,) * (length - len(value)) for value in values)
+        if isinstance(operation, ast.Eq):
+            return left == right
+        if isinstance(operation, ast.NotEq):
+            return left != right
+        if isinstance(operation, ast.Lt):
+            return left < right
+        if isinstance(operation, ast.LtE):
+            return left <= right
+        if isinstance(operation, ast.Gt):
+            return left > right
+        if isinstance(operation, ast.GtE):
+            return left >= right
+        if isinstance(operation, ast.In):
+            return left in right
+        if isinstance(operation, ast.NotIn):
+            return left not in right
+        raise ValueError("unsupported requirements environment marker")
+
+    try:
+        return evaluate(ast.parse(expression.strip(), mode="eval").body)
+    except SyntaxError as error:
+        raise ValueError("invalid requirements environment marker") from error
+
+
+def requirements_pins(
+    text: str, bundle: str = DEFAULT_BUNDLE, *, root: Path = ROOT
+) -> dict[str, str]:
     pins = {}
     for line in text.splitlines():
         line = line.strip()
         if not line or line.startswith("#"):
             continue
-        match = re.fullmatch(r"([A-Za-z0-9][A-Za-z0-9_.-]*)==([A-Za-z0-9_.+!-]+)", line)
+        requirement, separator, marker = line.partition(";")
+        match = re.fullmatch(
+            r"([A-Za-z0-9][A-Za-z0-9_.-]*)==([A-Za-z0-9_.+!-]+)", requirement.strip()
+        )
         if not match:
             raise ValueError("remote requirements must contain exact package pins only")
+        if separator and not remote_marker_applies(marker):
+            continue
         name, version = match.groups()
         name = re.sub(r"[-_.]+", "-", name).lower()
         if name in pins:
             raise ValueError(f"duplicate requirement: {name}")
         pins[name] = version
-    if any(pins.get(name) != version for name, version in ENGINE_PINS.items()):
+    if any(
+        pins.get(name) != version
+        for name, version in engine_pins(bundle, root=root).items()
+    ):
         raise ValueError("requirements do not match the certified engine pins")
     return pins
 
 
-def certified_pin(root: Path) -> dict:
-    cert = json.loads((root / "data/uk/certified_bundle.json").read_bytes())
-    audit = json.loads((root / "docs/uk_replay/OFFLINE_BUNDLE_AUDIT.json").read_bytes())
+def certified_pin(root: Path, bundle: str = DEFAULT_BUNDLE) -> dict:
+    cert = json.loads(uk_bundle.bundle_pin_path(bundle, root=root).read_bytes())
+    config = uk_bundle.load_bundle(bundle, root=root)
+    audit = json.loads(
+        (root / bundle_file(bundle, "offline_audit", root=root)).read_bytes()
+    )
     if (
-        cert.get("repo_id") != "policyengine/populace-uk-private"
-        or cert.get("artifact") != "populace_uk_2023.h5"
-        or not re.fullmatch(r"[0-9a-f]{64}", cert.get("sha256", ""))
+        not re.fullmatch(r"[0-9a-f]{64}", cert.get("sha256", ""))
         or cert.get("size_bytes", 0) <= 0
-        or audit["certified_identity"].get("resolved_hf_commit") != HF_COMMIT
+        or audit["certified_identity"].get("resolved_hf_commit")
+        != config["resolved_hf_commit"]
         or any(
             audit["certified_identity"].get(key) != cert.get(key)
             for key in ("repo_id", "artifact", "revision", "sha256", "size_bytes")
         )
-        or not any(
-            row.get("name") == "policyengine-uk" and row.get("specifier") == "==2.89.2"
-            for row in cert.get("compatible_model_packages", [])
-        )
     ):
         raise ValueError("certified pin differs from the audited offline bundle")
+    pins = engine_pins(bundle, root=root)
+    if not any(
+        row.get("name") == "policyengine-uk"
+        and row.get("specifier") == f"=={pins['policyengine-uk']}"
+        for row in cert.get("compatible_model_packages", [])
+    ):
+        raise ValueError("certified pin differs from the audited engine model")
+    if bundle != DEFAULT_BUNDLE and (
+        audit["certified_identity"].get("repo_type") != config["repo_type"]
+        or audit["certified_identity"].get("model_version") != pins["policyengine-uk"]
+        or audit["certified_identity"].get("core_version") != pins["policyengine-core"]
+        or audit.get("policyengine_version") != pins["policyengine"]
+    ):
+        raise ValueError("certified pin differs from the audited engine runtime")
     return cert
 
 
 def input_manifest(
-    event: str, *, root: Path = ROOT, hf_cache: Path | None = None
+    event: str,
+    *,
+    bundle: str = DEFAULT_BUNDLE,
+    root: Path = ROOT,
+    hf_cache: Path | None = None,
 ) -> tuple[dict, dict[str, Path]]:
     """List exact mounts; never traverse a repository or a Hugging Face cache."""
-    cert = certified_pin(root)
-    requirements_pins((root / "docs/uk_replay/requirements.txt").read_text())
+    cert = certified_pin(root, bundle)
+    requirements_pins(
+        (root / bundle_file(bundle, "requirements_freeze", root=root)).read_text(),
+        bundle,
+        root=root,
+    )
+    repo_cache_name, commit = hf_identity(bundle, root=root)
     hf_cache = hf_cache or Path.home() / ".cache/huggingface/hub"
-    repo_cache = hf_cache / HF_REPO_CACHE
+    repo_cache = hf_cache / repo_cache_name
     ref = repo_cache / "refs" / cert["revision"]
-    artifact = repo_cache / "snapshots" / HF_COMMIT / cert["artifact"]
-    if ref.read_text().strip() != HF_COMMIT:
+    artifact = repo_cache / "snapshots" / commit / cert["artifact"]
+    if ref.read_text().strip() != commit:
         raise ValueError("cached revision does not resolve to the audited HF commit")
     if artifact.stat().st_size != cert["size_bytes"]:
         raise ValueError("cached artifact size differs from the certified bundle")
-    mounts = {relative: root / relative for relative in repository_files(event)}
-    ref_relative = f"{HF_CACHE_RELATIVE}/{HF_REPO_CACHE}/refs/{cert['revision']}"
+    allowlist = repository_files(event, bundle, root=root)
+    mounts = {relative: root / relative for relative in allowlist}
+    ref_relative = f"{HF_CACHE_RELATIVE}/{repo_cache_name}/refs/{cert['revision']}"
     artifact_relative = (
-        f"{HF_CACHE_RELATIVE}/{HF_REPO_CACHE}/snapshots/{HF_COMMIT}/{cert['artifact']}"
+        f"{HF_CACHE_RELATIVE}/{repo_cache_name}/snapshots/{commit}/{cert['artifact']}"
     )
     # Mount the blob's content directly at the snapshot path; no symlink or
     # unrelated blob, release metadata, refs/main or token file is transmitted.
     mounts[ref_relative] = ref
     mounts[artifact_relative] = artifact.resolve(strict=True)
+    index_relative = bundle_index_relative(root)
+    index_payload = selected_index_bytes(bundle, root=root)
     rows = []
     for relative, source in sorted(mounts.items()):
         is_artifact = relative == artifact_relative
-        if relative in repository_files(event) and not source.resolve().is_relative_to(
+        if relative in allowlist and not source.resolve().is_relative_to(
             root.resolve()
         ):
             raise ValueError(
@@ -213,8 +404,14 @@ def input_manifest(
         rows.append(
             {
                 "path": relative,
-                "size_bytes": source.stat().st_size,
-                "sha256": cert["sha256"] if is_artifact else sha256_file(source),
+                "size_bytes": len(index_payload)
+                if relative == index_relative
+                else source.stat().st_size,
+                "sha256": cert["sha256"]
+                if is_artifact
+                else digest_bytes(index_payload)
+                if relative == index_relative
+                else sha256_file(source),
                 "kind": "certified_artifact" if is_artifact else "input",
             }
         )
@@ -222,10 +419,15 @@ def input_manifest(
         "schema_version": 1,
         "event": event,
         "certified_bundle": cert,
-        "hf_commit": HF_COMMIT,
+        "hf_commit": commit,
         "files": rows,
         "artifact_digest_validation": "remote hash before engine import, plus existing managed-loader pre/post simulation checks",
         "resource_limits": RESOURCE_LIMITS,
+        **(
+            uk_bundle.bundle_identity(bundle, root=root)
+            if bundle != DEFAULT_BUNDLE
+            else {}
+        ),
     }, mounts
 
 
@@ -236,21 +438,26 @@ def request_spec(
     measures: list[str],
     output_dir: str,
     preflight_only: bool,
+    bundle: str = DEFAULT_BUNDLE,
+    root: Path = ROOT,
 ) -> dict:
     if event not in EVENTS:
         raise ValueError("unsupported fiscal event")
     output_dir = relative_path(output_dir)
     output = PurePosixPath(output_dir)
-    canonical = PurePosixPath("results/uk/events") / event
+    canonical = PurePosixPath(
+        bundle_relative(uk_bundle.event_output_dir(event, bundle, root=root), root)
+    )
     ignored = PurePosixPath(".venv-replay-checks/modal")
     if not (output.is_relative_to(canonical) or output.is_relative_to(ignored)):
         raise ValueError(
             "remote output must be event results or the ignored Modal directory"
         )
+    start, end = uk_bundle.bundle_window(uk_bundle.load_bundle(bundle, root=root))
     if len(years) != len(set(years)) or any(
-        year < 2023 or year > 2030 for year in years
+        year < start or year > end for year in years
     ):
-        raise ValueError("years must be unique within 2023–2030")
+        raise ValueError(f"years must be unique within {start}–{end}")
     if len(measures) != len(set(measures)) or any(
         not re.fullmatch(r"[a-z0-9]+(?:_+[a-z0-9]+)*", key) for key in measures
     ):
@@ -263,13 +470,21 @@ def request_spec(
         "output_dir": output_dir,
         "preflight_only": preflight_only,
         "workers": 1,
+        **(
+            uk_bundle.bundle_identity(bundle, root=root)
+            if bundle != DEFAULT_BUNDLE
+            else {}
+        ),
     }
 
 
 def validate_selection(request: dict, *, root: Path = ROOT) -> None:
+    bundle = request.get("bundle_key", DEFAULT_BUNDLE)
+    uk_bundle.validate_bundle_identity(request, bundle, root=root)
     registry = json.loads(
-        (root / f"data/uk/events/{request['event']}_measures.json").read_bytes()
+        uk_bundle.registry_path(request["event"], bundle, root=root).read_bytes()
     )
+    uk_bundle.validate_registry_bundle(registry, bundle, root=root)
     if registry.get("event_slug", registry.get("event")) != request["event"]:
         raise ValueError("uploaded registry belongs to another fiscal event")
     if set(request["years"]) - set(registry["calendar_years"]):
@@ -279,20 +494,24 @@ def validate_selection(request: dict, *, root: Path = ROOT) -> None:
         raise ValueError("requested measure keys are absent from the event registry")
 
 
-def verify_inputs(manifest: dict, *, root: Path = ROOT) -> None:
+def verify_inputs(
+    manifest: dict, *, bundle: str = DEFAULT_BUNDLE, root: Path = ROOT
+) -> None:
     """Check uploaded bytes before importing a country package."""
-    cert = certified_pin(root)
-    expected = set(repository_files(manifest["event"]))
-    expected.add(f"{HF_CACHE_RELATIVE}/{HF_REPO_CACHE}/refs/{cert['revision']}")
+    uk_bundle.validate_bundle_identity(manifest, bundle, root=root)
+    cert = certified_pin(root, bundle)
+    repo_cache_name, commit = hf_identity(bundle, root=root)
+    expected = set(repository_files(manifest["event"], bundle, root=root))
+    expected.add(f"{HF_CACHE_RELATIVE}/{repo_cache_name}/refs/{cert['revision']}")
     artifact_relative = (
-        f"{HF_CACHE_RELATIVE}/{HF_REPO_CACHE}/snapshots/{HF_COMMIT}/{cert['artifact']}"
+        f"{HF_CACHE_RELATIVE}/{repo_cache_name}/snapshots/{commit}/{cert['artifact']}"
     )
     expected.add(artifact_relative)
     rows = manifest.get("files", [])
     if (
         manifest.get("schema_version") != 1
         or manifest.get("certified_bundle") != cert
-        or manifest.get("hf_commit") != HF_COMMIT
+        or manifest.get("hf_commit") != commit
         or manifest.get("resource_limits") != RESOURCE_LIMITS
         or len(rows) != len(expected)
         or {row["path"] for row in rows} != expected
@@ -312,19 +531,25 @@ def verify_inputs(manifest: dict, *, root: Path = ROOT) -> None:
             or sha256_file(source) != row["sha256"]
         ):
             raise ValueError(f"uploaded input differs from its digest: {row['path']}")
-    ref = root / HF_CACHE_RELATIVE / HF_REPO_CACHE / "refs" / cert["revision"]
-    if ref.read_text().strip() != HF_COMMIT:
+    ref = root / HF_CACHE_RELATIVE / repo_cache_name / "refs" / cert["revision"]
+    if ref.read_text().strip() != commit:
         raise ValueError("remote HF revision ref differs from the audited commit")
 
 
-def verify_runtime(*, root: Path = ROOT) -> dict:
-    pins = requirements_pins((root / "docs/uk_replay/requirements.txt").read_text())
+def verify_runtime(*, bundle: str = DEFAULT_BUNDLE, root: Path = ROOT) -> dict:
+    pins = requirements_pins(
+        (root / bundle_file(bundle, "requirements_freeze", root=root)).read_text(),
+        bundle,
+        root=root,
+    )
     installed = {name: importlib.metadata.version(name) for name in pins}
     if installed != pins or platform.python_version() != PYTHON_VERSION:
         raise ValueError(
             "remote Python or installed requirements differ from the pinned environment"
         )
-    audit = json.loads((root / "docs/uk_replay/OFFLINE_BUNDLE_AUDIT.json").read_bytes())
+    audit = json.loads(
+        (root / bundle_file(bundle, "offline_audit", root=root)).read_bytes()
+    )
     distribution = importlib.metadata.distribution("policyengine")
     packaged_manifest = Path(
         distribution.locate_file("policyengine/data/bundle/manifest.json")
@@ -348,6 +573,7 @@ def verify_runtime(*, root: Path = ROOT) -> dict:
 def run_worker(payload: dict) -> int:
     started = time.perf_counter()
     request = payload["request"]
+    bundle = request.get("bundle_key", DEFAULT_BUNDLE)
     if (
         request
         != request_spec(
@@ -356,6 +582,7 @@ def run_worker(payload: dict) -> int:
             measures=request["measures"],
             output_dir=request["output_dir"],
             preflight_only=request["preflight_only"],
+            bundle=bundle,
         )
         or payload["inputs"]["event"] != request["event"]
     ):
@@ -365,24 +592,24 @@ def run_worker(payload: dict) -> int:
     os.environ["HF_HOME"] = str(ROOT / ".cache/huggingface")
     os.environ["HF_HUB_CACHE"] = str(ROOT / HF_CACHE_RELATIVE)
     print("[modal] verifying allowlisted inputs before engine import", flush=True)
-    verify_inputs(payload["inputs"])
+    verify_inputs(payload["inputs"], bundle=bundle)
     validate_selection(request)
-    runtime = verify_runtime()
+    runtime = verify_runtime(bundle=bundle)
     print("[modal] input hashes and full pinned environment verified", flush=True)
     from pipeline import compute_uk_event as compute
 
-    registry_path, _ = compute.event_paths(request["event"])
+    registry_path, _ = compute.event_paths(request["event"], bundle=bundle)
     registry = json.loads(registry_path.read_bytes())
-    compute.validate_event_identity(registry, request["event"])
+    compute.validate_event_identity(registry, request["event"], bundle=bundle)
     compute.registry_builder.validate_registry(registry)
-    compute.validate_years(request["years"], registry)
+    compute.validate_years(request["years"], registry, bundle=bundle)
     output = ROOT / request["output_dir"]
     if output.exists() and any(output.iterdir()):
         raise ValueError("remote output directory already contains files")
     output.mkdir(parents=True, exist_ok=True)
     if request["preflight_only"]:
         print("[modal] starting existing offline managed-bundle preflight", flush=True)
-        pre = compute.preflight()
+        pre = compute.preflight(bundle=bundle)
         result = {
             "event": request["event"],
             "computed": False,
@@ -393,6 +620,7 @@ def run_worker(payload: dict) -> int:
             "input_manifest_sha256": digest_bytes(canonical_bytes(payload["inputs"])),
             "engine_version": compute.fiscal.package_version("policyengine-uk"),
             **compute.runtime_versions(),
+            **(uk_bundle.bundle_identity(bundle) if bundle != DEFAULT_BUNDLE else {}),
         }
         compute.fiscal.atomic_write_bytes(
             output / "PREFLIGHT.json", canonical_bytes(result)
@@ -407,6 +635,8 @@ def run_worker(payload: dict) -> int:
             "--workers",
             "1",
         ]
+        if bundle != DEFAULT_BUNDLE:
+            argv.extend(["--bundle", bundle])
         if request["years"]:
             argv.extend(["--years", *map(str, request["years"])])
         if request["measures"]:
@@ -436,7 +666,7 @@ def run_worker(payload: dict) -> int:
     return 0
 
 
-def modal_function(mounts: dict[str, Path]):
+def modal_function(mounts: dict[str, Path], bundle: str = DEFAULT_BUNDLE):
     """Construct lazy SDK objects; only main's explicit --execute starts them."""
     if sys.version_info[:2] != (3, 12):
         raise ValueError(
@@ -451,14 +681,14 @@ def modal_function(mounts: dict[str, Path]):
         modal.Image.debian_slim(python_version="3.12")
         .pip_install(f"uv=={UV_VERSION}")
         .add_local_file(
-            mounts["docs/uk_replay/requirements.txt"],
+            mounts[bundle_file(bundle, "requirements_freeze")],
             "/opt/replay-requirements.txt",
             copy=True,
         )
         .run_commands(
             f"uv python install {PYTHON_VERSION}",
             f"uv venv --python {PYTHON_VERSION} /opt/replay-venv",
-            f"uv pip install --python {REMOTE_PYTHON} --requirements /opt/replay-requirements.txt",
+            f"uv pip install --python {REMOTE_PYTHON} --no-deps --requirements /opt/replay-requirements.txt",
         )
         .env(
             {
@@ -466,10 +696,24 @@ def modal_function(mounts: dict[str, Path]):
                 "PYTHONPATH": REMOTE_ROOT,
                 "HF_HOME": f"{REMOTE_ROOT}/.cache/huggingface",
                 "HF_HUB_CACHE": f"{REMOTE_ROOT}/{HF_CACHE_RELATIVE}",
+                **(
+                    {"UK_BUNDLE_INDEX": bundle_index_relative(ROOT)}
+                    if os.environ.get("UK_BUNDLE_INDEX")
+                    else {}
+                ),
             }
         )
     )
+    index_relative = bundle_index_relative(ROOT)
     for relative, path in sorted(mounts.items()):
+        if relative == index_relative:
+            # Mount exactly the bytes the input manifest hashed.
+            selected = tempfile.NamedTemporaryFile(
+                prefix="replay-index-", suffix=".json", delete=False
+            )
+            selected.write(selected_index_bytes(bundle, root=ROOT))
+            selected.close()
+            path = Path(selected.name)
         image = image.add_local_file(path, f"{REMOTE_ROOT}/{relative}", copy=False)
     app = modal.App("scorecard-uk-event-replay", include_source=False)
 
@@ -595,6 +839,7 @@ def save_download(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--event", choices=EVENTS, default="autumn_budget_2024")
+    parser.add_argument("--bundle", default=DEFAULT_BUNDLE)
     parser.add_argument("--years", nargs="*", type=int, default=[])
     parser.add_argument("--measures", nargs="*", default=[])
     parser.add_argument("--output-dir")
@@ -613,7 +858,9 @@ def main(argv: list[str] | None = None) -> int:
     output = args.output_dir or (
         f".venv-replay-checks/modal/{args.event}/preflight"
         if args.preflight_only
-        else f"results/uk/events/{args.event}"
+        else bundle_relative(
+            uk_bundle.event_output_dir(args.event, args.bundle, root=ROOT), ROOT
+        )
     )
     request = request_spec(
         args.event,
@@ -621,9 +868,12 @@ def main(argv: list[str] | None = None) -> int:
         measures=args.measures,
         output_dir=output,
         preflight_only=args.preflight_only,
+        bundle=args.bundle,
     )
     validate_selection(request)
-    inputs, mounts = input_manifest(args.event, hf_cache=args.hf_cache)
+    inputs, mounts = input_manifest(
+        args.event, bundle=args.bundle, hf_cache=args.hf_cache
+    )
     payload = {"request": request, "inputs": inputs}
     prefix = download_prefix(args.download_root)
     if not args.execute:
@@ -639,7 +889,7 @@ def main(argv: list[str] | None = None) -> int:
         raise ValueError("download destination escapes its ignored prefix")
     if target.exists() and any(target.iterdir()):
         raise ValueError("choose an empty download prefix before a remote run")
-    modal, app, replay = modal_function(mounts)
+    modal, app, replay = modal_function(mounts, bundle=args.bundle)
     response = None
     with modal.enable_output(), app.run():
         response = replay.remote(payload)

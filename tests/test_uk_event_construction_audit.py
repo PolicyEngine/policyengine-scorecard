@@ -65,11 +65,10 @@ def test_saved_receipt_has_certified_identity_and_keeps_contributions_unsized():
     for field in ("sha256", "size_bytes", "artifact", "revision"):
         assert receipt["certified_dataset"][field] == bundle[field]
     assert receipt["certified_dataset"]["digest_checked_before_hdf5_open"] is True
-    assert (
-        receipt["inspection_script"]["sha256"]
-        == hashlib.sha256(
-            (audit.ROOT / receipt["inspection_script"]["path"]).read_bytes()
-        ).hexdigest()
+    # This is the historical execution receipt. Its source digest must remain
+    # the original version, even as the current auditor gains bundle selection.
+    assert receipt["inspection_script"]["sha256"] == (
+        "ec1c6354653da622530b617f5a651c0ddde9320dda15505e4d79136981d9ea8c"
     )
     assert receipt["observations"]["time_period"] == "2023"
     columns = receipt["observations"]["input_columns"]
@@ -107,3 +106,63 @@ def test_saved_receipt_has_certified_identity_and_keeps_contributions_unsized():
         ]
         == "9547795632c1da3cacba2f11b8b109082e02e18c74cc35e5a726cb504507ba25"
     )
+
+
+def engine_tree(root, *, cgt_reads=(), purchase_has_formula=True):
+    """A minimal site-packages with only the two source files the audit reads."""
+    cgt = root / audit.CGT_FORMULA
+    cgt.parent.mkdir(parents=True)
+    cgt.write_text(
+        'gains = person("capital_gains", period)\n'
+        + "".join(f'person("{name}", period)\n' for name in cgt_reads)
+    )
+    purchase = root / audit.ADDITIONAL_PURCHASE
+    purchase.parent.mkdir(parents=True)
+    purchase.write_text(
+        "class additional_residential_property_purchased(Variable):\n"
+        + (
+            "    def formula(household, period):\n        ...\n"
+            if purchase_has_formula
+            else "    pass\n"
+        )
+    )
+    return root
+
+
+def test_the_historical_bundle_keeps_its_committed_construction_limits():
+    committed = json.loads(
+        (audit.ROOT / "results/uk/events/CONSTRUCTION_AUDIT.json").read_text()
+    )
+    assert audit.legacy_construction_limits() == committed["construction_limits"]
+
+
+@pytest.mark.parametrize("supplied", [(), audit.GAIN_SUBTYPE_INPUTS])
+def test_cgt_limit_separates_formula_capability_from_dataset_inputs(tmp_path, supplied):
+    """An engine can implement gain-type branches the population can't feed."""
+    site = engine_tree(tmp_path, cgt_reads=audit.GAIN_SUBTYPE_INPUTS)
+    observations = {
+        "input_columns": {"household": [], "person": ["capital_gains", *supplied]}
+    }
+    cgt = audit.engine_construction_limits(site, observations)[1]
+    assert cgt["formula_reads_gain_types"] == list(audit.GAIN_SUBTYPE_INPUTS)
+    assert cgt["dataset_supplies_gain_types"] == list(supplied)
+    assert ("does not supply" in cgt["finding"]) == (not supplied)
+    pooled = engine_tree(tmp_path / "old")
+    old = audit.engine_construction_limits(pooled, observations)[1]
+    assert old["formula_reads_gain_types"] == []
+    assert "no separate gain-type input" in old["finding"]
+
+
+@pytest.mark.parametrize("has_formula", [True, False])
+@pytest.mark.parametrize("in_dataset", [True, False])
+def test_sdlt_limit_reports_whether_the_purchase_is_derived_or_supplied(
+    tmp_path, has_formula, in_dataset
+):
+    site = engine_tree(tmp_path, purchase_has_formula=has_formula)
+    columns = ["additional_residential_property_purchased"] if in_dataset else []
+    observations = {"input_columns": {"household": columns, "person": []}}
+    sdlt = audit.engine_construction_limits(site, observations)[0]
+    assert sdlt["additional_purchase_is_derived"] is has_formula
+    assert sdlt["dataset_supplies_additional_purchase"] is in_dataset
+    if not has_formula and not in_dataset:
+        assert "does not supply it" in sdlt["finding"]

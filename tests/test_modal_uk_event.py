@@ -30,6 +30,15 @@ def inputs(tmp_path):
         path = tmp_path / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text("{}")
+    (tmp_path / "data/uk/certified_bundles/index.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "default_bundle": runner.DEFAULT_BUNDLE,
+                "bundles": {runner.DEFAULT_BUNDLE: "data/uk/certified_bundle.json"},
+            }
+        )
+    )
     (tmp_path / "data/uk/certified_bundle.json").write_text(json.dumps(cert))
     (tmp_path / "docs/uk_replay/OFFLINE_BUNDLE_AUDIT.json").write_text(
         json.dumps(audit)
@@ -42,6 +51,7 @@ def inputs(tmp_path):
         json.dumps(
             {
                 "event_slug": "autumn_budget_2024",
+                "bundle": cert,
                 "calendar_years": list(range(2024, 2030)),
                 "measures": [
                     {"measure_key": "autumn_budget_2024__private_school_vat_20pct"}
@@ -65,6 +75,12 @@ def inputs(tmp_path):
     return tmp_path, manifest, mounts
 
 
+def upload_index(root, bundle=runner.DEFAULT_BUNDLE):
+    """Emulate the mount: the remote index holds only the selected mappings."""
+    path = root / "data/uk/certified_bundles/index.json"
+    path.write_bytes(runner.selected_index_bytes(bundle, root=root))
+
+
 def test_allowlist_mounts_only_pinned_inputs(inputs):
     root, manifest, mounts = inputs
     assert len(mounts) == len(runner.repository_files("autumn_budget_2024")) + 2
@@ -73,7 +89,177 @@ def test_allowlist_mounts_only_pinned_inputs(inputs):
     )
     assert not any(".git" in Path(path).parts for path in mounts)
     assert sum(row["kind"] == "certified_artifact" for row in manifest["files"]) == 1
+    upload_index(root)
     runner.verify_inputs(manifest, root=root)
+
+
+@pytest.fixture
+def model_bundle(inputs):
+    """A model-repository bundle exists only inside this temporary test root."""
+    root, _, _ = inputs
+    key = "development-2024__pe-uk-2.102.3"
+    artifact_bytes = b"new certified fixture"
+    pin = {
+        "schema_version": 2,
+        "bundle_key": key,
+        "repo_id": "policyengine/policyengine-uk-data-private",
+        "repo_type": "model",
+        "revision": "1.56.16",
+        "release_tag": "1.56.16",
+        "resolved_hf_commit": "b" * 40,
+        "release_manifest_revision": "c" * 40,
+        "artifact": "enhanced_frs_2024_25.h5",
+        "sha256": runner.digest_bytes(artifact_bytes),
+        "size_bytes": len(artifact_bytes),
+        "data_build_id": "policyengine-uk-data-1.56.16",
+        "data_year": 2024,
+        "supported_calendar_years": [2024, 2030],
+        "compatible_model_packages": [
+            {"name": "policyengine-uk", "specifier": "==2.102.3"}
+        ],
+        "compatible_core_packages": [
+            {"name": "policyengine-core", "specifier": "==3.32.10"}
+        ],
+        "managed_loader_version": "6.2.5",
+        "requirements_freeze": "docs/uk_replay/requirements-development.txt",
+        "offline_audit": "docs/uk_replay/OFFLINE_DEVELOPMENT.json",
+        "development_bundle": True,
+    }
+    pin_relative = "data/uk/certified_bundles/development.json"
+    (root / pin_relative).write_bytes(runner.canonical_bytes(pin))
+    index = root / "data/uk/certified_bundles/index.json"
+    document = json.loads(index.read_bytes())
+    document["bundles"][key] = pin_relative
+    index.write_bytes(runner.canonical_bytes(document))
+    audit = {
+        "policyengine_version": "6.2.5",
+        "packaged_bundle_manifest_sha256": "d" * 64,
+        "certified_identity": {
+            **pin,
+            "model_version": "2.102.3",
+            "core_version": "3.32.10",
+        },
+    }
+    (root / pin["offline_audit"]).write_bytes(runner.canonical_bytes(audit))
+    (root / pin["requirements_freeze"]).write_text(
+        "policyengine==6.2.5\npolicyengine-uk==2.102.3\npolicyengine-core==3.32.10\n"
+    )
+    registry_path = runner.uk_bundle.registry_path("autumn_budget_2024", key, root=root)
+    registry_path.parent.mkdir(parents=True)
+    registry_path.write_bytes(
+        runner.canonical_bytes(
+            {
+                "event_slug": "autumn_budget_2024",
+                "calendar_years": [2024, 2026],
+                "bundle": pin,
+                "measures": [
+                    {"measure_key": "autumn_budget_2024__private_school_vat_20pct"}
+                ],
+                **runner.uk_bundle.bundle_identity(key, root=root),
+            }
+        )
+    )
+    cache_name, commit = runner.hf_identity(key, root=root)
+    cache = root / runner.HF_CACHE_RELATIVE / cache_name
+    ref = cache / "refs" / pin["revision"]
+    artifact = cache / "snapshots" / commit / pin["artifact"]
+    ref.parent.mkdir(parents=True)
+    artifact.parent.mkdir(parents=True)
+    ref.write_text(commit)
+    artifact.write_bytes(artifact_bytes)
+    manifest, mounts = runner.input_manifest(
+        "autumn_budget_2024",
+        bundle=key,
+        root=root,
+        hf_cache=root / runner.HF_CACHE_RELATIVE,
+    )
+    return root, key, pin, manifest, mounts
+
+
+def test_model_bundle_selects_exact_cache_freeze_audit_and_registry(model_bundle):
+    root, key, pin, manifest, mounts = model_bundle
+    assert manifest["bundle_key"] == key
+    assert manifest["hf_commit"] == pin["resolved_hf_commit"]
+    assert pin["requirements_freeze"] in mounts and pin["offline_audit"] in mounts
+    assert "data/uk/certified_bundle.json" not in mounts
+    assert any(
+        "models--policyengine--policyengine-uk-data-private/snapshots/" in path
+        for path in mounts
+    )
+    assert not any(
+        "datasets--policyengine--populace-uk-private" in path for path in mounts
+    )
+    upload_index(root, key)
+    runner.verify_inputs(manifest, bundle=key, root=root)
+
+
+def test_bundle_window_and_canonical_output_are_selected_together(model_bundle):
+    root, key, _, _, _ = model_bundle
+    output = f"results/uk/events/bundles/{key}/autumn_budget_2024"
+    request = runner.request_spec(
+        "autumn_budget_2024",
+        bundle=key,
+        root=root,
+        years=[2024],
+        measures=[],
+        output_dir=output,
+        preflight_only=False,
+    )
+    runner.validate_selection(request, root=root)
+    with pytest.raises(ValueError, match="2024–2030"):
+        runner.request_spec(
+            "autumn_budget_2024",
+            bundle=key,
+            root=root,
+            years=[2023],
+            measures=[],
+            output_dir=output,
+            preflight_only=False,
+        )
+    with pytest.raises(ValueError, match="remote output"):
+        runner.request_spec(
+            "autumn_budget_2024",
+            bundle=key,
+            root=root,
+            years=[],
+            measures=[],
+            output_dir="results/uk/events/autumn_budget_2024",
+            preflight_only=False,
+        )
+
+
+@pytest.mark.parametrize("target", ["manifest", "registry"])
+def test_cross_bundle_identity_is_rejected_before_engine_import(model_bundle, target):
+    root, key, _, manifest, _ = model_bundle
+    if target == "manifest":
+        with pytest.raises(ValueError, match="bundle identity mismatch"):
+            runner.verify_inputs(manifest, root=root)
+    else:
+        registry = runner.uk_bundle.registry_path("autumn_budget_2024", key, root=root)
+        document = json.loads(registry.read_bytes())
+        document["bundle_key"] = runner.DEFAULT_BUNDLE
+        registry.write_bytes(runner.canonical_bytes(document))
+        request = runner.request_spec(
+            "autumn_budget_2024",
+            bundle=key,
+            root=root,
+            years=[2024],
+            measures=[],
+            output_dir=f"results/uk/events/bundles/{key}/autumn_budget_2024",
+            preflight_only=False,
+        )
+        with pytest.raises(ValueError, match="bundle identity mismatch"):
+            runner.validate_selection(request, root=root)
+
+
+def test_model_bundle_rejects_audit_engine_or_core_drift(model_bundle):
+    root, key, pin, _, _ = model_bundle
+    audit_path = root / pin["offline_audit"]
+    audit = json.loads(audit_path.read_bytes())
+    audit["certified_identity"]["core_version"] = "3.27.1"
+    audit_path.write_bytes(runner.canonical_bytes(audit))
+    with pytest.raises(ValueError, match="audited engine runtime"):
+        runner.certified_pin(root, key)
 
 
 def test_upload_hash_gate_rejects_same_size_changed_h5_before_engine_import(inputs):
@@ -120,6 +306,31 @@ def test_requirements_are_exact_and_engine_compatible(requirement):
         text += "\n" + requirement
     with pytest.raises(ValueError):
         runner.requirements_pins(text)
+
+
+def test_uv_export_markers_select_the_remote_linux_python_freeze():
+    text = "\n".join(
+        f"{name}=={version}" for name, version in runner.ENGINE_PINS.items()
+    )
+    text += "\nnumpy==2.1.3 ; python_full_version < '3.14'\nnumpy==2.5.3 ; python_full_version >= '3.14'\ncolorama==0.4.6 ; sys_platform == 'win32'\nhf-xet==1.1.9 ; platform_machine == 'aarch64' or platform_machine == 'x86_64'\n"
+    pins = runner.requirements_pins(text)
+    assert pins["numpy"] == "2.1.3"
+    assert pins["hf-xet"] == "1.1.9"
+    assert "colorama" not in pins
+
+
+@pytest.mark.parametrize(
+    "expression",
+    [
+        "__import__('os').system('true')",
+        "unknown == 'linux'",
+        "python_version.startswith('3')",
+        "sys_platform ==",
+    ],
+)
+def test_requirements_markers_reject_code_and_unknown_names(expression):
+    with pytest.raises(ValueError, match="marker"):
+        runner.remote_marker_applies(expression)
 
 
 @pytest.mark.parametrize(
@@ -267,13 +478,13 @@ def test_interrupted_modal_context_returns_130_without_downloading(
 
     monkeypatch.setattr(runner, "validate_selection", lambda request: None)
     monkeypatch.setattr(
-        runner, "input_manifest", lambda event, hf_cache=None: ({"event": event}, {})
+        runner, "input_manifest", lambda event, **kwargs: ({"event": event}, {})
     )
     monkeypatch.setattr(runner, "download_prefix", lambda value: tmp_path / "download")
     monkeypatch.setattr(
         runner,
         "modal_function",
-        lambda mounts: (
+        lambda mounts, **kwargs: (
             SimpleNamespace(enable_output=nullcontext),
             SimpleNamespace(run=SuppressInterrupt),
             SimpleNamespace(remote=interrupted_remote),
@@ -348,7 +559,7 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
     assert recorded["commands"][0] == "uv python install 3.12.13"
     assert "uv venv --python 3.12.13 /opt/replay-venv" in recorded["commands"]
     assert any(
-        "--requirements /opt/replay-requirements.txt" in command
+        "--no-deps --requirements /opt/replay-requirements.txt" in command
         for command in recorded["commands"]
     )
     assert all(
@@ -359,3 +570,28 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
         for key in recorded["env"]
     )
     assert len(recorded["mounts"]) == len(mounts) + 1  # build-time frozen requirements
+
+
+def test_registering_another_bundle_keeps_existing_input_commitments(inputs):
+    """Only the selected mappings are mounted and hashed, not the shared index."""
+    root, manifest, _ = inputs
+    index_path = root / "data/uk/certified_bundles/index.json"
+    index = json.loads(index_path.read_text())
+    index["bundles"]["unrelated-later-bundle"] = "data/uk/certified_bundles/later.json"
+    index_path.write_text(json.dumps(index, indent=2, sort_keys=True) + "\n")
+    hf_cache = root / runner.HF_CACHE_RELATIVE
+    again, _ = runner.input_manifest("autumn_budget_2024", root=root, hf_cache=hf_cache)
+    assert again == manifest
+    selected = json.loads(runner.selected_index_bytes(root=root))
+    assert set(selected["bundles"]) == {runner.DEFAULT_BUNDLE}
+    with pytest.raises(ValueError, match="unregistered"):
+        runner.selected_index_bytes("not-registered", root=root)
+
+
+def test_selected_index_matches_registration_bytes_for_the_same_mappings(inputs):
+    """With nothing unrelated registered, the mounted index is the index file."""
+    root, _, _ = inputs
+    index_path = root / "data/uk/certified_bundles/index.json"
+    index = json.loads(index_path.read_text())
+    index_path.write_text(json.dumps(index, indent=2, sort_keys=True) + "\n")
+    assert runner.selected_index_bytes(root=root) == index_path.read_bytes()

@@ -440,7 +440,21 @@ def not_computable(
 # --- the certified world -------------------------------------------------------
 
 
-def preflight() -> dict:
+def preflight(bundle_key=None) -> dict:
+    from pipeline import uk_bundle
+
+    if bundle_key is not None and bundle_key != uk_bundle.DEFAULT_BUNDLE:
+        from pipeline.compute_uk_obr_costings import preflight_certified_dataset
+
+        managed = preflight_certified_dataset(bundle_key)
+        pin = uk_bundle.load_bundle(bundle_key)
+        return {
+            **managed,
+            "artifact": Path(managed["runtime_dataset_source"]),
+            "revision": pin["revision"],
+            "repo_id": pin["repo_id"],
+            "engine_version": importlib.metadata.version("policyengine-uk"),
+        }
     configure_offline()
     import policyengine as pe
     from huggingface_hub import hf_hub_download

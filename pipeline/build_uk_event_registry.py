@@ -21,6 +21,15 @@ from collections import Counter, defaultdict
 from decimal import Decimal, localcontext
 from pathlib import Path
 
+from pipeline.uk_bundle import (
+    DEFAULT_BUNDLE,
+    bundle_document,
+    bundle_identity,
+    bundle_window,
+    registry_path,
+    validate_registry_bundle,
+)
+
 try:
     from pipeline.uk_engine_registry import engine_dumps
 except ModuleNotFoundError:
@@ -229,9 +238,11 @@ def accounting(rows, measures):
     }
 
 
-def validate_registry(document):
+def validate_registry(document, bundle=None):
     """Verify a checked-in event account against its independently pinned source."""
     event_slug = document["event_slug"]
+    if bundle is not None:
+        validate_registry_bundle(document, bundle)
     actual = accounting(source_rows(event_slug), document["measures"])
     if actual != document["accounting"]:
         raise ValueError(
@@ -740,19 +751,95 @@ def gap_reason(title, rows):
     )
 
 
-def build_registry(event_slug, engine_parameters, engine_variables, resolve):
+def build_registry(
+    event_slug, engine_parameters, engine_variables, resolve, bundle=DEFAULT_BUNDLE
+):
     rows = source_rows(event_slug)
     event_name = EVENTS.get(event_slug) or rows[0]["fiscal_event"]
     grouped = defaultdict(list)
     for row in rows:
         grouped[row["title"]].append(row)
-    years = sorted({int(r["fy"][:4]) for r in rows if 2023 <= int(r["fy"][:4]) <= 2030})
+    start, end = bundle_window(bundle)
+    versions = bundle_identity(bundle)["engine_versions"]
+    years = sorted({int(r["fy"][:4]) for r in rows if start <= int(r["fy"][:4]) <= end})
     measures = []
     for title, rs in grouped.items():
         authored = authored_construction(event_slug, title, resolve)
         if authored:
             m = dict(authored)
             key = m.pop("key")
+            if bundle != DEFAULT_BUNDLE:
+                paths = set(m.get("pe_baseline_modifier", {})) | set(
+                    m.get("pe_reform_delta", {})
+                )
+                metadata_reader = getattr(
+                    resolve, "parameter_metadata", lambda path: {}
+                )
+                modes = {
+                    path: {
+                        flag: bool(metadata_reader(path).get(flag, False))
+                        for flag in ("fiscal_year_blend", "preserve_calendar_dates")
+                    }
+                    for path in sorted(paths)
+                }
+                m["parameter_processing_evidence"] = {
+                    "engine_file": "policyengine_uk/utils/parameters.py",
+                    "metadata_by_path": modes,
+                }
+                if (
+                    key == "capital_gains_main_rates_and_reliefs"
+                    and modes
+                    and all(mode["fiscal_year_blend"] for mode in modes.values())
+                ):
+                    m["pe_baseline_modifier"] = {
+                        path: {"2024-01-01": schedule["2024-10-30"]}
+                        for path, schedule in m["pe_baseline_modifier"].items()
+                    }
+                    m["missing_legs"] = list(m["missing_legs"])
+                    m["missing_legs"][1] = (
+                        "Current-law CGT rate parameters carry fiscal_year_blend metadata: the processed CY2024 rate includes the 30 October 2024 increase. The dictionary reversal starts 1 January 2024 in the processed tree, restoring the pre-announcement rate against that blended annual current law without another fiscal-year conversion."
+                    )
+                    m["note"] = (
+                        "Restore pre-announcement CGT main rates from annual CY2024 against the engine's fiscal-year-blended current law. Evidence: policyengine_uk/utils/parameters.py and fiscal_year_blend metadata on gov.hmrc.cgt basic/higher/additional_rate. Pooled gains still include residential gains already taxed at 18%/24% before AB2024, so the old 10%/20% pooled reversal retains that construction limit. Receipt timing and realisations responses remain divergence axes."
+                    )
+                    m["construction_adjustments"] = [
+                        {
+                            "id": "cgt_fiscal_year_blend_annual_reversal",
+                            "from_date": "2024-10-30",
+                            "to_date": "2024-01-01",
+                            "evidence": "parameter_processing_evidence.metadata_by_path",
+                        }
+                    ]
+            # These two original registries are inputs bound by the track-1
+            # receipts. Preserve their authored wording while the corrected
+            # explanation remains in RECIPE.md; subsequent bundles use the
+            # current construction description above.
+            if bundle == DEFAULT_BUNDLE:
+                if (
+                    event_slug == "autumn_budget_2024"
+                    and key == "sdlt_additional_dwelling_surcharge_2pp"
+                ):
+                    m["note"] = (
+                        "The pin still has the 3% surcharge scale, so the announcement is a forward 2pp increase to every marginal bracket. Government parameter processing samples 30 April and applies that value across each annual period; the October2024 onset is therefore absent from processed 2024 and present throughout processed 2025. Main-home rates and thresholds are retained."
+                    )
+                elif (
+                    event_slug == "autumn_budget_2024"
+                    and key == "capital_gains_main_rates_and_reliefs"
+                ):
+                    m["missing_legs"] = list(m["missing_legs"])
+                    m["missing_legs"][1] = (
+                        "The pinned main-rate parameters start on 2025-04-06, although the announcement starts on 2024-10-30. Government parameter processing samples 30 April and applies that value across each annual period, so the first higher processed year is 2025. No onset repair is applied."
+                    )
+                    m["note"] = (
+                        "A literal pre-announcement main-rate reversal, not a repair of the certified world's delayed rate onset or gains composition. Receipt timing and realisations responses remain divergence axes."
+                    )
+                elif (
+                    event_slug == "spring_budget_2024"
+                    and key == "class_1_employee_nics_main_rate_cut_2pp"
+                ):
+                    m["note"] = (
+                        "The 2pp marginal reversal on the certified 8% world is 10%. For AS2023, CY2023 has zero because commencement was January 2024; CY-proxies-FY explicitly misses the January-March FY2023-24 leg. Later SB2024 cuts are retained in the certified world."
+                    )
             classification = m["classification"]
             search = "|".join(
                 re.escape(p)
@@ -812,7 +899,7 @@ def build_registry(event_slug, engine_parameters, engine_variables, resolve):
                     "pattern": search,
                     "parameter_matches": ph,
                     "variable_matches": vh,
-                    "engine_version": "2.89.2",
+                    "engine_version": versions["policyengine-uk"],
                     "searched": ["full_parameter_tree", "full_variable_list"],
                 },
             }
@@ -821,6 +908,8 @@ def build_registry(event_slug, engine_parameters, engine_variables, resolve):
         m["unmapped_obr_heads"] = sorted({r["tax_head"] for r in rs} - mapped)
         for row in rs:
             r = dict(row)
+            if bundle != DEFAULT_BUNDLE and not start <= int(r["fy"][:4]) <= end:
+                r["computation_status"] = "outside_bundle_window"
             if classification == "out_of_household_scope" or is_non_household_head(
                 r["tax_head"]
             ):
@@ -864,7 +953,7 @@ def build_registry(event_slug, engine_parameters, engine_variables, resolve):
     if len(set(keys)) != len(keys):
         raise ValueError("duplicate measure key")
     manifest = json.loads(SOURCE_MANIFEST.read_text())
-    bundle = json.loads(CERTIFIED.read_text())
+    pin = bundle_document(bundle)
     return {
         "schema_version": 1,
         "event_slug": event_slug,
@@ -872,11 +961,14 @@ def build_registry(event_slug, engine_parameters, engine_variables, resolve):
         "classification_note": "not_expressible means no established executable construction in this replay. gap_kind distinguishes evidenced model/data gaps from construction_pending decisions; pending constructions do not claim the underlying liability model is absent.",
         "calendar_years": years,
         "years_note": (
-            "Calendar year starting the OBR fiscal year is the proxy. FY before 2023-24 stays accounted but is not simulated. Detailed pinned-engine/data support is recorded in docs/uk_replay/YEARS.md."
+            f"Calendar year starting the OBR fiscal year is the proxy. FY outside {start}-{end} stays accounted once as outside_bundle_window and is not simulated. Bundle-specific engine/data evidence is recorded in docs/uk_replay/YEARS_{bundle}.md."
+            if bundle != DEFAULT_BUNDLE
+            else "Calendar year starting the OBR fiscal year is the proxy. FY before 2023-24 stays accounted but is not simulated. Detailed pinned-engine/data support is recorded in docs/uk_replay/YEARS.md."
             if event_slug in EVENTS
             else "Calendar year starting the OBR fiscal year is the proxy. FY before 2023-24 or starting after 2030 stays accounted but is not simulated. Detailed pinned-engine/data support is recorded in docs/uk_replay/YEARS.md."
         ),
-        "bundle": bundle,
+        "bundle": pin,
+        **(bundle_identity(bundle) if bundle != DEFAULT_BUNDLE else {}),
         "source": manifest,
         "orientation": "positive means gain to the Exchequer; reversal effect = -(literal reversal - certified baseline)",
         "accounting": accounting(rows, measures),
@@ -890,7 +982,7 @@ def engine_resolver(system=None):
     if system is None:
         system = CountryTaxBenefitSystem()
 
-    def resolve(path, date):
+    def node_at(path):
         node = system.parameters
         for part in path.split("."):
             match = re.fullmatch(r"(.+)\[(\d+)\]", part)
@@ -899,11 +991,15 @@ def engine_resolver(system=None):
                 if match
                 else getattr(node, part)
             )
-        value = node(date)
+        return node
+
+    def resolve(path, date):
+        value = node_at(path)(date)
         if hasattr(value, "item"):
             value = value.item()
         return value
 
+    resolve.parameter_metadata = lambda path: dict(node_at(path).metadata or {})
     return resolve
 
 
@@ -915,19 +1011,27 @@ def main():
         help="Slug of any fiscal event in the pinned source; 'all' builds the five pilot events.",
     )
     p.add_argument("--check", action="store_true")
+    p.add_argument("--bundle", default=DEFAULT_BUNDLE)
     args = p.parse_args()
     if not re.fullmatch(r"[a-z][a-z0-9_]*", args.event):
         p.error("--event must be a lowercase fiscal-event slug")
     for name in ("HF_HUB_OFFLINE", "HF_DATASETS_OFFLINE", "TRANSFORMERS_OFFLINE"):
         os.environ[name] = "1"
+    import importlib.metadata
+
     from policyengine_uk import CountryTaxBenefitSystem
 
+    expected = bundle_identity(args.bundle)["engine_versions"]
+    for package, version in expected.items():
+        if importlib.metadata.version(package) != version:
+            raise ValueError(f"selected bundle requires {package}=={version}")
+
     system = CountryTaxBenefitSystem()
-    params, variables = engine_dumps(system=system)
+    params, variables = engine_dumps(pin=expected["policyengine-uk"], system=system)
     resolve = engine_resolver(system)
     for event_slug in EVENTS if args.event == "all" else [args.event]:
-        registry = build_registry(event_slug, params, variables, resolve)
-        output = ROOT / "data/uk/events" / f"{event_slug}_measures.json"
+        registry = build_registry(event_slug, params, variables, resolve, args.bundle)
+        output = registry_path(event_slug, args.bundle)
         content = canonical_bytes(registry)
         if args.check:
             if not output.exists() or output.read_bytes() != content:
