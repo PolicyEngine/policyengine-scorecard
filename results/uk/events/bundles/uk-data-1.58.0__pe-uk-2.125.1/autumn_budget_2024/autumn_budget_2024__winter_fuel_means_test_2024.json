@@ -1,0 +1,97 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.dwp.winter_fuel_payment.eligibility.require_benefits": {
+    "2024-01-01.2035-12-31": false
+   }
+  }
+ },
+ "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+ "bundle_pin_sha256": "45c3adf7d2b4e74b39f5b8b6ebafd370256ec656b1b66eed76dbb6cd2628f9ad",
+ "calendar_year_proxy": "PE calendar year 2024 proxies FY 2024-25.",
+ "certified_aggregates_gbp": {
+  "winter_fuel_allowance": 379546399.976477
+ },
+ "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "components": [
+  "autumn_budget_2024__winter_fuel_means_test"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.0",
+ "dataset_sha256_after": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "dataset_sha256_before": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "engine_version": "2.125.1",
+ "engine_versions": {
+  "policyengine": "6.2.6",
+  "policyengine-core": "3.33.0",
+  "policyengine-uk": "2.125.1"
+ },
+ "event": "autumn_budget_2024",
+ "fiscal_event": "Autumn Budget 2024",
+ "fy_proxy": "2024-25",
+ "head_channels": {
+  "winter_fuel_allowance": "spending"
+ },
+ "head_definitions": [
+  {
+   "channel": "spending",
+   "obr_head": "Welfare inside cap",
+   "pe_variables": [
+    "winter_fuel_allowance"
+   ]
+  }
+ ],
+ "head_effects": {
+  "winter_fuel_allowance": 1494917395.8842216
+ },
+ "head_variables": [
+  "winter_fuel_allowance"
+ ],
+ "literal_reform_minus_baseline": {
+  "winter_fuel_allowance": -1494917395.8842216
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "winter_fuel_allowance": -1494917395.8842216
+ },
+ "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+ "measure_total_gbp": 1494917395.8842216,
+ "null_executed_as_no_limit": [],
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.2.6",
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "3b2bdcaa6774306868d6b388f9eca2e3324ca19bba84461ce413502f98a2da68",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "supported_calendar_years": [
+  2024,
+  2030
+ ],
+ "totals": {
+  "baseline": {
+   "heads": {
+    "winter_fuel_allowance": 1874463795.8606987
+   }
+  },
+  "reform": {
+   "heads": {
+    "winter_fuel_allowance": 379546399.976477
+   }
+  }
+ },
+ "variable_metadata": {
+  "winter_fuel_allowance": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/dwp/winter_fuel_allowance.py",
+   "entity": "household",
+   "label": "Winter Fuel Allowance",
+   "unit": "currency-GBP"
+  }
+ },
+ "year": 2024
+}

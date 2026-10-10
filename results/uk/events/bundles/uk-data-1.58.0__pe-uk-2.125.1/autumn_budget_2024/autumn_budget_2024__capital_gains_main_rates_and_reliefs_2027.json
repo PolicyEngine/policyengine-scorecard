@@ -1,0 +1,103 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.cgt.additional_rate": {
+    "2024-01-01.2035-12-31": 0.2
+   },
+   "gov.hmrc.cgt.basic_rate": {
+    "2024-01-01.2035-12-31": 0.1
+   },
+   "gov.hmrc.cgt.higher_rate": {
+    "2024-01-01.2035-12-31": 0.2
+   }
+  }
+ },
+ "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+ "bundle_pin_sha256": "45c3adf7d2b4e74b39f5b8b6ebafd370256ec656b1b66eed76dbb6cd2628f9ad",
+ "calendar_year_proxy": "PE calendar year 2027 proxies FY 2027-28.",
+ "certified_aggregates_gbp": {
+  "capital_gains_tax": 13652775596.971504
+ },
+ "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "components": [
+  "autumn_budget_2024__capital_gains_main_rates_and_reliefs"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.0",
+ "dataset_sha256_after": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "dataset_sha256_before": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "engine_version": "2.125.1",
+ "engine_versions": {
+  "policyengine": "6.2.6",
+  "policyengine-core": "3.33.0",
+  "policyengine-uk": "2.125.1"
+ },
+ "event": "autumn_budget_2024",
+ "fiscal_event": "Autumn Budget 2024",
+ "fy_proxy": "2027-28",
+ "head_channels": {
+  "capital_gains_tax": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Capital gains tax",
+   "pe_variables": [
+    "capital_gains_tax"
+   ]
+  }
+ ],
+ "head_effects": {
+  "capital_gains_tax": 2502018045.7553406
+ },
+ "head_variables": [
+  "capital_gains_tax"
+ ],
+ "literal_reform_minus_baseline": {
+  "capital_gains_tax": -2502018045.7553406
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "capital_gains_tax": -2502018045.7553406
+ },
+ "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+ "measure_total_gbp": 2502018045.7553406,
+ "null_executed_as_no_limit": [],
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.2.6",
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "3b2bdcaa6774306868d6b388f9eca2e3324ca19bba84461ce413502f98a2da68",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "supported_calendar_years": [
+  2024,
+  2030
+ ],
+ "totals": {
+  "baseline": {
+   "heads": {
+    "capital_gains_tax": 11150757551.216164
+   }
+  },
+  "reform": {
+   "heads": {
+    "capital_gains_tax": 13652775596.971504
+   }
+  }
+ },
+ "variable_metadata": {
+  "capital_gains_tax": {
+   "definition_period": "year",
+   "documentation": "Capital gains tax on the person's gains, charged on four schedules: gains qualifying for Business Asset Disposal Relief or Investors' Relief (capital_gains_badr, a flat rate up to the lifetime limit), residential property gains (capital_gains_residential_property), carried interest (capital_gains_carried_interest) and the remainder of capital_gains at the main rates. The three named inputs are components of capital_gains before any realisation response: relief gains move by their own response (capital_gains_badr_behavioural_response) and the other two in proportion with the rest of the gains. All three are clipped so that together they never exceed capital_gains. The annual exempt amount is set against the schedule with the highest top rate first (TCGA 1992 s. 1K(5)); the unused basic rate band goes to relief gains first, as s. 1I(4)-(6) requires, and then to the schedule with the widest gap between its higher and basic rates (s. 1I(7)-(9)). Gains above the basic rate band are split at the income tax higher rate limit only so that reforms can set an additional rate; the law has none.",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/capital_gains_tax/capital_gains_tax.py",
+   "entity": "person",
+   "label": "capital gains tax",
+   "unit": "currency-GBP"
+  }
+ },
+ "year": 2027
+}

@@ -1,0 +1,174 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.national_insurance.class_1.rates.employer": {
+    "2025-01-01.2035-12-31": 0.138
+   },
+   "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+    "2025-01-01.2035-12-31": 175
+   }
+  }
+ },
+ "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+ "bundle_pin_sha256": "45c3adf7d2b4e74b39f5b8b6ebafd370256ec656b1b66eed76dbb6cd2628f9ad",
+ "calendar_year_proxy": "PE calendar year 2026 proxies FY 2026-27.",
+ "certified_aggregates_gbp": {
+  "income_tax": 320545242708.44257,
+  "ni_class_1_employee": 52759800753.614365,
+  "ni_class_1_employer": 161154088343.20874,
+  "ni_class_2": 0.0,
+  "ni_class_4": 2739883740.9723544
+ },
+ "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "components": [
+  "autumn_budget_2024__employer_nics_package"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.0",
+ "dataset_sha256_after": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "dataset_sha256_before": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "engine_version": "2.125.1",
+ "engine_versions": {
+  "policyengine": "6.2.6",
+  "policyengine-core": "3.33.0",
+  "policyengine-uk": "2.125.1"
+ },
+ "event": "autumn_budget_2024",
+ "fiscal_event": "Autumn Budget 2024",
+ "fy_proxy": "2026-27",
+ "head_channels": {
+  "income_tax": "tax",
+  "ni_class_1_employee": "tax",
+  "ni_class_1_employer": "tax",
+  "ni_class_2": "tax",
+  "ni_class_4": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Income tax",
+   "pe_variables": [
+    "income_tax"
+   ]
+  },
+  {
+   "channel": "tax",
+   "obr_head": "NICs",
+   "pe_variables": [
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4"
+   ]
+  }
+ ],
+ "head_effects": {
+  "income_tax": -7456022688.512695,
+  "ni_class_1_employee": -1428103439.5549774,
+  "ni_class_1_employer": 25961604613.46797,
+  "ni_class_2": 0.0,
+  "ni_class_4": 456907.1710767746
+ },
+ "head_variables": [
+  "income_tax",
+  "ni_class_1_employee",
+  "ni_class_1_employer",
+  "ni_class_2",
+  "ni_class_4"
+ ],
+ "literal_reform_minus_baseline": {
+  "income_tax": 7456022688.512695,
+  "ni_class_1_employee": 1428103439.5549774,
+  "ni_class_1_employer": -25961604613.46797,
+  "ni_class_2": -0.0,
+  "ni_class_4": -456907.1710767746
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "income_tax": 7456022688.512695,
+  "ni_class_1_employee": 1428103439.5549774,
+  "ni_class_1_employer": -25961604613.46797,
+  "ni_class_2": -0.0,
+  "ni_class_4": -456907.1710767746
+ },
+ "measure_key": "autumn_budget_2024__employer_nics_package",
+ "measure_total_gbp": 17077935392.571377,
+ "null_executed_as_no_limit": [],
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.2.6",
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "3b2bdcaa6774306868d6b388f9eca2e3324ca19bba84461ce413502f98a2da68",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "supported_calendar_years": [
+  2024,
+  2030
+ ],
+ "totals": {
+  "baseline": {
+   "heads": {
+    "income_tax": 328001265396.95526,
+    "ni_class_1_employee": 54187904193.16934,
+    "ni_class_1_employer": 135192483729.74077,
+    "ni_class_2": 0.0,
+    "ni_class_4": 2739426833.8012776
+   }
+  },
+  "reform": {
+   "heads": {
+    "income_tax": 320545242708.44257,
+    "ni_class_1_employee": 52759800753.614365,
+    "ni_class_1_employer": 161154088343.20874,
+    "ni_class_2": 0.0,
+    "ni_class_4": 2739883740.9723544
+   }
+  }
+ },
+ "variable_metadata": {
+  "income_tax": {
+   "definition_period": "year",
+   "documentation": "Total Income Tax liability",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/income_tax/income_tax.py",
+   "entity": "person",
+   "label": "Income Tax",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employee": {
+   "definition_period": "month",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employee.py",
+   "entity": "person",
+   "label": "NI Class 1 employee-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employer": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employer.py",
+   "entity": "person",
+   "label": "NI Class 1 employer-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_2": {
+   "definition_period": "year",
+   "documentation": "Compulsory Class 2 contributions under s.11(2) SSCBA 1992 for a full year of self-employment: the weekly rate for each contribution week in the tax year (53 in 2019-20, otherwise 52 to 2023-24). Liability is tested on relevant profits, the profits on which Class 4 is payable under s.15 (s.11(3)), as modelled in ni_class_4_profits.",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_2/ni_class_2.py",
+   "entity": "person",
+   "label": "NI Class 2 contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_4": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_4/ni_class_4.py",
+   "entity": "person",
+   "label": "NI Class 4 contributions",
+   "unit": "currency-GBP"
+  }
+ },
+ "year": 2026
+}

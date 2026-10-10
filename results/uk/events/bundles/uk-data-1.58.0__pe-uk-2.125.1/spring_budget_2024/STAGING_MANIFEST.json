@@ -1,0 +1,32 @@
+{
+ "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+ "bundle_pin_sha256": "45c3adf7d2b4e74b39f5b8b6ebafd370256ec656b1b66eed76dbb6cd2628f9ad",
+ "by_status": {
+  "constructed": 40,
+  "not_computed": 640,
+  "outside_bundle_window": 136
+ },
+ "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "computed_measure_years": 15,
+ "engine_versions": {
+  "policyengine": "6.2.6",
+  "policyengine-core": "3.33.0",
+  "policyengine-uk": "2.125.1"
+ },
+ "event": "spring_budget_2024",
+ "full_event_complete": true,
+ "full_event_grid_size": 15,
+ "missing_measure_years": [],
+ "registry_sha256": "2114ef9738b16f344fe412790924f94fbba6529235d82a9290107dcf067f178d",
+ "source_rows": 816,
+ "source_value_gbp": -44032196115.273796,
+ "source_value_gbp_decimal": "-44032196115.27379504483028",
+ "staged_path": "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_budget_2024/STAGED.jsonl",
+ "staged_rows": 816,
+ "staged_sha256": "ee26267f19ec254eb78fbdd89e471f0dbe7c3abfd5e09ee38b6f47fb1d65fc8d",
+ "staged_value_gbp_decimal": "-44032196115.27379504483028",
+ "supported_calendar_years": [
+  2024,
+  2030
+ ]
+}

@@ -1,0 +1,27 @@
+{
+ "artifacts": {
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2029.json": "169282ffc662d57056000cbb4ec6e0213db7515edf5465e7de272924a60edf50",
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2029.json": "fdcd1019e88cf1fa047e2b722ade558f294d821cffd1a63b0c209b73dd0d93a8"
+ },
+ "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+ "bundle_pin_sha256": "45c3adf7d2b4e74b39f5b8b6ebafd370256ec656b1b66eed76dbb6cd2628f9ad",
+ "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "data_bundle": "policyengine-uk-data-1.58.0",
+ "engine_version": "2.125.1",
+ "engine_versions": {
+  "policyengine": "6.2.6",
+  "policyengine-core": "3.33.0",
+  "policyengine-uk": "2.125.1"
+ },
+ "event": "spring_statement_2025",
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.2.6",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "65d249569242e7aef886e8836faa9dbc35a89d00b194f10e2fea592954ee3262",
+ "schema_version": 1,
+ "supported_calendar_years": [
+  2024,
+  2030
+ ],
+ "year": 2029
+}

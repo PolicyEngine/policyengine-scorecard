@@ -1,0 +1,34 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+ "bundle_pin_sha256": "45c3adf7d2b4e74b39f5b8b6ebafd370256ec656b1b66eed76dbb6cd2628f9ad",
+ "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "engine_versions": {
+  "policyengine": "6.2.6",
+  "policyengine-core": "3.33.0",
+  "policyengine-uk": "2.125.1"
+ },
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "9039c16a8c5ca1f2f53fde18497ac44d89c84a395da4e671a328ea5877e83f9e",
+  "COMPARISON.json": "a07a16b4fe8aef06104df9dccaee928a9a59aae7aa6910118f29f55d7f5da94e",
+  "COMPARISON.md": "b4594ea0d18e06e2621de0f28e5767e50ea054e02a0ff5117c8dfe38587cc241"
+ },
+ "registry_path": "data/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_budget_2023_measures.json",
+ "registry_sha256": "f8fa456ba6ed5e12e8100ce189f7ba788c13d512ced529e84717a4e98e05960a",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": true,
+  "full_event_grid_size": 8,
+  "missing_measure_years": []
+ },
+ "source_rows": 1020,
+ "staged_path": "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "28e6a9ef861be37ff1780af3e3eab77136b0be07f83317e96d80e25cc3a39e4e",
+ "staging_manifest_path": "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "2b67a0f0ebd7961315e2be024f4e2d029f557852c1af8710efcfdb023c49ad6d",
+ "supported_calendar_years": [
+  2024,
+  2030
+ ]
+}

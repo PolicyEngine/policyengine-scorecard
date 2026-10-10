@@ -1,0 +1,123 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+    "2024-01-01.2035-12-31": 60000
+   },
+   "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+    "2024-01-01.2035-12-31": 50000
+   }
+  }
+ },
+ "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+ "bundle_pin_sha256": "45c3adf7d2b4e74b39f5b8b6ebafd370256ec656b1b66eed76dbb6cd2628f9ad",
+ "calendar_year_proxy": "PE calendar year 2026 proxies FY 2026-27.",
+ "certified_aggregates_gbp": {
+  "child_benefit": 16903134171.057903,
+  "income_tax": 320545242708.44257
+ },
+ "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "components": [
+  "spring_budget_2024__hicbc_threshold_and_taper"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.0",
+ "dataset_sha256_after": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "dataset_sha256_before": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "engine_version": "2.125.1",
+ "engine_versions": {
+  "policyengine": "6.2.6",
+  "policyengine-core": "3.33.0",
+  "policyengine-uk": "2.125.1"
+ },
+ "event": "spring_budget_2024",
+ "fiscal_event": "Spring Budget 2024",
+ "fy_proxy": "2026-27",
+ "head_channels": {
+  "child_benefit": "spending",
+  "income_tax": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Income tax",
+   "pe_variables": [
+    "income_tax"
+   ]
+  },
+  {
+   "channel": "spending",
+   "obr_head": "Welfare inside cap",
+   "pe_variables": [
+    "child_benefit"
+   ]
+  }
+ ],
+ "head_effects": {
+  "child_benefit": -301628867.5257015,
+  "income_tax": -1172268397.6498413
+ },
+ "head_variables": [
+  "income_tax",
+  "child_benefit"
+ ],
+ "literal_reform_minus_baseline": {
+  "child_benefit": 301628867.5257015,
+  "income_tax": 1172268397.6498413
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "child_benefit": 301628867.5257015,
+  "income_tax": 1172268397.6498413
+ },
+ "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+ "measure_total_gbp": -1473897265.1755428,
+ "null_executed_as_no_limit": [],
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.2.6",
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "2114ef9738b16f344fe412790924f94fbba6529235d82a9290107dcf067f178d",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "supported_calendar_years": [
+  2024,
+  2030
+ ],
+ "totals": {
+  "baseline": {
+   "heads": {
+    "child_benefit": 16601505303.532202,
+    "income_tax": 321717511106.0924
+   }
+  },
+  "reform": {
+   "heads": {
+    "child_benefit": 16903134171.057903,
+    "income_tax": 320545242708.44257
+   }
+  }
+ },
+ "variable_metadata": {
+  "child_benefit": {
+   "definition_period": "year",
+   "documentation": "Total Child Benefit paid to a benefit unit that would claim it. Claimants with payment opt-outs resume when the charge share falls below the assumed opt-out threshold; an opt-out flag never establishes a claim.",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/child_benefit.py",
+   "entity": "benunit",
+   "label": "Child Benefit",
+   "unit": "currency-GBP"
+  },
+  "income_tax": {
+   "definition_period": "year",
+   "documentation": "Total Income Tax liability",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/income_tax/income_tax.py",
+   "entity": "person",
+   "label": "Income Tax",
+   "unit": "currency-GBP"
+  }
+ },
+ "year": 2026
+}

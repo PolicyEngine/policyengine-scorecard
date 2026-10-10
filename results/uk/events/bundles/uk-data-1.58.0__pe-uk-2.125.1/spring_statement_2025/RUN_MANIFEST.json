@@ -1,0 +1,212 @@
+{
+ "artifact_grid": [
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2029
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2029
+  }
+ ],
+ "artifacts": {
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2024.json": "32a9842f2a0628020100888114a91faab12d330e519757161d5f74ef1fd63a77",
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2025.json": "b7495309c0a521e2c926fd955d33cd58db644da58b3e2f70556d6f6481cf4672",
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2026.json": "17caed4c30ec790531c2eb57d26d8e4ee2aeafd7f23a2a6320955bce794110fb",
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2027.json": "0b1d2d01516956253cb3ba51a9d4fddc5aa4fb0984e8236d5c63a8567c8787d5",
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2028.json": "b555fdb104874c5d45309c71ad60d3991bb916637bb6d5b3a934e4bf232bb740",
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2029.json": "169282ffc662d57056000cbb4ec6e0213db7515edf5465e7de272924a60edf50",
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2024.json": "ca79384e2ff2116dd4358d9e6cc1912134e21be26f85b75eab3944b15d6c1fb6",
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2025.json": "56927a78cb55a73402b6ac32dde41360f918a31ca8a23dbd95fc39109f3ad2ec",
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2026.json": "b81b53989700ff4c977b244cec9cd6c655dc3aba9ad76fc195414230c537716f",
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2027.json": "2b798e42bcc6cd03d6450be1acb3b2e576ffa05d24192466fc7027429c7e0659",
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2028.json": "fe7fd449bcfca838c28f41186963a4c4b11749a2182ecb10d6f88d3859f7c584",
+  "results/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2029.json": "fdcd1019e88cf1fa047e2b722ade558f294d821cffd1a63b0c209b73dd0d93a8"
+ },
+ "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+ "bundle_pin_sha256": "45c3adf7d2b4e74b39f5b8b6ebafd370256ec656b1b66eed76dbb6cd2628f9ad",
+ "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "data_bundle": "policyengine-uk-data-1.58.0",
+ "engine_version": "2.125.1",
+ "engine_versions": {
+  "policyengine": "6.2.6",
+  "policyengine-core": "3.33.0",
+  "policyengine-uk": "2.125.1"
+ },
+ "event": "spring_statement_2025",
+ "full_event_complete": true,
+ "full_event_grid": [
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2029
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2029
+  }
+ ],
+ "measures": [
+  "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+  "spring_statement_2025__uc_standard_allowance_above_inflation"
+ ],
+ "not_computable": {},
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.2.6",
+ "registry_path": "data/uk/events/bundles/uk-data-1.58.0__pe-uk-2.125.1/spring_statement_2025_measures.json",
+ "registry_sha256": "65d249569242e7aef886e8836faa9dbc35a89d00b194f10e2fea592954ee3262",
+ "requested_grid": [
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2029
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "year": 2029
+  }
+ ],
+ "requested_measures": [
+  "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+  "spring_statement_2025__uc_standard_allowance_above_inflation"
+ ],
+ "requested_years": [
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029
+ ],
+ "schema_version": 1,
+ "supported_calendar_years": [
+  2024,
+  2030
+ ],
+ "years": [
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029
+ ]
+}

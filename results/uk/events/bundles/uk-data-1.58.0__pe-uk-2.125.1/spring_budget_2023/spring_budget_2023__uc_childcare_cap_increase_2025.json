@@ -1,0 +1,108 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.dwp.universal_credit.elements.childcare.cap.1": {
+    "2023-01-01.2023-12-31": 646.35,
+    "2024-01-01.2024-12-31": 689.6,
+    "2025-01-01.2025-12-31": 701.32,
+    "2026-01-01.2026-12-31": 727.97,
+    "2027-01-01.2027-12-31": 727.97
+   },
+   "gov.dwp.universal_credit.elements.childcare.cap.2": {
+    "2023-01-01.2023-12-31": 1108.04,
+    "2024-01-01.2024-12-31": 1182.39,
+    "2025-01-01.2025-12-31": 1202.49,
+    "2026-01-01.2026-12-31": 1248.18,
+    "2027-01-01.2027-12-31": 1248.18
+   }
+  }
+ },
+ "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+ "bundle_pin_sha256": "45c3adf7d2b4e74b39f5b8b6ebafd370256ec656b1b66eed76dbb6cd2628f9ad",
+ "calendar_year_proxy": "PE calendar year 2025 proxies FY 2025-26.",
+ "certified_aggregates_gbp": {
+  "universal_credit": 79297415263.88225
+ },
+ "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "components": [
+  "spring_budget_2023__uc_childcare_cap_increase"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.0",
+ "dataset_sha256_after": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "dataset_sha256_before": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "engine_version": "2.125.1",
+ "engine_versions": {
+  "policyengine": "6.2.6",
+  "policyengine-core": "3.33.0",
+  "policyengine-uk": "2.125.1"
+ },
+ "event": "spring_budget_2023",
+ "fiscal_event": "Spring Budget 2023",
+ "fy_proxy": "2025-26",
+ "head_channels": {
+  "universal_credit": "spending"
+ },
+ "head_definitions": [
+  {
+   "channel": "spending",
+   "obr_head": "Welfare inside cap",
+   "pe_variables": [
+    "universal_credit"
+   ]
+  }
+ ],
+ "head_effects": {
+  "universal_credit": -228866641.1560974
+ },
+ "head_variables": [
+  "universal_credit"
+ ],
+ "literal_reform_minus_baseline": {
+  "universal_credit": 228866641.1560974
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "universal_credit": 228866641.1560974
+ },
+ "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+ "measure_total_gbp": -228866641.1560974,
+ "null_executed_as_no_limit": [],
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.2.6",
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "f8fa456ba6ed5e12e8100ce189f7ba788c13d512ced529e84717a4e98e05960a",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "supported_calendar_years": [
+  2024,
+  2030
+ ],
+ "totals": {
+  "baseline": {
+   "heads": {
+    "universal_credit": 79068548622.72615
+   }
+  },
+  "reform": {
+   "heads": {
+    "universal_credit": 79297415263.88225
+   }
+  }
+ },
+ "variable_metadata": {
+  "universal_credit": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/dwp/universal_credit/universal_credit.py",
+   "entity": "benunit",
+   "label": "Universal Credit",
+   "unit": "currency-GBP"
+  }
+ },
+ "year": 2025
+}
