@@ -458,7 +458,7 @@ def main(argv: list[str] | None = None) -> int:
         json.loads(manifest_path.read_bytes()) if manifest_path.exists() else None
     )
     registry = json.loads(payload)
-    compute.validate_event_identity(registry, args.event)
+    compute.validate_event_identity(registry, args.event, args.bundle)
     compute.registry_builder.validate_registry(registry)
     rows, tally = stage_event(
         registry,

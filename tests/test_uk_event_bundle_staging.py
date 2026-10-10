@@ -160,6 +160,29 @@ def test_stage_rejects_foreign_bundle_compute_manifest(pinned_stage, field):
         )
 
 
+def test_stage_cli_validates_the_registry_against_the_selected_bundle(
+    pinned_stage, monkeypatch
+):
+    """The CLI must pass --bundle to identity validation, not the default."""
+    _registry, _manifest, registry_path, output, _root = pinned_stage
+    seen = {}
+
+    class Stop(Exception):
+        pass
+
+    def capture(registry, event, bundle=bundles.DEFAULT_BUNDLE):
+        seen["bundle"] = bundle
+        raise Stop
+
+    monkeypatch.setattr(bundles, "registry_path", lambda event, key: registry_path)
+    monkeypatch.setattr(bundles, "event_output_dir", lambda event, key: output)
+    monkeypatch.setattr(bundles, "validate_bundle_path", lambda *a, **k: a[0])
+    monkeypatch.setattr(staging.compute, "validate_event_identity", capture)
+    with pytest.raises(Stop):
+        staging.main(["--event", "event", "--bundle", DEV])
+    assert seen["bundle"] == DEV
+
+
 def test_stage_refuses_foreign_registry_or_window(pinned_stage):
     registry, manifest, _, output, root = pinned_stage
     registry["bundle"] = bundles.bundle_document()
