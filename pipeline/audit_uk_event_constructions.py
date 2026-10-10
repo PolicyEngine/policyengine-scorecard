@@ -177,6 +177,122 @@ def inspect_h5(path: Path) -> dict:
         }
 
 
+GAIN_SUBTYPE_INPUTS = (
+    "capital_gains_badr",
+    "capital_gains_residential_property",
+    "capital_gains_carried_interest",
+)
+CGT_FORMULA = (
+    "policyengine_uk/variables/gov/hmrc/capital_gains_tax/capital_gains_tax.py"
+)
+ADDITIONAL_PURCHASE = "policyengine_uk/variables/household/consumption/additional_residential_property_purchased.py"
+
+
+def legacy_construction_limits() -> list[dict]:
+    """The 2.89.2 audit's findings, kept verbatim for the historical bundle."""
+    return [
+        {
+            "id": "sdlt_flagged_stock_transaction_proxy",
+            "variables": [
+                "property_purchased",
+                "other_residential_property_value",
+                "additional_residential_property_purchased",
+            ],
+            "finding": "The bundle supplies property stock and a purchase flag, but no direct main/additional purchase prices. Additional purchase price is stock multiplied by that flag. This is a transaction-price proxy; full stock is not taxed unconditionally.",
+            "annual_projection": "Population extension copies the purchase flag; per-capita GDP uprating grows property values. There is no annual purchaser resampling in this path.",
+            "aggregate_scope": "Base-year raw input aggregates precede SDLT geography, minimum-price thresholds, annual uprating and reform aggregation. Raw row counts include capital-gains clones.",
+            "divergence_axes": [
+                "construction_scope",
+                "head_scope",
+                "population_vintage",
+            ],
+            "national_contribution": "unsized",
+        },
+        {
+            "id": "cgt_pooled_gain_types_and_zero_elasticity",
+            "variables": [
+                "capital_gains",
+                "capital_gains_before_response",
+                "capital_gains_behavioural_response",
+                "capital_gains_tax",
+            ],
+            "finding": "The tax formula applies the main CGT rate schedule to one pooled gains amount, with no asset-type, BADR, Investors' Relief or carried-interest branch. The bundle has one capital_gains input. The loader moves it to before_response; the default zero elasticity makes the response formula return zero.",
+            "annual_projection": "Both capital_gains and capital_gains_before_response are uprated by per-capita GDP. No gain-type allocation is supplied by this path.",
+            "divergence_axes": [
+                "construction_scope",
+                "head_scope",
+                "behavioural_adjustment",
+                "population_vintage",
+            ],
+            "national_contribution": "unsized",
+        },
+    ]
+
+
+def engine_construction_limits(site_packages: Path, observations: dict) -> list[dict]:
+    """Derive each statement from this engine's source and this dataset's columns.
+
+    The formula's capability and the population's inputs are reported
+    separately: a branch the engine implements can still be inert because the
+    dataset doesn't supply its input.
+    """
+    columns = observations["input_columns"]
+    supplied = set(columns["household"]) | set(columns["person"])
+    cgt_source = (site_packages / CGT_FORMULA).read_text()
+    formula_reads = [name for name in GAIN_SUBTYPE_INPUTS if f'"{name}"' in cgt_source]
+    dataset_has = [name for name in formula_reads if name in supplied]
+    missing = [name for name in formula_reads if name not in supplied]
+    if not formula_reads:
+        cgt_finding = "The tax formula reads one pooled capital_gains amount and no separate gain-type input."
+    elif missing:
+        cgt_finding = (
+            "The tax formula reads separate gain-type inputs ("
+            + ", ".join(formula_reads)
+            + "). The certified dataset does not supply "
+            + ", ".join(missing)
+            + ", so those branches take their default and the corresponding gains are taxed from the pooled capital_gains input."
+        )
+    else:
+        cgt_finding = (
+            "The tax formula reads separate gain-type inputs ("
+            + ", ".join(formula_reads)
+            + ") and the certified dataset supplies all of them."
+        )
+    purchase_source = (site_packages / ADDITIONAL_PURCHASE).read_text()
+    derived = "def formula" in purchase_source
+    has_purchase_input = "additional_residential_property_purchased" in supplied
+    if derived:
+        sdlt_finding = "additional_residential_property_purchased has a formula in this engine; it is derived, not read from the dataset."
+    elif has_purchase_input:
+        sdlt_finding = "additional_residential_property_purchased is an input in this engine and the certified dataset supplies it."
+    else:
+        sdlt_finding = "additional_residential_property_purchased is an input in this engine and the certified dataset does not supply it, so it takes its default."
+    return [
+        {
+            "id": "sdlt_flagged_stock_transaction_proxy",
+            "variables": [
+                "property_purchased",
+                "other_residential_property_value",
+                "additional_residential_property_purchased",
+            ],
+            "finding": sdlt_finding,
+            "additional_purchase_is_derived": derived,
+            "dataset_supplies_additional_purchase": has_purchase_input,
+            "source_file": ADDITIONAL_PURCHASE,
+            "national_contribution": "unsized",
+        },
+        {
+            "id": "cgt_pooled_gain_types_and_zero_elasticity",
+            "variables": ["capital_gains", *GAIN_SUBTYPE_INPUTS, "capital_gains_tax"],
+            "finding": cgt_finding,
+            "formula_reads_gain_types": formula_reads,
+            "dataset_supplies_gain_types": dataset_has,
+            "source_file": CGT_FORMULA,
+            "national_contribution": "unsized",
+        },
+    ]
+
+
 def collect_audit(dataset: Path, site_packages: Path, bundle: dict) -> dict:
     identity = verify_dataset(dataset, bundle)
     versions = {
@@ -209,43 +325,9 @@ def collect_audit(dataset: Path, site_packages: Path, bundle: dict) -> dict:
         "certified_dataset": identity,
         "observations": observations,
         "source_evidence": evidence,
-        "construction_limits": [
-            {
-                "id": "sdlt_flagged_stock_transaction_proxy",
-                "variables": [
-                    "property_purchased",
-                    "other_residential_property_value",
-                    "additional_residential_property_purchased",
-                ],
-                "finding": "The bundle supplies property stock and a purchase flag, but no direct main/additional purchase prices. Additional purchase price is stock multiplied by that flag. This is a transaction-price proxy; full stock is not taxed unconditionally.",
-                "annual_projection": "Population extension copies the purchase flag; per-capita GDP uprating grows property values. There is no annual purchaser resampling in this path.",
-                "aggregate_scope": "Base-year raw input aggregates precede SDLT geography, minimum-price thresholds, annual uprating and reform aggregation. Raw row counts include capital-gains clones.",
-                "divergence_axes": [
-                    "construction_scope",
-                    "head_scope",
-                    "population_vintage",
-                ],
-                "national_contribution": "unsized",
-            },
-            {
-                "id": "cgt_pooled_gain_types_and_zero_elasticity",
-                "variables": [
-                    "capital_gains",
-                    "capital_gains_before_response",
-                    "capital_gains_behavioural_response",
-                    "capital_gains_tax",
-                ],
-                "finding": "The tax formula applies the main CGT rate schedule to one pooled gains amount, with no asset-type, BADR, Investors' Relief or carried-interest branch. The bundle has one capital_gains input. The loader moves it to before_response; the default zero elasticity makes the response formula return zero.",
-                "annual_projection": "Both capital_gains and capital_gains_before_response are uprated by per-capita GDP. No gain-type allocation is supplied by this path.",
-                "divergence_axes": [
-                    "construction_scope",
-                    "head_scope",
-                    "behavioural_adjustment",
-                    "population_vintage",
-                ],
-                "national_contribution": "unsized",
-            },
-        ],
+        "construction_limits": legacy_construction_limits()
+        if key == DEFAULT_BUNDLE
+        else engine_construction_limits(site_packages, observations),
         "interpretation": "These observations document construction and data-flow limits. They do not establish national model errors, causal residual amounts or an explained share. No new model diagnostic is asserted.",
     }
 
