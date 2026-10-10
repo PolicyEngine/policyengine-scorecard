@@ -1,0 +1,30 @@
+{
+ "schema_version": 1,
+ "base": "test-base",
+ "new": "test-new",
+ "fixture_note": "Test example only. This is not attribution for any executed national comparison.",
+ "entries": [
+  {
+   "event": "event",
+   "measure_key": "event__tax",
+   "drivers": [
+    {
+     "driver": "data_release",
+     "evidence": [{"kind": "diagnostic", "reference": "test-fixture: paired certified aggregate change"}],
+     "sized": false
+    }
+   ]
+  },
+  {
+   "event": "event",
+   "measure_key": "event__gap",
+   "drivers": [
+    {
+     "driver": "unattributed",
+     "evidence": [{"kind": "unattributed", "reference": "Test fixture has no measured mechanism attribution"}],
+     "sized": false
+    }
+   ]
+  }
+ ]
+}
