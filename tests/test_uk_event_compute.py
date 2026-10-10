@@ -498,7 +498,9 @@ def test_explicit_delayed_january_activation_keeps_timing_gap(tmp_path, monkeypa
     assert "inert_measure_years" not in tally
 
 
-def test_injected_original_aa_april_start_blocks_numerical_replay(tmp_path, monkeypatch):
+def test_injected_original_aa_april_start_blocks_numerical_replay(
+    tmp_path, monkeypatch
+):
     monkeypatch.setattr(compute, "ROOT", tmp_path)
     m = measure()
     m.update(
@@ -538,7 +540,9 @@ def test_injected_original_aa_april_start_blocks_numerical_replay(tmp_path, monk
     assert {row["status"] for row in rows} == {"inert_construction"}
     assert all(row["pe_value"] is None for row in rows)
     assert tally["full_event_complete"] is False
-    assert tally["inert_measure_years"] == [{"measure_key": m["measure_key"], "year": 2023}]
+    assert tally["inert_measure_years"] == [
+        {"measure_key": m["measure_key"], "year": 2023}
+    ]
 
 
 def test_no_digest_no_simulation(tmp_path, monkeypatch):

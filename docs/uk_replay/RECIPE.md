@@ -315,7 +315,7 @@ The inherited `stage_uk_ab2025.identical_year_verdict` asserts a zero for
 identical computed worlds only when the source FY precedes the registry's
 recorded `commences_fy`. Identical worlds during an active annual construction
 are `inert_construction`, retain no numeric counterpart and block
-"Numerical replay complete" even if every planned artifact exists. Tests
+"Registered construction replay complete" even if every planned artifact exists. Tests
 inject the UC modifier-ordering defect to check that it cannot be hidden as
 an ordinary uncomputed row. `STAGING_MANIFEST.json` sets
 `full_event_complete=false` and records the affected `inert_measure_years`.

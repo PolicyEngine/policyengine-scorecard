@@ -714,7 +714,9 @@ def build_comparison_rows(
             "diagnosis": {
                 **(row.get("diagnosis") or {}),
                 **review_diagnosis(
-                    measure["measure_key"], int(source["fy"][:4]), source.get("tax_head", "")
+                    measure["measure_key"],
+                    int(source["fy"][:4]),
+                    source.get("tax_head", ""),
                 ),
             },
             **describe_decomposition(gap, axes, components),
@@ -1141,7 +1143,7 @@ def render_summary(
         inert_count = sum(r.get("status") == "inert_construction" for r in event_rows)
         if computed_count and replay_grid:
             state = (
-                "Numerical replay complete"
+                "Registered construction replay complete"
                 if replay_grid.get("full_event_complete")
                 else (
                     "Numerical comparison available; replay grid incomplete "
@@ -1256,7 +1258,9 @@ def render_summary(
         diagnostic = row.get("diagnosis") or {}
         diagnostic = {
             **diagnostic,
-            **review_diagnosis(row["measure_key"], row["year"], row.get("tax_head", "")),
+            **review_diagnosis(
+                row["measure_key"], row["year"], row.get("tax_head", "")
+            ),
         }
         evidence = diagnostic.get("evidence", "Open: relevant axes unsized")
         command = (

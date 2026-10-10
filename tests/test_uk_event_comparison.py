@@ -316,7 +316,7 @@ def test_inert_construction_blocks_complete_summary_and_numeric_assertions(input
     assert "Numerical replay blocked" in render_markdown(registry, rows, grid)
     summary = render_summary({"event": rows}, replay_grids={"event": grid})
     assert "inert_construction (1 source rows)" in summary
-    assert "Numerical replay complete" not in summary
+    assert "Registered construction replay complete" not in summary
 
 
 def test_review_diagnoses_retain_causes_issues_and_opposite_direction(inputs):

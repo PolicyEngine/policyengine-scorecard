@@ -52,9 +52,14 @@ def annual_reform(reform: dict | None) -> dict | None:
         for window, value in windows.items():
             try:
                 start_text, stop_text = window.split(".")
-                start, stop = date.fromisoformat(start_text), date.fromisoformat(stop_text)
+                start, stop = (
+                    date.fromisoformat(start_text),
+                    date.fromisoformat(stop_text),
+                )
             except (AttributeError, ValueError) as exc:
-                raise ValueError(f"{path}: invalid dated reform window {window!r}") from exc
+                raise ValueError(
+                    f"{path}: invalid dated reform window {window!r}"
+                ) from exc
             first_year = start.year + ((start.month, start.day) != (1, 1))
             last_year = stop.year
             if first_year > last_year or start > stop:
@@ -62,7 +67,10 @@ def annual_reform(reform: dict | None) -> dict | None:
                     f"{path}: reform window {window} contains no 1 January annual lookup"
                 )
             annual_window = f"{first_year}-01-01.{last_year}-12-31"
-            if annual_window in normalized[path] and normalized[path][annual_window] != value:
+            if (
+                annual_window in normalized[path]
+                and normalized[path][annual_window] != value
+            ):
                 raise ValueError(f"{path}: conflicting annual reform windows")
             normalized[path][annual_window] = value
     return normalized

@@ -6,11 +6,11 @@ Numerical comparison outputs available: 5. Registry inventories available: 5.
 
 | Event | Replay state | Measures | Source rows | Computed rows | Computed FYs |
 |---|---|---:|---:|---:|---|
-| [autumn_budget_2024](autumn_budget_2024/COMPARISON.md) | Numerical replay complete | 74 | 1134 | 33 | 2024-25, 2025-26, 2026-27, 2027-28, 2028-29, 2029-30 |
-| [autumn_statement_2023](autumn_statement_2023/COMPARISON.md) | Numerical replay complete | 77 | 1116 | 57 | 2023-24, 2024-25, 2025-26, 2026-27, 2027-28, 2028-29 |
-| [spring_budget_2023](spring_budget_2023/COMPARISON.md) | Numerical replay complete | 89 | 1020 | 15 | 2023-24, 2024-25, 2025-26, 2026-27, 2027-28 |
-| [spring_budget_2024](spring_budget_2024/COMPARISON.md) | Numerical replay complete | 49 | 816 | 48 | 2023-24, 2024-25, 2025-26, 2026-27, 2027-28, 2028-29 |
-| [spring_statement_2025](spring_statement_2025/COMPARISON.md) | Numerical replay complete | 32 | 498 | 12 | 2024-25, 2025-26, 2026-27, 2027-28, 2028-29, 2029-30 |
+| [autumn_budget_2024](autumn_budget_2024/COMPARISON.md) | Registered construction replay complete | 74 | 1134 | 33 | 2024-25, 2025-26, 2026-27, 2027-28, 2028-29, 2029-30 |
+| [autumn_statement_2023](autumn_statement_2023/COMPARISON.md) | Registered construction replay complete | 77 | 1116 | 57 | 2023-24, 2024-25, 2025-26, 2026-27, 2027-28, 2028-29 |
+| [spring_budget_2023](spring_budget_2023/COMPARISON.md) | Registered construction replay complete | 89 | 1020 | 15 | 2023-24, 2024-25, 2025-26, 2026-27, 2027-28 |
+| [spring_budget_2024](spring_budget_2024/COMPARISON.md) | Registered construction replay complete | 49 | 816 | 48 | 2023-24, 2024-25, 2025-26, 2026-27, 2027-28, 2028-29 |
+| [spring_statement_2025](spring_statement_2025/COMPARISON.md) | Registered construction replay complete | 32 | 498 | 12 | 2024-25, 2025-26, 2026-27, 2027-28, 2028-29, 2029-30 |
 
 ## Source inventory accounting
 

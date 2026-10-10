@@ -281,23 +281,35 @@ def authored_construction(event_slug, title, resolve):
             "lha_reset_to_30th_percentile",
             "housing_benefit",
             {"gov.dwp.LHA.freeze": {"2024-01-01": True}},
-            [_head("Welfare inside cap", ["housing_benefit", "universal_credit"], "spending")],
+            [
+                _head(
+                    "Welfare inside cap",
+                    ["housing_benefit", "universal_credit"],
+                    "spending",
+                )
+            ],
             partial=[
                 "Housing Benefit and UC housing effects are combined in Welfare inside cap; the OBR Welfare outside cap caseload is not separately identified.",
                 "Rent and tenure responses are absent; the certified later rent distribution and population are retained.",
             ],
             note="Restore LHA.freeze=True from annual2024, removing the pinned April2024 reset to the default 30th BRMA rent percentile. The engine's find_freeze_start then preserves the continuous 2020 freeze rather than the certified new freeze from2025. Uses the installed rent list, with no dataset download.",
         )
-    if event_slug == "autumn_statement_2023" and "abolish Class 2 self-employed NICs liability" in title:
+    if (
+        event_slug == "autumn_statement_2023"
+        and "abolish Class 2 self-employed NICs liability" in title
+    ):
         return _construct(
             "class_2_self_employed_nics_abolition",
             "national_insurance",
             {
                 "gov.hmrc.national_insurance.class_2.flat_rate": {"2024-01-01": 3.70},
-                "gov.hmrc.national_insurance.class_2.small_profits_threshold": {"2024-01-01": 12570},
+                "gov.hmrc.national_insurance.class_2.small_profits_threshold": {
+                    "2024-01-01": 12570
+                },
             },
             tax_nic_heads,
-            partial=common_missing + [
+            partial=common_missing
+            + [
                 "Restores only compulsory cash liability at the documented April2024 £3.70 weekly rate above £12,570; later hypothetical uprating, voluntary contributions and benefit-credit/entitlement responses are omitted.",
             ],
             note="Reverse the certified zero Class2 compulsory liability from annual2024 to the documented £3.70/week that was due from April2024 without abolition, with a £12,570 cash-liability threshold. The pinned formula otherwise charges above the small-profits threshold, although profits £6,725-£12,570 were already credited without paying. This threshold substitution isolates compulsory cash payments; voluntary contributions and benefit credits are not modelled. The pin incorrectly uses £3.15 for2023-24 against the actual £3.45 (later fixed upstream in #1887); nominal2023 remains that certified world and is before abolition. Later years keep £3.70 in cash terms and omit hypothetical later compulsory-rate uprating. Source: https://www.gov.uk/government/publications/autumn-statement-2023/autumn-statement-2023-html",
@@ -310,7 +322,10 @@ def authored_construction(event_slug, title, resolve):
         new_caps = {"1": 951, "2": 1630}
         spec = {
             f"{prefix}.{count}": {
-                str(y): round(old * resolve(f"{prefix}.{count}", f"{y}-04-06") / new_caps[count], 2)
+                str(y): round(
+                    old * resolve(f"{prefix}.{count}", f"{y}-04-06") / new_caps[count],
+                    2,
+                )
                 for y in range(2023, 2028)
             }
             for count, old in old_caps.items()
@@ -524,7 +539,10 @@ def authored_construction(event_slug, title, resolve):
         inflation_2026 = 1.038
         spec = {
             f"{prefix}.{t}": {
-                str(y): round(v * inflation_2026 * resolve(index_path, f"{y}-04-06") / base_index, 2)
+                str(y): round(
+                    v * inflation_2026 * resolve(index_path, f"{y}-04-06") / base_index,
+                    2,
+                )
                 for y in range(2026, 2030)
             }
             for t, v in old.items()
