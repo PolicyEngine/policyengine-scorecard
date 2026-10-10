@@ -1,0 +1,19 @@
+{
+  "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+  "export_command": [
+    "uv",
+    "export",
+    "--frozen",
+    "--no-hashes",
+    "--no-dev",
+    "--extra",
+    "uk",
+    "--no-emit-project",
+    "--offline",
+    "--no-cache"
+  ],
+  "freeze_sha256": "e84b5e1dd40497d91371900ed71a8dcb2673bb4cdffe8bdf6be87183b77776ab",
+  "policyengine_commit": "481940eca44fc75e41fbf9de4ff454e0a0d7c0e0",
+  "policyengine_tag": "6.2.6",
+  "uv_lock_sha256": "a7f53ed668636dd09abf595171dcb8f73b1fe14514a5f9f40cfeb994dee2cf7a"
+}

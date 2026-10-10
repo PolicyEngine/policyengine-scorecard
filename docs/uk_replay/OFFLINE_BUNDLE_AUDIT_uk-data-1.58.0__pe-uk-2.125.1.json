@@ -1,0 +1,247 @@
+{
+ "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+ "bundle_pin_sha256": "45c3adf7d2b4e74b39f5b8b6ebafd370256ec656b1b66eed76dbb6cd2628f9ad",
+ "bundled_certification": {
+  "built_with_model_git_sha": "4cbedbecca352f52dffe47e849553c2759a00711",
+  "built_with_model_version": "2.122.2",
+  "certified_by": "policyengine.py bundle certification",
+  "certified_for_model_version": "2.125.1",
+  "compatibility_basis": "legacy_compatible_model_package",
+  "data_build_fingerprint": "sha256:c094d7006fdd81df220090284212f16bbffb15624643bc442c4bb3e1b1e5dac8",
+  "data_build_id": "policyengine-uk-data-1.58.0"
+ },
+ "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "certified_identity": {
+  "artifact": "enhanced_frs_2024_25.h5",
+  "core_version": "3.33.0",
+  "data_build_id": "policyengine-uk-data-1.58.0",
+  "data_year": 2024,
+  "dataset_uri": "hf://policyengine/policyengine-uk-data-private/enhanced_frs_2024_25.h5@1.58.0",
+  "model_version": "2.125.1",
+  "repo_id": "policyengine/policyengine-uk-data-private",
+  "repo_type": "model",
+  "resolved_hf_commit": "47bbb58d3f6467aa4a7059bc6110d2bdcf699b29",
+  "revision": "1.58.0",
+  "sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+  "size_bytes": 128369110
+ },
+ "development_bundle": false,
+ "engine_versions": {
+  "policyengine": "6.2.6",
+  "policyengine-core": "3.33.0",
+  "policyengine-uk": "2.125.1"
+ },
+ "inspection": "Engine-free installed-source inspection; no provider, credentials, network or simulation.",
+ "minimal_hf_cache_allowlist": {
+  "exclude": [
+   "tokens",
+   "credentials",
+   "refs/main",
+   "other revisions",
+   "other artifacts"
+  ],
+  "repo_cache_directory": "models--policyengine--policyengine-uk-data-private",
+  "required_ref": {
+   "contents": "47bbb58d3f6467aa4a7059bc6110d2bdcf699b29",
+   "path": "refs/1.58.0"
+  },
+  "required_snapshot_file": {
+   "path": "snapshots/47bbb58d3f6467aa4a7059bc6110d2bdcf699b29/enhanced_frs_2024_25.h5"
+  }
+ },
+ "offline_loader_behavior": {
+  "fallback": "Must retain packaged certified_for_model_version matching the runtime; unverified fallback is refused.",
+  "materialization": "Reuse hash-verified ./data/<artifact>; requests downloads bypass HF offline flags on a missing or mismatched file.",
+  "projection": "managed_microsimulation passes the original stored-year dataset to the engine; no projected year-file re-anchoring.",
+  "read_only_h5": "Single-year and multi-year constructors use HDFStore(mode='r'); no writable dataset copy is required.",
+  "release_metadata": "requests.get bypasses HF offline flags; socket blocking forces packaged certification fallback.",
+  "runtime_dataset_source": "The source.path returned by materialize_dataset is recorded by build_runtime_dataset_provenance and must resolve to the pre/post hashed file."
+ },
+ "packaged_bundle_manifest_sha256": "8633ad814c9c85e53c7c513f69c4c7b1500a03cd2f6ef133d6e2ea8346b2db54",
+ "policyengine_version": "6.2.6",
+ "registration_provenance_hashes": {
+  "cached_artifact_manifest_sha256": "ddd63e1f7755ee358c4ede9050bfdde09f3a80f48a5c0d8ee9d1fb531e4a1a07",
+  "engine_extension_source_sha256": "d2ed9985f6308befbe523ebbfb10a2bbd76ff7ae2084ea3a6bf45cff91e1dca2",
+  "packaged_bundle_manifest_sha256": "8633ad814c9c85e53c7c513f69c4c7b1500a03cd2f6ef133d6e2ea8346b2db54"
+ },
+ "release_manifest_revision": "fdeba38517bd86067f34c0a5d8ed8923efb3b10a",
+ "schema_version": 2,
+ "source_files_sha256": {
+  "policyengine/core/tax_benefit_model_version.py": "a9a731ced229ca5993c715b134b97dce84201971bdb547a5c346a9d4de7b9f8a",
+  "policyengine/provenance/dataset_materialization.py": "33dd345fee43ef60c3fc865865e4747787a7abbf1ee9ab3ad0e9fc2947d4d363",
+  "policyengine/provenance/manifest.py": "d86595e401ade1d7ac15702681579403a39ed3ae62e93e525ae275e065d847f0",
+  "policyengine/tax_benefit_models/common/model_version.py": "61936bad7fb476d05f929616d937f725a9d91a8ce5575ea4a568730c4494b87f",
+  "policyengine/tax_benefit_models/uk/model.py": "8bf7da81e991b7a879759618ea71489584c38f2a1d840b623ba44bdd30b677a4",
+  "policyengine_uk/data/dataset_schema.py": "1c3df14b0011d7e7755dc78cd84f6a7a57eaaa9baa6498e521d5de5adade83b5",
+  "policyengine_uk/data/economic_assumptions.py": "d2ed9985f6308befbe523ebbfb10a2bbd76ff7ae2084ea3a6bf45cff91e1dca2",
+  "policyengine_uk/parameters/gov/hmrc/alcohol_duty/rates/beer.yaml": "a72fda046203e130bc603adce5b31d15cb31658d394a59768e6fe2bb373298ce",
+  "policyengine_uk/parameters/gov/hmrc/cgt/additional_rate.yaml": "8cd5276a19370b0665aebcea204af620c287c05c692d60e461c8522f4876f29c",
+  "policyengine_uk/parameters/gov/hmrc/cgt/basic_rate.yaml": "adea67b26f52f53b42b0fa8e333d1b200ea8431524c6d7a2532054daf8f16579",
+  "policyengine_uk/parameters/gov/hmrc/cgt/higher_rate.yaml": "5efda44289f6d6eb128b62c91b08278b72ab9a85ca0719bfb2f3217c0876a67a",
+  "policyengine_uk/parameters/gov/hmrc/fuel_duty/lpg.yaml": "2acccb3bdfcd914321d5fe4c1630644ebdadbd3d0bace5aa37708adb150182fd",
+  "policyengine_uk/parameters/gov/hmrc/fuel_duty/natural_gas.yaml": "3916a3c52b656e72c9a0d20ce98aec4799c755ce7b1806e90673752164a4c66a",
+  "policyengine_uk/parameters/gov/hmrc/tobacco_duty/rates/cigarette_specific.yaml": "0bc7852556782b72429bd35ff97620361bafa9365f79a52dbafde0f4be295531",
+  "policyengine_uk/scenarios/uc_reform.py": "f0b259519aed379720c14cc039cec1f4efca9b8d61b301ef5f67f667bbd1da9c",
+  "policyengine_uk/simulation.py": "77691dce9d172a1486f89352e5cb080b9636f74711fba57423fad8be04b4276b",
+  "policyengine_uk/utils/parameters.py": "a8b40d995666e3658e836bba2d0304478d1a9ae3a29429c82105ba9b4738383a",
+  "policyengine_uk/utils/scenario.py": "a5a3f688891177b2895fd93e5f016a0bcad14ba6b9da5db52f889f0ea0a117d4"
+ },
+ "source_references": {
+  "policyengine/core/tax_benefit_model_version.py": [
+   {
+    "line": 137,
+    "text": "def release_bundle(self) -> dict[str, Optional[str]]:"
+   }
+  ],
+  "policyengine/provenance/dataset_materialization.py": [
+   {
+    "line": 124,
+    "text": "def materialize_dataset("
+   },
+   {
+    "line": 260,
+    "text": "def _reuse_or_download_bundle_files("
+   }
+  ],
+  "policyengine/provenance/manifest.py": [
+   {
+    "line": 339,
+    "text": "def get_data_release_manifest(country_id: str) -> DataReleaseManifest:"
+   },
+   {
+    "line": 422,
+    "text": "return bundled_certification"
+   }
+  ],
+  "policyengine/tax_benefit_models/common/model_version.py": [
+   {
+    "line": 81,
+    "text": "\"runtime_dataset_source\": local_path,"
+   }
+  ],
+  "policyengine/tax_benefit_models/uk/model.py": [
+   {
+    "line": 397,
+    "text": "def managed_microsimulation("
+   }
+  ],
+  "policyengine_uk/data/dataset_schema.py": [
+   {
+    "line": 56,
+    "text": "with pd.HDFStore(file_path, mode=\"r\") as f:"
+   },
+   {
+    "line": 198,
+    "text": "with pd.HDFStore(file_path, mode=\"r\") as f:"
+   }
+  ],
+  "policyengine_uk/data/economic_assumptions.py": [
+   {
+    "line": 56,
+    "text": "end_year: int = 2030,"
+   }
+  ],
+  "policyengine_uk/parameters/gov/hmrc/alcohol_duty/rates/beer.yaml": [
+   {
+    "line": 19,
+    "text": "preserve_calendar_dates: true"
+   }
+  ],
+  "policyengine_uk/parameters/gov/hmrc/cgt/additional_rate.yaml": [
+   {
+    "line": 14,
+    "text": "fiscal_year_blend: true"
+   }
+  ],
+  "policyengine_uk/parameters/gov/hmrc/cgt/basic_rate.yaml": [
+   {
+    "line": 14,
+    "text": "fiscal_year_blend: true"
+   }
+  ],
+  "policyengine_uk/parameters/gov/hmrc/cgt/higher_rate.yaml": [
+   {
+    "line": 14,
+    "text": "fiscal_year_blend: true"
+   }
+  ],
+  "policyengine_uk/parameters/gov/hmrc/fuel_duty/lpg.yaml": [
+   {
+    "line": 18,
+    "text": "fiscal_year_blend: true"
+   }
+  ],
+  "policyengine_uk/parameters/gov/hmrc/fuel_duty/natural_gas.yaml": [
+   {
+    "line": 18,
+    "text": "fiscal_year_blend: true"
+   }
+  ],
+  "policyengine_uk/parameters/gov/hmrc/tobacco_duty/rates/cigarette_specific.yaml": [
+   {
+    "line": 27,
+    "text": "preserve_calendar_dates: true"
+   }
+  ],
+  "policyengine_uk/scenarios/uc_reform.py": [
+   {
+    "line": 95,
+    "text": "sim.set_input(\"uc_LCWRA_element\", year, current_health_element)"
+   }
+  ],
+  "policyengine_uk/simulation.py": [
+   {
+    "line": 194,
+    "text": "universal_credit_july_2025_reform.simulation_modifier(self)"
+   },
+   {
+    "line": 232,
+    "text": "if scenario is not None and not scenario.applied_before_data_load:"
+   },
+   {
+    "line": 505,
+    "text": "def build_from_single_year_dataset(self, dataset: UKSingleYearDataset) -> None:"
+   },
+   {
+    "line": 519,
+    "text": "def build_from_multi_year_dataset(self, dataset: UKMultiYearDataset) -> None:"
+   }
+  ],
+  "policyengine_uk/utils/parameters.py": [
+   {
+    "line": 78,
+    "text": "def convert_to_fiscal_year_parameters(parameters):"
+   },
+   {
+    "line": 90,
+    "text": "year. Parameters carrying `fiscal_year_blend: true` in their metadata are"
+   },
+   {
+    "line": 96,
+    "text": "Parameters with ``preserve_calendar_dates: true`` retain statutory dates."
+   },
+   {
+    "line": 106,
+    "text": "if (param.metadata or {}).get(\"preserve_calendar_dates\", False):"
+   },
+   {
+    "line": 108,
+    "text": "blend = (param.metadata or {}).get(\"fiscal_year_blend\", False)"
+   }
+  ],
+  "policyengine_uk/utils/scenario.py": [
+   {
+    "line": 111,
+    "text": "def from_reform(cls, reform: Union[tuple, dict, Type[Reform]]) -> \"Scenario\":"
+   },
+   {
+    "line": 175,
+    "text": "if target.metadata.get(\"preserve_calendar_dates\")"
+   }
+  ]
+ },
+ "supported_calendar_years": [
+  2024,
+  2030
+ ]
+}

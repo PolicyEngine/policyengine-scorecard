@@ -1,0 +1,208 @@
+# UK replay bundle uk-data-1.58.0__pe-uk-2.125.1
+# policyengine.py tag 6.2.6, commit 481940eca44fc75e41fbf9de4ff454e0a0d7c0e0
+# uv.lock SHA-256 a7f53ed668636dd09abf595171dcb8f73b1fe14514a5f9f40cfeb994dee2cf7a
+# uv export --frozen --no-hashes --no-dev --extra uk --no-emit-project
+annotated-types==0.7.0
+    # via pydantic
+asttokens==3.0.0
+    # via stack-data
+attrs==25.3.0
+    # via
+    #   jsonschema
+    #   referencing
+blosc2==3.7.2
+    # via tables
+certifi==2025.8.3
+    # via requests
+charset-normalizer==3.4.3
+    # via requests
+colorama==0.4.6 ; sys_platform == 'win32'
+    # via
+    #   ipython
+    #   pytest
+    #   tqdm
+decorator==5.2.1
+    # via ipython
+dpath==2.2.0
+    # via policyengine-core
+executing==2.2.1
+    # via stack-data
+filelock==3.19.1
+    # via huggingface-hub
+fsspec==2025.9.0
+    # via huggingface-hub
+h5py==3.16.0
+    # via
+    #   policyengine
+    #   policyengine-core
+hf-xet==1.1.9 ; platform_machine == 'aarch64' or platform_machine == 'amd64' or platform_machine == 'arm64' or platform_machine == 'x86_64'
+    # via huggingface-hub
+huggingface-hub==0.34.4
+    # via policyengine-core
+idna==3.10
+    # via requests
+iniconfig==2.1.0
+    # via pytest
+ipython==8.37.0
+    # via
+    #   policyengine-core
+    #   pyvis
+jedi==0.19.2
+    # via ipython
+jinja2==3.1.6
+    # via pyvis
+jsonpickle==4.1.1
+    # via pyvis
+jsonschema==4.25.1
+    # via policyengine
+jsonschema-specifications==2025.4.1
+    # via jsonschema
+markupsafe==3.0.2
+    # via jinja2
+matplotlib-inline==0.1.7
+    # via ipython
+microdf-python==1.3.0
+    # via
+    #   policyengine
+    #   policyengine-core
+    #   policyengine-uk
+msgpack==1.1.1
+    # via blosc2
+ndindex==1.10.0
+    # via blosc2
+networkx==3.5
+    # via pyvis
+numexpr==2.11.0
+    # via
+    #   blosc2
+    #   policyengine-core
+    #   tables
+numpy==2.1.3 ; python_full_version < '3.14'
+    # via
+    #   blosc2
+    #   h5py
+    #   microdf-python
+    #   numexpr
+    #   pandas
+    #   policyengine-core
+    #   tables
+numpy==2.5.3 ; python_full_version >= '3.14'
+    # via
+    #   blosc2
+    #   h5py
+    #   microdf-python
+    #   numexpr
+    #   pandas
+    #   policyengine-core
+    #   tables
+packaging==25.0
+    # via
+    #   huggingface-hub
+    #   plotly
+    #   policyengine
+    #   pytest
+    #   tables
+pandas==3.0.5
+    # via
+    #   microdf-python
+    #   policyengine
+    #   policyengine-core
+parso==0.8.5
+    # via jedi
+pexpect==4.9.0 ; sys_platform != 'emscripten' and sys_platform != 'win32'
+    # via ipython
+platformdirs==4.4.0
+    # via blosc2
+plotly==5.24.1
+    # via policyengine-core
+pluggy==1.6.0
+    # via pytest
+policyengine-core==3.33.0
+    # via
+    #   policyengine
+    #   policyengine-uk
+policyengine-uk==2.125.1
+    # via policyengine
+prompt-toolkit==3.0.52
+    # via ipython
+psutil==6.1.1
+    # via
+    #   policyengine
+    #   policyengine-core
+ptyprocess==0.7.0 ; sys_platform != 'emscripten' and sys_platform != 'win32'
+    # via pexpect
+pure-eval==0.2.3
+    # via stack-data
+py-cpuinfo==9.0.0
+    # via
+    #   blosc2
+    #   tables
+pydantic==2.12.5
+    # via
+    #   policyengine
+    #   policyengine-uk
+pydantic-core==2.41.5
+    # via pydantic
+pygments==2.19.2
+    # via
+    #   ipython
+    #   pytest
+pytest==9.1.1
+    # via policyengine-core
+python-dateutil==2.9.0.post0
+    # via pandas
+pyvis==0.3.2
+    # via policyengine-core
+pyyaml==6.0.2
+    # via huggingface-hub
+referencing==0.36.2
+    # via
+    #   jsonschema
+    #   jsonschema-specifications
+requests==2.32.5
+    # via
+    #   blosc2
+    #   huggingface-hub
+    #   policyengine
+    #   policyengine-core
+rpds-py==0.27.1
+    # via
+    #   jsonschema
+    #   referencing
+six==1.17.0
+    # via python-dateutil
+sortedcontainers==2.4.0
+    # via policyengine-core
+stack-data==0.6.3
+    # via ipython
+standard-imghdr==3.13.0
+    # via policyengine-core
+tables==3.11.1
+    # via policyengine-uk
+tenacity==9.1.2
+    # via plotly
+tqdm==4.67.1
+    # via huggingface-hub
+traitlets==5.14.3
+    # via
+    #   ipython
+    #   matplotlib-inline
+typing-extensions==4.15.0
+    # via
+    #   huggingface-hub
+    #   ipython
+    #   pydantic
+    #   pydantic-core
+    #   referencing
+    #   typing-inspection
+typing-inspection==0.4.2
+    # via pydantic
+tzdata==2025.2 ; sys_platform == 'emscripten' or sys_platform == 'win32'
+    # via pandas
+urllib3==2.5.0
+    # via requests
+wcwidth==0.2.13
+    # via prompt-toolkit
+wheel==0.45.1
+    # via policyengine-core
+policyengine==6.2.6

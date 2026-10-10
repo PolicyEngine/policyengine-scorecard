@@ -1,0 +1,85 @@
+{
+ "artifact": "enhanced_frs_2024_25.h5",
+ "bundle_key": "uk-data-1.58.0__pe-uk-2.125.1",
+ "cached_artifact_manifest_revision": "fdeba38517bd86067f34c0a5d8ed8923efb3b10a",
+ "certification": {
+  "built_with_model_git_sha": "4cbedbecca352f52dffe47e849553c2759a00711",
+  "built_with_model_version": "2.122.2",
+  "certified_by": "policyengine.py bundle certification",
+  "certified_for_model_version": "2.125.1",
+  "compatibility_basis": "legacy_compatible_model_package",
+  "data_build_fingerprint": "sha256:c094d7006fdd81df220090284212f16bbffb15624643bc442c4bb3e1b1e5dac8",
+  "data_build_id": "policyengine-uk-data-1.58.0"
+ },
+ "compatibility_authority": "Packaged loader certification and packages pins; producer build pins describe the original build, not this recertified environment.",
+ "compatible_core_packages": [
+  {
+   "name": "policyengine-core",
+   "specifier": "==3.33.0"
+  }
+ ],
+ "compatible_model_packages": [
+  {
+   "name": "policyengine-uk",
+   "specifier": "==2.125.1"
+  }
+ ],
+ "data_build_id": "policyengine-uk-data-1.58.0",
+ "data_year": 2024,
+ "development_bundle": false,
+ "engine_constraint_note": "Exact model and core constraints come from this installed managed-loader release. Computing at other engine versions requires another certified bundle registration; see #126.",
+ "managed_loader_version": "6.2.6",
+ "offline_audit": "docs/uk_replay/OFFLINE_BUNDLE_AUDIT_uk-data-1.58.0__pe-uk-2.125.1.json",
+ "producer_declared_core_packages": [
+  {
+   "name": "policyengine-core",
+   "specifier": "==3.32.13"
+  },
+  {
+   "name": "policyengine-core",
+   "specifier": "==3.32.21"
+  },
+  {
+   "name": "policyengine-core",
+   "specifier": "==3.33.0"
+  }
+ ],
+ "producer_declared_model_packages": [
+  {
+   "name": "policyengine-uk",
+   "specifier": "==2.122.2"
+  },
+  {
+   "name": "policyengine-uk",
+   "specifier": "==2.123.4"
+  },
+  {
+   "name": "policyengine-uk",
+   "specifier": "==2.125.1"
+  }
+ ],
+ "provenance": "Read from the installed release's packaged policyengine/data/bundle/manifest.json; independently verified the already-cached HF artifact, its producer-declared size, stored data year and installed engine extension function. No network request or simulation.",
+ "provenance_hashes": {
+  "cached_artifact_manifest_sha256": "ddd63e1f7755ee358c4ede9050bfdde09f3a80f48a5c0d8ee9d1fb531e4a1a07",
+  "engine_extension_source_sha256": "d2ed9985f6308befbe523ebbfb10a2bbd76ff7ae2084ea3a6bf45cff91e1dca2",
+  "packaged_bundle_manifest_sha256": "8633ad814c9c85e53c7c513f69c4c7b1500a03cd2f6ef133d6e2ea8346b2db54"
+ },
+ "registry_rule": "Offline byte-exact certified UK replay identity; the installed managed loader's packaged manifest certifies the exact model/core environment.",
+ "release_manifest_path": "releases/1.58.0/release_manifest.json",
+ "release_manifest_revision": "fdeba38517bd86067f34c0a5d8ed8923efb3b10a",
+ "release_tag": "1.58.0",
+ "repo_id": "policyengine/policyengine-uk-data-private",
+ "repo_type": "model",
+ "requirements_freeze": "docs/uk_replay/requirements-uk-data-1.58.0__pe-uk-2.125.1.txt",
+ "resolved_commit": "47bbb58d3f6467aa4a7059bc6110d2bdcf699b29",
+ "resolved_hf_commit": "47bbb58d3f6467aa4a7059bc6110d2bdcf699b29",
+ "revision": "1.58.0",
+ "schema_version": 2,
+ "sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+ "size_bytes": 128369110,
+ "supported_calendar_years": [
+  2024,
+  2030
+ ],
+ "why_this_bundle": "Registered separately so older certified results remain available for descriptive comparison."
+}
