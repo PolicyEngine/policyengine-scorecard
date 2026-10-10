@@ -747,8 +747,9 @@ def _verify_run_receipts(
     modal = directory / "MODAL_RECEIPT.json"
     if modal.exists():
         commit(modal)
+        # The Modal wrapper records the bundle identity in its request.
         bundles.validate_bundle_identity(
-            json.loads(modal.read_bytes()), bundle, root=root
+            json.loads(modal.read_bytes())["request"], bundle, root=root
         )
 
 

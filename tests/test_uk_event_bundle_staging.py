@@ -292,9 +292,8 @@ def test_path_selection_rejects_other_bundles_including_default(pinned_stage, ki
         )
 
 
-def test_engine_generator_binds_every_input_and_writes_deterministically(pinned_stage):
-    from pipeline import compare_uk_engines as engines
-
+def two_bundle_comparison(pinned_stage):
+    """Stage and compare one event under DEV and a second development bundle."""
     registry, _manifest, registry_path, output, root = pinned_stage
     _, _, staged = save_stage(pinned_stage)
     comparison.write_comparison(
@@ -391,6 +390,39 @@ def test_engine_generator_binds_every_input_and_writes_deterministically(pinned_
             }
         )
     )
+    return {
+        "registry_path": registry_path,
+        "output": output,
+        "root": root,
+        "staged": staged,
+        "other": other,
+        "pin": pin,
+        "other_pin_path": other_pin_path,
+        "index_path": index_path,
+        "other_registry_path": other_registry_path,
+        "other_output": other_output,
+        "axes": axes,
+        "attribution_path": attribution_path,
+    }
+
+
+def test_engine_generator_binds_every_input_and_writes_deterministically(pinned_stage):
+    from pipeline import compare_uk_engines as engines
+
+    setup = two_bundle_comparison(pinned_stage)
+    registry_path, output, root, staged = (
+        setup["registry_path"],
+        setup["output"],
+        setup["root"],
+        setup["staged"],
+    )
+    other, pin, index_path = setup["other"], setup["pin"], setup["index_path"]
+    other_pin_path = setup["other_pin_path"]
+    other_registry_path, other_output = (
+        setup["other_registry_path"],
+        setup["other_output"],
+    )
+    axes, attribution_path = setup["axes"], setup["attribution_path"]
     rows = engines.write_engine_comparison(
         DEV, other, attribution_path=attribution_path, artifact_root=root
     )
@@ -454,6 +486,34 @@ def test_engine_generator_binds_every_input_and_writes_deterministically(pinned_
     assert before == {
         path.name: path.read_bytes() for path in directory.glob("ENGINE_COMPARISON*")
     }
+
+
+def test_engine_generator_reads_bundle_identity_from_the_modal_request(pinned_stage):
+    """Real Modal receipts carry the bundle identity under ``request``."""
+    from pipeline import compare_uk_engines as engines
+
+    setup = two_bundle_comparison(pinned_stage)
+    root, other = setup["root"], setup["other"]
+    for key, directory in ((DEV, setup["output"]), (other, setup["other_output"])):
+        receipt = {
+            "schema_version": 1,
+            "request": {
+                "event": "event",
+                **bundles.bundle_identity(key, root=root),
+            },
+        }
+        (directory / "MODAL_RECEIPT.json").write_text(json.dumps(receipt))
+    rows = engines.write_engine_comparison(
+        DEV, other, attribution_path=setup["attribution_path"], artifact_root=root
+    )
+    assert len(rows) == 2
+    foreign = json.loads((setup["other_output"] / "MODAL_RECEIPT.json").read_text())
+    foreign["request"]["bundle_key"] = DEV
+    (setup["other_output"] / "MODAL_RECEIPT.json").write_text(json.dumps(foreign))
+    with pytest.raises(ValueError, match="bundle identity mismatch: bundle_key"):
+        engines.write_engine_comparison(
+            DEV, other, attribution_path=setup["attribution_path"], artifact_root=root
+        )
 
 
 def test_sized_paired_artifact_verifies_real_endpoints(pinned_stage):
