@@ -145,6 +145,37 @@ def bundle_index_relative(root: Path) -> str:
     return bundle_relative(path if path.is_absolute() else root / path, root)
 
 
+def selected_index_bytes(bundle: str = DEFAULT_BUNDLE, *, root: Path = ROOT) -> bytes:
+    """The index entries this run needs, serialized as registration writes them.
+
+    Mounting and hashing the whole shared index would let registering an
+    unrelated bundle change every earlier run's input commitment. Only the
+    default mapping and the selected bundle's mapping are kept.
+    """
+    path = uk_bundle.bundle_index_path(root=root)
+    index = (
+        json.loads(path.read_text())
+        if path.exists()
+        else {
+            "schema_version": 1,
+            "default_bundle": DEFAULT_BUNDLE,
+            "bundles": {DEFAULT_BUNDLE: "data/uk/certified_bundle.json"},
+        }
+    )
+    if bundle not in index["bundles"]:
+        raise ValueError(f"unregistered UK bundle: {bundle}")
+    selected = {
+        "schema_version": index["schema_version"],
+        "default_bundle": index["default_bundle"],
+        "bundles": {
+            key: value
+            for key, value in index["bundles"].items()
+            if key in (DEFAULT_BUNDLE, bundle)
+        },
+    }
+    return (json.dumps(selected, indent=2, sort_keys=True) + "\n").encode()
+
+
 def bundle_file(bundle: str, field: str, *, root: Path = ROOT) -> str:
     return relative_path(uk_bundle.load_bundle(bundle, root=root)[field])
 
@@ -359,6 +390,8 @@ def input_manifest(
     # unrelated blob, release metadata, refs/main or token file is transmitted.
     mounts[ref_relative] = ref
     mounts[artifact_relative] = artifact.resolve(strict=True)
+    index_relative = bundle_index_relative(root)
+    index_payload = selected_index_bytes(bundle, root=root)
     rows = []
     for relative, source in sorted(mounts.items()):
         is_artifact = relative == artifact_relative
@@ -371,8 +404,14 @@ def input_manifest(
         rows.append(
             {
                 "path": relative,
-                "size_bytes": source.stat().st_size,
-                "sha256": cert["sha256"] if is_artifact else sha256_file(source),
+                "size_bytes": len(index_payload)
+                if relative == index_relative
+                else source.stat().st_size,
+                "sha256": cert["sha256"]
+                if is_artifact
+                else digest_bytes(index_payload)
+                if relative == index_relative
+                else sha256_file(source),
                 "kind": "certified_artifact" if is_artifact else "input",
             }
         )
@@ -665,7 +704,16 @@ def modal_function(mounts: dict[str, Path], bundle: str = DEFAULT_BUNDLE):
             }
         )
     )
+    index_relative = bundle_index_relative(ROOT)
     for relative, path in sorted(mounts.items()):
+        if relative == index_relative:
+            # Mount exactly the bytes the input manifest hashed.
+            selected = tempfile.NamedTemporaryFile(
+                prefix="replay-index-", suffix=".json", delete=False
+            )
+            selected.write(selected_index_bytes(bundle, root=ROOT))
+            selected.close()
+            path = Path(selected.name)
         image = image.add_local_file(path, f"{REMOTE_ROOT}/{relative}", copy=False)
     app = modal.App("scorecard-uk-event-replay", include_source=False)
 

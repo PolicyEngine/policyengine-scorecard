@@ -75,6 +75,12 @@ def inputs(tmp_path):
     return tmp_path, manifest, mounts
 
 
+def upload_index(root, bundle=runner.DEFAULT_BUNDLE):
+    """Emulate the mount: the remote index holds only the selected mappings."""
+    path = root / "data/uk/certified_bundles/index.json"
+    path.write_bytes(runner.selected_index_bytes(bundle, root=root))
+
+
 def test_allowlist_mounts_only_pinned_inputs(inputs):
     root, manifest, mounts = inputs
     assert len(mounts) == len(runner.repository_files("autumn_budget_2024")) + 2
@@ -83,6 +89,7 @@ def test_allowlist_mounts_only_pinned_inputs(inputs):
     )
     assert not any(".git" in Path(path).parts for path in mounts)
     assert sum(row["kind"] == "certified_artifact" for row in manifest["files"]) == 1
+    upload_index(root)
     runner.verify_inputs(manifest, root=root)
 
 
@@ -182,6 +189,7 @@ def test_model_bundle_selects_exact_cache_freeze_audit_and_registry(model_bundle
     assert not any(
         "datasets--policyengine--populace-uk-private" in path for path in mounts
     )
+    upload_index(root, key)
     runner.verify_inputs(manifest, bundle=key, root=root)
 
 
@@ -562,3 +570,28 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
         for key in recorded["env"]
     )
     assert len(recorded["mounts"]) == len(mounts) + 1  # build-time frozen requirements
+
+
+def test_registering_another_bundle_keeps_existing_input_commitments(inputs):
+    """Only the selected mappings are mounted and hashed, not the shared index."""
+    root, manifest, _ = inputs
+    index_path = root / "data/uk/certified_bundles/index.json"
+    index = json.loads(index_path.read_text())
+    index["bundles"]["unrelated-later-bundle"] = "data/uk/certified_bundles/later.json"
+    index_path.write_text(json.dumps(index, indent=2, sort_keys=True) + "\n")
+    hf_cache = root / runner.HF_CACHE_RELATIVE
+    again, _ = runner.input_manifest("autumn_budget_2024", root=root, hf_cache=hf_cache)
+    assert again == manifest
+    selected = json.loads(runner.selected_index_bytes(root=root))
+    assert set(selected["bundles"]) == {runner.DEFAULT_BUNDLE}
+    with pytest.raises(ValueError, match="unregistered"):
+        runner.selected_index_bytes("not-registered", root=root)
+
+
+def test_selected_index_matches_registration_bytes_for_the_same_mappings(inputs):
+    """With nothing unrelated registered, the mounted index is the index file."""
+    root, _, _ = inputs
+    index_path = root / "data/uk/certified_bundles/index.json"
+    index = json.loads(index_path.read_text())
+    index_path.write_text(json.dumps(index, indent=2, sort_keys=True) + "\n")
+    assert runner.selected_index_bytes(root=root) == index_path.read_bytes()
