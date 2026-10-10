@@ -24,6 +24,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from pipeline import uk_bundle as bundles
 from pipeline.build_uk_event_registry import _sum as source_gbp_sum
 from pipeline.compare_uk_obr_costings import atomic_write_bytes, ratio_and_bin
 
@@ -543,8 +544,22 @@ def describe_decomposition(
 
 
 def build_comparison_rows(
-    registry: dict, staged_rows: list[dict], *, artifact_root: Path = ROOT
+    registry: dict,
+    staged_rows: list[dict],
+    *,
+    artifact_root: Path = ROOT,
+    bundle: str | None = None,
+    registry_sha256: str | None = None,
 ) -> list[dict]:
+    selected = bundle or bundles.DEFAULT_BUNDLE
+    verify_bundle = (
+        bundle is not None or "bundle" in registry or "bundle_key" in registry
+    )
+    if verify_bundle:
+        try:
+            bundles.validate_registry_bundle(registry, selected, root=artifact_root)
+        except ValueError as exc:
+            raise EventComparisonError(str(exc)) from exc
     inventory = {}
     for measure in registry["measures"]:
         for source in measure["source_rows"]:
@@ -589,6 +604,14 @@ def build_comparison_rows(
                 f"{key}: numerical source amount differs from decimal commitment"
             )
         pe = row.get("pe_value")
+        if selected != bundles.DEFAULT_BUNDLE:
+            start, end = bundles.bundle_window(selected, root=artifact_root)
+            if not start <= int(source["fy"][:4]) <= end and (
+                pe is not None or row.get("status") != "outside_bundle_window"
+            ):
+                raise EventComparisonError(
+                    "pre-window source row must be accounted as outside_bundle_window"
+                )
         variables = row.get("head_variables", [])
         reference = row.get("artifact_path")
         digest = row.get("artifact_sha256")
@@ -612,6 +635,35 @@ def build_comparison_rows(
                 if hashlib.sha256(payload).hexdigest() != digest:
                     raise EventComparisonError(f"{key}: artifact SHA-256 differs")
                 artifact = json.loads(payload)
+                if verify_bundle:
+                    try:
+                        bundles.validate_bundle_path(
+                            path, selected, kind="results", root=artifact_root
+                        )
+                        bundles.validate_runtime_bundle(
+                            artifact, selected, root=artifact_root
+                        )
+                    except ValueError as exc:
+                        raise EventComparisonError(str(exc)) from exc
+                    if artifact.get("event") != registry["event_slug"]:
+                        raise EventComparisonError(
+                            "artifact event differs from registry"
+                        )
+                    if (
+                        registry_sha256 is not None
+                        and artifact.get("registry_sha256") != registry_sha256
+                    ):
+                        raise EventComparisonError(
+                            "artifact registry SHA-256 differs from current registry"
+                        )
+                    if (
+                        not bundles.bundle_window(selected, root=artifact_root)[0]
+                        <= artifact.get("year", 0)
+                        <= bundles.bundle_window(selected, root=artifact_root)[1]
+                    ):
+                        raise EventComparisonError(
+                            "computed artifact is outside selected bundle window"
+                        )
                 validate_artifact(artifact, reference)
                 artifacts[reference] = (artifact, digest)
             artifact, saved_digest = artifacts[reference]
@@ -705,7 +757,9 @@ def build_comparison_rows(
             "ratio_bin": bin_name,
             "status": row.get("status"),
             "reason": reason,
-            "construction_note": construction_note(measure),
+            "construction_note": construction_note(measure)
+            if selected == bundles.DEFAULT_BUNDLE
+            else measure.get("note", ""),
             "missing_legs": measure.get("missing_legs", []),
             "head_variables": variables,
             "artifact": reference,
@@ -713,10 +767,14 @@ def build_comparison_rows(
             "axes": axes,
             "diagnosis": {
                 **(row.get("diagnosis") or {}),
-                **review_diagnosis(
-                    measure["measure_key"],
-                    int(source["fy"][:4]),
-                    source.get("tax_head", ""),
+                **(
+                    review_diagnosis(
+                        measure["measure_key"],
+                        int(source["fy"][:4]),
+                        source.get("tax_head", ""),
+                    )
+                    if selected == bundles.DEFAULT_BUNDLE
+                    else {}
                 ),
             },
             **describe_decomposition(gap, axes, components),
@@ -770,7 +828,10 @@ def profile(rows: list[dict], field: str) -> list[tuple[str, dict[str, int]]]:
 
 
 def render_markdown(
-    registry: dict, rows: list[dict], replay_grid: dict | None = None
+    registry: dict,
+    rows: list[dict],
+    replay_grid: dict | None = None,
+    bundle: str = bundles.DEFAULT_BUNDLE,
 ) -> str:
     computed = [r for r in rows if r["pe_value_gbp"] is not None]
     lines = [
@@ -952,14 +1013,23 @@ def render_markdown(
     caveats = [
         measure
         for measure in registry["measures"]
-        if construction_note(measure)
+        if (
+            construction_note(measure)
+            if bundle == bundles.DEFAULT_BUNDLE
+            else measure.get("note", "")
+        )
         and measure.get("classification", measure.get("computability"))
         in ("expressible", "partial")
     ]
     if caveats:
         lines += ["", "## Construction caveats", ""]
         for measure in caveats:
-            lines.append(f"* `{measure['measure_key']}`: {construction_note(measure)}")
+            note = (
+                construction_note(measure)
+                if bundle == bundles.DEFAULT_BUNDLE
+                else measure.get("note", "")
+            )
+            lines.append(f"* `{measure['measure_key']}`: {note}")
     diagnosed = {}
     for row in rows:
         diagnosis = row.get("diagnosis") or {}
@@ -994,19 +1064,41 @@ def _receipt_path(reference: Any, artifact_root: Path) -> Path:
 
 
 def _verify_staging(
-    registry_path: Path, staged_path: Path, *, artifact_root: Path
+    registry_path: Path,
+    staged_path: Path,
+    *,
+    artifact_root: Path,
+    bundle: str | None = None,
 ) -> tuple[dict, list[dict], Path]:
     registry = _json(registry_path)
     manifest_path = staged_path.parent / "STAGING_MANIFEST.json"
     if not manifest_path.exists():
         raise EventComparisonError("comparison requires STAGING_MANIFEST.json")
     manifest = _json(manifest_path)
+    if bundle is not None or "bundle" in registry or "bundle_key" in registry:
+        selected = bundle or bundles.DEFAULT_BUNDLE
+        try:
+            for path, kind in (
+                (registry_path, "registry"),
+                (staged_path, "results"),
+                (manifest_path, "results"),
+            ):
+                bundles.validate_bundle_path(
+                    path, selected, kind=kind, root=artifact_root
+                )
+            bundles.validate_bundle_identity(manifest, selected, root=artifact_root)
+        except ValueError as exc:
+            raise EventComparisonError(str(exc)) from exc
     if manifest.get("registry_sha256") != _sha256(registry_path):
         raise EventComparisonError("registry SHA-256 differs from staging manifest")
     if manifest.get("staged_sha256") != _sha256(staged_path):
         raise EventComparisonError("staged SHA-256 differs from staging manifest")
     rows = build_comparison_rows(
-        registry, load_jsonl(staged_path), artifact_root=artifact_root
+        registry,
+        load_jsonl(staged_path),
+        artifact_root=artifact_root,
+        bundle=bundle,
+        registry_sha256=_sha256(registry_path),
     )
     if manifest.get("staged_rows") != len(rows):
         raise EventComparisonError("staging manifest row count differs")
@@ -1041,18 +1133,27 @@ def write_comparison(
     staged_path: Path | None = None,
     output_dir: Path | None = None,
     artifact_root: Path = ROOT,
+    bundle: str | None = None,
 ) -> list[dict]:
-    registry_path = (
-        registry_path
-        or artifact_root / "data" / "uk" / "events" / f"{event}_measures.json"
+    selected = bundle or bundles.DEFAULT_BUNDLE
+    registry_path = registry_path or bundles.registry_path(
+        event, selected, root=artifact_root
     )
-    output_dir = output_dir or artifact_root / "results" / "uk" / "events" / event
+    output_dir = output_dir or bundles.event_output_dir(
+        event, selected, root=artifact_root
+    )
     staged_path = staged_path or output_dir / "STAGED.jsonl"
     registry, rows, staging_manifest_path = _verify_staging(
-        registry_path, staged_path, artifact_root=artifact_root
+        registry_path, staged_path, artifact_root=artifact_root, bundle=bundle
     )
     if registry.get("event_slug") != event:
         raise EventComparisonError("registry event differs from --event")
+    try:
+        bundles.validate_bundle_path(
+            output_dir, selected, kind="results", root=artifact_root
+        )
+    except ValueError as exc:
+        raise EventComparisonError(str(exc)) from exc
     output_dir.mkdir(parents=True, exist_ok=True)
     staging_manifest = _json(staging_manifest_path)
     replay_grid = {
@@ -1060,9 +1161,22 @@ def write_comparison(
         for field in GRID_FIELDS
         if field in staging_manifest
     }
+    markdown = render_markdown(registry, rows, replay_grid, bundle=selected)
+    if selected != bundles.DEFAULT_BUNDLE:
+        year = bundles.bundle_window(selected, root=artifact_root)[0]
+        markdown = markdown.replace("2023 population", f"{year} population")
+        markdown = markdown.replace("one 2023 population", f"one {year} population")
+        markdown = markdown.replace(
+            "with government baseline policy parameters annualized from the engine's 30 April snapshot.",
+            "with government baseline policy parameters processed by the selected engine's fiscal-year conversion, including declared calendar-date exceptions.",
+        )
+        markdown = markdown.replace(
+            "without a new 30 April conversion",
+            "without repeating fiscal-year conversion",
+        )
     payloads = {
         "COMPARISON.csv": render_csv(rows),
-        "COMPARISON.md": render_markdown(registry, rows, replay_grid),
+        "COMPARISON.md": markdown,
         "COMPARISON.json": json.dumps(rows, indent=1, sort_keys=True, allow_nan=False)
         + "\n",
     }
@@ -1086,6 +1200,8 @@ def write_comparison(
             for name, payload in payloads.items()
         },
     }
+    if selected != bundles.DEFAULT_BUNDLE:
+        provenance.update(bundles.bundle_identity(selected, root=artifact_root))
     atomic_write_bytes(
         output_dir / "COMPARISON_PROVENANCE.json",
         (json.dumps(provenance, indent=1, sort_keys=True) + "\n").encode(),
@@ -1098,6 +1214,7 @@ def render_summary(
     diagnostics: list[dict] | None = None,
     registries: dict[str, dict] | None = None,
     replay_grids: dict[str, dict] | None = None,
+    bundle: str = bundles.DEFAULT_BUNDLE,
 ) -> str:
     rows = [row for event_rows in events.values() for row in event_rows]
     computed = [r for r in rows if r["pe_value_gbp"] is not None]
@@ -1258,8 +1375,12 @@ def render_summary(
         diagnostic = row.get("diagnosis") or {}
         diagnostic = {
             **diagnostic,
-            **review_diagnosis(
-                row["measure_key"], row["year"], row.get("tax_head", "")
+            **(
+                review_diagnosis(
+                    row["measure_key"], row["year"], row.get("tax_head", "")
+                )
+                if bundle == bundles.DEFAULT_BUNDLE
+                else {}
             ),
         }
         evidence = diagnostic.get("evidence", "Open: relevant axes unsized")
@@ -1319,12 +1440,23 @@ def render_summary(
     return "\n".join(lines)
 
 
-def load_verified_comparison(path: Path, *, artifact_root: Path = ROOT) -> list[dict]:
+def load_verified_comparison(
+    path: Path, *, artifact_root: Path = ROOT, bundle: str | None = None
+) -> list[dict]:
     """Bind summary-only reads to current source, stage, axes and artifact bytes."""
     provenance_path = path.parent / "COMPARISON_PROVENANCE.json"
     if not provenance_path.exists():
         raise EventComparisonError("summary requires COMPARISON_PROVENANCE.json")
     provenance = _json(provenance_path)
+    selected = bundle or bundles.DEFAULT_BUNDLE
+    if bundle is not None or "bundle_key" in provenance:
+        try:
+            bundles.validate_bundle_path(
+                path, selected, kind="results", root=artifact_root
+            )
+            bundles.validate_bundle_identity(provenance, selected, root=artifact_root)
+        except ValueError as exc:
+            raise EventComparisonError(str(exc)) from exc
     if provenance.get("event_slug") != path.parent.name:
         raise EventComparisonError("comparison provenance event differs")
     if provenance.get("axes_sha256") != _sha256(AXES_PATH):
@@ -1342,7 +1474,7 @@ def load_verified_comparison(path: Path, *, artifact_root: Path = ROOT) -> list[
             raise EventComparisonError(f"comparison {label} SHA-256 is stale")
         paths[label] = receipt
     registry, verified_rows, manifest_path = _verify_staging(
-        paths["registry"], paths["staged"], artifact_root=artifact_root
+        paths["registry"], paths["staged"], artifact_root=artifact_root, bundle=bundle
     )
     if manifest_path != paths["staging_manifest"]:
         raise EventComparisonError("comparison staging manifest path differs")
@@ -1352,8 +1484,8 @@ def load_verified_comparison(path: Path, *, artifact_root: Path = ROOT) -> list[
         raise EventComparisonError("comparison replay-grid receipt differs")
     if registry.get("event_slug") != path.parent.name:
         raise EventComparisonError("summary registry event differs")
-    canonical_registry = (
-        artifact_root / "data" / "uk" / "events" / f"{path.parent.name}_measures.json"
+    canonical_registry = bundles.registry_path(
+        path.parent.name, selected, root=artifact_root
     )
     if (
         canonical_registry.exists()
@@ -1366,9 +1498,13 @@ def load_verified_comparison(path: Path, *, artifact_root: Path = ROOT) -> list[
     return rows
 
 
-def write_summary(events_root: Path, *, artifact_root: Path = ROOT) -> None:
+def write_summary(
+    events_root: Path, *, artifact_root: Path = ROOT, bundle: str | None = None
+) -> None:
     events = {
-        path.parent.name: load_verified_comparison(path, artifact_root=artifact_root)
+        path.parent.name: load_verified_comparison(
+            path, artifact_root=artifact_root, bundle=bundle
+        )
         for path in sorted(events_root.glob("*/COMPARISON.json"))
     }
     replay_grids = {
@@ -1381,29 +1517,63 @@ def write_summary(events_root: Path, *, artifact_root: Path = ROOT) -> None:
     diagnostics = (
         json.loads(diagnostic_path.read_text()) if diagnostic_path.exists() else []
     )
+    for diagnostic in diagnostics:
+        try:
+            bundles.validate_runtime_bundle(
+                diagnostic, bundle or bundles.DEFAULT_BUNDLE, root=artifact_root
+            )
+        except ValueError as exc:
+            raise EventComparisonError(str(exc)) from exc
     registries = {
         path.stem.removesuffix("_measures"): _json(path)
         for path in sorted(
-            (artifact_root / "data" / "uk" / "events").glob("*_measures.json")
+            bundles.registry_path(
+                "event", bundle or bundles.DEFAULT_BUNDLE, root=artifact_root
+            ).parent.glob("*_measures.json")
         )
     }
-    events_root.mkdir(parents=True, exist_ok=True)
-    atomic_write_bytes(
-        events_root / "SUMMARY.md",
-        render_summary(events, diagnostics, registries, replay_grids).encode(),
+    selected = bundle or bundles.DEFAULT_BUNDLE
+    try:
+        bundles.validate_bundle_path(
+            events_root, selected, kind="results", root=artifact_root
+        )
+        for registry in registries.values():
+            if bundle is not None or "bundle" in registry or "bundle_key" in registry:
+                bundles.validate_registry_bundle(registry, selected, root=artifact_root)
+    except ValueError as exc:
+        raise EventComparisonError(str(exc)) from exc
+    summary = render_summary(
+        events, diagnostics, registries, replay_grids, bundle=selected
     )
+    if selected != bundles.DEFAULT_BUNDLE:
+        pin = bundles.load_bundle(selected, root=artifact_root)
+        model = bundles.bundle_identity(selected, root=artifact_root)[
+            "engine_versions"
+        ]["policyengine-uk"]
+        summary = summary.replace(
+            "pinned populace-uk-2023 bundle definition with",
+            f"pinned {selected} bundle definition with",
+        )
+        summary = summary.replace("policyengine-uk 2.89.2", f"policyengine-uk {model}")
+        summary = summary.replace(
+            "certified 2023 population", f"certified {pin['data_year']} population"
+        )
+        # Legacy review diagnoses concern only their recorded bundle. New
+        # comparisons carry diagnoses solely from their audited stage inputs.
+        summary = summary.replace("--event ", f"--bundle {selected} --event ")
+    events_root.mkdir(parents=True, exist_ok=True)
+    atomic_write_bytes(events_root / "SUMMARY.md", summary.encode())
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--event")
+    parser.add_argument("--bundle", default=bundles.DEFAULT_BUNDLE)
     parser.add_argument("--registry", type=Path)
     parser.add_argument("--staged", type=Path)
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--summary", action="store_true")
-    parser.add_argument(
-        "--events-root", type=Path, default=ROOT / "results" / "uk" / "events"
-    )
+    parser.add_argument("--events-root", type=Path)
     args = parser.parse_args(argv)
     if args.event:
         rows = write_comparison(
@@ -1411,13 +1581,15 @@ def main(argv: list[str] | None = None) -> int:
             registry_path=args.registry,
             staged_path=args.staged,
             output_dir=args.output_dir,
+            bundle=args.bundle,
         )
         print(f"{args.event}: wrote {len(rows)} descriptive comparison rows")
     elif not args.summary:
         parser.error("--event or --summary is required")
     if args.summary:
-        write_summary(args.events_root)
-        print(f"wrote {args.events_root / 'SUMMARY.md'}")
+        events_root = args.events_root or bundles.results_root(args.bundle)
+        write_summary(events_root, bundle=args.bundle)
+        print(f"wrote {events_root / 'SUMMARY.md'}")
     return 0
 
 

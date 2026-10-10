@@ -65,11 +65,10 @@ def test_saved_receipt_has_certified_identity_and_keeps_contributions_unsized():
     for field in ("sha256", "size_bytes", "artifact", "revision"):
         assert receipt["certified_dataset"][field] == bundle[field]
     assert receipt["certified_dataset"]["digest_checked_before_hdf5_open"] is True
-    assert (
-        receipt["inspection_script"]["sha256"]
-        == hashlib.sha256(
-            (audit.ROOT / receipt["inspection_script"]["path"]).read_bytes()
-        ).hexdigest()
+    # This is the historical execution receipt. Its source digest must remain
+    # the original version, even as the current auditor gains bundle selection.
+    assert receipt["inspection_script"]["sha256"] == (
+        "ec1c6354653da622530b617f5a651c0ddde9320dda15505e4d79136981d9ea8c"
     )
     assert receipt["observations"]["time_period"] == "2023"
     columns = receipt["observations"]["input_columns"]

@@ -25,6 +25,7 @@ from pathlib import Path
 from pipeline import build_uk_event_registry as registry_builder
 from pipeline import compute_uk_ab2025 as worlds
 from pipeline import compute_uk_obr_costings as fiscal
+from pipeline import uk_bundle
 
 ROOT = worlds.ROOT
 EVENT_PATTERN = re.compile(r"^[a-z0-9]+(?:_[a-z0-9]+)*$")
@@ -98,19 +99,34 @@ def uc_health_scenario(reform: dict):
     return Scenario(simulation_modifier=apply_and_refresh)
 
 
-def event_paths(event: str) -> tuple[Path, Path]:
+def event_paths(
+    event: str, bundle: str = uk_bundle.DEFAULT_BUNDLE
+) -> tuple[Path, Path]:
     if not EVENT_PATTERN.fullmatch(event):
         raise ValueError("event must be a lowercase underscore-separated slug")
     return (
-        ROOT / "data" / "uk" / "events" / f"{event}_measures.json",
-        ROOT / "results" / "uk" / "events" / event,
+        uk_bundle.registry_path(event, bundle, root=ROOT),
+        uk_bundle.event_output_dir(event, bundle, root=ROOT),
     )
 
 
-def validate_event_identity(registry: dict, event: str) -> None:
+def validate_event_identity(
+    registry: dict, event: str, bundle: str = uk_bundle.DEFAULT_BUNDLE
+) -> None:
     identity = registry.get("event_slug", registry.get("event"))
     if identity is not None and identity != event:
         raise ValueError("registry event identity differs from --event")
+    if (
+        bundle != uk_bundle.DEFAULT_BUNDLE
+        or "bundle" in registry
+        or "bundle_key" in registry
+    ):
+        uk_bundle.validate_registry_bundle(registry, bundle, root=ROOT)
+
+
+def validate_output_bundle(path: Path, bundle: str) -> None:
+    """Custom development outputs are allowed; another canonical bundle is not."""
+    uk_bundle.validate_bundle_path(path, bundle, kind="results", root=ROOT)
 
 
 def canonical_bytes(value: object) -> bytes:
@@ -189,6 +205,7 @@ def build_artifact(
     certified: dict,
     registry_sha256: str,
     event: str,
+    bundle: str = uk_bundle.DEFAULT_BUNDLE,
 ) -> dict:
     """Numerical facts only: identical inputs produce identical artifact bytes.
 
@@ -275,13 +292,17 @@ def build_artifact(
     }
     if reversal:
         artifact["literal_reversal_minus_certified_gbp"] = literal
+    if bundle != uk_bundle.DEFAULT_BUNDLE:
+        artifact.update(uk_bundle.bundle_identity(bundle))
     return artifact
 
 
-def preflight() -> dict:
+def preflight(bundle: str = uk_bundle.DEFAULT_BUNDLE) -> dict:
     """The committed pin and the managed release must agree before any run."""
     fiscal.configure_offline()
     worlds.configure_offline()
+    if bundle != uk_bundle.DEFAULT_BUNDLE:
+        return fiscal.preflight_certified_dataset(bundle)
     committed = worlds.preflight()
     managed = fiscal.preflight_certified_dataset()
     if (
@@ -300,6 +321,8 @@ def run_sim(year: int, variables: list[str], reform: dict | None, pre: dict) -> 
         else None
     )
     scenario_kwargs = {"scenario": scenario} if scenario is not None else {}
+    if pre.get("bundle_key"):
+        scenario_kwargs["bundle_key"] = pre["bundle_key"]
     result = fiscal.run_managed_simulation(
         year=year,
         variables=variables,
@@ -365,6 +388,7 @@ def run_year_job(job: dict) -> dict:
             certified=baseline,
             registry_sha256=job["registry_sha256"],
             event=job["event"],
+            bundle=job.get("bundle", uk_bundle.DEFAULT_BUNDLE),
         )
         path = job["output_dir"] / f"{key}_{year}.json"
         fiscal.atomic_write_bytes(path, canonical_bytes(artifact))
@@ -387,7 +411,7 @@ def run_year_job(job: dict) -> dict:
 
 def progress_receipt(job: dict, artifacts: dict[str, str]) -> dict:
     """Commit completed artifact bytes before the next simulation begins."""
-    return {
+    receipt = {
         "schema_version": 1,
         "receipt_kind": "completed_event_artifacts",
         "event": job["event"],
@@ -399,6 +423,10 @@ def progress_receipt(job: dict, artifacts: dict[str, str]) -> dict:
         **runtime_versions(),
         "artifacts": artifacts,
     }
+    bundle = job.get("bundle", job["pre"].get("bundle_key", uk_bundle.DEFAULT_BUNDLE))
+    if bundle != uk_bundle.DEFAULT_BUNDLE:
+        receipt.update(uk_bundle.bundle_identity(bundle))
+    return receipt
 
 
 def retained_artifact_digests(
@@ -408,12 +436,15 @@ def retained_artifact_digests(
     years: list[int],
     registry_sha256: str,
     pre: dict,
+    bundle: str = uk_bundle.DEFAULT_BUNDLE,
 ) -> dict[str, str]:
     """Read only SHA-bound completed outputs; unreceipted files are ignored."""
     receipts = []
     manifest_path = output_dir / "RUN_MANIFEST.json"
     if manifest_path.exists():
         manifest = json.loads(manifest_path.read_bytes())
+        if bundle != uk_bundle.DEFAULT_BUNDLE or "bundle_key" in manifest:
+            uk_bundle.validate_runtime_bundle(manifest, bundle)
         if (
             manifest.get("event") == event
             and manifest.get("registry_sha256") == registry_sha256
@@ -425,12 +456,15 @@ def retained_artifact_digests(
         if not path.exists():
             continue
         receipt = json.loads(path.read_bytes())
+        if bundle != uk_bundle.DEFAULT_BUNDLE or "bundle_key" in receipt:
+            uk_bundle.validate_runtime_bundle(receipt, bundle)
         expected = progress_receipt(
             {
                 "event": event,
                 "year": year,
                 "registry_sha256": registry_sha256,
                 "pre": pre,
+                "bundle": bundle,
             },
             {},
         )
@@ -458,14 +492,17 @@ def grid_rows(pairs) -> list[dict]:
     return [{"measure_key": key, "year": year} for key, year in sorted(pairs)]
 
 
-def validate_years(requested: list[int], registry: dict) -> list[int]:
+def validate_years(
+    requested: list[int], registry: dict, bundle: str = uk_bundle.DEFAULT_BUNDLE
+) -> list[int]:
     allowed = registry.get("calendar_years")
     if not allowed:
         raise ValueError("registry must record the supported calendar_years")
     years = sorted(set(requested or allowed))
-    if any(year < 2023 or year > 2030 for year in years):
+    start, end = uk_bundle.bundle_window(bundle)
+    if any(year < start or year > end for year in years):
         raise ValueError(
-            "certified single-population replay supports 2023 through 2030 only"
+            f"certified single-population replay supports {start} through {end} only"
         )
     if set(years) - set(allowed):
         raise ValueError(
@@ -510,6 +547,7 @@ def main(argv: list[str] | None = None) -> int:
     worlds.configure_offline()
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--event", required=True)
+    ap.add_argument("--bundle", default=uk_bundle.DEFAULT_BUNDLE)
     ap.add_argument("--registry", type=Path)
     ap.add_argument("--output-dir", type=Path)
     ap.add_argument("--measures", nargs="*")
@@ -525,12 +563,16 @@ def main(argv: list[str] | None = None) -> int:
         help="spawn at most two year workers; each holds one live managed simulation",
     )
     args = ap.parse_args(argv)
-    default_registry, default_output = event_paths(args.event)
+    default_registry, default_output = event_paths(args.event, args.bundle)
     registry_path = args.registry or default_registry
+    uk_bundle.validate_bundle_path(
+        registry_path, args.bundle, kind="registry", root=ROOT
+    )
     output_dir = (args.output_dir or default_output).resolve()
     registry_payload = registry_path.read_bytes()
     registry = json.loads(registry_payload)
-    validate_event_identity(registry, args.event)
+    validate_event_identity(registry, args.event, args.bundle)
+    validate_output_bundle(output_dir, args.bundle)
     registry_builder.validate_registry(registry)
     if (
         not (args.dry_run or args.guards)
@@ -544,7 +586,7 @@ def main(argv: list[str] | None = None) -> int:
             "or an explicit --output-dir"
         )
     registry_sha256 = fiscal.hashlib.sha256(registry_payload).hexdigest()
-    years = validate_years(args.years or [], registry)
+    years = validate_years(args.years or [], registry, args.bundle)
     index = {measure["measure_key"]: measure for measure in registry["measures"]}
     planned = worlds.computable(index, years=years)
     runnable = {key: world for key, world in planned.items() if "alias_of" not in world}
@@ -594,7 +636,11 @@ def main(argv: list[str] | None = None) -> int:
     started = time.perf_counter()
     verify_registry_identity(registry_path, registry_sha256)
     print(f"[pid {os.getpid()}] starting offline bundle preflight", flush=True)
-    pre = preflight()
+    pre = (
+        preflight()
+        if args.bundle == uk_bundle.DEFAULT_BUNDLE
+        else preflight(args.bundle)
+    )
     print(
         f"[pid {os.getpid()}] offline bundle preflight complete; starting processed-world reversal guard",
         flush=True,
@@ -614,6 +660,7 @@ def main(argv: list[str] | None = None) -> int:
         years=registry["calendar_years"],
         registry_sha256=registry_sha256,
         pre=pre,
+        bundle=args.bundle,
     )
     requested_pairs = {(key, year) for key in selected for year in years}
     full_pairs = {
@@ -640,6 +687,8 @@ def main(argv: list[str] | None = None) -> int:
                 f"retained artifact bytes differ from manifest: {relative}"
             )
         previous = json.loads(path.read_bytes())
+        if args.bundle != uk_bundle.DEFAULT_BUNDLE or "bundle_key" in previous:
+            uk_bundle.validate_runtime_bundle(previous, args.bundle)
         if (
             previous.get("registry_sha256") != registry_sha256
             or previous.get("certified_dataset_sha256") != pre["sha256"]
@@ -678,6 +727,7 @@ def main(argv: list[str] | None = None) -> int:
                     "pre": pre,
                     "registry_sha256": registry_sha256,
                     "event": args.event,
+                    "bundle": args.bundle,
                     "output_dir": output_dir,
                     "retained_artifacts": {
                         str(
@@ -723,6 +773,8 @@ def main(argv: list[str] | None = None) -> int:
         **runtime_versions(),
         "not_computable": worlds.not_computable(index, years=years),
     }
+    if args.bundle != uk_bundle.DEFAULT_BUNDLE:
+        manifest.update(uk_bundle.bundle_identity(args.bundle))
     fiscal.atomic_write_bytes(
         output_dir / "RUN_MANIFEST.json", canonical_bytes(manifest)
     )

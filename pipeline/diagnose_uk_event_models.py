@@ -18,6 +18,13 @@ import os
 import re
 from pathlib import Path
 
+from pipeline.uk_bundle import (
+    DEFAULT_BUNDLE,
+    bundle_identity,
+    validate_bundle_identity,
+    validate_bundle_path,
+)
+
 ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -166,16 +173,191 @@ def _additional_model_checks(package_root: Path, simulation_type, case: str | No
     return results
 
 
-def investigate(case: str | None = None) -> list[dict]:
+PAIRED_CASES = (
+    "annual_allowance_relief_and_charge_pe_uk_2237",
+    "sdlt_additional_purchase_stock_pe_uk_2238",
+    "uc_standard_allowance_2027_2030_pe_uk_2239",
+    "hicbc_opt_out",
+    "nics_threshold_freeze_end_date",
+)
+
+
+def current_bundle_observation(result, identity):
+    """Keep earlier diagnoses as references, not assertions about a later pin."""
+    if identity["bundle_key"] == DEFAULT_BUNDLE:
+        return result
+    result.update(identity)
+    result["legacy_reference"] = {
+        "bundle_key": DEFAULT_BUNDLE,
+        "engine_version": "2.89.2",
+        "class": result["class"],
+        "interpretation": result["interpretation"],
+        "evidence": "results/uk/events/MODEL_DIAGNOSTICS.json",
+    }
+    result["class"] = "bundle_observation"
+    result["interpretation"] = (
+        "Current parameters, formula source and synthetic observations are recorded "
+        "for the selected certified bundle. The legacy_reference retains the "
+        "2.89.2 diagnosis for comparison; interpretation at this pin requires "
+        "review of the current observations and source. National contributions "
+        "remain unsized."
+    )
+    return result
+
+
+def _paired_checks(package_root, simulation_type, case):
+    """Issue-body reproducers, identical controlled inputs at both bundle pins."""
+    if case not in PAIRED_CASES:
+        return []
+    year = 2025 if case in (PAIRED_CASES[1], PAIRED_CASES[3]) else 2024
+    people = {}
+    units = {}
+    households = {}
+    if case == PAIRED_CASES[0]:
+        for amount in (60000, 80000):
+            name = f"contributions_{amount}"
+            people[name] = {
+                "age": {str(year): 45},
+                "employment_income": {str(year): 150000},
+                "personal_pension_contributions": {str(year): amount},
+            }
+            units[name] = {"members": [name]}
+            households[name] = {"members": [name], "region": {str(year): "LONDON"}}
+        variables = [
+            "pension_contributions_relief",
+            "personal_pension_contributions_tax",
+            "income_tax",
+        ]
+        evidence = "variables/gov/hmrc/pensions/pension_contributions_relief.py"
+        issue = 2237
+        years = [year]
+    elif case == PAIRED_CASES[1]:
+        for purchased in (False, True):
+            name = f"purchase_{str(purchased).lower()}"
+            people[name] = {
+                "age": {str(year): 45},
+                "employment_income": {str(year): 80000},
+            }
+            units[name] = {"members": [name]}
+            households[name] = {
+                "members": [name],
+                "region": {str(year): "LONDON"},
+                "main_residence_value": {str(year): 600000},
+                "other_residential_property_value": {str(year): 2000000},
+                "property_purchased": {str(year): purchased},
+            }
+        variables = ["additional_residential_property_purchased", "stamp_duty_land_tax"]
+        evidence = "variables/household/consumption/additional_residential_property_purchased.py"
+        issue = 2238
+        years = [year]
+    elif case == PAIRED_CASES[2]:
+        years = list(range(2025, 2031))
+        people["claimant"] = {"age": {str(y): 30 for y in years}}
+        units["unit"] = {"members": ["claimant"]}
+        households["household"] = {
+            "members": ["claimant"],
+            "region": {str(y): "LONDON" for y in years},
+        }
+        variables = ["uc_standard_allowance"]
+        evidence = "variables/gov/dwp/universal_credit/standard_allowance/uc_standard_allowance.py"
+        issue = 2239
+    elif case == PAIRED_CASES[3]:
+        years = [year]
+        for opted in (False, True):
+            name = f"opt_out_{str(opted).lower()}"
+            adult, child = name + "_adult", name + "_child"
+            people[adult] = {
+                "age": {str(year): 45},
+                "employment_income": {str(year): 100000},
+            }
+            people[child] = {"age": {str(year): 8}}
+            units[name] = {
+                "members": [adult, child],
+                "child_benefit_opts_out": {str(year): opted},
+                "would_claim_child_benefit": {str(year): True},
+            }
+            households[name] = {
+                "members": [adult, child],
+                "region": {str(year): "LONDON"},
+            }
+        variables = ["child_benefit", "CB_HITC", "child_benefit_less_tax_charge"]
+        evidence = "variables/gov/hmrc/child_benefit.py"
+        issue = None
+    else:
+        years = list(range(2026, 2031))
+        people["worker"] = {
+            "age": {str(y): 45 for y in years},
+            "self_employment_income": {str(y): 30000 for y in years},
+        }
+        units["unit"] = {"members": ["worker"]}
+        households["household"] = {
+            "members": ["worker"],
+            "region": {str(y): "LONDON" for y in years},
+        }
+        variables = ["ni_class_4"]
+        evidence = "parameters/gov/hmrc/national_insurance/class_4/thresholds/lower_profits_limit.yaml"
+        issue = None
+    situation = {"people": people, "benunits": units, "households": households}
+    simulation = simulation_type(situation=situation)
+    try:
+        observation = {
+            str(y): {v: simulation.calculate(v, y).tolist() for v in variables}
+            for y in years
+        }
+        if case == PAIRED_CASES[4]:
+            for y in years:
+                observation[str(y)]["class4_thresholds"] = {
+                    name: resolve(
+                        simulation.tax_benefit_system,
+                        f"gov.hmrc.national_insurance.class_4.thresholds.{name}",
+                        f"{y}-01-01",
+                    )
+                    for name in ("lower_profits_limit", "upper_profits_limit")
+                }
+    finally:
+        del simulation
+        gc.collect()
+    return [
+        {
+            "id": case,
+            "class": "paired_dev_observation",
+            "variables": variables,
+            "situation": situation,
+            "years": years,
+            "observation": observation,
+            "evidence": _source(package_root, evidence),
+            "existing_issue": f"https://github.com/PolicyEngine/policyengine-uk/issues/{issue}"
+            if issue
+            else None,
+            "assessment": "docs/uk_replay/MODEL_INVESTIGATIONS.md: class4_threshold_indexation_from_2027"
+            if case == PAIRED_CASES[4]
+            else None,
+            "interpretation": "Controlled synthetic observations for descriptive engine comparison. Compare the same inputs at each certified pin; this run does not size or attribute a national difference.",
+            "national_effect": "unsized",
+            "reproducer": f"--case {case}",
+        }
+    ]
+
+
+def investigate(case: str | None = None, bundle=DEFAULT_BUNDLE) -> list[dict]:
     for key in ("HF_HUB_OFFLINE", "HF_DATASETS_OFFLINE", "TRANSFORMERS_OFFLINE"):
         os.environ[key] = "1"
     version = importlib.metadata.version("policyengine-uk")
-    if version != "2.89.2":
-        raise RuntimeError(f"requires policyengine-uk 2.89.2; found {version}")
+    identity = bundle_identity(bundle)
+    for package, expected in identity["engine_versions"].items():
+        if importlib.metadata.version(package) != expected:
+            raise RuntimeError(f"selected bundle requires {package} {expected}")
     import policyengine_uk
     from policyengine_uk import CountryTaxBenefitSystem, Simulation
 
     package_root = Path(policyengine_uk.__file__).parent
+    if case in PAIRED_CASES:
+        results = _paired_checks(package_root, Simulation, case)
+        for result in results:
+            result["engine_version"] = version
+            if bundle != DEFAULT_BUNDLE:
+                result.update(identity)
+        return results
     system = CountryTaxBenefitSystem()
     results = []
 
@@ -431,6 +613,8 @@ def investigate(case: str | None = None) -> list[dict]:
     results.extend(_additional_model_checks(package_root, Simulation, case))
     for result in results:
         result["engine_version"] = version
+        if bundle != DEFAULT_BUNDLE:
+            current_bundle_observation(result, identity)
         absent = set(result["variables"]) - set(system.variables)
         if absent:
             raise RuntimeError(f"diagnostic names unknown engine variables: {absent}")
@@ -440,6 +624,7 @@ def investigate(case: str | None = None) -> list[dict]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--case")
+    parser.add_argument("--bundle", default=DEFAULT_BUNDLE)
     parser.add_argument(
         "--from-json",
         type=Path,
@@ -451,37 +636,50 @@ def main(argv: list[str] | None = None) -> int:
     results = (
         json.loads(args.from_json.read_text())
         if args.from_json
-        else investigate(args.case)
+        else investigate(args.case, args.bundle)
     )
+    if args.from_json:
+        for result in results:
+            validate_bundle_identity(result, args.bundle)
     if args.case:
         results = [r for r in results if r["id"] == args.case]
         if not results:
             parser.error("unknown diagnostic case")
     payload = json.dumps(results, indent=1, sort_keys=True, allow_nan=False) + "\n"
     if args.output:
+        validate_bundle_path(args.output, args.bundle, kind="results")
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(payload)
     else:
         print(payload, end="")
     if args.report:
+        model_version = bundle_identity(args.bundle)["engine_versions"][
+            "policyengine-uk"
+        ]
         lines = [
             "# Measured UK replay model investigation candidates",
             "",
             (
-                "These small reproductions inspect policyengine-uk 2.89.2. They identify "
+                f"These small reproductions inspect policyengine-uk {model_version}. They identify "
                 "specific encoding or parameter concerns, independently of the national "
                 "OBR differences. Their national effect is unsized; no issue has been filed. "
                 "These are model investigation candidates, not ten sized explanations "
                 "of national differences."
             ),
             "",
-            (
-                "An [integrated execution receipt](../../results/uk/events/MODEL_DIAGNOSTICS_VERIFICATION.json) "
-                "binds the [preserved fresh output](../../results/uk/events/diagnostics/integrated_run_20261009.json) "
-                "to these observations. The Class 4 primary citation was added afterward; "
-                "the receipt distinguishes that metadata addition from engine results."
+            *(
+                [
+                    (
+                        "An [integrated execution receipt](../../results/uk/events/MODEL_DIAGNOSTICS_VERIFICATION.json) "
+                        "binds the [preserved fresh output](../../results/uk/events/diagnostics/integrated_run_20261009.json) "
+                        "to these observations. The Class 4 primary citation was added afterward; "
+                        "the receipt distinguishes that metadata addition from engine results."
+                    ),
+                    "",
+                ]
+                if args.bundle == DEFAULT_BUNDLE
+                else []
             ),
-            "",
         ]
         for result in results:
             primary = result.get("primary_source")
@@ -497,7 +695,11 @@ def main(argv: list[str] | None = None) -> int:
                 (
                     f"Evidence: `{result['evidence']['engine_file']}`; source SHA-256 "
                     f"`{result['evidence']['sha256']}`. Full source and measured observations "
-                    "are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`."
+                    + (
+                        "are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`."
+                        if args.bundle == DEFAULT_BUNDLE
+                        else f"are retained in `{args.from_json or args.output or 'the saved bundle diagnostic output'}`."
+                    )
                 ),
                 "",
                 *(
@@ -513,7 +715,11 @@ def main(argv: list[str] | None = None) -> int:
                     else []
                 ),
                 "```bash",
-                "PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py "
+                (
+                    "PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py "
+                    if args.bundle == DEFAULT_BUNDLE
+                    else f"PYTHONPATH=. <bundle_python> -m pipeline.diagnose_uk_event_models --bundle {args.bundle} "
+                )
                 + result["reproducer"],
                 "```",
                 "",

@@ -12,6 +12,15 @@ import json
 import sysconfig
 from pathlib import Path
 
+from pipeline.uk_bundle import (
+    DEFAULT_BUNDLE,
+    bundle_document,
+    bundle_identity,
+    load_bundle,
+    results_root,
+    validate_bundle_path,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_RANGES = {
     "policyengine_uk/variables/gov/hmrc/sdlt_on_residential_property_transactions.py": [
@@ -81,11 +90,15 @@ def package_version(site_packages: Path, distribution: str) -> str:
     raise ValueError(f"missing {distribution} version metadata")
 
 
-def source_evidence(site_packages: Path) -> list[dict]:
+def source_evidence(site_packages: Path, *, legacy=True) -> list[dict]:
     evidence = []
     for relative, ranges in SOURCE_RANGES.items():
         path = site_packages / relative
+        if not legacy and not path.exists():
+            continue
         raw = path.read_bytes()
+        if not legacy:
+            ranges = [(1, len(raw.decode().splitlines()))]
         source = raw.decode()
         lines = source.splitlines(keepends=True)
         evidence.append(
@@ -123,7 +136,8 @@ def inspect_h5(path: Path) -> dict:
             "household_weight",
             "household_is_capital_gains_clone",
         ]
-        values = household.fields(fields)[()]
+        available = [name for name in fields if name in household.dtype.names]
+        values = household.fields(available)[()]
         purchased = values["property_purchased"].astype(bool)
         stock = values["other_residential_property_value"]
         weights = values["household_weight"]
@@ -144,6 +158,8 @@ def inspect_h5(path: Path) -> dict:
             "other_property_nonfinite_rows": int((~np.isfinite(stock)).sum()),
             "capital_gains_clone_household_rows": int(
                 values["household_is_capital_gains_clone"].sum()
+                if "household_is_capital_gains_clone" in available
+                else 0
             ),
         }
         del values
@@ -167,13 +183,19 @@ def collect_audit(dataset: Path, site_packages: Path, bundle: dict) -> dict:
         package: package_version(site_packages, package)
         for package in ("policyengine", "policyengine-uk", "policyengine-core")
     }
-    if versions != {
-        "policyengine": "5.0.2",
-        "policyengine-uk": "2.89.2",
-        "policyengine-core": "3.27.1",
-    }:
+    key = bundle.get("bundle_key", DEFAULT_BUNDLE)
+    expected = (
+        bundle_identity(key)["engine_versions"]
+        if key != DEFAULT_BUNDLE
+        else {
+            "policyengine": "5.0.2",
+            "policyengine-uk": "2.89.2",
+            "policyengine-core": "3.27.1",
+        }
+    )
+    if versions != expected:
         raise ValueError("construction audit requires the pinned replay packages")
-    evidence = source_evidence(site_packages)
+    evidence = source_evidence(site_packages, legacy=key == DEFAULT_BUNDLE)
     observations = inspect_h5(dataset)
     return {
         "schema_version": 1,
@@ -183,6 +205,7 @@ def collect_audit(dataset: Path, site_packages: Path, bundle: dict) -> dict:
             "sha256": sha256_file(Path(__file__)),
         },
         "packages": versions,
+        **(bundle_identity(key) if key != DEFAULT_BUNDLE else {}),
         "certified_dataset": identity,
         "observations": observations,
         "source_evidence": evidence,
@@ -229,6 +252,7 @@ def collect_audit(dataset: Path, site_packages: Path, bundle: dict) -> dict:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--bundle", default=DEFAULT_BUNDLE)
     parser.add_argument("--dataset", required=True, type=Path)
     parser.add_argument(
         "--site-packages", type=Path, default=Path(sysconfig.get_paths()["purelib"])
@@ -236,11 +260,17 @@ def main() -> None:
     parser.add_argument(
         "--output",
         type=Path,
-        default=ROOT / "results/uk/events/CONSTRUCTION_AUDIT.json",
+        default=None,
     )
     args = parser.parse_args()
-    bundle = json.loads((ROOT / "data/uk/certified_bundle.json").read_text())
+    bundle = (
+        load_bundle(args.bundle)
+        if args.bundle != DEFAULT_BUNDLE
+        else bundle_document(args.bundle)
+    )
     audit = collect_audit(args.dataset, args.site_packages, bundle)
+    args.output = args.output or results_root(args.bundle) / "CONSTRUCTION_AUDIT.json"
+    validate_bundle_path(args.output, args.bundle, kind="results")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(audit, indent=1, sort_keys=True, allow_nan=False) + "\n"
