@@ -108,6 +108,17 @@ def inputs(
     )
 
 
+def verified(root, *names):
+    """Treat ``names`` as artifacts from a verified default-bundle manifest."""
+    from pipeline import uk_bundle as bundles
+
+    pin = root / "data/uk/certified_bundle.json"
+    if not pin.exists():
+        pin.parent.mkdir(parents=True)
+        pin.write_bytes(bundles.bundle_pin_path().read_bytes())
+    return {name: bundles.DEFAULT_BUNDLE for name in names}
+
+
 def compare(values=None, attribution=None, **kwargs):
     left, right, before, after, old, new = values or inputs()
     return engines.build_engine_rows(
@@ -188,15 +199,86 @@ def test_sized_driver_requires_matching_computed_artifact_hash_and_value(tmp_pat
         },
     )
     hashes = {}
-    compare(values, attribution, artifact_root=tmp_path, input_hashes=hashes)
+    receipts = verified(tmp_path, "paired.json")
+    compare(
+        values,
+        attribution,
+        artifact_root=tmp_path,
+        input_hashes=hashes,
+        verified_artifacts=receipts,
+    )
     assert hashes == {"paired.json": hashlib.sha256(payload).hexdigest()}
+    # The same artifact outside a verified run manifest sizes nothing.
+    with pytest.raises(engines.EngineComparisonError, match="verified run manifest"):
+        compare(values, attribution, artifact_root=tmp_path)
     driver["value_gbp"] += 1
     with pytest.raises(engines.EngineComparisonError, match="differs"):
-        compare(values, attribution, artifact_root=tmp_path)
+        compare(
+            values, attribution, artifact_root=tmp_path, verified_artifacts=receipts
+        )
     driver["value_gbp"] -= 1
     driver["artifact"]["sha256"] = "0" * 64
     with pytest.raises(engines.EngineComparisonError, match="SHA-256"):
-        compare(values, attribution, artifact_root=tmp_path)
+        compare(
+            values, attribution, artifact_root=tmp_path, verified_artifacts=receipts
+        )
+
+
+def test_sized_artifact_from_another_engine_is_rejected(tmp_path):
+    """A hash-correct artifact still has to match its bundle's runtime pins."""
+    values = inputs()
+    artifact = {**values[5]["new.json"], "engine_version": "9.9.9"}
+    payload = engines.canonical_bytes(artifact)
+    (tmp_path / "foreign.json").write_bytes(payload)
+    attribution = json.loads(FIXTURE.read_text())
+    attribution["entries"][0]["fy"] = "2024-25"
+    attribution["entries"][0]["drivers"][0].update(
+        sized=True,
+        value_gbp=120,
+        artifact={
+            "path": "foreign.json",
+            "sha256": hashlib.sha256(payload).hexdigest(),
+            "value_path": ["head_effects", "head_0"],
+        },
+    )
+    with pytest.raises(ValueError, match="runtime bundle mismatch: engine_version"):
+        compare(
+            values,
+            attribution,
+            artifact_root=tmp_path,
+            verified_artifacts=verified(tmp_path, "foreign.json"),
+        )
+
+
+def test_total_and_one_of_its_heads_cannot_both_be_sized(tmp_path):
+    values = inputs()
+    payload = engines.canonical_bytes(values[5]["new.json"])
+    (tmp_path / "artifact.json").write_bytes(payload)
+    proof = {"path": "artifact.json", "sha256": hashlib.sha256(payload).hexdigest()}
+    attribution = json.loads(FIXTURE.read_text())
+    entry = attribution["entries"][0]
+    entry["fy"] = "2024-25"
+    entry["drivers"][0].update(
+        sized=True,
+        value_gbp=95,
+        artifact={**proof, "value_path": ["measure_total_gbp"]},
+    )
+    entry["drivers"].append(
+        {
+            "driver": "other_engine_change",
+            "evidence": [{"kind": "paired_run", "reference": "artifact.json"}],
+            "sized": True,
+            "value_gbp": 120,
+            "artifact": {**proof, "value_path": ["head_effects", "head_0"]},
+        }
+    )
+    with pytest.raises(engines.EngineComparisonError, match="overlap"):
+        compare(
+            values,
+            attribution,
+            artifact_root=tmp_path,
+            verified_artifacts=verified(tmp_path, "artifact.json"),
+        )
 
 
 def test_unsized_driver_withholds_explained_share_even_beside_sized(tmp_path):
@@ -218,7 +300,12 @@ def test_unsized_driver_withholds_explained_share_even_beside_sized(tmp_path):
             },
         }
     )
-    rows = compare(values, attribution, artifact_root=tmp_path)
+    rows = compare(
+        values,
+        attribution,
+        artifact_root=tmp_path,
+        verified_artifacts=verified(tmp_path, "artifact.json"),
+    )
     assert all(r["explained_share"] is None for r in rows)
     assert all(
         r["explained_share_withheld"] == "unsized drivers"
@@ -353,7 +440,12 @@ def test_named_drivers_cannot_double_count_one_computed_term(tmp_path):
     second = {**copy.deepcopy(first), "driver": "other_engine_change"}
     entry["drivers"].append(second)
     with pytest.raises(engines.EngineComparisonError, match="same computed term"):
-        compare(values, attribution, artifact_root=tmp_path)
+        compare(
+            values,
+            attribution,
+            artifact_root=tmp_path,
+            verified_artifacts=verified(tmp_path, "artifact.json"),
+        )
 
 
 @pytest.mark.parametrize("scope", [None, ["head_0"]])
@@ -409,7 +501,10 @@ def test_paired_package_size_is_not_allocated_to_each_source_head(
             "value_path": ["effect_gbp"],
         },
     )
-    rows = compare(values, attribution, artifact_root=tmp_path)
+    receipts = verified(tmp_path, "measured-base.json", "measured-new.json")
+    rows = compare(
+        values, attribution, artifact_root=tmp_path, verified_artifacts=receipts
+    )
     tax = [row for row in rows if row["measure_key"] == "event__tax"]
     if scope is None:
         assert all(row["explained_share"] is None for row in tax)
@@ -419,4 +514,83 @@ def test_paired_package_size_is_not_allocated_to_each_source_head(
     assert (
         tax[1]["explained_share_withheld"]
         == "measure sizing does not isolate this source head"
+    )
+
+
+def test_paired_head_subset_cannot_be_sized_beside_its_superset(tmp_path):
+    """Review case: a two-head paired size plus its one-head subset."""
+    from pipeline import uk_bundle as bundles
+
+    measured = inputs(old=(100, 100), new=(110, 110))
+    receipts = verified(tmp_path, "measured-base.json", "measured-new.json")
+    endpoints = {}
+    for side, artifact in (
+        ("base", measured[4]["base.json"]),
+        ("new", measured[5]["new.json"]),
+    ):
+        payload = engines.canonical_bytes(artifact)
+        (tmp_path / f"measured-{side}.json").write_bytes(payload)
+        endpoints[side] = {
+            "path": f"measured-{side}.json",
+            "sha256": hashlib.sha256(payload).hexdigest(),
+        }
+    drivers = []
+    for name, driver, scope, effect in (
+        ("both.json", "data_release", ["head_0", "head_1"], 20),
+        ("subset.json", "other_engine_change", ["head_0"], 10),
+    ):
+        paired = {
+            "artifact_type": "paired_run",
+            "status": "computed",
+            "effect_gbp": effect,
+            "base_artifact": endpoints["base"],
+            "new_artifact": endpoints["new"],
+            "base_bundle": bundles.DEFAULT_BUNDLE,
+            "new_bundle": bundles.DEFAULT_BUNDLE,
+            "head_variables": scope,
+        }
+        payload = engines.canonical_bytes(paired)
+        (tmp_path / name).write_bytes(payload)
+        drivers.append(
+            {
+                "driver": driver,
+                "evidence": [{"kind": "paired_run", "reference": name}],
+                "sized": True,
+                "value_gbp": effect,
+                "artifact": {
+                    "path": name,
+                    "sha256": hashlib.sha256(payload).hexdigest(),
+                    "value_path": ["effect_gbp"],
+                },
+            }
+        )
+    attribution = json.loads(FIXTURE.read_text())
+    attribution["entries"][0].update(fy="2024-25", drivers=drivers)
+    values = inputs(old=(100, 100), new=(120, 120))
+    with pytest.raises(engines.EngineComparisonError, match="overlap"):
+        compare(
+            values, attribution, artifact_root=tmp_path, verified_artifacts=receipts
+        )
+    # Disjoint heads from the same endpoints remain valid.
+    drivers[0]["artifact"]["path"] = "other.json"
+    other = {
+        **json.loads((tmp_path / "both.json").read_bytes()),
+        "head_variables": ["head_1"],
+        "effect_gbp": 10,
+    }
+    payload = engines.canonical_bytes(other)
+    (tmp_path / "other.json").write_bytes(payload)
+    drivers[0]["artifact"]["sha256"] = hashlib.sha256(payload).hexdigest()
+    drivers[0]["value_gbp"] = 10
+    rows = compare(
+        values, attribution, artifact_root=tmp_path, verified_artifacts=receipts
+    )
+    # Each driver is measured on one head only, so it is unmeasured for the
+    # other head's row and the explained share stays withheld there.
+    tax = [row for row in rows if row["measure_key"] == "event__tax"]
+    assert all(row["explained_share"] is None for row in tax)
+    assert all(
+        row["explained_share_withheld"]
+        == "measure sizing does not isolate this source head"
+        for row in tax
     )

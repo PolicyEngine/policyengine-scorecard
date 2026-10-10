@@ -199,16 +199,34 @@ def _entry_index(attribution: dict) -> dict[tuple[str, str, str | None], list[di
     return out
 
 
+def _verified_bundle(reference: str, verified: dict[str, str]) -> str:
+    """Sized evidence must be an executed artifact from a verified run manifest."""
+    if reference not in verified:
+        raise EngineComparisonError(
+            "sized evidence must be an artifact listed in a verified run manifest"
+        )
+    return verified[reference]
+
+
 def validate_attribution(
     attribution: dict,
     *,
     artifact_root: Path = ROOT,
     input_hashes: dict[str, str] | None = None,
+    verified_artifacts: dict[str, str] | None = None,
 ) -> dict:
-    """Validate all entries, even entries not used by a changed row."""
+    """Validate all entries, even entries not used by a changed row.
+
+    ``verified_artifacts`` maps each artifact path (relative to the root) from
+    a verified run manifest to its bundle. Without it, no driver can be sized.
+    """
+    verified = verified_artifacts or {}
     out = _entry_index(attribution)
     for (event, measure_key, fy), drivers in out.items():
         sized_terms = set()
+        # Heads already sized from each measured endpoint, so no two drivers
+        # (or a total and one of its heads) count the same contribution twice.
+        measured_heads: dict[tuple, set[str]] = {}
         for driver in drivers:
             evidence = driver.get("evidence")
             if not isinstance(evidence, list) or not evidence:
@@ -267,6 +285,11 @@ def validate_attribution(
                 raise EngineComparisonError("sized artifact SHA-256 differs")
             computed = json.loads(path.read_bytes())
             if "head_effects" in computed:
+                bundles.validate_runtime_bundle(
+                    computed,
+                    _verified_bundle(reference, verified),
+                    root=artifact_root,
+                )
                 event_comparison.validate_artifact(computed, reference)
                 if (
                     computed.get("event"),
@@ -286,6 +309,12 @@ def validate_attribution(
                         "sized artifact value must be a computed GBP effect"
                     )
                 term = ("computed", proof["sha256"], tuple(allowed))
+                measured = ("computed", proof["sha256"])
+                heads = (
+                    {allowed[1]}
+                    if allowed[0] == "head_effects"
+                    else set(computed["head_effects"])
+                )
             elif (
                 computed.get("artifact_type") == "paired_run"
                 and computed.get("status") == "computed"
@@ -337,6 +366,16 @@ def validate_attribution(
                         raise EngineComparisonError(
                             "paired-run endpoint requires bundle identity"
                         )
+                    if (
+                        _verified_bundle(
+                            str(endpoint_path.relative_to(artifact_root.resolve())),
+                            verified,
+                        )
+                        != endpoint_bundle
+                    ):
+                        raise EngineComparisonError(
+                            "paired-run endpoint belongs to another verified bundle"
+                        )
                     bundles.validate_runtime_bundle(
                         endpoint, endpoint_bundle, root=artifact_root
                     )
@@ -375,6 +414,12 @@ def validate_attribution(
                     computed["new_artifact"]["sha256"],
                     tuple(sorted(paired_heads)),
                 )
+                measured = (
+                    "paired_run",
+                    computed["base_artifact"]["sha256"],
+                    computed["new_artifact"]["sha256"],
+                )
+                heads = set(paired_heads)
             else:
                 raise EngineComparisonError(
                     "sized evidence is not a computed national artifact"
@@ -402,6 +447,11 @@ def validate_attribution(
                     "sized drivers repeat the same computed term"
                 )
             sized_terms.add(term)
+            if measured_heads.setdefault(measured, set()) & heads:
+                raise EngineComparisonError(
+                    "sized drivers overlap on the same measured heads"
+                )
+            measured_heads[measured] |= heads
             if input_hashes is not None:
                 input_hashes[reference] = proof["sha256"]
     return out
@@ -438,6 +488,7 @@ def build_engine_rows(
     new_artifacts: dict[str, dict],
     artifact_root: Path = ROOT,
     input_hashes: dict | None = None,
+    verified_artifacts: dict[str, str] | None = None,
 ) -> list[dict]:
     """Join the exact source universe; neither gaps nor zero rows are dropped."""
     left, right = _inventory(base_registry), _inventory(new_registry)
@@ -456,7 +507,10 @@ def build_engine_rows(
     base_measures = {m["measure_key"]: m for m in base_registry["measures"]}
     new_measures = {m["measure_key"]: m for m in new_registry["measures"]}
     drivers = validate_attribution(
-        attribution, artifact_root=artifact_root, input_hashes=input_hashes
+        attribution,
+        artifact_root=artifact_root,
+        input_hashes=input_hashes,
+        verified_artifacts=verified_artifacts,
     )
     rows = []
     for identity in sorted(left):
@@ -682,6 +736,7 @@ def _verify_run_receipts(
     bundle: str,
     root: Path,
     commit,
+    verified: dict[str, str] | None = None,
 ) -> None:
     """Bind the numerical manifest and each per-year progress receipt."""
     from pipeline import stage_uk_event as staging
@@ -700,6 +755,8 @@ def _verify_run_receipts(
                 "compute manifest artifact path or SHA-256 differs"
             )
         commit(path)
+        if verified is not None:
+            verified[str(path.resolve().relative_to(root.resolve()))] = bundle
         years.add(json.loads(path.read_bytes())["year"])
     for year in sorted(years):
         progress_path = directory / f"RUN_PROGRESS_{year}.json"
@@ -814,7 +871,10 @@ def write_engine_comparison(
         raise EngineComparisonError(
             "both bundles require comparisons for every event in the same nonempty registry inventory"
         )
-    rows = []
+    # Verify every bundle's receipt chain first, so sized attribution for any
+    # event can only cite artifacts from a verified run manifest.
+    verified_artifacts: dict[str, str] = {}
+    loaded = {}
     for event in sorted(event_sets[base]):
         registries, comparisons, artifacts = {}, {}, {}
         for key in (base, new):
@@ -838,7 +898,13 @@ def write_engine_comparison(
             registry_path = artifact_root / provenance["registry_path"]
             registries[key] = json.loads(registry_path.read_bytes())
             _verify_run_receipts(
-                directory, registry_path, registries[key], key, artifact_root, commit
+                directory,
+                registry_path,
+                registries[key],
+                key,
+                artifact_root,
+                commit,
+                verified_artifacts,
             )
             source = registries[key].get("source", {})
             if source.get("claims_path"):
@@ -856,6 +922,9 @@ def write_engine_comparison(
                     artifacts[key][row["artifact"]] = json.loads(
                         artifact_path.read_bytes()
                     )
+        loaded[event] = (registries, comparisons, artifacts)
+    rows = []
+    for event, (registries, comparisons, artifacts) in loaded.items():
         rows.extend(
             build_engine_rows(
                 registries[base],
@@ -867,6 +936,7 @@ def write_engine_comparison(
                 new_artifacts=artifacts[new],
                 artifact_root=artifact_root,
                 input_hashes=inputs,
+                verified_artifacts=verified_artifacts,
             )
         )
     payloads = {

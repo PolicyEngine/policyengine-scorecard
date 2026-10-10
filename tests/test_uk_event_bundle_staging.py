@@ -625,8 +625,23 @@ def test_sized_paired_artifact_verifies_real_endpoints(pinned_stage):
         ],
     }
     hashes = {}
-    engines.validate_attribution(attribution, artifact_root=root, input_hashes=hashes)
+    verified = {"base.json": DEV, "new.json": DEV}
+    engines.validate_attribution(
+        attribution,
+        artifact_root=root,
+        input_hashes=hashes,
+        verified_artifacts=verified,
+    )
     assert set(hashes) == {"base.json", "new.json", "paired.json"}
+    # Endpoints must come from a verified run manifest of the named bundle.
+    with pytest.raises(engines.EngineComparisonError, match="verified run manifest"):
+        engines.validate_attribution(attribution, artifact_root=root)
+    with pytest.raises(engines.EngineComparisonError, match="another verified bundle"):
+        engines.validate_attribution(
+            attribution,
+            artifact_root=root,
+            verified_artifacts={**verified, "new.json": bundles.DEFAULT_BUNDLE},
+        )
     # Copying a paired receipt under another name does not create a second
     # independently sized contribution from the same executed endpoints.
     second_pair = {**paired, "note": "another named mechanism, same numerical term"}
@@ -641,11 +656,15 @@ def test_sized_paired_artifact_verifies_real_endpoints(pinned_stage):
     )
     attribution["entries"][0]["drivers"].append(second_driver)
     with pytest.raises(engines.EngineComparisonError, match="same computed term"):
-        engines.validate_attribution(attribution, artifact_root=root)
+        engines.validate_attribution(
+            attribution, artifact_root=root, verified_artifacts=verified
+        )
     attribution["entries"][0]["drivers"].pop()
     (root / "new.json").write_bytes((root / "new.json").read_bytes() + b"\n")
     with pytest.raises(engines.EngineComparisonError, match="endpoint SHA-256"):
-        engines.validate_attribution(attribution, artifact_root=root)
+        engines.validate_attribution(
+            attribution, artifact_root=root, verified_artifacts=verified
+        )
 
 
 def test_summary_rejects_another_bundles_model_observations(pinned_stage):
