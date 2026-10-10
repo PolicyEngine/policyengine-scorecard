@@ -1,0 +1,15 @@
+{
+ "artifacts": {
+  "results/uk/events/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2024.json": "f102df28229afbd58bd9f4eb3217098ee66af4f4f0be795ca227b544852bbc44"
+ },
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "engine_version": "2.89.2",
+ "event": "spring_budget_2023",
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "1b6f738faafd9e441e2bd1e2ccb1db198837c551c0fc8279536e3a63bf345393",
+ "schema_version": 1,
+ "year": 2024
+}

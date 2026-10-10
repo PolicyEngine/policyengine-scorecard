@@ -2,94 +2,21 @@
  "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
  "event_slug": "spring_budget_2024",
  "outputs_sha256": {
-  "COMPARISON.csv": "0e77c7c7f3ba5a3dbb89a5e0044b8a1a29724503d5ce8792b5782e89e7635a9f",
-  "COMPARISON.json": "3d0d3e4006b739cd34e784ec6e917e52b84a2467c235689752e52a670191a7f0",
-  "COMPARISON.md": "190a1946c0cad930f3b7b74debf4576f520aee03ca451145ca828b243c9c2b66"
+  "COMPARISON.csv": "2b5ec97ecdc19740ec3b1e7f75782ff1bee4140d2b50715c92d99e92e8f22cb4",
+  "COMPARISON.json": "67e7099f6a9aabdc1114a2448b71c4925ed72f1ebffd0ce470b9da577d2bf925",
+  "COMPARISON.md": "3ba13b66588446ae499c651d2ad6e3eb78ea5a9b1cfe330f0100b703fbe8f997"
  },
  "registry_path": "data/uk/events/spring_budget_2024_measures.json",
  "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
  "replay_grid": {
-  "computed_measure_years": 0,
-  "full_event_complete": false,
+  "computed_measure_years": 18,
+  "full_event_complete": true,
   "full_event_grid_size": 18,
-  "missing_measure_years": [
-   {
-    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
-    "year": 2023
-   },
-   {
-    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
-    "year": 2024
-   },
-   {
-    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
-    "year": 2025
-   },
-   {
-    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
-    "year": 2026
-   },
-   {
-    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
-    "year": 2027
-   },
-   {
-    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
-    "year": 2028
-   },
-   {
-    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
-    "year": 2023
-   },
-   {
-    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
-    "year": 2024
-   },
-   {
-    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
-    "year": 2025
-   },
-   {
-    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
-    "year": 2026
-   },
-   {
-    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
-    "year": 2027
-   },
-   {
-    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
-    "year": 2028
-   },
-   {
-    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
-    "year": 2023
-   },
-   {
-    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
-    "year": 2024
-   },
-   {
-    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
-    "year": 2025
-   },
-   {
-    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
-    "year": 2026
-   },
-   {
-    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
-    "year": 2027
-   },
-   {
-    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
-    "year": 2028
-   }
-  ]
+  "missing_measure_years": []
  },
  "source_rows": 816,
  "staged_path": "results/uk/events/spring_budget_2024/STAGED.jsonl",
- "staged_sha256": "c317f5e491392e352ea3a1be29c22ecbd79d718016c71a888a78d6cae196ff71",
+ "staged_sha256": "e7ba6d1bbd4957aa988e0ddcac7b4a91fbac55a39e76b0e7bf42c9bf2975b6b7",
  "staging_manifest_path": "results/uk/events/spring_budget_2024/STAGING_MANIFEST.json",
- "staging_manifest_sha256": "606b02eb76a14d34d2e0a18dca13450893c7ae18fbf1b40777f086bf21c30899"
+ "staging_manifest_sha256": "0f5c1e45246eddf57031adc67aa0de1ecd1e3775388d41d359a85c4430fe746e"
 }

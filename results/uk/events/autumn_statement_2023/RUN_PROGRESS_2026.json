@@ -1,0 +1,16 @@
+{
+ "artifacts": {
+  "results/uk/events/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2026.json": "62180635af809881e1d89e2c31ccc5749b7db3cd75581d11b78e49369ee1c239",
+  "results/uk/events/autumn_statement_2023/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2026.json": "8e2b71cbe9049d51e3db57ce6457d17903820d337dff50f0bafea3bf89badb7d"
+ },
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "engine_version": "2.89.2",
+ "event": "autumn_statement_2023",
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "a6b08eb4873fb598434afcb0385fea9fff88c382287d625dd0718e0acc602fba",
+ "schema_version": 1,
+ "year": 2026
+}

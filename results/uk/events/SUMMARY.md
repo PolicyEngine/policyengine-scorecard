@@ -2,15 +2,15 @@
 
 The inventories use the pinned populace-uk-2023 bundle definition with policyengine-uk 2.89.2. A seeded registry does not establish a completed numerical replay. Available comparisons use one source head and fiscal year per row.
 
-Numerical comparison outputs available: 1. Registry inventories available: 5.
+Numerical comparison outputs available: 5. Registry inventories available: 5.
 
 | Event | Replay state | Measures | Source rows | Computed rows | Computed FYs |
 |---|---|---:|---:|---:|---|
 | [autumn_budget_2024](autumn_budget_2024/COMPARISON.md) | Numerical replay complete | 74 | 1134 | 33 | 2024-25, 2025-26, 2026-27, 2027-28, 2028-29, 2029-30 |
-| [autumn_statement_2023](autumn_statement_2023/COMPARISON.md) | Registry seeded; numerical replay incomplete | 77 | 1116 | 0 | — |
-| [spring_budget_2023](spring_budget_2023/COMPARISON.md) | Registry seeded; numerical replay incomplete | 89 | 1020 | 0 | — |
-| [spring_budget_2024](spring_budget_2024/COMPARISON.md) | Registry seeded; numerical replay incomplete | 49 | 816 | 0 | — |
-| [spring_statement_2025](spring_statement_2025/COMPARISON.md) | Registry seeded; numerical replay incomplete | 32 | 498 | 0 | — |
+| [autumn_statement_2023](autumn_statement_2023/COMPARISON.md) | Numerical replay complete | 77 | 1116 | 33 | 2023-24, 2024-25, 2025-26, 2026-27, 2027-28, 2028-29 |
+| [spring_budget_2023](spring_budget_2023/COMPARISON.md) | Numerical replay complete | 89 | 1020 | 8 | 2024-25, 2025-26, 2026-27, 2027-28 |
+| [spring_budget_2024](spring_budget_2024/COMPARISON.md) | Numerical replay complete | 49 | 816 | 48 | 2023-24, 2024-25, 2025-26, 2026-27, 2027-28, 2028-29 |
+| [spring_statement_2025](spring_statement_2025/COMPARISON.md) | Numerical replay complete | 32 | 498 | 8 | 2024-25, 2025-26, 2026-27, 2027-28, 2028-29, 2029-30 |
 
 ## Source inventory accounting
 
@@ -66,14 +66,14 @@ These amounts sum all source heads and costing years, including zero cells. They
 | Fuel duty | not_available: 6 |
 | Gross operating surplus | not_available: 6 |
 | Immigration health surcharge | not_available: 6 |
-| Income tax | both_zero: 1, not_available: 444, opposite_sign: 1, same_sign_ratio_at_least_2: 4 |
+| Income tax | both_zero: 8, not_available: 411, opposite_sign: 1, pe_zero: 17, same_sign_ratio_at_least_2: 13 |
 | Inheritance tax | not_available: 60 |
 | Interest and dividend receipts | not_available: 54 |
 | Landfill tax | not_available: 12 |
 | Locally-financed capital expenditure | not_available: 24 |
 | Locally-financed current expenditure | not_available: 132 |
 | Multinational top-up tax | not_available: 6 |
-| NICs | both_zero: 1, not_available: 204, same_sign_ratio_0.8_to_1.25: 5 |
+| NICs | both_zero: 4, not_available: 177, pe_zero: 4, same_sign_ratio_0.8_to_1.25: 8, same_sign_ratio_1.25_to_2: 17 |
 | Net public service pension payments | not_available: 18 |
 | North sea taxes | not_available: 6 |
 | Other AME (current) | not_available: 66 |
@@ -99,7 +99,7 @@ These amounts sum all source heads and costing years, including zero cells. They
 | Vaping duty | not_available: 18 |
 | Vehicle excise duty | not_available: 18 |
 | Visa fees | not_available: 12 |
-| Welfare inside cap | not_available: 312, same_sign_ratio_1.25_to_2: 1, same_sign_ratio_below_0.5: 5 |
+| Welfare inside cap | both_zero: 8, not_available: 275, pe_zero: 5, same_sign_ratio_0.5_to_0.8: 12, same_sign_ratio_0.8_to_1.25: 5, same_sign_ratio_1.25_to_2: 6, same_sign_ratio_below_0.5: 7 |
 | Welfare outside cap | not_available: 96 |
 | Welsh BGA (current) | not_available: 30 |
 
@@ -109,20 +109,20 @@ These amounts sum all source heads and costing years, including zero cells. They
 | business_tax | not_available: 516 |
 | capital_gains_tax | not_available: 73, opposite_sign: 1, same_sign_ratio_at_least_2: 4 |
 | carers_allowance | not_available: 12 |
-| child_benefit | not_available: 12 |
+| child_benefit | both_zero: 2, pe_zero: 5, same_sign_ratio_at_least_2: 5 |
 | fuel_duty | not_available: 18 |
-| income_tax | not_available: 114 |
+| income_tax | not_available: 106, pe_zero: 4, same_sign_ratio_at_least_2: 4 |
 | indirect_tax | not_available: 162 |
 | inheritance_tax | not_available: 90 |
 | local_government_finance | not_available: 6 |
-| national_insurance | both_zero: 2, not_available: 174, opposite_sign: 1, same_sign_ratio_0.8_to_1.25: 5, same_sign_ratio_at_least_2: 4 |
+| national_insurance | both_zero: 14, not_available: 105, opposite_sign: 1, pe_zero: 17, same_sign_ratio_0.5_to_0.8: 10, same_sign_ratio_0.8_to_1.25: 13, same_sign_ratio_1.25_to_2: 22, same_sign_ratio_at_least_2: 4 |
 | other | not_available: 840 |
 | savings | not_available: 36 |
 | scope | not_available: 1152 |
 | stamp_duty_land_tax | not_available: 25, same_sign_ratio_at_least_2: 5 |
 | tax_benefit | not_available: 222 |
 | transport | not_available: 120 |
-| universal_credit | not_available: 30 |
+| universal_credit | both_zero: 4, not_available: 22, same_sign_ratio_0.5_to_0.8: 2, same_sign_ratio_below_0.5: 2 |
 | value_added_tax | not_available: 13, same_sign_ratio_0.8_to_1.25: 5 |
 | welfare | not_available: 240 |
 | winter_fuel_payment | not_available: 18, same_sign_ratio_1.25_to_2: 1, same_sign_ratio_below_0.5: 5 |
@@ -133,7 +133,7 @@ population_vintage tags every row: the fiscal event's OBR forecast differs from 
 
 Pinned employer-NIC incidence assigns the wage adjustment fully to employees while holding employer cost fixed. OBR's direct per-head costings exclude separately reported macroeconomic indirect effects. This construction/head_scope difference is named, but its contribution to the raw gaps remains unsized.
 
-Axis-tagged coverage: 33 computed rows, £84.813bn of absolute raw gap. Explained share is available on 0 rows; relevant unsized axes withhold it on the rest. These are different quantities.
+Axis-tagged coverage: 130 computed rows, £152.076bn of absolute raw gap. Explained share is available on 0 rows; relevant unsized axes withhold it on the rest. These are different quantities.
 
 ## Largest unexplained divergences
 
@@ -142,10 +142,15 @@ The queue below is ranked by absolute residual_plus_unsized, after any evidence-
 | Event / measure | FY / head | Residual £bn | Variables | Evidence / diagnosis | Minimal replay |
 |---|---|---:|---|---|---|
 | autumn_budget_2024 / Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to £5,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to £10,500, remove the £100,000 Employment Allowance eligibility threshold | 2029-30 / Income tax | -9.274 | income_tax | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --measures autumn_budget_2024__employer_nics_package --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2029` |
+| spring_budget_2023 / Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2027-28 / Income tax | -6.036 | income_tax | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event spring_budget_2023 --measures spring_budget_2023__pension_annual_allowance_package --years 2027 --workers 1 --output-dir .venv-replay-checks/reproductions/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2027` |
 | autumn_budget_2024 / Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026 | 2027-28 / Capital gains tax | 5.028 | capital_gains_tax | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --measures autumn_budget_2024__capital_gains_main_rates_and_reliefs --years 2027 --workers 1 --output-dir .venv-replay-checks/reproductions/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2027` |
+| autumn_statement_2023 / National Insurance contributions (NICs): 2p cut to the main rate of Class 1 employee NICs from January 2024 | 2028-29 / NICs | -2.824 | ni_class_1_employee, ni_class_1_employer, ni_class_2, ni_class_4 | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_statement_2023 --measures autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2028` |
+| spring_budget_2024 / National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 1 employee NICs from 6 April 2024 | 2028-29 / NICs | -2.575 | ni_class_1_employee, ni_class_1_employer, ni_class_2, ni_class_4 | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event spring_budget_2024 --measures spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/spring_budget_2024/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2028` |
 | autumn_budget_2024 / Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024 | 2029-30 / Stamp duty | 1.846 | stamp_duty_land_tax | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --measures autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2029` |
+| spring_budget_2024 / High Income Child Benefit Charge: increase income threshold to £60,000 and taper range to £60,000 to £80,000 from 6 April 2024 | 2028-29 / Income tax | -1.779 | income_tax | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event spring_budget_2024 --measures spring_budget_2024__hicbc_threshold_and_taper --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2028` |
+| spring_statement_2025 / Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth £106 per week in 2029-30 | 2029-30 / Welfare inside cap | 1.056 | universal_credit | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event spring_statement_2025 --measures spring_statement_2025__uc_standard_allowance_above_inflation --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2029` |
 | autumn_budget_2024 / Winter Fuel Payments: Target payments at recipients of Pension Credit and certain other means-tested benefits from winter 2024-25 | 2026-27 / Welfare inside cap | -1.052 | winter_fuel_allowance | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --measures autumn_budget_2024__winter_fuel_means_test --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/autumn_budget_2024/autumn_budget_2024__winter_fuel_means_test_2026` |
-| autumn_budget_2024 / VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025 | 2029-30 / VAT | -0.338 | private_school_vat | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event autumn_budget_2024 --measures autumn_budget_2024__private_school_vat_20pct --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2029` |
+| spring_budget_2024 / National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024 | 2028-29 / NICs | -0.500 | ni_class_1_employee, ni_class_1_employer, ni_class_2, ni_class_4 | Open: relevant axes unsized | `PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event spring_budget_2024 --measures spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/spring_budget_2024/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2028` |
 
 Evidence-backed PolicyEngine issue candidates recorded: 9. No upstream issues were filed by this replay lane.
 

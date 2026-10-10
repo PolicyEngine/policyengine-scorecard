@@ -1,0 +1,157 @@
+{
+ "runner": "local managed simulation; one live simulation per process",
+ "timings": [
+  {
+   "performance": {
+    "cleanup_seconds": 0.4075470060000015,
+    "end_rss_bytes": 18199150592,
+    "peak_rss_bytes": 18999214080,
+    "rss_after_gc_bytes": 10486652928,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 344760320,
+    "wall_seconds": 73.70765532
+   },
+   "seconds": 74.117148859,
+   "world": "certified_baseline",
+   "year": 2023
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "seconds": 114.85152219599999,
+   "year": 2023
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "seconds": 109.482058798,
+   "year": 2023
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.5144069090000016,
+    "end_rss_bytes": 18370854912,
+    "peak_rss_bytes": 19081375744,
+    "rss_after_gc_bytes": 11659550720,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 12065263616,
+    "wall_seconds": 63.15082198499999
+   },
+   "seconds": 63.667137938999986,
+   "world": "certified_baseline",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "seconds": 115.55843806799999,
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "seconds": 125.09889352299996,
+   "year": 2024
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.7733680559999812,
+    "end_rss_bytes": 19091038208,
+    "peak_rss_bytes": 20374511616,
+    "rss_after_gc_bytes": 14299545600,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 14932664320,
+    "wall_seconds": 69.48693333400001
+   },
+   "seconds": 70.26318569,
+   "world": "certified_baseline",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "seconds": 146.951867106,
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "seconds": 152.15479718899996,
+   "year": 2025
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.6421364240000003,
+    "end_rss_bytes": 21912846336,
+    "peak_rss_bytes": 22557736960,
+    "rss_after_gc_bytes": 21064769536,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 21041700864,
+    "wall_seconds": 70.96260437399997
+   },
+   "seconds": 71.60685799299995,
+   "world": "certified_baseline",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "seconds": 134.89146705300004,
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "seconds": 120.84729878500002,
+   "year": 2026
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.48398120399997424,
+    "end_rss_bytes": 22639288320,
+    "peak_rss_bytes": 23809294336,
+    "rss_after_gc_bytes": 21141315584,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 21118246912,
+    "wall_seconds": 58.99018498800001
+   },
+   "seconds": 59.47560638799996,
+   "world": "certified_baseline",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "seconds": 103.40323278999995,
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "seconds": 105.21532315199988,
+   "year": 2027
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.5542015650000849,
+    "end_rss_bytes": 22715834368,
+    "peak_rss_bytes": 23821877248,
+    "rss_after_gc_bytes": 21219958784,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 21196890112,
+    "wall_seconds": 60.40208269300001
+   },
+   "seconds": 60.95806766800001,
+   "world": "certified_baseline",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "seconds": 107.16270407699994,
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "seconds": 108.64896262799994,
+   "year": 2028
+  }
+ ],
+ "wall_seconds": 1854.042068723,
+ "workers": 1
+}

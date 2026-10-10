@@ -2,42 +2,21 @@
  "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
  "event_slug": "spring_budget_2023",
  "outputs_sha256": {
-  "COMPARISON.csv": "99541c605aab24e68992d734478a292a0c22908b5452e3c3aa1aaf015af6057f",
-  "COMPARISON.json": "90d2c361e3a0aa3b43160a9662ce125600c231ff2bc8cfdcda312f3343e90338",
-  "COMPARISON.md": "401848633e9ed4fabebd7ac495f4aa04d470224788a3720ed94653434041a526"
+  "COMPARISON.csv": "659498ec203921e5460810d6b2bd35443f1849ad62cccb47974b7448af52be06",
+  "COMPARISON.json": "b2c466eaab2c8c2c590ac24a147fa9c1655b3ad11077a99927b626839884b7b7",
+  "COMPARISON.md": "b5aae6c9708184342838152a0030e45ae698be38f8321745aa20826ea5dd0afb"
  },
  "registry_path": "data/uk/events/spring_budget_2023_measures.json",
  "registry_sha256": "1b6f738faafd9e441e2bd1e2ccb1db198837c551c0fc8279536e3a63bf345393",
  "replay_grid": {
-  "computed_measure_years": 0,
-  "full_event_complete": false,
+  "computed_measure_years": 5,
+  "full_event_complete": true,
   "full_event_grid_size": 5,
-  "missing_measure_years": [
-   {
-    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
-    "year": 2023
-   },
-   {
-    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
-    "year": 2024
-   },
-   {
-    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
-    "year": 2025
-   },
-   {
-    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
-    "year": 2026
-   },
-   {
-    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
-    "year": 2027
-   }
-  ]
+  "missing_measure_years": []
  },
  "source_rows": 1020,
  "staged_path": "results/uk/events/spring_budget_2023/STAGED.jsonl",
- "staged_sha256": "287f0aca5add3884ad91461ea752db6e3f0a024b74d135d4b22fcc9b88dfc510",
+ "staged_sha256": "a280524155626a08574440aaba7aa5e2ca04218a2206640fea736e2090ee7aed",
  "staging_manifest_path": "results/uk/events/spring_budget_2023/STAGING_MANIFEST.json",
- "staging_manifest_sha256": "cf507469b9857f6a2891c381b0592f1a00d49f31cfda670388fc862cc79ce741"
+ "staging_manifest_sha256": "d5b624126df5737f11891c51416596892e77086ba0b8863a53a90afac8286539"
 }

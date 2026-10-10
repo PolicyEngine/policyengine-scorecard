@@ -2,70 +2,21 @@
  "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
  "event_slug": "autumn_statement_2023",
  "outputs_sha256": {
-  "COMPARISON.csv": "95f0a339145038610544bd5fe25812c71a25d46fd1a17af402f26a42db4ed058",
-  "COMPARISON.json": "5b1a86301823aa783bb20ea1cb7865039848323be1d2e53907c81f4a90ae8951",
-  "COMPARISON.md": "e0879e0f77dd16e3237c6403bd683d2cacb60216f2440029546472a3429d644e"
+  "COMPARISON.csv": "d70d49d0561522eb35ee6a09d226be35cf7a61dbd324ae7fc6025116d7964623",
+  "COMPARISON.json": "85bb9f80e665f776cd8cd3525e8f581709d119c3e93dbfd7ff4699178c15ce68",
+  "COMPARISON.md": "000359ea271d52bbd299efd72fcdc7ac8306511cd5fd93365765508cb5f9c125"
  },
  "registry_path": "data/uk/events/autumn_statement_2023_measures.json",
  "registry_sha256": "a6b08eb4873fb598434afcb0385fea9fff88c382287d625dd0718e0acc602fba",
  "replay_grid": {
-  "computed_measure_years": 0,
-  "full_event_complete": false,
+  "computed_measure_years": 12,
+  "full_event_complete": true,
   "full_event_grid_size": 12,
-  "missing_measure_years": [
-   {
-    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
-    "year": 2023
-   },
-   {
-    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
-    "year": 2024
-   },
-   {
-    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
-    "year": 2025
-   },
-   {
-    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
-    "year": 2026
-   },
-   {
-    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
-    "year": 2027
-   },
-   {
-    "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
-    "year": 2028
-   },
-   {
-    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
-    "year": 2023
-   },
-   {
-    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
-    "year": 2024
-   },
-   {
-    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
-    "year": 2025
-   },
-   {
-    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
-    "year": 2026
-   },
-   {
-    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
-    "year": 2027
-   },
-   {
-    "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
-    "year": 2028
-   }
-  ]
+  "missing_measure_years": []
  },
  "source_rows": 1116,
  "staged_path": "results/uk/events/autumn_statement_2023/STAGED.jsonl",
- "staged_sha256": "5c1cd91d32f6265ddb14ae6a89248589b54d99d8b2756d16bf2eecf337380912",
+ "staged_sha256": "e8928809876fc41cf2cffbfd9b12cd8916f97d6333deb62303798db025f62726",
  "staging_manifest_path": "results/uk/events/autumn_statement_2023/STAGING_MANIFEST.json",
- "staging_manifest_sha256": "f0792959ef89e0098a9616026e9573142f2e3cfe14178b6bfaa12cf64cd17310"
+ "staging_manifest_sha256": "bddb52d893d910e7d23ff1ca90e87a4a8894819b841050f9f0dae4d9321a0118"
 }

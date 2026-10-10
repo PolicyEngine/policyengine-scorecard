@@ -1,0 +1,107 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+    "2026-01-01.2026-12-31": 649.46,
+    "2027-01-01.2027-12-31": 664.39,
+    "2028-01-01.2028-12-31": 677.68,
+    "2029-01-01.2029-12-31": 691.23
+   },
+   "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+    "2026-01-01.2026-12-31": 514.47,
+    "2027-01-01.2027-12-31": 526.3,
+    "2028-01-01.2028-12-31": 536.82,
+    "2029-01-01.2029-12-31": 547.56
+   },
+   "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+    "2026-01-01.2026-12-31": 413.74,
+    "2027-01-01.2027-12-31": 423.26,
+    "2028-01-01.2028-12-31": 431.72,
+    "2029-01-01.2029-12-31": 440.36
+   },
+   "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+    "2026-01-01.2026-12-31": 327.76,
+    "2027-01-01.2027-12-31": 335.3,
+    "2028-01-01.2028-12-31": 342.0,
+    "2029-01-01.2029-12-31": 348.84
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2028 proxies FY 2028-29.",
+ "certified_aggregates_gbp": {
+  "universal_credit": 41265285840.954895
+ },
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "components": [
+  "spring_statement_2025__uc_standard_allowance_above_inflation"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "dataset_sha256_after": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "dataset_sha256_before": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "engine_version": "2.89.2",
+ "event": "spring_statement_2025",
+ "fiscal_event": "Spring Statement 2025",
+ "fy_proxy": "2028-29",
+ "head_channels": {
+  "universal_credit": "spending"
+ },
+ "head_definitions": [
+  {
+   "channel": "spending",
+   "obr_head": "Welfare inside cap",
+   "pe_variables": [
+    "universal_credit"
+   ]
+  }
+ ],
+ "head_effects": {
+  "universal_credit": -481849932.0606613
+ },
+ "head_variables": [
+  "universal_credit"
+ ],
+ "literal_reform_minus_baseline": {
+  "universal_credit": 481849932.0606613
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "universal_credit": 481849932.0606613
+ },
+ "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+ "measure_total_gbp": -481849932.0606613,
+ "null_executed_as_no_limit": [],
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "4ee750cbd1c1e88551ea68d3fae2462c2edb5ff62665ca5b355f60d2e255ca4a",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "universal_credit": 40783435908.89423
+   }
+  },
+  "reform": {
+   "heads": {
+    "universal_credit": 41265285840.954895
+   }
+  }
+ },
+ "variable_metadata": {
+  "universal_credit": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/dwp/universal_credit/universal_credit.py",
+   "entity": "benunit",
+   "label": "Universal Credit",
+   "unit": "currency-GBP"
+  }
+ },
+ "year": 2028
+}

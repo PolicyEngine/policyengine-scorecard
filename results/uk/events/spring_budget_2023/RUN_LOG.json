@@ -1,0 +1,107 @@
+{
+ "runner": "local managed simulation; one live simulation per process",
+ "timings": [
+  {
+   "performance": {
+    "cleanup_seconds": 0.9832936399999994,
+    "end_rss_bytes": 17623060480,
+    "peak_rss_bytes": 19011121152,
+    "rss_after_gc_bytes": 2156122112,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 342601728,
+    "wall_seconds": 86.243809226
+   },
+   "seconds": 87.23105871899999,
+   "world": "certified_baseline",
+   "year": 2023
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "seconds": 139.429488282,
+   "year": 2023
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.6120759469999939,
+    "end_rss_bytes": 18253795328,
+    "peak_rss_bytes": 19028709376,
+    "rss_after_gc_bytes": 8764354560,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 9406525440,
+    "wall_seconds": 72.40577266000003
+   },
+   "seconds": 73.020178249,
+   "world": "certified_baseline",
+   "year": 2024
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "seconds": 137.22748555100003,
+   "year": 2024
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.6583145060000106,
+    "end_rss_bytes": 18335903744,
+    "peak_rss_bytes": 19053146112,
+    "rss_after_gc_bytes": 11974074368,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 11941568512,
+    "wall_seconds": 67.71658343600001
+   },
+   "seconds": 68.37736023600007,
+   "world": "certified_baseline",
+   "year": 2025
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "seconds": 125.31763635699997,
+   "year": 2025
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.5412677189999613,
+    "end_rss_bytes": 18419642368,
+    "peak_rss_bytes": 19086553088,
+    "rss_after_gc_bytes": 14281150464,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 14257033216,
+    "wall_seconds": 70.61612841400006
+   },
+   "seconds": 71.15933833600002,
+   "world": "certified_baseline",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "seconds": 133.64310271399995,
+   "year": 2026
+  },
+  {
+   "performance": {
+    "cleanup_seconds": 0.5246959410000045,
+    "end_rss_bytes": 18510319616,
+    "peak_rss_bytes": 19122704384,
+    "rss_after_gc_bytes": 16089407488,
+    "rss_after_gc_method": "psutil_process_rss",
+    "rss_method": "psutil_process_rss",
+    "start_rss_bytes": 16062144512,
+    "wall_seconds": 65.61606724
+   },
+   "seconds": 66.14283563200001,
+   "world": "certified_baseline",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "seconds": 127.32204938600012,
+   "year": 2027
+  }
+ ],
+ "wall_seconds": 1043.85052581,
+ "workers": 1
+}

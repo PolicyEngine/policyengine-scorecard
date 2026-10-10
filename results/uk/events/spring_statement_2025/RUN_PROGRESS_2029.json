@@ -1,0 +1,16 @@
+{
+ "artifacts": {
+  "results/uk/events/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2029.json": "4ba26e748ce80166e7c62a525ffa0dfc47838961ecdbbf6f7d79ae3cc1c25f73",
+  "results/uk/events/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2029.json": "2a478883bd92e1c9d608381772c33a9ec7736a1df606a7b6e2564ac5ba2241f0"
+ },
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "engine_version": "2.89.2",
+ "event": "spring_statement_2025",
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "4ee750cbd1c1e88551ea68d3fae2462c2edb5ff62665ca5b355f60d2e255ca4a",
+ "schema_version": 1,
+ "year": 2029
+}

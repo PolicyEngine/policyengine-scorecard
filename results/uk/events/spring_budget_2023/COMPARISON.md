@@ -2,9 +2,7 @@
 
 Positive GBP means a gain to the Exchequer. PolicyEngine is the pinned certified 2023 population uprated to calendar year Y, with government policy parameters annualized from the engine's 30 April snapshot. These calendar population inputs proxy OBR FY Y–(Y+1). OBR's announcement forecast and behavioural costings remain distinct from this construction.
 
-Every source row remains visible: 1020 rows, 0 with computed counterparts. Source rows are counted once; no comparison subtotal is treated as a separately published OBR claim.
-
-Numerical replay grid incomplete: 0 of 5 executable measure-year pairs have artifacts. Rows without counterparts remain visible; this report does not establish a completed event replay.
+Every source row remains visible: 1020 rows, 8 with computed counterparts. Source rows are counted once; no comparison subtotal is treated as a separately published OBR claim.
 
 ## Accounting
 
@@ -21,13 +19,64 @@ Net and absolute £ sum source-row values across the costing years; they are acc
 
 The bins describe PE/OBR on each source head and year. They do not define a quality gate.
 
+| Tax head | Source-row ratio bins |
+|---|---|
+| Aggregates levy | not_available: 6 |
+| Alcohol duty | not_available: 6 |
+| Bank surcharge | not_available: 6 |
+| Betting | not_available: 6 |
+| Capital gains tax | not_available: 18 |
+| Climate change levy | not_available: 6 |
+| Company and other credits | not_available: 24 |
+| Corporation tax (onshore) | not_available: 42 |
+| Council Tax | not_available: 12 |
+| Customs duty | not_available: 12 |
+| Electricity generators levy | not_available: 6 |
+| Energy bills subsidies | not_available: 18 |
+| Fuel Duty | not_available: 6 |
+| Income tax | not_available: 86, same_sign_ratio_at_least_2: 4 |
+| Inheritance tax | not_available: 6 |
+| Locally-financed current expenditure | not_available: 18 |
+| NICs | not_available: 32, pe_zero: 4 |
+| Net public service pension payments | not_available: 18 |
+| Other departmental expenditure (capital) | not_available: 6 |
+| Other departmental expenditure (current) | not_available: 6 |
+| Other tax | not_available: 6 |
+| PSCE in RDEL | not_available: 276 |
+| PSGI in CDEL | not_available: 66 |
+| Penalties | not_available: 6 |
+| Scottish BGA (capital) | not_available: 18 |
+| Scottish BGA (current) | not_available: 156 |
+| Stamp duty | not_available: 18 |
+| Tobacco duty | not_available: 6 |
+| VAT | not_available: 36 |
+| Vehicle excise duty | not_available: 6 |
+| Welfare inside cap | not_available: 60 |
+| Welfare outside cap | not_available: 18 |
+
+| Measure type | Source-row ratio bins |
+|---|---|
+| administration | not_available: 60 |
+| business_tax | not_available: 60 |
+| capital_gains_tax | not_available: 6 |
+| fuel_duty | not_available: 6 |
+| income_tax | not_available: 76, pe_zero: 4, same_sign_ratio_at_least_2: 4 |
+| indirect_tax | not_available: 36 |
+| inheritance_tax | not_available: 24 |
+| other | not_available: 198 |
+| savings | not_available: 6 |
+| scope | not_available: 390 |
+| tax_benefit | not_available: 54 |
+| transport | not_available: 6 |
+| welfare | not_available: 90 |
+
 ## Divergence axes and explained share
 
 Every row tags population_vintage: OBR used the forecast at its fiscal event, whereas this bundle uses one 2023 population calibrated to later targets. The other declared axes are behavioural_adjustment (static versus behavioural), baseline_vintage (certified versus announcement baseline), cy_proxies_fy and head_scope. Partial constructions also tag construction_scope.
 
 The replay retains pinned incidence rules: employer_ni.employee_incidence=1 changes wages holding employer cost fixed, so its Income Tax effect is not a fixed-wage static costing. The OBR database reports direct measure effects and excludes separately reported indirect macroeconomic effects. Scope and incidence therefore require head_scope/construction_scope notes; neither a raw head gap nor the static label sizes a behavioural explanation.
 
-Tagged coverage: 0 computed rows and £0.000bn of absolute raw gap have named axes. Tagged coverage does not size their effects.
+Tagged coverage: 8 computed rows and £20.794bn of absolute raw gap have named axes. Tagged coverage does not size their effects.
 
 Explained share: available on 0 computed rows. For other rows it is withheld because relevant axes remain unsized. A tagged limitation cannot claim a percentage of the gap. Residuals are therefore labelled residual_plus_unsized, not model error.
 
@@ -736,28 +785,28 @@ Explained share: available on 0 computed rows. For other rows it is withheld bec
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2022-23 | Net public service pension payments | out_of_household_scope | 0.000 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2022-23 | PSCE in RDEL | out_of_household_scope | 0.000 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2022-23 | Scottish BGA (current) | out_of_household_scope | 0.000 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
-| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2023-24 | Income tax | partial | -0.081 | — | — | not_available | not_computed: no numerical artifact for this measure and calendar year |
-| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2023-24 | NICs | partial | -0.009 | — | — | not_available | not_computed: no numerical artifact for this measure and calendar year |
+| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2023-24 | Income tax | partial | -0.081 | — | — | not_available | not_computed: reform and baseline worlds identical in FY 2023-24, a year the measure is in force (commences FY 2023-24): the construction does not carry it in this year, so no zero is asserted |
+| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2023-24 | NICs | partial | -0.009 | — | — | not_available | not_computed: reform and baseline worlds identical in FY 2023-24, a year the measure is in force (commences FY 2023-24): the construction does not carry it in this year, so no zero is asserted |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2023-24 | Net public service pension payments | out_of_household_scope | 0.042 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2023-24 | PSCE in RDEL | out_of_household_scope | -0.000 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2023-24 | Scottish BGA (current) | out_of_household_scope | -0.006 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
-| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2024-25 | Income tax | partial | -0.234 | — | — | not_available | not_computed: no numerical artifact for this measure and calendar year |
-| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2024-25 | NICs | partial | -0.014 | — | — | not_available | not_computed: no numerical artifact for this measure and calendar year |
+| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2024-25 | Income tax | partial | -0.234 | -4.298 | 18.375 | same_sign_ratio_at_least_2 | constructed: Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg. |
+| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2024-25 | NICs | partial | -0.014 | 0.000 | -0.000 | pe_zero | constructed: Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2024-25 | Net public service pension payments | out_of_household_scope | 0.068 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2024-25 | PSCE in RDEL | out_of_household_scope | -0.000 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2024-25 | Scottish BGA (current) | out_of_household_scope | -0.017 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
-| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2025-26 | Income tax | partial | -0.405 | — | — | not_available | not_computed: no numerical artifact for this measure and calendar year |
-| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2025-26 | NICs | partial | -0.021 | — | — | not_available | not_computed: no numerical artifact for this measure and calendar year |
+| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2025-26 | Income tax | partial | -0.405 | -5.395 | 13.321 | same_sign_ratio_at_least_2 | constructed: Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg. |
+| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2025-26 | NICs | partial | -0.021 | 0.000 | -0.000 | pe_zero | constructed: Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2025-26 | Net public service pension payments | out_of_household_scope | 0.186 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2025-26 | PSCE in RDEL | out_of_household_scope | -0.001 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2025-26 | Scottish BGA (current) | out_of_household_scope | -0.029 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
-| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2026-27 | Income tax | partial | -0.415 | — | — | not_available | not_computed: no numerical artifact for this measure and calendar year |
-| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2026-27 | NICs | partial | -0.021 | — | — | not_available | not_computed: no numerical artifact for this measure and calendar year |
+| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2026-27 | Income tax | partial | -0.415 | -6.041 | 14.569 | same_sign_ratio_at_least_2 | constructed: Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg. |
+| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2026-27 | NICs | partial | -0.021 | 0.000 | -0.000 | pe_zero | constructed: Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2026-27 | Net public service pension payments | out_of_household_scope | 0.196 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2026-27 | PSCE in RDEL | out_of_household_scope | -0.001 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2026-27 | Scottish BGA (current) | out_of_household_scope | -0.029 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
-| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2027-28 | Income tax | partial | -0.420 | — | — | not_available | not_computed: no numerical artifact for this measure and calendar year |
-| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2027-28 | NICs | partial | -0.022 | — | — | not_available | not_computed: no numerical artifact for this measure and calendar year |
+| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2027-28 | Income tax | partial | -0.420 | -6.456 | 15.357 | same_sign_ratio_at_least_2 | constructed: Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg. |
+| Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2027-28 | NICs | partial | -0.022 | 0.000 | -0.000 | pe_zero | constructed: Aggregation of Pension Input Amounts across open/closed public-service schemes needs scheme membership and defined-benefit input amounts; these are not separately observed.; Carry-forward and announcement-specific retirement/earnings responses are absent from this annual static relief leg. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2027-28 | Net public service pension payments | out_of_household_scope | 0.183 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2027-28 | PSCE in RDEL | out_of_household_scope | -0.001 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
 | Annual Allowance (AA): increase to £60,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023 | 2027-28 | Scottish BGA (current) | out_of_household_scope | -0.030 | — | — | not_available | not_computed: Source head is outside household tax-benefit scope; retained for event accounting. |
