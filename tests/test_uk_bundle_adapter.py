@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -523,3 +524,48 @@ def test_output_paths_cannot_cross_registered_bundle_namespaces(adapter):
             / f"results/uk/events/bundles/{adapter.key}/autumn_budget_2024",
             bundles.DEFAULT_BUNDLE,
         )
+
+
+def test_runtime_network_block_covers_dns_datagrams_and_connects():
+    """Audit hooks are permanent, so exercise the block in a child process."""
+    import subprocess
+    import sys
+    import textwrap
+
+    probe = textwrap.dedent(
+        """
+        import socket
+        from pipeline import compute_uk_obr_costings as fiscal
+
+        left, right = socket.socketpair()  # local IPC still works
+        left.sendall(b"ok"); assert right.recv(2) == b"ok"
+        fiscal.block_runtime_network()
+        attempts = {
+            "dns": lambda: socket.getaddrinfo("localhost", 80),
+            "udp": lambda: socket.socket(socket.AF_INET, socket.SOCK_DGRAM).sendto(
+                b"x", ("127.0.0.1", 9)
+            ),
+            "tcp": lambda: socket.create_connection(("127.0.0.1", 9), timeout=1),
+        }
+        for name, attempt in attempts.items():
+            try:
+                attempt()
+            except OSError as exc:
+                assert "network is blocked" in str(exc), (name, exc)
+            else:
+                raise SystemExit(f"{name} was not blocked")
+        left2, right2 = socket.socketpair()
+        left2.sendall(b"ok"); assert right2.recv(2) == b"ok"
+        print("blocked")
+        """
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", probe],
+        cwd=Path(__file__).resolve().parents[1],
+        env={**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[1])},
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "blocked"

@@ -885,11 +885,26 @@ def assert_engine_matches_bundle(
     return installed
 
 
+# Name resolution and datagram sends happen before (or without) a connect,
+# so blocking connect alone still let DNS lookups and UDP traffic through.
+BLOCKED_SOCKET_EVENTS = frozenset(
+    {
+        "socket.connect",
+        "socket.getaddrinfo",
+        "socket.gethostbyname",
+        "socket.gethostbyaddr",
+        "socket.getnameinfo",
+        "socket.sendto",
+        "socket.sendmsg",
+    }
+)
+
+
 def block_runtime_network() -> None:
     """Make the packaged certification fallback mandatory in this process."""
 
     def deny_network(event, args):
-        if event == "socket.connect":
+        if event in BLOCKED_SOCKET_EVENTS:
             raise OSError("certified replay runtime network is blocked")
 
     sys.addaudithook(deny_network)
