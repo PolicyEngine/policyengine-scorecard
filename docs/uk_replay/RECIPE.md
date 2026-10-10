@@ -648,3 +648,136 @@ The [construction audit](CONSTRUCTION_AUDIT.md) records the certified
 SDLT purchase-price proxy and pooled CGT gains, with a hash-guarded inspection
 command. These data-flow limits remain separate from model-error diagnoses;
 their national contributions are unsized.
+
+## Rerunning on another certified bundle
+
+`data/uk/certified_bundles/index.json` defaults to
+`populace-uk-2023__pe-uk-2.89.2`, pointing at the original, unchanged pin.
+Omitting `--bundle` preserves the historical registry, results, receipts and
+summary paths. A selected key uses
+`data/uk/events/bundles/<key>/<event>_measures.json` and
+`results/uk/events/bundles/<key>/<event>/`; its summary sits beside those
+event directories. Pins and receipts bind the key, pin digest, dataset,
+model/core/loader versions and year window. An explicit output directory is
+useful for repeats; it cannot address another bundle's canonical namespace.
+
+The next 1.58.0 bundle is **not registered by this change**. Wait for
+policyengine.py#555 to merge and its final release to be published, then use
+that release's actual model and core versions. Do not substitute a newer
+engine against the historical pin or reuse the 6.2.5 development pin as the
+new event bundle. The [development loader audit](OFFLINE_BUNDLE_AUDIT_dev-uk-data-1.56.16__pe-uk-2.102.3.md)
+and [year evidence](YEARS_dev-uk-data-1.56.16__pe-uk-2.102.3.md) explain the
+tested adapter path, including the original-data-year projection, read-only
+materializer and blocked-network packaged certification fallback.
+
+Define these placeholders before running the commands below:
+
+* `PE_REPOSITORY`: existing local checkout of policyengine.py containing the final tag.
+* `PE_TAG`: final published managed-loader tag after #555.
+* `BUNDLE_KEY`: a stable key naming the data/model pairing, for example `uk-data-1.58.0__pe-uk-<FINAL_UK_VERSION>`.
+* `NEXT_VENV`: the main session's provisioned Python 3.12 environment for that release; `NEXT_PYTHON=$NEXT_VENV/bin/python`.
+* `CONTROL_PYTHON=.venv-replay-checks/modal-control/bin/python`: the existing Modal 1.3.2 control interpreter.
+* `FREEZE=docs/uk_replay/requirements-$BUNDLE_KEY.txt` and `AUDIT=docs/uk_replay/OFFLINE_BUNDLE_AUDIT_$BUNDLE_KEY.json`.
+* `EVENT`: one of the five replay slugs, in the event order listed below.
+* `MEASURE` and `YEAR`: an executable, in-force measure/year from the rebuilt registry, used for the determinism check.
+* `CACHED_H5`: the already-cached artifact at the registered resolved commit; `SITE_PACKAGES`: the final environment's `purelib` path.
+
+These commands are main-session release setup, not permission to create new
+environments or download data in the development lane. The exporter reads
+only a local release tag and runs uv frozen/offline without a cache. Its
+freeze includes the UK extra's complete lock and the loader itself; markers
+are preserved, with Modal selecting the exact Linux Python 3.12 target.
+
+```bash
+"$NEXT_PYTHON" -m pipeline.export_uk_bundle_requirements --repository "$PE_REPOSITORY" --tag "$PE_TAG" --key "$BUNDLE_KEY"
+uv pip install --python "$NEXT_PYTHON" --no-deps -r "$FREEZE"
+"$NEXT_PYTHON" -m pipeline.register_uk_certified_bundle --key "$BUNDLE_KEY" --requirements-freeze "$FREEZE" --offline-audit "$AUDIT"
+"$NEXT_PYTHON" -m pipeline.audit_uk_bundle_loader --bundle "$BUNDLE_KEY" --output "$AUDIT"
+```
+
+Inspect the audit's installed-source references and record
+`docs/uk_replay/YEARS_$BUNDLE_KEY.md`. Registration reads the H5's actual
+data year and the installed extension's default end, not guessed constants.
+The currently inspected window is 2024–2030. All earlier OBR cells remain in
+the accounting and stage once as `outside_bundle_window`. The new loader's
+managed call consumes the stored-year population and lets policyengine-uk
+project it; never give it a projected year file as the observed data year.
+Recheck fiscal conversion exceptions, dated Scenario behavior and UC input
+modifier ordering at the final pin.
+
+Rebuild and inspect **all five** registries before starting national runs.
+The sequence is Autumn Budget 2024, Autumn Statement 2023, Spring Budget
+2024, Spring Statement 2025, Spring Budget 2023:
+
+```bash
+for BUILD_EVENT in autumn_budget_2024 autumn_statement_2023 spring_budget_2024 spring_statement_2025 spring_budget_2023; do
+  "$NEXT_PYTHON" -m pipeline.build_uk_event_registry --event "$BUILD_EVENT" --bundle "$BUNDLE_KEY"
+  "$NEXT_PYTHON" -m pipeline.build_uk_event_registry --event "$BUILD_EVENT" --bundle "$BUNDLE_KEY" --check
+  "$NEXT_PYTHON" -m pipeline.compute_uk_event --event "$BUILD_EVENT" --bundle "$BUNDLE_KEY" --dry-run
+done
+"$NEXT_PYTHON" -m pipeline.audit_uk_event_constructions --bundle "$BUNDLE_KEY" --dataset "$CACHED_H5" --site-packages "$SITE_PACKAGES" --output ".venv-replay-checks/$BUNDLE_KEY/CONSTRUCTION_AUDIT.json"
+"$NEXT_PYTHON" -m pipeline.diagnose_uk_event_models --bundle "$BUNDLE_KEY" --output ".venv-replay-checks/$BUNDLE_KEY/MODEL_DIAGNOSTICS.json"
+for CASE in annual_allowance_relief_and_charge_pe_uk_2237 sdlt_additional_purchase_stock_pe_uk_2238 uc_standard_allowance_2027_2030_pe_uk_2239 hicbc_opt_out nics_threshold_freeze_end_date; do
+  .venv-replay/bin/python -m pipeline.diagnose_uk_event_models --bundle populace-uk-2023__pe-uk-2.89.2 --case "$CASE" --output ".venv-replay-checks/$BUNDLE_KEY/base_$CASE.json"
+  "$NEXT_PYTHON" -m pipeline.diagnose_uk_event_models --bundle "$BUNDLE_KEY" --case "$CASE" --output ".venv-replay-checks/$BUNDLE_KEY/new_$CASE.json"
+done
+```
+
+List every classification or construction change against the base registry.
+Reversal guards may expose changed parameter values or paths, particularly
+SDLT, UC uplift counterfactuals, pension Annual Allowance, HICBC opt-out and
+NIC threshold freeze end dates. An old construction's explanation is not a
+new engine mechanism. Re-audit the construction before computing it.
+Small diagnostic observations establish mechanisms; they do not size
+national differences and count toward the two-simulation cap.
+
+Run a remote preflight with no simulation, then repeat the same nonzero
+measure/year in two fresh ignored prefixes. Keep at most **two concurrent
+invocations**, each with one worker, counting local and synthetic runs.
+Plan around the observed roughly **70 minutes per full event**, then use
+the new `RUN_LOG.json` and `MODAL_RECEIPT.json` timings to refine that estimate.
+
+```bash
+"$CONTROL_PYTHON" -m pipeline.modal_uk_event --event "$EVENT" --bundle "$BUNDLE_KEY" --preflight-only --output-dir ".venv-replay-checks/modal/$BUNDLE_KEY/preflight" --download-root ".venv-replay-checks/modal-downloads/$BUNDLE_KEY/preflight" --execute
+"$CONTROL_PYTHON" -m pipeline.modal_uk_event --event "$EVENT" --bundle "$BUNDLE_KEY" --measures "$MEASURE" --years "$YEAR" --output-dir ".venv-replay-checks/modal/$BUNDLE_KEY/repeat_a" --download-root ".venv-replay-checks/modal-downloads/$BUNDLE_KEY/repeat_a" --execute
+"$CONTROL_PYTHON" -m pipeline.modal_uk_event --event "$EVENT" --bundle "$BUNDLE_KEY" --measures "$MEASURE" --years "$YEAR" --output-dir ".venv-replay-checks/modal/$BUNDLE_KEY/repeat_b" --download-root ".venv-replay-checks/modal-downloads/$BUNDLE_KEY/repeat_b" --execute
+cmp ".venv-replay-checks/modal-downloads/$BUNDLE_KEY/repeat_a/.venv-replay-checks/modal/$BUNDLE_KEY/repeat_a/${MEASURE}_${YEAR}.json" ".venv-replay-checks/modal-downloads/$BUNDLE_KEY/repeat_b/.venv-replay-checks/modal/$BUNDLE_KEY/repeat_b/${MEASURE}_${YEAR}.json"
+```
+
+For each event in order, run, inspect the adoption report and adopt only
+after its local run has stopped. These commands keep historical results
+and the new namespace separate:
+
+```bash
+"$CONTROL_PYTHON" -m pipeline.modal_uk_event --event "$EVENT" --bundle "$BUNDLE_KEY" --download-root ".venv-replay-checks/modal-downloads/$BUNDLE_KEY/full_$EVENT" --execute
+"$NEXT_PYTHON" -m pipeline.adopt_uk_event --event "$EVENT" --bundle "$BUNDLE_KEY" --download-root ".venv-replay-checks/modal-downloads/$BUNDLE_KEY/full_$EVENT" > ".venv-replay-checks/${BUNDLE_KEY}_${EVENT}_adoption.json"
+"$NEXT_PYTHON" -m pipeline.adopt_uk_event --event "$EVENT" --bundle "$BUNDLE_KEY" --download-root ".venv-replay-checks/modal-downloads/$BUNDLE_KEY/full_$EVENT" --adopt --local-run-stopped --backup-root ".venv-replay-checks/modal-adoption-backups/$BUNDLE_KEY/$EVENT"
+"$NEXT_PYTHON" -m pipeline.stage_uk_event --event "$EVENT" --bundle "$BUNDLE_KEY"
+"$NEXT_PYTHON" -m pipeline.compare_uk_event --event "$EVENT" --bundle "$BUNDLE_KEY" --summary
+```
+
+After all runs, hand-author
+`data/uk/events/engine_attribution/populace-uk-2023__pe-uk-2.89.2__$BUNDLE_KEY.json`.
+The schema example is **tests only** in
+`tests/fixtures/uk_engine_comparison/attribution.json`. Every changed row
+requires evidence-bearing drivers or an explicit `unattributed`. The closed
+vocabulary is `hicbc_opt_out`, `annual_allowance_pe_uk_2237`,
+`sdlt_pe_uk_2238`, `uc_uplifts_pe_uk_2239`, `nics_freeze`, `data_release`,
+`construction_change`, `window_change`, `other_engine_change`, `unattributed`.
+A driver is `sized: false` unless a hash-bound computed artifact supplies
+its exact GBP value. Sized entries require an explicit `fy`,
+`artifact: {path, sha256, value_path}` and `value_gbp` equal to the referenced
+computed effect. A paired-run artifact also binds both executed numerical
+endpoints with `base_artifact` and `new_artifact` path/hash pairs and their
+bundle identities. Unsized drivers never contribute to an explained share. Then generate the descriptive table and full input-hash provenance:
+
+```bash
+"$NEXT_PYTHON" -m pipeline.compare_uk_engines --base populace-uk-2023__pe-uk-2.89.2 --new "$BUNDLE_KEY"
+```
+
+It writes `results/uk/events/ENGINE_COMPARISON.md`, `.json`, `.csv` and
+`ENGINE_COMPARISON_PROVENANCE.json`. Each source cell retains both bins,
+the signed PE change, construction/window status, and the head's certified
+aggregate ratio beside its measure-effect ratio. Ratios and named axes are
+descriptive; the generator does not infer drivers or compute replication
+rates. Construction changes and unavailable population years remain visible.
