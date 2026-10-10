@@ -311,16 +311,33 @@ def test_paths_cannot_enter_the_other_protected_tree(pinned_stage, key):
     )
 
 
-def test_diagnostic_report_cannot_overwrite_another_bundles_outputs(tmp_path):
+def test_diagnostic_destinations_cannot_overwrite_another_bundles_outputs(
+    tmp_path, monkeypatch
+):
+    """Runs against a temporary root, so a broken guard can't touch real files."""
+    import functools
+
     from pipeline import diagnose_uk_event_models as diagnose
 
+    monkeypatch.setattr(diagnose, "ROOT", tmp_path)
+    monkeypatch.setattr(
+        diagnose,
+        "validate_bundle_path",
+        functools.partial(bundles.validate_bundle_path, root=tmp_path),
+    )
     saved = tmp_path / "observations.json"
     saved.write_text("[]")
-    for report in (
-        diagnose.ROOT / "results/uk/events/SUMMARY.md",
-        diagnose.ROOT / diagnose.DEFAULT_REPORT,
+    summary = tmp_path / "results/uk/events/SUMMARY.md"
+    reserved = tmp_path / diagnose.DEFAULT_REPORT
+    for path in (summary, reserved):
+        path.parent.mkdir(parents=True)
+        path.write_text("the default bundle's file")
+    for flag, destination in (
+        ("--report", summary),
+        ("--output", summary),
+        ("--report", reserved),
+        ("--output", reserved),
     ):
-        before = report.read_bytes() if report.exists() else None
         with pytest.raises((ValueError, SystemExit)):
             diagnose.main(
                 [
@@ -328,11 +345,11 @@ def test_diagnostic_report_cannot_overwrite_another_bundles_outputs(tmp_path):
                     "some-other-bundle",
                     "--from-json",
                     str(saved),
-                    "--report",
-                    str(report),
+                    flag,
+                    str(destination),
                 ]
             )
-        assert (report.read_bytes() if report.exists() else None) == before
+        assert destination.read_text() == "the default bundle's file"
 
 
 def two_bundle_comparison(pinned_stage):
@@ -690,3 +707,40 @@ def test_summary_rejects_another_bundles_model_observations(pinned_stage):
     ):
         comparison.write_summary(output.parent, artifact_root=root, bundle=DEV)
     assert not (output.parent / "SUMMARY.md").exists()
+
+
+def test_engine_comparison_output_cannot_enter_a_registry_or_bundle_namespace(
+    pinned_stage,
+):
+    from pipeline import compare_uk_engines as engines
+
+    setup = two_bundle_comparison(pinned_stage)
+    root, other = setup["root"], setup["other"]
+    forbidden = [
+        setup["other_output"],
+        setup["other_output"].parent,
+        bundles.results_root("unrelated-bundle", root=root),
+        setup["registry_path"].parent,
+        root / "data/uk/events/bundles/unrelated-bundle",
+        root / "results/uk/events/event",
+    ]
+    for directory in forbidden:
+        before = sorted(directory.glob("*")) if directory.exists() else None
+        with pytest.raises(engines.EngineComparisonError, match="protected"):
+            engines.write_engine_comparison(
+                DEV,
+                other,
+                attribution_path=setup["attribution_path"],
+                output_dir=directory,
+                artifact_root=root,
+            )
+        assert (sorted(directory.glob("*")) if directory.exists() else None) == before
+    scratch = root / "scratch/comparison"
+    engines.write_engine_comparison(
+        DEV,
+        other,
+        attribution_path=setup["attribution_path"],
+        output_dir=scratch,
+        artifact_root=root,
+    )
+    assert (scratch / "ENGINE_COMPARISON.md").exists()

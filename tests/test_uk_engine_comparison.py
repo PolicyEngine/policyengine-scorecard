@@ -594,3 +594,68 @@ def test_paired_head_subset_cannot_be_sized_beside_its_superset(tmp_path):
         == "measure sizing does not isolate this source head"
         for row in tax
     )
+
+
+def test_computed_and_paired_proofs_cannot_size_the_same_head(tmp_path):
+    """Re-review case: a paired change plus the standalone effect it ends at."""
+    from pipeline import uk_bundle as bundles
+
+    measured = inputs(old=(0, 10), new=(10, 20))
+    receipts = verified(tmp_path, "measured-base.json", "measured-new.json")
+    endpoints = {}
+    for side, artifact in (
+        ("base", measured[4]["base.json"]),
+        ("new", measured[5]["new.json"]),
+    ):
+        payload = engines.canonical_bytes(artifact)
+        (tmp_path / f"measured-{side}.json").write_bytes(payload)
+        endpoints[side] = {
+            "path": f"measured-{side}.json",
+            "sha256": hashlib.sha256(payload).hexdigest(),
+        }
+    paired = {
+        "artifact_type": "paired_run",
+        "status": "computed",
+        "effect_gbp": 10,
+        "base_artifact": endpoints["base"],
+        "new_artifact": endpoints["new"],
+        "base_bundle": bundles.DEFAULT_BUNDLE,
+        "new_bundle": bundles.DEFAULT_BUNDLE,
+        "head_variables": ["head_0"],
+    }
+    payload = engines.canonical_bytes(paired)
+    (tmp_path / "paired.json").write_bytes(payload)
+    attribution = json.loads(FIXTURE.read_text())
+    attribution["entries"][0].update(
+        fy="2024-25",
+        drivers=[
+            {
+                "driver": "data_release",
+                "evidence": [{"kind": "paired_run", "reference": "paired.json"}],
+                "sized": True,
+                "value_gbp": 10,
+                "artifact": {
+                    "path": "paired.json",
+                    "sha256": hashlib.sha256(payload).hexdigest(),
+                    "value_path": ["effect_gbp"],
+                },
+            },
+            {
+                "driver": "other_engine_change",
+                "evidence": [{"kind": "diagnostic", "reference": "new endpoint"}],
+                "sized": True,
+                "value_gbp": 10,
+                "artifact": {
+                    **endpoints["new"],
+                    "value_path": ["head_effects", "head_0"],
+                },
+            },
+        ],
+    )
+    with pytest.raises(engines.EngineComparisonError, match="overlap"):
+        compare(
+            inputs(old=(0, 10), new=(10, 20)),
+            attribution,
+            artifact_root=tmp_path,
+            verified_artifacts=receipts,
+        )

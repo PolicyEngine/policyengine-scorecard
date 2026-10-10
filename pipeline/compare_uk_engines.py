@@ -224,9 +224,11 @@ def validate_attribution(
     out = _entry_index(attribution)
     for (event, measure_key, fy), drivers in out.items():
         sized_terms = set()
-        # Heads already sized from each measured endpoint, so no two drivers
-        # (or a total and one of its heads) count the same contribution twice.
-        measured_heads: dict[tuple, set[str]] = {}
+        # Each head is sized by at most one driver per entry, whatever kind of
+        # proof it cites. A computed artifact and a paired run that ends at it
+        # (or a total and one of its heads) would otherwise count one
+        # contribution twice.
+        sized_heads: set[str] = set()
         for driver in drivers:
             evidence = driver.get("evidence")
             if not isinstance(evidence, list) or not evidence:
@@ -309,7 +311,6 @@ def validate_attribution(
                         "sized artifact value must be a computed GBP effect"
                     )
                 term = ("computed", proof["sha256"], tuple(allowed))
-                measured = ("computed", proof["sha256"])
                 heads = (
                     {allowed[1]}
                     if allowed[0] == "head_effects"
@@ -414,11 +415,6 @@ def validate_attribution(
                     computed["new_artifact"]["sha256"],
                     tuple(sorted(paired_heads)),
                 )
-                measured = (
-                    "paired_run",
-                    computed["base_artifact"]["sha256"],
-                    computed["new_artifact"]["sha256"],
-                )
                 heads = set(paired_heads)
             else:
                 raise EngineComparisonError(
@@ -447,11 +443,11 @@ def validate_attribution(
                     "sized drivers repeat the same computed term"
                 )
             sized_terms.add(term)
-            if measured_heads.setdefault(measured, set()) & heads:
+            if sized_heads & heads:
                 raise EngineComparisonError(
                     "sized drivers overlap on the same measured heads"
                 )
-            measured_heads[measured] |= heads
+            sized_heads |= heads
             if input_hashes is not None:
                 input_hashes[reference] = proof["sha256"]
     return out
@@ -810,6 +806,23 @@ def _verify_run_receipts(
         )
 
 
+def validate_output_dir(output_dir: Path, artifact_root: Path) -> None:
+    """Allow the shared comparison directory or a path outside both trees.
+
+    A directory inside the registry tree, an event's results or any bundle's
+    namespace is refused, so a comparison can't overwrite their files.
+    """
+    resolved = Path(output_dir).resolve()
+    if resolved == (artifact_root / "results/uk/events").resolve():
+        return
+    for tree in bundles.PROTECTED_TREES.values():
+        if resolved.is_relative_to((artifact_root / tree).resolve()):
+            raise EngineComparisonError(
+                "engine comparison output would enter a protected registry or "
+                "bundle namespace"
+            )
+
+
 def write_engine_comparison(
     base: str,
     new: str,
@@ -819,6 +832,8 @@ def write_engine_comparison(
     artifact_root: Path = ROOT,
 ) -> list[dict]:
     """Verify both comparison receipt chains and bind every used input hash."""
+    output_dir = output_dir or artifact_root / "results/uk/events"
+    validate_output_dir(output_dir, artifact_root)
     bundles.load_bundle(base, root=artifact_root)
     bundles.load_bundle(new, root=artifact_root)
     attribution_path = (
@@ -948,7 +963,6 @@ def write_engine_comparison(
     for reference, digest in inputs.items():
         if sha256(artifact_root / reference) != digest:
             raise EngineComparisonError("input changed during engine comparison")
-    output_dir = output_dir or artifact_root / "results/uk/events"
     output_dir.mkdir(parents=True, exist_ok=True)
     for name, payload in payloads.items():
         atomic_write_bytes(output_dir / name, payload)

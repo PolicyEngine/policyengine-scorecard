@@ -640,10 +640,10 @@ def main(argv: list[str] | None = None) -> int:
     for destination in (args.output, args.report):
         if destination is not None:
             validate_bundle_path(destination, args.bundle, kind="results")
-    if (
-        args.report is not None
-        and args.bundle != DEFAULT_BUNDLE
-        and args.report.resolve() == (ROOT / DEFAULT_REPORT).resolve()
+    reserved = (ROOT / DEFAULT_REPORT).resolve()
+    if args.bundle != DEFAULT_BUNDLE and any(
+        destination is not None and destination.resolve() == reserved
+        for destination in (args.output, args.report)
     ):
         parser.error("the default bundle's investigation report is not writable here")
     results = (
