@@ -1,0 +1,330 @@
+{
+  "engine": "policyengine-uk 2.125.1",
+  "review_type": "Class2/Class4/UC NI patch follow-up; source read from latest_patch.whl and installed source; no imports or simulations",
+  "corrections": [
+    {
+      "area": "nics_class_2",
+      "existing_registry_key": "ab2025__nics_class_2_abroad_removed_and_class_3_residency_requirement",
+      "expressibility": "not",
+      "expressibility_note": "2.125.1 computes compulsory Class 2, which ended in 2024; it adds no voluntary Class 2 abroad, Class 3 residency/contribution-history eligibility, or overseas contribution population. The stated 2026 policy remains not expressible.",
+      "measure": "National Insurance: Remove access to Class 2 National Insurance contributions (NICs) and increase the initial residency and contributions history requirements for Class 3 NICs for individuals abroad from 6 April 2026",
+      "missing_machinery": "Population is people living abroad paying voluntary Class 2/3 contributions; no contribution records or voluntary-contribution rules (ni_class_3 is an input).",
+      "out_reason": null,
+      "parameter_paths": [],
+      "row_id": "autumn_budget_2025:tax:006",
+      "scope": "in",
+      "scope_note": "Ends voluntary Class 2 access and tightens Class 3 conditions for individuals abroad (individual contributions).",
+      "variables": []
+    },
+    {
+      "area": "nics_class_2",
+      "existing_registry_key": null,
+      "expressibility": "not",
+      "expressibility_note": "2.125.1 class_2_liable uses the lower profits threshold from 2022-23, so changing SPT does not change compulsory cash liability in the treated-as-paid period. After abolition flat_rate is zero. This revenue-loss costing still needs voluntary-payment/contribution-record channels, which remain absent.",
+      "measure": "National Insurance contributions: impact of maintaining the Lower Earnings Limit and Small Profits Threshold at 2022-23 levels",
+      "missing_machinery": "No NI contribution/qualifying-year records or voluntary Class 2/3 payment rules. The compulsory treated-as-paid band is now represented, but preserving the SPT/LEL credit boundary and voluntary payment behaviour is not.",
+      "out_reason": null,
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_2.small_profits_threshold",
+        "gov.hmrc.national_insurance.class_1.thresholds.lower_earnings_limit"
+      ],
+      "row_id": "spring_budget_2023:tax:046",
+      "scope": "in",
+      "scope_note": "Thresholds governing self-employed and employee NI records.",
+      "variables": [
+        "ni_class_2"
+      ]
+    },
+    {
+      "area": "nics_class_2",
+      "existing_registry_key": "autumn_statement_2023__class_2_self_employed_nics_liability_abolition",
+      "expressibility": "expressible",
+      "expressibility_note": "2.125.1 carries GBP 3.45/week from 2023-04-06 and zero compulsory rate from 2024-04-06. class_2_liable retains the lower-profits-threshold test for a reversal: restore the flat rate and pre-abolition Class 4 annual_maximum.includes_class_2 from April 2024. The compulsory household liability leg is expressible; voluntary payments were retained by the policy and remain outside this construction. Full-year self-employment is assumed by ni_class_2.",
+      "measure": "National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024",
+      "missing_machinery": null,
+      "out_reason": null,
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_2.flat_rate",
+        "gov.hmrc.national_insurance.class_4.annual_maximum.includes_class_2"
+      ],
+      "row_id": "autumn_statement_2023:tax:010",
+      "scope": "in",
+      "scope_note": "Class 2 NICs are borne by the self-employed.",
+      "variables": [
+        "ni_class_2",
+        "ni_class_4"
+      ]
+    },
+    {
+      "area": "nics_class_2",
+      "existing_registry_key": null,
+      "expressibility": "not",
+      "expressibility_note": "2.125.1 class_2_liable uses the lower profits threshold from 2022-23, so changing SPT does not change compulsory cash liability in the treated-as-paid period. After abolition flat_rate is zero. This revenue-loss costing still needs voluntary-payment/contribution-record channels, which remain absent.",
+      "measure": "NICs: freeze the Lower Earnings Limit and Small Profits Threshold for one year from April 2024",
+      "missing_machinery": "No NI contribution/qualifying-year records or voluntary Class 2/3 payment rules. The compulsory treated-as-paid band is now represented, but preserving the SPT/LEL credit boundary and voluntary payment behaviour is not.",
+      "out_reason": null,
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_2.small_profits_threshold",
+        "gov.hmrc.national_insurance.class_1.thresholds.lower_earnings_limit"
+      ],
+      "row_id": "autumn_statement_2023:tax:014",
+      "scope": "in",
+      "scope_note": "Thresholds governing self-employed and employee NI records.",
+      "variables": [
+        "ni_class_2"
+      ]
+    },
+    {
+      "area": "nics_class_2",
+      "existing_registry_key": "efo_march_2026__class_2_nics_threshold_rise",
+      "expressibility": "expressible",
+      "expressibility_note": "2.125.1 explicitly implements the treated-as-paid band: class_2_liable uses relevant ni_class_4_profits above lower_profits_threshold (11908 for 2022-23,12570 from 2023-24), with the lower_profits_threshold_applies switch true from 2022-04-06. Reversal sets that switch false to restore SPT-based compulsory payments; retain SPT as the credit boundary. The flat-rate cash formula uses contribution weeks (52 or 53), not always 52. Later events abolition must be removed from a vintage baseline separately.",
+      "measure": "National Insurance: reduce class 2 NICs payments on profits between \u00a36,725 and \u00a312,570",
+      "missing_machinery": null,
+      "out_reason": null,
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_2.lower_profits_threshold_applies",
+        "gov.hmrc.national_insurance.class_2.lower_profits_threshold"
+      ],
+      "row_id": "spring_statement_2022:tax:006",
+      "scope": "in",
+      "scope_note": "Self-employed with profits between the small profits threshold and lower profits limit stop paying Class 2.",
+      "variables": [
+        "ni_class_2",
+        "ni_class_4_profits"
+      ]
+    },
+    {
+      "area": "nics_class_2",
+      "existing_registry_key": null,
+      "expressibility": "not",
+      "expressibility_note": "Row is zero in every year. The 2.125.1 patch fixes compulsory Class 2 dates and treated-as-paid liability; it adds no voluntary-payment rate/base formula, so this voluntary rate freeze remains not expressible.",
+      "measure": "National Insurance contributions (NICs): freeze Class 2 and 3 rates for 2024-25",
+      "missing_machinery": "Voluntary Class 2 and Class 3 contributions are not modelled: ni_class_3 is an input with no formula, and ni_class_2 computes compulsory full-year payments only, with compulsory flat_rate zero from 2024-04-06.",
+      "out_reason": null,
+      "parameter_paths": [],
+      "row_id": "spring_budget_2024:tax:060",
+      "scope": "in",
+      "scope_note": "Income-tax head (zero) of the Class 2/3 rate freeze; household measure.",
+      "variables": []
+    },
+    {
+      "area": "nics_class_2",
+      "existing_registry_key": null,
+      "expressibility": "not",
+      "expressibility_note": "The 2.125.1 patch fixes compulsory Class 2 dates and treated-as-paid liability; it adds no voluntary-payment rate/base formula, so this voluntary rate freeze remains not expressible.",
+      "measure": "National Insurance contributions (NICs): freeze Class 2 and 3 rates for 2024-25",
+      "missing_machinery": "Voluntary Class 2 and Class 3 contributions are not modelled: ni_class_3 is an input with no formula, and ni_class_2 computes compulsory full-year payments only, with compulsory flat_rate zero from 2024-04-06.",
+      "out_reason": null,
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_2.flat_rate"
+      ],
+      "row_id": "spring_budget_2024:tax:061",
+      "scope": "in",
+      "scope_note": "Voluntary Class 2 and Class 3 NICs rates paid by individuals.",
+      "variables": [
+        "ni_class_2",
+        "ni_class_3"
+      ]
+    },
+    {
+      "area": "nics_class_2",
+      "existing_registry_key": null,
+      "expressibility": "not",
+      "expressibility_note": "Row is zero in every year. The 2.125.1 patch fixes compulsory Class 2 dates and treated-as-paid liability; it adds no voluntary-payment rate/base formula, so this voluntary rate freeze remains not expressible.",
+      "measure": "National Insurance contributions (NICs): freeze Class 2 and 3 rates for 2024-25",
+      "missing_machinery": "Voluntary Class 2 and Class 3 contributions are not modelled: ni_class_3 is an input with no formula, and ni_class_2 computes compulsory full-year payments only, with compulsory flat_rate zero from 2024-04-06.",
+      "out_reason": null,
+      "parameter_paths": [],
+      "row_id": "spring_budget_2024:spending:049",
+      "scope": "in",
+      "scope_note": "Welfare head (zero) of the Class 2/3 rate freeze; household measure.",
+      "variables": []
+    },
+    {
+      "area": "nics_class_2",
+      "existing_registry_key": null,
+      "expressibility": "partial",
+      "expressibility_note": "Reversal sets class_2.flat_rate to zero from the scheduled pre-event abolition date; both event-vintage worlds must restore the appropriate compulsory Class 2 path rather than use abolition in 2024 as the baseline. 2.125.1 tests ni_class_4_profits against SPT before 2022 and multiplies the weekly rate by contribution weeks (53 in 2019-20, otherwise 52 in this costing window). The bill provisions not named by the PMD and voluntary-payment legs remain unknown/unrepresented; partial retained.",
+      "measure": "NICs: delay NICs Bill by one year and maintain Class 2 NICs",
+      "missing_machinery": "Other provisions of the delayed NICs Bill (the PMD text does not list them) and voluntary Class 2/Class 3 contributions have no representation; ni_class_3 is an input.",
+      "out_reason": null,
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_2.flat_rate",
+        "gov.hmrc.national_insurance.class_2.small_profits_threshold"
+      ],
+      "row_id": "budget_2018:tax:066",
+      "scope": "in",
+      "scope_note": "Keeping Class 2 NICs (instead of abolishing them) is a liability on self-employed individuals.",
+      "variables": [
+        "ni_class_2"
+      ]
+    },
+    {
+      "area": "nics_class_2",
+      "existing_registry_key": null,
+      "expressibility": "not",
+      "expressibility_note": "2.125.1 improves compulsory Class 2 cash liability, not the State Pension/contributory-benefit record derived from past contributions. This benefit consequence therefore remains not expressible.",
+      "measure": "NICs: delay NICs Bill by one year and maintain Class 2 NICs",
+      "missing_machinery": "No NI contribution records or contributory-entitlement tests: contributory ESA/JSA, Maternity Allowance and State Pension are reported amounts or data-driven.",
+      "out_reason": null,
+      "parameter_paths": [],
+      "row_id": "budget_2018:spending:102",
+      "scope": "in",
+      "scope_note": "Welfare consequence of the in-scope Class 2 measure: contributions preserve contributory benefit entitlement.",
+      "variables": []
+    },
+    {
+      "area": "nics_class_2",
+      "existing_registry_key": null,
+      "expressibility": "expressible",
+      "expressibility_note": "Set Class 2 compulsory flat_rate to zero from 2018-04-06 (later withdrawn). 2.125.1 has a cash liability formula and dated pre-abolition weekly rates/SPT values; adjust Class 4 annual_maximum.includes_class_2 where required by the event-vintage abolished-compulsory scenario. The planned contributory-entitlement changes are a separate fiscal concept; voluntary payments and contribution records remain absent.",
+      "measure": "Self Employed: abolish Class 2 NICs",
+      "missing_machinery": null,
+      "out_reason": null,
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_2.flat_rate",
+        "gov.hmrc.national_insurance.class_4.annual_maximum.includes_class_2"
+      ],
+      "row_id": "budget_2016:tax:041",
+      "scope": "in",
+      "scope_note": "Self-employed NICs.",
+      "variables": [
+        "ni_class_2"
+      ]
+    },
+    {
+      "area": "universal_credit",
+      "existing_registry_key": "efo_march_2026__class_2_nics_threshold_rise",
+      "expressibility": "expressible",
+      "expressibility_note": "2.125.1 explicitly implements the treated-as-paid band: class_2_liable uses relevant ni_class_4_profits above lower_profits_threshold (11908 for 2022-23,12570 from 2023-24), with the lower_profits_threshold_applies switch true from 2022-04-06. Reversal sets that switch false to restore SPT-based compulsory payments; retain SPT as the credit boundary. The flat-rate cash formula uses contribution weeks (52 or 53), not always 52. Later events abolition must be removed from a vintage baseline separately. UC deducts actual ni_class_2 in uc_national_insurance_on_earnings, and the self-employed MIF NI formula now uses the same liability helper and contribution-week count on notional floor income.",
+      "measure": "National Insurance: reduce Class 2 NICs payments on profits between \u00a36,725 and \u00a312,570",
+      "missing_machinery": null,
+      "out_reason": null,
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_2.lower_profits_threshold_applies",
+        "gov.hmrc.national_insurance.class_2.lower_profits_threshold"
+      ],
+      "row_id": "spring_statement_2022:spending:004",
+      "scope": "in",
+      "scope_note": "UC knock-on of the Class 2 change (UC deducts Class 2 from self-employed earnings).",
+      "variables": [
+        "universal_credit",
+        "uc_national_insurance_on_earnings",
+        "ni_class_2",
+        "uc_minimum_income_floor_national_insurance"
+      ]
+    },
+    {
+      "area": "nics_class_1_employee",
+      "existing_registry_key": "efo_march_2026__nics_rise_in_primary_threshold",
+      "expressibility": "expressible",
+      "expressibility_note": "2.125.1 keys Class 4 LPL 11908 on 2022-04-06 and 12570 on 2023-04-06. Class 1 PT carries the July 2022 step 241.73/week. Reversal restores pre-measure PT 190/week and the pre-measure indexed annual LPL. Class 4 is annual on ni_class_4_profits; Class 1 employee liability is monthly.",
+      "measure": "National Insurance: increase annual primary threshold and lower profits limit to \u00a312,570 from July 2022",
+      "missing_machinery": null,
+      "out_reason": null,
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_1.thresholds.primary_threshold",
+        "gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit"
+      ],
+      "row_id": "spring_statement_2022:tax:001",
+      "scope": "in",
+      "scope_note": "Raises the Class 1 primary threshold and Class 4 lower profits limit to GBP 12,570.",
+      "variables": [
+        "ni_class_1_employee",
+        "ni_class_4"
+      ]
+    },
+    {
+      "area": "nics_class_4",
+      "existing_registry_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+      "expressibility": "expressible",
+      "expressibility_note": "2.125.1 dates the combined current-law Class 4 main rate 0.06 at 2024-04-06. A current-law marginal reversal of the AS 2023 one-point cut sets 0.07. A vintage-faithful AS 2023 pair instead uses 0.09 before and 0.08 after, excluding the later SB 2024 two-point cut. ni_class_4 and its annual-maximum formula read this rate.",
+      "measure": "National Insurance contributions (NICs): 1p cut to the main rate of Class 4 self-employed NICs from April 2024",
+      "missing_machinery": null,
+      "out_reason": null,
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_4.rates.main"
+      ],
+      "row_id": "autumn_statement_2023:tax:006",
+      "scope": "in",
+      "scope_note": "Class 4 NICs are borne by the self-employed.",
+      "variables": [
+        "ni_class_4"
+      ]
+    },
+    {
+      "area": "nics_class_4",
+      "existing_registry_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+      "expressibility": "expressible",
+      "expressibility_note": "Reversal restores Class 4 main rate 0.08 from 2024-04-06 against 0.06 after SB 2024. 2.125.1 keys 0.09 from 2023-04-06 and 0.06 from 2024-04-06 (both AS 2023 and SB 2024 cuts), and ni_class_4/ni_class_4_main read that rate on ni_class_4_profits.",
+      "measure": "National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 4 self-employed NICs from 6 April 2024",
+      "missing_machinery": null,
+      "out_reason": null,
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_4.rates.main"
+      ],
+      "row_id": "spring_budget_2024:tax:005",
+      "scope": "in",
+      "scope_note": "Class 4 NICs on self-employment profits; legal incidence on the self-employed.",
+      "variables": [
+        "ni_class_4_main",
+        "ni_class_4"
+      ]
+    },
+    {
+      "area": "health_and_social_care_levy",
+      "existing_registry_key": null,
+      "expressibility": "expressible",
+      "expressibility_note": "The event-vintage 2022-23 NICs increase is +1.25 pp on Class 1 employee main/additional, employer and Class 4 main/additional rates. 2.125.1 current law instead carries the later-repeal blended Class 4 annual rates 9.73%/2.73% from 2022-04-06 and 9%/2% from 2023-04-06; a faithful AB 2021 world must explicitly use 10.25%/3.25% for 2022-23. Class 1 employee rates are monthly; its additional-rate YAML still has the separate late-reversion date gap. The levy after 2023 is a separate head/gap.",
+      "measure": "Health and Social Care Levy introduced from April 2022: gross yield",
+      "missing_machinery": null,
+      "out_reason": null,
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_1.rates.employee.main",
+        "gov.hmrc.national_insurance.class_1.rates.employee.additional",
+        "gov.hmrc.national_insurance.class_1.rates.employer",
+        "gov.hmrc.national_insurance.class_4.rates.main",
+        "gov.hmrc.national_insurance.class_4.rates.additional"
+      ],
+      "row_id": "autumn_budget_2021:tax:002",
+      "scope": "in",
+      "scope_note": "1.25pp rise in Class 1 employee, employer and Class 4 NICs in 2022-23 (the levy's first year).",
+      "variables": [
+        "ni_class_1_employee",
+        "ni_class_1_employer",
+        "ni_class_4"
+      ]
+    },
+    {
+      "area": "nics_class_1_employee",
+      "existing_registry_key": null,
+      "expressibility": "expressible",
+      "expressibility_note": "Reversal restores pre-repeal Class 1 rates from 2022-11-06, and Class 4 annual 2022-23 rates 10.25%/3.25%. 2.125.1 post-repeal Class 4 annual rates are 9.73%/2.73% from 2022-04-06, returning 9%/2% from 2023-04-06. Class 1 employee rates are monthly, while its additional-rate YAML still reverts only 2024-04-04 and needs explicit vintage values. The later-year small NICs tails are indirect effects.",
+      "measure": "National Insurance: reverse temporary 1.25pp increase in NICs rates from November 2022, and cancel the Health and Social Care Levy",
+      "missing_machinery": null,
+      "out_reason": null,
+      "parameter_paths": [
+        "gov.hmrc.national_insurance.class_1.rates.employee.main",
+        "gov.hmrc.national_insurance.class_1.rates.employee.additional",
+        "gov.hmrc.national_insurance.class_1.rates.employer",
+        "gov.hmrc.national_insurance.class_4.rates.main",
+        "gov.hmrc.national_insurance.class_4.rates.additional"
+      ],
+      "row_id": "autumn_statement_2022:tax:084",
+      "scope": "in",
+      "scope_note": "Reversal of the 1.25pp NICs rate rise from 6 November 2022 (employee, employer and Class 4); liability on earners and employers per employee.",
+      "variables": [
+        "ni_class_1_employee",
+        "ni_class_1_employer",
+        "ni_class_4"
+      ]
+    }
+  ],
+  "class_change": {
+    "row_id": "autumn_statement_2023:tax:010",
+    "from": "in:partial",
+    "to": "in:expressible",
+    "gross_gbp_m": 1804.737006
+  }
+}

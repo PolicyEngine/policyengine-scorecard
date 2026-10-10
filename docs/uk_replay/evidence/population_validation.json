@@ -1,0 +1,25 @@
+{
+  "checked_on": "2026-10-09",
+  "simulation_count": 0,
+  "event_names_vintages_FYs_match": 32,
+  "common_target_series_event_counts": {
+    "IT": 32,
+    "NICS": 32,
+    "VAT": 32,
+    "Fuel": 32,
+    "CGT": 32,
+    "IHT": 32,
+    "PTT": 32,
+    "Council": 32,
+    "Total welfare": 32,
+    "CPI": 32,
+    "RPI": 32,
+    "Empl": 32,
+    "Houseprices": 32
+  },
+  "IT_forecast_FY_window_coverage": 32,
+  "DWP_publication_pages_successful": 16,
+  "welfare_cap_vintages": 23,
+  "claimant_count_vintages": 15,
+  "document_sha256": "4fa6945dcc191ad0666175c80b73a658724d06b142347f30610e27d789c44702"
+}

@@ -1,0 +1,32 @@
+{
+  "version": "2.125.1",
+  "previous": "2.125.0",
+  "wheel_sha256": "a0983b4cef868467578a4fd0d163a977a0da8f710dd5194ec01c75f66d512c5a",
+  "wheel_url": "https://files.pythonhosted.org/packages/ec/3a/1d90bad4346d1a8c2715be211ed3d3d7f48917da0d90405b8257b7304091/policyengine_uk-2.125.1-py3-none-any.whl",
+  "upload_utc": "2026-10-10T00:21:17",
+  "changed_package_files": [
+    "policyengine_uk/parameters/gov/hmrc/national_insurance/class_2/flat_rate.yaml",
+    "policyengine_uk/parameters/gov/hmrc/national_insurance/class_2/lower_profits_threshold.yaml",
+    "policyengine_uk/parameters/gov/hmrc/national_insurance/class_2/lower_profits_threshold_applies.yaml",
+    "policyengine_uk/parameters/gov/hmrc/national_insurance/class_2/small_profits_threshold.yaml",
+    "policyengine_uk/parameters/gov/hmrc/national_insurance/class_4/rates/additional.yaml",
+    "policyengine_uk/parameters/gov/hmrc/national_insurance/class_4/rates/main.yaml",
+    "policyengine_uk/parameters/gov/hmrc/national_insurance/class_4/thresholds/lower_profits_limit.yaml",
+    "policyengine_uk/parameters/gov/hmrc/national_insurance/class_4/thresholds/upper_profits_limit.yaml",
+    "policyengine_uk/tests/test_ni_class_2.py",
+    "policyengine_uk/tests/test_ni_class_4_properties.py",
+    "policyengine_uk/tests/test_ni_class_4_statute.py",
+    "policyengine_uk/tests/test_uc_minimum_income_floor_properties.py",
+    "policyengine_uk/tests/policy/baseline/finance/benefit/family/universal_credit/income/income_floor/uc_minimum_income_floor.yaml",
+    "policyengine_uk/tests/policy/baseline/gov/hmrc/national_insurance/class_2/ni_class_2.yaml",
+    "policyengine_uk/tests/policy/baseline/gov/hmrc/national_insurance/class_4/ni_class_4.yaml",
+    "policyengine_uk/tests/policy/baseline/gov/hmrc/national_insurance/class_4/ni_class_4_main.yaml",
+    "policyengine_uk/tests/policy/baseline/gov/hmrc/national_insurance/class_4/ni_class_4_maximum.yaml",
+    "policyengine_uk/utils/class_2.py",
+    "policyengine_uk/variables/gov/dwp/universal_credit/income/income_floor/uc_minimum_income_floor_national_insurance.py",
+    "policyengine_uk/variables/gov/hmrc/national_insurance/class_2/ni_class_2.py",
+    "policyengine_uk/variables/gov/hmrc/national_insurance/class_4/ni_class_4_maximum.py"
+  ],
+  "comparison_method": "compare installed and wheel RECORD SHA-256 values; read each changed source file",
+  "installation_method": "verified wheel delta in existing scratch venv; unchanged source identities compared through RECORD; changed bytes matched after installation"
+}

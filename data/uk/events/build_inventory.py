@@ -11,7 +11,7 @@ scorecard cells only; the OBR's nominal-GDP extension cells were dropped at
 staging, see that family's NOTES.md). Cells are written in workbook order, a
 row at a time and fiscal year ascending within a row, so a workbook row is
 recovered as a maximal run of cells with the same (table, event, description,
-head) whose fiscal years strictly increase. The PMD carries 44 rows that repeat
+head) whose fiscal years strictly increase. The selected PMD rows include repeated
 an earlier row's (event, description, head) key, so the key alone is not an
 identity; the run is.
 
@@ -55,6 +55,7 @@ HARVEST = (
 )
 HARVEST_SHA256 = "46117d14c4de7ac10cbc9bc09acef6c5b5060db1605e02334d4a827cf420a3bd"
 CLASSIFICATIONS = HERE / "classifications"
+ENGINE_VERSION = "2.125.1"  # latest PyPI release checked 9 October 2026
 OUT = HERE / "inventory.jsonl"
 SUMMARY = HERE / "event_summary.json"
 BASE = HERE / "base_rows.jsonl"
@@ -164,9 +165,9 @@ IN_AREAS = {
     "other_household",
 }
 HISTORY_TAGS = {
-    "values_cover_costing_years",
-    "values_partly_cover_costing_years",
-    "values_start_after_first_costing_year",
+    "date_keys_exist_by_first_costing_year",
+    "some_date_keys_exist_by_first_costing_year",
+    "date_keys_start_after_first_costing_year",
     "no_parameter_cited",
 }
 
@@ -197,7 +198,7 @@ def load_rows() -> list[dict]:
     rows: list[dict] = []
     cur = None
     with gzip.open(HARVEST, "rt") as fh:
-        for line in fh:
+        for line_number, line in enumerate(fh, 1):
             c = json.loads(line)
             table = PMD_TABLES.get(c.get("source_table"))
             if table is None:
@@ -215,9 +216,12 @@ def load_rows() -> list[dict]:
                 or cur["_key"] != key
                 or fy_start(fy) <= fy_start(cur["_last_fy"])
             ):
-                cur = {"_key": key, "_last_fy": fy, "cells": {}}
+                cur = {"_key": key, "_last_fy": fy, "cells": {}, "source_cells": {},
+                       "publication": c["publication"]}
                 rows.append(cur)
             cur["cells"][fy] = c["value_raw"]
+            cur["source_cells"][fy] = {"harvest_line": line_number,
+                "line_sha256": hashlib.sha256(line.encode()).hexdigest()}
             cur["_last_fy"] = fy
     out = []
     seq = Counter()
@@ -241,6 +245,10 @@ def load_rows() -> list[dict]:
                 "last_fy": max(cells),
                 "net_gbp_m": round(sum(cells.values()), 6),
                 "gross_gbp_m": round(sum(abs(v) for v in cells.values()), 6),
+                "source_cells": r["source_cells"],
+                "source_workbook": r["publication"]["workbook"],
+                "source_url": r["publication"]["url"],
+                "source_table": "Tax Measures" if table == "tax" else "Spending Measures",
             }
         )
     found = {r["event"] for r in out}
@@ -270,10 +278,10 @@ def assign_measure_keys(rows: list[dict]) -> None:
 
 
 def load_param_index() -> tuple[str, dict[str, dict], set[str]]:
-    files = sorted(HERE.glob("pe_uk_parameter_dates_*.json.gz"))
-    if len(files) != 1:
-        sys.exit(f"expected one parameter index, found {[f.name for f in files]}")
-    idx = json.load(gzip.open(files[0], "rt"))
+    path = HERE / f"pe_uk_parameter_dates_{ENGINE_VERSION}.json.gz"
+    idx = json.load(gzip.open(path, "rt"))
+    if idx["policyengine_uk"] != ENGINE_VERSION:
+        sys.exit("parameter index version does not match the pinned inventory engine")
     params = {p["path"]: p for p in idx["parameters"]}
     return idx["policyengine_uk"], params, set(idx.get("variables", []))
 
@@ -310,6 +318,8 @@ def load_classifications() -> dict[str, dict]:
 
 def validate(rec: dict, row: dict, params: dict, variables: set) -> list[str]:
     errs = []
+    if not rec.get("scope_note"):
+        errs.append("scope reason missing")
     if rec.get("measure") != row["measure"]:
         errs.append("measure text does not match the PMD row")
     if rec.get("scope") not in SCOPES:
@@ -323,6 +333,8 @@ def validate(rec: dict, row: dict, params: dict, variables: set) -> list[str]:
         if ex != "not_applicable":
             errs.append("out-of-scope rows carry expressibility not_applicable")
     if rec.get("scope") == "in":
+        if not rec.get("expressibility_note"):
+            errs.append("expressibility reason missing")
         if rec.get("area") not in IN_AREAS:
             errs.append(f"area {rec.get('area')!r}")
         if ex == "not_applicable":
@@ -369,11 +381,11 @@ def history_tag(row: dict, rec: dict, params: dict) -> tuple[str, list[dict]]:
             }
         )
     if all(covered):
-        tag = "values_cover_costing_years"
+        tag = "date_keys_exist_by_first_costing_year"
     elif any(covered):
-        tag = "values_partly_cover_costing_years"
+        tag = "some_date_keys_exist_by_first_costing_year"
     else:
-        tag = "values_start_after_first_costing_year"
+        tag = "date_keys_start_after_first_costing_year"
     return tag, detail
 
 
@@ -424,6 +436,9 @@ def build(base_only: bool) -> tuple[str, str]:
         text = "".join(json.dumps(r, sort_keys=True) + "\n" for r in rows)
         return text, ""
     version, params, variables = load_param_index()
+    index_path = HERE / f"pe_uk_parameter_dates_{version}.json.gz"
+    index = json.load(gzip.open(index_path, "rt"))
+    variable_files = {v["name"]: v["file"] for v in index["variable_detail"]}
     recs = load_classifications()
     errors = []
     ids = {r["row_id"] for r in rows}
@@ -440,6 +455,15 @@ def build(base_only: bool) -> tuple[str, str]:
         errors += [f"{r['row_id']}: {e}" for e in errs]
         tag, detail = history_tag(r, rec, params)
         cls = f"{rec['scope']}:{rec['expressibility']}" if rec["scope"] == "in" else "out"
+        cited_files = {variable_files[v] for v in rec.get("variables", []) if v in variable_files}
+        for path in rec.get("parameter_paths", []):
+            cited_files.update(p["file"] for k, p in params.items() if
+                k == path or k.startswith(path + ".") or k.startswith(path + "["))
+        evidence = sorted(f for f in cited_files if f)
+        if rec["scope"] == "in":
+            evidence += ["docs/uk_replay/HISTORICAL_RULES.md",
+                         "docs/uk_replay/research/CLASSIFICATION_AUDIT.md",
+                         "docs/uk_replay/evidence/patch_sources.json"]
         out_rows.append(
             {
                 **r,
@@ -457,16 +481,19 @@ def build(base_only: bool) -> tuple[str, str]:
                 "parameter_history_detail": detail,
                 "existing_registry_key": rec.get("existing_registry_key"),
                 "engine": f"policyengine-uk {version}",
+                "mechanism_evidence": evidence,
+                "readiness": "scoped_only_no_vintage_replay_certified",
             }
         )
     if errors:
         sys.exit("classification errors:\n  " + "\n  ".join(errors[:200]) + f"\n({len(errors)} total)")
     text = "".join(json.dumps(r, sort_keys=True) + "\n" for r in out_rows)
     summary = {
-        "schema_version": 1,
+        "schema_version": 2,
         "source": "sources/harvest-uk-2026-08-02/uk_obr/claims_staged.jsonl.gz (PMD November 2025 vintage, original scorecard cells)",
         "source_sha256": HARVEST_SHA256,
         "engine": f"policyengine-uk {version}",
+        "expressibility_basis": "today's machinery, separate from historic rules, population, vintage, and executable construction readiness",
         "gross_rule": "gross_gbp_m = sum over original scorecard years of |costing|, GBP million; a measure's share is its gross over the event's gross",
         "sign_convention": "positive = gain to the Exchequer (PMD Notes sheet)",
         "events": summarise(out_rows),

@@ -4,8 +4,8 @@ Reads the parameter YAML tree exactly as written (policyengine-core's
 `load_parameter_file`, before policyengine-uk's processing step backdates and
 uprates it), so `earliest` is the first date key a file actually carries. Each
 leaf records its YAML file, its dated values' instants, its label and its
-uprating index. Variables come from the loaded tax-benefit system, with the
-file each one is defined in.
+uprating index. Variables are read with Python's AST from the installed
+source. No model is initialized and no simulation runs.
 
 Output: data/uk/events/pe_uk_parameter_dates_<version>.json.gz, the index
 build_inventory.py resolves every cited parameter path against.
@@ -16,13 +16,11 @@ build_inventory.py resolves every cited parameter path against.
 from __future__ import annotations
 
 import gzip
+import ast
 import importlib.metadata as md
-import inspect
 import json
-import os
 from pathlib import Path
 
-import policyengine_uk
 from policyengine_core.parameters import (
     Parameter,
     ParameterNode,
@@ -31,7 +29,7 @@ from policyengine_core.parameters import (
 )
 
 HERE = Path(__file__).resolve().parent
-PKG = Path(policyengine_uk.__file__).resolve().parent
+PKG = Path(md.distribution("policyengine-uk").locate_file("policyengine_uk")).resolve()
 PDIR = PKG / "parameters"
 
 
@@ -72,29 +70,40 @@ def main() -> None:
         elif isinstance(p, ParameterNode):
             nodes.append(name)
 
-    from policyengine_uk import CountryTaxBenefitSystem
-
-    system = CountryTaxBenefitSystem()
     variables = []
-    for vname, var in sorted(system.variables.items()):
-        try:
-            vfile = rel(inspect.getsourcefile(type(var)))
-        except TypeError:
-            vfile = None
-        variables.append(
-            {
-                "name": vname,
-                "file": vfile,
-                "label": getattr(var, "label", None),
-                "entity": var.entity.key,
-                "definition_period": str(var.definition_period),
-                "has_formula": bool(var.formulas),
-            }
-        )
+    for file in sorted((PKG / "variables").rglob("*.py")):
+        for cls in ast.parse(file.read_text()).body:
+            if not isinstance(cls, ast.ClassDef) or not any(
+                isinstance(base, ast.Name) and base.id == "Variable" for base in cls.bases
+            ):
+                continue
+            attributes = {}
+            for statement in cls.body:
+                if isinstance(statement, ast.Assign):
+                    for target in statement.targets:
+                        if isinstance(target, ast.Name):
+                            attributes[target.id] = statement.value
+            def literal(name):
+                value = attributes.get(name)
+                return value.value if isinstance(value, ast.Constant) else None
+            def identifier(name):
+                value = attributes.get(name)
+                return value.id.lower() if isinstance(value, ast.Name) else None
+            variables.append({
+                "name": cls.name, "file": rel(str(file)),
+                "label": literal("label"), "entity": identifier("entity"),
+                "definition_period": identifier("definition_period"),
+                "has_formula": "formula" in attributes or any(isinstance(s, ast.FunctionDef) and
+                    (s.name == "formula" or s.name.startswith("formula_")) for s in cls.body),
+            })
+    variables.sort(key=lambda v: v["name"])
+    if len({v["name"] for v in variables}) != len(variables):
+        raise ValueError("duplicate source variable names")
     out = {
         "policyengine_uk": version,
         "policyengine_core": md.version("policyengine-core"),
         "reader": "policyengine_core.parameters.load_parameter_file over the package parameters/ tree, before CountryTaxBenefitSystem.process_parameters",
+        "variable_reader": "AST of direct Variable subclasses in installed variables/; source metadata, no processed system",
         "n_parameters": len(params),
         "n_scales": len(scales),
         "n_variables": len(variables),
