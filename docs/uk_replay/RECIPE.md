@@ -606,14 +606,20 @@ invocations never run more than two simulations at once. How the slots hold:
 * A slot changes hands only through `put(..., skip_if_exists=True)`, Modal's
   atomic create-if-absent: each holder, and each renewal, creates the slot's
   next generation key, and nothing is deleted. A holder writes only its own
-  key, and only to release or shorten it.
+  key, and only to release or shorten it. A head key names the newest
+  generation as a hint; a step that took over a day writes no head and
+  gives its claim back, so keys Modal expired (7 days idle) can never be
+  pointed back to.
 * The lease (4 hours) is renewed after the image build, just before the
   remote call, and the remote function refuses to start unless its whole
-  3-hour timeout fits inside the lease. A run therefore ends before its slot
-  can pass on, even if the client dies.
-* A finished or never-started run frees its slot at once. After ctrl-C,
-  Modal's client tells the server to stop the app's tasks, and the slot frees
-  10 minutes later. A client killed outright frees it when the lease lapses.
+  3-hour timeout plus a 10-minute margin fits inside the lease. A run
+  therefore ends before its slot can pass on, even if the client dies.
+* A finished or never-started run frees its slot at once. When `app.run()`
+  exits after ctrl-C, Modal's client has already asked the server to stop
+  the app's tasks, and the slot frees 10 minutes later. Anything else after
+  the run started (a lost connection, which Modal's runner re-raises
+  without that request; a remote error; a failed stop request; a client
+  killed outright) leaves the claim until the lease lapses.
 * A renewal after the lease lapsed is refused (exit 75): the slot may have
   passed on. Waiting runs poll every 30 seconds in no set order.
 * `tests/test_modal_uk_event.py` checks this call by call: Hypothesis

@@ -353,9 +353,10 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
         "run",
         lambda *args, **kwargs: pytest.fail("a short lease must not start a run"),
     )
-    short = time.time() + runner.RESOURCE_LIMITS["timeout_seconds"] - 60
-    with pytest.raises(RuntimeError, match="lease does not cover"):
-        replay({"request": {}}, short)
+    timeout = runner.RESOURCE_LIMITS["timeout_seconds"]
+    for slack in (-60, runner.GUARD_MARGIN_SECONDS - 60):
+        with pytest.raises(RuntimeError, match="lease does not cover"):
+            replay({"request": {}}, time.time() + timeout + slack)
     configuration = recorded["function"]
     assert configuration["cpu"] == (2, 2)
     assert configuration["memory"] == (32768, 32768)
@@ -550,18 +551,6 @@ def test_a_holder_that_dies_at_any_step_frees_its_slot_after_the_lease(calls):
     assert slots_for(store, clock, "next", count=1).acquire(wait_seconds=0).slot == 0
 
 
-def test_renewal_after_the_lease_lapsed_is_refused_even_untaken():
-    # A laptop closed during the image build: the slot may have moved on and
-    # Modal may have expired the keys it used, so the run does not start.
-    clock = Clock()
-    store = FakeDict(clock)
-    slots = slots_for(store, clock, "a", count=1)
-    lease = slots.acquire()
-    clock.now += 8 * 24 * 60 * 60
-    with pytest.raises(runner.LeaseLost):
-        slots.renew(lease)
-
-
 def test_a_stale_renewal_cannot_recreate_an_expired_generation():
     # The slot changes hands across days and Modal expires the old keys; a
     # client back from a week asleep must not renew into a key that no
@@ -578,6 +567,8 @@ def test_a_stale_renewal_cannot_recreate_an_expired_generation():
         clock.now += day
     clock.now += 8 * day  # every old key idles past Modal's 7 days
     current = slots_for(store, clock, "current", count=1).acquire()
+    following = runner.SimulationSlots.claim_key(0, stale.chain, stale.generation + 1)
+    assert store.get(following) is None  # a create here would succeed
     with pytest.raises(runner.LeaseLost):
         sleeper.renew(stale)
     assert holders_of(store, clock) == {0: "current"}
@@ -620,9 +611,10 @@ def test_an_interrupt_frees_the_slot_after_the_grace_period():
     assert holders_of(store, clock) == {}
 
 
-def test_the_lease_covers_the_timeout_and_scheduling():
+def test_the_lease_covers_the_timeout_margin_and_scheduling():
     timeout = runner.RESOURCE_LIMITS["timeout_seconds"]
-    assert runner.LEASE_SECONDS >= timeout + 60 * 60
+    assert runner.LEASE_SECONDS >= timeout + runner.GUARD_MARGIN_SECONDS + 30 * 60
+    assert runner.STALE_STEP_SECONDS < FakeDict.TTL
     assert runner.INTERRUPT_GRACE_SECONDS < runner.LEASE_SECONDS
 
 
@@ -651,8 +643,13 @@ def holder_program(slots):
     outcome = yield ("start", lease)
     if outcome == "running":
         outcome = yield ("await",)
-    grace = 0.0 if outcome == "returned" else runner.INTERRUPT_GRACE_SECONDS
-    yield from slots._release_steps(lease, grace=grace)
+    # main(): a returned run frees the slot now; after a caught ctrl-C
+    # (app.run() exited, the stop request sent) it frees after the grace;
+    # after a lost connection or a remote error nothing is written.
+    if outcome == "returned":
+        yield from slots._release_steps(lease)
+    elif outcome == "interrupted":
+        yield from slots._release_steps(lease, grace=runner.INTERRUPT_GRACE_SECONDS)
 
 
 @settings(max_examples=600, deadline=None)
@@ -669,40 +666,57 @@ def test_interleaved_holders_never_overlap_on_a_slot_and_never_lose_one(data):
     actors = []
     for index in range(count):
         program = holder_program(slots_for(store, clock, f"h{index}"))
-        actors.append({"program": program, "call": next(program), "done": False})
+        actors.append(
+            {"program": program, "call": next(program), "done": False, "since": 1e3}
+        )
     runs = []
 
     def send(actor, value):
+        before = actor["call"][0]
         try:
             actor["call"] = actor["program"].send(value)
         except StopIteration:
             actor["done"] = True
+            return
+        if actor["call"][0] in ("get", "put") and before not in ("get", "put"):
+            actor["since"] = clock.now  # a protocol step begins
 
     for _ in range(data.draw(st.integers(0, 150), label="actions")):
         action = data.draw(
-            st.sampled_from(["step", "step", "step", "tick", "crash", "interrupt"])
+            st.sampled_from(
+                ["step", "step", "step", "tick", "crash", "interrupt", "disconnect"]
+            )
         )
         if action == "tick":
             seconds = data.draw(
                 st.sampled_from([1, 60, 600, 3600, TIMEOUT, 4 * 3600, 8 * 86400])
             )
-            # The stated assumption: no stall of days inside one protocol
-            # step (a pending Dict call); between steps, anything goes.
-            mid_step = any(
-                not a["done"] and a["call"][0] in ("get", "put") for a in actors
+            # The stated assumption: no protocol step (consecutive Dict
+            # calls) spans 7 days, so Modal never expires a key a step read
+            # before the step ends; between steps, anything goes.
+            limit = min(
+                (
+                    6 * 86400 - (clock.now - a["since"])
+                    for a in actors
+                    if not a["done"] and a["call"][0] in ("get", "put")
+                ),
+                default=seconds,
             )
-            clock.now += min(seconds, 6 * 86400) if mid_step else seconds
+            clock.now += max(0, min(seconds, limit))
             continue
         live = [a for a in actors if not a["done"]]
         if not live:
             break
-        if action == "interrupt":  # ctrl-C on a client whose run is going
+        if action in ("interrupt", "disconnect"):
             awaiting = [a for a in live if a["call"][0] == "await"]
             if awaiting:
                 actor = data.draw(st.sampled_from(awaiting))
-                run = actor["run"]
-                run["end"] = min(run["end"], clock.now + STOP_AFTER_DISCONNECT)
-                send(actor, "interrupted")
+                if action == "interrupt":  # ctrl-C: the stop request is sent
+                    run = actor["run"]
+                    run["end"] = min(run["end"], clock.now + STOP_AFTER_DISCONNECT)
+                    send(actor, "interrupted")
+                else:  # connection lost: the run goes on to its own end
+                    send(actor, "connection_lost")
             continue
         actor = data.draw(st.sampled_from(live))
         if action == "crash":
@@ -717,8 +731,8 @@ def test_interleaved_holders_never_overlap_on_a_slot_and_never_lose_one(data):
             send(actor, None)
         elif call[0] == "start":
             lease = call[1]
-            if clock.now + TIMEOUT > lease.expires:  # the remote guard refuses
-                send(actor, "refused")
+            if clock.now + TIMEOUT + runner.GUARD_MARGIN_SECONDS > lease.expires:
+                send(actor, "refused")  # the remote guard: a remote error
                 continue
             duration = data.draw(st.integers(1, TIMEOUT), label="run seconds")
             run = {"slot": lease.slot, "start": clock.now, "end": clock.now + duration}
@@ -741,3 +755,94 @@ def test_interleaved_holders_never_overlap_on_a_slot_and_never_lose_one(data):
         clock.now,
         store.data,
     )
+
+
+def test_a_week_stalled_acquire_cannot_replace_a_live_chain():
+    # Review of dff81d0, 2: A reads the head, stalls a week (Modal expires
+    # every key), B builds a new chain and holds the slot; A's late writes
+    # must not point the head back at A's dead chain.
+    day = 24 * 60 * 60
+    clock = Clock()
+    store = FakeDict(clock)
+    old = slots_for(store, clock, "old", count=1)
+    old.release(old.acquire())
+    a = slots_for(store, clock, "a", count=1)
+    steps = a._try_steps(0)
+    call = next(steps)
+    while call[0] == "get":
+        call = steps.send(store.get(call[1]))
+    clock.now += 8 * day
+    b = slots_for(store, clock, "b", count=1).acquire()
+    with pytest.raises(StopIteration) as done:
+        while True:
+            if call[0] == "get":
+                call = steps.send(store.get(call[1]))
+            else:
+                call = steps.send(store.put(call[1], call[2], skip_if_exists=call[3]))
+    assert done.value.value is None
+    assert store.get("head-0")["chain"] == b.chain
+    assert holders_of(store, clock) == {0: "b"}
+    third = slots_for(store, clock, "third", count=1)
+    assert run_steps(store, third._try_steps(0)) == (True, None)
+
+
+def test_a_lost_connection_keeps_the_claim_until_the_lease_lapses(
+    monkeypatch, tmp_path
+):
+    # Review of dff81d0, 1: the runner re-raises a lost connection without
+    # asking the server to stop the app, so the run may still be going.
+    class LostConnection(Exception):
+        pass
+
+    def lost(payload, lease_expires):
+        raise LostConnection
+
+    slots = FakeDict()
+    monkeypatch.setattr(runner, "validate_selection", lambda request: None)
+    monkeypatch.setattr(
+        runner, "input_manifest", lambda event, hf_cache=None: ({"event": event}, {})
+    )
+    monkeypatch.setattr(runner, "download_prefix", lambda value: tmp_path / "download")
+    monkeypatch.setattr(
+        runner,
+        "modal_function",
+        lambda mounts: (
+            SimpleNamespace(
+                enable_output=nullcontext,
+                Dict=SimpleNamespace(from_name=lambda name, create_if_missing: slots),
+            ),
+            SimpleNamespace(run=nullcontext),
+            SimpleNamespace(remote=lost),
+        ),
+    )
+    with pytest.raises(LostConnection):
+        runner.main(["--event", "autumn_budget_2024", "--execute"])
+    claims = [v for k, v in slots.data.items() if k.startswith("claim-")]
+    newest = max(claims, key=lambda claim: claim["expires"])
+    assert newest["released"] is False
+    assert newest["expires"] >= time.time() + runner.LEASE_SECONDS - 60
+
+
+def test_a_finished_run_frees_its_slot_at_once(monkeypatch, tmp_path):
+    slots = FakeDict()
+    monkeypatch.setattr(runner, "validate_selection", lambda request: None)
+    monkeypatch.setattr(
+        runner, "input_manifest", lambda event, hf_cache=None: ({"event": event}, {})
+    )
+    monkeypatch.setattr(runner, "download_prefix", lambda value: tmp_path / "download")
+    monkeypatch.setattr(runner, "save_download", lambda *args: [])
+    monkeypatch.setattr(
+        runner,
+        "modal_function",
+        lambda mounts: (
+            SimpleNamespace(
+                enable_output=nullcontext,
+                Dict=SimpleNamespace(from_name=lambda name, create_if_missing: slots),
+            ),
+            SimpleNamespace(run=nullcontext),
+            SimpleNamespace(remote=lambda payload, lease_expires: {"files": {}}),
+        ),
+    )
+    assert runner.main(["--event", "autumn_budget_2024", "--execute"]) == 0
+    claims = [v for k, v in slots.data.items() if k.startswith("claim-")]
+    assert max(claims, key=lambda claim: claim["expires"])["released"] is True

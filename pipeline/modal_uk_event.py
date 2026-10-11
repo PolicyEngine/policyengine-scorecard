@@ -109,10 +109,16 @@ SLOT_COUNT = 2
 # function refuses to start unless its whole timeout fits inside the lease,
 # so a run always ends before its slot can pass to anyone else.
 LEASE_SECONDS = 4 * 60 * 60
-# After an interrupt, Modal's client tells the server to stop the ephemeral
-# app's tasks (modal/runner.py, _status_based_disconnect); the slot frees
-# this long afterwards rather than at once.
+# The remote guard also leaves this much of the lease unused, for clock
+# differences between hosts and the time Modal takes to stop a timed-out run.
+GUARD_MARGIN_SECONDS = 10 * 60
+# When app.run() exits after the runner caught ctrl-C, it has already asked
+# the server to stop the ephemeral app's tasks (modal/runner.py,
+# _status_based_disconnect); the slot frees this long afterwards.
 INTERRUPT_GRACE_SECONDS = 10 * 60
+# A protocol step (a few consecutive Dict calls) that took longer than this
+# writes no head: Modal may have expired the keys it read (7 days idle).
+STALE_STEP_SECONDS = 24 * 60 * 60
 
 
 class LeaseLost(RuntimeError):
@@ -187,6 +193,7 @@ class SimulationSlots:
             head = yield ("get", head_key)
             if head is None:
                 return None
+        looked = self.clock()
         chain, generation = head["chain"], head["generation"]
         newest = None
         if generation >= 0:
@@ -206,6 +213,11 @@ class SimulationSlots:
         key = self.claim_key(slot, chain, generation + 1)
         if not (yield ("put", key, self._claim(expires), True)):
             return None
+        if self.clock() - looked > STALE_STEP_SECONDS:
+            # What this step read may be gone: give the claim back and leave
+            # the head alone, so a stale chain never replaces a live one.
+            yield ("put", key, self._claim(expires, released=True), False)
+            return None
         yield ("put", head_key, {"chain": chain, "generation": generation + 1}, False)
         return Lease(slot, chain, generation + 1, expires)
 
@@ -213,12 +225,16 @@ class SimulationSlots:
         # While a lease is live no one else can create its next generation,
         # so that key has never existed and cannot be one Modal expired;
         # after it lapses the slot may have moved on, so renewal stops.
-        if self.clock() >= lease.expires:
+        began = self.clock()
+        if began >= lease.expires:
             raise LeaseLost(f"simulation slot {lease.slot} lease lapsed")
-        expires = self.clock() + self.lease
+        expires = began + self.lease
         key = self.claim_key(lease.slot, lease.chain, lease.generation + 1)
         if not (yield ("put", key, self._claim(expires), True)):
             raise LeaseLost(f"simulation slot {lease.slot} passed to another holder")
+        if self.clock() - began > STALE_STEP_SECONDS:
+            yield ("put", key, self._claim(expires, released=True), False)
+            raise LeaseLost(f"simulation slot {lease.slot} renewal stalled")
         head = {"chain": lease.chain, "generation": lease.generation + 1}
         yield ("put", f"head-{lease.slot}", head, False)
         return Lease(lease.slot, lease.chain, lease.generation + 1, expires)
@@ -645,6 +661,7 @@ def modal_function(mounts: dict[str, Path]):
         image = image.add_local_file(path, f"{REMOTE_ROOT}/{relative}", copy=False)
     app = modal.App("scorecard-uk-event-replay", include_source=False)
     timeout_seconds = RESOURCE_LIMITS["timeout_seconds"]
+    guard_seconds = timeout_seconds + GUARD_MARGIN_SECONDS
 
     @app.function(
         image=image,
@@ -667,7 +684,7 @@ def modal_function(mounts: dict[str, Path]):
         from pathlib import Path
 
         # A run that could outlive its simulation slot does not start.
-        if time.time() + timeout_seconds > lease_expires:
+        if time.time() + guard_seconds > lease_expires:
             raise RuntimeError("the simulation slot lease does not cover the timeout")
         # Inherit stdout/stderr so Modal streams phase progress as it happens.
         subprocess.run(
@@ -823,7 +840,7 @@ def main(argv: list[str] | None = None) -> int:
         holder=f"{platform.node()}:{os.getpid()}:{digest_bytes(canonical_bytes(request))[:12]}",
     )
     lease = slots.acquire()
-    started = False
+    started = exited = False
     try:
         with modal.enable_output(), app.run():
             # The image build can take a while: renew so the lease covers
@@ -831,14 +848,21 @@ def main(argv: list[str] | None = None) -> int:
             lease = slots.renew(lease)
             started = True
             response = replay.remote(payload, lease.expires)
+        # app.run() returned: the run finished, or the runner caught ctrl-C
+        # after asking the server to stop the app's tasks.
+        exited = True
     except LeaseLost:
         print("Modal run not started: its simulation slot lapsed", file=sys.stderr)
         return 75
     finally:
-        # A returned or never-started run frees its slot now; an interrupted
-        # one frees it after Modal has had time to stop the remote task.
-        finished = response is not None or not started
-        slots.release(lease, grace=0.0 if finished else INTERRUPT_GRACE_SECONDS)
+        if not started or response is not None:
+            slots.release(lease)
+        elif exited:
+            slots.release(lease, grace=INTERRUPT_GRACE_SECONDS)
+        # Otherwise (a lost connection, which the runner re-raises without a
+        # stop request; a remote error; an exception during the stop request)
+        # the remote run may still be going: the claim stays until the lease
+        # lapses, after the run's end by the remote guard.
     if response is None:
         print("Modal run interrupted; no output downloaded", file=sys.stderr)
         return 130
