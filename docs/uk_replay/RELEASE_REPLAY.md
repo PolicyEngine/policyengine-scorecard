@@ -157,17 +157,21 @@ FY2023–24 counterparts; that loss is shown, never hidden.
 
 * Legacy results stay where they are, in `results/uk/events/<event>/`.
 * Every other variant writes to `results/uk/replays/<variant_id>/`:
-  `VARIANT.json` (the validated record plus the runtime receipt),
+  `<event>/` (the same files as a legacy event directory), `SUMMARY.md`,
   `SUPPORT.json`, `CONSTRUCTION_PREMISES.json`, `MODEL_DIAGNOSTICS.json`,
-  `<event>/` (the same files as a legacy event directory), `SUMMARY.md`, and
-  finally `REPLAY_RECEIPT.json`.
-* `results/uk/replays/INDEX.json` maps each variant to its root (legacy:
-  `results/uk/events`), status and receipt.
-* A namespace with `REPLAY_RECEIPT.json` is **sealed**: the receipt binds the
-  SHA-256 of every file under it, the runner refuses to write there, and CI
-  fails if any sealed byte changes. A rerun of the same variant goes to a new
-  namespace suffix (`<variant_id>/rerun-<n>`) and its determinism against the
-  sealed run is itself a check.
+  `REQUEST.json` (the qualification request the run answers), and finally
+  `NAMESPACE_MANIFEST.json` and `REPLAY_RECEIPT.json`.
+* `data/uk/replay_variants.json` is the index: each record's `result_root`
+  names its namespace (legacy: `results/uk/events`) and its `status`. A
+  candidate's record and results live on the `replay-state` branch under
+  `requests/<request_id>/results/` until it is certified.
+* A namespace with `REPLAY_RECEIPT.json` is **sealed**:
+  `NAMESPACE_MANIFEST.json` lists the SHA-256 of every file under it (and of
+  its release diff), the receipt binds that manifest's digest, the runner
+  refuses to write there, and CI fails if any sealed byte changes. A rerun of
+  a sealed variant writes to an explicit separate output directory, and its
+  bytes against the sealed run are a determinism check (CI replays one real
+  measure-year this way).
 * Release differences live in `results/uk/replays/diffs/<base>__<head>/`.
 
 ## Version-scoped diagnoses
