@@ -235,11 +235,11 @@ bin transitions.
 |---|---|
 | `numerical` | Both sides numeric and `abs(head − base) > max(£1,000,000, 0.01 × max(abs(head), abs(base)))`. Strictly greater. |
 | `structural` | Sign reversal or a zero crossing (zero means `abs(x) ≤ £0.50`, accounting roundoff); artifact schema or orientation changed; non-finite value. Regardless of size. |
-| `coverage` | A counterpart, artifact pair or source row present on one side only. |
+| `coverage` | A counterpart, artifact pair or source row present on one side only, in a year both sides support. |
 | `mapping` | A row's `head_variables`, an artifact's `head_channels` or `head_definitions`, or the registry SHA-256 differs. |
 | `support` | A year supported on one side only. |
 | `inertness` | `inert_construction` on one side only, or identical worlds in an in-force year on one side only. |
-| `construction` | Executed `baseline_world`/`reform_world` reform dicts differ, or a premise check differs. |
+| `construction` | Executed `baseline_world`/`reform_world` reform dicts differ, or a premise check's result differs. A changed current-law value of a touched parameter is recorded as context on the row, not flagged: it is what a model release is expected to change. |
 
 Identity changes (wrapper, engine, core, data build, dataset digest) are
 recorded once per diff; they explain moves and are not flags on rows.

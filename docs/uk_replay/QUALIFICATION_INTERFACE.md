@@ -1,9 +1,26 @@
-# Qualification request and replay receipt (v1, proposed)
+# Qualification request and replay receipt (v1)
 
-Status: proposal from W6 (policyengine-scorecard) to W4 (policyengine.py
-qualification), 11 October 2026, for agreement by 15 October. JSON Schemas:
-[`schemas/qualification_request.v1.json`](schemas/qualification_request.v1.json)
-and [`schemas/replay_receipt.v1.json`](schemas/replay_receipt.v1.json).
+Status: proposed by W6 (policyengine-scorecard) to W4 (policyengine.py
+qualification) on 11 October 2026 and accepted in principle by W4 the same
+day, with the amendments folded in below (RFC 8785 canonicalisation, the
+receipt digest and commit in `STATUS.json`, extra `requested_by` fields, and
+the post-release flow). JSON Schemas:
+[`schemas/qualification_request.v1.json`](schemas/qualification_request.v1.json),
+[`schemas/replay_receipt.v1.json`](schemas/replay_receipt.v1.json) and
+[`schemas/replay_status.v1.json`](schemas/replay_status.v1.json).
+Implementation: `pipeline/uk_replay_interface.py`. Golden fixtures with
+pinned digests: `tests/fixtures/uk_replay/` (`DIGESTS.json`, and the exact
+JCS bytes in `*.jcs`).
+
+## Canonical bytes
+
+Both sides compute digests over **RFC 8785 (JCS)** bytes, using the
+`rfc8785` package (0.1.4 here). `json.dumps(sort_keys=True)` is not
+equivalent: it writes `1e-07` where JCS writes `1e-7`, `1.5e+16` where JCS
+writes `15000000000000000`, and escapes non-ASCII characters that JCS
+writes as UTF-8. Integers must lie within ±(2^53 − 1); the package refuses
+larger ones. The golden request carries these probes in
+`requested_by.jcs_probe` and a non-ASCII `requested_by.note`.
 
 Two flows use the same receiver:
 
@@ -12,10 +29,11 @@ Two flows use the same receiver:
   validates the candidate's identity and compatibility, reruns the supported
   event corpus, diffs it against the latest certified variant, and returns an
   artifact-bound receipt that qualification consumes.
-* **Post-promotion consumer dispatch.** After a policyengine.py release, the
-  existing dispatcher notifies consumers. Scorecard treats a released bundle
-  it has not replayed as a request with `kind: "released_bundle"`, so it
-  ends up with a certified variant and a sealed namespace.
+* **Post-promotion consumer dispatch.** After a policyengine.py release,
+  W4's NotifyConsumers sends the same event with `kind: "released_bundle"`,
+  the policyengine PyPI wheel SHA-256 and the packaged manifest SHA-256. The
+  same receiver handles it, so scorecard ends up with a certified variant
+  and a sealed namespace for every release; there is no separate handler.
 
 ## Transport
 
@@ -32,9 +50,12 @@ Two flows use the same receiver:
 * State for request `<request_id>` lives at
   `replay-state:requests/<request_id>/`:
   `REQUEST.json` (the bytes received), `STATUS.json`
-  (`queued` → `running` → `complete` | `rejected` | `failed`, with
-  timestamps and the Actions run URL), and on completion
-  `REPLAY_RECEIPT.json`.
+  (`queued` → `running` → `complete` | `rejected` | `failed`, with a
+  history of timestamps and Actions run URLs), and on completion
+  `REPLAY_RECEIPT.json`. The receipt is committed first; a terminal
+  `STATUS.json` is written in a later commit and names `receipt_sha256` and
+  `receipt_commit`, so one contents read binds the status to the receipt
+  bytes.
 * W4 polls `GET /repos/PolicyEngine/policyengine-scorecard/contents/requests/<request_id>/STATUS.json?ref=replay-state`
   (the repository is public). A receipt is addressed by the request's own
   digest, so W4 needs no callback and no scorecard token.
@@ -79,9 +100,10 @@ Two flows use the same receiver:
 }
 ```
 
-* `request_id` is not a field: it is the SHA-256 of the canonical request
-  JSON (sorted keys, no whitespace, UTF-8). Both sides compute it the same
-  way; `tests/fixtures/` holds a shared golden example.
+* `request_id` is not a field: it is the SHA-256 of the request's JCS
+  bytes. Both sides test against the golden fixture.
+* `requested_by` accepts additional provenance fields (for example
+  `run_attempt`); every other object is closed.
 * The wrapper is identified by `version` plus either a PyPI wheel
   (`{"pypi": {"wheel_sha256": …}}`) or, for an unreleased candidate whose
   regenerated manifest is not on PyPI yet, a public git commit. Scorecard
@@ -164,6 +186,19 @@ A rejected request has no numerical results; its receipt says why.
 
 ### Division of judgement
 
+How flags arise, so a gate built on them sees the intended events:
+
+* A year unsupported on one side raises `support` on that year's rows, not
+  `coverage`. A lost counterpart is `coverage` only where both sides support
+  the year.
+* `construction` means the executed reform dictionaries differ or a premise
+  check changed its result. A change in the current-law value of a parameter
+  the construction touches is recorded as context in the row's details, not
+  as a flag, because it is what a model release is expected to change.
+* For a candidate, the base is the latest certified variant, normally on the
+  same data build; the first certified-variant run diffs against the legacy
+  populace variant, where the data family itself changes.
+
 * `integrity.status` is `complete`, `incomplete` or `failed`. `failed` means
   a crash, a non-finite aggregate, an identity mismatch after the run started,
   or an accounting identity broken in staging. These are structural failures
@@ -173,17 +208,30 @@ A rejected request has no numerical results; its receipt says why.
   promotion, and who reviews it, is W4's qualification policy under d1344.
 * Unsupported years are listed per event and are never counted as failures.
 
-## Open points for W4
+## Agreed points
 
-1. Does the candidate wrapper arrive as a git commit (as proposed) or as a
-   wheel artifact? Scorecard can consume either; a wheel needs a URL it can
-   read without a token.
-2. Receipt delivery: polling `replay-state` (proposed) or an additional
-   callback dispatch to policyengine.py.
-3. Expected turnaround: not yet measured for a full sweep. One probe on
+1. The candidate wrapper is a git commit on a policyengine.py
+   `candidate/uk/<model>-<data>` branch whose packaged manifest, pins,
+   `uv.lock` and TRO certify the pair; that commit becomes the promotion PR
+   head, so the replayed bytes are the promoted bytes.
+2. Receipt delivery is by polling `replay-state`; no callback.
+3. W4's qualification receipt records `request_id`, `receipt_sha256` and
+   `receipt_commit`; nothing of this receipt nests inside W4's execution
+   receipt.
+4. W4 computes `expected_release_bundle` in a subprocess with the three
+   Hugging Face token variables removed.
+5. W4's proposed gate on these fields (pending d1344): `rejected`, `failed`,
+   integrity `failed` or `incomplete`, and structural, coverage, mapping,
+   inertness or construction flags fail the replay gate; numerical and
+   support flags go to review; `no_supported_years` fails; unsupported years
+   alone never fail.
+
+## Open points
+
+1. Expected turnaround: not yet measured for a full sweep. One probe on
    6.2.6/2.125.1/1.58.0 loaded the baseline and computed five annual
    aggregates in 10.6s at 2.3GB peak, so a five-event sweep should take
    minutes rather than hours on a 16GB runner; the first full run will
    replace this estimate. The queue serialises runs, so a backlog adds wait.
-4. The receipt schema versioning rule: additive fields keep `v1`; renamed or
-   removed fields bump to `v2`.
+2. The receipt schema versioning rule: additive optional fields keep `v1`;
+   renamed or removed fields bump to `v2`.
