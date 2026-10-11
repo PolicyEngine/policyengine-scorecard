@@ -42,6 +42,28 @@ OFFLINE_VARIABLES = {
     "HF_HUB_DISABLE_TELEMETRY": "1",
     "HF_HUB_DISABLE_IMPLICIT_TOKEN": "1",
 }
+# policyengine.py 6.x fetches the data release manifest with requests
+# (provenance/manifest.py, get_data_release_manifest), which ignores
+# HF_HUB_OFFLINE. requests reads these proxy variables, so with them the
+# fetch fails at once and certify_data_release_compatibility falls back to
+# the wrapper's packaged certification, the one each record certifies.
+NO_NETWORK = {
+    name: "http://127.0.0.1:9"
+    for name in (
+        "HTTP_PROXY",
+        "HTTPS_PROXY",
+        "ALL_PROXY",
+        "http_proxy",
+        "https_proxy",
+        "all_proxy",
+    )
+}
+PROXY_EXCEPTIONS = ("NO_PROXY", "no_proxy")
+ENGINE_MODULES = {
+    "policyengine": "policyengine",
+    "policyengine-uk": "policyengine_uk",
+    "policyengine-core": "policyengine_core",
+}
 MATERIALIZATIONS = ("hf_cache_mirror", "policyengine_data_dir")
 LAYOUTS = ("legacy_events", "replay_namespace")
 STATUSES = ("certified", "candidate", "retired")
@@ -173,20 +195,35 @@ def load_document(path: Path = VARIANTS_PATH) -> dict:
         raise VariantError("replay_variants.json repeats a variant_id")
     if document.get("default_variant") not in ids:
         raise VariantError("default_variant is not a listed variant")
+    default = variants[ids.index(document["default_variant"])]
+    if default.get("status") != "certified":
+        raise VariantError("default_variant must be a certified variant")
     return document
 
 
 def get_variant(
-    variant_id: str | None = None, *, path: Path = VARIANTS_PATH, root: Path = ROOT
+    variant_id: str | None = None,
+    *,
+    path: Path = VARIANTS_PATH,
+    root: Path = ROOT,
+    allow_uncertified: bool = False,
 ) -> dict:
-    """The validated record; None selects the file's default variant."""
+    """The validated record; None selects the file's default variant.
+
+    Only a certified variant runs, unless a qualification run, which replays
+    its own candidate record, asks with ``allow_uncertified``."""
     document = load_document(path)
     wanted = variant_id or document["default_variant"]
     for record in document["variants"]:
         if record["variant_id"] == wanted:
             validate_record(record, root=root)
+            if record["status"] != "certified" and not allow_uncertified:
+                raise VariantError(
+                    f"{wanted} is {record['status']}, not certified; only a "
+                    "qualification run replays an uncertified variant"
+                )
             return record
-    raise VariantError(f"no certified replay variant {wanted!r}")
+    raise VariantError(f"no replay variant {wanted!r}")
 
 
 def is_legacy(record: dict) -> bool:
@@ -210,6 +247,14 @@ def validate_record(record: dict, *, root: Path = ROOT) -> None:
         certification = record["certification"]
     except (KeyError, TypeError) as exc:
         raise VariantError(f"variant record is missing {exc}") from exc
+    if not all(
+        isinstance(part, dict)
+        for part in (identity, packages, bundle, dataset, certification)
+    ):
+        raise VariantError(
+            "identity, its packages, release_bundle and dataset, and "
+            "certification must be objects"
+        )
     need(
         set(packages) == set(PACKAGES),
         "identity.packages must name exactly the three packages",
@@ -453,7 +498,93 @@ def installed_identity(*, verify_files: bool = True) -> dict:
             re.sub(r"[-_.]+", "-", d.metadata["Name"]).lower(): d.version
             for d in importlib.metadata.distributions()
         },
+        "unlisted_files": unlisted_package_files() if verify_files else {},
     }
+
+
+def unlisted_package_files(names=PACKAGES) -> dict[str, list[str]]:
+    """Files in each package's top-level directories that no installed
+    distribution's RECORD lists.
+
+    A listed file is checked against its hash, but policyengine-core also
+    loads files nobody listed: every file in a parameter directory
+    (parameters/parameter_node.py, sorted os.listdir) and every module in a
+    variable directory (taxbenefitsystems/tax_benefit_system.py,
+    add_variables_from_directory). Bytecode caches are skipped here because
+    runs never read them (isolate_bytecode)."""
+    listed = set()
+    for distribution in importlib.metadata.distributions():
+        for line in (distribution.read_text("RECORD") or "").splitlines():
+            relative = line.rsplit(",", 2)[0]
+            if relative:
+                listed.add(Path(distribution.locate_file(relative)).resolve())
+    found = {}
+    for name in names:
+        distribution = importlib.metadata.distribution(name)
+        tops = {
+            row[0].split("/", 1)[0]
+            for row in _record_rows(distribution)
+            if "/" in row[0] and ".dist-info/" not in row[0]
+        }
+        extra = []
+        for top in sorted(tops):
+            base = Path(distribution.locate_file(top))
+            for directory, subdirectories, files in os.walk(base):
+                subdirectories[:] = sorted(
+                    d for d in subdirectories if d != "__pycache__"
+                )
+                for file in sorted(files):
+                    path = Path(directory) / file
+                    if path.resolve() not in listed:
+                        extra.append(
+                            str(path.relative_to(distribution.locate_file("")))
+                        )
+        if extra:
+            found[name] = extra
+    return found
+
+
+def isolate_bytecode(runtime_root: Path, environ=os.environ) -> Path:
+    """Compile the engine from its verified sources, never from a cache.
+
+    Bytecode is read only from sys.pycache_prefix when one is set, so an
+    empty prefix with writing turned off ignores every __pycache__ beside
+    the sources (including one whose header matches its source). Spawned
+    year workers inherit both settings. Call before importing the engine."""
+    loaded = sorted(m for m in ENGINE_MODULES.values() if m in sys.modules)
+    if loaded:
+        raise VariantError(f"engine modules imported before isolation: {loaded}")
+    prefix = (runtime_root / "no-bytecode").resolve()
+    if prefix.is_symlink():
+        raise VariantError(f"{prefix} is a symlink; refusing it")
+    if prefix.exists():
+        shutil.rmtree(prefix)
+    prefix.mkdir(parents=True)
+    sys.pycache_prefix = str(prefix)
+    sys.dont_write_bytecode = True
+    environ["PYTHONPYCACHEPREFIX"] = str(prefix)
+    environ["PYTHONDONTWRITEBYTECODE"] = "1"
+    return prefix
+
+
+def verify_import_origins(names=PACKAGES) -> None:
+    """Each imported engine package is the verified distribution's own
+    files, not a same-named tree earlier on sys.path."""
+    for name in names:
+        module_name = ENGINE_MODULES[name]
+        module = sys.modules.get(module_name)
+        if module is None:
+            raise VariantError(f"{module_name} is not imported yet")
+        expected = Path(
+            importlib.metadata.distribution(name).locate_file(
+                f"{module_name}/__init__.py"
+            )
+        ).resolve()
+        if Path(module.__file__).resolve() != expected:
+            raise VariantError(
+                f"{module_name} imported from {module.__file__}, not its "
+                f"verified distribution ({expected})"
+            )
 
 
 def environment_mismatches(pins: dict[str, str], installed: dict) -> list[str]:
@@ -502,6 +633,11 @@ def verify_installed(
     mismatches = identity_mismatches(record, installed)
     pins = requirements_pins((root / record["requirements"]["path"]).read_text())
     mismatches += environment_mismatches(pins, installed)
+    mismatches += [
+        f"{name}: files outside its RECORD: {', '.join(paths[:5])}"
+        + (f" and {len(paths) - 5} more" if len(paths) > 5 else "")
+        for name, paths in sorted(installed.get("unlisted_files", {}).items())
+    ]
     if mismatches:
         raise VariantError(
             f"{record['variant_id']}: installed environment is not the certified one: "
@@ -516,9 +652,17 @@ def isolate_certification_environment(environ=os.environ) -> list[str]:
     With a Hugging Face token, policyengine.py derives the certification from
     the remote release manifest instead, which changes release_bundle fields
     (OFFLINE_BUNDLE_AUDIT.json records the 5.0.2 case; 6.2.6 behaves alike).
-    Call before importing policyengine; returns the variables removed."""
-    removed = [name for name in TOKEN_VARIABLES if environ.pop(name, None) is not None]
+    Without a token a private data repository answers 401; a public one
+    would still answer, so the proxy variables (NO_NETWORK) make the fetch
+    fail for both. Call before importing policyengine; returns the
+    variables removed."""
+    removed = [
+        name
+        for name in (*TOKEN_VARIABLES, *PROXY_EXCEPTIONS)
+        if environ.pop(name, None) is not None
+    ]
     environ.update(OFFLINE_VARIABLES)
+    environ.update(NO_NETWORK)
     return removed
 
 
@@ -583,8 +727,9 @@ def materialize_dataset(
     dataset = record["identity"]["dataset"]
     runtime_root = (runtime_root or RUNTIME_ROOT / record["variant_id"]).resolve()
     destination = runtime_root / "data" / Path(dataset["path"]).name
-    if destination.is_symlink():
-        raise VariantError(f"{destination} is a symlink; refusing it")
+    for path in (runtime_root / "data", destination):
+        if path.is_symlink():
+            raise VariantError(f"{path} is a symlink; refusing it")
     if destination.resolve().parent != (runtime_root / "data").resolve():
         raise VariantError("dataset destination escapes the runtime directory")
     if (

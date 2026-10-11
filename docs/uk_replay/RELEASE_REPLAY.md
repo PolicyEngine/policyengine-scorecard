@@ -83,10 +83,10 @@ A variant record:
 |---|---|
 | `variant_id` | `pe<wrapper>_uk<model>_<certified_data_build_id>`, recomputed from `identity`; when another identity already holds that slug (same versions, other wheels or numerical environment) the id adds `--<first 10 hex of identity_sha256>`. |
 | `identity` | Everything that determines execution. Its canonical-JSON SHA-256 is `identity_sha256`. |
-| `identity.packages` | For `policyengine`, `policyengine-uk`, `policyengine-core`: exact `version`, and `record_sha256`: the SHA-256 of the distribution's own `RECORD` entries, sorted, excluding installer bookkeeping (`INSTALLER`, `REQUESTED`, `RECORD`, `direct_url.json`, `uv_cache.json`), bytecode, and the console-script wrappers the installer generates outside site-packages (their shebang names the environment's interpreter). Every listed file is checked on disk against its recorded hash when the identity is read, so the digest binds the wheel's installed contents, and pip and uv installs of one wheel agree. Optional `wheel_sha256` when the wheel itself was hashed. |
+| `identity.packages` | For `policyengine`, `policyengine-uk`, `policyengine-core`: exact `version`, and `record_sha256`: the SHA-256 of the distribution's own `RECORD` entries, sorted, excluding installer bookkeeping (`INSTALLER`, `REQUESTED`, `RECORD`, `direct_url.json`, `uv_cache.json`), bytecode, and the console-script wrappers the installer generates outside site-packages (their shebang names the environment's interpreter). Every listed file is checked on disk against its recorded hash when the identity is read, so the digest binds the wheel's installed contents, and pip and uv installs of one wheel agree. Optional `wheel_sha256`: the wheel's digest as published on PyPI, recorded at certification; the receiver verifies each downloaded wheel against it, and the runner, which never sees a wheel, checks only its format. |
 | `identity.packaged_bundle_manifest_sha256` | SHA-256 of `policyengine/data/bundle/manifest.json` as installed. |
 | `identity.release_bundle` | The exact `pe.uk.uk_latest.release_bundle` dict expected at runtime under **packaged (offline) certification**. |
-| `identity.dataset` | `repo_id`, `repo_type`, `revision`, `path`, `sha256`, `size_bytes`, `uri`. |
+| `identity.dataset` | `repo_id`, `repo_type`, `revision`, `path`, `sha256`, `size_bytes`; `release_bundle.default_dataset_uri` must name the same file. |
 | `identity.materialization` | `hf_cache_mirror` (policyengine 5.x: the existing HF-cache plus `data/uk/policyengine-local` mirror) or `policyengine_data_dir` (6.x: a verified copy at `<runtime dir>/data/<path>`). |
 | `identity.python` | Interpreter minor version, e.g. `3.12`. |
 | `identity.requirements_sha256` | The SHA-256 of the requirements freeze below: the numerical environment (numpy, pandas, h5py and the rest) is part of the identity, because it can move numbers. |
@@ -94,7 +94,7 @@ A variant record:
 | `data_years` | Calendar years the population supports: from the dataset's first `time_period` through the engine's extension end, as observed in `simulation.dataset.years`. |
 | `data_years_evidence` | The observed `time_period`, `dataset.years` and the engine file/line that sets the extension end. |
 | `certification` | Where the pairing is certified: `source` (e.g. `policyengine.py 6.2.6 packaged manifest`), `compatibility_basis`, `certified_for_model_version`, `data_build_id`. |
-| `status` | `certified` (a released policyengine.py bundle), `candidate` (a W4 qualification request; never a default), or `retired`. |
+| `status` | `certified` (a released policyengine.py bundle), `candidate` (a W4 qualification request), or `retired`. Only a certified variant runs, and the default must be certified; a qualification run, which replays its own candidate record, passes `--allow-uncertified`. |
 | `qualification_request_sha256` | For candidates, the request the variant was built from. |
 | `executor` | `local` (GitHub runner or workstation) and/or `modal`. The populace 1.3GB dataset needs Modal's 32GiB; the 128MB enhanced FRS runs on a 16GB runner. |
 
@@ -116,23 +116,41 @@ failure:
    and `compatible_model_packages` agree with the record.
 2. **Installed environment.** Installed versions of the three packages equal
    the record; every installed file matches its `RECORD` hash and the
-   normalised `RECORD` hashes to `record_sha256`; every distribution pinned in
-   the requirements freeze is installed at its pinned version (extra
-   distributions, such as the receipt tools, are allowed); the
+   normalised `RECORD` hashes to `record_sha256`; no file sits in the three
+   packages' directories without a `RECORD` entry in some installed
+   distribution (policyengine-core loads every file in a parameter directory
+   and every module in a variable directory, listed or not); every
+   distribution pinned in the requirements freeze is installed at its pinned
+   version (extra distributions, such as the receipt tools, are allowed); the
    installed packaged manifest hashes to `packaged_bundle_manifest_sha256`;
-   the interpreter minor version matches.
-3. **Certification path.** Before importing the engine the runner removes
-   `HUGGING_FACE_TOKEN`, `HF_TOKEN` and `HUGGINGFACE_HUB_TOKEN` from the
-   environment and forces Hugging Face offline mode, so the wrapper uses its
-   packaged certification on every host. Then
+   the interpreter minor version matches. The legacy variant is checked the
+   same way.
+3. **What is imported.** Before the engine is imported, bytecode caching is
+   turned off and `sys.pycache_prefix` points at an empty directory, so
+   Python compiles every engine module from the verified sources and never
+   reads a `__pycache__` beside them; spawned year workers inherit both
+   settings. After import, each package's `__file__` must be its verified
+   distribution's own `__init__.py`, not a same-named tree earlier on
+   `sys.path`; each year worker checks this too.
+4. **Certification path.** Before importing the engine the runner removes
+   `HUGGING_FACE_TOKEN`, `HF_TOKEN` and `HUGGINGFACE_HUB_TOKEN` and the
+   `NO_PROXY` exceptions from the environment, forces Hugging Face offline
+   mode, and points the HTTP(S) proxy variables at a closed local port.
+   policyengine.py 6.x fetches the data release manifest with `requests`
+   (`provenance/manifest.py`, `get_data_release_manifest`), which ignores
+   `HF_HUB_OFFLINE` but reads those proxy variables, so the fetch fails at
+   once for a private or a public data repository, and
+   `certify_data_release_compatibility` falls back to the wrapper's packaged
+   certification. Then
    `dict(pe.uk.uk_latest.release_bundle) == identity.release_bundle`, exactly.
-4. **Dataset bytes.** The materialised file hashes to `dataset.sha256` and
+5. **Dataset bytes.** The materialised file hashes to `dataset.sha256` and
    has `size_bytes`, before construction and after the last aggregate
    (existing `run_managed_simulation` checks), and the simulation's reported
    runtime dataset source is that file.
-5. **Year support.** Requested years must lie in `data_years`, and inside
-   every simulation `year in simulation.dataset.years` (when the attribute
-   exists) or the run stops. Registry years outside `data_years` are not
+6. **Year support.** Requested years must lie in `data_years`, and inside
+   every simulation `year in simulation.dataset.years` or the run stops; on a
+   non-legacy variant a dataset that does not state its years stops the run
+   too (the legacy check skips it, as it always has). Registry years outside `data_years` are not
    requested by default; they are reported as unsupported (below).
 
 A model/data combination is **incompatible** when no certified variant
@@ -146,7 +164,13 @@ variant runs `calendar_years ∩ data_years`. The rest are **unsupported on the
 variant**, with a reason (`before_data_year` or `after_extension_end`).
 `RUN_MANIFEST.json` records `supported_years`, `unsupported_years` and
 `full_supported_grid_complete`; `full_event_complete` keeps its meaning
-(every registry year). Staging marks a source row whose year is unsupported
+(every registry year). Staging does not take those fields on trust: it loads
+the manifest's `variant_id` from the variants document, requires the
+manifest's identity digest, `data_years`, `supported_years` and
+`unsupported_years` to be the ones that record gives, and requires every
+artifact's variant fields to match (a legacy manifest and its artifacts carry
+none). `--resume` reads receipts only for supported years and refuses any
+receipt that names an unsupported one. Staging marks a source row whose year is unsupported
 as `status: "unsupported_on_variant"` with no numerical counterpart, kept in
 the row universe and counted separately from `not_computed`. On
 `pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0`, CY2023 is unsupported, so
@@ -168,7 +192,8 @@ FY2023–24 counterparts; that loss is shown, never hidden.
 * A namespace with `REPLAY_RECEIPT.json` is **sealed**:
   `NAMESPACE_MANIFEST.json` lists the SHA-256 of every file under it (and of
   its release diff), the receipt binds that manifest's digest, the runner
-  refuses to write there, and CI fails if any sealed byte changes. A rerun of
+  refuses to write there (compute, staging, comparison and the summary all
+  check), and CI fails if any sealed byte changes. A rerun of
   a sealed variant writes to an explicit separate output directory, and its
   bytes against the sealed run are a determinism check (CI replays one real
   measure-year this way).
