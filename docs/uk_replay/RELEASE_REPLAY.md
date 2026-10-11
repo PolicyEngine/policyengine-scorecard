@@ -261,7 +261,73 @@ issues; this pipeline files none.
 ## Qualification requests and receipts
 
 See [QUALIFICATION_INTERFACE.md](QUALIFICATION_INTERFACE.md) for the request
-W4 sends before promotion, the receipt returned, and the persistent queue.
+W4 sends before promotion and the receipt returned.
+
+### The receiver
+
+`.github/workflows/uk-replay.yml` receives `repository_dispatch` events of
+type `uk-replay-qualification-request` (and manual requests). Its `enqueue`
+job writes the request to the persistent queue on the `replay-state` branch
+before anything else (`pipeline/uk_replay_queue.py`), so GitHub cancelling
+an older pending run never loses one. Its `drain` job, one at a time
+(concurrency group `uk-replay-drain`), runs `.github/scripts/uk_replay_drain.sh`.
+That script takes the oldest pending request, marks it running, and runs
+`pipeline/uk_replay_qualify.py run-request`:
+
+1. Validate the request (`schema_invalid`).
+2. Download the requested dataset with `HUGGING_FACE_TOKEN` into the Hugging
+   Face cache and check its size and SHA-256 (`data_access_failed`,
+   `artifact_hash_mismatch`).
+3. Build the candidate environment: download the model and core wheels
+   without dependencies, check their SHA-256 against the request, then
+   install them, the wrapper (its PyPI wheel or its public commit) and the
+   receipt tools. Re-qualifying a certified pair installs that pair's exact
+   requirements freeze; a new candidate resolves within the newest certified
+   freeze, falling back to a free resolution only if its own pins conflict.
+4. Probe inside that environment: the installed identity, the release
+   bundle under packaged certification (`release_bundle_mismatch`), the
+   certification naming this model and this dataset (`incompatible_pair`),
+   and the simulation's data years (`no_supported_years`). If the
+   environment reproduces a committed variant exactly, the run uses that
+   record; otherwise it builds a candidate record whose requirements are the
+   environment's normalised freeze.
+5. Run the corpus: every event's compute, staging and comparison, the
+   summary, the construction premises, the re-verified diagnostics.
+6. Diff against `compare_to` (default: the newest other certified variant
+   whose results are committed).
+7. Seal the namespace (`NAMESPACE_MANIFEST.json`, then
+   `REPLAY_RECEIPT.json`) and copy it, the diff and the requirements to
+   `replay-state:requests/<request_id>/results/`.
+
+The receipt is committed first; the terminal `STATUS.json` follows in a
+later commit naming the receipt's digest and that commit. A step that fails
+before the candidate's identity is known yields a `failed` receipt with no
+execution block; an unexpected exception also yields a `failed` receipt, so a
+request never loops. A request still `running` seven hours after its last
+update (a cancelled or crashed job) is retried. A scheduled run every three
+hours drains whatever is left.
+
+At most one drain job runs, with at most two simulation workers, so this
+workflow never runs more than two simulations at once. These runs use GitHub
+runners; manual replays on the shared Mac also respect the host reservation
+(`python3 ~/reviews/fleet-ops/tools/reservation.py allowed w6-replay`), which
+holds heavy local work back from 29 October to 2 November.
+
+### Replay in CI
+
+`ci.yml` runs two kinds of replay check on every pull request and push:
+
+* Engine-free, in the main job: every committed namespace (legacy and each
+  variant) is re-staged and re-compared from its artifacts, every committed
+  release diff is re-rendered with `--check`, and every sealed namespace must
+  match its receipt byte for byte; the no-drift gate fails on any change.
+* `replay engine`, once per certified variant: installs the variant's exact
+  freeze, checks the installed environment against the record, runs every
+  event's construction guards, regenerates the committed construction
+  premises (and, for non-legacy variants, the re-verified diagnostics) byte
+  for byte, and, with the `HUGGING_FACE_TOKEN` secret, replays one real
+  measure-year on the certified dataset and compares the artifact with the
+  committed bytes. Without the secret that step says it did not run.
 
 ## Invariants
 
