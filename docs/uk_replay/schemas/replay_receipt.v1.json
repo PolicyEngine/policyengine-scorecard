@@ -140,7 +140,7 @@
       },
       "python": {
        "type": "string",
-       "pattern": "^3\\.[0-9]+\\.[0-9]+"
+       "pattern": "^3\\.[0-9]+\\.[0-9]+$"
       },
       "platform": {
        "type": "string",
@@ -421,6 +421,22 @@
      },
      "diff": {
       "type": "null"
+     },
+     "variant_id": {
+      "type": "null"
+     },
+     "variant_identity_sha256": {
+      "type": "null"
+     },
+     "execution": {
+      "type": "null"
+     },
+     "integrity": {
+      "properties": {
+       "status": {
+        "const": "not_run"
+       }
+      }
      }
     }
    }
@@ -429,10 +445,7 @@
    "if": {
     "properties": {
      "status": {
-      "enum": [
-       "complete",
-       "failed"
-      ]
+      "const": "complete"
      }
     }
    },
@@ -446,6 +459,14 @@
      },
      "execution": {
       "type": "object"
+     },
+     "variant_identity_sha256": {
+      "$ref": "#/$defs/sha256"
+     },
+     "results": {
+      "required": [
+       "manifest_sha256"
+      ]
      }
     }
    }
@@ -472,6 +493,29 @@
      },
      "corpus": {
       "type": "object"
+     }
+    }
+   }
+  },
+  {
+   "if": {
+    "properties": {
+     "status": {
+      "const": "failed"
+     }
+    }
+   },
+   "then": {
+    "properties": {
+     "rejection": {
+      "type": "null"
+     },
+     "integrity": {
+      "properties": {
+       "status": {
+        "const": "failed"
+       }
+      }
      }
     }
    }
