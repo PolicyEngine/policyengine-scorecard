@@ -309,7 +309,15 @@ before the candidate's identity is known yields a `failed` receipt with no
 execution block; an unexpected exception also yields a `failed` receipt, so a
 request never loops. A request still `running` seven hours after its last
 update (a cancelled or crashed job) is retried. A scheduled run every three
-hours drains whatever is left.
+hours drains whatever is left, after first queueing a `released_bundle`
+request for every policyengine.py release newer than the newest certified
+variant that no request names yet (`pipeline/uk_replay_discover.py`, at most
+three per run, oldest first). That catches releases whose dispatch never
+arrived. Their requests are built from primary artifacts: the PyPI wheel
+digests (the model's must equal the one in the wrapper's packaged manifest),
+the packaged manifest, and the data release manifest's SHA-256 and dataset
+size; the expected release bundle is read from a scratch install, so for a
+discovered request the receiver's bundle check repeats that reading.
 
 At most one drain job runs, with at most two simulation workers, so this
 workflow never runs more than two simulations at once. These runs use GitHub

@@ -12,8 +12,11 @@ name: UK replay qualification
 # older pending ones, so a request is first written to the persistent queue
 # on the `replay-state` branch (enqueue job, no concurrency group). The drain
 # job then runs queued requests one at a time. A scheduled run drains anything
-# a cancelled run left behind. A request whose run died mid-way is retried
-# after the stale bound in pipeline/uk_replay_queue.py.
+# a cancelled run left behind, and first queues a request for any
+# policyengine.py release newer than the newest certified variant whose
+# dispatch never arrived (pipeline/uk_replay_discover.py). A request whose
+# run died mid-way is retried after the stale bound in
+# pipeline/uk_replay_queue.py.
 #
 # Simulations: one drain job at a time, at most two workers inside it, so
 # never more than two simulations at once from this workflow.
@@ -44,84 +47,72 @@ jobs:
     name: record the request
     if: github.event_name == 'repository_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.request != '')
     runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: .
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - name: Check out the state branch
-        run: |
-          set -euo pipefail
-          if git ls-remote --exit-code --heads origin "$STATE_BRANCH" >/dev/null; then
-            git fetch -q origin "$STATE_BRANCH"
-            git worktree add -q state "origin/$STATE_BRANCH"
-            git -C state switch -q -C "$STATE_BRANCH"
-          else
-            git worktree add -q --orphan -b "$STATE_BRANCH" state
-          fi
-          git -C state config user.name "github-actions[bot]"
-          git -C state config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - run: bash .github/scripts/uk_replay_state.sh
       - name: Write the request
         env:
           DISPATCH_REQUEST: ${{ toJSON(github.event.client_payload.request) }}
           MANUAL_REQUEST: ${{ github.event.inputs.request }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
-          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+          if [ "$EVENT_NAME" = "repository_dispatch" ]; then
             printf '%s' "$DISPATCH_REQUEST" > "$RUNNER_TEMP/request.json"
           else
             printf '%s' "$MANUAL_REQUEST" > "$RUNNER_TEMP/request.json"
           fi
-      - name: Enqueue and push
+      - run: bash .github/scripts/uk_replay_enqueue.sh "$RUNNER_TEMP/request.json"
+
+  discover:
+    name: catch up on undispatched releases
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.request == '')
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: .
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: bash .github/scripts/uk_replay_state.sh
+      - name: Build requests for releases no request names yet
         env:
-          PYTHONPATH: .
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          HUGGING_FACE_TOKEN: ${{ secrets.HUGGING_FACE_TOKEN }}
         run: |
           set -euo pipefail
-          now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          uv run --with rfc8785==0.1.4 --with jsonschema python -m pipeline.uk_replay_queue \
-            enqueue --state state --request "$RUNNER_TEMP/request.json" --run-url "$RUN_URL" --now "$now" \
-            | tee "$RUNNER_TEMP/enqueued.txt"
-          git -C state add -A
-          if git -C state diff --cached --quiet; then
-            echo "already recorded: $(cat "$RUNNER_TEMP/enqueued.txt")"
-            exit 0
+          uv run --with rfc8785==0.1.4 --with jsonschema --with huggingface_hub --with packaging \
+            python -m pipeline.uk_replay_discover --state state --work "$RUNNER_TEMP/discover" \
+            --output-dir "$RUNNER_TEMP/discovered" --commit "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID"
+          shopt -s nullglob
+          requests=("$RUNNER_TEMP"/discovered/*.json)
+          if [ "${#requests[@]}" -gt 0 ]; then
+            bash .github/scripts/uk_replay_enqueue.sh "${requests[@]}"
+          else
+            echo "no undispatched releases"
           fi
-          git -C state commit -qm "Queue $(cut -d' ' -f1 "$RUNNER_TEMP/enqueued.txt")"
-          for attempt in 1 2 3 4 5; do
-            git -C state push -q origin "HEAD:$STATE_BRANCH" && exit 0
-            git -C state pull -q --rebase origin "$STATE_BRANCH"
-          done
-          exit 1
 
   drain:
     name: run queued requests
-    needs: [enqueue]
-    if: always() && (needs.enqueue.result == 'success' || needs.enqueue.result == 'skipped')
+    needs: [enqueue, discover]
+    if: always() && contains(fromJSON('["success", "skipped"]'), needs.enqueue.result) && contains(fromJSON('["success", "skipped"]'), needs.discover.result)
     runs-on: ubuntu-latest
     timeout-minutes: 340
     concurrency:
       group: uk-replay-drain
       cancel-in-progress: false
+    env:
+      PYTHONPATH: .
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - name: Check out the state branch
-        run: |
-          set -euo pipefail
-          if ! git ls-remote --exit-code --heads origin "$STATE_BRANCH" >/dev/null; then
-            echo "no state branch yet; nothing queued"
-            echo "EMPTY=1" >> "$GITHUB_ENV"
-            exit 0
-          fi
-          git fetch -q origin "$STATE_BRANCH"
-          git worktree add -q state "origin/$STATE_BRANCH"
-          git -C state switch -q -C "$STATE_BRANCH"
-          git -C state config user.name "github-actions[bot]"
-          git -C state config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - run: bash .github/scripts/uk_replay_state.sh
       - name: Drain the queue
-        if: env.EMPTY != '1'
         env:
-          PYTHONPATH: .
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           HUGGING_FACE_TOKEN: ${{ secrets.HUGGING_FACE_TOKEN }}
           REPLAY_RUNNER: github-actions ${{ runner.os }} ${{ runner.arch }}
         run: bash .github/scripts/uk_replay_drain.sh

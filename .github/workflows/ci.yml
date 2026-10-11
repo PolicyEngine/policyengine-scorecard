@@ -41,7 +41,7 @@ jobs:
       # pypdf + pyyaml are NOT optional extras: the HMT lane's strongest
       # honesty guarantee (every registry title and figure anchor verbatim
       # in the real PDF) runs as a test, and a bare env silently skipped it.
-      - run: uv run --with pytest --with hypothesis --with pypdf --with pyyaml --with numpy --with psutil --with rfc8785==0.1.4 --with jsonschema pytest tests/ -q
+      - run: uv run --with pytest --with hypothesis --with pypdf --with pyyaml --with numpy --with psutil --with rfc8785==0.1.4 --with jsonschema --with packaging pytest tests/ -q
         env:
           PYTHONPATH: .
       # REPLAY NAMESPACES: every committed event replay (the legacy
