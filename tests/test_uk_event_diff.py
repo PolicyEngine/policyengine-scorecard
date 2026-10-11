@@ -414,21 +414,36 @@ def test_premise_changes_flag_construction_and_current_law_is_context(ns):
         }
     }
     base["premises"] = premise
-    moved = copy.deepcopy(premise)
-    moved["events"][EVENT]["measures"][KEY]["years"]["2024"]["paths"][
-        "gov.tax.rate"
-    ].update(current_law=0.35, reform_world=0.35)
-    head["premises"] = moved
-    record = next(
-        r
-        for r in diff.diff_sides(base, head)["rows"]
-        if r["level"] == "measure_year" and r["year"] == 2024
-    )
-    assert record["flags"] == ["construction"]
-    assert [d["code"] for d in record["details"]] == ["reform_world_value_changed"]
+
+    def record_for(head_premises):
+        head["premises"] = head_premises
+        return next(
+            r
+            for r in diff.diff_sides(base, head)["rows"]
+            if r["level"] == "measure_year" and r["year"] == 2024
+        )
+
+    def changed(**values):
+        out = copy.deepcopy(premise)
+        out["events"][EVENT]["measures"][KEY]["years"]["2024"]["paths"][
+            "gov.tax.rate"
+        ].update(values)
+        return out
+
+    # The reform world of a reversal is current law: when current law moves,
+    # that world moves with it, which is context and not a construction change.
+    record = record_for(changed(current_law=0.35, reform_world=0.35))
+    assert record["flags"] == []
     assert record["context"]["current_law_changed"] == {
         "gov.tax.rate": {"base": 0.3, "head": 0.35}
     }
+    # An executed override that changes (a re-derived counterfactual) is.
+    record = record_for(changed(baseline_world=0.25))
+    assert record["flags"] == ["construction"]
+    assert [d["code"] for d in record["details"]] == ["baseline_world_value_changed"]
+    # So is an override on one side that the other side no longer applies.
+    record = record_for(changed(baseline_world=0.3))
+    assert record["flags"] == ["construction"]
     only_current_law = copy.deepcopy(premise)
     only_current_law["events"][EVENT]["measures"][KEY]["years"]["2024"]["paths"][
         "gov.tax.rate"
