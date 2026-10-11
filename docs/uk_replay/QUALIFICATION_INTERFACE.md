@@ -224,10 +224,11 @@ How flags arise, so a gate built on them sees the intended events:
    Hugging Face token variables and `NO_PROXY`/`no_proxy` removed, and the
    HTTP(S) proxy variables pointed at a closed local port, exactly as
    `uk_replay_variants.isolate_certification_environment` does. (Amended 11
-   October, pending W4's confirmation: removing the tokens alone forces the
-   packaged certification only for a private data repository; policyengine.py
-   fetches the release manifest with `requests`, which ignores
-   `HF_HUB_OFFLINE`, so a public one would still answer.)
+   October and confirmed by W4 the same day, implemented in
+   policyengine.py#574: removing the tokens alone forces the packaged
+   certification only for a private data repository; policyengine.py fetches
+   the release manifest with `requests`, which ignores `HF_HUB_OFFLINE`, so a
+   public one would still answer.)
 5. W4's proposed gate on these fields (pending d1344): `rejected`, `failed`,
    integrity `failed` or `incomplete`, and structural, coverage, mapping,
    inertness or construction flags fail the replay gate; numerical and

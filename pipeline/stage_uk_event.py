@@ -139,6 +139,13 @@ def manifest_variant(
         raise ValueError("the legacy variant's manifest names no variant_id")
     if manifest.get("variant_identity_sha256") != record["identity_sha256"]:
         raise ValueError("compute manifest variant identity differs from its record")
+    identity = record["identity"]
+    if manifest.get("certified_dataset_sha256") != identity["dataset"][
+        "sha256"
+    ] or manifest.get("data_bundle") != fiscal.data_bundle_id(
+        identity["release_bundle"]
+    ):
+        raise ValueError("compute manifest dataset differs from the variant's record")
     supported, unsupported = variants.supported_years(
         record, registry["calendar_years"]
     )

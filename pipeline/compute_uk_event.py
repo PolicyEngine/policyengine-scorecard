@@ -285,11 +285,14 @@ def build_artifact(
 def preflight(variant: dict | None = None) -> dict:
     """The committed pin and the managed release must agree before any run.
 
-    Given the legacy variant record, the engine is also compiled from its
-    verified sources and imported from its own distributions."""
+    Given the legacy variant record, the run is also isolated like any other
+    variant's (packaged certification, engine compiled from its verified
+    sources and imported from its own distributions) and the release bundle
+    must equal the record's exactly."""
     fiscal.configure_offline()
     worlds.configure_offline()
     if variant is not None:
+        variants.isolate_certification_environment()
         variants.isolate_bytecode(variants.RUNTIME_ROOT / variant["variant_id"])
     committed = worlds.preflight()
     managed = fiscal.preflight_certified_dataset()
@@ -300,6 +303,7 @@ def preflight(variant: dict | None = None) -> dict:
         raise RuntimeError("managed release differs from data/uk/certified_bundle.json")
     if variant is not None:
         import_engine()
+        variants.verify_release_bundle(variant, managed["release_bundle"])
         return {**managed, "check_import_origins": True}
     return managed
 
@@ -713,7 +717,10 @@ def main(argv: list[str] | None = None) -> int:
         raise ValueError("\n".join(coverage))
     if args.dry_run or args.guards:
         if args.guards:
+            # --guards reads the installed engine: check it is the certified
+            # one and compile it from its verified sources.
             check_variant_environment(variant)
+            variants.isolate_bytecode(variants.RUNTIME_ROOT / variant["variant_id"])
         try:
             resolve = worlds.engine_resolver()
         except ImportError:
@@ -724,6 +731,8 @@ def main(argv: list[str] | None = None) -> int:
             gaps = worlds.reversal_delta_mismatches(index, resolve, years=years)
             if gaps:
                 raise ValueError("\n".join(gaps))
+            if args.guards:
+                import_engine()
             guard = "every reversal delta restates certified current law"
         plan = {
             "event": args.event,
