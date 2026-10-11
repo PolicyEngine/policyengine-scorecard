@@ -105,6 +105,10 @@ def stage_event(
     """Engine-free staging; missing measures and unsupported FYs stay visible."""
     artifacts = {}
     paths = {}
+    # A non-legacy variant's manifest names its identity and the registry
+    # years its population cannot supply (RELEASE_REPLAY.md).
+    variant_id = (manifest or {}).get("variant_id")
+    unsupported = {row["year"] for row in (manifest or {}).get("unsupported_years", [])}
     if manifest is not None:
         event = registry.get("event_slug", registry.get("event"))
         if event is not None and manifest.get("event", event) != event:
@@ -142,6 +146,18 @@ def stage_event(
             registry_sha256,
             manifest["certified_dataset_sha256"],
         )
+        if variant_id is not None and (
+            artifact.get("variant_id") != variant_id
+            or artifact.get("variant_identity_sha256")
+            != manifest["variant_identity_sha256"]
+        ):
+            raise ValueError(
+                "artifact variant identity differs from the compute manifest"
+            )
+        if year in unsupported:
+            raise ValueError(
+                f"{key} {year}: artifact in a year the variant's population does not support"
+            )
     planned = compute.worlds.computable(index, years=registry["calendar_years"])
     full_pairs = {
         (key, year)
@@ -150,6 +166,7 @@ def stage_event(
         for year in registry["calendar_years"]
     }
     computed_pairs = set(artifacts)
+    supported_pairs = {pair for pair in full_pairs if pair[1] not in unsupported}
     if computed_pairs - full_pairs:
         raise ValueError(
             "committed artifact is outside the event's executable measure/year grid"
@@ -217,6 +234,17 @@ def stage_event(
                 raise ValueError(
                     "compute manifest full-event completeness is inaccurate"
                 )
+            if variant_id is not None:
+                if declared_pairs("full_supported_grid") != supported_pairs:
+                    raise ValueError(
+                        "compute manifest supported grid differs from the variant's years"
+                    )
+                if manifest["full_supported_grid_complete"] != (
+                    supported_pairs <= computed_pairs
+                ):
+                    raise ValueError(
+                        "compute manifest supported-grid completeness is inaccurate"
+                    )
         elif "measures" in manifest and "years" in manifest:
             requested = {
                 (key, year)
@@ -308,6 +336,18 @@ def stage_event(
                 row["reason"] = (
                     "FY start outside this event's documented certified-bundle support"
                 )
+            elif year in unsupported:
+                data_years = manifest["data_years"]
+                reason = next(
+                    r["reason"]
+                    for r in manifest["unsupported_years"]
+                    if r["year"] == year
+                )
+                row["status"] = "unsupported_on_variant"
+                row["reason"] = (
+                    f"CY{year} is outside {variant_id}'s supported data years "
+                    f"{data_years[0]}–{data_years[-1]} ({reason})"
+                )
             elif artifact is None:
                 row["reason"] = (
                     "no numerical artifact for this measure and calendar year"
@@ -392,6 +432,20 @@ def stage_event(
     }
     if inert_pairs:
         tally["inert_measure_years"] = compute.grid_rows(inert_pairs)
+    if variant_id is not None:
+        tally.update(
+            {
+                "variant_id": variant_id,
+                "unsupported_years": sorted(unsupported),
+                "unsupported_measure_years": compute.grid_rows(
+                    full_pairs - supported_pairs
+                ),
+                "supported_grid_size": len(supported_pairs),
+                "full_supported_grid_complete": supported_pairs <= computed_pairs
+                and not inert_pairs,
+                "unsupported_source_rows": counts.get("unsupported_on_variant", 0),
+            }
+        )
     if tally["source_rows"] != tally["staged_rows"]:
         raise ValueError(
             "staging inventory does not preserve the source-row accounting identity"

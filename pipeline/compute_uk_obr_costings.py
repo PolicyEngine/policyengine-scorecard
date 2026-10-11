@@ -1070,6 +1070,17 @@ def run_managed_simulation(
             ]
             if missing:
                 raise RuntimeError(f"managed sim lacks variables: {missing}")
+            # A year outside the dataset's projected years has no inputs: it
+            # calculates defaults without raising (a 2023 income tax of zero
+            # on a 2024 dataset). Both pinned engines expose dataset.years.
+            dataset_years = getattr(getattr(sim, "dataset", None), "years", None)
+            if dataset_years is not None and int(year) not in {
+                int(value) for value in dataset_years
+            }:
+                raise RuntimeError(
+                    f"{year} is outside the simulation dataset's years "
+                    f"{sorted(int(value) for value in dataset_years)}"
+                )
             aggregates: dict[str, float] = {}
             for name in variables:
                 calculated = sim.calculate(name, str(year))

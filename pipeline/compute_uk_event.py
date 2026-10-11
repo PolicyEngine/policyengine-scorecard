@@ -25,6 +25,7 @@ from pathlib import Path
 from pipeline import build_uk_event_registry as registry_builder
 from pipeline import compute_uk_ab2025 as worlds
 from pipeline import compute_uk_obr_costings as fiscal
+from pipeline import uk_replay_variants as variants
 
 ROOT = worlds.ROOT
 EVENT_PATTERN = re.compile(r"^[a-z0-9]+(?:_[a-z0-9]+)*$")
@@ -189,6 +190,7 @@ def build_artifact(
     certified: dict,
     registry_sha256: str,
     event: str,
+    variant_fields: dict | None = None,
 ) -> dict:
     """Numerical facts only: identical inputs produce identical artifact bytes.
 
@@ -275,6 +277,8 @@ def build_artifact(
     }
     if reversal:
         artifact["literal_reversal_minus_certified_gbp"] = literal
+    # Legacy artifacts carry no variant fields, so their bytes are unchanged.
+    artifact.update(variant_fields or {})
     return artifact
 
 
@@ -290,6 +294,49 @@ def preflight() -> dict:
     ):
         raise RuntimeError("managed release differs from data/uk/certified_bundle.json")
     return managed
+
+
+def variant_identity_fields(variant: dict) -> dict:
+    """Artifact and receipt identity of a non-legacy variant; legacy: none."""
+    if variants.is_legacy(variant):
+        return {}
+    return {
+        "variant_id": variant["variant_id"],
+        "variant_identity_sha256": variant["identity_sha256"],
+    }
+
+
+def check_variant_environment(variant: dict) -> dict:
+    """Engine-free: the record is certified and the installed wheels are its own."""
+    variants.validate_record(variant)
+    return variants.verify_installed(variant)
+
+
+def variant_preflight(variant: dict, *, dataset_source: Path | None = None) -> dict:
+    """Validate a non-legacy variant exactly before any simulation.
+
+    Order matters: the certification environment is isolated before the
+    wrapper is imported, and the working directory moves to the runtime
+    directory whose ./data holds the verified dataset, where policyengine.py
+    6.x materialises its default dataset. Spawned year workers inherit both.
+    """
+    installed = check_variant_environment(variant)
+    variants.isolate_certification_environment()
+    fiscal.configure_offline()
+    worlds.configure_offline()
+    runtime_root = (variants.RUNTIME_ROOT / variant["variant_id"]).resolve()
+    dataset = variants.materialize_dataset(variant, runtime_root, source=dataset_source)
+    os.chdir(runtime_root)
+    import policyengine as pe
+
+    release_bundle = dict(pe.uk.uk_latest.release_bundle)
+    variants.verify_release_bundle(variant, release_bundle)
+    return {
+        "release_bundle": release_bundle,
+        "sha256": variant["identity"]["dataset"]["sha256"],
+        "runtime_dataset_source": str(dataset),
+        "installed": installed,
+    }
 
 
 def run_sim(year: int, variables: list[str], reform: dict | None, pre: dict) -> dict:
@@ -365,6 +412,7 @@ def run_year_job(job: dict) -> dict:
             certified=baseline,
             registry_sha256=job["registry_sha256"],
             event=job["event"],
+            variant_fields=job.get("variant_fields"),
         )
         path = job["output_dir"] / f"{key}_{year}.json"
         fiscal.atomic_write_bytes(path, canonical_bytes(artifact))
@@ -397,6 +445,7 @@ def progress_receipt(job: dict, artifacts: dict[str, str]) -> dict:
         "data_bundle": fiscal.data_bundle_id(job["pre"]["release_bundle"]),
         "engine_version": fiscal.package_version("policyengine-uk"),
         **runtime_versions(),
+        **(job.get("variant_fields") or {}),
         "artifacts": artifacts,
     }
 
@@ -408,8 +457,10 @@ def retained_artifact_digests(
     years: list[int],
     registry_sha256: str,
     pre: dict,
+    variant_fields: dict | None = None,
 ) -> dict[str, str]:
     """Read only SHA-bound completed outputs; unreceipted files are ignored."""
+    variant_fields = variant_fields or {}
     receipts = []
     manifest_path = output_dir / "RUN_MANIFEST.json"
     if manifest_path.exists():
@@ -418,6 +469,7 @@ def retained_artifact_digests(
             manifest.get("event") == event
             and manifest.get("registry_sha256") == registry_sha256
             and manifest.get("certified_dataset_sha256") == pre["sha256"]
+            and all(manifest.get(k) == v for k, v in variant_fields.items())
         ):
             receipts.append(manifest)
     for year in years:
@@ -431,6 +483,7 @@ def retained_artifact_digests(
                 "year": year,
                 "registry_sha256": registry_sha256,
                 "pre": pre,
+                "variant_fields": variant_fields,
             },
             {},
         )
@@ -474,6 +527,38 @@ def validate_years(requested: list[int], registry: dict) -> list[int]:
     return years
 
 
+def validate_variant_years(
+    requested: list[int], registry: dict, variant: dict
+) -> list[int]:
+    """Registry years the variant's population supports.
+
+    A year before the dataset's first time period computes without error but
+    from absent inputs (a 2023 income tax of zero on a 2024 dataset), so an
+    unsupported year is refused, never run; by default it is reported.
+    """
+    allowed = registry.get("calendar_years")
+    if not allowed:
+        raise ValueError("registry must record the supported calendar_years")
+    supported, unsupported = variants.supported_years(variant, allowed)
+    if not supported:
+        raise ValueError(
+            f"{variant['variant_id']} supports none of this event's years {allowed}"
+        )
+    years = sorted(set(requested or supported))
+    if set(years) - set(allowed):
+        raise ValueError(
+            f"years {years} outside this event's documented support {allowed}"
+        )
+    refused = sorted(set(years) - set(supported))
+    if refused:
+        raise ValueError(
+            f"years {refused} are outside {variant['variant_id']}'s data years "
+            f"{variant['data_years'][0]}-{variant['data_years'][-1]}: "
+            f"{[row for row in unsupported if row['year'] in refused]}"
+        )
+    return years
+
+
 def verify_registry_identity(path: Path, expected_sha256: str) -> None:
     if fiscal.sha256_file(path) != expected_sha256:
         raise ValueError(
@@ -510,6 +595,15 @@ def main(argv: list[str] | None = None) -> int:
     worlds.configure_offline()
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--event", required=True)
+    ap.add_argument(
+        "--variant",
+        help="certified replay variant (data/uk/replay_variants.json); default: the file's default",
+    )
+    ap.add_argument(
+        "--dataset-file",
+        type=Path,
+        help="a local file holding the variant's certified dataset bytes (verified by SHA-256)",
+    )
     ap.add_argument("--registry", type=Path)
     ap.add_argument("--output-dir", type=Path)
     ap.add_argument("--measures", nargs="*")
@@ -525,9 +619,17 @@ def main(argv: list[str] | None = None) -> int:
         help="spawn at most two year workers; each holds one live managed simulation",
     )
     args = ap.parse_args(argv)
+    variant = variants.get_variant(args.variant)
+    legacy = variants.is_legacy(variant)
+    variant_fields = variant_identity_fields(variant)
     default_registry, default_output = event_paths(args.event)
-    registry_path = args.registry or default_registry
+    if not legacy:
+        default_output = variants.event_output_dir(variant, args.event)
+    # Absolute before a variant preflight moves into its runtime directory.
+    registry_path = (args.registry or default_registry).resolve()
     output_dir = (args.output_dir or default_output).resolve()
+    if args.dataset_file is not None:
+        args.dataset_file = args.dataset_file.resolve()
     registry_payload = registry_path.read_bytes()
     registry = json.loads(registry_payload)
     validate_event_identity(registry, args.event)
@@ -544,7 +646,11 @@ def main(argv: list[str] | None = None) -> int:
             "or an explicit --output-dir"
         )
     registry_sha256 = fiscal.hashlib.sha256(registry_payload).hexdigest()
-    years = validate_years(args.years or [], registry)
+    years = (
+        validate_years(args.years or [], registry)
+        if legacy
+        else validate_variant_years(args.years or [], registry, variant)
+    )
     index = {measure["measure_key"]: measure for measure in registry["measures"]}
     planned = worlds.computable(index, years=years)
     runnable = {key: world for key, world in planned.items() if "alias_of" not in world}
@@ -559,6 +665,8 @@ def main(argv: list[str] | None = None) -> int:
     if coverage:
         raise ValueError("\n".join(coverage))
     if args.dry_run or args.guards:
+        if not legacy and args.guards:
+            check_variant_environment(variant)
         try:
             resolve = worlds.engine_resolver()
         except ImportError:
@@ -570,31 +678,41 @@ def main(argv: list[str] | None = None) -> int:
             if gaps:
                 raise ValueError("\n".join(gaps))
             guard = "every reversal delta restates certified current law"
-        print(
-            json.dumps(
-                {
-                    "event": args.event,
-                    "years": years,
-                    "selected": selected,
-                    "not_computable": worlds.not_computable(index, years=years),
-                    "guard": guard,
-                    "annual_lookup_reforms": {
-                        key: {
-                            field: annual_reform(runnable[key][field])
-                            for field in ("baseline_reform", "reform_reform")
-                        }
-                        for key in selected
-                    },
-                },
-                indent=1,
-                sort_keys=True,
+        plan = {
+            "event": args.event,
+            "years": years,
+            "selected": selected,
+            "not_computable": worlds.not_computable(index, years=years),
+            "guard": guard,
+            "annual_lookup_reforms": {
+                key: {
+                    field: annual_reform(runnable[key][field])
+                    for field in ("baseline_reform", "reform_reform")
+                }
+                for key in selected
+            },
+        }
+        if not legacy:
+            supported, unsupported = variants.supported_years(
+                variant, registry["calendar_years"]
             )
-        )
+            plan.update(
+                variant_fields,
+                supported_years=supported,
+                unsupported_years=unsupported,
+                output_dir=fiscal.relative_to_root(output_dir),
+            )
+        print(json.dumps(plan, indent=1, sort_keys=True))
         return 0
     started = time.perf_counter()
+    variants.assert_not_sealed(output_dir)
     verify_registry_identity(registry_path, registry_sha256)
     print(f"[pid {os.getpid()}] starting offline bundle preflight", flush=True)
-    pre = preflight()
+    pre = (
+        preflight()
+        if legacy
+        else variant_preflight(variant, dataset_source=args.dataset_file)
+    )
     print(
         f"[pid {os.getpid()}] offline bundle preflight complete; starting processed-world reversal guard",
         flush=True,
@@ -614,11 +732,21 @@ def main(argv: list[str] | None = None) -> int:
         years=registry["calendar_years"],
         registry_sha256=registry_sha256,
         pre=pre,
+        variant_fields=variant_fields,
     )
     requested_pairs = {(key, year) for key in selected for year in years}
     full_pairs = {
         (key, year) for key in runnable for year in registry["calendar_years"]
     }
+    supported_pairs = (
+        full_pairs
+        if legacy
+        else {
+            (key, year)
+            for key, year in full_pairs
+            if year in variants.supported_years(variant, registry["calendar_years"])[0]
+        }
+    )
     expected_paths = {
         str((output_dir / f"{key}_{year}.json").relative_to(ROOT)): (key, year)
         for key, year in full_pairs
@@ -648,7 +776,7 @@ def main(argv: list[str] | None = None) -> int:
             or previous.get("year") != year
             or any(
                 previous.get(field) != value
-                for field, value in runtime_versions().items()
+                for field, value in {**runtime_versions(), **variant_fields}.items()
             )
         ):
             raise ValueError("retained artifact identity differs from its receipt")
@@ -679,6 +807,7 @@ def main(argv: list[str] | None = None) -> int:
                     "registry_sha256": registry_sha256,
                     "event": args.event,
                     "output_dir": output_dir,
+                    "variant_fields": variant_fields,
                     "retained_artifacts": {
                         str(
                             (output_dir / f"{key}_{year}.json").relative_to(ROOT)
@@ -723,6 +852,16 @@ def main(argv: list[str] | None = None) -> int:
         **runtime_versions(),
         "not_computable": worlds.not_computable(index, years=years),
     }
+    if not legacy:
+        manifest.update(
+            variants.manifest_fields(
+                variant,
+                registry["calendar_years"],
+                full_pairs,
+                supported_pairs,
+                artifact_pairs,
+            )
+        )
     fiscal.atomic_write_bytes(
         output_dir / "RUN_MANIFEST.json", canonical_bytes(manifest)
     )

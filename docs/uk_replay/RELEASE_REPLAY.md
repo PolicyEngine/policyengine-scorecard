@@ -83,7 +83,7 @@ A variant record:
 |---|---|
 | `variant_id` | `pe<wrapper>_uk<model>_<certified_data_build_id>`; must equal the slug recomputed from `identity`. |
 | `identity` | Everything that determines execution. Its canonical-JSON SHA-256 is `identity_sha256`. |
-| `identity.packages` | For `policyengine`, `policyengine-uk`, `policyengine-core`: exact `version`, and `record_sha256`, the SHA-256 of the installed distribution's `RECORD` file (it lists every installed file with its hash, so it binds the wheel contents). Optional `wheel_sha256` when the wheel itself was hashed. |
+| `identity.packages` | For `policyengine`, `policyengine-uk`, `policyengine-core`: exact `version`, and `record_sha256`: the SHA-256 of the distribution's own `RECORD` entries, sorted, excluding installer bookkeeping (`INSTALLER`, `REQUESTED`, `RECORD`, `direct_url.json`) and bytecode. Every listed file is checked on disk against its recorded hash when the identity is read, so the digest binds the wheel's installed contents, and pip and uv installs of one wheel agree. Optional `wheel_sha256` when the wheel itself was hashed. |
 | `identity.packaged_bundle_manifest_sha256` | SHA-256 of `policyengine/data/bundle/manifest.json` as installed. |
 | `identity.release_bundle` | The exact `pe.uk.uk_latest.release_bundle` dict expected at runtime under **packaged (offline) certification**. |
 | `identity.dataset` | `repo_id`, `repo_type`, `revision`, `path`, `sha256`, `size_bytes`, `uri`. |
@@ -114,7 +114,8 @@ failure:
    `certified_bundle.json`'s `revision`, `sha256`, `size_bytes`, `repo_id`
    and `compatible_model_packages` agree with the record.
 2. **Installed environment.** Installed versions of the three packages equal
-   the record; each installed `RECORD` hashes to `record_sha256`; the
+   the record; every installed file matches its `RECORD` hash and the
+   normalised `RECORD` hashes to `record_sha256`; the
    installed packaged manifest hashes to `packaged_bundle_manifest_sha256`;
    the interpreter minor version matches.
 3. **Certification path.** Before importing the engine the runner removes
