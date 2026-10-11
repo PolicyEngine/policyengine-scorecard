@@ -152,16 +152,25 @@ class SimulationSlots:
     shorten it, so no write can take a slot from anyone.
 
     ``head-{slot}`` is a hint naming the newest generation; readers walk
-    forward from it, so a stale hint costs reads, never safety. Its random
-    chain id separates generations written after Modal expires idle entries
-    (7 days without a read or write) from any older key that survives.
+    forward from it. Its random chain id separates generations written after
+    Modal expires idle entries (7 days without a read or write) from any
+    older key that survives.
+
+    What is guaranteed, and when. With every protocol step (acquire or
+    renew: a few consecutive Dict calls) finishing within 7 days, two
+    holders never hold one slot. Stalls between steps (an image build, a
+    run, a closed laptop) are safe whatever their length. A step that stalls
+    longer is handled in the cases a client can detect: a step that took
+    over a day gives its claim back and writes no head, and a reader whose
+    head names a claim that is gone (a head written late, after its keys
+    expired) blocks the slot for one lease instead of taking it. One case
+    is not covered: a head write that reaches the server 7 or more days
+    late and names a generation that still exists while later ones have
+    expired.
 
     Every Dict call is one step of a generator (``_try_steps``,
     ``_renew_steps``, ``_release_steps``), so tests interleave several
-    holders call by call. The guarantee assumes no process stalls for days
-    inside one of these steps (a few consecutive Dict calls): a write made
-    after Modal expired the keys it read could recreate one. Stalls between
-    steps (an image build, a run, a closed laptop) are safe.
+    holders call by call.
     """
 
     def __init__(
@@ -186,6 +195,8 @@ class SimulationSlots:
 
     def _try_steps(self, slot: int):
         head_key = f"head-{slot}"
+        # Before the first call: a response can sit unread through a stall.
+        looked = self.clock()
         head = yield ("get", head_key)
         if head is None:
             fresh = {"chain": self.chain_id(), "generation": -1}
@@ -193,11 +204,23 @@ class SimulationSlots:
             head = yield ("get", head_key)
             if head is None:
                 return None
-        looked = self.clock()
         chain, generation = head["chain"], head["generation"]
         newest = None
         if generation >= 0:
             newest = yield ("get", self.claim_key(slot, chain, generation))
+            if newest is None:
+                # A head is written after its claim, and readers touch both,
+                # so a head whose claim is gone was written late, after its
+                # keys expired, and may hide a live holder elsewhere. Any
+                # such holder's lease began before that write: block the
+                # slot for one lease instead of taking it.
+                blocker = {
+                    "holder": f"blocked-by:{self.holder}",
+                    "expires": self.clock() + self.lease,
+                    "released": False,
+                }
+                yield ("put", self.claim_key(slot, chain, generation), blocker, True)
+                return None
         while True:
             following = yield ("get", self.claim_key(slot, chain, generation + 1))
             if following is None:
@@ -218,7 +241,13 @@ class SimulationSlots:
             # the head alone, so a stale chain never replaces a live one.
             yield ("put", key, self._claim(expires, released=True), False)
             return None
-        yield ("put", head_key, {"chain": chain, "generation": generation + 1}, False)
+        try:
+            head = {"chain": chain, "generation": generation + 1}
+            yield ("put", head_key, head, False)
+        except Exception:
+            # The claim exists but the hint may not: do not hold the slot.
+            yield ("put", key, self._claim(expires, released=True), False)
+            raise
         return Lease(slot, chain, generation + 1, expires)
 
     def _renew_steps(self, lease: Lease):
@@ -235,8 +264,12 @@ class SimulationSlots:
         if self.clock() - began > STALE_STEP_SECONDS:
             yield ("put", key, self._claim(expires, released=True), False)
             raise LeaseLost(f"simulation slot {lease.slot} renewal stalled")
-        head = {"chain": lease.chain, "generation": lease.generation + 1}
-        yield ("put", f"head-{lease.slot}", head, False)
+        try:
+            head = {"chain": lease.chain, "generation": lease.generation + 1}
+            yield ("put", f"head-{lease.slot}", head, False)
+        except Exception:
+            yield ("put", key, self._claim(expires, released=True), False)
+            raise
         return Lease(lease.slot, lease.chain, lease.generation + 1, expires)
 
     def _release_steps(self, lease: Lease, *, grace: float = 0.0):
@@ -252,10 +285,18 @@ class SimulationSlots:
         try:
             call = next(steps)
             while True:
-                if call[0] == "get":
-                    result = self.store.get(call[1])
-                else:
-                    result = self.store.put(call[1], call[2], skip_if_exists=call[3])
+                try:
+                    if call[0] == "get":
+                        result = self.store.get(call[1])
+                    else:
+                        result = self.store.put(
+                            call[1], call[2], skip_if_exists=call[3]
+                        )
+                except Exception as error:
+                    # Let the step see a failed call, so it can give back a
+                    # claim it just made.
+                    call = steps.throw(error)
+                    continue
                 call = steps.send(result)
         except StopIteration as done:
             return done.value
@@ -854,6 +895,11 @@ def main(argv: list[str] | None = None) -> int:
     except LeaseLost:
         print("Modal run not started: its simulation slot lapsed", file=sys.stderr)
         return 75
+    except Exception as error:
+        if response is None:
+            raise
+        # The run returned its result; only leaving the app failed.
+        print(f"Modal app exit failed after the run returned: {error}", file=sys.stderr)
     finally:
         if not started or response is not None:
             slots.release(lease)

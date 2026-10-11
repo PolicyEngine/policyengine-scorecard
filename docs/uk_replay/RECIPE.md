@@ -607,9 +607,16 @@ invocations never run more than two simulations at once. How the slots hold:
   atomic create-if-absent: each holder, and each renewal, creates the slot's
   next generation key, and nothing is deleted. A holder writes only its own
   key, and only to release or shorten it. A head key names the newest
-  generation as a hint; a step that took over a day writes no head and
-  gives its claim back, so keys Modal expired (7 days idle) can never be
-  pointed back to.
+  generation as a hint.
+* Modal expires an entry after 7 days without a read or write, so the
+  guarantee is stated against that: with every protocol step (acquire or
+  renew, a few consecutive Dict calls) finishing within 7 days, two holders
+  never hold one slot, however long the gaps between steps. Longer stalls
+  are handled where a client can detect them: a step that took over a day
+  gives its claim back and writes no head, and a reader whose head names a
+  claim that is gone blocks the slot for one lease instead of taking it.
+  Not covered: a head write that arrives 7 or more days late and names a
+  generation that still exists while later ones have expired.
 * The lease (4 hours) is renewed after the image build, just before the
   remote call, and the remote function refuses to start unless its whole
   3-hour timeout plus a 10-minute margin fits inside the lease. A run
@@ -621,13 +628,15 @@ invocations never run more than two simulations at once. How the slots hold:
   without that request; a remote error; a failed stop request; a client
   killed outright) leaves the claim until the lease lapses.
 * A renewal after the lease lapsed is refused (exit 75): the slot may have
-  passed on. Waiting runs poll every 30 seconds in no set order.
+  passed on. Waiting runs poll every 30 seconds in no set order. A claim
+  whose head write fails is given back at once.
 * `tests/test_modal_uk_event.py` checks this call by call: Hypothesis
   interleaves several holders' Dict calls with clock jumps, crashes,
   interrupts and Modal's 7-day expiry of idle entries, and asserts that no two
   runs overlap on a slot and that both slots can be taken once every lease
-  has lapsed. It assumes no process stalls for days inside one protocol step
-  (a few consecutive Dict calls).
+  has lapsed (after one further lease where a reader blocked a slot). The
+  model keeps every step within 6 days; the longer stalls above have their
+  own deterministic tests.
 
 Local simulations are not in that lease: count them yourself toward the
 overall maximum of two. A full event plus one focused repeat uses both
