@@ -8,6 +8,8 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+from hypothesis import given, settings
+from hypothesis import strategies as st
 
 from pipeline import modal_uk_event as runner
 
@@ -270,11 +272,15 @@ def test_interrupted_modal_context_returns_130_without_downloading(
         runner, "input_manifest", lambda event, hf_cache=None: ({"event": event}, {})
     )
     monkeypatch.setattr(runner, "download_prefix", lambda value: tmp_path / "download")
+    slots = FakeDict()
     monkeypatch.setattr(
         runner,
         "modal_function",
         lambda mounts: (
-            SimpleNamespace(enable_output=nullcontext),
+            SimpleNamespace(
+                enable_output=nullcontext,
+                Dict=SimpleNamespace(from_name=lambda name, create_if_missing: slots),
+            ),
             SimpleNamespace(run=SuppressInterrupt),
             SimpleNamespace(remote=interrupted_remote),
         ),
@@ -286,6 +292,8 @@ def test_interrupted_modal_context_returns_130_without_downloading(
     )
     assert runner.main(["--event", "autumn_budget_2024", "--execute"]) == 130
     assert "interrupted; no output downloaded" in capsys.readouterr().err
+    # The interrupted run gave its simulation slot back.
+    assert not [key for key in slots.data if key.startswith("slot-")]
 
 
 def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
@@ -359,3 +367,99 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
         for key in recorded["env"]
     )
     assert len(recorded["mounts"]) == len(mounts) + 1  # build-time frozen requirements
+
+
+class FakeDict:
+    """A Modal Dict's put/get/pop, with put(skip_if_exists=True) atomic."""
+
+    def __init__(self):
+        self.data = {}
+
+    def put(self, key, value, *, skip_if_exists=False):
+        if skip_if_exists and key in self.data:
+            return False
+        self.data[key] = value
+        return True
+
+    def get(self, key, default=None):
+        return self.data.get(key, default)
+
+    def pop(self, key, default=None):
+        return self.data.pop(key, default)
+
+
+class Clock:
+    def __init__(self):
+        self.now = 1_000.0
+
+    def __call__(self):
+        return self.now
+
+
+def test_two_slots_then_a_third_run_waits():
+    store, clock = FakeDict(), Clock()
+    a = runner.SimulationSlots(store, holder="a", clock=clock)
+    b = runner.SimulationSlots(store, holder="b", clock=clock)
+    c = runner.SimulationSlots(store, holder="c", clock=clock)
+    assert {a.acquire(), b.acquire()} == {0, 1}
+    sleeps = []
+
+    def sleep(seconds):
+        sleeps.append(seconds)
+        clock.now += seconds
+
+    with pytest.raises(TimeoutError):
+        c.acquire(wait_seconds=60, poll_seconds=30, sleep=sleep)
+    assert sleeps == [30, 30]
+    c.release(0)  # not its slot: no effect
+    assert store.get("slot-0")["holder"] in ("a", "b")
+    a.release(0 if store.get("slot-0")["holder"] == "a" else 1)
+    assert c.acquire(wait_seconds=0, sleep=sleep) in (0, 1)
+
+
+def test_an_expired_slot_is_reclaimed_once():
+    store, clock = FakeDict(), Clock()
+    dead = runner.SimulationSlots(store, holder="dead", clock=clock, count=1)
+    dead.acquire()
+    clock.now += runner.LEASE_SECONDS + 1
+    first = runner.SimulationSlots(store, holder="first", clock=clock, count=1)
+    second = runner.SimulationSlots(store, holder="second", clock=clock, count=1)
+    assert first._try(0) is True
+    assert second._try(0) is False
+    assert store.get("slot-0")["holder"] == "first"
+    dead.release(0)  # the dead holder cannot free the new lease
+    assert store.get("slot-0")["holder"] == "first"
+
+
+def test_a_live_lease_outlasts_the_function_timeout():
+    assert runner.LEASE_SECONDS > runner.RESOURCE_LIMITS["timeout_seconds"]
+
+
+@settings(max_examples=300, deadline=None)
+@given(
+    st.lists(
+        st.tuples(st.sampled_from("abcd"), st.sampled_from(["try", "release", "tick"])),
+        max_size=40,
+    )
+)
+def test_never_more_than_two_live_holders(operations):
+    store, clock = FakeDict(), Clock()
+    slots = {h: runner.SimulationSlots(store, holder=h, clock=clock) for h in "abcd"}
+    held = {}
+    for holder, action in operations:
+        if action == "tick":
+            clock.now += 600  # well inside a lease
+        elif action == "try" and holder not in held:
+            for slot in range(runner.SLOT_COUNT):
+                if slots[holder]._try(slot):
+                    held[holder] = slot
+                    break
+        elif action == "release" and holder in held:
+            slots[holder].release(held.pop(holder))
+        live = {
+            value["holder"]
+            for key, value in store.data.items()
+            if key.startswith("slot-") and value["expires"] > clock.now
+        }
+        assert len(live) <= runner.SLOT_COUNT
+        assert live == set(held)

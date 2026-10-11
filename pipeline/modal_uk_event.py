@@ -100,6 +100,74 @@ OFFLINE_ENV = {
 }
 
 
+SLOTS_DICT = "scorecard-replay-simulation-slots"
+SLOT_COUNT = 2
+# Longer than the function timeout (10,800 s), so a live run never loses its
+# slot; a holder that died without releasing frees it after this.
+LEASE_SECONDS = 4 * 60 * 60
+
+
+class SimulationSlots:
+    """At most two replay simulations at once across Modal invocations.
+
+    Each invocation runs one worker, and separate invocations share no
+    Modal-side limit, so a third concurrent run would exceed the two the
+    shared account allows. Before starting, an invocation takes one of two
+    slots in a named Modal Dict: ``put(key, value, skip_if_exists=True)`` is
+    an atomic create-if-absent on the server. An expired slot is reclaimed by
+    whoever first creates its one-time reclaim token, so two reclaimers
+    cannot both take it.
+    """
+
+    def __init__(
+        self, store, *, holder, count=SLOT_COUNT, lease=LEASE_SECONDS, clock=time.time
+    ):
+        self.store, self.holder, self.count, self.lease, self.clock = (
+            store,
+            holder,
+            count,
+            lease,
+            clock,
+        )
+
+    def _try(self, slot: int) -> bool:
+        key = f"slot-{slot}"
+        claim = {"holder": self.holder, "expires": self.clock() + self.lease}
+        if self.store.put(key, claim, skip_if_exists=True):
+            return True
+        current = self.store.get(key)
+        if current is None or current["expires"] > self.clock():
+            return False
+        token = f"reclaim-{slot}-{current['holder']}-{current['expires']}"
+        if not self.store.put(token, self.holder, skip_if_exists=True):
+            return False
+        self.store.pop(key, None)
+        return bool(self.store.put(key, claim, skip_if_exists=True))
+
+    def acquire(
+        self,
+        *,
+        wait_seconds: float = 6 * 60 * 60,
+        poll_seconds: float = 30,
+        sleep=time.sleep,
+    ) -> int:
+        deadline = self.clock() + wait_seconds
+        while True:
+            for slot in range(self.count):
+                if self._try(slot):
+                    return slot
+            if self.clock() >= deadline:
+                raise TimeoutError("no simulation slot became free")
+            print("[modal] both simulation slots are held; waiting", flush=True)
+            sleep(poll_seconds)
+
+    def release(self, slot: int) -> None:
+        key = f"slot-{slot}"
+        current = self.store.get(key)
+        if current is not None and current["holder"] == self.holder:
+            self.store.pop(key, None)
+
+
 def canonical_bytes(value: object) -> bytes:
     return (
         json.dumps(value, indent=1, sort_keys=True, allow_nan=False) + "\n"
@@ -641,8 +709,16 @@ def main(argv: list[str] | None = None) -> int:
         raise ValueError("choose an empty download prefix before a remote run")
     modal, app, replay = modal_function(mounts)
     response = None
-    with modal.enable_output(), app.run():
-        response = replay.remote(payload)
+    slots = SimulationSlots(
+        modal.Dict.from_name(SLOTS_DICT, create_if_missing=True),
+        holder=f"{platform.node()}:{os.getpid()}:{digest_bytes(canonical_bytes(request))[:12]}",
+    )
+    slot = slots.acquire()
+    try:
+        with modal.enable_output(), app.run():
+            response = replay.remote(payload)
+    finally:
+        slots.release(slot)
     if response is None:
         print("Modal run interrupted; no output downloaded", file=sys.stderr)
         return 130

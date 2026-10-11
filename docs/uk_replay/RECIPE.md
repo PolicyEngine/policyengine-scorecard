@@ -598,9 +598,11 @@ fields and head effects. `--allow-changed-existing` permits replacement only
 after that report has been reviewed; original bytes remain in the backup.
 `--allow-partial` permits read-only inspection of a focused download, but
 partial or noncanonical outputs cannot be adopted. Keep raw receipts for
-provenance. Each Modal invocation uses one replay worker. Count every
-active invocation and local simulation toward the overall maximum of two;
-separate invocations do not share a global concurrency gate. A full event
+provenance. Each Modal invocation uses one replay worker and first takes one of two
+simulation slots in the Modal Dict `scorecard-replay-simulation-slots`
+(`modal_uk_event.SimulationSlots`), waiting while both are held, so Modal
+invocations never run more than two simulations at once. Local simulations
+are not in that lease: count them yourself toward the overall maximum of two. A full event
 plus one focused repeat uses both slots. Remote wall time is recorded
 separately in `MODAL_RECEIPT.json`; use the completed event's observed timings
 when planning the next lane.
