@@ -286,6 +286,7 @@ def test_interrupted_modal_context_returns_130_without_downloading(
             ),
             SimpleNamespace(run=SuppressInterrupt),
             SimpleNamespace(remote=interrupted_remote),
+            SimpleNamespace(remote=time.time),
         ),
     )
     monkeypatch.setattr(
@@ -297,8 +298,11 @@ def test_interrupted_modal_context_returns_130_without_downloading(
     assert "interrupted; no output downloaded" in capsys.readouterr().err
     # The interrupted run's slot frees once Modal has had time to stop it.
     claims = [v for k, v in slots.data.items() if k.startswith("claim-")]
-    assert claims[-1]["released"] is False
-    assert claims[-1]["expires"] <= time.time() + runner.INTERRUPT_GRACE_SECONDS
+    assert claims and all(claim["released"] is False for claim in claims)
+    assert all(
+        claim["expires"] <= time.time() + runner.INTERRUPT_GRACE_SECONDS + 1
+        for claim in claims
+    )
 
 
 def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
@@ -334,7 +338,7 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
             assert include_source is False
 
         def function(self, **kwargs):
-            recorded["function"] = kwargs
+            recorded.setdefault("functions", []).append(kwargs)
             return lambda fn: fn
 
     def concurrent(**kwargs):
@@ -346,7 +350,8 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
     monkeypatch.setattr(
         runner.importlib.metadata, "version", lambda name: runner.MODAL_VERSION
     )
-    _, _, replay = runner.modal_function(mounts)
+    _, _, replay, modal_time = runner.modal_function(mounts)
+    assert abs(modal_time() - time.time()) < 5
     # The remote refuses to start unless its whole timeout fits in the lease.
     monkeypatch.setattr(
         sys.modules["subprocess"],
@@ -357,7 +362,9 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
     for slack in (-60, runner.GUARD_MARGIN_SECONDS - 60):
         with pytest.raises(RuntimeError, match="lease does not cover"):
             replay({"request": {}}, time.time() + timeout + slack)
-    configuration = recorded["function"]
+    configuration, clock_configuration = recorded["functions"]
+    assert clock_configuration["block_network"] is True
+    assert clock_configuration["timeout"] == 60
     assert configuration["cpu"] == (2, 2)
     assert configuration["memory"] == (32768, 32768)
     assert (
@@ -420,23 +427,24 @@ class FakeDict:
 
 
 class Clock:
-    def __init__(self):
-        self.now = 1_000.0
+    """True (Modal) time. Starts mid-morning, well inside a day."""
+
+    def __init__(self, now=10 * 3600.0):
+        self.now = now
 
     def __call__(self):
         return self.now
 
 
-CHAIN_IDS = itertools.count()
+DAY = runner.EPOCH_SECONDS
+TIMEOUT = runner.RESOURCE_LIMITS["timeout_seconds"]
+MARGIN = runner.CLOCK_MARGIN_SECONDS
 
 
-def slots_for(store, clock, holder, **kwargs):
+def slots_for(store, clock, holder, *, offset=0.0, **kwargs):
+    """A holder whose own clock reads true time plus ``offset``."""
     return runner.SimulationSlots(
-        store,
-        holder=holder,
-        clock=clock,
-        chain_id=lambda: f"chain{next(CHAIN_IDS)}",
-        **kwargs,
+        store, holder=holder, clock=lambda: clock() + offset, **kwargs
     )
 
 
@@ -460,22 +468,29 @@ def run_steps(store, steps, *, limit=None):
 
 
 def holders_of(store, clock):
-    """Each slot's newest generation, if it is held now."""
+    """Each slot's live claim in today's chain, by true time."""
     held = {}
-    for key, head in store.data.items():
-        if not key.startswith("head-"):
-            continue
-        slot = int(key.split("-")[1])
-        generation, newest = head["generation"], None
+    today = int(clock() // DAY)
+    for slot in range(runner.SLOT_COUNT):
+        generation, newest = -1, None
         while True:
-            claim = store.data.get(f"claim-{slot}-{head['chain']}-{generation + 1}")
+            claim = store.data.get(f"claim-{slot}-{today}-{generation + 1}")
             if claim is None:
                 break
             generation, newest = generation + 1, claim
-        newest = newest or store.data.get(f"claim-{slot}-{head['chain']}-{generation}")
         if newest and not newest["released"] and newest["expires"] > clock():
             held[slot] = newest["holder"]
     return held
+
+
+def test_the_constants_leave_room_for_a_run_and_for_modal_expiry():
+    assert runner.LEASE_SECONDS >= TIMEOUT + runner.GUARD_MARGIN_SECONDS + 30 * 60
+    assert runner.INTERRUPT_GRACE_SECONDS < runner.LEASE_SECONDS
+    # A day's claims matter for a day plus a lease: far inside Modal's expiry.
+    assert runner.EPOCH_SECONDS + 2 * runner.LEASE_SECONDS < FakeDict.TTL / 2
+    # Takeover waits out the clock error of two invocations.
+    assert runner.CLOCK_MARGIN_SECONDS >= 2 * runner.MAX_CLOCK_DRIFT_SECONDS + 20
+    assert runner.GUARD_MARGIN_SECONDS > runner.CLOCK_MARGIN_SECONDS
 
 
 def test_two_slots_then_a_third_run_waits():
@@ -501,37 +516,42 @@ def test_two_slots_then_a_third_run_waits():
     }
 
 
+def test_a_lapsed_claim_is_taken_only_after_the_clock_margin():
+    clock = Clock()
+    store = FakeDict(clock)
+    dead = slots_for(store, clock, "dead", count=1).acquire()
+    nxt = slots_for(store, clock, "next", count=1)
+    clock.now = dead.expires + MARGIN - 1
+    assert run_steps(store, nxt._try_steps(0)) == (True, None)
+    clock.now = dead.expires + MARGIN
+    assert run_steps(store, nxt._try_steps(0))[1] is not None
+
+
 def test_a_stale_release_cannot_free_a_newer_holder():
-    # Review of #166, 2(a): a holder past its lease releases after the slot
-    # passed on; the release writes only its own generation.
     clock = Clock()
     store = FakeDict(clock)
     late = slots_for(store, clock, "late", count=1)
     old = late.acquire()
-    clock.now += runner.LEASE_SECONDS + 1
-    successor = slots_for(store, clock, "successor", count=1).acquire()
+    clock.now = old.expires + MARGIN
+    slots_for(store, clock, "successor", count=1).acquire()
     late.release(old)
     assert holders_of(store, clock) == {0: "successor"}
     third = slots_for(store, clock, "third", count=1)
     assert run_steps(store, third._try_steps(0)) == (True, None)
-    assert successor.generation == old.generation + 1
 
 
-def test_a_reclaimer_cannot_displace_a_claim_made_after_it_looked():
-    # Review of #166, 2(b): A sees the slot free, then C takes it before A
-    # writes; A's create-if-absent of the same generation fails.
+def test_a_contender_cannot_displace_a_claim_made_after_it_looked():
     clock = Clock()
     store = FakeDict(clock)
     holder = slots_for(store, clock, "holder", count=1)
     lease = holder.acquire()
     a = slots_for(store, clock, "a", count=1)
     c = slots_for(store, clock, "c", count=1)
-    clock.now += runner.LEASE_SECONDS + 1
+    clock.now = lease.expires + MARGIN
     steps = a._try_steps(0)
     call = next(steps)
     while call[0] == "get":  # A reads up to its create
         call = steps.send(store.get(call[1]))
-    holder.release(lease)
     assert run_steps(store, c._try_steps(0))[1] is not None
     with pytest.raises(StopIteration) as done:  # A's create now fails
         steps.send(store.put(call[1], call[2], skip_if_exists=call[3]))
@@ -539,65 +559,42 @@ def test_a_reclaimer_cannot_displace_a_claim_made_after_it_looked():
     assert holders_of(store, clock) == {0: "c"}
 
 
-@pytest.mark.parametrize("calls", range(8))
+@pytest.mark.parametrize("calls", range(6))
 def test_a_holder_that_dies_at_any_step_frees_its_slot_after_the_lease(calls):
-    # Review of #166, 1: a caller that dies mid-protocol never loses a slot
-    # for good.
     clock = Clock()
     store = FakeDict(clock)
     dying = slots_for(store, clock, "dying", count=1)
     run_steps(store, dying._try_steps(0), limit=calls)
-    clock.now += runner.LEASE_SECONDS + 1
+    clock.now += runner.LEASE_SECONDS + MARGIN
     assert slots_for(store, clock, "next", count=1).acquire(wait_seconds=0).slot == 0
 
 
-def test_a_lapsed_lease_is_not_renewed_even_when_its_next_key_is_free():
-    # The slot changes hands across days and Modal expires the old keys; a
-    # client back from a week asleep must not renew into a key that no
-    # longer exists while someone else holds the slot.
-    day = 24 * 60 * 60
-    clock = Clock()
+def test_a_lease_across_midnight_holds_both_days():
+    clock = Clock(now=22 * 3600.0)  # two hours before the day ends
     store = FakeDict(clock)
-    sleeper = slots_for(store, clock, "sleeper", count=1)
-    stale = sleeper.acquire()
-    clock.now += runner.LEASE_SECONDS + 1
-    for name in ("b", "c"):
-        slots = slots_for(store, clock, name, count=1)
-        slots.release(slots.acquire())
-        clock.now += day
-    clock.now += 8 * day  # every old key idles past Modal's 7 days
-    current = slots_for(store, clock, "current", count=1).acquire()
-    following = runner.SimulationSlots.claim_key(0, stale.chain, stale.generation + 1)
-    assert store.get(following) is None  # a create here would succeed
-    with pytest.raises(runner.LeaseLost):
-        sleeper.renew(stale)
-    assert holders_of(store, clock) == {0: "current"}
-    assert current.slot == 0
+    night = slots_for(store, clock, "night", count=1)
+    lease = night.acquire()
+    assert [epoch for epoch, _ in lease.claims] == [0, 1]
+    clock.now = DAY + 600  # the next day, the run still going
+    assert holders_of(store, clock) == {0: "night"}
+    morning = slots_for(store, clock, "morning", count=1)
+    assert run_steps(store, morning._try_steps(0)) == (True, None)
+    night.release(lease)
+    assert run_steps(store, morning._try_steps(0))[1] is not None
 
 
-def test_renewal_after_a_takeover_is_refused():
-    clock = Clock()
+def test_a_refused_second_day_gives_the_first_day_back():
+    # Someone already holds tomorrow's chain: taking today's alone would
+    # hold a slot this run cannot keep past midnight.
+    clock = Clock(now=22 * 3600.0)
     store = FakeDict(clock)
-    slow = slots_for(store, clock, "slow", count=1)
-    lease = slow.acquire()
-    clock.now += runner.LEASE_SECONDS + 1
-    slots_for(store, clock, "fast", count=1).acquire()
-    with pytest.raises(runner.LeaseLost):
-        slow.renew(lease)
-    assert holders_of(store, clock) == {0: "fast"}
-
-
-def test_renewal_extends_from_now_and_keeps_the_slot():
-    clock = Clock()
-    store = FakeDict(clock)
-    slots = slots_for(store, clock, "a", count=1)
-    lease = slots.acquire()
-    clock.now += 3_000  # image build
-    renewed = slots.renew(lease)
-    assert renewed.expires == clock.now + runner.LEASE_SECONDS
-    assert renewed.generation == lease.generation + 1
-    clock.now += runner.LEASE_SECONDS - 1
-    assert holders_of(store, clock) == {0: "a"}
+    store.put(
+        "claim-0-1-0",
+        {"holder": "other", "expires": DAY + 3 * 3600, "released": False},
+    )
+    a = slots_for(store, clock, "a", count=1)
+    assert run_steps(store, a._try_steps(0)) == (True, None)
+    assert store.data["claim-0-0-0"]["released"] is True
 
 
 def test_an_interrupt_frees_the_slot_after_the_grace_period():
@@ -607,21 +604,140 @@ def test_an_interrupt_frees_the_slot_after_the_grace_period():
     lease = slots.acquire()
     slots.release(lease, grace=runner.INTERRUPT_GRACE_SECONDS)
     assert holders_of(store, clock) == {0: "a"}
-    clock.now += runner.INTERRUPT_GRACE_SECONDS
-    assert holders_of(store, clock) == {}
+    other = slots_for(store, clock, "b", count=1)
+    clock.now += runner.INTERRUPT_GRACE_SECONDS + MARGIN - 1
+    assert run_steps(store, other._try_steps(0)) == (True, None)
+    clock.now += 1
+    assert run_steps(store, other._try_steps(0))[1] is not None
 
 
-def test_the_lease_covers_the_timeout_margin_and_scheduling():
-    timeout = runner.RESOURCE_LIMITS["timeout_seconds"]
-    assert runner.LEASE_SECONDS >= timeout + runner.GUARD_MARGIN_SECONDS + 30 * 60
-    assert runner.STALE_STEP_SECONDS < FakeDict.TTL
-    assert runner.INTERRUPT_GRACE_SECONDS < runner.LEASE_SECONDS
+def test_a_step_that_outlasts_its_lease_grants_nothing():
+    # A machine asleep in the middle of taking a slot: whatever it wrote,
+    # it holds nothing afterwards, and nobody is displaced.
+    clock = Clock()
+    store = FakeDict(clock)
+    a = slots_for(store, clock, "a", count=1)
+    steps = a._try_steps(0)
+    call = next(steps)
+    while call[0] == "get":
+        call = steps.send(store.get(call[1]))
+    clock.now += 9 * DAY  # asleep with the create in flight
+    b = slots_for(store, clock, "b", count=1).acquire()
+    try:
+        while True:
+            if call[0] == "get":
+                call = steps.send(store.get(call[1]))
+            else:
+                call = steps.send(store.put(call[1], call[2], skip_if_exists=call[3]))
+    except StopIteration as done:
+        assert done.value is None
+    assert holders_of(store, clock) == {0: "b"}
+    assert b.slot == 0
 
 
-TIMEOUT = runner.RESOURCE_LIMITS["timeout_seconds"]
-# Modal's disconnect stops an ephemeral app's tasks "in a few seconds"
-# (modal/runner.py); the model allows a minute, inside the grace period.
-STOP_AFTER_DISCONNECT = 60
+def test_a_week_late_write_lands_in_a_day_that_no_longer_matters():
+    # Review of bac8974, 1: with no pointer to roll back, a write that
+    # arrives days late cannot change which claim is newest today.
+    clock = Clock()
+    store = FakeDict(clock)
+    early = slots_for(store, clock, "early", count=1)
+    lease = early.acquire()
+    clock.now += 6.5 * DAY
+    current = slots_for(store, clock, "current", count=1).acquire()
+    early.release(lease)  # the late write
+    stalled = slots_for(store, clock, "stalled", count=1)
+    steps = stalled._try_steps(0)
+    call = next(steps)
+    clock.now += 0.9 * DAY - runner.LEASE_SECONDS  # stalls, then resumes
+    result = None
+    try:
+        while True:
+            if call[0] == "get":
+                call = steps.send(store.get(call[1]))
+            else:
+                call = steps.send(store.put(call[1], call[2], skip_if_exists=call[3]))
+    except StopIteration as done:
+        result = done.value
+    live = current.expires > clock.now
+    assert result is None or not live
+
+
+def test_a_fast_clock_cannot_take_an_occupied_slot():
+    # Review of bac8974, 2: main() runs every holder on Modal's clock; within
+    # the drift it enforces, a contender cannot see a live claim as lapsed
+    # before the run under it has ended.
+    clock = Clock()
+    store = FakeDict(clock)
+    drift = runner.MAX_CLOCK_DRIFT_SECONDS
+    holder = slots_for(store, clock, "holder", count=1, offset=-drift)
+    lease = holder.acquire()
+    run_must_end_by = lease.expires - runner.GUARD_MARGIN_SECONDS  # remote guard
+    fast = slots_for(store, clock, "fast", count=1, offset=drift)
+    clock.now = run_must_end_by
+    assert run_steps(store, fast._try_steps(0)) == (True, None)
+    taken_at = None
+    while taken_at is None:
+        clock.now += 1
+        if run_steps(store, fast._try_steps(0))[1] is not None:
+            taken_at = clock.now
+    assert taken_at >= run_must_end_by + runner.GUARD_MARGIN_SECONDS - 2 * drift
+
+
+def test_a_machine_five_hours_fast_still_sees_modal_time():
+    # Review of bac8974, 2, as reported: B's own clock is five hours ahead.
+    # main() gives the slots Modal's time (local plus the measured offset),
+    # so B sees A's claim as live.
+    clock = Clock()
+    store = FakeDict(clock)
+    slots_for(store, clock, "a", count=1).acquire()
+
+    def b_local():
+        return clock() + 5 * 3600
+
+    offset = runner.clock_offset(clock, local=b_local)
+    assert offset == -5 * 3600
+    b = runner.SimulationSlots(
+        store, holder="b", count=1, clock=lambda: b_local() + offset
+    )
+    assert run_steps(store, b._try_steps(0)) == (True, None)
+    assert holders_of(store, clock) == {0: "a"}
+
+
+def test_the_clock_offset_is_measured_against_modal():
+    local = iter([100.0, 104.0])
+    assert runner.clock_offset(lambda: 1_102.0, local=lambda: next(local)) == 1_000.0
+    # A slow first round trip (a cold start) is retried.
+    local = iter([0.0, 50.0, 60.0, 61.0])
+    assert runner.clock_offset(lambda: 5.5, local=lambda: next(local)) == -55.0
+    slow = iter(range(0, 1000, 20))
+    with pytest.raises(runner.LeaseLost):
+        runner.clock_offset(lambda: 0.0, local=lambda: float(next(slow)))
+
+
+class FailingPuts(FakeDict):
+    """A Dict whose writes start failing after ``allowed`` of them."""
+
+    def __init__(self, clock, allowed):
+        super().__init__(clock)
+        self.allowed = allowed
+
+    def put(self, key, value, *, skip_if_exists=False):
+        if self.allowed == 0:
+            raise OSError("connection lost")
+        self.allowed -= 1
+        return super().put(key, value, skip_if_exists=skip_if_exists)
+
+
+def test_a_failed_second_claim_gives_the_first_back_when_it_can():
+    clock = Clock(now=22 * 3600.0)  # the lease spans two days: two creates
+    store = FailingPuts(clock, allowed=1)
+    a = slots_for(store, clock, "a", count=1)
+    with pytest.raises(OSError):
+        a.acquire(wait_seconds=0)
+    store.allowed = 10
+    # The first claim stays (its release failed too) but lapses with the lease.
+    clock.now += runner.LEASE_SECONDS + MARGIN
+    assert slots_for(store, clock, "b", count=1).acquire(wait_seconds=0).slot == 0
 
 
 def holder_program(slots):
@@ -634,12 +750,6 @@ def holder_program(slots):
                 break
         else:
             yield ("pause",)
-    yield ("pause",)  # image build
-    try:
-        lease = yield from slots._renew_steps(lease)
-    except runner.LeaseLost:
-        yield from slots._release_steps(lease)
-        return
     outcome = yield ("start", lease)
     if outcome == "running":
         outcome = yield ("await",)
@@ -652,34 +762,37 @@ def holder_program(slots):
         yield from slots._release_steps(lease, grace=runner.INTERRUPT_GRACE_SECONDS)
 
 
+# Modal's disconnect stops an ephemeral app's tasks "in a few seconds"
+# (modal/runner.py); the model allows a minute, inside the grace period.
+STOP_AFTER_DISCONNECT = 60
+
+
 @settings(max_examples=600, deadline=None)
 @given(st.data())
 def test_interleaved_holders_never_overlap_on_a_slot_and_never_lose_one(data):
-    """Model check: holders interleaved call by call, with clock jumps,
-    crashes (no release; a started run continues to its end), interrupts and
-    Dict entry expiry. Safety: two runs never overlap on one slot, so at most
-    SLOT_COUNT run at once. Liveness: once every lease has lapsed, both slots
-    can be taken again."""
-    clock = Clock()
+    """Model check: holders interleaved call by call, each on its own clock
+    (within the drift main() enforces), with clock jumps of any size at any
+    point (a stalled step, a closed laptop, midnight), crashes (no release;
+    a started run continues to its end), interrupts, lost connections and
+    Dict entry expiry. Safety: two runs never overlap on one slot, so at
+    most SLOT_COUNT run at once. Liveness: once every lease has lapsed, both
+    slots can be taken again."""
+    clock = Clock(now=float(data.draw(st.sampled_from([3600, 12 * 3600, 23 * 3600]))))
     store = FakeDict(clock)
+    drift = runner.MAX_CLOCK_DRIFT_SECONDS
     count = data.draw(st.integers(2, 4), label="holders")
     actors = []
     for index in range(count):
-        program = holder_program(slots_for(store, clock, f"h{index}"))
-        actors.append(
-            {"program": program, "call": next(program), "done": False, "since": 1e3}
-        )
+        offset = data.draw(st.sampled_from([-drift, 0, drift]), label="offset")
+        program = holder_program(slots_for(store, clock, f"h{index}", offset=offset))
+        actors.append({"program": program, "call": next(program), "done": False})
     runs = []
 
     def send(actor, value):
-        before = actor["call"][0]
         try:
             actor["call"] = actor["program"].send(value)
         except StopIteration:
             actor["done"] = True
-            return
-        if actor["call"][0] in ("get", "put") and before not in ("get", "put"):
-            actor["since"] = clock.now  # a protocol step begins
 
     for _ in range(data.draw(st.integers(0, 150), label="actions")):
         action = data.draw(
@@ -688,21 +801,11 @@ def test_interleaved_holders_never_overlap_on_a_slot_and_never_lose_one(data):
             )
         )
         if action == "tick":
-            seconds = data.draw(
-                st.sampled_from([1, 60, 600, 3600, TIMEOUT, 4 * 3600, 8 * 86400])
+            clock.now += data.draw(
+                st.sampled_from(
+                    [1, 60, 600, 3600, TIMEOUT, 4 * 3600, 20 * 3600, 6.5 * DAY, 8 * DAY]
+                )
             )
-            # The stated assumption: no protocol step (consecutive Dict
-            # calls) spans 7 days, so Modal never expires a key a step read
-            # before the step ends; between steps, anything goes.
-            limit = min(
-                (
-                    6 * 86400 - (clock.now - a["since"])
-                    for a in actors
-                    if not a["done"] and a["call"][0] in ("get", "put")
-                ),
-                default=seconds,
-            )
-            clock.now += max(0, min(seconds, limit))
             continue
         live = [a for a in actors if not a["done"]]
         if not live:
@@ -731,8 +834,9 @@ def test_interleaved_holders_never_overlap_on_a_slot_and_never_lose_one(data):
             send(actor, None)
         elif call[0] == "start":
             lease = call[1]
+            # The remote guard, on Modal's (true) clock.
             if clock.now + TIMEOUT + runner.GUARD_MARGIN_SECONDS > lease.expires:
-                send(actor, "refused")  # the remote guard: a remote error
+                send(actor, "refused")
                 continue
             duration = data.draw(st.integers(1, TIMEOUT), label="run seconds")
             run = {"slot": lease.slot, "start": clock.now, "end": clock.now + duration}
@@ -747,58 +851,64 @@ def test_interleaved_holders_never_overlap_on_a_slot_and_never_lose_one(data):
         running = [r for r in runs if r["start"] <= clock.now < r["end"]]
         assert len(running) <= runner.SLOT_COUNT
 
-    # Once every lease has lapsed both slots can be taken, after at most one
-    # further lease when a reader had to block a slot whose head outlived
-    # its claim.
-    clock.now += runner.LEASE_SECONDS + 1
-    taken = set()
-    for attempt in range(2):
-        for n in range(runner.SLOT_COUNT):
-            holder = slots_for(store, clock, f"fresh{attempt}-{n}")
-            for slot in range(runner.SLOT_COUNT):
-                if slot not in taken and holder._drive(holder._try_steps(slot)):
-                    taken.add(slot)
-                    break
-        if taken == set(range(runner.SLOT_COUNT)):
-            break
-        clock.now += runner.LEASE_SECONDS + 1
+    clock.now += runner.LEASE_SECONDS + MARGIN + drift
+    fresh = [slots_for(store, clock, f"fresh{n}") for n in range(runner.SLOT_COUNT)]
+    taken = {s.acquire(wait_seconds=0).slot for s in fresh}
     assert taken == set(range(runner.SLOT_COUNT)), (taken, clock.now, store.data)
 
 
-def test_a_week_stalled_acquire_cannot_replace_a_live_chain():
-    # Review of dff81d0, 2: A reads the head, stalls a week (Modal expires
-    # every key), B builds a new chain and holds the slot; A's late writes
-    # must not point the head back at A's dead chain.
-    day = 24 * 60 * 60
-    clock = Clock()
-    store = FakeDict(clock)
-    old = slots_for(store, clock, "old", count=1)
-    old.release(old.acquire())
-    a = slots_for(store, clock, "a", count=1)
-    steps = a._try_steps(0)
-    call = next(steps)
-    while call[0] == "get":
-        call = steps.send(store.get(call[1]))
-    clock.now += 8 * day
-    b = slots_for(store, clock, "b", count=1).acquire()
-    with pytest.raises(StopIteration) as done:
-        while True:
-            if call[0] == "get":
-                call = steps.send(store.get(call[1]))
-            else:
-                call = steps.send(store.put(call[1], call[2], skip_if_exists=call[3]))
-    assert done.value.value is None
-    assert store.get("head-0")["chain"] == b.chain
-    assert holders_of(store, clock) == {0: "b"}
-    third = slots_for(store, clock, "third", count=1)
-    assert run_steps(store, third._try_steps(0)) == (True, None)
+def modal_fakes(slots, remote, run=nullcontext):
+    return lambda mounts: (
+        SimpleNamespace(
+            enable_output=nullcontext,
+            Dict=SimpleNamespace(from_name=lambda name, create_if_missing: slots),
+        ),
+        SimpleNamespace(run=run),
+        SimpleNamespace(remote=remote),
+        SimpleNamespace(remote=time.time),
+    )
+
+
+@pytest.fixture
+def stub_main(monkeypatch, tmp_path):
+    monkeypatch.setattr(runner, "validate_selection", lambda request: None)
+    monkeypatch.setattr(
+        runner, "input_manifest", lambda event, hf_cache=None: ({"event": event}, {})
+    )
+    monkeypatch.setattr(runner, "download_prefix", lambda value: tmp_path / "download")
+    saved = []
+    monkeypatch.setattr(runner, "save_download", lambda *args: saved.append(args) or [])
+    return saved
+
+
+ARGS = ["--event", "autumn_budget_2024", "--execute"]
+
+
+def claims_in(slots):
+    return [v for k, v in slots.data.items() if k.startswith("claim-")]
+
+
+def test_a_finished_run_frees_its_slot_at_once(monkeypatch, stub_main):
+    slots = FakeDict()
+    seen = {}
+
+    def remote(payload, lease_expires):
+        seen["expires"] = lease_expires
+        return {"files": {}}
+
+    monkeypatch.setattr(runner, "modal_function", modal_fakes(slots, remote))
+    assert runner.main(ARGS) == 0
+    assert len(stub_main) == 1
+    assert all(claim["released"] is True for claim in claims_in(slots))
+    # The run was told a lease long enough for its timeout and the margin.
+    assert seen["expires"] - time.time() > TIMEOUT + runner.GUARD_MARGIN_SECONDS
 
 
 def test_a_lost_connection_keeps_the_claim_until_the_lease_lapses(
-    monkeypatch, tmp_path
+    monkeypatch, stub_main
 ):
-    # Review of dff81d0, 1: the runner re-raises a lost connection without
-    # asking the server to stop the app, so the run may still be going.
+    # The runner re-raises a lost connection without asking the server to
+    # stop the app, so the run may still be going.
     class LostConnection(Exception):
         pass
 
@@ -806,168 +916,17 @@ def test_a_lost_connection_keeps_the_claim_until_the_lease_lapses(
         raise LostConnection
 
     slots = FakeDict()
-    monkeypatch.setattr(runner, "validate_selection", lambda request: None)
-    monkeypatch.setattr(
-        runner, "input_manifest", lambda event, hf_cache=None: ({"event": event}, {})
-    )
-    monkeypatch.setattr(runner, "download_prefix", lambda value: tmp_path / "download")
-    monkeypatch.setattr(
-        runner,
-        "modal_function",
-        lambda mounts: (
-            SimpleNamespace(
-                enable_output=nullcontext,
-                Dict=SimpleNamespace(from_name=lambda name, create_if_missing: slots),
-            ),
-            SimpleNamespace(run=nullcontext),
-            SimpleNamespace(remote=lost),
-        ),
-    )
+    monkeypatch.setattr(runner, "modal_function", modal_fakes(slots, lost))
     with pytest.raises(LostConnection):
-        runner.main(["--event", "autumn_budget_2024", "--execute"])
-    claims = [v for k, v in slots.data.items() if k.startswith("claim-")]
-    newest = max(claims, key=lambda claim: claim["expires"])
-    assert newest["released"] is False
-    assert newest["expires"] >= time.time() + runner.LEASE_SECONDS - 60
-
-
-def test_a_finished_run_frees_its_slot_at_once(monkeypatch, tmp_path):
-    slots = FakeDict()
-    monkeypatch.setattr(runner, "validate_selection", lambda request: None)
-    monkeypatch.setattr(
-        runner, "input_manifest", lambda event, hf_cache=None: ({"event": event}, {})
+        runner.main(ARGS)
+    assert all(claim["released"] is False for claim in claims_in(slots))
+    assert all(
+        claim["expires"] >= time.time() + runner.LEASE_SECONDS - 60
+        for claim in claims_in(slots)
     )
-    monkeypatch.setattr(runner, "download_prefix", lambda value: tmp_path / "download")
-    monkeypatch.setattr(runner, "save_download", lambda *args: [])
-    monkeypatch.setattr(
-        runner,
-        "modal_function",
-        lambda mounts: (
-            SimpleNamespace(
-                enable_output=nullcontext,
-                Dict=SimpleNamespace(from_name=lambda name, create_if_missing: slots),
-            ),
-            SimpleNamespace(run=nullcontext),
-            SimpleNamespace(remote=lambda payload, lease_expires: {"files": {}}),
-        ),
-    )
-    assert runner.main(["--event", "autumn_budget_2024", "--execute"]) == 0
-    claims = [v for k, v in slots.data.items() if k.startswith("claim-")]
-    assert max(claims, key=lambda claim: claim["expires"])["released"] is True
 
 
-def finish(store, steps, call):
-    """Drive a protocol generator from a pending call to its return value."""
-    try:
-        while True:
-            if call[0] == "get":
-                call = steps.send(store.get(call[1]))
-            else:
-                call = steps.send(store.put(call[1], call[2], skip_if_exists=call[3]))
-    except StopIteration as done:
-        return done.value
-
-
-def test_a_head_response_read_before_a_week_asleep_is_not_acted_on():
-    # Review of 4a5a272, 1(a): the head was answered, then the machine slept
-    # a week before the step used it; the step must not look fresh.
-    day = 24 * 60 * 60
-    clock = Clock()
-    store = FakeDict(clock)
-    old = slots_for(store, clock, "old", count=1)
-    old.release(old.acquire())
-    a = slots_for(store, clock, "a", count=1)
-    steps = a._try_steps(0)
-    call = next(steps)
-    assert call == ("get", "head-0")
-    answered = store.get("head-0")  # the server answers...
-    clock.now += 8 * day  # ...and the response sits unread
-    b = slots_for(store, clock, "b", count=1).acquire()
-    assert finish(store, steps, steps.send(answered)) is None
-    assert store.get("head-0")["chain"] == b.chain
-    assert holders_of(store, clock) == {0: "b"}
-
-
-def test_a_fresh_chain_head_read_before_a_week_asleep_is_not_acted_on():
-    # The same stall on a chain with no claim yet (generation -1): only the
-    # step's own clock, read before its first call, shows it is stale.
-    day = 24 * 60 * 60
-    clock = Clock()
-    store = FakeDict(clock)
-    store.put("head-0", {"chain": "abandoned", "generation": -1})
-    a = slots_for(store, clock, "a", count=1)
-    steps = a._try_steps(0)
-    assert next(steps) == ("get", "head-0")
-    answered = store.get("head-0")
-    clock.now += 8 * day
-    b = slots_for(store, clock, "b", count=1).acquire()
-    assert finish(store, steps, steps.send(answered)) is None
-    assert store.get("head-0")["chain"] == b.chain
-    assert holders_of(store, clock) == {0: "b"}
-
-
-def test_a_head_written_a_week_late_blocks_the_slot_instead_of_hiding_a_holder():
-    # Review of 4a5a272, 1(b): A's head write lands after every key expired
-    # and B built a new chain. A reader must not take the slot from B.
-    day = 24 * 60 * 60
-    clock = Clock()
-    store = FakeDict(clock)
-    a = slots_for(store, clock, "a", count=1)
-    steps = a._try_steps(0)
-    call = next(steps)
-    while not (call[0] == "put" and call[1] == "head-0" and not call[3]):
-        if call[0] == "get":
-            call = steps.send(store.get(call[1]))
-        else:
-            call = steps.send(store.put(call[1], call[2], skip_if_exists=call[3]))
-    late_head = call  # A's claim exists; its head write is in flight
-    clock.now += 8 * day
-    b = slots_for(store, clock, "b", count=1)
-    b_lease = b.renew(b.acquire())
-    store.put(late_head[1], late_head[2], skip_if_exists=False)  # it lands
-    assert store.get("head-0")["chain"] != b_lease.chain
-    c = slots_for(store, clock, "c", count=1)
-    assert run_steps(store, c._try_steps(0)) == (True, None)
-    assert run_steps(store, c._try_steps(0)) == (True, None)  # still blocked
-    # B's lease began before the late write, so it ends within the block.
-    clock.now += runner.LEASE_SECONDS + 1
-    assert b_lease.expires <= clock.now
-    assert slots_for(store, clock, "d", count=1).acquire(wait_seconds=0).slot == 0
-
-
-class FailingHeadPuts(FakeDict):
-    """Dict whose unconditional head writes fail (a lost connection)."""
-
-    def put(self, key, value, *, skip_if_exists=False):
-        if key.startswith("head-") and not skip_if_exists:
-            raise OSError("connection lost")
-        return super().put(key, value, skip_if_exists=skip_if_exists)
-
-
-def test_a_failed_head_write_gives_the_claim_back():
-    # A claim without its hint would hold the slot for a lease with no run.
-    clock = Clock()
-    store = FailingHeadPuts(clock)
-    a = slots_for(store, clock, "a", count=1)
-    with pytest.raises(OSError):
-        a.acquire(wait_seconds=0)
-    claims = [v for k, v in store.data.items() if k.startswith("claim-")]
-    assert claims and all(claim["released"] for claim in claims)
-    # The same on renewal: the new generation is released, not held.
-    store2 = FakeDict(clock)
-    b = slots_for(store2, clock, "b", count=1)
-    lease = b.acquire()
-    b.store = FailingHeadPuts(clock)
-    b.store.data, b.store.touched = store2.data, store2.touched
-    with pytest.raises(OSError):
-        b.renew(lease)
-    newest = store2.data[
-        runner.SimulationSlots.claim_key(0, lease.chain, lease.generation + 1)
-    ]
-    assert newest["released"] is True
-
-
-def test_a_returned_result_survives_a_failed_app_exit(monkeypatch, tmp_path):
+def test_a_returned_result_survives_a_failed_app_exit(monkeypatch, stub_main):
     class ExitFails:
         def __enter__(self):
             return self
@@ -976,26 +935,50 @@ def test_a_returned_result_survives_a_failed_app_exit(monkeypatch, tmp_path):
             raise OSError("stop request failed")
 
     slots = FakeDict()
-    saved = []
-    monkeypatch.setattr(runner, "validate_selection", lambda request: None)
-    monkeypatch.setattr(
-        runner, "input_manifest", lambda event, hf_cache=None: ({"event": event}, {})
-    )
-    monkeypatch.setattr(runner, "download_prefix", lambda value: tmp_path / "download")
-    monkeypatch.setattr(runner, "save_download", lambda *args: saved.append(args) or [])
     monkeypatch.setattr(
         runner,
         "modal_function",
-        lambda mounts: (
-            SimpleNamespace(
-                enable_output=nullcontext,
-                Dict=SimpleNamespace(from_name=lambda name, create_if_missing: slots),
-            ),
-            SimpleNamespace(run=ExitFails),
-            SimpleNamespace(remote=lambda payload, lease_expires: {"files": {}}),
-        ),
+        modal_fakes(slots, lambda payload, lease_expires: {"files": {}}, run=ExitFails),
     )
-    assert runner.main(["--event", "autumn_budget_2024", "--execute"]) == 0
-    assert len(saved) == 1
-    claims = [v for k, v in slots.data.items() if k.startswith("claim-")]
-    assert max(claims, key=lambda claim: claim["expires"])["released"] is True
+    assert runner.main(ARGS) == 0
+    assert len(stub_main) == 1
+    assert all(claim["released"] is True for claim in claims_in(slots))
+
+
+def test_a_returned_result_survives_a_failed_release(monkeypatch, stub_main, capsys):
+    # Review of bac8974, 3: the Dict failing at release must not cost a
+    # completed result; the claim simply lapses.
+    class ReleaseFails(FakeDict):
+        def put(self, key, value, *, skip_if_exists=False):
+            if not skip_if_exists:
+                raise OSError("connection lost")
+            return super().put(key, value, skip_if_exists=skip_if_exists)
+
+    slots = ReleaseFails()
+    monkeypatch.setattr(
+        runner,
+        "modal_function",
+        modal_fakes(slots, lambda payload, lease_expires: {"files": {}}),
+    )
+    assert runner.main(ARGS) == 0
+    assert len(stub_main) == 1
+    assert "not released" in capsys.readouterr().err
+
+
+def test_a_clock_that_moved_while_waiting_stops_the_run(monkeypatch, stub_main, capsys):
+    slots = FakeDict()
+    readings = iter([0.0, 120.0])  # Modal minus local: 0 at first, then 120 s
+
+    def modal_now():
+        return time.time() + next(readings)
+
+    def fakes(mounts):
+        modal, app, replay, _ = modal_fakes(
+            slots, lambda payload, lease_expires: pytest.fail("the run must not start")
+        )(mounts)
+        return modal, app, replay, SimpleNamespace(remote=modal_now)
+
+    monkeypatch.setattr(runner, "modal_function", fakes)
+    assert runner.main(ARGS) == 75
+    assert "clock moved" in capsys.readouterr().err
+    assert all(claim["released"] is True for claim in claims_in(slots))
