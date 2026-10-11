@@ -2,6 +2,7 @@
 
 import copy
 import json
+import re
 from pathlib import Path
 
 from hypothesis import given, settings
@@ -203,37 +204,42 @@ def test_moved_code_or_missing_variables_are_inconclusive_never_resolved():
         assert diagnose.defect_status(absent) == "inconclusive"
 
 
+# Every key a predicate reads (test_property_keys_reach_every_predicate_input).
+KEYS = [
+    "2024-10-30",
+    "2025-04-06",
+    "2029",
+    "2030",
+    "basic",
+    "ni_class_1_employer",
+    "pension_annual_allowance",
+    "annual_carers_allowance_gbp",
+    "annual_synthetic_lcwra_element",
+    "2026-06-01",
+    "2027-06-01",
+    "lower_profits_limit",
+    "upper_profits_limit",
+    "2024-06-01",
+    "2025-06-01",
+    "2025-01-01",
+    "personal_pension_contributions_tax",
+    "uk_higher_threshold",
+    "uk_additional_threshold",
+    "dividend_higher_threshold",
+    "dividend_additional_threshold",
+]
+
 observations = st.recursive(
     st.none()
     | st.booleans()
     | st.floats(allow_nan=True)
     | st.integers()
+    # JSON integers parse exactly, so values beyond float range are legal.
+    | st.integers(min_value=10**308, max_value=10**400)
     | st.text(max_size=4),
     lambda children: (
         st.lists(children, max_size=3)
-        | st.dictionaries(
-            st.sampled_from(
-                [
-                    "2024-10-30",
-                    "2025-04-06",
-                    "2029",
-                    "2030",
-                    "basic",
-                    "ni_class_1_employer",
-                    "pension_annual_allowance",
-                    "annual_carers_allowance_gbp",
-                    "annual_synthetic_lcwra_element",
-                    "2026-06-01",
-                    "2027-06-01",
-                    "lower_profits_limit",
-                    "upper_profits_limit",
-                    "2024-06-01",
-                    "2025-06-01",
-                ]
-            ),
-            children,
-            max_size=4,
-        )
+        | st.dictionaries(st.sampled_from(KEYS), children, max_size=4)
     ),
     max_leaves=12,
 )
@@ -244,3 +250,55 @@ observations = st.recursive(
 def test_predicates_are_total(identifier, observation):
     record = {"id": identifier, "evidence": {}, "observation": observation}
     assert diagnose.defect_status(record) in diagnose.STATUSES
+
+
+def test_property_keys_reach_every_predicate_input():
+    """The generated keys cover every key a predicate reads, so the totality
+    property exercises each predicate past its first shape check."""
+    source = Path(diagnose.__file__).read_text()
+    start = source.index("def _close(")
+    body = source[start : source.index("DEFECT_PREDICATES = {")]
+    read = set(re.findall(r'"([0-9a-z_-]+)"', body)) - set(diagnose.STATUSES)
+    generated = set(KEYS)
+    assert read <= generated, sorted(read - generated)
+
+
+records = st.fixed_dictionaries(
+    {"id": st.sampled_from(sorted(diagnose.DEFECT_PREDICATES)) | observations},
+    optional={
+        "evidence": observations,
+        "supporting_evidence": observations,
+        "absent_variables": observations,
+        "observation": observations,
+    },
+)
+
+
+@settings(max_examples=400, deadline=None)
+@given(records)
+def test_status_is_total_over_malformed_records(record):
+    assert diagnose.defect_status(record) in diagnose.STATUSES
+
+
+def test_integers_beyond_float_range_are_inconclusive():
+    huge = 10**400
+    cases = {
+        "private_school_vat_current_law_lever_zero": {
+            "2025-01-01": 0,
+            "2025-06-01": huge,
+            "2026-06-01": 0,
+        },
+        "cgt_main_rate_commencement": {
+            "2024-10-30": {"basic": huge},
+            "2025-04-06": {"basic": 0},
+        },
+        "uc_lcwra_protection_stops_at_2030": {
+            "annual_synthetic_lcwra_element": {"2029": [huge], "2030": [0]}
+        },
+        "employer_nics_state_pension_age_exemption": {
+            "ni_class_1_employer": [huge, 0.5]
+        },
+    }
+    for identifier, observation in cases.items():
+        record = {"id": identifier, "evidence": {}, "observation": observation}
+        assert diagnose.defect_status(record) == "inconclusive", identifier

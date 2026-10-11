@@ -644,23 +644,32 @@ DEFECT_PREDICATES = {
 }
 
 
+# What a JSON value of the wrong shape can raise inside a predicate: a wrong
+# type (TypeError, AttributeError), a short or long unpack (ValueError), an
+# index or slice into the wrong container (LookupError), or an integer beyond
+# float range meeting float arithmetic (ArithmeticError).
+MALFORMED = (TypeError, ValueError, AttributeError, LookupError, ArithmeticError)
+
+
 def defect_status(result: dict) -> str:
     """persists | resolved | inconclusive, from the case's own observation.
 
     A missing engine file or variable is inconclusive: code that moved is not
-    evidence that the behaviour changed."""
-    predicate = DEFECT_PREDICATES.get(result.get("id"))
-    if predicate is None or result.get("absent_variables"):
-        return "inconclusive"
-    evidence = [
-        result.get("evidence") or {},
-        *(result.get("supporting_evidence") or []),
-    ]
-    if any(item.get("missing") for item in evidence):
-        return "inconclusive"
+    evidence that the behaviour changed. Total over JSON records: a record or
+    observation of the wrong shape (a list where a dict was expected, an
+    integer too large for a float) is inconclusive, never an exception."""
     try:
+        predicate = DEFECT_PREDICATES.get(result.get("id"))
+        if predicate is None or result.get("absent_variables"):
+            return "inconclusive"
+        evidence = [
+            result.get("evidence") or {},
+            *(result.get("supporting_evidence") or []),
+        ]
+        if any(item.get("missing") for item in evidence):
+            return "inconclusive"
         status = predicate(result.get("observation") or {})
-    except (TypeError, ValueError, AttributeError, IndexError, KeyError):
+    except MALFORMED:
         return "inconclusive"
     return status if status in STATUSES else "inconclusive"
 
