@@ -660,7 +660,7 @@ def defect_status(result: dict) -> str:
         return "inconclusive"
     try:
         status = predicate(result.get("observation") or {})
-    except (TypeError, ValueError, AttributeError, IndexError):
+    except (TypeError, ValueError, AttributeError, IndexError, KeyError):
         return "inconclusive"
     return status if status in STATUSES else "inconclusive"
 
