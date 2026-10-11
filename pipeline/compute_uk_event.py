@@ -600,6 +600,12 @@ def main(argv: list[str] | None = None) -> int:
         help="certified replay variant (data/uk/replay_variants.json); default: the file's default",
     )
     ap.add_argument(
+        "--variants-file",
+        type=Path,
+        default=variants.VARIANTS_PATH,
+        help="variant records to select from (a qualification run adds its candidate)",
+    )
+    ap.add_argument(
         "--dataset-file",
         type=Path,
         help="a local file holding the variant's certified dataset bytes (verified by SHA-256)",
@@ -619,7 +625,7 @@ def main(argv: list[str] | None = None) -> int:
         help="spawn at most two year workers; each holds one live managed simulation",
     )
     args = ap.parse_args(argv)
-    variant = variants.get_variant(args.variant)
+    variant = variants.get_variant(args.variant, path=args.variants_file.resolve())
     legacy = variants.is_legacy(variant)
     variant_fields = variant_identity_fields(variant)
     default_registry, default_output = event_paths(args.event)

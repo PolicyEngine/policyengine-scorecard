@@ -53,11 +53,11 @@
     "packaged_bundle_manifest_sha256": "255dbb893f455d078a6bcece87399f0a22478f56bc4c6e526b758c4fd5b4db24",
     "packages": {
      "policyengine": {
-      "record_sha256": "5d5de97a40dbc525bc41a6347fc793ba772bd78f9e0630f2f1d382bc92575e68",
+      "record_sha256": "8d5eec548a5ce206a8fe59ef018542c701e26c0f927351f92339a7a57591b990",
       "version": "5.0.2"
      },
      "policyengine-core": {
-      "record_sha256": "dd6570fe988159d89e45df66ccc43355f70abddb8a3a58d246ef38ce711e5687",
+      "record_sha256": "103128a1c2a3397268b65e33b83edddfa8e406a4eb64fb6f4ff2310db421c770",
       "version": "3.27.1"
      },
      "policyengine-uk": {
@@ -83,9 +83,10 @@
      "model_package": "policyengine-uk",
      "model_version": "2.89.2",
      "policyengine_version": "5.0.2"
-    }
+    },
+    "requirements_sha256": "450e64b173b66333027ac36e056e19928d23df1cbe2690e462bab09b31ddff9d"
    },
-   "identity_sha256": "5c642304a4fff8f30074899b2bb530197920703add1b92304a4c3c3a48c5d176",
+   "identity_sha256": "3f1a33f31ac70a8f0beac2373b6408c8be3366128ec0d0e3c1b716de3880003c",
    "layout": "legacy_events",
    "note": "The bundle the track 1 replays were computed against. Its 1.3GB populace dataset needs Modal's 32GiB containers for full events.",
    "requirements": {
@@ -145,12 +146,12 @@
     "packaged_bundle_manifest_sha256": "8633ad814c9c85e53c7c513f69c4c7b1500a03cd2f6ef133d6e2ea8346b2db54",
     "packages": {
      "policyengine": {
-      "record_sha256": "072606d8f554123484caff5a1e0f12c3203b96d03f5990ebc4d80d6491441fd0",
+      "record_sha256": "f5990ac205b959621c56585c16ed963a5d1b07b1403adaa7242e0131fbf61f40",
       "version": "6.2.6",
       "wheel_sha256": "9ac20a2599cc1f4b50c128c2245042b105c40592e07fc25d39c99a529c9f410b"
      },
      "policyengine-core": {
-      "record_sha256": "7a4e8a82c3467681971f5160428296b06e65357b8a70801f2cd631ea0943394a",
+      "record_sha256": "53a92f2e67982a16faeba61b8b3d145d3ab9a50d298e92c512d61166ffe5d5d4",
       "version": "3.33.0",
       "wheel_sha256": "2e32d02a8910ab683a2b7600987904b351d058fc2bd5910a8ea6641438bcd789"
      },
@@ -178,9 +179,10 @@
      "model_package": "policyengine-uk",
      "model_version": "2.125.1",
      "policyengine_version": "6.2.6"
-    }
+    },
+    "requirements_sha256": "5c333faef091e6780b2c178ac7584249ac7db0159841921727b913505577bcdb"
    },
-   "identity_sha256": "f241374dea3ca00aeba8849437481da34e6c6c9ddb0bb9b75d3e72bbbe22fd69",
+   "identity_sha256": "3f62a208a9bf522cccb391fe65c1411124abaf4488ab760c522b0568f5b417aa",
    "layout": "replay_namespace",
    "note": "The newest certified pair on 11 October 2026; data built with policyengine-uk 2.122.2 and certified for 2.125.1.",
    "requirements": {

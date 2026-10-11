@@ -102,8 +102,10 @@ Two flows use the same receiver:
 
 * `request_id` is not a field: it is the SHA-256 of the request's JCS
   bytes. Both sides test against the golden fixture.
-* `requested_by` accepts additional provenance fields (for example
-  `run_attempt`); every other object is closed.
+* `requested_by` names the requesting repository and commit;
+  `workflow_run_id` is optional (a scorecard catch-up run started outside
+  Actions has none), and additional provenance fields such as `run_attempt`
+  are accepted. Every other object is closed.
 * The wrapper is identified by `version` plus either a PyPI wheel
   (`{"pypi": {"wheel_sha256": …}}`) or, for an unreleased candidate whose
   regenerated manifest is not on PyPI yet, a public git commit. Scorecard

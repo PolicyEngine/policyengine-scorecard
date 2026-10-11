@@ -50,8 +50,16 @@ SHA256 = re.compile(r"^[0-9a-f]{64}$")
 VERSION = re.compile(r"^[0-9]+(?:\.[0-9]+)*[a-z0-9.+-]*$")
 PIN = re.compile(r"([A-Za-z0-9][A-Za-z0-9_.-]*)==([A-Za-z0-9_.+!-]+)")
 # Installer bookkeeping differs between pip and uv for the same wheel; only
-# the distribution's own files identify what was installed.
-INSTALLER_METADATA = ("INSTALLER", "REQUESTED", "RECORD", "direct_url.json")
+# the distribution's own files identify what was installed. Paths outside
+# site-packages ("../../../bin/...") are console-script wrappers the
+# installer generates, with the environment's interpreter in their shebang.
+INSTALLER_METADATA = (
+    "INSTALLER",
+    "REQUESTED",
+    "RECORD",
+    "direct_url.json",
+    "uv_cache.json",
+)
 
 
 class VariantError(ValueError):
@@ -89,6 +97,44 @@ def variant_slug(identity: dict) -> str:
         f"pe{packages['policyengine']['version']}"
         f"_uk{packages['policyengine-uk']['version']}_{build}"
     )
+
+
+def variant_id_for(identity: dict, taken: dict[str, str] | None = None) -> str:
+    """The version slug, suffixed with the identity digest when another
+    identity already holds that slug (same versions, other wheels or
+    numerical environment)."""
+    slug = variant_slug(identity)
+    digest = identity_sha256(identity)
+    holder = (taken or {}).get(slug)
+    return slug if holder in (None, digest) else f"{slug}--{digest[:10]}"
+
+
+def normalized_freeze(text: str, versions: dict[str, str]) -> str:
+    """A freeze as exact pins. Engine packages installed from a verified local
+    wheel or a commit appear as ``name @ <source>``; they become ``name==version``
+    (the wheel and installed-file digests bind them) with the source kept as a
+    comment. Any other non-pinned line refuses."""
+    lines = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        name, at, source = stripped.partition(" @ ")
+        key = re.sub(r"[-_.]+", "-", name).lower()
+        if at and key in versions:
+            lines.append(
+                f"# {key} installed from {source.split('/')[-1] if source.startswith('file:') else source}"
+            )
+            lines.append(f"{key}=={versions[key]}")
+        elif at:
+            raise VariantError(f"freeze line is not an exact pin: {stripped}")
+        else:
+            lines.append(stripped)
+    pins = requirements_pins("\n".join(lines))
+    missing = sorted(set(versions) - set(pins))
+    if missing:
+        raise VariantError(f"freeze lacks {missing}")
+    return "\n".join(lines) + "\n"
 
 
 def hf_uri(dataset: dict) -> str:
@@ -189,7 +235,11 @@ def validate_record(record: dict, *, root: Path = ROOT) -> None:
     uk = packages["policyengine-uk"]["version"]
     wrapper = packages["policyengine"]["version"]
     need(
-        record.get("variant_id") == variant_slug(identity),
+        record.get("variant_id")
+        in (
+            variant_slug(identity),
+            f"{variant_slug(identity)}--{identity_sha256(identity)[:10]}",
+        ),
         "variant_id differs from its identity",
     )
     need(
@@ -280,6 +330,10 @@ def validate_record(record: dict, *, root: Path = ROOT) -> None:
         f"result_root must be {expected_root}",
     )
     requirements = record.get("requirements") or {}
+    need(
+        identity.get("requirements_sha256") == requirements.get("sha256"),
+        "the identity binds another requirements file",
+    )
     requirements_path = root / str(requirements.get("path", ""))
     if not requirements.get("path") or not requirements_path.is_file():
         problems.append("requirements file is missing")
@@ -342,6 +396,7 @@ def _record_rows(distribution) -> list[tuple[str, str, str]]:
             and name in INSTALLER_METADATA
             or "__pycache__/" in path
             or path.endswith(".pyc")
+            or path.startswith("../")
         ):
             continue
         rows.append((path, digest, size))
@@ -394,7 +449,23 @@ def installed_identity(*, verify_files: bool = True) -> dict:
         "packages": packages,
         "packaged_bundle_manifest_sha256": sha256_file(manifest),
         "python": f"{sys.version_info.major}.{sys.version_info.minor}",
+        "distributions": {
+            re.sub(r"[-_.]+", "-", d.metadata["Name"]).lower(): d.version
+            for d in importlib.metadata.distributions()
+        },
     }
+
+
+def environment_mismatches(pins: dict[str, str], installed: dict) -> list[str]:
+    """Every pinned distribution installed at its pinned version. Extra
+    distributions (the receipt tools) are allowed; a missing or different
+    numerical dependency is not."""
+    have = installed.get("distributions", {})
+    return [
+        f"{name}: pinned {version}, installed {have.get(name)}"
+        for name, version in sorted(pins.items())
+        if have.get(name) != version
+    ]
 
 
 def identity_mismatches(record: dict, installed: dict) -> list[str]:
@@ -424,9 +495,13 @@ def identity_mismatches(record: dict, installed: dict) -> list[str]:
     return out
 
 
-def verify_installed(record: dict, *, installed: dict | None = None) -> dict:
+def verify_installed(
+    record: dict, *, installed: dict | None = None, root: Path = ROOT
+) -> dict:
     installed = installed if installed is not None else installed_identity()
     mismatches = identity_mismatches(record, installed)
+    pins = requirements_pins((root / record["requirements"]["path"]).read_text())
+    mismatches += environment_mismatches(pins, installed)
     if mismatches:
         raise VariantError(
             f"{record['variant_id']}: installed environment is not the certified one: "

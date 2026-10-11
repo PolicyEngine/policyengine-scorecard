@@ -178,7 +178,35 @@ def installed_for(r):
         },
         "packaged_bundle_manifest_sha256": identity["packaged_bundle_manifest_sha256"],
         "python": identity["python"],
+        "distributions": rv.requirements_pins(
+            (rv.ROOT / r["requirements"]["path"]).read_text()
+        ),
     }
+
+
+def test_every_pinned_distribution_is_part_of_the_installed_check():
+    r = record()
+    exact = installed_for(r)
+    for name in ("numpy", "pandas", "h5py"):
+        changed = copy.deepcopy(exact)
+        changed["distributions"][name] = "0.0.0"
+        with pytest.raises(rv.VariantError, match=name):
+            rv.verify_installed(r, installed=changed)
+        missing = copy.deepcopy(exact)
+        del missing["distributions"][name]
+        with pytest.raises(rv.VariantError, match=name):
+            rv.verify_installed(r, installed=missing)
+    extra = copy.deepcopy(exact)
+    extra["distributions"]["rfc8785"] = "0.1.4"
+    rv.verify_installed(r, installed=extra)
+
+
+def test_the_identity_binds_the_requirements_freeze():
+    r = record()
+    r["identity"]["requirements_sha256"] = "5" * 64
+    reseal(r)
+    with pytest.raises(rv.VariantError, match="another requirements file"):
+        rv.validate_record(r)
 
 
 def test_installed_environment_must_match_every_field():
