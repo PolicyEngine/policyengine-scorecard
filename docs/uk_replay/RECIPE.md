@@ -601,9 +601,31 @@ partial or noncanonical outputs cannot be adopted. Keep raw receipts for
 provenance. Each Modal invocation uses one replay worker and first takes one of two
 simulation slots in the Modal Dict `scorecard-replay-simulation-slots`
 (`modal_uk_event.SimulationSlots`), waiting while both are held, so Modal
-invocations never run more than two simulations at once. Local simulations
-are not in that lease: count them yourself toward the overall maximum of two. A full event
-plus one focused repeat uses both slots. Remote wall time is recorded
+invocations never run more than two simulations at once. How the slots hold:
+
+* A slot changes hands only through `put(..., skip_if_exists=True)`, Modal's
+  atomic create-if-absent: each holder, and each renewal, creates the slot's
+  next generation key, and nothing is deleted. A holder writes only its own
+  key, and only to release or shorten it.
+* The lease (4 hours) is renewed after the image build, just before the
+  remote call, and the remote function refuses to start unless its whole
+  3-hour timeout fits inside the lease. A run therefore ends before its slot
+  can pass on, even if the client dies.
+* A finished or never-started run frees its slot at once. After ctrl-C,
+  Modal's client tells the server to stop the app's tasks, and the slot frees
+  10 minutes later. A client killed outright frees it when the lease lapses.
+* A renewal after the lease lapsed is refused (exit 75): the slot may have
+  passed on. Waiting runs poll every 30 seconds in no set order.
+* `tests/test_modal_uk_event.py` checks this call by call: Hypothesis
+  interleaves several holders' Dict calls with clock jumps, crashes,
+  interrupts and Modal's 7-day expiry of idle entries, and asserts that no two
+  runs overlap on a slot and that both slots can be taken once every lease
+  has lapsed. It assumes no process stalls for days inside one protocol step
+  (a few consecutive Dict calls).
+
+Local simulations are not in that lease: count them yourself toward the
+overall maximum of two. A full event plus one focused repeat uses both
+slots. Remote wall time is recorded
 separately in `MODAL_RECEIPT.json`; use the completed event's observed timings
 when planning the next lane.
 

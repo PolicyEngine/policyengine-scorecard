@@ -1,8 +1,11 @@
 """Offline Modal transport checks; no Modal installation or country imports."""
 
 import hashlib
+import itertools
 import json
+import subprocess  # noqa: F401 - patched in the factory test
 import sys
+import time
 from contextlib import nullcontext
 from pathlib import Path
 from types import SimpleNamespace
@@ -264,7 +267,7 @@ def test_interrupted_modal_context_returns_130_without_downloading(
         def __exit__(self, kind, value, traceback):
             return kind is KeyboardInterrupt
 
-    def interrupted_remote(payload):
+    def interrupted_remote(payload, lease_expires):
         raise KeyboardInterrupt
 
     monkeypatch.setattr(runner, "validate_selection", lambda request: None)
@@ -292,8 +295,10 @@ def test_interrupted_modal_context_returns_130_without_downloading(
     )
     assert runner.main(["--event", "autumn_budget_2024", "--execute"]) == 130
     assert "interrupted; no output downloaded" in capsys.readouterr().err
-    # The interrupted run gave its simulation slot back.
-    assert not [key for key in slots.data if key.startswith("slot-")]
+    # The interrupted run's slot frees once Modal has had time to stop it.
+    claims = [v for k, v in slots.data.items() if k.startswith("claim-")]
+    assert claims[-1]["released"] is False
+    assert claims[-1]["expires"] <= time.time() + runner.INTERRUPT_GRACE_SECONDS
 
 
 def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
@@ -341,7 +346,16 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
     monkeypatch.setattr(
         runner.importlib.metadata, "version", lambda name: runner.MODAL_VERSION
     )
-    runner.modal_function(mounts)
+    _, _, replay = runner.modal_function(mounts)
+    # The remote refuses to start unless its whole timeout fits in the lease.
+    monkeypatch.setattr(
+        sys.modules["subprocess"],
+        "run",
+        lambda *args, **kwargs: pytest.fail("a short lease must not start a run"),
+    )
+    short = time.time() + runner.RESOURCE_LIMITS["timeout_seconds"] - 60
+    with pytest.raises(RuntimeError, match="lease does not cover"):
+        replay({"request": {}}, short)
     configuration = recorded["function"]
     assert configuration["cpu"] == (2, 2)
     assert configuration["memory"] == (32768, 32768)
@@ -370,22 +384,38 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
 
 
 class FakeDict:
-    """A Modal Dict's put/get/pop, with put(skip_if_exists=True) atomic."""
+    """A Modal Dict's get/put, with put(skip_if_exists=True) atomic and, given
+    a clock, entries expiring after 7 days without a read or write (as
+    modal/dict.py documents)."""
 
-    def __init__(self):
-        self.data = {}
+    TTL = 7 * 24 * 60 * 60
+
+    def __init__(self, clock=None):
+        self.data, self.touched, self.clock = {}, {}, clock
+
+    def _expire(self):
+        if self.clock is None:
+            return
+        for key in [k for k, t in self.touched.items() if self.clock() - t > self.TTL]:
+            del self.data[key], self.touched[key]
+
+    def _touch(self, key):
+        if self.clock is not None and key in self.data:
+            self.touched[key] = self.clock()
 
     def put(self, key, value, *, skip_if_exists=False):
+        self._expire()
         if skip_if_exists and key in self.data:
+            self._touch(key)
             return False
         self.data[key] = value
+        self._touch(key)
         return True
 
     def get(self, key, default=None):
+        self._expire()
+        self._touch(key)
         return self.data.get(key, default)
-
-    def pop(self, key, default=None):
-        return self.data.pop(key, default)
 
 
 class Clock:
@@ -396,12 +426,63 @@ class Clock:
         return self.now
 
 
+CHAIN_IDS = itertools.count()
+
+
+def slots_for(store, clock, holder, **kwargs):
+    return runner.SimulationSlots(
+        store,
+        holder=holder,
+        clock=clock,
+        chain_id=lambda: f"chain{next(CHAIN_IDS)}",
+        **kwargs,
+    )
+
+
+def run_steps(store, steps, *, limit=None):
+    """Drive a protocol generator for at most ``limit`` Dict calls; return
+    (finished, value)."""
+    calls = 0
+    try:
+        call = next(steps)
+        while True:
+            if limit is not None and calls == limit:
+                return False, None
+            calls += 1
+            if call[0] == "get":
+                result = store.get(call[1])
+            else:
+                result = store.put(call[1], call[2], skip_if_exists=call[3])
+            call = steps.send(result)
+    except StopIteration as done:
+        return True, done.value
+
+
+def holders_of(store, clock):
+    """Each slot's newest generation, if it is held now."""
+    held = {}
+    for key, head in store.data.items():
+        if not key.startswith("head-"):
+            continue
+        slot = int(key.split("-")[1])
+        generation, newest = head["generation"], None
+        while True:
+            claim = store.data.get(f"claim-{slot}-{head['chain']}-{generation + 1}")
+            if claim is None:
+                break
+            generation, newest = generation + 1, claim
+        newest = newest or store.data.get(f"claim-{slot}-{head['chain']}-{generation}")
+        if newest and not newest["released"] and newest["expires"] > clock():
+            held[slot] = newest["holder"]
+    return held
+
+
 def test_two_slots_then_a_third_run_waits():
-    store, clock = FakeDict(), Clock()
-    a = runner.SimulationSlots(store, holder="a", clock=clock)
-    b = runner.SimulationSlots(store, holder="b", clock=clock)
-    c = runner.SimulationSlots(store, holder="c", clock=clock)
-    assert {a.acquire(), b.acquire()} == {0, 1}
+    clock = Clock()
+    store = FakeDict(clock)
+    a, b, c = (slots_for(store, clock, h) for h in "abc")
+    leases = {"a": a.acquire(), "b": b.acquire()}
+    assert {lease.slot for lease in leases.values()} == {0, 1}
     sleeps = []
 
     def sleep(seconds):
@@ -411,55 +492,252 @@ def test_two_slots_then_a_third_run_waits():
     with pytest.raises(TimeoutError):
         c.acquire(wait_seconds=60, poll_seconds=30, sleep=sleep)
     assert sleeps == [30, 30]
-    c.release(0)  # not its slot: no effect
-    assert store.get("slot-0")["holder"] in ("a", "b")
-    a.release(0 if store.get("slot-0")["holder"] == "a" else 1)
-    assert c.acquire(wait_seconds=0, sleep=sleep) in (0, 1)
+    a.release(leases["a"])
+    assert c.acquire(wait_seconds=0, sleep=sleep).slot == leases["a"].slot
+    assert holders_of(store, clock) == {
+        leases["a"].slot: "c",
+        leases["b"].slot: "b",
+    }
 
 
-def test_an_expired_slot_is_reclaimed_once():
-    store, clock = FakeDict(), Clock()
-    dead = runner.SimulationSlots(store, holder="dead", clock=clock, count=1)
-    dead.acquire()
+def test_a_stale_release_cannot_free_a_newer_holder():
+    # Review of #166, 2(a): a holder past its lease releases after the slot
+    # passed on; the release writes only its own generation.
+    clock = Clock()
+    store = FakeDict(clock)
+    late = slots_for(store, clock, "late", count=1)
+    old = late.acquire()
     clock.now += runner.LEASE_SECONDS + 1
-    first = runner.SimulationSlots(store, holder="first", clock=clock, count=1)
-    second = runner.SimulationSlots(store, holder="second", clock=clock, count=1)
-    assert first._try(0) is True
-    assert second._try(0) is False
-    assert store.get("slot-0")["holder"] == "first"
-    dead.release(0)  # the dead holder cannot free the new lease
-    assert store.get("slot-0")["holder"] == "first"
+    successor = slots_for(store, clock, "successor", count=1).acquire()
+    late.release(old)
+    assert holders_of(store, clock) == {0: "successor"}
+    third = slots_for(store, clock, "third", count=1)
+    assert run_steps(store, third._try_steps(0)) == (True, None)
+    assert successor.generation == old.generation + 1
 
 
-def test_a_live_lease_outlasts_the_function_timeout():
-    assert runner.LEASE_SECONDS > runner.RESOURCE_LIMITS["timeout_seconds"]
+def test_a_reclaimer_cannot_displace_a_claim_made_after_it_looked():
+    # Review of #166, 2(b): A sees the slot free, then C takes it before A
+    # writes; A's create-if-absent of the same generation fails.
+    clock = Clock()
+    store = FakeDict(clock)
+    holder = slots_for(store, clock, "holder", count=1)
+    lease = holder.acquire()
+    a = slots_for(store, clock, "a", count=1)
+    c = slots_for(store, clock, "c", count=1)
+    clock.now += runner.LEASE_SECONDS + 1
+    steps = a._try_steps(0)
+    call = next(steps)
+    while call[0] == "get":  # A reads up to its create
+        call = steps.send(store.get(call[1]))
+    holder.release(lease)
+    assert run_steps(store, c._try_steps(0))[1] is not None
+    with pytest.raises(StopIteration) as done:  # A's create now fails
+        steps.send(store.put(call[1], call[2], skip_if_exists=call[3]))
+    assert done.value.value is None
+    assert holders_of(store, clock) == {0: "c"}
 
 
-@settings(max_examples=300, deadline=None)
-@given(
-    st.lists(
-        st.tuples(st.sampled_from("abcd"), st.sampled_from(["try", "release", "tick"])),
-        max_size=40,
-    )
-)
-def test_never_more_than_two_live_holders(operations):
-    store, clock = FakeDict(), Clock()
-    slots = {h: runner.SimulationSlots(store, holder=h, clock=clock) for h in "abcd"}
-    held = {}
-    for holder, action in operations:
+@pytest.mark.parametrize("calls", range(8))
+def test_a_holder_that_dies_at_any_step_frees_its_slot_after_the_lease(calls):
+    # Review of #166, 1: a caller that dies mid-protocol never loses a slot
+    # for good.
+    clock = Clock()
+    store = FakeDict(clock)
+    dying = slots_for(store, clock, "dying", count=1)
+    run_steps(store, dying._try_steps(0), limit=calls)
+    clock.now += runner.LEASE_SECONDS + 1
+    assert slots_for(store, clock, "next", count=1).acquire(wait_seconds=0).slot == 0
+
+
+def test_renewal_after_the_lease_lapsed_is_refused_even_untaken():
+    # A laptop closed during the image build: the slot may have moved on and
+    # Modal may have expired the keys it used, so the run does not start.
+    clock = Clock()
+    store = FakeDict(clock)
+    slots = slots_for(store, clock, "a", count=1)
+    lease = slots.acquire()
+    clock.now += 8 * 24 * 60 * 60
+    with pytest.raises(runner.LeaseLost):
+        slots.renew(lease)
+
+
+def test_a_stale_renewal_cannot_recreate_an_expired_generation():
+    # The slot changes hands across days and Modal expires the old keys; a
+    # client back from a week asleep must not renew into a key that no
+    # longer exists while someone else holds the slot.
+    day = 24 * 60 * 60
+    clock = Clock()
+    store = FakeDict(clock)
+    sleeper = slots_for(store, clock, "sleeper", count=1)
+    stale = sleeper.acquire()
+    clock.now += runner.LEASE_SECONDS + 1
+    for name in ("b", "c"):
+        slots = slots_for(store, clock, name, count=1)
+        slots.release(slots.acquire())
+        clock.now += day
+    clock.now += 8 * day  # every old key idles past Modal's 7 days
+    current = slots_for(store, clock, "current", count=1).acquire()
+    with pytest.raises(runner.LeaseLost):
+        sleeper.renew(stale)
+    assert holders_of(store, clock) == {0: "current"}
+    assert current.slot == 0
+
+
+def test_renewal_after_a_takeover_is_refused():
+    clock = Clock()
+    store = FakeDict(clock)
+    slow = slots_for(store, clock, "slow", count=1)
+    lease = slow.acquire()
+    clock.now += runner.LEASE_SECONDS + 1
+    slots_for(store, clock, "fast", count=1).acquire()
+    with pytest.raises(runner.LeaseLost):
+        slow.renew(lease)
+    assert holders_of(store, clock) == {0: "fast"}
+
+
+def test_renewal_extends_from_now_and_keeps_the_slot():
+    clock = Clock()
+    store = FakeDict(clock)
+    slots = slots_for(store, clock, "a", count=1)
+    lease = slots.acquire()
+    clock.now += 3_000  # image build
+    renewed = slots.renew(lease)
+    assert renewed.expires == clock.now + runner.LEASE_SECONDS
+    assert renewed.generation == lease.generation + 1
+    clock.now += runner.LEASE_SECONDS - 1
+    assert holders_of(store, clock) == {0: "a"}
+
+
+def test_an_interrupt_frees_the_slot_after_the_grace_period():
+    clock = Clock()
+    store = FakeDict(clock)
+    slots = slots_for(store, clock, "a", count=1)
+    lease = slots.acquire()
+    slots.release(lease, grace=runner.INTERRUPT_GRACE_SECONDS)
+    assert holders_of(store, clock) == {0: "a"}
+    clock.now += runner.INTERRUPT_GRACE_SECONDS
+    assert holders_of(store, clock) == {}
+
+
+def test_the_lease_covers_the_timeout_and_scheduling():
+    timeout = runner.RESOURCE_LIMITS["timeout_seconds"]
+    assert runner.LEASE_SECONDS >= timeout + 60 * 60
+    assert runner.INTERRUPT_GRACE_SECONDS < runner.LEASE_SECONDS
+
+
+TIMEOUT = runner.RESOURCE_LIMITS["timeout_seconds"]
+# Modal's disconnect stops an ephemeral app's tasks "in a few seconds"
+# (modal/runner.py); the model allows a minute, inside the grace period.
+STOP_AFTER_DISCONNECT = 60
+
+
+def holder_program(slots):
+    """main()'s use of the slots, one Dict call or event at a time."""
+    lease = None
+    while lease is None:
+        for slot in range(slots.count):
+            lease = yield from slots._try_steps(slot)
+            if lease is not None:
+                break
+        else:
+            yield ("pause",)
+    yield ("pause",)  # image build
+    try:
+        lease = yield from slots._renew_steps(lease)
+    except runner.LeaseLost:
+        yield from slots._release_steps(lease)
+        return
+    outcome = yield ("start", lease)
+    if outcome == "running":
+        outcome = yield ("await",)
+    grace = 0.0 if outcome == "returned" else runner.INTERRUPT_GRACE_SECONDS
+    yield from slots._release_steps(lease, grace=grace)
+
+
+@settings(max_examples=600, deadline=None)
+@given(st.data())
+def test_interleaved_holders_never_overlap_on_a_slot_and_never_lose_one(data):
+    """Model check: holders interleaved call by call, with clock jumps,
+    crashes (no release; a started run continues to its end), interrupts and
+    Dict entry expiry. Safety: two runs never overlap on one slot, so at most
+    SLOT_COUNT run at once. Liveness: once every lease has lapsed, both slots
+    can be taken again."""
+    clock = Clock()
+    store = FakeDict(clock)
+    count = data.draw(st.integers(2, 4), label="holders")
+    actors = []
+    for index in range(count):
+        program = holder_program(slots_for(store, clock, f"h{index}"))
+        actors.append({"program": program, "call": next(program), "done": False})
+    runs = []
+
+    def send(actor, value):
+        try:
+            actor["call"] = actor["program"].send(value)
+        except StopIteration:
+            actor["done"] = True
+
+    for _ in range(data.draw(st.integers(0, 150), label="actions")):
+        action = data.draw(
+            st.sampled_from(["step", "step", "step", "tick", "crash", "interrupt"])
+        )
         if action == "tick":
-            clock.now += 600  # well inside a lease
-        elif action == "try" and holder not in held:
-            for slot in range(runner.SLOT_COUNT):
-                if slots[holder]._try(slot):
-                    held[holder] = slot
-                    break
-        elif action == "release" and holder in held:
-            slots[holder].release(held.pop(holder))
-        live = {
-            value["holder"]
-            for key, value in store.data.items()
-            if key.startswith("slot-") and value["expires"] > clock.now
-        }
-        assert len(live) <= runner.SLOT_COUNT
-        assert live == set(held)
+            seconds = data.draw(
+                st.sampled_from([1, 60, 600, 3600, TIMEOUT, 4 * 3600, 8 * 86400])
+            )
+            # The stated assumption: no stall of days inside one protocol
+            # step (a pending Dict call); between steps, anything goes.
+            mid_step = any(
+                not a["done"] and a["call"][0] in ("get", "put") for a in actors
+            )
+            clock.now += min(seconds, 6 * 86400) if mid_step else seconds
+            continue
+        live = [a for a in actors if not a["done"]]
+        if not live:
+            break
+        if action == "interrupt":  # ctrl-C on a client whose run is going
+            awaiting = [a for a in live if a["call"][0] == "await"]
+            if awaiting:
+                actor = data.draw(st.sampled_from(awaiting))
+                run = actor["run"]
+                run["end"] = min(run["end"], clock.now + STOP_AFTER_DISCONNECT)
+                send(actor, "interrupted")
+            continue
+        actor = data.draw(st.sampled_from(live))
+        if action == "crash":
+            actor["done"] = True
+            continue
+        call = actor["call"]
+        if call[0] == "get":
+            send(actor, store.get(call[1]))
+        elif call[0] == "put":
+            send(actor, store.put(call[1], call[2], skip_if_exists=call[3]))
+        elif call[0] == "pause":
+            send(actor, None)
+        elif call[0] == "start":
+            lease = call[1]
+            if clock.now + TIMEOUT > lease.expires:  # the remote guard refuses
+                send(actor, "refused")
+                continue
+            duration = data.draw(st.integers(1, TIMEOUT), label="run seconds")
+            run = {"slot": lease.slot, "start": clock.now, "end": clock.now + duration}
+            for other in runs:
+                if other["slot"] == run["slot"]:
+                    assert other["end"] <= run["start"], (other, run)
+            runs.append(run)
+            actor["run"] = run
+            send(actor, "running")
+        elif call[0] == "await" and clock.now >= actor["run"]["end"]:
+            send(actor, "returned")
+        running = [r for r in runs if r["start"] <= clock.now < r["end"]]
+        assert len(running) <= runner.SLOT_COUNT
+
+    clock.now += runner.LEASE_SECONDS + 1
+    fresh = [slots_for(store, clock, f"fresh{n}") for n in range(runner.SLOT_COUNT)]
+    taken = [s.acquire(wait_seconds=0) for s in fresh]
+    assert {lease.slot for lease in taken} == set(range(runner.SLOT_COUNT)), (
+        taken,
+        clock.now,
+        store.data,
+    )

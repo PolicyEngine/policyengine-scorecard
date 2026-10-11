@@ -37,9 +37,11 @@ import json
 import os
 import platform
 import re
+import secrets
 import sys
 import tempfile
 import time
+from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -102,9 +104,27 @@ OFFLINE_ENV = {
 
 SLOTS_DICT = "scorecard-replay-simulation-slots"
 SLOT_COUNT = 2
-# Longer than the function timeout (10,800 s), so a live run never loses its
-# slot; a holder that died without releasing frees it after this.
+# The function timeout (10,800 s) plus an hour for the container to be
+# scheduled. The lease is renewed just before the remote call, and the remote
+# function refuses to start unless its whole timeout fits inside the lease,
+# so a run always ends before its slot can pass to anyone else.
 LEASE_SECONDS = 4 * 60 * 60
+# After an interrupt, Modal's client tells the server to stop the ephemeral
+# app's tasks (modal/runner.py, _status_based_disconnect); the slot frees
+# this long afterwards rather than at once.
+INTERRUPT_GRACE_SECONDS = 10 * 60
+
+
+class LeaseLost(RuntimeError):
+    """The slot passed to another holder before this one renewed it."""
+
+
+@dataclass(frozen=True)
+class Lease:
+    slot: int
+    chain: str
+    generation: int
+    expires: float
 
 
 class SimulationSlots:
@@ -113,36 +133,116 @@ class SimulationSlots:
     Each invocation runs one worker, and separate invocations share no
     Modal-side limit, so a third concurrent run would exceed the two the
     shared account allows. Before starting, an invocation takes one of two
-    slots in a named Modal Dict: ``put(key, value, skip_if_exists=True)`` is
-    an atomic create-if-absent on the server. An expired slot is reclaimed by
-    whoever first creates its one-time reclaim token, so two reclaimers
-    cannot both take it.
+    slots in a named Modal Dict.
+
+    The only operation that changes who holds a slot is
+    ``put(key, value, skip_if_exists=True)``, an atomic create-if-absent on
+    the server (modal/dict.py, ``DictUpdateRequest(if_not_exists=...)``).
+    Each change of holder, and each renewal, creates the slot's next
+    generation key, ``claim-{slot}-{chain}-{generation}``; exactly one caller
+    creates any generation, and nothing is ever deleted. A caller may take
+    the next generation only when the newest one is released or expired.
+    A holder writes only its own generation, and only to release it or to
+    shorten it, so no write can take a slot from anyone.
+
+    ``head-{slot}`` is a hint naming the newest generation; readers walk
+    forward from it, so a stale hint costs reads, never safety. Its random
+    chain id separates generations written after Modal expires idle entries
+    (7 days without a read or write) from any older key that survives.
+
+    Every Dict call is one step of a generator (``_try_steps``,
+    ``_renew_steps``, ``_release_steps``), so tests interleave several
+    holders call by call. The guarantee assumes no process stalls for days
+    inside one of these steps (a few consecutive Dict calls): a write made
+    after Modal expired the keys it read could recreate one. Stalls between
+    steps (an image build, a run, a closed laptop) are safe.
     """
 
     def __init__(
-        self, store, *, holder, count=SLOT_COUNT, lease=LEASE_SECONDS, clock=time.time
+        self,
+        store,
+        *,
+        holder,
+        count=SLOT_COUNT,
+        lease=LEASE_SECONDS,
+        clock=time.time,
+        chain_id=lambda: secrets.token_hex(8),
     ):
-        self.store, self.holder, self.count, self.lease, self.clock = (
-            store,
-            holder,
-            count,
-            lease,
-            clock,
-        )
+        self.store, self.holder, self.count = store, holder, count
+        self.lease, self.clock, self.chain_id = lease, clock, chain_id
 
-    def _try(self, slot: int) -> bool:
-        key = f"slot-{slot}"
-        claim = {"holder": self.holder, "expires": self.clock() + self.lease}
-        if self.store.put(key, claim, skip_if_exists=True):
-            return True
-        current = self.store.get(key)
-        if current is None or current["expires"] > self.clock():
-            return False
-        token = f"reclaim-{slot}-{current['holder']}-{current['expires']}"
-        if not self.store.put(token, self.holder, skip_if_exists=True):
-            return False
-        self.store.pop(key, None)
-        return bool(self.store.put(key, claim, skip_if_exists=True))
+    @staticmethod
+    def claim_key(slot: int, chain: str, generation: int) -> str:
+        return f"claim-{slot}-{chain}-{generation}"
+
+    def _claim(self, expires: float, *, released: bool = False) -> dict:
+        return {"holder": self.holder, "expires": expires, "released": released}
+
+    def _try_steps(self, slot: int):
+        head_key = f"head-{slot}"
+        head = yield ("get", head_key)
+        if head is None:
+            fresh = {"chain": self.chain_id(), "generation": -1}
+            yield ("put", head_key, fresh, True)
+            head = yield ("get", head_key)
+            if head is None:
+                return None
+        chain, generation = head["chain"], head["generation"]
+        newest = None
+        if generation >= 0:
+            newest = yield ("get", self.claim_key(slot, chain, generation))
+        while True:
+            following = yield ("get", self.claim_key(slot, chain, generation + 1))
+            if following is None:
+                break
+            generation, newest = generation + 1, following
+        if (
+            newest is not None
+            and not newest["released"]
+            and newest["expires"] > self.clock()
+        ):
+            return None
+        expires = self.clock() + self.lease
+        key = self.claim_key(slot, chain, generation + 1)
+        if not (yield ("put", key, self._claim(expires), True)):
+            return None
+        yield ("put", head_key, {"chain": chain, "generation": generation + 1}, False)
+        return Lease(slot, chain, generation + 1, expires)
+
+    def _renew_steps(self, lease: Lease):
+        # While a lease is live no one else can create its next generation,
+        # so that key has never existed and cannot be one Modal expired;
+        # after it lapses the slot may have moved on, so renewal stops.
+        if self.clock() >= lease.expires:
+            raise LeaseLost(f"simulation slot {lease.slot} lease lapsed")
+        expires = self.clock() + self.lease
+        key = self.claim_key(lease.slot, lease.chain, lease.generation + 1)
+        if not (yield ("put", key, self._claim(expires), True)):
+            raise LeaseLost(f"simulation slot {lease.slot} passed to another holder")
+        head = {"chain": lease.chain, "generation": lease.generation + 1}
+        yield ("put", f"head-{lease.slot}", head, False)
+        return Lease(lease.slot, lease.chain, lease.generation + 1, expires)
+
+    def _release_steps(self, lease: Lease, *, grace: float = 0.0):
+        key = self.claim_key(lease.slot, lease.chain, lease.generation)
+        if grace:
+            claim = self._claim(min(lease.expires, self.clock() + grace))
+        else:
+            claim = self._claim(lease.expires, released=True)
+        yield ("put", key, claim, False)
+
+    def _drive(self, steps):
+        """Run one protocol generator against the store."""
+        try:
+            call = next(steps)
+            while True:
+                if call[0] == "get":
+                    result = self.store.get(call[1])
+                else:
+                    result = self.store.put(call[1], call[2], skip_if_exists=call[3])
+                call = steps.send(result)
+        except StopIteration as done:
+            return done.value
 
     def acquire(
         self,
@@ -150,22 +250,26 @@ class SimulationSlots:
         wait_seconds: float = 6 * 60 * 60,
         poll_seconds: float = 30,
         sleep=time.sleep,
-    ) -> int:
+    ) -> Lease:
         deadline = self.clock() + wait_seconds
         while True:
             for slot in range(self.count):
-                if self._try(slot):
-                    return slot
+                lease = self._drive(self._try_steps(slot))
+                if lease is not None:
+                    return lease
             if self.clock() >= deadline:
                 raise TimeoutError("no simulation slot became free")
             print("[modal] both simulation slots are held; waiting", flush=True)
             sleep(poll_seconds)
 
-    def release(self, slot: int) -> None:
-        key = f"slot-{slot}"
-        current = self.store.get(key)
-        if current is not None and current["holder"] == self.holder:
-            self.store.pop(key, None)
+    def renew(self, lease: Lease) -> Lease:
+        """A fresh full lease, taken just before the remote call starts."""
+        return self._drive(self._renew_steps(lease))
+
+    def release(self, lease: Lease, *, grace: float = 0.0) -> None:
+        """Free the slot now, or ``grace`` seconds from now when the remote
+        run may still be stopping."""
+        self._drive(self._release_steps(lease, grace=grace))
 
 
 def canonical_bytes(value: object) -> bytes:
@@ -540,6 +644,7 @@ def modal_function(mounts: dict[str, Path]):
     for relative, path in sorted(mounts.items()):
         image = image.add_local_file(path, f"{REMOTE_ROOT}/{relative}", copy=False)
     app = modal.App("scorecard-uk-event-replay", include_source=False)
+    timeout_seconds = RESOURCE_LIMITS["timeout_seconds"]
 
     @app.function(
         image=image,
@@ -547,19 +652,23 @@ def modal_function(mounts: dict[str, Path]):
         include_source=False,
         cpu=(2, 2),
         memory=(32768, 32768),
-        timeout=10800,
+        timeout=timeout_seconds,
         max_containers=1,
         retries=0,
         block_network=True,
         restrict_modal_access=True,
     )
     @modal.concurrent(max_inputs=1)
-    def replay(payload: dict) -> dict:
+    def replay(payload: dict, lease_expires: float) -> dict:
         import hashlib
         import json
         import subprocess
+        import time
         from pathlib import Path
 
+        # A run that could outlive its simulation slot does not start.
+        if time.time() + timeout_seconds > lease_expires:
+            raise RuntimeError("the simulation slot lease does not cover the timeout")
         # Inherit stdout/stderr so Modal streams phase progress as it happens.
         subprocess.run(
             [
@@ -713,12 +822,23 @@ def main(argv: list[str] | None = None) -> int:
         modal.Dict.from_name(SLOTS_DICT, create_if_missing=True),
         holder=f"{platform.node()}:{os.getpid()}:{digest_bytes(canonical_bytes(request))[:12]}",
     )
-    slot = slots.acquire()
+    lease = slots.acquire()
+    started = False
     try:
         with modal.enable_output(), app.run():
-            response = replay.remote(payload)
+            # The image build can take a while: renew so the lease covers
+            # the remote run from its start.
+            lease = slots.renew(lease)
+            started = True
+            response = replay.remote(payload, lease.expires)
+    except LeaseLost:
+        print("Modal run not started: its simulation slot lapsed", file=sys.stderr)
+        return 75
     finally:
-        slots.release(slot)
+        # A returned or never-started run frees its slot now; an interrupted
+        # one frees it after Modal has had time to stop the remote task.
+        finished = response is not None or not started
+        slots.release(lease, grace=0.0 if finished else INTERRUPT_GRACE_SECONDS)
     if response is None:
         print("Modal run interrupted; no output downloaded", file=sys.stderr)
         return 130
