@@ -221,7 +221,13 @@ How flags arise, so a gate built on them sees the intended events:
    `receipt_commit`; nothing of this receipt nests inside W4's execution
    receipt.
 4. W4 computes `expected_release_bundle` in a subprocess with the three
-   Hugging Face token variables removed.
+   Hugging Face token variables and `NO_PROXY`/`no_proxy` removed, and the
+   HTTP(S) proxy variables pointed at a closed local port, exactly as
+   `uk_replay_variants.isolate_certification_environment` does. (Amended 11
+   October, pending W4's confirmation: removing the tokens alone forces the
+   packaged certification only for a private data repository; policyengine.py
+   fetches the release manifest with `requests`, which ignores
+   `HF_HUB_OFFLINE`, so a public one would still answer.)
 5. W4's proposed gate on these fields (pending d1344): `rejected`, `failed`,
    integrity `failed` or `incomplete`, and structural, coverage, mapping,
    inertness or construction flags fail the replay gate; numerical and
