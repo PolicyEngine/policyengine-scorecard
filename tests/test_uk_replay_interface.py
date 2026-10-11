@@ -113,6 +113,9 @@ def test_rejected_receipt_carries_a_reason_and_no_results():
     receipt.update(
         status="rejected",
         rejection={"code": "release_bundle_mismatch", "detail": "model_version"},
+        variant_id=None,
+        variant_identity_sha256=None,
+        execution=None,
         corpus=None,
         diff=None,
         integrity={"status": "not_run", "failures": []},
@@ -129,6 +132,83 @@ def test_rejected_receipt_carries_a_reason_and_no_results():
             ),
             ui.RECEIPT_SCHEMA_ID,
         )
+
+
+def _rejected():
+    receipt = golden("replay_receipt_golden.json")
+    receipt.update(
+        status="rejected",
+        rejection={"code": "incompatible_pair", "detail": "x"},
+        variant_id=None,
+        variant_identity_sha256=None,
+        execution=None,
+        corpus=None,
+        diff=None,
+        integrity={"status": "not_run", "failures": []},
+    )
+    return receipt
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        # A rejected request ran nothing and has no identity (review of #160, M6).
+        {"variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"},
+        {"variant_identity_sha256": "0" * 64},
+        {"execution": golden("replay_receipt_golden.json")["execution"]},
+        {"integrity": {"status": "complete", "failures": []}},
+        {"integrity": {"status": "failed", "failures": []}},
+    ],
+)
+def test_a_rejected_receipt_cannot_claim_a_run(change):
+    ui.validate(ui.seal_receipt(_rejected()), ui.RECEIPT_SCHEMA_ID)
+    with pytest.raises(jsonschema.ValidationError):
+        ui.validate(ui.seal_receipt({**_rejected(), **change}), ui.RECEIPT_SCHEMA_ID)
+
+
+def test_a_complete_receipt_names_its_identity_and_sealed_namespace():
+    receipt = golden("replay_receipt_golden.json")
+    del receipt["receipt_sha256"]
+    with pytest.raises(jsonschema.ValidationError):
+        ui.validate(
+            ui.seal_receipt({**receipt, "variant_identity_sha256": None}),
+            ui.RECEIPT_SCHEMA_ID,
+        )
+    results = {k: v for k, v in receipt["results"].items() if k != "manifest_sha256"}
+    with pytest.raises(jsonschema.ValidationError):
+        ui.validate(
+            ui.seal_receipt({**receipt, "results": results}), ui.RECEIPT_SCHEMA_ID
+        )
+
+
+def test_a_failed_receipt_cannot_report_complete_integrity():
+    receipt = golden("replay_receipt_golden.json")
+    del receipt["receipt_sha256"]
+    receipt["status"] = "failed"
+    for status in ("complete", "incomplete", "not_run"):
+        with pytest.raises(jsonschema.ValidationError):
+            ui.validate(
+                ui.seal_receipt(
+                    {**receipt, "integrity": {"status": status, "failures": []}}
+                ),
+                ui.RECEIPT_SCHEMA_ID,
+            )
+
+
+def test_execution_python_is_exactly_a_version():
+    receipt = golden("replay_receipt_golden.json")
+    del receipt["receipt_sha256"]
+    receipt["execution"] = {**receipt["execution"], "python": "3.12.13; rm -rf"}
+    with pytest.raises(jsonschema.ValidationError):
+        ui.validate(ui.seal_receipt(receipt), ui.RECEIPT_SCHEMA_ID)
+
+
+@pytest.mark.parametrize("path", ["../x.h5", "a/../x.h5", "a/..", ".."])
+def test_request_dataset_path_has_no_parent_segments(path):
+    request = golden("qualification_request_golden.json")
+    request["candidate"]["data"]["path"] = path
+    with pytest.raises(jsonschema.ValidationError):
+        ui.validate_request(request)
 
 
 def test_tampered_receipt_fails_its_digest():
