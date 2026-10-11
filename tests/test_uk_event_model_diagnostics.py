@@ -35,7 +35,10 @@ def test_synthetic_diagnostics_release_worlds_and_use_only_supplied_households(
     monkeypatch.setattr(
         diagnostics,
         "_source",
-        lambda root, path: {"engine_file": path, "sha256": "recorded separately"},
+        lambda root, path, **options: {
+            "engine_file": path,
+            "sha256": "recorded separately",
+        },
     )
     rows = diagnostics._additional_model_checks(Path("unused"), SmallSimulation, None)
     assert len(rows) == len(constructed) == 3

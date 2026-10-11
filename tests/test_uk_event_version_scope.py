@@ -1,0 +1,246 @@
+"""Diagnoses and construction notes belong to the engine that established them."""
+
+import copy
+import json
+from pathlib import Path
+
+from hypothesis import given, settings
+from hypothesis import strategies as st
+
+from pipeline import compare_uk_event as compare
+from pipeline import diagnose_uk_event_models as diagnose
+
+ROOT = Path(__file__).resolve().parent.parent
+EVENTS = (
+    "autumn_budget_2024",
+    "autumn_statement_2023",
+    "spring_budget_2024",
+    "spring_statement_2025",
+    "spring_budget_2023",
+)
+VARIANT = {
+    "engine_version": "2.125.1",
+    "policyengine_version": "6.2.6",
+    "data_bundle": "policyengine-uk-data-1.58.0",
+    "variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0",
+    "data_years": list(range(2024, 2031)),
+    "unsupported_years": [{"year": 2023, "reason": "before_data_year"}],
+    "run_manifest": None,
+}
+# Sentences that state 2.89.2 facts as facts about the run.
+LEGACY_ONLY = (
+    "£3.15",
+    "#1887",
+    "still has the 3% surcharge scale",
+    "−£786.808m",
+    "-£786.808m",
+    "processed employee NICs main rate is 8%",
+)
+
+
+def measures():
+    for event in EVENTS:
+        registry = json.loads(
+            (ROOT / f"data/uk/events/{event}_measures.json").read_text()
+        )
+        yield from registry["measures"]
+
+
+def test_legacy_review_diagnoses_are_unchanged_and_others_are_prior():
+    seen = 0
+    for measure in measures():
+        for year in (2024, 2027):
+            legacy = compare.review_diagnosis(measure["measure_key"], year)
+            assert legacy == compare.review_diagnosis(
+                measure["measure_key"], year, "", compare.LEGACY_ENGINE
+            )
+            other = compare.review_diagnosis(
+                measure["measure_key"], year, "", "2.125.1"
+            )
+            if not legacy:
+                assert other == {}
+                continue
+            seen += 1
+            assert "cause_class" not in other and "issues" not in other
+            (prior,) = other["prior_diagnoses"]
+            assert prior["status"] == "not_reverified"
+            assert prior["established_on"] == ["2.89.2"]
+            assert {
+                k: v for k, v in prior.items() if k not in ("status", "established_on")
+            } == legacy
+    assert seen >= 9
+
+
+def test_construction_notes_on_another_engine_are_labelled_and_scoped():
+    for measure in measures():
+        legacy = compare.construction_note(measure)
+        assert legacy == compare.construction_note(measure, compare.LEGACY_ENGINE)
+        other = compare.construction_note(measure, "2.125.1")
+        if not measure.get("note"):
+            assert other == ""
+            continue
+        assert other.startswith("Authored against policyengine-uk 2.89.2: ")
+        assert other.endswith("recorded in CONSTRUCTION_PREMISES.json.")
+        appended = other.removeprefix("Authored against policyengine-uk 2.89.2: ")
+        appended = appended.removeprefix(measure["note"])
+        assert not any(marker in appended for marker in LEGACY_ONLY)
+
+
+def test_run_identity_defaults_to_the_legacy_run(tmp_path):
+    identity = compare.run_identity(tmp_path)
+    assert identity["engine_version"] == "2.89.2"
+    assert not compare.is_variant(identity)
+    (tmp_path / "RUN_MANIFEST.json").write_text(
+        json.dumps(
+            {"engine_version": "2.125.1", "variant_id": "v", "data_years": [2024]}
+        )
+    )
+    identity = compare.run_identity(tmp_path)
+    assert compare.is_variant(identity)
+    assert identity["run_manifest"] == tmp_path / "RUN_MANIFEST.json"
+
+
+def test_variant_reports_state_their_execution_and_unsupported_years():
+    registry = json.loads(
+        (ROOT / "data/uk/events/spring_budget_2023_measures.json").read_text()
+    )
+    rows = [
+        {
+            "event_slug": "spring_budget_2023",
+            "source_row_id": "x",
+            "measure_key": registry["measures"][0]["measure_key"],
+            "title": "t",
+            "classification": "partial",
+            "gap_kind": None,
+            "measure_type": "m",
+            "fy": "2023-24",
+            "year": 2023,
+            "tax_head": "Income tax",
+            "obr_value_gbp": 1.0,
+            "obr_value_gbp_decimal": "1",
+            "pe_value_gbp": None,
+            "pe_to_obr_ratio": None,
+            "ratio_bin": "pe_missing",
+            "status": "unsupported_on_variant",
+            "reason": "CY2023 is outside v's supported data years 2024–2030 (before_data_year)",
+            "diagnosis": compare.review_diagnosis(
+                "spring_budget_2023__pension_annual_allowance_package",
+                2023,
+                "",
+                "2.125.1",
+            ),
+            "gap_gbp": None,
+            "explained_share": None,
+        }
+    ]
+    grid = {
+        "full_event_complete": False,
+        "full_supported_grid_complete": True,
+        "unsupported_years": [2023],
+    }
+    text = compare.render_markdown(registry, rows, grid, VARIANT)
+    assert "policyengine-uk 2.125.1 with policyengine 6.2.6" in text
+    assert "pinned certified 2023 population" not in text
+    assert "Unsupported on this release: calendar years 2023" in text
+    assert "1 source rows keep their OBR values" in text
+    assert "Numerical replay grid incomplete" not in text
+    assert "## Prior diagnoses, established on policyengine-uk 2.89.2" in text
+    assert "## Review diagnoses" not in text
+    legacy = compare.render_markdown(registry, [], None, None)
+    assert "pinned certified 2023 population" in legacy
+
+
+def established():
+    return json.loads((ROOT / "results/uk/events/MODEL_DIAGNOSTICS.json").read_text())
+
+
+def test_every_predicate_finds_its_defect_in_its_founding_observation():
+    records = established()
+    assert {r["id"] for r in records} == set(diagnose.DEFECT_PREDICATES)
+    for record in records:
+        assert diagnose.defect_status(record) == "persists", record["id"]
+
+
+def test_resolution_signatures():
+    by_id = {r["id"]: r for r in established()}
+    fixed = {
+        "carers_allowance_earnings_test_absent": {
+            "annual_carers_allowance_gbp": [4331.0, 0.0]
+        },
+        "cgt_main_rate_commencement": {
+            "2024-10-30": {"basic": 0.1346},
+            "2025-04-06": {"basic": 0.18},
+        },
+        "sdlt_additional_home_hike_absent": {
+            "2025-04-06": [0.05, 0.07, 0.10, 0.15, 0.17]
+        },
+        "private_school_vat_current_law_lever_zero": {
+            "2025-01-01": 0.2,
+            "2025-06-01": 0.2,
+            "2026-06-01": 0.2,
+        },
+        "employer_nics_state_pension_age_exemption": {
+            "ni_class_1_employer": [6750.0, 6750.0]
+        },
+        "pension_taper_omits_employer_contributions": {
+            "pension_annual_allowance": [45000.0]
+        },
+        "annual_allowance_charge_single_marginal_rate": {
+            "personal_pension_contributions_tax": [6460.0]
+        },
+    }
+    for identifier, observation in fixed.items():
+        record = {**by_id[identifier], "observation": observation}
+        assert diagnose.defect_status(record) == "resolved", identifier
+
+
+def test_moved_code_or_missing_variables_are_inconclusive_never_resolved():
+    for record in established():
+        missing_file = copy.deepcopy(record)
+        missing_file["evidence"] = {"engine_file": "x.py", "missing": True}
+        assert diagnose.defect_status(missing_file) == "inconclusive"
+        absent = {**record, "absent_variables": ["x"]}
+        assert diagnose.defect_status(absent) == "inconclusive"
+
+
+observations = st.recursive(
+    st.none()
+    | st.booleans()
+    | st.floats(allow_nan=True)
+    | st.integers()
+    | st.text(max_size=4),
+    lambda children: (
+        st.lists(children, max_size=3)
+        | st.dictionaries(
+            st.sampled_from(
+                [
+                    "2024-10-30",
+                    "2025-04-06",
+                    "2029",
+                    "2030",
+                    "basic",
+                    "ni_class_1_employer",
+                    "pension_annual_allowance",
+                    "annual_carers_allowance_gbp",
+                    "annual_synthetic_lcwra_element",
+                    "2026-06-01",
+                    "2027-06-01",
+                    "lower_profits_limit",
+                    "upper_profits_limit",
+                    "2024-06-01",
+                    "2025-06-01",
+                ]
+            ),
+            children,
+            max_size=4,
+        )
+    ),
+    max_leaves=12,
+)
+
+
+@settings(max_examples=400, deadline=None)
+@given(st.sampled_from(sorted(diagnose.DEFECT_PREDICATES)), observations)
+def test_predicates_are_total(identifier, observation):
+    record = {"id": identifier, "evidence": {}, "observation": observation}
+    assert diagnose.defect_status(record) in diagnose.STATUSES
