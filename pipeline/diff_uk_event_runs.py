@@ -389,7 +389,12 @@ def _premise_details(event, measure_key, year, base_premises, head_premises):
     for path in sorted(set(by) | set(hy)):
         bp, hp = by.get(path, {}), hy.get(path, {})
         for world in ("baseline_world", "reform_world"):
-            if bp.get(world) != hp.get(world):
+            # A world that is current law on both sides moved with current
+            # law (context below); only an executed override is construction.
+            overrides = any(
+                side.get(world) != side.get("current_law") for side in (bp, hp)
+            )
+            if overrides and bp.get(world) != hp.get(world):
                 details.append(
                     {
                         "flag": "construction",
