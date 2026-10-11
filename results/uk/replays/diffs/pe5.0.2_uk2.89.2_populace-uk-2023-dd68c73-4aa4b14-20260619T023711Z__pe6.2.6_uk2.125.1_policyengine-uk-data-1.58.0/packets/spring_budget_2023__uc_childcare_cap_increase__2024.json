@@ -1,0 +1,314 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.dwp.universal_credit.elements.childcare.cap.1": {
+     "2023-01-01.2023-12-31": 646.35,
+     "2024-01-01.2024-12-31": 689.6,
+     "2025-01-01.2025-12-31": 701.32,
+     "2026-01-01.2026-12-31": 727.97,
+     "2027-01-01.2027-12-31": 727.97
+    },
+    "gov.dwp.universal_credit.elements.childcare.cap.2": {
+     "2023-01-01.2023-12-31": 1108.04,
+     "2024-01-01.2024-12-31": 1182.39,
+     "2025-01-01.2025-12-31": 1202.49,
+     "2026-01-01.2026-12-31": 1248.18,
+     "2027-01-01.2027-12-31": 1248.18
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/events/spring_budget_2023/spring_budget_2023__uc_childcare_cap_increase_2024.json",
+   "reform_reform_dict": null,
+   "sha256": "c21d836003dbe2e6425cf4967781afbc6150b184e65e0c88405f72b005f21f3d"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.dwp.universal_credit.elements.childcare.cap.1": {
+     "2023-01-01.2023-12-31": 646.35,
+     "2024-01-01.2024-12-31": 689.6,
+     "2025-01-01.2025-12-31": 701.32,
+     "2026-01-01.2026-12-31": 727.97,
+     "2027-01-01.2027-12-31": 727.97
+    },
+    "gov.dwp.universal_credit.elements.childcare.cap.2": {
+     "2023-01-01.2023-12-31": 1108.04,
+     "2024-01-01.2024-12-31": 1182.39,
+     "2025-01-01.2025-12-31": 1202.49,
+     "2026-01-01.2026-12-31": 1248.18,
+     "2027-01-01.2027-12-31": 1248.18
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_budget_2023/spring_budget_2023__uc_childcare_cap_increase_2024.json",
+   "reform_reform_dict": null,
+   "sha256": "508c38183f3bd02028aaad5e4ed2b9d43966d1020c36c43fe8e00a13684a8e1a"
+  }
+ },
+ "cited_sources": [],
+ "event": "spring_budget_2023",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2024-25",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+   "data_bundle": "policyengine-uk-data-1.58.0",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.125.1",
+   "policyengine_version": "6.2.6",
+   "variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+  }
+ },
+ "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "this engine samples every government parameter at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.universal_credit.elements.childcare.cap.1": {
+      "baseline_world": 689.6,
+      "current_law": 1014.63,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 1014.63,
+      "reform_world": 1014.63
+     },
+     "gov.dwp.universal_credit.elements.childcare.cap.2": {
+      "baseline_world": 1182.39,
+      "current_law": 1739.37,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 1739.37,
+      "reform_world": 1739.37
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.universal_credit.elements.childcare.cap.1": {
+      "baseline_world": 689.6,
+      "current_law": 1014.63,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 1014.63,
+      "reform_world": 1014.63
+     },
+     "gov.dwp.universal_credit.elements.childcare.cap.2": {
+      "baseline_world": 1182.39,
+      "current_law": 1739.37,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 1739.37,
+      "reform_world": 1739.37
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2024-25",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:20827:22d8d3be038c9fa2",
+   "level": "source_row",
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "threshold_gbp": null,
+   "year": 2024
+  },
+  {
+   "base_gbp": -1793717.8464126587,
+   "context": {
+    "fy": "2024-25",
+    "obr_value_gbp": -86814000.0,
+    "ratio_bin": {
+     "base": "same_sign_ratio_below_0.5",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": -216441236.56417084,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 2182349.544105835
+    }
+   ],
+   "event": "spring_budget_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -218234954.4105835,
+   "key": "obr_pmd_nov2025:20833:270c17d92e54dca4",
+   "level": "source_row",
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "threshold_gbp": 2182349.544105835,
+   "year": 2024
+  },
+  {
+   "base_gbp": -1793717.8464126587,
+   "context": {},
+   "delta_gbp": -216441236.56417084,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 2182349.544105835
+    }
+   ],
+   "event": "spring_budget_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -218234954.4105835,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "threshold_gbp": 2182349.544105835,
+   "year": 2024
+  },
+  {
+   "base_gbp": -1793717.8464126587,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": -216441236.56417084,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 2182349.544105835
+    }
+   ],
+   "event": "spring_budget_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -218234954.4105835,
+   "key": "universal_credit",
+   "level": "head",
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "threshold_gbp": 2182349.544105835,
+   "year": 2024
+  }
+ ],
+ "registry_sha256": {
+  "base": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+  "head": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2023 --variant pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z --measures spring_budget_2023__uc_childcare_cap_increase --years 2024 --workers 1 --output-dir .venv-replay-checks/reproductions/pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/spring_budget_2023/spring_budget_2023__uc_childcare_cap_increase_2024",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2023 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --measures spring_budget_2023__uc_childcare_cap_increase --years 2024 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_budget_2023/spring_budget_2023__uc_childcare_cap_increase_2024"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2024-25",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "source_column": "2024-25",
+   "source_row_id": "obr_pmd_nov2025:20827:22d8d3be038c9fa2",
+   "source_row_number": 20827,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": -1793717.8464126587,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2024-25",
+   "head_gbp": -218234954.4105835,
+   "obr_value_gbp": -86814000.0,
+   "source_column": "2024-25",
+   "source_row_id": "obr_pmd_nov2025:20833:270c17d92e54dca4",
+   "source_row_number": 20833,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "DWP: increase the maximum support available in Universal Credit for childcare costs",
+ "year": 2024
+}

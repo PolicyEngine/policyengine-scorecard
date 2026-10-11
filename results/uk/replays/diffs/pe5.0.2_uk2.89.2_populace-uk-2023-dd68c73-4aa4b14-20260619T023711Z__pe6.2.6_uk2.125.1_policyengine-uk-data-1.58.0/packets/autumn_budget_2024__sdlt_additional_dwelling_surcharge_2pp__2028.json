@@ -1,0 +1,478 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": null,
+   "construction": "forward_delta_on_certified_world",
+   "path": "results/uk/events/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2028.json",
+   "reform_reform_dict": {
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+     "2024-10-31.2035-12-31": 0.05
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+     "2024-10-31.2035-12-31": 0.07
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+     "2024-10-31.2035-12-31": 0.1
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+     "2024-10-31.2035-12-31": 0.15
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+     "2024-10-31.2035-12-31": 0.17
+    }
+   },
+   "sha256": "70e7150fa4a3f1eaad3603f32abfebc280f14c4aa93c9df190d6b0290af18f48"
+  },
+  "head": {
+   "baseline_reform_dict": null,
+   "construction": "forward_delta_on_certified_world",
+   "path": "results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2028.json",
+   "reform_reform_dict": {
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+     "2024-10-31.2035-12-31": 0.05
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+     "2024-10-31.2035-12-31": 0.07
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+     "2024-10-31.2035-12-31": 0.1
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+     "2024-10-31.2035-12-31": 0.15
+    },
+    "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+     "2024-10-31.2035-12-31": 0.17
+    }
+   },
+   "sha256": "789a3d2e467eca75c0793c0ceb7bdb30073e5f3a9aecedfa4d78eecf30c5fa9e"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2024",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+   "data_bundle": "policyengine-uk-data-1.58.0",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.125.1",
+   "policyengine_version": "6.2.6",
+   "variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+  }
+ },
+ "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "this engine samples every government parameter at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "the forward delta changes current law in an in-force year",
+     "holds": true
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "not a reversal",
+     "holds": null
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+      "baseline_world": 0.03,
+      "current_law": 0.03,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 0.03,
+      "reform_world": 0.05
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+      "baseline_world": 0.05,
+      "current_law": 0.05,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 0.05,
+      "reform_world": 0.07
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+      "baseline_world": 0.08,
+      "current_law": 0.08,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 0.08,
+      "reform_world": 0.1
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+      "baseline_world": 0.13,
+      "current_law": 0.13,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 0.13,
+      "reform_world": 0.15
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+      "baseline_world": 0.15,
+      "current_law": 0.15,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 0.15,
+      "reform_world": 0.17
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "the forward delta changes current law in an in-force year",
+     "holds": true
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "not a reversal",
+     "holds": null
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[0].rate": {
+      "baseline_world": 0.03,
+      "current_law": 0.03,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.03,
+      "reform_world": 0.05
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[1].rate": {
+      "baseline_world": 0.05,
+      "current_law": 0.05,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.05,
+      "reform_world": 0.07
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[2].rate": {
+      "baseline_world": 0.08,
+      "current_law": 0.08,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.08,
+      "reform_world": 0.1
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[3].rate": {
+      "baseline_world": 0.13,
+      "current_law": 0.13,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.13,
+      "reform_world": 0.15
+     },
+     "gov.hmrc.stamp_duty.residential.purchase.additional.rate[4].rate": {
+      "baseline_world": 0.15,
+      "current_law": 0.15,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.15,
+      "reform_world": 0.17
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 2259267108.0862694,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 450753667.0,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Stamp duty"
+   },
+   "delta_gbp": 167950783.51881027,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 24272178.916050795
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 2427217891.6050797,
+   "key": "obr_pmd_nov2025:11650:068acce8b0873200",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": 24272178.916050795,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -122757660.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:11656:e5c5845a4df7a18b",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -77431827.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Inheritance tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:11662:6d909ba62cdc4a9d",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 21006518.810046963,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22809:83691f2969d81ad0",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 9112360.189953031,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22815:1312cc7ca835f35b",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": 2259267108.0862694,
+   "context": {},
+   "delta_gbp": 167950783.51881027,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 24272178.916050795
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 2427217891.6050797,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": 24272178.916050795,
+   "year": 2028
+  },
+  {
+   "base_gbp": 2259267108.0862694,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 167950783.51881027,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 24272178.916050795
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 2427217891.6050797,
+   "key": "stamp_duty_land_tax",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "threshold_gbp": 24272178.916050795,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+  "head": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z --measures autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2028",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --measures autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 2259267108.0862694,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2028-29",
+   "head_gbp": 2427217891.6050797,
+   "obr_value_gbp": 450753667.0,
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:11650:068acce8b0873200",
+   "source_row_number": 11650,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Stamp duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -122757660.0,
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:11656:e5c5845a4df7a18b",
+   "source_row_number": 11656,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -77431827.0,
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:11662:6d909ba62cdc4a9d",
+   "source_row_number": 11662,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Inheritance tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 21006518.810046963,
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:22809:83691f2969d81ad0",
+   "source_row_number": 22809,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 9112360.189953031,
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:22815:1312cc7ca835f35b",
+   "source_row_number": 22815,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Stamp Duty Land Tax (SDLT): Increase the Higher Rate of Additional Dwelling (HRAD) of SDLT by 2ppts from 3% to 5% from 31 October 2024",
+ "year": 2028
+}

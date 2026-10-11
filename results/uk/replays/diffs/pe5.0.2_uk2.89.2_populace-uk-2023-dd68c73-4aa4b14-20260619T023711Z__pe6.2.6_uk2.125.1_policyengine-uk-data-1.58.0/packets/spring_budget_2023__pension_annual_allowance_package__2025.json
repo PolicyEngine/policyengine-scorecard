@@ -1,0 +1,510 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+     "2023-01-01.2035-12-31": 40000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+     "2023-01-01.2035-12-31": 4000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+     "2023-01-01.2035-12-31": 240000
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/events/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2025.json",
+   "reform_reform_dict": null,
+   "sha256": "64dba3c5fb37101d55915559ede077a03a75dcfb37be9d135a228205f8432598"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+     "2023-01-01.2035-12-31": 40000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+     "2023-01-01.2035-12-31": 4000
+    },
+    "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+     "2023-01-01.2035-12-31": 240000
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2025.json",
+   "reform_reform_dict": null,
+   "sha256": "0b70828cc20dd5e3bf3ce0f264629be7e70127bf292a9bc08e20824669f7d59f"
+  }
+ },
+ "cited_sources": [],
+ "event": "spring_budget_2023",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2025-26",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+   "data_bundle": "policyengine-uk-data-1.58.0",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.125.1",
+   "policyengine_version": "6.2.6",
+   "variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+  }
+ },
+ "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "this engine samples every government parameter at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+      "baseline_world": 40000,
+      "current_law": 60000,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 60000,
+      "reform_world": 60000
+     },
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+      "baseline_world": 4000,
+      "current_law": 10000,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 10000,
+      "reform_world": 10000
+     },
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+      "baseline_world": 240000,
+      "current_law": 260000,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 260000,
+      "reform_world": 260000
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.allowances.annual_allowance.default": {
+      "baseline_world": 40000,
+      "current_law": 60000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 60000,
+      "reform_world": 60000
+     },
+     "gov.hmrc.income_tax.allowances.annual_allowance.minimum": {
+      "baseline_world": 4000,
+      "current_law": 10000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 10000,
+      "reform_world": 10000
+     },
+     "gov.hmrc.income_tax.allowances.annual_allowance.taper": {
+      "baseline_world": 240000,
+      "current_law": 260000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 260000,
+      "reform_world": 260000
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": -5395125608.308472,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": -405021326.1734674,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": 2347685685.02124,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 53951256.08308472
+    }
+   ],
+   "event": "spring_budget_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -3047439923.2872314,
+   "key": "obr_pmd_nov2025:10233:f9cad5be5ec138c8",
+   "level": "source_row",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 53951256.08308472,
+   "year": 2025
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": -20568943.281972002,
+    "ratio_bin": {
+     "base": "pe_zero",
+     "head": "pe_zero"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "obr_pmd_nov2025:10239:eae2e7a942d667da",
+   "level": "source_row",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": -28717123.48316291,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:20996:18794ff6dbde2924",
+   "level": "source_row",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": 186175369.60035098,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Net public service pension payments"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:21002:97562450c81ff19c",
+   "level": "source_row",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": -913981.4878025111,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:21008:3fcd0f4987e122f2",
+   "level": "source_row",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": -5395125608.308472,
+   "context": {},
+   "delta_gbp": 2347685685.02124,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 53951256.08308472
+    }
+   ],
+   "event": "spring_budget_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -3047439923.2872314,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 53951256.08308472,
+   "year": 2025
+  },
+  {
+   "base_gbp": -5395125608.308472,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 2347685685.02124,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 53951256.08308472
+    }
+   ],
+   "event": "spring_budget_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -3047439923.2872314,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 53951256.08308472,
+   "year": 2025
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employee",
+   "level": "head",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2025
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employer",
+   "level": "head",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2025
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_2",
+   "level": "head",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2025
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "spring_budget_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_4",
+   "level": "head",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2025
+  }
+ ],
+ "registry_sha256": {
+  "base": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+  "head": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2023 --variant pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z --measures spring_budget_2023__pension_annual_allowance_package --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2025",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2023 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --measures spring_budget_2023__pension_annual_allowance_package --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_budget_2023/spring_budget_2023__pension_annual_allowance_package_2025"
+ },
+ "source_cells": [
+  {
+   "base_gbp": -5395125608.308472,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2025-26",
+   "head_gbp": -3047439923.2872314,
+   "obr_value_gbp": -405021326.1734674,
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:10233:f9cad5be5ec138c8",
+   "source_row_number": 10233,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": 0.0,
+   "obr_value_gbp": -20568943.281972002,
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:10239:eae2e7a942d667da",
+   "source_row_number": 10239,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": -28717123.48316291,
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:20996:18794ff6dbde2924",
+   "source_row_number": 20996,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": 186175369.60035098,
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:21002:97562450c81ff19c",
+   "source_row_number": 21002,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Net public service pension payments"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": -913981.4878025111,
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:21008:3fcd0f4987e122f2",
+   "source_row_number": 21008,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Annual Allowance (AA): increase to \u00a360,000 and allow Pension Input Amount aggregation between open and closed public service pension schemes from April 2023",
+ "year": 2025
+}

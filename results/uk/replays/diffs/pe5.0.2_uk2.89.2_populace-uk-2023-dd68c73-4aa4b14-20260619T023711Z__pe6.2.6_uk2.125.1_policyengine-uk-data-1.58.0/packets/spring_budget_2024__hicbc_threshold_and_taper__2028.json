@@ -1,0 +1,347 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+     "2024-01-01.2035-12-31": 60000
+    },
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+     "2024-01-01.2035-12-31": 50000
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/events/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2028.json",
+   "reform_reform_dict": null,
+   "sha256": "795f1654f1baf12ebaf9e5d69e37c9f9b8073c24cb18285b1451c9f0dc97b3aa"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+     "2024-01-01.2035-12-31": 60000
+    },
+    "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+     "2024-01-01.2035-12-31": 50000
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2028.json",
+   "reform_reform_dict": null,
+   "sha256": "5a07d59ddaaa77c239927de152fed3a339d51baa1ccba4d3468d6c837206a847"
+  }
+ },
+ "cited_sources": [],
+ "event": "spring_budget_2024",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical",
+  "structural"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+   "data_bundle": "policyengine-uk-data-1.58.0",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.125.1",
+   "policyengine_version": "6.2.6",
+   "variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+  }
+ },
+ "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "this engine samples every government parameter at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+      "baseline_world": 60000,
+      "current_law": 80000,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 80000,
+      "reform_world": 80000
+     },
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+      "baseline_world": 50000,
+      "current_law": 60000,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 60000,
+      "reform_world": 60000
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+      "baseline_world": 60000,
+      "current_law": 80000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 80000,
+      "reform_world": 80000
+     },
+     "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+      "baseline_world": 50000,
+      "current_law": 60000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 60000,
+      "reform_world": 60000
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": -1972030891.008606,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -193000000.0,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": 600082536.7721558,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 19720308.91008606
+    }
+   ],
+   "event": "spring_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -1371948354.2364502,
+   "key": "obr_pmd_nov2025:10991:11a476b01436c0db",
+   "level": "source_row",
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "threshold_gbp": 19720308.91008606,
+   "year": 2028
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -465000000.0,
+    "ratio_bin": {
+     "base": "pe_zero",
+     "head": "same_sign_ratio_0.5_to_0.8"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": -366873300.0880203,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 3668733.000880203
+    },
+    {
+     "code": "zero_crossing",
+     "flag": "structural"
+    }
+   ],
+   "event": "spring_budget_2024",
+   "flags": [
+    "numerical",
+    "structural"
+   ],
+   "head_gbp": -366873300.0880203,
+   "key": "obr_pmd_nov2025:22210:0ea61ade0bedb0f5",
+   "level": "source_row",
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "threshold_gbp": 3668733.000880203,
+   "year": 2028
+  },
+  {
+   "base_gbp": -1972030891.008606,
+   "context": {},
+   "delta_gbp": 233209236.68413544,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 19720308.91008606
+    }
+   ],
+   "event": "spring_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -1738821654.3244705,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "threshold_gbp": 19720308.91008606,
+   "year": 2028
+  },
+  {
+   "base_gbp": -0.0,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": -366873300.0880203,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 3668733.000880203
+    },
+    {
+     "code": "zero_crossing",
+     "flag": "structural"
+    }
+   ],
+   "event": "spring_budget_2024",
+   "flags": [
+    "numerical",
+    "structural"
+   ],
+   "head_gbp": -366873300.0880203,
+   "key": "child_benefit",
+   "level": "head",
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "threshold_gbp": 3668733.000880203,
+   "year": 2028
+  },
+  {
+   "base_gbp": -1972030891.008606,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 600082536.7721558,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 19720308.91008606
+    }
+   ],
+   "event": "spring_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -1371948354.2364502,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "threshold_gbp": 19720308.91008606,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+  "head": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2024 --variant pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z --measures spring_budget_2024__hicbc_threshold_and_taper --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2028",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2024 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --measures spring_budget_2024__hicbc_threshold_and_taper --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": -1972030891.008606,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2028-29",
+   "head_gbp": -1371948354.2364502,
+   "obr_value_gbp": -193000000.0,
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:10991:11a476b01436c0db",
+   "source_row_number": 10991,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 0.0,
+   "flags": [
+    "numerical",
+    "structural"
+   ],
+   "fy": "2028-29",
+   "head_gbp": -366873300.0880203,
+   "obr_value_gbp": -465000000.0,
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:22210:0ea61ade0bedb0f5",
+   "source_row_number": 22210,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "High Income Child Benefit Charge: increase income threshold to \u00a360,000 and taper range to \u00a360,000 to \u00a380,000 from 6 April 2024",
+ "year": 2028
+}

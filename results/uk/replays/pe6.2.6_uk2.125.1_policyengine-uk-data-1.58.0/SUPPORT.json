@@ -1,0 +1,68 @@
+{
+ "autumn_budget_2024": {
+  "supported_years": [
+   2024,
+   2025,
+   2026,
+   2027,
+   2028,
+   2029
+  ],
+  "unsupported_years": []
+ },
+ "autumn_statement_2023": {
+  "supported_years": [
+   2024,
+   2025,
+   2026,
+   2027,
+   2028
+  ],
+  "unsupported_years": [
+   {
+    "reason": "before_data_year",
+    "year": 2023
+   }
+  ]
+ },
+ "spring_budget_2023": {
+  "supported_years": [
+   2024,
+   2025,
+   2026,
+   2027
+  ],
+  "unsupported_years": [
+   {
+    "reason": "before_data_year",
+    "year": 2023
+   }
+  ]
+ },
+ "spring_budget_2024": {
+  "supported_years": [
+   2024,
+   2025,
+   2026,
+   2027,
+   2028
+  ],
+  "unsupported_years": [
+   {
+    "reason": "before_data_year",
+    "year": 2023
+   }
+  ]
+ },
+ "spring_statement_2025": {
+  "supported_years": [
+   2024,
+   2025,
+   2026,
+   2027,
+   2028,
+   2029
+  ],
+  "unsupported_years": []
+ }
+}

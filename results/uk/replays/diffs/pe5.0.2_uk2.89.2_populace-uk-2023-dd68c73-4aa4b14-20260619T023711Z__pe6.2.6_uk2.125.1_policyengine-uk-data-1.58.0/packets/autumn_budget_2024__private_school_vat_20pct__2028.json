@@ -1,0 +1,314 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": null,
+   "construction": "forward_delta_on_certified_world",
+   "path": "results/uk/events/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2028.json",
+   "reform_reform_dict": {
+    "gov.contrib.labour.private_school_vat": {
+     "2025-01-01.2035-12-31": 0.2
+    }
+   },
+   "sha256": "d65c650dd4abf908089442db4175e67667a6299853017d3861c8979ae5e58501"
+  },
+  "head": {
+   "baseline_reform_dict": null,
+   "construction": "forward_delta_on_certified_world",
+   "path": "results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2028.json",
+   "reform_reform_dict": {
+    "gov.contrib.labour.private_school_vat": {
+     "2025-01-01.2035-12-31": 0.2
+    }
+   },
+   "sha256": "93ba23b4da1ae971d9e8216964e941ebeef0a265071fadc5d2e55c4ff6793256"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2024",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+   "data_bundle": "policyengine-uk-data-1.58.0",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.125.1",
+   "policyengine_version": "6.2.6",
+   "variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+  }
+ },
+ "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "this engine samples every government parameter at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "the forward delta changes current law in an in-force year",
+     "holds": true
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "not a reversal",
+     "holds": null
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.contrib.labour.private_school_vat": {
+      "baseline_world": 0,
+      "current_law": 0,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 0,
+      "reform_world": 0.2
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "the forward delta changes current law in an in-force year",
+     "holds": true
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "not a reversal",
+     "holds": null
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.contrib.labour.private_school_vat": {
+      "baseline_world": 0,
+      "current_law": 0,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0,
+      "reform_world": 0.2
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 1354856060.444217,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 1664253638.0025508,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.8_to_1.25",
+     "head": "same_sign_ratio_1.25_to_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "VAT"
+   },
+   "delta_gbp": 821773082.6574676,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 21766291.431016847
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 2176629143.1016846,
+   "key": "obr_pmd_nov2025:11620:5446e6157f4ef4ec",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "threshold_gbp": 21766291.431016847,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 467000000.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "VAT refunds"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:11626:0135955a60199873",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -467000000.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "VAT refunds"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22785:2ad7bb129298e82a",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": 1354856060.444217,
+   "context": {},
+   "delta_gbp": 821773082.6574676,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 21766291.431016847
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 2176629143.1016846,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "threshold_gbp": 21766291.431016847,
+   "year": 2028
+  },
+  {
+   "base_gbp": 1354856060.444217,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 821773082.6574676,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 21766291.431016847
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 2176629143.1016846,
+   "key": "private_school_vat",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "threshold_gbp": 21766291.431016847,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+  "head": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z --measures autumn_budget_2024__private_school_vat_20pct --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2028",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --measures autumn_budget_2024__private_school_vat_20pct --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 1354856060.444217,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2028-29",
+   "head_gbp": 2176629143.1016846,
+   "obr_value_gbp": 1664253638.0025508,
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:11620:5446e6157f4ef4ec",
+   "source_row_number": 11620,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "VAT"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 467000000.0,
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:11626:0135955a60199873",
+   "source_row_number": 11626,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "VAT refunds"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -467000000.0,
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:22785:2ad7bb129298e82a",
+   "source_row_number": 22785,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "VAT refunds"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+ "year": 2028
+}

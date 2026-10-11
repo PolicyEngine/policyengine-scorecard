@@ -1,0 +1,68 @@
+# Investigation packet: spring_budget_2024 / spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp / CY2028
+
+This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.
+
+* Title: National Insurance contributions (NICs): 2 percentage point cut to the main rate of Class 1 employee NICs from 6 April 2024
+* Flags: numerical
+* Base: `pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z`
+* Head: `pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0`
+
+## Movements (£m, positive = gain to the Exchequer)
+
+| Level | Key | Base | Head | Change | Flags | Details |
+|---|---|---:|---:|---:|---|---|
+| source_row | obr_pmd_nov2025:10955:f6669fdf7dfdb034 | 0.0 | 0.0 | 0.0 | — | — |
+| source_row | obr_pmd_nov2025:10961:cc058843879051af | -12,663.9 | -12,566.1 | 97.7 | — | — |
+| source_row | obr_pmd_nov2025:10967:74cca71eaf790883 | — | — | — | — | — |
+| source_row | obr_pmd_nov2025:22174:b9088212717e5ab4 | 109.8 | 308.4 | 198.6 | numerical | move_above_threshold |
+| source_row | obr_pmd_nov2025:22180:d3ab9da8189aac68 | — | — | — | — | — |
+| source_row | obr_pmd_nov2025:22186:471c557dcd62c5e3 | — | — | — | — | — |
+| measure_year | total | -12,554.1 | -12,257.7 | 296.4 | numerical | move_above_threshold |
+| head | income_tax | 0.0 | 0.0 | 0.0 | — | — |
+| head | ni_class_1_employee | -12,667.3 | -12,573.3 | 94.1 | — | — |
+| head | ni_class_1_employer | 0.0 | 0.0 | 0.0 | — | — |
+| head | ni_class_2 | 0.0 | 0.0 | 0.0 | — | — |
+| head | ni_class_4 | 3.5 | 7.1 | 3.7 | numerical | move_above_threshold |
+| head | universal_credit | 109.8 | 308.4 | 198.6 | numerical | move_above_threshold |
+
+## OBR source cells
+
+| Source row | Table / column | FY | Head | OBR £m | Base £m | Head £m |
+|---|---|---|---|---:|---:|---:|
+| obr_pmd_nov2025:10955:f6669fdf7dfdb034 (row 10955) | Tax Measures (Policy measures database) / 2028-29 | 2028-29 | Income tax | 472.4 | 0.0 | 0.0 |
+| obr_pmd_nov2025:10961:cc058843879051af (row 10961) | Tax Measures (Policy measures database) / 2028-29 | 2028-29 | NICs | -10,088.4 | -12,663.9 | -12,566.1 |
+| obr_pmd_nov2025:10967:74cca71eaf790883 (row 10967) | Tax Measures (Policy measures database) / 2028-29 | 2028-29 | Corporation tax (onshore) | -606.3 | — | — |
+| obr_pmd_nov2025:22174:b9088212717e5ab4 (row 22174) | Spending Measures (Policy measures database) / 2028-29 | 2028-29 | Welfare inside cap | 179.6 | 109.8 | 308.4 |
+| obr_pmd_nov2025:22180:d3ab9da8189aac68 (row 22180) | Spending Measures (Policy measures database) / 2028-29 | 2028-29 | PSCE in RDEL | 5.9 | — | — |
+| obr_pmd_nov2025:22186:471c557dcd62c5e3 (row 22186) | Spending Measures (Policy measures database) / 2028-29 | 2028-29 | Scottish BGA (current) | 49.0 | — | — |
+
+## Executed worlds
+
+* base: `results/uk/events/spring_budget_2024/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2028.json` (sha256 `b486fe4fa108dd1ab14834f96887d46787143caa5542fc82db7a52108b5d93df`), reversal_on_certified_world; baseline dict `{"gov.hmrc.national_insurance.class_1.rates.employee.main": {"2024-01-01.2035-12-31": 0.1}}`; reform dict `null`
+* head: `results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_budget_2024/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2028.json` (sha256 `f7dd8a8d4b9b97cb2a7100d4f5cc5dd832ce3969cde5c5825cbdc00984748f62`), reversal_on_certified_world; baseline dict `{"gov.hmrc.national_insurance.class_1.rates.employee.main": {"2024-01-01.2035-12-31": 0.1}}`; reform dict `null`
+
+## Reproduce
+
+base:
+
+```bash
+PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2024 --variant pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z --measures spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/spring_budget_2024/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2028
+```
+
+head:
+
+```bash
+PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_budget_2024 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --measures spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_budget_2024/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2028
+```
+
+## Sources the registry cites
+
+* none recorded
+
+## Minimal case
+
+To be completed by the investigating lane.
+
+## Statutory evidence
+
+To be completed by the investigating lane.

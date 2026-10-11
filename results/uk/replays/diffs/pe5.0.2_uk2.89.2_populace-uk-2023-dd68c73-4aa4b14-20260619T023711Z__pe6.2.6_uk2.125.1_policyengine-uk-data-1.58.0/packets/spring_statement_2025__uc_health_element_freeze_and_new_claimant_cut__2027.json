@@ -1,0 +1,282 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+     "2026-01-01.2026-12-31": 437.66,
+     "2027-01-01.2027-12-31": 447.73,
+     "2028-01-01.2028-12-31": 456.68,
+     "2029-01-01.2029-12-31": 465.81
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/events/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2027.json",
+   "reform_reform_dict": null,
+   "sha256": "e4498a6ffb5ce844af7ccb47c3e7d25d8b2458f098a3a97b7b9998391931155b"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+     "2026-01-01.2026-12-31": 437.66,
+     "2027-01-01.2027-12-31": 447.73,
+     "2028-01-01.2028-12-31": 456.68,
+     "2029-01-01.2029-12-31": 465.81
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2027.json",
+   "reform_reform_dict": null,
+   "sha256": "98466d318bc36e2421513ef40d8e6ed8660157dcc5a591dd2bcbb89695966d45"
+  }
+ },
+ "cited_sources": [],
+ "event": "spring_statement_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2027-28",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+   "data_bundle": "policyengine-uk-data-1.58.0",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.125.1",
+   "policyengine_version": "6.2.6",
+   "variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+  }
+ },
+ "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "this engine samples every government parameter at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+      "baseline_world": 447.73,
+      "current_law": 217.26,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 217.26,
+      "reform_world": 217.26
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+      "baseline_world": 447.73,
+      "current_law": 217.26,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 217.26,
+      "reform_world": 217.26
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 338556341.93270874,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": 1555705616.0371184,
+    "ratio_bin": {
+     "base": "same_sign_ratio_below_0.5",
+     "head": "same_sign_ratio_0.5_to_0.8"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": 566377943.7276764,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 9049342.856603852
+    }
+   ],
+   "event": "spring_statement_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 904934285.6603851,
+   "key": "obr_pmd_nov2025:23318:dcc529f309fec572",
+   "level": "source_row",
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "threshold_gbp": 9049342.856603852,
+   "year": 2027
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": -22250267.5487044,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_statement_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23324:9399b2f27fbfd06e",
+   "level": "source_row",
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "threshold_gbp": null,
+   "year": 2027
+  },
+  {
+   "base_gbp": 338556341.93270874,
+   "context": {},
+   "delta_gbp": 566377943.7276764,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 9049342.856603852
+    }
+   ],
+   "event": "spring_statement_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 904934285.6603851,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "threshold_gbp": 9049342.856603852,
+   "year": 2027
+  },
+  {
+   "base_gbp": 338556341.93270874,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": 566377943.7276764,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 9049342.856603852
+    }
+   ],
+   "event": "spring_statement_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 904934285.6603851,
+   "key": "universal_credit",
+   "level": "head",
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "threshold_gbp": 9049342.856603852,
+   "year": 2027
+  }
+ ],
+ "registry_sha256": {
+  "base": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+  "head": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_statement_2025 --variant pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z --measures spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut --years 2027 --workers 1 --output-dir .venv-replay-checks/reproductions/pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2027",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_statement_2025 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --measures spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut --years 2027 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_statement_2025/spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut_2027"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 338556341.93270874,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2027-28",
+   "head_gbp": 904934285.6603851,
+   "obr_value_gbp": 1555705616.0371184,
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:23318:dcc529f309fec572",
+   "source_row_number": 23318,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": -22250267.5487044,
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:23324:9399b2f27fbfd06e",
+   "source_row_number": 23324,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Universal Credit Health Element: Maintain at 2025-26 rate until 2029-30, reduce rate by 50% for new claimants from April 2026 and maintain until 2029-30",
+ "year": 2027
+}

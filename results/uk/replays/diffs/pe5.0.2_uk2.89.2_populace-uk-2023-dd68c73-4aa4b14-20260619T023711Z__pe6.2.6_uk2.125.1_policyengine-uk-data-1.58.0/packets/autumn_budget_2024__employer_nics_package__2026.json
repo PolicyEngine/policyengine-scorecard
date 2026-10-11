@@ -1,0 +1,503 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.national_insurance.class_1.rates.employer": {
+     "2025-01-01.2035-12-31": 0.138
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+     "2025-01-01.2035-12-31": 175
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/events/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2026.json",
+   "reform_reform_dict": null,
+   "sha256": "6e42825fd8a34899580c52fef565374a05406652556e75d8ae04b89edaefd322"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.national_insurance.class_1.rates.employer": {
+     "2025-01-01.2035-12-31": 0.138
+    },
+    "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+     "2025-01-01.2035-12-31": 175
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2026.json",
+   "reform_reform_dict": null,
+   "sha256": "85b474fc000ee82371908d8e3a0626a3e6f76deda52a12740c9c75cbad8108fa"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2024",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2026-27",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+   "data_bundle": "policyengine-uk-data-1.58.0",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.125.1",
+   "policyengine_version": "6.2.6",
+   "variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+  }
+ },
+ "measure_key": "autumn_budget_2024__employer_nics_package",
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "this engine samples every government parameter at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": {
+      "baseline_world": 0.138,
+      "current_law": 0.15,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 0.15,
+      "reform_world": 0.15
+     },
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+      "baseline_world": 175,
+      "current_law": 96,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 96,
+      "reform_world": 96
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.national_insurance.class_1.rates.employer": {
+      "baseline_world": 0.138,
+      "current_law": 0.15,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.15,
+      "reform_world": 0.15
+     },
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+      "baseline_world": 175,
+      "current_law": 96.153846,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 96.153846,
+      "reform_world": 96.153846
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": -8507737534.679443,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": -312921791.2621155,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": 1051714846.793335,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 85077375.34679444
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -7456022687.886108,
+   "key": "obr_pmd_nov2025:11666:e4413c7487d85ddf",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 85077375.34679444,
+   "year": 2026
+  },
+  {
+   "base_gbp": 24754424875.897583,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 23923342053.649563,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.8_to_1.25",
+     "head": "same_sign_ratio_0.8_to_1.25"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": -220466794.81357193,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": 24533958081.08401,
+   "key": "obr_pmd_nov2025:11672:0b55202125025854",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 247544248.75897583,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 104302519.83016719,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:11678:cf7e6fb3e86bb47c",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": -22555697.86413367,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22819:dd2ccd436f0e20b2",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": -2722169.4714540956,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22825:edacdcc46eb06fe4",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": 16246687341.218138,
+   "context": {
+    "current_law_changed": {
+     "gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold": {
+      "base": 96,
+      "head": 96.153846
+     }
+    }
+   },
+   "delta_gbp": 831248051.9797649,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 170779353.93197903
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 17077935393.197903,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 170779353.93197903,
+   "year": 2026
+  },
+  {
+   "base_gbp": -8507737534.679443,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 1051714846.793335,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 85077375.34679444
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -7456022687.886108,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 85077375.34679444,
+   "year": 2026
+  },
+  {
+   "base_gbp": -1260499988.3872528,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -167603451.1677246,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 14281034.395549774
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -1428103439.5549774,
+   "key": "ni_class_1_employee",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 14281034.395549774,
+   "year": 2026
+  },
+  {
+   "base_gbp": 26014010206.312836,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -52405592.84492493,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": 25961604613.46791,
+   "key": "ni_class_1_employer",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 260140102.06312835,
+   "year": 2026
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_2",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  },
+  {
+   "base_gbp": 914657.9719982147,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -457750.8009209633,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": 456907.17107725143,
+   "key": "ni_class_4",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  }
+ ],
+ "registry_sha256": {
+  "base": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+  "head": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z --measures autumn_budget_2024__employer_nics_package --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2026",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --measures autumn_budget_2024__employer_nics_package --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2026"
+ },
+ "source_cells": [
+  {
+   "base_gbp": -8507737534.679443,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2026-27",
+   "head_gbp": -7456022687.886108,
+   "obr_value_gbp": -312921791.2621155,
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:11666:e4413c7487d85ddf",
+   "source_row_number": 11666,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 24754424875.897583,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": 24533958081.08401,
+   "obr_value_gbp": 23923342053.649563,
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:11672:0b55202125025854",
+   "source_row_number": 11672,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 104302519.83016719,
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:11678:cf7e6fb3e86bb47c",
+   "source_row_number": 11678,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": -22555697.86413367,
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:22819:dd2ccd436f0e20b2",
+   "source_row_number": 22819,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": -2722169.4714540956,
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:22825:edacdcc46eb06fe4",
+   "source_row_number": 22825,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Secondary Threshold to \u00a35,000 until 5 April 2028 and uprate with CPI thereafter, increase Employment Allowance to \u00a310,500, remove the \u00a3100,000 Employment Allowance eligibility threshold",
+ "year": 2026
+}

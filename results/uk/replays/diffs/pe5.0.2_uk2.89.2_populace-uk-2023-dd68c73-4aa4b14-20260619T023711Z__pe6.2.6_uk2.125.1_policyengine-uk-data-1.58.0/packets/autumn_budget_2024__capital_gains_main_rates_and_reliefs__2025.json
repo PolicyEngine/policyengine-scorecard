@@ -1,0 +1,450 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.cgt.additional_rate": {
+     "2024-10-30.2035-12-31": 0.2
+    },
+    "gov.hmrc.cgt.basic_rate": {
+     "2024-10-30.2035-12-31": 0.1
+    },
+    "gov.hmrc.cgt.higher_rate": {
+     "2024-10-30.2035-12-31": 0.2
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/events/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2025.json",
+   "reform_reform_dict": null,
+   "sha256": "f8dcfdd9c3c8032dfe54a1451a0598d73df2065370401e74a60873c16032cb8f"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.cgt.additional_rate": {
+     "2024-10-30.2035-12-31": 0.2
+    },
+    "gov.hmrc.cgt.basic_rate": {
+     "2024-10-30.2035-12-31": 0.1
+    },
+    "gov.hmrc.cgt.higher_rate": {
+     "2024-10-30.2035-12-31": 0.2
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2025.json",
+   "reform_reform_dict": null,
+   "sha256": "8316a941248c156b9b971b9ee86298b354a2d84241a625400da378a94d77b6ba"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2024",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical",
+  "construction"
+ ],
+ "fy": "2025-26",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+   "data_bundle": "policyengine-uk-data-1.58.0",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.125.1",
+   "policyengine_version": "6.2.6",
+   "variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+  }
+ },
+ "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "this engine samples every government parameter at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.cgt.additional_rate": {
+      "baseline_world": 0.2,
+      "current_law": 0.24,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 0.24,
+      "reform_world": 0.24
+     },
+     "gov.hmrc.cgt.basic_rate": {
+      "baseline_world": 0.1,
+      "current_law": 0.18,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 0.18,
+      "reform_world": 0.18
+     },
+     "gov.hmrc.cgt.higher_rate": {
+      "baseline_world": 0.2,
+      "current_law": 0.24,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 0.24,
+      "reform_world": 0.24
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "these paths are annualised another way (day-weighted fiscal-year blend or statutory calendar dates): gov.hmrc.cgt.additional_rate, gov.hmrc.cgt.basic_rate, gov.hmrc.cgt.higher_rate",
+     "holds": false
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.cgt.additional_rate": {
+      "baseline_world": 0.2,
+      "current_law": 0.24,
+      "fiscal_year_blend": true,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.24,
+      "reform_world": 0.24
+     },
+     "gov.hmrc.cgt.basic_rate": {
+      "baseline_world": 0.1,
+      "current_law": 0.18000000000000002,
+      "fiscal_year_blend": true,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.18,
+      "reform_world": 0.18000000000000002
+     },
+     "gov.hmrc.cgt.higher_rate": {
+      "baseline_world": 0.2,
+      "current_law": 0.24,
+      "fiscal_year_blend": true,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.24,
+      "reform_world": 0.24
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 4655334129.036697,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": 1005043228.7250798,
+    "ratio_bin": {
+     "base": "same_sign_ratio_at_least_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": -2317527335.7791557,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 46553341.29036698
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 2337806793.2575417,
+   "key": "obr_pmd_nov2025:11683:b9096ecd110093bf",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": 46553341.29036698,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": -40935198.754274525,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Stamp duty"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:11689:8192b33705abc153",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": 448727476.6050552,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:11695:6d29375672cd45e7",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": 25579185.297371842,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22830:1b3ca3ad7932d614",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": 1410735.2449058858,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22836:46b312b678d3c12e",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": 4655334129.036697,
+   "context": {
+    "current_law_changed": {
+     "gov.hmrc.cgt.basic_rate": {
+      "base": 0.18,
+      "head": 0.18000000000000002
+     }
+    }
+   },
+   "delta_gbp": -2317527335.7791557,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 46553341.29036698
+    },
+    {
+     "base": true,
+     "check": "annual_value_matches_30_april_sample",
+     "code": "premise_check_changed",
+     "flag": "construction",
+     "head": false
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical",
+    "construction"
+   ],
+   "head_gbp": 2337806793.2575417,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": 46553341.29036698,
+   "year": 2025
+  },
+  {
+   "base_gbp": 4655334129.036697,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -2317527335.7791557,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 46553341.29036698
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 2337806793.2575417,
+   "key": "capital_gains_tax",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "threshold_gbp": 46553341.29036698,
+   "year": 2025
+  }
+ ],
+ "registry_sha256": {
+  "base": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+  "head": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z --measures autumn_budget_2024__capital_gains_main_rates_and_reliefs --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2025",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --measures autumn_budget_2024__capital_gains_main_rates_and_reliefs --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2025"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 4655334129.036697,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2025-26",
+   "head_gbp": 2337806793.2575417,
+   "obr_value_gbp": 1005043228.7250798,
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:11683:b9096ecd110093bf",
+   "source_row_number": 11683,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": -40935198.754274525,
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:11689:8192b33705abc153",
+   "source_row_number": 11689,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Stamp duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": 448727476.6050552,
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:11695:6d29375672cd45e7",
+   "source_row_number": 11695,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": 25579185.297371842,
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:22830:1b3ca3ad7932d614",
+   "source_row_number": 22830,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": 1410735.2449058858,
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:22836:46b312b678d3c12e",
+   "source_row_number": 22836,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Capital Gains Tax: Increase the main rates of CGT to 18% and 24% from 30 October 2024, and the Business Asset Disposal Relief (BADR) and Investors' Relief (IR) rate to 14% from 6 April 2025 and to 18% from 6 April 2026",
+ "year": 2025
+}

@@ -1,0 +1,70 @@
+# Investigation packet: autumn_statement_2023 / autumn_statement_2023__class_2_self_employed_nics_abolition / CY2028
+
+This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.
+
+* Title: National Insurance contributions (NICs): abolish Class 2 self-employed NICs liability from April 2024
+* Flags: numerical, structural
+* Base: `pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z`
+* Head: `pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0`
+
+## Movements (£m, positive = gain to the Exchequer)
+
+| Level | Key | Base | Head | Change | Flags | Details |
+|---|---|---:|---:|---:|---|---|
+| source_row | obr_pmd_nov2025:10595:d9bbeb74fa78d25e | 0.0 | 0.0 | 0.0 | — | — |
+| source_row | obr_pmd_nov2025:10601:756ded1466aa84b3 | -1,054.6 | -477.6 | 577.0 | numerical | move_above_threshold |
+| source_row | obr_pmd_nov2025:10607:8dbf84f23026cba0 | — | — | — | — | — |
+| source_row | obr_pmd_nov2025:10613:3cfca8cfa0228665 | — | — | — | — | — |
+| source_row | obr_pmd_nov2025:21502:1ea7fa7e0cfb40da | 12.0 | 41.2 | 29.2 | numerical | move_above_threshold |
+| source_row | obr_pmd_nov2025:21508:243bee3203cd1327 | — | — | — | — | — |
+| source_row | obr_pmd_nov2025:21514:95c9fc186b0b36f4 | — | — | — | — | — |
+| measure_year | total | -1,042.6 | -436.4 | 606.2 | numerical | move_above_threshold |
+| head | income_tax | 0.0 | 0.0 | 0.0 | — | — |
+| head | ni_class_1_employee | 0.0 | 0.0 | 0.0 | — | — |
+| head | ni_class_1_employer | 0.0 | 0.0 | 0.0 | — | — |
+| head | ni_class_2 | -558.7 | -477.6 | 81.1 | numerical | move_above_threshold |
+| head | ni_class_4 | -495.9 | 0.0 | 495.9 | numerical, structural | move_above_threshold; zero_crossing |
+| head | universal_credit | 12.0 | 41.2 | 29.2 | numerical | move_above_threshold |
+
+## OBR source cells
+
+| Source row | Table / column | FY | Head | OBR £m | Base £m | Head £m |
+|---|---|---|---|---:|---:|---:|
+| obr_pmd_nov2025:10595:d9bbeb74fa78d25e (row 10595) | Tax Measures (Policy measures database) / 2028-29 | 2028-29 | Income tax | 261.7 | 0.0 | 0.0 |
+| obr_pmd_nov2025:10601:756ded1466aa84b3 (row 10601) | Tax Measures (Policy measures database) / 2028-29 | 2028-29 | NICs | -378.9 | -1,054.6 | -477.6 |
+| obr_pmd_nov2025:10607:8dbf84f23026cba0 (row 10607) | Tax Measures (Policy measures database) / 2028-29 | 2028-29 | Corporation tax (onshore) | -290.6 | — | — |
+| obr_pmd_nov2025:10613:3cfca8cfa0228665 (row 10613) | Tax Measures (Policy measures database) / 2028-29 | 2028-29 | Capital gains tax | 0.0 | — | — |
+| obr_pmd_nov2025:21502:1ea7fa7e0cfb40da (row 21502) | Spending Measures (Policy measures database) / 2028-29 | 2028-29 | Welfare inside cap | 6.7 | 12.0 | 41.2 |
+| obr_pmd_nov2025:21508:243bee3203cd1327 (row 21508) | Spending Measures (Policy measures database) / 2028-29 | 2028-29 | PSCE in RDEL | 2.8 | — | — |
+| obr_pmd_nov2025:21514:95c9fc186b0b36f4 (row 21514) | Spending Measures (Policy measures database) / 2028-29 | 2028-29 | Scottish BGA (current) | 25.8 | — | — |
+
+## Executed worlds
+
+* base: `results/uk/events/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2028.json` (sha256 `666c062067b3a8634c74b548da1bdd77ab06b0f24a0465fac2fb6e903e8acae1`), reversal_on_certified_world; baseline dict `{"gov.hmrc.national_insurance.class_2.flat_rate": {"2024-01-01.2035-12-31": 3.7}, "gov.hmrc.national_insurance.class_2.small_profits_threshold": {"2024-01-01.2035-12-31": 12570}}`; reform dict `null`
+* head: `results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2028.json` (sha256 `c2d8898fae8da31b8d0417aa1d70b5c0c5e672fa91b17acb1c12232c3b11a849`), reversal_on_certified_world; baseline dict `{"gov.hmrc.national_insurance.class_2.flat_rate": {"2024-01-01.2035-12-31": 3.7}, "gov.hmrc.national_insurance.class_2.small_profits_threshold": {"2024-01-01.2035-12-31": 12570}}`; reform dict `null`
+
+## Reproduce
+
+base:
+
+```bash
+PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_statement_2023 --variant pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z --measures autumn_statement_2023__class_2_self_employed_nics_abolition --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2028
+```
+
+head:
+
+```bash
+PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_statement_2023 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --measures autumn_statement_2023__class_2_self_employed_nics_abolition --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2028
+```
+
+## Sources the registry cites
+
+* https://www.gov.uk/government/publications/autumn-statement-2023/autumn-statement-2023-html
+
+## Minimal case
+
+To be completed by the investigating lane.
+
+## Statutory evidence
+
+To be completed by the investigating lane.

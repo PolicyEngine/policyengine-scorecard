@@ -1,0 +1,579 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.hmrc.national_insurance.class_4.rates.main": {
+     "2024-01-01.2035-12-31": 0.07
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/events/autumn_statement_2023/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2026.json",
+   "reform_reform_dict": null,
+   "sha256": "29b11585397d4b002b5e8be825e74a6353acc2715a053bb0627ac6992844b151"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.hmrc.national_insurance.class_4.rates.main": {
+     "2024-01-01.2035-12-31": 0.07
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_statement_2023/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2026.json",
+   "reform_reform_dict": null,
+   "sha256": "30ec4f136a6fdbc39561f5fec015daa6c7a9b76fbcfb380dd6c8724a2f855c05"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_statement_2023",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2026-27",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+   "data_bundle": "policyengine-uk-data-1.58.0",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.125.1",
+   "policyengine_version": "6.2.6",
+   "variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+  }
+ },
+ "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "this engine samples every government parameter at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.national_insurance.class_4.rates.main": {
+      "baseline_world": 0.07,
+      "current_law": 0.06,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 0.06,
+      "reform_world": 0.06
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.hmrc.national_insurance.class_4.rates.main": {
+      "baseline_world": 0.07,
+      "current_law": 0.06,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.06,
+      "reform_world": 0.06
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 114311565.9459352,
+    "ratio_bin": {
+     "base": "pe_zero",
+     "head": "pe_zero"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "obr_pmd_nov2025:10569:9c1e6218a8238dfd",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  },
+  {
+   "base_gbp": -583538584.2492275,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": -330136761.76593643,
+    "ratio_bin": {
+     "base": "same_sign_ratio_1.25_to_2",
+     "head": "same_sign_ratio_0.8_to_1.25"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": 256298431.76676512,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 5835385.842492275
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -327240152.4824624,
+   "key": "obr_pmd_nov2025:10575:e617707f9625fbba",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": 5835385.842492275,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": -132183902.09964179,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:10581:97f735b5b05863e9",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:10587:5f3c7d488533b903",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": 7701561.54548645,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 6093086.0845173085,
+    "ratio_bin": {
+     "base": "same_sign_ratio_1.25_to_2",
+     "head": "same_sign_ratio_at_least_2"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": 13725138.251174927,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 1000000.0
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 21426699.796661377,
+   "key": "obr_pmd_nov2025:21482:753c71d52bde5307",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 1161436.1788518343,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:21488:9444f449b920b74b",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 10641728.499036483,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:21494:c20e55b607e6fc79",
+   "level": "source_row",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": -575837022.7037411,
+   "context": {},
+   "delta_gbp": 270023570.01794004,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 5758370.227037411
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -305813452.685801,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": 5758370.227037411,
+   "year": 2026
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employee",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_1_employer",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  },
+  {
+   "base_gbp": 0.0,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 0.0,
+   "details": [],
+   "event": "autumn_statement_2023",
+   "flags": [],
+   "head_gbp": 0.0,
+   "key": "ni_class_2",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  },
+  {
+   "base_gbp": -583538584.2492275,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 256298431.76676512,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 5835385.842492275
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -327240152.4824624,
+   "key": "ni_class_4",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": 5835385.842492275,
+   "year": 2026
+  },
+  {
+   "base_gbp": 7701561.54548645,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": 13725138.251174927,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 1000000.0
+    }
+   ],
+   "event": "autumn_statement_2023",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 21426699.796661377,
+   "key": "universal_credit",
+   "level": "head",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "threshold_gbp": 1000000.0,
+   "year": 2026
+  }
+ ],
+ "registry_sha256": {
+  "base": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+  "head": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_statement_2023 --variant pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z --measures autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/autumn_statement_2023/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2026",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_statement_2023 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --measures autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_statement_2023/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2026"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 0.0,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": 0.0,
+   "obr_value_gbp": 114311565.9459352,
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:10569:9c1e6218a8238dfd",
+   "source_row_number": 10569,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": -583538584.2492275,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2026-27",
+   "head_gbp": -327240152.4824624,
+   "obr_value_gbp": -330136761.76593643,
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:10575:e617707f9625fbba",
+   "source_row_number": 10575,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": -132183902.09964179,
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:10581:97f735b5b05863e9",
+   "source_row_number": 10581,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:10587:5f3c7d488533b903",
+   "source_row_number": 10587,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": 7701561.54548645,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2026-27",
+   "head_gbp": 21426699.796661377,
+   "obr_value_gbp": 6093086.0845173085,
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:21482:753c71d52bde5307",
+   "source_row_number": 21482,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 1161436.1788518343,
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:21488:9444f449b920b74b",
+   "source_row_number": 21488,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 10641728.499036483,
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:21494:c20e55b607e6fc79",
+   "source_row_number": 21494,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "National Insurance contributions (NICs): 1p cut to the main rate of Class 4 self-employed NICs from April 2024",
+ "year": 2026
+}

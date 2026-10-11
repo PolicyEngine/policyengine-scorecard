@@ -1,0 +1,406 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+     "2026-01-01.2026-12-31": 651.97,
+     "2027-01-01.2027-12-31": 666.96,
+     "2028-01-01.2028-12-31": 680.3,
+     "2029-01-01.2029-12-31": 693.91
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+     "2026-01-01.2026-12-31": 516.46,
+     "2027-01-01.2027-12-31": 528.33,
+     "2028-01-01.2028-12-31": 538.9,
+     "2029-01-01.2029-12-31": 549.68
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+     "2026-01-01.2026-12-31": 415.35,
+     "2027-01-01.2027-12-31": 424.9,
+     "2028-01-01.2028-12-31": 433.39,
+     "2029-01-01.2029-12-31": 442.06
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+     "2026-01-01.2026-12-31": 329.03,
+     "2027-01-01.2027-12-31": 336.59,
+     "2028-01-01.2028-12-31": 343.32,
+     "2029-01-01.2029-12-31": 350.19
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/events/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2027.json",
+   "reform_reform_dict": null,
+   "sha256": "6f47a7fe1b09a531640bd4ed65f0cd76fb1bc5f67e24ef439b258cf715192332"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+     "2026-01-01.2026-12-31": 651.97,
+     "2027-01-01.2027-12-31": 666.96,
+     "2028-01-01.2028-12-31": 680.3,
+     "2029-01-01.2029-12-31": 693.91
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+     "2026-01-01.2026-12-31": 516.46,
+     "2027-01-01.2027-12-31": 528.33,
+     "2028-01-01.2028-12-31": 538.9,
+     "2029-01-01.2029-12-31": 549.68
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+     "2026-01-01.2026-12-31": 415.35,
+     "2027-01-01.2027-12-31": 424.9,
+     "2028-01-01.2028-12-31": 433.39,
+     "2029-01-01.2029-12-31": 442.06
+    },
+    "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+     "2026-01-01.2026-12-31": 329.03,
+     "2027-01-01.2027-12-31": 336.59,
+     "2028-01-01.2028-12-31": 343.32,
+     "2029-01-01.2029-12-31": 350.19
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2027.json",
+   "reform_reform_dict": null,
+   "sha256": "42f38d30547ff4635fcd27370d6102e1a89f680e42af906874960c7214de3925"
+  }
+ },
+ "cited_sources": [
+  "https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/consumerpriceinflation/september2025"
+ ],
+ "event": "spring_statement_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2027-28",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "5ba399ea5ab9a6c7d4e9aaf6c623080beb34d9ad5f330f6244dbad72b8d960b6",
+   "data_bundle": "policyengine-uk-data-1.58.0",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.125.1",
+   "policyengine_version": "6.2.6",
+   "variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+  }
+ },
+ "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "this engine samples every government parameter at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+      "baseline_world": 666.96,
+      "current_law": 682.3088316082925,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 682.3088316082925,
+      "reform_world": 682.3088316082925
+     },
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+      "baseline_world": 528.33,
+      "current_law": 540.4906488926418,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 540.4906488926418,
+      "reform_world": 540.4906488926418
+     },
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+      "baseline_world": 424.9,
+      "current_law": 434.67175817557535,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 434.67175817557535,
+      "reform_world": 434.67175817557535
+     },
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+      "baseline_world": 336.59,
+      "current_law": 346.36658951067614,
+      "fiscal_year_blend": null,
+      "preserve_calendar_dates": null,
+      "raw_30_april": 346.36658951067614,
+      "reform_world": 346.36658951067614
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_OLD": {
+      "baseline_world": 666.96,
+      "current_law": 682.3088316082925,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 682.3088316082925,
+      "reform_world": 682.3088316082925
+     },
+     "gov.dwp.universal_credit.standard_allowance.amount.COUPLE_YOUNG": {
+      "baseline_world": 528.33,
+      "current_law": 540.4906488926418,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 540.4906488926418,
+      "reform_world": 540.4906488926418
+     },
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD": {
+      "baseline_world": 424.9,
+      "current_law": 434.67175817557535,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 434.67175817557535,
+      "reform_world": 434.67175817557535
+     },
+     "gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG": {
+      "baseline_world": 336.59,
+      "current_law": 346.36658951067614,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 346.36658951067614,
+      "reform_world": 346.36658951067614
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": -205000000.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Welfare outside cap"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_statement_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23330:9881d3a86b7a4bbc",
+   "level": "source_row",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "threshold_gbp": null,
+   "year": 2027
+  },
+  {
+   "base_gbp": -409490512.0053253,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": -938051000.0,
+    "ratio_bin": {
+     "base": "same_sign_ratio_below_0.5",
+     "head": "same_sign_ratio_0.5_to_0.8"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": -322026628.21466064,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 7315171.40219986
+    }
+   ],
+   "event": "spring_statement_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -731517140.219986,
+   "key": "obr_pmd_nov2025:23336:5d8fea1a1f3c86d6",
+   "level": "source_row",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "threshold_gbp": 7315171.40219986,
+   "year": 2027
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "spring_statement_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23342:0fd5ad27ca12101a",
+   "level": "source_row",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "threshold_gbp": null,
+   "year": 2027
+  },
+  {
+   "base_gbp": -409490512.0053253,
+   "context": {},
+   "delta_gbp": -322026628.21466064,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 7315171.40219986
+    }
+   ],
+   "event": "spring_statement_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -731517140.219986,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "threshold_gbp": 7315171.40219986,
+   "year": 2027
+  },
+  {
+   "base_gbp": -409490512.0053253,
+   "context": {
+    "channel": {
+     "base": "spending",
+     "head": "spending"
+    }
+   },
+   "delta_gbp": -322026628.21466064,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 7315171.40219986
+    }
+   ],
+   "event": "spring_statement_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": -731517140.219986,
+   "key": "universal_credit",
+   "level": "head",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "threshold_gbp": 7315171.40219986,
+   "year": 2027
+  }
+ ],
+ "registry_sha256": {
+  "base": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+  "head": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_statement_2025 --variant pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z --measures spring_statement_2025__uc_standard_allowance_above_inflation --years 2027 --workers 1 --output-dir .venv-replay-checks/reproductions/pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2027",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event spring_statement_2025 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --measures spring_statement_2025__uc_standard_allowance_above_inflation --years 2027 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_statement_2025/spring_statement_2025__uc_standard_allowance_above_inflation_2027"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": -205000000.0,
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:23330:9881d3a86b7a4bbc",
+   "source_row_number": 23330,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare outside cap"
+  },
+  {
+   "base_gbp": -409490512.0053253,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2027-28",
+   "head_gbp": -731517140.219986,
+   "obr_value_gbp": -938051000.0,
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:23336:5d8fea1a1f3c86d6",
+   "source_row_number": 23336,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:23342:0fd5ad27ca12101a",
+   "source_row_number": 23342,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Universal Credit Standard Allowance: Increase above inflation for all claimants from April 2026, reaching CPI +5% from April 2029, with the standard allowance expected to be worth \u00a3106 per week in 2029-30",
+ "year": 2027
+}

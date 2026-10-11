@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "b308fc33277577d6b8370cdbbe7e99055d23fd58f146ea7801ec6a94e1a8d0e1",
+  "COMPARISON.json": "24e5fb44cbbd7b08d446586e064a721e1f46d6309b50d731e3cec594bb6a8b5d",
+  "COMPARISON.md": "b4a13351ae9b2111a584d35cfe1c9fa7accd00d00740b4df0e3974165b92bf00"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "7b00ec8e6e8b60c88acdd06c9215c9ecdeed573216dde938f16e8a41b842094a",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "95b478fd8417c139f53580eeda7588e064db52e0c04013e852210cab7a66b3b2",
+ "staging_manifest_path": "results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "9f23b1afe827cdccccc199b65c800b2c12a6c3ededfc1fec85ce1b0a4e9fa89f"
+}
