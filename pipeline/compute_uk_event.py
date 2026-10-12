@@ -282,10 +282,18 @@ def build_artifact(
     return artifact
 
 
-def preflight() -> dict:
-    """The committed pin and the managed release must agree before any run."""
+def preflight(variant: dict | None = None) -> dict:
+    """The committed pin and the managed release must agree before any run.
+
+    Given the legacy variant record, the run is also isolated like any other
+    variant's (packaged certification, engine compiled from its verified
+    sources and imported from its own distributions) and the release bundle
+    must equal the record's exactly."""
     fiscal.configure_offline()
     worlds.configure_offline()
+    if variant is not None:
+        variants.isolate_certification_environment()
+        variants.isolate_bytecode(variants.RUNTIME_ROOT / variant["variant_id"])
     committed = worlds.preflight()
     managed = fiscal.preflight_certified_dataset()
     if (
@@ -293,7 +301,20 @@ def preflight() -> dict:
         or fiscal.data_bundle_id(managed["release_bundle"]) != committed["revision"]
     ):
         raise RuntimeError("managed release differs from data/uk/certified_bundle.json")
+    if variant is not None:
+        import_engine()
+        variants.verify_release_bundle(variant, managed["release_bundle"])
+        return {**managed, "check_import_origins": True}
     return managed
+
+
+def import_engine() -> None:
+    """Import all three engine packages and check where each came from."""
+    import policyengine  # noqa: F401
+    import policyengine_core  # noqa: F401
+    import policyengine_uk  # noqa: F401
+
+    variants.verify_import_origins()
 
 
 def variant_identity_fields(variant: dict) -> dict:
@@ -327,8 +348,10 @@ def variant_preflight(variant: dict, *, dataset_source: Path | None = None) -> d
     runtime_root = (variants.RUNTIME_ROOT / variant["variant_id"]).resolve()
     dataset = variants.materialize_dataset(variant, runtime_root, source=dataset_source)
     os.chdir(runtime_root)
+    variants.isolate_bytecode(runtime_root)
     import policyengine as pe
 
+    import_engine()
     release_bundle = dict(pe.uk.uk_latest.release_bundle)
     variants.verify_release_bundle(variant, release_bundle)
     return {
@@ -336,6 +359,10 @@ def variant_preflight(variant: dict, *, dataset_source: Path | None = None) -> d
         "sha256": variant["identity"]["dataset"]["sha256"],
         "runtime_dataset_source": str(dataset),
         "installed": installed,
+        # A year outside the population's data years must fail, not
+        # calculate defaults (compute_uk_obr_costings.run_managed_simulation).
+        "require_dataset_years": True,
+        "check_import_origins": True,
     }
 
 
@@ -354,6 +381,7 @@ def run_sim(year: int, variables: list[str], reform: dict | None, pre: dict) -> 
         runtime_dataset_source=Path(pre["runtime_dataset_source"]),
         expected_dataset_sha256=pre["sha256"],
         include_engine_provenance=True,
+        require_dataset_years=pre.get("require_dataset_years", False),
         **scenario_kwargs,
     )
     fiscal.assert_managed_bundle(result["policyengine_bundle"], pre["release_bundle"])
@@ -370,6 +398,9 @@ def run_year_job(job: dict) -> dict:
         flush=True,
     )
     baseline = run_sim(year, job["variables"], None, pre)
+    # This spawned worker imported the engine itself: check its origin too.
+    if pre.get("check_import_origins"):
+        variants.verify_import_origins()
     timings = [
         {
             "world": "certified_baseline",
@@ -600,9 +631,20 @@ def main(argv: list[str] | None = None) -> int:
         help="certified replay variant (data/uk/replay_variants.json); default: the file's default",
     )
     ap.add_argument(
+        "--variants-file",
+        type=Path,
+        default=variants.VARIANTS_PATH,
+        help="variant records to select from (a qualification run adds its candidate)",
+    )
+    ap.add_argument(
         "--dataset-file",
         type=Path,
         help="a local file holding the variant's certified dataset bytes (verified by SHA-256)",
+    )
+    ap.add_argument(
+        "--allow-uncertified",
+        action="store_true",
+        help="replay a candidate variant (qualification runs only)",
     )
     ap.add_argument("--registry", type=Path)
     ap.add_argument("--output-dir", type=Path)
@@ -619,8 +661,17 @@ def main(argv: list[str] | None = None) -> int:
         help="spawn at most two year workers; each holds one live managed simulation",
     )
     args = ap.parse_args(argv)
-    variant = variants.get_variant(args.variant)
+    variant = variants.get_variant(
+        args.variant,
+        path=args.variants_file.resolve(),
+        allow_uncertified=args.allow_uncertified,
+    )
     legacy = variants.is_legacy(variant)
+    if legacy and args.dataset_file is not None:
+        raise ValueError(
+            "--dataset-file applies to a variant that materialises its dataset; "
+            "the legacy variant reads its pinned Hugging Face cache"
+        )
     variant_fields = variant_identity_fields(variant)
     default_registry, default_output = event_paths(args.event)
     if not legacy:
@@ -665,8 +716,11 @@ def main(argv: list[str] | None = None) -> int:
     if coverage:
         raise ValueError("\n".join(coverage))
     if args.dry_run or args.guards:
-        if not legacy and args.guards:
+        if args.guards:
+            # --guards reads the installed engine: check it is the certified
+            # one and compile it from its verified sources.
             check_variant_environment(variant)
+            variants.isolate_bytecode(variants.RUNTIME_ROOT / variant["variant_id"])
         try:
             resolve = worlds.engine_resolver()
         except ImportError:
@@ -677,6 +731,8 @@ def main(argv: list[str] | None = None) -> int:
             gaps = worlds.reversal_delta_mismatches(index, resolve, years=years)
             if gaps:
                 raise ValueError("\n".join(gaps))
+            if args.guards:
+                import_engine()
             guard = "every reversal delta restates certified current law"
         plan = {
             "event": args.event,
@@ -708,8 +764,10 @@ def main(argv: list[str] | None = None) -> int:
     variants.assert_not_sealed(output_dir)
     verify_registry_identity(registry_path, registry_sha256)
     print(f"[pid {os.getpid()}] starting offline bundle preflight", flush=True)
+    if legacy:
+        check_variant_environment(variant)
     pre = (
-        preflight()
+        preflight(variant)
         if legacy
         else variant_preflight(variant, dataset_source=args.dataset_file)
     )
@@ -726,10 +784,15 @@ def main(argv: list[str] | None = None) -> int:
     print(f"[pid {os.getpid()}] processed-world reversal guard complete", flush=True)
     verify_registry_identity(registry_path, registry_sha256)
     output_dir.mkdir(parents=True, exist_ok=True)
+    supported_calendar_years = (
+        registry["calendar_years"]
+        if legacy
+        else variants.supported_years(variant, registry["calendar_years"])[0]
+    )
     previous_digests = retained_artifact_digests(
         output_dir,
         event=args.event,
-        years=registry["calendar_years"],
+        years=supported_calendar_years,
         registry_sha256=registry_sha256,
         pre=pre,
         variant_fields=variant_fields,
@@ -738,15 +801,9 @@ def main(argv: list[str] | None = None) -> int:
     full_pairs = {
         (key, year) for key in runnable for year in registry["calendar_years"]
     }
-    supported_pairs = (
-        full_pairs
-        if legacy
-        else {
-            (key, year)
-            for key, year in full_pairs
-            if year in variants.supported_years(variant, registry["calendar_years"])[0]
-        }
-    )
+    supported_pairs = {
+        (key, year) for key, year in full_pairs if year in supported_calendar_years
+    }
     expected_paths = {
         str((output_dir / f"{key}_{year}.json").relative_to(ROOT)): (key, year)
         for key, year in full_pairs
@@ -758,6 +815,13 @@ def main(argv: list[str] | None = None) -> int:
                 "retained receipt names a measure/year outside the event grid"
             )
         key, year = expected_paths[relative]
+        if (key, year) not in supported_pairs:
+            # No artifact exists for a year the population cannot supply,
+            # whatever an older receipt says (RELEASE_REPLAY.md).
+            raise ValueError(
+                f"retained receipt names {key} {year}, outside the variant's "
+                "supported years"
+            )
         if not args.resume and (key, year) in requested_pairs:
             continue
         path = ROOT / relative

@@ -359,3 +359,66 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
         for key in recorded["env"]
     )
     assert len(recorded["mounts"]) == len(mounts) + 1  # build-time frozen requirements
+
+
+# Imported inside functions the replay worker never calls: the fiscal
+# costings CLI's own restage and comparison steps (restage_existing_run and
+# main in compute_uk_obr_costings.py).
+NOT_ON_THE_WORKER_PATH = {"pipeline/compare_uk_obr_costings.py"}
+
+
+def pipeline_imports(relative: str) -> set[str]:
+    """Every pipeline module a file imports, at module level or in a function."""
+    import ast
+
+    found = set()
+    for node in ast.walk(ast.parse((runner.ROOT / relative).read_text())):
+        names = []
+        if isinstance(node, ast.ImportFrom) and node.module == "pipeline":
+            names = [alias.name for alias in node.names]
+        elif isinstance(node, ast.ImportFrom) and (node.module or "").startswith(
+            "pipeline."
+        ):
+            names = [node.module.split(".", 1)[1]]
+        elif isinstance(node, ast.Import):
+            names = [
+                alias.name.split(".", 1)[1]
+                for alias in node.names
+                if alias.name.startswith("pipeline.")
+            ]
+        for name in names:
+            candidate = f"pipeline/{name.replace('.', '/')}.py"
+            if (runner.ROOT / candidate).is_file():
+                found.add(candidate)
+    return found
+
+
+def pipeline_import_closure(start: str) -> set[str]:
+    seen, queue = set(), [start]
+    while queue:
+        relative = queue.pop()
+        if relative in seen or relative in NOT_ON_THE_WORKER_PATH:
+            continue
+        seen.add(relative)
+        queue.extend(pipeline_imports(relative))
+    return seen
+
+
+def test_the_remote_image_holds_everything_the_runner_imports_and_reads():
+    # Review of #160: the worker imports compute_uk_event, which imports the
+    # variants module and reads the variants document; a file missing from
+    # the allowlist fails every remote run at import.
+    from pipeline import uk_replay_variants as variants
+
+    allowed = set(runner.repository_files("autumn_budget_2024"))
+    needed = pipeline_import_closure("pipeline/modal_uk_event.py")
+    assert "pipeline/uk_replay_variants.py" in needed
+    assert needed <= allowed, sorted(needed - allowed)
+    legacy = variants.get_variant()
+    assert variants.is_legacy(legacy)
+    read = {
+        str(variants.VARIANTS_PATH.relative_to(runner.ROOT)),
+        str(variants.CERTIFIED_BUNDLE.relative_to(runner.ROOT)),
+        legacy["requirements"]["path"],
+    }
+    assert read <= allowed, sorted(read - allowed)

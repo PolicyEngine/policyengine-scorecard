@@ -16,6 +16,13 @@ from pipeline import compute_uk_event as compute
 from pipeline import stage_uk_event as stage
 
 
+@pytest.fixture(autouse=True)
+def engine_free_environment(monkeypatch):
+    """These tests stub the engine; the installed-environment check that
+    precedes every real run is tested in test_uk_replay_variants.py."""
+    monkeypatch.setattr(compute, "check_variant_environment", lambda variant: {})
+
+
 def test_optional_engine_provenance_preserves_legacy_metadata(monkeypatch):
     variable = SimpleNamespace(
         label="Income tax",
@@ -557,7 +564,7 @@ def test_no_digest_no_simulation(tmp_path, monkeypatch):
     monkeypatch.setattr(
         compute,
         "preflight",
-        lambda: (_ for _ in ()).throw(RuntimeError("missing digest")),
+        lambda *args: (_ for _ in ()).throw(RuntimeError("missing digest")),
     )
     called = []
     monkeypatch.setattr(compute, "run_sim", lambda *args: called.append(args))
@@ -681,7 +688,7 @@ def test_changed_registry_refused_before_preflight(tmp_path, monkeypatch):
         lambda document: registry.write_text("{}"),
     )
     called = []
-    monkeypatch.setattr(compute, "preflight", lambda: called.append("preflight"))
+    monkeypatch.setattr(compute, "preflight", lambda *args: called.append("preflight"))
     with pytest.raises(ValueError, match="registry bytes changed"):
         compute.main(["--event", "test_event", "--registry", str(registry)])
     assert not called
@@ -707,7 +714,7 @@ def test_compute_reuses_baselines_and_reruns_produce_identical_bytes(
     monkeypatch.setattr(
         compute,
         "preflight",
-        lambda: {
+        lambda *args: {
             "sha256": "a" * 64,
             "release_bundle": {"certified_data_build_id": "certified-test"},
         },
@@ -773,7 +780,7 @@ def test_cli_event_identity_checked_before_preflight(tmp_path, monkeypatch):
     monkeypatch.setattr(
         compute,
         "preflight",
-        lambda: (_ for _ in ()).throw(AssertionError("preflight must not run")),
+        lambda *args: (_ for _ in ()).throw(AssertionError("preflight must not run")),
     )
     with pytest.raises(ValueError, match="event identity"):
         compute.main(["--event", "test_event", "--registry", str(path)])
@@ -794,7 +801,7 @@ def test_focused_default_rerun_guard_precedes_preflight(tmp_path, monkeypatch):
     monkeypatch.setattr(
         compute,
         "preflight",
-        lambda: (_ for _ in ()).throw(AssertionError("preflight reached")),
+        lambda *args: (_ for _ in ()).throw(AssertionError("preflight reached")),
     )
     args = ["--event", "test_event", "--measures", measure()["measure_key"]]
     with pytest.raises(ValueError, match="focused reruns"):
@@ -823,7 +830,7 @@ def test_interrupted_compute_resumes_only_receipted_artifacts(tmp_path, monkeypa
     monkeypatch.setattr(
         compute,
         "preflight",
-        lambda: {
+        lambda *args: {
             "sha256": "a" * 64,
             "release_bundle": {"certified_data_build_id": "certified-test"},
         },

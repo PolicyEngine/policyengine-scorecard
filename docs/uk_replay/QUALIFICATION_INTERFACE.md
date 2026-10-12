@@ -102,8 +102,10 @@ Two flows use the same receiver:
 
 * `request_id` is not a field: it is the SHA-256 of the request's JCS
   bytes. Both sides test against the golden fixture.
-* `requested_by` accepts additional provenance fields (for example
-  `run_attempt`); every other object is closed.
+* `requested_by` names the requesting repository and commit;
+  `workflow_run_id` is optional (a scorecard catch-up run started outside
+  Actions has none), and additional provenance fields such as `run_attempt`
+  are accepted. Every other object is closed.
 * The wrapper is identified by `version` plus either a PyPI wheel
   (`{"pypi": {"wheel_sha256": …}}`) or, for an unreleased candidate whose
   regenerated manifest is not on PyPI yet, a public git commit. Scorecard
@@ -219,7 +221,14 @@ How flags arise, so a gate built on them sees the intended events:
    `receipt_commit`; nothing of this receipt nests inside W4's execution
    receipt.
 4. W4 computes `expected_release_bundle` in a subprocess with the three
-   Hugging Face token variables removed.
+   Hugging Face token variables and `NO_PROXY`/`no_proxy` removed, and the
+   HTTP(S) proxy variables pointed at a closed local port, exactly as
+   `uk_replay_variants.isolate_certification_environment` does. (Amended 11
+   October and confirmed by W4 the same day, implemented in
+   policyengine.py#574: removing the tokens alone forces the packaged
+   certification only for a private data repository; policyengine.py fetches
+   the release manifest with `requests`, which ignores `HF_HUB_OFFLINE`, so a
+   public one would still answer.)
 5. W4's proposed gate on these fields (pending d1344): `rejected`, `failed`,
    integrity `failed` or `incomplete`, and structural, coverage, mapping,
    inertness or construction flags fail the replay gate; numerical and

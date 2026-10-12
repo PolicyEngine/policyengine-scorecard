@@ -1025,8 +1025,12 @@ def run_managed_simulation(
     expected_dataset_sha256: str,
     include_engine_provenance: bool = False,
     scenario: Any = None,
+    require_dataset_years: bool = False,
 ) -> dict[str, Any]:
-    """Run, aggregate, delete, and collect exactly one managed sim."""
+    """Run, aggregate, delete, and collect exactly one managed sim.
+
+    With ``require_dataset_years`` a simulation whose dataset does not state
+    its years fails instead of skipping the year check."""
 
     if scenario is not None and reform is not None:
         raise ValueError("pass either reform or scenario, not both")
@@ -1074,6 +1078,11 @@ def run_managed_simulation(
             # calculates defaults without raising (a 2023 income tax of zero
             # on a 2024 dataset). Both pinned engines expose dataset.years.
             dataset_years = getattr(getattr(sim, "dataset", None), "years", None)
+            if dataset_years is None and require_dataset_years:
+                raise RuntimeError(
+                    "the simulation dataset does not state its years; "
+                    f"cannot confirm {year} has inputs"
+                )
             if dataset_years is not None and int(year) not in {
                 int(value) for value in dataset_years
             }:
