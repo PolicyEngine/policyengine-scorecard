@@ -162,7 +162,12 @@ def resolve_root(value: str, *, artifact_root: Path = ROOT) -> Path:
 
 
 def _revalidate_run(
-    event_dir: Path, manifest: dict, provenance: dict, *, artifact_root: Path
+    event_dir: Path,
+    manifest: dict,
+    provenance: dict,
+    *,
+    artifact_root: Path,
+    variants_path: Path | None = None,
 ) -> tuple[dict, dict, dict, Path]:
     """Reconcile unbound run metadata with the receipt-bound staging inputs."""
     registry_path = compare._receipt_path(provenance["registry_path"], artifact_root)
@@ -215,6 +220,7 @@ def _revalidate_run(
         staging_manifest,
         artifact_dir=event_dir,
         registry_sha256=provenance["registry_sha256"],
+        variants_path=variants_path or stage.variants.VARIANTS_PATH,
     )
     pairs = set()
     for absolute in inventory:
@@ -299,8 +305,14 @@ def _revalidate_run(
     return registry, staging, artifacts, staging_path
 
 
-def load_side(root: Path, *, artifact_root: Path = ROOT) -> dict:
-    """Every event of a namespace, re-verified through its receipts."""
+def load_side(
+    root: Path, *, artifact_root: Path = ROOT, variants_path: Path | None = None
+) -> dict:
+    """Every event of a namespace, re-verified through its receipts.
+
+    A variant run's manifest is checked against its record in
+    ``variants_path`` (default data/uk/replay_variants.json); a qualification
+    run passes its work file, which also holds the candidate's record."""
     root = root.resolve()
     artifact_root = artifact_root.resolve()
     events = {}
@@ -325,7 +337,11 @@ def load_side(root: Path, *, artifact_root: Path = ROOT) -> dict:
                 registry_path=registry_path,
             )
             registry, staging, artifacts, staging_path = _revalidate_run(
-                event_dir, manifest, provenance, artifact_root=artifact_root
+                event_dir,
+                manifest,
+                provenance,
+                artifact_root=artifact_root,
+                variants_path=variants_path,
             )
             identity = side_identity(manifest)
         except (ValueError, KeyError, TypeError, OSError) as exc:
@@ -1184,6 +1200,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--base", required=True, help="namespace path or variant id")
     parser.add_argument("--head", required=True, help="namespace path or variant id")
     parser.add_argument("--output-dir", type=Path)
+    parser.add_argument(
+        "--variants-file",
+        type=Path,
+        help="variant records the runs' manifests are checked against "
+        "(default data/uk/replay_variants.json)",
+    )
     parser.add_argument("--max-rows", type=int, default=200)
     parser.add_argument(
         "--check",
@@ -1191,8 +1213,9 @@ def main(argv: list[str] | None = None) -> int:
         help="compare a fresh render with the files on disk",
     )
     args = parser.parse_args(argv)
-    base = load_side(resolve_root(args.base))
-    head = load_side(resolve_root(args.head))
+    variants_path = args.variants_file.resolve() if args.variants_file else None
+    base = load_side(resolve_root(args.base), variants_path=variants_path)
+    head = load_side(resolve_root(args.head), variants_path=variants_path)
     output_dir = args.output_dir or (
         DIFF_ROOT
         / f"{base['identity']['variant_id']}__{head['identity']['variant_id']}"

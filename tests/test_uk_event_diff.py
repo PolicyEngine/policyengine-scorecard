@@ -240,9 +240,34 @@ def make_namespace(
     return diff.load_side(root, artifact_root=tmp_path)
 
 
+def synthetic_record(manifest, registry, *, variants_path):
+    """Stand-in for staging's variant lookup. These sides use synthetic
+    variants (several share an id with different data years), so no one
+    variants document can hold them; staging's checks of a manifest against
+    its record are tested in test_uk_replay_variants.py."""
+    if manifest is None or manifest.get("variant_id") is None:
+        return None
+    return {
+        "variant_id": manifest["variant_id"],
+        "layout": "replay_namespace",
+        "identity_sha256": manifest["variant_identity_sha256"],
+        "data_years": manifest["data_years"],
+        "identity": {
+            "dataset": {
+                "path": "synthetic.h5",
+                "repo_id": "synthetic/data",
+                "revision": manifest["data_bundle"],
+                "sha256": manifest["certified_dataset_sha256"],
+            },
+            "release_bundle": {"certified_data_build_id": manifest["data_bundle"]},
+        },
+    }
+
+
 @pytest.fixture
 def ns(tmp_path, monkeypatch):
     monkeypatch.setattr(compute, "ROOT", tmp_path)
+    monkeypatch.setattr(stage, "manifest_variant", synthetic_record)
 
     def build(name, **kwargs):
         return make_namespace(tmp_path, name, **kwargs)
@@ -1127,3 +1152,23 @@ def test_committed_reproduction_command_is_accepted_by_compute_cli(
 
     monkeypatch.setattr(compute.worlds, "engine_resolver", unavailable_engine)
     assert compute.main(argv + ["--dry-run"]) == 0
+
+
+def test_the_variants_file_reaches_staging(ns, tmp_path, monkeypatch):
+    # A qualification run diffs a candidate whose record is only in its work
+    # variants file; the diff must check each manifest against that file.
+    ns("base", variant="pe6_uk2_build")
+    seen = []
+    real = stage.stage_event
+
+    def spy(*args, **kwargs):
+        seen.append(kwargs.get("variants_path"))
+        return real(*args, **kwargs)
+
+    monkeypatch.setattr(stage, "stage_event", spy)
+    work = tmp_path / "work-variants.json"
+    diff.load_side(tmp_path / "ns" / "base", artifact_root=tmp_path, variants_path=work)
+    assert seen == [work]
+    seen.clear()
+    diff.load_side(tmp_path / "ns" / "base", artifact_root=tmp_path)
+    assert seen == [stage.variants.VARIANTS_PATH]
