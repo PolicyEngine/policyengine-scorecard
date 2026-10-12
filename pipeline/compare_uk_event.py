@@ -1319,8 +1319,14 @@ def render_summary(
     return "\n".join(lines)
 
 
-def load_verified_comparison(path: Path, *, artifact_root: Path = ROOT) -> list[dict]:
-    """Bind summary-only reads to current source, stage, axes and artifact bytes."""
+def load_verified_comparison(
+    path: Path, *, artifact_root: Path = ROOT, registry_path: Path | None = None
+) -> list[dict]:
+    """Verify receipts against the current registry or an explicit snapshot.
+
+    Historical readers may select the receipt-bound registry snapshot. The
+    default preserves summaries' binding to the current event registry.
+    """
     provenance_path = path.parent / "COMPARISON_PROVENANCE.json"
     if not provenance_path.exists():
         raise EventComparisonError("summary requires COMPARISON_PROVENANCE.json")
@@ -1352,7 +1358,9 @@ def load_verified_comparison(path: Path, *, artifact_root: Path = ROOT) -> list[
         raise EventComparisonError("comparison replay-grid receipt differs")
     if registry.get("event_slug") != path.parent.name:
         raise EventComparisonError("summary registry event differs")
-    canonical_registry = (
+    if registry_path is not None and registry_path.resolve() != paths["registry"]:
+        raise EventComparisonError("comparison registry snapshot path differs")
+    canonical_registry = registry_path or (
         artifact_root / "data" / "uk" / "events" / f"{path.parent.name}_measures.json"
     )
     if (
