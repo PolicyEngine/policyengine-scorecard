@@ -376,9 +376,12 @@ def _validate_attestation(
     # attested id and BOTH engine versions must match the artifact's own
     # `engine` block (which drives _base_engine / the pe_results stamp), so a
     # forged engine can't ride in behind a plausible-looking attestation.
-    if att.get("release_id") not in (None, release_id):
+    # The attested id is REQUIRED: an absent one used to pass this check
+    # vacuously, which is a presence-style gate (re-gate round 3, finding 2).
+    if att.get("release_id") != release_id:
         raise SystemExit(
-            f"{release_id}: _attestation.release_id {att.get('release_id')!r} mismatches."
+            f"{release_id}: _attestation.release_id {att.get('release_id')!r} "
+            "is missing or mismatches the artifact's release_id."
         )
     engine = artifact.get("engine") or {}
     for k in ("policyengine_us", "policyengine_core"):

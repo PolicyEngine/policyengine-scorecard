@@ -294,6 +294,13 @@ def test_attestation_is_verified_not_just_present(tmp_path):
         lambda a: a["_attestation"].update(policyengine_us="9.9.9"),
         "inconsistent",
     )
+    # an attested release id that is absent or names a different release
+    # (re-gate round 3: absence used to pass the cross-check vacuously).
+    _ingest(lambda a: a["_attestation"].pop("release_id"), "release_id")
+    _ingest(
+        lambda a: a["_attestation"].update(release_id=BUILDO),
+        "release_id",
+    )
 
     # The clean fixture still ingests (cross-consistent block).
     art = _new_release_artifact()
@@ -328,3 +335,26 @@ def test_refuse_if_mixed_revisions(tmp_path):
     ok_dir.mkdir()
     backfill._refuse_if_mixed({"aaa"}, {"drv"}, ok_dir)
     assert ok_dir.exists()  # not purged
+
+
+def test_observed_engine_stamps_installed_versions_or_refuses():
+    # The attestation's engine versions are READ BACK from the environment
+    # and must equal the release manifest being stamped (re-gate round 3,
+    # finding 2: the manifest was fetched twice and installed versions were
+    # never read back into the stamp).
+    manifest = {
+        "build": {
+            "built_with_model_package": {"version": "1.799.9"},
+            "built_with_core_package": {"version": "3.0.0"},
+        }
+    }
+    installed = {"policyengine-us": "1.799.9", "policyengine-core": "3.0.0"}
+    assert backfill._observed_engine(manifest, version=installed.__getitem__) == {
+        "policyengine_us": "1.799.9",
+        "policyengine_core": "3.0.0",
+    }
+    # The manifest moved after install (or a dependency overrode the pin):
+    # refuse rather than stamp versions that didn't run.
+    drifted = {**installed, "policyengine-us": "1.800.0"}
+    with pytest.raises(SystemExit, match="installed engines"):
+        backfill._observed_engine(manifest, version=drifted.__getitem__)

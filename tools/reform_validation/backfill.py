@@ -248,6 +248,37 @@ def _backfill_note(manifest: dict, producer_commit: str, h5_sha: str) -> str:
     )
 
 
+def _observed_engine(manifest: dict, version=None) -> dict:
+    """The policyengine-us/-core versions INSTALLED in this environment,
+    verified against the release manifest.
+
+    The Modal app installs the engines from its own (install-time) manifest
+    fetch, and this driver re-fetches the manifest at provenance time. The
+    attestation must stamp what actually ran (re-gate round 3, finding 2), so
+    read the installed versions back and refuse if they differ from the
+    manifest being stamped. That covers a manifest that moved between the two
+    fetches and a dependency that overrode the pin. ``version`` is
+    injectable for tests (default: importlib.metadata.version)."""
+    if version is None:
+        from importlib.metadata import version
+    b = manifest["build"]
+    expected = {
+        "policyengine_us": b["built_with_model_package"]["version"],
+        "policyengine_core": b["built_with_core_package"]["version"],
+    }
+    observed = {
+        "policyengine_us": version("policyengine-us"),
+        "policyengine_core": version("policyengine-core"),
+    }
+    if observed != expected:
+        raise SystemExit(
+            f"installed engines {observed} != release manifest {expected} — the "
+            "manifest moved since install or a dependency overrode the pin; "
+            "refusing to stamp an attestation that doesn't match what ran."
+        )
+    return observed
+
+
 def _revision_dirty(commits: set) -> bool:
     """A partial-revision set is unusable if it is empty, mixes revisions, or
     contains a missing/unknown stamp."""
@@ -320,12 +351,10 @@ def merge(manifest: dict, producer_commit: str, h5_sha: str) -> Path:
     # Structured engine pin (scorecard ingest reads this to resolve a new
     # release's policyengine-us/-core versions without a code edit — the
     # prose _backfill_note carries the same fact for humans). These are the
-    # exact release_manifest versions the H5 was scored under.
-    b = manifest["build"]
-    header["engine"] = {
-        "policyengine_us": b["built_with_model_package"]["version"],
-        "policyengine_core": b["built_with_core_package"]["version"],
-    }
+    # versions read back from the environment the batches ran in, verified
+    # equal to the release_manifest (observed, not declared).
+    engine = _observed_engine(manifest)
+    header["engine"] = dict(engine)
     # Explicit, validated scoring mode (ingest fails loudly if absent, never
     # defaults — issue #53 re-gate blocker 5). backfill.py always drives the
     # producer with OBBBA scored jointly in one JCX-stacked batch.
@@ -337,8 +366,8 @@ def merge(manifest: dict, producer_commit: str, h5_sha: str) -> Path:
         "release_id": _release_id(),
         "producer_commit": producer_commit,
         "driver_commit": os.environ.get("RV_DRIVER_COMMIT", "unknown"),
-        "policyengine_us": b["built_with_model_package"]["version"],
-        "policyengine_core": b["built_with_core_package"]["version"],
+        "policyengine_us": engine["policyengine_us"],
+        "policyengine_core": engine["policyengine_core"],
         "h5_sha256": h5_sha,
         "n_rows": len(rows),
         "batches": names,
@@ -376,6 +405,9 @@ def _sha256_file(path: Path) -> str:
 def orchestrate(release_id: str, producer_commit: str) -> Path:
     wd, h5, diag, _ = _paths()
     manifest = release_manifest(release_id)
+    # Fail fast, before hours of compute, if the provenance-time manifest no
+    # longer matches the engines installed from the install-time fetch.
+    _observed_engine(manifest)
     art = manifest["artifacts"]["populace_us_2024"]
     if not h5.exists():
         print(f"downloading H5 ({art['sha256'][:12]}…)…", flush=True)
