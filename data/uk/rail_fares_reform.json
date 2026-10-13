@@ -1,0 +1,73 @@
+{
+ "schema_version": 1,
+ "measure_key": "ab2026__rail_fares_freeze",
+ "title": "Regulated rail fares freeze (England), 2026",
+ "fiscal_event": "autumn_budget_2026",
+ "registry_rule": "The reform specification for the 2026 regulated rail fares freeze. This file stages NO value claims: the DfT saving figures in circulation are DfT's, and the #86/#91 re-publication rule applies \u2014 a re-published figure belongs to its originator, and is harvested in its own lane from primary documents, never copied from reporting into a spec.",
+ "engine_pin": {
+  "policyengine_uk": "2.89.2",
+  "resolved_on": "2026-09-07",
+  "pin_meaning": "The pin follows the certified populace-uk bundle, which DECLARES policyengine-uk ==2.89.2, because that is the engine this lane will be COMPUTED at. v1 pinned whatever was installed (2.92.0), and the consequence was concrete: --resolve REFUSED at the certified engine, so the spec could not be checked against the world its own not_yet_run says the compute needs. Same distinction as #100, #101, #126 and #129.",
+  "pin_rule": "Read from importlib.metadata at write time, never typed as a literal."
+ },
+ "direction_note": "The freeze is ALREADY IN the certified baseline \u2014 gov.dft.rail.fare_index carries it. So the scored object is the COUNTERFACTUAL: what fares would have done under prior law. The engine ships that leg too, as gov.dft.rail.prior_law_fare_index. This is the indexed-baseline problem #13 and #67 keep meeting, except here we do not have to construct the counterfactual \u2014 the engine already carries both legs, and the comparison is baseline vs counterfactual rather than baseline vs reform.",
+ "counterfactual": {
+  "gov.dft.rail.fare_index": "gov.dft.rail.prior_law_fare_index"
+ },
+ "engine_readings": {
+  "2026": {
+   "gov.dft.rail.fare_index": 1.217,
+   "gov.dft.rail.prior_law_fare_index": 1.288
+  },
+  "2027": {
+   "gov.dft.rail.fare_index": 1.268,
+   "gov.dft.rail.prior_law_fare_index": 1.342
+  },
+  "2028": {
+   "gov.dft.rail.fare_index": 1.318,
+   "gov.dft.rail.prior_law_fare_index": 1.394
+  }
+ },
+ "head_variables": [
+  "rail_subsidy_spending",
+  "dft_subsidy_spending"
+ ],
+ "mechanism_note": "rail_usage x fare_index -> rail_subsidy_spending -> dft_subsidy_spending. The factorisation is deliberate and documented in the engine: rail_subsidy_spending's docstring states it exists 'allowing reforms to modify fare prices independently of usage quantity'. So a fare-price change is expressible without touching the usage quantity.",
+ "years": [
+  2026,
+  2027,
+  2028
+ ],
+ "scope_conditions": {
+  "regulated_share_note": "Regulated fares are a MINORITY of tickets sold in England. A DfT passenger-level saving and a PE household-level subsidy aggregate therefore measure different populations. This is recorded here as a named divergence axis (#59) BEFORE any comparison runs, so a gap is attributed to scope rather than to the engine.",
+  "geography": "England (regulated National Rail fares)",
+  "entity_mismatch": "DfT reports savings per passenger; the engine's quantities are per household. The two are not the same denominator and a counterpart must state which it publishes."
+ },
+ "not_yet_run": "This PR specifies and resolves the reform; it computes no counterpart. UK counterpart compute runs through #51, which is not merged. Publishing a number before that lands would bypass the compute contract.",
+ "compute_engine_constraint": {
+  "required_specifier": "==2.89.2",
+  "source": "certified bundle release_manifest.json",
+  "bundle": {
+   "repo_id": "policyengine/populace-uk-private",
+   "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "artifact": "populace_uk_2023.h5",
+   "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "size_bytes": 1315880118,
+   "compatible_model_packages": [
+    {
+     "name": "policyengine-uk",
+     "specifier": "==2.89.2"
+    }
+   ],
+   "read_on": "2026-09-07"
+  },
+  "note": "The certified bundle DECLARES its own engine compatibility: policyengine-uk ==2.89.2. So a compute of this lane runs at 2.89.2 regardless of what is installed for verification, and re-computing at a newer engine needs a NEW certified bundle, not a pin edit. engine_pin is what the paths were re-read against; this is what the run must use. They differ, and the registry says so rather than implying the newer engine is usable end to end.",
+  "readings_hold_on_both_engines": "Verified across BOTH engines, not assumed: the readings first committed on 2026-08-27 under 2.89.2 (fare_index 1.217/1.268/1.318, prior_law 1.288/1.342/1.394) are byte-identical to the 2.92.0 re-resolve. So 2.92.0-verified readings are safe for a 2.89.2 compute.",
+  "resolved": "Superseded by the pin now following the bundle: verification and compute are no longer split, because pinning away from the compute engine made the spec unverifiable there. The constraint is kept as the SOURCE of the required specifier."
+ },
+ "also_verified_at": {
+  "version": "2.92.0",
+  "date": "2026-09-03",
+  "finding": "The readings are byte-identical on 2.92.0, so none of this lane's numbers is an artifact of one engine version. Kept as corroboration; the pin still follows the bundle."
+ }
+}

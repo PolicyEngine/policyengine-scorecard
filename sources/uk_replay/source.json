@@ -1,0 +1,22 @@
+{
+  "source": "obr",
+  "description": "OBR Policy measures database: original-scorecard tax and spending rows; local harvest verified byte-identical to the checked-in gzip copy.",
+  "claims_path": "sources/harvest-uk-2026-08-02/uk_obr/claims_staged.jsonl.gz",
+  "claims_gzip_sha256": "ef88a02aa930501f4f8941ca85b399abbe258ab3664b9dcc4699b7a63cb5501c",
+  "claims_uncompressed_sha256": "46117d14c4de7ac10cbc9bc09acef6c5b5060db1605e02334d4a827cf420a3bd",
+  "workbook_name": "Policy_measures_database_November_2025_.xlsx",
+  "workbook_sha256": "76fb24ac780364949e5537563a70f8fbbe30cad6c652195704ea5d72b32ea619",
+  "publication": {
+    "title": "Policy measures database (November 2025)",
+    "publisher": "Office for Budget Responsibility",
+    "publication_url": "https://obr.uk/data/",
+    "url": "https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+    "wayback": "https://web.archive.org/web/20260102175529id_/https://obr.uk/docs/dlm_uploads/Policy_measures_database_November_2025_.xlsx",
+    "vintage": "November 2025 (updated to Autumn Budget 2025)",
+    "workbook": "Policy_measures_database_November_2025_.xlsx",
+    "units_note": "All figures in GBP million; Treasury costings rounded to nearest GBP 5m (GBP 1m since Budget 2018)",
+    "sign_convention": "positive = gain to the Exchequer (reduces borrowing); verbatim from Notes sheet"
+  },
+  "source_row_identity": "1-based line in uncompressed claims_path plus sha256 of the verbatim UTF-8 row",
+  "harvest_note": "Spending rows use proposed_metric=exchequer_impact; tax rows use metric=revenue_change. Both signs are positive_gain_to_exchequer. Raw rows and original values are retained in the checked-in harvest; registries contain traceable normalized pointers."
+}

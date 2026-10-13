@@ -1,0 +1,51 @@
+[
+ {
+  "claim_ids": [
+   "6778be5ac3ced7fa9738",
+   "9357938a53b8b8bc1cbf",
+   "8fe6e6be2dd2e9e5189a",
+   "398639e9ebbd8665146a",
+   "92aa1caec795252eb72d",
+   "38e29938c27e9b529c51",
+   "b76829e6164c5aa80b6a",
+   "de7cfb4f8a2900da6951",
+   "39eb5b816ef4b45388ec",
+   "bf281a1525fe6c51c037",
+   "ba20651e0785aa0d8d57",
+   "09057a43236fc4fb27b3",
+   "2cc49b50cbfd8576dd96",
+   "1d6fdb20253e0df807a1",
+   "44c58f4dc8e208cea168",
+   "1d6085945242e1a31a31",
+   "5288482f2f3b7b5946b1"
+  ],
+  "title": "PE EITC participation runs high because PE has no EITC non-filers",
+  "classification": "pe_gap",
+  "split": null,
+  "confidence": "medium",
+  "evidence": [
+   "sources/irs-eitc-participation/pe/us-6.2.1.json: would_file_if_eligible_for_refundable_credit = 1.0 for every tax unit; entitled_flag_on_not_paid = 0, so every PE non-participant has takes_up_eitc off.",
+   "CES-WP-24-75 Table 2: 4.6 million of 5.7 million eligible non-claimants in TY2021 were non-filers.",
+   "PE is above IRS in 39 of 51 jurisdictions; 15 States are 10+ points above (PE 87.6-100% vs IRS 73.6-82.8%). National: PE 88.0% vs 80.8% (ACS) and 78% (CPS).",
+   "Minnesota reaches 100% (13 weighted units with the flag off): calibration to SOI TY2022 State claims by children (us-6.2.1 targets) fills the eligible pool, the SNAP saturation pattern."
+  ],
+  "fix_type": "upstream_issue",
+  "fix_draft": "microcosm#1133: seed would_file_if_eligible_for_refundable_credit from a non-filer propensity; then re-run this lane.",
+  "action_link": "https://github.com/PolicyEngine/microcosm/issues/1133"
+ },
+ {
+  "claim_ids": [
+   "33c0b11211972fff26ce"
+  ],
+  "title": "Connecticut: PE EITC participation 15 points below IRS",
+  "classification": "open",
+  "split": null,
+  "confidence": "low",
+  "evidence": [
+   "Connecticut PE 67.3% vs IRS 82.0%; 32.7% of PE's eligible units have the take-up flag off against 12.0% nationally, so calibration to Connecticut's SOI claims put more weight on flag-off units there. The cause is not identified."
+  ],
+  "fix_type": null,
+  "fix_draft": null,
+  "action_link": null
+ }
+]

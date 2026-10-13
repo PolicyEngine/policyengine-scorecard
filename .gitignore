@@ -11,3 +11,4 @@ diagnosis/*.err.log
 
 # Derived artifact — build with: PYTHONPATH=. python -m scorecard_db.build_db
 data/scorecard.db
+data/uk/policyengine-local/

@@ -1,27 +1,42 @@
-[    0.0s] merging: kept 9838 prior rows from other runs
-[    0.0s] === run fullpart_all: constructing sim ===
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[   56.0s]   flag means after set: {'takes_up_aca_if_eligible': 1.0, 'takes_up_eitc': 1.0, 'takes_up_head_start_if_eligible': 1.0, 'takes_up_housing_assistance_if_eligible': 1.0, 'takes_up_medicaid_if_eligible': 1.0, 'takes_up_medicare_if_eligible': 1.0, 'takes_up_snap_if_eligible': 1.0, 'takes_up_ssi_if_eligible': 1.0, 'takes_up_tanf_if_eligible': 1.0, 'would_claim_wic': 1.0}
-[   56.0s] === run fullpart_all: sim ready ===
-[   56.6s] denominators done
-[  264.8s] snap done
-[  265.5s] ssi done
-[  266.4s] tanf done
-[  280.6s] wic done
-[  280.7s] eitc/ctc done
-[  280.8s] housing done
-[  308.2s] poverty done (var=spm_unit_is_in_spm_poverty)
-[  308.2s] === run fullpart_all complete: 19676 cumulative rows ===
-[  310.1s] === run fullpart_urban6: constructing sim ===
-[  329.5s]   flag means after set: {'takes_up_snap_if_eligible': 1.0, 'takes_up_ssi_if_eligible': 1.0, 'takes_up_tanf_if_eligible': 1.0, 'takes_up_housing_assistance_if_eligible': 1.0, 'takes_up_eitc': 1.0, 'would_claim_wic': 1.0}
-[  329.5s] === run fullpart_urban6: sim ready ===
-[  329.8s] denominators done
-[  511.3s] snap done
-[  511.7s] ssi done
-[  512.3s] tanf done
-[  520.3s] wic done
-[  520.4s] eitc/ctc done
-[  520.4s] housing done
-[  548.1s] poverty done (var=spm_unit_is_in_spm_poverty)
-[  548.1s] === run fullpart_urban6 complete: 29514 cumulative rows ===
-[  551.5s] DONE: 29514 rows -> /Users/maxghenis/PolicyEngine/policyengine-scorecard/data/pe
+[    0.0s] === run baseline: constructing sim ===
+WARNING:root:The dataset contains 189 column(s) that do not match any variable in the tax-benefit system and were ignored: ACTC_CRD, AGI, ANN_VAL, A_AGE, A_ENRLW, A_EXPRRP, A_FAMREL, A_FAMTYP, A_FNLWGT, A_FTPT, … (179 more)
+[   11.6s] === run baseline: sim ready ===
+[   11.9s] denominators done
+[  135.4s] snap done
+[  135.7s] ssi done
+[  136.2s] tanf done
+[  142.2s] wic done
+[  142.2s] eitc/ctc done
+[  142.3s] housing done
+[  221.1s] poverty done (var=spm_unit_is_in_spm_poverty)
+[  221.1s] === run baseline complete: 9838 cumulative rows ===
+[  222.4s] persisted 9838 rows after baseline
+[  222.4s] === run fullpart_all: constructing sim ===
+WARNING:root:The dataset contains 189 column(s) that do not match any variable in the tax-benefit system and were ignored: ACTC_CRD, AGI, ANN_VAL, A_AGE, A_ENRLW, A_EXPRRP, A_FAMREL, A_FAMTYP, A_FNLWGT, A_FTPT, … (179 more)
+[  224.5s]   flag means after set: {'takes_up_aca_if_eligible': 1.0, 'takes_up_dc_ptc': 1.0, 'takes_up_early_head_start_if_eligible': 1.0, 'takes_up_eitc': 1.0, 'takes_up_head_start_if_eligible': 1.0, 'takes_up_housing_assistance_if_eligible': 1.0, 'takes_up_medicaid_if_eligible': 1.0, 'takes_up_medicare_if_eligible': 1.0, 'takes_up_snap_if_eligible': 1.0, 'takes_up_ssi_if_eligible': 1.0, 'takes_up_tanf_if_eligible': 1.0, 'takes_up_wic_if_eligible': 1.0}
+[  224.5s] === run fullpart_all: sim ready ===
+[  224.8s] denominators done
+[  345.5s] snap done
+[  345.8s] ssi done
+[  346.3s] tanf done
+[  354.3s] wic done
+[  354.3s] eitc/ctc done
+[  354.4s] housing done
+[  441.8s] poverty done (var=spm_unit_is_in_spm_poverty)
+[  441.8s] === run fullpart_all complete: 19676 cumulative rows ===
+[  442.9s] persisted 19676 rows after fullpart_all
+[  442.9s] === run fullpart_urban6: constructing sim ===
+WARNING:root:The dataset contains 189 column(s) that do not match any variable in the tax-benefit system and were ignored: ACTC_CRD, AGI, ANN_VAL, A_AGE, A_ENRLW, A_EXPRRP, A_FAMREL, A_FAMTYP, A_FNLWGT, A_FTPT, … (179 more)
+[  445.0s]   flag means after set: {'takes_up_snap_if_eligible': 1.0, 'takes_up_ssi_if_eligible': 1.0, 'takes_up_tanf_if_eligible': 1.0, 'takes_up_housing_assistance_if_eligible': 1.0, 'takes_up_eitc': 1.0, 'takes_up_wic_if_eligible': 1.0}
+[  445.0s] === run fullpart_urban6: sim ready ===
+[  445.3s] denominators done
+[  563.2s] snap done
+[  563.5s] ssi done
+[  564.0s] tanf done
+[  572.7s] wic done
+[  572.7s] eitc/ctc done
+[  572.8s] housing done
+[  657.2s] poverty done (var=spm_unit_is_in_spm_poverty)
+[  657.2s] === run fullpart_urban6 complete: 29514 cumulative rows ===
+[  658.4s] persisted 29514 rows after fullpart_urban6
+[  658.4s] DONE: 29514 rows -> /Users/pavelmakarchuk/policyengine-scorecard/data/pe

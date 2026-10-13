@@ -143,3 +143,13 @@ High throughout: Flourish values machine-read from embed JSON; Table 4.1 from la
 text with one visual verification (RNRB £6bn); Table 6.5 all 12 rows column-checked
 against prose restatements (540k/£4,510/£2.5bn long-run figure cross-consistent);
 Fig 6.1 machine-read from xlsx at full float precision. No OCR anywhere.
+
+## Re-attribution (2026-09-24, #136)
+
+Two rows from the 27 Nov 2025 deck ("Personal tax and benefits", slide bullet) —
+5.2m brought into income tax and 4.8m into the higher or additional rate by
+2030-31 — are the OBR's own Box 3.3 counts (EFO November 2025), repeated on
+the IFS slide. They now carry `attribution` naming the originator and are
+dropped at ingest under the #86 rule (ingest_uk_thinktanks: third_party
+_attribution 8 → 10, ingested 314 → 312). The OBR's rows are in
+sources/harvest-uk-ab2025-2026-09-24/uk_obr_tables.

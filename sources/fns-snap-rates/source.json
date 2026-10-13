@@ -1,0 +1,31 @@
+{
+  "id": "fns-snap-rates",
+  "name": "USDA FNS — Estimates of State SNAP Participation Rates: FY 2020 and FY 2022",
+  "organization": "USDA Food and Nutrition Service (prepared by Mathematica)",
+  "country": "US",
+  "url": "https://www.fns.usda.gov/research/snap/state-participation-rates/2022",
+  "data_urls": [
+    "https://www.fns.usda.gov/sites/default/files/resource-files/ear-SNAP-Participation-Rates-2022.pdf",
+    "https://www.fns.usda.gov/sites/default/files/resource-files/ear-snap-Reaching-Those-in-Need-2022.pdf"
+  ],
+  "raw_sha256": {
+    "ear-SNAP-Participation-Rates-2022.pdf": "34266fb753c399b284c19ea40694e3cc32184fc65cad91dfa60c13597de0e16b",
+    "ear-snap-Reaching-Those-in-Need-2022.pdf": "2aec9d73abbd31d99ba68a68815633340dc8d3b6bbae63613ab4694b5dd7301a"
+  },
+  "citation": "Cunnyngham, Karen. \"Empirical Bayes Shrinkage Estimates of State Supplemental Nutrition Assistance Program Participation Rates: Fiscal Year 2020 and Fiscal Year 2022.\" Prepared by Mathematica, Contract No. 12-3198-23-F-0047. USDA FNS, Office of Policy Support, February 2025.",
+  "published": "2025-02",
+  "fetched": "2026-10-06",
+  "latest_edition_note": "FY 2022 is the latest year on the FNS state-participation-rates page as fetched (editions 2000-2020, then 2022; no FY 2021 estimates by design).",
+  "model": {
+    "name": "Mathematica SNAP eligibility microsimulation (CPS ASEC) with empirical Bayes shrinkage",
+    "open_source": false,
+    "method": "Rate = eligible participants / eligible people, average month of the fiscal year. Numerator: FNS program-operations participants (disaster-only participants excluded) times the SNAP QC share correctly receiving benefits and eligible under FEDERAL rules (BBCE-only and erroneous participants excluded). Denominator: CPS ASEC microsimulation of federal income and resource rules (two ASEC years per fiscal year), as a share of the ASEC population times Census population estimates. State direct estimates are averaged with regression predictions (ACS, tax, admin predictors) by empirical Bayes shrinkage, benchmarked to the direct national eligible total, and capped at 100%.",
+    "method_basis": "Report chapter II and Appendix A (equations 1-3, 43-46; Exhibits A.2, A.3)"
+  },
+  "period": "FY 2020 (October 2019-February 2020 only, pre-pandemic) and FY 2022 (October 2021-September 2022), average month",
+  "programs": ["snap"],
+  "geographies": "50 States and the District of Columbia; national; seven FNS regions (whole-percent rates only)",
+  "coverage_note": "No subgroup rates in this edition (the FY 2020 sample was too small); the working-poor series is not published for these years.",
+  "vintage_note": "FY 2020 rates cover five months and are an underestimate by the report's own account (seasonality). FY 2020 values here are re-estimates and are not comparable with earlier editions.",
+  "diagnosis_upstream": "The Mathematica eligibility model is closed-source; divergences classified as external-model issues become a comparison memo, not an upstream PR."
+}

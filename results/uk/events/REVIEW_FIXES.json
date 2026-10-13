@@ -1,0 +1,1827 @@
+{
+ "accounting": {
+  "autumn_budget_2024": {
+   "absolute_gbp_classified_decimal": "700667662186.6517290408028",
+   "absolute_gbp_in_decimal": "700667662186.6517290408028",
+   "amount_basis": "All harvested GBP cells across all source heads and costing years, including zeros; this is not a one-year Budget total.",
+   "by_class": {
+    "expressible": {
+     "absolute_gbp_decimal": "0",
+     "measures": 0,
+     "net_gbp_decimal": "0",
+     "rows": 0
+    },
+    "not_expressible": {
+     "absolute_gbp_decimal": "71094265972.65404016440",
+     "measures": 43,
+     "net_gbp_decimal": "42162693475.67742453810",
+     "rows": 438
+    },
+    "out_of_household_scope": {
+     "absolute_gbp_decimal": "477285058784.8563589679028",
+     "measures": 26,
+     "net_gbp_decimal": "-380605978576.4460772627272",
+     "rows": 636
+    },
+    "partial": {
+     "absolute_gbp_decimal": "152288337429.1413299085",
+     "measures": 5,
+     "net_gbp_decimal": "148278589752.7765537585",
+     "rows": 60
+    }
+   },
+   "by_fy": {
+    "2024-25": {
+     "absolute_gbp_classified_decimal": "39079154871.5649675507367",
+     "absolute_gbp_in_decimal": "39079154871.5649675507367",
+     "net_gbp_classified_decimal": "-23728942098.3736529285933",
+     "net_gbp_in_decimal": "-23728942098.3736529285933",
+     "rows_classified": 189,
+     "rows_in": 189
+    },
+    "2025-26": {
+     "absolute_gbp_classified_decimal": "137224984109.5957080249411",
+     "absolute_gbp_in_decimal": "137224984109.5957080249411",
+     "net_gbp_classified_decimal": "-34844687370.3734814818589",
+     "net_gbp_in_decimal": "-34844687370.3734814818589",
+     "rows_classified": 189,
+     "rows_in": 189
+    },
+    "2026-27": {
+     "absolute_gbp_classified_decimal": "120464785431.379529765168",
+     "absolute_gbp_in_decimal": "120464785431.379529765168",
+     "net_gbp_classified_decimal": "-32381492635.555606645232",
+     "net_gbp_in_decimal": "-32381492635.555606645232",
+     "rows_classified": 189,
+     "rows_in": 189
+    },
+    "2027-28": {
+     "absolute_gbp_classified_decimal": "130515528424.419581349877",
+     "absolute_gbp_in_decimal": "130515528424.419581349877",
+     "net_gbp_classified_decimal": "-33424142672.132679028923",
+     "net_gbp_in_decimal": "-33424142672.132679028923",
+     "rows_classified": 189,
+     "rows_in": 189
+    },
+    "2028-29": {
+     "absolute_gbp_classified_decimal": "136295911899.439343639685",
+     "absolute_gbp_in_decimal": "136295911899.439343639685",
+     "net_gbp_classified_decimal": "-35727309670.268358942915",
+     "net_gbp_in_decimal": "-35727309670.268358942915",
+     "rows_classified": 189,
+     "rows_in": 189
+    },
+    "2029-30": {
+     "absolute_gbp_classified_decimal": "137087297450.252598710395",
+     "absolute_gbp_in_decimal": "137087297450.252598710395",
+     "net_gbp_classified_decimal": "-30058120901.288319938605",
+     "net_gbp_in_decimal": "-30058120901.288319938605",
+     "rows_classified": 189,
+     "rows_in": 189
+    }
+   },
+   "identity": "rows_in = rows_classified; net GBP in = net GBP classified; absolute GBP in = absolute GBP classified (also within each FY)",
+   "net_gbp_classified_decimal": "-190164695347.9920989661272",
+   "net_gbp_in_decimal": "-190164695347.9920989661272",
+   "rows_classified": 1134,
+   "rows_in": 1134,
+   "sign_convention": "positive means a gain to the Exchequer"
+  },
+  "autumn_statement_2023": {
+   "absolute_gbp_classified_decimal": "186490393928.55938838526489776",
+   "absolute_gbp_in_decimal": "186490393928.55938838526489776",
+   "amount_basis": "All harvested GBP cells across all source heads and costing years, including zeros; this is not a one-year Budget total.",
+   "by_class": {
+    "expressible": {
+     "absolute_gbp_decimal": "0",
+     "measures": 0,
+     "net_gbp_decimal": "0",
+     "rows": 0
+    },
+    "not_expressible": {
+     "absolute_gbp_decimal": "21286066210.258327469254018",
+     "measures": 35,
+     "net_gbp_decimal": "15971168071.307040306245982",
+     "rows": 318
+    },
+    "out_of_household_scope": {
+     "absolute_gbp_decimal": "99222627549.85242051201087976",
+     "measures": 38,
+     "net_gbp_decimal": "-67493338569.05955833511087976",
+     "rows": 714
+    },
+    "partial": {
+     "absolute_gbp_decimal": "65981700168.4486404040",
+     "measures": 4,
+     "net_gbp_decimal": "-55217430907.2756770960",
+     "rows": 84
+    }
+   },
+   "by_fy": {
+    "2023-24": {
+     "absolute_gbp_classified_decimal": "10715868675.79345983896",
+     "absolute_gbp_in_decimal": "10715868675.79345983896",
+     "net_gbp_classified_decimal": "-8244010898.15974734046",
+     "net_gbp_in_decimal": "-8244010898.15974734046",
+     "rows_classified": 186,
+     "rows_in": 186
+    },
+    "2024-25": {
+     "absolute_gbp_classified_decimal": "29467792083.085659022752",
+     "absolute_gbp_in_decimal": "29467792083.085659022752",
+     "net_gbp_classified_decimal": "-15042261402.695325714052",
+     "net_gbp_in_decimal": "-15042261402.695325714052",
+     "rows_classified": 186,
+     "rows_in": 186
+    },
+    "2025-26": {
+     "absolute_gbp_classified_decimal": "26392093348.60207916302745076",
+     "absolute_gbp_in_decimal": "26392093348.60207916302745076",
+     "net_gbp_classified_decimal": "-15855946333.00243740586745076",
+     "net_gbp_in_decimal": "-15855946333.00243740586745076",
+     "rows_classified": 186,
+     "rows_in": 186
+    },
+    "2026-27": {
+     "absolute_gbp_classified_decimal": "35736002553.0133241829445535",
+     "absolute_gbp_in_decimal": "35736002553.0133241829445535",
+     "net_gbp_classified_decimal": "-23069729586.1936580484045535",
+     "net_gbp_in_decimal": "-23069729586.1936580484045535",
+     "rows_classified": 186,
+     "rows_in": 186
+    },
+    "2027-28": {
+     "absolute_gbp_classified_decimal": "40902479362.5147974027686655",
+     "absolute_gbp_in_decimal": "40902479362.5147974027686655",
+     "net_gbp_classified_decimal": "-26121002234.3894025647086655",
+     "net_gbp_in_decimal": "-26121002234.3894025647086655",
+     "rows_classified": 186,
+     "rows_in": 186
+    },
+    "2028-29": {
+     "absolute_gbp_classified_decimal": "43276157905.550068774812228",
+     "absolute_gbp_in_decimal": "43276157905.550068774812228",
+     "net_gbp_classified_decimal": "-18406650950.587624051372228",
+     "net_gbp_in_decimal": "-18406650950.587624051372228",
+     "rows_classified": 186,
+     "rows_in": 186
+    }
+   },
+   "identity": "rows_in = rows_classified; net GBP in = net GBP classified; absolute GBP in = absolute GBP classified (also within each FY)",
+   "net_gbp_classified_decimal": "-106739601405.02819512486489776",
+   "net_gbp_in_decimal": "-106739601405.02819512486489776",
+   "rows_classified": 1116,
+   "rows_in": 1116,
+   "sign_convention": "positive means a gain to the Exchequer"
+  },
+  "spring_budget_2023": {
+   "absolute_gbp_classified_decimal": "126412522967.221098755102794",
+   "absolute_gbp_in_decimal": "126412522967.221098755102794",
+   "amount_basis": "All harvested GBP cells across all source heads and costing years, including zeros; this is not a one-year Budget total.",
+   "by_class": {
+    "expressible": {
+     "absolute_gbp_decimal": "0",
+     "measures": 0,
+     "net_gbp_decimal": "0",
+     "rows": 0
+    },
+    "not_expressible": {
+     "absolute_gbp_decimal": "40639730627.120064076713124",
+     "measures": 39,
+     "net_gbp_decimal": "-22201749958.141974857379284",
+     "rows": 324
+    },
+    "out_of_household_scope": {
+     "absolute_gbp_decimal": "83758999400.68278977338967",
+     "measures": 48,
+     "net_gbp_decimal": "-63833979218.38919178144453",
+     "rows": 678
+    },
+    "partial": {
+     "absolute_gbp_decimal": "2013792939.418244905",
+     "measures": 2,
+     "net_gbp_decimal": "-2013792939.418244905",
+     "rows": 18
+    }
+   },
+   "by_fy": {
+    "2022-23": {
+     "absolute_gbp_classified_decimal": "7521928126.69310132051469",
+     "absolute_gbp_in_decimal": "7521928126.69310132051469",
+     "net_gbp_classified_decimal": "-134382693.86895473025331",
+     "net_gbp_in_decimal": "-134382693.86895473025331",
+     "rows_classified": 170,
+     "rows_in": 170
+    },
+    "2023-24": {
+     "absolute_gbp_classified_decimal": "25561945008.3988942009442",
+     "absolute_gbp_in_decimal": "25561945008.3988942009442",
+     "net_gbp_classified_decimal": "-21605179284.5390067610358",
+     "net_gbp_in_decimal": "-21605179284.5390067610358",
+     "rows_classified": 170,
+     "rows_in": 170
+    },
+    "2024-25": {
+     "absolute_gbp_classified_decimal": "25850688502.996643283203604",
+     "absolute_gbp_in_decimal": "25850688502.996643283203604",
+     "net_gbp_classified_decimal": "-21030545142.629751961163604",
+     "net_gbp_in_decimal": "-21030545142.629751961163604",
+     "rows_classified": 170,
+     "rows_in": 170
+    },
+    "2025-26": {
+     "absolute_gbp_classified_decimal": "26631829560.0198106192637",
+     "absolute_gbp_in_decimal": "26631829560.0198106192637",
+     "net_gbp_classified_decimal": "-20947625269.7627083418777",
+     "net_gbp_in_decimal": "-20947625269.7627083418777",
+     "rows_classified": 170,
+     "rows_in": 170
+    },
+    "2026-27": {
+     "absolute_gbp_classified_decimal": "20378153790.9695168648630",
+     "absolute_gbp_in_decimal": "20378153790.9695168648630",
+     "net_gbp_classified_decimal": "-14417678614.2474486062158",
+     "net_gbp_in_decimal": "-14417678614.2474486062158",
+     "rows_classified": 170,
+     "rows_in": 170
+    },
+    "2027-28": {
+     "absolute_gbp_classified_decimal": "20467977978.1431324663136",
+     "absolute_gbp_in_decimal": "20467977978.1431324663136",
+     "net_gbp_classified_decimal": "-9914111110.9015411432776",
+     "net_gbp_in_decimal": "-9914111110.9015411432776",
+     "rows_classified": 170,
+     "rows_in": 170
+    }
+   },
+   "identity": "rows_in = rows_classified; net GBP in = net GBP classified; absolute GBP in = absolute GBP classified (also within each FY)",
+   "net_gbp_classified_decimal": "-88049522115.949411543823814",
+   "net_gbp_in_decimal": "-88049522115.949411543823814",
+   "rows_classified": 1020,
+   "rows_in": 1020,
+   "sign_convention": "positive means a gain to the Exchequer"
+  },
+  "spring_budget_2024": {
+   "absolute_gbp_classified_decimal": "111908351738.51131217126668",
+   "absolute_gbp_in_decimal": "111908351738.51131217126668",
+   "amount_basis": "All harvested GBP cells across all source heads and costing years, including zeros; this is not a one-year Budget total.",
+   "by_class": {
+    "expressible": {
+     "absolute_gbp_decimal": "0",
+     "measures": 0,
+     "net_gbp_decimal": "0",
+     "rows": 0
+    },
+    "not_expressible": {
+     "absolute_gbp_decimal": "28291135439.2031551041672",
+     "measures": 26,
+     "net_gbp_decimal": "9152381577.7088104666672",
+     "rows": 276
+    },
+    "out_of_household_scope": {
+     "absolute_gbp_decimal": "25416225856.97994206409948",
+     "measures": 20,
+     "net_gbp_decimal": "-1254963808.40385210849748",
+     "rows": 492
+    },
+    "partial": {
+     "absolute_gbp_decimal": "58200990442.328215003",
+     "measures": 3,
+     "net_gbp_decimal": "-51929613884.578753403",
+     "rows": 48
+    }
+   },
+   "by_fy": {
+    "2023-24": {
+     "absolute_gbp_classified_decimal": "7195105402.44571865454",
+     "absolute_gbp_in_decimal": "7195105402.44571865454",
+     "net_gbp_classified_decimal": "-57872132.16214514254",
+     "net_gbp_in_decimal": "-57872132.16214514254",
+     "rows_classified": 136,
+     "rows_in": 136
+    },
+    "2024-25": {
+     "absolute_gbp_classified_decimal": "16422895138.8574098751447",
+     "absolute_gbp_in_decimal": "16422895138.8574098751447",
+     "net_gbp_classified_decimal": "-13899536655.7178665414197",
+     "net_gbp_in_decimal": "-13899536655.7178665414197",
+     "rows_classified": 136,
+     "rows_in": 136
+    },
+    "2025-26": {
+     "absolute_gbp_classified_decimal": "18566395921.5101242740759",
+     "absolute_gbp_in_decimal": "18566395921.5101242740759",
+     "net_gbp_classified_decimal": "-10116298604.5628424105243",
+     "net_gbp_in_decimal": "-10116298604.5628424105243",
+     "rows_classified": 136,
+     "rows_in": 136
+    },
+    "2026-27": {
+     "absolute_gbp_classified_decimal": "21844366329.9605015521516",
+     "absolute_gbp_in_decimal": "21844366329.9605015521516",
+     "net_gbp_classified_decimal": "-7682994107.6142612190702",
+     "net_gbp_in_decimal": "-7682994107.6142612190702",
+     "rows_classified": 136,
+     "rows_in": 136
+    },
+    "2027-28": {
+     "absolute_gbp_classified_decimal": "23977809872.50816078156473",
+     "absolute_gbp_in_decimal": "23977809872.50816078156473",
+     "net_gbp_classified_decimal": "-6338461778.42580652471673",
+     "net_gbp_in_decimal": "-6338461778.42580652471673",
+     "rows_classified": 136,
+     "rows_in": 136
+    },
+    "2028-29": {
+     "absolute_gbp_classified_decimal": "23901779073.22939703378975",
+     "absolute_gbp_in_decimal": "23901779073.22939703378975",
+     "net_gbp_classified_decimal": "-5937032836.79087320655935",
+     "net_gbp_in_decimal": "-5937032836.79087320655935",
+     "rows_classified": 136,
+     "rows_in": 136
+    }
+   },
+   "identity": "rows_in = rows_classified; net GBP in = net GBP classified; absolute GBP in = absolute GBP classified (also within each FY)",
+   "net_gbp_classified_decimal": "-44032196115.27379504483028",
+   "net_gbp_in_decimal": "-44032196115.27379504483028",
+   "rows_classified": 816,
+   "rows_in": 816,
+   "sign_convention": "positive means a gain to the Exchequer"
+  },
+  "spring_statement_2025": {
+   "absolute_gbp_classified_decimal": "74978639025.75495625090152",
+   "absolute_gbp_in_decimal": "74978639025.75495625090152",
+   "amount_basis": "All harvested GBP cells across all source heads and costing years, including zeros; this is not a one-year Budget total.",
+   "by_class": {
+    "expressible": {
+     "absolute_gbp_decimal": "0",
+     "measures": 0,
+     "net_gbp_decimal": "0",
+     "rows": 0
+    },
+    "not_expressible": {
+     "absolute_gbp_decimal": "22174211058.30566841825452",
+     "measures": 17,
+     "net_gbp_decimal": "13905803182.72034823285452",
+     "rows": 156
+    },
+    "out_of_household_scope": {
+     "absolute_gbp_decimal": "39773717081.089675232647",
+     "measures": 13,
+     "net_gbp_decimal": "-10695514936.054166761393",
+     "rows": 324
+    },
+    "partial": {
+     "absolute_gbp_decimal": "13030710886.3596126",
+     "measures": 2,
+     "net_gbp_decimal": "2364990886.3596126",
+     "rows": 18
+    }
+   },
+   "by_fy": {
+    "2024-25": {
+     "absolute_gbp_classified_decimal": "2751828727.47982490142552",
+     "absolute_gbp_in_decimal": "2751828727.47982490142552",
+     "net_gbp_classified_decimal": "-811327014.84729446857448",
+     "net_gbp_in_decimal": "-811327014.84729446857448",
+     "rows_classified": 83,
+     "rows_in": 83
+    },
+    "2025-26": {
+     "absolute_gbp_classified_decimal": "3400257564.041355192984",
+     "absolute_gbp_in_decimal": "3400257564.041355192984",
+     "net_gbp_classified_decimal": "-1039839715.573402926016",
+     "net_gbp_in_decimal": "-1039839715.573402926016",
+     "rows_classified": 83,
+     "rows_in": 83
+    },
+    "2026-27": {
+     "absolute_gbp_classified_decimal": "8571959773.289268476172",
+     "absolute_gbp_in_decimal": "8571959773.289268476172",
+     "net_gbp_classified_decimal": "-891729632.246194998628",
+     "net_gbp_in_decimal": "-891729632.246194998628",
+     "rows_classified": 83,
+     "rows_in": 83
+    },
+    "2027-28": {
+     "absolute_gbp_classified_decimal": "14591386021.12541967647",
+     "absolute_gbp_in_decimal": "14591386021.12541967647",
+     "net_gbp_classified_decimal": "-583431382.91932673777",
+     "net_gbp_in_decimal": "-583431382.91932673777",
+     "rows_classified": 83,
+     "rows_in": 83
+    },
+    "2028-29": {
+     "absolute_gbp_classified_decimal": "19103311706.80469810940",
+     "absolute_gbp_in_decimal": "19103311706.80469810940",
+     "net_gbp_classified_decimal": "2644039260.11620681800",
+     "net_gbp_in_decimal": "2644039260.11620681800",
+     "rows_classified": 83,
+     "rows_in": 83
+    },
+    "2029-30": {
+     "absolute_gbp_classified_decimal": "26559895233.01438989445",
+     "absolute_gbp_in_decimal": "26559895233.01438989445",
+     "net_gbp_classified_decimal": "6257567618.49580638445",
+     "net_gbp_in_decimal": "6257567618.49580638445",
+     "rows_classified": 83,
+     "rows_in": 83
+    }
+   },
+   "identity": "rows_in = rows_classified; net GBP in = net GBP classified; absolute GBP in = absolute GBP classified (also within each FY)",
+   "net_gbp_classified_decimal": "5575279133.02579407146152",
+   "net_gbp_in_decimal": "5575279133.02579407146152",
+   "rows_classified": 498,
+   "rows_in": 498,
+   "sign_convention": "positive means a gain to the Exchequer"
+  }
+ },
+ "branch": "replay/pilot",
+ "changed_computed_rows": [
+  {
+   "after_pe_value_gbp": 0.0,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2023-24",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": 0.0,
+   "source_row_id": "obr_pmd_nov2025:10590:9fb656d369cf6c02",
+   "tax_head": "Income tax"
+  },
+  {
+   "after_pe_value_gbp": 0.0,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2023-24",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": 0.0,
+   "source_row_id": "obr_pmd_nov2025:10596:482eac698ab9c181",
+   "tax_head": "NICs"
+  },
+  {
+   "after_pe_value_gbp": 0.0,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2023-24",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": 0.0,
+   "source_row_id": "obr_pmd_nov2025:21497:197a81ed0459bc7d",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": 0.0,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2024-25",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": 0.0,
+   "source_row_id": "obr_pmd_nov2025:10591:06c2501422284995",
+   "tax_head": "Income tax"
+  },
+  {
+   "after_pe_value_gbp": -512170359.34750974,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2024-25",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": -348669309.17433286,
+   "source_row_id": "obr_pmd_nov2025:10597:37b420855b7005a0",
+   "tax_head": "NICs"
+  },
+  {
+   "after_pe_value_gbp": 9706978.086303711,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2024-25",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": 4097382.253023544,
+   "source_row_id": "obr_pmd_nov2025:21498:3fa4108a7eac0a15",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": 0.0,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2025-26",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": 1701838.270432405,
+   "source_row_id": "obr_pmd_nov2025:10592:e5c257a04708cde7",
+   "tax_head": "Income tax"
+  },
+  {
+   "after_pe_value_gbp": -519186159.4330233,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2025-26",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": -350102319.5871488,
+   "source_row_id": "obr_pmd_nov2025:10598:28f9366b82391330",
+   "tax_head": "NICs"
+  },
+  {
+   "after_pe_value_gbp": 9353628.809425354,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2025-26",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": 5374644.901458091,
+   "source_row_id": "obr_pmd_nov2025:21499:909bf2ab3554e230",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": 0.0,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2026-27",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": 141921087.68720073,
+   "source_row_id": "obr_pmd_nov2025:10593:f37c77d805ce9401",
+   "tax_head": "Income tax"
+  },
+  {
+   "after_pe_value_gbp": -542530999.0906498,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2026-27",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": -358399850.0876191,
+   "source_row_id": "obr_pmd_nov2025:10599:0cdd3c6417e28a14",
+   "tax_head": "NICs"
+  },
+  {
+   "after_pe_value_gbp": 11441880.627342224,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2026-27",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": 6093086.0845173085,
+   "source_row_id": "obr_pmd_nov2025:21500:3cd35347ee5fc266",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": 0.0,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2027-28",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": 206481578.21251217,
+   "source_row_id": "obr_pmd_nov2025:10594:eac703aa1cd0c605",
+   "tax_head": "Income tax"
+  },
+  {
+   "after_pe_value_gbp": -1338847352.1526794,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2027-28",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": -368703205.37524307,
+   "source_row_id": "obr_pmd_nov2025:10600:d0828a5bfb537ca4",
+   "tax_head": "NICs"
+  },
+  {
+   "after_pe_value_gbp": 11933081.293174744,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2027-28",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": 6154373.680937649,
+   "source_row_id": "obr_pmd_nov2025:21501:53e1c92d4a4f4e96",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": 0.0,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2028-29",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": 261654511.53642154,
+   "source_row_id": "obr_pmd_nov2025:10595:d9bbeb74fa78d25e",
+   "tax_head": "Income tax"
+  },
+  {
+   "after_pe_value_gbp": -1054555794.4022624,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2028-29",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": -378862321.47441095,
+   "source_row_id": "obr_pmd_nov2025:10601:756ded1466aa84b3",
+   "tax_head": "NICs"
+  },
+  {
+   "after_pe_value_gbp": 11951206.26462555,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2028-29",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": 6726701.429016321,
+   "source_row_id": "obr_pmd_nov2025:21502:1ea7fa7e0cfb40da",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": 0.0,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2023-24",
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "obr_value_gbp": 0.0,
+   "source_row_id": "obr_pmd_nov2025:21629:a71ef831d6e1cb87",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -584567128.8834467,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2024-25",
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "obr_value_gbp": -952573500.0,
+   "source_row_id": "obr_pmd_nov2025:21630:bf9643f47e057983",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -799767145.6307344,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2025-26",
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "obr_value_gbp": -1092072500.0,
+   "source_row_id": "obr_pmd_nov2025:21631:75b9415771e2e20c",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -833673303.0592041,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2026-27",
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "obr_value_gbp": -1188456000.0,
+   "source_row_id": "obr_pmd_nov2025:21632:353c5d3f922bfc89",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -859073219.5275888,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2027-28",
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "obr_value_gbp": -1259868000.0,
+   "source_row_id": "obr_pmd_nov2025:21633:5ce95c1559b8bc39",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -859833233.0249033,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2028-29",
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "obr_value_gbp": -1273040500.0,
+   "source_row_id": "obr_pmd_nov2025:21634:ff94f5b54b89d1ee",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": 264112675.57543182,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_statement_2025",
+   "fy": "2026-27",
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "obr_value_gbp": 760288239.1244123,
+   "source_row_id": "obr_pmd_nov2025:23317:1b983354102bb14d",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": 338556341.93270874,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_statement_2025",
+   "fy": "2027-28",
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "obr_value_gbp": 1555705616.0371184,
+   "source_row_id": "obr_pmd_nov2025:23318:dcc529f309fec572",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": 436340777.1042633,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_statement_2025",
+   "fy": "2028-29",
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "obr_value_gbp": 2328372386.4247274,
+   "source_row_id": "obr_pmd_nov2025:23319:c6ce8500db20415e",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": 626601979.8689651,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_statement_2025",
+   "fy": "2029-30",
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "obr_value_gbp": 3053484644.7733545,
+   "source_row_id": "obr_pmd_nov2025:23320:4c41d84635ed82ad",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -403656800.85860443,
+   "after_status": "constructed",
+   "before_pe_value_gbp": -469488223.6998291,
+   "before_status": "constructed",
+   "event": "spring_statement_2025",
+   "fy": "2026-27",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "obr_value_gbp": -667364500.0,
+   "source_row_id": "obr_pmd_nov2025:23335:7e9f9d66b5194ff6",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -409490512.0053253,
+   "after_status": "constructed",
+   "before_pe_value_gbp": -476169901.9299164,
+   "before_status": "constructed",
+   "event": "spring_statement_2025",
+   "fy": "2027-28",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "obr_value_gbp": -938051000.0,
+   "source_row_id": "obr_pmd_nov2025:23336:5d8fea1a1f3c86d6",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -414257872.6100464,
+   "after_status": "constructed",
+   "before_pe_value_gbp": -481849932.0606613,
+   "before_status": "constructed",
+   "event": "spring_statement_2025",
+   "fy": "2028-29",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "obr_value_gbp": -1224374000.0,
+   "source_row_id": "obr_pmd_nov2025:23337:31f0f1693e3bba3c",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -421859102.8292618,
+   "after_status": "constructed",
+   "before_pe_value_gbp": -490444744.11904144,
+   "before_status": "constructed",
+   "event": "spring_statement_2025",
+   "fy": "2029-30",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "obr_value_gbp": -1546070500.0,
+   "source_row_id": "obr_pmd_nov2025:23338:27e34c93a163b4f0",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -3693209247.487488,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_budget_2023",
+   "fy": "2023-24",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "obr_value_gbp": -80947714.92372231,
+   "source_row_id": "obr_pmd_nov2025:10231:ce0a1472426c8430",
+   "tax_head": "Income tax"
+  },
+  {
+   "after_pe_value_gbp": 0.0,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_budget_2023",
+   "fy": "2023-24",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "obr_value_gbp": -8990625.53614,
+   "source_row_id": "obr_pmd_nov2025:10237:2f261725299509e1",
+   "tax_head": "NICs"
+  },
+  {
+   "after_pe_value_gbp": -2321120.9429092407,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_budget_2023",
+   "fy": "2023-24",
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "obr_value_gbp": -41340000.0,
+   "source_row_id": "obr_pmd_nov2025:20832:882117c50af13444",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -1793717.8464126587,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_budget_2023",
+   "fy": "2024-25",
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "obr_value_gbp": -86814000.0,
+   "source_row_id": "obr_pmd_nov2025:20833:270c17d92e54dca4",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -1723210.1202392578,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_budget_2023",
+   "fy": "2025-26",
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "obr_value_gbp": -75445500.00000001,
+   "source_row_id": "obr_pmd_nov2025:20834:e0b34fcdbf83f61a",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -1925531.0124588013,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_budget_2023",
+   "fy": "2026-27",
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "obr_value_gbp": -81646500.0,
+   "source_row_id": "obr_pmd_nov2025:20835:1e730fccbdf4c015",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -2069178.6504898071,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_budget_2023",
+   "fy": "2027-28",
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "obr_value_gbp": -86814000.0,
+   "source_row_id": "obr_pmd_nov2025:20836:76beca3818ed1fe1",
+   "tax_head": "Welfare inside cap"
+  }
+ ],
+ "class2_variable_decomposition": {
+  "adoption_report": ".venv-replay-checks/review_as23_adoption_report.json",
+  "engine_version": "2.89.2",
+  "event": "autumn_statement_2023",
+  "formula_reproduction": {
+   "certified_parameters": {
+    "class_2_flat_rate": 0.0,
+    "class_2_small_profits_threshold": 7980.15922330097
+   },
+   "counterfactual_parameters": {
+    "class_2_flat_rate": 3.7,
+    "class_2_small_profits_threshold": 12570
+   },
+   "inputs": {
+    "ni_class_1_employee": 0.0,
+    "ni_class_1_employee_primary": 0.0,
+    "self_employment_income": 143750.0
+   },
+   "kind": "pure pinned formulas, no population simulation",
+   "mechanism": "The certified cap tests step_4_raw > other_aggregate_contributions. These quantities are mathematically equal for this input but differ by floating-point rounding. The certified zero-Class2 world enters case_1 and clips additional-rate Class4; restoring Class2 enters case_2.",
+   "national_causality": "The national Class4 contributions are directly observed in the downloaded artifacts. Their entire attribution to this floating-point branch defect is not proved; the pure example demonstrates sensitivity, not a national decomposition of that cause.",
+   "not_proved": "National floating-point causality is not proved.",
+   "outputs": {
+    "certified_ni_class_2": 0.0,
+    "certified_ni_class_4": 2307.236430509277,
+    "certified_other_aggregate_contributions": 2307.2364305092765,
+    "certified_step_4_raw": 2307.236430509277,
+    "counterfactual_minus_certified_ni_class_4": 1849.4935865455227,
+    "counterfactual_ni_class_2": 192.4,
+    "counterfactual_ni_class_4": 4156.7300170548,
+    "strict_comparison_rounding_gap": 4.547473508864641e-13
+   },
+   "shared_parameters": {
+    "class_4_additional_rate": 0.02,
+    "class_4_lower_profits_limit": 12821.380164235901,
+    "class_4_main_rate": 0.06,
+    "class_4_upper_profits_limit": 51275.32067272385,
+    "flat_rate_multiplier_in_class_4_cap": 53,
+    "weeks_in_class_2_formula": 52
+   },
+   "source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_4/ni_class_4_maximum.py",
+   "year": 2027
+  },
+  "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+  "modal_app_url": "https://modal.com/apps/policyengine/main/ap-jReEj7uZY0UVMiM5WImgtK",
+  "national_results": [
+   {
+    "artifact": ".venv-replay-checks/modal-downloads/review_as23/results/uk/events/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2023.json",
+    "artifact_sha256": "3e4a62564a5dcfe270f748c3922b225362aac7d4960c7e793589a1abfba604ce",
+    "class_1_employee_gbp": 0.0,
+    "class_1_employer_gbp": 0.0,
+    "class_4_interaction_gbp": 0.0,
+    "direct_class_2_gbp": 0.0,
+    "fy": "2023-24",
+    "head_sum_gbp": 0.0,
+    "income_tax_gbp": 0.0,
+    "measure_total_gbp": 0.0,
+    "universal_credit_gbp": -0.0,
+    "year": 2023
+   },
+   {
+    "artifact": ".venv-replay-checks/modal-downloads/review_as23/results/uk/events/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2024.json",
+    "artifact_sha256": "14eefc6220de65b37bc5cc85ce99871336a44dea94de7bf4cf603598a581e2c2",
+    "class_1_employee_gbp": 0.0,
+    "class_1_employer_gbp": 0.0,
+    "class_4_interaction_gbp": -51920.31273508072,
+    "direct_class_2_gbp": -512118439.03477466,
+    "fy": "2024-25",
+    "head_sum_gbp": -502463381.26120603,
+    "income_tax_gbp": 0.0,
+    "measure_total_gbp": -502463381.26120603,
+    "universal_credit_gbp": 9706978.086303711,
+    "year": 2024
+   },
+   {
+    "artifact": ".venv-replay-checks/modal-downloads/review_as23/results/uk/events/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2025.json",
+    "artifact_sha256": "f6f3ead373fbe24d5ac6838752c31503c83917e29aec9e670feae9e1a4afa493",
+    "class_1_employee_gbp": 0.0,
+    "class_1_employer_gbp": 0.0,
+    "class_4_interaction_gbp": -44891.4857134819,
+    "direct_class_2_gbp": -519141267.9473098,
+    "fy": "2025-26",
+    "head_sum_gbp": -509832530.6235979,
+    "income_tax_gbp": 0.0,
+    "measure_total_gbp": -509832530.6235979,
+    "universal_credit_gbp": 9353628.809425354,
+    "year": 2025
+   },
+   {
+    "artifact": ".venv-replay-checks/modal-downloads/review_as23/results/uk/events/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2026.json",
+    "artifact_sha256": "5848a23c568097954f5aa4d814fea0101c088492cfc483782b1e580f5823f587",
+    "class_1_employee_gbp": 0.0,
+    "class_1_employer_gbp": 0.0,
+    "class_4_interaction_gbp": -45062.07357978821,
+    "direct_class_2_gbp": -542485937.01707,
+    "fy": "2026-27",
+    "head_sum_gbp": -531089118.4633076,
+    "income_tax_gbp": 0.0,
+    "measure_total_gbp": -531089118.4633076,
+    "universal_credit_gbp": 11441880.627342224,
+    "year": 2026
+   },
+   {
+    "artifact": ".venv-replay-checks/modal-downloads/review_as23/results/uk/events/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2027.json",
+    "artifact_sha256": "a62c960ec57a7ae1d115d2e00c69ebfa178bd224474fb10284407fb1c2759b3c",
+    "class_1_employee_gbp": 0.0,
+    "class_1_employer_gbp": 0.0,
+    "class_4_interaction_gbp": -786808198.6083603,
+    "direct_class_2_gbp": -552039153.5443193,
+    "fy": "2027-28",
+    "head_sum_gbp": -1326914270.8595047,
+    "income_tax_gbp": 0.0,
+    "measure_total_gbp": -1326914270.8595047,
+    "universal_credit_gbp": 11933081.293174744,
+    "year": 2027
+   },
+   {
+    "artifact": ".venv-replay-checks/modal-downloads/review_as23/results/uk/events/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2028.json",
+    "artifact_sha256": "666c062067b3a8634c74b548da1bdd77ab06b0f24a0465fac2fb6e903e8acae1",
+    "class_1_employee_gbp": 0.0,
+    "class_1_employer_gbp": 0.0,
+    "class_4_interaction_gbp": -495875053.47705746,
+    "direct_class_2_gbp": -558680740.925205,
+    "fy": "2028-29",
+    "head_sum_gbp": -1042604588.1376369,
+    "income_tax_gbp": 0.0,
+    "measure_total_gbp": -1042604588.1376369,
+    "universal_credit_gbp": 11951206.26462555,
+    "year": 2028
+   }
+  ],
+  "schema_version": 1,
+  "sign_convention": "positive_gain_to_exchequer"
+ },
+ "commits": {
+  "logical_steps": [
+   "Execute UC health modifiers, make annual dates explicit, and block inert constructions; update regression tests.",
+   "Construct LHA, childcare and Class 2 reversals, correct CPI baseline and document review diagnoses and gaps.",
+   "Adopt three affected Modal event replays, regenerate comparisons/summary and save review verification."
+  ],
+  "reason": "git add could not create the shared worktree index.lock (Operation not permitted). Main session must commit these files on replay/pilot.",
+  "status": "blocked_by_filesystem_sandbox"
+ },
+ "determinism": {
+  "artifact_byte_identical": true,
+  "full_run_sha256": "e0d6fb26993d0898595500df9680d138ae9605afe38d061dd3e9a8ddd3e4d08a",
+  "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+  "repeat_sha256": "e0d6fb26993d0898595500df9680d138ae9605afe38d061dd3e9a8ddd3e4d08a",
+  "validation_report_path": ".venv-replay-checks/review_health_repeat_validation.json",
+  "year": 2026
+ },
+ "events": {
+  "autumn_budget_2024": {
+   "after_computed_rows": 33,
+   "before_computed_rows": 33,
+   "full_event_complete": true,
+   "full_event_grid_size": 30,
+   "gap_kind_measures": {
+    "construction_pending": 14,
+    "model_or_data_gap": 29
+   },
+   "measure_year_artifacts": 30,
+   "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+   "source_rows": 1134
+  },
+  "autumn_statement_2023": {
+   "after_computed_rows": 57,
+   "before_computed_rows": 33,
+   "full_event_complete": true,
+   "full_event_grid_size": 24,
+   "gap_kind_measures": {
+    "construction_pending": 24,
+    "model_or_data_gap": 11
+   },
+   "measure_year_artifacts": 24,
+   "modal_input_manifest_sha256": "06f6330d7e69d21a025ecbe76b2790f81388eca5416dd3fbea7036b64136251c",
+   "modal_receipt_sha256": "3815eac794a3da2016acd6438b2b5774fdd0d9b19c6c24acc69d6eea76ac2dc4",
+   "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+   "source_rows": 1116
+  },
+  "spring_budget_2023": {
+   "after_computed_rows": 15,
+   "before_computed_rows": 8,
+   "full_event_complete": true,
+   "full_event_grid_size": 10,
+   "gap_kind_measures": {
+    "construction_pending": 23,
+    "model_or_data_gap": 16
+   },
+   "measure_year_artifacts": 10,
+   "modal_input_manifest_sha256": "71f5ec8a1b53a3281296a1f5a4ed0596c1de6245a8690e5abca104ff5b667a03",
+   "modal_receipt_sha256": "45c4bba981279bed745f8da089c39e92ba5f54203de641359fb3feb96bbdc5be",
+   "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+   "source_rows": 1020
+  },
+  "spring_budget_2024": {
+   "after_computed_rows": 48,
+   "before_computed_rows": 48,
+   "full_event_complete": true,
+   "full_event_grid_size": 18,
+   "gap_kind_measures": {
+    "construction_pending": 17,
+    "model_or_data_gap": 9
+   },
+   "measure_year_artifacts": 18,
+   "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+   "source_rows": 816
+  },
+  "spring_statement_2025": {
+   "after_computed_rows": 12,
+   "before_computed_rows": 8,
+   "full_event_complete": true,
+   "full_event_grid_size": 12,
+   "gap_kind_measures": {
+    "construction_pending": 6,
+    "model_or_data_gap": 11
+   },
+   "measure_year_artifacts": 12,
+   "modal_input_manifest_sha256": "9cc8659b18bc83d532569882987a01d0d6ca32346ab55686b9b1d03a2b18f9d8",
+   "modal_receipt_sha256": "fcc3a135ba6222742934d0952df4897bdb1dd34efdf7031215e18f17df2e4b42",
+   "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+   "source_rows": 498
+  }
+ },
+ "findings": [
+  {
+   "change": "Apply the normalized parameter reform, clear parameter caches and rerun the pinned seeded UC modifier. Full national and synthetic nonzero checks establish execution.",
+   "id": "B1",
+   "status": "done"
+  },
+  {
+   "change": "Document raw-tree April processing versus managed dictionary January lookups; normalize dated windows explicitly, reject empty annual windows and start the AA reversal in January 2023.",
+   "id": "B2",
+   "status": "done"
+  },
+  {
+   "change": "Identical in-force worlds become inert_construction, withhold numerical assertions and block completion. Regression tests inject the B1 modifier defect and original AA date defect.",
+   "id": "B3",
+   "status": "done"
+  },
+  {
+   "change": "Anchor the 2026 allowance counterfactual to actual September 2025 CPI of 3.8%; name missing 2027-29 legislated uplifts as policyengine-uk#2239 and state the index correction's opposite direction.",
+   "id": "M1",
+   "status": "changed"
+  },
+  {
+   "change": "SUMMARY and every event COMPARISON split construction_pending from model_or_data_gap; after three promotions the measure totals are 84 and 76.",
+   "id": "M2",
+   "status": "done"
+  },
+  {
+   "change": "Queue every measure's largest residual, with all eight review cause classes, source-level evidence and unsized national attribution. Name #2237 and #2238; retain post-pin HICBC fix, employee base, WFP vintage, CGT scope/behaviour and employer wage incidence. State opposite-direction AA, WFP and CPI diagnostics.",
+   "id": "M3",
+   "status": "done"
+  },
+  {
+   "change": "Correct the SB2024 Class 1 description, state identical AS2023/SB2024 10% to 8% worlds, and note the pinned FY 2023-24 Class 2 rate of \u00a33.15 against the actual \u00a33.45, later fixed in policyengine-uk#1887.",
+   "id": "L1",
+   "status": "done"
+  },
+  {
+   "change": "Reverse the April 2024 30th-percentile reset with LHA.freeze=true. Map HB plus UC to Welfare inside cap; retain outside-cap and behaviour limitations.",
+   "id": "LHA",
+   "status": "changed"
+  },
+  {
+   "change": "Restore the old \u00a3646.35/\u00a31,108.04 caps and preserve later certified growth, with explicit annual 2023 versus June onset and omitted scope limitations.",
+   "id": "UC childcare",
+   "status": "changed"
+  },
+  {
+   "change": "Restore the documented compulsory April 2024 \u00a33.70 rate at a \u00a312,570 formula threshold, avoiding cash liability on the already-credited small-profits group. The retained >= boundary may overstate cost at exactly \u00a312,570 (law required >). Later hypothetical uprating and voluntary/credit responses remain omitted.",
+   "id": "Class 2 abolition",
+   "status": "changed"
+  },
+  {
+   "change": "State that reversing pooled residential gains to 10%/20% overstates the announced main-rate tax gain, in construction notes and comparisons; numerical results unchanged.",
+   "id": "CGT",
+   "status": "done"
+  }
+ ],
+ "gap_kind_measure_totals": {
+  "construction_pending": 84,
+  "model_or_data_gap": 76
+ },
+ "headline_figures": [
+  {
+   "after_pe_value_gbp": 264112675.57543182,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_statement_2025",
+   "fy": "2026-27",
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "obr_value_gbp": 760288239.1244123,
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -403656800.85860443,
+   "after_status": "constructed",
+   "before_pe_value_gbp": -469488223.6998291,
+   "before_status": "constructed",
+   "event": "spring_statement_2025",
+   "fy": "2026-27",
+   "measure_key": "spring_statement_2025__uc_standard_allowance_above_inflation",
+   "obr_value_gbp": -667364500.0,
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -3693209247.487488,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_budget_2023",
+   "fy": "2023-24",
+   "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+   "obr_value_gbp": -80947714.92372231,
+   "tax_head": "Income tax"
+  },
+  {
+   "after_pe_value_gbp": -2321120.9429092407,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "spring_budget_2023",
+   "fy": "2023-24",
+   "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+   "obr_value_gbp": -41340000.0,
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -584567128.8834467,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2024-25",
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "obr_value_gbp": -952573500.0,
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -512170359.34750974,
+   "after_status": "constructed",
+   "before_pe_value_gbp": null,
+   "before_status": "not_computed",
+   "event": "autumn_statement_2023",
+   "fy": "2024-25",
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "obr_value_gbp": -348669309.17433286,
+   "tax_head": "NICs"
+  },
+  {
+   "after_pe_value_gbp": 4793563953.670055,
+   "after_status": "constructed",
+   "before_pe_value_gbp": 4793563953.670055,
+   "before_status": "constructed",
+   "event": "autumn_budget_2024",
+   "fy": "2026-27",
+   "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+   "obr_value_gbp": 95778978.2266941,
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "after_pe_value_gbp": -12070073648.808764,
+   "after_status": "constructed",
+   "before_pe_value_gbp": -12070073648.808764,
+   "before_status": "constructed",
+   "event": "autumn_statement_2023",
+   "fy": "2026-27",
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "obr_value_gbp": -9343022622.888573,
+   "tax_head": "NICs"
+  },
+  {
+   "after_pe_value_gbp": -12070073648.808764,
+   "after_status": "constructed",
+   "before_pe_value_gbp": -12070073648.808764,
+   "before_status": "constructed",
+   "event": "spring_budget_2024",
+   "fy": "2026-27",
+   "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+   "obr_value_gbp": -9619251699.103523,
+   "tax_head": "NICs"
+  },
+  {
+   "after_pe_value_gbp": -1720629444.0709229,
+   "after_status": "constructed",
+   "before_pe_value_gbp": -1720629444.0709229,
+   "before_status": "constructed",
+   "event": "spring_budget_2024",
+   "fy": "2026-27",
+   "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+   "obr_value_gbp": -250000000.0,
+   "tax_head": "Income tax"
+  },
+  {
+   "after_pe_value_gbp": 2106518390.8636017,
+   "after_status": "constructed",
+   "before_pe_value_gbp": 2106518390.8636017,
+   "before_status": "constructed",
+   "event": "autumn_budget_2024",
+   "fy": "2026-27",
+   "measure_key": "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp",
+   "obr_value_gbp": 334228735.0,
+   "tax_head": "Stamp duty"
+  },
+  {
+   "after_pe_value_gbp": 367920017.09756255,
+   "after_status": "constructed",
+   "before_pe_value_gbp": 367920017.09756255,
+   "before_status": "constructed",
+   "event": "autumn_budget_2024",
+   "fy": "2026-27",
+   "measure_key": "autumn_budget_2024__winter_fuel_means_test",
+   "obr_value_gbp": 1420000000.0,
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "after_pe_value_gbp": -8507737534.679443,
+   "after_status": "constructed",
+   "before_pe_value_gbp": -8507737534.679443,
+   "before_status": "constructed",
+   "event": "autumn_budget_2024",
+   "fy": "2026-27",
+   "measure_key": "autumn_budget_2024__employer_nics_package",
+   "obr_value_gbp": -312921791.2621155,
+   "tax_head": "Income tax"
+  },
+  {
+   "after_pe_value_gbp": 1292278978.386702,
+   "after_status": "constructed",
+   "before_pe_value_gbp": 1292278978.386702,
+   "before_status": "constructed",
+   "event": "autumn_budget_2024",
+   "fy": "2026-27",
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "obr_value_gbp": 1557694028.0528445,
+   "tax_head": "VAT"
+  },
+  {
+   "after_pe_value_gbp": -583538584.2492275,
+   "after_status": "constructed",
+   "before_pe_value_gbp": -583538584.2492275,
+   "before_status": "constructed",
+   "event": "autumn_statement_2023",
+   "fy": "2026-27",
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "obr_value_gbp": -330136761.76593643,
+   "tax_head": "NICs"
+  },
+  {
+   "after_pe_value_gbp": -1167913753.6299438,
+   "after_status": "constructed",
+   "before_pe_value_gbp": -1167913753.6299438,
+   "before_status": "constructed",
+   "event": "spring_budget_2024",
+   "fy": "2026-27",
+   "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+   "obr_value_gbp": -699520927.4729086,
+   "tax_head": "NICs"
+  }
+ ],
+ "modal_execution": {
+  "datasets_downloaded": 0,
+  "events_rerun": [
+   "spring_statement_2025",
+   "spring_budget_2023",
+   "autumn_statement_2023"
+  ],
+  "maximum_concurrent_invocations": 2,
+  "new_worktrees_or_venvs": 0,
+  "source_binding_note": "All three full runs were validated and adopted against their exact frozen upload inputs. After adoption the Class 2 authoring function was updated to reproduce the already-uploaded \u00a33.70/\u00a312,570 registry; rebuilding the registry stayed byte-identical. The invalid reform-window type guard was also classified as TypeError for lint consistency, without changing valid execution. The focused UC-health repeat used the final source and produced the same numerical artifact bytes.",
+  "uploaded_input_manifests": {
+   "autumn_statement_2023": {
+    "artifact_digest_validation": "remote hash before engine import, plus existing managed-loader pre/post simulation checks",
+    "certified_bundle": {
+     "artifact": "populace_uk_2023.h5",
+     "compatible_model_packages": [
+      {
+       "name": "policyengine-uk",
+       "specifier": "==2.89.2"
+      }
+     ],
+     "engine_constraint_note": "The bundle DECLARES policyengine-uk ==2.89.2. That is not this repo's preference; it is the data's own compatibility statement. Computing at a newer engine needs a NEW certified bundle, not a relaxed check \u2014 see #126.",
+     "provenance": "Read from the release's own release_manifest.json in policyengine/populace-uk-private on 2026-09-07, and independently confirmed by downloading the artifact at that revision and hashing it.",
+     "registry_rule": "The identity of the certified populace-uk artifact a UK compute run must execute against. Committed so verification is OFFLINE and byte-exact: a run checks the artifact it was handed against this digest before constructing a simulation, rather than trusting a filename or a path.",
+     "repo_id": "policyengine/populace-uk-private",
+     "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "schema_version": 1,
+     "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+     "size_bytes": 1315880118,
+     "why_this_bundle": "It is the bundle the 14 existing UK results were computed against (run_id campaign-20260802-reckoner-t2, engine_version 2.89.2 in pe_results). A counterpart computed on a different bundle is not comparable to them."
+    },
+    "event": "autumn_statement_2023",
+    "files": [
+     {
+      "kind": "input",
+      "path": ".cache/huggingface/hub/datasets--policyengine--populace-uk-private/refs/populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "sha256": "b8b4ba75f161356d008100520edb82c807ff8851e9ac301320faa9a63a8d967e",
+      "size_bytes": 40
+     },
+     {
+      "kind": "certified_artifact",
+      "path": ".cache/huggingface/hub/datasets--policyengine--populace-uk-private/snapshots/a75a9a831d6b07aaffbd09713f2a1124f5c0f08f/populace_uk_2023.h5",
+      "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "size_bytes": 1315880118
+     },
+     {
+      "kind": "input",
+      "path": "data/uk/certified_bundle.json",
+      "sha256": "bbc174c96fb95781c3c2d49a988941a44b13df66c81134c874a62645605856b6",
+      "size_bytes": 1379
+     },
+     {
+      "kind": "input",
+      "path": "data/uk/events/autumn_statement_2023_measures.json",
+      "sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+      "size_bytes": 1499961
+     },
+     {
+      "kind": "input",
+      "path": "docs/uk_replay/OFFLINE_BUNDLE_AUDIT.json",
+      "sha256": "1a270155643267ee704bf8737a8f67871c7c71890e99e62b48d31bb51dc25354",
+      "size_bytes": 6010
+     },
+     {
+      "kind": "input",
+      "path": "docs/uk_replay/requirements.txt",
+      "sha256": "450e64b173b66333027ac36e056e19928d23df1cbe2690e462bab09b31ddff9d",
+      "size_bytes": 1818
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/build_uk_event_registry.py",
+      "sha256": "99ec083adb4e020b6ac598859d26a4cbbf8f678b3d3c3f21a709970dadd13155",
+      "size_bytes": 46888
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/compute_uk_ab2025.py",
+      "sha256": "217b40300022ec9dfb7dd5ff8e60177a9819e1dbb37a195cb645cd16a98beb88",
+      "size_bytes": 37506
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/compute_uk_event.py",
+      "sha256": "65e76cf2375c88600a85a54bddb207d7cb9ee51bfcf656cf361b0a86a6655505",
+      "size_bytes": 28773
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/compute_uk_obr_costings.py",
+      "sha256": "8b0ab4dd556a0d98a123fd06e55cd4008cd8951cf0ea3cfe920e2cacd886eb76",
+      "size_bytes": 129081
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/modal_uk_event.py",
+      "sha256": "48379dc51aedbf515af4f3f1d959b10f46af004923d874495854a0cd1980a4b5",
+      "size_bytes": 25839
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/uk_engine_registry.py",
+      "sha256": "dc86aa9913423cbf4301219557b7abce19f3460e9bc6a1b4d373654a410399c2",
+      "size_bytes": 1925
+     },
+     {
+      "kind": "input",
+      "path": "sources/harvest-uk-2026-08-02/uk_obr/claims_staged.jsonl.gz",
+      "sha256": "ef88a02aa930501f4f8941ca85b399abbe258ab3664b9dcc4699b7a63cb5501c",
+      "size_bytes": 609965
+     },
+     {
+      "kind": "input",
+      "path": "sources/uk_replay/source.json",
+      "sha256": "b6b7a64fb4dcfe074ed7df7e0426fb85349fb7501753b6f177e6c69f76f7e659",
+      "size_bytes": 1753
+     }
+    ],
+    "hf_commit": "a75a9a831d6b07aaffbd09713f2a1124f5c0f08f",
+    "resource_limits": {
+     "block_network": true,
+     "cpu": 2,
+     "max_containers": 1,
+     "max_inputs": 1,
+     "memory_mib": 32768,
+     "timeout_seconds": 10800,
+     "workers": 1
+    },
+    "schema_version": 1
+   },
+   "spring_budget_2023": {
+    "artifact_digest_validation": "remote hash before engine import, plus existing managed-loader pre/post simulation checks",
+    "certified_bundle": {
+     "artifact": "populace_uk_2023.h5",
+     "compatible_model_packages": [
+      {
+       "name": "policyengine-uk",
+       "specifier": "==2.89.2"
+      }
+     ],
+     "engine_constraint_note": "The bundle DECLARES policyengine-uk ==2.89.2. That is not this repo's preference; it is the data's own compatibility statement. Computing at a newer engine needs a NEW certified bundle, not a relaxed check \u2014 see #126.",
+     "provenance": "Read from the release's own release_manifest.json in policyengine/populace-uk-private on 2026-09-07, and independently confirmed by downloading the artifact at that revision and hashing it.",
+     "registry_rule": "The identity of the certified populace-uk artifact a UK compute run must execute against. Committed so verification is OFFLINE and byte-exact: a run checks the artifact it was handed against this digest before constructing a simulation, rather than trusting a filename or a path.",
+     "repo_id": "policyengine/populace-uk-private",
+     "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "schema_version": 1,
+     "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+     "size_bytes": 1315880118,
+     "why_this_bundle": "It is the bundle the 14 existing UK results were computed against (run_id campaign-20260802-reckoner-t2, engine_version 2.89.2 in pe_results). A counterpart computed on a different bundle is not comparable to them."
+    },
+    "event": "spring_budget_2023",
+    "files": [
+     {
+      "kind": "input",
+      "path": ".cache/huggingface/hub/datasets--policyengine--populace-uk-private/refs/populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "sha256": "b8b4ba75f161356d008100520edb82c807ff8851e9ac301320faa9a63a8d967e",
+      "size_bytes": 40
+     },
+     {
+      "kind": "certified_artifact",
+      "path": ".cache/huggingface/hub/datasets--policyengine--populace-uk-private/snapshots/a75a9a831d6b07aaffbd09713f2a1124f5c0f08f/populace_uk_2023.h5",
+      "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "size_bytes": 1315880118
+     },
+     {
+      "kind": "input",
+      "path": "data/uk/certified_bundle.json",
+      "sha256": "bbc174c96fb95781c3c2d49a988941a44b13df66c81134c874a62645605856b6",
+      "size_bytes": 1379
+     },
+     {
+      "kind": "input",
+      "path": "data/uk/events/spring_budget_2023_measures.json",
+      "sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+      "size_bytes": 1414938
+     },
+     {
+      "kind": "input",
+      "path": "docs/uk_replay/OFFLINE_BUNDLE_AUDIT.json",
+      "sha256": "1a270155643267ee704bf8737a8f67871c7c71890e99e62b48d31bb51dc25354",
+      "size_bytes": 6010
+     },
+     {
+      "kind": "input",
+      "path": "docs/uk_replay/requirements.txt",
+      "sha256": "450e64b173b66333027ac36e056e19928d23df1cbe2690e462bab09b31ddff9d",
+      "size_bytes": 1818
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/build_uk_event_registry.py",
+      "sha256": "99ec083adb4e020b6ac598859d26a4cbbf8f678b3d3c3f21a709970dadd13155",
+      "size_bytes": 46888
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/compute_uk_ab2025.py",
+      "sha256": "217b40300022ec9dfb7dd5ff8e60177a9819e1dbb37a195cb645cd16a98beb88",
+      "size_bytes": 37506
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/compute_uk_event.py",
+      "sha256": "65e76cf2375c88600a85a54bddb207d7cb9ee51bfcf656cf361b0a86a6655505",
+      "size_bytes": 28773
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/compute_uk_obr_costings.py",
+      "sha256": "8b0ab4dd556a0d98a123fd06e55cd4008cd8951cf0ea3cfe920e2cacd886eb76",
+      "size_bytes": 129081
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/modal_uk_event.py",
+      "sha256": "48379dc51aedbf515af4f3f1d959b10f46af004923d874495854a0cd1980a4b5",
+      "size_bytes": 25839
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/uk_engine_registry.py",
+      "sha256": "dc86aa9913423cbf4301219557b7abce19f3460e9bc6a1b4d373654a410399c2",
+      "size_bytes": 1925
+     },
+     {
+      "kind": "input",
+      "path": "sources/harvest-uk-2026-08-02/uk_obr/claims_staged.jsonl.gz",
+      "sha256": "ef88a02aa930501f4f8941ca85b399abbe258ab3664b9dcc4699b7a63cb5501c",
+      "size_bytes": 609965
+     },
+     {
+      "kind": "input",
+      "path": "sources/uk_replay/source.json",
+      "sha256": "b6b7a64fb4dcfe074ed7df7e0426fb85349fb7501753b6f177e6c69f76f7e659",
+      "size_bytes": 1753
+     }
+    ],
+    "hf_commit": "a75a9a831d6b07aaffbd09713f2a1124f5c0f08f",
+    "resource_limits": {
+     "block_network": true,
+     "cpu": 2,
+     "max_containers": 1,
+     "max_inputs": 1,
+     "memory_mib": 32768,
+     "timeout_seconds": 10800,
+     "workers": 1
+    },
+    "schema_version": 1
+   },
+   "spring_statement_2025": {
+    "artifact_digest_validation": "remote hash before engine import, plus existing managed-loader pre/post simulation checks",
+    "certified_bundle": {
+     "artifact": "populace_uk_2023.h5",
+     "compatible_model_packages": [
+      {
+       "name": "policyengine-uk",
+       "specifier": "==2.89.2"
+      }
+     ],
+     "engine_constraint_note": "The bundle DECLARES policyengine-uk ==2.89.2. That is not this repo's preference; it is the data's own compatibility statement. Computing at a newer engine needs a NEW certified bundle, not a relaxed check \u2014 see #126.",
+     "provenance": "Read from the release's own release_manifest.json in policyengine/populace-uk-private on 2026-09-07, and independently confirmed by downloading the artifact at that revision and hashing it.",
+     "registry_rule": "The identity of the certified populace-uk artifact a UK compute run must execute against. Committed so verification is OFFLINE and byte-exact: a run checks the artifact it was handed against this digest before constructing a simulation, rather than trusting a filename or a path.",
+     "repo_id": "policyengine/populace-uk-private",
+     "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+     "schema_version": 1,
+     "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+     "size_bytes": 1315880118,
+     "why_this_bundle": "It is the bundle the 14 existing UK results were computed against (run_id campaign-20260802-reckoner-t2, engine_version 2.89.2 in pe_results). A counterpart computed on a different bundle is not comparable to them."
+    },
+    "event": "spring_statement_2025",
+    "files": [
+     {
+      "kind": "input",
+      "path": ".cache/huggingface/hub/datasets--policyengine--populace-uk-private/refs/populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+      "sha256": "b8b4ba75f161356d008100520edb82c807ff8851e9ac301320faa9a63a8d967e",
+      "size_bytes": 40
+     },
+     {
+      "kind": "certified_artifact",
+      "path": ".cache/huggingface/hub/datasets--policyengine--populace-uk-private/snapshots/a75a9a831d6b07aaffbd09713f2a1124f5c0f08f/populace_uk_2023.h5",
+      "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+      "size_bytes": 1315880118
+     },
+     {
+      "kind": "input",
+      "path": "data/uk/certified_bundle.json",
+      "sha256": "bbc174c96fb95781c3c2d49a988941a44b13df66c81134c874a62645605856b6",
+      "size_bytes": 1379
+     },
+     {
+      "kind": "input",
+      "path": "data/uk/events/spring_statement_2025_measures.json",
+      "sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+      "size_bytes": 663144
+     },
+     {
+      "kind": "input",
+      "path": "docs/uk_replay/OFFLINE_BUNDLE_AUDIT.json",
+      "sha256": "1a270155643267ee704bf8737a8f67871c7c71890e99e62b48d31bb51dc25354",
+      "size_bytes": 6010
+     },
+     {
+      "kind": "input",
+      "path": "docs/uk_replay/requirements.txt",
+      "sha256": "450e64b173b66333027ac36e056e19928d23df1cbe2690e462bab09b31ddff9d",
+      "size_bytes": 1818
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/build_uk_event_registry.py",
+      "sha256": "99ec083adb4e020b6ac598859d26a4cbbf8f678b3d3c3f21a709970dadd13155",
+      "size_bytes": 46888
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/compute_uk_ab2025.py",
+      "sha256": "217b40300022ec9dfb7dd5ff8e60177a9819e1dbb37a195cb645cd16a98beb88",
+      "size_bytes": 37506
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/compute_uk_event.py",
+      "sha256": "65e76cf2375c88600a85a54bddb207d7cb9ee51bfcf656cf361b0a86a6655505",
+      "size_bytes": 28773
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/compute_uk_obr_costings.py",
+      "sha256": "8b0ab4dd556a0d98a123fd06e55cd4008cd8951cf0ea3cfe920e2cacd886eb76",
+      "size_bytes": 129081
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/modal_uk_event.py",
+      "sha256": "48379dc51aedbf515af4f3f1d959b10f46af004923d874495854a0cd1980a4b5",
+      "size_bytes": 25839
+     },
+     {
+      "kind": "input",
+      "path": "pipeline/uk_engine_registry.py",
+      "sha256": "dc86aa9913423cbf4301219557b7abce19f3460e9bc6a1b4d373654a410399c2",
+      "size_bytes": 1925
+     },
+     {
+      "kind": "input",
+      "path": "sources/harvest-uk-2026-08-02/uk_obr/claims_staged.jsonl.gz",
+      "sha256": "ef88a02aa930501f4f8941ca85b399abbe258ab3664b9dcc4699b7a63cb5501c",
+      "size_bytes": 609965
+     },
+     {
+      "kind": "input",
+      "path": "sources/uk_replay/source.json",
+      "sha256": "b6b7a64fb4dcfe074ed7df7e0426fb85349fb7501753b6f177e6c69f76f7e659",
+      "size_bytes": 1753
+     }
+    ],
+    "hf_commit": "a75a9a831d6b07aaffbd09713f2a1124f5c0f08f",
+    "resource_limits": {
+     "block_network": true,
+     "cpu": 2,
+     "max_containers": 1,
+     "max_inputs": 1,
+     "memory_mib": 32768,
+     "timeout_seconds": 10800,
+     "workers": 1
+    },
+    "schema_version": 1
+   }
+  }
+ },
+ "preservation": {
+  "ab2025": {
+   "all_byte_identical": true,
+   "files_checked": 203,
+   "legacy_fixture_files_checked": 205
+  },
+  "autumn_budget_2024": {
+   "all_byte_identical": true,
+   "comparison_change": "Descriptions, diagnosis metadata and gap_kind only; all numeric fields and statuses identical.",
+   "files_checked": 41,
+   "registry_byte_identical": true
+  },
+  "spring_budget_2024": {
+   "all_byte_identical": true,
+   "comparison_change": "Descriptions, diagnosis metadata and gap_kind only; all numeric fields and statuses identical.",
+   "files_checked": 29,
+   "registry_byte_identical": true
+  }
+ },
+ "reviewed_head": "2c231b4",
+ "schema_version": 1,
+ "sign_convention": "Positive means gain to the Exchequer; calendar year Y proxies fiscal year Y-(Y+1).",
+ "tests": {
+  "accounting": "Shared source gzip re-read for all five events; row identity, exact net/absolute GBP and all fiscal-year identities passed.",
+  "annual_normalization_read_only_audit": {
+   "accepted_randomized_overlapping_schedules": 80,
+   "rejected_unsupported_or_conflicting_schedules": 120
+  },
+  "class2_synthetic_scope_check": {
+   "cash_threshold_gbp": 12570,
+   "certified_ni_class_2_gbp": [
+    0.0,
+    0.0
+   ],
+   "compulsory_flat_rate_gbp_per_week": 3.7,
+   "counterfactual_ni_class_2_gbp": [
+    0.0,
+    192.39999389648438
+   ],
+   "evidence_path": ".venv-replay-checks/review_class2_synthetic.json",
+   "people": [
+    "credited_small_profits",
+    "compulsory_cash"
+   ],
+   "profits_gbp": [
+    8000,
+    20000
+   ]
+  },
+  "extended_legacy_suites": {
+   "log": ".venv-replay-checks/review_extended_pytest.log",
+   "passed": 324,
+   "warnings": 1
+  },
+  "git_diff_check": {
+   "log": ".venv-replay-checks/review_final_diff_check.log",
+   "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "status": "passed"
+  },
+  "pinned_uc_health_integration": {
+   "certified_and_broken_world_gbp": 97146.84,
+   "log": ".venv-replay-checks/review_final_uc_health_integration.log",
+   "passed": 1,
+   "process_isolation": "Run separately because engine-free adoption validation rejects any imported policyengine module. The normal replay suite skips this integration test and the separate pinned-engine process executes it.",
+   "refreshed_world_gbp": 102436.44,
+   "test": "tests/test_uk_event_compute.py::test_uc_health_modifier_refresh_changes_awards_without_changing_cohorts"
+  },
+  "replay_suites": {
+   "log": ".venv-replay-checks/review_final_pytest.log",
+   "passed": 176,
+   "skipped": 1
+  },
+  "ruff_event_modules_and_tests": {
+   "log": ".venv-replay-checks/review_final_ruff.log",
+   "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+   "status": "passed"
+  },
+  "shared_legacy_runner_ruff": {
+   "after_evidence_path": ".venv-replay-checks/review_legacy_ruff_after.json",
+   "before_evidence_path": ".venv-replay-checks/review_legacy_ruff_before.json",
+   "findings": 6,
+   "status": "Existing code/message counts match; no new finding."
+  }
+ }
+}

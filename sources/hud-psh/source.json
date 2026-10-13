@@ -1,0 +1,31 @@
+{
+  "id": "hud-psh",
+  "name": "HUD — Picture of Subsidized Households, 2024 and 2025 (State and U.S.)",
+  "organization": "U.S. Department of Housing and Urban Development, Office of Policy Development and Research (HUD USER)",
+  "country": "US",
+  "url": "https://www.huduser.gov/portal/datasets/assthsg.html",
+  "data_urls": [
+    "https://www.huduser.gov/portal/datasets/pictures/files/STATE_2025_2020census.xlsx",
+    "https://www.huduser.gov/portal/datasets/pictures/files/US_2025_2020census.xlsx",
+    "https://www.huduser.gov/portal/datasets/pictures/files/STATE_2024_2020census.xlsx",
+    "https://www.huduser.gov/portal/datasets/pictures/files/US_2024_2020census.xlsx",
+    "https://www.huduser.gov/portal/datasets/pictures/dictionary_2025.pdf"
+  ],
+  "raw_sha256": {
+    "STATE_2025_2020census.xlsx": "c80258295212508b69749a9e48b10b3376785c72c8014663273ac3f516b1adf8",
+    "US_2025_2020census.xlsx": "7b18a5da2cf36be7ec36f6d1652417ec771a8e343f70adaea57b33e2e0748c91",
+    "STATE_2024_2020census.xlsx": "b05ba438cdcc8dc3c36d9673431ca09ca8a033e86e4b3651b3eeb711426ab786",
+    "US_2024_2020census.xlsx": "21c3ebc831fdd142bcb8162ccf72195f1278e07b140881238931ab90ae0682e7",
+    "dictionary_2025.pdf": "c55a6391dd80d7989c4576c47b11e9817f1cbcbca47855b568b02f221f8a4e78"
+  },
+  "fetched": "2026-10-06",
+  "kind": "administrative",
+  "routing": "Chronicle staging only (data/ledger/us_admin_outturns.jsonl), per the 2026-08-02 boundary ruling (issue #6): administrative outturns are calibration material, never scorecard claims.",
+  "method": "HUD program records: units under contract for federal subsidy and available for occupancy; household characteristics from tenant reports (Forms 50058 and 50059) received as of December, with effective dates over the prior 18 months. Average HUD expenditure per unit-month includes operating subsidy and capital cost for public housing, and the housing assistance payment (plus an administrative fee for tenant-based vouchers and Moderate Rehabilitation) otherwise.",
+  "method_basis": "dictionary_2025.pdf (variable definitions and missing-value codes)",
+  "period": "31 December 2024 and 31 December 2025 snapshots",
+  "programs": ["all_hud_programs", "public_housing", "housing_choice_vouchers", "moderate_rehabilitation", "project_based_section_8", "section_236_bmir", "section_202_prac", "section_811_prac", "section_811_pra"],
+  "geographies": "U.S., 50 States, DC, territories, and HUD's 'XX Missing' bucket",
+  "coverage_note": "Program-level rows plus the voucher tenant-/project-based splits; the 2025 MTW/non-MTW administrative splits are dropped with a tally. Distributional shares (income brackets, family type, age, race, disability, bedrooms, tract context) stay in raw/ unstaged.",
+  "vintage_note": "The 2024 files have 74 columns (no occupied-unit count); the 2025 files have 88 and add the 811 PRA program and sub-program splits."
+}

@@ -1,0 +1,394 @@
+{
+ "provenance": {
+  "engine_version": "2.2.1",
+  "data_bundle": "populace-us-2024-spm-20260915",
+  "bundle_id": "us-6.2.1",
+  "policyengine_version": "6.2.1",
+  "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+ },
+ "jobs": [
+  {
+   "label": "cpsp TCJA CTC CY2024",
+   "values": {
+    "children_under_18_poor": 11972205.282271717,
+    "children_under_18_pop": 76683005.28060344,
+    "children_under_18": 0.15612592696989697,
+    "children_under_6_poor": 3860746.7477414673,
+    "children_under_6_pop": 22697940.657062482,
+    "children_under_6": 0.1700923800124657
+   },
+   "bundle": {
+    "bundle_id": "us-6.2.1",
+    "country_id": "us",
+    "policyengine_version": "6.2.1",
+    "model_package": "policyengine-us",
+    "model_version": "2.2.1",
+    "data_package": "microcosm-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "certified_data_build_id": "populace-us-2024-spm-20260915",
+    "certified_data_artifact_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "data_build_model_version": "2.2.1",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "managed_by": "policyengine.py",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "runtime_dataset_source": "data/populace_us_2024.h5",
+    "runtime_dataset_data_package": "microcosm-data",
+    "runtime_dataset_repo_type": "dataset",
+    "runtime_dataset_revision": "populace-us-2024-spm-20260915",
+    "runtime_dataset_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "spm": "{'forecast_content_sha256': '3d86d5c4c0423480e6b69b75d222ffa4a7a2639e4094df5ba2504af01be17173', 'scenario': 'ce_trend', 'geography_kind': 'county', 'geography_id': None, 'county_vintage': '2020', 'as_of': None}",
+    "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+   },
+   "reform": null,
+   "reform_checked": {},
+   "inputs_set": [
+    "takes_up_eitc=True [2024]",
+    "would_file_if_eligible_for_refundable_credit=True [2024]"
+   ],
+   "seconds": 242.6,
+   "maxrss_gb": 84.2
+  },
+  {
+   "label": "cpsp No CTC CY2024",
+   "values": {
+    "children_under_18_poor": 15893209.562912013,
+    "children_under_18_pop": 76683005.28060344,
+    "children_under_18": 0.2072585640684601,
+    "children_under_6_poor": 5058927.290410768,
+    "children_under_6_pop": 22697940.657062482,
+    "children_under_6": 0.22288045276198565
+   },
+   "bundle": {
+    "bundle_id": "us-6.2.1",
+    "country_id": "us",
+    "policyengine_version": "6.2.1",
+    "model_package": "policyengine-us",
+    "model_version": "2.2.1",
+    "data_package": "microcosm-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "certified_data_build_id": "populace-us-2024-spm-20260915",
+    "certified_data_artifact_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "data_build_model_version": "2.2.1",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "managed_by": "policyengine.py",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "runtime_dataset_source": "data/populace_us_2024.h5",
+    "runtime_dataset_data_package": "microcosm-data",
+    "runtime_dataset_repo_type": "dataset",
+    "runtime_dataset_revision": "populace-us-2024-spm-20260915",
+    "runtime_dataset_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "spm": "{'forecast_content_sha256': '3d86d5c4c0423480e6b69b75d222ffa4a7a2639e4094df5ba2504af01be17173', 'scenario': 'ce_trend', 'geography_kind': 'county', 'geography_id': None, 'county_vintage': '2020', 'as_of': None}",
+    "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.base[0].amount": {
+     "2024-01-01.2024-12-31": 0
+    },
+    "gov.irs.credits.ctc.amount.adult_dependent": {
+     "2024-01-01.2024-12-31": 0
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.base[0].amount@2024-01-01": 0,
+    "gov.irs.credits.ctc.amount.adult_dependent@2024-01-01": 0
+   },
+   "inputs_set": [
+    "takes_up_eitc=True [2024]",
+    "would_file_if_eligible_for_refundable_credit=True [2024]"
+   ],
+   "seconds": 274.5,
+   "maxrss_gb": 81.34
+  },
+  {
+   "label": "cpsp OBBBA CTC CY2024",
+   "values": {
+    "children_under_18_poor": 11945343.232685428,
+    "children_under_18_pop": 76683005.28060344,
+    "children_under_18": 0.1557756270633141,
+    "children_under_6_poor": 3845928.1828341847,
+    "children_under_6_pop": 22697940.657062482,
+    "children_under_6": 0.1694395205689077
+   },
+   "bundle": {
+    "bundle_id": "us-6.2.1",
+    "country_id": "us",
+    "policyengine_version": "6.2.1",
+    "model_package": "policyengine-us",
+    "model_version": "2.2.1",
+    "data_package": "microcosm-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "certified_data_build_id": "populace-us-2024-spm-20260915",
+    "certified_data_artifact_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "data_build_model_version": "2.2.1",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "managed_by": "policyengine.py",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "runtime_dataset_source": "data/populace_us_2024.h5",
+    "runtime_dataset_data_package": "microcosm-data",
+    "runtime_dataset_repo_type": "dataset",
+    "runtime_dataset_revision": "populace-us-2024-spm-20260915",
+    "runtime_dataset_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "spm": "{'forecast_content_sha256': '3d86d5c4c0423480e6b69b75d222ffa4a7a2639e4094df5ba2504af01be17173', 'scenario': 'ce_trend', 'geography_kind': 'county', 'geography_id': None, 'county_vintage': '2020', 'as_of': None}",
+    "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.base[0].amount": {
+     "2024-01-01.2024-12-31": 2137.38
+    },
+    "gov.irs.credits.ctc.refundable.individual_max": {
+     "2024-01-01.2024-12-31": 1651.61
+    },
+    "gov.irs.credits.ctc.refundable.phase_in.threshold": {
+     "2024-01-01.2024-12-31": 2428.84
+    },
+    "gov.irs.credits.ctc.phase_out.threshold.SINGLE": {
+     "2024-01-01.2024-12-31": 194308.0
+    },
+    "gov.irs.credits.ctc.phase_out.threshold.JOINT": {
+     "2024-01-01.2024-12-31": 388616.0
+    },
+    "gov.irs.credits.ctc.phase_out.threshold.SEPARATE": {
+     "2024-01-01.2024-12-31": 194308.0
+    },
+    "gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD": {
+     "2024-01-01.2024-12-31": 194308.0
+    },
+    "gov.irs.credits.ctc.phase_out.threshold.SURVIVING_SPOUSE": {
+     "2024-01-01.2024-12-31": 388616.0
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.base[0].amount@2024-01-01": 2137.38,
+    "gov.irs.credits.ctc.refundable.individual_max@2024-01-01": 1651.61,
+    "gov.irs.credits.ctc.refundable.phase_in.threshold@2024-01-01": 2428.84,
+    "gov.irs.credits.ctc.phase_out.threshold.SINGLE@2024-01-01": 194308.0,
+    "gov.irs.credits.ctc.phase_out.threshold.JOINT@2024-01-01": 388616.0,
+    "gov.irs.credits.ctc.phase_out.threshold.SEPARATE@2024-01-01": 194308.0,
+    "gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD@2024-01-01": 194308.0,
+    "gov.irs.credits.ctc.phase_out.threshold.SURVIVING_SPOUSE@2024-01-01": 388616.0
+   },
+   "inputs_set": [
+    "takes_up_eitc=True [2024]",
+    "would_file_if_eligible_for_refundable_credit=True [2024]"
+   ],
+   "seconds": 249.5,
+   "maxrss_gb": 83.12
+  },
+  {
+   "label": "cpsp AFA CTC CY2024",
+   "values": {
+    "children_under_18_poor": 7550153.776953427,
+    "children_under_18_pop": 76683005.28060344,
+    "children_under_18": 0.09845928376601065,
+    "children_under_6_poor": 2490783.5681446367,
+    "children_under_6_pop": 22697940.657062482,
+    "children_under_6": 0.10973610363060084
+   },
+   "bundle": {
+    "bundle_id": "us-6.2.1",
+    "country_id": "us",
+    "policyengine_version": "6.2.1",
+    "model_package": "policyengine-us",
+    "model_version": "2.2.1",
+    "data_package": "microcosm-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "certified_data_build_id": "populace-us-2024-spm-20260915",
+    "certified_data_artifact_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "data_build_model_version": "2.2.1",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "managed_by": "policyengine.py",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "runtime_dataset_source": "data/populace_us_2024.h5",
+    "runtime_dataset_data_package": "microcosm-data",
+    "runtime_dataset_repo_type": "dataset",
+    "runtime_dataset_revision": "populace-us-2024-spm-20260915",
+    "runtime_dataset_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "spm": "{'forecast_content_sha256': '3d86d5c4c0423480e6b69b75d222ffa4a7a2639e4094df5ba2504af01be17173', 'scenario': 'ce_trend', 'geography_kind': 'county', 'geography_id': None, 'county_vintage': '2020', 'as_of': None}",
+    "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.arpa[0].amount": {
+     "2024-01-01.2024-12-31": 4197.04
+    },
+    "gov.irs.credits.ctc.amount.arpa[1].amount": {
+     "2024-01-01.2024-12-31": 3497.53
+    },
+    "gov.irs.credits.ctc.phase_out.arpa.threshold.JOINT": {
+     "2024-01-01.2024-12-31": 145730.6
+    },
+    "gov.irs.credits.ctc.phase_out.arpa.threshold.SURVIVING_SPOUSE": {
+     "2024-01-01.2024-12-31": 145730.6
+    },
+    "gov.irs.credits.ctc.phase_out.arpa.threshold.SINGLE": {
+     "2024-01-01.2024-12-31": 72865.3
+    },
+    "gov.irs.credits.ctc.phase_out.arpa.threshold.SEPARATE": {
+     "2024-01-01.2024-12-31": 72865.3
+    },
+    "gov.irs.credits.ctc.phase_out.arpa.threshold.HEAD_OF_HOUSEHOLD": {
+     "2024-01-01.2024-12-31": 109297.95
+    },
+    "gov.irs.credits.ctc.amount.base[1].threshold": {
+     "2024-01-01.2024-12-31": 18
+    },
+    "gov.irs.credits.ctc.refundable.fully_refundable": {
+     "2024-01-01.2024-12-31": true
+    },
+    "gov.irs.credits.ctc.phase_out.arpa.in_effect": {
+     "2024-01-01.2024-12-31": true
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.arpa[0].amount@2024-01-01": 4197.04,
+    "gov.irs.credits.ctc.amount.arpa[1].amount@2024-01-01": 3497.53,
+    "gov.irs.credits.ctc.phase_out.arpa.threshold.JOINT@2024-01-01": 145730.6,
+    "gov.irs.credits.ctc.phase_out.arpa.threshold.SURVIVING_SPOUSE@2024-01-01": 145730.6,
+    "gov.irs.credits.ctc.phase_out.arpa.threshold.SINGLE@2024-01-01": 72865.3,
+    "gov.irs.credits.ctc.phase_out.arpa.threshold.SEPARATE@2024-01-01": 72865.3,
+    "gov.irs.credits.ctc.phase_out.arpa.threshold.HEAD_OF_HOUSEHOLD@2024-01-01": 109297.95,
+    "gov.irs.credits.ctc.amount.base[1].threshold@2024-01-01": 18,
+    "gov.irs.credits.ctc.refundable.fully_refundable@2024-01-01": true,
+    "gov.irs.credits.ctc.phase_out.arpa.in_effect@2024-01-01": true
+   },
+   "inputs_set": [
+    "takes_up_eitc=True [2024]",
+    "would_file_if_eligible_for_refundable_credit=True [2024]"
+   ],
+   "seconds": 282.0,
+   "maxrss_gb": 78.2
+  }
+ ],
+ "dropped_not_reproduced": [],
+ "family": "cpsp_ctc_2024",
+ "rows": [
+  {
+   "pe_value": 0.15612592696989697,
+   "match": {
+    "source": "cpsp",
+    "metric": "poverty_rate",
+    "period": 2024,
+    "conditions": {
+     "geography": "us",
+     "subgroup": "children_under_18",
+     "policy_scenario": "TCJA CTC"
+    }
+   }
+  },
+  {
+   "pe_value": 0.1700923800124657,
+   "match": {
+    "source": "cpsp",
+    "metric": "poverty_rate",
+    "period": 2024,
+    "conditions": {
+     "geography": "us",
+     "subgroup": "children_under_6",
+     "policy_scenario": "TCJA CTC"
+    }
+   }
+  },
+  {
+   "pe_value": 0.2072585640684601,
+   "match": {
+    "source": "cpsp",
+    "metric": "poverty_rate",
+    "period": 2024,
+    "conditions": {
+     "geography": "us",
+     "subgroup": "children_under_18",
+     "policy_scenario": "No CTC"
+    }
+   }
+  },
+  {
+   "pe_value": 0.22288045276198565,
+   "match": {
+    "source": "cpsp",
+    "metric": "poverty_rate",
+    "period": 2024,
+    "conditions": {
+     "geography": "us",
+     "subgroup": "children_under_6",
+     "policy_scenario": "No CTC"
+    }
+   }
+  },
+  {
+   "pe_value": 0.1557756270633141,
+   "match": {
+    "source": "cpsp",
+    "metric": "poverty_rate",
+    "period": 2024,
+    "conditions": {
+     "geography": "us",
+     "subgroup": "children_under_18",
+     "policy_scenario": "OBBBA CTC"
+    }
+   }
+  },
+  {
+   "pe_value": 0.1694395205689077,
+   "match": {
+    "source": "cpsp",
+    "metric": "poverty_rate",
+    "period": 2024,
+    "conditions": {
+     "geography": "us",
+     "subgroup": "children_under_6",
+     "policy_scenario": "OBBBA CTC"
+    }
+   }
+  },
+  {
+   "pe_value": 0.09845928376601065,
+   "match": {
+    "source": "cpsp",
+    "metric": "poverty_rate",
+    "period": 2024,
+    "conditions": {
+     "geography": "us",
+     "subgroup": "children_under_18",
+     "policy_scenario": "AFA CTC"
+    }
+   }
+  },
+  {
+   "pe_value": 0.10973610363060084,
+   "match": {
+    "source": "cpsp",
+    "metric": "poverty_rate",
+    "period": 2024,
+    "conditions": {
+     "geography": "us",
+     "subgroup": "children_under_6",
+     "policy_scenario": "AFA CTC"
+    }
+   }
+  }
+ ],
+ "wall_seconds": 1080.0
+}

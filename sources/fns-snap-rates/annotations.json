@@ -1,0 +1,65 @@
+{
+  "_schema": {
+    "applies_to": "matcher on {program, metrics}; null = any. saturated: true restricts a note to geographies where every federally eligible person's SPM unit carries the take-up flag (takeup_flag_share == 1 in pe/<bundle>.json)",
+    "severity": "period | definitional | construction | caution | gap",
+    "basis": "traceability: a section of the FNS report in raw/, engine metadata recorded in pe/<bundle>.json, docs/replication-assessment.md, or a measured diagnostic in this repo's data"
+  },
+  "annotations": [
+    {
+      "id": "fns-period-vintage",
+      "applies_to": {"program": "snap", "metrics": null},
+      "severity": "period",
+      "text": "PolicyEngine values are the average month of calendar 2024 on the certified data; FNS values are the average month of fiscal 2022 (October 2021 to September 2022). Level differences can come from the two-year gap as well as from the models.",
+      "basis": "FNS report ch. II.A (fiscal-year average month from two CPS ASEC years); sources/fns-snap-rates/pe/us-6.2.1.json (period, time_basis)"
+    },
+    {
+      "id": "fns-federal-rules",
+      "applies_to": {"program": "snap", "metrics": null},
+      "severity": "definitional",
+      "text": "FNS counts only people eligible under federal income and resource rules: BBCE-only eligibility is excluded from both the eligible count and the participants. PolicyEngine's counterpart is computed the same way, with BBCE (is_tanf_non_cash_eligible) turned off for every month, so a BBCE-only unit is neither eligible nor a participant.",
+      "basis": "FNS report Appendix A, text after equation 2; policyengine-us 2.2.1 meets_snap_categorical_eligibility and gov.usda.snap.categorical_eligibility; toggle check in sources/fns-snap-rates/pe/us-6.2.1.json"
+    },
+    {
+      "id": "fns-numerator-calibrated",
+      "applies_to": {"program": "snap", "metrics": ["participation_rate"]},
+      "severity": "construction",
+      "text": "PolicyEngine's SNAP participants are calibrated to FNS average-month household counts, national and by State, so the rate's numerator agrees partly by construction. The eligible count is the out-of-sample part of this comparison.",
+      "basis": "docs/replication-assessment.md §3-§4 (scorecard_db/relationships.py, SNAP participation)"
+    },
+    {
+      "id": "fns-snap-unit",
+      "applies_to": {"program": "snap", "metrics": null},
+      "severity": "construction",
+      "text": "PolicyEngine treats the SPM unit as the SNAP unit and counts its members who are not excluded (students, immigration status, work rules). FNS builds the SNAP household inside the CPS household from purchase-and-prepare rules, and imputes resources, deductions and monthly income that the CPS does not record.",
+      "basis": "FNS report Appendix A, text after equation 3; policyengine-us 2.2.1 is_snap_eligible (entity SPMUnit) and is_snap_excluded_member"
+    },
+    {
+      "id": "fns-rate-cap",
+      "applies_to": {"program": "snap", "metrics": null},
+      "severity": "caution",
+      "text": "FNS caps State rates at 100%: where the estimated eligible count fell below the participant count, FNS raised the eligible count to equal participants and reduced other States in proportion. In a capped State the published eligible count equals participants and the rate is 100% by construction.",
+      "basis": "FNS report ch. II.D and Appendix A, Exhibit A.3 (uncapped implied rates in data/externals/fns-snap-rates.json, variant uncapped_implied)"
+    },
+    {
+      "id": "fns-shrinkage-se",
+      "applies_to": {"program": "snap", "metrics": null},
+      "severity": "caution",
+      "text": "FNS State values are shrinkage estimates from a small survey sample. Rate standard errors range from 1.7 to 6.3 points, so a 90% confidence interval (estimate plus or minus 1.645 standard errors) spans about 6 to 21 points.",
+      "basis": "FNS report Tables A.17 and A.18 (standard errors in data/externals/fns-snap-rates.json, variant standard_error); report equations 45-46"
+    },
+    {
+      "id": "fns-person-grain",
+      "applies_to": {"program": "snap", "metrics": null},
+      "severity": "construction",
+      "text": "FNS counts people in SNAP households. PolicyEngine's SNAP calibration matches FNS at household grain only, and SPM-unit membership overcounts the members of SNAP assistance units.",
+      "basis": "diagnosis/diagnoses.json, 'Alaska SNAP exposes post-calibration household-to-person saturation' (batch 1; Populace source_stages.json:1806); the ingest appends the measured counts from baseline_participants in sources/fns-snap-rates/pe/us-6.2.1.json and FNS Table A.1"
+    },
+    {
+      "id": "fns-saturation",
+      "applies_to": {"program": "snap", "metrics": ["participation_rate"], "saturated": true},
+      "severity": "caution",
+      "text": "This State is saturated in PolicyEngine: every federally eligible person's SPM unit carries the SNAP take-up flag (measured). Populace's take-up stage sets every eligible unit to take up when the FNS household target meets or exceeds the eligible weight, so this rate reflects calibration, not take-up behavior. Eligible people outside participating units here are in units with a zero benefit.",
+      "basis": "takeup_flag_share in sources/fns-snap-rates/pe/us-6.2.1.json (measured); PolicyEngine/microcosm#647; diagnosis/diagnoses.json, 'Alaska SNAP exposes post-calibration household-to-person saturation' (batch 1; Populace snap_state_take_up.py:186-211)"
+    }
+  ]
+}

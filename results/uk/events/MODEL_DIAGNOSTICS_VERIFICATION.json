@@ -1,0 +1,79 @@
+{
+ "actual_output_path": "results/uk/events/diagnostics/integrated_run_20261009.json",
+ "actual_output_sha256": "4612e893d78989e6e1e8a2e88e2f7d2d4620b9aaaef1016b8c3f7d264ccedd59",
+ "actual_output_size_bytes": 38238,
+ "actual_records": 10,
+ "checked_in_current_path": "results/uk/events/MODEL_DIAGNOSTICS.json",
+ "checked_in_current_sha256": "a596a75b387d63b3d0102f364a9fcc24ef510d85f5301b7b12082a902cc0490e",
+ "checked_in_output_sha256": "1008dc3854c0451b9654a7841974b37f113bfcbe168d223b32ed3e04d581297e",
+ "checked_in_records": 10,
+ "command": "PYTHONPATH=. HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv-replay/bin/python pipeline/diagnose_uk_event_models.py --output .venv-replay-checks/final-model-diagnostics.json",
+ "current_engine_fields_compared": [
+  "observation",
+  "evidence",
+  "supporting_evidence",
+  "situation",
+  "year",
+  "variables",
+  "events",
+  "class",
+  "engine_version",
+  "interpretation",
+  "reproducer"
+ ],
+ "engine_versions": {
+  "policyengine": "5.0.2",
+  "policyengine_core": "3.27.1",
+  "policyengine_uk": "2.89.2"
+ },
+ "execution_exit_code": 0,
+ "other_metadata_differences": [
+  {
+   "field": "observation_provenance",
+   "id": "employer_nics_state_pension_age_exemption",
+   "present_in_actual": false,
+   "present_in_checked_in": true
+  },
+  {
+   "field": "observation_provenance",
+   "id": "pension_taper_omits_employer_contributions",
+   "present_in_actual": false,
+   "present_in_checked_in": true
+  },
+  {
+   "field": "observation_provenance",
+   "id": "annual_allowance_charge_single_marginal_rate",
+   "present_in_actual": false,
+   "present_in_checked_in": true
+  }
+ ],
+ "post_validation_metadata_changes": [
+  {
+   "fields": [
+    "primary_source",
+    "national_effect"
+   ],
+   "id": "class4_threshold_indexation_from_2027",
+   "reason": "Root-verified official Autumn Statement 2022 Class4 threshold-freeze citation added after successful engine validation; observations/evidence/situation unchanged."
+  }
+ ],
+ "schema_version": 1,
+ "semantic_differences": [],
+ "semantic_fields": [
+  "observation",
+  "evidence",
+  "supporting_evidence",
+  "situation",
+  "year",
+  "variables",
+  "events",
+  "class",
+  "engine_version",
+  "primary_source",
+  "national_effect",
+  "interpretation",
+  "reproducer"
+ ],
+ "synthetic_execution": "One pinned offline process; sequential worlds released with del and gc.collect. No national dataset loaded.",
+ "validation_note": "The fresh integrated execution matched all recorded engine observations, source evidence, situations and interpretations exactly. The saved candidate file additionally retains three earlier observation-provenance records. After validation, a root-verified Class4 primary citation and explicit unsized national-effect label were added; neither changes observed engine values or construction."
+}

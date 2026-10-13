@@ -1,0 +1,92 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.cgt.additional_rate": {
+    "2024-10-30.2035-12-31": 0.2
+   },
+   "gov.hmrc.cgt.basic_rate": {
+    "2024-10-30.2035-12-31": 0.1
+   },
+   "gov.hmrc.cgt.higher_rate": {
+    "2024-10-30.2035-12-31": 0.2
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2027 proxies FY 2027-28.",
+ "certified_aggregates_gbp": {
+  "capital_gains_tax": 25184350262.467262
+ },
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "components": [
+  "autumn_budget_2024__capital_gains_main_rates_and_reliefs"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "dataset_sha256_after": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "dataset_sha256_before": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "engine_version": "2.89.2",
+ "event": "autumn_budget_2024",
+ "fiscal_event": "Autumn Budget 2024",
+ "fy_proxy": "2027-28",
+ "head_channels": {
+  "capital_gains_tax": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Capital gains tax",
+   "pe_variables": [
+    "capital_gains_tax"
+   ]
+  }
+ ],
+ "head_effects": {
+  "capital_gains_tax": 4952429950.859825
+ },
+ "head_variables": [
+  "capital_gains_tax"
+ ],
+ "literal_reform_minus_baseline": {
+  "capital_gains_tax": -4952429950.859825
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "capital_gains_tax": -4952429950.859825
+ },
+ "measure_key": "autumn_budget_2024__capital_gains_main_rates_and_reliefs",
+ "measure_total_gbp": 4952429950.859825,
+ "null_executed_as_no_limit": [],
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "capital_gains_tax": 20231920311.607437
+   }
+  },
+  "reform": {
+   "heads": {
+    "capital_gains_tax": 25184350262.467262
+   }
+  }
+ },
+ "variable_metadata": {
+  "capital_gains_tax": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/capital_gains_tax/capital_gains_tax.py",
+   "entity": "person",
+   "label": "capital gains tax",
+   "unit": "currency-GBP"
+  }
+ },
+ "year": 2027
+}

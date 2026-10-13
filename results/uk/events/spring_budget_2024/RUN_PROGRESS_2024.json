@@ -1,0 +1,17 @@
+{
+ "artifacts": {
+  "results/uk/events/spring_budget_2024/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2024.json": "c211dee279061b6f57d7c003626a33ad97db84e5f3e3e1f1b992df6a45ef27f4",
+  "results/uk/events/spring_budget_2024/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2024.json": "ffcc6f491732be630b29189d1603666a728313f546618b5e82303e1acdd38434",
+  "results/uk/events/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2024.json": "80f6e9f694dc205da1ad721c56e69b2db797da8ca50bfa74c6c07995994ce339"
+ },
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "engine_version": "2.89.2",
+ "event": "spring_budget_2024",
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+ "schema_version": 1,
+ "year": 2024
+}

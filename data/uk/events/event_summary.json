@@ -1,0 +1,1261 @@
+{
+ "engine": "policyengine-uk 2.125.1",
+ "events": {
+  "Autumn 2010": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 22085.0,
+     "measures": 8,
+     "rows": 12,
+     "share_of_gross": 0.235926
+    },
+    "in:not": {
+     "gross_gbp_m": 10680.0,
+     "measures": 6,
+     "rows": 9,
+     "share_of_gross": 0.11409
+    },
+    "out": {
+     "gross_gbp_m": 60845.0,
+     "measures": 13,
+     "rows": 18,
+     "share_of_gross": 0.649984
+    }
+   },
+   "event_index": 2,
+   "event_key": "autumn_2010",
+   "gross_gbp_m": 93610.0,
+   "measures": 26,
+   "rows": 39,
+   "scoring_fys": [
+    "2010-11",
+    "2015-16"
+   ],
+   "share_in_scope": 0.350016,
+   "share_in_scope_expressible": 0.235926,
+   "share_in_scope_expressible_or_partial": 0.235926
+  },
+  "Autumn 2011": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 11245.0,
+     "measures": 5,
+     "rows": 7,
+     "share_of_gross": 0.222103
+    },
+    "in:not": {
+     "gross_gbp_m": 815.0,
+     "measures": 7,
+     "rows": 9,
+     "share_of_gross": 0.016097
+    },
+    "in:partial": {
+     "gross_gbp_m": 780.0,
+     "measures": 1,
+     "rows": 1,
+     "share_of_gross": 0.015406
+    },
+    "out": {
+     "gross_gbp_m": 37789.583,
+     "measures": 18,
+     "rows": 21,
+     "share_of_gross": 0.746393
+    }
+   },
+   "event_index": 4,
+   "event_key": "autumn_2011",
+   "gross_gbp_m": 50629.583,
+   "measures": 31,
+   "rows": 38,
+   "scoring_fys": [
+    "2011-12",
+    "2016-17"
+   ],
+   "share_in_scope": 0.253607,
+   "share_in_scope_expressible": 0.222103,
+   "share_in_scope_expressible_or_partial": 0.237509
+  },
+  "Autumn 2012": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 23530.0,
+     "measures": 5,
+     "rows": 7,
+     "share_of_gross": 0.228991
+    },
+    "in:not": {
+     "gross_gbp_m": 2720.0,
+     "measures": 8,
+     "rows": 8,
+     "share_of_gross": 0.026471
+    },
+    "in:partial": {
+     "gross_gbp_m": 14050.0,
+     "measures": 4,
+     "rows": 5,
+     "share_of_gross": 0.136733
+    },
+    "out": {
+     "gross_gbp_m": 62455.0,
+     "measures": 29,
+     "rows": 51,
+     "share_of_gross": 0.607805
+    }
+   },
+   "event_index": 6,
+   "event_key": "autumn_2012",
+   "gross_gbp_m": 102755.0,
+   "measures": 39,
+   "rows": 71,
+   "scoring_fys": [
+    "2012-13",
+    "2017-18"
+   ],
+   "share_in_scope": 0.392195,
+   "share_in_scope_expressible": 0.228991,
+   "share_in_scope_expressible_or_partial": 0.365724
+  },
+  "Autumn 2013": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 7370.0,
+     "measures": 5,
+     "rows": 6,
+     "share_of_gross": 0.150562
+    },
+    "in:not": {
+     "gross_gbp_m": 7050.0,
+     "measures": 6,
+     "rows": 7,
+     "share_of_gross": 0.144025
+    },
+    "in:partial": {
+     "gross_gbp_m": 850.0,
+     "measures": 1,
+     "rows": 1,
+     "share_of_gross": 0.017365
+    },
+    "out": {
+     "gross_gbp_m": 33680.0,
+     "measures": 50,
+     "rows": 95,
+     "share_of_gross": 0.688049
+    }
+   },
+   "event_index": 8,
+   "event_key": "autumn_2013",
+   "gross_gbp_m": 48950.0,
+   "measures": 60,
+   "rows": 109,
+   "scoring_fys": [
+    "2013-14",
+    "2018-19"
+   ],
+   "share_in_scope": 0.311951,
+   "share_in_scope_expressible": 0.150562,
+   "share_in_scope_expressible_or_partial": 0.167926
+  },
+  "Autumn 2014": {
+   "classes": {
+    "in:not": {
+     "gross_gbp_m": 4750.0,
+     "measures": 13,
+     "rows": 18,
+     "share_of_gross": 0.100105
+    },
+    "in:partial": {
+     "gross_gbp_m": 7560.0,
+     "measures": 2,
+     "rows": 2,
+     "share_of_gross": 0.159326
+    },
+    "out": {
+     "gross_gbp_m": 35140.0,
+     "measures": 47,
+     "rows": 80,
+     "share_of_gross": 0.740569
+    }
+   },
+   "event_index": 10,
+   "event_key": "autumn_2014",
+   "gross_gbp_m": 47450.0,
+   "measures": 61,
+   "rows": 100,
+   "scoring_fys": [
+    "2014-15",
+    "2019-20"
+   ],
+   "share_in_scope": 0.259431,
+   "share_in_scope_expressible": 0.0,
+   "share_in_scope_expressible_or_partial": 0.159326
+  },
+  "Autumn 2015": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 22625.0,
+     "measures": 3,
+     "rows": 3,
+     "share_of_gross": 0.182115
+    },
+    "in:not": {
+     "gross_gbp_m": 4360.0,
+     "measures": 8,
+     "rows": 11,
+     "share_of_gross": 0.035095
+    },
+    "in:partial": {
+     "gross_gbp_m": 23240.0,
+     "measures": 4,
+     "rows": 4,
+     "share_of_gross": 0.187065
+    },
+    "out": {
+     "gross_gbp_m": 74010.0,
+     "measures": 23,
+     "rows": 38,
+     "share_of_gross": 0.595726
+    }
+   },
+   "event_index": 13,
+   "event_key": "autumn_2015",
+   "gross_gbp_m": 124235.0,
+   "measures": 34,
+   "rows": 56,
+   "scoring_fys": [
+    "2015-16",
+    "2020-21"
+   ],
+   "share_in_scope": 0.404274,
+   "share_in_scope_expressible": 0.182115,
+   "share_in_scope_expressible_or_partial": 0.369179
+  },
+  "Autumn 2016": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 6980.0,
+     "measures": 3,
+     "rows": 4,
+     "share_of_gross": 0.088573
+    },
+    "in:not": {
+     "gross_gbp_m": 17195.0,
+     "measures": 14,
+     "rows": 23,
+     "share_of_gross": 0.218197
+    },
+    "out": {
+     "gross_gbp_m": 54630.065,
+     "measures": 34,
+     "rows": 63,
+     "share_of_gross": 0.69323
+    }
+   },
+   "event_index": 15,
+   "event_key": "autumn_2016",
+   "gross_gbp_m": 78805.065,
+   "measures": 48,
+   "rows": 90,
+   "scoring_fys": [
+    "2016-17",
+    "2021-22"
+   ],
+   "share_in_scope": 0.30677,
+   "share_in_scope_expressible": 0.088573,
+   "share_in_scope_expressible_or_partial": 0.088573
+  },
+  "Autumn Budget 2017": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 10350.0,
+     "measures": 4,
+     "rows": 4,
+     "share_of_gross": 0.120035
+    },
+    "in:not": {
+     "gross_gbp_m": 6275.0,
+     "measures": 12,
+     "rows": 16,
+     "share_of_gross": 0.072775
+    },
+    "in:partial": {
+     "gross_gbp_m": 15.0,
+     "measures": 1,
+     "rows": 1,
+     "share_of_gross": 0.000174
+    },
+    "out": {
+     "gross_gbp_m": 69585.0,
+     "measures": 68,
+     "rows": 120,
+     "share_of_gross": 0.807017
+    }
+   },
+   "event_index": 17,
+   "event_key": "autumn_budget_2017",
+   "gross_gbp_m": 86225.0,
+   "measures": 76,
+   "rows": 141,
+   "scoring_fys": [
+    "2017-18",
+    "2022-23"
+   ],
+   "share_in_scope": 0.192983,
+   "share_in_scope_expressible": 0.120035,
+   "share_in_scope_expressible_or_partial": 0.120209
+  },
+  "Autumn Budget 2021": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 50300.978,
+     "measures": 6,
+     "rows": 7,
+     "share_of_gross": 0.121022
+    },
+    "in:not": {
+     "gross_gbp_m": 3422.538,
+     "measures": 15,
+     "rows": 25,
+     "share_of_gross": 0.008234
+    },
+    "in:partial": {
+     "gross_gbp_m": 119683.229,
+     "measures": 8,
+     "rows": 10,
+     "share_of_gross": 0.287952
+    },
+    "out": {
+     "gross_gbp_m": 242229.835,
+     "measures": 49,
+     "rows": 138,
+     "share_of_gross": 0.582792
+    }
+   },
+   "event_index": 24,
+   "event_key": "autumn_budget_2021",
+   "gross_gbp_m": 415636.579,
+   "measures": 66,
+   "rows": 180,
+   "scoring_fys": [
+    "2021-22",
+    "2026-27"
+   ],
+   "share_in_scope": 0.417208,
+   "share_in_scope_expressible": 0.121022,
+   "share_in_scope_expressible_or_partial": 0.408973
+  },
+  "Autumn Budget 2024": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 22815.05,
+     "measures": 8,
+     "rows": 8,
+     "share_of_gross": 0.032562
+    },
+    "in:not": {
+     "gross_gbp_m": 47043.986,
+     "measures": 24,
+     "rows": 35,
+     "share_of_gross": 0.067142
+    },
+    "in:partial": {
+     "gross_gbp_m": 131722.11,
+     "measures": 3,
+     "rows": 4,
+     "share_of_gross": 0.187995
+    },
+    "out": {
+     "gross_gbp_m": 499086.516,
+     "measures": 54,
+     "rows": 142,
+     "share_of_gross": 0.712301
+    }
+   },
+   "event_index": 30,
+   "event_key": "autumn_budget_2024",
+   "gross_gbp_m": 700667.662,
+   "measures": 74,
+   "rows": 189,
+   "scoring_fys": [
+    "2024-25",
+    "2029-30"
+   ],
+   "share_in_scope": 0.287699,
+   "share_in_scope_expressible": 0.032562,
+   "share_in_scope_expressible_or_partial": 0.220557
+  },
+  "Autumn Budget 2025": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 68001.398,
+     "measures": 13,
+     "rows": 17,
+     "share_of_gross": 0.19832
+    },
+    "in:not": {
+     "gross_gbp_m": 44679.2,
+     "measures": 27,
+     "rows": 42,
+     "share_of_gross": 0.130303
+    },
+    "in:partial": {
+     "gross_gbp_m": 23131.671,
+     "measures": 6,
+     "rows": 7,
+     "share_of_gross": 0.067462
+    },
+    "out": {
+     "gross_gbp_m": 207074.698,
+     "measures": 85,
+     "rows": 186,
+     "share_of_gross": 0.603915
+    }
+   },
+   "event_index": 32,
+   "event_key": "autumn_budget_2025",
+   "gross_gbp_m": 342886.967,
+   "measures": 105,
+   "rows": 252,
+   "scoring_fys": [
+    "2025-26",
+    "2030-31"
+   ],
+   "share_in_scope": 0.396085,
+   "share_in_scope_expressible": 0.19832,
+   "share_in_scope_expressible_or_partial": 0.265782
+  },
+  "Autumn Statement 2022": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 143584.494,
+     "measures": 16,
+     "rows": 22,
+     "share_of_gross": 0.257639
+    },
+    "in:not": {
+     "gross_gbp_m": 5677.949,
+     "measures": 16,
+     "rows": 23,
+     "share_of_gross": 0.010188
+    },
+    "in:partial": {
+     "gross_gbp_m": 132645.282,
+     "measures": 8,
+     "rows": 9,
+     "share_of_gross": 0.23801
+    },
+    "out": {
+     "gross_gbp_m": 275401.907,
+     "measures": 53,
+     "rows": 142,
+     "share_of_gross": 0.494163
+    }
+   },
+   "event_index": 26,
+   "event_key": "autumn_statement_2022",
+   "gross_gbp_m": 557309.632,
+   "measures": 71,
+   "rows": 196,
+   "scoring_fys": [
+    "2022-23",
+    "2027-28"
+   ],
+   "share_in_scope": 0.505837,
+   "share_in_scope_expressible": 0.257639,
+   "share_in_scope_expressible_or_partial": 0.495649
+  },
+  "Autumn Statement 2023": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 62548.561,
+     "measures": 7,
+     "rows": 10,
+     "share_of_gross": 0.335398
+    },
+    "in:not": {
+     "gross_gbp_m": 4954.743,
+     "measures": 16,
+     "rows": 23,
+     "share_of_gross": 0.026568
+    },
+    "in:partial": {
+     "gross_gbp_m": 3428.473,
+     "measures": 2,
+     "rows": 2,
+     "share_of_gross": 0.018384
+    },
+    "out": {
+     "gross_gbp_m": 115558.617,
+     "measures": 62,
+     "rows": 151,
+     "share_of_gross": 0.619649
+    }
+   },
+   "event_index": 28,
+   "event_key": "autumn_statement_2023",
+   "gross_gbp_m": 186490.394,
+   "measures": 77,
+   "rows": 186,
+   "scoring_fys": [
+    "2023-24",
+    "2028-29"
+   ],
+   "share_in_scope": 0.380351,
+   "share_in_scope_expressible": 0.335398,
+   "share_in_scope_expressible_or_partial": 0.353782
+  },
+  "Budget 2010 #2": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 87545.0,
+     "measures": 9,
+     "rows": 10,
+     "share_of_gross": 0.394747
+    },
+    "in:not": {
+     "gross_gbp_m": 19215.0,
+     "measures": 24,
+     "rows": 32,
+     "share_of_gross": 0.086642
+    },
+    "in:partial": {
+     "gross_gbp_m": 30505.0,
+     "measures": 8,
+     "rows": 10,
+     "share_of_gross": 0.137549
+    },
+    "out": {
+     "gross_gbp_m": 84510.0,
+     "measures": 12,
+     "rows": 14,
+     "share_of_gross": 0.381062
+    }
+   },
+   "event_index": 1,
+   "event_key": "budget_2010_2",
+   "gross_gbp_m": 221775.0,
+   "measures": 49,
+   "rows": 66,
+   "scoring_fys": [
+    "2010-11",
+    "2014-15"
+   ],
+   "share_in_scope": 0.618938,
+   "share_in_scope_expressible": 0.394747,
+   "share_in_scope_expressible_or_partial": 0.532296
+  },
+  "Budget 2011": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 11500.0,
+     "measures": 4,
+     "rows": 5,
+     "share_of_gross": 0.205688
+    },
+    "in:not": {
+     "gross_gbp_m": 5940.0,
+     "measures": 17,
+     "rows": 20,
+     "share_of_gross": 0.106242
+    },
+    "in:partial": {
+     "gross_gbp_m": 4880.0,
+     "measures": 4,
+     "rows": 4,
+     "share_of_gross": 0.087283
+    },
+    "out": {
+     "gross_gbp_m": 33590.0,
+     "measures": 40,
+     "rows": 50,
+     "share_of_gross": 0.600787
+    }
+   },
+   "event_index": 3,
+   "event_key": "budget_2011",
+   "gross_gbp_m": 55910.0,
+   "measures": 60,
+   "rows": 79,
+   "scoring_fys": [
+    "2011-12",
+    "2015-16"
+   ],
+   "share_in_scope": 0.399213,
+   "share_in_scope_expressible": 0.205688,
+   "share_in_scope_expressible_or_partial": 0.292971
+  },
+  "Budget 2012": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 2885.0,
+     "measures": 2,
+     "rows": 3,
+     "share_of_gross": 0.051973
+    },
+    "in:not": {
+     "gross_gbp_m": 11045.0,
+     "measures": 15,
+     "rows": 20,
+     "share_of_gross": 0.198973
+    },
+    "in:partial": {
+     "gross_gbp_m": 15305.0,
+     "measures": 3,
+     "rows": 3,
+     "share_of_gross": 0.275716
+    },
+    "out": {
+     "gross_gbp_m": 26275.0,
+     "measures": 42,
+     "rows": 58,
+     "share_of_gross": 0.473338
+    }
+   },
+   "event_index": 5,
+   "event_key": "budget_2012",
+   "gross_gbp_m": 55510.0,
+   "measures": 56,
+   "rows": 84,
+   "scoring_fys": [
+    "2012-13",
+    "2016-17"
+   ],
+   "share_in_scope": 0.526662,
+   "share_in_scope_expressible": 0.051973,
+   "share_in_scope_expressible_or_partial": 0.327689
+  },
+  "Budget 2013": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 5815.0,
+     "measures": 3,
+     "rows": 4,
+     "share_of_gross": 0.085932
+    },
+    "in:not": {
+     "gross_gbp_m": 21905.0,
+     "measures": 22,
+     "rows": 32,
+     "share_of_gross": 0.323703
+    },
+    "in:partial": {
+     "gross_gbp_m": 4690.0,
+     "measures": 1,
+     "rows": 2,
+     "share_of_gross": 0.069307
+    },
+    "out": {
+     "gross_gbp_m": 35260.0,
+     "measures": 46,
+     "rows": 71,
+     "share_of_gross": 0.521058
+    }
+   },
+   "event_index": 7,
+   "event_key": "budget_2013",
+   "gross_gbp_m": 67670.0,
+   "measures": 68,
+   "rows": 109,
+   "scoring_fys": [
+    "2013-14",
+    "2017-18"
+   ],
+   "share_in_scope": 0.478942,
+   "share_in_scope_expressible": 0.085932,
+   "share_in_scope_expressible_or_partial": 0.155239
+  },
+  "Budget 2014": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 485.0,
+     "measures": 3,
+     "rows": 3,
+     "share_of_gross": 0.012436
+    },
+    "in:not": {
+     "gross_gbp_m": 10605.0,
+     "measures": 20,
+     "rows": 31,
+     "share_of_gross": 0.271923
+    },
+    "in:partial": {
+     "gross_gbp_m": 8425.0,
+     "measures": 3,
+     "rows": 4,
+     "share_of_gross": 0.216026
+    },
+    "out": {
+     "gross_gbp_m": 19485.0,
+     "measures": 35,
+     "rows": 63,
+     "share_of_gross": 0.499615
+    }
+   },
+   "event_index": 9,
+   "event_key": "budget_2014",
+   "gross_gbp_m": 39000.0,
+   "measures": 57,
+   "rows": 101,
+   "scoring_fys": [
+    "2014-15",
+    "2018-19"
+   ],
+   "share_in_scope": 0.500385,
+   "share_in_scope_expressible": 0.012436,
+   "share_in_scope_expressible_or_partial": 0.228462
+  },
+  "Budget 2015": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 7715.0,
+     "measures": 2,
+     "rows": 3,
+     "share_of_gross": 0.230919
+    },
+    "in:not": {
+     "gross_gbp_m": 7040.0,
+     "measures": 9,
+     "rows": 13,
+     "share_of_gross": 0.210715
+    },
+    "in:partial": {
+     "gross_gbp_m": 3010.0,
+     "measures": 1,
+     "rows": 1,
+     "share_of_gross": 0.090093
+    },
+    "out": {
+     "gross_gbp_m": 15645.0,
+     "measures": 39,
+     "rows": 56,
+     "share_of_gross": 0.468273
+    }
+   },
+   "event_index": 11,
+   "event_key": "budget_2015",
+   "gross_gbp_m": 33410.0,
+   "measures": 48,
+   "rows": 73,
+   "scoring_fys": [
+    "2015-16",
+    "2019-20"
+   ],
+   "share_in_scope": 0.531727,
+   "share_in_scope_expressible": 0.230919,
+   "share_in_scope_expressible_or_partial": 0.321012
+  },
+  "Budget 2015 #2": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 33860.0,
+     "measures": 9,
+     "rows": 13,
+     "share_of_gross": 0.124469
+    },
+    "in:not": {
+     "gross_gbp_m": 29610.0,
+     "measures": 20,
+     "rows": 27,
+     "share_of_gross": 0.108846
+    },
+    "in:partial": {
+     "gross_gbp_m": 40605.0,
+     "measures": 7,
+     "rows": 11,
+     "share_of_gross": 0.149264
+    },
+    "out": {
+     "gross_gbp_m": 167960.0,
+     "measures": 37,
+     "rows": 59,
+     "share_of_gross": 0.617421
+    }
+   },
+   "event_index": 12,
+   "event_key": "budget_2015_2",
+   "gross_gbp_m": 272035.0,
+   "measures": 61,
+   "rows": 110,
+   "scoring_fys": [
+    "2015-16",
+    "2020-21"
+   ],
+   "share_in_scope": 0.382579,
+   "share_in_scope_expressible": 0.124469,
+   "share_in_scope_expressible_or_partial": 0.273733
+  },
+  "Budget 2016": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 20275.0,
+     "measures": 6,
+     "rows": 11,
+     "share_of_gross": 0.156994
+    },
+    "in:not": {
+     "gross_gbp_m": 19175.0,
+     "measures": 22,
+     "rows": 31,
+     "share_of_gross": 0.148477
+    },
+    "out": {
+     "gross_gbp_m": 89695.0,
+     "measures": 60,
+     "rows": 94,
+     "share_of_gross": 0.694529
+    }
+   },
+   "event_index": 14,
+   "event_key": "budget_2016",
+   "gross_gbp_m": 129145.0,
+   "measures": 78,
+   "rows": 136,
+   "scoring_fys": [
+    "2015-16",
+    "2020-21"
+   ],
+   "share_in_scope": 0.305471,
+   "share_in_scope_expressible": 0.156994,
+   "share_in_scope_expressible_or_partial": 0.156994
+  },
+  "Budget 2017": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 4105.0,
+     "measures": 2,
+     "rows": 3,
+     "share_of_gross": 0.114761
+    },
+    "in:not": {
+     "gross_gbp_m": 445.0,
+     "measures": 4,
+     "rows": 4,
+     "share_of_gross": 0.012441
+    },
+    "in:partial": {
+     "gross_gbp_m": 400.0,
+     "measures": 1,
+     "rows": 1,
+     "share_of_gross": 0.011183
+    },
+    "out": {
+     "gross_gbp_m": 30820.0,
+     "measures": 33,
+     "rows": 55,
+     "share_of_gross": 0.861616
+    }
+   },
+   "event_index": 16,
+   "event_key": "budget_2017",
+   "gross_gbp_m": 35770.0,
+   "measures": 37,
+   "rows": 63,
+   "scoring_fys": [
+    "2017-18",
+    "2021-22"
+   ],
+   "share_in_scope": 0.138384,
+   "share_in_scope_expressible": 0.114761,
+   "share_in_scope_expressible_or_partial": 0.125944
+  },
+  "Budget 2018": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 23453.463,
+     "measures": 3,
+     "rows": 5,
+     "share_of_gross": 0.090272
+    },
+    "in:not": {
+     "gross_gbp_m": 11130.333,
+     "measures": 15,
+     "rows": 20,
+     "share_of_gross": 0.042841
+    },
+    "in:partial": {
+     "gross_gbp_m": 3750.103,
+     "measures": 4,
+     "rows": 6,
+     "share_of_gross": 0.014434
+    },
+    "out": {
+     "gross_gbp_m": 221473.986,
+     "measures": 93,
+     "rows": 188,
+     "share_of_gross": 0.852453
+    }
+   },
+   "event_index": 19,
+   "event_key": "budget_2018",
+   "gross_gbp_m": 259807.885,
+   "measures": 104,
+   "rows": 219,
+   "scoring_fys": [
+    "2018-19",
+    "2023-24"
+   ],
+   "share_in_scope": 0.147547,
+   "share_in_scope_expressible": 0.090272,
+   "share_in_scope_expressible_or_partial": 0.104706
+  },
+  "Budget 2020": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 15482.164,
+     "measures": 3,
+     "rows": 5,
+     "share_of_gross": 0.031101
+    },
+    "in:not": {
+     "gross_gbp_m": 11575.016,
+     "measures": 29,
+     "rows": 36,
+     "share_of_gross": 0.023252
+    },
+    "in:partial": {
+     "gross_gbp_m": 10446.431,
+     "measures": 4,
+     "rows": 4,
+     "share_of_gross": 0.020985
+    },
+    "out": {
+     "gross_gbp_m": 460295.831,
+     "measures": 79,
+     "rows": 199,
+     "share_of_gross": 0.924661
+    }
+   },
+   "event_index": 21,
+   "event_key": "budget_2020",
+   "gross_gbp_m": 497799.443,
+   "measures": 104,
+   "rows": 244,
+   "scoring_fys": [
+    "2019-20",
+    "2024-25"
+   ],
+   "share_in_scope": 0.075339,
+   "share_in_scope_expressible": 0.031101,
+   "share_in_scope_expressible_or_partial": 0.052086
+  },
+  "Spending Review 2020": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 11872.438,
+     "measures": 7,
+     "rows": 8,
+     "share_of_gross": 0.022219
+    },
+    "in:not": {
+     "gross_gbp_m": 105973.283,
+     "measures": 14,
+     "rows": 22,
+     "share_of_gross": 0.198323
+    },
+    "in:partial": {
+     "gross_gbp_m": 9563.295,
+     "measures": 3,
+     "rows": 4,
+     "share_of_gross": 0.017897
+    },
+    "out": {
+     "gross_gbp_m": 406937.219,
+     "measures": 44,
+     "rows": 115,
+     "share_of_gross": 0.761561
+    }
+   },
+   "event_index": 22,
+   "event_key": "spending_review_2020",
+   "gross_gbp_m": 534346.235,
+   "measures": 62,
+   "rows": 149,
+   "scoring_fys": [
+    "2019-20",
+    "2025-26"
+   ],
+   "share_in_scope": 0.238439,
+   "share_in_scope_expressible": 0.022219,
+   "share_in_scope_expressible_or_partial": 0.040116
+  },
+  "Spring Budget 2021": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 36400.718,
+     "measures": 7,
+     "rows": 11,
+     "share_of_gross": 0.158517
+    },
+    "in:not": {
+     "gross_gbp_m": 38683.184,
+     "measures": 16,
+     "rows": 29,
+     "share_of_gross": 0.168457
+    },
+    "in:partial": {
+     "gross_gbp_m": 1762.899,
+     "measures": 2,
+     "rows": 2,
+     "share_of_gross": 0.007677
+    },
+    "out": {
+     "gross_gbp_m": 152786.123,
+     "measures": 52,
+     "rows": 128,
+     "share_of_gross": 0.665349
+    }
+   },
+   "event_index": 23,
+   "event_key": "spring_budget_2021",
+   "gross_gbp_m": 229632.923,
+   "measures": 65,
+   "rows": 170,
+   "scoring_fys": [
+    "2020-21",
+    "2025-26"
+   ],
+   "share_in_scope": 0.334651,
+   "share_in_scope_expressible": 0.158517,
+   "share_in_scope_expressible_or_partial": 0.166194
+  },
+  "Spring Budget 2023": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 18610.14,
+     "measures": 4,
+     "rows": 4,
+     "share_of_gross": 0.147218
+    },
+    "in:not": {
+     "gross_gbp_m": 4711.974,
+     "measures": 21,
+     "rows": 24,
+     "share_of_gross": 0.037275
+    },
+    "in:partial": {
+     "gross_gbp_m": 21094.404,
+     "measures": 6,
+     "rows": 6,
+     "share_of_gross": 0.16687
+    },
+    "out": {
+     "gross_gbp_m": 81996.005,
+     "measures": 71,
+     "rows": 136,
+     "share_of_gross": 0.648638
+    }
+   },
+   "event_index": 27,
+   "event_key": "spring_budget_2023",
+   "gross_gbp_m": 126412.523,
+   "measures": 89,
+   "rows": 170,
+   "scoring_fys": [
+    "2022-23",
+    "2027-28"
+   ],
+   "share_in_scope": 0.351362,
+   "share_in_scope_expressible": 0.147218,
+   "share_in_scope_expressible_or_partial": 0.314087
+  },
+  "Spring Budget 2024": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 63194.818,
+     "measures": 8,
+     "rows": 10,
+     "share_of_gross": 0.564702
+    },
+    "in:not": {
+     "gross_gbp_m": 14834.697,
+     "measures": 10,
+     "rows": 19,
+     "share_of_gross": 0.132561
+    },
+    "in:partial": {
+     "gross_gbp_m": 3743.766,
+     "measures": 3,
+     "rows": 3,
+     "share_of_gross": 0.033454
+    },
+    "out": {
+     "gross_gbp_m": 30135.07,
+     "measures": 42,
+     "rows": 104,
+     "share_of_gross": 0.269283
+    }
+   },
+   "event_index": 29,
+   "event_key": "spring_budget_2024",
+   "gross_gbp_m": 111908.352,
+   "measures": 49,
+   "rows": 136,
+   "scoring_fys": [
+    "2023-24",
+    "2028-29"
+   ],
+   "share_in_scope": 0.730717,
+   "share_in_scope_expressible": 0.564702,
+   "share_in_scope_expressible_or_partial": 0.598155
+  },
+  "Spring Statement 2018": {
+   "classes": {
+    "in:not": {
+     "gross_gbp_m": 540.0,
+     "measures": 3,
+     "rows": 4,
+     "share_of_gross": 0.039074
+    },
+    "in:partial": {
+     "gross_gbp_m": 3490.0,
+     "measures": 1,
+     "rows": 1,
+     "share_of_gross": 0.252533
+    },
+    "out": {
+     "gross_gbp_m": 9790.0,
+     "measures": 8,
+     "rows": 12,
+     "share_of_gross": 0.708394
+    }
+   },
+   "event_index": 18,
+   "event_key": "spring_statement_2018",
+   "gross_gbp_m": 13820.0,
+   "measures": 10,
+   "rows": 17,
+   "scoring_fys": [
+    "2017-18",
+    "2022-23"
+   ],
+   "share_in_scope": 0.291606,
+   "share_in_scope_expressible": 0.0,
+   "share_in_scope_expressible_or_partial": 0.252533
+  },
+  "Spring Statement 2019": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 105.417,
+     "measures": 1,
+     "rows": 1,
+     "share_of_gross": 0.004444
+    },
+    "in:not": {
+     "gross_gbp_m": 1241.786,
+     "measures": 3,
+     "rows": 3,
+     "share_of_gross": 0.052344
+    },
+    "in:partial": {
+     "gross_gbp_m": 1227.213,
+     "measures": 2,
+     "rows": 2,
+     "share_of_gross": 0.05173
+    },
+    "out": {
+     "gross_gbp_m": 21149.05,
+     "measures": 15,
+     "rows": 27,
+     "share_of_gross": 0.891482
+    }
+   },
+   "event_index": 20,
+   "event_key": "spring_statement_2019",
+   "gross_gbp_m": 23723.466,
+   "measures": 20,
+   "rows": 33,
+   "scoring_fys": [
+    "2018-19",
+    "2023-24"
+   ],
+   "share_in_scope": 0.108518,
+   "share_in_scope_expressible": 0.004444,
+   "share_in_scope_expressible_or_partial": 0.056173
+  },
+  "Spring Statement 2022": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 55185.778,
+     "measures": 11,
+     "rows": 12,
+     "share_of_gross": 0.406875
+    },
+    "in:not": {
+     "gross_gbp_m": 7286.974,
+     "measures": 5,
+     "rows": 7,
+     "share_of_gross": 0.053726
+    },
+    "in:partial": {
+     "gross_gbp_m": 6642.704,
+     "measures": 5,
+     "rows": 9,
+     "share_of_gross": 0.048975
+    },
+    "out": {
+     "gross_gbp_m": 66517.836,
+     "measures": 32,
+     "rows": 79,
+     "share_of_gross": 0.490424
+    }
+   },
+   "event_index": 25,
+   "event_key": "spring_statement_2022",
+   "gross_gbp_m": 135633.291,
+   "measures": 41,
+   "rows": 107,
+   "scoring_fys": [
+    "2021-22",
+    "2026-27"
+   ],
+   "share_in_scope": 0.509576,
+   "share_in_scope_expressible": 0.406875,
+   "share_in_scope_expressible_or_partial": 0.45585
+  },
+  "Spring Statement 2025": {
+   "classes": {
+    "in:expressible": {
+     "gross_gbp_m": 5332.86,
+     "measures": 1,
+     "rows": 2,
+     "share_of_gross": 0.071125
+    },
+    "in:not": {
+     "gross_gbp_m": 13246.443,
+     "measures": 3,
+     "rows": 3,
+     "share_of_gross": 0.17667
+    },
+    "in:partial": {
+     "gross_gbp_m": 8854.851,
+     "measures": 2,
+     "rows": 2,
+     "share_of_gross": 0.118098
+    },
+    "out": {
+     "gross_gbp_m": 47544.485,
+     "measures": 32,
+     "rows": 76,
+     "share_of_gross": 0.634107
+    }
+   },
+   "event_index": 31,
+   "event_key": "spring_statement_2025",
+   "gross_gbp_m": 74978.639,
+   "measures": 32,
+   "rows": 83,
+   "scoring_fys": [
+    "2024-25",
+    "2029-30"
+   ],
+   "share_in_scope": 0.365893,
+   "share_in_scope_expressible": 0.071125,
+   "share_in_scope_expressible_or_partial": 0.189223
+  }
+ },
+ "expressibility_basis": "today's machinery, separate from historic rules, population, vintage, and executable construction readiness",
+ "gross_rule": "gross_gbp_m = sum over original scorecard years of |costing|, GBP million; a measure's share is its gross over the event's gross",
+ "schema_version": 2,
+ "sign_convention": "positive = gain to the Exchequer (PMD Notes sheet)",
+ "source": "sources/harvest-uk-2026-08-02/uk_obr/claims_staged.jsonl.gz (PMD November 2025 vintage, original scorecard cells)",
+ "source_sha256": "46117d14c4de7ac10cbc9bc09acef6c5b5060db1605e02334d4a827cf420a3bd"
+}

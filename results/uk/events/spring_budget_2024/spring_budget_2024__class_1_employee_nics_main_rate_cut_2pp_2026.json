@@ -1,0 +1,183 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.national_insurance.class_1.rates.employee.main": {
+    "2024-01-01.2035-12-31": 0.1
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2026 proxies FY 2026-27.",
+ "certified_aggregates_gbp": {
+  "income_tax": 421891913533.19946,
+  "ni_class_1_employee": 57077663137.03293,
+  "ni_class_1_employer": 185481157065.2179,
+  "ni_class_2": 0.0,
+  "ni_class_4": 4372643327.084593,
+  "universal_credit": 39887838277.66961
+ },
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "components": [
+  "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "dataset_sha256_after": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "dataset_sha256_before": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "engine_version": "2.89.2",
+ "event": "spring_budget_2024",
+ "fiscal_event": "Spring Budget 2024",
+ "fy_proxy": "2026-27",
+ "head_channels": {
+  "income_tax": "tax",
+  "ni_class_1_employee": "tax",
+  "ni_class_1_employer": "tax",
+  "ni_class_2": "tax",
+  "ni_class_4": "tax",
+  "universal_credit": "spending"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Income tax",
+   "pe_variables": [
+    "income_tax"
+   ]
+  },
+  {
+   "channel": "tax",
+   "obr_head": "NICs",
+   "pe_variables": [
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_2",
+    "ni_class_4"
+   ]
+  },
+  {
+   "channel": "spending",
+   "obr_head": "Welfare inside cap",
+   "pe_variables": [
+    "universal_credit"
+   ]
+  }
+ ],
+ "head_effects": {
+  "income_tax": 0.0,
+  "ni_class_1_employee": -12073479284.911896,
+  "ni_class_1_employer": 0.0,
+  "ni_class_2": 0.0,
+  "ni_class_4": 3405636.103132248,
+  "universal_credit": 104678630.74134064
+ },
+ "head_variables": [
+  "income_tax",
+  "ni_class_1_employee",
+  "ni_class_1_employer",
+  "ni_class_2",
+  "ni_class_4",
+  "universal_credit"
+ ],
+ "literal_reform_minus_baseline": {
+  "income_tax": -0.0,
+  "ni_class_1_employee": 12073479284.911896,
+  "ni_class_1_employer": -0.0,
+  "ni_class_2": -0.0,
+  "ni_class_4": -3405636.103132248,
+  "universal_credit": -104678630.74134064
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "income_tax": -0.0,
+  "ni_class_1_employee": 12073479284.911896,
+  "ni_class_1_employer": -0.0,
+  "ni_class_2": -0.0,
+  "ni_class_4": -3405636.103132248,
+  "universal_credit": -104678630.74134064
+ },
+ "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+ "measure_total_gbp": -11965395018.067423,
+ "null_executed_as_no_limit": [],
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "income_tax": 421891913533.19946,
+    "ni_class_1_employee": 69151142421.94482,
+    "ni_class_1_employer": 185481157065.2179,
+    "ni_class_2": 0.0,
+    "ni_class_4": 4369237690.981461,
+    "universal_credit": 39992516908.41095
+   }
+  },
+  "reform": {
+   "heads": {
+    "income_tax": 421891913533.19946,
+    "ni_class_1_employee": 57077663137.03293,
+    "ni_class_1_employer": 185481157065.2179,
+    "ni_class_2": 0.0,
+    "ni_class_4": 4372643327.084593,
+    "universal_credit": 39887838277.66961
+   }
+  }
+ },
+ "variable_metadata": {
+  "income_tax": {
+   "definition_period": "year",
+   "documentation": "Total Income Tax liability",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/income_tax/income_tax.py",
+   "entity": "person",
+   "label": "Income Tax",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employee": {
+   "definition_period": "month",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employee.py",
+   "entity": "person",
+   "label": "NI Class 1 employee-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_1_employer": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_1/ni_class_1_employer.py",
+   "entity": "person",
+   "label": "NI Class 1 employer-side contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_2": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_2/ni_class_2.py",
+   "entity": "person",
+   "label": "NI Class 2 contributions",
+   "unit": "currency-GBP"
+  },
+  "ni_class_4": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/hmrc/national_insurance/class_4/ni_class_4.py",
+   "entity": "person",
+   "label": "NI Class 4 main contributions",
+   "unit": "currency-GBP"
+  },
+  "universal_credit": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/dwp/universal_credit/universal_credit.py",
+   "entity": "benunit",
+   "label": "Universal Credit",
+   "unit": "currency-GBP"
+  }
+ },
+ "year": 2026
+}

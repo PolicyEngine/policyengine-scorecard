@@ -17,9 +17,31 @@ Chain order is dependency order and is part of the contract:
     solo         solo-counterfactual results + exhibits
     diagnoses    curated diagnosis rows
     campaign_us  staged day-1/day-2 campaign results (claim matching)
-    uk_externals five UK primary-source families + Ledger staging
+    harvest_lane_stages  harvest lanes ingested -> computed where results
+                attached (derived from the DB, so the feed can't drift)
+    fns_snap_rates  FNS state SNAP participation rates + PE counterparts
+    irs_eitc_participation  IRS/Census EITC participation + PE counterparts
+    aspe_welfare_indicators  ASPE Indicator 4 (TRIM3/FNS) + PE counterparts
+    diagnoses_batch3  diagnosis batch 3 on the FNS, EITC and ASPE lanes
+    us_admin_outturns  US admin outturns -> data/ledger (Chronicle; no claims)
+    uk_externals five UK primary-source families + Chronicle staging
     uk_deductions FRR family
+    dwp_pensions  workplace pension participation (ASHE, GB)
+    lpc_minimum_wage  LPC coverage + bite (jobs, not people)
+    hmt_distributional    HMT Budget distributional analysis (zero claims,
+                          declared: 132 chart cells, none digitized)
+    obr_divergence        OBR costings divergence decomposition (#59)
+    uk_reform_validation  the UK reform-validation lane (declared empty
+                          until issue #79's artifact lands)
+    uk_thinktanks IFS + Resolution Foundation (independent models)
+    ons_etb       ONS effects of taxes and benefits (5 income concepts)
+    uk_policy_effects  OBR published economic effects of policy
     produce_uk + campaign_uk  archive-resolved UK reckoner attaches
+    nz_budget_scores New Zealand Treasury Budget score tables (official-only)
+    be_pit_reform Belgian PIT-reform claims + Axiom result attachments
+    be_jrc      JRC EUROMOD-BE model claims + honest demo attachments;
+                final so its 2026-08-21 lane update cannot be regressed by
+                an older feed sync
 
 Usage:
     PYTHONPATH=. python -m scorecard_db.build_db [data/scorecard.db]
@@ -33,18 +55,74 @@ import sqlite3
 import sys
 from pathlib import Path
 
+from be import ingest_jrc_country_report, ingest_pit_reform_2026
+from nz import ingest_official_budget_scores
+
 from . import (
+    ingest_aspe_welfare_indicators,
     ingest_campaign,
     ingest_diagnoses,
+    ingest_fns_snap_rates,
     ingest_harvest,
+    ingest_hmt_distributional,
+    ingest_irs_eitc_participation,
+    ingest_obr_divergence,
+    ingest_obr_costings,
+    ingest_obr_policy_effects,
     ingest_platform,
     ingest_reform_validation,
     ingest_solo,
     ingest_uk_deductions,
     ingest_uk_externals,
+    ingest_dwp_pensions,
+    ingest_lpc_minimum_wage,
+    ingest_uk_ab2025,
+    ingest_uk_thinktanks,
+    ingest_us_admin_outturns,
+    ingest_ons_etb,
     ingest_urban,
     produce_campaign_uk,
+    produce_obr_costings,
 )
+
+
+def _assert_every_imported_ingest_runs(steps) -> None:
+    """Every ingest module imported at the top must appear in `steps`.
+
+    The chain is one ordered list that many branches add to at the same
+    anchor, so `build_db.py` conflicts on nearly every merge — and the
+    conflict region splits a step tuple, which means a careless
+    resolution either breaks the syntax (loud) or DROPS A STEP (silent).
+    A silently dropped step ships a database missing a whole lane while
+    every test still passes, because the tests that would notice are the
+    ones the dropped ingest brought with it.
+
+    So the import list is the contract: if a module is imported here it
+    must run here. Adding an ingest means adding both, and removing one
+    means removing both, deliberately.
+    """
+    registered = set()
+    for _, fn in steps:
+        registered.update(
+            name
+            for name in fn.__code__.co_names
+            if name.startswith(("ingest_", "produce_"))
+        )
+    imported = {
+        name
+        for name in globals()
+        if name.startswith(("ingest_", "produce_"))
+        and hasattr(globals()[name], "__file__")
+    }
+    missing = sorted(imported - registered)
+    if missing:
+        raise SystemExit(
+            f"build_db imports {missing} but never runs them. Either the "
+            "chain lost a step in a merge resolution (build_db.py conflicts "
+            "on nearly every branch, and the conflict splits a step tuple), "
+            "or the import is dead. Both are decided deliberately, never "
+            "left to a silently shorter database."
+        )
 
 
 def content_hash(db_path: Path) -> str:
@@ -87,14 +165,118 @@ def build(db_path: Path) -> dict:
         ("solo", lambda: ingest_solo.ingest(db_path)),
         ("diagnoses", lambda: ingest_diagnoses.ingest(db_path)),
         ("campaign_us", lambda: ingest_campaign.ingest(db_path)),
+        (
+            "campaign_us_20261006",
+            lambda: ingest_campaign.ingest(db_path, ingest_campaign.STAGED_US_20261006),
+        ),
+        (
+            "harvest_lane_stages",
+            lambda: ingest_harvest.advance_computed_lanes(db_path),
+        ),
+        # FNS state SNAP participation rates (#2): the first US mode-1
+        # source after Urban; claims + federal-rules PE counterparts.
+        ("fns_snap_rates", lambda: ingest_fns_snap_rates.ingest(db_path)),
+        # IRS/Census EITC participation rates (#2, lane nta-eitc).
+        (
+            "irs_eitc_participation",
+            lambda: ingest_irs_eitc_participation.ingest(db_path),
+        ),
+        # ASPE Welfare Indicators, Indicator 4 (#2): TANF/SNAP/SSI
+        # participation among the eligible (TRIM3 + FNS series).
+        (
+            "aspe_welfare_indicators",
+            lambda: ingest_aspe_welfare_indicators.ingest(db_path),
+        ),
+        # Diagnosis batch 3 (FNS, EITC, ASPE lanes): after their claims exist.
+        ("diagnoses_batch3", lambda: ingest_diagnoses.ingest_batch3(db_path)),
+        # US administrative outturns staged for Chronicle (boundary rule
+        # 2026-08-02): HUD Picture of Subsidized Households. No claims.
+        ("us_admin_outturns", lambda: ingest_us_admin_outturns.ingest(db_path)),
         ("uk_externals", lambda: ingest_uk_externals.ingest(db_path)),
         ("uk_deductions", lambda: ingest_uk_deductions.ingest(db_path)),
+        # DWP workplace pension participation (#98): the first external
+        # validation of any pensions quantity in the UK scorecard.
+        ("dwp_pensions", lambda: ingest_dwp_pensions.ingest(db_path)),
+        # Low Pay Commission (#88): the first external validation of
+        # PE-UK's minimum-wage machinery.
+        ("lpc_minimum_wage", lambda: ingest_lpc_minimum_wage.ingest(db_path)),
+        # A ZERO-claim lane, registered on purpose: HMT publishes the
+        # Budget decile impacts as unlabeled chart bars, and without this
+        # step a fresh build contained no trace of the lane at all —
+        # indistinguishable from never having harvested it.
+        (
+            "hmt_distributional",
+            lambda: ingest_hmt_distributional.ingest(db_path),
+        ),
+        # The divergence decomposition's artifact vanished on every CI
+        # rebuild because nothing registered it; the lane is written
+        # either way, so a build says "not run" rather than saying
+        # nothing.
+        (
+            "obr_divergence",
+            lambda: ingest_obr_divergence.ingest(db_path),
+        ),
+        # The UK reform-validation lane. Registered even though issue
+        # #79's artifact does not exist yet: without this step a
+        # deterministic build silently ignored a future artifact and left
+        # the DB indistinguishable from "awaiting artifact".
+        (
+            "uk_reform_validation",
+            lambda: ingest_reform_validation.ingest_uk(db_path),
+        ),
+        # Two independent UK models (#86), harvested in the 2026-08-02
+        # sweep and unused until now.
+        ("uk_thinktanks", lambda: ingest_uk_thinktanks.ingest(db_path)),
+        # ONS effects of taxes and benefits (#90): the distributional
+        # population HMT publishes only as charts.
+        ("ons_etb", lambda: ingest_ons_etb.ingest(db_path)),
+        (
+            "uk_policy_effects",
+            lambda: ingest_obr_policy_effects.ingest(db_path),
+        ),
+        # The OBR-certified costings PR #56's lane scores: 621 Policy
+        # Measures Database / EFO Table 3.17 rows keyed to
+        # data/uk/obr_measure_reforms.yaml, with announcement-time
+        # baselines (#13).
+        ("obr_costings", lambda: ingest_obr_costings.ingest(db_path)),
+        # Every Autumn Budget 2025 score (#136): 25 harvest families from
+        # 27 producers, keyed to data/uk/ab2025_measures.json, with exact
+        # per-family accounting.
+        ("uk_ab2025", lambda: ingest_uk_ab2025.ingest(db_path)),
         ("produce_uk", lambda: produce_campaign_uk.produce(db_path)),
         (
             "campaign_uk",
             lambda: ingest_campaign.ingest(db_path, produce_campaign_uk.RESOLVED),
         ),
+        # The tranche-3 PolicyEngine counterparts for AB2025 claims (#136):
+        # computed on the certified bundle by pipeline/compute_uk_ab2025.py,
+        # staged claim_id-direct with the executed pre-Budget world stamped.
+        (
+            "campaign_uk_ab2025",
+            lambda: ingest_campaign.ingest(
+                db_path, ingest_uk_ab2025.STAGED_COUNTERPARTS
+            ),
+        ),
+        # #56's computed counterparts: the compute staging resolved to
+        # claim ids and executed worlds, then attached like any campaign.
+        ("produce_uk_obr_costings", lambda: produce_obr_costings.produce(db_path)),
+        (
+            "campaign_uk_obr_costings",
+            lambda: ingest_campaign.ingest(db_path, produce_obr_costings.RESOLVED),
+        ),
+        # The pe_gap verdicts for AB2025 claims on measures the certified
+        # engine cannot express: a result row AND a diagnosis row carrying
+        # the registry's action_link, so the gap is a finding with somewhere
+        # to go rather than a blank (#136, gate #9).
+        ("uk_ab2025_verdicts", lambda: ingest_uk_ab2025.ingest_verdicts(db_path)),
+        # After the counterpart runs attach, a lane whose claims now carry a
+        # computed PE result reads "computed" rather than "ingested" (#136).
+        ("uk_ab2025_lanes", lambda: ingest_uk_ab2025.advance_lanes(db_path)),
+        ("nz_budget_scores", lambda: ingest_official_budget_scores.ingest(db_path)),
+        ("be_pit_reform", lambda: ingest_pit_reform_2026.ingest(db_path)),
+        ("be_jrc", lambda: ingest_jrc_country_report.ingest(db_path)),
     ]
+    _assert_every_imported_ingest_runs(steps)
     summary: dict = {"steps": {}}
     for name, fn in steps:
         summary["steps"][name] = fn()

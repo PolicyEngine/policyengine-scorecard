@@ -9,7 +9,8 @@ descriptor naming the harvested claim it compares against — either a
 family-vocabulary descriptor (translated below) or, for claims already in
 the DB (the Urban subgroup joins), the claim_id directly.
 
-US families attach from sources/campaign-20260802/us. UK families
+US families attach from sources/campaign-20260802/us, and their us-6.2.1
+recompute from sources/campaign-20261006/us (pipeline/campaign_us/). UK families
 attach from sources/campaign-20260802/uk_resolved — the DERIVED staging
 produce_campaign_uk builds from the frozen uk/ archive by resolving
 each row to a claim_id against the ingested UK claims (today:
@@ -54,6 +55,13 @@ from .models import BASELINE, ComparisonStatus, PEResult
 
 REPO = Path(__file__).resolve().parent.parent
 STAGED_US = REPO / "sources" / "campaign-20260802" / "us"
+# The same US families recomputed on bundle us-6.2.1 (policyengine-us 2.2.1
+# + populace-us-2024-spm-20260915) by pipeline/campaign_us/, after every
+# row reproduced the August value exactly on us-5.0.1
+# (pipeline/campaign_us/VALIDATION.md). Same descriptors and file names,
+# new run_ids (campaign-20261006-*), so ingesting it adds a second
+# per-release result without touching the August ones.
+STAGED_US_20261006 = REPO / "sources" / "campaign-20261006" / "us"
 
 _CURRENT_LAW_KEY = BASELINE.baseline_key()
 
@@ -107,6 +115,14 @@ def _normalize(family: str, match: dict) -> tuple[dict, str | None]:
     else:
         raise ValueError(f"no normalizer for family {family!r}")
     return cond, reform_policy
+
+
+def _executed_baseline(row: dict) -> str:
+    """The key of the world the run executed as its baseline. Absent on
+    the US campaign staging (every run there executed current law);
+    present on staging whose runs executed a registered pre-measure
+    world (produce_obr_costings). Never inferred from the claim."""
+    return row.get("baseline_key") or _CURRENT_LAW_KEY
 
 
 def _find_claim(db: ScorecardDB, family: str, match: dict) -> str:
@@ -207,7 +223,7 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
                         "run_id": row["run_id"],
                         "computed_at": row["computed_at"],
                         "note": note,
-                        "baseline_key": _CURRENT_LAW_KEY,
+                        "baseline_key": _executed_baseline(row),
                     }
                 )
                 continue
@@ -228,13 +244,29 @@ def ingest(db_path: Path, staged_dir: Path | None = None) -> dict:
                     run_id=row["run_id"],
                     computed_at=row["computed_at"],
                     annotations=row.get("annotations", []),
-                    # every campaign run executed a current-law
-                    # baseline (reform side carries the option;
-                    # the jct expiry-reversal's negation is in
-                    # its construction)
-                    baseline_key=_CURRENT_LAW_KEY,
+                    # the world the run EXECUTED as its baseline: current
+                    # law unless the staging says otherwise (the US
+                    # campaign runs all executed current law; the UK OBR
+                    # costings lane executes registered pre-measure
+                    # worlds and stamps them, #13)
+                    baseline_key=_executed_baseline(row),
                 )
             )
+
+    # A staged executed world must be a registered one: an unregistered
+    # key would pass the FK-less insert and defeat the #13 guard.
+    registered = {
+        r[0] for r in db.conn.execute("SELECT baseline_key FROM baselines").fetchall()
+    }
+    staged_worlds = {r.baseline_key for r in results} | {
+        e["baseline_key"] for e in exhibits
+    }
+    unregistered = sorted(k for k in staged_worlds if k not in registered)
+    if unregistered:
+        raise ValueError(
+            f"staged baseline_key(s) {unregistered} are not registered worlds "
+            "(baselines.py) — register the executed world, never stamp a guess"
+        )
 
     # All parsing and matching done — one transaction, commit or nothing.
     # Deletion is scoped to the exact run_ids being re-ingested, never the

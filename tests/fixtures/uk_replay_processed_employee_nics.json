@@ -1,0 +1,21 @@
+{
+  "engine_version": "2.89.2",
+  "parameter": "gov.hmrc.national_insurance.class_1.rates.employee.main",
+  "basis": "Measured from the installed pinned CountryTaxBenefitSystem by the compute lane; these are processed parameters, not raw YAML.",
+  "preprocessing_source": "policyengine_uk/utils/parameters.py::convert_to_fiscal_year_parameters",
+  "preprocessing_source_sha256": "a0dcccd5bc8e19053ae5a38535499d01e3f5040f0dc70b646b57383968506850",
+  "sampling_rule": "For each year2015..2040, sample each government Parameter at April30 and update the whole nominal year to that value.",
+  "observed_current_law_2024": {
+    "2024-01-01": 0.08,
+    "2024-04-06": 0.08,
+    "2024-04-30": 0.08,
+    "2024-12-31": 0.08
+  },
+  "observed_values_list_2024": [
+    {
+      "instant_str": "2024-01-01",
+      "value": 0.08
+    }
+  ],
+  "reproducer": "from policyengine_uk import CountryTaxBenefitSystem; s=CountryTaxBenefitSystem(); p=s.parameters.gov.hmrc.national_insurance.class_1.rates.employee.main; print({d:p(d) for d in ('2024-01-01','2024-04-06','2024-04-30','2024-12-31')}); print([(v.instant_str,v.value) for v in p.values_list if v.instant_str.startswith('2024')])"
+}

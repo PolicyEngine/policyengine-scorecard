@@ -1,3 +1,4 @@
+import json
 from dataclasses import replace
 import pytest
 
@@ -135,6 +136,33 @@ class TestDB:
         assert row["pe_value"] == 950.0
         assert row["delta"] == pytest.approx(-50.0)
         assert row["ratio"] == pytest.approx(0.95)
+
+    def test_platform_grid_wins_within_the_newest_bundle(self, db):
+        """On one data bundle the canonical grid (what the app ships) beats a
+        later run of another construction; a newer bundle still wins."""
+        s = score()
+        db.upsert_scores([s])
+        cid = s.claim_id()
+        mk = lambda v, bundle, run, t: PEResult(  # noqa: E731
+            claim_id=cid,
+            computed_value=v,
+            status="comparable",
+            engine_version="2.2.1",
+            data_bundle=bundle,
+            run_id=run,
+            computed_at=t,
+        )
+        db.add_results(
+            [
+                mk(900.0, "spm", "platform-grid-2024", "2026-10-06T12:00:00"),
+                mk(950.0, "spm", "campaign-20261006-subgroups", "2026-10-06T18:19:03"),
+            ]
+        )
+        assert db.comparisons(source="urban_sotsn")[0]["pe_value"] == 900.0
+        db.add_results(
+            [mk(990.0, "next", "campaign-20261101-subgroups", "2026-11-01T00:00:00")]
+        )
+        assert db.comparisons(source="urban_sotsn")[0]["pe_value"] == 990.0
 
     def test_held_out_filter(self, db):
         consumed = score(
@@ -882,3 +910,59 @@ def test_stale_view_definition_is_rebuilt(tmp_path):
     cols = {r[1] for r in db.conn.execute("PRAGMA table_info(comparisons)")}
     db.close()
     assert "claim_id" in cols and "not_the_view" not in cols
+
+
+class TestPolicyEngineVariables:
+    def test_variables_round_trip_through_view_and_default_empty(self, tmp_path):
+        db = ScorecardDB(tmp_path / "v.db")
+        s = score()
+        db.upsert_scores([s])
+        db.add_results(
+            [
+                PEResult(
+                    claim_id=s.claim_id(),
+                    computed_value=1.0,
+                    status="comparable",
+                    engine_version="1",
+                    data_bundle="b",
+                    computed_at="2026-09-10T00:00",
+                    policyengine_variables=["refundable_ctc"],
+                )
+            ]
+        )
+        row = db.comparisons(source="urban_sotsn")[0]
+        assert json.loads(row["policyengine_variables"]) == ["refundable_ctc"]
+
+        # A result that names nothing stores an empty list, never NULL.
+        db.add_results(
+            [
+                PEResult(
+                    claim_id=s.claim_id(),
+                    computed_value=2.0,
+                    status="comparable",
+                    engine_version="1",
+                    data_bundle="b",
+                    computed_at="2026-09-11T00:00",
+                )
+            ]
+        )
+        row = db.comparisons(source="urban_sotsn")[0]
+        assert json.loads(row["policyengine_variables"]) == []
+
+    def test_pre_existing_file_gains_the_column(self, tmp_path):
+        # A file written before the column existed: build one with the
+        # current schema, then take the column away the way an old file
+        # would lack it, and reopen.
+        import sqlite3
+
+        path = tmp_path / "old.db"
+        ScorecardDB(path).close()
+        with sqlite3.connect(path) as conn:
+            conn.executescript(
+                "DROP VIEW IF EXISTS comparisons;"
+                "ALTER TABLE pe_results DROP COLUMN policyengine_variables;"
+            )
+        db = ScorecardDB(path)
+        cols = {r["name"] for r in db.conn.execute("PRAGMA table_info(pe_results)")}
+        assert "policyengine_variables" in cols
+        db.close()

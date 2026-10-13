@@ -9,14 +9,15 @@ can check, one SQLite file, reform-keyed.
   `baseline` (current law) for level validation, a PolicyEngine parametric
   reform for score validation, an Axiom rulespec reference reserved. A level
   is a score of the null reform — modes 1 and 2 share one table.
-- **Populace-targets shape.** Row = `ledger_fact` (a Ledger
+- **Microcosm-targets shape.** Row = `ledger_fact` (a Chronicle
   `validation_comparator` fact id once cataloged; inline publication
-  provenance until then) + closed-vocabulary `metric` / `unit_concept` /
+  provenance until then — legacy `ledger` field/path names are frozen) + closed-vocabulary `metric` / `unit_concept` /
   `time_basis` + an open `conditions` mapping (geography, program, subgroup,
   methodological `variant`, `rate_unit`, …). Adapters fail loudly on
   anything unmapped.
 - **`calibration_relationship` mandatory** (`consumed_as_target` /
-  `seed_source` / `held_out`). Published validation wins = held_out only.
+  `seed_source` / `held_out`). Published validation comparisons use held-out
+  rows only.
 - **History, not state.** `pe_results` keeps every computation (engine
   version × certified data bundle × run); the `comparisons` view joins each
   claim to its latest result. Re-scoring on a new certified artifact appends.
@@ -156,6 +157,19 @@ this ingest mints is marked publication.registry =
 (re-ingest deletes and recreates exactly these claims, never the harvest
 claims it attaches results to).
 
+Country dimension (#62): the ingest is parameterised, not forked —
+`ingest(..., country="US")` is the default; every minted claim carries
+`publication.country` (claim ids are unchanged: publication is outside the
+claim-id hash). The `COUNTRIES` map declares the UK lane (raw_uk/ dir,
+`populace-uk-rv-` run prefix, `populace_uk_reform_validation` registry
+mark, GBP claims) with a deliberately **empty** release map: the first
+`reform_validation.json` a managed populace-uk run produces adds its
+release_manifest.json pin there. Non-US artifacts use the country-neutral
+categories `Reform` / `Program actual` with an explicit `jct.publisher`
+(the US category→publisher inference never runs for them). Replacement
+scope is per country — run prefixes are disjoint by test, so one country's
+wholesale replace cannot delete another's rows.
+
 **Per-release automation** (`tools/reform_validation/`, re-homed from
 calibration-diagnostics #112 per issue #15 call 3). The scheduled workflow
 `.github/workflows/reform-validation-backfill.yml` keeps this population
@@ -176,3 +190,263 @@ because a new release brings a new engine pin and shifts the exact-count
 ingest tests — a human confirms the DB delta and updates
 `tests/test_reform_validation_ingest.py`'s corpus counts before merging.
 Requires `MODAL_TOKEN_ID` / `MODAL_TOKEN_SECRET` repo secrets.
+
+## 2026-08-20 population: OBR published policy effects (UK)
+
+Fourth UK population and the external half of the Macro entry point
+(issue #55): 266 claims from OBR's own published estimates of what
+fiscal policy does to the ECONOMY, harvested by
+`sources/obr-policy-effects/adapter.py` and ingested by
+`ingest_obr_policy_effects` (chain position: after `uk_deductions`,
+before the campaign attaches).
+
+```bash
+PYTHONPATH=. python -m scorecard_db.ingest_obr_policy_effects data/scorecard.db
+```
+
+Four families on four new metrics — `gdp_level_effect` (151),
+`cpi_inflation_effect` (36), `supply_side_impact` (19) and
+`decisions_effect_on_borrowing` (60). The first and third are
+deliberately distinct metrics: a package's effect on the actual-GDP path
+is not one measure's supply-side scoring, and
+`decisions_effect_on_borrowing` (PSNB) is likewise kept apart from
+`revenue_change` and `cash_requirement_change` (PSNCR).
+
+**Units.** Three of the four quantities look like "percent" and are not
+one thing, so each carries its own unit concept:
+`percent_of_real_gdp` (a deviation in the LEVEL of real GDP),
+`percentage_points` (the AB2025 package's effect on CPI inflation) and
+`percent_of_potential_gdp` (briefing paper No.10's supply-side
+scorings); borrowing is `gbp`. The mapping is validate-THEN-map: the
+adapter's staged unit label must equal the one the metric carries or the
+ingest raises, so a mislabeled row can never be stored as a different
+quantity.
+
+**Baselines.** These claims are NOT scored against `current_law`. OBR
+measures a package as a deviation from that EFO round's PRE-MEASURES
+forecast — a distinct named world per round — and briefing paper No.10
+chapter 2 splits the counterfactual KIND further: tax and welfare
+measures against a legislated-parameter counterfactual, DEL and
+regulatory measures against the pre-existing activity/spending baseline.
+March 2026 Table B.1 states its own counterfactual in its title (the
+November 2025 Budget forecast). Each row carries the world and kind as a
+`ReformRef.baseline` descriptor with `conditions["baseline_policy"]`
+mirroring it, a locator travels with the claim, an event whose baseline
+does not match its round raises, and all eleven (round, counterfactual)
+worlds are registered in `baselines.py`. Defaulting to `current_law`
+would have let a PE result computed against current law read as
+comparable.
+
+**Publication.** Provenance is per vendored artifact, so each round's
+claims carry their own release date and dated URL (2023-11-22,
+2024-03-06, 2024-10-30, 2025-11-26, 2026-03-03) rather than one generic
+`obr.uk/publications/` stamp — and the March 2026 rows carry the
+publication date, not the Wayback capture.
+
+All 266 are `held_out`: nothing in pe-uk-data or policyengine-uk is
+fitted to a macro-effect path — they are what the Macro members get
+scored against. `basis` is `forecast` on every row (its repo-wide
+meaning); how the effect was scored rides in
+`conditions["scoring_method"]` (`post_behavioural` | `supply_side`).
+
+Two identity decisions this population forced:
+
+- **`conditions["decomposition"]`.** The October 2024 workbook prints
+  the AB2024 package twice — chart 2.A by expenditure component, 2.B by
+  measure/channel — so both publish a `total` and a
+  `demand_multipliers`. The decomposition is therefore identity-bearing,
+  not provenance, and is keyed off (fiscal_event, sheet): the sheet id
+  alone will not do, since C2.A is by-channel in the Nov 2023 and Mar
+  2024 workbooks.
+- **The supply-side horizon, per scoring round.** Briefing paper No.10's
+  Table 2.1 states its year in words ("the impact on potential output in
+  the fifth year of our forecast"), never as a digit — and the paper
+  re-states scorings made at five EARLIER fiscal events, so "our
+  forecast" is each measure's own round. `_BP10_HORIZON` resolves the
+  symbol per event (2027-28 for March 2023 through 2029-30 for March
+  2025); the note rides verbatim in `conditions["horizon_note"]` and
+  `conditions["horizon"]` names the symbol. Period is claim identity, so
+  one shared horizon would have been 19 wrong claims.
+
+Table B.1's nested rows keep the `aggregate_level`/`parent` guard the
+OBR welfare lines use, so no consumer summing borrowing effects by FY
+double-counts. PE counterparts are step 3 of #55 and are not computed
+here.
+
+## 2026-09-24 population: every Autumn Budget 2025 score (UK, #136)
+
+Twenty-five harvest families from 27 producers
+(`sources/harvest-uk-ab2025-2026-09-24/`), ingested by
+`ingest_uk_ab2025` (chain position: after `uk_policy_effects`, before the
+campaign attaches) with a second step, `ingest_uk_ab2025.ingest_verdicts`,
+after `campaign_uk`.
+
+```bash
+PYTHONPATH=. python -m scorecard_db.ingest_uk_ab2025 data/scorecard.db
+```
+
+8,194 staged rows = 6,985 claims + 1,209 tallied drops, pinned per family
+in `ingest_uk_ab2025_expected.json`. The drops are decisions with written
+reasons, never omissions: 342 re-published official figures (the #86
+rule; their originators' rows are in the same harvest), 221 single-
+household worked examples and specimen families (mode-3 material, #63),
+100 categorical uncertainty ratings, 104 behavioural parameters and
+non-monetary tax bases, 119 macro-fiscal aggregates (#55, tranche 4), 85
+benefits-in-kind readings (#61 decides how an in-kind series is carried),
+and the remainder ratios, threshold levels and single-row quantities with
+no registered metric. 28 twins (one statistic printed twice by one
+producer) are merged through `merge_republications`.
+
+**Three retrieval axes on every claim.** `source` is the producer;
+`conditions.measure_key` is the key in `data/uk/ab2025_measures.json`
+(shared across producers, so the two-child measure's rows from HM
+Treasury, the OBR, the IFS, RF, JRF, IPPR and CPAG join on one reform
+key per baseline world); `conditions.fiscal_event` is `autumn_budget_2025`.
+`conditions.benchmark_class` is set on every row — the first UK use of
+the cross-model epistemics ruling — and the Fabian Society's four
+PolicyEngine-computed rows are `same_assumptions`.
+
+**The verdict on the row.** Every keyed claim carries the registry's
+`pe_expressibility`, and a `not_expressible` one carries `pe_missing` and
+`action_link` (the ONS ETB pattern). The verdicts step then writes, for
+each such claim, a `pe_results` row with status `pe_gap` (no value, the
+certified pin as engine and bundle, the registry's `why` and name search
+as annotations) and a `diagnoses` row of class `pe_gap` carrying the
+link, so `SELECT COUNT(*) FROM comparisons WHERE pe_status='pe_gap' AND
+action_link=''` is zero by construction. Expressible and partial measures
+have no result row until the tranche-3 run attaches one.
+
+**Units and metrics minted** (recurring across producers only):
+`affected_count` / `affected_share`, `average_tax_change`,
+`share_no_change`, `energy_bill_change`, `revenue_share`; units
+`properties` and `estates`.
+
+**Visibility.** Every national-grain claim sets
+`publication.publish_without_result` so it reaches the page before a
+counterpart exists; the 2,991 constituency-grain Tax Policy Associates
+rows stay in the DB and out of `populations.json` until a constituency
+view exists.
+
+**Worlds.** Fourteen producer-defined counterfactuals quoted in the
+harvest as `proposed_baseline` are registered in `baselines.py` and mapped
+by their opening words in `_PROPOSED_BASELINE_PREFIXES`; a row on an
+unregistered world raises rather than defaulting to current law (#13).
+
+
+### Tranche 3 (2026-09-25, revised 2026-09-28): PolicyEngine counterparts on the certified bundle
+
+Run `campaign-20260925-uk-ab2025` (`pipeline/compute_uk_ab2025.py`, policyengine-uk
+2.89.2 on `populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z`, sha256 `f17306cc…`
+checked before every simulation; calendar years 2026–2030 proxy FY 2026-27 to
+2030-31; static, no behavioural response): 40 measures × 5 years = 200 artifacts
+under `results/uk/ab2025/`, plus `RUN_MANIFEST.json` (`certified_dataset_sha256`,
+the executed measures, the 24 expressible measures the runner refused with the
+reason for each, the two aliases, and every artifact's digest).
+
+Three constructions execute. A reversal simulates the pre-Budget world
+(`pe_baseline_modifier`) against current law; a forward delta simulates current
+law against the delta; a measure carrying BOTH outside a reversal
+(`delta_on_modified_baseline`) simulates both worlds, the modifier as the
+baseline and the delta as the reform, one simulation alive at a time. The
+announced threshold freeze is the last kind: at the pin the income tax
+thresholds are frozen to 2031 but the NI thresholds are not, so its IT legs are
+reversed and its NI legs applied (the pre-Budget world pins the class 4 limits
+in 2027-28, which pre-Budget law froze and the engine uprates); the two packages
+that contain it, and the two-year option scored on the same pre-Budget world,
+execute the same way.
+
+Two guards run before every run, in `--dry-run`, and in CI (`--guards`, in the
+baseline-probe workflow, against the pinned engine). `world_coverage_gaps`
+(engine-free): a year-keyed world that stops before the run ends reverts to
+current law there and would assert a zero, so every executed world must cover
+the run unless the registry records `effect_ends_fy` (it caught the plan-2
+student loan freeze, whose pre-Budget world stopped at 2029 while its effect
+runs on). `reversal_delta_mismatches`: a reversal never executes its
+`pe_reform_delta`, so the delta must be current law at some date of its window
+(deliberately some date: current law may uprate the announced level later in
+the window), or it is a reform leg the reversal would drop and the run refuses
+(it caught the threshold freeze's NI legs).
+
+`pipeline/stage_uk_ab2025.py` derives `results/uk/staged_ab2025/ab2025_counterparts.jsonl`
+from those artifacts against the built database — 1,008 counterparts on 23
+measures, every row `constructed` (the claim's own baseline and the executed
+pre-Budget world named in the annotations, with the period proxy and the sign
+orientation). A measure whose reform world equals its baseline world in EVERY
+year of the full run is inert — the lever did not bite on the certified engine
+and data — and its claims are tallied, never attached as zeros (four measures:
+the UC rebalancing switch, the triple lock, the LHA freeze and the rail fare
+index; 99 claims). Identical worlds in any single year assert a zero only when
+the year is before the measure's RECORDED commencement (`commences_fy`, from the
+HM Treasury Table 4.1 title, with its source): 88 rows attach as `not yet in
+force`; identical worlds in a year the measure is in force assert nothing (8
+claims, the savings measure's 2026-27, whose starting-rate leg is in force but
+not constructed). A year the registry marks non-comparable (`non_comparable_fys`:
+the student loan freeze's 2026-27 loan-book revaluation) is never answered (2
+claims). Where a measure's head moved while `gov_tax` and `gov_spending` did
+not, the aggregates do not carry that head and the exchequer effect is read from
+the head itself (`HEAD_SIDE`: student loan repayments a receipt, the Scottish
+child payment an outlay; 5 rows); a head with no recorded side is unanswerable.
+Every claim not answered is counted in `STAGING_TALLY.json` (by reason, overall
+and per measure) and listed, one line per claim, in `STAGING_UNANSWERED.jsonl`
+(5,691 lines: 3,318 sub-national, 1,133 on a fiscal year or measure without an
+artifact, 442 without a fiscal year, 222 owned by the OBR costings lane, the
+rules above, and the metric shapes the mapper has no counterpart for yet:
+`average_tax_change` 241, `affected_share` 61, `participation_rate` 45, …). The
+222 claims that carry `obr_measure_key` are the OBR costings lane's: no claim
+ever carries two computed answers (a fact of the built database, checked in
+`tests/test_uk_ab2025_counterparts.py`).
+
+Known engine defect, not adjusted here: policyengine-uk 2.89.2's
+`ni_class_4_maximum` compares two algebraically equal amounts with a strict `>`
+when Class 1 and Class 2 are zero, so float rounding decides whether Class 4 is
+capped at the main band, dropping the 2% band above the upper profits limit for
+0.1m–0.55m self-employed people a year from 2027. Class 4 legs of any measure
+that moves the Class 4 thresholds (the threshold freeze: +£989m, +£14m, +£1,111m
+in 2028-29 to 2030-31) carry that noise.
+
+Build step `campaign_uk_ab2025` attaches the staged rows through
+`ingest_campaign` (claim_id-direct, executed world stamped from the
+`pre_ab2025__*` registry, deletion scoped to this run_id); the lane advancer
+then reads `uk-ab2025-official` (363 claims answered), `uk-ab2025-microsim`
+(631), `uk-ab2025-admin-other` (13) and `uk-ab2025-macro` (1) as `computed`.
+Re-running the stager against the built database must reproduce the three
+committed files byte for byte; the runner's `--resume` picks up an interrupted
+run from its artifacts (one simulation at a time, `HDF5_USE_FILE_LOCKING=FALSE`).
+
+## 2026-09-25 population: OBR-certified measure costings (UK, #54/#56)
+
+`ingest_obr_costings` (chain position: after `uk_policy_effects`, before
+`uk_ab2025`) ingests the 621-row slice of the OBR Policy Measures Database
+(November 2025 vintage, 552 rows, source `obr_pmd`) and the EFO March 2026
+Table 3.17 re-estimates (69 rows, source `obr_efo`) that
+`data/uk/obr_measure_reforms.yaml` scores. The slice is DERIVED from the
+vendored harvest by `pipeline/select_obr_costings_claims.py` (25,558 rows
+read = 621 selected + 24,937 outside the registry; `--check` is byte-exact),
+which also writes the JSON projection of the YAML registry the build reads.
+
+```
+PYTHONPATH=. uv run --with pyyaml python pipeline/select_obr_costings_claims.py --check
+PYTHONPATH=. python -m scorecard_db.ingest_obr_costings data/scorecard.db
+```
+
+Identity: every condition key is in `STANDARD_CONDITIONS`; claims key the
+FY END year; `exchequer_impact` rows carry `REVENUE_CHANGE` with
+`fiscal_measure = exchequer_impact`; every row names the registered world
+OBR scored it against (that round's `obr_pre_measures_<event>`, or the
+indexed-thresholds counterfactual for the March 2026 re-estimates) and, for
+the Autumn Budget 2025 measures, the #136 registry key so the OBR leg joins
+the other producers' rows on one reform key.
+
+Results: `produce_obr_costings` (after `campaign_uk`) resolves the compute
+staging `results/uk/staged/obr_costings.jsonl` to claim ids and stamps the
+world PE EXECUTED (`baseline_key`: the registered pre-measure world for a
+reversal on the certified world); `campaign_uk_obr_costings` attaches it via
+`ingest_campaign`, which now honours a staged `baseline_key` and refuses an
+unregistered one.
+
+Ownership of overlapping measures (the #56 / #140 rule): a claim that carries
+`conditions.obr_measure_key` is in the OBR costings slice and is answered ONLY by
+this lane's compute (per OBR head, in OBR's conventions); every other claim on an
+`ab2025__` measure is answered ONLY by the AB2025 counterparts stager
+(`pipeline/stage_uk_ab2025.py`), which skips claims carrying `obr_measure_key`.
+One claim, one computed answer, never two.

@@ -1,0 +1,24 @@
+{
+  "id": "hmt-distributional",
+  "name": "HM Treasury — Impact on households: distributional analysis to accompany Budget 2025",
+  "organization": "HM Treasury",
+  "country": "UK",
+  "url": "https://www.gov.uk/government/publications/supporting-documents-for-budget-2025",
+  "data_urls": [
+    "https://assets.publishing.service.gov.uk/media/69269c6222424e25e6bc31bb/Impact_on_households.pdf"
+  ],
+  "raw_note": "raw/ vendors the PDF only, because that is all HMT publishes: the decile impacts in Figures 1.A-1.C are unlabeled chart bars with no accompanying spreadsheet or chart-data file. The adapter verifies and extracts document structure (figure inventory, policy scope, methodology facts); per-decile values are not machine-readable and are not emitted.",
+  "published": "2025-11-26",
+  "fetched": "2026-08-17",
+  "model": {
+    "name": "HM Treasury distributional analysis model",
+    "open_source": false,
+    "method": "Static microsimulation of tax and welfare measures on survey data plus allocation of benefits-in-kind from public service spending, ranked by equivalised net household income (BHC) deciles. Cumulative impact of decisions announced from Autumn Budget 2024 onwards, shown in 2028-29 against a counterfactual of no policy changes over the period. Full compliance with tax and welfare rules assumed; behavioural responses generally excluded.",
+    "method_basis": "Chapter 2 (Data sources and methodology) of the publication"
+  },
+  "period": "Impacts in 2028-29 (final year of Spending Review 2025)",
+  "programs": ["hmt_distributional_analysis"],
+  "geographies": "UK households (devolved administrations' own decisions excluded)",
+  "vintage_note": "Each fiscal event's edition re-scores the cumulative package against that event's counterfactual; editions are not comparable to each other row-by-row. Score only against the edition named in the claim's fiscal_event condition.",
+  "diagnosis_upstream": "Divergences decompose against package composition (which measures are in scope), income concept and equivalisation, the public-services benefits-in-kind allocation (not_expressible in PE), and the no-policy-change counterfactual baseline. Only after every one of those axes is sized may an engine defect be named — and then only through the citable-known-issue gate: a diagnosis carries a class, a rationale and an action_link to the upstream issue, exactly as every other diagnosed divergence does. 'May be inferred' is not a route; an uncited engine-defect claim is blame, not a finding."
+}

@@ -1,0 +1,32 @@
+{
+  "id": "irs-eitc-participation",
+  "name": "IRS/Census — EITC participation rates (State, TY2014-2022; national CPS series, TY2019-2022)",
+  "organization": "Internal Revenue Service with the U.S. Census Bureau Center for Economic Studies",
+  "country": "US",
+  "url": "https://www.irs.gov/tax-professionals/eitc-central/eitc-participation-rate-by-state",
+  "data_urls": [
+    "https://www.irs.gov/tax-professionals/eitc-central/eitc-participation-rate-by-state",
+    "https://web.archive.org/web/20240527172311id_/https://www.eitc.irs.gov/eitc-central/participation-rate-by-state/eitc-participation-rate-by-states",
+    "https://www2.census.gov/library/working-papers/2024/adrm/ces/CES-WP-24-75.pdf"
+  ],
+  "raw_sha256": {
+    "irs-eitc-participation-rate-by-state_2026-10-06.html": "303c3f6444934948eed106e7384185774d5067daa493c55b0659c29cf32e3a53",
+    "irs-eitc-participation-rate-by-states_wayback-20240527172311.html": "23ea827ae21252a8df17ea4094b468b6abd4a612fd45196cda539a6912e65c40",
+    "CES-WP-24-75.pdf": "60e370a5b30dff6e12c5ebc46870ed8c6c19213688f6fa8875175b689f72b563"
+  },
+  "citation": "Coleman, Ciyata, Charles Hokayem, Sanghun (Eric) Kim, Ethan Krohn, Krishnan Patel and Dean Plueger. \"EITC Participation Results and IRS-Census Match Methodology, Tax Year 2021.\" U.S. Census Bureau CES Working Paper 24-75, December 2024. (The same file is posted at irs.gov/pub/irs-soi/24rpeitcunderclaimsty2021census.pdf.)",
+  "published": "State table: undated web page, TY2022 edition current as fetched 2026-10-06; CES-WP-24-75: 2024-12",
+  "fetched": "2026-10-06",
+  "model": {
+    "name": "IRS-Census Exact Match (survey records linked to IRS returns)",
+    "open_source": false,
+    "method": "Participation = eligible taxpayers receiving an EITC payment / taxpayers eligible for the EITC. Eligibility is modeled from survey income and demographic data (ACS for the State table, CPS ASEC for the national headline), including non-filers; receipt comes from IRS records. Taxpayers and tax units are used interchangeably.",
+    "method_basis": "IRS page footnotes 1-2; CES-WP-24-75 methodology section"
+  },
+  "period": "State table: tax years 2014-2022 (ACS). National CPS series: tax years 2019-2021 (CES-WP-24-75 Tables 1-3) and tax year 2022 (IRS page footnote 2).",
+  "programs": ["eitc"],
+  "geographies": "50 States, DC and national (State table); national only (CPS series)",
+  "coverage_note": "No State-level eligible counts or by-children rates are published with the State table; the CES paper's by-children and by-filing-status rates are stated in prose only and are not extracted.",
+  "vintage_note": "Tax year 2021 is the ARPA year (childless EITC expanded for that year only), so CPS TY2021 eligibility is not comparable with other years. The State table's older editions (TY2013-2020, May 2024) match the current edition cell for cell where they overlap.",
+  "diagnosis_upstream": "The IRS-Census model is not public; divergences classified as external-model issues become a comparison memo, not an upstream PR."
+}

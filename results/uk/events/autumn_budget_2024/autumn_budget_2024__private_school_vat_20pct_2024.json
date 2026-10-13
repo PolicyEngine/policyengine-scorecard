@@ -1,0 +1,83 @@
+{
+ "baseline_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "calendar_year_proxy": "PE calendar year 2024 proxies FY 2024-25.",
+ "certified_aggregates_gbp": {
+  "private_school_vat": 0.0
+ },
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "components": [
+  "autumn_budget_2024__private_school_vat_20pct"
+ ],
+ "construction": "forward_delta_on_certified_world",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "dataset_sha256_after": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "dataset_sha256_before": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "engine_version": "2.89.2",
+ "event": "autumn_budget_2024",
+ "fiscal_event": "Autumn Budget 2024",
+ "fy_proxy": "2024-25",
+ "head_channels": {
+  "private_school_vat": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "VAT",
+   "pe_variables": [
+    "private_school_vat"
+   ]
+  }
+ ],
+ "head_effects": {
+  "private_school_vat": 0.0
+ },
+ "head_variables": [
+  "private_school_vat"
+ ],
+ "literal_reform_minus_baseline": {
+  "private_school_vat": 0.0
+ },
+ "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+ "measure_total_gbp": 0.0,
+ "null_executed_as_no_limit": [],
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "reform_world": {
+  "executed": "certified world with pe_reform_delta",
+  "reform_dict": {
+   "gov.contrib.labour.private_school_vat": {
+    "2025-01-01.2035-12-31": 0.2
+   }
+  }
+ },
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "private_school_vat": 0.0
+   }
+  },
+  "reform": {
+   "heads": {
+    "private_school_vat": 0.0
+   }
+  }
+ },
+ "variable_metadata": {
+  "private_school_vat": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/contrib/labour/private_school_vat.py",
+   "entity": "household",
+   "label": "private school VAT",
+   "unit": "currency-GBP"
+  }
+ },
+ "year": 2024
+}

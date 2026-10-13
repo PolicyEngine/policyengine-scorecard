@@ -1,0 +1,148 @@
+{
+ "provenance": {
+  "engine_version": "2.2.1",
+  "data_bundle": "populace-us-2024-spm-20260915",
+  "bundle_id": "us-6.2.1",
+  "policyengine_version": "6.2.1",
+  "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+ },
+ "jobs": [
+  {
+   "label": "jct current law CY2026",
+   "values": {
+    "income_tax": 2610499432897.5215
+   },
+   "bundle": {
+    "bundle_id": "us-6.2.1",
+    "country_id": "us",
+    "policyengine_version": "6.2.1",
+    "model_package": "policyengine-us",
+    "model_version": "2.2.1",
+    "data_package": "microcosm-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "certified_data_build_id": "populace-us-2024-spm-20260915",
+    "certified_data_artifact_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "data_build_model_version": "2.2.1",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "managed_by": "policyengine.py",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "runtime_dataset_source": "data/populace_us_2024.h5",
+    "runtime_dataset_data_package": "microcosm-data",
+    "runtime_dataset_repo_type": "dataset",
+    "runtime_dataset_revision": "populace-us-2024-spm-20260915",
+    "runtime_dataset_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "spm": "{'forecast_content_sha256': '3d86d5c4c0423480e6b69b75d222ffa4a7a2639e4094df5ba2504af01be17173', 'scenario': 'ce_trend', 'geography_kind': 'county', 'geography_id': None, 'county_vintage': '2020', 'as_of': None}",
+    "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+   },
+   "reform": null,
+   "reform_checked": {},
+   "inputs_set": [],
+   "seconds": 156.3,
+   "maxrss_gb": 40.32
+  },
+  {
+   "label": "jct expiry world CY2026",
+   "values": {
+    "income_tax": 2701694886000.883
+   },
+   "bundle": {
+    "bundle_id": "us-6.2.1",
+    "country_id": "us",
+    "policyengine_version": "6.2.1",
+    "model_package": "policyengine-us",
+    "model_version": "2.2.1",
+    "data_package": "microcosm-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "certified_data_build_id": "populace-us-2024-spm-20260915",
+    "certified_data_artifact_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "data_build_model_version": "2.2.1",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "managed_by": "policyengine.py",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+    "runtime_dataset_source": "data/populace_us_2024.h5",
+    "runtime_dataset_data_package": "microcosm-data",
+    "runtime_dataset_repo_type": "dataset",
+    "runtime_dataset_revision": "populace-us-2024-spm-20260915",
+    "runtime_dataset_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+    "spm": "{'forecast_content_sha256': '3d86d5c4c0423480e6b69b75d222ffa4a7a2639e4094df5ba2504af01be17173', 'scenario': 'ce_trend', 'geography_kind': 'county', 'geography_id': None, 'county_vintage': '2020', 'as_of': None}",
+    "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.base[0].amount": {
+     "2026-01-01.2100-12-31": 1000
+    },
+    "gov.irs.credits.ctc.amount.adult_dependent": {
+     "2026-01-01.2100-12-31": 0
+    },
+    "gov.irs.credits.ctc.refundable.individual_max": {
+     "2026-01-01.2100-12-31": 1000
+    },
+    "gov.irs.credits.ctc.refundable.phase_in.threshold": {
+     "2026-01-01.2100-12-31": 3000
+    },
+    "gov.irs.credits.ctc.phase_out.threshold.JOINT": {
+     "2026-01-01.2100-12-31": 110000
+    },
+    "gov.irs.credits.ctc.phase_out.threshold.SINGLE": {
+     "2026-01-01.2100-12-31": 75000
+    },
+    "gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 75000
+    },
+    "gov.irs.credits.ctc.phase_out.threshold.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 75000
+    },
+    "gov.irs.credits.ctc.phase_out.threshold.SEPARATE": {
+     "2026-01-01.2100-12-31": 55000
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.base[0].amount@2026-01-01": 1000,
+    "gov.irs.credits.ctc.amount.adult_dependent@2026-01-01": 0,
+    "gov.irs.credits.ctc.refundable.individual_max@2026-01-01": 1000,
+    "gov.irs.credits.ctc.refundable.phase_in.threshold@2026-01-01": 3000,
+    "gov.irs.credits.ctc.phase_out.threshold.JOINT@2026-01-01": 110000,
+    "gov.irs.credits.ctc.phase_out.threshold.SINGLE@2026-01-01": 75000,
+    "gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD@2026-01-01": 75000,
+    "gov.irs.credits.ctc.phase_out.threshold.SURVIVING_SPOUSE@2026-01-01": 75000,
+    "gov.irs.credits.ctc.phase_out.threshold.SEPARATE@2026-01-01": 55000
+   },
+   "inputs_set": [],
+   "seconds": 143.8,
+   "maxrss_gb": 41.72
+  }
+ ],
+ "unrounded": -91195453103.36133,
+ "ratio_vs_jct": 1.869947161167955,
+ "dropped_not_reproduced": [],
+ "family": "jct_obbba_provision4",
+ "rows": [
+  {
+   "pe_value": -91195453103.0,
+   "match": {
+    "source": "jct",
+    "metric": "revenue_change",
+    "period": 2026,
+    "conditions": {
+     "provision": "4. Extension and enhancement of increased child tax credit [1]",
+     "bill_version": "JCX-35-25",
+     "table_section": "Chapter 1: Providing Permanent Tax Relief for Middle-Class Families and Workers",
+     "baseline": "present_law"
+    }
+   }
+  }
+ ],
+ "wall_seconds": 303.0
+}

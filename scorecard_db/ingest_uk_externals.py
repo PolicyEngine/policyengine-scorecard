@@ -30,7 +30,8 @@ policyengine-uk takeup.yaml parameters). Administrative OUTTURN cells —
 OBR's FY2024-25 column, HMRC's 2023-24 SPI-outturn liabilities, DWP's
 recipient counts and amounts claimed — route to
 data/ledger/uk_admin_outturns.jsonl (the 2026-08-02 boundary rule:
-outturns are populace calibration material, never scorecard claims),
+outturns are Chronicle material for Microcosm calibration, never
+scorecard claims),
 each with a deterministic fact id and, where pe-uk-data literally
 consumes the cell, the consuming pin named. Condition identities route
 through scorecard_db/uk_aliases.py, the closed (source, axis, value)
@@ -75,10 +76,10 @@ UK_SOURCES = ("dwp_takeup", "dwp_hbai", "uk_hmrc", "obr", "ukmod")
 
 
 def _ledger_row(source, row, fy, metric, unit, publication, consumed_by=None):
-    """An admin-outturn fact routed to Ledger staging (never a claim).
+    """An admin-outturn fact routed to Chronicle staging (never a claim).
 
     fact_id is deterministic over the cell's identity so re-ingest
-    rewrites the same facts and downstream Ledger consumers can key on
+    rewrites the same facts and downstream Chronicle consumers can key on
     it."""
     unit = canon(source, "unit", unit)
     program = (
@@ -121,7 +122,7 @@ def _ledger_row(source, row, fy, metric, unit, publication, consumed_by=None):
         "aggregate_level": row.get("aggregate_level"),
         "parent": row.get("parent"),
         "consumed_by": consumed_by,
-        "routing": "ledger: admin outturn (boundary rule 2026-08-02)",
+        "routing": "chronicle: admin outturn (boundary rule 2026-08-02)",
     }
 
 
@@ -254,7 +255,7 @@ _DWP_PUB = {
 }
 
 # Administrative cells (the recipient numerator and claimed amounts are
-# published admin statistics, not model output) route to LEDGER, never
+# published admin statistics, not model output) route to CHRONICLE, never
 # to claims — the 2026-08-02 boundary rule.
 _DWP_ADMIN_METRICS = frozenset(
     {
@@ -324,7 +325,7 @@ def stage_dwp_takeup() -> tuple[list[ExternalScore], list[dict], dict]:
         if row["metric"] in _DWP_ADMIN_METRICS:
             # pe-uk-data@dd68c73 consumes DWP benefit STATISTICS caseloads
             # (targets/sources/dwp.py), a different publication — these
-            # take-up-release admin cells are Ledger material with no
+            # take-up-release admin cells are Chronicle material with no
             # consuming pin.
             ledger.append(
                 _ledger_row(
@@ -489,7 +490,7 @@ _HMRC_LEVELS = {
 
 # The liabilities publication's own description sheet (vendored
 # workbook, 2_1_Description!A5): every year through 2023-24 is OUTTURN;
-# 2024-25 onward are projections. All outturn years -> Ledger.
+# 2024-25 onward are projections. All outturn years -> Chronicle.
 _HMRC_LAST_OUTTURN_END = 2024  # FY 2023-24
 
 _RECKONER_BASELINE = "hmrc_indexed_baseline_spring_2025"
@@ -794,10 +795,10 @@ STAGERS = {
 # adapter regeneration must fail HERE, never shrink or grow the catalog
 # silently (adjudication blocker 7: the earlier >0 assertions let a
 # +168-claim drift pass unseen).
-# 15,851 claims + 1,073 Ledger facts + 1,829 deliberate drops account
+# 15,851 claims + 1,073 Chronicle facts + 1,829 deliberate drops account
 # for every adapter row (16,924 pre-routing; the admin outturns — DWP
 # recipient/claimed cells, HMRC's full 1990-91..2023-24 outturn span,
-# OBR's FY2024-25 column — route to Ledger per the boundary rule).
+# OBR's FY2024-25 column — route to Chronicle per the boundary rule).
 _EXPECTED = {
     "claims": {
         "dwp_takeup": 1092,
@@ -834,7 +835,7 @@ def stage_all() -> tuple[list[ExternalScore], list[dict], dict]:
         )
     if _EXPECTED["ledger"] and summary["ledger"] != _EXPECTED["ledger"]:
         raise ValueError(
-            f"ledger accounting drifted: {summary['ledger']} != {_EXPECTED['ledger']}"
+            f"Chronicle accounting drifted: {summary['ledger']} != {_EXPECTED['ledger']}"
         )
     if _EXPECTED["drops"] and summary["drops"] != _EXPECTED["drops"]:
         raise ValueError(
@@ -850,7 +851,7 @@ def ingest(db_path: Path) -> dict:
     (#13), lane rows: commit or nothing. A claim referencing an
     unregistered baseline world therefore never persists past its own
     gate (round-2 fix: registration used to run post-commit, which
-    validated the state but did not guard it). The Ledger staging file
+    validated the state but did not guard it). The Chronicle staging file
     and the lane-feed mirror are rewritten only after the commit; both
     regenerations are idempotent (deterministic fact ids, sorted; feed
     merge keyed by lane id)."""
@@ -885,7 +886,7 @@ def ingest(db_path: Path) -> dict:
                     "ingested",
                     f"{summary['claims'][name]} claims"
                     + (
-                        f", {summary['ledger'][name]} ledger facts"
+                        f", {summary['ledger'][name]} Chronicle facts"
                         if name in summary["ledger"]
                         else ""
                     ),

@@ -1,0 +1,444 @@
+{
+ "certified_dataset": {
+  "artifact": "populace_uk_2023.h5",
+  "digest_checked_before_hdf5_open": true,
+  "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+  "size_bytes": 1315880118
+ },
+ "construction_limits": [
+  {
+   "aggregate_scope": "Base-year raw input aggregates precede SDLT geography, minimum-price thresholds, annual uprating and reform aggregation. Raw row counts include capital-gains clones.",
+   "annual_projection": "Population extension copies the purchase flag; per-capita GDP uprating grows property values. There is no annual purchaser resampling in this path.",
+   "divergence_axes": [
+    "construction_scope",
+    "head_scope",
+    "population_vintage"
+   ],
+   "finding": "The bundle supplies property stock and a purchase flag, but no direct main/additional purchase prices. Additional purchase price is stock multiplied by that flag. This is a transaction-price proxy; full stock is not taxed unconditionally.",
+   "id": "sdlt_flagged_stock_transaction_proxy",
+   "national_contribution": "unsized",
+   "variables": [
+    "property_purchased",
+    "other_residential_property_value",
+    "additional_residential_property_purchased"
+   ]
+  },
+  {
+   "annual_projection": "Both capital_gains and capital_gains_before_response are uprated by per-capita GDP. No gain-type allocation is supplied by this path.",
+   "divergence_axes": [
+    "construction_scope",
+    "head_scope",
+    "behavioural_adjustment",
+    "population_vintage"
+   ],
+   "finding": "The tax formula applies the main CGT rate schedule to one pooled gains amount, with no asset-type, BADR, Investors' Relief or carried-interest branch. The bundle has one capital_gains input. The loader moves it to before_response; the default zero elasticity makes the response formula return zero.",
+   "id": "cgt_pooled_gain_types_and_zero_elasticity",
+   "national_contribution": "unsized",
+   "variables": [
+    "capital_gains",
+    "capital_gains_before_response",
+    "capital_gains_behavioural_response",
+    "capital_gains_tax"
+   ]
+  }
+ ],
+ "inspection_script": {
+  "path": "pipeline/audit_uk_event_constructions.py",
+  "sha256": "ec1c6354653da622530b617f5a651c0ddde9320dda15505e4d79136981d9ea8c"
+ },
+ "interpretation": "These observations document construction and data-flow limits. They do not establish national model errors, causal residual amounts or an explained share. No new model diagnostic is asserted.",
+ "method": "Engine-free source reading and HDF5 aggregate inspection; no simulation.",
+ "observations": {
+  "capital_gains_input_rows": {
+   "negative": 49640,
+   "nonfinite": 0,
+   "positive": 217900
+  },
+  "entity_rows": {
+   "household": 535080,
+   "person": 1157100
+  },
+  "household_aggregates": {
+   "capital_gains_clone_household_rows": 267540,
+   "other_property_nonfinite_rows": 0,
+   "other_property_positive_rows": 44220,
+   "other_property_stock_gated_by_purchase_weighted_gbp": 94692939650.8347,
+   "other_property_stock_weighted_gbp": 1140778698267.267,
+   "property_purchased_true_rows": 20080,
+   "property_purchased_true_weighted_households": 943619.6482388675,
+   "purchased_and_other_property_positive_rows": 1740,
+   "weighted_households": 28840551.182180054
+  },
+  "input_columns": {
+   "household": [
+    "index",
+    "household_id",
+    "household_weight",
+    "region",
+    "tenure_type",
+    "accommodation_type",
+    "council_tax",
+    "council_tax_band",
+    "domestic_rates",
+    "rent",
+    "mortgage_interest_repayment",
+    "mortgage_capital_repayment",
+    "housing_service_charges",
+    "structural_insurance_payments",
+    "water_and_sewerage_charges",
+    "external_child_payments",
+    "brma",
+    "household_owns_tv",
+    "would_evade_tv_licence_fee",
+    "main_residential_property_purchased_is_first_home",
+    "property_purchased",
+    "owned_land",
+    "property_wealth",
+    "corporate_wealth",
+    "gross_financial_wealth",
+    "net_financial_wealth",
+    "main_residence_value",
+    "other_residential_property_value",
+    "non_residential_property_value",
+    "savings",
+    "num_vehicles",
+    "mortgage_debt",
+    "consumer_debt",
+    "has_fuel_consumption",
+    "food_and_non_alcoholic_beverages_consumption",
+    "alcohol_and_tobacco_consumption",
+    "clothing_and_footwear_consumption",
+    "housing_water_and_electricity_consumption",
+    "household_furnishings_consumption",
+    "health_consumption",
+    "transport_consumption",
+    "communication_consumption",
+    "recreation_consumption",
+    "education_consumption",
+    "restaurants_and_hotels_consumption",
+    "miscellaneous_consumption",
+    "petrol_spending",
+    "diesel_spending",
+    "bus_fare_spending",
+    "domestic_energy_consumption",
+    "electricity_consumption",
+    "gas_consumption",
+    "full_rate_vat_expenditure_rate",
+    "dfe_education_spending",
+    "rail_subsidy_spending",
+    "bus_subsidy_spending",
+    "rail_usage",
+    "household_is_spi_synthetic",
+    "household_is_capital_gains_clone",
+    "oa_code",
+    "lsoa_code",
+    "msoa_code",
+    "la_code_oa",
+    "constituency_code_oa",
+    "region_code_oa",
+    "clone_index"
+   ],
+   "person": [
+    "index",
+    "person_id",
+    "person_benunit_id",
+    "person_household_id",
+    "age",
+    "gender",
+    "hours_worked",
+    "is_household_head",
+    "is_benunit_head",
+    "is_parent",
+    "marital_status",
+    "current_education",
+    "is_in_non_advanced_education",
+    "age_started_or_accepted_current_education_or_training",
+    "is_before_universal_credit_qualifying_young_person_terminal_date",
+    "highest_education",
+    "employment_status",
+    "employment_sector",
+    "sic_industry_division",
+    "employment_income",
+    "private_pension_income",
+    "self_employment_income",
+    "tax_free_savings_income",
+    "savings_interest_income",
+    "dividend_income",
+    "property_income",
+    "maintenance_income",
+    "miscellaneous_income",
+    "private_transfer_income",
+    "lump_sum_income",
+    "student_loan_repayments",
+    "child_benefit_reported",
+    "income_support_reported",
+    "housing_benefit_reported",
+    "attendance_allowance_reported",
+    "dla_sc_reported",
+    "dla_m_reported",
+    "iidb_reported",
+    "carers_allowance_reported",
+    "sda_reported",
+    "afcs_reported",
+    "ssmg_reported",
+    "pension_credit_reported",
+    "child_tax_credit_reported",
+    "working_tax_credit_reported",
+    "state_pension_reported",
+    "winter_fuel_allowance_reported",
+    "universal_credit_reported",
+    "pip_m_reported",
+    "pip_dl_reported",
+    "aa_category",
+    "dla_sc_category",
+    "dla_m_category",
+    "pip_m_category",
+    "pip_dl_category",
+    "jsa_contrib_reported",
+    "jsa_income_reported",
+    "esa_contrib_reported",
+    "esa_income_reported",
+    "receives_benefits_in_own_right",
+    "bsp_reported",
+    "statutory_sick_pay",
+    "statutory_maternity_pay",
+    "student_loans",
+    "adult_ema",
+    "child_ema",
+    "access_fund",
+    "education_grants",
+    "council_tax_benefit_reported",
+    "healthy_start_vouchers",
+    "free_school_breakfasts",
+    "free_school_fruit_veg",
+    "free_school_meals",
+    "maintenance_expenses",
+    "childcare_expenses",
+    "personal_pension_contributions",
+    "employee_pension_contributions",
+    "employer_pension_contributions",
+    "pension_contributions_via_salary_sacrifice",
+    "salary_sacrifice_reported",
+    "salary_sacrifice_asked",
+    "is_disabled_for_benefits",
+    "is_enhanced_disabled_for_benefits",
+    "is_severely_disabled_for_benefits",
+    "legacy_jobseeker_proxy",
+    "esa_health_condition_proxy",
+    "esa_support_group_proxy",
+    "would_claim_marriage_allowance",
+    "would_claim_scp",
+    "higher_earner_tie_break",
+    "attends_private_school_random_draw",
+    "student_loan_balance",
+    "a_and_e_visits",
+    "admitted_patient_visits",
+    "outpatient_visits",
+    "nhs_a_and_e_spending",
+    "nhs_admitted_patient_spending",
+    "nhs_outpatient_spending",
+    "gift_aid",
+    "charitable_investment_gifts",
+    "capital_gains",
+    "student_loan_plan",
+    "attends_private_school",
+    "is_higher_earner"
+   ]
+  },
+  "time_period": "2023"
+ },
+ "packages": {
+  "policyengine": "5.0.2",
+  "policyengine-core": "3.27.1",
+  "policyengine-uk": "2.89.2"
+ },
+ "schema_version": 1,
+ "source_evidence": [
+  {
+   "excerpts": [
+    {
+     "end_line": 38,
+     "source": "    def formula(household, period, parameters):\n        stamp_duty = parameters(period).gov.hmrc.stamp_duty\n        # Tax on main-home purchases\n        price_limit = stamp_duty.residential.purchase.main.first.max\n        price = household(\"main_residential_property_purchased\", period)\n        residential_purchase_qualifies_as_first_buy = household(\n            \"main_residential_property_purchased_is_first_home\", period\n        ) & (price < price_limit)\n        main_residential_purchase_tax = where(\n            residential_purchase_qualifies_as_first_buy,\n            stamp_duty.residential.purchase.main.first.rate.calc(price),\n            stamp_duty.residential.purchase.main.subsequent.calc(price),\n        )\n        # Tax on second-home purchases\n        second_home_price = household(\n            \"additional_residential_property_purchased\", period\n        )\n        price = where(\n            second_home_price < stamp_duty.residential.purchase.additional.min,\n            0,\n            second_home_price,\n        )\n        additional_residential_purchase_tax = (\n            stamp_duty.residential.purchase.additional.rate.calc(price)\n        )\n        return main_residential_purchase_tax + additional_residential_purchase_tax\n",
+     "start_line": 13
+    }
+   ],
+   "file": "policyengine_uk/variables/gov/hmrc/sdlt_on_residential_property_transactions.py",
+   "sha256": "1a3b91ac5e4ff2774be55efadece9caa5d3b9c662e10cdeab74541989fc18085"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 17,
+     "source": "class additional_residential_property_purchased(Variable):\n    label = \"Residential property bought (additional)\"\n    documentation = \"The price paid for the purchase of a residential property in the year, for use as a second home or another non-main-residence purpose. Only include the value of a single purchase.\"\n    entity = Household\n    definition_period = YEAR\n    value_type = float\n    unit = GBP\n\n    def formula(household, period):\n        property_purchased = household(\"property_purchased\", period)\n        other_residential_property_value = household(\n            \"other_residential_property_value\", period\n        )\n        return other_residential_property_value * property_purchased\n",
+     "start_line": 4
+    }
+   ],
+   "file": "policyengine_uk/variables/household/consumption/additional_residential_property_purchased.py",
+   "sha256": "9547795632c1da3cacba2f11b8b109082e02e18c74cc35e5a726cb504507ba25"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 18,
+     "source": "class property_purchased(Variable):\n    label = \"All property bought this year\"\n    documentation = \"Whether all property wealth was bought this year\"\n    entity = Household\n    definition_period = YEAR\n    value_type = bool\n    # Fail-safe default: a household has NOT bought all its property this year.\n    # main_residential_property_purchased is computed as\n    # main_residence_value * property_purchased, so a True default charges\n    # every household stamp duty on its full property wealth (~\u00a3370bn of\n    # phantom SDLT). Population datasets set this explicitly for the small\n    # share of genuine purchasers; the household calculator and tests set\n    # main_residential_property_purchased directly. False is the correct\n    # neutral default for any household where it is not set.\n    default_value = False\n",
+     "start_line": 4
+    }
+   ],
+   "file": "policyengine_uk/variables/input/consumption/property/property_purchased.py",
+   "sha256": "fa495354ef64a2b93a695be7b15c8f038a371e4767e6bf5c1a568a91c1a72929"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 17,
+     "source": "class other_residential_property_value(Variable):\n    label = \"other residence value\"\n    documentation = (\n        \"Total value of residential property owned by the household other than \"\n        \"the main residence, before any additional Universal Credit Schedule \"\n        \"10 disregards within this broad asset class that are not separately \"\n        \"split out in the current dataset\"\n    )\n    entity = Household\n    definition_period = YEAR\n    value_type = float\n    unit = GBP\n    quantity_type = STOCK\n    uprating = \"gov.economic_assumptions.indices.obr.per_capita.gdp\"\n",
+     "start_line": 4
+    }
+   ],
+   "file": "policyengine_uk/variables/input/other_residential_property_value.py",
+   "sha256": "1d7450e1dbf0378631485a9ce53df14021b34906c1dc89341ba45107ed4b6940"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 16,
+     "source": "class stamp_duty_land_tax(Variable):\n    label = \"Stamp Duty Land Tax\"\n    documentation = \"Total tax liability for Stamp Duty Land Tax\"\n    entity = Household\n    definition_period = YEAR\n    value_type = float\n    unit = GBP\n    reference = \"https://www.legislation.gov.uk/ukpga/2003/14/part/4\"\n    defined_for = \"sdlt_liable\"\n    adds = [\n        \"sdlt_on_transactions\",\n        \"sdlt_on_rent\",\n    ]\n",
+     "start_line": 4
+    }
+   ],
+   "file": "policyengine_uk/variables/gov/hmrc/stamp_duty_land_tax.py",
+   "sha256": "95c3e0d9f703a34f9f0e897fa9b66f8ef1e53d7cd27e2804fc923a88b6ee7fc8"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 18,
+     "source": "    def formula(household, period):\n        country = household(\"country\", period)\n        countries = country.possible_values\n        return np.isin(\n            country.decode_to_str(),\n            [countries.ENGLAND.name, countries.NORTHERN_IRELAND.name],\n        )\n",
+     "start_line": 12
+    }
+   ],
+   "file": "policyengine_uk/variables/gov/hmrc/sdlt_liable.py",
+   "sha256": "a31c3c43f023e261562a93dd863fd3ab726dd8205a967ed57fb9a974a8d09500"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 57,
+     "source": "    def formula(person, period, parameters):\n        hmrc = parameters(period).gov.hmrc\n        cgt = hmrc.cgt\n        it = hmrc.income_tax\n\n        personal_pension_band_extension = min_(\n            person(\"personal_pension_contributions\", period),\n            person(\"pension_contributions_relief\", period),\n        )\n        basic_rate_band_extension = (\n            person(\"gift_aid_grossed_up\", period) + personal_pension_band_extension\n        )\n        allowances_for_cgt_income = max_(\n            0,\n            person(\"allowances\", period)\n            - person(\"gift_aid\", period)\n            - personal_pension_band_extension,\n        )\n        taxable_income = max_(\n            0,\n            person(\"adjusted_net_income\", period) - allowances_for_cgt_income,\n        )\n        gains = max_(0, person(\"capital_gains\", period))\n        aea = cgt.annual_exempt_amount\n        gains_less_aea = max_(0, gains - aea)\n        basic_rate_limit = it.rates.uk.thresholds[1] + basic_rate_band_extension\n        remaining_basic_rate_band = max_(basic_rate_limit - taxable_income, 0)\n\n        basic_rate_applicable_cg = min_(gains_less_aea, remaining_basic_rate_band)\n        higher_and_add_rate_applicable_cg = max_(\n            gains_less_aea - remaining_basic_rate_band, 0\n        )\n        higher_rate_limit = it.rates.uk.thresholds[2] + basic_rate_band_extension\n        higher_rate_applicable_cg = min_(\n            higher_and_add_rate_applicable_cg,\n            higher_rate_limit - basic_rate_limit,\n        )\n        add_rate_applicable_cg = max_(\n            higher_and_add_rate_applicable_cg - higher_rate_applicable_cg, 0\n        )\n\n        basic_rate_tax = basic_rate_applicable_cg * cgt.basic_rate\n        higher_rate_tax = higher_rate_applicable_cg * cgt.higher_rate\n        add_rate_tax = add_rate_applicable_cg * cgt.additional_rate\n\n        return basic_rate_tax + higher_rate_tax + add_rate_tax\n",
+     "start_line": 12
+    }
+   ],
+   "file": "policyengine_uk/variables/gov/hmrc/capital_gains_tax/capital_gains_tax.py",
+   "sha256": "943c3269a89c74a6470451b5c41fb4863d419e3087a7bc330d79ff79e440a3be"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 15,
+     "source": "class capital_gains(Variable):\n    label = \"capital gains\"\n    entity = Person\n    definition_period = YEAR\n    value_type = float\n    unit = GBP\n    adds = [\n        \"capital_gains_before_response\",\n        \"capital_gains_behavioural_response\",\n    ]\n",
+     "start_line": 6
+    }
+   ],
+   "file": "policyengine_uk/variables/household/income/capital_gains.py",
+   "sha256": "82f6c2eb6e673e5e71d23f09e2ca6083159c4761f7c4105e510802a7380988be"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 28,
+     "source": "    def formula(person, period, parameters):\n        simulation = person.simulation\n        if simulation.baseline is None:\n            return 0\n\n        if parameters(period).gov.simulation.capital_gains_responses.elasticity == 0:\n            return 0\n\n        capital_gains = person(\"capital_gains_before_response\", period)\n        tax_rate_change = person(\"relative_capital_gains_mtr_change\", period)\n        elasticity = person(\"capital_gains_elasticity\", period)\n\n        # Calculate response using log differences\n        response_factor = np.exp(elasticity * tax_rate_change) - 1\n        response = capital_gains * response_factor\n\n        return response\n",
+     "start_line": 12
+    }
+   ],
+   "file": "policyengine_uk/variables/gov/hmrc/capital_gains_tax/capital_gains_behavioural_response.py",
+   "sha256": "1951ab7811e9e22eeb3c3994af6815c353ba2e4ce1c278c8811050b3e59ca272"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 6,
+     "source": "description: Elasticity of capital gains with respect to the capital gains marginal tax rate.\nvalues:\n  2000-01-01: 0\nmetadata:\n  unit: /1\n  label: Capital gains elasticity\n",
+     "start_line": 1
+    }
+   ],
+   "file": "policyengine_uk/parameters/gov/simulation/capital_gains_responses/elasticity.yaml",
+   "sha256": "78c09558521f7802d9f7b536d51490f2858b0828d04dffbd73d651117a12f965"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 208,
+     "source": "        self.move_values(\"capital_gains\", \"capital_gains_before_response\")\n        self.move_values(\"employment_income\", \"employment_income_before_lsr\")\n        self.move_values(\n            \"employee_pension_contributions\",\n            \"employee_pension_contributions_reported\",\n        )\n\n        self.input_variables = self.get_known_variables()\n\n        if scenario is not None:\n            self.baseline = Simulation(\n                scenario=None,\n                situation=situation,\n                dataset=dataset,\n                trace=trace,\n            )\n        else:\n            self.baseline = self.clone()\n",
+     "start_line": 191
+    },
+    {
+     "end_line": 455,
+     "source": "                if variable not in self.tax_benefit_system.variables:\n                    continue\n                self.set_input(variable, time_period, data[variable][time_period])\n\n        # Now convert to the new UKSingleYearDataset\n        self.input_variables = self.get_known_variables()\n        self.dataset = dataset\n        dataset = UKSingleYearDataset.from_simulation(\n            self, fiscal_year=first_time_period\n        )\n        multi_year_dataset = extend_single_year_dataset(\n            dataset, self.tax_benefit_system.parameters\n        )\n\n        self.build_from_multi_year_dataset(multi_year_dataset)\n        self.dataset = multi_year_dataset\n",
+     "start_line": 440
+    },
+    {
+     "end_line": 501,
+     "source": "        # Load variable values for all years\n        for year in dataset.years:\n            for table in dataset[year].tables:\n                for variable in table.columns:\n                    if variable not in self.tax_benefit_system.variables:\n                        continue\n                    self.set_input(variable, year, table[variable])\n",
+     "start_line": 495
+    },
+    {
+     "end_line": 563,
+     "source": "    def move_values(self, variable_donor: str, variable_target: str) -> None:\n        \"\"\"Move values from one variable to another across all branches.\n\n        Used for behavioral response modeling where original values need\n        to be preserved.\n\n        Args:\n            variable_donor: Variable to move values from\n            variable_target: Variable to move values to\n        \"\"\"\n        for simulation in list(self.branches.values()) + [self]:\n            holder = simulation.get_holder(variable_donor)\n            for known_period in holder.get_known_periods():\n                array = holder.get_array(known_period)\n                simulation.set_input(variable_target, known_period, array)\n                holder.delete_arrays(known_period)\n",
+     "start_line": 548
+    }
+   ],
+   "file": "policyengine_uk/simulation.py",
+   "sha256": "748bb7503f338d876023034263a790c34b8c0059a52e3e620fc3640e9e4b6b4c"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 174,
+     "source": "    def from_simulation(simulation: \"Microsimulation\", fiscal_year: int = 2025):\n        entity_dfs = {}\n\n        for entity in [\"person\", \"benunit\", \"household\"]:\n            input_variables = [\n                variable\n                for variable in simulation.input_variables\n                if simulation.tax_benefit_system.variables[variable].entity.key\n                == entity\n            ]\n            if len(input_variables) == 0:\n                entity_dfs[entity] = pd.DataFrame()\n            else:\n                entity_dfs[entity] = simulation.calculate_dataframe(\n                    input_variables, period=fiscal_year\n                )\n\n        return UKSingleYearDataset(\n            person=entity_dfs[\"person\"],\n            benunit=entity_dfs[\"benunit\"],\n            household=entity_dfs[\"household\"],\n            fiscal_year=fiscal_year,\n",
+     "start_line": 153
+    }
+   ],
+   "file": "policyengine_uk/data/dataset_schema.py",
+   "sha256": "8593cbc1a1797c5290d63a2d8f237bc39a35172395bab530373cc67073f01cb7"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 52,
+     "source": "def extend_single_year_dataset(\n    dataset: UKSingleYearDataset,\n    tax_benefit_system_parameters: ParameterNode,\n    end_year: int = 2030,\n) -> UKMultiYearDataset:\n    # Extend years and uprate\n    start_year = int(dataset.time_period)\n    datasets = [dataset]\n    for year in range(start_year, end_year + 1):\n        next_year = dataset.copy()\n        next_year.time_period = str(year)\n        datasets.append(next_year)\n    multi_year_dataset = UKMultiYearDataset(datasets=datasets)\n    return apply_uprating(\n        multi_year_dataset,\n        tax_benefit_system_parameters=tax_benefit_system_parameters,\n        copy=False,\n    )\n",
+     "start_line": 35
+    },
+    {
+     "end_line": 112,
+     "source": "def apply_single_year_uprating(\n    current_year: UKSingleYearDataset,\n    previous_year: UKSingleYearDataset,\n    parameters: ParameterNode,\n):\n    # Apply uprating to a single year dataset.\n\n    # First, apply standard variable-YoY growth based uprating.\n\n    with open(Path(__file__).parent / \"uprating_indices.yaml\", \"r\") as f:\n        uprating = yaml.safe_load(f)\n    for index_name, variables in uprating.items():\n        index_rel_change = parameters.get_child(index_name)(current_year.time_period)\n        for variable in variables:\n            for table_name, df in zip(current_year.table_names, current_year.tables):\n                if variable in df.columns:\n                    prev_year_value = getattr(previous_year, table_name)[variable]\n                    current_year_value = prev_year_value * (1 + index_rel_change)\n                    getattr(current_year, table_name)[variable] = current_year_value\n\n    # Next, apply custom uprating.\n\n    # Council Tax is uprated by OBR forecasts/outturns by country.\n\n    current_year = uprate_council_tax(current_year, previous_year, parameters)\n\n    # Rent is uprated by OBR forecasts/outturns by region.\n\n    current_year = uprate_rent(current_year, previous_year, parameters)\n\n    current_year = uprate_student_loan_plans(current_year, previous_year, parameters)\n\n    current_year.validate()\n",
+     "start_line": 80
+    }
+   ],
+   "file": "policyengine_uk/data/economic_assumptions.py",
+   "sha256": "5f962cd694e2bdfd389d3ec57dfbdb0dacb4f2b63f10597e4570d2735354d240"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 76,
+     "source": "gov.economic_assumptions.yoy_growth.obr.per_capita.gdp:\n- capital_gains\n- capital_gains_before_response\n- corporate_wealth\n- dividend_income\n- gross_financial_wealth\n- lump_sum_income\n- main_residence_value\n- maintenance_income\n- miscellaneous_income\n- mortgage_capital_repayment\n- net_financial_wealth\n- non_residential_property_value\n- other_investment_income\n- other_residential_property_value\n- owned_land\n- pension_income\n- private_transfer_income\n- property_income\n",
+     "start_line": 58
+    }
+   ],
+   "file": "policyengine_uk/data/uprating_indices.yaml",
+   "sha256": "8a93659cab30f5039f54d669a1be80dff103aa314d80fa2b9b2efbf77852dfb5"
+  },
+  {
+   "excerpts": [
+    {
+     "end_line": 330,
+     "source": "def managed_microsimulation(\n    *,\n    dataset: Optional[str] = None,\n    allow_unmanaged: bool = False,\n    **kwargs,\n):\n    \"\"\"Construct a country-package Microsimulation pinned to this bundle.\n\n    By default this enforces the dataset selection from the bundled\n    ``policyengine.py`` release manifest. Arbitrary dataset URIs require\n    ``allow_unmanaged=True``.\n    \"\"\"\n\n    from policyengine_uk import Microsimulation\n\n    if \"dataset\" in kwargs:\n        raise ValueError(\n            \"Pass `dataset=` directly to managed_microsimulation, not through \"\n            \"**kwargs, so policyengine.py can enforce the release bundle.\"\n        )\n\n    dataset_uri = resolve_managed_dataset_reference(\n        \"uk\",\n        dataset,\n        allow_unmanaged=allow_unmanaged,\n    )\n    dataset_source = resolve_local_managed_dataset_source(\n        \"uk\",\n        dataset_uri,\n        allow_local_mirror=not (\n            allow_unmanaged and dataset is not None and \"://\" in dataset\n        ),\n    )\n    runtime_dataset_source = materialize_dataset_source(dataset_source)\n    runtime_dataset = runtime_dataset_source\n    if isinstance(runtime_dataset_source, str) and \"://\" not in runtime_dataset_source:\n        from policyengine_uk.data.dataset_schema import (\n            UKMultiYearDataset,\n            UKSingleYearDataset,\n        )\n\n        if UKMultiYearDataset.validate_file_path(runtime_dataset_source, False):\n            runtime_dataset = UKMultiYearDataset(runtime_dataset_source)\n        elif UKSingleYearDataset.validate_file_path(runtime_dataset_source, False):\n            runtime_dataset = UKSingleYearDataset(runtime_dataset_source)\n    microsim = Microsimulation(dataset=runtime_dataset, **kwargs)\n    microsim.policyengine_bundle = _managed_release_bundle(\n        dataset_uri,\n        runtime_dataset_source,\n    )\n    return microsim\n",
+     "start_line": 280
+    }
+   ],
+   "file": "policyengine/tax_benefit_models/uk/model.py",
+   "sha256": "5d6336cf9f55504af24c24137ba6495d0095764db124461bb148e848e319eb09"
+  }
+ ]
+}

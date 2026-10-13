@@ -1,0 +1,546 @@
+[
+ {
+  "class": "pe_gap",
+  "engine_version": "2.89.2",
+  "events": [
+   "autumn_budget_2024"
+  ],
+  "evidence": {
+   "engine_file": "variables/gov/dwp/carers_allowance.py",
+   "sha256": "92657ce086a44f8fc7c1991167b23c9e088e53a5ae32163d4f46fb5ebda7db5a",
+   "source": "from policyengine_uk.model_api import *\n\n\nclass carers_allowance(Variable):\n    value_type = float\n    entity = Person\n    label = \"Carer's Allowance\"\n    definition_period = YEAR\n    unit = GBP\n\n    def formula(person, period, parameters):\n        in_scotland = person.household(\"country\", period).decode_to_str() == \"SCOTLAND\"\n        csp_replaces_ca = period.start.year >= 2025\n        receives_ca = person(\"carers_allowance_reported\", period) > 0\n        ca = parameters(period).gov.dwp.carers_allowance\n        weekly_care_hours = person(\"care_hours\", period)\n        meets_work_condition = weekly_care_hours >= ca.min_hours\n        eligible = ~(in_scotland & csp_replaces_ca) & (\n            meets_work_condition | receives_ca\n        )\n        return eligible * ca.rate * WEEKS_IN_YEAR\n"
+  },
+  "id": "carers_allowance_earnings_test_absent",
+  "interpretation": "The formula uses care hours or reported receipt and no earnings test. The AB2024 earnings-limit increase cannot be represented by this formula. This is an encoding gap, not a sized explanation of the national costing.",
+  "observation": {
+   "annual_carers_allowance_gbp": [
+    4331.080078125,
+    4331.080078125
+   ],
+   "annual_earnings_gbp": [
+    0,
+    100000
+   ],
+   "care_hours_weekly": [
+    35,
+    35
+   ],
+   "earnings_limit_parameter_names": [
+    "min_hours",
+    "rate"
+   ]
+  },
+  "reproducer": "--case carers_allowance_earnings_test_absent",
+  "variables": [
+   "carers_allowance"
+  ]
+ },
+ {
+  "class": "pe_gap",
+  "engine_version": "2.89.2",
+  "events": [
+   "autumn_budget_2024"
+  ],
+  "evidence": {
+   "engine_file": "parameters/gov/hmrc/cgt/basic_rate.yaml",
+   "sha256": "0a1896eb3f2007ca95811765e8eabcf526af7831897a5d105d8b18c6c9fe58ed",
+   "source": "description: Capital gains tax rate on basic rate taxpayers. This parameter is under active development and reforms including it should not be cited.\nvalues:\n  2015-01-01:\n    value: 0.1\n    reference:\n      - title: Finance Act 2016 s. 83\n        href: https://www.legislation.gov.uk/ukpga/2016/24/section/83\n  2025-04-06:\n    value: 0.18\n    reference:\n      - title: Finance Act 2025 s. 7\n        href: https://www.legislation.gov.uk/ukpga/2025/8/section/7\nmetadata:\n  unit: /1\n  label: Capital Gains Tax basic rate\n  reference:\n    - title: Finance Act 2025(7)\n      href: https://www.legislation.gov.uk/ukpga/2025/8/section/7\n\n"
+  },
+  "id": "cgt_main_rate_commencement",
+  "interpretation": "The harvested AB2024 title specifies 30 October 2024, while the raw main-rate schedule starts 6 April 2025. CountryTaxBenefitSystem annualizes government policy from the 30 April snapshot. The first higher processed year, 2025, is inferred from that conversion rule and the recorded April 2025 values. This records a missing part-year 2024 commencement, not an additional delay to 2026. The parameter description also warns that it is under active development. The national timing contribution remains unsized.",
+  "observation": {
+   "2024-10-29": {
+    "additional": 0.2,
+    "basic": 0.1,
+    "higher": 0.2
+   },
+   "2024-10-30": {
+    "additional": 0.2,
+    "basic": 0.1,
+    "higher": 0.2
+   },
+   "2025-04-06": {
+    "additional": 0.24,
+    "basic": 0.18,
+    "higher": 0.24
+   }
+  },
+  "reproducer": "--case cgt_main_rate_commencement",
+  "variables": [
+   "capital_gains_tax"
+  ]
+ },
+ {
+  "class": "pe_gap",
+  "engine_version": "2.89.2",
+  "events": [
+   "autumn_budget_2024"
+  ],
+  "evidence": {
+   "engine_file": "parameters/gov/hmrc/stamp_duty/residential/purchase/additional/rate.yaml",
+   "sha256": "0467640e77930ae05b3f923d8ed85eb37f634200e225a49766ec971785c48fb6",
+   "source": "description: Stamp Duty Land Tax progressive rates for residential property transfers that are not replacements of an individual's primary residence.\nbrackets:\n  - rate:\n      2016-09-15: 0.03\n    threshold:\n      2016-09-15: 0\n  - rate:\n      2016-09-15: 0.05\n      2020-07-08: null\n      2021-03-31: 0.05\n    threshold:\n      2016-09-15: 125_000\n      2020-07-08: null\n      2021-03-31: 125_000\n  - rate:\n      2016-09-15: 0.08\n    threshold:\n      2016-09-15: 250_000\n      2020-07-08: 500_000\n      2021-03-31: 250_000\n  - rate:\n      2016-09-15: 0.13\n    threshold:\n      2016-09-15: 925_000\n  - rate:\n      2016-09-15: 0.15\n    threshold:\n      2016-09-15: 1_500_000\nmetadata:\n  threshold_unit: currency-GBP\n  rate_unit: /1\n  label: Stamp Duty on secondary residences\n  reference:\n    - title: Finance Act 2003 schedule 4ZA(1)(2)\n      href: https://www.legislation.gov.uk/ukpga/2003/14/schedule/4ZA\n    - title: Stamp Duty Land Tax (Temporary Relief) Act 2020\n      href: https://www.legislation.gov.uk/ukpga/2020/15/section/1/enacted\n"
+  },
+  "id": "sdlt_additional_home_hike_absent",
+  "interpretation": "The source title raises HRAD from 3% to 5% on 31 October 2024. The pinned additional-home scale still has rates 3/5/8/13/15% at these dates. A forward +2pp construction models this missing announced change; it is not a reversal already present in certified law.",
+  "observation": {
+   "2024-10-30": [
+    0.03,
+    0.05,
+    0.08,
+    0.13,
+    0.15
+   ],
+   "2024-10-31": [
+    0.03,
+    0.05,
+    0.08,
+    0.13,
+    0.15
+   ],
+   "2025-04-06": [
+    0.03,
+    0.05,
+    0.08,
+    0.13,
+    0.15
+   ],
+   "2026-06-01": [
+    0.03,
+    0.05,
+    0.08,
+    0.13,
+    0.15
+   ]
+  },
+  "reproducer": "--case sdlt_additional_home_hike_absent",
+  "variables": [
+   "sdlt_on_residential_property_transactions",
+   "stamp_duty_land_tax"
+  ]
+ },
+ {
+  "class": "pe_gap",
+  "engine_version": "2.89.2",
+  "events": [
+   "autumn_budget_2024"
+  ],
+  "evidence": {
+   "engine_file": "parameters/gov/contrib/labour/private_school_vat.yaml",
+   "sha256": "d108161e9d328757f935e0149c27fb06ead467d2e16f359a4b79ff65b8c26633",
+   "source": "description: VAT rate applied to private schools.\nvalues:\n  2000-01-01: 0\nmetadata:\n  unit: /1\n  label: Private school VAT rate"
+  },
+  "id": "private_school_vat_current_law_lever_zero",
+  "interpretation": "The harvested AB2024 title applies 20% VAT to private-school education and boarding from January 2025. The pinned private-school VAT lever remains zero. The replay therefore executes a forward 20% construction; its imputed fees, attendance and omitted input-VAT recovery remain separate unsized scope limitations.",
+  "observation": {
+   "2025-01-01": 0,
+   "2025-06-01": 0,
+   "2026-06-01": 0
+  },
+  "reproducer": "--case private_school_vat_current_law_lever_zero",
+  "variables": [
+   "private_school_vat"
+  ]
+ },
+ {
+  "class": "pe_gap",
+  "engine_version": "2.89.2",
+  "events": [
+   "autumn_statement_2023",
+   "spring_budget_2024",
+   "spring_budget_2023"
+  ],
+  "evidence": {
+   "engine_file": "parameters/gov/hmrc/income_tax/rates/dividends.yaml",
+   "sha256": "d3bcbc7fec39442b8313401c9c84f9fe7d704abf070e9a91a4d01478b54f8244",
+   "source": "description: Dividend income tax scale. Dividends are taxed using this scale as if they were on top of non-dividend income.\nbrackets:\n  - rate:\n      metadata:\n        label: Dividends basic rate\n        unit: /1\n        reference:\n          - title: Finance Act 2022 s. 4\n            href: https://www.legislation.gov.uk/ukpga/2022/3/section/4/enacted\n      values:\n        2015-04-01: 0.075\n        2022-04-01:\n          value: 0.0875\n          metadata:\n            reference:\n              - title: Autumn Budget and Spending Review 2022\n                href: https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/1043689/Budget_AB2021_Web_Accessible.pdf\n        2026-04-06:\n          value: 0.1075\n          metadata:\n            reference:\n              - title: OBR Economic and Fiscal Outlook November 2025\n                href: https://obr.uk/efo/economic-and-fiscal-outlook-november-2025/\n    threshold:\n      values:\n        2015-04-01: 0\n      metadata:\n        label: Dividends basic rate threshold\n        reference:\n          - title: Finance Act 2022 s. 4\n            href: https://www.legislation.gov.uk/ukpga/2022/3/section/4/enacted\n  - rate:\n      metadata:\n        label: Dividends higher rate\n        unit: /1\n        reference:\n          - title: Finance Act 2022 s. 4\n            href: https://www.legislation.gov.uk/ukpga/2022/3/section/4/enacted\n      values:\n        2015-04-01: 0.325\n        2022-04-01:\n          value: 0.3375\n          metadata:\n            reference:\n              - title: Autumn Budget and Spending Review 2022\n                href: https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/1043689/Budget_AB2021_Web_Accessible.pdf\n        2026-04-06:\n          value: 0.3575\n          metadata:\n            reference:\n              - title: OBR Economic and Fiscal Outlook November 2025\n                href: https://obr.uk/efo/economic-and-fiscal-outlook-november-2025/\n    threshold:\n      metadata:\n        label: Dividends higher rate threshold\n      values:\n        2015-04-01: 37_500\n        2026-04-06:\n          value: 37_700\n          metadata:\n            reference:\n              - title: Income Tax rates and allowances for current and previous tax years\n                href: https://www.gov.uk/government/publications/rates-and-allowances-income-tax/income-tax-rates-and-allowances-current-and-past\n  - rate:\n      metadata:\n        label: Dividends additional rate\n        unit: /1\n        reference:\n          - title: Finance Act 2022 s. 4\n            href: https://www.legislation.gov.uk/ukpga/2022/3/section/4/enacted\n      values:\n        2015-04-01: 0.381\n        2022-04-01:\n          value: 0.3935\n          metadata:\n            reference:\n              - title: Autumn Budget and Spending Review 2022\n                href: https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/1043689/Budget_AB2021_Web_Accessible.pdf\n    threshold:\n      values:\n        2015-04-01: 150_000\n        2026-04-06:\n          value: 125_140\n          metadata:\n            reference:\n              - title: Income Tax rates and allowances for current and previous tax years\n                href: https://www.gov.uk/government/publications/rates-and-allowances-income-tax/income-tax-rates-and-allowances-current-and-past\n      metadata:\n        period: year\n        label: Dividends additional rate threshold\n        reference:\n          - title: Finance Act 2022 s. 4\n            href: https://www.legislation.gov.uk/ukpga/2022/3/section/4/enacted\n  - rate:\n      description: An extra dividend tax bracket.\n      metadata:\n        label: Extra dividend tax bracket rate\n        unit: /1\n      values:\n        2015-04-01: 0.381\n        2022-06-05: 0.3935\n    threshold:\n      description: The lower threshold for the extra dividend bracket rate.\n      metadata:\n        label: Extra dividend tax bracket threshold\n        period: year\n        unit: currency-GBP\n      values:\n        2015-06-05: 10_000_000\nmetadata:\n  threshold_period: year\n  type: marginal_rate\n  threshold_unit: currency-GBP\n  rate_unit: /1\n  reference:\n    - title: Finance Act 2022 s. 4\n      href: https://www.legislation.gov.uk/ukpga/2022/3/section/4/enacted\n    - title: Autumn Budget and Spending Review\n      href: https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/1029973/Budget_AB2021_Print.pdf#page=138\n"
+  },
+  "existing_issue": "https://github.com/PolicyEngine/policyengine-uk/issues/1822",
+  "id": "dividend_band_threshold_lag",
+  "interpretation": "The existing mode-2 registry records the dividend thresholds lagging the main bands until April 2026. Their effect on a specific NICs costing's Income Tax interaction is unsized, so the national gap remains open.",
+  "observation": {
+   "2024-06-01": {
+    "dividend_additional_threshold": 150000,
+    "dividend_higher_threshold": 37500,
+    "uk_additional_threshold": 125140,
+    "uk_higher_threshold": 37700
+   },
+   "2025-06-01": {
+    "dividend_additional_threshold": 150000,
+    "dividend_higher_threshold": 37500,
+    "uk_additional_threshold": 125140,
+    "uk_higher_threshold": 37700
+   },
+   "2026-06-01": {
+    "dividend_additional_threshold": 125140,
+    "dividend_higher_threshold": 37700,
+    "uk_additional_threshold": 125140,
+    "uk_higher_threshold": 37700
+   }
+  },
+  "reproducer": "--case dividend_band_threshold_lag",
+  "variables": [
+   "dividend_income_tax",
+   "income_tax"
+  ]
+ },
+ {
+  "assessment": "data/uk/ab2025_measures.json: personal_tax_thresholds_freeze_to_2031.baseline_integrity_note",
+  "class": "pe_gap",
+  "engine_version": "2.89.2",
+  "events": [
+   "autumn_statement_2023",
+   "spring_budget_2024"
+  ],
+  "evidence": {
+   "engine_file": "parameters/gov/hmrc/national_insurance/class_4/thresholds/lower_profits_limit.yaml",
+   "sha256": "22412335d15673fd57fe56d9a9989675c02cc3ed64fce33ca3b57f6906d90dd5",
+   "source": "description: The Lower Profits Limit is the threshold at which self-employed earners pay the main Class 4 National Insurance rate.\nvalues:\n  2015-04-06: 8_060\n  2017-04-06: 8_164\n  2018-04-06: 8_424\n  2019-04-06: 8_632\n  2020-04-06: 9_500\n  2021-04-06: 9_568\n  2022-04-06:\n    value: 11_908\n    metadata:\n      reference:\n        - title: National Insurance Contributions (Increase of Thresholds) Act 2022\n          href: https://www.legislation.gov.uk/ukpga/2022/16/section/2/enacted\n  2024-01-01:\n    value: 12_570\n    metadata:\n      reference:\n        - title: National Insurance Contributions (Increase of Thresholds) Act 2022\n          href: https://www.legislation.gov.uk/ukpga/2022/16/section/2/enacted\n  2026-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: \"GOV.UK | Rates and allowances: National Insurance contributions\"\n          href: https://www.gov.uk/government/publications/rates-and-allowances-national-insurance-contributions/rates-and-allowances-national-insurance-contributions\nmetadata:\n  label: NI lower profits limit\n  unit: currency-GBP\n  period: year\n  uprating: gov.economic_assumptions.indices.obr.consumer_price_index\n  reference:\n    - https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/882271/Table-a4.pdf\n    - https://www.gov.uk/government/publications/rates-and-allowances-national-insurance-contributions/rates-and-allowances-national-insurance-contributions\n"
+  },
+  "id": "class4_threshold_indexation_from_2027",
+  "interpretation": "The existing AB2025 baseline integrity assessment states the prior-law Class 4 freeze runs to April 2028 while the pin resumes uprating in April 2027. This changes the marginal tax base in 2027; no fraction of a replay gap is attributed without a paired run.",
+  "national_effect": "unsized",
+  "observation": {
+   "2026-06-01": {
+    "lower_profits_limit": 12570,
+    "upper_profits_limit": 50270
+   },
+   "2027-06-01": {
+    "lower_profits_limit": 12821.380164235901,
+    "upper_profits_limit": 51275.32067272385
+   },
+   "2028-06-01": {
+    "lower_profits_limit": 13077.795560896562,
+    "upper_profits_limit": 52300.77826939301
+   }
+  },
+  "primary_source": {
+   "checked_date": "2026-10-09",
+   "rule": "The Class 4 Lower Profits Limit of \u00a312,570 and Upper Profits Limit of \u00a350,270 were frozen until April 2028.",
+   "title": "Autumn Statement 2022 tax section",
+   "url": "https://www.gov.uk/government/publications/autumn-statement-2022-documents/autumn-statement-2022-html"
+  },
+  "reproducer": "--case class4_threshold_indexation_from_2027",
+  "variables": [
+   "ni_class_4"
+  ]
+ },
+ {
+  "class": "investigation",
+  "engine_version": "2.89.2",
+  "events": [
+   "spring_statement_2025"
+  ],
+  "evidence": {
+   "engine_file": "scenarios/uc_reform.py",
+   "sha256": "5f139b8af2579099d1842c86ad5c4de8fc1984d6adb77ed9ce25dbfebd4e9eec",
+   "source": "from policyengine_uk.model_api import Scenario\nfrom policyengine_uk import Microsimulation\nfrom policyengine_uk.variables.gov.dwp.universal_credit.standard_allowance.uc_standard_allowance_claimant_type import (\n    UCClaimantType,\n)\nimport numpy as np\n\n\nBASELINE_UC_REBALANCING_YEAR = 2025\n\n\ndef _benefit_uprating_ratio(sim: Microsimulation, year: int) -> float:\n    parameters = sim.tax_benefit_system.parameters\n    current_index = float(parameters(str(year)).gov.benefit_uprating_cpi)\n    baseline_index = float(\n        parameters(str(BASELINE_UC_REBALANCING_YEAR)).gov.benefit_uprating_cpi\n    )\n    return current_index / baseline_index\n\n\ndef _rebalanced_standard_allowance_monthly(\n    sim: Microsimulation, year: int, claimant_type: str\n) -> float:\n    current = sim.tax_benefit_system.parameters(str(year))\n    return float(\n        current.gov.dwp.universal_credit.standard_allowance.amount[claimant_type]\n    )\n\n\ndef _protected_existing_health_element_monthly(\n    sim: Microsimulation, year: int\n) -> float:\n    baseline = sim.tax_benefit_system.parameters(str(BASELINE_UC_REBALANCING_YEAR))\n    protected_combined_award = _benefit_uprating_ratio(sim, year) * (\n        float(baseline.gov.dwp.universal_credit.standard_allowance.amount.SINGLE_OLD)\n        + float(baseline.gov.dwp.universal_credit.elements.disabled.amount)\n    )\n    return protected_combined_award - _rebalanced_standard_allowance_monthly(\n        sim, year, \"SINGLE_OLD\"\n    )\n\n\ndef _protected_single_young_health_element_monthly(\n    sim: Microsimulation, year: int\n) -> float:\n    baseline = sim.tax_benefit_system.parameters(str(BASELINE_UC_REBALANCING_YEAR))\n    protected_combined_award = _benefit_uprating_ratio(sim, year) * (\n        float(baseline.gov.dwp.universal_credit.standard_allowance.amount.SINGLE_YOUNG)\n        + float(baseline.gov.dwp.universal_credit.elements.disabled.amount)\n    )\n    return protected_combined_award - _rebalanced_standard_allowance_monthly(\n        sim, year, \"SINGLE_YOUNG\"\n    )\n\n\ndef add_universal_credit_reform(sim: Microsimulation):\n    rebalancing = sim.tax_benefit_system.parameters.gov.dwp.universal_credit.rebalancing\n\n    generator = np.random.default_rng(43)\n\n    uc_seed = generator.random(len(sim.calculate(\"benunit_id\")))\n    post_2025_claimant_share = {\n        2025: 0,\n        2026: 0.11,\n        2027: 0.13,\n        2028: 0.16,\n        2029: 0.22,\n    }  # WPI Economics for Trussell Trust based on admin PIP data, 2025\n    new_claimant_health_element = rebalancing.new_claimant_health_element\n    for year in range(2026, 2030):\n        if not rebalancing.active(year):\n            continue\n        is_post_2025_claimant = uc_seed < post_2025_claimant_share[year]\n        current_health_element = sim.calculate(\"uc_LCWRA_element\", year)\n        claimant_type = sim.calculate(\"uc_standard_allowance_claimant_type\", year)\n        has_health_element = current_health_element > 0\n        protected_health_element = np.full(\n            current_health_element.shape,\n            _protected_existing_health_element_monthly(sim, year) * 12,\n            dtype=current_health_element.dtype,\n        )\n        protected_health_element[claimant_type == UCClaimantType.SINGLE_YOUNG.name] = (\n            _protected_single_young_health_element_monthly(sim, year) * 12\n        )\n        current_health_element[has_health_element & ~is_post_2025_claimant] = (\n            protected_health_element[has_health_element & ~is_post_2025_claimant]\n        )\n        # Set post-April 2026 claimants to \u00a3217.26/month.\n        # https://bills.parliament.uk/publications/62123/documents/6889#page=16\n        current_health_element[has_health_element & is_post_2025_claimant] = (\n            new_claimant_health_element(year) * 12\n        )  # Monthly amount * 12\n        sim.set_input(\"uc_LCWRA_element\", year, current_health_element)\n\n    # Standard allowance uplift is handled in the formula itself so user\n    # reforms to the base amount are applied before the uplift.\n\n\nuniversal_credit_july_2025_reform = Scenario(\n    simulation_modifier=add_universal_credit_reform,\n)\n"
+  },
+  "id": "uc_lcwra_protection_stops_at_2030",
+  "interpretation": "The default Simulation constructor executes a deterministic UC modifier. It protects seeded existing claimants for 2026\u20132029, so inspecting uc_LCWRA_element alone would incorrectly claim all claimants are halved. The modifier loops over range(2026,2030), leaving CY2030 outside that protection override. The synthetic observation isolates the cutoff; continued-protection policy scope requires review before calling it an encoding defect.",
+  "observation": {
+   "annual_synthetic_lcwra_element": {
+    "2029": [
+     5447.29150390625
+    ],
+    "2030": [
+     2830.311279296875
+    ]
+   },
+   "formula_source": "    def formula(benunit, period, parameters):\n        p = parameters(period).gov.dwp.universal_credit.elements.disabled\n        limited_capability = benunit.members(\"uc_limited_capability_for_WRA\", period)\n        person_amounts = limited_capability * p.amount\n        return benunit.sum(person_amounts) * MONTHS_IN_YEAR\n",
+   "monthly_disabled_element": {
+    "2025-06-01": 423.27,
+    "2026-06-01": 217.26,
+    "2030-06-01": 235.85927653841142
+   }
+  },
+  "reproducer": "--case uc_lcwra_protection_stops_at_2030",
+  "variables": [
+   "uc_LCWRA_element"
+  ]
+ },
+ {
+  "class": "pe_gap",
+  "engine_version": "2.89.2",
+  "events": [
+   "autumn_budget_2024"
+  ],
+  "evidence": {
+   "engine_file": "variables/gov/hmrc/national_insurance/class_1/ni_class_1_employer.py",
+   "sha256": "1327631826a869fbaa5f236ad7089e7dea6254c0d9502e2a10d344e308478008",
+   "source": "from policyengine_uk.model_api import *\n\n\nclass ni_class_1_employer(Variable):\n    value_type = float\n    entity = Person\n    label = \"NI Class 1 employer-side contributions\"\n    definition_period = YEAR\n    unit = GBP\n    defined_for = \"ni_liable\"\n    reference = \"https://www.legislation.gov.uk/ukpga/1992/4/section/9\"\n\n    def formula(person, period, parameters):\n        class_1 = parameters(period).gov.hmrc.national_insurance.class_1\n        earnings = person(\"ni_class_1_income\", period)\n        if not parameters(\n            period\n        ).gov.contrib.policyengine.employer_ni.exempt_employer_pension_contributions:\n            added_pension_contributions = person(\n                \"employer_pension_contributions\", period\n            )\n            taxed_earnings = earnings + added_pension_contributions\n        else:\n            taxed_earnings = earnings\n        secondary_threshold = class_1.thresholds.secondary_threshold * WEEKS_IN_YEAR\n        main_earnings = max_(\n            taxed_earnings - secondary_threshold,\n            0,\n        )\n        return class_1.rates.employer * main_earnings\n"
+  },
+  "id": "employer_nics_state_pension_age_exemption",
+  "interpretation": "The employer formula uses the same ni_liable age mask as employee contributions. For otherwise identical \u00a350,000 earnings, employer NICs falls to zero at age 70. HMRC states employer contributions continue after State Pension age. This is an employer-liability encoding concern; its national contribution to the NICs replay difference remains unsized.",
+  "national_effect": "unsized",
+  "observation": {
+   "ni_class_1_employee": [
+    2994.4033203125,
+    0.0
+   ],
+   "ni_class_1_employer": [
+    6751.2001953125,
+    0.0
+   ],
+   "ni_liable": [
+    true,
+    false
+   ]
+  },
+  "observation_provenance": {
+   "execution": "One authorized process, sequential synthetic situations with del and gc.collect between worlds; no national dataset loaded.",
+   "recorded_date": "2026-10-09",
+   "source_receipt": ".venv-replay-checks/candidate-audit/MEASURED_OBSERVATIONS.json"
+  },
+  "primary_source": {
+   "checked_date": "2026-10-09",
+   "rule": "Employers continue paying National Insurance after employees reach State Pension age.",
+   "url": "https://www.gov.uk/employee-reaches-state-pension-age"
+  },
+  "reproducer": "--case employer_nics_state_pension_age_exemption",
+  "situation": {
+   "benunits": {
+    "pension_age": {
+     "members": [
+      "pension_age"
+     ]
+    },
+    "working_age": {
+     "members": [
+      "working_age"
+     ]
+    }
+   },
+   "households": {
+    "pension_age": {
+     "members": [
+      "pension_age"
+     ],
+     "region": {
+      "2026": "LONDON"
+     }
+    },
+    "working_age": {
+     "members": [
+      "working_age"
+     ],
+     "region": {
+      "2026": "LONDON"
+     }
+    }
+   },
+   "people": {
+    "pension_age": {
+     "age": {
+      "2026": 70
+     },
+     "employment_income": {
+      "2026": 50000
+     },
+     "ni_class_1_income": {
+      "2026": 50000
+     }
+    },
+    "working_age": {
+     "age": {
+      "2026": 45
+     },
+     "employment_income": {
+      "2026": 50000
+     },
+     "ni_class_1_income": {
+      "2026": 50000
+     }
+    }
+   }
+  },
+  "supporting_evidence": [
+   {
+    "engine_file": "variables/gov/hmrc/national_insurance/class_1/ni_liable.py",
+    "sha256": "5c4c8b028f9865b445c7272003458536560518408f2d861eacf54eb3c5d32cec",
+    "source": "from policyengine_uk.model_api import *\n\n\nclass ni_liable(Variable):\n    label = \"NI liable\"\n    documentation = \"Whether this person is liable for NI contributions by their age.\"\n    entity = Person\n    definition_period = YEAR\n    value_type = bool\n\n    def formula(person, period, parameters):\n        return person(\"over_16\", period) & ~person(\"is_SP_age\", period)\n"
+   }
+  ],
+  "variables": [
+   "ni_liable",
+   "ni_class_1_employer",
+   "ni_class_1_employee"
+  ],
+  "year": 2026
+ },
+ {
+  "class": "pe_gap",
+  "engine_version": "2.89.2",
+  "events": [
+   "spring_budget_2023",
+   "autumn_budget_2024"
+  ],
+  "evidence": {
+   "engine_file": "variables/gov/hmrc/income_tax/allowances/pension_annual_allowance.py",
+   "sha256": "086e8e8b7da2d5c8693e9f6ce5cb67d6535fbac9b9c619adbe3bab872bad78c2",
+   "source": "from policyengine_uk.model_api import *\n\n\nclass pension_annual_allowance(Variable):\n    value_type = float\n    entity = Person\n    label = \"Annual Allowance for pension contributions\"\n    definition_period = YEAR\n    unit = GBP\n\n    def formula(person, period, parameters):\n        allowance = parameters(period).gov.hmrc.income_tax.allowances.annual_allowance\n        ANI = person(\"adjusted_net_income\", period)\n        reduction = max_(0, ANI - allowance.taper) * allowance.reduction_rate\n        return max_(allowance.minimum, allowance.default - reduction)\n"
+  },
+  "id": "pension_taper_omits_employer_contributions",
+  "interpretation": "The pension taper uses adjusted_net_income, which excludes employer pension contributions, and omits the separate threshold-income gate. With \u00a3240,000 salary and \u00a350,000 employer contributions it returns the full \u00a360,000 allowance. HMRC's adjusted-income rule gives \u00a3290,000 and a \u00a345,000 allowance for this controlled case. The national contribution to pension or Income Tax costing differences remains unsized.",
+  "national_effect": "unsized",
+  "observation": {
+   "adjusted_net_income": [
+    240000.0
+   ],
+   "pension_annual_allowance": [
+    60000.0
+   ]
+  },
+  "observation_provenance": {
+   "execution": "One authorized process, sequential synthetic situations with del and gc.collect between worlds; no national dataset loaded.",
+   "recorded_date": "2026-10-09",
+   "source_receipt": ".venv-replay-checks/candidate-audit/MEASURED_OBSERVATIONS.json"
+  },
+  "primary_source": {
+   "checked_date": "2026-10-09",
+   "rule": "Threshold income must exceed \u00a3200,000, and adjusted income adds employer pension contributions; the taper starts above \u00a3260,000.",
+   "url": "https://www.gov.uk/guidance/pension-schemes-work-out-your-tapered-annual-allowance"
+  },
+  "reproducer": "--case pension_taper_omits_employer_contributions",
+  "situation": {
+   "benunits": {
+    "worker": {
+     "members": [
+      "worker"
+     ]
+    }
+   },
+   "households": {
+    "worker": {
+     "members": [
+      "worker"
+     ],
+     "region": {
+      "2024": "LONDON"
+     }
+    }
+   },
+   "people": {
+    "worker": {
+     "age": {
+      "2024": 45
+     },
+     "employer_pension_contributions": {
+      "2024": 50000
+     },
+     "employment_income": {
+      "2024": 240000
+     },
+     "personal_pension_contributions": {
+      "2024": 0
+     }
+    }
+   }
+  },
+  "supporting_evidence": [
+   {
+    "engine_file": "variables/gov/hmrc/income_tax/adjusted_net_income.py",
+    "sha256": "e981d92c0340fc34e3cba57b781d6fa9afe3fd5fa199989955bd85b79661eeba",
+    "source": "from policyengine_uk.model_api import *\n\n\nclass adjusted_net_income(Variable):\n    value_type = float\n    entity = Person\n    label = \"Taxable income after tax reliefs and before allowances\"\n    definition_period = YEAR\n    reference = dict(\n        title=\"Income Tax Act 2007, s. 23\",\n        href=\"https://www.legislation.gov.uk/ukpga/2007/3/section/23\",\n    )\n    unit = GBP\n\n    def formula(person, period, parameters):\n        adjusted_net_income_components = parameters(\n            period\n        ).gov.hmrc.income_tax.adjusted_net_income_components\n\n        # Find adjusted net income\n        ani = add(person, period, adjusted_net_income_components)\n\n        # For basic income contributions, add basic income\n        # Modifying param list directly is mutative, hence two-step process\n        if parameters(\n            period\n        ).gov.contrib.ubi_center.basic_income.interactions.include_in_taxable_income:\n            ani += person(\"basic_income\", period)\n\n        return max_(0, ani)\n"
+   },
+   {
+    "engine_file": "parameters/gov/hmrc/income_tax/adjusted_net_income_components.yaml",
+    "sha256": "27ada6022094b53bc6d47396cabe05d84e7ae2f921d99efa08fcd052d665674b",
+    "source": "description: Components of adjusted net income.\nvalues:\n  0000-01-01:\n    - taxable_employment_income\n    - taxable_pension_income\n    - taxable_social_security_income\n    - taxable_self_employment_income\n    - taxable_property_income\n    - taxable_savings_interest_income\n    - taxable_dividend_income\n    - taxable_miscellaneous_income\n    \nmetadata:\n  unit: list\n  label: Adjusted net income components\n  period: year\n  reference:\n    - title: \"Income Tax Act 2007, s. 58 (1)\"\n      href: https://www.legislation.gov.uk/ukpga/2007/3/section/58\n"
+   },
+   {
+    "engine_file": "parameters/gov/hmrc/income_tax/allowances/annual_allowance/taper.yaml",
+    "sha256": "e163e82307af00d74759b595f594030e2069e383424729f75e9385ad66297a0e",
+    "source": "description: Adjusted net income limit for tapering of the annual allowance.\nvalues:\n  2015-04-01: 240_000\n  2023-04-06: 260_000\nmetadata:\n  unit: currency-GBP\n  label: Annual allowance taper threshold\n  reference:\n  - title: Finance Act 2004 s. 228ZA\n    href: https://www.legislation.gov.uk/ukpga/2004/12/section/228ZA\n  - title: Tax on your private pension contributions\n    href: https://www.gov.uk/tax-on-your-private-pension/annual-allowance\n"
+   },
+   {
+    "engine_file": "parameters/gov/hmrc/income_tax/allowances/annual_allowance/default.yaml",
+    "sha256": "4c0b1bd675d5b645103fe6677ee3cb9ed932fcde6970eb3de212f50c5684ba5c",
+    "source": "description: Annual allowance for relief on pension contributions.\nvalues:\n  2015-04-01: 40_000\n  2023-04-06: 60_000\nmetadata:\n  unit: currency-GBP\n  label: Annual allowance for pension contributions\n  reference:\n  - title: Finance Act 2004 s. 228\n    href: https://www.legislation.gov.uk/ukpga/2004/12/section/228\n  - title: Tax on your private pension contributions\n    href: https://www.gov.uk/tax-on-your-private-pension/annual-allowance\n"
+   }
+  ],
+  "variables": [
+   "adjusted_net_income",
+   "pension_annual_allowance"
+  ],
+  "year": 2024
+ },
+ {
+  "class": "pe_gap",
+  "engine_version": "2.89.2",
+  "events": [
+   "spring_budget_2023",
+   "autumn_budget_2024"
+  ],
+  "evidence": {
+   "engine_file": "variables/gov/hmrc/pensions/private_pension_contributions_tax.py",
+   "sha256": "eb27b9fc08eb6a6db2d12ea6b7b3e41e620687caa723bb5f9cb0f93661cfdae3",
+   "source": "from policyengine_uk.model_api import *\n\n\nclass personal_pension_contributions_tax(Variable):\n    value_type = float\n    entity = Person\n    label = \"Reduction in taxable income from pension contributions to pensions other than the State Pension\"\n    definition_period = YEAR\n    reference = [\n        dict(\n            title=\"Finance Act 2004 s. 227\",\n            href=\"https://www.legislation.gov.uk/ukpga/2004/12/section/227\",\n        ),\n        dict(\n            title=\"Finance Act 2004 s. 233\",\n            href=\"https://www.legislation.gov.uk/ukpga/2004/12/section/233\",\n        ),\n    ]\n    unit = GBP\n\n    def formula(person, period, parameters):\n        p = parameters(period).gov.hmrc.income_tax.rates.uk\n        taxed_income = person(\"taxed_income\", period)\n\n        personal_pension_contributions = person(\n            \"pension_contributions_for_annual_allowance\", period\n        )\n        pension_annual_allowance = person(\"pension_annual_allowance\", period)\n        taxable_contributions = (\n            personal_pension_contributions - pension_annual_allowance\n        )\n\n        tax_rate = p.marginal_rates(taxed_income)\n        return max_(0, taxable_contributions * tax_rate)\n"
+  },
+  "id": "annual_allowance_charge_single_marginal_rate",
+  "interpretation": "The annual-allowance charge applies one marginal rate at taxed_income to the entire excess. Controlled intermediate inputs of \u00a330,000 taxed income and \u00a320,000 excess produce \u00a34,000. HMRC's band-crossing rule gives \u00a36,460 (\u00a37,700 at 20% and \u00a312,300 at 40%). Intermediate overrides isolate this formula rather than claim a complete household contribution history. The national contribution remains unsized.",
+  "national_effect": "unsized",
+  "observation": {
+   "personal_pension_contributions_tax": [
+    4000.0
+   ]
+  },
+  "observation_provenance": {
+   "execution": "One authorized process, sequential synthetic situations with del and gc.collect between worlds; no national dataset loaded.",
+   "recorded_date": "2026-10-09",
+   "source_receipt": ".venv-replay-checks/candidate-audit/MEASURED_OBSERVATIONS.json"
+  },
+  "primary_source": {
+   "checked_date": "2026-10-09",
+   "rule": "The annual-allowance charge uses the rates that apply if the excess is added to taxable income, including bands crossed by that excess.",
+   "url": "https://www.gov.uk/hmrc-internal-manuals/pensions-tax-manual/ptm056110"
+  },
+  "reproducer": "--case annual_allowance_charge_single_marginal_rate",
+  "situation": {
+   "benunits": {
+    "worker": {
+     "members": [
+      "worker"
+     ]
+    }
+   },
+   "households": {
+    "worker": {
+     "members": [
+      "worker"
+     ],
+     "region": {
+      "2024": "LONDON"
+     }
+    }
+   },
+   "people": {
+    "worker": {
+     "age": {
+      "2024": 45
+     },
+     "pension_annual_allowance": {
+      "2024": 60000
+     },
+     "pension_contributions_for_annual_allowance": {
+      "2024": 80000
+     },
+     "taxed_income": {
+      "2024": 30000
+     }
+    }
+   }
+  },
+  "supporting_evidence": [
+   {
+    "engine_file": "parameters/gov/hmrc/income_tax/rates/uk.yaml",
+    "sha256": "c32409413c8739fbee4c12a7038cc523a84728ebee70b35551159705d1c51130",
+    "source": "brackets:\n- rate:\n    description: The basic rate is the first of three tax brackets on all income,\n      after allowances are deducted\n    metadata:\n      label: Basic rate\n      reference:\n      - href: https://www.legislation.gov.uk/ukpga/2022/3/section/2/enacted\n        title: Finance Act 2022 s. 2 (a)\n      unit: /1\n    values:\n      2015-04-01: 0.2\n  threshold:\n    description: The starting threshold for the basic rate, after allowances.\n    metadata:\n      reference:\n      - title: Income Tax Act 2007, s. 6 (1)(b)\n        href: https://www.legislation.gov.uk/ukpga/2007/3/section/6\n    values:\n      2015-04-05: 0\n- rate:\n    description: The higher rate is the middle tax bracket on earned income.\n    metadata:\n      label: Higher rate\n      reference:\n      - href: https://www.legislation.gov.uk/ukpga/2022/3/section/2/enacted\n        title: Finance Act 2022 s. 2 (b)\n      unit: /1\n    values:\n      2015-04-05: 0.4\n  threshold:\n    description: The lower threshold for the higher rate of income tax (and therefore\n      the upper threshold of the basic rate)\n    metadata:\n      label: Higher rate threshold\n      period: year\n      reference:\n      - href: https://www.legislation.gov.uk/ukpga/2021/26/section/5\n        title: Finance Act 2021 s. 5 (1)\n      unit: currency-GBP\n      uprating: gov.benefit_uprating_cpi\n    values:\n      2015-04-05: 32000\n      2017-04-01: 33500\n      2018-04-01: 34500\n      2019-04-01: 37500\n      2020-04-01: 37500\n      2021-04-01: 37700\n      2027-04-01: 37700\n      2030-04-01:\n        value: 37700\n        metadata:\n          reference:\n            - title: OBR Economic and Fiscal Outlook November 2025\n              href: https://obr.uk/efo/economic-and-fiscal-outlook-november-2025/\n- rate:\n    description: The additional rate is the highest tax bracket, with no upper bound\n    metadata:\n      label: Additional rate\n      reference:\n      - href: https://www.legislation.gov.uk/ukpga/2022/3/section/2/enacted\n        title: Finance Act 2022 s. 2 (c)\n      tests:\n      - decreases_net_income: true\n        period: 2022\n      unit: /1\n    values:\n      2015-04-05: 0.45\n  threshold:\n    description: The lower threshold for the additional rate\n    metadata:\n      label: Additional rate threshold\n      period: year\n      reference:\n      - href: https://www.legislation.gov.uk/ukpga/2022/3/section/2/enacted\n        title: Finance Act 2022 s. 2\n      unit: currency-GBP\n    values:\n      2015-04-05: 150_000\n      2023-01-01:\n        value: 125_140\n        reference:\n          - title: Finance Act 2023 s. 6 (4)\n            href: https://www.legislation.gov.uk/ukpga/2023/1/section/6/enacted\n      2030-04-01:\n        value: 125_140\n        metadata:\n          reference:\n            - title: OBR Economic and Fiscal Outlook November 2025\n              href: https://obr.uk/efo/economic-and-fiscal-outlook-november-2025/\n- rate:\n    description: An extra tax bracket.\n    metadata:\n      label: Extra tax bracket rate\n      unit: /1\n    values:\n      2015-04-05: 0.45\n  threshold:\n    description: The lower threshold for the extra bracket rate.\n    metadata:\n      label: Extra tax bracket threshold\n      period: year\n      unit: currency-GBP\n    values:\n      2015-04-05: 10_000_000\ndescription: Income Tax scale.\nmetadata:\n  label: Income Tax main rates\n  rate_unit: /1\n  reference:\n  - href: https://www.legislation.gov.uk/ukpga/2022/3/section/2/enacted\n    title: Finance Act 2022 s. 2\n  threshold_period: year\n  threshold_unit: currency-GBP\n  type: marginal_rate\n"
+   }
+  ],
+  "variables": [
+   "personal_pension_contributions_tax"
+  ],
+  "year": 2024
+ }
+]

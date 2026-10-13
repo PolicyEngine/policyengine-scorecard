@@ -1,0 +1,31 @@
+{
+  "id": "aspe-welfare-indicators",
+  "name": "HHS ASPE — Welfare Indicators and Risk Factors, 25th Report to Congress: Indicator 4 (participation among the eligible)",
+  "organization": "U.S. Department of Health and Human Services, Office of the Assistant Secretary for Planning and Evaluation",
+  "country": "US",
+  "url": "https://aspe.hhs.gov/reports/welfare-indicators-risk-factors-twenty-fifth-report-congress",
+  "data_urls": [
+    "https://aspe.hhs.gov/sites/default/files/documents/dbfa8a8b1349c527db830903a57b8867/25th%20Welfare%20Indicators%20Report%20to%20Congress%20-%20Appendix%20Tables.pdf",
+    "https://www.aspe.hhs.gov/sites/default/files/documents/9726be6ff81604c026fb82eceec5d716/25th%20Welfare%20Indicators%20Report%20to%20Congress.pdf",
+    "https://aspe.hhs.gov/sites/default/files/documents/94da44bd0fab7e3bccee335ad0a5858a/24th%20Welfare%20Indicators%20Report%20to%20Congress%20-%20Appendix%20Tables.pdf"
+  ],
+  "raw_sha256": {
+    "25th-welfare-indicators-appendix-tables.pdf": "e2cbc4c98ef9a2176854be9acf655ade6972b2fad236af23b6ea667d146f6da3",
+    "25th-welfare-indicators-report.pdf": "aed486eb61dca8eb22cd34a44b2fdb5fef0185534d092884c82c3f6ecbce00b9",
+    "24th-welfare-indicators-appendix-tables.pdf": "e4b5d128821c863d2ac59c0b30faeab1b064c816262f5b904ae2e9c24c5f3faa"
+  },
+  "published": "2026-04 (25th report); 2025-08 (24th report)",
+  "fetched": "2026-10-07",
+  "model": {
+    "name": "TRIM3 (Urban Institute, for HHS) for TANF and SSI; FNS's SNAP participation series for SNAP",
+    "open_source": false,
+    "method": "Indicator 4 is the share of people (TANF families, SNAP households, SSI adult units) who receive a benefit among those eligible, in an average month. TANF and SSI eligibility and participation are simulated by TRIM3 on the CPS ASEC; the SNAP series combines FNS program operations, SNAP QC and the CPS ASEC.",
+    "method_basis": "25th report, Indicator 4 definition; Appendix Tables 10-12 notes and source lines"
+  },
+  "period": "TANF select years 1981-2023; SNAP September 1976 to FY 2022 (no FY 2021); SSI 1993-2023 (counts from 1998)",
+  "programs": ["tanf", "snap", "ssi"],
+  "geographies": "national only",
+  "routing_note": "SNAP participating households (Table 11) are FNS program-operations counts — administrative, so dropped from claims under the 2026-08-02 boundary ruling. TANF and SSI participating counts are TRIM3 simulation output and stay claims.",
+  "vintage_note": "Table 11 marks methodological breaks (series consistent within 1976-1994, 1994-1999, FY1999-2001, FY2002-2009, FY2010-2016). Table 10 excludes small supplemental-only benefits from 2017. Table 12 carries an erratum for 2013-2016 (corrected in this edition).",
+  "diagnosis_upstream": "TRIM3 is not public; divergences classified as external-model issues become a comparison memo."
+}

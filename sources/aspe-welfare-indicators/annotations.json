@@ -1,0 +1,58 @@
+{
+  "_schema": {
+    "applies_to": "matcher on {program, metrics}; null = any",
+    "severity": "period | definitional | construction | caution | gap",
+    "basis": "traceability: a table or section of the ASPE report in raw/, engine metadata or measurements in pe/<bundle>.json, scorecard_db/relationships.py, or microcosm's take-up spec"
+  },
+  "annotations": [
+    {
+      "id": "aspe-period-vintage",
+      "applies_to": {"program": null, "metrics": null},
+      "severity": "period",
+      "text": "PolicyEngine values are calendar 2024 on the certified data; ASPE's latest values are 2023 (TANF, SSI) and fiscal 2022 (SNAP). Level differences can come from the gap as well as from the models.",
+      "basis": "ASPE 25th report, Appendix Tables 10-12; sources/aspe-welfare-indicators/pe/us-6.2.1.json (period)"
+    },
+    {
+      "id": "aspe-tanf-seed",
+      "applies_to": {"program": "tanf", "metrics": ["participation_rate"]},
+      "severity": "construction",
+      "text": "PolicyEngine's TANF take-up flag is seeded at 21.9%, the 2022 value of this very table in the 24th report. Calibration then reweights units toward ACF TANF cash-assistance dollar targets (national and 22 States; the national target is missed by 36%), so the weighted rate does not stay at the seed.",
+      "basis": "microcosm packages/microcosm-build/src/microcosm/build/us/spec/take_up.yaml (tanf: 0.219, 24th report Table 10); us-6.2.1 calibration_diagnostics.json (23 hhs_acf_tanf.fy2024.cash_assistance.* targets; national -36.1%); scorecard_db/relationships.py _ASPE; the ingest appends the measured flag share and weighted rate from pe/us-6.2.1.json"
+    },
+    {
+      "id": "aspe-tanf-annual-units",
+      "applies_to": {"program": "tanf", "metrics": null},
+      "severity": "construction",
+      "text": "PolicyEngine counts SPM units with a TANF entitlement (and a payment) at any time in 2024, because its State TANF programs mix yearly and monthly periods; ASPE counts TRIM3 assistance units in an average month. Any-time counts run above average-month counts, so only the rate is compared as a like quantity.",
+      "basis": "pe_construction.tanf in sources/aspe-welfare-indicators/pe/us-6.2.1.json; policyengine-us 2.2.1 tanf_if_takes_up (51 State programs; ca_tanf YEAR, tx_tanf MONTH)"
+    },
+    {
+      "id": "aspe-snap-federal-households",
+      "applies_to": {"program": "snap", "metrics": null},
+      "severity": "definitional",
+      "text": "ASPE republishes FNS's national household series: households eligible under federal rules, average month of the fiscal year. PolicyEngine counts SPM units in the same federal-rules world as the FNS State lane (BBCE turned off every month), averaged over 2024.",
+      "basis": "ASPE 25th report, Appendix Table 11 (source line); pe_construction.snap and toggle_check in pe/us-6.2.1.json"
+    },
+    {
+      "id": "aspe-snap-numerator-calibrated",
+      "applies_to": {"program": "snap", "metrics": ["participation_rate"]},
+      "severity": "construction",
+      "text": "PolicyEngine's SNAP participating units are calibrated to FNS household counts, so the rate's numerator agrees by construction; the eligible count is the out-of-sample part.",
+      "basis": "docs/replication-assessment.md §3-§4 (scorecard_db/relationships.py _FNS)"
+    },
+    {
+      "id": "aspe-ssi-units",
+      "applies_to": {"program": "ssi", "metrics": null},
+      "severity": "construction",
+      "text": "ASPE counts TRIM3 adult units: one-person units aged 65 and older, one-person disabled units, and married couples; children are excluded. PolicyEngine counts adults with an SSI payment due (and paid) in an average 2024 month, treats joint claims as couple units, and splits the others at age 65.",
+      "basis": "ASPE 25th report, Appendix Table 12 and Indicator 4 definition; pe_construction.ssi in pe/us-6.2.1.json"
+    },
+    {
+      "id": "aspe-ssi-recipients-calibrated",
+      "applies_to": {"program": "ssi", "metrics": ["participation_rate", "participant_count"]},
+      "severity": "construction",
+      "text": "PolicyEngine's SSI recipients are calibrated to SSA recipient counts and payments, so participants agree largely by construction; the eligible count is the out-of-sample part.",
+      "basis": "docs/replication-assessment.md §3 (scorecard_db/relationships.py _SSA)"
+    }
+  ]
+}

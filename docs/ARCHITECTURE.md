@@ -153,12 +153,64 @@ Operating rules for the agent stage:
    work beyond labels.
 4. Run the diagnosis stage on the new divergence queue.
 
+### Built after Urban
+
+- **FNS state SNAP participation rates** (`sources/fns-snap-rates/`, lane
+  `fns-snap-rates`, issue #2): a PDF table adapter with an
+  independent-recompute QC (every published rate is rebuilt from its
+  published parts), claims through `scorecard_db/ingest_fns_snap_rates.py`,
+  and PE counterparts from `pipeline/campaign_us/fns_snap_rates.py`. FNS
+  counts only federal-rules eligibility, so the counterpart runs in a
+  BBCE-off world (`is_tanf_non_cash_eligible` forced False) and averages
+  the twelve months. The rate's numerator class is a calibration target;
+  the eligible count is the held-out signal.
+- **IRS/Census EITC participation** (`sources/irs-eitc-participation/`,
+  lane `nta-eitc`, issue #2): the ACS-based State table (TY2014-2022) and
+  the CPS-based national series (CES-WP-24-75). The QC checks the current
+  table against its May 2024 edition cell for cell and recomputes the
+  Census paper's non-claimants and unclaimed dollars from its rates.
+  Counterparts come from `pipeline/campaign_us/irs_eitc_participation.py`
+  (eligibility = take-up and filing forced on). The relationship is
+  source-keyed in `relationships.us_source_relationship`: us-6.2.1 targets
+  SOI State EITC claims by number of children, so the rate's numerator is
+  consumed; eligibility is held out.
+
+- **ASPE Welfare Indicators, Indicator 4** (`sources/aspe-welfare-indicators/`,
+  lane `aspe-welfare-indicators`): TANF families and SSI adult units
+  (TRIM3) and SNAP households (FNS series), participation among the
+  eligible. The QC recomputes every rate from its counts and checks the
+  24th and 25th editions cell for cell. SNAP participating households are
+  program-operations counts and are dropped (boundary rule). TANF take-up
+  is seeded from this table, so the TANF rate is `seed_source`; PE's TANF
+  counts are any-time-in-year (State programs mix periods) and are marked
+  `concept_mismatch`.
+
+### Staged for Chronicle, not claims
+
+Administrative outturn tables (caseloads, units, spending) are calibration
+material under the 2026-08-02 boundary ruling (issue #6). They are parsed
+and QC'd like any source, then written to `data/ledger/*_admin_outturns.jsonl`
+with deterministic fact ids and the consuming pin (if any), never to
+`external_scores`.
+
+- **HUD Picture of Subsidized Households** (`sources/hud-psh/`, lane
+  `hud-psh`, stage `cataloged`): 10,398 State and U.S. facts for 31 Dec 2024
+  and 2025 in `data/ledger/us_admin_outturns.jsonl`, written by
+  `scorecard_db/ingest_us_admin_outturns.py`. us-6.2.1 has no housing
+  targets, so `consumed_by` is null.
+- **SNAP QC household characteristics, FY 2023** (`sources/snap-qc-characteristics/`,
+  lane `snap-qc`, stage `cataloged`): Tables B.1-B.2 by State — households,
+  participants, benefits, and the caseload's average size, income,
+  deductions and certification period (540 facts). The QC rebuilds B.2's
+  household size and benefit from B.1's counts. us-6.2.1 targets FY 2024
+  households and benefits but no person counts — the gap behind the FNS
+  lane's 2.7 people per participating SPM unit (QC: 1.9).
+
 ### Designed-for future sources (not yet built)
 
 | source | comparison unit | adapter shape | notes |
 |---|---|---|---|
 | TAXSIM (NBER) | record-level tax liability | run policyengine-taxsim on shared records; rows = aggregate match rates + named mismatch clusters | open source → upstream PRs possible; policyengine-taxsim already exists |
-| FNS official SNAP state participation rates | state × year rates | direct table adapter | the natural held-out validation for SNAP (FNS state rates are not consumed by calibration) |
 | SNAP QC | caseload composition | distributional rows (shares by hh type/income band) | needs a composition metric family |
 | ASPE welfare indicators | TANF/SSI recipiency rates | direct table adapter | TRIM3-based — same family as Urban's TANF seed source |
 | Census SPM reports | poverty rates by state/group | direct table adapter | anchors the poverty side independently of Urban |
@@ -173,5 +225,8 @@ and a `composition` metric family for QC-style shares. Nothing else changes.
 - Private-first; flip public only deliberately.
 - `data/` artifacts are committed — the scorecard is a provenance artifact,
   and CI can re-derive them.
-- App: bun + vite + react + `@policyengine/ui-kit` tokens; sentence case;
+- App: bun + vite + react on the `@policyengine/ui-kit` shell (shared
+  PolicyEngine header/footer, tokens, primitives). Views: Overview (landing),
+  Comparison (`?view=scorecard`), Divergences, Reform validation, Gaps,
+  Method; one country selector scopes every view. Sentence case;
   counts/rates formatted centrally.

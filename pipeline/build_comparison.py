@@ -7,7 +7,10 @@ Status taxonomy (honesty made structural — misses stay on the page):
   comparable       PE measures the same concept (annotations may still apply)
   constructed      PE approximates Urban's concept via a documented
                    construction (e.g. payable-under-forced-take-up denominators)
-  concept_mismatch PE value exists but measures a different concept (housing)
+  concept_mismatch PE value exists but measures a different concept (housing;
+                   and, per diagnosis batch 1, the SNAP person rate/gap, the
+                   refundable-CTC claims count and the full-participation
+                   poverty counterfactual — see their annotations)
   pe_gap           the model/artifact cannot produce this today (LIHEAP, CCDF,
                    metro/non-metro)
   not_computed     producible but not yet in the pipeline (v1 backlog)
@@ -126,16 +129,22 @@ def counterpart(pe, program, metric, subgroup, variant, geo, unit_concept):
                 "comparable",
                 "baseline is_snap_eligible→person ÷ persons",
             )
+        # Annual mapped-person rate vs Urban's average-month admin numerator:
+        # not like-for-like (diagnosis batch 1; snap-rate-not-like-for-like).
         if metric == "participation_rate":
             return (
                 ratio(both, elig),
-                "comparable",
+                "concept_mismatch",
                 "baseline snap>0 & eligible, ÷ eligible (persons)",
             )
         if metric == "participation_gap_count":
             if elig is None or both is None:
                 return None, "not_computed", None
-            return elig - both, "comparable", "eligible − participating & eligible"
+            return (
+                elig - both,
+                "concept_mismatch",
+                "eligible − participating & eligible",
+            )
 
     if program == "ssi":
         if subgroup not in SSI_SUBS:
@@ -248,12 +257,14 @@ def counterpart(pe, program, metric, subgroup, variant, geo, unit_concept):
             return None, "not_computed", None
         claims = g("baseline", "ctc_refund", "participant_count", "total", geo)
         recipe = "baseline refundable_ctc>0 (claims-calibrated; no take-up flag)"
+        # Claims-shaped count vs Urban's modeled eligibility (diagnosis
+        # batch 1; ctc-claims-vs-eligibility).
         if metric == "eligible_count":
-            return claims, "constructed", recipe
+            return claims, "concept_mismatch", recipe
         if metric == "eligibility_rate":
             return (
                 ratio(claims, g("baseline", "_tax_units", "count", "total", geo)),
-                "constructed",
+                "concept_mismatch",
                 recipe + " ÷ tax units",
             )
 
@@ -297,21 +308,24 @@ def counterpart(pe, program, metric, subgroup, variant, geo, unit_concept):
         f_poor, f_pop = pov("fullpart_all")
         if metric == "poverty_rate":
             return ratio(b_poor, b_pop), "comparable", "baseline SPM poverty"
+        # The fullpart counterfactuals force different program sets on the
+        # two sides: a non-replication (diagnosis batch 1;
+        # fullpart-nonreplication).
         if metric == "poverty_rate_fullpart":
             return (
                 ratio(f_poor, f_pop),
-                "constructed",
+                "concept_mismatch",
                 "all stored take-up flags True + WIC gate (see pe_meta runs)",
             )
         if metric == "poverty_rate_relative_change_fullpart":
             br, fr = ratio(b_poor, b_pop), ratio(f_poor, f_pop)
             if br in (None, 0) or fr is None:
                 return None, "not_computed", None
-            return (fr - br) / br, "constructed", "(fullpart − base) ÷ base"
+            return (fr - br) / br, "concept_mismatch", "(fullpart − base) ÷ base"
         if metric == "poverty_count_change_fullpart":
             if b_poor is None or f_poor is None:
                 return None, "not_computed", None
-            return f_poor - b_poor, "constructed", "fullpart poor − base poor"
+            return f_poor - b_poor, "concept_mismatch", "fullpart poor − base poor"
 
     return None, "not_computed", None
 
@@ -423,6 +437,16 @@ CALIBRATION_RELATIONSHIP = {
 }
 
 
+def policyengine_variables(program_variables, program, pe_value):
+    """The model variables behind a row's PE value, as the machine-readable
+    counterpart of pe_construction. Empty when there is no PE value (a gap,
+    a suppressed cell, a not-yet-computed construction): nothing was
+    measured, so nothing can be matched to it."""
+    if pe_value is None:
+        return []
+    return list(program_variables.get(program, []))
+
+
 def calibration_relationship(program, metric):
     hit = CALIBRATION_RELATIONSHIP.get(
         (program, metric)
@@ -519,11 +543,13 @@ def main():
     annotations = load_annotations()
     ic_2026, ic_2024 = load_2026()
     diagnoses = load_diagnoses()
-    externals = []
-    for f in sorted((DATA / "externals").glob("*.json")):
-        externals.extend(json.loads(f.read_text()))
+    # The comparison grid is the Urban SOTSN lane. data/externals/ has since
+    # grown UK lanes and a metadata dict that this join's row schema does
+    # not fit, so the builder reads its own lane's file, not the glob.
+    externals = json.loads((DATA / "externals" / "urban-sotsn.json").read_text())
 
     pe_meta = json.loads((DATA / "pe" / "pe_meta.json").read_text())
+    program_variables = pe_meta.get("program_variables", {})
 
     out_rows = []
     for ext in externals:
@@ -554,6 +580,9 @@ def main():
         row["pe_period"] = "2024 annual" if pe_value is not None else None
         row["status"] = status
         row["pe_construction"] = construction
+        row["policyengine_variables"] = policyengine_variables(
+            program_variables, ext["program"], pe_value
+        )
         # 2026 projection. Preferred source: our own 2026 grid (identical
         # constructions by definition — full subgroup/state coverage).
         # Fallback: the canonical interchange behind a 0.5%

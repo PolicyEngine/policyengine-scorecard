@@ -1,0 +1,132 @@
+{
+ "artifact_bytes_rehashed_by_this_inspection": false,
+ "bundled_certification": {
+  "built_with_model_version": "2.89.2",
+  "certified_by": "policyengine.py bundle certification",
+  "certified_for_model_version": "2.89.2",
+  "compatibility_basis": "built_with_model_package",
+  "data_build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+ },
+ "cached_release_artifact": {
+  "kind": "microdata",
+  "path": "populace_uk_2023.h5",
+  "repo_id": "policyengine/populace-uk-private",
+  "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+  "size_bytes": 1315880118
+ },
+ "cached_release_build": {
+  "build_id": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "built_at": "2026-06-19T02:38:00Z",
+  "built_with_core_package": {
+   "name": "policyengine-core",
+   "version": "3.27.1"
+  },
+  "built_with_model_package": {
+   "name": "policyengine-uk",
+   "version": "2.89.2"
+  }
+ },
+ "cached_release_compatible_core_packages": [
+  {
+   "name": "policyengine-core",
+   "specifier": "==3.27.1"
+  }
+ ],
+ "cached_release_compatible_model_packages": [
+  {
+   "name": "policyengine-uk",
+   "specifier": "==2.89.2"
+  }
+ ],
+ "cached_uk_release_manifest_sha256": "687c5c19ee75aa7959d4eaedf310b10a00036dd8f9c46af4cb712c3f30f02921",
+ "certified_identity": {
+  "artifact": "populace_uk_2023.h5",
+  "core_version": "3.27.1",
+  "dataset_uri": "hf://policyengine/populace-uk-private/populace_uk_2023.h5@populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "model_package": "policyengine-uk",
+  "model_version": "2.89.2",
+  "repo_id": "policyengine/populace-uk-private",
+  "resolved_hf_commit": "a75a9a831d6b07aaffbd09713f2a1124f5c0f08f",
+  "revision": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+  "sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+  "size_bytes": 1315880118
+ },
+ "fields_unchanged_between_these_certification_paths": [
+  "bundle_id",
+  "country_id",
+  "policyengine_version",
+  "model_package",
+  "model_version",
+  "data_package",
+  "data_version",
+  "default_dataset",
+  "default_dataset_uri",
+  "certified_data_build_id",
+  "certified_data_artifact_sha256",
+  "data_build_model_version",
+  "data_build_model_git_sha",
+  "data_build_fingerprint"
+ ],
+ "identity_checks": {
+  "bundled_certification_build_id_equals_committed_revision": true,
+  "bundled_certified_model_version_matches": true,
+  "cached_release_artifact_matches_committed_pin": true,
+  "cached_release_built_with_model_matches": true,
+  "cached_release_model_constraint_matches_committed_pin": true,
+  "packaged_artifact_digest_equals_committed_pin": true,
+  "packaged_default_uri_equals_committed_pin": true,
+  "snapshot_file_size_matches": true
+ },
+ "inspection": "Engine-free source and JSON inspection; no imports of policyengine, provider calls, credential reads, or simulations.",
+ "minimal_hf_cache_allowlist": {
+  "exclude": [
+   "refs/main",
+   "other snapshots and blobs",
+   "HF token files",
+   "calibration diagnostics and calibration NPZ",
+   "other dataset repositories"
+  ],
+  "optional_audit_metadata": "snapshots/a75a9a831d6b07aaffbd09713f2a1124f5c0f08f/releases/populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z/release_manifest.json",
+  "repo_cache_directory": "datasets--policyengine--populace-uk-private",
+  "required_blob_if_symlink_preserved": "blobs/f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+  "required_ref": {
+   "contents": "a75a9a831d6b07aaffbd09713f2a1124f5c0f08f",
+   "path": "refs/populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "required_snapshot_file": {
+   "alternative": "Copy the exact verified H5 directly to this snapshot path.",
+   "path": "snapshots/a75a9a831d6b07aaffbd09713f2a1124f5c0f08f/populace_uk_2023.h5",
+   "symlink_target": "../../blobs/f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833"
+  }
+ },
+ "offline_loader_behavior": {
+  "cached_release_manifest_required_for_compute": false,
+  "default_dataset_selection": "resolve_managed_dataset_reference(\"uk\", None) returns the packaged default_dataset_uri.",
+  "fallback": "DataReleaseManifestUnavailableError returns bundled certification when certified_for_model_version equals runtime_model_version; optional fingerprint checks remain enforced.",
+  "local_mirror": "POLICYENGINE_UK_DATA_REPO resolves <value>/policyengine_uk_data/storage/populace_uk_2023.h5; generic preflight hash-checks the cached file and creates/validates this mirror.",
+  "packaged_manifest": "Loaded from installed policyengine/data/bundle/manifest.json.",
+  "recommended_remote_runtime": "Force all Hugging Face offline flags and block runtime network; do not forward tokens. Build-time package installation is separate from runtime network blocking.",
+  "release_manifest_fetch": "get_data_release_manifest uses requests.get with a 30-second timeout, does not consult HF_HUB_OFFLINE or HF cache, and may use HUGGING_FACE_TOKEN if present."
+ },
+ "packaged_bundle_manifest_sha256": "255dbb893f455d078a6bcece87399f0a22478f56bc4c6e526b758c4fd5b4db24",
+ "policyengine_version": "5.0.2",
+ "release_bundle_field_changes_if_remote_manifest_is_available": {
+  "certified_by": {
+   "offline_fallback": "policyengine.py bundle certification",
+   "remote_manifest": null
+  },
+  "compatibility_basis": {
+   "offline_fallback": "built_with_model_package",
+   "remote_manifest": "exact_build_model_version"
+  }
+ },
+ "schema_version": 1,
+ "source_files_sha256": {
+  "core/tax_benefit_model_version.py": "4b2e1e5555c52b8b38802e9e963aeab34f8a766dbe17005dbdc18c3650203a0c",
+  "provenance/dataset_sources.py": "8a13ed5970fff5a1345f15539ff453c7489be0ce0ecc2d857b25e6cdf155acd8",
+  "provenance/manifest.py": "316c607e29e4c6322c03a3f990836529a2eebf71f3143d0d30c992b2929d7e97",
+  "tax_benefit_models/common/model_version.py": "3c5deed4e833e29347ad1a3446ca7d87daedbfd83d810d2c7124c96a8cd8d37d",
+  "tax_benefit_models/uk/model.py": "5d6336cf9f55504af24c24137ba6495d0095764db124461bb148e848e319eb09"
+ }
+}

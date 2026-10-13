@@ -1,0 +1,23 @@
+{
+  "id": "snap-qc-characteristics",
+  "name": "USDA FNS — Characteristics of SNAP Households: Fiscal Year 2023 (SNAP Quality Control), State Tables B.1-B.2",
+  "organization": "USDA Food and Nutrition Service, Evidence, Analysis, and Regulatory Affairs",
+  "country": "US",
+  "url": "https://www.fns.usda.gov/research/snap/characteristics-fy23",
+  "data_urls": [
+    "https://fns-prod.azureedge.us/sites/default/files/resource-files/snap-FY23-Characteristics-Report.pdf"
+  ],
+  "raw_sha256": {
+    "snap-FY23-Characteristics-Report.pdf": "519cc00200c17764a324735c8f72a1123225253d1c32c596038340428e4c695a"
+  },
+  "citation": "Monkovic, Mia, and Ben Ward. Characteristics of Supplemental Nutrition Assistance Program Households: Fiscal Year 2023. USDA FNS, Alexandria, VA, 2025.",
+  "fetched": "2026-10-07",
+  "kind": "administrative",
+  "routing": "Chronicle staging only (data/ledger/us_admin_outturns.jsonl), per the 2026-08-02 boundary ruling (issue #6): caseload tables are calibration material, never scorecard claims.",
+  "method": "SNAP QC sample of 43,776 households, weighted to SNAP Program Operations totals by State (monthly participating households, participants and benefits) after removing erroneously paid and disaster-only households. Delaware lacks July and September 2023 sample data; Alaska and Guam use a single March 2023 weight.",
+  "method_basis": "Report Appendix D, 'Weighting'",
+  "period": "FY 2023 (October 2022 to September 2023), monthly averages",
+  "programs": ["snap"],
+  "geographies": "50 States, DC, Guam, the U.S. Virgin Islands, and the total",
+  "coverage_note": "Tables B.1 (counts) and B.2 (averages) only; the report's other national and State tables (household composition, income sources, poverty status, age, disability) stay in raw/ unstaged."
+}

@@ -1,0 +1,1948 @@
+{
+ "provenance": {
+  "engine_version": "1.764.6",
+  "data_bundle": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+  "bundle_id": "us-5.0.1",
+  "policyengine_version": "5.0.1",
+  "legacy_input_renames": null
+ },
+ "jobs": [
+  {
+   "label": "tpc current law CY2026",
+   "values": {
+    "income_tax_2026": 2605685778044.8057
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": null,
+   "reform_checked": {},
+   "inputs_set": [],
+   "seconds": 126.5,
+   "maxrss_gb": 39.27
+  },
+  {
+   "label": "tpc ctc option 1 CY2026",
+   "values": {
+    "income_tax_2026": 2593272445205.1777
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.base[0].amount": {
+     "2025-01-01.2100-12-31": 2500
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.base[0].amount@2025-01-01": 2500
+   },
+   "inputs_set": [],
+   "seconds": 131.7,
+   "maxrss_gb": 40.79
+  },
+  {
+   "label": "tpc ctc option 2 CY2026",
+   "values": {
+    "income_tax_2026": 2590284214433.565
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.base[0].amount": {
+     "2025-01-01.2100-12-31": 2500
+    },
+    "gov.irs.credits.ctc.refundable.individual_max": {
+     "2025-01-01.2100-12-31": 2000
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.base[0].amount@2025-01-01": 2500,
+    "gov.irs.credits.ctc.refundable.individual_max@2025-01-01": 2000
+   },
+   "inputs_set": [],
+   "seconds": 165.5,
+   "maxrss_gb": 40.8
+  },
+  {
+   "label": "tpc ctc option 3 CY2026",
+   "values": {
+    "income_tax_2026": 2587913937464.357
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.base[0].amount": {
+     "2025-01-01.2100-12-31": 2500
+    },
+    "gov.irs.credits.ctc.refundable.individual_max": {
+     "2025-01-01.2100-12-31": 2000
+    },
+    "gov.irs.credits.ctc.refundable.phase_in.threshold": {
+     "2025-01-01.2100-12-31": 0
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.base[0].amount@2025-01-01": 2500,
+    "gov.irs.credits.ctc.refundable.individual_max@2025-01-01": 2000,
+    "gov.irs.credits.ctc.refundable.phase_in.threshold@2025-01-01": 0
+   },
+   "inputs_set": [],
+   "seconds": 126.4,
+   "maxrss_gb": 40.8
+  },
+  {
+   "label": "tpc top-rate option 1 CY2026",
+   "values": {
+    "income_tax_2026": 2607578466284.594
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.contrib.additional_tax_bracket.in_effect": {
+     "2026-01-01.2100-12-31": true
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.1": {
+     "2026-01-01.2100-12-31": 0.1
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.2": {
+     "2026-01-01.2100-12-31": 0.12
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.3": {
+     "2026-01-01.2100-12-31": 0.22
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.4": {
+     "2026-01-01.2100-12-31": 0.24
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.5": {
+     "2026-01-01.2100-12-31": 0.32
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.6": {
+     "2026-01-01.2100-12-31": 0.35
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.7": {
+     "2026-01-01.2100-12-31": 0.37
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SINGLE": {
+     "2026-01-01.2100-12-31": 12400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.JOINT": {
+     "2026-01-01.2100-12-31": 24800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SEPARATE": {
+     "2026-01-01.2100-12-31": 12400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 17700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 24800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SINGLE": {
+     "2026-01-01.2100-12-31": 50400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.JOINT": {
+     "2026-01-01.2100-12-31": 100800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SEPARATE": {
+     "2026-01-01.2100-12-31": 50400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 67450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 100800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SINGLE": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.JOINT": {
+     "2026-01-01.2100-12-31": 211400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SEPARATE": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 211400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SINGLE": {
+     "2026-01-01.2100-12-31": 201775.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.JOINT": {
+     "2026-01-01.2100-12-31": 403550.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SEPARATE": {
+     "2026-01-01.2100-12-31": 201775.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 201750.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 403550.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SINGLE": {
+     "2026-01-01.2100-12-31": 256225.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.JOINT": {
+     "2026-01-01.2100-12-31": 512450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SEPARATE": {
+     "2026-01-01.2100-12-31": 256225.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 256200.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 512450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SINGLE": {
+     "2026-01-01.2100-12-31": 640600.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.JOINT": {
+     "2026-01-01.2100-12-31": 768700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SEPARATE": {
+     "2026-01-01.2100-12-31": 384350.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 640600.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 768700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SINGLE": {
+     "2026-01-01.2100-12-31": 1884425.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.JOINT": {
+     "2026-01-01.2100-12-31": 2120000.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SEPARATE": {
+     "2026-01-01.2100-12-31": 1060000.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 2002200.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 2120000.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.8": {
+     "2026-01-01.2100-12-31": 0.396
+    }
+   },
+   "reform_checked": {
+    "gov.contrib.additional_tax_bracket.in_effect@2026-01-01": true,
+    "gov.contrib.additional_tax_bracket.bracket.rates.1@2026-01-01": 0.1,
+    "gov.contrib.additional_tax_bracket.bracket.rates.2@2026-01-01": 0.12,
+    "gov.contrib.additional_tax_bracket.bracket.rates.3@2026-01-01": 0.22,
+    "gov.contrib.additional_tax_bracket.bracket.rates.4@2026-01-01": 0.24,
+    "gov.contrib.additional_tax_bracket.bracket.rates.5@2026-01-01": 0.32,
+    "gov.contrib.additional_tax_bracket.bracket.rates.6@2026-01-01": 0.35,
+    "gov.contrib.additional_tax_bracket.bracket.rates.7@2026-01-01": 0.37,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SINGLE@2026-01-01": 12400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.JOINT@2026-01-01": 24800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SEPARATE@2026-01-01": 12400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.HEAD_OF_HOUSEHOLD@2026-01-01": 17700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SURVIVING_SPOUSE@2026-01-01": 24800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SINGLE@2026-01-01": 50400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.JOINT@2026-01-01": 100800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SEPARATE@2026-01-01": 50400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.HEAD_OF_HOUSEHOLD@2026-01-01": 67450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SURVIVING_SPOUSE@2026-01-01": 100800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SINGLE@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.JOINT@2026-01-01": 211400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SEPARATE@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.HEAD_OF_HOUSEHOLD@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SURVIVING_SPOUSE@2026-01-01": 211400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SINGLE@2026-01-01": 201775.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.JOINT@2026-01-01": 403550.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SEPARATE@2026-01-01": 201775.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.HEAD_OF_HOUSEHOLD@2026-01-01": 201750.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SURVIVING_SPOUSE@2026-01-01": 403550.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SINGLE@2026-01-01": 256225.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.JOINT@2026-01-01": 512450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SEPARATE@2026-01-01": 256225.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.HEAD_OF_HOUSEHOLD@2026-01-01": 256200.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SURVIVING_SPOUSE@2026-01-01": 512450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SINGLE@2026-01-01": 640600.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.JOINT@2026-01-01": 768700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SEPARATE@2026-01-01": 384350.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.HEAD_OF_HOUSEHOLD@2026-01-01": 640600.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SURVIVING_SPOUSE@2026-01-01": 768700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SINGLE@2026-01-01": 1884425.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.JOINT@2026-01-01": 2120000.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SEPARATE@2026-01-01": 1060000.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.HEAD_OF_HOUSEHOLD@2026-01-01": 2002200.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SURVIVING_SPOUSE@2026-01-01": 2120000.0,
+    "gov.contrib.additional_tax_bracket.bracket.rates.8@2026-01-01": 0.396
+   },
+   "inputs_set": [],
+   "seconds": 139.9,
+   "maxrss_gb": 40.8
+  },
+  {
+   "label": "tpc top-rate option 2 CY2026",
+   "values": {
+    "income_tax_2026": 2609245945343.1367
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.contrib.additional_tax_bracket.in_effect": {
+     "2026-01-01.2100-12-31": true
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.1": {
+     "2026-01-01.2100-12-31": 0.1
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.2": {
+     "2026-01-01.2100-12-31": 0.12
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.3": {
+     "2026-01-01.2100-12-31": 0.22
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.4": {
+     "2026-01-01.2100-12-31": 0.24
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.5": {
+     "2026-01-01.2100-12-31": 0.32
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.6": {
+     "2026-01-01.2100-12-31": 0.35
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.7": {
+     "2026-01-01.2100-12-31": 0.37
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SINGLE": {
+     "2026-01-01.2100-12-31": 12400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.JOINT": {
+     "2026-01-01.2100-12-31": 24800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SEPARATE": {
+     "2026-01-01.2100-12-31": 12400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 17700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 24800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SINGLE": {
+     "2026-01-01.2100-12-31": 50400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.JOINT": {
+     "2026-01-01.2100-12-31": 100800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SEPARATE": {
+     "2026-01-01.2100-12-31": 50400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 67450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 100800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SINGLE": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.JOINT": {
+     "2026-01-01.2100-12-31": 211400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SEPARATE": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 211400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SINGLE": {
+     "2026-01-01.2100-12-31": 201775.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.JOINT": {
+     "2026-01-01.2100-12-31": 403550.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SEPARATE": {
+     "2026-01-01.2100-12-31": 201775.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 201750.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 403550.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SINGLE": {
+     "2026-01-01.2100-12-31": 256225.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.JOINT": {
+     "2026-01-01.2100-12-31": 512450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SEPARATE": {
+     "2026-01-01.2100-12-31": 256225.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 256200.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 512450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SINGLE": {
+     "2026-01-01.2100-12-31": 640600.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.JOINT": {
+     "2026-01-01.2100-12-31": 768700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SEPARATE": {
+     "2026-01-01.2100-12-31": 384350.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 640600.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 768700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SINGLE": {
+     "2026-01-01.2100-12-31": 1528875.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.JOINT": {
+     "2026-01-01.2100-12-31": 1720000.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SEPARATE": {
+     "2026-01-01.2100-12-31": 860000.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 1624400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 1720000.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.8": {
+     "2026-01-01.2100-12-31": 0.396
+    }
+   },
+   "reform_checked": {
+    "gov.contrib.additional_tax_bracket.in_effect@2026-01-01": true,
+    "gov.contrib.additional_tax_bracket.bracket.rates.1@2026-01-01": 0.1,
+    "gov.contrib.additional_tax_bracket.bracket.rates.2@2026-01-01": 0.12,
+    "gov.contrib.additional_tax_bracket.bracket.rates.3@2026-01-01": 0.22,
+    "gov.contrib.additional_tax_bracket.bracket.rates.4@2026-01-01": 0.24,
+    "gov.contrib.additional_tax_bracket.bracket.rates.5@2026-01-01": 0.32,
+    "gov.contrib.additional_tax_bracket.bracket.rates.6@2026-01-01": 0.35,
+    "gov.contrib.additional_tax_bracket.bracket.rates.7@2026-01-01": 0.37,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SINGLE@2026-01-01": 12400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.JOINT@2026-01-01": 24800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SEPARATE@2026-01-01": 12400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.HEAD_OF_HOUSEHOLD@2026-01-01": 17700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SURVIVING_SPOUSE@2026-01-01": 24800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SINGLE@2026-01-01": 50400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.JOINT@2026-01-01": 100800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SEPARATE@2026-01-01": 50400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.HEAD_OF_HOUSEHOLD@2026-01-01": 67450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SURVIVING_SPOUSE@2026-01-01": 100800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SINGLE@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.JOINT@2026-01-01": 211400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SEPARATE@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.HEAD_OF_HOUSEHOLD@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SURVIVING_SPOUSE@2026-01-01": 211400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SINGLE@2026-01-01": 201775.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.JOINT@2026-01-01": 403550.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SEPARATE@2026-01-01": 201775.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.HEAD_OF_HOUSEHOLD@2026-01-01": 201750.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SURVIVING_SPOUSE@2026-01-01": 403550.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SINGLE@2026-01-01": 256225.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.JOINT@2026-01-01": 512450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SEPARATE@2026-01-01": 256225.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.HEAD_OF_HOUSEHOLD@2026-01-01": 256200.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SURVIVING_SPOUSE@2026-01-01": 512450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SINGLE@2026-01-01": 640600.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.JOINT@2026-01-01": 768700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SEPARATE@2026-01-01": 384350.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.HEAD_OF_HOUSEHOLD@2026-01-01": 640600.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SURVIVING_SPOUSE@2026-01-01": 768700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SINGLE@2026-01-01": 1528875.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.JOINT@2026-01-01": 1720000.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SEPARATE@2026-01-01": 860000.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.HEAD_OF_HOUSEHOLD@2026-01-01": 1624400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SURVIVING_SPOUSE@2026-01-01": 1720000.0,
+    "gov.contrib.additional_tax_bracket.bracket.rates.8@2026-01-01": 0.396
+   },
+   "inputs_set": [],
+   "seconds": 149.3,
+   "maxrss_gb": 40.8
+  },
+  {
+   "label": "tpc top-rate option 3 CY2026",
+   "values": {
+    "income_tax_2026": 2610098927657.827
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.contrib.additional_tax_bracket.in_effect": {
+     "2026-01-01.2100-12-31": true
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.1": {
+     "2026-01-01.2100-12-31": 0.1
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.2": {
+     "2026-01-01.2100-12-31": 0.12
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.3": {
+     "2026-01-01.2100-12-31": 0.22
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.4": {
+     "2026-01-01.2100-12-31": 0.24
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.5": {
+     "2026-01-01.2100-12-31": 0.32
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.6": {
+     "2026-01-01.2100-12-31": 0.35
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.7": {
+     "2026-01-01.2100-12-31": 0.37
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SINGLE": {
+     "2026-01-01.2100-12-31": 12400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.JOINT": {
+     "2026-01-01.2100-12-31": 24800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SEPARATE": {
+     "2026-01-01.2100-12-31": 12400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 17700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 24800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SINGLE": {
+     "2026-01-01.2100-12-31": 50400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.JOINT": {
+     "2026-01-01.2100-12-31": 100800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SEPARATE": {
+     "2026-01-01.2100-12-31": 50400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 67450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 100800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SINGLE": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.JOINT": {
+     "2026-01-01.2100-12-31": 211400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SEPARATE": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 211400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SINGLE": {
+     "2026-01-01.2100-12-31": 201775.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.JOINT": {
+     "2026-01-01.2100-12-31": 403550.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SEPARATE": {
+     "2026-01-01.2100-12-31": 201775.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 201750.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 403550.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SINGLE": {
+     "2026-01-01.2100-12-31": 256225.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.JOINT": {
+     "2026-01-01.2100-12-31": 512450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SEPARATE": {
+     "2026-01-01.2100-12-31": 256225.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 256200.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 512450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SINGLE": {
+     "2026-01-01.2100-12-31": 640600.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.JOINT": {
+     "2026-01-01.2100-12-31": 768700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SEPARATE": {
+     "2026-01-01.2100-12-31": 384350.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 640600.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 768700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SINGLE": {
+     "2026-01-01.2100-12-31": 1388875.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.JOINT": {
+     "2026-01-01.2100-12-31": 1562500.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SEPARATE": {
+     "2026-01-01.2100-12-31": 781250.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 1475650.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 1562500.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.8": {
+     "2026-01-01.2100-12-31": 0.396
+    }
+   },
+   "reform_checked": {
+    "gov.contrib.additional_tax_bracket.in_effect@2026-01-01": true,
+    "gov.contrib.additional_tax_bracket.bracket.rates.1@2026-01-01": 0.1,
+    "gov.contrib.additional_tax_bracket.bracket.rates.2@2026-01-01": 0.12,
+    "gov.contrib.additional_tax_bracket.bracket.rates.3@2026-01-01": 0.22,
+    "gov.contrib.additional_tax_bracket.bracket.rates.4@2026-01-01": 0.24,
+    "gov.contrib.additional_tax_bracket.bracket.rates.5@2026-01-01": 0.32,
+    "gov.contrib.additional_tax_bracket.bracket.rates.6@2026-01-01": 0.35,
+    "gov.contrib.additional_tax_bracket.bracket.rates.7@2026-01-01": 0.37,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SINGLE@2026-01-01": 12400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.JOINT@2026-01-01": 24800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SEPARATE@2026-01-01": 12400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.HEAD_OF_HOUSEHOLD@2026-01-01": 17700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SURVIVING_SPOUSE@2026-01-01": 24800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SINGLE@2026-01-01": 50400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.JOINT@2026-01-01": 100800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SEPARATE@2026-01-01": 50400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.HEAD_OF_HOUSEHOLD@2026-01-01": 67450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SURVIVING_SPOUSE@2026-01-01": 100800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SINGLE@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.JOINT@2026-01-01": 211400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SEPARATE@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.HEAD_OF_HOUSEHOLD@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SURVIVING_SPOUSE@2026-01-01": 211400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SINGLE@2026-01-01": 201775.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.JOINT@2026-01-01": 403550.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SEPARATE@2026-01-01": 201775.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.HEAD_OF_HOUSEHOLD@2026-01-01": 201750.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SURVIVING_SPOUSE@2026-01-01": 403550.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SINGLE@2026-01-01": 256225.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.JOINT@2026-01-01": 512450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SEPARATE@2026-01-01": 256225.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.HEAD_OF_HOUSEHOLD@2026-01-01": 256200.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SURVIVING_SPOUSE@2026-01-01": 512450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SINGLE@2026-01-01": 640600.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.JOINT@2026-01-01": 768700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SEPARATE@2026-01-01": 384350.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.HEAD_OF_HOUSEHOLD@2026-01-01": 640600.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SURVIVING_SPOUSE@2026-01-01": 768700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SINGLE@2026-01-01": 1388875.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.JOINT@2026-01-01": 1562500.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SEPARATE@2026-01-01": 781250.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.HEAD_OF_HOUSEHOLD@2026-01-01": 1475650.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SURVIVING_SPOUSE@2026-01-01": 1562500.0,
+    "gov.contrib.additional_tax_bracket.bracket.rates.8@2026-01-01": 0.396
+   },
+   "inputs_set": [],
+   "seconds": 147.7,
+   "maxrss_gb": 40.8
+  },
+  {
+   "label": "tpc total option 1 CY2026",
+   "values": {
+    "income_tax_2026": 2595165133444.966
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.base[0].amount": {
+     "2025-01-01.2100-12-31": 2500
+    },
+    "gov.contrib.additional_tax_bracket.in_effect": {
+     "2026-01-01.2100-12-31": true
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.1": {
+     "2026-01-01.2100-12-31": 0.1
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.2": {
+     "2026-01-01.2100-12-31": 0.12
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.3": {
+     "2026-01-01.2100-12-31": 0.22
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.4": {
+     "2026-01-01.2100-12-31": 0.24
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.5": {
+     "2026-01-01.2100-12-31": 0.32
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.6": {
+     "2026-01-01.2100-12-31": 0.35
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.7": {
+     "2026-01-01.2100-12-31": 0.37
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SINGLE": {
+     "2026-01-01.2100-12-31": 12400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.JOINT": {
+     "2026-01-01.2100-12-31": 24800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SEPARATE": {
+     "2026-01-01.2100-12-31": 12400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 17700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 24800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SINGLE": {
+     "2026-01-01.2100-12-31": 50400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.JOINT": {
+     "2026-01-01.2100-12-31": 100800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SEPARATE": {
+     "2026-01-01.2100-12-31": 50400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 67450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 100800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SINGLE": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.JOINT": {
+     "2026-01-01.2100-12-31": 211400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SEPARATE": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 211400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SINGLE": {
+     "2026-01-01.2100-12-31": 201775.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.JOINT": {
+     "2026-01-01.2100-12-31": 403550.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SEPARATE": {
+     "2026-01-01.2100-12-31": 201775.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 201750.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 403550.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SINGLE": {
+     "2026-01-01.2100-12-31": 256225.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.JOINT": {
+     "2026-01-01.2100-12-31": 512450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SEPARATE": {
+     "2026-01-01.2100-12-31": 256225.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 256200.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 512450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SINGLE": {
+     "2026-01-01.2100-12-31": 640600.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.JOINT": {
+     "2026-01-01.2100-12-31": 768700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SEPARATE": {
+     "2026-01-01.2100-12-31": 384350.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 640600.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 768700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SINGLE": {
+     "2026-01-01.2100-12-31": 1884425.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.JOINT": {
+     "2026-01-01.2100-12-31": 2120000.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SEPARATE": {
+     "2026-01-01.2100-12-31": 1060000.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 2002200.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 2120000.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.8": {
+     "2026-01-01.2100-12-31": 0.396
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.base[0].amount@2025-01-01": 2500,
+    "gov.contrib.additional_tax_bracket.in_effect@2026-01-01": true,
+    "gov.contrib.additional_tax_bracket.bracket.rates.1@2026-01-01": 0.1,
+    "gov.contrib.additional_tax_bracket.bracket.rates.2@2026-01-01": 0.12,
+    "gov.contrib.additional_tax_bracket.bracket.rates.3@2026-01-01": 0.22,
+    "gov.contrib.additional_tax_bracket.bracket.rates.4@2026-01-01": 0.24,
+    "gov.contrib.additional_tax_bracket.bracket.rates.5@2026-01-01": 0.32,
+    "gov.contrib.additional_tax_bracket.bracket.rates.6@2026-01-01": 0.35,
+    "gov.contrib.additional_tax_bracket.bracket.rates.7@2026-01-01": 0.37,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SINGLE@2026-01-01": 12400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.JOINT@2026-01-01": 24800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SEPARATE@2026-01-01": 12400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.HEAD_OF_HOUSEHOLD@2026-01-01": 17700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SURVIVING_SPOUSE@2026-01-01": 24800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SINGLE@2026-01-01": 50400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.JOINT@2026-01-01": 100800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SEPARATE@2026-01-01": 50400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.HEAD_OF_HOUSEHOLD@2026-01-01": 67450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SURVIVING_SPOUSE@2026-01-01": 100800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SINGLE@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.JOINT@2026-01-01": 211400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SEPARATE@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.HEAD_OF_HOUSEHOLD@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SURVIVING_SPOUSE@2026-01-01": 211400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SINGLE@2026-01-01": 201775.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.JOINT@2026-01-01": 403550.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SEPARATE@2026-01-01": 201775.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.HEAD_OF_HOUSEHOLD@2026-01-01": 201750.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SURVIVING_SPOUSE@2026-01-01": 403550.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SINGLE@2026-01-01": 256225.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.JOINT@2026-01-01": 512450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SEPARATE@2026-01-01": 256225.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.HEAD_OF_HOUSEHOLD@2026-01-01": 256200.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SURVIVING_SPOUSE@2026-01-01": 512450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SINGLE@2026-01-01": 640600.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.JOINT@2026-01-01": 768700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SEPARATE@2026-01-01": 384350.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.HEAD_OF_HOUSEHOLD@2026-01-01": 640600.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SURVIVING_SPOUSE@2026-01-01": 768700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SINGLE@2026-01-01": 1884425.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.JOINT@2026-01-01": 2120000.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SEPARATE@2026-01-01": 1060000.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.HEAD_OF_HOUSEHOLD@2026-01-01": 2002200.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SURVIVING_SPOUSE@2026-01-01": 2120000.0,
+    "gov.contrib.additional_tax_bracket.bracket.rates.8@2026-01-01": 0.396
+   },
+   "inputs_set": [],
+   "seconds": 142.1,
+   "maxrss_gb": 40.79
+  },
+  {
+   "label": "tpc total option 2 CY2026",
+   "values": {
+    "income_tax_2026": 2593844381731.896
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.base[0].amount": {
+     "2025-01-01.2100-12-31": 2500
+    },
+    "gov.irs.credits.ctc.refundable.individual_max": {
+     "2025-01-01.2100-12-31": 2000
+    },
+    "gov.contrib.additional_tax_bracket.in_effect": {
+     "2026-01-01.2100-12-31": true
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.1": {
+     "2026-01-01.2100-12-31": 0.1
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.2": {
+     "2026-01-01.2100-12-31": 0.12
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.3": {
+     "2026-01-01.2100-12-31": 0.22
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.4": {
+     "2026-01-01.2100-12-31": 0.24
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.5": {
+     "2026-01-01.2100-12-31": 0.32
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.6": {
+     "2026-01-01.2100-12-31": 0.35
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.7": {
+     "2026-01-01.2100-12-31": 0.37
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SINGLE": {
+     "2026-01-01.2100-12-31": 12400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.JOINT": {
+     "2026-01-01.2100-12-31": 24800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SEPARATE": {
+     "2026-01-01.2100-12-31": 12400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 17700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 24800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SINGLE": {
+     "2026-01-01.2100-12-31": 50400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.JOINT": {
+     "2026-01-01.2100-12-31": 100800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SEPARATE": {
+     "2026-01-01.2100-12-31": 50400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 67450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 100800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SINGLE": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.JOINT": {
+     "2026-01-01.2100-12-31": 211400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SEPARATE": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 211400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SINGLE": {
+     "2026-01-01.2100-12-31": 201775.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.JOINT": {
+     "2026-01-01.2100-12-31": 403550.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SEPARATE": {
+     "2026-01-01.2100-12-31": 201775.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 201750.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 403550.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SINGLE": {
+     "2026-01-01.2100-12-31": 256225.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.JOINT": {
+     "2026-01-01.2100-12-31": 512450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SEPARATE": {
+     "2026-01-01.2100-12-31": 256225.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 256200.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 512450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SINGLE": {
+     "2026-01-01.2100-12-31": 640600.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.JOINT": {
+     "2026-01-01.2100-12-31": 768700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SEPARATE": {
+     "2026-01-01.2100-12-31": 384350.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 640600.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 768700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SINGLE": {
+     "2026-01-01.2100-12-31": 1528875.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.JOINT": {
+     "2026-01-01.2100-12-31": 1720000.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SEPARATE": {
+     "2026-01-01.2100-12-31": 860000.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 1624400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 1720000.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.8": {
+     "2026-01-01.2100-12-31": 0.396
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.base[0].amount@2025-01-01": 2500,
+    "gov.irs.credits.ctc.refundable.individual_max@2025-01-01": 2000,
+    "gov.contrib.additional_tax_bracket.in_effect@2026-01-01": true,
+    "gov.contrib.additional_tax_bracket.bracket.rates.1@2026-01-01": 0.1,
+    "gov.contrib.additional_tax_bracket.bracket.rates.2@2026-01-01": 0.12,
+    "gov.contrib.additional_tax_bracket.bracket.rates.3@2026-01-01": 0.22,
+    "gov.contrib.additional_tax_bracket.bracket.rates.4@2026-01-01": 0.24,
+    "gov.contrib.additional_tax_bracket.bracket.rates.5@2026-01-01": 0.32,
+    "gov.contrib.additional_tax_bracket.bracket.rates.6@2026-01-01": 0.35,
+    "gov.contrib.additional_tax_bracket.bracket.rates.7@2026-01-01": 0.37,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SINGLE@2026-01-01": 12400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.JOINT@2026-01-01": 24800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SEPARATE@2026-01-01": 12400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.HEAD_OF_HOUSEHOLD@2026-01-01": 17700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SURVIVING_SPOUSE@2026-01-01": 24800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SINGLE@2026-01-01": 50400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.JOINT@2026-01-01": 100800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SEPARATE@2026-01-01": 50400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.HEAD_OF_HOUSEHOLD@2026-01-01": 67450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SURVIVING_SPOUSE@2026-01-01": 100800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SINGLE@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.JOINT@2026-01-01": 211400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SEPARATE@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.HEAD_OF_HOUSEHOLD@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SURVIVING_SPOUSE@2026-01-01": 211400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SINGLE@2026-01-01": 201775.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.JOINT@2026-01-01": 403550.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SEPARATE@2026-01-01": 201775.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.HEAD_OF_HOUSEHOLD@2026-01-01": 201750.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SURVIVING_SPOUSE@2026-01-01": 403550.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SINGLE@2026-01-01": 256225.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.JOINT@2026-01-01": 512450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SEPARATE@2026-01-01": 256225.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.HEAD_OF_HOUSEHOLD@2026-01-01": 256200.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SURVIVING_SPOUSE@2026-01-01": 512450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SINGLE@2026-01-01": 640600.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.JOINT@2026-01-01": 768700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SEPARATE@2026-01-01": 384350.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.HEAD_OF_HOUSEHOLD@2026-01-01": 640600.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SURVIVING_SPOUSE@2026-01-01": 768700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SINGLE@2026-01-01": 1528875.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.JOINT@2026-01-01": 1720000.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SEPARATE@2026-01-01": 860000.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.HEAD_OF_HOUSEHOLD@2026-01-01": 1624400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SURVIVING_SPOUSE@2026-01-01": 1720000.0,
+    "gov.contrib.additional_tax_bracket.bracket.rates.8@2026-01-01": 0.396
+   },
+   "inputs_set": [],
+   "seconds": 142.3,
+   "maxrss_gb": 40.8
+  },
+  {
+   "label": "tpc total option 3 CY2026",
+   "values": {
+    "income_tax_2026": 2592327087077.378
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.base[0].amount": {
+     "2025-01-01.2100-12-31": 2500
+    },
+    "gov.irs.credits.ctc.refundable.individual_max": {
+     "2025-01-01.2100-12-31": 2000
+    },
+    "gov.irs.credits.ctc.refundable.phase_in.threshold": {
+     "2025-01-01.2100-12-31": 0
+    },
+    "gov.contrib.additional_tax_bracket.in_effect": {
+     "2026-01-01.2100-12-31": true
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.1": {
+     "2026-01-01.2100-12-31": 0.1
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.2": {
+     "2026-01-01.2100-12-31": 0.12
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.3": {
+     "2026-01-01.2100-12-31": 0.22
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.4": {
+     "2026-01-01.2100-12-31": 0.24
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.5": {
+     "2026-01-01.2100-12-31": 0.32
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.6": {
+     "2026-01-01.2100-12-31": 0.35
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.7": {
+     "2026-01-01.2100-12-31": 0.37
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SINGLE": {
+     "2026-01-01.2100-12-31": 12400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.JOINT": {
+     "2026-01-01.2100-12-31": 24800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SEPARATE": {
+     "2026-01-01.2100-12-31": 12400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 17700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 24800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SINGLE": {
+     "2026-01-01.2100-12-31": 50400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.JOINT": {
+     "2026-01-01.2100-12-31": 100800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SEPARATE": {
+     "2026-01-01.2100-12-31": 50400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 67450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 100800.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SINGLE": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.JOINT": {
+     "2026-01-01.2100-12-31": 211400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SEPARATE": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 105700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 211400.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SINGLE": {
+     "2026-01-01.2100-12-31": 201775.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.JOINT": {
+     "2026-01-01.2100-12-31": 403550.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SEPARATE": {
+     "2026-01-01.2100-12-31": 201775.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 201750.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 403550.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SINGLE": {
+     "2026-01-01.2100-12-31": 256225.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.JOINT": {
+     "2026-01-01.2100-12-31": 512450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SEPARATE": {
+     "2026-01-01.2100-12-31": 256225.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 256200.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 512450.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SINGLE": {
+     "2026-01-01.2100-12-31": 640600.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.JOINT": {
+     "2026-01-01.2100-12-31": 768700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SEPARATE": {
+     "2026-01-01.2100-12-31": 384350.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 640600.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 768700.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SINGLE": {
+     "2026-01-01.2100-12-31": 1388875.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.JOINT": {
+     "2026-01-01.2100-12-31": 1562500.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SEPARATE": {
+     "2026-01-01.2100-12-31": 781250.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 1475650.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SURVIVING_SPOUSE": {
+     "2026-01-01.2100-12-31": 1562500.0
+    },
+    "gov.contrib.additional_tax_bracket.bracket.rates.8": {
+     "2026-01-01.2100-12-31": 0.396
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.base[0].amount@2025-01-01": 2500,
+    "gov.irs.credits.ctc.refundable.individual_max@2025-01-01": 2000,
+    "gov.irs.credits.ctc.refundable.phase_in.threshold@2025-01-01": 0,
+    "gov.contrib.additional_tax_bracket.in_effect@2026-01-01": true,
+    "gov.contrib.additional_tax_bracket.bracket.rates.1@2026-01-01": 0.1,
+    "gov.contrib.additional_tax_bracket.bracket.rates.2@2026-01-01": 0.12,
+    "gov.contrib.additional_tax_bracket.bracket.rates.3@2026-01-01": 0.22,
+    "gov.contrib.additional_tax_bracket.bracket.rates.4@2026-01-01": 0.24,
+    "gov.contrib.additional_tax_bracket.bracket.rates.5@2026-01-01": 0.32,
+    "gov.contrib.additional_tax_bracket.bracket.rates.6@2026-01-01": 0.35,
+    "gov.contrib.additional_tax_bracket.bracket.rates.7@2026-01-01": 0.37,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SINGLE@2026-01-01": 12400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.JOINT@2026-01-01": 24800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SEPARATE@2026-01-01": 12400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.HEAD_OF_HOUSEHOLD@2026-01-01": 17700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.1.SURVIVING_SPOUSE@2026-01-01": 24800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SINGLE@2026-01-01": 50400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.JOINT@2026-01-01": 100800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SEPARATE@2026-01-01": 50400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.HEAD_OF_HOUSEHOLD@2026-01-01": 67450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.2.SURVIVING_SPOUSE@2026-01-01": 100800.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SINGLE@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.JOINT@2026-01-01": 211400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SEPARATE@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.HEAD_OF_HOUSEHOLD@2026-01-01": 105700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.3.SURVIVING_SPOUSE@2026-01-01": 211400.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SINGLE@2026-01-01": 201775.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.JOINT@2026-01-01": 403550.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SEPARATE@2026-01-01": 201775.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.HEAD_OF_HOUSEHOLD@2026-01-01": 201750.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.4.SURVIVING_SPOUSE@2026-01-01": 403550.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SINGLE@2026-01-01": 256225.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.JOINT@2026-01-01": 512450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SEPARATE@2026-01-01": 256225.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.HEAD_OF_HOUSEHOLD@2026-01-01": 256200.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.5.SURVIVING_SPOUSE@2026-01-01": 512450.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SINGLE@2026-01-01": 640600.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.JOINT@2026-01-01": 768700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SEPARATE@2026-01-01": 384350.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.HEAD_OF_HOUSEHOLD@2026-01-01": 640600.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.6.SURVIVING_SPOUSE@2026-01-01": 768700.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SINGLE@2026-01-01": 1388875.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.JOINT@2026-01-01": 1562500.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SEPARATE@2026-01-01": 781250.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.HEAD_OF_HOUSEHOLD@2026-01-01": 1475650.0,
+    "gov.contrib.additional_tax_bracket.bracket.thresholds.7.SURVIVING_SPOUSE@2026-01-01": 1562500.0,
+    "gov.contrib.additional_tax_bracket.bracket.rates.8@2026-01-01": 0.396
+   },
+   "inputs_set": [],
+   "seconds": 138.4,
+   "maxrss_gb": 36.92
+  },
+  {
+   "label": "tpc AFA CY2026",
+   "values": {
+    "income_tax_2026": 2473219175851.7544
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.arpa[0].amount": {
+     "2026-01-01.2100-12-31": 4320
+    },
+    "gov.irs.credits.ctc.amount.arpa[1].amount": {
+     "2026-01-01.2100-12-31": 3600
+    },
+    "gov.irs.credits.ctc.phase_out.arpa.in_effect": {
+     "2026-01-01.2100-12-31": true
+    },
+    "gov.irs.credits.ctc.refundable.fully_refundable": {
+     "2026-01-01.2100-12-31": true
+    },
+    "gov.irs.credits.ctc.amount.base[1].threshold": {
+     "2026-01-01.2100-12-31": 18
+    },
+    "gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 300000
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.arpa[0].amount@2026-01-01": 4320,
+    "gov.irs.credits.ctc.amount.arpa[1].amount@2026-01-01": 3600,
+    "gov.irs.credits.ctc.phase_out.arpa.in_effect@2026-01-01": true,
+    "gov.irs.credits.ctc.refundable.fully_refundable@2026-01-01": true,
+    "gov.irs.credits.ctc.amount.base[1].threshold@2026-01-01": 18,
+    "gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD@2026-01-01": 300000
+   },
+   "inputs_set": [],
+   "seconds": 138.8,
+   "maxrss_gb": 24.88
+  },
+  {
+   "label": "tpc AFA $2,000-floor bound CY2026",
+   "values": {
+    "income_tax_2026": 2474981792835.276
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.arpa[0].amount": {
+     "2026-01-01.2100-12-31": 4320
+    },
+    "gov.irs.credits.ctc.amount.arpa[1].amount": {
+     "2026-01-01.2100-12-31": 3600
+    },
+    "gov.irs.credits.ctc.phase_out.arpa.in_effect": {
+     "2026-01-01.2100-12-31": true
+    },
+    "gov.irs.credits.ctc.refundable.fully_refundable": {
+     "2026-01-01.2100-12-31": true
+    },
+    "gov.irs.credits.ctc.amount.base[1].threshold": {
+     "2026-01-01.2100-12-31": 18
+    },
+    "gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD": {
+     "2026-01-01.2100-12-31": 300000
+    },
+    "gov.irs.credits.ctc.amount.base[0].amount": {
+     "2026-01-01.2100-12-31": 2000
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.arpa[0].amount@2026-01-01": 4320,
+    "gov.irs.credits.ctc.amount.arpa[1].amount@2026-01-01": 3600,
+    "gov.irs.credits.ctc.phase_out.arpa.in_effect@2026-01-01": true,
+    "gov.irs.credits.ctc.refundable.fully_refundable@2026-01-01": true,
+    "gov.irs.credits.ctc.amount.base[1].threshold@2026-01-01": 18,
+    "gov.irs.credits.ctc.phase_out.threshold.HEAD_OF_HOUSEHOLD@2026-01-01": 300000,
+    "gov.irs.credits.ctc.amount.base[0].amount@2026-01-01": 2000
+   },
+   "inputs_set": [],
+   "seconds": 132.1,
+   "maxrss_gb": 24.88
+  },
+  {
+   "label": "tpc current law CY2025",
+   "values": {
+    "income_tax_2025": 2405320746810.899
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": null,
+   "reform_checked": {},
+   "inputs_set": [],
+   "seconds": 125.6,
+   "maxrss_gb": 38.88
+  },
+  {
+   "label": "tpc ctc option 1 CY2025",
+   "values": {
+    "income_tax_2025": 2393041508940.1396
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.base[0].amount": {
+     "2025-01-01.2100-12-31": 2500
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.base[0].amount@2025-01-01": 2500
+   },
+   "inputs_set": [],
+   "seconds": 130.6,
+   "maxrss_gb": 40.38
+  },
+  {
+   "label": "tpc ctc option 2 CY2025",
+   "values": {
+    "income_tax_2025": 2390222851009.9644
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.base[0].amount": {
+     "2025-01-01.2100-12-31": 2500
+    },
+    "gov.irs.credits.ctc.refundable.individual_max": {
+     "2025-01-01.2100-12-31": 2000
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.base[0].amount@2025-01-01": 2500,
+    "gov.irs.credits.ctc.refundable.individual_max@2025-01-01": 2000
+   },
+   "inputs_set": [],
+   "seconds": 133.6,
+   "maxrss_gb": 37.6
+  },
+  {
+   "label": "tpc ctc option 3 CY2025",
+   "values": {
+    "income_tax_2025": 2387717779801.6143
+   },
+   "bundle": {
+    "bundle_id": "us-5.0.1",
+    "country_id": "us",
+    "policyengine_version": "5.0.1",
+    "model_package": "policyengine-us",
+    "model_version": "1.764.6",
+    "data_package": "populace-data",
+    "data_version": "0.1.0",
+    "default_dataset": "populace_us_2024",
+    "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_build_id": "populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "certified_data_artifact_sha256": "48b9d479fb4fd1c3537f9383ce4697d130b6f618658409d74f6233c43b994c7e",
+    "data_build_model_version": "1.764.6",
+    "data_build_model_git_sha": "None",
+    "data_build_fingerprint": "None",
+    "compatibility_basis": "exact_build_model_version",
+    "certified_by": "None",
+    "runtime_dataset": "populace_us_2024",
+    "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-buildp-sparse-rmloss100-cae8640-20260728T011454Z",
+    "runtime_dataset_source": "/Users/pavelmakarchuk/.cache/huggingface/hub/datasets--policyengine--populace-us/snapshots/26dcad66867687f15735dc4926523e3741920836/populace_us_2024.h5",
+    "managed_by": "policyengine.py"
+   },
+   "reform": {
+    "gov.irs.credits.ctc.amount.base[0].amount": {
+     "2025-01-01.2100-12-31": 2500
+    },
+    "gov.irs.credits.ctc.refundable.individual_max": {
+     "2025-01-01.2100-12-31": 2000
+    },
+    "gov.irs.credits.ctc.refundable.phase_in.threshold": {
+     "2025-01-01.2100-12-31": 0
+    }
+   },
+   "reform_checked": {
+    "gov.irs.credits.ctc.amount.base[0].amount@2025-01-01": 2500,
+    "gov.irs.credits.ctc.refundable.individual_max@2025-01-01": 2000,
+    "gov.irs.credits.ctc.refundable.phase_in.threshold@2025-01-01": 0
+   },
+   "inputs_set": [],
+   "seconds": 131.9,
+   "maxrss_gb": 39.06
+  }
+ ],
+ "unrounded_cy2026": {
+  "ctc1": -12413332839.62793,
+  "ctc2": -15401563611.240723,
+  "ctc3": -17771840580.44873,
+  "top1": 1892688239.7885742,
+  "top2": 3560167298.3310547,
+  "top3": 4413149613.021484,
+  "tot1": -10520644599.839844,
+  "tot2": -11841396312.909668,
+  "tot3": -13358690967.427734,
+  "afa": -132466602193.05127,
+  "afa_floor2000": -130703985209.52979
+ },
+ "cy2025": {
+  "ctc1": -12279237870.759277,
+  "ctc2": -15097895800.93457,
+  "ctc3": -17602967009.284668
+ },
+ "exhibits_unrounded": {
+  "tpc_t25_0209_toprate_opt2_minus_opt1": 1667479058.5424805,
+  "tpc_t25_0209_toprate_opt3_minus_opt2": 852982314.6904297,
+  "tpc_t25_0209_ctc_opt3_minus_opt2": -2370276969.208008,
+  "tpc_t25_0209_ctc_opt2_minus_opt1": -2988230771.612793
+ },
+ "family": "tpc_t25_0209_t26_0029",
+ "rows": [
+  {
+   "pe_value": -12413332840.0,
+   "match": {
+    "source": "tpc",
+    "metric": "revenue_change",
+    "period": 2026,
+    "conditions": {
+     "geography": "US",
+     "provision_row": "Increase child tax credit (CTC) amount to $2,500, indexed for inflation after",
+     "option": "Option 1"
+    }
+   }
+  },
+  {
+   "pe_value": -15401563611.0,
+   "match": {
+    "source": "tpc",
+    "metric": "revenue_change",
+    "period": 2026,
+    "conditions": {
+     "geography": "US",
+     "provision_row": "Increase CTC amount to $2,500 and CTC maximum refundable amount to $2,000, both amounts indexed for inflation after",
+     "option": "Option 2"
+    }
+   }
+  },
+  {
+   "pe_value": -17771840580.0,
+   "match": {
+    "source": "tpc",
+    "metric": "revenue_change",
+    "period": 2026,
+    "conditions": {
+     "geography": "US",
+     "provision_row": "Increase CTC amount to $2,500 and CTC maximum refundable amount to $2,000, both amounts indexed for inflation after 2025; and phase in CTC starting with the first dollar of earnings",
+     "option": "Option 3"
+    }
+   }
+  },
+  {
+   "pe_value": 1892688240.0,
+   "match": {
+    "source": "tpc",
+    "metric": "revenue_change",
+    "period": 2026,
+    "conditions": {
+     "geography": "US",
+     "provision_row": "Increase top individual income tax rate to 39.6 percent for taxable income in excess of $2,120,000 for married couples filing jointly; $1,884,425 for singles; and $2,002,200 for heads of household, indexed for inflation after 2026.",
+     "option": "Option 1"
+    }
+   }
+  },
+  {
+   "pe_value": 3560167298.0,
+   "match": {
+    "source": "tpc",
+    "metric": "revenue_change",
+    "period": 2026,
+    "conditions": {
+     "geography": "US",
+     "provision_row": "Increase top individual income tax rate to 39.6 percent for taxable income in excess of $1,720,000 for married couples filing jointly; $1,528,875 for singles; and $1,624,400 for heads of household, indexed for inflation after 2026.",
+     "option": "Option 2"
+    }
+   }
+  },
+  {
+   "pe_value": 4413149613.0,
+   "match": {
+    "source": "tpc",
+    "metric": "revenue_change",
+    "period": 2026,
+    "conditions": {
+     "geography": "US",
+     "provision_row": "Increase top individual income tax rate to 39.6 percent for taxable income in excess of $1,562,500 for married couples filing jointly; $1,388,875 for singles; and $1,475,650 for heads of household, indexed for inflation after 2026.",
+     "option": "Option 3"
+    }
+   }
+  },
+  {
+   "pe_value": -10520644600.0,
+   "match": {
+    "source": "tpc",
+    "metric": "revenue_change",
+    "period": 2026,
+    "conditions": {
+     "geography": "US",
+     "provision_row": "Total for both provisions",
+     "option": "Option 1"
+    }
+   }
+  },
+  {
+   "pe_value": -11841396313.0,
+   "match": {
+    "source": "tpc",
+    "metric": "revenue_change",
+    "period": 2026,
+    "conditions": {
+     "geography": "US",
+     "provision_row": "Total for both provisions",
+     "option": "Option 2"
+    }
+   }
+  },
+  {
+   "pe_value": -13358690967.0,
+   "match": {
+    "source": "tpc",
+    "metric": "revenue_change",
+    "period": 2026,
+    "conditions": {
+     "geography": "US",
+     "provision_row": "Total for both provisions",
+     "option": "Option 3"
+    }
+   }
+  },
+  {
+   "pe_value": -132466602193.0,
+   "match": {
+    "source": "tpc",
+    "metric": "revenue_change",
+    "period": 2026,
+    "conditions": {
+     "geography": "US",
+     "provision_row": "American Family Act"
+    }
+   }
+  },
+  {
+   "pe_value": 1670000000.0,
+   "match": {
+    "metric": "revenue_change",
+    "unit_concept": "usd",
+    "period": 2026,
+    "time_basis": "calendar_year",
+    "reform_key": "tpc_t25_0209_toprate_opt2_minus_opt1",
+    "note": "PE pair-difference at CY2026; TPC twin values are FY2026 (both option legs share the FY basis, so the difference largely nets the timing)"
+   }
+  },
+  {
+   "pe_value": 850000000.0,
+   "match": {
+    "metric": "revenue_change",
+    "unit_concept": "usd",
+    "period": 2026,
+    "time_basis": "calendar_year",
+    "reform_key": "tpc_t25_0209_toprate_opt3_minus_opt2",
+    "note": "PE pair-difference at CY2026; TPC twin values are FY2026 (both option legs share the FY basis, so the difference largely nets the timing)"
+   }
+  },
+  {
+   "pe_value": -2370000000.0,
+   "match": {
+    "metric": "revenue_change",
+    "unit_concept": "usd",
+    "period": 2026,
+    "time_basis": "calendar_year",
+    "reform_key": "tpc_t25_0209_ctc_opt3_minus_opt2",
+    "note": "PE pair-difference at CY2026; TPC twin values are FY2026 (both option legs share the FY basis, so the difference largely nets the timing)"
+   }
+  },
+  {
+   "pe_value": -2990000000.0,
+   "match": {
+    "metric": "revenue_change",
+    "unit_concept": "usd",
+    "period": 2026,
+    "time_basis": "calendar_year",
+    "reform_key": "tpc_t25_0209_ctc_opt2_minus_opt1",
+    "note": "PE pair-difference at CY2026; TPC twin values are FY2026 (both option legs share the FY basis, so the difference largely nets the timing)"
+   }
+  }
+ ],
+ "wall_seconds": 2223.8
+}

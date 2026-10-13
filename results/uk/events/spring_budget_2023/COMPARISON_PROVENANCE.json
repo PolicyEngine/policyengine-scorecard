@@ -1,0 +1,22 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "fedb23ee2652a9aad992bc269f784c81ce2bddc26b4e647b219b6c616434e9dd",
+  "COMPARISON.json": "23fd058a1818857510f13324406b1bcc9117bd90f098ae4b30bc0fc562adf2f7",
+  "COMPARISON.md": "d7a979651731f7e29e260ee6ff58e1d4e1d756bf3068827ebe1126ced7d15132"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 10,
+  "full_event_complete": true,
+  "full_event_grid_size": 10,
+  "missing_measure_years": []
+ },
+ "source_rows": 1020,
+ "staged_path": "results/uk/events/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "f809c53b1786fd84a1801d75228588dbf75976ee0bc44e329c48cad03c6bea10",
+ "staging_manifest_path": "results/uk/events/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "bc2afee05f5912337279704e90205a0754eb8fe00b4bc2623d148bb29ab435c0"
+}

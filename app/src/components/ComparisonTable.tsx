@@ -1,9 +1,23 @@
-import { Fragment, useMemo, useState } from "react";
-import type { Filters } from "../App";
-import { closeness, divergenceScore, fmtDivergence, fmtValue } from "../format";
+import { Fragment, useMemo, useState, type ReactNode } from "react";
+import { Button } from "@policyengine/ui-kit/primitives";
+import { defaultFilters, hasActiveFilters, type Filters } from "../filters";
+import {
+  divergenceScore,
+  divergenceTextClass,
+  fmtDivergence,
+  fmtValue,
+} from "../format";
 import type { Comparison, Row } from "../types";
-import { METRIC_LABELS, PROGRAM_LABELS, STATUS_LABELS } from "../types";
-import { SPINE_META, type SpineBucket } from "../spine";
+import { METRIC_LABELS, PROGRAM_LABELS } from "../types";
+import { SPINE_META, SPINE_ORDER, type SpineBucket } from "../spine";
+import {
+  nextSort,
+  sortRows,
+  type SortDir,
+  type SortState,
+  type SortValue,
+} from "../tableSort";
+import { LabeledSelect, StatusBadge, TableCard, Tag } from "./ui";
 
 const PROGRAM_ORDER = [
   "snap", "ssi", "tanf", "wic", "ccdf", "housing", "liheap", "eitc",
@@ -16,6 +30,35 @@ const METRIC_ORDER = [
 ];
 const MAX_RENDER = 600;
 
+/**
+ * Sortable columns, in table order. Δ sorts by the size of the gap
+ * (divergenceScore), so rates and counts rank together; status sorts in
+ * coverage order (close → suppressed). Text starts A→Z, numbers largest
+ * first.
+ */
+type ColKey =
+  | "program"
+  | "metric"
+  | "subgroup"
+  | "geography"
+  | "external"
+  | "pe"
+  | "delta"
+  | "pe2026"
+  | "status";
+
+const FIRST_DIR: Record<ColKey, SortDir> = {
+  program: "asc",
+  metric: "asc",
+  subgroup: "asc",
+  geography: "asc",
+  external: "desc",
+  pe: "desc",
+  delta: "desc",
+  pe2026: "desc",
+  status: "asc",
+};
+
 export function ComparisonTable({
   data,
   buckets,
@@ -27,8 +70,10 @@ export function ComparisonTable({
   filters: Filters;
   setFilters: (f: Filters) => void;
 }) {
-  const [sortByDivergence, setSortByDivergence] = useState(false);
+  const [sort, setSort] = useState<SortState<ColKey> | null>(null);
+  const onSort = (key: ColKey) => setSort((s) => nextSort(s, key, FIRST_DIR[key]));
   const [expanded, setExpanded] = useState<Row | null>(null);
+  const externalLabel = filters.country === "US" ? "Urban" : "External";
 
   const subgroups = useMemo(
     () => [...new Set(data.rows.map((r) => r.subgroup))].sort(),
@@ -62,131 +107,194 @@ export function ComparisonTable({
       PROGRAM_ORDER.indexOf(r.program) * 100 +
       METRIC_ORDER.indexOf(r.metric) * 2 +
       (r.variant ? 1 : 0);
-    rows = rows.sort((a, b) =>
-      sortByDivergence
-        ? divergenceScore(b) - divergenceScore(a)
-        : key(a) - key(b) ||
-          a.subgroup.localeCompare(b.subgroup) ||
-          a.geography.localeCompare(b.geography),
+    rows = rows.sort(
+      (a, b) =>
+        key(a) - key(b) ||
+        a.subgroup.localeCompare(b.subgroup) ||
+        a.geography.localeCompare(b.geography),
     );
-    return rows;
-  }, [data, filters, buckets, sortByDivergence, national]);
-
-  const sel =
-    "h-8 rounded-md border border-border bg-background px-2 text-sm";
+    const value = (r: Row, col: ColKey): SortValue => {
+      switch (col) {
+        case "program":
+          return PROGRAM_LABELS[r.program] ?? r.program;
+        case "metric":
+          return METRIC_LABELS[r.metric] ?? r.metric;
+        case "subgroup":
+          return r.subgroup;
+        case "geography":
+          return r.geography;
+        case "external":
+          return r.external_value;
+        case "pe":
+          return r.pe_value;
+        case "delta":
+          return fmtDivergence(r) === "" ? null : divergenceScore(r);
+        case "pe2026":
+          return r.pe_value_2026;
+        case "status":
+          return SPINE_ORDER.indexOf(buckets.get(r)!);
+      }
+    };
+    return sortRows(rows, sort, value);
+  }, [data, filters, buckets, sort, national]);
 
   return (
-    <div>
-      <div className="mb-4 flex flex-wrap items-end gap-3">
-        <label className="text-xs text-muted-foreground">
-          Program
-          <br />
-          <select
-            className={sel}
-            value={filters.program}
-            onChange={(e) =>
-              setFilters({ ...filters, program: e.target.value })
-            }
-          >
-            <option value="all">All programs</option>
-            {PROGRAM_ORDER.map((p) => (
-              <option key={p} value={p}>
-                {PROGRAM_LABELS[p] ?? p}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="text-xs text-muted-foreground">
-          Metric
-          <br />
-          <select
-            className={sel}
-            value={filters.metric}
-            onChange={(e) => setFilters({ ...filters, metric: e.target.value })}
-          >
-            <option value="all">All metrics</option>
-            {METRIC_ORDER.map((m) => (
-              <option key={m} value={m}>
-                {METRIC_LABELS[m] ?? m}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="text-xs text-muted-foreground">
-          Geography
-          <br />
-          <select
-            className={sel}
-            value={filters.geography}
-            onChange={(e) =>
-              setFilters({ ...filters, geography: e.target.value })
-            }
-          >
-            <option value={national}>National</option>
-            <option value="states">All states</option>
-            {states.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="text-xs text-muted-foreground">
-          Subgroup
-          <br />
-          <select
-            className={sel}
-            value={filters.subgroup}
-            onChange={(e) =>
-              setFilters({ ...filters, subgroup: e.target.value })
-            }
-          >
-            <option value="total">Total only</option>
-            <option value="all">All subgroups</option>
-            {subgroups
-              .filter((s) => s !== "total")
-              .map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-          </select>
-        </label>
-        <label className="flex h-8 items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={sortByDivergence}
-            onChange={(e) => setSortByDivergence(e.target.checked)}
-          />
-          Sort by divergence
-        </label>
-        <span className="ml-auto text-xs text-muted-foreground fig">
-          {filtered.length.toLocaleString()} rows
-        </span>
-      </div>
-
-      <div className="overflow-x-auto rounded-md border border-border">
+    <div className="space-y-4">
+      <TableCard
+        toolbar={
+          <>
+            <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-5">
+              <LabeledSelect
+                label="Program"
+                value={filters.program}
+                onChange={(program) => setFilters({ ...filters, program })}
+                options={[
+                  { value: "all", label: "All programs" },
+                  ...PROGRAM_ORDER.map((p) => ({
+                    value: p,
+                    label: PROGRAM_LABELS[p] ?? p,
+                  })),
+                ]}
+              />
+              <LabeledSelect
+                label="Metric"
+                value={filters.metric}
+                onChange={(metric) => setFilters({ ...filters, metric })}
+                options={[
+                  { value: "all", label: "All metrics" },
+                  ...METRIC_ORDER.map((m) => ({
+                    value: m,
+                    label: METRIC_LABELS[m] ?? m,
+                  })),
+                ]}
+              />
+              <LabeledSelect
+                label="Geography"
+                value={filters.geography}
+                onChange={(geography) => setFilters({ ...filters, geography })}
+                options={[
+                  { value: national, label: "National" },
+                  { value: "states", label: "All states" },
+                  ...states.map((s) => ({ value: s, label: s })),
+                ]}
+              />
+              <LabeledSelect
+                label="Subgroup"
+                value={filters.subgroup}
+                onChange={(subgroup) => setFilters({ ...filters, subgroup })}
+                options={[
+                  { value: "total", label: "Total only" },
+                  { value: "all", label: "All subgroups" },
+                  ...subgroups
+                    .filter((s) => s !== "total")
+                    .map((s) => ({ value: s, label: s })),
+                ]}
+              />
+              <LabeledSelect
+                label="Status"
+                value={filters.bucket ?? "all"}
+                onChange={(v) =>
+                  setFilters({
+                    ...filters,
+                    bucket: v === "all" ? null : (v as SpineBucket),
+                  })
+                }
+                options={[
+                  { value: "all", label: "All statuses" },
+                  ...SPINE_ORDER.map((b) => ({
+                    value: b,
+                    label: SPINE_META[b].label,
+                  })),
+                ]}
+              />
+            </div>
+            {(hasActiveFilters(filters) || sort) && (
+              <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3">
+                {hasActiveFilters(filters) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setFilters(defaultFilters(filters.country))}
+                  >
+                    Reset filters
+                  </Button>
+                )}
+                {sort && (
+                  <Button variant="ghost" size="sm" onClick={() => setSort(null)}>
+                    Default order
+                  </Button>
+                )}
+              </div>
+            )}
+          </>
+        }
+      >
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="border-b border-border bg-muted/60 text-left text-xs text-muted-foreground">
-              <th className="px-2 py-2 font-medium">Program</th>
-              <th className="px-2 py-2 font-medium">Metric</th>
-              <th className="px-2 py-2 font-medium">Subgroup</th>
-              <th className="px-2 py-2 font-medium">Geo</th>
-              <th className="px-2 py-2 text-right font-medium">
-                Urban <VintageChip label="2023 avg-month" tone="external" />
-              </th>
-              <th className="px-2 py-2 text-right font-medium">
-                PolicyEngine <VintageChip label="2024 calibrated" tone="pe" />
-              </th>
-              <th className="px-2 py-2 text-right font-medium">Δ</th>
-              <th className="px-2 py-2 text-right font-medium">
-                <VintageChip label="2026+ projected" tone="proj" />
-              </th>
-              <th className="px-2 py-2 font-medium">Status</th>
+            <tr className="border-b border-border bg-muted text-left text-xs text-muted-foreground">
+              <SortHeader col="program" sort={sort} onSort={onSort}>
+                Program
+              </SortHeader>
+              <SortHeader col="metric" sort={sort} onSort={onSort}>
+                Metric
+              </SortHeader>
+              <SortHeader col="subgroup" sort={sort} onSort={onSort}>
+                Subgroup
+              </SortHeader>
+              <SortHeader col="geography" sort={sort} onSort={onSort}>
+                Geo
+              </SortHeader>
+              <SortHeader
+                col="external"
+                sort={sort}
+                onSort={onSort}
+                right
+                sub="2023 avg month"
+              >
+                {externalLabel}
+              </SortHeader>
+              <SortHeader
+                col="pe"
+                sort={sort}
+                onSort={onSort}
+                right
+                sub="2024 calibrated"
+              >
+                PolicyEngine
+              </SortHeader>
+              <SortHeader
+                col="delta"
+                sort={sort}
+                onSort={onSort}
+                right
+              >
+                Δ
+              </SortHeader>
+              <SortHeader
+                col="pe2026"
+                sort={sort}
+                onSort={onSort}
+                right
+                sub="2026"
+              >
+                Projected
+              </SortHeader>
+              <SortHeader col="status" sort={sort} onSort={onSort}>
+                Status
+              </SortHeader>
             </tr>
           </thead>
           <tbody>
+            {filtered.length === 0 && (
+              <tr>
+                <td
+                  colSpan={9}
+                  className="px-3 py-8 text-center text-sm text-muted-foreground"
+                >
+                  No rows match these filters.
+                </td>
+              </tr>
+            )}
             {filtered.slice(0, MAX_RENDER).map((r) => (
               <Fragment key={r.source_column + r.geography}>
                 <RowLine
@@ -195,20 +303,93 @@ export function ComparisonTable({
                   expanded={expanded === r}
                   onToggle={() => setExpanded(expanded === r ? null : r)}
                 />
-                {expanded === r && <RowDetail row={r} data={data} />}
+                {expanded === r && (
+                  <RowDetail
+                    row={r}
+                    data={data}
+                    externalLabel={externalLabel}
+                  />
+                )}
               </Fragment>
             ))}
           </tbody>
         </table>
         {filtered.length > MAX_RENDER && (
-          <p className="border-t border-border px-2 py-2 text-xs text-muted-foreground">
+          <p className="border-t border-border px-3 py-2 text-xs text-muted-foreground">
             Showing the first {MAX_RENDER} of{" "}
             {filtered.length.toLocaleString()} rows — narrow the filters to see
             the rest.
           </p>
         )}
-      </div>
+      </TableCard>
     </div>
+  );
+}
+
+/**
+ * A column header that sorts the table. Label and sub-label each stay on
+ * one line and headers sit on the row's baseline, so the labels line up
+ * with their column. The arrow lives in the cell padding (a CSS glyph, so
+ * it takes no width and stays out of copied text): faint on hover, solid
+ * on the active column.
+ */
+function SortHeader({
+  col,
+  sort,
+  onSort,
+  right = false,
+  sub,
+  children,
+}: {
+  col: ColKey;
+  sort: SortState<ColKey> | null;
+  onSort: (col: ColKey) => void;
+  right?: boolean;
+  sub?: string;
+  children: ReactNode;
+}) {
+  const dir = sort?.key === col ? sort.dir : null;
+  return (
+    <th
+      className={
+        "whitespace-nowrap px-3 py-2 align-bottom font-medium " +
+        (right ? "text-right" : "text-left")
+      }
+      aria-sort={
+        dir === "asc" ? "ascending" : dir === "desc" ? "descending" : undefined
+      }
+    >
+      <button
+        type="button"
+        onClick={() => onSort(col)}
+        className={
+          "group cursor-pointer font-medium hover:text-foreground " +
+          (right ? "text-right " : "text-left ") +
+          (dir ? "text-foreground" : "")
+        }
+      >
+        <span className="relative">
+          {children}
+          <span
+            aria-hidden
+            className={
+              "pointer-events-none absolute top-0 w-3 text-center " +
+              (right ? "-left-3.5 " : "-right-3.5 ") +
+              (dir === "asc"
+                ? "after:content-['↑']"
+                : dir === "desc"
+                  ? "after:content-['↓']"
+                  : "opacity-0 group-hover:opacity-60 after:content-['↕']")
+            }
+          />
+        </span>
+        {sub && (
+          <span className="block text-[11px] font-normal text-muted-foreground">
+            {sub}
+          </span>
+        )}
+      </button>
+    </th>
   );
 }
 
@@ -223,64 +404,66 @@ function RowLine({
   expanded: boolean;
   onToggle: () => void;
 }) {
-  const c = closeness(row);
-  const divergenceColor =
-    c === "far"
-      ? "text-destructive"
-      : c === "moderate"
-        ? "text-[#B45309]"
-        : "text-muted-foreground";
+  const td = "px-3 py-2";
   return (
     <tr
       onClick={onToggle}
+      tabIndex={0}
+      aria-expanded={expanded}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onToggle();
+        }
+      }}
       className={
-        "cursor-pointer border-b border-border/60 hover:bg-muted/40 " +
-        (expanded ? "bg-muted/40" : "")
+        "cursor-pointer border-b border-border hover:bg-muted/60 " +
+        (expanded ? "bg-muted/60" : "")
       }
     >
-      <td className="px-2 py-1.5 whitespace-nowrap">
+      <td className={td + " whitespace-nowrap font-medium"}>
         {PROGRAM_LABELS[row.program] ?? row.program}
         {row.variant ? (
-          <span className="text-muted-foreground"> · {row.variant}</span>
+          <span className="font-normal text-muted-foreground">
+            {" "}
+            · {row.variant}
+          </span>
         ) : null}
       </td>
-      <td className="px-2 py-1.5 whitespace-nowrap">
+      <td className={td + " whitespace-nowrap"}>
         {METRIC_LABELS[row.metric] ?? row.metric}
       </td>
-      <td className="px-2 py-1.5 whitespace-nowrap text-muted-foreground">
+      <td className={td + " whitespace-nowrap text-muted-foreground"}>
         {row.subgroup}
       </td>
-      <td className="px-2 py-1.5 fig">{row.geography}</td>
-      <td className="px-2 py-1.5 text-right fig">
+      <td className={td + " fig"}>{row.geography}</td>
+      <td className={td + " fig text-right"}>
         {fmtValue(row.external_value, row.metric)}
       </td>
-      <td className="px-2 py-1.5 text-right fig">
+      <td className={td + " fig text-right"}>
         {fmtValue(row.pe_value, row.metric)}
       </td>
-      <td className={"px-2 py-1.5 text-right fig " + divergenceColor}>
+      <td className={td + " fig text-right " + divergenceTextClass(row)}>
         {fmtDivergence(row)}
       </td>
-      <td className="px-2 py-1.5 text-right fig text-muted-foreground">
+      <td className={td + " fig text-right text-muted-foreground"}>
         {row.pe_value_2026 !== null
           ? fmtValue(row.pe_value_2026, row.metric)
           : ""}
       </td>
-      <td className="px-2 py-1.5">
-        <StatusChip bucket={bucket} status={row.status} />
+      <td className={td + " whitespace-nowrap"}>
+        <StatusBadge bucket={bucket} status={row.status} />
         {row.calibration_relationship !== "held_out" && (
-          <span
-            className="ml-1 align-middle rounded-sm border border-dashed border-border px-1 py-px text-[9px] uppercase tracking-wide text-muted-foreground"
-            title={row.calibration_basis}
-          >
+          <Tag tone="dashed" className="ml-1" title={row.calibration_basis}>
             {row.calibration_relationship === "seed_source"
               ? "seed"
               : "target"}
-          </span>
+          </Tag>
         )}
         {row.annotations.length > 0 && (
           <span
             className="ml-1.5 align-middle text-[10px] text-muted-foreground"
-            title={`${row.annotations.length} annotations — click row`}
+            title={`${row.annotations.length} annotations — open the row`}
           >
             ⓘ{row.annotations.length}
           </span>
@@ -290,75 +473,35 @@ function RowLine({
   );
 }
 
-function VintageChip({
-  label,
-  tone,
+function RowDetail({
+  row,
+  data,
+  externalLabel,
 }: {
-  label: string;
-  tone: "external" | "pe" | "proj";
+  row: Row;
+  data: Comparison;
+  externalLabel: string;
 }) {
-  const styles: Record<string, string> = {
-    external: "border-border text-muted-foreground",
-    pe: "border-[var(--chart-1)] text-[var(--chart-3)]",
-    proj: "border-[var(--chart-2)] text-[var(--chart-4)]",
-  };
   return (
-    <span
-      className={
-        "ml-1 inline-block rounded-sm border px-1 py-px text-[9px] font-medium uppercase tracking-wide " +
-        styles[tone]
-      }
-    >
-      {label}
-    </span>
-  );
-}
-
-function StatusChip({
-  bucket,
-  status,
-}: {
-  bucket: SpineBucket;
-  status: Row["status"];
-}) {
-  const meta = SPINE_META[bucket];
-  return (
-    <span
-      className="inline-flex items-center gap-1.5 rounded-sm border border-border px-1.5 py-0.5 text-[11px] whitespace-nowrap"
-      title={meta.text}
-    >
-      <span
-        className="h-2 w-2 rounded-[2px]"
-        style={{ background: meta.color }}
-      />
-      {["close", "moderate", "far"].includes(bucket)
-        ? STATUS_LABELS[status]
-        : meta.label}
-    </span>
-  );
-}
-
-function RowDetail({ row, data }: { row: Row; data: Comparison }) {
-  return (
-    <tr className="border-b border-border bg-muted/30">
+    <tr className="border-b border-border bg-muted/40">
       <td colSpan={9} className="px-4 py-3">
-        <div className="grid gap-3 text-xs md:grid-cols-2">
+        <div className="grid gap-4 text-xs md:grid-cols-2">
           <div>
             <p className="mb-1 font-semibold">Construction</p>
             <p className="fig text-muted-foreground">
-              {row.pe_construction ?? "no PE counterpart"}
+              {row.pe_construction ?? "no PolicyEngine counterpart"}
             </p>
             <p className="mt-2 text-muted-foreground">
-              Urban: {row.unit_concept}, {row.period} · PolicyEngine:{" "}
+              {externalLabel}: {row.unit_concept}, {row.period} · PolicyEngine:{" "}
               {row.pe_period ?? "—"}
               {row.pe_value_2026 !== null &&
                 " · 2026 projection: same artifact, engine-side uprating"}{" "}
               · source column <span className="fig">{row.source_column}</span>
             </p>
             <p className="mt-2 text-muted-foreground">
-              <span className="mr-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide">
+              <Tag className="mr-1.5">
                 {row.calibration_relationship.replace(/_/g, " ")}
-              </span>
+              </Tag>
               {row.calibration_basis}
             </p>
           </div>
@@ -373,9 +516,7 @@ function RowDetail({ row, data }: { row: Row; data: Comparison }) {
                 if (!a) return null;
                 return (
                   <li key={id}>
-                    <span className="mr-1.5 rounded-sm bg-border px-1 py-0.5 text-[10px] uppercase tracking-wide">
-                      {a.severity}
-                    </span>
+                    <Tag className="mr-1.5">{a.severity}</Tag>
                     {a.text}{" "}
                     <span className="text-muted-foreground">({a.basis})</span>
                   </li>

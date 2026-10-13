@@ -1,0 +1,112 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.hmrc.income_tax.charges.CB_HITC.phase_out_end": {
+    "2024-01-01.2035-12-31": 60000
+   },
+   "gov.hmrc.income_tax.charges.CB_HITC.phase_out_start": {
+    "2024-01-01.2035-12-31": 50000
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2027 proxies FY 2027-28.",
+ "certified_aggregates_gbp": {
+  "child_benefit": 17901653521.40091,
+  "income_tax": 443671961318.895
+ },
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "components": [
+  "spring_budget_2024__hicbc_threshold_and_taper"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "dataset_sha256_after": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "dataset_sha256_before": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "engine_version": "2.89.2",
+ "event": "spring_budget_2024",
+ "fiscal_event": "Spring Budget 2024",
+ "fy_proxy": "2027-28",
+ "head_channels": {
+  "child_benefit": "spending",
+  "income_tax": "tax"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Income tax",
+   "pe_variables": [
+    "income_tax"
+   ]
+  },
+  {
+   "channel": "spending",
+   "obr_head": "Welfare inside cap",
+   "pe_variables": [
+    "child_benefit"
+   ]
+  }
+ ],
+ "head_effects": {
+  "child_benefit": -0.0,
+  "income_tax": -1844209824.508789
+ },
+ "head_variables": [
+  "income_tax",
+  "child_benefit"
+ ],
+ "literal_reform_minus_baseline": {
+  "child_benefit": 0.0,
+  "income_tax": 1844209824.508789
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "child_benefit": 0.0,
+  "income_tax": 1844209824.508789
+ },
+ "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+ "measure_total_gbp": -1844209824.508789,
+ "null_executed_as_no_limit": [],
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "child_benefit": 17901653521.40091,
+    "income_tax": 445516171143.4038
+   }
+  },
+  "reform": {
+   "heads": {
+    "child_benefit": 17901653521.40091,
+    "income_tax": 443671961318.895
+   }
+  }
+ },
+ "variable_metadata": {
+  "child_benefit": {
+   "definition_period": "year",
+   "documentation": "Total Child Benefit for the benefit unit",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/child_benefit.py",
+   "entity": "benunit",
+   "label": "Child Benefit",
+   "unit": "currency-GBP"
+  },
+  "income_tax": {
+   "definition_period": "year",
+   "documentation": "Total Income Tax liability",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/income_tax/income_tax.py",
+   "entity": "person",
+   "label": "Income Tax",
+   "unit": "currency-GBP"
+  }
+ },
+ "year": 2027
+}

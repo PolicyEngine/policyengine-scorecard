@@ -14,6 +14,27 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* Sentence-case, small-caps kicker used above stats and section headings. */
+.kicker {
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* Suppressed cells have no value on either side, so they read as a hatch
+   rather than a fill (spine, legend and status swatches). */
+.swatch-hatch {
+  background-color: var(--card);
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--border-dark) 0 1px,
+    transparent 1px 4px
+  );
+}
+
 :focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;

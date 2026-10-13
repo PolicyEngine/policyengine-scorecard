@@ -18,6 +18,15 @@ get their own entries.
 
 from __future__ import annotations
 
+from be.worlds import (
+    AXIOM_BE_2026_DEMO_WORLD,
+    AXIOM_BE_PIT_REFORM_2026_BASELINE,
+    COUR_DES_COMPTES_PIT_REFORM_2026_BASELINE,
+    EUROMOD_BE_2022_WORLD,
+    EUROMOD_BE_2023_WORLD,
+    SPF_FINANCES_PIT_REFORM_2026_BASELINE,
+)
+
 from .db import BASELINE_SQL, ScorecardDB
 from .models import CURRENT_LAW_DESCRIPTOR, baseline_key
 
@@ -192,6 +201,401 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "with two-child limit and family premium removal fully rolled "
         "out' (sources/harvest-uk-2026-08-02/uk_ifs).",
     ),
+    # --- OBR published policy effects (#55) ---------------------------
+    # OBR does NOT score a package against "the law in force" in the
+    # abstract: it scores against that EFO round's PRE-MEASURES forecast
+    # — a distinct, named world per round, which also fixes the economic
+    # determinants the effect is measured off. Two rounds' pre-measures
+    # worlds are different worlds, so a PE result computed against
+    # current law is NOT comparable to these claims unless it says so.
+    # Briefing paper No.10 chapter 2 splits the counterfactual KIND, so
+    # the kind is a descriptor key rather than a blurred single world:
+    #   policy_parameters  the measures' pre-announcement legislated
+    #                      parameters (tax and welfare measures, and every
+    #                      package-level chart)
+    #   del_activity       the pre-existing DEL activity/spending level —
+    #                      a departmental programme's counterfactual is
+    #                      the activity already assumed, not a parameter
+    #   regulatory         the pre-existing regulatory baseline (the
+    #                      National Planning Policy Framework as it stood)
+    # Only the (round, kind) pairs the data actually keys are registered;
+    # the registry is a record of decisions, not a cross-product.
+    (
+        {
+            "policy": "obr_pre_measures_spring_budget_2023",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_pre_measures_spring_budget_2023__policy_parameters",
+        "OBR's pre-measures March 2023 forecast, the world the "
+        "Spring Budget 2023 package and its individually scored measures "
+        "are measured against; counterfactual kind: the measures' pre-announcement legislated parameters.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_spring_budget_2023",
+            "counterfactual": "del_activity",
+        },
+        "obr_pre_measures_spring_budget_2023__del_activity",
+        "OBR's pre-measures March 2023 forecast, the world the "
+        "Spring Budget 2023 package and its individually scored measures "
+        "are measured against; counterfactual kind: the pre-existing DEL activity/spending baseline.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_autumn_statement_2023",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_pre_measures_autumn_statement_2023__policy_parameters",
+        "OBR's pre-measures November 2023 forecast, the world the "
+        "Autumn Statement 2023 package and its individually scored measures "
+        "are measured against; counterfactual kind: the measures' pre-announcement legislated parameters.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_autumn_statement_2023",
+            "counterfactual": "del_activity",
+        },
+        "obr_pre_measures_autumn_statement_2023__del_activity",
+        "OBR's pre-measures November 2023 forecast, the world the "
+        "Autumn Statement 2023 package and its individually scored measures "
+        "are measured against; counterfactual kind: the pre-existing DEL activity/spending baseline.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_spring_budget_2024",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_pre_measures_spring_budget_2024__policy_parameters",
+        "OBR's pre-measures March 2024 forecast, the world the "
+        "Spring Budget 2024 package and its individually scored measures "
+        "are measured against; counterfactual kind: the measures' pre-announcement legislated parameters.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_autumn_budget_2024",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_pre_measures_autumn_budget_2024__policy_parameters",
+        "OBR's pre-measures October 2024 forecast, the world the "
+        "Autumn Budget 2024 package and its individually scored measures "
+        "are measured against; counterfactual kind: the measures' pre-announcement legislated parameters.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_autumn_budget_2024",
+            "counterfactual": "del_activity",
+        },
+        "obr_pre_measures_autumn_budget_2024__del_activity",
+        "OBR's pre-measures October 2024 forecast, the world the "
+        "Autumn Budget 2024 package and its individually scored measures "
+        "are measured against; counterfactual kind: the pre-existing DEL activity/spending baseline.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_spring_statement_2025",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_pre_measures_spring_statement_2025__policy_parameters",
+        "OBR's pre-measures March 2025 forecast, the world the "
+        "Spring Statement 2025 package and its individually scored measures "
+        "are measured against; counterfactual kind: the measures' pre-announcement legislated parameters.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_spring_statement_2025",
+            "counterfactual": "regulatory",
+        },
+        "obr_pre_measures_spring_statement_2025__regulatory",
+        "OBR's pre-measures March 2025 forecast, the world the "
+        "Spring Statement 2025 package and its individually scored measures "
+        "are measured against; counterfactual kind: the pre-existing regulatory baseline.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_pre_measures_autumn_budget_2025",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_pre_measures_autumn_budget_2025__policy_parameters",
+        "OBR's pre-measures November 2025 forecast, the world the "
+        "Autumn Budget 2025 package and its individually scored measures "
+        "are measured against; counterfactual kind: the measures' pre-announcement legislated parameters.",
+        "policy_ref",
+        "sources/obr-policy-effects/source.json (baseline_key) plus the "
+        "per-row baseline / baseline_counterfactual / baseline_locator "
+        "the adapter emits from the vendored workbooks; descriptor "
+        "stamped by scorecard_db/ingest_obr_policy_effects.py "
+        "(_baseline_descriptor).",
+    ),
+    (
+        {
+            "policy": "obr_november_2025_budget_forecast",
+            "counterfactual": "policy_parameters",
+        },
+        "obr_november_2025_budget_forecast__policy_parameters",
+        "The OBR's November 2025 Budget forecast — the counterfactual "
+        "March 2026 Table B.1 names in its own title ('Total effect of "
+        "Government decisions SINCE the November 2025 Budget'). A "
+        "post-measures world, deliberately not a pre-measures one.",
+        "policy_ref",
+        "EFO March 2026, Annex B Table B.1 title, vendored at "
+        "sources/obr-policy-effects/raw/efo_march2026_annex_tables.xlsx; "
+        "descriptor stamped by "
+        "scorecard_db/ingest_obr_policy_effects.py (_baseline_descriptor).",
+    ),
+    (
+        {"policy": "obr_announcement_baseline_efo_march_2026"},
+        "obr_announcement_baseline_efo_march_2026",
+        "The announcement-consistent counterfactual the EFO March 2026 "
+        "re-estimates of the PA and HRT freezes are measured against: the "
+        "thresholds INDEXED as they would have been without the freeze, on "
+        "the March 2026 earnings determinants. It is a THRESHOLD-indexation "
+        "counterfactual, not a data-vintage one — the certified "
+        "policyengine-uk world already grows incomes along those same "
+        "determinants, so differencing the data vintage would difference a "
+        "world against itself. The divergence decomposition's "
+        "baseline_vintage axis claimed this world while it was registered "
+        "nowhere; a claimed baseline that no registry describes is not a "
+        "baseline.",
+        "policy_ref",
+        "EFO March 2026 Table 3.17 (PA and HRT freezes re-estimate); axis "
+        "recipe in data/uk/obr_divergence_axes.json "
+        "(efo_march_2026__pa_and_hrt_freezes / baseline_vintage).",
+    ),
+    (
+        {"policy": "hmt_no_policy_change_from_ab2024"},
+        "hmt_no_policy_change_from_ab2024",
+        "HM Treasury's published counterfactual for the Budget 2025 "
+        "'Impact on households' analysis: no policy changes over the "
+        "relevant period — i.e. the world without any of the decisions "
+        "announced from Autumn Budget 2024 onwards (Spring Statement "
+        "2025, Spending Review 2025 and Budget 2025 included), scored in "
+        "2028-29. Figures 1.A and 1.B are CHANGES against this world; "
+        "figure 1.C is a post-policy LEVEL and keys current law instead, "
+        "so the three charts are deliberately not one world.",
+        "policy_ref",
+        "Impact on households (Budget 2025) paras 1.1 and 1.6, vendored at "
+        "sources/hmt-distributional/raw/Impact_on_households.pdf (sha256 "
+        "in data/uk/hmt_da_packages.yaml); per-figure assignment lives in "
+        "that registry's charts[].baseline and is emitted into "
+        "data/externals/hmt-distributional-meta.json.",
+    ),
+    # --- Autumn Budget 2025 port (#136): the producers' own worlds --------
+    # Six counterfactual worlds appear in the AB2025 material and none is
+    # current law at the scoring date. Each is registered from the
+    # producer's own definition; a PE result computed against current law
+    # is `constructed` against them, never comparable, by the view's guard.
+    (
+        {"policy": "rf_permanent_measures_since_ab2024"},
+        "rf_permanent_measures_since_ab2024",
+        "Resolution Foundation's 'permanent measures announced since Autumn "
+        "Budget 2024' world, scored in 2029-30 across AHC income vigintiles "
+        "(Stairway to headroom, Figure 18).",
+        "policy_ref",
+        "Stairway to headroom (27 Nov 2025) Figure 18 source note; "
+        "sources/harvest-uk-ab2025-2026-09-24/uk_rf_ab2025/NOTES.md.",
+    ),
+    (
+        {"policy": "rf_start_of_parliament_policy"},
+        "rf_start_of_parliament_policy",
+        "Resolution Foundation's whole-parliament counterfactual: policy as "
+        "it stood at the start of the 2024 parliament, scored over the "
+        "parliament (Stairway to headroom, Figure 20).",
+        "policy_ref",
+        "Stairway to headroom (27 Nov 2025) Figure 20; "
+        "sources/harvest-uk-ab2025-2026-09-24/uk_rf_ab2025/NOTES.md.",
+    ),
+    (
+        {"policy": "jrf_pre_ab2025_projection_path"},
+        "jrf_pre_ab2025_projection_path",
+        "JRF's pre-Budget projection world: policy as legislated before "
+        "26 Nov 2025 (WFP and PIP reversals, the UC health cut) on JRF's "
+        "own OBR-March-2025 / BoE-August-2025 path, incomes projected to "
+        "September of each year (the 27 Nov post-Budget piece moves to a "
+        "November-to-November path), tertiles of equivalised AHC income.",
+        "policy_ref",
+        "JRF 'A decade of falling incomes?' (25 Sep 2025) and 'Two "
+        "policies' (30 Sep 2025), IPPR tax-benefit model v02_85; "
+        "sources/harvest-uk-ab2025-2026-09-24/uk_jrf/NOTES.md.",
+    ),
+    (
+        {"policy": "ukmod_b2025_09_fixed_baseline_line"},
+        "ukmod_b2025_09_fixed_baseline_line",
+        "UKMOD B2025.09 single-year statics against a fixed baseline "
+        "poverty line (CeMPA WP 3/26 on the Autumn Budget 2025 package).",
+        "policy_ref",
+        "CeMPA working paper 3/26; sources/ukmod-stats and "
+        "sources/harvest-uk-ab2025-2026-09-24/README.md.",
+    ),
+    (
+        {"policy": "end_of_parliament_pre_ab2025"},
+        "end_of_parliament_pre_ab2025",
+        "The 'end of parliament' (2029-30) world with pre-Budget policy, "
+        "as scored by CPAG (UKMOD B1.13) and IPPR (tax-benefit model "
+        "calibrated to the government's 450,000). One label, two engines: "
+        "the engine rides on the claim (source_model), the calibration in "
+        "conditions.",
+        "policy_ref",
+        "CPAG Budget submission (17 Oct 2025); IPPR 'Restoring security' "
+        "(4 Dec 2025); sources/harvest-uk-ab2025-2026-09-24/uk_cpag and "
+        "uk_ippr NOTES.md.",
+    ),
+    # --- Autumn Budget 2025 port (#136): worlds the producers defined --------
+    # Fourteen more counterfactuals quoted in the harvest as
+    # proposed_baseline; each is the producer's own definition, registered
+    # so the #13 gate lets its rows in and the comparisons view refuses to
+    # render a current-law PE result against them as plain agreement.
+    (
+        {"policy": "rf_previous_government_spending_plans_spring_2024"},
+        "rf_previous_government_spending_plans_spring_2024",
+        "Resolution Foundation's counterfactual for day-to-day public-service spending in England in 2028-29: the previous Government's Spring 2024 spending plans (Stairway to headroom, the RDEL comparison).",
+        "policy_ref",
+        "Stairway to headroom (27 Nov 2025) RDEL section; sources/harvest-uk-ab2025-2026-09-24/uk_rf_ab2025/NOTES.md (proposed_baseline).",
+    ),
+    (
+        {"policy": "obr_box_3_3_thresholds_indexed_with_inflation"},
+        "obr_box_3_3_thresholds_indexed_with_inflation",
+        "The OBR's Box 3.3 counterfactual for the personal tax threshold freezes: the personal allowance and higher-rate threshold moving in line with inflation ('Had the PA and HRT instead moved in line with inflation').",
+        "policy_ref",
+        "EFO November 2025 Box 3.3; sources/harvest-uk-ab2025-2026-09-24/uk_obr_tables/NOTES.md.",
+    ),
+    (
+        {"policy": "hmrc_tiin_iht_thresholds_cpi_indexed"},
+        "hmrc_tiin_iht_thresholds_cpi_indexed",
+        "HMRC's TIIN counterfactual for the inheritance-tax threshold freeze: nil-rate bands increased with CPI.",
+        "policy_ref",
+        "TIIN 'Inheritance Tax: maintaining thresholds' (26 Nov 2025); sources/harvest-uk-ab2025-2026-09-24/uk_hmrc_tiins/NOTES.md.",
+    ),
+    (
+        {"policy": "hmrc_tiin_thresholds_cpi_indexed_from_2028_29"},
+        "hmrc_tiin_thresholds_cpi_indexed_from_2028_29",
+        "HMRC's TIIN counterfactual for the personal tax threshold freeze: thresholds indexed with CPI from 2028-29 onwards.",
+        "policy_ref",
+        "TIIN 'Income Tax: maintaining the Personal Allowance and the basic rate limit ... until 5 April 2031' (26 Nov 2025); uk_hmrc_tiins/NOTES.md.",
+    ),
+    (
+        {"policy": "obr_fuel_duty_rpi_uprated_since_2010_11"},
+        "obr_fuel_duty_rpi_uprated_since_2010_11",
+        "The OBR's stated-policy counterfactual for fuel duty: rates uprated in line with RPI inflation every year since 2010-11 (the cumulative cost of the freezes).",
+        "policy_ref",
+        "EFO November 2025 fuel duty box; uk_obr_tables/NOTES.md.",
+    ),
+    (
+        {"policy": "rf_case_study_counterfactual_pre_ab2024_measures"},
+        "rf_case_study_counterfactual_pre_ab2024_measures",
+        "Resolution Foundation's case-study counterfactual: policy before the key measures announced since Autumn Budget 2024 (income tax thresholds, employer NICs, benefit changes), against which Stairway Table 1's ten specimen families are scored.",
+        "policy_ref",
+        "Stairway to headroom Table 1 note; uk_rf_ab2025/NOTES.md.",
+    ),
+    (
+        {"policy": "wpi_hunger_and_hardship_projection_2026_27"},
+        "wpi_hunger_and_hardship_projection_2026_27",
+        "WPI Economics' projection for Trussell of hunger and hardship to 2026/27 (Year 5) from a 2022/23 FRS base under policy as of the April 2025 report, the world its severe-hardship changes are measured from.",
+        "policy_ref",
+        "WPI Economics technical report (Tables 24a-28a) and Trussell's 26 Nov / 11 Dec 2025 releases; uk_trussell_wpi/NOTES.md.",
+    ),
+    (
+        {"policy": "jrf_post_ab2025_projection_obr_nov2025_central"},
+        "jrf_post_ab2025_projection_obr_nov2025_central",
+        "JRF's post-Budget projection: current policy after Autumn Budget 2025 on the OBR November 2025 EFO central scenario (IPPR tax-benefit model v02_90, FRS 2021-24, average of five model runs).",
+        "policy_ref",
+        "JRF 'This isn't what change feels like' (27 Jan 2026); uk_jrf/NOTES.md.",
+    ),
+    (
+        {"policy": "rf_current_policy_projection_2025_10_30"},
+        "rf_current_policy_projection_2025_10_30",
+        "Resolution Foundation's 'current policy' projection at 30 October 2025: pre-Budget policy including the free-school-meals extension and the UC standard-allowance over-indexation, excluding Scottish mitigation.",
+        "policy_ref",
+        "RF 'No half measures' (30 Oct 2025); uk_rf_ab2025/NOTES.md.",
+    ),
+    (
+        {"policy": "jrf_post_ab2025_projection_path_nov_to_nov"},
+        "jrf_post_ab2025_projection_path_nov_to_nov",
+        "JRF's post-Budget projection path: Autumn Budget 2025 policy on the OBR November 2025 forecast, household disposable income projected November to November.",
+        "policy_ref",
+        "JRF 'Scrapping two-child limit eases burden on families' (27 Nov 2025); uk_jrf/NOTES.md.",
+    ),
+    (
+        {"policy": "ifs_no_freezes_april_2021_thresholds_uprated"},
+        "ifs_no_freezes_april_2021_thresholds_uprated",
+        "The IFS 'no freezes at all' world: the April 2021 income tax and NICs thresholds uprated with inflation to 2029 (endnote 6 of the 14 Nov 2025 freeze analysis).",
+        "policy_ref",
+        "IFS 'How are frozen tax thresholds reshaping who pays personal taxes?' (14 Nov 2025); uk_ifs_ab2025/NOTES.md.",
+    ),
+    (
+        {"policy": "jrf_post_spring_forecast_2026_projection_path"},
+        "jrf_post_spring_forecast_2026_projection_path",
+        "JRF's post-Spring-Forecast-2026 projection path: current policy on the OBR's March 2026 forecasts (IPPR tax-benefit model v02_92, FRS 2023/24, April of each year, 2025/26 prices).",
+        "policy_ref",
+        "JRF 'Living standards challenge still acute' (3 Mar 2026); uk_jrf/NOTES.md.",
+    ),
+    (
+        {"policy": "rf_projection_without_child_poverty_strategy"},
+        "rf_projection_without_child_poverty_strategy",
+        "Resolution Foundation's projection without the Child Poverty Strategy policies (two-child limit repeal, free-school-meals expansion and the rest of the December 2025 package).",
+        "policy_ref",
+        "RF press release 'Rate of child poverty set to fall over the Parliament' (5 Dec 2025); uk_rf_ab2025/NOTES.md.",
+    ),
+    (
+        {"policy": "jrf_post_ab2025_two_child_limit_retained"},
+        "jrf_post_ab2025_two_child_limit_retained",
+        "JRF's post-Budget projection path with the two-child limit retained ('than if the policy was retained'), the counterfactual its 27 Nov 2025 child-poverty change is measured from.",
+        "policy_ref",
+        "JRF 27 Nov 2025 piece; uk_jrf/NOTES.md.",
+    ),
     (
         {"policy": "pre_ab2025"},
         "pre_ab2025",
@@ -204,6 +608,445 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "Campaign run results/uk/two_child_reinstate_2026.json "
         "(gov.dwp.universal_credit.elements.child.limit.child_count: "
         "inf -> 2); issue #13 grounding artifact.",
+    ),
+    # --- Autumn Budget 2025 port (#136): the pre-Budget worlds PE executes.
+    # A measure that is IN the certified baseline is scored by REVERSAL:
+    # PolicyEngine executes the pre-Budget world (data/uk/ab2025_measures.json
+    # pe_baseline_modifier) as the baseline and current law as the reform.
+    # A per-measure reversal is a different world per measure (#13), so each
+    # gets its own entry; pre_ab2025 (above) stays the two-child world the
+    # campaign already executed. Generated from the registry; the tranche-3
+    # run records which of these it actually executed.
+    (
+        {
+            "policy": "pre_ab2025__personal_tax_thresholds_freeze_to_2031",
+            "measure": "ab2025__personal_tax_thresholds_freeze_to_2031",
+        },
+        "pre_ab2025__personal_tax_thresholds_freeze_to_2031",
+        "UK current law with Personal Tax: Maintain the personal income tax and equivalent national insurance threshold… reversed to its "
+        "pre-Budget path (gov.hmrc.income_tax.allowances.personal_allowance.amount, gov.hmrc.income_tax.rates.uk[1].threshold, gov.hmrc.national_insurance.class_1.thresholds.primary_threshold, gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit, gov.hmrc.national_insurance.class_4.thresholds.lower_profits_limit, gov.hmrc.national_insurance.class_4.thresholds.upper_profits_limit).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__personal_tax_thresholds_freeze_to_2031 pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+            "measure": "ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+        },
+        "pre_ab2025__employer_nics_secondary_threshold_freeze_to_2031",
+        "UK current law with National Insurance: Maintain the secondary threshold for employer contributions at current… reversed to its "
+        "pre-Budget path (gov.hmrc.national_insurance.class_1.thresholds.secondary_threshold).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__employer_nics_secondary_threshold_freeze_to_2031 pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__student_loans_plan2_threshold_freeze",
+            "measure": "ab2025__student_loans_plan2_threshold_freeze",
+        },
+        "pre_ab2025__student_loans_plan2_threshold_freeze",
+        "UK current law with Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027… reversed to its "
+        "pre-Budget path (gov.hmrc.student_loans.thresholds.plan_2).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__student_loans_plan2_threshold_freeze pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__property_income_separate_rates",
+            "measure": "ab2025__property_income_separate_rates",
+        },
+        "pre_ab2025__property_income_separate_rates",
+        "UK current law with Property Income: Introduce separate tax rates for property income at 22% for the property… reversed to its "
+        "pre-Budget path (gov.hmrc.income_tax.rates.property.additional, gov.hmrc.income_tax.rates.property.basic, gov.hmrc.income_tax.rates.property.higher).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__property_income_separate_rates pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__dividend_rates_plus_2pp",
+            "measure": "ab2025__dividend_rates_plus_2pp",
+        },
+        "pre_ab2025__dividend_rates_plus_2pp",
+        "UK current law with Dividend Income: Increase tax rates on dividend income by 2ppts at the ordinary and upper… reversed to its "
+        "pre-Budget path (gov.hmrc.income_tax.rates.dividends[0].rate, gov.hmrc.income_tax.rates.dividends[1].rate).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__dividend_rates_plus_2pp pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+            "measure": "ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+        },
+        "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+        "UK current law with Savings Income: Increase tax rates on savings income by 2ppts at the basic, higher and add… reversed to its "
+        "pre-Budget path (gov.hmrc.income_tax.rates.savings.additional, gov.hmrc.income_tax.rates.savings.basic, gov.hmrc.income_tax.rates.savings.higher).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__savings_rates_plus_2pp_and_starter_limit_held pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+            "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+        },
+        "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+        "UK current law with Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can rece… reversed to its "
+        "pre-Budget path (gov.hmrc.national_insurance.salary_sacrifice_pension_cap).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__salary_sacrifice_pension_nics_cap_2000 pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__high_value_council_tax_surcharge",
+            "measure": "ab2025__high_value_council_tax_surcharge",
+        },
+        "pre_ab2025__high_value_council_tax_surcharge",
+        "UK current law with High Value Council Tax Surcharge: Introduce a surcharge on owners of residential propertie… reversed to its "
+        "pre-Budget path (gov.hmrc.council_tax.high_value_surcharge.amount[1].amount, gov.hmrc.council_tax.high_value_surcharge.amount[2].amount, gov.hmrc.council_tax.high_value_surcharge.amount[3].amount, gov.hmrc.council_tax.high_value_surcharge.amount[4].amount).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__high_value_council_tax_surcharge pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__fuel_duty_freeze_extension_2026_27",
+            "measure": "ab2025__fuel_duty_freeze_extension_2026_27",
+        },
+        "pre_ab2025__fuel_duty_freeze_extension_2026_27",
+        "UK current law with Fuel Duty: Cancel uprating for 2026-27; extend the 5p cut in rates to 31 August 2026, then… reversed to its "
+        "pre-Budget path (gov.hmrc.fuel_duty.petrol_and_diesel).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__fuel_duty_freeze_extension_2026_27 pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__rail_fares_freeze_2026",
+            "measure": "ab2025__rail_fares_freeze_2026",
+        },
+        "pre_ab2025__rail_fares_freeze_2026",
+        "UK current law with Rail Fares: Freeze rail fares in England for one year from 1 March 2026… reversed to its "
+        "pre-Budget path (gov.dft.rail.fare_index).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__rail_fares_freeze_2026 pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__winter_fuel_payment_income_test_35000",
+            "measure": "ab2025__winter_fuel_payment_income_test_35000",
+        },
+        "pre_ab2025__winter_fuel_payment_income_test_35000",
+        "UK current law with Winter Fuel Payment: Target to pensioners with taxable income below or equal to £35,000 fr… reversed to its "
+        "pre-Budget path (gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__winter_fuel_payment_income_test_35000 pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__uc_standard_allowance_and_health_element_rebalancing",
+            "measure": "ab2025__uc_standard_allowance_and_health_element_rebalancing",
+        },
+        "pre_ab2025__uc_standard_allowance_and_health_element_rebalancing",
+        "UK current law with Universal Credit: Changes to the standard allowance and health element to protect existing… reversed to its "
+        "pre-Budget path (gov.dwp.universal_credit.rebalancing.active).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__uc_standard_allowance_and_health_element_rebalancing pe_baseline_modifier; "
+        "executed by the #136 tranche-3 run.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__package",
+            "measure": "ab2025__package_total_policy_decisions",
+        },
+        "pre_ab2025__package",
+        "UK current law with every expressible Autumn Budget 2025 household "
+        "measure reversed to its pre-Budget path at once (the package world).",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json, every reversal_on_certified_world "
+        "measure's pe_baseline_modifier applied together; executed by the "
+        "#136 tranche-3 run.",
+    ),
+    (
+        EUROMOD_BE_2022_WORLD,
+        "euromod_be_2025_current_law_2022",
+        "Belgium current-law policy system BE_2022 as published in the "
+        "2025 JRC EUROMOD-BE country-report validation tables (EUROMOD "
+        "J1.0+); calendar policy-system/output year 2022 simulated from "
+        "database BE_2022_c1 (EU-SILC 2022, income reference year 2021) "
+        "with monetary uprating — not a matched income-reference year.",
+        "euromod",
+        "EUROMOD Country Report Belgium 2025, Annex 3 tables A3.7/A3.8; "
+        "sources/jrc-euromod-be-2025/jrc_euromod_be_baseline_statistics_2025.csv "
+        "SHA-256 2ed1f8a677799fefe7cc2f092b4f30221940a2a2fc9deecbf29e7a5f7d71b69f; "
+        "Chronicle origin/main@1cab80987a462e00055f259cc56dc6b311c030bf.",
+    ),
+    (
+        EUROMOD_BE_2023_WORLD,
+        "euromod_be_2025_current_law_2023",
+        "Belgium current-law policy system BE_2023 as published in the "
+        "2025 JRC EUROMOD-BE country-report validation tables (EUROMOD "
+        "J1.0+); calendar policy-system/output year 2023 simulated from "
+        "database BE_2022_c1 (EU-SILC 2022, income reference year 2021) "
+        "with monetary uprating — not a matched income-reference year.",
+        "euromod",
+        "EUROMOD Country Report Belgium 2025, Annex 3 tables A3.4/A3.6; "
+        "sources/jrc-euromod-be-2025/jrc_euromod_be_baseline_statistics_2025.csv "
+        "SHA-256 2ed1f8a677799fefe7cc2f092b4f30221940a2a2fc9deecbf29e7a5f7d71b69f; "
+        "Chronicle origin/main@1cab80987a462e00055f259cc56dc6b311c030bf.",
+    ),
+    (
+        AXIOM_BE_2026_DEMO_WORLD,
+        "axiom_be_rulespec_current_law_demo_2026",
+        "Axiom rulespec-be current-law worker-slice execution for CY2026 "
+        "on the demo-grade microcosm_be_v02 population. This world is not "
+        "equivalent to either EUROMOD published-claim world.",
+        "axiom",
+        "rulespec-be@7c85808ae99f5731b21059e643e5e19b66438904; "
+        "sources/jrc-euromod-be-2025/microcosm_be_v02_manifest.json "
+        "SHA-256 f69cfce742f603c089ba7777749df8afb6c4b5266af2b80097d5480955e2851d; "
+        "demo-grade: US survey support records reweighted to Belgian "
+        "administrative targets — not Belgian microdata.",
+    ),
+    (
+        SPF_FINANCES_PIT_REFORM_2026_BASELINE,
+        "spf_finances_internal_pit_baseline_2026",
+        "SPF Finances' internal baseline for its Belgian PIT-reform score. "
+        "DOC 56 1243/001 says the model uses assessment-year-2023 "
+        "microdata; the methodology is unpublished.",
+        "internal_model",
+        "Belgian Chamber DOC 56 1243/001 and DOC 56 1243/004, pinned in "
+        "sources/be-pit-reform-2026/manifest.jsonl. No equivalence to "
+        "another registered baseline is asserted.",
+    ),
+    (
+        COUR_DES_COMPTES_PIT_REFORM_2026_BASELINE,
+        "cour_des_comptes_pit_baseline_2026_unspecified",
+        "Baseline underlying the Cour des comptes Belgian PIT-reform "
+        "evaluation; its basis is not stated in the pinned secondary "
+        "citation.",
+        "external_model",
+        "Belgian Chamber DOC 56 1243/004, pinned in "
+        "sources/be-pit-reform-2026/manifest.jsonl. The Cour des comptes "
+        "advice document is not pinned, so no additional baseline terms "
+        "are inferred.",
+    ),
+    (
+        AXIOM_BE_PIT_REFORM_2026_BASELINE,
+        "axiom_be_pit_v05h_same_year_indexed_current_law",
+        "Axiom/Microcosm-BE v05h same-year indexed current-law baseline "
+        "family for the Belgian PIT reform: encoded Article 178 chain and "
+        "statutory special coefficients, declared FPB income uprating on "
+        "fixed 2025 weights, and Royal-Decree-pending Article 147 values "
+        "carried at their last enacted levels.",
+        "axiom",
+        "population-rerun@3d9f690; LANE_AGED3_REPORT.md and "
+        "out/v05h/aged_results.json hashes pinned in "
+        "sources/be-pit-reform-2026/manifest.jsonl.",
+    ),
+    # --- #56 OBR costings lane: the pre-measure worlds PE executes by
+    # reversing each scored measure on the certified world (the
+    # Autumn Budget 2025 measures reuse the pre_ab2025__* worlds above;
+    # the PA/HRT re-estimate executes obr_announcement_baseline_efo_march_2026).
+    (
+        {
+            "policy": "pre_efo_march_2026__additional_rate_threshold_reduction",
+            "measure": "efo_march_2026__additional_rate_threshold_reduction",
+        },
+        "pre_efo_march_2026__additional_rate_threshold_reduction",
+        "UK current law (the certified world) with Additional rate threshold: reduction reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml efo_march_2026__additional_rate_threshold_reduction pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_efo_march_2026__nics_rise_in_primary_threshold",
+            "measure": "efo_march_2026__nics_rise_in_primary_threshold",
+        },
+        "pre_efo_march_2026__nics_rise_in_primary_threshold",
+        "UK current law (the certified world) with NICs: rise in primary threshold reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml efo_march_2026__nics_rise_in_primary_threshold pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_efo_march_2026__class_1_nics_threshold_freezes",
+            "measure": "efo_march_2026__class_1_nics_threshold_freezes",
+        },
+        "pre_efo_march_2026__class_1_nics_threshold_freezes",
+        "UK current law (the certified world) with Class 1 NICs: threshold freezes reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml efo_march_2026__class_1_nics_threshold_freezes pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_efo_march_2026__autumn_statement_2023_nics_reduction",
+            "measure": "efo_march_2026__autumn_statement_2023_nics_reduction",
+        },
+        "pre_efo_march_2026__autumn_statement_2023_nics_reduction",
+        "UK current law (the certified world) with Autumn Statement 2023 NICs reduction reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml efo_march_2026__autumn_statement_2023_nics_reduction pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_efo_march_2026__spring_budget_2024_nics_reduction",
+            "measure": "efo_march_2026__spring_budget_2024_nics_reduction",
+        },
+        "pre_efo_march_2026__spring_budget_2024_nics_reduction",
+        "UK current law (the certified world) with Spring Budget 2024 NICs reduction reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml efo_march_2026__spring_budget_2024_nics_reduction pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_efo_march_2026__autumn_budget_2024_employer_nics_rise",
+            "measure": "efo_march_2026__autumn_budget_2024_employer_nics_rise",
+        },
+        "pre_efo_march_2026__autumn_budget_2024_employer_nics_rise",
+        "UK current law (the certified world) with Autumn Budget 2024 employer NICs rise reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml efo_march_2026__autumn_budget_2024_employer_nics_rise pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+            "measure": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+        },
+        "pre_autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+        "UK current law (the certified world) with National Insurance contributions (NICs): 2p cut to the main rate of Class 1 employee NIC… reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+            "measure": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+        },
+        "pre_autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+        "UK current law (the certified world) with National Insurance contributions (NICs): 1p cut to the main rate of Class 4 self-employe… reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+            "measure": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+        },
+        "pre_spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+        "UK current law (the certified world) with National Insurance contributions (NICs): 2 percentage point cut to the main rate of Clas… reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+            "measure": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+        },
+        "pre_spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+        "UK current law (the certified world) with National Insurance contributions (NICs): 2 percentage point cut to the main rate of Clas… reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_spring_budget_2024__hicbc_threshold_and_taper",
+            "measure": "spring_budget_2024__hicbc_threshold_and_taper",
+        },
+        "pre_spring_budget_2024__hicbc_threshold_and_taper",
+        "UK current law (the certified world) with High Income Child Benefit Charge: increase income threshold to £60,000 and taper range t… reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml spring_budget_2024__hicbc_threshold_and_taper pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    (
+        {
+            "policy": "pre_autumn_budget_2024__employer_nics_package",
+            "measure": "autumn_budget_2024__employer_nics_package",
+        },
+        "pre_autumn_budget_2024__employer_nics_package",
+        "UK current law (the certified world) with Employer National Insurance contributions: Increase rate by 1.2 ppts to 15%, cut the Sec… reversed: the "
+        "pre-measure world PE executes so the OBR costing is measured as "
+        "current law minus this world (#56 reversal_on_certified_world).",
+        "policyengine_uk",
+        "data/uk/obr_measure_reforms.yaml autumn_budget_2024__employer_nics_package pe_reform; executed by "
+        "pipeline/compute_uk_obr_costings.py on the certified bundle.",
+    ),
+    # --- #136 tranche 3: the pre-Budget worlds PE executes for the two
+    # computed PACKAGES (each component's pe_baseline_modifier composed).
+    (
+        {
+            "policy": "pre_ab2025__package_ifs_decile_chart_scope",
+            "measure": "ab2025__package_ifs_decile_chart_scope",
+        },
+        "pre_ab2025__package_ifs_decile_chart_scope",
+        "UK current law (the certified world) with every measure in the IFS 27 Nov 2025 decile-chart scope "
+        "reversed to its pre-Budget path at once: the pre-Budget world PE executes so the package is "
+        "measured as current law minus this world.",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__package_ifs_decile_chart_scope package_of, each component's "
+        "pe_baseline_modifier composed by pipeline/compute_uk_ab2025.py.",
+    ),
+    (
+        {
+            "policy": "pre_ab2025__package_ukmod_wp3_26",
+            "measure": "ab2025__package_ukmod_wp3_26",
+        },
+        "pre_ab2025__package_ukmod_wp3_26",
+        "UK current law (the certified world) with the three registry measures in UKMOD's WP 3/26 package "
+        "(threshold freezes, two-child limit removal, Winter Fuel Payment test) reversed at once; the paper's "
+        "Pension Credit leg is not a registry measure and is not reversed.",
+        "policyengine_uk",
+        "data/uk/ab2025_measures.json ab2025__package_ukmod_wp3_26 package_of, composed by "
+        "pipeline/compute_uk_ab2025.py.",
+    ),
+    (
+        {"policy": "niesr_pre_measures_autumn_2025_outlook"},
+        "niesr_pre_measures_autumn_2025_outlook",
+        "NIESR's pre-measures forecast: the Autumn 2025 UK Economic Outlook (completed 27 Oct 2025) "
+        "with no changes to planned spending or tax rates in the Autumn Budget — the world NIESR's "
+        "NiGEM package effects and fiscal-stance calls are measured against.",
+        "policy_ref",
+        "sources/harvest-uk-ab2025-2026-09-24/uk_macro_calls/NOTES.md (proposed_baseline on the NiGEM rows).",
     ),
 ]
 

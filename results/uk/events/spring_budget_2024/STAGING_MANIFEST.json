@@ -1,0 +1,19 @@
+{
+ "by_status": {
+  "constructed": 48,
+  "not_computed": 768
+ },
+ "computed_measure_years": 18,
+ "event": "spring_budget_2024",
+ "full_event_complete": true,
+ "full_event_grid_size": 18,
+ "missing_measure_years": [],
+ "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+ "source_rows": 816,
+ "source_value_gbp": -44032196115.273796,
+ "source_value_gbp_decimal": "-44032196115.27379504483028",
+ "staged_path": "results/uk/events/spring_budget_2024/STAGED.jsonl",
+ "staged_rows": 816,
+ "staged_sha256": "e7ba6d1bbd4957aa988e0ddcac7b4a91fbac55a39e76b0e7bf42c9bf2975b6b7",
+ "staged_value_gbp_decimal": "-44032196115.27379504483028"
+}

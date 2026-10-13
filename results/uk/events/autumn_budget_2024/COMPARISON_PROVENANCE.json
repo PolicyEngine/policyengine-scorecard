@@ -1,0 +1,22 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "autumn_budget_2024",
+ "outputs_sha256": {
+  "COMPARISON.csv": "3dd2c75299a13bc478512f643084196635ba5a4ebb360d5ecf4175c69421d025",
+  "COMPARISON.json": "b9879f94a88837df172f4f388b9f88cbb7609f905290f6b65308188b66b3c229",
+  "COMPARISON.md": "13d3aad343d284b0dbfbc406f7ae0d12db103fe2a066441e22c02c0b5e678e80"
+ },
+ "registry_path": "data/uk/events/autumn_budget_2024_measures.json",
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "replay_grid": {
+  "computed_measure_years": 30,
+  "full_event_complete": true,
+  "full_event_grid_size": 30,
+  "missing_measure_years": []
+ },
+ "source_rows": 1134,
+ "staged_path": "results/uk/events/autumn_budget_2024/STAGED.jsonl",
+ "staged_sha256": "122bd4643eb17dae6d6d980e120cf89561510dfa4910ecc3c79f22f73a67633c",
+ "staging_manifest_path": "results/uk/events/autumn_budget_2024/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "8e32b12a704fe36cf2177059d0b2f2036d05c17f059f72dcf65d46e9a8edc12f"
+}

@@ -1,0 +1,1599 @@
+{
+ "schema": "sources/ukmod-cases/SCHEMA.md",
+ "schema_version": 1,
+ "description": "Autumn Budget 2025 worked examples (tranche 4 of #136) as a mode-3 case battery: each case is one distinct specimen household a producer published (commercial firms, EY via BBC News, PPI, CPS, CPAG, Resolution Foundation), harvested in sources/harvest-uk-ab2025-2026-09-24/. Inputs + expected focus only - every value the producer printed is quoted in the rationale as text and never stored as a field; both sides of every comparison come from engine runs. A case carries a registered baseline world when the example compares against the pre-Budget position (threshold freeze, salary-sacrifice NI cap, savings rates, UC standard-allowance rebalancing, two-child limit) and none for a current-law level. All amounts annual GBP; weekly amounts x 52. Companion notes: AB2025_WORKED_EXAMPLES_NOTES.md.",
+ "cases": [
+  {
+   "case_id": "uk-ab2025-aj-bell-earner-15000",
+   "description": "Single employee on GBP 15,000 with the standard personal allowance (AJ Bell income-tax table for Which?, 2025-26)",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 15000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax"
+   ],
+   "rationale": "Pins the 2025-26 income tax bill of a single employee on GBP 15,000 with the standard personal allowance, as printed in AJ Bell's table for Which? ('How much would an income tax rise cost you?' (Which?, AJ Bell table), 7 Nov 2025, https://www.which.co.uk/news/article/how-much-would-an-income-tax-rise-cost-you-avpAh8w8hknt): 'Income tax bill 2025-26' GBP 486; the table's other columns (GBP 535 after a 2p rise in the basic rate, 'Extra tax paid' GBP 49, 'rounded to the nearest GBP 1') score the pre-Budget option of a 2p basic-rate rise, which is not a registered world, so the case is a pure current-law computation and the option figures are recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). policy_year 2025 is the 2025-26 tax year the example is computed in; the thresholds it turns on are frozen at the same nominal values in 2026-27."
+  },
+  {
+   "case_id": "uk-ab2025-aj-bell-earner-20000",
+   "description": "Single employee on GBP 20,000 with the standard personal allowance (AJ Bell income-tax table for Which?, 2025-26)",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 20000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax"
+   ],
+   "rationale": "Pins the 2025-26 income tax bill of a single employee on GBP 20,000 with the standard personal allowance, as printed in AJ Bell's table for Which? ('How much would an income tax rise cost you?' (Which?, AJ Bell table), 7 Nov 2025, https://www.which.co.uk/news/article/how-much-would-an-income-tax-rise-cost-you-avpAh8w8hknt): 'Income tax bill 2025-26' GBP 1,486; the table's other columns (GBP 1,635 after a 2p rise in the basic rate, 'Extra tax paid' GBP 149, 'rounded to the nearest GBP 1') score the pre-Budget option of a 2p basic-rate rise, which is not a registered world, so the case is a pure current-law computation and the option figures are recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). policy_year 2025 is the 2025-26 tax year the example is computed in; the thresholds it turns on are frozen at the same nominal values in 2026-27."
+  },
+  {
+   "case_id": "uk-ab2025-aj-bell-earner-25000",
+   "description": "Single employee on GBP 25,000 with the standard personal allowance (AJ Bell income-tax table for Which?, 2025-26)",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 25000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax"
+   ],
+   "rationale": "Pins the 2025-26 income tax bill of a single employee on GBP 25,000 with the standard personal allowance, as printed in AJ Bell's table for Which? ('How much would an income tax rise cost you?' (Which?, AJ Bell table), 7 Nov 2025, https://www.which.co.uk/news/article/how-much-would-an-income-tax-rise-cost-you-avpAh8w8hknt): 'Income tax bill 2025-26' GBP 2,486; the table's other columns (GBP 2,735 after a 2p rise in the basic rate, 'Extra tax paid' GBP 249, 'rounded to the nearest GBP 1') score the pre-Budget option of a 2p basic-rate rise, which is not a registered world, so the case is a pure current-law computation and the option figures are recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). policy_year 2025 is the 2025-26 tax year the example is computed in; the thresholds it turns on are frozen at the same nominal values in 2026-27."
+  },
+  {
+   "case_id": "uk-ab2025-aj-bell-earner-30000",
+   "description": "Single employee on GBP 30,000 with the standard personal allowance (AJ Bell income-tax table for Which?, 2025-26)",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 30000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax"
+   ],
+   "rationale": "Pins the 2025-26 income tax bill of a single employee on GBP 30,000 with the standard personal allowance, as printed in AJ Bell's table for Which? ('How much would an income tax rise cost you?' (Which?, AJ Bell table), 7 Nov 2025, https://www.which.co.uk/news/article/how-much-would-an-income-tax-rise-cost-you-avpAh8w8hknt): 'Income tax bill 2025-26' GBP 3,486; the table's other columns (GBP 3,835 after a 2p rise in the basic rate, 'Extra tax paid' GBP 349, 'rounded to the nearest GBP 1') score the pre-Budget option of a 2p basic-rate rise, which is not a registered world, so the case is a pure current-law computation and the option figures are recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). policy_year 2025 is the 2025-26 tax year the example is computed in; the thresholds it turns on are frozen at the same nominal values in 2026-27."
+  },
+  {
+   "case_id": "uk-ab2025-aj-bell-earner-35000",
+   "description": "Single employee on GBP 35,000 with the standard personal allowance (AJ Bell income-tax table for Which?, 2025-26)",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 35000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax"
+   ],
+   "rationale": "Pins the 2025-26 income tax bill of a single employee on GBP 35,000 with the standard personal allowance, as printed in AJ Bell's table for Which? ('How much would an income tax rise cost you?' (Which?, AJ Bell table), 7 Nov 2025, https://www.which.co.uk/news/article/how-much-would-an-income-tax-rise-cost-you-avpAh8w8hknt): 'Income tax bill 2025-26' GBP 4,486; the table's other columns (GBP 4,935 after a 2p rise in the basic rate, 'Extra tax paid' GBP 449, 'rounded to the nearest GBP 1') score the pre-Budget option of a 2p basic-rate rise, which is not a registered world, so the case is a pure current-law computation and the option figures are recorded here only. The same GBP 35,000 earner ('roughly the average income of a UK adult') appears in 'The Budget is a month away: What could be on the chopping block' (AJ Bell, Tom Selby), 31 Oct 2025, https://www.ajbell.co.uk/news/budget-month-away-what-could-be-chopping-block: annual bill GBP 4,486 at current rates rising to GBP 4,710 under 1p on all income tax rates (another unregistered option). Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). policy_year 2025 is the 2025-26 tax year the example is computed in; the thresholds it turns on are frozen at the same nominal values in 2026-27."
+  },
+  {
+   "case_id": "uk-ab2025-aj-bell-earner-40000",
+   "description": "Single employee on GBP 40,000 with the standard personal allowance (AJ Bell income-tax table for Which?, 2025-26)",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 40000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax"
+   ],
+   "rationale": "Pins the 2025-26 income tax bill of a single employee on GBP 40,000 with the standard personal allowance, as printed in AJ Bell's table for Which? ('How much would an income tax rise cost you?' (Which?, AJ Bell table), 7 Nov 2025, https://www.which.co.uk/news/article/how-much-would-an-income-tax-rise-cost-you-avpAh8w8hknt): 'Income tax bill 2025-26' GBP 5,486; the table's other columns (GBP 6,035 after a 2p rise in the basic rate, 'Extra tax paid' GBP 549, 'rounded to the nearest GBP 1') score the pre-Budget option of a 2p basic-rate rise, which is not a registered world, so the case is a pure current-law computation and the option figures are recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). policy_year 2025 is the 2025-26 tax year the example is computed in; the thresholds it turns on are frozen at the same nominal values in 2026-27."
+  },
+  {
+   "case_id": "uk-ab2025-aj-bell-earner-45000",
+   "description": "Single employee on GBP 45,000 with the standard personal allowance (AJ Bell income-tax table for Which?, 2025-26)",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 45000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax"
+   ],
+   "rationale": "Pins the 2025-26 income tax bill of a single employee on GBP 45,000 with the standard personal allowance, as printed in AJ Bell's table for Which? ('How much would an income tax rise cost you?' (Which?, AJ Bell table), 7 Nov 2025, https://www.which.co.uk/news/article/how-much-would-an-income-tax-rise-cost-you-avpAh8w8hknt): 'Income tax bill 2025-26' GBP 6,486; the table's other columns (GBP 7,135 after a 2p rise in the basic rate, 'Extra tax paid' GBP 649, 'rounded to the nearest GBP 1') score the pre-Budget option of a 2p basic-rate rise, which is not a registered world, so the case is a pure current-law computation and the option figures are recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). policy_year 2025 is the 2025-26 tax year the example is computed in; the thresholds it turns on are frozen at the same nominal values in 2026-27."
+  },
+  {
+   "case_id": "uk-ab2025-aj-bell-earner-50270",
+   "description": "Single employee on GBP 50,270 with the standard personal allowance (AJ Bell income-tax table for Which?, 2025-26)",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 50270
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax"
+   ],
+   "rationale": "Pins the 2025-26 income tax bill of a single employee on GBP 50,270 with the standard personal allowance, as printed in AJ Bell's table for Which? ('How much would an income tax rise cost you?' (Which?, AJ Bell table), 7 Nov 2025, https://www.which.co.uk/news/article/how-much-would-an-income-tax-rise-cost-you-avpAh8w8hknt): 'Income tax bill 2025-26' GBP 7,540; the table's other columns (GBP 8,294 after a 2p rise in the basic rate, 'Extra tax paid' GBP 754, 'rounded to the nearest GBP 1') score the pre-Budget option of a 2p basic-rate rise, which is not a registered world, so the case is a pure current-law computation and the option figures are recorded here only. GBP 50,270 sits exactly at the higher-rate threshold (and the NI upper earnings limit), so the case is a rate-boundary pin. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). policy_year 2025 is the 2025-26 tax year the example is computed in; the thresholds it turns on are frozen at the same nominal values in 2026-27."
+  },
+  {
+   "case_id": "uk-ab2025-aj-bell-sally-salary-sacrifice-2025",
+   "description": "Sally: GBP 55,000 salary, 10% (GBP 5,500) pension contribution via salary sacrifice, current rules 2025-26",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 55000,
+      "employee_pension_contributions": 5500,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "rationale": "AJ Bell's 'Sally' example ('Higher earners face GBP 50k pension hole if Reeves caps salary sacrifice in Budget' (MoneyWeek, AJ Bell analysis), 6 Nov 2025, https://moneyweek.com/personal-finance/pensions/scrapping-pension-salary-sacrifice-cost): Sally earns GBP 55,000 and makes personal workplace-pension contributions of 10% (GBP 5,500) a year; AJ Bell tabulates the position with and without salary sacrifice under current rules (2025-26), as context for the then-rumoured NI cap. Printed with salary sacrifice (gross salary reduced to GBP 49,500): take-home GBP 39,161, employee NI GBP 2,953, income tax GBP 7,386, and an employer NI saving of GBP 825 on the GBP 5,500 sacrificed. Pins that a salary-sacrificed contribution reduces both taxable and NI-able pay. Pair with uk-ab2025-aj-bell-sally-net-pay-2025 (same person, contribution not sacrificed) and uk-ab2025-aj-bell-sally-salary-sacrifice-cap-2029 (same inputs once the cap applies). Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). policy_year 2025 is the 2025-26 tax year the example is computed in; the thresholds it turns on are frozen at the same nominal values in 2026-27."
+  },
+  {
+   "case_id": "uk-ab2025-aj-bell-sally-net-pay-2025",
+   "description": "Sally: GBP 55,000 salary, 10% (GBP 5,500) pension contribution through a net-pay scheme (no salary sacrifice), 2025-26",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 55000,
+      "employee_pension_contributions": 5500
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "rationale": "AJ Bell's 'Sally' example ('Higher earners face GBP 50k pension hole if Reeves caps salary sacrifice in Budget' (MoneyWeek, AJ Bell analysis), 6 Nov 2025, https://moneyweek.com/personal-finance/pensions/scrapping-pension-salary-sacrifice-cost): Sally earns GBP 55,000 and makes personal workplace-pension contributions of 10% (GBP 5,500) a year; AJ Bell tabulates the position with and without salary sacrifice under current rules (2025-26), as context for the then-rumoured NI cap. Printed for the net-pay arrangement (no salary sacrifice): take-home GBP 38,720, employee NI GBP 3,394, income tax GBP 7,386 (the same as with sacrifice, i.e. full income-tax relief on the contribution). The printed NI equals 8% of (55,000 - 12,570) = GBP 3,394.40, which applies the main rate all the way up with no 2% band above the GBP 50,270 upper earnings limit; the engines will apply the statutory 8%/2% schedule, so this pair is expected to surface an oracle-side arithmetic difference rather than an engine gap. The contribution is written without the salary_sacrifice flag, which the connector maps to its engine's non-sacrifice (net-pay / relief-at-source) concept. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). policy_year 2025 is the 2025-26 tax year the example is computed in; the thresholds it turns on are frozen at the same nominal values in 2026-27."
+  },
+  {
+   "case_id": "uk-ab2025-aj-bell-sally-salary-sacrifice-cap-2029",
+   "description": "GBP 55,000 salary, 10% contribution via salary sacrifice, once the GBP 2,000 NI cap is in force (2029-30)",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 55000,
+      "employee_pension_contributions": 5500,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "AJ Bell's Budget-day calculation for Which? ('Chancellor confirms salary sacrifice cap for pension contributions: what it means for you' (Which?, AJ Bell calculations), 26 Nov 2025, https://www.which.co.uk/news/article/chancellor-confirms-salary-sacrifice-cap-for-pension-contributions-what-it-means-for-you-a9c5n7u9K0Xa): 'someone earning GBP 55,000 a year and contributing 10% via salary sacrifice would lose GBP 188 in their take-home pay each year, once the GBP 2,000 cap comes into force'. Same inputs as uk-ab2025-aj-bell-sally-salary-sacrifice-2025, different world and year: Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. The sacrificed GBP 5,500 exceeds the cap by GBP 3,500, and the post-sacrifice salary of GBP 49,500 sits just below the upper earnings limit, so the case also pins which NI rate applies to the excess. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-aj-bell-freeze-15000",
+   "description": "Employee on GBP 15,000 today, extended threshold freeze (AJ Bell for MoneyWeek)",
+   "policy_year": 2028,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 15000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__personal_tax_thresholds_freeze_to_2031",
+    "measure": "ab2025__personal_tax_thresholds_freeze_to_2031"
+   },
+   "rationale": "AJ Bell's freeze analysis in 'Autumn Budget 2025 live blog' (MoneyWeek), 25 Nov 2025, https://moneyweek.com/news/live/economy/autumn-budget-2025 (entry 27 Nov 2025 14:20Z, 'AJ Bell freeze'): 'Someone with a yearly income of GBP 15,000 today faces stumping up an extra GBP 259 over the three years between 2028 and 2031 ... Someone on GBP 45,000 a year will take a hit of GBP 683, while a taxpayer with an annual income of GBP 47,000 will pay GBP 1,292', each relative to 'a system in which thresholds had increased by inflation each year'; this case is the GBP 15,000 earner (printed cumulative GBP 259). Evaluated in policy_year 2028 (2028-29, the first year of the three-year extension) against the registered pre_ab2025__personal_tax_thresholds_freeze_to_2031 world, in which the personal allowance and NI thresholds follow their pre-Budget path from April 2028, so the diff attributes the freeze extension. The printed figure is a three-year cumulative with pay assumed to rise with inflation; the case holds the stated 'today' income of GBP 15,000 at its nominal value and computes a single year, so it pins the per-year mechanism, not the printed total (ASSUMPTION: income not grown; only the first year of the extension is written, per the one-case-per-household rule). Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-aj-bell-freeze-45000",
+   "description": "Employee on GBP 45,000 today, extended threshold freeze (AJ Bell for MoneyWeek)",
+   "policy_year": 2028,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 45000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__personal_tax_thresholds_freeze_to_2031",
+    "measure": "ab2025__personal_tax_thresholds_freeze_to_2031"
+   },
+   "rationale": "AJ Bell's freeze analysis in 'Autumn Budget 2025 live blog' (MoneyWeek), 25 Nov 2025, https://moneyweek.com/news/live/economy/autumn-budget-2025 (entry 27 Nov 2025 14:20Z, 'AJ Bell freeze'): 'Someone with a yearly income of GBP 15,000 today faces stumping up an extra GBP 259 over the three years between 2028 and 2031 ... Someone on GBP 45,000 a year will take a hit of GBP 683, while a taxpayer with an annual income of GBP 47,000 will pay GBP 1,292', each relative to 'a system in which thresholds had increased by inflation each year'; this case is the GBP 45,000 earner (printed cumulative GBP 683). Evaluated in policy_year 2028 (2028-29, the first year of the three-year extension) against the registered pre_ab2025__personal_tax_thresholds_freeze_to_2031 world, in which the personal allowance and NI thresholds follow their pre-Budget path from April 2028, so the diff attributes the freeze extension. The printed figure is a three-year cumulative with pay assumed to rise with inflation; the case holds the stated 'today' income of GBP 45,000 at its nominal value and computes a single year, so it pins the per-year mechanism, not the printed total (ASSUMPTION: income not grown; only the first year of the extension is written, per the one-case-per-household rule). Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-aj-bell-freeze-47000",
+   "description": "Employee on GBP 47,000 today, extended threshold freeze (AJ Bell for MoneyWeek)",
+   "policy_year": 2028,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 47000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__personal_tax_thresholds_freeze_to_2031",
+    "measure": "ab2025__personal_tax_thresholds_freeze_to_2031"
+   },
+   "rationale": "AJ Bell's freeze analysis in 'Autumn Budget 2025 live blog' (MoneyWeek), 25 Nov 2025, https://moneyweek.com/news/live/economy/autumn-budget-2025 (entry 27 Nov 2025 14:20Z, 'AJ Bell freeze'): 'Someone with a yearly income of GBP 15,000 today faces stumping up an extra GBP 259 over the three years between 2028 and 2031 ... Someone on GBP 45,000 a year will take a hit of GBP 683, while a taxpayer with an annual income of GBP 47,000 will pay GBP 1,292', each relative to 'a system in which thresholds had increased by inflation each year'; this case is the GBP 47,000 earner (printed cumulative GBP 1,292). Evaluated in policy_year 2028 (2028-29, the first year of the three-year extension) against the registered pre_ab2025__personal_tax_thresholds_freeze_to_2031 world, in which the personal allowance and NI thresholds follow their pre-Budget path from April 2028, so the diff attributes the freeze extension. The printed figure is a three-year cumulative with pay assumed to rise with inflation; the case holds the stated 'today' income of GBP 47,000 at its nominal value and computes a single year, so it pins the per-year mechanism, not the printed total (ASSUMPTION: income not grown; only the first year of the extension is written, per the one-case-per-household rule). Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-ey-fatima-25000-lone-parent-london",
+   "description": "Fatima: single mum on GBP 25,000 (level 4 apprentice construction site supervisor), council housing, north London",
+   "policy_year": 2028,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 35,
+      "employment_income": 25000
+     },
+     "child_1": {
+      "age": 8
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": [
+       "child_1"
+      ]
+     }
+    ],
+    "region": "LONDON",
+    "tenure": "rented_social",
+    "rent": 7800
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance",
+    "universal_credit",
+    "child_benefit"
+   ],
+   "rationale": "EY's modelling for BBC News ('I earn GBP 20,000 and live with my son. The Budget means we will pay more tax' (BBC News case studies with EY modelling), 25 Nov 2025 (EY figures added 27 Nov 2025), https://www.bbc.co.uk/news/articles/c9d6zwppjvjo): Fatima, a single mum and level 4 apprentice construction site supervisor in council housing in north London who says 'I make GBP 25,000', 'would pay GBP 215 more in tax in 2028-29 as a result of the freeze extension, if her income rises in line with inflation' (EY method not published). Evaluated in policy_year 2028 (2028-29, the first year of the three-year extension) against the registered pre_ab2025__personal_tax_thresholds_freeze_to_2031 world, in which the personal allowance and NI thresholds follow their pre-Budget path from April 2028, so the diff attributes the freeze extension; 2028-29 is exactly the year EY printed. A lone parent on GBP 25,000 with a social rent may also be on Universal Credit, where the freeze feeds through net earnings, so universal_credit and child_benefit are in focus. Assumed: Fatima's age 35 and one child aged 8 (the piece states neither; it says only 'single mum'); council rent GBP 150/week = 7,800 (unstated); income held at the stated GBP 25,000 rather than inflation-grown."
+  },
+  {
+   "case_id": "uk-ab2025-ey-deborah-20000-sheffield",
+   "description": "Deborah: single, 63, NHS admin 33 hours a week on GBP 20,000, lives with her adult son, Sheffield",
+   "policy_year": 2028,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 63,
+      "employment_income": 20000,
+      "hours_worked_per_week": 33
+     },
+     "adult_2": {
+      "age": 30
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     },
+     {
+      "adults": [
+       "adult_2"
+      ],
+      "children": []
+     }
+    ],
+    "region": "YORKSHIRE",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "rationale": "EY's modelling for BBC News ('I earn GBP 20,000 and live with my son. The Budget means we will pay more tax' (BBC News case studies with EY modelling), 25 Nov 2025 (EY figures added 27 Nov 2025), https://www.bbc.co.uk/news/articles/c9d6zwppjvjo): Deborah, 63, an NHS administrator working 33 hours a week in Sheffield who 'is currently paid GBP 20,000' and lives with her adult son, 'would pay GBP 871 more in income tax between 2028-29 and 2030-31 as a result of the threshold freeze being extended by three years', if her pay rises with inflation. Evaluated in policy_year 2028 (2028-29, the first year of the three-year extension) against the registered pre_ab2025__personal_tax_thresholds_freeze_to_2031 world, in which the personal allowance and NI thresholds follow their pre-Budget path from April 2028, so the diff attributes the freeze extension; the printed figure is a three-year cumulative and only the first year is written. Sheffield maps to region YORKSHIRE. Assumed: the adult son is a separate benefit unit aged 30 with no stated income (the piece gives neither); tenure owner-occupier (unstated; immaterial to her tax); income held at GBP 20,000 rather than inflation-grown."
+  },
+  {
+   "case_id": "uk-ab2025-ey-neal-tara-couple-100000-bradford",
+   "description": "Neal and Tara: couple, both 58, both in administration, combined about GBP 100,000, mortgage paid off, Bradford",
+   "policy_year": 2028,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 58,
+      "employment_income": 50000
+     },
+     "adult_2": {
+      "age": 58,
+      "employment_income": 50000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1",
+       "adult_2"
+      ],
+      "children": []
+     }
+    ],
+    "region": "YORKSHIRE",
+    "tenure": "owned_outright",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "rationale": "EY's modelling for BBC News ('I earn GBP 20,000 and live with my son. The Budget means we will pay more tax' (BBC News case studies with EY modelling), 25 Nov 2025 (EY figures added 27 Nov 2025), https://www.bbc.co.uk/news/articles/c9d6zwppjvjo): Neal and Tara, both 58 and working in administration in Bradford with a combined income of about GBP 100,000 and their mortgage paid off, 'would pay a combined GBP 3,485 more in income tax between 2028 and 2031 if their salaries rise in line with inflation'. Evaluated in policy_year 2028 (2028-29, the first year of the three-year extension) against the registered pre_ab2025__personal_tax_thresholds_freeze_to_2031 world, in which the personal allowance and NI thresholds follow their pre-Budget path from April 2028, so the diff attributes the freeze extension; the printed figure is cumulative and combined, only the first year is written. Bradford maps to region YORKSHIRE; 'mortgage paid off' is tenure owned_outright. Assumed: the combined GBP 100,000 split equally, GBP 50,000 each (the split is not stated; an equal split keeps both below the higher-rate threshold, which is what makes the freeze bite through the personal allowance); incomes held at the stated level rather than inflation-grown."
+  },
+  {
+   "case_id": "uk-ab2025-hargreaves-lansdown-freeze-51000",
+   "description": "Employee earning GBP 51,000 in the year to April 2028, thresholds frozen for three more years",
+   "policy_year": 2028,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 51000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__personal_tax_thresholds_freeze_to_2031",
+    "measure": "ab2025__personal_tax_thresholds_freeze_to_2031"
+   },
+   "rationale": "Hargreaves Lansdown ('Autumn Budget 2025 - what you need to know' (Hargreaves Lansdown, Christian Peasgood), 26 Nov 2025, https://www.hl.co.uk/news/autumn-budget-2025-what-you-need-to-know): 'Freezing the thresholds for three more years, instead of increasing with wages, means someone earning GBP 51,000 in the year to April 2028 could pay GBP 964 more in tax' (no year stated for the GBP 964; the harvest records it at 2030-31). GBP 51,000 sits just above the frozen GBP 50,270 higher-rate threshold, so the case pins the higher-rate band edge. Evaluated in policy_year 2028 (2028-29, the first year of the three-year extension) against the registered pre_ab2025__personal_tax_thresholds_freeze_to_2031 world, in which the personal allowance and NI thresholds follow their pre-Budget path from April 2028, so the diff attributes the freeze extension. Note HL's counterfactual is thresholds rising with WAGES, whereas the registered world follows the pre-Budget (CPI) path, so the printed figure is not the quantity the case computes. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance); the stated 2027-28 income is carried unchanged into 2028-29."
+  },
+  {
+   "case_id": "uk-ab2025-quilter-freeze-40000",
+   "description": "Worker earning GBP 40,000 today, extended threshold freeze (Quilter for Which?)",
+   "policy_year": 2028,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 40000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__personal_tax_thresholds_freeze_to_2031",
+    "measure": "ab2025__personal_tax_thresholds_freeze_to_2031"
+   },
+   "rationale": "Quilter's analysis in 'Income tax band freeze extended by three years' (Which?, Quilter analysis), 26 Nov 2025, https://www.which.co.uk/news/article/income-tax-band-freeze-extended-by-three-years-a9J7a4s6WPwG: 'for someone earning GBP 44,000 today, extending the freeze increases their tax bill by GBP 843 over the next four years to 2030. For a worker earning GBP 40,000 today, the freeze adds GBP 321 over the period to 2030' (indexation basis not stated); this case is the GBP 40,000 earner (printed cumulative GBP 321). Evaluated in policy_year 2028 (2028-29, the first year of the three-year extension) against the registered pre_ab2025__personal_tax_thresholds_freeze_to_2031 world, in which the personal allowance and NI thresholds follow their pre-Budget path from April 2028, so the diff attributes the freeze extension; the printed figure is cumulative and only the first year is written. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance); income held at the stated 'today' value."
+  },
+  {
+   "case_id": "uk-ab2025-quilter-freeze-44000",
+   "description": "Worker earning GBP 44,000 today, extended threshold freeze (Quilter for Which?)",
+   "policy_year": 2028,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 44000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__personal_tax_thresholds_freeze_to_2031",
+    "measure": "ab2025__personal_tax_thresholds_freeze_to_2031"
+   },
+   "rationale": "Quilter's analysis in 'Income tax band freeze extended by three years' (Which?, Quilter analysis), 26 Nov 2025, https://www.which.co.uk/news/article/income-tax-band-freeze-extended-by-three-years-a9J7a4s6WPwG: 'for someone earning GBP 44,000 today, extending the freeze increases their tax bill by GBP 843 over the next four years to 2030. For a worker earning GBP 40,000 today, the freeze adds GBP 321 over the period to 2030' (indexation basis not stated); this case is the GBP 44,000 earner (printed cumulative GBP 843). Evaluated in policy_year 2028 (2028-29, the first year of the three-year extension) against the registered pre_ab2025__personal_tax_thresholds_freeze_to_2031 world, in which the personal allowance and NI thresholds follow their pre-Budget path from April 2028, so the diff attributes the freeze extension; the printed figure is cumulative and only the first year is written. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance); income held at the stated 'today' value."
+  },
+  {
+   "case_id": "uk-ab2025-deloitte-50000-ss-10pct",
+   "description": "Employee earning GBP 50,000 sacrificing 10% (GBP 5,000) of salary into a pension",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 50000,
+      "employee_pension_contributions": 5000,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "Deloitte ('Changes to salary sacrifice pension schemes to hit employee pay packets and pension funds' (Deloitte TaxScape press release), 26 Nov 2025, https://taxscape.deloitte.com/uk-budget/autumn-budget-2025/press-releases-autumn-budget-2025/changes-to-salary-sacrifice-pension-schemes.aspx): 'If an employee earning GBP 50,000 sacrifices 10% of their salary, their income tax and NIC is currently calculated based on the reduced salary of GBP 45,000. The proposals will cause the employee's NIC deductions in their payslips for 2029/30 to increase by GBP 240', with employer NIC up GBP 450 (8% and 15% of the GBP 3,000 above the cap). Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-rsm-employee-a-40000-ss-5pct",
+   "description": "RSM Employee A: GBP 40,000, 5% (GBP 2,000) salary sacrifice, exactly at the cap",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 40000,
+      "employee_pension_contributions": 2000,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "RSM ('Autumn Budget 2025 - Detailed analysis' (RSM UK), 27 Nov 2025 per the landscape memo (the page meta now shows a 2026 republish), https://www.rsmuk.com/insights/budget/autumn-budget-2025-detailed-analysis): 'Employee A earns GBP 40k and sacrifices 5% into pension, in line with the auto-enrolment minimums. This equates to a GBP 2k sacrifice, meaning the employer and employee have no NICs to pay.' Fidelity prints the identical household ('Will salary sacrifice changes impact me?' (Fidelity International), 26 Nov 2025, https://www.fidelity.co.uk/markets-insights/personal-finance/saving-for-retirement/why-are-people-talking-about-salary-sacrifice-the-basics: 'If you earn GBP 40,000 and pay 5% of your salary into your pension via salary sacrifice, that works out to GBP 2,000 a year ... neither you nor your employer will be paying any more NI'); the two are merged into one case. The sacrifice equals the cap exactly, so the expected diff against the no-cap world is zero: a boundary pin (an engine applying the cap as 'GBP 2,000 or more' rather than 'above GBP 2,000' would show a nonzero diff). Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-rsm-employee-b-60000-ss-5pct",
+   "description": "RSM Employee B: GBP 60,000, 5% (GBP 3,000) salary sacrifice, GBP 1,000 over the cap",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 60000,
+      "employee_pension_contributions": 3000,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "RSM ('Autumn Budget 2025 - Detailed analysis' (RSM UK), 27 Nov 2025 per the landscape memo (the page meta now shows a 2026 republish), https://www.rsmuk.com/insights/budget/autumn-budget-2025-detailed-analysis): 'Employee B earns GBP 60k and sacrifices 5% (GBP 3k). The employer has to pay 15% on the GBP 1k above the cap', GBP 150, and the employee GBP 20 (2%). Blick Rothenberg prints the same household ('Salary Sacrifice Pension Changes: Impacts on Individuals and Employers' (Blick Rothenberg, Tomm Adams), 1 Dec 2025, https://www.blickrothenberg.com/insights/detail/salary-sacrifice-pension-changes-impacts-on-individuals-and-employers/: 'an employee earning GBP 60,000 annually and contributing 5% (GBP 3,000) via salary sacrifice will pay an additional GBP 20 per year in NICs on the GBP 1,000 above the cap', employer GBP 150), and the Resolution Foundation uses the same GBP 3,000 sacrifice without naming an income ('Stairway to headroom: Putting the Autumn Budget 2025 decisions on tax, spending and borrowing into context' (Resolution Foundation), 27 Nov 2025, https://www.resolutionfoundation.org/app/uploads/2025/11/Stairway-to-headroom.pdf, pp.22-23: 'GBP 150 a year if GBP 3,000 of salary was sacrificed'; 'GBP 20 using the same example' for an employee above the higher-rate threshold); all three are merged into this case. Post-sacrifice pay of GBP 57,000 is above the upper earnings limit, so the excess attracts the 2% rate. Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-rsm-employee-c-35000-ss-20pct",
+   "description": "RSM Employee C: GBP 35,000, 20% (GBP 7,000) salary sacrifice, GBP 5,000 over the cap",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 35000,
+      "employee_pension_contributions": 7000,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "RSM ('Autumn Budget 2025 - Detailed analysis' (RSM UK), 27 Nov 2025 per the landscape memo (the page meta now shows a 2026 republish), https://www.rsmuk.com/insights/budget/autumn-budget-2025-detailed-analysis): Employee C earns GBP 35k and sacrifices 20% (GBP 7k); printed extra NICs GBP 400 for the employee (8% of the GBP 5,000 above the cap) and GBP 750 for the employer (15%). A basic-rate earner with a large sacrifice, so the whole excess sits in the 8% band. Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-fidelity-40000-ss-10pct",
+   "description": "Employee earning GBP 40,000 sacrificing 10% (GBP 4,000), GBP 2,000 over the cap",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 40000,
+      "employee_pension_contributions": 4000,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "Fidelity ('Will salary sacrifice changes impact me?' (Fidelity International), 26 Nov 2025, https://www.fidelity.co.uk/markets-insights/personal-finance/saving-for-retirement/why-are-people-talking-about-salary-sacrifice-the-basics): 'National Insurance for employees is 8% on earnings between GBP 12,570 and GBP 50,270, so 8% of GBP 2,000 would mean an extra NI bill for the employee of GBP 160' for a GBP 40,000 earner sacrificing 10% (GBP 4,000). Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-fidelity-110000-ss-10000",
+   "description": "Employee earning GBP 110,000 sacrificing GBP 10,000 to restore the personal allowance, GBP 8,000 over the cap",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 110000,
+      "employee_pension_contributions": 10000,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "Fidelity ('Will salary sacrifice changes impact me?' (Fidelity International), 26 Nov 2025, https://www.fidelity.co.uk/markets-insights/personal-finance/saving-for-retirement/why-are-people-talking-about-salary-sacrifice-the-basics): someone on GBP 110,000 sacrificing GBP 10,000 to bring adjusted income back to GBP 100,000 and restore the personal allowance; 'under the new GBP 2,000 cap, you will be paying NI on GBP 8,000 of that money. The NI rate for employees on earnings over GBP 50,270 is 2% - so that would also mean an extra NI bill of GBP 160'. Also pins that the cap is an NI-only measure: income tax (and the personal-allowance taper, which the sacrifice fully unwinds) should be identical in both worlds. Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-fidelity-120000-ss-20000",
+   "description": "Employee earning GBP 120,000 putting GBP 20,000 into a pension via salary sacrifice, GBP 18,000 over the cap",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 120000,
+      "employee_pension_contributions": 20000,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "Fidelity ('Autumn Budget: how might the government change pensions?' (Fidelity International, Ed Monk), 26 Nov 2025, https://www.fidelity.co.uk/markets-insights/personal-finance/saving-for-retirement/how-might-the-government-change-pensions): 'someone earning GBP 120,000 and putting GBP 20,000 into their pension via salary sacrifice would face paying NI on GBP 18,000 - the excess above the GBP 2,000 cap. That would mean an extra NI bill of GBP 360 for the employee and GBP 2,700 for the employer at current NI rates'. The largest excess in the battery, entirely in the 2% band; income tax should be unchanged across the two worlds. Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-moore-kingston-smith-50000-ss-5pct",
+   "description": "Employee earning GBP 50,000 sacrificing 5% (GBP 2,500) of salary",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 50000,
+      "employee_pension_contributions": 2500,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "Moore Kingston Smith ('Autumn Budget 2025: Employers' (Moore Kingston Smith), 26 Nov 2025, https://mooreks.co.uk/insights/autumn-budget-2025-employers/): 'An employee earning GBP 50,000 and sacrificing 5% of salary will see take-home pay fall by around GBP 40 per year, with an additional employer cost of GBP 77.50' (the harvest notes a flat 15% on the GBP 500 excess would give GBP 75). Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-moore-kingston-smith-100000-ss-5pct",
+   "description": "Employee earning GBP 100,000 sacrificing 5% (GBP 5,000) of salary",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 100000,
+      "employee_pension_contributions": 5000,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "Moore Kingston Smith ('Autumn Budget 2025: Employers' (Moore Kingston Smith), 26 Nov 2025, https://mooreks.co.uk/insights/autumn-budget-2025-employers/): 'For an employee earning GBP 100,000 sacrificing 5%, take-home pay drops by GBP 60 per year, while employer costs rise by GBP 465' (the harvest notes a flat 15% on the GBP 3,000 excess would give GBP 450). Post-sacrifice pay of GBP 95,000 sits below the GBP 100,000 personal-allowance taper, so income tax should match across worlds while NI moves. Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-royal-london-45000-ss-5pct",
+   "description": "Employee earning GBP 45,000 sacrificing 5% (GBP 2,250) of salary, GBP 250 over the cap",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 45000,
+      "employee_pension_contributions": 2250,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "Royal London ('2025 Autumn Budget: Key tax, pension, trust and Inheritance Tax changes explained' (Royal London for advisers), 26 Nov 2025, https://adviser.royallondon.com/technical-central/pensions/budgets-and-acts/autumn-budget-2025/): 'an employee earning GBP 45,000 who sacrifices 5% of their salary will pay approximately GBP 20 more in NI annually, while their employer will pay an additional GBP 37.50'. Hargreaves Lansdown printed the same household for the rumoured cap before the Budget ('Autumn Budget 2025: tax-free cash cuts off the table but salary sacrifice change looms' (Hargreaves Lansdown, Helen Morrissey), 12 Nov 2025, https://www.hl.co.uk/news/autumn-budget-2025-tax-free-cash-cuts-off-the-table-but-salary-sacrifice-change-looms: 'a worker earning GBP 45,000 who saves 5% of their salary would have to pay GBP 30 more in National Insurance and their employer GBP 34'; the harvest notes a straight 8% on GBP 250 gives GBP 20 and 15% gives GBP 37.50); merged into this case, whose oracle run adjudicates between the two printed answers. Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-ppi-median-43000-ss-5pct",
+   "description": "PPI median earner (GBP 39,039 today, close to GBP 43,000 in 2029) sacrificing 5%",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 43000,
+      "employee_pension_contributions": 2150,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "Pensions Policy Institute ('PPI Digest: Autumn Budget 2025' (Pensions Policy Institute, PDF), 27 Nov 2025, https://www.pensionspolicyinstitute.org.uk/media/gdcaa1oy/20251127-ppi-digest-the-autumn-budget-final.pdf, p.2): 'An employee with current median gross annual earnings of GBP 39,039 and sacrificing 5% of their salary ... will see no impact to their take home pay. However, by the time the policy comes into effect, earnings are projected to have grown. This could lead to an impact of around GBP 12 a year to the employee and GBP 22 a year to the employer.' The 2029 income is PPI's 'close to GBP 43,000' (ASSUMPTION: written as exactly GBP 43,000; 5% = GBP 2,150, GBP 150 over the cap). Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-ppi-median-43000-ss-10pct",
+   "description": "PPI median earner (close to GBP 43,000 in 2029) sacrificing 10%",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 43000,
+      "employee_pension_contributions": 4300,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "Pensions Policy Institute ('PPI Digest: Autumn Budget 2025' (PPI web page with the Director's initial response), 27 Nov 2025, https://www.pensionspolicyinstitute.org.uk/research-library/research-reports/2025/ppi-digest-autumn-budget-2025/): for the median earner projected close to GBP 43,000 in 2029, 'If they were to make a 10% sacrifice to support higher pension savings then the policy would cost the individual GBP 184 a year, and the employer GBP 344 year'. Same person as uk-ab2025-ppi-median-43000-ss-5pct with a 10% contribution (GBP 4,300, GBP 2,300 over the cap). ASSUMPTION: income written as exactly GBP 43,000. Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-ppi-uel-50270-ss-5pct",
+   "description": "PPI employee at the upper earnings limit (GBP 50,270) sacrificing 5%",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 50270,
+      "employee_pension_contributions": 2513.5,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "Pensions Policy Institute ('PPI Digest: Autumn Budget 2025' (Pensions Policy Institute, PDF), 27 Nov 2025, https://www.pensionspolicyinstitute.org.uk/media/gdcaa1oy/20251127-ppi-digest-the-autumn-budget-final.pdf, pp.2 and 9; 'PPI Digest: Autumn Budget 2025' (PPI web page with the Director's initial response), 27 Nov 2025, https://www.pensionspolicyinstitute.org.uk/research-library/research-reports/2025/ppi-digest-autumn-budget-2025/): 'an employee earning GBP 50,270 sacrificing 5% of salary will be GBP 41.08 a year worse off' (GBP 41 on the web page), 'and the employer pays an additional GBP 77 NI a year'. 5% of GBP 50,270 = GBP 2,513.50, GBP 513.50 over the cap; the gross salary sits exactly at the upper earnings limit, so the excess is charged at the main rate. Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-ppi-uel-50270-ss-10pct",
+   "description": "PPI employee at the upper earnings limit (GBP 50,270) sacrificing 10%",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 50270,
+      "employee_pension_contributions": 5027,
+      "salary_sacrifice": true
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "national_insurance",
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__salary_sacrifice_pension_nics_cap_2000",
+    "measure": "ab2025__salary_sacrifice_pension_nics_cap_2000"
+   },
+   "rationale": "Pensions Policy Institute ('PPI Digest: Autumn Budget 2025' (Pensions Policy Institute, PDF), 27 Nov 2025, https://www.pensionspolicyinstitute.org.uk/media/gdcaa1oy/20251127-ppi-digest-the-autumn-budget-final.pdf, pp.2 and 9; 'PPI Digest: Autumn Budget 2025' (PPI web page with the Director's initial response), 27 Nov 2025, https://www.pensionspolicyinstitute.org.uk/research-library/research-reports/2025/ppi-digest-autumn-budget-2025/): an employee earning GBP 50,270 'when sacrificing 10% of salary a year will be GBP 242.16 a year worse off' (GBP 242 on the web page, 'with the employer paying an additional GBP 454 NI a year'). 10% = GBP 5,027, GBP 3,027 over the cap. Evaluated in policy_year 2029 (2029-30, when the GBP 2,000 cap on NI-relieved salary-sacrificed pension contributions applies) against the registered pre_ab2025__salary_sacrifice_pension_nics_cap_2000 world (no cap), so the diff in national_insurance is the employee NI on the sacrificed amount above GBP 2,000; employer NI is not a battery variable and the printed employer figure is recorded here only. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-investengine-cash-isa-year3-2029",
+   "description": "Basic-rate saver, year 3 of InvestEngine's cash-ISA scenario: GBP 1,080 non-ISA interest at 4.5%",
+   "policy_year": 2029,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 30000,
+      "savings_income": 1080
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "measure": "ab2025__savings_rates_plus_2pp_and_starter_limit_held"
+   },
+   "rationale": "InvestEngine's five-year table in 'Autumn Budget 2025 live blog' (MoneyWeek), 25 Nov 2025, https://moneyweek.com/news/live/economy/autumn-budget-2025 (entry 'Savers at risk of paying more tax...', 27 Nov 2025 12:27Z): a basic-rate taxpayer puts GBP 12,000 a year into a cash ISA and GBP 8,000 a year into a top non-ISA account at 4.5%, with a GBP 1,000 personal savings allowance; in year 3 the non-ISA balance is GBP 24,000, annual interest GBP 1,080, taxable interest GBP 80, tax due GBP 16 at 20% and GBP 17.60 at 22% (cumulative GBP 16 / GBP 17.60). The harvest maps year 3 to 2029-30 (the ISA cut and the +2pp savings rates both apply from April 2027). Evaluated against the registered pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held world (savings basic rate 20%) so the diff in income_tax attributes the +2pp; the personal savings allowance is exercised on the way. ISA holdings are not an input: ISA interest is outside the tax base. ASSUMPTION: employment income GBP 30,000, chosen so the saver is a basic-rate taxpayer with non-savings income above the starting-rate-for-savings band, as InvestEngine's 'basic-rate taxpayer' and GBP 1,000 allowance imply (no income is stated); age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). Years 1-2 of the table (interest GBP 360 / 720, within the allowance) are not written: zero tax in both worlds."
+  },
+  {
+   "case_id": "uk-ab2025-investengine-cash-isa-year4-2030",
+   "description": "Basic-rate saver, year 4 of InvestEngine's cash-ISA scenario: GBP 1,440 non-ISA interest at 4.5%",
+   "policy_year": 2030,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 30000,
+      "savings_income": 1440
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "measure": "ab2025__savings_rates_plus_2pp_and_starter_limit_held"
+   },
+   "rationale": "InvestEngine's five-year table in 'Autumn Budget 2025 live blog' (MoneyWeek), 25 Nov 2025, https://moneyweek.com/news/live/economy/autumn-budget-2025 (entry 'Savers at risk of paying more tax...', 27 Nov 2025 12:27Z): a basic-rate taxpayer puts GBP 12,000 a year into a cash ISA and GBP 8,000 a year into a top non-ISA account at 4.5%, with a GBP 1,000 personal savings allowance; in year 4 the non-ISA balance is GBP 32,000, annual interest GBP 1,440, taxable interest GBP 440, tax due GBP 88 at 20% and GBP 96.80 at 22% (cumulative GBP 104 / GBP 114.40). The harvest maps year 4 to 2030-31 (the ISA cut and the +2pp savings rates both apply from April 2027). Evaluated against the registered pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held world (savings basic rate 20%) so the diff in income_tax attributes the +2pp; the personal savings allowance is exercised on the way. ISA holdings are not an input: ISA interest is outside the tax base. ASSUMPTION: employment income GBP 30,000, chosen so the saver is a basic-rate taxpayer with non-savings income above the starting-rate-for-savings band, as InvestEngine's 'basic-rate taxpayer' and GBP 1,000 allowance imply (no income is stated); age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). Years 1-2 of the table (interest GBP 360 / 720, within the allowance) are not written: zero tax in both worlds."
+  },
+  {
+   "case_id": "uk-ab2025-investengine-cash-isa-year5-2031",
+   "description": "Basic-rate saver, year 5 of InvestEngine's cash-ISA scenario: GBP 1,800 non-ISA interest at 4.5%",
+   "policy_year": 2031,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 30000,
+      "savings_income": 1800
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held",
+    "measure": "ab2025__savings_rates_plus_2pp_and_starter_limit_held"
+   },
+   "rationale": "InvestEngine's five-year table in 'Autumn Budget 2025 live blog' (MoneyWeek), 25 Nov 2025, https://moneyweek.com/news/live/economy/autumn-budget-2025 (entry 'Savers at risk of paying more tax...', 27 Nov 2025 12:27Z): a basic-rate taxpayer puts GBP 12,000 a year into a cash ISA and GBP 8,000 a year into a top non-ISA account at 4.5%, with a GBP 1,000 personal savings allowance; in year 5 the non-ISA balance is GBP 40,000, annual interest GBP 1,800, taxable interest GBP 800, tax due GBP 160 at 20% and GBP 176 at 22% (cumulative GBP 264 / GBP 290.40). The harvest maps year 5 to 2031-32 (the ISA cut and the +2pp savings rates both apply from April 2027). Evaluated against the registered pre_ab2025__savings_rates_plus_2pp_and_starter_limit_held world (savings basic rate 20%) so the diff in income_tax attributes the +2pp; the personal savings allowance is exercised on the way. ISA holdings are not an input: ISA interest is outside the tax base. ASSUMPTION: employment income GBP 30,000, chosen so the saver is a basic-rate taxpayer with non-savings income above the starting-rate-for-savings band, as InvestEngine's 'basic-rate taxpayer' and GBP 1,000 allowance imply (no income is stated); age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). Years 1-2 of the table (interest GBP 360 / 720, within the allowance) are not written: zero tax in both worlds."
+  },
+  {
+   "case_id": "uk-ab2025-cps-worker-50000-2025",
+   "description": "CPS worker on GBP 50,000 in 2025-26 (take-home level)",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 40,
+      "employment_income": 50000
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "rationale": "Centre for Policy Studies ('Who Wins Under Labour?' (Centre for Policy Studies, Daniel Herring), dated 1 Jan 2026 in the harvest (PDF path 2025/12), https://cps.org.uk/wp-content/uploads/2025/12/Who-Wins-Under-Labour.pdf, p.1 and the table 'Calculations: worker on GBP 50,000 in 2025-26'): a worker on GBP 50,000 in 2025-26 has take-home pay of GBP 39,520 (nominal; also the 2025-26 base of the real post-tax wage series). A pure current-law level, and the base year of uk-ab2025-cps-worker-56269-2030. Assumed: age 40 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)' (CPS says 'rUK rates'); owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance). policy_year 2025 is the 2025-26 tax year the example is computed in; the thresholds it turns on are frozen at the same nominal values in 2026-27."
+  },
+  {
+   "case_id": "uk-ab2025-cps-worker-56269-2030",
+   "description": "CPS worker whose GBP 50,000 salary has grown with OBR wage forecasts to GBP 56,269 in 2030-31",
+   "policy_year": 2030,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 45,
+      "employment_income": 56269
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_mortgage",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "national_insurance"
+   ],
+   "rationale": "Centre for Policy Studies ('Who Wins Under Labour?' (Centre for Policy Studies, Daniel Herring), dated 1 Jan 2026 in the harvest (PDF path 2025/12), https://cps.org.uk/wp-content/uploads/2025/12/Who-Wins-Under-Labour.pdf, p.1): 'a worker on GBP 50,000 in 2025-26 who sees their pay rise in line with average wage growth - assuming the OBR's predictions are correct - would see their salary reach GBP 56,269 in 2030-31. After tax, they would have GBP 43,193 in take-home pay, up from GBP 39,520', GBP 39,014 in 2025-26 prices, i.e. 'GBP 505 worse off in real terms'. CPS states the 2030-31 salary, so this is a fully specified current-law computation for 2030-31 with the thresholds frozen; GBP 56,269 sits GBP 5,999 above the frozen higher-rate threshold. No baseline: CPS compares against 2025-26 in real terms, not against a pre-Budget world. Assumed: age 45 (unstated; 40 in the 2025 case plus five years); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier with a mortgage and no rent assumed (unstated; immaterial to income tax and National Insurance)."
+  },
+  {
+   "case_id": "uk-ab2025-cps-pensioner-full-nsp-2025",
+   "description": "CPS pensioner on the full new State Pension only, 2025-26",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 70,
+      "state_pension": 11973
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_outright",
+    "rent": 0
+   },
+   "expected_focus": [
+    "income_tax",
+    "pension_credit"
+   ],
+   "rationale": "Centre for Policy Studies ('Who Wins Under Labour?' (Centre for Policy Studies, Daniel Herring), dated 1 Jan 2026 in the harvest (PDF path 2025/12), https://cps.org.uk/wp-content/uploads/2025/12/Who-Wins-Under-Labour.pdf, p.2 and the p.3 table): 'a pensioner on the full new State Pension (triple lock; 2.5% a year from 2027-28; 20% income tax on the pension over GBP 12,570) could expect ... to be at least GBP 306 better off in 2030-31 than they are this year (in real terms)'; 2030-31 real level GBP 12,279 in 2025-26 prices (GBP 12,510 under the mooted 'quadruple lock', GBP 537 better off, an unregistered option). Only the 2025-26 base year is written: the 2030-31 nominal pension CPS projected is not printed. The full new State Pension in 2025-26 is GBP 230.25/week = 11,973 a year, below the GBP 12,570 personal allowance, so the case pins zero income tax and, with no other income, zero Pension Credit (the full new State Pension exceeds the single guarantee). Assumed: age 70 (unstated); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'; owner-occupier outright with no rent (unstated). policy_year 2025 is the 2025-26 tax year the example is computed in; the thresholds it turns on are frozen at the same nominal values in 2026-27."
+  },
+  {
+   "case_id": "uk-ab2025-cps-uc-single-standard-allowance-2030",
+   "description": "CPS single person over 25 on the Universal Credit standard allowance only, 2030-31",
+   "policy_year": 2030,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 30
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "owned_outright",
+    "rent": 0
+   },
+   "expected_focus": [
+    "universal_credit"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__uc_standard_allowance_and_health_element_rebalancing",
+    "measure": "ab2025__uc_standard_allowance_and_health_element_rebalancing"
+   },
+   "rationale": "Centre for Policy Studies ('Who Wins Under Labour?' (Centre for Policy Studies, Daniel Herring), dated 1 Jan 2026 in the harvest (PDF path 2025/12), https://cps.org.uk/wp-content/uploads/2025/12/Who-Wins-Under-Labour.pdf, p.2 and the p.3 table): 'thanks to Labour's big increases in the standard rate of Universal Credit, someone on out-of-work benefits will receive an extra GBP 290' in 2030-31 versus 2025-26 in real terms ('the increase in UC refers only to the increase in the standard allowance'); 2030-31 real level GBP 5,092 in 2025-26 prices for the over-25 standard allowance. Evaluated in the registered pre_ab2025__uc_standard_allowance_and_health_element_rebalancing world (the above-inflation standard-allowance uprating reversed) so the diff in universal_credit attributes the rebalancing by 2030-31; NOTE this world is registered in baselines.py but is not among the worlds listed in the tranche-4 brief. Standard allowance only, per CPS: no housing element (owner-occupier outright with no rent), no earnings. Assumed: age 30 (CPS says 'over 25'); region SOUTH_EAST assumed as the default English region for 'rUK rates (not stated otherwise)'."
+  },
+  {
+   "case_id": "uk-ab2025-cpag-benefit-cap-lone-parent-inner-london",
+   "description": "CPAG: workless lone parent with three children renting a private three-bedroom home, Inner London, benefit-capped",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 35
+     },
+     "child_1": {
+      "age": 12
+     },
+     "child_2": {
+      "age": 9
+     },
+     "child_3": {
+      "age": 5
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": [
+       "child_1",
+       "child_2",
+       "child_3"
+      ]
+     }
+    ],
+    "region": "LONDON",
+    "tenure": "rented_private",
+    "rent": 25220,
+    "brma": "Inner London"
+   },
+   "expected_focus": [
+    "benefit_cap",
+    "universal_credit",
+    "child_benefit"
+   ],
+   "rationale": "CPAG ('Benefit cap leaving families with as little as GBP 3 after rent' (CPAG press release), 13 Oct 2025, https://cpag.org.uk/news/benefit-cap-leaving-families-little-ps3-after-rent), Table 1 'Selected local rental areas and weekly entitlement after housing costs for a lone parent of three children', 'Author's calculations from benefit and local housing allowance rates': a lone parent with three children renting a private-sector three-bedroom home is left with (weekly post-rent income) Inner London GBP 3, Guildford GBP 82, Brighton and Hove GBP 89, Oxford GBP 118, Harlow GBP 144, Northampton GBP 170, Cardiff GBP 210. This case is the Inner London row (printed GBP 3 a week after rent). Only Inner London and Cardiff are in the BRMA registry, so the other five areas are not written (see the NOTES). The cap binds because pre-cap UC (standard allowance, child elements and the three-bedroom LHA housing element) exceeds the single-parent cap tier for the region, so benefit_cap, universal_credit and child_benefit are the compared outputs and are invariant to the exact rent once capped; CPAG's post-rent income itself is not a battery variable. policy_year 2025 = the 2025-26 rates CPAG used (13 Oct 2025); in 2025-26 the two-child limit still applied, so the third child (born after 6 April 2017) carries no child element, which does not change a capped award. ASSUMPTIONS: rent GBP 485/week = 25,220 a year, set at the three-bedroom LHA rate the table implies for Inner London (CPAG uses the LHA rate; the actual figure is not printed); parent aged 35 and children aged 12, 9 and 5 (no ages stated); no earnings (CPAG's family is out of work)."
+  },
+  {
+   "case_id": "uk-ab2025-cpag-benefit-cap-lone-parent-cardiff",
+   "description": "CPAG: workless lone parent with three children renting a private three-bedroom home, Cardiff, benefit-capped",
+   "policy_year": 2025,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 35
+     },
+     "child_1": {
+      "age": 12
+     },
+     "child_2": {
+      "age": 9
+     },
+     "child_3": {
+      "age": 5
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": [
+       "child_1",
+       "child_2",
+       "child_3"
+      ]
+     }
+    ],
+    "region": "WALES",
+    "tenure": "rented_private",
+    "rent": 11180,
+    "brma": "Cardiff"
+   },
+   "expected_focus": [
+    "benefit_cap",
+    "universal_credit",
+    "child_benefit"
+   ],
+   "rationale": "CPAG ('Benefit cap leaving families with as little as GBP 3 after rent' (CPAG press release), 13 Oct 2025, https://cpag.org.uk/news/benefit-cap-leaving-families-little-ps3-after-rent), Table 1 'Selected local rental areas and weekly entitlement after housing costs for a lone parent of three children', 'Author's calculations from benefit and local housing allowance rates': a lone parent with three children renting a private-sector three-bedroom home is left with (weekly post-rent income) Inner London GBP 3, Guildford GBP 82, Brighton and Hove GBP 89, Oxford GBP 118, Harlow GBP 144, Northampton GBP 170, Cardiff GBP 210. This case is the Cardiff row (printed GBP 210 a week after rent). Only Inner London and Cardiff are in the BRMA registry, so the other five areas are not written (see the NOTES). The cap binds because pre-cap UC (standard allowance, child elements and the three-bedroom LHA housing element) exceeds the single-parent cap tier for the region, so benefit_cap, universal_credit and child_benefit are the compared outputs and are invariant to the exact rent once capped; CPAG's post-rent income itself is not a battery variable. policy_year 2025 = the 2025-26 rates CPAG used (13 Oct 2025); in 2025-26 the two-child limit still applied, so the third child (born after 6 April 2017) carries no child element, which does not change a capped award. ASSUMPTIONS: rent GBP 215/week = 11,180 a year, set at the three-bedroom LHA rate the table implies for Cardiff (CPAG uses the LHA rate; the actual figure is not printed); parent aged 35 and children aged 12, 9 and 5 (no ages stated); no earnings (CPAG's family is out of work)."
+  },
+  {
+   "case_id": "uk-ab2025-rf-table1-single-unemployed-north-east",
+   "description": "RF Table 1: single adult, unemployed, lives in the North East, does not drive (2028-29)",
+   "policy_year": 2028,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 30
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": []
+     }
+    ],
+    "region": "NORTH_EAST",
+    "tenure": "rented_social",
+    "rent": 5200
+   },
+   "expected_focus": [
+    "universal_credit"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__uc_standard_allowance_and_health_element_rebalancing",
+    "measure": "ab2025__uc_standard_allowance_and_health_element_rebalancing"
+   },
+   "rationale": "Resolution Foundation ('Stairway to headroom: Putting the Autumn Budget 2025 decisions on tax, spending and borrowing into context' (Resolution Foundation), 27 Nov 2025, https://www.resolutionfoundation.org/app/uploads/2025/11/Stairway-to-headroom.pdf, p.35, Table 1 'Key measures since Budget 2024 will result in many typical families being better off in 2028-29 than would otherwise have been the case'): 'Single adult, unemployed, lives in the North East, does not drive' (household income decile 3, pre-measures basis): tax and benefit policy +GBP 195, energy policy +GBP 85, transport policy GBP 0, total annual income change +GBP 280 in 2028-29 in 2025-26 prices, against RF's case-study counterfactual ('policy before the key measures announced since Autumn Budget 2024'), which is not a registered world. The tax-and-benefit component for a workless single adult is the Universal Credit standard-allowance rebalancing, so the case is evaluated in the registered pre_ab2025__uc_standard_allowance_and_health_element_rebalancing world (NOTE: registered in baselines.py but not among the worlds listed in the tranche-4 brief); energy and transport are outside the vocabulary. ASSUMPTIONS: age 30; social rent GBP 100/week = 5,200 (RF states no housing; the rebalancing diff does not depend on it)."
+  },
+  {
+   "case_id": "uk-ab2025-rf-table1-capped-lone-parent-four-children-london",
+   "description": "RF Table 1: single parent with four children, not working and subject to the benefit cap, London (2028-29)",
+   "policy_year": 2028,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 35
+     },
+     "child_1": {
+      "age": 12
+     },
+     "child_2": {
+      "age": 9
+     },
+     "child_3": {
+      "age": 6
+     },
+     "child_4": {
+      "age": 3
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1"
+      ],
+      "children": [
+       "child_1",
+       "child_2",
+       "child_3",
+       "child_4"
+      ]
+     }
+    ],
+    "region": "LONDON",
+    "tenure": "rented_private",
+    "rent": 18200,
+    "brma": "Outer London"
+   },
+   "expected_focus": [
+    "benefit_cap",
+    "universal_credit",
+    "child_benefit"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025"
+   },
+   "rationale": "Resolution Foundation ('Stairway to headroom: Putting the Autumn Budget 2025 decisions on tax, spending and borrowing into context' (Resolution Foundation), 27 Nov 2025, https://www.resolutionfoundation.org/app/uploads/2025/11/Stairway-to-headroom.pdf, p.35, Table 1): 'Single parent with four children, not working and subject to the benefit cap, lives in London, does not drive' (decile 1): tax and benefit policy GBP 0, energy policy +GBP 135, transport GBP 0, total +GBP 135 in 2028-29 (2025-26 prices). RF's point is that removing the two-child limit gives nothing to a family already at the benefit cap. Evaluated in 2028 with baseline pre_ab2025 (limit reinstated at two children) against current law (limit removed): both worlds are capped, so universal_credit and benefit_cap should be identical across the pair and the two-child removal diff should be exactly zero. ASSUMPTIONS: private rent GBP 350/week = 18,200 in the Outer London BRMA, chosen so that pre-cap UC exceeds the Greater London single-parent cap even with only two child elements (RF states 'subject to the benefit cap' but no rent or BRMA); parent aged 35 and children aged 12, 9, 6 and 3 (unstated; the two youngest are post-April-2017 births, so the reinstated limit withholds their elements); no earnings (RF: 'not working')."
+  },
+  {
+   "case_id": "uk-ab2025-rf-uc-couple-two-children-uprating-2026",
+   "description": "RF: couple with two children on Universal Credit, April 2026 standard-allowance uprating",
+   "policy_year": 2026,
+   "country": "UK",
+   "household": {
+    "people": {
+     "adult_1": {
+      "age": 35
+     },
+     "adult_2": {
+      "age": 33
+     },
+     "child_1": {
+      "age": 8
+     },
+     "child_2": {
+      "age": 5
+     }
+    },
+    "benefit_units": [
+     {
+      "adults": [
+       "adult_1",
+       "adult_2"
+      ],
+      "children": [
+       "child_1",
+       "child_2"
+      ]
+     }
+    ],
+    "region": "SOUTH_EAST",
+    "tenure": "rented_social",
+    "rent": 6240
+   },
+   "expected_focus": [
+    "universal_credit",
+    "child_benefit"
+   ],
+   "baseline": {
+    "policy": "pre_ab2025__uc_standard_allowance_and_health_element_rebalancing",
+    "measure": "ab2025__uc_standard_allowance_and_health_element_rebalancing"
+   },
+   "rationale": "Resolution Foundation ('Catching up? Benefit uprating policy for April 2026' (Resolution Foundation, Lalitha Try), 22 Oct 2025, https://www.resolutionfoundation.org/app/uploads/2025/10/Benefit-uprating-spotlight-sept-2025-final.pdf, p.5): 'a couple with two children's Universal Credit would increase by GBP 61 a year, a not insignificant amount' from the above-inflation uprating of the standard allowance in April 2026 (the Universal Credit Act rebalancing). Evaluated in 2026 in the registered pre_ab2025__uc_standard_allowance_and_health_element_rebalancing world (NOTE: registered but not among the worlds listed in the tranche-4 brief) against current law, so the universal_credit diff is the couple standard-allowance uplift; child_benefit is unaffected and pins that. ASSUMPTIONS: adults aged 35 and 33, children aged 8 and 5, no earnings, social rent GBP 120/week = 6,240 and region SOUTH_EAST (RF states only 'a couple with two children' on Universal Credit; the uplift does not depend on any of these)."
+  }
+ ]
+}

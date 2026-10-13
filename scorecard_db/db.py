@@ -13,7 +13,8 @@ One file (`scorecard.db`), five tables:
                    citable known issue in action_link)
 - lanes          — live mission-control status per (source × area) lane
 
-`comparisons` is a VIEW joining each claim to its latest PE result. Common
+`comparisons` is a VIEW joining each claim to its latest PE result (newest
+data bundle first; within it the canonical platform grid). Common
 conditions (geography, program) are extracted into indexed columns; the full
 conditions mapping stays canonical JSON queryable via json_extract.
 """
@@ -84,7 +85,8 @@ CREATE TABLE IF NOT EXISTS pe_results (
     run_id TEXT NOT NULL DEFAULT '',
     computed_at TEXT NOT NULL DEFAULT '',
     annotations TEXT NOT NULL DEFAULT '[]',
-    baseline_key TEXT
+    baseline_key TEXT,
+    policyengine_variables TEXT NOT NULL DEFAULT '[]'
 );
 CREATE INDEX IF NOT EXISTS idx_results_claim ON pe_results(claim_id);
 
@@ -158,6 +160,7 @@ SELECT
     r.engine_version,
     r.data_bundle,
     r.pe_construction,
+    r.policyengine_variables,
     r.computed_at,
     r.baseline_key AS pe_baseline_key,
     bc.label AS claim_baseline_label,
@@ -188,10 +191,24 @@ SELECT
     d.rationale AS diagnosis_rationale,
     d.action_link
 FROM external_scores s
+-- Latest result: the newest result's data bundle first; within that
+-- bundle the canonical Urban grid (platform-grid-*, what the app ships in
+-- data/comparison.json) beats any other run on the same data — e.g. the
+-- compute campaign's Urban subgroup rows, which overlap 44 claims — so the
+-- pick never depends on the hour each job happened to run; then newest.
 LEFT JOIN pe_results r ON r.id = (
-    SELECT id FROM pe_results
-    WHERE claim_id = s.claim_id
-    ORDER BY computed_at DESC, id DESC LIMIT 1
+    SELECT p.id FROM pe_results p
+    WHERE p.claim_id = s.claim_id
+    ORDER BY
+        p.data_bundle = (
+            SELECT q.data_bundle FROM pe_results q
+            WHERE q.claim_id = p.claim_id
+            ORDER BY q.computed_at DESC, q.id DESC LIMIT 1
+        ) DESC,
+        p.run_id LIKE 'platform-grid-%' DESC,
+        p.computed_at DESC,
+        p.id DESC
+    LIMIT 1
 )
 LEFT JOIN diagnoses d ON d.claim_id = s.claim_id
 LEFT JOIN baselines bc ON bc.baseline_key = s.baseline_key
@@ -200,19 +217,32 @@ LEFT JOIN baselines bp ON bp.baseline_key = r.baseline_key;
 
 
 SCORES_SQL = (
-    "INSERT OR REPLACE INTO external_scores"
+    "INSERT INTO external_scores"
     " (claim_id, source, source_model, ledger_fact,"
     " source_column, publication, reform_key, reform_json,"
     " metric, unit_concept, period, time_basis, conditions,"
     " geography, program, value, value_kind, status,"
     " calibration_relationship, period_start, period_end, baseline_key)"
     " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+    " ON CONFLICT(claim_id) DO UPDATE SET"
+    " source=excluded.source, source_model=excluded.source_model,"
+    " ledger_fact=excluded.ledger_fact, source_column=excluded.source_column,"
+    " publication=excluded.publication, reform_key=excluded.reform_key,"
+    " reform_json=excluded.reform_json, metric=excluded.metric,"
+    " unit_concept=excluded.unit_concept, period=excluded.period,"
+    " time_basis=excluded.time_basis, conditions=excluded.conditions,"
+    " geography=excluded.geography, program=excluded.program,"
+    " value=excluded.value, value_kind=excluded.value_kind,"
+    " status=excluded.status,"
+    " calibration_relationship=excluded.calibration_relationship,"
+    " period_start=excluded.period_start, period_end=excluded.period_end,"
+    " baseline_key=excluded.baseline_key"
 )
 RESULTS_SQL = (
     "INSERT INTO pe_results (claim_id, computed_value, status,"
     " engine_version, data_bundle, pe_construction, run_id,"
-    " computed_at, annotations, baseline_key)"
-    " VALUES (?,?,?,?,?,?,?,?,?,?)"
+    " computed_at, annotations, baseline_key, policyengine_variables)"
+    " VALUES (?,?,?,?,?,?,?,?,?,?,?)"
 )
 EXHIBITS_SQL = (
     "INSERT INTO pe_exhibits (exhibit, reform_key, reform_json,"
@@ -227,6 +257,12 @@ LANE_SQL = (
     " VALUES (?,?,?,?) ON CONFLICT(lane) DO UPDATE SET"
     " stage=excluded.stage, detail=excluded.detail,"
     " updated_at=excluded.updated_at"
+)
+DIAGNOSES_SQL = (
+    "INSERT INTO diagnoses VALUES (?,?,?,?) ON CONFLICT(claim_id)"
+    " DO UPDATE SET diagnosis_class=excluded.diagnosis_class,"
+    " rationale=excluded.rationale,"
+    " action_link=excluded.action_link"
 )
 BASELINE_SQL = (
     "INSERT INTO baselines VALUES (?,?,?,?,?,?)"
@@ -311,6 +347,11 @@ class ScorecardDB:
                     self.conn.execute(
                         f"ALTER TABLE {table} ADD COLUMN baseline_key TEXT"
                     )
+            if "policyengine_variables" not in cols("pe_results"):
+                self.conn.execute(
+                    "ALTER TABLE pe_results ADD COLUMN policyengine_variables"
+                    " TEXT NOT NULL DEFAULT '[]'"
+                )
             diag_sql = self.conn.execute(
                 "SELECT sql FROM sqlite_master WHERE type='table' AND name='diagnoses'"
             ).fetchone()
@@ -401,6 +442,7 @@ class ScorecardDB:
             r.computed_at,
             json.dumps(r.annotations),
             r.baseline_key,
+            json.dumps(list(r.policyengine_variables)),
         )
 
     def upsert_scores(self, scores: Iterable[ExternalScore]) -> int:
@@ -487,15 +529,21 @@ class ScorecardDB:
             )
         ]
 
-    def diagnose(
-        self,
+    @staticmethod
+    def diagnosis_row(
         claim_id: str,
         diagnosis_class: str,
         rationale: str = "",
         action_link: str = "",
-    ):
-        # Descriptive register (issue #9): normative classes are gated on
-        # a citable known issue; divergence alone never qualifies.
+    ) -> tuple:
+        """Prepare a diagnoses row for DIAGNOSES_SQL, applying the
+        descriptive-register gate (issue #9): the normative classes
+        (pe_gap, external_issue) need a citable known issue in
+        action_link; divergence alone never qualifies. Exposed like
+        score_row / result_row so an ingest can write claims, results
+        and diagnoses inside ONE `with db.conn:` block (diagnose() below
+        commits per call, which would break a wholesale-replace
+        transaction the way baselines.py documents)."""
         if DiagnosisClass(diagnosis_class) in GATED_DIAGNOSIS_CLASSES and (
             not action_link
         ):
@@ -503,14 +551,18 @@ class ScorecardDB:
                 f"{diagnosis_class} requires a citable known issue in "
                 "action_link (descriptive register, issue #9)"
             )
+        return (claim_id, diagnosis_class, rationale, action_link)
+
+    def diagnose(
+        self,
+        claim_id: str,
+        diagnosis_class: str,
+        rationale: str = "",
+        action_link: str = "",
+    ):
+        row = self.diagnosis_row(claim_id, diagnosis_class, rationale, action_link)
         with self.conn:
-            self.conn.execute(
-                "INSERT INTO diagnoses VALUES (?,?,?,?) ON CONFLICT(claim_id)"
-                " DO UPDATE SET diagnosis_class=excluded.diagnosis_class,"
-                " rationale=excluded.rationale,"
-                " action_link=excluded.action_link",
-                (claim_id, diagnosis_class, rationale, action_link),
-            )
+            self.conn.execute(DIAGNOSES_SQL, row)
 
     # -- reads ----------------------------------------------------------
     def comparisons(

@@ -1,0 +1,733 @@
+{
+  "audit_date": "2026-10-09 (America/New_York, evening)",
+  "base_receipt": "historical_rules_sources.json",
+  "base_source_comparison": [
+    {
+      "base_sha256": "4d0d3d6ae8652209fa240c2cc7ad127235850b5cb134b556dd83c23bcc7aea5a",
+      "changed": false,
+      "file": "parameters/gov/dwp/ESA/income/amount_over_25.yaml",
+      "latest_sha256": "4d0d3d6ae8652209fa240c2cc7ad127235850b5cb134b556dd83c23bcc7aea5a"
+    },
+    {
+      "base_sha256": "bc26506b0dd0a61ff0ab48a04fc538d3475cef526a90ae289153dc1f7498b943",
+      "changed": false,
+      "file": "parameters/gov/dwp/JSA/income/amount_over_25.yaml",
+      "latest_sha256": "bc26506b0dd0a61ff0ab48a04fc538d3475cef526a90ae289153dc1f7498b943"
+    },
+    {
+      "base_sha256": "7ab5c9adcd0fe68a02a45dd7d48ae01152bddd02e7b49acf629853d32593915e",
+      "changed": false,
+      "file": "parameters/gov/dwp/LHA/maximum/A.yaml",
+      "latest_sha256": "7ab5c9adcd0fe68a02a45dd7d48ae01152bddd02e7b49acf629853d32593915e"
+    },
+    {
+      "base_sha256": "202e6b579890661120c12213a310959f3d11cb42d7af6af40b0dd285fdb511d2",
+      "changed": false,
+      "file": "parameters/gov/dwp/benefit_cap.yaml",
+      "latest_sha256": "202e6b579890661120c12213a310959f3d11cb42d7af6af40b0dd285fdb511d2"
+    },
+    {
+      "base_sha256": "2622227463c279e67f6cbdaf46239ae696f75931057fb0fb46cba63b17901a66",
+      "changed": false,
+      "file": "parameters/gov/dwp/housing_benefit/means_test/withdrawal_rate.yaml",
+      "latest_sha256": "2622227463c279e67f6cbdaf46239ae696f75931057fb0fb46cba63b17901a66"
+    },
+    {
+      "base_sha256": "596d6193433a4bd451072d44349280915defc4dd72b18374891fc77583c49492",
+      "changed": false,
+      "file": "parameters/gov/dwp/income_support/amounts/amount_16_24.yaml",
+      "latest_sha256": "596d6193433a4bd451072d44349280915defc4dd72b18374891fc77583c49492"
+    },
+    {
+      "base_sha256": "6efe0835fa47819ebdd4c4506c14a7fd9cf056c0f04085d1257562ed84496b96",
+      "changed": false,
+      "file": "parameters/gov/dwp/income_support/eligibility/lone_parent_youngest_child_age_limit.yaml",
+      "latest_sha256": "6efe0835fa47819ebdd4c4506c14a7fd9cf056c0f04085d1257562ed84496b96"
+    },
+    {
+      "base_sha256": "42bae47ce6d9320f101aa140c5f6135d8057f877fdbd355ba69ae684ff790149",
+      "changed": false,
+      "file": "parameters/gov/dwp/pension_credit/guarantee_credit/minimum_guarantee.yaml",
+      "latest_sha256": "42bae47ce6d9320f101aa140c5f6135d8057f877fdbd355ba69ae684ff790149"
+    },
+    {
+      "base_sha256": "36cb604588c2f0f39d60c943c08d17d7ddbcd737488c154f8a991489ba26dcde",
+      "changed": false,
+      "file": "parameters/gov/dwp/pension_credit/savings_credit/threshold.yaml",
+      "latest_sha256": "36cb604588c2f0f39d60c943c08d17d7ddbcd737488c154f8a991489ba26dcde"
+    },
+    {
+      "base_sha256": "d64059ce328bd6a7582f093aa03b3b2d4c23064b7caa57a88cd7bd2217247847",
+      "changed": false,
+      "file": "parameters/gov/dwp/state_pension/age/age_by_birth_date.yaml",
+      "latest_sha256": "d64059ce328bd6a7582f093aa03b3b2d4c23064b7caa57a88cd7bd2217247847"
+    },
+    {
+      "base_sha256": "a15ccbc3ee53939cf58f46a657b55a08ecbce5b6bc77ef986e7b6f3672113b6b",
+      "changed": false,
+      "file": "parameters/gov/dwp/state_pension/age/day_by_birth_date.yaml",
+      "latest_sha256": "a15ccbc3ee53939cf58f46a657b55a08ecbce5b6bc77ef986e7b6f3672113b6b"
+    },
+    {
+      "base_sha256": "90349dc3df4900887ee8a36e83a0979f2a19a42b48a3e04d01b0f508b2902c36",
+      "changed": false,
+      "file": "parameters/gov/dwp/state_pension/age/male/age.yaml",
+      "latest_sha256": "90349dc3df4900887ee8a36e83a0979f2a19a42b48a3e04d01b0f508b2902c36"
+    },
+    {
+      "base_sha256": "5b82e8f4550822eba364cc215c0d43fff228883487b2666206d050ae43ae35cd",
+      "changed": false,
+      "file": "parameters/gov/dwp/state_pension/age/male/born_before.yaml",
+      "latest_sha256": "5b82e8f4550822eba364cc215c0d43fff228883487b2666206d050ae43ae35cd"
+    },
+    {
+      "base_sha256": "60775f2a44ffd72b15a39c364c7c69cd97390223d130057daeefed5144ab32d7",
+      "changed": false,
+      "file": "parameters/gov/dwp/state_pension/basic_state_pension/amount.yaml",
+      "latest_sha256": "60775f2a44ffd72b15a39c364c7c69cd97390223d130057daeefed5144ab32d7"
+    },
+    {
+      "base_sha256": "df5caa61ed957e208b83013ef8ca9a7378f1ccd6d39682bc557984d653a25c1c",
+      "changed": false,
+      "file": "parameters/gov/dwp/state_pension/new_state_pension/active.yaml",
+      "latest_sha256": "df5caa61ed957e208b83013ef8ca9a7378f1ccd6d39682bc557984d653a25c1c"
+    },
+    {
+      "base_sha256": "29a8cc4d9bf133627eb2e93bddc979b2fa0ff5931ff53997e4654d6157da49f5",
+      "changed": false,
+      "file": "parameters/gov/dwp/tax_credits/child_tax_credit/elements/child_element.yaml",
+      "latest_sha256": "29a8cc4d9bf133627eb2e93bddc979b2fa0ff5931ff53997e4654d6157da49f5"
+    },
+    {
+      "base_sha256": "c651d132a54209543b3878c564f135bfc1ed72d824ad639baaa645dcc5402f4b",
+      "changed": false,
+      "file": "parameters/gov/dwp/tax_credits/means_test/income_threshold.yaml",
+      "latest_sha256": "c651d132a54209543b3878c564f135bfc1ed72d824ad639baaa645dcc5402f4b"
+    },
+    {
+      "base_sha256": "0ab5d232c496c5fab8f6bdb1edf12fc8bb4738ee19b80a10fed5b5c568280102",
+      "changed": false,
+      "file": "parameters/gov/dwp/tax_credits/working_tax_credit/elements/basic.yaml",
+      "latest_sha256": "0ab5d232c496c5fab8f6bdb1edf12fc8bb4738ee19b80a10fed5b5c568280102"
+    },
+    {
+      "base_sha256": "4788bfa6d49dfe4b2396e55ee1228fd469e4e8802729aa3da2c5fc4c648048a0",
+      "changed": false,
+      "file": "parameters/gov/dwp/tax_credits/working_tax_credit/min_hours/couple_with_children.yaml",
+      "latest_sha256": "4788bfa6d49dfe4b2396e55ee1228fd469e4e8802729aa3da2c5fc4c648048a0"
+    },
+    {
+      "base_sha256": "60dd554b46b507d9360f553cf14abac60088a744151faa6f7f1f2cdc63070845",
+      "changed": false,
+      "file": "parameters/gov/dwp/universal_credit/means_test/work_allowance.yaml",
+      "latest_sha256": "60dd554b46b507d9360f553cf14abac60088a744151faa6f7f1f2cdc63070845"
+    },
+    {
+      "base_sha256": "8087f1552098af7a6edadc356fb3e5249376e4a88919d96200669d16edf12a8b",
+      "changed": false,
+      "file": "parameters/gov/dwp/universal_credit/rollout_rate.yaml",
+      "latest_sha256": "8087f1552098af7a6edadc356fb3e5249376e4a88919d96200669d16edf12a8b"
+    },
+    {
+      "base_sha256": "470c1ab7a8d6763af1a1287b5a681160e4c1f0bed04b5f6580bf000af598e38d",
+      "changed": false,
+      "file": "parameters/gov/dwp/universal_credit/standard_allowance/amount.yaml",
+      "latest_sha256": "470c1ab7a8d6763af1a1287b5a681160e4c1f0bed04b5f6580bf000af598e38d"
+    },
+    {
+      "base_sha256": "fd7e619a02a9084114f0b9dd94461fdecbaffe456c5a5d47eabb270b50670622",
+      "changed": false,
+      "file": "parameters/gov/hmrc/cgt/annual_exempt_amount.yaml",
+      "latest_sha256": "fd7e619a02a9084114f0b9dd94461fdecbaffe456c5a5d47eabb270b50670622"
+    },
+    {
+      "base_sha256": "adea67b26f52f53b42b0fa8e333d1b200ea8431524c6d7a2532054daf8f16579",
+      "changed": false,
+      "file": "parameters/gov/hmrc/cgt/basic_rate.yaml",
+      "latest_sha256": "adea67b26f52f53b42b0fa8e333d1b200ea8431524c6d7a2532054daf8f16579"
+    },
+    {
+      "base_sha256": "5efda44289f6d6eb128b62c91b08278b72ab9a85ca0719bfb2f3217c0876a67a",
+      "changed": false,
+      "file": "parameters/gov/hmrc/cgt/higher_rate.yaml",
+      "latest_sha256": "5efda44289f6d6eb128b62c91b08278b72ab9a85ca0719bfb2f3217c0876a67a"
+    },
+    {
+      "base_sha256": "46b013730590823246524fc6edd87b7f365319cf03e77088acc43ddd555caa27",
+      "changed": false,
+      "file": "parameters/gov/hmrc/child_benefit/amount/eldest.yaml",
+      "latest_sha256": "46b013730590823246524fc6edd87b7f365319cf03e77088acc43ddd555caa27"
+    },
+    {
+      "base_sha256": "aaf292249112a00c8a27a5ccdf32bd94cda2280a80872dbf3de1745cde313ef1",
+      "changed": false,
+      "file": "parameters/gov/hmrc/fuel_duty/petrol_and_diesel.yaml",
+      "latest_sha256": "aaf292249112a00c8a27a5ccdf32bd94cda2280a80872dbf3de1745cde313ef1"
+    },
+    {
+      "base_sha256": "49e580c314aa0cc88eed5ccd17be772a5f4de1b206eda49165ee18b6576773d7",
+      "changed": false,
+      "file": "parameters/gov/hmrc/income_tax/allowances/dividend_allowance.yaml",
+      "latest_sha256": "49e580c314aa0cc88eed5ccd17be772a5f4de1b206eda49165ee18b6576773d7"
+    },
+    {
+      "base_sha256": "16c4530fed54639636155d0faf9819a373eb5e39d620276a5d99c5e0b00d156a",
+      "changed": false,
+      "file": "parameters/gov/hmrc/income_tax/allowances/marriage_allowance/max.yaml",
+      "latest_sha256": "16c4530fed54639636155d0faf9819a373eb5e39d620276a5d99c5e0b00d156a"
+    },
+    {
+      "base_sha256": "a99cd9255bc75be326d7e8e8f5cfe52e5d3ed29df38d31f2f4f1d58d4ce89ba9",
+      "changed": false,
+      "file": "parameters/gov/hmrc/income_tax/allowances/personal_allowance/amount.yaml",
+      "latest_sha256": "a99cd9255bc75be326d7e8e8f5cfe52e5d3ed29df38d31f2f4f1d58d4ce89ba9"
+    },
+    {
+      "base_sha256": "ad8c0b24ee2f33bd2e3e84f6768a77883cb37400925653f7e2c70165933615f4",
+      "changed": false,
+      "file": "parameters/gov/hmrc/income_tax/allowances/personal_allowance/maximum_ANI.yaml",
+      "latest_sha256": "ad8c0b24ee2f33bd2e3e84f6768a77883cb37400925653f7e2c70165933615f4"
+    },
+    {
+      "base_sha256": "7511bcc1203e7eaa8c812fd425ed09e47fe5e4638532e065facc7badac37d0ba",
+      "changed": false,
+      "file": "parameters/gov/hmrc/income_tax/allowances/personal_savings_allowance/basic.yaml",
+      "latest_sha256": "7511bcc1203e7eaa8c812fd425ed09e47fe5e4638532e065facc7badac37d0ba"
+    },
+    {
+      "base_sha256": "6645f9c94b3b2dd55c0aec9e1f75ba291976a204f140529387802bb47c3ae705",
+      "changed": false,
+      "file": "parameters/gov/hmrc/income_tax/charges/CB_HITC/phase_out_start.yaml",
+      "latest_sha256": "6645f9c94b3b2dd55c0aec9e1f75ba291976a204f140529387802bb47c3ae705"
+    },
+    {
+      "base_sha256": "d3bcbc7fec39442b8313401c9c84f9fe7d704abf070e9a91a4d01478b54f8244",
+      "changed": false,
+      "file": "parameters/gov/hmrc/income_tax/rates/dividends.yaml",
+      "latest_sha256": "d3bcbc7fec39442b8313401c9c84f9fe7d704abf070e9a91a4d01478b54f8244"
+    },
+    {
+      "base_sha256": "818baf678bcb171d662fdb7d35738fdfeb3bb53304d3a0819bd09ee9fc5b44fa",
+      "changed": false,
+      "file": "parameters/gov/hmrc/income_tax/rates/savings_starter_rate/allowance.yaml",
+      "latest_sha256": "818baf678bcb171d662fdb7d35738fdfeb3bb53304d3a0819bd09ee9fc5b44fa"
+    },
+    {
+      "base_sha256": "0fa0a15b04d499053c94d58aea7d64690f3de98d752d78a4243ea266be836ff9",
+      "changed": false,
+      "file": "parameters/gov/hmrc/income_tax/rates/scotland/rates.yaml",
+      "latest_sha256": "0fa0a15b04d499053c94d58aea7d64690f3de98d752d78a4243ea266be836ff9"
+    },
+    {
+      "base_sha256": "c32409413c8739fbee4c12a7038cc523a84728ebee70b35551159705d1c51130",
+      "changed": false,
+      "file": "parameters/gov/hmrc/income_tax/rates/uk.yaml",
+      "latest_sha256": "c32409413c8739fbee4c12a7038cc523a84728ebee70b35551159705d1c51130"
+    },
+    {
+      "base_sha256": "b193b08d6390010183232a58127ae9caf2dcc9cf23ba966f0dd1917b999fcfac",
+      "changed": false,
+      "file": "parameters/gov/hmrc/national_insurance/class_1/rates/employee/additional.yaml",
+      "latest_sha256": "b193b08d6390010183232a58127ae9caf2dcc9cf23ba966f0dd1917b999fcfac"
+    },
+    {
+      "base_sha256": "e62f9b70bba0e6325cdad57c265c6ad4681029103498cd45a13b4cf4b2e72e75",
+      "changed": false,
+      "file": "parameters/gov/hmrc/national_insurance/class_1/rates/employee/main.yaml",
+      "latest_sha256": "e62f9b70bba0e6325cdad57c265c6ad4681029103498cd45a13b4cf4b2e72e75"
+    },
+    {
+      "base_sha256": "62520f8f3295263c6189019b5f1fcfd3e3a82f1d501a0c9ec5ebcb70e0134eb0",
+      "changed": false,
+      "file": "parameters/gov/hmrc/national_insurance/class_1/rates/employer.yaml",
+      "latest_sha256": "62520f8f3295263c6189019b5f1fcfd3e3a82f1d501a0c9ec5ebcb70e0134eb0"
+    },
+    {
+      "base_sha256": "924137311eb8477b40c14c5a55411b0f609a8500ef884e8f45c458e1b35b730e",
+      "changed": false,
+      "file": "parameters/gov/hmrc/national_insurance/class_1/thresholds/primary_threshold.yaml",
+      "latest_sha256": "924137311eb8477b40c14c5a55411b0f609a8500ef884e8f45c458e1b35b730e"
+    },
+    {
+      "base_sha256": "b47d3b7d9066aa4e8d92c9f57032d1c37ede953bc6db342f7f89d77e3569ef94",
+      "changed": true,
+      "file": "parameters/gov/hmrc/national_insurance/class_2/flat_rate.yaml",
+      "latest_sha256": "fde287156228222888f6b04dc3325d3010661ae1319143b14160470591a6c716"
+    },
+    {
+      "base_sha256": "6e76c4a793bc53453f7946ec65ad8a604d62156b10b1c19ddcf03aa621345ed1",
+      "changed": true,
+      "file": "parameters/gov/hmrc/national_insurance/class_4/rates/additional.yaml",
+      "latest_sha256": "d89bcf077f65b4adf7cd5829dec2150544357ea1629108c82e8b4dd7ca22a65e"
+    },
+    {
+      "base_sha256": "4c14df487fddc2065dcbf19f961a846708ae488d55aa132c05da4767f78c8e27",
+      "changed": true,
+      "file": "parameters/gov/hmrc/national_insurance/class_4/rates/main.yaml",
+      "latest_sha256": "2634d064a70b1cb53d8451d2aea30550185e9022dc9f0a0ba2bbcc9bb8356e46"
+    },
+    {
+      "base_sha256": "31639eefc55438964263d36d885e6cf9cb43ca561084f73cf040aac574771628",
+      "changed": false,
+      "file": "parameters/gov/hmrc/stamp_duty/residential/purchase/additional/min.yaml",
+      "latest_sha256": "31639eefc55438964263d36d885e6cf9cb43ca561084f73cf040aac574771628"
+    },
+    {
+      "base_sha256": "d8a6d8fb9cf410e2c99e38416dd97d2bc81f6e52917b30ed2cb864c116a755d5",
+      "changed": false,
+      "file": "parameters/gov/hmrc/stamp_duty/residential/purchase/main/first/max.yaml",
+      "latest_sha256": "d8a6d8fb9cf410e2c99e38416dd97d2bc81f6e52917b30ed2cb864c116a755d5"
+    },
+    {
+      "base_sha256": "57b15ec7185d1fe27fe7cc0bb154bb6a86da7774c3ff4e6fdd9e523ef0285d16",
+      "changed": false,
+      "file": "parameters/gov/hmrc/stamp_duty/residential/purchase/main/subsequent.yaml",
+      "latest_sha256": "57b15ec7185d1fe27fe7cc0bb154bb6a86da7774c3ff4e6fdd9e523ef0285d16"
+    },
+    {
+      "base_sha256": "9f06ff66d0b4c3a9c2b52d648daace5bb4afa658621bb082228ff546f6bc7269",
+      "changed": false,
+      "file": "parameters/gov/hmrc/vat/standard_rate.yaml",
+      "latest_sha256": "9f06ff66d0b4c3a9c2b52d648daace5bb4afa658621bb082228ff546f6bc7269"
+    },
+    {
+      "base_sha256": "885170344faa329429d380a99099f6bc83e58f0bfcb8081ea274b0ea6df34ba3",
+      "changed": false,
+      "file": "parameters/gov/local_authorities/england/council_tax_reduction/pensioners/means_test/withdrawal_rate.yaml",
+      "latest_sha256": "885170344faa329429d380a99099f6bc83e58f0bfcb8081ea274b0ea6df34ba3"
+    },
+    {
+      "base_sha256": "a6406922833935fc230db3b566d430dbe0e598dc1bdcd9f23f363314a3b56897",
+      "changed": false,
+      "file": "parameters/gov/local_authorities/scotland/council_tax_reduction/means_test/withdrawal_rate.yaml",
+      "latest_sha256": "a6406922833935fc230db3b566d430dbe0e598dc1bdcd9f23f363314a3b56897"
+    },
+    {
+      "base_sha256": "42ef9d954e7d41035d33c788cf209b51f34c54b2fd0d26db6d38936d4f0b1841",
+      "changed": false,
+      "file": "parameters/gov/local_authorities/wales/council_tax_reduction/means_test/withdrawal_rate.yaml",
+      "latest_sha256": "42ef9d954e7d41035d33c788cf209b51f34c54b2fd0d26db6d38936d4f0b1841"
+    },
+    {
+      "base_sha256": "e48d16115700ecd520ff4d15b47aac830a3850a777cb5ec8da2cc9fd149347f7",
+      "changed": false,
+      "file": "parameters/gov/revenue_scotland/lbtt/residential/rate.yaml",
+      "latest_sha256": "e48d16115700ecd520ff4d15b47aac830a3850a777cb5ec8da2cc9fd149347f7"
+    },
+    {
+      "base_sha256": "bae3f2e6e1feb0221c6126379c5f47a9ca8827d3ca240dee127fcab242837630",
+      "changed": false,
+      "file": "parameters/gov/simulation/labour_supply_responses/income_elasticity.yaml",
+      "latest_sha256": "bae3f2e6e1feb0221c6126379c5f47a9ca8827d3ca240dee127fcab242837630"
+    },
+    {
+      "base_sha256": "b52df454379de3ef5eea8b3fd03bf1bd4474058dc9476085d42c594d744dc669",
+      "changed": false,
+      "file": "parameters/gov/wra/land_transaction_tax/residential/primary.yaml",
+      "latest_sha256": "b52df454379de3ef5eea8b3fd03bf1bd4474058dc9476085d42c594d744dc669"
+    },
+    {
+      "base_sha256": "0773e569488513276034a2bf4751b62499d862c36ec5d3f7d14fe2e54ef1e979",
+      "changed": false,
+      "file": "programs.yaml",
+      "latest_sha256": "0773e569488513276034a2bf4751b62499d862c36ec5d3f7d14fe2e54ef1e979"
+    },
+    {
+      "base_sha256": "e9ac5e7ac02fcf303ed51356a1ab133e034e71117385e1a663a099d5ecf9183d",
+      "changed": false,
+      "file": "tax_benefit_system.py",
+      "latest_sha256": "e9ac5e7ac02fcf303ed51356a1ab133e034e71117385e1a663a099d5ecf9183d"
+    },
+    {
+      "base_sha256": "a8b40d995666e3658e836bba2d0304478d1a9ae3a29429c82105ba9b4738383a",
+      "changed": false,
+      "file": "utils/parameters.py",
+      "latest_sha256": "a8b40d995666e3658e836bba2d0304478d1a9ae3a29429c82105ba9b4738383a"
+    },
+    {
+      "base_sha256": "63fcbd25fdc68585cf6229987951a8798249390835ca413035b2604b48840a8c",
+      "changed": false,
+      "file": "utils/state_pension_age.py",
+      "latest_sha256": "63fcbd25fdc68585cf6229987951a8798249390835ca413035b2604b48840a8c"
+    },
+    {
+      "base_sha256": "c607ecdd6aa4f74a0daca4905f1f319efd9ccc85d5f64ca9b195563378ebf1c6",
+      "changed": false,
+      "file": "variables/gov/dft/vehicle_excise_duty/car_vehicle_excise_duty.py",
+      "latest_sha256": "c607ecdd6aa4f74a0daca4905f1f319efd9ccc85d5f64ca9b195563378ebf1c6"
+    },
+    {
+      "base_sha256": "2b8c694eb4e58efde45dec01bbfedd682fb0e26458d72f9ec97cf6f53e4f8c9d",
+      "changed": false,
+      "file": "variables/gov/dwp/additional_state_pension.py",
+      "latest_sha256": "2b8c694eb4e58efde45dec01bbfedd682fb0e26458d72f9ec97cf6f53e4f8c9d"
+    },
+    {
+      "base_sha256": "d6dd0468854b6192b56d8757dcbb49b1cb1354130a73778cbabad564567dd241",
+      "changed": false,
+      "file": "variables/gov/dwp/attendance_allowance.py",
+      "latest_sha256": "d6dd0468854b6192b56d8757dcbb49b1cb1354130a73778cbabad564567dd241"
+    },
+    {
+      "base_sha256": "88a7799f2868b84f33b78157d6717f16abf9246cdef7d0c5e27f4f183e8c937d",
+      "changed": false,
+      "file": "variables/gov/dwp/basic_state_pension.py",
+      "latest_sha256": "88a7799f2868b84f33b78157d6717f16abf9246cdef7d0c5e27f4f183e8c937d"
+    },
+    {
+      "base_sha256": "4830bc140cbfad0d8a3f20c2b2b8c65953eaa9db931c3c563be1fec299f892e0",
+      "changed": false,
+      "file": "variables/gov/dwp/carers_allowance_pre_overlap.py",
+      "latest_sha256": "4830bc140cbfad0d8a3f20c2b2b8c65953eaa9db931c3c563be1fec299f892e0"
+    },
+    {
+      "base_sha256": "e6c54946e7ebb3296b54a12bc1ef222dcc400373073bc8983557afe298ded762",
+      "changed": false,
+      "file": "variables/gov/dwp/child_tax_credit.py",
+      "latest_sha256": "e6c54946e7ebb3296b54a12bc1ef222dcc400373073bc8983557afe298ded762"
+    },
+    {
+      "base_sha256": "01f43c14e1c844a4f05cc2066da20070265c7ec6aa8657b4de99b06cb8166eef",
+      "changed": false,
+      "file": "variables/gov/dwp/council_tax_benefit.py",
+      "latest_sha256": "01f43c14e1c844a4f05cc2066da20070265c7ec6aa8657b4de99b06cb8166eef"
+    },
+    {
+      "base_sha256": "3cfd8a3caf726fc4262d7c98ac8a8d3406e5e42bfe9f6f05946af6d43458c422",
+      "changed": false,
+      "file": "variables/gov/dwp/dla/dla_sc.py",
+      "latest_sha256": "3cfd8a3caf726fc4262d7c98ac8a8d3406e5e42bfe9f6f05946af6d43458c422"
+    },
+    {
+      "base_sha256": "2b5f2a98adfdfd3afe435dd04da70f661bc9f3cedb1fe937bee67da2fe594475",
+      "changed": false,
+      "file": "variables/gov/dwp/esa_contrib.py",
+      "latest_sha256": "2b5f2a98adfdfd3afe435dd04da70f661bc9f3cedb1fe937bee67da2fe594475"
+    },
+    {
+      "base_sha256": "eb69563900879e9c2b5d9b9a1cc9c5bcead857a1e222dbe011906dd2a6fce16d",
+      "changed": false,
+      "file": "variables/gov/dwp/esa_income.py",
+      "latest_sha256": "eb69563900879e9c2b5d9b9a1cc9c5bcead857a1e222dbe011906dd2a6fce16d"
+    },
+    {
+      "base_sha256": "7fee6f61279c040b91dc0aec540898ccabbb4b67852a7f71a6f171558638b5ff",
+      "changed": false,
+      "file": "variables/gov/dwp/housing_benefit/entitlement/housing_benefit_entitlement.py",
+      "latest_sha256": "7fee6f61279c040b91dc0aec540898ccabbb4b67852a7f71a6f171558638b5ff"
+    },
+    {
+      "base_sha256": "70ba090d88f6699872db9ed7475b6523861334247d48f50c4f3a463c95f54bde",
+      "changed": false,
+      "file": "variables/gov/dwp/housing_benefit/housing_benefit_eligible.py",
+      "latest_sha256": "70ba090d88f6699872db9ed7475b6523861334247d48f50c4f3a463c95f54bde"
+    },
+    {
+      "base_sha256": "6e51427a72abd51bb231095c831f143ba561e55e8261d86a6a573abc06c093e3",
+      "changed": false,
+      "file": "variables/gov/dwp/income_support_applicable_amount.py",
+      "latest_sha256": "6e51427a72abd51bb231095c831f143ba561e55e8261d86a6a573abc06c093e3"
+    },
+    {
+      "base_sha256": "0adfae10aadd1c72a9579cbbbd2d56bc5f126d2fee68bffb807a2f490f1aaec3",
+      "changed": false,
+      "file": "variables/gov/dwp/income_support_entitlement.py",
+      "latest_sha256": "0adfae10aadd1c72a9579cbbbd2d56bc5f126d2fee68bffb807a2f490f1aaec3"
+    },
+    {
+      "base_sha256": "4aac80d457d152e1ca834c1b5b72d2473d5bf9a0348c9febabd0fc691a760dd6",
+      "changed": false,
+      "file": "variables/gov/dwp/is_CTC_eligible.py",
+      "latest_sha256": "4aac80d457d152e1ca834c1b5b72d2473d5bf9a0348c9febabd0fc691a760dd6"
+    },
+    {
+      "base_sha256": "88fdcf1fca095c3412cac9235767921cf6269c566c4bd854df0c61da0ed1df9b",
+      "changed": false,
+      "file": "variables/gov/dwp/is_WTC_eligible.py",
+      "latest_sha256": "88fdcf1fca095c3412cac9235767921cf6269c566c4bd854df0c61da0ed1df9b"
+    },
+    {
+      "base_sha256": "eab74e34d00097639802619f2f1c7644da368343b23330a7e4577e4bb1878b34",
+      "changed": false,
+      "file": "variables/gov/dwp/jsa_contrib.py",
+      "latest_sha256": "eab74e34d00097639802619f2f1c7644da368343b23330a7e4577e4bb1878b34"
+    },
+    {
+      "base_sha256": "5976c42396ef48fdd39c3395705988040df591306b3219b32838738794d8467c",
+      "changed": false,
+      "file": "variables/gov/dwp/jsa_income.py",
+      "latest_sha256": "5976c42396ef48fdd39c3395705988040df591306b3219b32838738794d8467c"
+    },
+    {
+      "base_sha256": "acdffc776e9aca1ff67533bbdc6760302fefce08738d4544508c4703cd8acabf",
+      "changed": false,
+      "file": "variables/gov/dwp/new_state_pension.py",
+      "latest_sha256": "acdffc776e9aca1ff67533bbdc6760302fefce08738d4544508c4703cd8acabf"
+    },
+    {
+      "base_sha256": "9e2ee883346d65ee2f2b5e99e0d4c167719e03d47c13f3480c7ae0d67de34535",
+      "changed": false,
+      "file": "variables/gov/dwp/pip/pip_dl.py",
+      "latest_sha256": "9e2ee883346d65ee2f2b5e99e0d4c167719e03d47c13f3480c7ae0d67de34535"
+    },
+    {
+      "base_sha256": "efcf7033fe4a671754e6dd448bd7ed19c9c98a38a94194d8fb2496c9de5f3abf",
+      "changed": false,
+      "file": "variables/gov/dwp/state_pension_age.py",
+      "latest_sha256": "efcf7033fe4a671754e6dd448bd7ed19c9c98a38a94194d8fb2496c9de5f3abf"
+    },
+    {
+      "base_sha256": "dc70cf5c11237f9c70adf0474086502282096c4b28eee75b35dee430d7fd6d6a",
+      "changed": false,
+      "file": "variables/gov/dwp/state_pension_reported.py",
+      "latest_sha256": "dc70cf5c11237f9c70adf0474086502282096c4b28eee75b35dee430d7fd6d6a"
+    },
+    {
+      "base_sha256": "8da2f941fdead378366c11ef1580d3ca405bdd97c0553e921d380a36a1b1e3e9",
+      "changed": false,
+      "file": "variables/gov/dwp/state_pension_type.py",
+      "latest_sha256": "8da2f941fdead378366c11ef1580d3ca405bdd97c0553e921d380a36a1b1e3e9"
+    },
+    {
+      "base_sha256": "1fe39c38317d917cfb017827813e879de01dc1fcb75b337fcc7b1e0c4fe35e4b",
+      "changed": false,
+      "file": "variables/gov/dwp/tax_credits_applicable_income.py",
+      "latest_sha256": "1fe39c38317d917cfb017827813e879de01dc1fcb75b337fcc7b1e0c4fe35e4b"
+    },
+    {
+      "base_sha256": "905d0eabc7eec15fb88ad32bb3d0ec9ac626c0525ab28ae714a5bfd1a3e0f1c8",
+      "changed": false,
+      "file": "variables/gov/dwp/universal_credit/housing_costs_element/uc_housing_costs_element.py",
+      "latest_sha256": "905d0eabc7eec15fb88ad32bb3d0ec9ac626c0525ab28ae714a5bfd1a3e0f1c8"
+    },
+    {
+      "base_sha256": "f4da0ab35a9d51eefb48daf00badead9704deb27523f102d110aaf7aea7bb594",
+      "changed": false,
+      "file": "variables/gov/dwp/universal_credit/is_uc_eligible.py",
+      "latest_sha256": "f4da0ab35a9d51eefb48daf00badead9704deb27523f102d110aaf7aea7bb594"
+    },
+    {
+      "base_sha256": "905aba6194908ac29c2d6fbef00e775349c6fceedf8f96e0142aae65acfd591e",
+      "changed": false,
+      "file": "variables/gov/dwp/universal_credit/would_claim_uc.py",
+      "latest_sha256": "905aba6194908ac29c2d6fbef00e775349c6fceedf8f96e0142aae65acfd591e"
+    },
+    {
+      "base_sha256": "234290c326cbae9c8a4dcee1306148ddcda2b456a9f905c7bff4b72207c92de6",
+      "changed": false,
+      "file": "variables/gov/dwp/working_tax_credit.py",
+      "latest_sha256": "234290c326cbae9c8a4dcee1306148ddcda2b456a9f905c7bff4b72207c92de6"
+    },
+    {
+      "base_sha256": "16bc0ad0ce230b34f7b3d926aa082a262e7d6fe7310740622d63715ab3bfbdd1",
+      "changed": false,
+      "file": "variables/gov/hmrc/alcohol_duty/beer_duty.py",
+      "latest_sha256": "16bc0ad0ce230b34f7b3d926aa082a262e7d6fe7310740622d63715ab3bfbdd1"
+    },
+    {
+      "base_sha256": "2b7c0392a535233c8c022c10ffad765a6cf1d30b97edcbb768c9377c23f70998",
+      "changed": false,
+      "file": "variables/gov/hmrc/fuel_duty/fuel_duty.py",
+      "latest_sha256": "2b7c0392a535233c8c022c10ffad765a6cf1d30b97edcbb768c9377c23f70998"
+    },
+    {
+      "base_sha256": "e86dba46fc073eeafd684a4d5cd311d1f3e249550aef4f4902ec256a5eaa7416",
+      "changed": false,
+      "file": "variables/gov/hmrc/income_tax/allowances/married_couples_allowance.py",
+      "latest_sha256": "e86dba46fc073eeafd684a4d5cd311d1f3e249550aef4f4902ec256a5eaa7416"
+    },
+    {
+      "base_sha256": "54b8ddc1118bcbcecaa952b12d415474dd2bf4d6380e5dc1644028a0678252bf",
+      "changed": false,
+      "file": "variables/gov/hmrc/income_tax/bases/taxed_dividend_income.py",
+      "latest_sha256": "54b8ddc1118bcbcecaa952b12d415474dd2bf4d6380e5dc1644028a0678252bf"
+    },
+    {
+      "base_sha256": "455e1138db1347cb9b9592624a4526b78f10f082b48d600637d7101e6812ba2e",
+      "changed": false,
+      "file": "variables/gov/hmrc/income_tax/bracketized_liability/tax_band.py",
+      "latest_sha256": "455e1138db1347cb9b9592624a4526b78f10f082b48d600637d7101e6812ba2e"
+    },
+    {
+      "base_sha256": "1c362296a5efaf9d207c087bdb6e328036aae6ba8145d64b1aebaa2131777b5d",
+      "changed": false,
+      "file": "variables/gov/hmrc/income_tax/earned_income_tax.py",
+      "latest_sha256": "1c362296a5efaf9d207c087bdb6e328036aae6ba8145d64b1aebaa2131777b5d"
+    },
+    {
+      "base_sha256": "c1afcd88fa9d078e00f27c1a51aeffbbd2cc97cda4f06489d037122a1e7e1e21",
+      "changed": false,
+      "file": "variables/gov/hmrc/income_tax/liability/dividend_income_tax.py",
+      "latest_sha256": "c1afcd88fa9d078e00f27c1a51aeffbbd2cc97cda4f06489d037122a1e7e1e21"
+    },
+    {
+      "base_sha256": "c62724c3cd391c99ab6696b971ab5221d42479f8252fb17c607170c8e39994e7",
+      "changed": false,
+      "file": "variables/gov/hmrc/national_insurance/class_1/ni_class_1_employee.py",
+      "latest_sha256": "c62724c3cd391c99ab6696b971ab5221d42479f8252fb17c607170c8e39994e7"
+    },
+    {
+      "base_sha256": "ce285edfa2bdc447fa2033dffef9f066d9f92ec1224045fdea9f87629e5336c1",
+      "changed": false,
+      "file": "variables/gov/hmrc/national_insurance/class_1/ni_class_1_employer.py",
+      "latest_sha256": "ce285edfa2bdc447fa2033dffef9f066d9f92ec1224045fdea9f87629e5336c1"
+    },
+    {
+      "base_sha256": "0e6d8c0a1137c70ee04d740a3ab57aa2b781cbe92afc4f60b1edadb4f65bcd27",
+      "changed": false,
+      "file": "variables/gov/hmrc/national_insurance/class_1/ni_liable.py",
+      "latest_sha256": "0e6d8c0a1137c70ee04d740a3ab57aa2b781cbe92afc4f60b1edadb4f65bcd27"
+    },
+    {
+      "base_sha256": "69ff422b47d8b328e521fc7dafe486a7024b873fa107de4c60d73cc0269b3081",
+      "changed": true,
+      "file": "variables/gov/hmrc/national_insurance/class_2/ni_class_2.py",
+      "latest_sha256": "0389117ba789de20758fc34e1781750635ac2cf72a004287a3a893ee78c12e7b"
+    },
+    {
+      "base_sha256": "8f2e6bc5bda69befec93ead978998199dbd241a6012f3e3c8203239f7218d517",
+      "changed": false,
+      "file": "variables/gov/hmrc/national_insurance/class_3/ni_class_3.py",
+      "latest_sha256": "8f2e6bc5bda69befec93ead978998199dbd241a6012f3e3c8203239f7218d517"
+    },
+    {
+      "base_sha256": "136f56d3e10752850eca9d9cd1a0b90b3fc69ff7e7c3be40d3de42c075235172",
+      "changed": false,
+      "file": "variables/gov/hmrc/national_insurance/class_4/ni_class_4.py",
+      "latest_sha256": "136f56d3e10752850eca9d9cd1a0b90b3fc69ff7e7c3be40d3de42c075235172"
+    },
+    {
+      "base_sha256": "44c3f47659d95fef2b25e2f10c354c31cd15835c13aeb29039a2e1215caa8726",
+      "changed": false,
+      "file": "variables/gov/hmrc/regional/pays_scottish_income_tax.py",
+      "latest_sha256": "44c3f47659d95fef2b25e2f10c354c31cd15835c13aeb29039a2e1215caa8726"
+    },
+    {
+      "base_sha256": "a31c3c43f023e261562a93dd863fd3ab726dd8205a967ed57fb9a974a8d09500",
+      "changed": false,
+      "file": "variables/gov/hmrc/sdlt_liable.py",
+      "latest_sha256": "a31c3c43f023e261562a93dd863fd3ab726dd8205a967ed57fb9a974a8d09500"
+    },
+    {
+      "base_sha256": "1a3b91ac5e4ff2774be55efadece9caa5d3b9c662e10cdeab74541989fc18085",
+      "changed": false,
+      "file": "variables/gov/hmrc/sdlt_on_residential_property_transactions.py",
+      "latest_sha256": "1a3b91ac5e4ff2774be55efadece9caa5d3b9c662e10cdeab74541989fc18085"
+    },
+    {
+      "base_sha256": "9df227f8b1740e7aa7f6eb287946f61629834492d67062d28c3d4190ed525537",
+      "changed": false,
+      "file": "variables/gov/hmrc/tobacco_duty/tobacco_duty.py",
+      "latest_sha256": "9df227f8b1740e7aa7f6eb287946f61629834492d67062d28c3d4190ed525537"
+    },
+    {
+      "base_sha256": "f0b6b7bcfbf2ab384226f17f1acda16b820d718b07576c4e91a4294534a45222",
+      "changed": false,
+      "file": "variables/gov/hmrc/vat.py",
+      "latest_sha256": "f0b6b7bcfbf2ab384226f17f1acda16b820d718b07576c4e91a4294534a45222"
+    },
+    {
+      "base_sha256": "37cf3738aecae41ffa916a9999e1e55f2858af0c410ee4adfc9aef16f44c9caf",
+      "changed": false,
+      "file": "variables/gov/revenue_scotland/lbtt_liable.py",
+      "latest_sha256": "37cf3738aecae41ffa916a9999e1e55f2858af0c410ee4adfc9aef16f44c9caf"
+    },
+    {
+      "base_sha256": "2516414f3c946087fd8780686cbfc5d0acb7158e8a5edbce98f84165966ded4b",
+      "changed": false,
+      "file": "variables/gov/simulation/labour_supply_response/income_elasticity_lsr.py",
+      "latest_sha256": "2516414f3c946087fd8780686cbfc5d0acb7158e8a5edbce98f84165966ded4b"
+    },
+    {
+      "base_sha256": "b23b824c2ba9b98689928c161a666ccef05f467144e9a39b32644961011720e8",
+      "changed": false,
+      "file": "variables/gov/wra/ltt_liable.py",
+      "latest_sha256": "b23b824c2ba9b98689928c161a666ccef05f467144e9a39b32644961011720e8"
+    },
+    {
+      "base_sha256": "e7f8b577506fa131250b8e2369ca79d2f8e204c1e4dd46c4d622b41f71d89164",
+      "changed": false,
+      "file": "variables/input/consumption/property/council_tax.py",
+      "latest_sha256": "e7f8b577506fa131250b8e2369ca79d2f8e204c1e4dd46c4d622b41f71d89164"
+    },
+    {
+      "base_sha256": "ce7a444c2319bcdb2a3432489c7778045fe8a33c2aca2f5d42b2ceb9f3fa6bfe",
+      "changed": false,
+      "file": "variables/input/employment_income.py",
+      "latest_sha256": "ce7a444c2319bcdb2a3432489c7778045fe8a33c2aca2f5d42b2ceb9f3fa6bfe"
+    }
+  ],
+  "installed_distribution_version": "2.125.1",
+  "method": "Read installed 2.125.1 source and byte-check against wheel; compare all 109 preserved base source hashes. No model import or simulations.",
+  "newly_read_sources": [
+    "parameters/gov/hmrc/national_insurance/class_2/README.md",
+    "parameters/gov/hmrc/national_insurance/class_2/lower_profits_threshold.yaml",
+    "parameters/gov/hmrc/national_insurance/class_2/lower_profits_threshold_applies.yaml",
+    "parameters/gov/hmrc/national_insurance/class_2/small_profits_threshold.yaml",
+    "utils/class_2.py",
+    "variables/gov/dwp/universal_credit/income/income_floor/uc_minimum_income_floor_national_insurance.py",
+    "variables/gov/hmrc/national_insurance/class_4/ni_class_4_maximum.py",
+    "parameters/gov/hmrc/national_insurance/class_4/thresholds/lower_profits_limit.yaml",
+    "parameters/gov/hmrc/national_insurance/class_4/thresholds/upper_profits_limit.yaml"
+  ],
+  "policyengine_uk_version": "2.125.1",
+  "release_receipt": "../../../data/uk/events/patch_release_receipt.json",
+  "uk_sources": {
+    "parameters/gov/hmrc/national_insurance/class_2/README.md": {
+      "sha256": "1549176699cebc7afa61d89fafdfa8f4580bde1764cf5c734e7fffe42c85ccc9",
+      "text": "# Class 2\n"
+    },
+    "parameters/gov/hmrc/national_insurance/class_2/flat_rate.yaml": {
+      "sha256": "fde287156228222888f6b04dc3325d3010661ae1319143b14160470591a6c716",
+      "text": "description: Weekly Class 2 National Insurance contribution that self-employed earners are liable to pay under section 11(2) of the Social Security Contributions and Benefits Act 1992. Compulsory Class 2 ended on 6 April 2024; voluntary Class 2 is not modelled.\nvalues:\n  2015-04-06:\n    value: 2.8\n    metadata:\n      reference:\n        - title: National Insurance Contributions Act 2015 Sch 1 para 3 (substituting s 11(2) of the Social Security Contributions and Benefits Act 1992)\n          href: https://www.legislation.gov.uk/ukpga/2015/5/schedule/1/paragraph/3/enacted\n        - title: Social Security Contributions and Benefits Act 1992 s 11(2) (as at 6 April 2016, unchanged for 2016-17)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/11/2016-04-06\n  2017-04-06:\n    value: 2.85\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2017 reg 3(a)\n          href: https://www.legislation.gov.uk/uksi/2017/415/regulation/3/made\n  2018-04-06:\n    value: 2.95\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2018 reg 3(a)\n          href: https://www.legislation.gov.uk/uksi/2018/337/regulation/3/made\n  2019-04-06:\n    value: 3\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2019 reg 3(a)\n          href: https://www.legislation.gov.uk/uksi/2019/262/regulation/3/made\n  2020-04-06:\n    value: 3.05\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2020 reg 3(a)\n          href: https://www.legislation.gov.uk/uksi/2020/299/regulation/3/made\n        - title: Social Security Contributions and Benefits Act 1992 s 11(2) (as at 6 April 2021, unchanged for 2021-22)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/11/2021-04-06\n  2022-04-06:\n    value: 3.15\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2022 reg 3(a)\n          href: https://www.legislation.gov.uk/uksi/2022/232/regulation/3/made\n  2023-04-06:\n    value: 3.45\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2023 reg 3(a)\n          href: https://www.legislation.gov.uk/uksi/2023/236/regulation/3/made\n        - title: Social Security Contributions and Benefits Act 1992 s 11(2) (as at 6 April 2023)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/11/2023-04-06\n  2024-04-06:\n    value: 0\n    metadata:\n      reference:\n        - title: National Insurance Contributions (Reduction in Rates) Act 2023 s 3(1)(a) and (3) (omitting s 11(2) of the Social Security Contributions and Benefits Act 1992 from 6 April 2024)\n          href: https://www.legislation.gov.uk/ukpga/2023/57/section/3/enacted\nmetadata:\n  unit: currency-GBP\n  period: week\n  label: NI class 2 flat rate\n  reference:\n    - title: Social Security Contributions and Benefits Act 1992 s 11\n      href: https://www.legislation.gov.uk/ukpga/1992/4/section/11\n    - title: \"GOV.UK | Rates and allowances: National Insurance contributions\"\n      href: https://www.gov.uk/government/publications/rates-and-allowances-national-insurance-contributions/rates-and-allowances-national-insurance-contributions\n"
+    },
+    "parameters/gov/hmrc/national_insurance/class_2/lower_profits_threshold.yaml": {
+      "sha256": "66da66ac8e0bea61259bd1a72a1178b20960f3dc1f9efff8dead9e2ba5c5a842",
+      "text": "description: Lower profits threshold for Class 2 National Insurance contributions under section 11(4)(a) of the Social Security Contributions and Benefits Act 1992. In 2022-23 and 2023-24 self-employed earners were liable for Class 2 only on profits above it. Section 11(4)(a) was omitted from 6 April 2024, when compulsory Class 2 ended; the 2023-24 value applies to reforms that restore a Class 2 rate.\nvalues:\n  2022-04-06:\n    value: 11_908\n    metadata:\n      reference:\n        - title: The Social Security (Class 2 National Insurance Contributions Increase of Threshold) Regulations 2022 reg 2(3)\n          href: https://www.legislation.gov.uk/uksi/2022/1329/regulation/2/made\n  2023-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2023 reg 3(b)\n          href: https://www.legislation.gov.uk/uksi/2023/236/regulation/3/made\nmetadata:\n  unit: currency-GBP\n  period: year\n  label: NI class 2 lower profits threshold\n  reference:\n    - title: Social Security Contributions and Benefits Act 1992 s 11(2), (4) and (5A) (as at 6 April 2023)\n      href: https://www.legislation.gov.uk/ukpga/1992/4/section/11/2023-04-06\n"
+    },
+    "parameters/gov/hmrc/national_insurance/class_2/lower_profits_threshold_applies.yaml": {
+      "sha256": "008d2caf5453e7272c6c5ab0102f21a87a31f5441d51ef5bf810f3af2b13fe51",
+      "text": "description: Class 2 National Insurance liability starts above the lower profits threshold rather than at the small profits threshold. In 2022-23 and 2023-24 profits from the small profits threshold up to the lower profits threshold were treated as paid. Compulsory Class 2 ended on 6 April 2024; the switch stays on so that a reform restoring a Class 2 rate uses the 2023-24 rule.\nvalues:\n  2015-04-06:\n    value: false\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s 11(2) (as at 6 April 2021)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/11/2021-04-06\n  2022-04-06:\n    value: true\n    metadata:\n      reference:\n        - title: The Social Security (Class 2 National Insurance Contributions Increase of Threshold) Regulations 2022 regs 1 and 2(2)\n          href: https://www.legislation.gov.uk/uksi/2022/1329/regulation/2/made\nmetadata:\n  unit: bool\n  period: year\n  label: Class 2 liability starts above the lower profits threshold\n  reference:\n    - title: Social Security Contributions and Benefits Act 1992 s 11(2), (5A) and (5B) (as at 6 April 2023)\n      href: https://www.legislation.gov.uk/ukpga/1992/4/section/11/2023-04-06\n"
+    },
+    "parameters/gov/hmrc/national_insurance/class_2/small_profits_threshold.yaml": {
+      "sha256": "37034b1caa90712dcb000ddc312ed9476d12b2983b0e2edec4ca109b0ef903cb",
+      "text": "description: Small profits threshold for Class 2 National Insurance contributions under section 11(4) of the Social Security Contributions and Benefits Act 1992. Before 2022-23 self-employed earners with profits at or above it were liable for Class 2; in 2022-23 and 2023-24 profits from this threshold up to the lower profits threshold were treated as paid.\nvalues:\n  2015-04-06:\n    value: 5_965\n    metadata:\n      reference:\n        - title: National Insurance Contributions Act 2015 Sch 1 para 3 (substituting s 11(4) of the Social Security Contributions and Benefits Act 1992)\n          href: https://www.legislation.gov.uk/ukpga/2015/5/schedule/1/paragraph/3/enacted\n        - title: Social Security Contributions and Benefits Act 1992 s 11(4) (as at 6 April 2016, unchanged for 2016-17)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/11/2016-04-06\n  2017-04-06:\n    value: 6_025\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2017 reg 3(b)\n          href: https://www.legislation.gov.uk/uksi/2017/415/regulation/3/made\n  2018-04-06:\n    value: 6_205\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2018 reg 3(b)\n          href: https://www.legislation.gov.uk/uksi/2018/337/regulation/3/made\n  2019-04-06:\n    value: 6_365\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2019 reg 3(b)\n          href: https://www.legislation.gov.uk/uksi/2019/262/regulation/3/made\n  2020-04-06:\n    value: 6_475\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2020 reg 3(b)\n          href: https://www.legislation.gov.uk/uksi/2020/299/regulation/3/made\n  2021-04-06:\n    value: 6_515\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2021 reg 3\n          href: https://www.legislation.gov.uk/uksi/2021/157/regulation/3/made\n  2022-04-06:\n    value: 6_725\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2022 reg 3(b)\n          href: https://www.legislation.gov.uk/uksi/2022/232/regulation/3/made\n  2023-04-06:\n    value: 6_725\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s 11(4)(b) (as at 6 April 2023)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/11/2023-04-06\n  2024-04-06:\n    value: 6_725\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s 11(4)(b) (as at 6 April 2024)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/11/2024-04-06\n  2025-04-06:\n    value: 6_845\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments, National Insurance Funds Payments and Extension of Veteran's Relief) Regulations 2025 reg 3(a)\n          href: https://www.legislation.gov.uk/uksi/2025/288/regulation/3/made\n  2026-04-06:\n    value: 7_105\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments, National Insurance Funds Payments and Extension of Veteran's Relief) Regulations 2026 reg 3(a)\n          href: https://www.legislation.gov.uk/uksi/2026/231/regulation/3/made\nmetadata:\n  unit: currency-GBP\n  period: year\n  label: NI class 2 small profits threshold\n  uprating: gov.economic_assumptions.indices.obr.consumer_price_index\n  reference:\n    - title: Social Security Contributions and Benefits Act 1992 s 11\n      href: https://www.legislation.gov.uk/ukpga/1992/4/section/11\n    - title: \"GOV.UK | Rates and allowances: National Insurance contributions\"\n      href: https://www.gov.uk/government/publications/rates-and-allowances-national-insurance-contributions/rates-and-allowances-national-insurance-contributions\n"
+    },
+    "parameters/gov/hmrc/national_insurance/class_4/rates/additional.yaml": {
+      "sha256": "d89bcf077f65b4adf7cd5829dec2150544357ea1629108c82e8b4dd7ca22a65e",
+      "text": "description: The additional National Insurance rate paid above the Upper Profits Limit for self-employed profits.\nvalues:\n  2015-04-06:\n    value: 0.02\n    metadata:\n      reference:\n        - title: National Insurance Contributions Act 2011 s 2(1)(b) (additional Class 4 percentage of 2% from 6 April 2011)\n          href: https://www.legislation.gov.uk/ukpga/2011/3/section/2/enacted\n        - title: Social Security Contributions and Benefits Act 1992 s 15(3ZA)(b) (as at 6 April 2015)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15/2015-04-06\n  # Class 4 is charged on the year's profits, so 2022-23 has one rate for the\n  # whole tax year. The Health and Social Care Levy (Repeal) Act 2022 replaced\n  # the 3.25% that the Health and Social Care Levy Act 2021 s 5(2) had set.\n  2022-04-06:\n    value: 0.0273\n    metadata:\n      reference:\n        - title: Health and Social Care Levy (Repeal) Act 2022 s 2(2)(b) (additional Class 4 percentage of 2.73% for the tax year 2022-23)\n          href: https://www.legislation.gov.uk/ukpga/2022/43/section/2\n  2023-04-06:\n    value: 0.02\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s 15(3ZA)(b) (as at 6 April 2023)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15/2023-04-06\nmetadata:\n  label: NI class 4 additional rate\n  unit: /1\n  reference:\n    - title: Social Security Contributions and Benefits Act 1992 s 15(3ZA)\n      href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n    - title: \"GOV.UK | Rates and allowances: National Insurance contributions\"\n      href: https://www.gov.uk/government/publications/rates-and-allowances-national-insurance-contributions/rates-and-allowances-national-insurance-contributions\n"
+    },
+    "parameters/gov/hmrc/national_insurance/class_4/rates/main.yaml": {
+      "sha256": "2634d064a70b1cb53d8451d2aea30550185e9022dc9f0a0ba2bbcc9bb8356e46",
+      "text": "description: The main National Insurance rate paid between the Lower and Upper Profits Limits for self-employed profits.\nvalues:\n  2015-04-06:\n    value: 0.09\n    metadata:\n      reference:\n        - title: National Insurance Contributions Act 2011 s 2(1)(a) (main Class 4 percentage of 9% from 6 April 2011)\n          href: https://www.legislation.gov.uk/ukpga/2011/3/section/2/enacted\n        - title: Social Security Contributions and Benefits Act 1992 s 15(3ZA)(a) (as at 6 April 2015)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15/2015-04-06\n  # Class 4 is charged on the year's profits, so 2022-23 has one rate for the\n  # whole tax year. The Health and Social Care Levy (Repeal) Act 2022 replaced\n  # the 10.25% that the Health and Social Care Levy Act 2021 s 5(2) had set.\n  2022-04-06:\n    value: 0.0973\n    metadata:\n      reference:\n        - title: Health and Social Care Levy (Repeal) Act 2022 s 2(2)(a) (main Class 4 percentage of 9.73% for the tax year 2022-23)\n          href: https://www.legislation.gov.uk/ukpga/2022/43/section/2\n  2023-04-06:\n    value: 0.09\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s 15(3ZA)(a) (as at 6 April 2023)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15/2023-04-06\n  2024-04-06:\n    value: 0.06\n    metadata:\n      reference:\n        - title: National Insurance Contributions (Reduction in Rates) Act 2024 ss 1(3)(a) and 3(1)\n          href: https://www.legislation.gov.uk/ukpga/2024/5/section/1/enacted\n        - title: Social Security Contributions and Benefits Act 1992 s 15(3ZA)(a) (as at 6 April 2024)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15/2024-04-06\nmetadata:\n  label: NI class 4 main rate\n  unit: /1\n  reference:\n    - title: Social Security Contributions and Benefits Act 1992 s 15(3ZA)\n      href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n    - title: \"GOV.UK | Rates and allowances: National Insurance contributions\"\n      href: https://www.gov.uk/government/publications/rates-and-allowances-national-insurance-contributions/rates-and-allowances-national-insurance-contributions\n"
+    },
+    "parameters/gov/hmrc/national_insurance/class_4/thresholds/lower_profits_limit.yaml": {
+      "sha256": "a97c7fafd284942b70979f6285dcfe7d3e2d92badb770929fa7144787bac7e6d",
+      "text": "description: The Lower Profits Limit is the threshold at which self-employed earners pay the main Class 4 National Insurance rate.\n# Legal status: \u00a312,570 is the standing figure in SSCBA 1992 s.15(3)(a), which\n# stays until altered by order under SSAA 1992 s.141. Budget 2025 commits to\n# keeping it until April 2031. CPI uprating from 2031-32 is a modelling\n# assumption.\nvalues:\n  2015-04-06:\n    value: 8_060\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Re-rating and National Insurance Funds Payments) Order 2015 art 3(a)\n          href: https://www.legislation.gov.uk/uksi/2015/588/article/3/made\n        - title: Social Security Contributions and Benefits Act 1992 s 15(3)(a) (as at 6 April 2016, unchanged for 2016-17)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15/2016-04-06\n  2017-04-06:\n    value: 8_164\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2017 reg 5(a)\n          href: https://www.legislation.gov.uk/uksi/2017/415/regulation/5/made\n  2018-04-06:\n    value: 8_424\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2018 reg 5(a)\n          href: https://www.legislation.gov.uk/uksi/2018/337/regulation/5/made\n  2019-04-06:\n    value: 8_632\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2019 reg 5(a)\n          href: https://www.legislation.gov.uk/uksi/2019/262/regulation/5/made\n  2020-04-06:\n    value: 9_500\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2020 reg 5\n          href: https://www.legislation.gov.uk/uksi/2020/299/regulation/5/made\n  2021-04-06:\n    value: 9_568\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2021 reg 5(1)\n          href: https://www.legislation.gov.uk/uksi/2021/157/regulation/5/made\n  # SI 2022/232 reg 5 first set \u00a39,880 for 2022-23; the 2022 Act replaced it\n  # with \u00a311,908 for the whole year.\n  2022-04-06:\n    value: 11_908\n    metadata:\n      reference:\n        - title: National Insurance Contributions (Increase of Thresholds) Act 2022 s 2(1) and (2)\n          href: https://www.legislation.gov.uk/ukpga/2022/16/section/2/enacted\n  2023-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: National Insurance Contributions (Increase of Thresholds) Act 2022 s 2(3) and (4)\n          href: https://www.legislation.gov.uk/ukpga/2022/16/section/2/enacted\n        - title: Social Security Contributions and Benefits Act 1992 s 15(3)(a) (as at 6 April 2023)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15/2023-04-06\n  2026-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(a)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n  2027-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(a)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n        - title: \"HMRC: Income Tax Personal Allowance and the basic rate limit, and certain National Insurance contributions thresholds from 6 April 2026 to 5 April 2028 (Autumn Statement 2022)\"\n          href: https://www.gov.uk/government/publications/the-personal-allowance-and-basic-rate-limit-for-income-tax-and-certain-national-insurance-contributions-nics-thresholds-from-6-april-2026-to-5-apr/income-tax-personal-allowance-and-the-basic-rate-limit-and-certain-national-insurance-contributions-thresholds-from-6-april-2026-to-5-april-2028\n  2028-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(a)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n        - title: Budget 2025 (HC 1492) para 4.111\n          href: https://assets.publishing.service.gov.uk/media/6929b353345e31ab14ecf735/E03444720_Budget_2025_Web_Accessible.pdf#page=113\n        - title: \"HMRC: Maintaining Income Tax and equivalent National Insurance contributions thresholds until 5 April 2031\"\n          href: https://www.gov.uk/government/publications/maintaining-income-tax-and-equivalent-national-insurance-contributions-thresholds-until-5-april-2031/income-tax-maintaining-the-personal-allowance-and-the-basic-rate-limit-for-income-tax-and-equivalent-national-insurance-contributions-thresholds-unt\n        - title: Explanatory Memorandum to SI 2026/231 para 5.25\n          href: https://www.legislation.gov.uk/uksi/2026/231/pdfs/uksiem_20260231_en_001.pdf\n  2029-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(a)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n        - title: Budget 2025 (HC 1492) para 4.111\n          href: https://assets.publishing.service.gov.uk/media/6929b353345e31ab14ecf735/E03444720_Budget_2025_Web_Accessible.pdf#page=113\n        - title: \"HMRC: Maintaining Income Tax and equivalent National Insurance contributions thresholds until 5 April 2031\"\n          href: https://www.gov.uk/government/publications/maintaining-income-tax-and-equivalent-national-insurance-contributions-thresholds-until-5-april-2031/income-tax-maintaining-the-personal-allowance-and-the-basic-rate-limit-for-income-tax-and-equivalent-national-insurance-contributions-thresholds-unt\n        - title: Explanatory Memorandum to SI 2026/231 para 5.25\n          href: https://www.legislation.gov.uk/uksi/2026/231/pdfs/uksiem_20260231_en_001.pdf\n  2030-04-06:\n    value: 12_570\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(a)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n        - title: Budget 2025 (HC 1492) para 4.111\n          href: https://assets.publishing.service.gov.uk/media/6929b353345e31ab14ecf735/E03444720_Budget_2025_Web_Accessible.pdf#page=113\n        - title: \"HMRC: Maintaining Income Tax and equivalent National Insurance contributions thresholds until 5 April 2031\"\n          href: https://www.gov.uk/government/publications/maintaining-income-tax-and-equivalent-national-insurance-contributions-thresholds-until-5-april-2031/income-tax-maintaining-the-personal-allowance-and-the-basic-rate-limit-for-income-tax-and-equivalent-national-insurance-contributions-thresholds-unt\n        - title: Explanatory Memorandum to SI 2026/231 para 5.25\n          href: https://www.legislation.gov.uk/uksi/2026/231/pdfs/uksiem_20260231_en_001.pdf\nmetadata:\n  label: NI lower profits limit\n  unit: currency-GBP\n  period: year\n  uprating: gov.economic_assumptions.indices.obr.consumer_price_index\n  reference:\n    - https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/882271/Table-a4.pdf\n    - https://www.gov.uk/government/publications/rates-and-allowances-national-insurance-contributions/rates-and-allowances-national-insurance-contributions\n"
+    },
+    "parameters/gov/hmrc/national_insurance/class_4/thresholds/upper_profits_limit.yaml": {
+      "sha256": "8eaa8ce0fdbaf3f13dac1a6e18606933b8d398f480e796184a0daa0b4a391b92",
+      "text": "description: The Upper Profits Limit is the threshold at which self-employed earners pay the additional Class 4 National Insurance rate.\n# Legal status: \u00a350,270 is the standing figure in SSCBA 1992 s.15(3)(b), which\n# stays until altered by order under SSAA 1992 s.141. Budget 2025 commits to\n# keeping it until April 2031. CPI uprating from 2031-32 is a modelling\n# assumption.\nvalues:\n  2015-04-06:\n    value: 42_385\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Re-rating and National Insurance Funds Payments) Order 2015 art 3(b)\n          href: https://www.legislation.gov.uk/uksi/2015/588/article/3/made\n  2016-04-06:\n    value: 43_000\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2016 reg 2\n          href: https://www.legislation.gov.uk/uksi/2016/343/regulation/2/made\n  2017-04-06:\n    value: 45_000\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2017 reg 5(b)\n          href: https://www.legislation.gov.uk/uksi/2017/415/regulation/5/made\n  2018-04-06:\n    value: 46_350\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2018 reg 5(b)\n          href: https://www.legislation.gov.uk/uksi/2018/337/regulation/5/made\n  2019-04-06:\n    value: 50_000\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2019 reg 5(b)\n          href: https://www.legislation.gov.uk/uksi/2019/262/regulation/5/made\n        - title: Social Security Contributions and Benefits Act 1992 s 15(3) (as at 6 April 2020, unchanged for 2020-21)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15/2020-04-06\n  2021-04-06:\n    value: 50_270\n    metadata:\n      reference:\n        - title: The Social Security (Contributions) (Rates, Limits and Thresholds Amendments and National Insurance Funds Payments) Regulations 2021 reg 5(2)\n          href: https://www.legislation.gov.uk/uksi/2021/157/regulation/5/made\n  2026-04-06:\n    value: 50_270\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(b)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n  2027-04-06:\n    value: 50_270\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(b)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n        - title: \"HMRC: Income Tax Personal Allowance and the basic rate limit, and certain National Insurance contributions thresholds from 6 April 2026 to 5 April 2028 (Autumn Statement 2022)\"\n          href: https://www.gov.uk/government/publications/the-personal-allowance-and-basic-rate-limit-for-income-tax-and-certain-national-insurance-contributions-nics-thresholds-from-6-april-2026-to-5-apr/income-tax-personal-allowance-and-the-basic-rate-limit-and-certain-national-insurance-contributions-thresholds-from-6-april-2026-to-5-april-2028\n  2028-04-06:\n    value: 50_270\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(b)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n        - title: Budget 2025 (HC 1492) para 4.111\n          href: https://assets.publishing.service.gov.uk/media/6929b353345e31ab14ecf735/E03444720_Budget_2025_Web_Accessible.pdf#page=113\n        - title: \"HMRC: Maintaining Income Tax and equivalent National Insurance contributions thresholds until 5 April 2031\"\n          href: https://www.gov.uk/government/publications/maintaining-income-tax-and-equivalent-national-insurance-contributions-thresholds-until-5-april-2031/income-tax-maintaining-the-personal-allowance-and-the-basic-rate-limit-for-income-tax-and-equivalent-national-insurance-contributions-thresholds-unt\n        - title: Explanatory Memorandum to SI 2026/231 para 5.25\n          href: https://www.legislation.gov.uk/uksi/2026/231/pdfs/uksiem_20260231_en_001.pdf\n  2029-04-06:\n    value: 50_270\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(b)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n        - title: Budget 2025 (HC 1492) para 4.111\n          href: https://assets.publishing.service.gov.uk/media/6929b353345e31ab14ecf735/E03444720_Budget_2025_Web_Accessible.pdf#page=113\n        - title: \"HMRC: Maintaining Income Tax and equivalent National Insurance contributions thresholds until 5 April 2031\"\n          href: https://www.gov.uk/government/publications/maintaining-income-tax-and-equivalent-national-insurance-contributions-thresholds-until-5-april-2031/income-tax-maintaining-the-personal-allowance-and-the-basic-rate-limit-for-income-tax-and-equivalent-national-insurance-contributions-thresholds-unt\n        - title: Explanatory Memorandum to SI 2026/231 para 5.25\n          href: https://www.legislation.gov.uk/uksi/2026/231/pdfs/uksiem_20260231_en_001.pdf\n  2030-04-06:\n    value: 50_270\n    metadata:\n      reference:\n        - title: Social Security Contributions and Benefits Act 1992 s.15(3)(b)\n          href: https://www.legislation.gov.uk/ukpga/1992/4/section/15\n        - title: Budget 2025 (HC 1492) para 4.111\n          href: https://assets.publishing.service.gov.uk/media/6929b353345e31ab14ecf735/E03444720_Budget_2025_Web_Accessible.pdf#page=113\n        - title: \"HMRC: Maintaining Income Tax and equivalent National Insurance contributions thresholds until 5 April 2031\"\n          href: https://www.gov.uk/government/publications/maintaining-income-tax-and-equivalent-national-insurance-contributions-thresholds-until-5-april-2031/income-tax-maintaining-the-personal-allowance-and-the-basic-rate-limit-for-income-tax-and-equivalent-national-insurance-contributions-thresholds-unt\n        - title: Explanatory Memorandum to SI 2026/231 para 5.25\n          href: https://www.legislation.gov.uk/uksi/2026/231/pdfs/uksiem_20260231_en_001.pdf\nmetadata:\n  label: NI upper profits limit\n  unit: currency-GBP\n  period: year\n  uprating: gov.economic_assumptions.indices.obr.consumer_price_index\n  reference:\n    - https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/882271/Table-a4.pdf\n    - https://www.gov.uk/government/publications/rates-and-allowances-national-insurance-contributions/rates-and-allowances-national-insurance-contributions\n"
+    },
+    "utils/class_2.py": {
+      "sha256": "df91319f89a0bf65ca04c399f56c1c9be65699ee7f5f69299136daec60724a0d",
+      "text": "\"\"\"Class 2 National Insurance rules shared by ni_class_2 and by the notional\nClass 2 that the Universal Credit minimum income floor deducts.\n\nBoth charge a whole tax year of self-employment, so they share the s.11(2)\nliability test and the number of contribution weeks in the year.\n\"\"\"\n\nimport datetime\n\nimport numpy as np\n\n\ndef class_2_contribution_weeks(year: int) -> int:\n    \"\"\"Contribution weeks in the tax year that starts on 6 April of ``year``.\n\n    A contribution week is \"a period of seven days beginning with midnight\n    between Saturday and Sunday\" (SI 2001/1004 reg. 1(2)), and the first week\n    of a contribution year starts on the first Sunday after 5 April (HMRC\n    NIM70200). A year therefore has one week for each Sunday from 6 April to\n    the following 5 April: 53 in 2019-20 and 2025-26, 52 in the other years\n    from 2015-16 to 2026-27. NIM70200: \"a person who is self-employed for the\n    full year will be liable for all 53 weeks.\"\n    \"\"\"\n    start = datetime.date(year, 4, 6)\n    end = datetime.date(year + 1, 4, 5)\n    # date.weekday() is 6 on a Sunday.\n    first_sunday = start + datetime.timedelta(days=(6 - start.weekday()) % 7)\n    return (end - first_sunday).days // 7 + 1\n\n\ndef class_2_liable(relevant_profits, class_2):\n    \"\"\"Whether relevant profits meet the s.11(2) SSCBA 1992 profit condition\n    for the year.\n\n    From 2022-23 only relevant profits that exceed the lower profits threshold\n    are liable; those from the small profits threshold up to it are treated as\n    paid (s.11(5A)-(5B)) and cost nothing. Before then liability started at\n    the small profits threshold (\"of, or exceeding\"). ``class_2`` is the\n    gov.hmrc.national_insurance.class_2 parameter node for the year.\n\n    This is the threshold condition only. Callers multiply by the flat rate,\n    which is nil from 2024-25, when s.11(2) is omitted; the retained\n    thresholds then apply only to a reform that restores a rate.\n    \"\"\"\n    return np.where(\n        class_2.lower_profits_threshold_applies,\n        relevant_profits > class_2.lower_profits_threshold,\n        relevant_profits >= class_2.small_profits_threshold,\n    )\n"
+    },
+    "variables/gov/dwp/universal_credit/income/income_floor/uc_minimum_income_floor_national_insurance.py": {
+      "sha256": "de172055b1de97020b71112b84ee0865d159de4059a49052b26a7d563ec9d1c4",
+      "text": "from policyengine_uk.model_api import *\nfrom policyengine_uk.utils.class_2 import class_2_contribution_weeks, class_2_liable\n\n\nclass uc_minimum_income_floor_national_insurance(Variable):\n    value_type = float\n    entity = Person\n    label = \"Universal Credit minimum income floor deduction for National Insurance\"\n    documentation = (\n        \"The amount for National Insurance deducted from the person's gross \"\n        \"individual threshold to give their net minimum income floor. The \"\n        \"regulations leave it to the Secretary of State. The model takes the \"\n        \"contributions the person would pay if the threshold were their only \"\n        \"earnings: Class 2 and Class 4 on self-employed profits of that \"\n        \"amount, as in DWP's figures, or primary Class 1 on pay of that \"\n        \"amount where the parameter selects it.\"\n    )\n    definition_period = YEAR\n    unit = GBP\n    reference = [\n        dict(\n            title=\"Universal Credit Regulations 2013 reg. 62(4)(b)\",\n            href=\"https://www.legislation.gov.uk/uksi/2013/376/regulation/62\",\n        ),\n        dict(\n            title=\"Social Security Contributions and Benefits Act 1992 ss. 8, 11 and 15\",\n            href=\"https://www.legislation.gov.uk/ukpga/1992/4/part/I\",\n        ),\n    ]\n\n    def formula(person, period, parameters):\n        p = parameters(period)\n        ni = p.gov.hmrc.national_insurance\n        threshold = person(\"uc_minimum_income_floor_gross\", period)\n        # Primary Class 1 on pay equal to the threshold, with the annual\n        # thresholds (weekly amounts times 52) the model uses for employees.\n        class_1 = ni.class_1\n        primary_threshold = class_1.thresholds.primary_threshold * WEEKS_IN_YEAR\n        upper_earnings_limit = class_1.thresholds.upper_earnings_limit * WEEKS_IN_YEAR\n        employee = class_1.rates.employee.main * max_(\n            0, min_(threshold, upper_earnings_limit) - primary_threshold\n        ) + class_1.rates.employee.additional * max_(\n            0, threshold - upper_earnings_limit\n        )\n        # Class 2 and Class 4 on profits equal to the threshold, by the same\n        # s.11(2) test and contribution weeks as ni_class_2: from 2022-23\n        # profits up to the lower profits threshold are treated as paid.\n        class_2 = (\n            class_2_liable(threshold, ni.class_2)\n            * ni.class_2.flat_rate\n            * class_2_contribution_weeks(period.start.year)\n        )\n        class_4 = ni.class_4\n        class_4_amount = class_4.rates.main * max_(\n            0,\n            min_(threshold, class_4.thresholds.upper_profits_limit)\n            - class_4.thresholds.lower_profits_limit,\n        ) + class_4.rates.additional * max_(\n            0, threshold - class_4.thresholds.upper_profits_limit\n        )\n        # Each class is due only from those the model treats as liable for\n        # it, as for the person's actual contributions. Primary Class 1 and\n        # Class 2 stop at State Pension age (ni_liable). Class 4 is due for\n        # the whole tax year from anyone not over it on 6 April (SI 2001/1004\n        # reg. 91(a), ni_class_4_liable). No class is due from anyone under 16.\n        liable = person(\"ni_liable\", period)\n        class_4_liable = person(\"ni_class_4_liable\", period)\n        self_employed = liable * class_2 + class_4_liable * class_4_amount\n        mif = p.gov.dwp.universal_credit.means_test.minimum_income_floor\n        return where(\n            mif.self_employed_national_insurance, self_employed, liable * employee\n        )\n"
+    },
+    "variables/gov/hmrc/national_insurance/class_2/ni_class_2.py": {
+      "sha256": "0389117ba789de20758fc34e1781750635ac2cf72a004287a3a893ee78c12e7b",
+      "text": "from policyengine_uk.model_api import *\nfrom policyengine_uk.utils.class_2 import class_2_contribution_weeks, class_2_liable\n\n\nclass ni_class_2(Variable):\n    value_type = float\n    entity = Person\n    label = \"NI Class 2 contributions\"\n    documentation = (\n        \"Compulsory Class 2 contributions under s.11(2) SSCBA 1992 for a full \"\n        \"year of self-employment: the weekly rate for each contribution week \"\n        \"in the tax year (53 in 2019-20, otherwise 52 to 2023-24). Liability \"\n        \"is tested on relevant profits, the profits on which Class 4 is \"\n        \"payable under s.15 (s.11(3)), as modelled in ni_class_4_profits.\"\n    )\n    definition_period = YEAR\n    unit = GBP\n    defined_for = \"ni_liable\"\n    reference = [\n        dict(\n            title=\"Social Security Contributions and Benefits Act 1992, s. 11\",\n            href=\"https://www.legislation.gov.uk/ukpga/1992/4/section/11\",\n        ),\n        dict(\n            title=\"HMRC National Insurance Manual NIM70650\",\n            href=\"https://www.gov.uk/hmrc-internal-manuals/national-insurance-manual/nim70650\",\n        ),\n        dict(\n            title=\"HMRC National Insurance Manual NIM70200\",\n            href=\"https://www.gov.uk/hmrc-internal-manuals/national-insurance-manual/nim70200\",\n        ),\n    ]\n\n    def formula(person, period, parameters):\n        class_2 = parameters(period).gov.hmrc.national_insurance.class_2\n        # Section 11(3) SSCBA 1992: \"relevant profits\" are the profits in\n        # respect of which Class 4 is payable under s.15 (or would be, if they\n        # exceeded the lower profits limit), which s.15(3) computes under\n        # Schedule 2. Class 2 and Class 4 therefore share one profit base.\n        profits = person(\"ni_class_4_profits\", period)\n        # The flat rate is 0 once s.11(2) is omitted in 2024-25.\n        weeks = class_2_contribution_weeks(period.start.year)\n        return class_2_liable(profits, class_2) * class_2.flat_rate * weeks\n"
+    },
+    "variables/gov/hmrc/national_insurance/class_4/ni_class_4_maximum.py": {
+      "sha256": "50f5c1cb7d6031ccf8cc277d3625290eb27c2f9b77f50f09aea1c6695d647fcb",
+      "text": "from policyengine_uk.model_api import *\n\n\nclass ni_class_4_maximum(Variable):\n    label = \"NI Class 4 maximum liability\"\n    entity = Person\n    definition_period = YEAR\n    value_type = float\n    unit = GBP\n    reference = \"https://www.legislation.gov.uk/uksi/2001/1004/regulation/100\"\n\n    def formula(person, period, parameters):\n        ni = parameters(period).gov.hmrc.national_insurance\n        upl = ni.class_4.thresholds.upper_profits_limit\n        lpl = ni.class_4.thresholds.lower_profits_limit\n        step_1 = upl - lpl\n        # Regulation 100 writes its percentages out, but in every year from\n        # 2015-16 they match the Class 4 rates: 9% and 2% (Steps Two, Five,\n        # Eight and Nine) to 2021-22 and in 2023-24; 9.73% and 2.73% for\n        # 2022-23 (Health and Social Care Levy (Repeal) Act 2022 Sch para\n        # 6(2)); from 2024-25, 6% and 100/6 in Steps Two and Five (National\n        # Insurance Contributions (Reduction in Rates) Act 2024 s 2(3)) with\n        # Steps Eight and Nine still at 2%. So the steps read the rate\n        # parameters.\n        main_rate = ni.class_4.rates.main\n        add_rate = ni.class_4.rates.additional\n        step_2 = step_1 * main_rate\n        # Class 2 contributions drop out of regulation 100 from 6 April 2024.\n        includes_class_2 = ni.class_4.annual_maximum.includes_class_2\n        class_2_weeks_addition = 53 * ni.class_2.flat_rate * includes_class_2\n        step_3 = step_2 + class_2_weeks_addition\n        class_2_contributions = person(\"ni_class_2\", period) * includes_class_2\n        primary_class_1_contributions = person(\"ni_class_1_employee_primary\", period)\n        step_4_raw = step_3 - class_2_contributions - primary_class_1_contributions\n        step_4 = max_(step_4_raw, 0)\n        # Case 1: Step Four exceeds primary Class 1 + Class 2 + main-rate\n        # Class 4. Main-rate Class 4 is Step Two less the main rate on the\n        # unused part of the main band, so this is equivalent to\n        #   main rate x unused band + 53 weekly Class 2 rates\n        #     > 2 x (primary Class 1 + Class 2).\n        # Comparing the totals directly left the case to float32 rounding\n        # when they were equal (profits above the UPL, no Class 1 or 2), and\n        # a wrong Case 1 dropped the additional-rate band (#1878). The unused\n        # band is exactly zero at or above the UPL, so that equality is now\n        # decided exactly.\n        profits = person(\"ni_class_4_profits\", period)\n        unused_main_band = clip(upl - profits.astype(np.float64), 0, step_1)\n        case_1 = (step_4_raw >= 0) & (\n            main_rate * unused_main_band + class_2_weeks_addition\n            > 2\n            * (\n                class_2_contributions.astype(np.float64)\n                + primary_class_1_contributions.astype(np.float64)\n            )\n        )\n        # Step Five converts Step Four back to profits at the main rate. With a\n        # zero main rate (a reform abolishing it) there is no main-rate\n        # liability to limit, so the headroom is unlimited instead of 0 / 0.\n        step_5 = np.divide(\n            step_4,\n            main_rate,\n            out=np.full_like(step_4, np.inf),\n            where=main_rate > 0,\n        )\n        step_6 = min_(upl, profits) - lpl\n        step_7 = max_(0, step_6 - step_5)\n        step_8 = step_7 * add_rate\n        step_9 = max_(0, profits - upl) * add_rate\n\n        return where(case_1, step_4, step_4 + step_8 + step_9)\n"
+    }
+  },
+  "wheel_filename": "policyengine_uk-2.125.1-py3-none-any.whl",
+  "wheel_sha256": "a0983b4cef868467578a4fd0d163a977a0da8f710dd5194ec01c75f66d512c5a",
+  "wheel_upload_utc": "2026-10-10T00:21:17",
+  "wheel_url": "https://files.pythonhosted.org/packages/ec/3a/1d90bad4346d1a8c2715be211ed3d3d7f48917da0d90405b8257b7304091/policyengine_uk-2.125.1-py3-none-any.whl"
+}

@@ -106,14 +106,14 @@ def test_dwp_mapping_and_drops(monkeypatch):
     monkeypatch.setattr("scorecard_db.ingest_uk_externals._load", lambda name: rows)
     scores, ledger, drops = stage_dwp_takeup()
     assert drops == {"range_variants": 2}
-    # The recipient count is a published ADMIN cell: it routes to Ledger
+    # The recipient count is a published ADMIN cell: it routes to Chronicle
     # (boundary rule 2026-08-02), never to a claim.
     assert len(scores) == 1 and len(ledger) == 1
     (rate,), (admin,) = scores, ledger
     assert admin["metric"] == "recipients_count"
     assert admin["fy"] == "2023-24"
     assert admin["fact_id"].startswith("uk-admin-")
-    assert admin["routing"].startswith("ledger")
+    assert admin["routing"].startswith("chronicle")
     # PC take-up rate: the engine PARAMETER cites the FYE-2020 edition of
     # this series -> seed_source, never consumed (evidence in
     # relationships.py, read 2026-08-19).
@@ -267,7 +267,7 @@ def test_calibration_comes_from_the_registry(monkeypatch):
         )[0]
         is CR.HELD_OUT
     )
-    with pytest.raises(ValueError, match="route to Ledger"):
+    with pytest.raises(ValueError, match="route to Chronicle"):
         uk_relationship(
             "obr", Metric.BENEFIT_COST, program="pension_credit", kind="outturn"
         )
@@ -391,7 +391,7 @@ def test_full_ingest_round_trip(tmp_path):
     summary = ingest(tmp_path / "t.db")
     # Exact accounting (adjudication blocker 7 — a drifted adapter
     # regeneration must fail, never pass a >0 check): 15,851 claims +
-    # 1,073 Ledger facts = 16,924 admitted rows; + 1,829 deliberate
+    # 1,073 Chronicle facts = 16,924 admitted rows; + 1,829 deliberate
     # drops = 18,753, every adapter row.
     assert summary["claims"] == {
         "dwp_takeup": 1092,
@@ -666,7 +666,7 @@ def test_winter_fuel_alias_and_distinct_pairs():
     )
 
 
-# --- Ledger routing --------------------------------------------------------
+# --- Chronicle routing --------------------------------------------------------
 
 
 def test_obr_outturn_routes_to_ledger_with_consuming_pin(monkeypatch):
@@ -683,7 +683,7 @@ def test_obr_outturn_routes_to_ledger_with_consuming_pin(monkeypatch):
     by_prog = {r["program"]: r for r in ledger}
     # pension_credit is a consumed 4.9 line -> the pin is named
     assert "pe-uk-data@dd68c73" in by_prog["pension_credit"]["consumed_by"]
-    # christmas_bonus is not consumed -> no pin, still Ledger (outturn)
+    # christmas_bonus is not consumed -> no pin, still Chronicle (outturn)
     assert by_prog["christmas_bonus"]["consumed_by"] is None
     assert scores[0].conditions["basis"] == "forecast"
 
@@ -843,4 +843,21 @@ def test_accounting_drift_fails_loudly(monkeypatch):
 
     monkeypatch.setitem(mod.STAGERS, "ukmod", drifted)
     with pytest.raises(ValueError, match="claim accounting drifted"):
+        mod.stage_all()
+
+
+@pytest.mark.skipif(
+    not externals_present, reason="UK adapter outputs not present (PRs #43-#47)"
+)
+def test_fact_accounting_drift_fails_loudly(monkeypatch):
+    from scorecard_db import ingest_uk_externals as mod
+
+    real = mod.stage_dwp_takeup
+
+    def drifted():
+        scores, ledger, drops = real()
+        return scores, ledger[:-1], drops  # one fact short
+
+    monkeypatch.setitem(mod.STAGERS, "dwp_takeup", drifted)
+    with pytest.raises(ValueError, match="Chronicle accounting drifted"):
         mod.stage_all()

@@ -1,0 +1,472 @@
+{
+ "family": "fns_snap_rates",
+ "run_id": "fns-snap-rates-20261006",
+ "computed_at": "2026-10-07T00:01:11.066966+00:00",
+ "period": 2024,
+ "time_basis": "average_month",
+ "provenance": {
+  "engine_version": "2.2.1",
+  "data_bundle": "populace-us-2024-spm-20260915",
+  "bundle_id": "us-6.2.1",
+  "policyengine_version": "6.2.1",
+  "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+ },
+ "policyengine_variables": [
+  "is_snap_eligible",
+  "snap",
+  "is_snap_excluded_member",
+  "is_tanf_non_cash_eligible",
+  "takes_up_snap_if_eligible",
+  "state_code_str"
+ ],
+ "pe_construction": "Average of the 12 months of CY2024: weighted persons who are not is_snap_excluded_member in SPM units with is_snap_eligible (eligible_persons) and with snap > 0 (participants), in the federal-rules world (is_tanf_non_cash_eligible forced False for every month, so BBCE-only units are neither eligible nor participants); participation_rate = participants / eligible_persons; takeup_flag_share = eligible_persons whose SPM unit has takes_up_snap_if_eligible / eligible_persons. baseline_* repeat the counts in the as-served world (BBCE included).",
+ "toggle_check": {
+  "federal": {
+   "2024-01": 0.0,
+   "2024-02": 0.0,
+   "2024-03": 0.0,
+   "2024-04": 0.0,
+   "2024-05": 0.0,
+   "2024-06": 0.0,
+   "2024-07": 0.0,
+   "2024-08": 0.0,
+   "2024-09": 0.0,
+   "2024-10": 0.0,
+   "2024-11": 0.0,
+   "2024-12": 0.0
+  },
+  "baseline": {
+   "2024-01": 0.15919866444073455,
+   "2024-02": 0.15953255425709517,
+   "2024-03": 0.15968280467445742,
+   "2024-04": 0.15981636060100166,
+   "2024-05": 0.15981636060100166,
+   "2024-06": 0.15981636060100166,
+   "2024-07": 0.15958263772954925,
+   "2024-08": 0.15958263772954925,
+   "2024-09": 0.15958263772954925,
+   "2024-10": 0.16844741235392321,
+   "2024-11": 0.16824707846410686,
+   "2024-12": 0.16819699499165275
+  }
+ },
+ "geographies": {
+  "US": {
+   "eligible_persons": 38995569.54350376,
+   "participants": 37822104.85410287,
+   "baseline_eligible_persons": 66880561.96590707,
+   "baseline_participants": 60585012.248227544,
+   "participation_rate": 0.9699077432862786,
+   "takeup_flag_share": 0.9754994084262304,
+   "baseline_participating_spm_units": 22443239.056989428
+  },
+  "AL": {
+   "eligible_persons": 773450.5892315438,
+   "participants": 773450.5892315438,
+   "baseline_eligible_persons": 1005944.7174705258,
+   "baseline_participants": 1005944.7174705258,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "AK": {
+   "eligible_persons": 103844.57555363413,
+   "participants": 103626.00479267769,
+   "baseline_eligible_persons": 103844.57555363413,
+   "baseline_participants": 103626.00479267769,
+   "participation_rate": 0.9978952125347794,
+   "takeup_flag_share": 0.9978952125347794
+  },
+  "AZ": {
+   "eligible_persons": 971482.3606550664,
+   "participants": 761063.4299616799,
+   "baseline_eligible_persons": 1885862.5572909515,
+   "baseline_participants": 1412217.3235438394,
+   "participation_rate": 0.7834042704064107,
+   "takeup_flag_share": 0.7834042704064107
+  },
+  "AR": {
+   "eligible_persons": 399459.7582624811,
+   "participants": 399459.7582624811,
+   "baseline_eligible_persons": 399459.7582624811,
+   "baseline_participants": 399459.7582624811,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "CA": {
+   "eligible_persons": 4369822.700518019,
+   "participants": 4303695.0838188,
+   "baseline_eligible_persons": 6982905.198808707,
+   "baseline_participants": 6916777.582109489,
+   "participation_rate": 0.9848672082985472,
+   "takeup_flag_share": 1.0
+  },
+  "CO": {
+   "eligible_persons": 466302.77328515594,
+   "participants": 459363.7178645407,
+   "baseline_eligible_persons": 1019041.7920724504,
+   "baseline_participants": 845282.0546355167,
+   "participation_rate": 0.9851189917406478,
+   "takeup_flag_share": 0.9851189917406478
+  },
+  "CT": {
+   "eligible_persons": 275854.08972958906,
+   "participants": 270654.9218257108,
+   "baseline_eligible_persons": 769933.0880690446,
+   "baseline_participants": 547571.2424931613,
+   "participation_rate": 0.9811524711887547,
+   "takeup_flag_share": 0.9811524885205426
+  },
+  "DE": {
+   "eligible_persons": 112434.29710824875,
+   "participants": 107820.1194131957,
+   "baseline_eligible_persons": 229063.18739389148,
+   "baseline_participants": 168583.85959901835,
+   "participation_rate": 0.958961119393928,
+   "takeup_flag_share": 0.958961119393928
+  },
+  "DC": {
+   "eligible_persons": 73320.63355878547,
+   "participants": 73320.63355878547,
+   "baseline_eligible_persons": 193902.21028878834,
+   "baseline_participants": 193902.21028878834,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "FL": {
+   "eligible_persons": 2643632.4107062086,
+   "participants": 2643632.4107062086,
+   "baseline_eligible_persons": 5665279.769577961,
+   "baseline_participants": 5025615.426411342,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "GA": {
+   "eligible_persons": 1311904.7325100824,
+   "participants": 1311904.7325100824,
+   "baseline_eligible_persons": 2131602.101809107,
+   "baseline_participants": 2097879.7109964313,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "HI": {
+   "eligible_persons": 106741.84677101039,
+   "participants": 106741.84677101039,
+   "baseline_eligible_persons": 211117.5746991979,
+   "baseline_participants": 211117.5746991979,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "ID": {
+   "eligible_persons": 126495.05258828097,
+   "participants": 126495.05258828097,
+   "baseline_eligible_persons": 257823.38833858716,
+   "baseline_participants": 155363.80121584484,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "IL": {
+   "eligible_persons": 1463559.8560635627,
+   "participants": 1463559.8560635627,
+   "baseline_eligible_persons": 2870487.749538075,
+   "baseline_participants": 2761487.210724292,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "IN": {
+   "eligible_persons": 900139.5317177706,
+   "participants": 900139.5317177706,
+   "baseline_eligible_persons": 1018511.0819233814,
+   "baseline_participants": 1018511.0819233814,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "IA": {
+   "eligible_persons": 254654.76273639375,
+   "participants": 216241.13400112116,
+   "baseline_eligible_persons": 528419.936555249,
+   "baseline_participants": 361314.21656549064,
+   "participation_rate": 0.8491540926920086,
+   "takeup_flag_share": 0.8491540926920086
+  },
+  "KS": {
+   "eligible_persons": 278232.88661480736,
+   "participants": 239700.36736584493,
+   "baseline_eligible_persons": 278232.88661480736,
+   "baseline_participants": 239700.36736584493,
+   "participation_rate": 0.8615098318614369,
+   "takeup_flag_share": 0.8615098318614369
+  },
+  "KY": {
+   "eligible_persons": 735332.9774483264,
+   "participants": 585921.2519191244,
+   "baseline_eligible_persons": 1443879.7075954042,
+   "baseline_participants": 1053184.7638636262,
+   "participation_rate": 0.7968107916937514,
+   "takeup_flag_share": 0.7968107916937514
+  },
+  "LA": {
+   "eligible_persons": 784708.3787455506,
+   "participants": 784708.3787455506,
+   "baseline_eligible_persons": 1165197.4227414855,
+   "baseline_participants": 1165197.4227414855,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "ME": {
+   "eligible_persons": 65056.867144276795,
+   "participants": 65047.97489692742,
+   "baseline_eligible_persons": 268085.0297310389,
+   "baseline_participants": 221925.06222575973,
+   "participation_rate": 0.9998633157768011,
+   "takeup_flag_share": 0.9998633157768011
+  },
+  "MD": {
+   "eligible_persons": 706755.2090979615,
+   "participants": 642254.5583005492,
+   "baseline_eligible_persons": 1323800.7370219121,
+   "baseline_participants": 1064720.7875735147,
+   "participation_rate": 0.9087369290426098,
+   "takeup_flag_share": 0.9609476236776249
+  },
+  "MA": {
+   "eligible_persons": 852921.1630467554,
+   "participants": 852921.1630467554,
+   "baseline_eligible_persons": 1577338.6465752122,
+   "baseline_participants": 1496086.656641444,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "MI": {
+   "eligible_persons": 1064987.9727503443,
+   "participants": 979295.6605648998,
+   "baseline_eligible_persons": 2384996.2178754113,
+   "baseline_participants": 2103606.3768876917,
+   "participation_rate": 0.919536826351059,
+   "takeup_flag_share": 0.919536826351059
+  },
+  "MN": {
+   "eligible_persons": 403252.7987258181,
+   "participants": 375713.1235388627,
+   "baseline_eligible_persons": 1094946.5619962038,
+   "baseline_participants": 629706.7414837377,
+   "participation_rate": 0.9317061771822187,
+   "takeup_flag_share": 0.9317061771822187
+  },
+  "MS": {
+   "eligible_persons": 467282.71376904286,
+   "participants": 467282.71376904286,
+   "baseline_eligible_persons": 467282.71376904286,
+   "baseline_participants": 467282.71376904286,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "MO": {
+   "eligible_persons": 829963.0075263992,
+   "participants": 829963.0075263992,
+   "baseline_eligible_persons": 829963.0075263992,
+   "baseline_participants": 829963.0075263992,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "MT": {
+   "eligible_persons": 64486.11028365925,
+   "participants": 46430.384653537185,
+   "baseline_eligible_persons": 225821.85374261768,
+   "baseline_participants": 125591.15390030608,
+   "participation_rate": 0.7200059741439022,
+   "takeup_flag_share": 0.7200059741439022
+  },
+  "NE": {
+   "eligible_persons": 141718.58512629784,
+   "participants": 141713.5372593742,
+   "baseline_eligible_persons": 243618.67926621213,
+   "baseline_participants": 236974.82709559737,
+   "participation_rate": 0.9999643810519336,
+   "takeup_flag_share": 0.9999643810519336
+  },
+  "NV": {
+   "eligible_persons": 531171.6555735668,
+   "participants": 531171.6555735668,
+   "baseline_eligible_persons": 735858.3886703341,
+   "baseline_participants": 696456.223603973,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "NH": {
+   "eligible_persons": 75645.65091792449,
+   "participants": 68954.0962909122,
+   "baseline_eligible_persons": 159573.49998949395,
+   "baseline_participants": 117817.05604426701,
+   "participation_rate": 0.9115407885871374,
+   "takeup_flag_share": 0.9115407885871374
+  },
+  "NJ": {
+   "eligible_persons": 986199.2430152415,
+   "participants": 923885.5786957826,
+   "baseline_eligible_persons": 1468270.5422416264,
+   "baseline_participants": 1226739.8967583247,
+   "participation_rate": 0.9368143255424342,
+   "takeup_flag_share": 0.9368143255424342
+  },
+  "NM": {
+   "eligible_persons": 333567.88605855056,
+   "participants": 333567.88605855056,
+   "baseline_eligible_persons": 598653.8067561087,
+   "baseline_participants": 585235.1087464186,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "NY": {
+   "eligible_persons": 3081158.55900769,
+   "participants": 2966136.25432019,
+   "baseline_eligible_persons": 5090988.090001412,
+   "baseline_participants": 4718641.082762864,
+   "participation_rate": 0.9626691380905292,
+   "takeup_flag_share": 1.0
+  },
+  "NC": {
+   "eligible_persons": 1188386.4267159658,
+   "participants": 1188382.1972549248,
+   "baseline_eligible_persons": 2299102.0127758244,
+   "baseline_participants": 2179633.8918415788,
+   "participation_rate": 0.9999964410052606,
+   "takeup_flag_share": 0.9999964410052606
+  },
+  "ND": {
+   "eligible_persons": 33632.39048003263,
+   "participants": 33632.39048003263,
+   "baseline_eligible_persons": 51506.65098902851,
+   "baseline_participants": 51506.65098902851,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "OH": {
+   "eligible_persons": 1260840.1872954166,
+   "participants": 1260840.1872954166,
+   "baseline_eligible_persons": 2022243.456446615,
+   "baseline_participants": 1965018.4385864853,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "OK": {
+   "eligible_persons": 605191.6370582993,
+   "participants": 605191.6370582993,
+   "baseline_eligible_persons": 887938.5640789304,
+   "baseline_participants": 887938.5640789304,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "OR": {
+   "eligible_persons": 490217.56977138686,
+   "participants": 490217.56977138686,
+   "baseline_eligible_persons": 1144548.350733978,
+   "baseline_participants": 1034716.8502649885,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "PA": {
+   "eligible_persons": 1607272.1104933785,
+   "participants": 1607272.1104933785,
+   "baseline_eligible_persons": 3157536.2944498328,
+   "baseline_participants": 2896270.978484293,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "RI": {
+   "eligible_persons": 133639.3212082036,
+   "participants": 133639.3212082036,
+   "baseline_eligible_persons": 197614.18480570722,
+   "baseline_participants": 197614.18480570722,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "SC": {
+   "eligible_persons": 568991.1867190703,
+   "participants": 568991.126461777,
+   "baseline_eligible_persons": 761852.5167582431,
+   "baseline_participants": 742811.1257298528,
+   "participation_rate": 0.99999989409802,
+   "takeup_flag_share": 1.0
+  },
+  "SD": {
+   "eligible_persons": 101569.35286765866,
+   "participants": 101569.14286138903,
+   "baseline_eligible_persons": 101569.35286765866,
+   "baseline_participants": 101569.14286138903,
+   "participation_rate": 0.9999979323854716,
+   "takeup_flag_share": 0.9999979323854716
+  },
+  "TN": {
+   "eligible_persons": 1011569.5339830572,
+   "participants": 1011569.5339830572,
+   "baseline_eligible_persons": 1011569.5339830572,
+   "baseline_participants": 1011569.5339830572,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "TX": {
+   "eligible_persons": 3587296.0876074866,
+   "participants": 3587296.0876074866,
+   "baseline_eligible_persons": 4783150.291063401,
+   "baseline_participants": 4783150.238172652,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "UT": {
+   "eligible_persons": 271022.4495687001,
+   "participants": 271022.4495687001,
+   "baseline_eligible_persons": 271022.4495687001,
+   "baseline_participants": 271022.4495687001,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "VT": {
+   "eligible_persons": 36356.142674948045,
+   "participants": 36356.142674948045,
+   "baseline_eligible_persons": 110488.39711005196,
+   "baseline_participants": 110197.02030565288,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "VA": {
+   "eligible_persons": 765513.4557082229,
+   "participants": 577150.7872107909,
+   "baseline_eligible_persons": 2002382.6070270392,
+   "baseline_participants": 1192206.764161495,
+   "participation_rate": 0.7539394414391236,
+   "takeup_flag_share": 0.7539394414391236
+  },
+  "WA": {
+   "eligible_persons": 660782.3765546158,
+   "participants": 660781.9371189687,
+   "baseline_eligible_persons": 1570557.7494935489,
+   "baseline_participants": 1458133.5189030617,
+   "participation_rate": 0.9999993349767446,
+   "takeup_flag_share": 0.9999993349767446
+  },
+  "WV": {
+   "eligible_persons": 270845.70018074923,
+   "participants": 270845.70018074923,
+   "baseline_eligible_persons": 530557.5232941009,
+   "baseline_participants": 469021.68291334476,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  },
+  "WI": {
+   "eligible_persons": 611574.6990579749,
+   "participants": 526182.8375494938,
+   "baseline_eligible_persons": 1311888.2709840483,
+   "baseline_participants": 993820.908145004,
+   "participation_rate": 0.8603737832189388,
+   "takeup_flag_share": 0.8603737832189388
+  },
+  "WY": {
+   "eligible_persons": 35327.27971054775,
+   "participants": 35327.27971054775,
+   "baseline_eligible_persons": 35327.27971054775,
+   "baseline_participants": 35327.27971054775,
+   "participation_rate": 1.0,
+   "takeup_flag_share": 1.0
+  }
+ }
+}

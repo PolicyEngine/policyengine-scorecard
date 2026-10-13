@@ -1,0 +1,127 @@
+name: gate freshness
+
+# WHY THIS EXISTS
+#
+# GitHub runs a `pull_request` workflow from the PULL REQUEST'S OWN
+# branch, not from the base. So a branch that forked before a gate was
+# added keeps running the OLD workflow — and its green tick means
+# something weaker than the tick on a fresh branch, while looking
+# identical.
+#
+# That is not hypothetical here. #74 made the database a derived
+# artifact and added two gates to ci.yml: a determinism check (two
+# builds must agree on the content hash) and a no-drift gate (`git diff
+# --exit-code` after the build and after the suite). Branches that
+# forked before it kept the pre-#74 workflow, so NEITHER GATE HAD EVER
+# RUN against them — and they were reviewed and approved on the
+# understanding that both had. They also still tracked the committed
+# database that #74 removed.
+#
+# This job closes that. `pull_request_target` runs the workflow from the
+# BASE branch, so a stale head cannot skip it: the check is defined by
+# main and applies to every PR regardless of what its own .github looks
+# like.
+#
+# SECURITY: pull_request_target runs in the context of the base repo, so
+# this job NEVER checks out or executes pull-request code. It reads git
+# metadata only — commit ancestry — and holds read-only permissions.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  freshness:
+    name: PR contains the current gates
+    runs-on: ubuntu-latest
+    steps:
+      # Base branch only. The PR's tree is never checked out.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          fetch-depth: 0
+
+      - name: Fetch the head commit as data
+        run: |
+          git fetch --no-tags --depth=200 origin \
+            "+${{ github.event.pull_request.head.sha }}:refs/gatecheck/head" || \
+          git fetch --no-tags origin \
+            "+${{ github.event.pull_request.head.sha }}:refs/gatecheck/head"
+
+      - name: Refuse a branch whose green tick means less than main's
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+
+          # The gate set is DERIVED FROM THE BASE, not hardcoded here, so
+          # a gate added to ci.yml later is enforced on every open PR
+          # without anyone remembering to update this file. A "gate" is a
+          # line of the base workflow that makes the build prove
+          # something: the determinism assertion and the no-drift checks.
+          git show "$BASE_SHA:.github/workflows/ci.yml" > /tmp/base-ci.yml
+          grep -E 'nondeterministic|git diff --exit-code' /tmp/base-ci.yml \
+            | sed 's/^[[:space:]]*//' | sort -u > /tmp/required-gates.txt
+
+          echo "Gates defined by the base branch:"
+          sed 's/^/  /' /tmp/required-gates.txt
+
+          stale=0
+
+          if git cat-file -e "$HEAD_SHA:.github/workflows/ci.yml" 2>/dev/null; then
+            git show "$HEAD_SHA:.github/workflows/ci.yml" > /tmp/head-ci.yml
+          else
+            echo "STALE this branch has no .github/workflows/ci.yml at all"
+            : > /tmp/head-ci.yml
+            stale=1
+          fi
+
+          while IFS= read -r gate; do
+            [ -z "$gate" ] && continue
+            if grep -qF -- "$gate" /tmp/head-ci.yml; then
+              echo "ok    $gate"
+            else
+              echo "STALE this branch's ci.yml is missing: $gate"
+              stale=1
+            fi
+          done < /tmp/required-gates.txt
+
+          # The committed database left the repo in #74. A branch that
+          # still tracks it forked before that, and its build cannot have
+          # been from-scratch.
+          if git ls-tree -r --name-only "$HEAD_SHA" -- data/scorecard.db | grep -q .; then
+            echo "STALE data/scorecard.db is still TRACKED on this branch (removed in #74)"
+            stale=1
+          fi
+
+          if [ "$stale" -ne 0 ]; then
+            cat <<'MSG'
+
+          ────────────────────────────────────────────────────────────
+          This branch is running an OLDER workflow than main's.
+
+          GitHub runs a pull_request workflow from the PULL REQUEST'S OWN
+          branch. So a branch that forked before a gate was added keeps
+          running the workflow WITHOUT that gate — and its green tick
+          looks identical to one that ran the full set while meaning
+          strictly less.
+
+          Fix, and nothing about your own changes needs to move:
+
+              git checkout <this-branch>
+              git merge origin/main
+              rm -f data/scorecard.db          # gitignored since #74
+              PYTHONPATH=. python -m scorecard_db.build_db data/scorecard.db
+              pytest tests/ -q
+              git status --short               # must be clean
+
+          ────────────────────────────────────────────────────────────
+          MSG
+            exit 1
+          fi
+
+          echo "This PR runs every gate the base branch defines."

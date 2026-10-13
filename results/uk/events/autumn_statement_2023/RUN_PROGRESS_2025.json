@@ -1,0 +1,18 @@
+{
+ "artifacts": {
+  "results/uk/events/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2025.json": "1b7002908a8df14628b82d035c4eed72c16c06aba530b5e3ad841da25b01826e",
+  "results/uk/events/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2025.json": "f6f3ead373fbe24d5ac6838752c31503c83917e29aec9e670feae9e1a4afa493",
+  "results/uk/events/autumn_statement_2023/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2025.json": "fab7fbd151a2ec9da57c5ba3f1083cbd2001d2c9a1418821cf99aa727258bb9d",
+  "results/uk/events/autumn_statement_2023/autumn_statement_2023__lha_reset_to_30th_percentile_2025.json": "d2769bf900bc9aad6887ca2f42617c70e1d27c2a026522ed87b12c01b77adaf6"
+ },
+ "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+ "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+ "engine_version": "2.89.2",
+ "event": "autumn_statement_2023",
+ "policyengine_core_version": "3.27.1",
+ "policyengine_version": "5.0.2",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+ "schema_version": 1,
+ "year": 2025
+}
