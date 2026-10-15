@@ -310,10 +310,13 @@
           "description": "",
           "additionalProperties": false,
           "properties": {
+            "status": {
+              "const": "resolved"
+            },
             "bridge_id": {
-              "type": "string",
-              "description": "",
-              "minLength": 1
+              "enum": [
+                "fy_start_year.v1"
+              ]
             },
             "receipt_sha256": {
               "type": "string",
@@ -322,6 +325,7 @@
             }
           },
           "required": [
+            "status",
             "bridge_id",
             "receipt_sha256"
           ]
@@ -379,6 +383,7 @@
           },
           "annualisation_bridge": {
             "required": [
+              "status",
               "bridge_id",
               "receipt_sha256"
             ]

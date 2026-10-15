@@ -65,6 +65,10 @@ def inventory_fys(event):
     )
 
 
+def sha256_file(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
 def validate_selector(selector):
     """Cross-file/date invariants that JSON Schema cannot express."""
     validator("event_vintage_selector").validate(selector)
@@ -105,6 +109,24 @@ def validate_selector(selector):
                 "sha256": sources[role]["sha256"],
             }
     assert seen_roles == ROLES
+    # cos d1344: resolved methodology fields bind their files by SHA-256.
+    contracts = ROOT / "docs/uk_replay/contracts"
+    contract = selector["policy_world_contract"]
+    if contract.get("status") == "resolved":
+        path = contracts / f"{contract['contract_id']}.md"
+        assert contract["contract_sha256"] == sha256_file(path), "contract digest"
+        record, digest = contract["decision_receipt"].rsplit(" sha256:", 1)
+        record_path = ROOT / record.rsplit("; ", 1)[1]
+        assert digest == sha256_file(record_path), "decision record digest"
+    bridge = selector["annualisation_bridge"]
+    if bridge.get("status") == "resolved":
+        path = contracts / f"annualisation_{bridge['bridge_id']}.json"
+        assert bridge["receipt_sha256"] == sha256_file(path), "bridge receipt digest"
+        receipt = read_json(path)
+        assert receipt["bridge_id"] == bridge["bridge_id"]
+        assert receipt["event_years"][selector["event_slug"]] == {
+            fy: int(fy[:4]) for fy in selector["scoring_fys"]
+        }
 
 
 def test_complete_slice_is_committed():
@@ -287,7 +309,8 @@ def test_ready_selector_rejects_each_pending_contract(field):
         "decision_receipt": "synthetic schema example",
     }
     selector["annualisation_bridge"] = {
-        "bridge_id": "example",
+        "status": "resolved",
+        "bridge_id": "fy_start_year.v1",
         "receipt_sha256": "b" * 64,
     }
     validator("event_vintage_selector").validate(selector)
@@ -307,27 +330,34 @@ def test_ready_selector_rejects_each_pending_contract(field):
 @pytest.mark.parametrize("event", EVENTS)
 def test_selectors_bind_the_d1344_decisions_by_digest(event):
     # cos d1344 (Max, 2026-10-15): the workstream makes the methodology calls;
-    # each selector binds the chosen contract and bridge by their bytes.
+    # each selector binds the contract, the bridge receipt and the decision
+    # record by their bytes (validate_selector checks them).
     selector = read_json(SELECTOR_DIR / f"{event}.json")
-    contracts = ROOT / "docs/uk_replay/contracts"
-    contract = selector["policy_world_contract"]
-    assert contract["status"] == "resolved"
-    path = contracts / f"{contract['contract_id']}.md"
-    assert contract["contract_sha256"] == hashlib.sha256(path.read_bytes()).hexdigest()
-    assert "cos d1344" in contract["decision_receipt"]
-    bridge = selector["annualisation_bridge"]
-    receipt_path = contracts / "annualisation_fy_start_year.v1.json"
-    assert (
-        bridge["receipt_sha256"]
-        == hashlib.sha256(receipt_path.read_bytes()).hexdigest()
-    )
-    receipt = read_json(receipt_path)
-    assert receipt["bridge_id"] == bridge["bridge_id"]
-    # Every scoring FY maps to its start year, and nothing else is mapped.
-    assert receipt["event_years"][event] == {
-        fy: int(fy[:4]) for fy in selector["scoring_fys"]
-    }
+    validate_selector(selector)
     assert selector["readiness"] == "ready_for_population_build"
+    assert selector["policy_world_contract"]["contract_id"] == (
+        "published_end_state_same_weights.v1"
+    )
+    assert selector["annualisation_bridge"]["bridge_id"] == "fy_start_year.v1"
+    assert "cos d1344" in selector["policy_world_contract"]["decision_receipt"]
+
+
+@pytest.mark.parametrize(
+    "field", ("contract_sha256", "receipt_sha256", "decision_record")
+)
+def test_a_changed_methodology_file_breaks_the_binding(field):
+    selector = read_json(SELECTOR_DIR / f"{EVENTS[0]}.json")
+    if field == "contract_sha256":
+        selector["policy_world_contract"]["contract_sha256"] = "0" * 64
+    elif field == "receipt_sha256":
+        selector["annualisation_bridge"]["receipt_sha256"] = "0" * 64
+    else:
+        receipt = selector["policy_world_contract"]["decision_receipt"]
+        selector["policy_world_contract"]["decision_receipt"] = (
+            receipt.rsplit(" sha256:", 1)[0] + " sha256:" + "0" * 64
+        )
+    with pytest.raises(AssertionError):
+        validate_selector(selector)
 
 
 @pytest.mark.parametrize(

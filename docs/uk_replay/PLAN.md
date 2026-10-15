@@ -114,7 +114,8 @@ The first three-event slice is documented in the
 [policy-world proposal](POLICY_WORLD_CONTRACT.md),
 [historical FRS requirements](HISTORICAL_FRS.md) and
 [registry adapter design](HISTORICAL_ADAPTER.md). Its methodology decisions
-remain pending; these contracts do not supply historical population builds.
+were made under cos d1344 ([HISTORICAL_DECISIONS.md](HISTORICAL_DECISIONS.md));
+these contracts do not supply historical population builds.
 
 Finish phase 0, **8–12 lane-days**, with a small set of reviewable artifacts:
 lock the 2022 forecast releases and archive-access receipts; specify the
