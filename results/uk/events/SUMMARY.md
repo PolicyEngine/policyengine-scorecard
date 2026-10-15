@@ -2,11 +2,12 @@
 
 The inventories use the pinned populace-uk-2023 bundle definition with policyengine-uk 2.89.2. A seeded registry does not establish a completed numerical replay. Available comparisons use one source head and fiscal year per row.
 
-Numerical comparison outputs available: 5. Registry inventories available: 5.
+Numerical comparison outputs available: 5. Registry inventories available: 6.
 
 | Event | Replay state | Measures | Source rows | Computed rows | Computed FYs |
 |---|---|---:|---:|---:|---|
 | [autumn_budget_2024](autumn_budget_2024/COMPARISON.md) | Registered construction replay complete | 74 | 1134 | 33 | 2024-25, 2025-26, 2026-27, 2027-28, 2028-29, 2029-30 |
+| autumn_budget_2025 | Registry seeded; numerical replay incomplete | 105 | 1512 | 0 | — |
 | [autumn_statement_2023](autumn_statement_2023/COMPARISON.md) | Registered construction replay complete | 77 | 1116 | 57 | 2023-24, 2024-25, 2025-26, 2026-27, 2027-28, 2028-29 |
 | [spring_budget_2023](spring_budget_2023/COMPARISON.md) | Registered construction replay complete | 89 | 1020 | 15 | 2023-24, 2024-25, 2025-26, 2026-27, 2027-28 |
 | [spring_budget_2024](spring_budget_2024/COMPARISON.md) | Registered construction replay complete | 49 | 816 | 48 | 2023-24, 2024-25, 2025-26, 2026-27, 2027-28, 2028-29 |
@@ -22,6 +23,10 @@ These amounts sum all source heads and costing years, including zero cells. They
 | autumn_budget_2024 / partial | 5 | 60 | 148.279 | 152.288 |
 | autumn_budget_2024 / not_expressible | 43 | 438 | 42.163 | 71.094 |
 | autumn_budget_2024 / out_of_household_scope | 26 | 636 | -380.606 | 477.285 |
+| autumn_budget_2025 / expressible | 1 | 6 | 1.398 | 1.398 |
+| autumn_budget_2025 / partial | 8 | 138 | 19.726 | 73.212 |
+| autumn_budget_2025 / not_expressible | 51 | 510 | -8.198 | 82.650 |
+| autumn_budget_2025 / out_of_household_scope | 45 | 858 | 7.180 | 185.626 |
 | autumn_statement_2023 / expressible | 0 | 0 | 0.000 | 0.000 |
 | autumn_statement_2023 / partial | 4 | 84 | -55.217 | 65.982 |
 | autumn_statement_2023 / not_expressible | 35 | 318 | 15.971 | 21.286 |
@@ -47,6 +52,8 @@ construction_pending identifies unfinished replay constructions; model_or_data_g
 |---|---:|---:|---:|---:|
 | autumn_budget_2024 / construction_pending | 14 | 114 | -2.503 | 21.454 |
 | autumn_budget_2024 / model_or_data_gap | 29 | 324 | 44.666 | 49.640 |
+| autumn_budget_2025 / construction_pending | 36 | 366 | -18.921 | 66.119 |
+| autumn_budget_2025 / model_or_data_gap | 15 | 144 | 10.723 | 16.531 |
 | autumn_statement_2023 / construction_pending | 24 | 204 | 8.607 | 10.499 |
 | autumn_statement_2023 / model_or_data_gap | 11 | 114 | 7.364 | 10.787 |
 | spring_budget_2023 / construction_pending | 23 | 180 | -18.605 | 22.208 |
