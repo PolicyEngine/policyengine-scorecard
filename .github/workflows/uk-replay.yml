@@ -11,10 +11,15 @@ name: UK replay qualification
 # is used only in workflow_dispatch and repository_dispatch runs: the schedule
 # only dispatches a drain. In the run job it is in one step's environment,
 # which fetches and verifies the dataset before any candidate code is
-# installed; candidate steps never see it, and that job has contents: read and
-# no checkout credentials. Scorecard is public: the dataset and anything
-# household-level never leave the runner (no artifact, no cache); only the
-# request and the sealed aggregate results cross jobs, checked before upload.
+# installed. That job has contents: read and no checkout credentials, and
+# candidate code runs as an unprivileged account with no sudo, no access to
+# the workspace, the runner's command files or the processes holding the
+# job's secrets, and an environment built from nothing
+# (.github/scripts/uk_replay_sandbox.sh). Scorecard is public: the dataset and
+# anything household-level never leave the runner. setup-uv's cache is off
+# everywhere here, so no job saves or restores a cache; the only artifacts are
+# the request and the run's output, which an allowlist guard checks before the
+# upload and again before the recorder commits anything.
 # Receipts are pushed before their terminal status names the pushed commit.
 # GitHub documents GITHUB_TOKEN-triggered workflow_dispatch runs at:
 # https://docs.github.com/en/actions/concepts/security/github_token
@@ -66,6 +71,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
       - name: Write the received request
         env:
           EVENT_NAME: ${{ github.event_name }}
@@ -100,6 +107,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
       - name: Mark the oldest eligible request running
         id: select
         env:
@@ -127,6 +136,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
       - uses: actions/download-artifact@v4
         with:
           name: replay-input
@@ -136,18 +147,23 @@ jobs:
         env:
           HUGGING_FACE_TOKEN: ${{ secrets.PE_UK_PRIVATE_HF_READ_TOKEN }}
         run: |
-          uv run --with rfc8785==0.1.4 --with jsonschema --with huggingface_hub python \
+          uv run --with rfc8785==0.1.4 --with jsonschema --with huggingface_hub==2.2.0 python \
             -m pipeline.uk_replay_qualify fetch-dataset --request input/REQUEST.json \
             --output input/dataset.h5 --result-file input/fetch-result.json
+      - name: Hand a private copy to the unprivileged candidate account
+        run: bash .github/scripts/uk_replay_sandbox.sh setup
       - name: Run the candidate and preserve logs and outcome
         env:
           REQUEST_ID: ${{ needs.prepare.outputs.request_id }}
           REPLAY_RUNNER: github-actions ${{ runner.os }} ${{ runner.arch }}
-        run: bash .github/scripts/uk_replay_drain.sh
+        run: bash .github/scripts/uk_replay_sandbox.sh run
+      - name: Stop every candidate process and take its output back
+        if: always()
+        run: bash .github/scripts/uk_replay_sandbox.sh collect
       - name: Nothing household-level leaves the runner
         id: guard
         if: always()
-        run: bash .github/scripts/uk_replay_output_guard.sh output
+        run: python3 -I .github/scripts/uk_replay_output_guard.py output
       # A refused output is never uploaded; the recorder then finds no
       # artifact and records the attempt as failed.
       - name: Upload the receipt and results for the recorder
@@ -170,6 +186,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
       - name: Download the run artifact
         id: download
         continue-on-error: true
@@ -177,6 +195,16 @@ jobs:
         with:
           name: replay-output
           path: output/
+      # The run job's guard ran beside candidate code; check again here,
+      # where nothing of the candidate's has run, before anything reaches the
+      # public branch. A refused output is dropped: the recorder then records
+      # a failed receipt.
+      - name: Nothing household-level reaches the public branch
+        run: |
+          if ! python3 -I .github/scripts/uk_replay_output_guard.py output; then
+            echo "::error::the run's output was refused; recording a failed receipt"
+            rm -rf output
+          fi
       - name: Record the outcome and continue the queue
         env:
           REQUEST_ID: ${{ needs.prepare.outputs.request_id }}

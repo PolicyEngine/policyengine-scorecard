@@ -409,16 +409,52 @@ installed. That one step holds the data token: the organisation secret
 passed as `HUGGING_FACE_TOKEN`, and only in `workflow_dispatch` and
 `repository_dispatch` runs; the schedule only dispatches a drain, and the
 workflow has no pull-request trigger. A fetch rejection is passed to the run
-without installing candidate code. The job then runs
-`.github/scripts/uk_replay_drain.sh` for that one request.
+without installing candidate code.
+
+Candidate code then runs as an unprivileged account
+(`.github/scripts/uk_replay_sandbox.sh`), never as the runner user. The
+runner user has passwordless sudo, owns the workspace and the runner's
+command files (`$GITHUB_ENV`, `$GITHUB_PATH`), and owns the runner processes
+that keep the job's secrets in memory for the whole job and pass the Actions
+runtime token to later steps. The candidate account has no sudoers entry
+(checked: the job fails if it can use sudo), works in its own copy of the
+repository and of `input/` (the request, the verified dataset and the fetch
+outcome), starts from an empty environment (`env -i`), and cannot read
+another user's process memory or environment. It runs
+`.github/scripts/uk_replay_drain.sh` for that one request. Afterwards every
+process it started is killed and a copy of its `output/` comes back to the
+runner user; links are copied as links and special files as special files,
+for the guard to refuse.
 
 Scorecard is public, so the dataset and anything household-level stay on the
-runner: nothing is cached, and the only artifacts are the request and the
-run's `output/` directory. Before that upload,
-`.github/scripts/uk_replay_output_guard.sh` refuses dataset-shaped files
-(`.h5`, `.hdf5`, `.parquet`, `.feather`, pickles), any file over 25 MB and
-any symlink; a refused output is not uploaded, and the recorder records the
-attempt as failed. `pipeline/uk_replay_qualify.py run-request` then:
+runner. No job saves or restores a cache (setup-uv's default cache is off on
+every use, and nothing uses `actions/cache`), so no cache links a candidate
+to the jobs that can write. The only artifacts are the request and the run's
+`output/` directory. `.github/scripts/uk_replay_output_guard.py` (standard
+library, run with the runner's own Python) is an allowlist: every entry must
+be a regular file ending `.json`, `.jsonl`, `.csv`, `.md` or `.txt` whose
+bytes parse as that format (UTF-8 text, no NUL bytes), at most 10 MB each and
+100 MB in all; the committed sealed namespace for 6.2.6 is 30 MB, its largest
+file 3.3 MB. The run job uploads only if the guard passes. The `record` job,
+where no candidate code has run, applies the guard again before committing
+anything to the public `replay-state` branch, and drops a refused output, so
+the attempt is recorded as `failed`.
+
+What this protects, and what it does not. A request names its candidate by
+version and wheel SHA-256, and only a caller with write access to this
+repository can send one (`repository_dispatch` and `workflow_dispatch` both
+require it); requests are meant for PolicyEngine's own releases, from W4. A
+new candidate's dependencies resolve within the newest certified freeze
+where they can. The candidate and its dependencies are trusted with the
+dataset: they compute on it, and the guard stops accidental publication
+(an honest run that writes a dataset copy, a household-level table or a
+binary). Code in the candidate's dependency closure cannot reach the data
+token, the runtime token, the write jobs' credentials or a cache, and cannot
+alter the guard or what the recorder checks. A deliberately malicious
+candidate could still encode data in aggregates that parse, and could forge a
+schema-valid receipt for its own request, since the receipt and seal are
+produced beside it; neither is in scope, and both would require a malicious
+PolicyEngine release. `pipeline/uk_replay_qualify.py run-request` then:
 
 1. Validate the request (`schema_invalid`).
 2. Check the dataset file supplied by the control job against the request
@@ -502,6 +538,9 @@ holds heavy local work back from 29 October to 2 November.
   diagnostics and, on pushes to main with the `PE_UK_PRIVATE_HF_READ_TOKEN`
   secret and a committed sealed namespace, replay one real measure-year on
   the certified dataset and compare its artifact with the committed bytes.
+  The token is in one step that fetches the dataset into the Hugging Face
+  cache; the variant's engine runs in the next step, without it, in a job
+  with `contents: read`, no persisted checkout credential and no cache.
   Pull requests never receive the token: their run emits a notice that
   nothing was replayed. The legacy leg skips diagnostics and this
   determinism step. Without the secret, or without a committed sealed

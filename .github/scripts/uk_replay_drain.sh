@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Candidate code runs only here, in the read-only job without the dataset token.
+# Candidate code runs only here: as the unprivileged candidate account, in its
+# private copy of the repository (uk_replay_sandbox.sh run), after the dataset
+# was fetched and verified. Nothing here holds a token.
 set -euo pipefail
-CONTROL=(uv run --with rfc8785==0.1.4 --with jsonschema --with huggingface_hub python)
+CONTROL=(uv run --with rfc8785==0.1.4 --with jsonschema python)
 mkdir -p output/state
 
 if "${CONTROL[@]}" -m pipeline.uk_replay_qualify run-request \

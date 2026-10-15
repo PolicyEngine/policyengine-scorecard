@@ -227,10 +227,30 @@ def test_candidate_job_has_read_permission_and_no_dataset_token_or_credentials()
         'contains(fromJSON(\'["workflow_dispatch", "repository_dispatch"]\'), '
         "github.event_name)"
     )
+    # Then a private copy for the unprivileged account, the run as that
+    # account, every candidate process killed and the output taken back, the
+    # guard, and the upload only when the guard passed.
     steps = [step.get("name") for step in candidate["steps"]]
-    assert steps.index(fetch["name"]) < steps.index(
-        "Run the candidate and preserve logs and outcome"
+    order = [
+        fetch["name"],
+        "Hand a private copy to the unprivileged candidate account",
+        "Run the candidate and preserve logs and outcome",
+        "Stop every candidate process and take its output back",
+        "Nothing household-level leaves the runner",
+        "Upload the receipt and results for the recorder",
+    ]
+    assert [steps.index(name) for name in order] == sorted(
+        steps.index(name) for name in order
     )
+    by_name = {step.get("name"): step for step in candidate["steps"]}
+    assert by_name[order[1]]["run"] == "bash .github/scripts/uk_replay_sandbox.sh setup"
+    assert by_name[order[2]]["run"] == "bash .github/scripts/uk_replay_sandbox.sh run"
+    assert by_name[order[3]] == {
+        "name": order[3],
+        "if": "always()",
+        "run": "bash .github/scripts/uk_replay_sandbox.sh collect",
+    }
+    assert "huggingface_hub==2.2.0" in fetch["run"]
     rest = {k: v for k, v in candidate.items() if k != "steps"}
     assert "secrets." not in json.dumps(rest)
     assert workflow["jobs"]["record"]["permissions"] == {
@@ -259,14 +279,14 @@ def test_ci_checks_untracked_regeneration_and_announces_skipped_real_replay():
         if step.get("name") == "Replay namespaces regenerate and seals hold"
     )
     assert "git status --porcelain" in steps[regeneration_index + 1]["run"]
-    replay = next(
+    fetch = next(
         step
         for step in workflow["jobs"]["replay-engine"]["steps"]
-        if step.get("name") == "One real measure-year replays byte for byte"
+        if step.get("name") == "Fetch the certified dataset for the real replay"
     )
-    assert '"$RESULT_ROOT/REPLAY_RECEIPT.json"' in replay["run"]
-    assert '"$RESULT_ROOT/NAMESPACE_MANIFEST.json"' in replay["run"]
-    assert replay["run"].count("nothing was replayed") == 2
+    assert '"$RESULT_ROOT/REPLAY_RECEIPT.json"' in fetch["run"]
+    assert '"$RESULT_ROOT/NAMESPACE_MANIFEST.json"' in fetch["run"]
+    assert fetch["run"].count("nothing was replayed") == 2
 
 
 def test_nonzero_candidate_exit_keeps_logs_and_uploadable_outcome(tmp_path):
@@ -464,6 +484,57 @@ def test_recorder_handles_missing_or_invalid_run_artifact_and_clears_stale_resul
     assert prior_status["status"] == "running"
 
 
+def test_recorder_replaces_an_earlier_attempts_results_with_this_runs(tmp_path):
+    # Review of 176e974: the success path, not only the failure receipt,
+    # must leave no file of an earlier attempt beside this run's results.
+    seed = local_state(tmp_path)
+    request_id, _ = queue.enqueue(
+        seed, {"invalid": "request"}, run_url=RUN, now="2020-01-01T00:00:00Z"
+    )
+    queue.set_status(
+        seed, request_id, "running", run_url=RUN, now="2020-01-01T01:00:00Z"
+    )
+    stale = seed / "requests" / request_id / "results"
+    stale.mkdir()
+    (stale / "earlier-attempt.json").write_text("{}")
+    git(seed, "add", ".")
+    git(seed, "commit", "-qm", "Running request with stale results")
+    runner, remote, environment = control_runner(tmp_path, seed)
+    scratch = tmp_path / "scratch"
+    receipt = queue.write_failure_receipt(
+        scratch, request_id, code="event_run_failed", detail="this run's outcome"
+    )
+    uploaded = runner / "output" / "state" / "requests" / request_id
+    (uploaded / "results").mkdir(parents=True)
+    (uploaded / "results" / "this-run.json").write_text("{}")
+    (uploaded / "REPLAY_RECEIPT.json").write_text(json.dumps(receipt))
+    (runner / "output" / "outcome.json").write_text(
+        json.dumps(
+            {"status": receipt["status"], "receipt_sha256": receipt["receipt_sha256"]}
+        )
+    )
+    subprocess.run(
+        ["bash", ".github/scripts/uk_replay_record.sh"],
+        cwd=runner,
+        env={**environment, "REQUEST_ID": request_id},
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    status = json.loads(
+        git(remote, "show", f"replay-state:requests/{request_id}/STATUS.json")
+    )
+    assert status["receipt_sha256"] == receipt["receipt_sha256"]
+    assert git(
+        remote,
+        "ls-tree",
+        "-r",
+        "--name-only",
+        "replay-state",
+        f"requests/{request_id}/results",
+    ).splitlines() == [f"requests/{request_id}/results/this-run.json"]
+
+
 def test_empty_pending_cli_has_no_output_for_redispatch_decision(tmp_path, capsys):
     assert (
         queue.main(
@@ -565,41 +636,97 @@ def test_ci_regeneration_preserves_sealed_source_and_detects_every_changed_byte(
     )
 
 
-GUARD = ROOT / ".github/scripts/uk_replay_output_guard.sh"
+GUARD = ROOT / ".github/scripts/uk_replay_output_guard.py"
 
 
 def guard(directory: Path) -> subprocess.CompletedProcess:
+    # As the workflow runs it: isolated, standard library only.
     return subprocess.run(
-        ["bash", str(GUARD), str(directory)], capture_output=True, text=True
+        [sys.executable, "-I", str(GUARD), str(directory)],
+        capture_output=True,
+        text=True,
     )
 
 
-def test_output_guard_refuses_datasets_large_files_and_symlinks(tmp_path):
-    # Scorecard is public (d1383): only the receipt, status and sealed
-    # aggregate results may be uploaded from the run job.
+def guarded_output(tmp_path):
     output = tmp_path / "output"
-    results = output / "results" / "autumn_budget_2024"
+    results = output / "state" / "requests" / ("a" * 64) / "results" / "ab2024"
     results.mkdir(parents=True)
-    (results / "COMPARISON.json").write_text("{}")
-    (output / "REPLAY_RECEIPT.json").write_text("{}")
-    assert guard(output).returncode == 0
+    (results / "COMPARISON.json").write_text('{"rows": []}')
+    (results / "STAGED.jsonl").write_text('{"row": 1}\n\n{"row": 2}\n')
+    (results / "COMPARISON.csv").write_text("a,b\n1,2\n")
+    (results / "SUMMARY.md").write_text("# Summary\n")
+    (output / "run-exit.txt").write_text("0\n")
+    return output, results
+
+
+def test_output_guard_allows_only_parsable_aggregates(tmp_path):
+    # Scorecard is public (d1383): an allowlist, not a denylist. Every file
+    # must be a regular file with an allowed extension whose bytes parse as
+    # that format, under per-file and total caps.
+    output, results = guarded_output(tmp_path)
+    assert guard(output).returncode == 0, guard(output).stdout
     assert guard(tmp_path / "absent").returncode == 0
-    for name in ("dataset.h5", "frs.hdf5", "x.h5.partial", "people.parquet"):
+    refused = {
+        "dataset.h5": b"\x89HDF",
+        "people.parquet": b"PAR1",
+        "frame.feather": b"ARROW1",
+        "frame.pkl": b"\x80\x04",
+        "no_extension": b"{}",
+        "split.json": b"\x1f\x8b\x08\x00",  # gzip bytes renamed
+        "broken.json": b'{"rows": [',
+        "broken.jsonl": b'{"row": 1}\nnot json\n',
+        "binary.csv": b"a,b\n\xff\xfe\n",
+        "nul.md": b"# x\x00\n",
+    }
+    for name, data in refused.items():
         bad = results / name
-        bad.write_bytes(b"\0")
-        refused = guard(output)
-        assert refused.returncode == 1 and name in refused.stdout
+        bad.write_bytes(data)
+        result = guard(output)
+        assert result.returncode == 1 and name in result.stdout, name
         bad.unlink()
     big = results / "artifact.json"
-    with big.open("wb") as handle:
-        handle.truncate(25 * 1024 * 1024 + 1)
+    big.write_text('"' + "x" * (10 * 1024 * 1024) + '"')
     assert guard(output).returncode == 1
     big.unlink()
     outside = tmp_path / "input.json"
     outside.write_text("{}")
     (results / "link.json").symlink_to(outside)
-    refused = guard(output)
-    assert refused.returncode == 1 and "symlink" in refused.stdout
+    result = guard(output)
+    assert result.returncode == 1 and "not a regular file" in result.stdout
+    (results / "link.json").unlink()
+    os.mkfifo(results / "pipe.json")
+    assert guard(output).returncode == 1
+    (results / "pipe.json").unlink()
+    assert guard(output).returncode == 0
+
+
+def test_output_guard_caps_the_total(tmp_path):
+    output, results = guarded_output(tmp_path)
+    for index in range(12):  # 108 MiB in all, each under 10 MiB
+        (results / f"part_{index}.json").write_text('"' + "x" * (9 * 1024 * 1024) + '"')
+    result = guard(output)
+    assert result.returncode == 1 and "in all" in result.stdout
+
+
+def test_candidate_code_runs_as_an_unprivileged_account_with_nothing_inherited():
+    script = (ROOT / ".github/scripts/uk_replay_sandbox.sh").read_text()
+    # The account has no sudo; a check fails the job if it ever does.
+    assert 'sudo useradd --create-home --shell /bin/bash "$CANDIDATE"' in script
+    assert "not allowed to run sudo" in script
+    # Its environment is built from nothing: no token, no runtime token, no
+    # GITHUB_ENV or GITHUB_PATH, no uv cache directory from setup-uv.
+    assert 'sudo -n -u "$CANDIDATE" env -i' in script
+    assert "--preserve-env" not in script and "sudo -E" not in script
+    assert "exec bash .github/scripts/uk_replay_drain.sh" in script
+    # Nothing it starts outlives the run, and its output comes back as a
+    # copy that keeps links as links, for the guard to refuse.
+    assert 'sudo pkill -KILL -u "$CANDIDATE"' in script
+    assert 'sudo cp -R --no-preserve=all "$COPY/output" output' in script
+    result = subprocess.run(
+        ["bash", "-n", str(ROOT / ".github/scripts/uk_replay_sandbox.sh")]
+    )
+    assert result.returncode == 0
 
 
 def test_nothing_crosses_jobs_but_the_request_and_guarded_output():
@@ -619,14 +746,46 @@ def test_nothing_crosses_jobs_but_the_request_and_guarded_output():
     guard_step = steps[names.index("Nothing household-level leaves the runner")]
     upload = steps[names.index("Upload the receipt and results for the recorder")]
     assert names.index(guard_step["name"]) < names.index(upload["name"])
-    assert "uk_replay_output_guard.sh output" in guard_step["run"]
+    assert guard_step["run"] == (
+        "python3 -I .github/scripts/uk_replay_output_guard.py output"
+    )
     assert upload["if"] == "always() && steps.guard.outcome == 'success'"
     assert guard_step["id"] == "guard" and guard_step["if"] == "always()"
-    for path in (".github/workflows/uk-replay.yml", ".github/workflows/ci.yml"):
-        document = yaml.safe_load((ROOT / path).read_text())
+    # The recorder checks again, where no candidate code has run, and drops
+    # a refused output before anything reaches the public branch.
+    record = workflow["jobs"]["record"]["steps"]
+    record_names = [step.get("name") for step in record]
+    recheck = record[
+        record_names.index("Nothing household-level reaches the public branch")
+    ]
+    assert (
+        "python3 -I .github/scripts/uk_replay_output_guard.py output" in recheck["run"]
+    )
+    assert "rm -rf output" in recheck["run"]
+    assert record_names.index(recheck["name"]) < record_names.index(
+        "Record the outcome and continue the queue"
+    )
+    # No cache crosses jobs: setup-uv caches by default (v5: enable-cache
+    # auto), so every use here turns it off, as does the CI job that runs a
+    # variant's engine; nothing uses actions/cache.
+    uses = [
+        step
+        for job in workflow["jobs"].values()
+        for step in job["steps"]
+        if step.get("uses", "").startswith("astral-sh/setup-uv")
+    ]
+    assert len(uses) == 4
+    ci = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
+    uses += [
+        step
+        for step in ci["jobs"]["replay-engine"]["steps"]
+        if step.get("uses", "").startswith("astral-sh/setup-uv")
+    ]
+    assert all(step.get("with", {}).get("enable-cache") is False for step in uses)
+    for document in (workflow, ci):
         for job in document["jobs"].values():
             for step in job["steps"]:
-                assert not step.get("uses", "").startswith("actions/cache"), path
+                assert not step.get("uses", "").startswith("actions/cache")
 
 
 def test_the_data_token_is_used_only_outside_pull_requests():
@@ -634,15 +793,48 @@ def test_the_data_token_is_used_only_outside_pull_requests():
     # PyYAML reads the bare key `on` as True.
     assert set(replay[True]) == {"repository_dispatch", "workflow_dispatch", "schedule"}
     ci = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
+    token = "secrets.PE_UK_PRIVATE_HF_READ_TOKEN"
+    # Exactly two steps hold it, each with exactly this condition.
+    holders = {
+        (step["name"], step["if"])
+        for document in (replay, ci)
+        for job in document["jobs"].values()
+        for step in job["steps"]
+        if token in json.dumps(step)
+    }
+    assert holders == {
+        (
+            "Fetch and verify the dataset before any candidate code",
+            'contains(fromJSON(\'["workflow_dispatch", "repository_dispatch"]\'), '
+            "github.event_name)",
+        ),
+        (
+            "Fetch the certified dataset for the real replay",
+            "env.LEGACY == 'False' && github.event_name == 'push'",
+        ),
+    }
     for document in (replay, ci):
+        # Never at workflow or job level, where every step would see it.
+        assert "secrets." not in json.dumps(document.get("env", {}))
         for job in document["jobs"].values():
+            assert "secrets." not in json.dumps(job.get("env", {}))
             for step in job["steps"]:
-                text = json.dumps(step)
-                if "HF_READ_TOKEN" in text or "HUGGING_FACE" in text:
-                    assert "secrets.HUGGING_FACE_TOKEN" not in text
-                if "secrets.PE_UK_PRIVATE_HF_READ_TOKEN" in text:
-                    assert "pull_request" not in step["if"]
-                    assert (
-                        step["if"].endswith("github.event_name == 'push'")
-                        or "workflow_dispatch" in step["if"]
-                    )
+                assert "secrets.HUGGING_FACE_TOKEN" not in json.dumps(step)
+    # The CI job that runs a variant's engine reads only, keeps no checkout
+    # credential, and runs the engine in a later step than the token.
+    engine = ci["jobs"]["replay-engine"]
+    assert engine["permissions"] == {"contents": "read"}
+    checkout = next(
+        s for s in engine["steps"] if s.get("uses") == "actions/checkout@v4"
+    )
+    assert checkout["with"]["persist-credentials"] is False
+    names = [step.get("name") for step in engine["steps"]]
+    fetch = engine["steps"][
+        names.index("Fetch the certified dataset for the real replay")
+    ]
+    replay_step = engine["steps"][
+        names.index("One real measure-year replays byte for byte")
+    ]
+    assert names.index(fetch["name"]) < names.index(replay_step["name"])
+    assert replay_step["if"] == "steps.fetch.outputs.fetched == 'true'"
+    assert "env" not in replay_step and "huggingface_hub==2.2.0" in fetch["run"]

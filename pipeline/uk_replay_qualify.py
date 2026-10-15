@@ -1393,11 +1393,14 @@ def main(argv: list[str] | None = None) -> int:
         print(sealed["receipt_sha256"])
         return 0
     if args.command == "verify-sealed":
+        # A variant namespace holding replay results (any event's
+        # RUN_MANIFEST.json) must be sealed. Premises, diagnostics and an
+        # empty summary committed before the replay are not results.
         namespaces = args.namespaces or sorted(
             variants.namespace_root(record)
             for record in variants.load_document()["variants"]
             if record["layout"] == "replay_namespace"
-            and variants.namespace_root(record).exists()
+            and any(variants.namespace_root(record).glob("*/RUN_MANIFEST.json"))
         )
         problems = []
         for namespace in namespaces:

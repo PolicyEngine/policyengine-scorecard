@@ -383,6 +383,10 @@ def test_an_inert_construction_makes_the_receipt_incomplete_and_names_the_pair(
     else:
         assert receipt["integrity"]["status"] == "complete"
         assert event["inert_measure_years"] == []
+    # The receipt W4 reads: sealed and valid, the run complete either way.
+    sealed = qualify.seal(rv.namespace_root(record, root=tmp_path), receipt)
+    interface.validate(sealed, interface.RECEIPT_SCHEMA_ID)
+    assert sealed["status"] == "complete"
 
 
 def test_rejection_discards_a_supplied_record_and_cli_accepts_candidate(tmp_path):
@@ -728,6 +732,34 @@ def test_verify_sealed_checks_expected_namespace_with_missing_seal(
     )
     assert qualify.main(["verify-sealed"]) == 1
     assert "not sealed" in capsys.readouterr().out
+
+
+def test_a_namespace_must_be_sealed_once_it_holds_replay_results(
+    tmp_path, monkeypatch, capsys
+):
+    # Review of 176e974: premises, diagnostics and an empty summary committed
+    # before a variant's replay are not results; one event's run manifest is.
+    namespace = tmp_path / "ns"
+    namespace.mkdir()
+    (namespace / "CONSTRUCTION_PREMISES.json").write_text("{}")
+    (namespace / "SUMMARY.md").write_text("# summary\n")
+    monkeypatch.setattr(
+        rv,
+        "load_document",
+        lambda: {
+            "variants": [{"layout": "replay_namespace", "result_root": str(namespace)}]
+        },
+    )
+    assert qualify.main(["verify-sealed"]) == 0
+    (namespace / "an_event").mkdir()
+    (namespace / "an_event" / "RUN_MANIFEST.json").write_text("{}")
+    assert qualify.main(["verify-sealed"]) == 1
+    assert "not sealed" in capsys.readouterr().out
+
+
+def test_the_committed_namespaces_pass_the_seal_check():
+    # CI's "Replay namespaces regenerate and seals hold" step, on this tree.
+    assert qualify.main(["verify-sealed"]) == 0
 
 
 @pytest.mark.parametrize("code", [None, "artifact_hash_mismatch", "data_access_failed"])

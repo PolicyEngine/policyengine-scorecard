@@ -75,6 +75,8 @@ jobs:
     # stays on the runner: it is never uploaded or cached.
     name: replay engine · ${{ matrix.variant }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -86,7 +88,11 @@ jobs:
       VARIANT: ${{ matrix.variant }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
       - name: Install the variant's exact environment
         run: |
           set -euo pipefail
@@ -119,7 +125,11 @@ jobs:
       - name: No real replay on pull requests
         if: env.LEGACY == 'False' && github.event_name != 'push'
         run: echo "::notice::The dataset token is used on pushes only; nothing was replayed by the real replay determinism step"
-      - name: One real measure-year replays byte for byte
+      # The token is in this step only: it fetches the certified dataset into
+      # the Hugging Face cache before the variant's engine runs, in the next
+      # step, without it.
+      - name: Fetch the certified dataset for the real replay
+        id: fetch
         if: env.LEGACY == 'False' && github.event_name == 'push'
         env:
           HUGGING_FACE_TOKEN: ${{ secrets.PE_UK_PRIVATE_HF_READ_TOKEN }}
@@ -133,13 +143,18 @@ jobs:
             echo "::notice::The variant has no committed sealed namespace: nothing was replayed by the real replay determinism step"
             exit 0
           fi
-          uv run --with huggingface_hub python - <<'PY'
+          uv run --with huggingface_hub==2.2.0 python - <<'PY'
           import json, os
           from huggingface_hub import hf_hub_download
           d = json.load(open("data/uk/replay_variants.json"))
           v = [v for v in d["variants"] if v["variant_id"] == os.environ["VARIANT"]][0]["identity"]["dataset"]
           print(hf_hub_download(repo_id=v["repo_id"], repo_type=v["repo_type"], filename=v["path"], revision=v["revision"], token=os.environ["HUGGING_FACE_TOKEN"]))
           PY
+          echo "fetched=true" >> "$GITHUB_OUTPUT"
+      - name: One real measure-year replays byte for byte
+        if: steps.fetch.outputs.fetched == 'true'
+        run: |
+          set -euo pipefail
           key=autumn_budget_2024__private_school_vat_20pct
           .venv-variant/bin/python -m pipeline.compute_uk_event --event autumn_budget_2024 --variant "$VARIANT" \
             --measures "$key" --years 2026 --workers 1 --output-dir .venv-replay-checks/determinism

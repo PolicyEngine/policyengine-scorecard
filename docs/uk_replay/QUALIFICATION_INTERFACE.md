@@ -67,10 +67,16 @@ Two flows use the same receiver:
   only step holding the read-only dataset token (the organisation secret
   `PE_UK_PRIVATE_HF_READ_TOKEN`, only in `workflow_dispatch` and
   `repository_dispatch` runs). It verifies the file, which then goes to
-  `run-request` as `--dataset-file`. Scorecard is public: the dataset never
-  leaves the runner (no artifact, no cache), the control job hands over only
-  the request, and the run's output is checked for dataset-shaped files,
-  large files and symlinks before it is uploaded. The qualifier writes a structured result
+  `run-request` as `--dataset-file`. Candidate code runs as an unprivileged
+  account with no sudo, its own copy of the repository and inputs, and an
+  empty starting environment. Scorecard is public: the dataset never leaves
+  the runner, no job uses a cache, the control job hands over only the
+  request, and the run's output must pass an allowlist (parsable `.json`,
+  `.jsonl`, `.csv`, `.md` and `.txt` files under size caps) before it is
+  uploaded and again before it is committed. RELEASE_REPLAY.md states what
+  this protects and what it does not; in particular, a receipt is produced
+  beside the candidate, so requests are for PolicyEngine's own releases
+  only. The qualifier writes a structured result
   file with `status` and `receipt_sha256`, while logs remain visible in
   Actions. A separate recording job has `contents: write` and `actions: write`,
   validates the uploaded receipt, records it before terminal status and
