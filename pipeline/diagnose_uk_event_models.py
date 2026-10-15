@@ -20,6 +20,7 @@ import hashlib
 import importlib.metadata
 import inspect
 import json
+import math
 import os
 import re
 from pathlib import Path
@@ -503,13 +504,20 @@ def investigate(
     return results
 
 
+def _number(value) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
 def _close(value, target, tolerance=0.5) -> bool:
-    return isinstance(value, (int, float)) and abs(value - target) <= tolerance
+    return _number(value) and abs(value - target) <= tolerance
 
 
 def _carers_allowance(o):
-    low, high = (o.get("annual_carers_allowance_gbp") or [None, None])[:2]
-    if not all(isinstance(v, (int, float)) for v in (low, high)):
+    awards = o.get("annual_carers_allowance_gbp")
+    if not isinstance(awards, list) or len(awards) != 2:
+        return "inconclusive"
+    low, high = awards
+    if not all(_number(v) for v in (low, high)):
         return "inconclusive"
     if low > 0 and low == high:
         return "persists"  # £100,000 of earnings leaves the award unchanged
@@ -519,15 +527,22 @@ def _carers_allowance(o):
 
 
 def _cgt_commencement(o):
-    # Announced 10% to 18% basic rate from 30 October 2024: the defect is an
-    # annual 2024 value carrying none of that part-year increase.
+    # The processed CY2024 observation carries fiscal-year weights on 2.125.1:
+    # policyengine_uk/utils/parameters.py:28-54,108-118 and
+    # parameters/gov/hmrc/cgt/{basic,higher,additional}_rate.yaml:8-14.
+    # The 2.89.2 converter instead samples 30 April (utils/parameters.py:26-47).
     before, after = o.get("2024-10-30", {}), o.get("2025-04-06", {})
-    basic, later = before.get("basic"), after.get("basic")
-    if not all(isinstance(v, (int, float)) for v in (basic, later)):
+    names = ("basic", "higher", "additional")
+    old, new = (0.10, 0.20, 0.20), (0.18, 0.24, 0.24)
+    current, later = [before.get(n) for n in names], [after.get(n) for n in names]
+    if not all(_number(v) for v in current + later):
         return "inconclusive"
-    if _close(basic, 0.10, 1e-9) and _close(later, 0.18, 1e-9):
+    if not all(_close(v, target, 1e-9) for v, target in zip(later, new)):
+        return "inconclusive"
+    if all(_close(v, target, 1e-9) for v, target in zip(current, old)):
         return "persists"
-    if 0.10 < basic <= 0.18 and _close(later, 0.18, 1e-9):
+    blended = [a * 207 / 365 + b * 158 / 365 for a, b in zip(old, new)]
+    if all(_close(v, target, 1e-9) for v, target in zip(current, blended)):
         return "resolved"
     return "inconclusive"
 
@@ -543,7 +558,7 @@ def _sdlt_surcharge(o):
 
 def _private_school_vat(o):
     values = [o.get(d) for d in ("2025-01-01", "2025-06-01", "2026-06-01")]
-    if any(not isinstance(v, (int, float)) for v in values):
+    if any(not _number(v) for v in values):
         return "inconclusive"
     if all(v == 0 for v in values):
         return "persists"
@@ -563,7 +578,7 @@ def _dividend_lag(o):
                 row.get("dividend_additional_threshold"),
             ),
         ]
-    if any(not isinstance(v, (int, float)) for pair in pairs for v in pair):
+    if any(not _number(v) for pair in pairs for v in pair):
         return "inconclusive"
     return "persists" if any(a != b for a, b in pairs) else "resolved"
 
@@ -577,7 +592,7 @@ def _class4_indexation(o):
         for d in (now, next_year)
         for k in ("lower_profits_limit", "upper_profits_limit")
     ]
-    if any(not isinstance(v, (int, float)) for v in values):
+    if any(not _number(v) for v in values):
         return "inconclusive"
     if values[2] > values[0] or values[3] > values[1]:
         return "persists"
@@ -589,9 +604,9 @@ def _class4_indexation(o):
 def _lcwra_cutoff(o):
     element = o.get("annual_synthetic_lcwra_element") or {}
     first, second = element.get("2029"), element.get("2030")
-    if not (first and second) or not all(
-        isinstance(v, (int, float)) for v in first + second
-    ):
+    if any(not isinstance(v, list) or len(v) != 1 for v in (first, second)):
+        return "inconclusive"
+    if not all(_number(v) for v in first + second):
         return "inconclusive"
     if second[0] < 0.75 * first[0]:
         return "persists"  # the protected award falls away in 2030
@@ -602,7 +617,7 @@ def _lcwra_cutoff(o):
 
 def _employer_nics_spa(o):
     employer = o.get("ni_class_1_employer") or []
-    if len(employer) != 2 or not all(isinstance(v, (int, float)) for v in employer):
+    if len(employer) != 2 or not all(_number(v) for v in employer):
         return "inconclusive"
     working_age, pension_age = employer
     if working_age > 0 and pension_age == 0:
@@ -613,7 +628,10 @@ def _employer_nics_spa(o):
 
 
 def _pension_taper(o):
-    allowance = (o.get("pension_annual_allowance") or [None])[0]
+    allowances = o.get("pension_annual_allowance")
+    if not isinstance(allowances, list) or len(allowances) != 1:
+        return "inconclusive"
+    allowance = allowances[0]
     if _close(allowance, 60_000):
         return "persists"  # HMRC's adjusted-income rule gives £45,000 here
     if _close(allowance, 45_000):
@@ -622,7 +640,10 @@ def _pension_taper(o):
 
 
 def _annual_allowance_charge(o):
-    charge = (o.get("personal_pension_contributions_tax") or [None])[0]
+    charges = o.get("personal_pension_contributions_tax")
+    if not isinstance(charges, list) or len(charges) != 1:
+        return "inconclusive"
+    charge = charges[0]
     if _close(charge, 4_000):
         return "persists"  # the band-crossing rule gives £6,460
     if _close(charge, 6_460):
@@ -651,6 +672,20 @@ DEFECT_PREDICATES = {
 MALFORMED = (TypeError, ValueError, AttributeError, LookupError, ArithmeticError)
 
 
+def _has_nonfinite(value) -> bool:
+    """Reject non-finite values anywhere in a JSON-shaped observation."""
+    pending = [value]
+    while pending:
+        item = pending.pop()
+        if isinstance(item, float) and not math.isfinite(item):
+            return True
+        if isinstance(item, dict):
+            pending.extend(item.values())
+        elif isinstance(item, list):
+            pending.extend(item)
+    return False
+
+
 def defect_status(result: dict) -> str:
     """persists | resolved | inconclusive, from the case's own observation.
 
@@ -662,13 +697,27 @@ def defect_status(result: dict) -> str:
         predicate = DEFECT_PREDICATES.get(result.get("id"))
         if predicate is None or result.get("absent_variables"):
             return "inconclusive"
+        if "evidence" in result and not isinstance(result["evidence"], dict):
+            return "inconclusive"
+        if "supporting_evidence" in result and (
+            not isinstance(result["supporting_evidence"], list)
+            or any(not isinstance(item, dict) for item in result["supporting_evidence"])
+        ):
+            return "inconclusive"
+        if "absent_variables" in result and not isinstance(
+            result["absent_variables"], list
+        ):
+            return "inconclusive"
         evidence = [
             result.get("evidence") or {},
             *(result.get("supporting_evidence") or []),
         ]
         if any(item.get("missing") for item in evidence):
             return "inconclusive"
-        status = predicate(result.get("observation") or {})
+        observation = result.get("observation")
+        if not isinstance(observation, dict) or _has_nonfinite(observation):
+            return "inconclusive"
+        status = predicate(observation)
     except MALFORMED:
         return "inconclusive"
     return status if status in STATUSES else "inconclusive"
@@ -684,10 +733,36 @@ def reverify(prior: list[dict], *, expect_engine: str) -> list[dict]:
         )
     for result in results:
         prior_record = established[result["id"]]
+        historical_fields = (
+            "interpretation",
+            "primary_source",
+            "assessment",
+            "existing_issue",
+            "observation_provenance",
+            "national_effect",
+        )
+        result["established"] = {
+            "engine_version": prior_record["engine_version"],
+            **{k: prior_record[k] for k in historical_fields if k in prior_record},
+        }
+        for field in historical_fields:
+            result.pop(field, None)
         result["established_on"] = [prior_record["engine_version"]]
         result["reverified_on"] = result["engine_version"]
         result["status"] = defect_status(result)
         result["status_on_established_observation"] = defect_status(prior_record)
+        description = {
+            "persists": "the measured observation matches the predicate's persistence signature",
+            "resolved": "the measured observation matches the predicate's resolution signature",
+            "inconclusive": "the predicate cannot determine a status from the measured evidence",
+        }[result["status"]]
+        result["engine_observation"] = (
+            f"On policyengine-uk {result['engine_version']}, {description}."
+        )
+        result["reproducer"] = (
+            "--reverify results/uk/events/MODEL_DIAGNOSTICS.json "
+            f"--expect-engine {expect_engine} --case {result['id']}"
+        )
     return results
 
 
@@ -731,10 +806,23 @@ def main(argv: list[str] | None = None) -> int:
     else:
         print(payload, end="")
     if args.report:
+        versions = {r["engine_version"] for r in results}
+        if len(versions) != 1:
+            parser.error("a report requires observations from exactly one engine")
+        engine_version = versions.pop()
+        reverified = any("status" in r or "established" in r for r in results)
+        variant = reverified or engine_version != LEGACY_ENGINE
         lines = [
             "# Measured UK replay model investigation candidates",
             "",
             (
+                f"These small reproductions inspect policyengine-uk {engine_version}. "
+                "Each status comes from the case's measured observation on this engine. "
+                "Established diagnoses are labelled with their original engine. "
+                "Their national effect is unsized."
+            )
+            if variant
+            else (
                 "These small reproductions inspect policyengine-uk 2.89.2. They identify "
                 "specific encoding or parameter concerns, independently of the national "
                 "OBR differences. Their national effect is unsized; no issue has been filed. "
@@ -742,16 +830,35 @@ def main(argv: list[str] | None = None) -> int:
                 "of national differences."
             ),
             "",
-            (
-                "An [integrated execution receipt](../../results/uk/events/MODEL_DIAGNOSTICS_VERIFICATION.json) "
-                "binds the [preserved fresh output](../../results/uk/events/diagnostics/integrated_run_20261009.json) "
-                "to these observations. The Class 4 primary citation was added afterward; "
-                "the receipt distinguishes that metadata addition from engine results."
-            ),
-            "",
         ]
+        if not variant:
+            lines += [
+                (
+                    "An [integrated execution receipt](../../results/uk/events/MODEL_DIAGNOSTICS_VERIFICATION.json) "
+                    "binds the [preserved fresh output](../../results/uk/events/diagnostics/integrated_run_20261009.json) "
+                    "to these observations. The Class 4 primary citation was added afterward; "
+                    "the receipt distinguishes that metadata addition from engine results."
+                ),
+                "",
+            ]
         for result in results:
-            primary = result.get("primary_source")
+            historical = result.get("established", {})
+            primary = (
+                historical.get("primary_source")
+                if variant
+                else result.get("primary_source")
+            )
+            evidence = result["evidence"]
+            evidence_line = f"Evidence: `{evidence['engine_file']}`; " + (
+                "file missing on this engine."
+                if evidence.get("missing")
+                else f"source SHA-256 `{evidence.get('sha256', 'not recorded')}`."
+            )
+            if not variant:
+                evidence_line += (
+                    " Full source and measured observations "
+                    "are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`."
+                )
             lines += [
                 f"## {result['id']}",
                 "",
@@ -759,14 +866,23 @@ def main(argv: list[str] | None = None) -> int:
                 + ", ".join(f"`{v}`" for v in result["variables"])
                 + ".",
                 "",
-                result["interpretation"],
+                result.get(
+                    "engine_observation", "This observation has not been re-verified."
+                )
+                if variant
+                else result["interpretation"],
                 "",
-                (
-                    f"Evidence: `{result['evidence']['engine_file']}`; source SHA-256 "
-                    f"`{result['evidence']['sha256']}`. Full source and measured observations "
-                    "are retained in `results/uk/events/MODEL_DIAGNOSTICS.json`."
+                evidence_line,
+                "",
+                *(
+                    [
+                        f"Established on policyengine-uk {historical['engine_version']}: "
+                        + historical["interpretation"],
+                        "",
+                    ]
+                    if historical.get("interpretation")
+                    else []
                 ),
-                "",
                 *(
                     [
                         (
@@ -780,8 +896,15 @@ def main(argv: list[str] | None = None) -> int:
                     else []
                 ),
                 "```bash",
-                "PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py "
-                + result["reproducer"],
+                "PYTHONPATH=. "
+                + (".venv-candidate" if variant else ".venv-replay")
+                + "/bin/python pipeline/diagnose_uk_event_models.py "
+                + (
+                    "--reverify results/uk/events/MODEL_DIAGNOSTICS.json "
+                    f"--expect-engine {engine_version} --case {result['id']}"
+                    if variant
+                    else result["reproducer"]
+                ),
                 "```",
                 "",
                 "Observed:",

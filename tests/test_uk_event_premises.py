@@ -1,7 +1,8 @@
 """Construction premises: what each frozen world holds on an engine.
 
 A stub engine view stands in for policyengine-uk, so the checks run without
-the engine; one engine-marked test regenerates the committed 2.125.1 file.
+the engine. Installed-engine tests regenerate that engine's committed
+premises and compare processed annual CGT rates with raw 30 April values.
 """
 
 import importlib.util
@@ -137,6 +138,37 @@ def test_blended_annualisation_is_reported_only_where_the_engine_blends():
     assert sampled["years"]["2025"]["paths"]["gov.cgt"]["fiscal_year_blend"] is None
 
 
+def test_historical_annualisation_check_names_metadata_not_value_equality():
+    m = measure(
+        "reversal_on_certified_world", modifier={"gov.cgt": {"2024-01-01": 0.1}}
+    )
+    result = run(m, StubEngine({"gov.cgt": 0.1}, blend={"gov.cgt"}))
+    path = result["years"]["2024"]["paths"]["gov.cgt"]
+    assert path["current_law"] == path["raw_30_april"]
+    assert result["checks"]["annual_value_matches_30_april_sample"]["holds"] is False
+
+
+@pytest.mark.parametrize(
+    "body,expected",
+    [
+        ('"""fiscal_year_blend and preserve_calendar_dates"""', frozenset()),
+        ('name = "fiscal_year_blend"', frozenset()),
+        ('other.get("fiscal_year_blend")', frozenset()),
+        (
+            '(param.metadata or {}).get("fiscal_year_blend", False)',
+            frozenset({"fiscal_year_blend"}),
+        ),
+        (
+            'param.metadata["preserve_calendar_dates"]',
+            frozenset({"preserve_calendar_dates"}),
+        ),
+    ],
+)
+def test_converter_support_requires_executable_metadata_reads(body, expected):
+    source = f"def converter(param):\n    {body}\n"
+    assert premises.converter_metadata_keys(source) == expected
+
+
 def test_october_dates_execute_from_the_next_january():
     m = measure(
         "reversal_on_certified_world", modifier={"gov.cgt": {"2024-10-30": 0.1}}
@@ -233,6 +265,18 @@ def committed_engine():
     return version("policyengine-uk")
 
 
+@pytest.fixture(scope="module")
+def installed_engine_view():
+    if committed_engine() is None:
+        pytest.skip(
+            "policyengine-uk is not installed; committed premises and CGT values "
+            "are checked in .venv-candidate and .venv-replay"
+        )
+    # These parameter-only checks do not mutate the tree; share the expensive
+    # engine load between the committed audit and the direct value comparison.
+    return premises.EngineView()
+
+
 @pytest.mark.parametrize(
     "engine,path",
     [
@@ -243,10 +287,41 @@ def committed_engine():
         ("2.89.2", "results/uk/events/CONSTRUCTION_PREMISES.json"),
     ],
 )
-def test_committed_premises_regenerate(engine, path):
-    if committed_engine() != engine:
-        pytest.skip(f"needs policyengine-uk {engine}")
+def test_committed_premises_regenerate(engine, path, installed_engine_view):
+    installed = committed_engine()
+    if installed is None:
+        pytest.skip(
+            "policyengine-uk is not installed; committed premises regenerate in "
+            ".venv-candidate and .venv-replay"
+        )
+    if installed != engine:
+        pytest.skip(
+            f"installed policyengine-uk {installed}; this committed file belongs "
+            f"to {engine} (checked in its pinned environment)"
+        )
     payload = premises.canonical_bytes(
-        premises.audit(list(premises.EVENTS), premises.EngineView())
+        premises.audit(list(premises.EVENTS), installed_engine_view)
     )
     assert payload == (ROOT / path).read_bytes()
+
+
+def test_installed_cgt_annual_values_against_raw_30_april(installed_engine_view):
+    installed = committed_engine()
+    if installed not in ("2.89.2", "2.125.1"):
+        pytest.skip(
+            "CGT value comparison needs policyengine-uk 2.89.2 or 2.125.1; "
+            "run in .venv-replay or .venv-candidate"
+        )
+    engine = installed_engine_view
+    for name, old, new in (
+        ("basic_rate", 0.10, 0.18),
+        ("higher_rate", 0.20, 0.24),
+        ("additional_rate", 0.20, 0.24),
+    ):
+        path = f"gov.hmrc.cgt.{name}"
+        raw = engine.raw_30_april(path, 2024)
+        annual = engine.current_law(path, "2024-01-01")
+        assert raw == old
+        expected = old * 207 / 365 + new * 158 / 365 if installed == "2.125.1" else old
+        assert annual == pytest.approx(expected, abs=1e-10)
+        assert engine.reads_blend is (installed == "2.125.1")

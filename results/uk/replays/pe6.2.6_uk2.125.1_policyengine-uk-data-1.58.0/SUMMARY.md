@@ -1,0 +1,96 @@
+# Recent OBR fiscal-event replays
+
+This namespace describes certified variant `pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0`. PolicyEngine is policyengine-uk 2.125.1 with policyengine 6.2.6, on certified data build policyengine-uk-data-1.58.0: one survey population whose data years are 2024–2030, projected by the engine to calendar year Y. Reform dictionaries use explicit 1 January windows for annual lookups (compute_uk_event.annual_reform). Registry years outside the population's data years are reported as unsupported, not computed. A seeded registry does not establish a completed numerical replay. Available comparisons use one source head and fiscal year per row.
+
+Numerical comparison outputs available: 0. Registry inventories available: 5.
+
+| Event | Replay state | Measures | Source rows | Computed rows | Computed FYs |
+|---|---|---:|---:|---:|---|
+| autumn_budget_2024 | Registry seeded; numerical replay incomplete | 74 | 1134 | 0 | — |
+| autumn_statement_2023 | Registry seeded; numerical replay incomplete | 77 | 1116 | 0 | — |
+| spring_budget_2023 | Registry seeded; numerical replay incomplete | 89 | 1020 | 0 | — |
+| spring_budget_2024 | Registry seeded; numerical replay incomplete | 49 | 816 | 0 | — |
+| spring_statement_2025 | Registry seeded; numerical replay incomplete | 32 | 498 | 0 | — |
+
+## Source inventory accounting
+
+These amounts sum all source heads and costing years, including zero cells. They are inventory totals, not one-year event costings or numerical agreement statistics.
+
+| Event / class | Measures | Source rows | Net OBR £bn | Absolute OBR £bn |
+|---|---:|---:|---:|---:|
+| autumn_budget_2024 / expressible | 0 | 0 | 0.000 | 0.000 |
+| autumn_budget_2024 / partial | 5 | 60 | 148.279 | 152.288 |
+| autumn_budget_2024 / not_expressible | 43 | 438 | 42.163 | 71.094 |
+| autumn_budget_2024 / out_of_household_scope | 26 | 636 | -380.606 | 477.285 |
+| autumn_statement_2023 / expressible | 0 | 0 | 0.000 | 0.000 |
+| autumn_statement_2023 / partial | 4 | 84 | -55.217 | 65.982 |
+| autumn_statement_2023 / not_expressible | 35 | 318 | 15.971 | 21.286 |
+| autumn_statement_2023 / out_of_household_scope | 38 | 714 | -67.493 | 99.223 |
+| spring_budget_2023 / expressible | 0 | 0 | 0.000 | 0.000 |
+| spring_budget_2023 / partial | 2 | 18 | -2.014 | 2.014 |
+| spring_budget_2023 / not_expressible | 39 | 324 | -22.202 | 40.640 |
+| spring_budget_2023 / out_of_household_scope | 48 | 678 | -63.834 | 83.759 |
+| spring_budget_2024 / expressible | 0 | 0 | 0.000 | 0.000 |
+| spring_budget_2024 / partial | 3 | 48 | -51.930 | 58.201 |
+| spring_budget_2024 / not_expressible | 26 | 276 | 9.152 | 28.291 |
+| spring_budget_2024 / out_of_household_scope | 20 | 492 | -1.255 | 25.416 |
+| spring_statement_2025 / expressible | 0 | 0 | 0.000 | 0.000 |
+| spring_statement_2025 / partial | 2 | 18 | 2.365 | 13.031 |
+| spring_statement_2025 / not_expressible | 17 | 156 | 13.906 | 22.174 |
+| spring_statement_2025 / out_of_household_scope | 13 | 324 | -10.696 | 39.774 |
+
+### Not-expressible gap split
+
+construction_pending identifies unfinished replay constructions; model_or_data_gap identifies evidenced model or data limitations.
+
+| Event / gap kind | Measures | Source rows | Net OBR £bn | Absolute OBR £bn |
+|---|---:|---:|---:|---:|
+| autumn_budget_2024 / construction_pending | 14 | 114 | -2.503 | 21.454 |
+| autumn_budget_2024 / model_or_data_gap | 29 | 324 | 44.666 | 49.640 |
+| autumn_statement_2023 / construction_pending | 24 | 204 | 8.607 | 10.499 |
+| autumn_statement_2023 / model_or_data_gap | 11 | 114 | 7.364 | 10.787 |
+| spring_budget_2023 / construction_pending | 23 | 180 | -18.605 | 22.208 |
+| spring_budget_2023 / model_or_data_gap | 16 | 144 | -3.597 | 18.432 |
+| spring_budget_2024 / construction_pending | 17 | 192 | -4.211 | 14.828 |
+| spring_budget_2024 / model_or_data_gap | 9 | 84 | 13.364 | 13.463 |
+| spring_statement_2025 / construction_pending | 6 | 42 | 4.520 | 4.858 |
+| spring_statement_2025 / model_or_data_gap | 11 | 114 | 9.386 | 17.316 |
+
+## Agreement profile
+
+Unavailable: no completed numerical comparison rows have been published. Registry coverage does not supply a PE/OBR agreement profile.
+
+## Named axes and explained share
+
+population_vintage tags every row: the fiscal event's OBR forecast differs from this release's later survey population. behavioural_adjustment, baseline_vintage, cy_proxies_fy and head_scope describe the other construction differences. construction_scope identifies partial measures. The pipeline does not adjust the population vintage.
+
+Pinned employer-NIC incidence assigns the wage adjustment fully to employees while holding employer cost fixed. OBR's direct per-head costings exclude separately reported macroeconomic indirect effects. This construction/head_scope difference is named, but its contribution to the raw gaps remains unsized.
+
+National gaps and explained share are unavailable until numerical comparisons exist.
+
+## Largest unexplained divergences
+
+The queue below is ranked by absolute residual_plus_unsized, after any evidence-backed sized terms. It names variables and a minimal run selection for investigation. A raw gap with unsized vintage or behavioural terms does not establish a PolicyEngine model issue. Multiple years of one measure share a potential mechanism, so the queue selects one row per measure.
+
+| Event / measure | FY / head | Residual £bn | Variables | Cause class | Evidence / diagnosis | Minimal replay |
+|---|---|---:|---|---|---|---|
+| No computed divergences | — | — | — | — | — | — |
+
+Evidence-backed PolicyEngine issue candidates recorded: 6. No upstream issues were filed by this replay lane.
+
+## Measured model investigation candidates
+
+These are engine observations reproduced separately from the national costing. Their national contribution remains unsized. The list contains only observed candidates; it is not padded to ten.
+
+| Candidate | Class | Status on this engine | Variables | Evidence | Minimal reproducer |
+|---|---|---|---|---|---|
+| carers_allowance_earnings_test_absent | pe_gap | persists (established on 2.89.2) | carers_allowance | variables/gov/dwp/carers_allowance.py (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py --reverify results/uk/events/MODEL_DIAGNOSTICS.json --expect-engine 2.125.1 --case carers_allowance_earnings_test_absent` |
+| cgt_main_rate_commencement | pe_gap | resolved (established on 2.89.2) | capital_gains_tax | parameters/gov/hmrc/cgt/basic_rate.yaml (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py --reverify results/uk/events/MODEL_DIAGNOSTICS.json --expect-engine 2.125.1 --case cgt_main_rate_commencement` |
+| sdlt_additional_home_hike_absent | pe_gap | persists (established on 2.89.2) | sdlt_on_residential_property_transactions, stamp_duty_land_tax | parameters/gov/hmrc/stamp_duty/residential/purchase/additional/rate.yaml (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py --reverify results/uk/events/MODEL_DIAGNOSTICS.json --expect-engine 2.125.1 --case sdlt_additional_home_hike_absent` |
+| private_school_vat_current_law_lever_zero | pe_gap | persists (established on 2.89.2) | private_school_vat | parameters/gov/contrib/labour/private_school_vat.yaml (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py --reverify results/uk/events/MODEL_DIAGNOSTICS.json --expect-engine 2.125.1 --case private_school_vat_current_law_lever_zero` |
+| dividend_band_threshold_lag | pe_gap | persists (established on 2.89.2) | dividend_income_tax, income_tax | parameters/gov/hmrc/income_tax/rates/dividends.yaml (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py --reverify results/uk/events/MODEL_DIAGNOSTICS.json --expect-engine 2.125.1 --case dividend_band_threshold_lag` |
+| class4_threshold_indexation_from_2027 | pe_gap | resolved (established on 2.89.2) | ni_class_4 | parameters/gov/hmrc/national_insurance/class_4/thresholds/lower_profits_limit.yaml (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py --reverify results/uk/events/MODEL_DIAGNOSTICS.json --expect-engine 2.125.1 --case class4_threshold_indexation_from_2027` |
+| uc_lcwra_protection_stops_at_2030 | investigation | persists (established on 2.89.2) | uc_LCWRA_element | scenarios/uc_reform.py (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py --reverify results/uk/events/MODEL_DIAGNOSTICS.json --expect-engine 2.125.1 --case uc_lcwra_protection_stops_at_2030` |
+| employer_nics_state_pension_age_exemption | pe_gap | resolved (established on 2.89.2) | ni_liable, ni_class_1_employer, ni_class_1_employee | variables/gov/hmrc/national_insurance/class_1/ni_class_1_employer.py (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py --reverify results/uk/events/MODEL_DIAGNOSTICS.json --expect-engine 2.125.1 --case employer_nics_state_pension_age_exemption` |
+| pension_taper_omits_employer_contributions | pe_gap | persists (established on 2.89.2) | adjusted_net_income, pension_annual_allowance | variables/gov/hmrc/income_tax/allowances/pension_annual_allowance.py (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py --reverify results/uk/events/MODEL_DIAGNOSTICS.json --expect-engine 2.125.1 --case pension_taper_omits_employer_contributions` |
+| annual_allowance_charge_single_marginal_rate | pe_gap | persists (established on 2.89.2) | personal_pension_contributions_tax | variables/gov/hmrc/pensions/private_pension_contributions_tax.py (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py --reverify results/uk/events/MODEL_DIAGNOSTICS.json --expect-engine 2.125.1 --case annual_allowance_charge_single_marginal_rate` |
