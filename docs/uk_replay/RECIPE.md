@@ -422,6 +422,13 @@ PYTHONPATH=. .venv-candidate/bin/python -m pipeline.compute_uk_event --event aut
 PYTHONPATH=. .venv-candidate/bin/python pipeline/stage_uk_event.py --event autumn_budget_2024 --artifact-dir results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_budget_2024
 ```
 
+On the shared Mac, check the host reservation before a local run:
+`python3 ~/reviews/fleet-ops/tools/reservation.py allowed w6-replay` exits 1
+while a reserved run (the 29 October–2 November triple-lock rebuild) holds
+heavy local work back. Qualification runs from policyengine.py go through
+the receiver workflow on GitHub runners instead; see
+[RELEASE_REPLAY.md](RELEASE_REPLAY.md).
+
 The dataset must already be local: the runner finds the certified bytes by
 SHA-256 in the Hugging Face cache, or takes `--dataset-file <path>`, and
 copies them into `.venv-replay-checks/runtime/<variant_id>/data/`. Results
