@@ -437,8 +437,9 @@ def test_an_inert_pair_whose_premises_say_the_worlds_differ_fails(
         }
     }
     # Another event's premises for the same measure key differ in that year;
-    # only this event's own premises may decide (review of 6aa7fc4).
-    premises["events"]["another_event"] = {
+    # only this event's own premises may decide (review of 6aa7fc4). It comes
+    # first, so merging events' premises in either order would be caught.
+    other = {
         "measures": {
             KEY: {
                 "years": {
@@ -449,6 +450,7 @@ def test_an_inert_pair_whose_premises_say_the_worlds_differ_fails(
             }
         }
     }
+    premises["events"] = {"another_event": other, **premises["events"]}
     (namespace / "CONSTRUCTION_PREMISES.json").write_text(json.dumps(premises))
     monkeypatch.setattr(
         qualify,
@@ -536,22 +538,17 @@ def test_construction_inert_reads_the_pairs_own_year_and_measure():
         unique=True,
         max_size=6,
     ),
-    st.dictionaries(
-        st.integers(2024, 2027), st.tuples(st.integers(0, 2), st.integers(0, 2))
-    ),
 )
 def test_construction_inert_fails_exactly_the_inert_pairs_whose_year_differs(
-    measures, pairs, other_event_years
+    measures, pairs
 ):
-    events = {}
+    # One event's premises; that another event's premises cannot decide is
+    # pinned at the receipt level, where event_results selects them.
+    premises = {"measures": {}}
     for measure, years in measures.items():
-        events.setdefault("e", {"measures": {}})["measures"].update(
-            premises_with("e", measure, years)["e"]["measures"]
-        )
-    # Another event's premises, which must not change this event's result.
-    events.update(premises_with("other", "m1", other_event_years))
+        premises["measures"].update(premises_with("e", measure, years)["e"]["measures"])
     inert = [{"measure_key": m, "year": y} for m, y in pairs]
-    failures = qualify.construction_inert("e", inert, events.get("e", {}))
+    failures = qualify.construction_inert("e", inert, premises)
     expected = {
         (m, y)
         for m, y in pairs

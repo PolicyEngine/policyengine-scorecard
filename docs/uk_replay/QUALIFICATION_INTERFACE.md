@@ -244,7 +244,8 @@ An in-force measure-year whose declared heads come out identical in the two
 worlds is inert. If the run's `CONSTRUCTION_PREMISES.json` gives any
 parameter different 1 January values in the two worlds that year, the
 intended change did not show in the declared heads: the construction did not
-reach the engine, or it does not bind on this population. The receipt then
+reach the engine, it does not bind on this population, or it moves only
+variables outside those heads. The receipt then
 records an integrity failure `construction_inert` (with `event`,
 `measure_key`, `year`, and the parameter and both worlds' values in
 `detail`), and its status is `failed`. Equal premises values do not prove a
@@ -272,8 +273,8 @@ How flags arise, so a gate built on them sees the intended events:
 * `integrity.status` is `complete`, `incomplete` or `failed`. `failed` means
   a crash, a non-finite aggregate, an identity mismatch after the run started,
   an accounting identity broken in staging, or a `construction_inert`
-  measure-year. These are structural failures
-  in the PLAN's sense; W4 blocks promotion on them.
+  measure-year. These are structural failures; W4 blocks promotion on
+  them.
 * `diff.flag_counts` and `flagged_rows` describe movements against the base
   variant. They carry no verdict. Whether an unexplained material move blocks
   promotion, and who reviews it, is W4's qualification policy under d1344.

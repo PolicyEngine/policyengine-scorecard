@@ -701,7 +701,8 @@ def construction_inert(event: str, inert: list[dict], premises: dict) -> list[di
     """A failure for each inert pair whose own premises give its two worlds
     different 1 January values in that year. The intended change then did
     not show in the declared heads: the construction did not reach the
-    engine, or it does not bind on this population. Equal premises values do
+    engine, it does not bind on this population, or it moves only variables
+    outside those heads. Equal premises values do
     not prove a pair should be inert (a freeze can carry earlier years'
     rates forward), so such a pair stays an incomplete grid, not a failure.
 

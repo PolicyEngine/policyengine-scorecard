@@ -534,7 +534,8 @@ An in-force measure-year whose declared heads come out identical in the two
 worlds is inert. If the run's `CONSTRUCTION_PREMISES.json` gives any
 parameter different 1 January values in the two worlds that year, the
 intended change did not show in the declared heads: the construction did not
-reach the engine, or it does not bind on this population. The receipt then
+reach the engine, it does not bind on this population, or it moves only
+variables outside those heads. The receipt then
 records an integrity failure `construction_inert` (with `event`,
 `measure_key`, `year`, and the parameter and both worlds' values in
 `detail`), and its status is `failed`. Equal premises values do not prove a
