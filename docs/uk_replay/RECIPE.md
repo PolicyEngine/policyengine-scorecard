@@ -630,8 +630,12 @@ invocations never run more than two simulations at once. How the slots hold:
   `put(..., skip_if_exists=True)`, Modal's atomic create-if-absent: a caller
   creates a chain's next generation only when its newest one is released or
   lapsed. Nothing is deleted, there is no pointer that a late write could
-  roll back, and a holder writes only its own claims, to release or shorten
-  them. A lease that crosses midnight holds a claim in both days' chains.
+  roll back, and a holder writes only its own claims, to release them. A
+  lease that crosses midnight holds a claim in both days' chains.
+* Assumptions: every invocation uses the same Modal workspace and
+  environment (the Dict is looked up by name in the active one), and the
+  clocks of Modal's containers are within 30 seconds of true time
+  (`CLOCK_SKEW_SECONDS`).
 * A day's chain matters for at most a day plus a lease, far inside the 7 days
   after which Modal expires an idle entry, so no claim that still matters
   can have expired, and a write that arrives days late lands in a chain that
@@ -639,12 +643,16 @@ invocations never run more than two simulations at once. How the slots hold:
   long a step stalls.
 * Leases run on Modal's clock: every lease decision reads the time from
   Modal through a small remote function, so this machine's clock plays no
-  part, and a lapsed claim is taken over only 2 minutes after its expiry
-  (covering differences between Modal containers' clocks).
+  part, and a lapsed claim is taken over only 2 minutes after its expiry.
+  Even with the run's guard container 30 seconds slow and the contender's
+  reading container 30 seconds fast, a takeover comes 11 minutes after the
+  run's end (`test_the_worst_clock_corner_leaves_a_gap_that_needs_both_margins`
+  computes this on the real class).
 * The lease is 4 hours. The remote function refuses to start unless its
   whole 3-hour timeout plus a 10-minute margin fits inside it, so a run
   ends before its slot can pass on, even if the client dies.
-* A finished or never-started run frees its slot at once. Anything else
+* A finished run, a run the remote guard refused (it returns the refusal,
+  so nothing ran), and a run never started free the slot at once. Anything else
   after the run started (ctrl-C, a lost connection, a remote error, a client
   killed outright) leaves the claim until the lease lapses: Modal's client
   asks the server to stop the app on ctrl-C, but nothing confirms the task
@@ -652,14 +660,19 @@ invocations never run more than two simulations at once. How the slots hold:
   returned result: it is downloaded and the claim lapses.
 * The slot is taken with the app already open, after the image build, so a
   build never eats into a lease; an invocation waits for a slot (polling
-  every 30 seconds, in no set order) with its app open and idle.
-* `tests/test_modal_uk_event.py` checks this call by call: Hypothesis
-  interleaves several holders' Dict calls, each reading Modal time through a
-  container clock that may differ by 30 seconds, with clock jumps of any
-  size at any point, midnight
-  crossings, crashes, interrupts, lost connections and Modal's 7-day expiry,
-  and asserts that no two runs overlap on a slot and that both slots can be
-  taken once every lease has lapsed.
+  every 30 seconds, in no set order) with its app open and idle. After 6
+  hours without a free slot it exits with status 75 and holds nothing.
+* `tests/test_modal_uk_event.py` checks this call by call. A Hypothesis
+  model interleaves two to four holders' Dict calls on one or both slots;
+  every clock read (each holder's Modal time and each run's guard) is
+  drawn within 30 seconds of true time, independently per read. The clock
+  jumps by drawn amounts (seconds to 8 days, so midnight and Modal's 7-day
+  expiry occur) or to just around a started lease's expiry, runs can start
+  as late as their guard allows and run their whole timeout, and holders
+  crash, are interrupted or lose their connection. It asserts that no two
+  runs overlap on a slot and that every slot can be taken once every lease
+  has lapsed. With both margins removed the same model finds an overlap
+  (a test asserts it does), so it exercises the clock corners it covers.
 
 Local simulations are not in that lease: count them yourself toward the
 overall maximum of two. A full event plus one focused repeat uses both

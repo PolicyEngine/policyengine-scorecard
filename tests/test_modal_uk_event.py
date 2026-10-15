@@ -11,7 +11,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
-from hypothesis import given, settings
+from hypothesis import Phase, given, settings
 from hypothesis import strategies as st
 
 from pipeline import modal_uk_event as runner
@@ -360,8 +360,10 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
     )
     timeout = runner.RESOURCE_LIMITS["timeout_seconds"]
     for slack in (-60, runner.GUARD_MARGIN_SECONDS - 60):
-        with pytest.raises(RuntimeError, match="lease does not cover"):
-            replay({"request": {}}, time.time() + timeout + slack)
+        refused = replay({"request": {}}, time.time() + timeout + slack)
+        assert refused == {
+            "refused": "the simulation slot lease does not cover the timeout"
+        }
     configuration, clock_configuration = recorded["functions"]
     assert clock_configuration["block_network"] is True
     assert clock_configuration["timeout"] == 60
@@ -439,9 +441,8 @@ class Clock:
 DAY = runner.EPOCH_SECONDS
 TIMEOUT = runner.RESOURCE_LIMITS["timeout_seconds"]
 MARGIN = runner.CLOCK_MARGIN_SECONDS
-# The clocks of the Modal containers that read the time and run the replay
-# are NTP-disciplined; the model lets them differ by up to this much.
-HOST_SKEW = 30
+# The stated bound on Modal container clocks (runner.CLOCK_SKEW_SECONDS).
+HOST_SKEW = runner.CLOCK_SKEW_SECONDS
 
 
 def slots_for(store, clock, holder, *, offset=0.0, **kwargs):
@@ -499,7 +500,7 @@ def test_two_slots_then_a_third_run_waits():
     clock = Clock()
     store = FakeDict(clock)
     a, b, c = (slots_for(store, clock, h) for h in "abc")
-    leases = {"a": a.acquire(), "b": b.acquire()}
+    leases = {"a": a.acquire(wait_seconds=0), "b": b.acquire(wait_seconds=0)}
     assert {lease.slot for lease in leases.values()} == {0, 1}
     sleeps = []
 
@@ -521,7 +522,7 @@ def test_two_slots_then_a_third_run_waits():
 def test_a_lapsed_claim_is_taken_only_after_the_clock_margin():
     clock = Clock()
     store = FakeDict(clock)
-    dead = slots_for(store, clock, "dead", count=1).acquire()
+    dead = slots_for(store, clock, "dead", count=1).acquire(wait_seconds=0)
     nxt = slots_for(store, clock, "next", count=1)
     clock.now = dead.expires + MARGIN - 1
     assert run_steps(store, nxt._try_steps(0)) == (True, None)
@@ -533,9 +534,9 @@ def test_a_stale_release_cannot_free_a_newer_holder():
     clock = Clock()
     store = FakeDict(clock)
     late = slots_for(store, clock, "late", count=1)
-    old = late.acquire()
+    old = late.acquire(wait_seconds=0)
     clock.now = old.expires + MARGIN
-    slots_for(store, clock, "successor", count=1).acquire()
+    slots_for(store, clock, "successor", count=1).acquire(wait_seconds=0)
     late.release(old)
     assert holders_of(store, clock) == {0: "successor"}
     third = slots_for(store, clock, "third", count=1)
@@ -546,7 +547,7 @@ def test_a_contender_cannot_displace_a_claim_made_after_it_looked():
     clock = Clock()
     store = FakeDict(clock)
     holder = slots_for(store, clock, "holder", count=1)
-    lease = holder.acquire()
+    lease = holder.acquire(wait_seconds=0)
     a = slots_for(store, clock, "a", count=1)
     c = slots_for(store, clock, "c", count=1)
     clock.now = lease.expires + MARGIN
@@ -575,7 +576,7 @@ def test_a_lease_across_midnight_holds_both_days():
     clock = Clock(now=22 * 3600.0)  # two hours before the day ends
     store = FakeDict(clock)
     night = slots_for(store, clock, "night", count=1)
-    lease = night.acquire()
+    lease = night.acquire(wait_seconds=0)
     assert [epoch for epoch, _ in lease.claims] == [0, 1]
     clock.now = DAY + 600  # the next day, the run still going
     assert holders_of(store, clock) == {0: "night"}
@@ -610,7 +611,7 @@ def test_a_step_that_outlasts_its_lease_grants_nothing():
     while call[0] == "get":
         call = steps.send(store.get(call[1]))
     clock.now += 9 * DAY  # asleep with the create in flight
-    b = slots_for(store, clock, "b", count=1).acquire()
+    b = slots_for(store, clock, "b", count=1).acquire(wait_seconds=0)
     try:
         while True:
             if call[0] == "get":
@@ -630,13 +631,13 @@ def test_a_week_late_write_lands_in_a_day_that_no_longer_matters():
     clock = Clock()
     store = FakeDict(clock)
     early = slots_for(store, clock, "early", count=1)
-    lease = early.acquire()
+    lease = early.acquire(wait_seconds=0)
     stalled = slots_for(store, clock, "stalled", count=1)
     clock.now += 6.5 * DAY
     steps = stalled._try_steps(0)
     call = next(steps)  # it reads, then sleeps
     clock.now += 0.9 * DAY
-    current = slots_for(store, clock, "current", count=1).acquire()
+    current = slots_for(store, clock, "current", count=1).acquire(wait_seconds=0)
     clock.now += 600  # current's run is going
     early.release(lease)  # the week-late write lands
     result = None
@@ -653,12 +654,51 @@ def test_a_week_late_write_lands_in_a_day_that_no_longer_matters():
     assert holders_of(store, clock) == {0: "current"}
 
 
+def test_a_week_late_release_onto_an_expired_key_frees_nothing():
+    # Review of 2d727d8, B3: early's key expires untouched; a week later the
+    # current holder takes the slot in a new day's chain, and only then does
+    # early's release land. A fresh contender must still be refused. (With
+    # keys that dropped the day, the release would land on current's key.)
+    clock = Clock()
+    store = FakeDict(clock)
+    early = slots_for(store, clock, "early", count=1)
+    old = early.acquire(wait_seconds=0)
+    clock.now += 7.25 * DAY
+    current = slots_for(store, clock, "current", count=1).acquire(wait_seconds=0)
+    clock.now += 600  # current's run is going
+    early.release(old)
+    finished, lease = run_steps(
+        store, slots_for(store, clock, "fresh", count=1)._try_steps(0)
+    )
+    assert finished and current.expires > clock.now
+    assert lease is None, "a fresh contender took the slot while current runs"
+
+
 def test_main_takes_every_lease_decision_on_modals_clock(monkeypatch, stub_main):
-    # Review of 3e058b5, 2: this machine's clock plays no part. Its clock is
-    # five hours fast here, and the claims still carry Modal's time.
+    # Reviews of 3e058b5, 2, and of 2d727d8, B1: this machine's clock plays
+    # no part. Reading it fails the test, so neither a local clock nor an
+    # offset from it can be used; the takeover of a lapsed claim and the
+    # refusal of a live one are both decided on Modal's clock.
     slots = FakeDict()
     modal_now = 1_000_000.0
-    monkeypatch.setattr(runner.time, "time", lambda: modal_now + 5 * 3600)
+    day = int(modal_now // DAY)
+    lapsed = modal_now - MARGIN  # lapsed on Modal's clock, exactly
+    slots.data[f"claim-0-{day}-0"] = {
+        "holder": "old",
+        "expires": lapsed,
+        "released": False,
+    }
+    live = {"holder": "busy", "expires": modal_now + 60, "released": False}
+    slots.data[f"claim-1-{day}-0"] = dict(live)
+
+    def local_clock():
+        raise AssertionError("main() read this machine's clock")
+
+    def wait(seconds):
+        raise AssertionError("main() waited for a slot that should be free")
+
+    monkeypatch.setattr(runner.time, "time", local_clock)
+    monkeypatch.setattr(runner.time, "sleep", wait)
 
     def fakes(mounts):
         modal, app, _, _ = modal_fakes(slots, None)(mounts)
@@ -676,9 +716,99 @@ def test_main_takes_every_lease_decision_on_modals_clock(monkeypatch, stub_main)
 
     monkeypatch.setattr(runner, "modal_function", fakes)
     assert runner.main(ARGS) == 0
-    assert {claim["expires"] for claim in claims_in(slots)} == {
-        modal_now + runner.LEASE_SECONDS
-    }
+    taken = slots.data[f"claim-0-{day}-1"]
+    assert taken["expires"] == modal_now + runner.LEASE_SECONDS
+    assert taken["released"] is True
+    assert slots.data[f"claim-1-{day}-0"] == live
+    assert f"claim-1-{day}-1" not in slots.data
+
+
+def test_a_refused_run_frees_its_slot_at_once(monkeypatch, stub_main, capsys):
+    # The remote guard returns its refusal: nothing ran, so the slot is
+    # given back now rather than when the lease lapses.
+    slots = FakeDict()
+    monkeypatch.setattr(
+        runner,
+        "modal_function",
+        modal_fakes(slots, lambda payload, expires: {"refused": "lease too short"}),
+    )
+    assert runner.main(ARGS) == 75
+    assert stub_main == []
+    assert all(claim["released"] is True for claim in claims_in(slots))
+    assert "lease too short" in capsys.readouterr().err
+
+
+def test_no_free_slot_for_the_whole_wait_exits_75(monkeypatch, stub_main, capsys):
+    slots = FakeDict()
+
+    def acquire(self, **kwargs):
+        raise runner.NoSlotFree("no simulation slot became free")
+
+    monkeypatch.setattr(runner.SimulationSlots, "acquire", acquire)
+    monkeypatch.setattr(
+        runner, "modal_function", modal_fakes(slots, lambda *a: pytest.fail("ran"))
+    )
+    assert runner.main(ARGS) == 75
+    assert claims_in(slots) == [] and stub_main == []
+    assert "no simulation slot became free" in capsys.readouterr().err
+
+
+def test_a_failed_final_clock_read_gives_the_claims_back():
+    # Review of 2d727d8: the time-left read comes after the claims are made;
+    # if it fails, they go back rather than wait for the lease to lapse.
+    clock = Clock()
+    store = FakeDict(clock)
+    reads = []
+
+    def flaky():
+        reads.append(clock())
+        # acquire()'s deadline, the lease's start, then the time-left check.
+        if len(reads) == 3:
+            raise OSError("modal_time failed")
+        return clock()
+
+    holder = runner.SimulationSlots(store, holder="a", count=1, clock=flaky)
+    with pytest.raises(OSError):
+        holder.acquire(wait_seconds=0)
+    assert len(reads) == 3
+    assert claims_in(store) and all(claim["released"] for claim in claims_in(store))
+    assert slots_for(store, clock, "b", count=1).acquire(wait_seconds=0).slot == 0
+
+
+def corner_gap(*, midnight=True):
+    """Seconds from the end of a run to the earliest takeover of its slot, in
+    the worst clock corner: its guard container is HOST_SKEW slow, so the run
+    starts and ends as late as possible, and the contender's reading
+    container is HOST_SKEW fast. Negative means the two runs overlap."""
+    clock = Clock(now=(22.5 if midnight else 9) * 3600.0)
+    store = FakeDict(clock)
+    x = slots_for(store, clock, "x", count=1).acquire(wait_seconds=0)
+    if midnight:
+        assert len(x.claims) == 2  # the lease holds both days' chains
+    guard = TIMEOUT + runner.GUARD_MARGIN_SECONDS
+    start = x.expires - guard + HOST_SKEW  # the slow guard's last yes
+    assert (start - HOST_SKEW) + guard <= x.expires
+    end = start + TIMEOUT
+    y = slots_for(store, clock, "y", offset=HOST_SKEW, count=1)
+    clock.now = end - 2 * HOST_SKEW - 1
+    for _ in range(2 * (runner.GUARD_MARGIN_SECONDS + MARGIN + HOST_SKEW)):
+        finished, lease = run_steps(store, y._try_steps(0))
+        assert finished
+        if lease is not None:
+            return clock.now - end
+        clock.now += 1
+    raise AssertionError("the slot was never taken over")
+
+
+def test_the_worst_clock_corner_leaves_a_gap_that_needs_both_margins(monkeypatch):
+    # Review of 2d727d8, B2: computed on the real class, not argued.
+    expected = runner.GUARD_MARGIN_SECONDS + MARGIN - 2 * HOST_SKEW
+    assert corner_gap() == corner_gap(midnight=False) == expected > 0
+    # Without the margins the same schedule overlaps, so this test (unlike
+    # the arithmetic one above) would see the margins go.
+    monkeypatch.setattr(runner, "GUARD_MARGIN_SECONDS", 0)
+    monkeypatch.setattr(runner, "CLOCK_MARGIN_SECONDS", 0)
+    assert corner_gap() == -2 * HOST_SKEW
 
 
 class FailingPuts(FakeDict):
@@ -720,33 +850,41 @@ def holder_program(slots):
     outcome = yield ("start", lease)
     if outcome == "running":
         outcome = yield ("await",)
-    # main(): a returned run frees the slot now; after ctrl-C, a lost
-    # connection or a remote error nothing is written and the claim lapses.
-    if outcome == "returned":
+    # main(): a returned run, or one the guard refused, frees the slot now;
+    # after ctrl-C, a lost connection or a remote error nothing is written
+    # and the claim lapses.
+    if outcome in ("returned", "refused"):
         yield from slots._release_steps(lease)
 
 
-@settings(max_examples=600, deadline=None)
-@given(st.data())
-def test_interleaved_holders_never_overlap_on_a_slot_and_never_lose_one(data):
-    """Model check: holders interleaved call by call, each reading Modal time
-    through a container whose clock may differ by HOST_SKEW, with clock jumps
-    of any size at any
-    point (a stalled step, a closed laptop, midnight), crashes (no release;
-    a started run continues to its end), interrupts, lost connections and
-    Dict entry expiry. Safety: two runs never overlap on one slot, so at
-    most SLOT_COUNT run at once. Liveness: once every lease has lapsed, both
-    slots can be taken again."""
+def interleaved_holders(data):
+    """Model check: 2-4 holders interleaved Dict call by Dict call, on one or
+    both slots. Every clock read (each holder's Modal time, and each run's
+    guard) is drawn within HOST_SKEW of true time, independently per read.
+    Besides arbitrary clock jumps (a stalled step, a closed laptop, midnight,
+    Modal's 7-day expiry), the clock can jump to just around a started
+    lease's expiry, and a run can start as late as its guard allows and run
+    its whole timeout, so the tight corners are reachable. Crashes,
+    interrupts and lost connections leave runs going to their end. Safety:
+    two runs never overlap on one slot. Liveness: once every lease has
+    lapsed, every slot can be taken again."""
     clock = Clock(now=float(data.draw(st.sampled_from([3600, 12 * 3600, 23 * 3600]))))
     store = FakeDict(clock)
-    drift = HOST_SKEW
-    count = data.draw(st.integers(2, 4), label="holders")
+    count = data.draw(st.sampled_from([1, runner.SLOT_COUNT]), label="slots")
+    skews = st.sampled_from([-HOST_SKEW, 0, HOST_SKEW])
+
+    def modal_time():
+        return clock() + data.draw(skews, label="reading skew")
+
     actors = []
-    for index in range(count):
-        offset = data.draw(st.sampled_from([-drift, 0, drift]), label="offset")
-        program = holder_program(slots_for(store, clock, f"h{index}", offset=offset))
+    for index in range(data.draw(st.integers(2, 4), label="holders")):
+        program = holder_program(
+            runner.SimulationSlots(
+                store, holder=f"h{index}", count=count, clock=modal_time
+            )
+        )
         actors.append({"program": program, "call": next(program), "done": False})
-    runs = []
+    runs, leases = [], []
 
     def send(actor, value):
         try:
@@ -754,18 +892,91 @@ def test_interleaved_holders_never_overlap_on_a_slot_and_never_lose_one(data):
         except StopIteration:
             actor["done"] = True
 
+    def advance(actor):
+        """The actor's next Dict call or event."""
+        call = actor["call"]
+        if call[0] == "get":
+            send(actor, store.get(call[1]))
+        elif call[0] == "put":
+            send(actor, store.put(call[1], call[2], skip_if_exists=call[3]))
+        elif call[0] == "pause":
+            clock.now += 30  # acquire() polls every 30 seconds
+            send(actor, None)
+        elif call[0] == "start":
+            lease = call[1]
+            # The remote guard, on its own container's clock.
+            guard_skew = data.draw(skews, label="guard skew")
+            guard = TIMEOUT + runner.GUARD_MARGIN_SECONDS
+            if data.draw(st.booleans(), label="start as late as allowed"):
+                clock.now = max(clock.now, lease.expires - guard - guard_skew)
+            if clock.now + guard_skew + guard > lease.expires:
+                send(actor, "refused")
+                return
+            duration = data.draw(
+                st.one_of(st.just(TIMEOUT), st.integers(1, TIMEOUT)),
+                label="run seconds",
+            )
+            run = {"slot": lease.slot, "start": clock.now, "end": clock.now + duration}
+            for other in runs:
+                if other["slot"] == run["slot"]:
+                    assert other["end"] <= run["start"], ("overlap", other, run)
+            runs.append(run)
+            leases.append(lease)
+            actor["run"] = run
+            send(actor, "running")
+        elif call[0] == "await" and clock.now >= actor["run"]["end"]:
+            send(actor, "returned")
+
     for _ in range(data.draw(st.integers(0, 150), label="actions")):
         action = data.draw(
             st.sampled_from(
-                ["step", "step", "step", "tick", "crash", "interrupt", "disconnect"]
+                [
+                    "burst",
+                    "burst",
+                    "step",
+                    "step",
+                    "near",
+                    "near",
+                    "tick",
+                    "crash",
+                    "interrupt",
+                    "disconnect",
+                ]
             )
         )
         if action == "tick":
             clock.now += data.draw(
                 st.sampled_from(
-                    [1, 60, 600, 3600, TIMEOUT, 4 * 3600, 20 * 3600, 6.5 * DAY, 8 * DAY]
+                    [
+                        1,
+                        30,
+                        60,
+                        600,
+                        3600,
+                        TIMEOUT,
+                        4 * 3600,
+                        20 * 3600,
+                        6.5 * DAY,
+                        8 * DAY,
+                    ]
                 )
             )
+            continue
+        if action == "near":
+            if leases:
+                lease = data.draw(st.sampled_from(leases), label="near lease")
+                margin = runner.CLOCK_MARGIN_SECONDS
+                around = data.draw(
+                    st.sampled_from(
+                        [-2 * HOST_SKEW, -HOST_SKEW, -1, 0, 1, HOST_SKEW]
+                        + [
+                            margin + d
+                            for d in (-2 * HOST_SKEW, -HOST_SKEW - 1, -HOST_SKEW, 0)
+                        ]
+                    ),
+                    label="around expiry",
+                )
+                clock.now = max(clock.now, lease.expires + around)
             continue
         live = [a for a in actors if not a["done"]]
         if not live:
@@ -784,36 +995,51 @@ def test_interleaved_holders_never_overlap_on_a_slot_and_never_lose_one(data):
         if action == "crash":
             actor["done"] = True
             continue
-        call = actor["call"]
-        if call[0] == "get":
-            send(actor, store.get(call[1]))
-        elif call[0] == "put":
-            send(actor, store.put(call[1], call[2], skip_if_exists=call[3]))
-        elif call[0] == "pause":
-            send(actor, None)
-        elif call[0] == "start":
-            lease = call[1]
-            # The remote guard, on Modal's (true) clock.
-            if clock.now + TIMEOUT + runner.GUARD_MARGIN_SECONDS > lease.expires:
-                send(actor, "refused")
-                continue
-            duration = data.draw(st.integers(1, TIMEOUT), label="run seconds")
-            run = {"slot": lease.slot, "start": clock.now, "end": clock.now + duration}
-            for other in runs:
-                if other["slot"] == run["slot"]:
-                    assert other["end"] <= run["start"], (other, run)
-            runs.append(run)
-            actor["run"] = run
-            send(actor, "running")
-        elif call[0] == "await" and clock.now >= actor["run"]["end"]:
-            send(actor, "returned")
-        running = [r for r in runs if r["start"] <= clock.now < r["end"]]
-        assert len(running) <= runner.SLOT_COUNT
+        if action == "burst":
+            # One holder alone, back to back: its Dict calls, its polls and
+            # its start, up to a running (or refused) run; single steps
+            # interleave holders call by call.
+            for _ in range(100):
+                if actor["done"] or actor["call"][0] == "await":
+                    break
+                started = actor["call"][0] == "start"
+                advance(actor)
+                if started:
+                    break
+            continue
+        advance(actor)
 
-    clock.now += runner.LEASE_SECONDS + MARGIN + drift
-    fresh = [slots_for(store, clock, f"fresh{n}") for n in range(runner.SLOT_COUNT)]
+    # Every lease ends by its holder's (skewed) reading plus LEASE_SECONDS.
+    clock.now += runner.LEASE_SECONDS + runner.CLOCK_MARGIN_SECONDS + 2 * HOST_SKEW + 1
+    fresh = [slots_for(store, clock, f"fresh{n}", count=count) for n in range(count)]
     taken = {s.acquire(wait_seconds=0).slot for s in fresh}
-    assert taken == set(range(runner.SLOT_COUNT)), (taken, clock.now, store.data)
+    assert taken == set(range(count)), (taken, clock.now, store.data)
+
+
+@settings(max_examples=600, deadline=None)
+@given(st.data())
+def test_interleaved_holders_never_overlap_on_a_slot_and_never_lose_one(data):
+    interleaved_holders(data)
+
+
+def test_the_model_check_finds_the_overlap_when_the_margins_go(monkeypatch):
+    # Review of 2d727d8, B2: the model check must be able to fail. With both
+    # margins removed it finds two runs on one slot (derandomised, so this
+    # is deterministic).
+    monkeypatch.setattr(runner, "GUARD_MARGIN_SECONDS", 0)
+    monkeypatch.setattr(runner, "CLOCK_MARGIN_SECONDS", 0)
+    # Over 12 random seeds it took 78-1,487 examples; the budget leaves room
+    # for a Hypothesis release that generates differently.
+    check = settings(
+        max_examples=5000,
+        deadline=None,
+        derandomize=True,
+        database=None,
+        phases=[Phase.generate],
+        report_multiple_bugs=False,
+    )(given(st.data())(interleaved_holders))
+    with pytest.raises(AssertionError, match="overlap"):
+        check()
 
 
 def modal_fakes(slots, remote, run=nullcontext):
