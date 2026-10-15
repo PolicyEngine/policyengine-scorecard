@@ -40,6 +40,7 @@ import re
 import sys
 import tempfile
 import time
+from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -100,6 +101,224 @@ OFFLINE_ENV = {
     "MKL_NUM_THREADS": "2",
     "NUMEXPR_NUM_THREADS": "2",
 }
+
+
+SLOTS_DICT = "scorecard-replay-simulation-slots"
+SLOT_COUNT = 2
+# The function timeout (10,800 s) plus the guard margin and time for the
+# container to be scheduled. The remote function refuses to start unless its
+# whole timeout and the margin fit inside the lease, so a run always ends
+# before its slot can pass to anyone else.
+LEASE_SECONDS = 4 * 60 * 60
+# The remote guard leaves this much of the lease unused.
+GUARD_MARGIN_SECONDS = 10 * 60
+# Claims are grouped by calendar day (UTC, on Modal's clock). A day's claims
+# matter for at most EPOCH_SECONDS + LEASE_SECONDS, far inside the 7 days
+# after which Modal expires an idle Dict entry, so no claim that still
+# matters can have expired.
+EPOCH_SECONDS = 24 * 60 * 60
+# Every lease decision reads the time from Modal itself (a small remote
+# function), never this machine's clock. ASSUMPTION: the clocks of the Modal
+# containers that read the time and run the replay differ from true time by
+# at most CLOCK_SKEW_SECONDS (they are NTP-disciplined). A claim is treated
+# as lapsed only CLOCK_MARGIN_SECONDS after its expiry, which covers a
+# reading container that is fast and a guard container that is slow.
+CLOCK_SKEW_SECONDS = 30
+CLOCK_MARGIN_SECONDS = 2 * 60
+
+
+class NoSlotFree(TimeoutError):
+    """Both simulation slots stayed held for the whole wait."""
+
+
+@dataclass(frozen=True)
+class Lease:
+    slot: int
+    expires: float
+    claims: tuple  # ((epoch, generation), ...), ascending by epoch
+
+
+class SimulationSlots:
+    """At most two replay simulations at once across Modal invocations.
+
+    Each invocation runs one worker, and separate invocations share no
+    Modal-side limit, so a third concurrent run would exceed the two the
+    shared account allows. Before starting, an invocation takes one of two
+    slots in a named Modal Dict.
+
+    A slot has one chain of claims per calendar day (epoch):
+    ``claim-{slot}-{epoch}-{generation}``. The only operation that takes a
+    slot is ``put(key, value, skip_if_exists=True)``, an atomic
+    create-if-absent on the server (modal/dict.py,
+    ``DictUpdateRequest(if_not_exists=...)``): a caller creates a chain's
+    next generation only when its newest one is released or lapsed, and
+    exactly one caller creates any generation. Nothing is deleted, there is
+    no pointer to go stale, and a holder writes only its own claims, to
+    release them. A lease that crosses midnight holds a claim in both days'
+    chains, taken in order and given back together.
+
+    Assumptions: every invocation uses the same Modal workspace and
+    environment (``Dict.from_name`` resolves in the active one), and Modal
+    container clocks are within CLOCK_SKEW_SECONDS of true time. Freeing a
+    slot when a run returns its result also assumes that Modal returns an
+    input's result only after any earlier attempt of that input has
+    stopped. A stale read is harmless: a stale "absent" makes the following
+    create fail, and "released" and "lapsed" never revert.
+
+    Why this is safe:
+
+    * Within a chain, generations are contiguous and each newer one was
+      created only after the one before it was free, so at most one claim
+      is live at a time. A run at time t holds the live claim in t's chain.
+    * A chain governs only its own day, and its keys are at most
+      EPOCH_SECONDS + LEASE_SECONDS old while it does, so Modal's expiry of
+      entries idle for 7 days cannot remove one that still matters. A write
+      that arrives late lands in a chain that no longer governs anything.
+    * A step that stalls, however long, either finds its generation taken
+      (the create fails) or was unopposed all along; a lease is granted
+      only with enough time left for a run, on the clock read after the
+      last write.
+    * Clocks: ``clock`` is Modal's time: main() passes a remote function
+      that reads it, so every decision uses Modal's clock and no local clock
+      or offset is involved. Takeover waits CLOCK_MARGIN_SECONDS past a
+      claim's expiry, and the remote guard ends every run
+      GUARD_MARGIN_SECONDS before it. In the worst case (a guard container
+      CLOCK_SKEW_SECONDS slow, a reading container CLOCK_SKEW_SECONDS fast)
+      a takeover still comes GUARD_MARGIN_SECONDS + CLOCK_MARGIN_SECONDS -
+      2 * CLOCK_SKEW_SECONDS after the run's end.
+
+    A slot can stay held longer than needed, never past its lease plus the
+    margin: after ctrl-C during ``acquire``, after a create that succeeded
+    but reported failure (a retried request), after a release or give-back
+    whose Dict call failed, after the remote guard refused (Modal may have
+    retried the input after an earlier attempt that could still be
+    running), or while a started run's end is unconfirmed.
+
+    Every Dict call is one step of a generator (``_try_steps``,
+    ``_release_steps``), so tests interleave several holders call by call.
+    """
+
+    def __init__(
+        self,
+        store,
+        *,
+        holder,
+        count=SLOT_COUNT,
+        lease=LEASE_SECONDS,
+        clock=time.time,
+        minimum=None,
+    ):
+        self.store, self.holder, self.count = store, holder, count
+        self.lease, self.clock = lease, clock
+        # A lease with less than this left is not worth holding: the remote
+        # guard would refuse the run.
+        self.minimum = (
+            RESOURCE_LIMITS["timeout_seconds"] + GUARD_MARGIN_SECONDS + 60
+            if minimum is None
+            else minimum
+        )
+
+    @staticmethod
+    def claim_key(slot: int, epoch: int, generation: int) -> str:
+        return f"claim-{slot}-{epoch}-{generation}"
+
+    @staticmethod
+    def epochs(start: float, expires: float) -> range:
+        """The days a lease touches, padded by the clock margin."""
+        first = int((start - CLOCK_MARGIN_SECONDS) // EPOCH_SECONDS)
+        last = int((expires + CLOCK_MARGIN_SECONDS) // EPOCH_SECONDS)
+        return range(first, last + 1)
+
+    def _claim(self, expires: float, *, released: bool = False) -> dict:
+        return {"holder": self.holder, "expires": expires, "released": released}
+
+    def _give_back(self, slot: int, claims, expires: float):
+        for epoch, generation in claims:
+            key = self.claim_key(slot, epoch, generation)
+            yield ("put", key, self._claim(expires, released=True), False)
+
+    def _try_steps(self, slot: int):
+        expires = self.clock() + self.lease
+        made = []
+        try:
+            for epoch in self.epochs(expires - self.lease, expires):
+                generation, newest = -1, None
+                while True:
+                    key = self.claim_key(slot, epoch, generation + 1)
+                    following = yield ("get", key)
+                    if following is None:
+                        break
+                    generation, newest = generation + 1, following
+                free = (
+                    newest is None
+                    or newest["released"]
+                    or newest["expires"] + CLOCK_MARGIN_SECONDS <= self.clock()
+                )
+                key = self.claim_key(slot, epoch, generation + 1)
+                if not free or not (yield ("put", key, self._claim(expires), True)):
+                    yield from self._give_back(slot, made, expires)
+                    return None
+                made.append((epoch, generation + 1))
+            # The step itself may have taken too long for a run to fit.
+            enough = expires - self.clock() >= self.minimum
+        except Exception:
+            # A failed call or clock read: hold nothing rather than a slot
+            # with no run.
+            yield from self._give_back(slot, made, expires)
+            raise
+        if not enough:
+            yield from self._give_back(slot, made, expires)
+            return None
+        return Lease(slot, expires, tuple(made))
+
+    def _release_steps(self, lease: Lease):
+        for epoch, generation in lease.claims:
+            key = self.claim_key(lease.slot, epoch, generation)
+            yield ("put", key, self._claim(lease.expires, released=True), False)
+
+    def _drive(self, steps):
+        """Run one protocol generator against the store."""
+        try:
+            call = next(steps)
+            while True:
+                try:
+                    if call[0] == "get":
+                        result = self.store.get(call[1])
+                    else:
+                        result = self.store.put(
+                            call[1], call[2], skip_if_exists=call[3]
+                        )
+                except Exception as error:
+                    # Let the step see a failed call, so it can give back
+                    # the claims it just made.
+                    call = steps.throw(error)
+                    continue
+                call = steps.send(result)
+        except StopIteration as done:
+            return done.value
+
+    def acquire(
+        self,
+        *,
+        wait_seconds: float = 6 * 60 * 60,
+        poll_seconds: float = 30,
+        sleep=None,
+    ) -> Lease:
+        sleep = time.sleep if sleep is None else sleep
+        deadline = self.clock() + wait_seconds
+        while True:
+            for slot in range(self.count):
+                lease = self._drive(self._try_steps(slot))
+                if lease is not None:
+                    return lease
+            if self.clock() >= deadline:
+                raise NoSlotFree("no simulation slot became free")
+            print("[modal] both simulation slots are held; waiting", flush=True)
+            sleep(poll_seconds)
+
+    def release(self, lease: Lease) -> None:
+        """Free the slot. Only for a run that returned or never started."""
+        self._drive(self._release_steps(lease))
 
 
 def canonical_bytes(value: object) -> bytes:
@@ -474,6 +693,8 @@ def modal_function(mounts: dict[str, Path]):
     for relative, path in sorted(mounts.items()):
         image = image.add_local_file(path, f"{REMOTE_ROOT}/{relative}", copy=False)
     app = modal.App("scorecard-uk-event-replay", include_source=False)
+    timeout_seconds = RESOURCE_LIMITS["timeout_seconds"]
+    guard_seconds = timeout_seconds + GUARD_MARGIN_SECONDS
 
     @app.function(
         image=image,
@@ -481,19 +702,27 @@ def modal_function(mounts: dict[str, Path]):
         include_source=False,
         cpu=(2, 2),
         memory=(32768, 32768),
-        timeout=10800,
+        timeout=timeout_seconds,
         max_containers=1,
         retries=0,
         block_network=True,
         restrict_modal_access=True,
     )
     @modal.concurrent(max_inputs=1)
-    def replay(payload: dict) -> dict:
+    def replay(payload: dict, lease_expires: float) -> dict:
         import hashlib
         import json
         import subprocess
+        import time
         from pathlib import Path
 
+        # A run that could outlive its simulation slot does not start. The
+        # refusal is returned, not raised, so the caller exits with a clear
+        # status. It does not show that nothing ran: Modal may have retried
+        # this input after an earlier attempt (a preemption or a lost input)
+        # that could still be running, so the caller keeps the slot.
+        if time.time() + guard_seconds > lease_expires:
+            return {"refused": "the simulation slot lease does not cover the timeout"}
         # Inherit stdout/stderr so Modal streams phase progress as it happens.
         subprocess.run(
             [
@@ -527,7 +756,20 @@ def modal_function(mounts: dict[str, Path]):
             }
         return {"files": files}
 
-    return modal, app, replay
+    @app.function(
+        image=modal.Image.debian_slim(python_version="3.12"),
+        serialized=True,
+        include_source=False,
+        timeout=60,
+        block_network=True,
+        restrict_modal_access=True,
+    )
+    def modal_time() -> float:
+        import time
+
+        return time.time()
+
+    return modal, app, replay, modal_time
 
 
 def download_prefix(download_root: str, *, root: Path = ROOT) -> Path:
@@ -641,13 +883,56 @@ def main(argv: list[str] | None = None) -> int:
         raise ValueError("download destination escapes its ignored prefix")
     if target.exists() and any(target.iterdir()):
         raise ValueError("choose an empty download prefix before a remote run")
-    modal, app, replay = modal_function(mounts)
+    modal, app, replay, modal_time = modal_function(mounts)
     response = None
-    with modal.enable_output(), app.run():
-        response = replay.remote(payload)
+    slots = lease = None
+    started = False
+    try:
+        with modal.enable_output(), app.run():
+            # Every lease decision reads Modal's clock, so this machine's
+            # clock (however wrong, or however it jumps) plays no part.
+            slots = SimulationSlots(
+                modal.Dict.from_name(SLOTS_DICT, create_if_missing=True),
+                holder=f"{platform.node()}:{os.getpid()}:{digest_bytes(canonical_bytes(request))[:12]}",
+                clock=modal_time.remote,
+            )
+            lease = slots.acquire()
+            started = True
+            response = replay.remote(payload, lease.expires)
+    except NoSlotFree as error:
+        print(f"Modal run not started: {error}", file=sys.stderr)
+        return 75
+    except Exception as error:
+        if response is None:
+            raise
+        # The run returned its result; only leaving the app failed.
+        print(f"Modal app exit failed after the run returned: {error}", file=sys.stderr)
+    finally:
+        # A run that returned its result, or never started, frees its slot
+        # now. Otherwise (ctrl-C, a lost connection, a remote error, a guard
+        # refusal, a failed stop request) nothing confirms that every attempt
+        # has stopped, so the claim stays until its lease lapses, which each
+        # attempt's guard puts after that attempt's end. A failed release
+        # never costs a result: the claim lapses.
+        returned = response is not None and "refused" not in response
+        if lease is not None and (not started or returned):
+            try:
+                slots.release(lease)
+            except Exception as error:
+                print(
+                    f"simulation slot not released ({error}); it will lapse",
+                    file=sys.stderr,
+                )
     if response is None:
         print("Modal run interrupted; no output downloaded", file=sys.stderr)
         return 130
+    if "refused" in response:
+        print(
+            f"Modal run refused: {response['refused']}; the simulation slot "
+            "stays held until its lease lapses",
+            file=sys.stderr,
+        )
+        return 75
     paths = save_download(response, payload, args.download_root)
     print(
         f"verified and downloaded {len(paths)} small replay files under {args.download_root}"
