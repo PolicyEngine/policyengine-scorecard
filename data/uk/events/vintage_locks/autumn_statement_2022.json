@@ -15,7 +15,7 @@
       "archive_timestamp": "20221117122504",
       "edition": "November 2022",
       "capture_status": "unknown",
-      "capture_status_evidence": "Earliest capture listed in research/archive_obr.md; a capture date alone does not prove that these are the first published bytes.",
+      "capture_status_evidence": "Event-day file: sheets 1.8, 1.10, 1.12, 1.19 hold only the notice that the table would be published on 24 November, so they are unavailable in these bytes. A later file of the same forecast, Economy_supplementary_tables_November_2022_v2-1.xlsx, was first archived 2022-12-09 and is not locked here.",
       "status": "obtained",
       "retrieved_at": "2026-10-11T23:55:36+00:00",
       "byte_size": 342024,
@@ -57,6 +57,24 @@
           "http_status": 200,
           "error": null
         }
+      ],
+      "deferred_sheets": {
+        "sheets": [
+          "1.8",
+          "1.10",
+          "1.12",
+          "1.19"
+        ],
+        "notices": [
+          "This table will be published at 11am on 24 November."
+        ]
+      },
+      "later_versions": [
+        {
+          "original_url": "https://obr.uk/docs/dlm_uploads/Economy_supplementary_tables_November_2022_v2-1.xlsx",
+          "first_archived": "20221209171229",
+          "locked": false
+        }
       ]
     },
     {
@@ -66,7 +84,7 @@
       "archive_timestamp": "20221117122532",
       "edition": "November 2022",
       "capture_status": "unknown",
-      "capture_status_evidence": "Earliest capture listed in research/archive_obr.md; a capture date alone does not prove that these are the first published bytes.",
+      "capture_status_evidence": "Event-day file: sheets 2.13, 3.1, 3.2, 3.3, 3.4, 3.8, 3.11, 3.17, 3.18 hold only the notice that the table would be published on 24 November, so they are unavailable in these bytes. A later file of the same forecast, Fiscal_supplementary_tables_Receiptsother_November_2022_v3.xlsx, was first archived 2022-12-09 and is not locked here.",
       "status": "obtained",
       "retrieved_at": "2026-10-11T23:55:42+00:00",
       "byte_size": 2210375,
@@ -125,6 +143,30 @@
           "http_status": 200,
           "error": null
         }
+      ],
+      "deferred_sheets": {
+        "sheets": [
+          "2.13",
+          "3.1",
+          "3.2",
+          "3.3",
+          "3.4",
+          "3.8",
+          "3.11",
+          "3.17",
+          "3.18"
+        ],
+        "notices": [
+          "This table will be published at 11am on 24 November.",
+          "This table will be published at 11 am on 24 November."
+        ]
+      },
+      "later_versions": [
+        {
+          "original_url": "https://obr.uk/docs/dlm_uploads/Fiscal_supplementary_tables_Receiptsother_November_2022_v3.xlsx",
+          "first_archived": "20221209145619",
+          "locked": false
+        }
       ]
     },
     {
@@ -134,7 +176,7 @@
       "archive_timestamp": "20221117131030",
       "edition": "November 2022",
       "capture_status": "unknown",
-      "capture_status_evidence": "Earliest capture listed in research/archive_obr.md; a capture date alone does not prove that these are the first published bytes.",
+      "capture_status_evidence": "Event-day file: sheets 3.2, 3.18 hold only the notice that the table would be published on 24 November, so they are unavailable in these bytes. A later file of the same forecast, Fiscal_supplementary_tables_expenditure_November_2022_v3.xlsx, was first archived 2022-12-09 and is not locked here.",
       "status": "obtained",
       "retrieved_at": "2026-10-11T23:55:50+00:00",
       "byte_size": 17854855,
@@ -183,6 +225,22 @@
           "http_status": 200,
           "error": null
         }
+      ],
+      "deferred_sheets": {
+        "sheets": [
+          "3.2",
+          "3.18"
+        ],
+        "notices": [
+          "This table will be published at 11am on 24 November."
+        ]
+      },
+      "later_versions": [
+        {
+          "original_url": "https://obr.uk/docs/dlm_uploads/Fiscal_supplementary_tables_expenditure_November_2022_v3.xlsx",
+          "first_archived": "20221209171019",
+          "locked": false
+        }
       ]
     },
     {
@@ -192,7 +250,7 @@
       "archive_timestamp": "20221117122512",
       "edition": "November 2022",
       "capture_status": "unknown",
-      "capture_status_evidence": "Earliest capture listed in research/archive_obr.md; a capture date alone does not prove that these are the first published bytes.",
+      "capture_status_evidence": "Event-day file with no deferred-table notice. A later file of the same forecast, Economic_and_fiscal_outlook_charts_and_tables_November_2022-2.xlsx, was first archived 2022-12-09 and is not locked here.",
       "status": "obtained",
       "retrieved_at": "2026-10-11T23:56:44+00:00",
       "byte_size": 3975569,
@@ -261,6 +319,13 @@
           "retrieved_at": "2026-10-11T23:56:44+00:00",
           "http_status": 200,
           "error": null
+        }
+      ],
+      "later_versions": [
+        {
+          "original_url": "https://obr.uk/docs/dlm_uploads/Economic_and_fiscal_outlook_charts_and_tables_November_2022-2.xlsx",
+          "first_archived": "20221209153101",
+          "locked": false
         }
       ]
     },
@@ -2292,5 +2357,5 @@
     "pause_seconds": 4.0,
     "max_attempts": 3
   },
-  "receipt_sha256": "4527ff6bc95917ea9fee231484ee8396548658cf3e3ef3ffe9b2d877da55af6c"
+  "receipt_sha256": "eedee2388971f7997dc182d6fb2540023f55a523a673372449ea2d2c2b557bb6"
 }

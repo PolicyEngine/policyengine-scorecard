@@ -329,6 +329,90 @@ def test_offline_checker_rejects_corrupt_receipts(tmp_path, mutation):
         collector.check_locks(tmp_path)
 
 
+def load_collector():
+    spec = importlib.util.spec_from_file_location(
+        "vintage_collector", ROOT / "data/uk/events/collect_vintage_locks.py"
+    )
+    collector = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(collector)
+    return collector
+
+
+def source(lock, role):
+    return next(s for s in lock["sources"] if s["role"] == role)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "another_events_source",
+        "false_launch",
+        "captured_before_event",
+        "deferred_sheet_not_in_workbook",
+        "bad_datetime",
+        "bad_uri",
+    ),
+)
+def test_offline_checker_binds_each_source_to_its_event(tmp_path, mutation):
+    # Review of 4c5f918: a source from another event, or a launch label on a
+    # file edited after the event, passed the offline check.
+    collector = load_collector()
+    locks = {event: read_json(LOCK_DIR / f"{event}.json") for event in EVENTS}
+    ss2022, ab2021 = locks["spring_statement_2022"], locks["autumn_budget_2021"]
+    if mutation == "another_events_source":
+        # Autumn Budget 2021's economy receipt in Spring Statement 2022's lock.
+        borrowed = copy.deepcopy(source(ab2021, "economy"))
+        ss2022["sources"] = [
+            borrowed if s["role"] == "economy" else s for s in ss2022["sources"]
+        ]
+        target = ss2022
+    elif mutation == "false_launch":
+        receipts = source(ab2021, "receipts")
+        assert receipts["workbook_properties"]["modified"][:10] > ab2021["event_date"]
+        receipts["capture_status"] = "launch"
+        target = ab2021
+    elif mutation == "captured_before_event":
+        economy = source(ss2022, "economy")
+        economy["archive_timestamp"] = "20220101000000"
+        economy["archive_capture_url"] = (
+            f"https://web.archive.org/web/20220101000000id_/{economy['original_url']}"
+        )
+        target = ss2022
+    elif mutation == "deferred_sheet_not_in_workbook":
+        as2022 = locks["autumn_statement_2022"]
+        source(as2022, "economy")["deferred_sheets"]["sheets"].append("9.99")
+        target = as2022
+    elif mutation == "bad_datetime":
+        source(ss2022, "economy")["retrieved_at"] = "not a datetime"
+        target = ss2022
+    else:
+        source(ss2022, "economy")["original_url"] = "not a uri"
+        target = ss2022
+    target["receipt_sha256"] = receipt_digest(target)
+    for event, value in locks.items():
+        (tmp_path / f"{event}.json").write_text(json.dumps(value))
+    with pytest.raises((ValueError, ValidationError)):
+        collector.check_locks(tmp_path)
+
+
+def test_autumn_statement_2022_records_its_event_day_partial_files():
+    # Review of 4c5f918: the OBR's event-day files deferred tables to
+    # 24 November; each deferred sheet is recorded as unavailable and the
+    # later files are named without being locked.
+    lock = read_json(LOCK_DIR / "autumn_statement_2022.json")
+    deferred = {
+        role: set(source(lock, role).get("deferred_sheets", {}).get("sheets", []))
+        for role in ("economy", "receipts", "expenditure", "policy_measures")
+    }
+    assert deferred["economy"] == {"1.8", "1.10", "1.12", "1.19"}
+    assert len(deferred["receipts"]) == 9 and deferred["expenditure"] == {"3.2", "3.18"}
+    assert deferred["policy_measures"] == set()
+    for role in ("economy", "receipts", "expenditure", "policy_measures"):
+        later = source(lock, role)["later_versions"]
+        assert later and all(v["locked"] is False for v in later)
+        assert all(v["first_archived"].startswith("20221209") for v in later)
+
+
 def test_unavailable_source_cannot_invent_a_digest():
     lock = read_json(LOCK_DIR / f"{EVENTS[0]}.json")
     source = lock["sources"][0]

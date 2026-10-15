@@ -19,15 +19,13 @@
       "const": "vintage_lock.v1"
     },
     "event_slug": {
-      "enum": [
-        "spring_statement_2022",
-        "autumn_statement_2022",
-        "autumn_budget_2021"
-      ]
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*_[0-9]{4}$"
     },
     "event_date": {
       "type": "string",
-      "format": "date"
+      "format": "date",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
     },
     "forecast_vintage": {
       "type": "object",
@@ -46,14 +44,16 @@
         },
         "published_at": {
           "type": "string",
-          "format": "date"
+          "format": "date",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
         }
       },
       "additionalProperties": false
     },
     "collected_at": {
       "type": "string",
-      "format": "date"
+      "format": "date",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
     },
     "collector": {
       "type": "object",
@@ -121,7 +121,8 @@
           },
           "original_url": {
             "type": "string",
-            "format": "uri"
+            "format": "uri",
+            "pattern": "^https?://[^\\s]+$"
           },
           "archive_capture_url": {
             "type": "string",
@@ -154,7 +155,8 @@
           },
           "retrieved_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$"
           },
           "byte_size": {
             "type": [
@@ -268,11 +270,13 @@
               "properties": {
                 "url": {
                   "type": "string",
-                  "format": "uri"
+                  "format": "uri",
+                  "pattern": "^https?://[^\\s]+$"
                 },
                 "retrieved_at": {
                   "type": "string",
-                  "format": "date-time"
+                  "format": "date-time",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$"
                 },
                 "http_status": {
                   "type": [
@@ -287,6 +291,62 @@
                     "string",
                     "null"
                   ]
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "deferred_sheets": {
+            "description": "Sheets present in these bytes that hold only a notice that the table would be published later; their data is unavailable in this file.",
+            "type": "object",
+            "required": [
+              "sheets",
+              "notices"
+            ],
+            "properties": {
+              "sheets": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "notices": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "later_versions": {
+            "description": "Later files of the same publication under other names, recorded but not locked.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "original_url",
+                "first_archived",
+                "locked"
+              ],
+              "properties": {
+                "original_url": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https?://[^\\s]+$"
+                },
+                "first_archived": {
+                  "type": "string",
+                  "pattern": "^[0-9]{14}$"
+                },
+                "locked": {
+                  "const": false
                 }
               },
               "additionalProperties": false

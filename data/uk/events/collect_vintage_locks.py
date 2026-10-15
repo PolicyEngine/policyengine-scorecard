@@ -18,7 +18,7 @@ import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 import zipfile
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
@@ -40,6 +40,44 @@ ARCHIVE_PATTERN = re.compile(
 )
 NS = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
 REL_NS = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}"
+
+
+OBR_ROLES = ("economy", "receipts", "expenditure", "policy_measures")
+# Autumn Statement 2022: the OBR's event-day files deferred some tables to
+# 24 November, and later files of the same forecast replaced them under other
+# names (first archived 9 December 2022). The locks keep the event-day bytes,
+# record each deferred sheet as unavailable in them, and name the later files
+# without locking them. Sheets were found by their shared-string cells reading
+# the notice; later files from the archive's CDX index.
+FIRST_DAY_FILES = {
+    ("autumn_statement_2022", "economy"): (
+        ["1.8", "1.10", "1.12", "1.19"],
+        ["This table will be published at 11am on 24 November."],
+        "Economy_supplementary_tables_November_2022_v2-1.xlsx",
+        "20221209171229",
+    ),
+    ("autumn_statement_2022", "receipts"): (
+        ["2.13", "3.1", "3.2", "3.3", "3.4", "3.8", "3.11", "3.17", "3.18"],
+        [
+            "This table will be published at 11am on 24 November.",
+            "This table will be published at 11 am on 24 November.",
+        ],
+        "Fiscal_supplementary_tables_Receiptsother_November_2022_v3.xlsx",
+        "20221209145619",
+    ),
+    ("autumn_statement_2022", "expenditure"): (
+        ["3.2", "3.18"],
+        ["This table will be published at 11am on 24 November."],
+        "Fiscal_supplementary_tables_expenditure_November_2022_v3.xlsx",
+        "20221209171019",
+    ),
+    ("autumn_statement_2022", "policy_measures"): (
+        [],
+        [],
+        "Economic_and_fiscal_outlook_charts_and_tables_November_2022-2.xlsx",
+        "20221209153101",
+    ),
+}
 
 
 def canonical_receipt_digest(lock: dict) -> str:
@@ -161,6 +199,32 @@ def source_catalog() -> dict[str, dict]:
                 else f"https://obr.uk/download/{name}/"
             )
             sources.append(_source(role, stamp, original, label))
+            if (slug, role) in FIRST_DAY_FILES:
+                sheets, notices, later, first_archived = FIRST_DAY_FILES[(slug, role)]
+                deferred = (
+                    f"Event-day file: sheets {', '.join(sheets)} hold only the notice "
+                    "that the table would be published on 24 November, so they are "
+                    "unavailable in these bytes. "
+                    if sheets
+                    else "Event-day file with no deferred-table notice. "
+                )
+                sources[-1]["capture_status_evidence"] = (
+                    f"{deferred}A later file of the same forecast, {later}, was first "
+                    f"archived {first_archived[:4]}-{first_archived[4:6]}-"
+                    f"{first_archived[6:8]} and is not locked here."
+                )
+                if sheets:
+                    sources[-1]["deferred_sheets"] = {
+                        "sheets": sheets,
+                        "notices": notices,
+                    }
+                sources[-1]["later_versions"] = [
+                    {
+                        "original_url": f"https://obr.uk/docs/dlm_uploads/{later}",
+                        "first_archived": first_archived,
+                        "locked": False,
+                    }
+                ]
             if slug == "autumn_budget_2021" and role == "receipts":
                 sources[-1].update(
                     capture_status="later_revision",
@@ -469,7 +533,7 @@ def collect_source(client: ArchiveClient, source: dict, scratch: Path) -> dict:
         for sheet, cells in read_xlsx_cells(payload).items():
             for coordinate, value in cells.items():
                 if (
-                    coordinate.startswith("A")
+                    re.fullmatch(r"A[0-9]+", coordinate)
                     and re.sub(r"[†*]+$", "", value).strip()
                     == source["selection"]["forecast_label"]
                 ):
@@ -515,7 +579,32 @@ def check_locks(lock_dir: Path = LOCK_DIR) -> list[dict]:
                 f"Exactly one source for each core role is required: {path}"
             )
         obtained_digests = []
+        event_day = date.fromisoformat(lock["event_date"])
         for source in sources:
+            role = source["role"]
+            # A source belongs to its event: an OBR file names this forecast,
+            # and nothing but the cross-vintage HOFD was captured before the
+            # event; a file edited after the event is not its launch bytes.
+            if (
+                role in OBR_ROLES
+                and source["edition"] != lock["forecast_vintage"]["label"]
+            ):
+                raise ValueError(f"Edition names another forecast: {path}: {role}")
+            captured = datetime.strptime(source["archive_timestamp"], "%Y%m%d%H%M%S")
+            if role != "hofd_row" and captured.date() < event_day:
+                raise ValueError(f"Captured before the event: {path}: {role}")
+            modified = (source.get("workbook_properties") or {}).get("modified")
+            if (
+                source["capture_status"] == "launch"
+                and modified
+                and date.fromisoformat(modified[:10]) > event_day
+            ):
+                raise ValueError(f"Launch file edited after the event: {path}: {role}")
+            deferred = (source.get("deferred_sheets") or {}).get("sheets", [])
+            if source["status"] == "obtained" and not set(deferred) <= {
+                name.strip() for name in source["sheet_names"]
+            }:
+                raise ValueError(f"Deferred sheet not in the workbook: {path}: {role}")
             match = ARCHIVE_PATTERN.fullmatch(source["archive_capture_url"])
             if (
                 not match

@@ -12,15 +12,20 @@ the requested paths.
 All six required roles were obtained for each event: economy, receipts,
 expenditure, policy tables, HOFD historical forecast rows and the DWP benefit
 expenditure/caseload edition. The 18 role receipts identify 16 distinct
-workbooks because the three HOFD selections share one database. No required
-source remains unobtained. Unsuccessful exploratory lookups for the guessed
+workbooks because the three HOFD selections share one database. Every role has
+a locked file, but not every table in it: the OBR's Autumn Statement 2022
+event-day files deferred 15 tables to 24 November (economy 1.8, 1.10, 1.12 and
+1.19; receipts 2.13, 3.1–3.4, 3.8, 3.11, 3.17 and 3.18; expenditure 3.2 and
+3.18). The locks record those sheets as unavailable in the locked bytes
+(`deferred_sheets`) and name the later files of the same forecast, first
+archived on 9 December 2022, without locking them (`later_versions`). Unsuccessful exploratory lookups for the guessed
 HOFD path and modern Autumn 2021 DWP media URL were resolved to captured
 original URLs; they do not establish global archive absence.
 
 | Event | Canonical source-lock receipt SHA-256 |
 |---|---|
 | Spring Statement 2022 | `cdff2fd50b5033ad337f571eb9a8df9397d21f775de9912f901aabd8eb924782` |
-| Autumn Statement 2022 | `4527ff6bc95917ea9fee231484ee8396548658cf3e3ef3ffe9b2d877da55af6c` |
+| Autumn Statement 2022 | `eedee2388971f7997dc182d6fb2540023f55a523a673372449ea2d2c2b557bb6` |
 | Autumn Budget 2021 | `c98e70e9bae5b0c526e873cbd8827028aa1f1fa39dea16afe5b7fcd65c476a1f` |
 
 The [collector and lock contract](VINTAGE_LOCKS.md) retain exact capture URLs,
@@ -52,16 +57,13 @@ current 2023–2030 execution limits.
 
 ## Commands and verification
 
-The interpreter used was
-`/Users/maxghenis/PolicyEngine/policyengine-scorecard/.claude/worktrees/suspicious-wright-b02e85/.venv-candidate/bin/python`.
-No packages were installed.
+The commands ran with an existing Python 3.12 environment holding the
+test dependencies; no packages were installed.
 
 ```bash
-# Executed with the interpreter above (abbreviated here as python).
-python -u /tmp/w6-vintage-locks/run_collection.py
+# Collection: a scratch wrapper around the collector, described below.
 python data/uk/events/collect_vintage_locks.py --check
-PYTHONDONTWRITEBYTECODE=1 HYPOTHESIS_STORAGE_DIRECTORY=/tmp/w6-phase0-hypothesis \
-  python -m pytest --noconftest -p no:cacheprovider tests/test_uk_vintage_locks.py -q
+PYTHONDONTWRITEBYTECODE=1 python -m pytest --noconftest -p no:cacheprovider tests/test_uk_vintage_locks.py -q
 ruff format data/uk/events/collect_vintage_locks.py tests/test_uk_vintage_locks.py
 ruff format --check data/uk/events/collect_vintage_locks.py tests/test_uk_vintage_locks.py
 ruff check data/uk/events/collect_vintage_locks.py tests/test_uk_vintage_locks.py
@@ -71,7 +73,7 @@ git diff --check
 Collection used a scratch wrapper that imported the collector, seeded its
 cache with the initial economy workbook already fetched by curl with saved
 HTTP headers, and called `main(['--scratch-dir',
-'/tmp/w6-vintage-locks/downloads'])`. The remaining 15 distinct workbooks used
+'<scratch>/downloads'])`. The remaining 15 distinct workbooks used
 the normal collector client. The direct collection CLI documented in
 VINTAGE_LOCKS.md is rerun guidance; it was not the original collection command.
 
@@ -79,8 +81,8 @@ Final result: **29 tests passed in 84.96 seconds**; offline validation reported
 `Validated 3 vintage locks offline`; Ruff checks succeeded. A Python scratch
 audit rehashed all 16 downloaded workbooks and matched every byte size, digest
 and sheet list to its receipt. Public workbook bytes were then removed by
-targeted `Path.unlink`; scratch scripts and archive-access metadata remain in
-`/tmp/w6-vintage-locks`. No downloaded workbook is part of the change.
+targeted `Path.unlink`; scratch scripts and archive-access metadata stayed in a
+temporary scratch directory outside the repository. No downloaded workbook is part of the change.
 Final scope review confirmed all 22 changed paths are authorized, all new JSON
 parses, local document links resolve and the test-generated database is absent.
 
@@ -120,15 +122,11 @@ was read at `origin/w6/replay-variants`, commit
   schedules, projections, population artifacts and new certification. These
   remain requirements rather than demonstrated implementations.
 
-**No new commit could be created.** The attempted `git add` was refused because
-the sandbox cannot write the shared metadata file
-`/Users/maxghenis/PolicyEngine/policyengine-scorecard/.git/worktrees/w6-phase0/index.lock`.
-The worktree changes remain intact and unstaged; HEAD remains the checkpoint
-above. No history was rewritten, branch changed, push made or PR opened.
-The intended single coherent commit message is:
-
-```text
-Lock first three historical replay source vintages and contracts
-
-Co-Authored-By: GPT-6.1 Sol (Subfleet lane) <noreply@openai.com>
-```
+**Delivery.** The lane's sandbox could not write git metadata, so the main
+session committed the work (3209e0b) and opened PR #170. Its independent
+review found the Autumn Statement 2022 event-day files' deferred tables and
+that the offline check did not tie a source to its event; both are fixed in
+the follow-up commit: the deferred sheets and later files are recorded, and
+`check_locks` now refuses an OBR file naming another forecast, any source
+other than the HOFD captured before the event, and a `launch` label on a file
+modified after the event.

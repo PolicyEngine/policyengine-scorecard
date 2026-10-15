@@ -28,8 +28,8 @@ The current-worktree code was read at
 The variant interface was read with
 `git show origin/w6/replay-variants:docs/uk_replay/RELEASE_REPLAY.md`, with that
 remote-tracking ref resolving locally to
-`eec87f42719cc73f41774ac940f67f5e55a67dba`. This is a separate branch's
-interface, not an interface implemented on this worktree's checkpoint.
+`eec87f42719cc73f41774ac940f67f5e55a67dba`. That interface has since merged
+to main (`pipeline/uk_replay_variants.py`).
 
 At that commit,
 [compute_uk_event.validate_variant_years](https://github.com/PolicyEngine/policyengine-scorecard/blob/eec87f42719cc73f41774ac940f67f5e55a67dba/pipeline/compute_uk_event.py#L561-L590)

@@ -33,6 +33,23 @@ Autumn Budget 2021's receipts workbook has a verified modification timestamp
 on 28 October 2021, after the event, so it is classified `later_revision`.
 Whether its numeric cells differ from the launch workbook remains unverified.
 
+The OBR's Autumn Statement 2022 event-day files deferred some tables: those
+sheets hold only the notice "This table will be published at 11am on 24
+November" (economy 1.8, 1.10, 1.12 and 1.19; receipts 2.13, 3.1–3.4, 3.8,
+3.11, 3.17 and 3.18; expenditure 3.2 and 3.18). Each such source records the
+sheets as `deferred_sheets`, unavailable in the locked bytes. The later files
+of the same forecast under other names, first archived on 9 December 2022, are
+recorded as `later_versions` with `locked: false`; locking one is a separate,
+labelled `later_revision` receipt.
+
+The offline check ties every source to its event: an OBR file's `edition`
+must equal the forecast label, every source except the cross-vintage HOFD
+must have been captured on or after the event date, a `launch` label is
+refused for a file whose workbook was modified after the event, and every
+deferred sheet must be one of the workbook's sheets. Dates, date-times and
+URLs are checked by explicit schema patterns, since the default format
+checker does not check `uri` or `date-time`.
+
 The HOFD receipt pins the March 2025 database edition, explicitly a later
 cross-vintage publication. Its `selection.forecast_label` chooses the event's
 historical forecast. `verified_rows` retains actual label coordinates and
