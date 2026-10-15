@@ -133,8 +133,18 @@ VARIANT_MANIFEST_FIELDS = frozenset(
 
 
 def legacy_dataset_identity(variants_path: Path) -> tuple[str, str]:
-    """The legacy record's dataset digest and data build."""
-    identity = variants.get_variant(path=variants_path)["identity"]
+    """The legacy record's dataset digest and data build.
+
+    Found by layout, never as the document's default: the default only has
+    to be certified, and may one day be a newer variant."""
+    document = variants.load_document(variants_path)
+    legacy = [record for record in document["variants"] if variants.is_legacy(record)]
+    if len(legacy) != 1:
+        raise ValueError(
+            f"{variants_path}: expected exactly one legacy variant, found {len(legacy)}"
+        )
+    record = variants.get_variant(legacy[0]["variant_id"], path=variants_path)
+    identity = record["identity"]
     return identity["dataset"]["sha256"], fiscal.data_bundle_id(
         identity["release_bundle"]
     )
