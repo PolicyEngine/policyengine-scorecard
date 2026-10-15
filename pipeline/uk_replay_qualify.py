@@ -698,10 +698,17 @@ def event_results(
 
 
 def construction_inert(event: str, inert: list[dict], premises: dict) -> list[dict]:
-    """A failure for each inert pair whose own construction premises say the
-    two worlds differ in that year: the construction did not reach the
-    engine, so the result is broken, not a known gap. Inertness the premises
-    predict (equal worlds) stays an incomplete grid with its reason."""
+    """A failure for each inert pair whose own premises give its two worlds
+    different 1 January values in that year. The intended change then did
+    not show in the declared heads: the construction did not reach the
+    engine, or it does not bind on this population. Equal premises values do
+    not prove a pair should be inert (a freeze can carry earlier years'
+    rates forward), so such a pair stays an incomplete grid, not a failure.
+
+    Invariants: every failure is one of the inert pairs; a pair fails
+    exactly when its own event, measure and year have a path whose two
+    worlds differ; premises for other years, measures and events do not
+    change the result."""
     failures = []
     measures = premises.get("measures", {})
     for pair in inert:
@@ -720,9 +727,9 @@ def construction_inert(event: str, inert: list[dict], premises: dict) -> list[di
             {
                 "code": "construction_inert",
                 "detail": (
-                    f"identical worlds although CONSTRUCTION_PREMISES.json sets "
-                    f"{path} to {values.get('baseline_world')} and "
-                    f"{values.get('reform_world')} in the two worlds"
+                    f"identical heads although CONSTRUCTION_PREMISES.json sets "
+                    f"{path} to {values.get('baseline_world')} in the baseline "
+                    f"world and {values.get('reform_world')} in the reform world"
                     + (
                         f" (and {len(differing) - 1} more paths)"
                         if len(differing) > 1

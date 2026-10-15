@@ -530,14 +530,18 @@ first. The terminal `STATUS.json` follows in a later commit naming the receipt's
 digest and the pushed receipt commit. Missing or invalid run output yields a
 minimal `failed` receipt.
 
-An in-force measure-year whose two worlds come out identical is inert. If
-the run's `CONSTRUCTION_PREMISES.json` sets any parameter to different values
-in the two worlds that year, the construction did not reach the engine: the
-receipt records an integrity failure `construction_inert` (with `event`,
-`measure_key`, `year` and the parameter in `detail`) and its status is
-`failed`. Inertness the premises predict (equal worlds) leaves the grid
-incomplete and is listed in `inert_measure_years`. Whether either blocks
-promotion is W4's qualification policy.
+An in-force measure-year whose declared heads come out identical in the two
+worlds is inert. If the run's `CONSTRUCTION_PREMISES.json` gives any
+parameter different 1 January values in the two worlds that year, the
+intended change did not show in the declared heads: the construction did not
+reach the engine, or it does not bind on this population. The receipt then
+records an integrity failure `construction_inert` (with `event`,
+`measure_key`, `year`, and the parameter and both worlds' values in
+`detail`), and its status is `failed`. Equal premises values do not prove a
+pair should be inert (a freeze can carry earlier years' rates forward), so
+such a pair leaves the grid incomplete and is listed in
+`inert_measure_years`. Whether either blocks promotion is W4's qualification
+policy.
 
 A step that fails before the candidate's identity is known yields a `failed`
 receipt with no execution block. If no event outputs exist, `corpus` is null.

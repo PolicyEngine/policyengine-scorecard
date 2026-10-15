@@ -240,14 +240,18 @@ the receiver writes a minimal schema-valid failed receipt with
 run output is recorded as `run_artifact_failed`. The terminal status still
 names the receipt digest and the commit that was pushed before it.
 
-An in-force measure-year whose two worlds come out identical is inert. If
-the run's `CONSTRUCTION_PREMISES.json` sets any parameter to different values
-in the two worlds that year, the construction did not reach the engine: the
-receipt records an integrity failure `construction_inert` (with `event`,
-`measure_key`, `year` and the parameter in `detail`) and its status is
-`failed`. Inertness the premises predict (equal worlds) leaves the grid
-incomplete and is listed in `inert_measure_years`. Whether either blocks
-promotion is W4's qualification policy.
+An in-force measure-year whose declared heads come out identical in the two
+worlds is inert. If the run's `CONSTRUCTION_PREMISES.json` gives any
+parameter different 1 January values in the two worlds that year, the
+intended change did not show in the declared heads: the construction did not
+reach the engine, or it does not bind on this population. The receipt then
+records an integrity failure `construction_inert` (with `event`,
+`measure_key`, `year`, and the parameter and both worlds' values in
+`detail`), and its status is `failed`. Equal premises values do not prove a
+pair should be inert (a freeze can carry earlier years' rates forward), so
+such a pair leaves the grid incomplete and is listed in
+`inert_measure_years`. Whether either blocks promotion is W4's qualification
+policy.
 
 ### Division of judgement
 
@@ -267,7 +271,8 @@ How flags arise, so a gate built on them sees the intended events:
 
 * `integrity.status` is `complete`, `incomplete` or `failed`. `failed` means
   a crash, a non-finite aggregate, an identity mismatch after the run started,
-  or an accounting identity broken in staging. These are structural failures
+  an accounting identity broken in staging, or a `construction_inert`
+  measure-year. These are structural failures
   in the PLAN's sense; W4 blocks promotion on them.
 * `diff.flag_counts` and `flagged_rows` describe movements against the base
   variant. They carry no verdict. Whether an unexplained material move blocks

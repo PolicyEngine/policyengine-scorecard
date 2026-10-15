@@ -436,6 +436,19 @@ def test_an_inert_pair_whose_premises_say_the_worlds_differ_fails(
             }
         }
     }
+    # Another event's premises for the same measure key differ in that year;
+    # only this event's own premises may decide (review of 6aa7fc4).
+    premises["events"]["another_event"] = {
+        "measures": {
+            KEY: {
+                "years": {
+                    "2025": {
+                        "paths": {path: {"baseline_world": 1.0, "reform_world": 2.0}}
+                    }
+                }
+            }
+        }
+    }
     (namespace / "CONSTRUCTION_PREMISES.json").write_text(json.dumps(premises))
     monkeypatch.setattr(
         qualify,
@@ -466,6 +479,89 @@ def test_an_inert_pair_whose_premises_say_the_worlds_differ_fails(
         assert receipt["integrity"]["failures"] == []
     sealed = qualify.seal(namespace, receipt)
     interface.validate(sealed, interface.RECEIPT_SCHEMA_ID)
+
+
+def premises_with(event, measure, year_values):
+    """CONSTRUCTION_PREMISES events for one measure: year -> (baseline, reform)."""
+    return {
+        event: {
+            "measures": {
+                measure: {
+                    "years": {
+                        str(year): {
+                            "paths": {"gov.x": {"baseline_world": b, "reform_world": r}}
+                        }
+                        for year, (b, r) in year_values.items()
+                    }
+                }
+            }
+        }
+    }
+
+
+def test_construction_inert_reads_the_pairs_own_year_and_measure():
+    # Review of 6aa7fc4: the check must read the pair's own year, measure
+    # and event, not the measure's first year or any year.
+    premises = premises_with("e", "m", {2025: (1, 1), 2026: (1, 2)})["e"]
+    assert (
+        qualify.construction_inert("e", [{"measure_key": "m", "year": 2025}], premises)
+        == []
+    )
+    (failure,) = qualify.construction_inert(
+        "e", [{"measure_key": "m", "year": 2026}], premises
+    )
+    assert (failure["measure_key"], failure["year"]) == ("m", 2026)
+    assert "baseline world" in failure["detail"] and "reform world" in failure["detail"]
+    assert (
+        qualify.construction_inert(
+            "e", [{"measure_key": "other", "year": 2026}], premises
+        )
+        == []
+    )
+
+
+@settings(max_examples=200, deadline=None)
+@given(
+    st.dictionaries(
+        st.sampled_from(["m1", "m2"]),
+        st.dictionaries(
+            st.integers(2024, 2027),
+            st.tuples(st.integers(0, 2), st.integers(0, 2)),
+            max_size=4,
+        ),
+        max_size=2,
+    ),
+    st.lists(
+        st.tuples(st.sampled_from(["m1", "m2", "m3"]), st.integers(2024, 2027)),
+        unique=True,
+        max_size=6,
+    ),
+    st.dictionaries(
+        st.integers(2024, 2027), st.tuples(st.integers(0, 2), st.integers(0, 2))
+    ),
+)
+def test_construction_inert_fails_exactly_the_inert_pairs_whose_year_differs(
+    measures, pairs, other_event_years
+):
+    events = {}
+    for measure, years in measures.items():
+        events.setdefault("e", {"measures": {}})["measures"].update(
+            premises_with("e", measure, years)["e"]["measures"]
+        )
+    # Another event's premises, which must not change this event's result.
+    events.update(premises_with("other", "m1", other_event_years))
+    inert = [{"measure_key": m, "year": y} for m, y in pairs]
+    failures = qualify.construction_inert("e", inert, events.get("e", {}))
+    expected = {
+        (m, y)
+        for m, y in pairs
+        if y in measures.get(m, {}) and measures[m][y][0] != measures[m][y][1]
+    }
+    assert {(f["measure_key"], f["year"]) for f in failures} == expected
+    assert all(
+        f["code"] == "construction_inert" and f["event"] == "e" for f in failures
+    )
+    assert len(failures) == len(expected)
 
 
 def test_rejection_discards_a_supplied_record_and_cli_accepts_candidate(tmp_path):
