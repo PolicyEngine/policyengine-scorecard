@@ -567,25 +567,23 @@ def test_first_window_year_is_the_earliest_window_start(spec):
     assert first == min(starts) and first in starts
 
 
-def test_ab2025_measure_keys_are_the_inventorys_registry_keys():
-    # The scorecard DB ingest joins registry measures to inventory rows on
-    # existing_registry_key (#136's keys); a title without one keeps the
-    # builder's own key.
+def test_ab2025_measure_keys_are_the_inventorys_keys():
+    # The scorecard DB ingest joins registry measures to inventory rows and
+    # keys published scores by them: #136's existing_registry_key where the
+    # inventory has one, else the inventory's own measure_key.
     inventory = {}
     for line in (ROOT / "data/uk/events/inventory.jsonl").open():
         row = json.loads(line)
         if row["event_key"] == "autumn_budget_2025":
             inventory.setdefault(row["measure"].strip(), set()).add(
-                row.get("existing_registry_key")
+                row.get("existing_registry_key") or row["measure_key"]
             )
     keys = registry.inventory_registry_keys("autumn_budget_2025")
-    assert keys
-    for measure in ab2025_registry()["measures"]:
+    measures = ab2025_registry()["measures"]
+    assert len(keys) == len(measures) == len(inventory)
+    for measure in measures:
         (expected,) = inventory[measure["title"].strip()]
-        if expected:
-            assert measure["measure_key"] == expected == keys[measure["title"].strip()]
-        else:
-            assert measure["measure_key"].startswith("autumn_budget_2025__")
+        assert measure["measure_key"] == expected == keys[measure["title"].strip()]
     for event in registry.EVENTS:
         if event != "autumn_budget_2025":
             assert registry.inventory_registry_keys(event) == {}

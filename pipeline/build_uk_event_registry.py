@@ -287,21 +287,28 @@ def _head(name, variables, channel="tax"):
 
 
 def inventory_registry_keys(event_slug):
-    """Autumn Budget 2025's measure keys are #136's, as the replay inventory
-    records them (existing_registry_key): the scorecard DB ingest joins
-    registry measures to inventory rows on them (scorecard_db/ingest_obr_pmd.py).
-    The five earlier events keep the keys their frozen registries have."""
+    """Autumn Budget 2025's measure keys are the replay inventory's: #136's
+    key where the inventory records one (existing_registry_key), else the
+    inventory's own measure_key. The scorecard DB ingest joins registry
+    measures to inventory rows on them and keys the published scores by them
+    (scorecard_db/ingest_obr_pmd.py), so any other key would re-key scores
+    that already publish. The five earlier events keep their frozen keys."""
     if event_slug != "autumn_budget_2025":
         return {}
     keys = defaultdict(set)
     with INVENTORY.open() as lines:
         for line in lines:
             row = json.loads(line)
-            if row["event_key"] == event_slug and row.get("existing_registry_key"):
-                keys[row["measure"].strip()].add(row["existing_registry_key"])
+            if row["event_key"] == event_slug:
+                keys[row["measure"].strip()].add(
+                    row.get("existing_registry_key") or row["measure_key"]
+                )
     if any(len(k) != 1 for k in keys.values()):
         raise ValueError("an inventory measure has more than one registry key")
-    return {title: key for title, (key,) in keys.items()}
+    canonical = {title: key for title, (key,) in keys.items()}
+    if len(set(canonical.values())) != len(canonical):
+        raise ValueError("two inventory measures share a registry key")
+    return canonical
 
 
 def first_window_year(spec):
