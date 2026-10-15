@@ -17,7 +17,8 @@ Flags (docs/uk_replay/RELEASE_REPLAY.md, "Release differences"):
 * structural: a sign reversal or zero crossing, a changed artifact schema or
   construction orientation;
 * coverage: a counterpart, artifact or source row on one side only, in a
-  year both sides support, or every row of an event replayed on one side only;
+  year both sides support, or every source row of an event replayed on one
+  side only;
 * mapping: changed head variables, channels, definitions or registry digest;
 * support: a year supported on one side only (never also coverage);
 * inertness: an inert in-force construction on one side only;
@@ -1135,9 +1136,9 @@ def premises_note(diff: dict) -> str:
     present = "base" if digests["base"] else "head"
     return (
         f"Construction premises on the {present} side only "
-        f"(`{digests[present]}`): measures they cover carry "
-        f"`premises_on_{present}_only` construction flags, and no premise check "
-        "was compared."
+        f"(`{digests[present]}`): measure-years compared on both sides that "
+        f"they cover carry `premises_on_{present}_only` construction flags, and "
+        "no premise check was compared."
     )
 
 
