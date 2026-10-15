@@ -296,35 +296,6 @@
               "additionalProperties": false
             }
           },
-          "deferred_sheets": {
-            "description": "Sheets present in these bytes that hold only a notice that the table would be published later; their data is unavailable in this file.",
-            "type": "object",
-            "required": [
-              "sheets",
-              "notices"
-            ],
-            "properties": {
-              "sheets": {
-                "type": "array",
-                "minItems": 1,
-                "uniqueItems": true,
-                "items": {
-                  "type": "string",
-                  "minLength": 1
-                }
-              },
-              "notices": {
-                "type": "array",
-                "minItems": 1,
-                "uniqueItems": true,
-                "items": {
-                  "type": "string",
-                  "minLength": 1
-                }
-              }
-            },
-            "additionalProperties": false
-          },
           "later_versions": {
             "description": "Later files of the same publication under other names, recorded but not locked.",
             "type": "array",
@@ -347,6 +318,36 @@
                 },
                 "locked": {
                   "const": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "unavailable_sheets": {
+            "description": "Sheets present in these bytes that hold only a notice instead of the table: deferred to a later release, or not produced for this forecast. Their data is unavailable in this file.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "sheet",
+                "reason",
+                "notice"
+              ],
+              "properties": {
+                "sheet": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "reason": {
+                  "enum": [
+                    "deferred_to_later_release",
+                    "not_produced_for_this_forecast"
+                  ]
+                },
+                "notice": {
+                  "type": "string",
+                  "minLength": 1
                 }
               },
               "additionalProperties": false

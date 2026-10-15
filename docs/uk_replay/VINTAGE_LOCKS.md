@@ -33,20 +33,33 @@ Autumn Budget 2021's receipts workbook has a verified modification timestamp
 on 28 October 2021, after the event, so it is classified `later_revision`.
 Whether its numeric cells differ from the launch workbook remains unverified.
 
-The OBR's Autumn Statement 2022 event-day files deferred some tables: those
-sheets hold only the notice "This table will be published at 11am on 24
-November" (economy 1.8, 1.10, 1.12 and 1.19; receipts 2.13, 3.1–3.4, 3.8,
-3.11, 3.17 and 3.18; expenditure 3.2 and 3.18). Each such source records the
-sheets as `deferred_sheets`, unavailable in the locked bytes. The later files
-of the same forecast under other names, first archived on 9 December 2022, are
+In the OBR's Autumn Statement 2022 event-day files, 39 sheets hold only a
+back link, a title and a notice instead of a table:
+
+| File | Deferred to 24 November | Not updated for this forecast |
+|---|---|---|
+| Economy | 1.8, 1.10, 1.12, 1.19 | 1.11, 1.14, 1.15, 1.20 |
+| Receipts | 2.13, 3.1, 3.2, 3.3, 3.4, 3.8, 3.11, 3.17, 3.18 | 2.4, 2.5, 2.6, 2.7, 2.10, 2.11, 2.12, 2.14, 2.16, 3.9, 3.10, 3.15 |
+| Expenditure | 3.2, 3.18 | 3.1, 3.4, 3.5, 3.6, 3.15, 3.16, 3.17, 3.22 |
+
+Each source records these as `unavailable_sheets` (sheet, reason, notice):
+`deferred_to_later_release` for "This table will be published at 11am on 24
+November", `not_produced_for_this_forecast` for "This table will not be
+updated for the November 2022 forecast". They were found by content: every
+sheet carrying either notice has exactly three non-empty cells. The policy
+tables have none. A not-updated table was not produced for this forecast, so
+later files probably lack it too; that is unverified. The later files of the
+same forecast under other names, first archived on 9 December 2022, are
 recorded as `later_versions` with `locked: false`; locking one is a separate,
 labelled `later_revision` receipt.
 
 The offline check ties every source to its event: an OBR file's `edition`
 must equal the forecast label, every source except the cross-vintage HOFD
-must have been captured on or after the event date, a `launch` label is
-refused for a file whose workbook was modified after the event, and every
-deferred sheet must be one of the workbook's sheets. Dates, date-times and
+must have been captured on or after the event date, a DWP edition's file name
+must name the event, a `launch` label is refused for a file whose workbook was
+modified after the event, an OBR file modified after the event must be
+`later_revision`, and every unavailable sheet must be one of the workbook's
+sheets. Dates, date-times and
 URLs are checked by explicit schema patterns, since the default format
 checker does not check `uri` or `date-time`.
 

@@ -348,7 +348,9 @@ def source(lock, role):
         "another_events_source",
         "false_launch",
         "captured_before_event",
-        "deferred_sheet_not_in_workbook",
+        "unavailable_sheet_not_in_workbook",
+        "another_events_dwp_edition",
+        "later_revision_downgraded",
         "bad_datetime",
         "bad_uri",
     ),
@@ -378,10 +380,30 @@ def test_offline_checker_binds_each_source_to_its_event(tmp_path, mutation):
             f"https://web.archive.org/web/20220101000000id_/{economy['original_url']}"
         )
         target = ss2022
-    elif mutation == "deferred_sheet_not_in_workbook":
+    elif mutation == "unavailable_sheet_not_in_workbook":
         as2022 = locks["autumn_statement_2022"]
-        source(as2022, "economy")["deferred_sheets"]["sheets"].append("9.99")
+        source(as2022, "economy")["unavailable_sheets"].append(
+            {
+                "sheet": "9.99",
+                "reason": "not_produced_for_this_forecast",
+                "notice": "x",
+            }
+        )
         target = as2022
+    elif mutation == "another_events_dwp_edition":
+        # Review of 55e22e2: DWP files were captured in 2025, so only the
+        # edition's own name can tie them to their event.
+        borrowed = copy.deepcopy(
+            source(locks["autumn_statement_2022"], "dwp_benefit_expenditure_caseload")
+        )
+        ss2022["sources"] = [
+            borrowed if s["role"] == "dwp_benefit_expenditure_caseload" else s
+            for s in ss2022["sources"]
+        ]
+        target = ss2022
+    elif mutation == "later_revision_downgraded":
+        source(ab2021, "receipts")["capture_status"] = "unknown"
+        target = ab2021
     elif mutation == "bad_datetime":
         source(ss2022, "economy")["retrieved_at"] = "not a datetime"
         target = ss2022
@@ -396,17 +418,25 @@ def test_offline_checker_binds_each_source_to_its_event(tmp_path, mutation):
 
 
 def test_autumn_statement_2022_records_its_event_day_partial_files():
-    # Review of 4c5f918: the OBR's event-day files deferred tables to
-    # 24 November; each deferred sheet is recorded as unavailable and the
-    # later files are named without being locked.
+    # Reviews of 4c5f918 and 55e22e2: in the OBR's event-day files some
+    # sheets hold only a notice; each is recorded as unavailable with its
+    # reason, and the later files are named without being locked.
     lock = read_json(LOCK_DIR / "autumn_statement_2022.json")
-    deferred = {
-        role: set(source(lock, role).get("deferred_sheets", {}).get("sheets", []))
-        for role in ("economy", "receipts", "expenditure", "policy_measures")
-    }
-    assert deferred["economy"] == {"1.8", "1.10", "1.12", "1.19"}
-    assert len(deferred["receipts"]) == 9 and deferred["expenditure"] == {"3.2", "3.18"}
-    assert deferred["policy_measures"] == set()
+    by_reason = {}
+    for role in ("economy", "receipts", "expenditure", "policy_measures"):
+        for entry in source(lock, role).get("unavailable_sheets", []):
+            by_reason.setdefault((role, entry["reason"]), set()).add(entry["sheet"])
+    deferred, not_produced = (
+        "deferred_to_later_release",
+        "not_produced_for_this_forecast",
+    )
+    assert by_reason[("economy", deferred)] == {"1.8", "1.10", "1.12", "1.19"}
+    assert by_reason[("economy", not_produced)] == {"1.11", "1.14", "1.15", "1.20"}
+    assert len(by_reason[("receipts", deferred)]) == 9
+    assert len(by_reason[("receipts", not_produced)]) == 12
+    assert by_reason[("expenditure", deferred)] == {"3.2", "3.18"}
+    assert len(by_reason[("expenditure", not_produced)]) == 8
+    assert not any(role == "policy_measures" for role, _ in by_reason)
     for role in ("economy", "receipts", "expenditure", "policy_measures"):
         later = source(lock, role)["later_versions"]
         assert later and all(v["locked"] is False for v in later)

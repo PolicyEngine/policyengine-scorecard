@@ -15,7 +15,7 @@
       "archive_timestamp": "20221117122504",
       "edition": "November 2022",
       "capture_status": "unknown",
-      "capture_status_evidence": "Event-day file: sheets 1.8, 1.10, 1.12, 1.19 hold only the notice that the table would be published on 24 November, so they are unavailable in these bytes. A later file of the same forecast, Economy_supplementary_tables_November_2022_v2-1.xlsx, was first archived 2022-12-09 and is not locked here.",
+      "capture_status_evidence": "Event-day file: 8 sheets hold only a notice (4 deferred to 24 November, 4 not updated for this forecast) and are unavailable in these bytes. A later file of the same forecast, Economy_supplementary_tables_November_2022_v2-1.xlsx, was first archived 2022-12-09 and is not locked here.",
       "status": "obtained",
       "retrieved_at": "2026-10-11T23:55:36+00:00",
       "byte_size": 342024,
@@ -58,22 +58,53 @@
           "error": null
         }
       ],
-      "deferred_sheets": {
-        "sheets": [
-          "1.8",
-          "1.10",
-          "1.12",
-          "1.19"
-        ],
-        "notices": [
-          "This table will be published at 11am on 24 November."
-        ]
-      },
       "later_versions": [
         {
           "original_url": "https://obr.uk/docs/dlm_uploads/Economy_supplementary_tables_November_2022_v2-1.xlsx",
           "first_archived": "20221209171229",
           "locked": false
+        }
+      ],
+      "unavailable_sheets": [
+        {
+          "sheet": "1.8",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "1.10",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "1.11",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "1.12",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "1.14",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "1.15",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "1.19",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "1.20",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
         }
       ]
     },
@@ -84,7 +115,7 @@
       "archive_timestamp": "20221117122532",
       "edition": "November 2022",
       "capture_status": "unknown",
-      "capture_status_evidence": "Event-day file: sheets 2.13, 3.1, 3.2, 3.3, 3.4, 3.8, 3.11, 3.17, 3.18 hold only the notice that the table would be published on 24 November, so they are unavailable in these bytes. A later file of the same forecast, Fiscal_supplementary_tables_Receiptsother_November_2022_v3.xlsx, was first archived 2022-12-09 and is not locked here.",
+      "capture_status_evidence": "Event-day file: 21 sheets hold only a notice (9 deferred to 24 November, 12 not updated for this forecast) and are unavailable in these bytes. A later file of the same forecast, Fiscal_supplementary_tables_Receiptsother_November_2022_v3.xlsx, was first archived 2022-12-09 and is not locked here.",
       "status": "obtained",
       "retrieved_at": "2026-10-11T23:55:42+00:00",
       "byte_size": 2210375,
@@ -144,28 +175,118 @@
           "error": null
         }
       ],
-      "deferred_sheets": {
-        "sheets": [
-          "2.13",
-          "3.1",
-          "3.2",
-          "3.3",
-          "3.4",
-          "3.8",
-          "3.11",
-          "3.17",
-          "3.18"
-        ],
-        "notices": [
-          "This table will be published at 11am on 24 November.",
-          "This table will be published at 11 am on 24 November."
-        ]
-      },
       "later_versions": [
         {
           "original_url": "https://obr.uk/docs/dlm_uploads/Fiscal_supplementary_tables_Receiptsother_November_2022_v3.xlsx",
           "first_archived": "20221209145619",
           "locked": false
+        }
+      ],
+      "unavailable_sheets": [
+        {
+          "sheet": "2.4",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.5",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.6",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.7",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.10",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.11",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.12",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.13",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "2.14",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.16",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.1",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.2",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.3",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.4",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.8",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.9",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.10",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.11",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11 am on 24 November."
+        },
+        {
+          "sheet": "3.15",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.17",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.18",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
         }
       ]
     },
@@ -176,7 +297,7 @@
       "archive_timestamp": "20221117131030",
       "edition": "November 2022",
       "capture_status": "unknown",
-      "capture_status_evidence": "Event-day file: sheets 3.2, 3.18 hold only the notice that the table would be published on 24 November, so they are unavailable in these bytes. A later file of the same forecast, Fiscal_supplementary_tables_expenditure_November_2022_v3.xlsx, was first archived 2022-12-09 and is not locked here.",
+      "capture_status_evidence": "Event-day file: 10 sheets hold only a notice (2 deferred to 24 November, 8 not updated for this forecast) and are unavailable in these bytes. A later file of the same forecast, Fiscal_supplementary_tables_expenditure_November_2022_v3.xlsx, was first archived 2022-12-09 and is not locked here.",
       "status": "obtained",
       "retrieved_at": "2026-10-11T23:55:50+00:00",
       "byte_size": 17854855,
@@ -226,20 +347,63 @@
           "error": null
         }
       ],
-      "deferred_sheets": {
-        "sheets": [
-          "3.2",
-          "3.18"
-        ],
-        "notices": [
-          "This table will be published at 11am on 24 November."
-        ]
-      },
       "later_versions": [
         {
           "original_url": "https://obr.uk/docs/dlm_uploads/Fiscal_supplementary_tables_expenditure_November_2022_v3.xlsx",
           "first_archived": "20221209171019",
           "locked": false
+        }
+      ],
+      "unavailable_sheets": [
+        {
+          "sheet": "3.1",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.2",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.4",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.5",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.6",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.15",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.16",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.17",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.18",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.22",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
         }
       ]
     },
@@ -250,7 +414,7 @@
       "archive_timestamp": "20221117122512",
       "edition": "November 2022",
       "capture_status": "unknown",
-      "capture_status_evidence": "Event-day file with no deferred-table notice. A later file of the same forecast, Economic_and_fiscal_outlook_charts_and_tables_November_2022-2.xlsx, was first archived 2022-12-09 and is not locked here.",
+      "capture_status_evidence": "Event-day file with no placeholder sheet. A later file of the same forecast, Economic_and_fiscal_outlook_charts_and_tables_November_2022-2.xlsx, was first archived 2022-12-09 and is not locked here.",
       "status": "obtained",
       "retrieved_at": "2026-10-11T23:56:44+00:00",
       "byte_size": 3975569,
@@ -2357,5 +2521,5 @@
     "pause_seconds": 4.0,
     "max_attempts": 3
   },
-  "receipt_sha256": "eedee2388971f7997dc182d6fb2540023f55a523a673372449ea2d2c2b557bb6"
+  "receipt_sha256": "38a2a76143e2503c9300dff232df2afb2d33402e5aec623989af816a4d7a4169"
 }

@@ -13,19 +13,21 @@ All six required roles were obtained for each event: economy, receipts,
 expenditure, policy tables, HOFD historical forecast rows and the DWP benefit
 expenditure/caseload edition. The 18 role receipts identify 16 distinct
 workbooks because the three HOFD selections share one database. Every role has
-a locked file, but not every table in it: the OBR's Autumn Statement 2022
-event-day files deferred 15 tables to 24 November (economy 1.8, 1.10, 1.12 and
-1.19; receipts 2.13, 3.1–3.4, 3.8, 3.11, 3.17 and 3.18; expenditure 3.2 and
-3.18). The locks record those sheets as unavailable in the locked bytes
-(`deferred_sheets`) and name the later files of the same forecast, first
-archived on 9 December 2022, without locking them (`later_versions`). Unsuccessful exploratory lookups for the guessed
-HOFD path and modern Autumn 2021 DWP media URL were resolved to captured
-original URLs; they do not establish global archive absence.
+a locked file, but not every table in it. In the OBR's Autumn Statement 2022
+event-day files, 39 sheets hold only a notice: 15 tables were deferred to 24
+November and 24 were not updated for that forecast (economy, receipts and
+expenditure; [VINTAGE_LOCKS.md](VINTAGE_LOCKS.md) lists them). The locks record
+each as unavailable in the locked bytes, with its reason (`unavailable_sheets`),
+and name the later files of the same forecast, first archived on 9 December
+2022, without locking them (`later_versions`). Unsuccessful exploratory
+lookups for the guessed HOFD path and modern Autumn 2021 DWP media URL were
+resolved to captured original URLs; they do not establish global archive
+absence.
 
 | Event | Canonical source-lock receipt SHA-256 |
 |---|---|
 | Spring Statement 2022 | `cdff2fd50b5033ad337f571eb9a8df9397d21f775de9912f901aabd8eb924782` |
-| Autumn Statement 2022 | `eedee2388971f7997dc182d6fb2540023f55a523a673372449ea2d2c2b557bb6` |
+| Autumn Statement 2022 | `38a2a76143e2503c9300dff232df2afb2d33402e5aec623989af816a4d7a4169` |
 | Autumn Budget 2021 | `c98e70e9bae5b0c526e873cbd8827028aa1f1fa39dea16afe5b7fcd65c476a1f` |
 
 The [collector and lock contract](VINTAGE_LOCKS.md) retain exact capture URLs,
@@ -77,7 +79,8 @@ HTTP headers, and called `main(['--scratch-dir',
 the normal collector client. The direct collection CLI documented in
 VINTAGE_LOCKS.md is rerun guidance; it was not the original collection command.
 
-Final result: **29 tests passed in 84.96 seconds**; offline validation reported
+Final result at collection: **29 tests passed in 84.96 seconds** (38 after
+the review follow-ups); offline validation reported
 `Validated 3 vintage locks offline`; Ruff checks succeeded. A Python scratch
 audit rehashed all 16 downloaded workbooks and matched every byte size, digest
 and sheet list to its receipt. Public workbook bytes were then removed by
@@ -126,7 +129,8 @@ was read at `origin/w6/replay-variants`, commit
 session committed the work (3209e0b) and opened PR #170. Its independent
 review found the Autumn Statement 2022 event-day files' deferred tables and
 that the offline check did not tie a source to its event; both are fixed in
-the follow-up commit: the deferred sheets and later files are recorded, and
-`check_locks` now refuses an OBR file naming another forecast, any source
-other than the HOFD captured before the event, and a `launch` label on a file
-modified after the event.
+the follow-up commits: the unavailable sheets and later files are recorded,
+and `check_locks` now refuses an OBR file naming another forecast, a DWP
+edition naming another event, any source other than the HOFD captured before
+the event, a `launch` label on a file modified after the event, and an OBR
+file modified after the event that is not labelled `later_revision`.

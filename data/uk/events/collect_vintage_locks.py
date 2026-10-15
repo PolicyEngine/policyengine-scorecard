@@ -43,36 +43,230 @@ REL_NS = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}"
 
 
 OBR_ROLES = ("economy", "receipts", "expenditure", "policy_measures")
-# Autumn Statement 2022: the OBR's event-day files deferred some tables to
-# 24 November, and later files of the same forecast replaced them under other
-# names (first archived 9 December 2022). The locks keep the event-day bytes,
-# record each deferred sheet as unavailable in them, and name the later files
-# without locking them. Sheets were found by their shared-string cells reading
-# the notice; later files from the archive's CDX index.
+# Autumn Statement 2022: in the OBR's event-day files some sheets hold only a
+# back link, a title and a notice: either the table would be published on
+# 24 November (deferred_to_later_release) or it was not updated for this
+# forecast (not_produced_for_this_forecast). The locks keep the event-day
+# bytes, record each such sheet as unavailable with its reason and notice,
+# and name the later files of the same forecast (first archived 9 December
+# 2022, per the archive's CDX index) without locking them. The sheets were
+# found by content: every sheet with either notice has exactly three
+# non-empty cells.
 FIRST_DAY_FILES = {
     ("autumn_statement_2022", "economy"): (
-        ["1.8", "1.10", "1.12", "1.19"],
-        ["This table will be published at 11am on 24 November."],
+        [
+            (
+                "1.8",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
+            (
+                "1.10",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
+            (
+                "1.11",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "1.12",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
+            (
+                "1.14",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "1.15",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "1.19",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
+            (
+                "1.20",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+        ],
         "Economy_supplementary_tables_November_2022_v2-1.xlsx",
         "20221209171229",
     ),
     ("autumn_statement_2022", "receipts"): (
-        ["2.13", "3.1", "3.2", "3.3", "3.4", "3.8", "3.11", "3.17", "3.18"],
         [
-            "This table will be published at 11am on 24 November.",
-            "This table will be published at 11 am on 24 November.",
+            (
+                "2.4",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "2.5",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "2.6",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "2.7",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "2.10",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "2.11",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "2.12",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "2.13",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
+            (
+                "2.14",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "2.16",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "3.1",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
+            (
+                "3.2",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
+            (
+                "3.3",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
+            (
+                "3.4",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
+            (
+                "3.8",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
+            (
+                "3.9",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "3.10",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "3.11",
+                "deferred_to_later_release",
+                "This table will be published at 11 am on 24 November.",
+            ),
+            (
+                "3.15",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "3.17",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
+            (
+                "3.18",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
         ],
         "Fiscal_supplementary_tables_Receiptsother_November_2022_v3.xlsx",
         "20221209145619",
     ),
     ("autumn_statement_2022", "expenditure"): (
-        ["3.2", "3.18"],
-        ["This table will be published at 11am on 24 November."],
+        [
+            (
+                "3.1",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "3.2",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
+            (
+                "3.4",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "3.5",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "3.6",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "3.15",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "3.16",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "3.17",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+            (
+                "3.18",
+                "deferred_to_later_release",
+                "This table will be published at 11am on 24 November.",
+            ),
+            (
+                "3.22",
+                "not_produced_for_this_forecast",
+                "This table will not be updated for the November 2022 forecast.",
+            ),
+        ],
         "Fiscal_supplementary_tables_expenditure_November_2022_v3.xlsx",
         "20221209171019",
     ),
     ("autumn_statement_2022", "policy_measures"): (
-        [],
         [],
         "Economic_and_fiscal_outlook_charts_and_tables_November_2022-2.xlsx",
         "20221209153101",
@@ -200,24 +394,32 @@ def source_catalog() -> dict[str, dict]:
             )
             sources.append(_source(role, stamp, original, label))
             if (slug, role) in FIRST_DAY_FILES:
-                sheets, notices, later, first_archived = FIRST_DAY_FILES[(slug, role)]
-                deferred = (
-                    f"Event-day file: sheets {', '.join(sheets)} hold only the notice "
-                    "that the table would be published on 24 November, so they are "
-                    "unavailable in these bytes. "
-                    if sheets
-                    else "Event-day file with no deferred-table notice. "
+                unavailable, later, first_archived = FIRST_DAY_FILES[(slug, role)]
+                counts = {
+                    reason: sum(1 for _, r, _ in unavailable if r == reason)
+                    for reason in (
+                        "deferred_to_later_release",
+                        "not_produced_for_this_forecast",
+                    )
+                }
+                summary = (
+                    f"Event-day file: {len(unavailable)} sheets hold only a notice "
+                    f"({counts['deferred_to_later_release']} deferred to 24 November, "
+                    f"{counts['not_produced_for_this_forecast']} not updated for this "
+                    "forecast) and are unavailable in these bytes. "
+                    if unavailable
+                    else "Event-day file with no placeholder sheet. "
                 )
                 sources[-1]["capture_status_evidence"] = (
-                    f"{deferred}A later file of the same forecast, {later}, was first "
+                    f"{summary}A later file of the same forecast, {later}, was first "
                     f"archived {first_archived[:4]}-{first_archived[4:6]}-"
                     f"{first_archived[6:8]} and is not locked here."
                 )
-                if sheets:
-                    sources[-1]["deferred_sheets"] = {
-                        "sheets": sheets,
-                        "notices": notices,
-                    }
+                if unavailable:
+                    sources[-1]["unavailable_sheets"] = [
+                        {"sheet": sheet, "reason": reason, "notice": notice}
+                        for sheet, reason, notice in unavailable
+                    ]
                 sources[-1]["later_versions"] = [
                     {
                         "original_url": f"https://obr.uk/docs/dlm_uploads/{later}",
@@ -594,17 +796,34 @@ def check_locks(lock_dir: Path = LOCK_DIR) -> list[dict]:
             if role != "hofd_row" and captured.date() < event_day:
                 raise ValueError(f"Captured before the event: {path}: {role}")
             modified = (source.get("workbook_properties") or {}).get("modified")
-            if (
-                source["capture_status"] == "launch"
-                and modified
-                and date.fromisoformat(modified[:10]) > event_day
-            ):
+            edited_after = bool(
+                modified and date.fromisoformat(modified[:10]) > event_day
+            )
+            if source["capture_status"] == "launch" and edited_after:
                 raise ValueError(f"Launch file edited after the event: {path}: {role}")
-            deferred = (source.get("deferred_sheets") or {}).get("sheets", [])
-            if source["status"] == "obtained" and not set(deferred) <= {
-                name.strip() for name in source["sheet_names"]
-            }:
-                raise ValueError(f"Deferred sheet not in the workbook: {path}: {role}")
+            # An OBR file edited after the event is a later revision; DWP
+            # editions are published after their events by design.
+            if (
+                role in OBR_ROLES
+                and edited_after
+                and source["capture_status"] != "later_revision"
+            ):
+                raise ValueError(
+                    f"Edited after the event, not later_revision: {path}: {role}"
+                )
+            # A DWP edition names its fiscal event in its file name.
+            if role == "dwp_benefit_expenditure_caseload" and (
+                lock["event_slug"].replace("_", "-") not in source["original_url"]
+            ):
+                raise ValueError(f"DWP edition names another event: {path}")
+            sheets = [entry["sheet"] for entry in source.get("unavailable_sheets", [])]
+            if len(sheets) != len(set(sheets)) or (
+                source["status"] == "obtained"
+                and not set(sheets) <= {name.strip() for name in source["sheet_names"]}
+            ):
+                raise ValueError(
+                    f"Unavailable sheet not in the workbook: {path}: {role}"
+                )
             match = ARCHIVE_PATTERN.fullmatch(source["archive_capture_url"])
             if (
                 not match
