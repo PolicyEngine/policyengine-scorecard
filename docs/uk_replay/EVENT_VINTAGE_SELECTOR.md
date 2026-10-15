@@ -3,7 +3,8 @@
 The [v1 schema](schemas/event_vintage_selector.v1.json) binds an event to
 one OBR release, its source receipts, every original scoring FY and the
 historical surveys published before the event. The three
-[selectors](selectors/) are contracts awaiting methodology decisions, not
+[selectors](selectors/) bind the methodology decisions made under cos d1344
+([HISTORICAL_DECISIONS.md](HISTORICAL_DECISIONS.md)); they are not
 population builds. Their release choices and dates follow
 [PLAN.md](PLAN.md) and [POPULATIONS_AND_VINTAGES.md](POPULATIONS_AND_VINTAGES.md)
 at scorecard commit `61c13e38cfe4676756a7857e4fc6f67eac33cd0c`.
@@ -43,11 +44,15 @@ receipt before the preferred survey generation becomes an executable input.
 
 `policy_world_contract` is either an approved contract id and digest or
 `status: "pending", value: "pending"`, with the
-[proposal](POLICY_WORLD_CONTRACT.md) and decision `cos d1344`. The two allowed
+[proposal](POLICY_WORLD_CONTRACT.md) and decision `cos d1344`. All three
+selectors now bind `published_end_state_same_weights.v1` by the SHA-256 of
+[its contract](contracts/published_end_state_same_weights.v1.md). The two allowed
 contract ids are `published_end_state_same_weights.v1` and
 `documented_pre_measures_bridge.v1`. `annualisation_bridge` likewise needs a
 reviewed id/receipt, or a pending pointer to the
-[adapter design](HISTORICAL_ADAPTER.md). Neither pending value is a default.
+[adapter design](HISTORICAL_ADAPTER.md); the selectors bind `fy_start_year.v1`
+by the SHA-256 of [its receipt](contracts/annualisation_fy_start_year.v1.json).
+Neither pending value is a default.
 
 JSON Schema checks shape, enums, digests and date formats. The offline
 tests additionally check inventory FY equality, source-lock identity and

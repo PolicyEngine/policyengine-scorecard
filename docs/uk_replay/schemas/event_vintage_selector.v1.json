@@ -269,13 +269,25 @@
               "type": "string",
               "description": "",
               "minLength": 1
+            },
+            "decision_record": {
+              "type": "string",
+              "description": "Repository path of the decision record.",
+              "pattern": "^docs/uk_replay/[A-Z_]+\\.md$"
+            },
+            "decision_record_sha256": {
+              "type": "string",
+              "description": "Lowercase SHA-256 of the decision record's bytes.",
+              "pattern": "^[0-9a-f]{64}$"
             }
           },
           "required": [
             "status",
             "contract_id",
             "contract_sha256",
-            "decision_receipt"
+            "decision_receipt",
+            "decision_record",
+            "decision_record_sha256"
           ]
         }
       ]
@@ -310,10 +322,13 @@
           "description": "",
           "additionalProperties": false,
           "properties": {
+            "status": {
+              "const": "resolved"
+            },
             "bridge_id": {
-              "type": "string",
-              "description": "",
-              "minLength": 1
+              "enum": [
+                "fy_start_year.v1"
+              ]
             },
             "receipt_sha256": {
               "type": "string",
@@ -322,6 +337,7 @@
             }
           },
           "required": [
+            "status",
             "bridge_id",
             "receipt_sha256"
           ]
@@ -379,6 +395,7 @@
           },
           "annualisation_bridge": {
             "required": [
+              "status",
               "bridge_id",
               "receipt_sha256"
             ]

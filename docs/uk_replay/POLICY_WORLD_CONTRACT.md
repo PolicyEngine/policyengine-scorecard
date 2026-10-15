@@ -1,11 +1,13 @@
 # Policy-world contract for the 2022 events
 
-**Proposed; a methodology call under cos d1344.** Recommendation: calibrate
-each scoring year's published end-state once, then evaluate a documented
-pre-measure counterfactual on the same records and weights. This proposal
-does not approve a contract, build a population or establish a historical
-engine's policy schedules. The [selectors](selectors/) keep the decision
-and annualisation bridge explicitly pending.
+**Decided under cos d1344: Option A**, `published_end_state_same_weights.v1`,
+for all three events. Max decided d1344 on 15 October 2026, delegating the
+call to the workstream with independent review. The
+[decision record](HISTORICAL_DECISIONS.md) gives both readings and the
+reasons, and the [contract](contracts/published_end_state_same_weights.v1.md)
+states the terms the [selectors](selectors/) bind by digest. This page is the
+proposal as written before the decision; it builds no population and
+establishes no historical engine's policy schedules.
 
 The two alternatives come from [PLAN.md](PLAN.md), read at scorecard commit
 `61c13e38cfe4676756a7857e4fc6f67eac33cd0c`. The fetched files now confirm that

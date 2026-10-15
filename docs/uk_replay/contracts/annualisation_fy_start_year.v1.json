@@ -1,0 +1,82 @@
+{
+  "schema_version": "annualisation_bridge.v1",
+  "bridge_id": "fy_start_year.v1",
+  "rule": "OBR fiscal year 'YYYY-YY' (6 April YYYY to 5 April YYYY+1) maps to the engine's annual period YYYY.",
+  "part_year_rule": {
+    "rule": "A flow parameter (a rate, threshold or amount applying to income, earnings or entitlement spread over the year) whose law changes within fiscal year Y-(Y+1) takes its day-weighted fiscal-year value in period Y, in the published world and the counterfactual alike; such a measure-year is computed, compared and tagged part_year_day_weighted. A point-in-time parameter (a tax charged on a transaction at the rate in force on its date) is expressed through the engine's preserve_calendar_dates where the engine supports it; otherwise the targets it moves that year are flagged and excluded. The engine itself day-weights the CGT rates and fuel duty (fiscal_year_blend), although both are charged on transactions; those keep the engine's treatment and are recorded per measure. Where a change cannot be expressed in one of these ways, the targets it moves are flagged and excluded from that year's calibration.",
+    "why": "The engine's default 30 April sample keeps a mid-year change out of period Y, so calibrating period Y to the OBR's fiscal-year level would push the change's effect into the weights and contaminate every other measure that year. Day-weighting is the engine's own annualisation for flow parameters (fiscal_year_blend).",
+    "examples_verified": [
+      "National Insurance primary threshold to GBP 12,570 from July 2022 (March 2022 Annex A TA.2!C7); policyengine-uk 2.130.1 stores 190 per week from 2022-04-06 and the higher amount under the key 2022-07-01, while the file's own comment gives 6 July 2022, so day-weighting the engine's timeline would count five extra days at the new value; its 30 April sample gives 190 for period 2022.",
+      "Universal Credit taper from 63% to 55% (October 2021 Annex A TA.2!C21, 'from 1 December 2021'); policyengine-uk 2.130.1 changes it on 2021-11-24, so its 30 April 2021 sample gives 0.63 for period 2021.",
+      "Health and Social Care Levy rates in force only for earnings paid before 6 November 2022; policyengine-uk 2.130.1's own tests say model year 2022 takes the levy rate (a change within Autumn Statement 2022's 2022-23)."
+    ],
+    "intended_values": "Intended fiscal-year values are computed from the statute or the event's documents, never from the engine's own timeline, so an engine date error shows up in the processed-value check."
+  },
+  "reform_route": {
+    "requirement": "Each world's parameter values for period Y must equal the intended fiscal-year value (contract term 4). Every population run records, per measure-year and world, the processed period-Y value of every changed parameter beside its intended value, and refuses a mismatch.",
+    "routes_by_entry_point": {
+      "at_construction_2_130_1": "A reform passed when the Simulation is constructed (reform= or scenario=), or Simulation.apply_parameter_changes, is written onto the statutory timeline and reprocessed with current law (policyengine_uk/utils/dated_reforms.py): a change dated 6 April sets that fiscal year.",
+      "on_a_built_simulation": "Scenario.apply on an already-built simulation (2.130.1 and 2.125.1), and the 2.125.1 reform dict, edit the annualised parameters; dated keys are not annualised again and formulas read an annual parameter at 1 January, so a window must contain 1 January Y to change period Y. In 2.130.1 a dict scenario's bare simulation_modifier on a built simulation applies only single-day keys and paths the statutory tree does not define (the cause of the 6.4.1 inert UC health element; scorecard #173).",
+      "parameter_changes": "Scenario(parameter_changes=...) applies its value to every period, in both engines."
+    },
+    "re_read": "This evidence must be re-read for the engine actually certified for each population before it runs."
+  },
+  "decision": "cos d1344 (Max, 2026-10-15: methodology calls delegated to the workstream sessions with independent review); recorded in docs/uk_replay/HISTORICAL_DECISIONS.md",
+  "engine_evidence": [
+    {
+      "package": "policyengine-uk",
+      "versions": [
+        "2.125.1",
+        "2.130.1"
+      ],
+      "where": "policyengine_uk/utils/parameters.py, convert_to_fiscal_year_parameters; called from policyengine_uk/tax_benefit_system.py on parameters.gov",
+      "establishes": "Annual period Y is the fiscal year starting 6 April Y. By default each government parameter is sampled at 30 April Y and that value is written over period Y, for 2015 to 2040; the 6 parameter files with fiscal_year_blend: true (CGT rates and fuel duty) are day-weighted across the fiscal year; the files with preserve_calendar_dates: true keep statutory dates (33 in 2.130.1, including the Ofgem energy price cap and guarantee; 32 in 2.125.1, which lacks the UC rebalancing protected_health_element).",
+      "read": "2.125.1 from its installed source; 2.130.1 from its PyPI wheel; 2026-10-15. 2.130.1 is the policyengine-uk version certified by policyengine.py#617 (with policyengine-uk-data 1.58.1); it is not yet a scorecard replay variant."
+    },
+    {
+      "package": "policyengine-uk",
+      "versions": [
+        "2.89.2"
+      ],
+      "where": "docs/uk_replay/YEARS.md (policyengine_uk/utils/parameters.py lines 26-47, tax_benefit_system.py lines 81-109)",
+      "establishes": "The same 30 April sampling in the legacy engine; the existing replays use calendar period Y for fiscal year Y-(Y+1)."
+    }
+  ],
+  "alternative_considered": {
+    "bridge_id": "two_period_blend.v1",
+    "rule": "fiscal year Y-(Y+1) = 9/12 of period Y + 3/12 of period Y+1",
+    "why_not": "The engine's period Y already carries fiscal-year policy. Blending two periods would apply fiscal year Y+1's policy to January to March of fiscal year Y-(Y+1). Part-year changes are handled instead by the day-weighted fiscal-year value in period Y (part_year_rule)."
+  },
+  "limitations": [
+    "Population inputs for period Y are annual projections; they are not records for 6 April to 5 April. Every comparison keeps the cy_proxies_fy divergence axis.",
+    "Cash versus liability timing (for example self-assessment receipts arriving after the year) is not bridged: cash-basis receipts are not calibration targets (policy-world contract term 2), and comparisons record the timing per head.",
+    "No part-year coverage is claimed from an annual result; the part_year_rule sets annual values, and part-year effects are recorded per measure.",
+    "A population built for these events must list every mapped period below in its certification's data_years, or the run stops with source accounting only (docs/uk_replay/HISTORICAL_ADAPTER.md)."
+  ],
+  "event_years": {
+    "spring_statement_2022": {
+      "2021-22": 2021,
+      "2022-23": 2022,
+      "2023-24": 2023,
+      "2024-25": 2024,
+      "2025-26": 2025,
+      "2026-27": 2026
+    },
+    "autumn_statement_2022": {
+      "2022-23": 2022,
+      "2023-24": 2023,
+      "2024-25": 2024,
+      "2025-26": 2025,
+      "2026-27": 2026,
+      "2027-28": 2027
+    },
+    "autumn_budget_2021": {
+      "2021-22": 2021,
+      "2022-23": 2022,
+      "2023-24": 2023,
+      "2024-25": 2024,
+      "2025-26": 2025,
+      "2026-27": 2026
+    }
+  }
+}

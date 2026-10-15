@@ -2,8 +2,9 @@
 
 Status: proposed design for phase 0, 11 October 2026. This slice changes no
 registry builder, runner or numerical artifact. The policy-world choice and
-annualisation bridge remain pending under the [policy-world
-proposal](POLICY_WORLD_CONTRACT.md) and cos d1344.
+annualisation bridge were decided under cos d1344 on 15 October 2026
+([decision record](HISTORICAL_DECISIONS.md)): `published_end_state_same_weights.v1`
+and `fy_start_year.v1`.
 
 The adapter should retain every original source row and fiscal year, then
 select an explicitly certified event population through the
@@ -126,10 +127,10 @@ Before importing an engine, selection should perform these checks:
 
 Manifest `data_years` contains FY strings; the replay-variant record's
 `data_years` contains integer calendar years. They must not be compared
-directly. The current FY-start-year proxy would require calendar 2021–2026
-for Spring Statement 2022 and Autumn Budget 2021, and 2022–2027 for Autumn
-Statement 2022. Those ranges describe the current proxy's mapping, not an
-approved historical bridge. A bridge requiring two calendar periods for a
+directly. The approved bridge, `fy_start_year.v1`, maps each fiscal year to
+its start year, so a population needs periods 2021–2026 for Spring Statement
+2022 and Autumn Budget 2021, and 2022–2027 for Autumn Statement 2022
+([receipt](contracts/annualisation_fy_start_year.v1.json)). A bridge requiring two calendar periods for a
 single fiscal year must check both periods. Its receipt must explain policy
 commencement, annual parameter processing and the cash/liability distinction;
 it cannot claim part-year coverage merely because an annual result exists.
