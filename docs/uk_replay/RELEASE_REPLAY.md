@@ -423,8 +423,11 @@ step to run. So the candidate runs as a transient systemd service
 (`systemd-run --uid`): the whole filesystem is read-only except the
 account's home (`ProtectSystem=strict`), the runner's home is inaccessible,
 `/tmp` is private, setuid programs such as sudo cannot gain privileges
-(`NoNewPrivileges`), and other users' processes are invisible
-(`ProtectProc=invisible`). The account has no sudoers entry, no
+(`NoNewPrivileges`), other users' processes are invisible
+(`ProtectProc=invisible`), and kernel tunables, modules, logs, the clock,
+namespaces and capabilities are locked down. `/dev/shm` and `/dev/mqueue`
+stay shared with the host (systemd binds them under `PrivateDevices`), so
+Python multiprocessing works; nothing later in the job runs from them. The account has no sudoers entry, no
 supplementary group (so no docker socket) and no cron or at jobs. `setup`
 checks from inside the sandbox that sudo fails, that the account has no
 group beyond its own, and that nothing is writable among every directory on
@@ -439,8 +442,10 @@ survives, and the account streams its `output/` out with `tar`, which the
 runner user unpacks as itself; links stay links and special files stay
 special files, for the guard to refuse. The upload needs both `collect` and
 the guard to succeed. CI's `receiver sandbox` job runs `setup`, `run` and
-`collect` on the runner image on every pull request, with a stub drain that
-leaves a process behind, and no secrets.
+`collect` on the runner image on every pull request, with no secrets and a
+stub drain that does what a real run needs inside the sandbox (creates a uv
+environment and installs from PyPI, adds a git worktree of the copy, runs a
+multiprocessing pool) and leaves a process behind.
 
 Scorecard is public, so the dataset and anything household-level stay on the
 runner. No job saves or restores a cache (setup-uv's default cache is off on

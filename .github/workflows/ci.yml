@@ -181,13 +181,21 @@ jobs:
           enable-cache: false
       - name: Set up the candidate account and check it
         run: bash .github/scripts/uk_replay_sandbox.sh setup
-      - name: Replace the copy's drain with a stub that leaves a process behind
+      # The stub does what a real run needs inside the sandbox (uv and the
+      # network, a git worktree of the copy, a multiprocessing pool) and
+      # leaves a process behind; it writes probe.json only if all succeed.
+      - name: Replace the copy's drain with a stub that exercises a real run
         run: |
           sudo -u replay-candidate tee /home/replay-candidate/scorecard/.github/scripts/uk_replay_drain.sh > /dev/null <<'SH'
           set -euo pipefail
           mkdir -p output/state
+          uv venv --python 3.12 "$RUNNER_TEMP/venv"
+          uv pip install --python "$RUNNER_TEMP/venv/bin/python" rfc8785==0.1.4
+          git worktree add --detach "$RUNNER_TEMP/checkout" HEAD
+          "$RUNNER_TEMP/venv/bin/python" -c 'import multiprocessing as m, rfc8785; assert sum(m.Pool(2).map(abs, [-1, -2])) == 3'
           python3 -c 'import json; print(json.dumps({"status": "failed", "receipt_sha256": "a" * 64}))' > output/outcome.json
           echo 0 > output/run-exit.txt
+          echo '{"uv_and_network": true, "git_worktree": true, "multiprocessing": true}' > output/probe.json
           nohup sleep 600 > /dev/null 2>&1 &
           SH
       - name: Run the stub as the candidate
@@ -204,6 +212,7 @@ jobs:
             exit 1
           fi
           test "$(stat -c %U output/outcome.json)" = "$(id -un)"
+          test -f output/probe.json
           python3 -I .github/scripts/uk_replay_output_guard.py output
 
   app:
