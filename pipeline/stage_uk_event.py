@@ -17,6 +17,7 @@ from pathlib import Path
 from pipeline import compute_uk_event as compute
 from pipeline import compute_uk_obr_costings as fiscal
 from pipeline import stage_uk_ab2025 as ab_stage
+from pipeline import uk_replay_variants as variants
 
 AXES = [
     "behavioural_adjustment",
@@ -99,12 +100,126 @@ def validate_artifact(
         raise ValueError("per-measure head effects do not sum to the measure total")
 
 
+LEGACY_POPULATION_NOTE = (
+    "OBR uses the forecast available at announcement; PE uses a single "
+    "certified 2023 population with later calibration and uprating targets."
+)
+
+
+def population_note(record: dict | None) -> str:
+    """The first row annotation: which population PE used."""
+    if record is None:
+        return LEGACY_POPULATION_NOTE
+    dataset = record["identity"]["dataset"]
+    return (
+        "OBR uses the forecast available at announcement; PE uses a single "
+        f"certified population ({dataset['path']}, {dataset['repo_id']} "
+        f"{dataset['revision']}) with later calibration and uprating targets."
+    )
+
+
+# Fields only a non-legacy run's manifest carries (compute_uk_event
+# variant_identity_fields and uk_replay_variants.manifest_fields).
+VARIANT_MANIFEST_FIELDS = frozenset(
+    {
+        "variant_identity_sha256",
+        "data_years",
+        "supported_years",
+        "unsupported_years",
+        "full_supported_grid",
+        "full_supported_grid_complete",
+    }
+)
+
+
+def legacy_dataset_identity(variants_path: Path) -> tuple[str, str]:
+    """The legacy record's dataset digest and data build.
+
+    Found by layout, never as the document's default: the default only has
+    to be certified, and may one day be a newer variant."""
+    document = variants.load_document(variants_path)
+    legacy = [record for record in document["variants"] if variants.is_legacy(record)]
+    if len(legacy) != 1:
+        raise ValueError(
+            f"{variants_path}: expected exactly one legacy variant, found {len(legacy)}"
+        )
+    record = variants.get_variant(legacy[0]["variant_id"], path=variants_path)
+    identity = record["identity"]
+    return identity["dataset"]["sha256"], fiscal.data_bundle_id(
+        identity["release_bundle"]
+    )
+
+
+def manifest_variant(
+    manifest: dict | None, registry: dict, *, variants_path: Path
+) -> dict | None:
+    """The variant record a compute manifest claims, checked against the
+    variants document rather than trusted: its identity digest must match,
+    and its unsupported years must be the ones the record's data years give.
+    A manifest naming no variant is the legacy layout and lists none."""
+    if manifest is None:
+        return None
+    variant_id = manifest.get("variant_id")
+    if variant_id is None:
+        listed = sorted(set(manifest) & VARIANT_MANIFEST_FIELDS)
+        if listed:
+            raise ValueError(
+                f"a legacy compute manifest lists variant fields: {listed}"
+            )
+        # A manifest without variant fields claims the legacy variant: its
+        # dataset must be that record's, not an unrecorded one.
+        sha256, build = legacy_dataset_identity(variants_path)
+        if (
+            manifest.get("certified_dataset_sha256", sha256) != sha256
+            or manifest.get("data_bundle", build) != build
+        ):
+            raise ValueError("a legacy compute manifest names another dataset")
+        return None
+    record = variants.get_variant(
+        variant_id, path=variants_path, allow_uncertified=True
+    )
+    if variants.is_legacy(record):
+        raise ValueError("the legacy variant's manifest names no variant_id")
+    if manifest.get("variant_identity_sha256") != record["identity_sha256"]:
+        raise ValueError("compute manifest variant identity differs from its record")
+    identity = record["identity"]
+    if manifest.get("certified_dataset_sha256") != identity["dataset"][
+        "sha256"
+    ] or manifest.get("data_bundle") != fiscal.data_bundle_id(
+        identity["release_bundle"]
+    ):
+        raise ValueError("compute manifest dataset differs from the variant's record")
+    supported, unsupported = variants.supported_years(
+        record, registry["calendar_years"]
+    )
+    if (
+        manifest.get("unsupported_years") != unsupported
+        or manifest.get("supported_years") != supported
+        or manifest.get("data_years") != record["data_years"]
+    ):
+        raise ValueError(
+            "compute manifest supported years differ from the variant's data years"
+        )
+    return record
+
+
 def stage_event(
-    registry: dict, manifest: dict | None, *, artifact_dir: Path, registry_sha256: str
+    registry: dict,
+    manifest: dict | None,
+    *,
+    artifact_dir: Path,
+    registry_sha256: str,
+    variants_path: Path = variants.VARIANTS_PATH,
 ) -> tuple[list[dict], dict]:
     """Engine-free staging; missing measures and unsupported FYs stay visible."""
     artifacts = {}
     paths = {}
+    # A non-legacy variant's manifest names its identity and the registry
+    # years its population cannot supply (RELEASE_REPLAY.md); both are
+    # checked against the variants document.
+    record = manifest_variant(manifest, registry, variants_path=variants_path)
+    variant_id = record["variant_id"] if record is not None else None
+    unsupported = {row["year"] for row in (manifest or {}).get("unsupported_years", [])}
     if manifest is not None:
         event = registry.get("event_slug", registry.get("event"))
         if event is not None and manifest.get("event", event) != event:
@@ -142,6 +257,16 @@ def stage_event(
             registry_sha256,
             manifest["certified_dataset_sha256"],
         )
+        if artifact.get("variant_id") != variant_id or artifact.get(
+            "variant_identity_sha256"
+        ) != (manifest.get("variant_identity_sha256") if variant_id else None):
+            raise ValueError(
+                "artifact variant identity differs from the compute manifest"
+            )
+        if year in unsupported:
+            raise ValueError(
+                f"{key} {year}: artifact in a year the variant's population does not support"
+            )
     planned = compute.worlds.computable(index, years=registry["calendar_years"])
     full_pairs = {
         (key, year)
@@ -150,6 +275,7 @@ def stage_event(
         for year in registry["calendar_years"]
     }
     computed_pairs = set(artifacts)
+    supported_pairs = {pair for pair in full_pairs if pair[1] not in unsupported}
     if computed_pairs - full_pairs:
         raise ValueError(
             "committed artifact is outside the event's executable measure/year grid"
@@ -217,6 +343,17 @@ def stage_event(
                 raise ValueError(
                     "compute manifest full-event completeness is inaccurate"
                 )
+            if variant_id is not None:
+                if declared_pairs("full_supported_grid") != supported_pairs:
+                    raise ValueError(
+                        "compute manifest supported grid differs from the variant's years"
+                    )
+                if manifest["full_supported_grid_complete"] != (
+                    supported_pairs <= computed_pairs
+                ):
+                    raise ValueError(
+                        "compute manifest supported-grid completeness is inaccurate"
+                    )
         elif "measures" in manifest and "years" in manifest:
             requested = {
                 (key, year)
@@ -281,7 +418,7 @@ def stage_event(
                 "source_table": source.get("source_table"),
                 "source_column": source.get("source_column"),
                 "annotations": [
-                    "OBR uses the forecast available at announcement; PE uses a single certified 2023 population with later calibration and uprating targets.",
+                    population_note(record),
                     "PE calendar-year totals proxy fiscal-year totals; PE is static and its certified policy world differs from the announcement baseline.",
                 ],
             }
@@ -307,6 +444,18 @@ def stage_event(
             elif year not in registry["calendar_years"]:
                 row["reason"] = (
                     "FY start outside this event's documented certified-bundle support"
+                )
+            elif year in unsupported:
+                data_years = manifest["data_years"]
+                reason = next(
+                    r["reason"]
+                    for r in manifest["unsupported_years"]
+                    if r["year"] == year
+                )
+                row["status"] = "unsupported_on_variant"
+                row["reason"] = (
+                    f"CY{year} is outside {variant_id}'s supported data years "
+                    f"{data_years[0]}–{data_years[-1]} ({reason})"
                 )
             elif artifact is None:
                 row["reason"] = (
@@ -392,6 +541,20 @@ def stage_event(
     }
     if inert_pairs:
         tally["inert_measure_years"] = compute.grid_rows(inert_pairs)
+    if variant_id is not None:
+        tally.update(
+            {
+                "variant_id": variant_id,
+                "unsupported_years": sorted(unsupported),
+                "unsupported_measure_years": compute.grid_rows(
+                    full_pairs - supported_pairs
+                ),
+                "supported_grid_size": len(supported_pairs),
+                "full_supported_grid_complete": supported_pairs <= computed_pairs
+                and not inert_pairs,
+                "unsupported_source_rows": counts.get("unsupported_on_variant", 0),
+            }
+        )
     if tally["source_rows"] != tally["staged_rows"]:
         raise ValueError(
             "staging inventory does not preserve the source-row accounting identity"
@@ -407,6 +570,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--registry", type=Path)
     ap.add_argument("--artifact-dir", type=Path)
     ap.add_argument("--output", type=Path)
+    ap.add_argument(
+        "--variants-file",
+        type=Path,
+        default=variants.VARIANTS_PATH,
+        help="variant records a manifest's variant_id is checked against",
+    )
     args = ap.parse_args(argv)
     default_registry, default_artifacts = compute.event_paths(args.event)
     registry_path = args.registry or default_registry
@@ -420,11 +589,18 @@ def main(argv: list[str] | None = None) -> int:
     registry = json.loads(payload)
     compute.validate_event_identity(registry, args.event)
     compute.registry_builder.validate_registry(registry)
+    output = args.output or artifact_dir / "STAGED.jsonl"
+    # A sealed namespace's staged rows are part of what its receipt binds.
+    variants.assert_not_sealed(artifact_dir)
+    variants.assert_not_sealed(output.parent)
     rows, tally = stage_event(
-        registry, manifest, artifact_dir=artifact_dir, registry_sha256=registry_sha256
+        registry,
+        manifest,
+        artifact_dir=artifact_dir,
+        registry_sha256=registry_sha256,
+        variants_path=args.variants_file.resolve(),
     )
     compute.verify_registry_identity(registry_path, registry_sha256)
-    output = args.output or artifact_dir / "STAGED.jsonl"
     output.parent.mkdir(parents=True, exist_ok=True)
     staged_payload = b"".join(
         (json.dumps(row, sort_keys=True, allow_nan=False) + "\n").encode()

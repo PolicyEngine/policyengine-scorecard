@@ -25,6 +25,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from pipeline.build_uk_event_registry import _sum as source_gbp_sum
+from pipeline import uk_replay_variants as variants
 from pipeline.compare_uk_obr_costings import atomic_write_bytes, ratio_and_bin
 
 AXES_PATH = ROOT / "data" / "uk" / "obr_divergence_axes.json"
@@ -77,10 +78,48 @@ GRID_FIELDS = (
     "full_event_complete",
     "missing_measure_years",
     "inert_measure_years",
+    "variant_id",
+    "unsupported_years",
+    "unsupported_measure_years",
+    "supported_grid_size",
+    "full_supported_grid_complete",
 )
+# The review diagnoses and construction notes below were established on the
+# legacy execution (engine and populace-2023 bundle), not on every run of it.
+LEGACY_ENGINE = "2.89.2"
+REVIEW_DIAGNOSES_ESTABLISHED_ON = (LEGACY_ENGINE,)
 
 
-def review_diagnosis(measure_key: str, year: int, tax_head: str = "") -> dict:
+def run_identity(directory: Path) -> dict:
+    """The execution behind an event directory, from its RUN_MANIFEST.json.
+
+    Legacy manifests carry no variant fields; a directory without a manifest
+    is treated as the legacy run, as before."""
+    path = directory / "RUN_MANIFEST.json"
+    manifest = json.loads(path.read_bytes()) if path.exists() else {}
+    return {
+        "engine_version": manifest.get("engine_version", LEGACY_ENGINE),
+        "policyengine_version": manifest.get("policyengine_version"),
+        "data_bundle": manifest.get("data_bundle"),
+        "variant_id": manifest.get("variant_id"),
+        "data_years": manifest.get("data_years"),
+        "unsupported_years": manifest.get("unsupported_years", []),
+        "run_manifest": path if "variant_id" in manifest else None,
+    }
+
+
+def is_variant(identity: dict | None) -> bool:
+    return bool(identity and identity.get("variant_id"))
+
+
+def review_diagnosis(
+    measure_key: str,
+    year: int,
+    tax_head: str = "",
+    engine_version: str = LEGACY_ENGINE,
+    *,
+    identity: dict | None = None,
+) -> dict:
     """Retain the review's source-level diagnoses without sizing national terms.
 
     These observations concern the certified 2.89.2 pin. An upstream issue or
@@ -230,7 +269,7 @@ def review_diagnosis(measure_key: str, year: int, tax_head: str = "") -> dict:
         ]
     else:
         return {}
-    return {
+    diagnosis = {
         "class": "pe_gap" if issue else "review_diagnosis",
         "cause_class": cause,
         "evidence": evidence,
@@ -239,12 +278,39 @@ def review_diagnosis(measure_key: str, year: int, tax_head: str = "") -> dict:
         "issues": [issue] if issue else [],
         "national_effect": "unsized",
     }
+    if not is_variant(identity) and engine_version in REVIEW_DIAGNOSES_ESTABLISHED_ON:
+        return diagnosis
+    return {
+        "prior_diagnoses": [
+            {
+                **diagnosis,
+                "established_on": list(REVIEW_DIAGNOSES_ESTABLISHED_ON),
+                "status": "not_reverified",
+            }
+        ]
+    }
 
 
-def construction_note(measure: dict) -> str:
-    """Correct descriptive notes without invalidating unchanged result receipts."""
+def construction_note(
+    measure: dict,
+    engine_version: str = LEGACY_ENGINE,
+    *,
+    identity: dict | None = None,
+) -> str:
+    """Correct descriptive notes without invalidating unchanged result receipts.
+
+    The notes describe the legacy run. On any variant the authored note is
+    labelled as such, and legacy-only corrections are not repeated as facts
+    about this run."""
     key = measure["measure_key"]
     note = measure.get("note", "")
+    if is_variant(identity) or engine_version != LEGACY_ENGINE:
+        if not note:
+            return ""
+        return (
+            f"Authored against policyengine-uk {LEGACY_ENGINE}: {note} Engine "
+            "facts for this run are recorded in CONSTRUCTION_PREMISES.json."
+        )
     if key == "autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp":
         return (
             "The pin still has the 3% surcharge scale, so apply a forward 2pp "
@@ -543,8 +609,13 @@ def describe_decomposition(
 
 
 def build_comparison_rows(
-    registry: dict, staged_rows: list[dict], *, artifact_root: Path = ROOT
+    registry: dict,
+    staged_rows: list[dict],
+    *,
+    artifact_root: Path = ROOT,
+    identity: dict | None = None,
 ) -> list[dict]:
+    engine_version = (identity or {}).get("engine_version", LEGACY_ENGINE)
     inventory = {}
     for measure in registry["measures"]:
         for source in measure["source_rows"]:
@@ -705,7 +776,9 @@ def build_comparison_rows(
             "ratio_bin": bin_name,
             "status": row.get("status"),
             "reason": reason,
-            "construction_note": construction_note(measure),
+            "construction_note": construction_note(
+                measure, engine_version, identity=identity
+            ),
             "missing_legs": measure.get("missing_legs", []),
             "head_variables": variables,
             "artifact": reference,
@@ -717,6 +790,8 @@ def build_comparison_rows(
                     measure["measure_key"],
                     int(source["fy"][:4]),
                     source.get("tax_head", ""),
+                    engine_version,
+                    identity=identity,
                 ),
             },
             **describe_decomposition(gap, axes, components),
@@ -769,14 +844,59 @@ def profile(rows: list[dict], field: str) -> list[tuple[str, dict[str, int]]]:
     ]
 
 
+def variant_description(identity: dict) -> str:
+    """What a non-legacy run executed, stated only from its manifest and
+    this repository's own executor."""
+    years = identity.get("data_years") or []
+    span = f"{years[0]}–{years[-1]}" if years else "unrecorded"
+    return (
+        f"PolicyEngine is policyengine-uk {identity['engine_version']} with "
+        f"policyengine {identity['policyengine_version']}, on certified data build "
+        f"{identity['data_bundle']}: one survey population whose data years are "
+        f"{span}, projected by the engine to calendar year Y. Reform dictionaries "
+        "use explicit 1 January windows for annual lookups "
+        "(compute_uk_event.annual_reform)."
+    )
+
+
+def unsupported_lines(identity: dict | None, rows: list[dict]) -> list[str]:
+    unsupported = [r for r in rows if r.get("status") == "unsupported_on_variant"]
+    years = sorted(
+        {row["year"] for row in (identity or {}).get("unsupported_years", [])}
+    )
+    if not years:
+        return []
+    return [
+        (
+            f"Unsupported on this release: calendar years {', '.join(map(str, years))} "
+            "lie outside its population's data years, so they were not computed. "
+            f"{len(unsupported)} source rows keep their OBR values without a "
+            "PolicyEngine counterpart."
+        ),
+        "",
+    ]
+
+
 def render_markdown(
-    registry: dict, rows: list[dict], replay_grid: dict | None = None
+    registry: dict,
+    rows: list[dict],
+    replay_grid: dict | None = None,
+    identity: dict | None = None,
 ) -> str:
     computed = [r for r in rows if r["pe_value_gbp"] is not None]
+    variant = is_variant(identity)
     lines = [
         f"# {registry.get('event_name', registry['event_slug'])}: descriptive replay",
         "",
         (
+            "Positive GBP means a gain to the Exchequer. "
+            + variant_description(identity)
+            + " These calendar population inputs proxy OBR FY Y–(Y+1). OBR's "
+            "announcement forecast and behavioural costings remain distinct from "
+            "this construction."
+        )
+        if variant
+        else (
             "Positive GBP means a gain to the Exchequer. PolicyEngine is the pinned "
             "certified 2023 population uprated to calendar year Y, with government "
             "baseline policy parameters annualized from the engine's 30 April snapshot. "
@@ -802,9 +922,11 @@ def render_markdown(
             ),
             "",
         ]
+    lines += unsupported_lines(identity, rows)
     if (
         replay_grid
         and not replay_grid.get("full_event_complete")
+        and not replay_grid.get("full_supported_grid_complete")
         and not (inert_count or replay_grid.get("inert_measure_years"))
     ):
         lines += [
@@ -887,8 +1009,13 @@ def render_markdown(
         "",
         (
             "Every row tags population_vintage: OBR used the forecast at its fiscal "
-            "event, whereas this bundle uses one 2023 population calibrated to later "
-            "targets. The other declared axes are behavioural_adjustment (static versus "
+            + (
+                "event, whereas this release projects one later survey population. "
+                if variant
+                else "event, whereas this bundle uses one 2023 population calibrated to later "
+                "targets. "
+            )
+            + "The other declared axes are behavioural_adjustment (static versus "
             "behavioural), baseline_vintage (certified versus announcement baseline), "
             "cy_proxies_fy and head_scope. Partial constructions also tag construction_scope."
         ),
@@ -949,25 +1076,49 @@ def render_markdown(
             )
             + " |"
         )
+    engine_version = (identity or {}).get("engine_version", LEGACY_ENGINE)
     caveats = [
         measure
         for measure in registry["measures"]
-        if construction_note(measure)
+        if construction_note(measure, engine_version, identity=identity)
         and measure.get("classification", measure.get("computability"))
         in ("expressible", "partial")
     ]
     if caveats:
         lines += ["", "## Construction caveats", ""]
         for measure in caveats:
-            lines.append(f"* `{measure['measure_key']}`: {construction_note(measure)}")
+            lines.append(
+                f"* `{measure['measure_key']}`: {construction_note(measure, engine_version, identity=identity)}"
+            )
     diagnosed = {}
+    prior = {}
     for row in rows:
         diagnosis = row.get("diagnosis") or {}
         if diagnosis.get("cause_class"):
             diagnosed.setdefault(row["measure_key"], diagnosis)
+        for earlier in diagnosis.get("prior_diagnoses", []):
+            prior.setdefault(row["measure_key"], earlier)
     if diagnosed:
         lines += ["", "## Review diagnoses", ""]
         for key, diagnosis in diagnosed.items():
+            lines.append(
+                f"* `{key}` — {diagnosis['cause_class']}: {diagnosis['evidence']}"
+            )
+    if prior:
+        lines += [
+            "",
+            (
+                f"## Prior diagnoses, established on policyengine-uk {LEGACY_ENGINE} "
+                f"and not re-verified on this run (policyengine-uk {engine_version})"
+            ),
+            "",
+            (
+                "These review observations describe the legacy engine and population run. They are kept "
+                "for investigation and are not findings about this run."
+            ),
+            "",
+        ]
+        for key, diagnosis in prior.items():
             lines.append(
                 f"* `{key}` — {diagnosis['cause_class']}: {diagnosis['evidence']}"
             )
@@ -994,7 +1145,11 @@ def _receipt_path(reference: Any, artifact_root: Path) -> Path:
 
 
 def _verify_staging(
-    registry_path: Path, staged_path: Path, *, artifact_root: Path
+    registry_path: Path,
+    staged_path: Path,
+    *,
+    artifact_root: Path,
+    identity: dict | None = None,
 ) -> tuple[dict, list[dict], Path]:
     registry = _json(registry_path)
     manifest_path = staged_path.parent / "STAGING_MANIFEST.json"
@@ -1006,7 +1161,10 @@ def _verify_staging(
     if manifest.get("staged_sha256") != _sha256(staged_path):
         raise EventComparisonError("staged SHA-256 differs from staging manifest")
     rows = build_comparison_rows(
-        registry, load_jsonl(staged_path), artifact_root=artifact_root
+        registry,
+        load_jsonl(staged_path),
+        artifact_root=artifact_root,
+        identity=identity,
     )
     if manifest.get("staged_rows") != len(rows):
         raise EventComparisonError("staging manifest row count differs")
@@ -1048,11 +1206,13 @@ def write_comparison(
     )
     output_dir = output_dir or artifact_root / "results" / "uk" / "events" / event
     staged_path = staged_path or output_dir / "STAGED.jsonl"
+    identity = run_identity(staged_path.parent)
     registry, rows, staging_manifest_path = _verify_staging(
-        registry_path, staged_path, artifact_root=artifact_root
+        registry_path, staged_path, artifact_root=artifact_root, identity=identity
     )
     if registry.get("event_slug") != event:
         raise EventComparisonError("registry event differs from --event")
+    variants.assert_not_sealed(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     staging_manifest = _json(staging_manifest_path)
     replay_grid = {
@@ -1062,7 +1222,7 @@ def write_comparison(
     }
     payloads = {
         "COMPARISON.csv": render_csv(rows),
-        "COMPARISON.md": render_markdown(registry, rows, replay_grid),
+        "COMPARISON.md": render_markdown(registry, rows, replay_grid, identity),
         "COMPARISON.json": json.dumps(rows, indent=1, sort_keys=True, allow_nan=False)
         + "\n",
     }
@@ -1079,6 +1239,16 @@ def write_comparison(
         ),
         "staging_manifest_sha256": _sha256(staging_manifest_path),
         "axes_sha256": _sha256(AXES_PATH),
+        **(
+            {
+                "run_manifest_path": _relative_receipt(
+                    identity["run_manifest"], artifact_root
+                ),
+                "run_manifest_sha256": _sha256(identity["run_manifest"]),
+            }
+            if identity["run_manifest"] is not None
+            else {}
+        ),
         "source_rows": len(rows),
         "replay_grid": replay_grid,
         "outputs_sha256": {
@@ -1098,15 +1268,38 @@ def render_summary(
     diagnostics: list[dict] | None = None,
     registries: dict[str, dict] | None = None,
     replay_grids: dict[str, dict] | None = None,
+    identity: dict | None = None,
 ) -> str:
     rows = [row for event_rows in events.values() for row in event_rows]
     computed = [r for r in rows if r["pe_value_gbp"] is not None]
     registries = registries or {}
     replay_grids = replay_grids or {}
+    variant = is_variant(identity)
+    engine_version = (identity or {}).get("engine_version", LEGACY_ENGINE)
+    diagnostics = diagnostics or []
+    for diagnostic in diagnostics:
+        if diagnostic.get("engine_version") != engine_version:
+            raise EventComparisonError(
+                f"diagnostic {diagnostic.get('id', '<unrecorded>')} engine "
+                f"{diagnostic.get('engine_version')} differs from run engine {engine_version}"
+            )
     lines = [
         "# Recent OBR fiscal-event replays",
         "",
         (
+            (
+                f"These replays ran on certified variant `{identity['variant_id']}`. "
+                if events
+                else f"This namespace describes certified variant `{identity['variant_id']}`. "
+            )
+            + variant_description(identity)
+            + " Registry years outside the population's data years are reported as "
+            "unsupported, not computed. A seeded registry does not establish a "
+            "completed numerical replay. Available comparisons use one source head "
+            "and fiscal year per row."
+        )
+        if variant
+        else (
             "The inventories use the pinned populace-uk-2023 bundle definition with "
             "policyengine-uk 2.89.2. A seeded registry does not establish a completed "
             "numerical replay. Available comparisons use one source head and fiscal "
@@ -1145,6 +1338,12 @@ def render_summary(
             state = (
                 "Registered construction replay complete"
                 if replay_grid.get("full_event_complete")
+                else (
+                    "Registered construction replay complete on supported years; "
+                    "unsupported: "
+                    + ", ".join(map(str, replay_grid.get("unsupported_years", [])))
+                )
+                if replay_grid.get("full_supported_grid_complete")
                 else (
                     "Numerical comparison available; replay grid incomplete "
                     f"({replay_grid.get('computed_measure_years', 0)}/"
@@ -1215,8 +1414,12 @@ def render_summary(
         "",
         (
             "population_vintage tags every row: the fiscal event's OBR forecast differs "
-            "from the certified 2023 population and its later calibration targets. "
-            "behavioural_adjustment, baseline_vintage, cy_proxies_fy and head_scope "
+            + (
+                "from this release's later survey population. "
+                if variant
+                else "from the certified 2023 population and its later calibration targets. "
+            )
+            + "behavioural_adjustment, baseline_vintage, cy_proxies_fy and head_scope "
             "describe the other construction differences. construction_scope identifies "
             "partial measures. The pipeline does not adjust the population vintage."
         ),
@@ -1259,13 +1462,27 @@ def render_summary(
         diagnostic = {
             **diagnostic,
             **review_diagnosis(
-                row["measure_key"], row["year"], row.get("tax_head", "")
+                row["measure_key"],
+                row["year"],
+                row.get("tax_head", ""),
+                engine_version,
+                identity=identity,
             ),
         }
+        for earlier in diagnostic.get("prior_diagnoses", [])[:1]:
+            diagnostic = {
+                "cause_class": f"Prior ({LEGACY_ENGINE}), not re-verified: "
+                + earlier["cause_class"],
+                "evidence": earlier["evidence"],
+            }
         evidence = diagnostic.get("evidence", "Open: relevant axes unsized")
+        interpreter = (
+            ".venv-candidate/bin/python" if variant else ".venv-replay/bin/python"
+        )
         command = (
-            f"PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event {row['event_slug']} "
-            f"--measures {row['measure_key']} --years {row['year']} --workers 1 "
+            f"PYTHONPATH=. {interpreter} pipeline/compute_uk_event.py --event {row['event_slug']} "
+            + (f"--variant {identity['variant_id']} " if variant else "")
+            + f"--measures {row['measure_key']} --years {row['year']} --workers 1 "
             f"--output-dir .venv-replay-checks/reproductions/{row['event_slug']}/{row['measure_key']}_{row['year']}"
         )
         lines.append(
@@ -1280,10 +1497,15 @@ def render_summary(
     diagnosed = [
         r for r in computed if (r.get("diagnosis") or {}).get("class") == "pe_gap"
     ]
-    diagnostics = diagnostics or []
     active_events = set(events) | set(registries)
     relevant = [d for d in diagnostics if set(d.get("events", [])) & active_events]
-    concrete = [d for d in relevant if d.get("class") == "pe_gap"]
+    # A re-verified candidate counts only while its defect persists.
+    concrete = [
+        d
+        for d in relevant
+        if d.get("class") == "pe_gap"
+        and d.get("status", "not re-verified" if variant else "persists") == "persists"
+    ]
     lines += [
         "",
         (
@@ -1302,16 +1524,30 @@ def render_summary(
                 "candidates; it is not padded to ten."
             ),
             "",
-            "| Candidate | Class | Variables | Evidence | Minimal reproducer |",
-            "|---|---|---|---|---|",
+            "| Candidate | Class | Variables | Evidence | Minimal reproducer |"
+            if not variant
+            else "| Candidate | Class (established) | Status on this engine | Variables | Evidence | Minimal reproducer |",
+            "|---|---|---|---|---|" if not variant else "|---|---|---|---|---|---|",
         ]
         for diagnostic in relevant:
             command = (
                 "PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py "
                 + diagnostic["reproducer"]
+                if not variant
+                else (
+                    "PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py "
+                    "--reverify results/uk/events/MODEL_DIAGNOSTICS.json "
+                    f"--expect-engine {engine_version} --case {diagnostic['id']}"
+                )
+            )
+            status = (
+                f"{_md(diagnostic.get('status', 'not re-verified'))} "
+                f"(established on {_md(', '.join(diagnostic.get('established_on', [LEGACY_ENGINE])))}) | "
+                if variant
+                else ""
             )
             lines.append(
-                f"| {_md(diagnostic['id'])} | {_md(diagnostic['class'])} | "
+                f"| {_md(diagnostic['id'])} | {_md(diagnostic['class'])} | {status}"
                 f"{_md(', '.join(diagnostic['variables']))} | "
                 f"{_md(diagnostic['evidence']['engine_file'])} (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `{command}` |"
             )
@@ -1319,8 +1555,14 @@ def render_summary(
     return "\n".join(lines)
 
 
-def load_verified_comparison(path: Path, *, artifact_root: Path = ROOT) -> list[dict]:
-    """Bind summary-only reads to current source, stage, axes and artifact bytes."""
+def load_verified_comparison(
+    path: Path, *, artifact_root: Path = ROOT, registry_path: Path | None = None
+) -> list[dict]:
+    """Verify receipts against the current registry or an explicit snapshot.
+
+    Historical readers may select the receipt-bound registry snapshot. The
+    default preserves summaries' binding to the current event registry.
+    """
     provenance_path = path.parent / "COMPARISON_PROVENANCE.json"
     if not provenance_path.exists():
         raise EventComparisonError("summary requires COMPARISON_PROVENANCE.json")
@@ -1341,8 +1583,16 @@ def load_verified_comparison(path: Path, *, artifact_root: Path = ROOT) -> list[
         if _sha256(receipt) != provenance.get(f"{label}_sha256"):
             raise EventComparisonError(f"comparison {label} SHA-256 is stale")
         paths[label] = receipt
+    identity = run_identity(paths["staged"].parent)
+    if identity["run_manifest"] is not None and (
+        provenance.get("run_manifest_sha256") != _sha256(identity["run_manifest"])
+    ):
+        raise EventComparisonError("comparison run-manifest SHA-256 is stale")
     registry, verified_rows, manifest_path = _verify_staging(
-        paths["registry"], paths["staged"], artifact_root=artifact_root
+        paths["registry"],
+        paths["staged"],
+        artifact_root=artifact_root,
+        identity=identity,
     )
     if manifest_path != paths["staging_manifest"]:
         raise EventComparisonError("comparison staging manifest path differs")
@@ -1352,7 +1602,9 @@ def load_verified_comparison(path: Path, *, artifact_root: Path = ROOT) -> list[
         raise EventComparisonError("comparison replay-grid receipt differs")
     if registry.get("event_slug") != path.parent.name:
         raise EventComparisonError("summary registry event differs")
-    canonical_registry = (
+    if registry_path is not None and registry_path.resolve() != paths["registry"]:
+        raise EventComparisonError("comparison registry snapshot path differs")
+    canonical_registry = registry_path or (
         artifact_root / "data" / "uk" / "events" / f"{path.parent.name}_measures.json"
     )
     if (
@@ -1387,10 +1639,47 @@ def write_summary(events_root: Path, *, artifact_root: Path = ROOT) -> None:
             (artifact_root / "data" / "uk" / "events").glob("*_measures.json")
         )
     }
+    identities = {
+        json.dumps(
+            {
+                k: v
+                for k, v in run_identity(path.parent).items()
+                if k not in ("run_manifest", "unsupported_years")
+            },
+            sort_keys=True,
+        )
+        for path in sorted(events_root.glob("*/COMPARISON.json"))
+    }
+    if len(identities) > 1:
+        raise EventComparisonError("summary events come from different executions")
+    identity = json.loads(identities.pop()) if identities else None
+    variants_path = artifact_root / "data" / "uk" / "replay_variants.json"
+    if not events and variants_path.exists():
+        for registered in variants.load_document(variants_path)["variants"]:
+            if (
+                not variants.is_legacy(registered)
+                and variants.namespace_root(registered, root=artifact_root).resolve()
+                == events_root.resolve()
+            ):
+                record = variants.get_variant(
+                    registered["variant_id"], path=variants_path, root=artifact_root
+                )
+                packages = record["identity"]["packages"]
+                identity = {
+                    "engine_version": packages["policyengine-uk"]["version"],
+                    "policyengine_version": packages["policyengine"]["version"],
+                    "data_bundle": record["certification"]["data_build_id"],
+                    "variant_id": record["variant_id"],
+                    "data_years": record["data_years"],
+                }
+                break
+    variants.assert_not_sealed(events_root)
     events_root.mkdir(parents=True, exist_ok=True)
     atomic_write_bytes(
         events_root / "SUMMARY.md",
-        render_summary(events, diagnostics, registries, replay_grids).encode(),
+        render_summary(
+            events, diagnostics, registries, replay_grids, identity
+        ).encode(),
     )
 
 
