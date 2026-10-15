@@ -1,0 +1,2525 @@
+{
+  "schema_version": "vintage_lock.v1",
+  "event_slug": "autumn_statement_2022",
+  "event_date": "2022-11-17",
+  "forecast_vintage": {
+    "id": "obr_efo_november_2022",
+    "label": "November 2022",
+    "published_at": "2022-11-17"
+  },
+  "sources": [
+    {
+      "role": "economy",
+      "original_url": "https://obr.uk/docs/dlm_uploads/Economy_supplementary_tables_November_2022.xlsx",
+      "archive_capture_url": "https://web.archive.org/web/20221117122504id_/https://obr.uk/docs/dlm_uploads/Economy_supplementary_tables_November_2022.xlsx",
+      "archive_timestamp": "20221117122504",
+      "edition": "November 2022",
+      "capture_status": "unknown",
+      "capture_status_evidence": "Event-day file: 8 sheets hold only a notice (4 deferred to 24 November, 4 not updated for this forecast) and are unavailable in these bytes. A later file of the same forecast, Economy_supplementary_tables_November_2022_v2-1.xlsx, was first archived 2022-12-09 and is not locked here.",
+      "status": "obtained",
+      "retrieved_at": "2026-10-11T23:55:36+00:00",
+      "byte_size": 342024,
+      "sha256": "279db66221080e0e1050c98b26f14b2a1f5248598da3ef2a8f0f6974fbd4d3c3",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sheet_names": [
+        "Contents",
+        "1.1",
+        "1.2",
+        "1.3",
+        "1.4",
+        "1.5 ",
+        "1.6",
+        "1.7",
+        "1.8",
+        "1.9",
+        "1.10",
+        "1.11",
+        "1.12",
+        "1.13",
+        "1.14",
+        "1.15",
+        "1.16",
+        "1.17",
+        "1.18",
+        "1.19",
+        "1.20"
+      ],
+      "workbook_properties": {
+        "created": "2010-11-27T22:19:23Z",
+        "modified": "2022-11-16T18:54:43Z"
+      },
+      "original_last_modified": "Thu, 17 Nov 2022 10:34:44 GMT",
+      "failure_reason": null,
+      "attempts": [
+        {
+          "url": "https://web.archive.org/web/20221117122504id_/https://obr.uk/docs/dlm_uploads/Economy_supplementary_tables_November_2022.xlsx",
+          "retrieved_at": "2026-10-11T23:55:36+00:00",
+          "http_status": 200,
+          "error": null
+        }
+      ],
+      "later_versions": [
+        {
+          "original_url": "https://obr.uk/docs/dlm_uploads/Economy_supplementary_tables_November_2022_v2-1.xlsx",
+          "first_archived": "20221209171229",
+          "locked": false
+        }
+      ],
+      "unavailable_sheets": [
+        {
+          "sheet": "1.8",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "1.10",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "1.11",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "1.12",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "1.14",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "1.15",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "1.19",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "1.20",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        }
+      ]
+    },
+    {
+      "role": "receipts",
+      "original_url": "https://obr.uk/docs/dlm_uploads/Fiscal_supplementary_tables_Receiptsother_November_2022.xlsx",
+      "archive_capture_url": "https://web.archive.org/web/20221117122532id_/https://obr.uk/docs/dlm_uploads/Fiscal_supplementary_tables_Receiptsother_November_2022.xlsx",
+      "archive_timestamp": "20221117122532",
+      "edition": "November 2022",
+      "capture_status": "unknown",
+      "capture_status_evidence": "Event-day file: 21 sheets hold only a notice (9 deferred to 24 November, 12 not updated for this forecast) and are unavailable in these bytes. A later file of the same forecast, Fiscal_supplementary_tables_Receiptsother_November_2022_v3.xlsx, was first archived 2022-12-09 and is not locked here.",
+      "status": "obtained",
+      "retrieved_at": "2026-10-11T23:55:42+00:00",
+      "byte_size": 2210375,
+      "sha256": "674e08e2510b34b286cb570546c5133d14d1eea145b8460aa622688b05dbf306",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sheet_names": [
+        "Contents",
+        "Receipts",
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4",
+        "2.5",
+        "2.6",
+        "2.7",
+        "2.8",
+        "2.9",
+        "2.10",
+        "2.11",
+        "2.12",
+        "2.13",
+        "2.14",
+        "2.15",
+        "2.16",
+        "2.17",
+        "Other",
+        "3.1",
+        "3.2",
+        "3.3",
+        "3.4",
+        "3.5",
+        "3.6",
+        "3.7",
+        "3.8",
+        "3.9",
+        "3.10",
+        "3.11",
+        "3.12",
+        "3.13",
+        "3.14",
+        "3.15",
+        "3.16",
+        "3.17",
+        "3.18"
+      ],
+      "workbook_properties": {
+        "created": "2013-01-24T16:24:22Z",
+        "modified": "2022-11-17T10:28:56Z"
+      },
+      "original_last_modified": "Thu, 17 Nov 2022 10:56:28 GMT",
+      "failure_reason": null,
+      "attempts": [
+        {
+          "url": "https://web.archive.org/web/20221117122532id_/https://obr.uk/docs/dlm_uploads/Fiscal_supplementary_tables_Receiptsother_November_2022.xlsx",
+          "retrieved_at": "2026-10-11T23:55:42+00:00",
+          "http_status": 200,
+          "error": null
+        }
+      ],
+      "later_versions": [
+        {
+          "original_url": "https://obr.uk/docs/dlm_uploads/Fiscal_supplementary_tables_Receiptsother_November_2022_v3.xlsx",
+          "first_archived": "20221209145619",
+          "locked": false
+        }
+      ],
+      "unavailable_sheets": [
+        {
+          "sheet": "2.4",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.5",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.6",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.7",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.10",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.11",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.12",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.13",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "2.14",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "2.16",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.1",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.2",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.3",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.4",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.8",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.9",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.10",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.11",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11 am on 24 November."
+        },
+        {
+          "sheet": "3.15",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.17",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.18",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        }
+      ]
+    },
+    {
+      "role": "expenditure",
+      "original_url": "https://obr.uk/docs/dlm_uploads/Fiscal_supplementary_tables_expenditure_November_2022.xlsx",
+      "archive_capture_url": "https://web.archive.org/web/20221117131030id_/https://obr.uk/docs/dlm_uploads/Fiscal_supplementary_tables_expenditure_November_2022.xlsx",
+      "archive_timestamp": "20221117131030",
+      "edition": "November 2022",
+      "capture_status": "unknown",
+      "capture_status_evidence": "Event-day file: 10 sheets hold only a notice (2 deferred to 24 November, 8 not updated for this forecast) and are unavailable in these bytes. A later file of the same forecast, Fiscal_supplementary_tables_expenditure_November_2022_v3.xlsx, was first archived 2022-12-09 and is not locked here.",
+      "status": "obtained",
+      "retrieved_at": "2026-10-11T23:55:50+00:00",
+      "byte_size": 17854855,
+      "sha256": "1faf683c50e896e863ff9967b7343cd8e3d17cabd942b33eb91f6a6e079272aa",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sheet_names": [
+        "Contents",
+        "3.1",
+        "3.2",
+        "3.3",
+        "3.4",
+        "3.5",
+        "3.6",
+        "3.7",
+        "3.8",
+        "3.9",
+        "3.10",
+        "3.11",
+        "3.12",
+        "3.13",
+        "3.14",
+        "3.15",
+        "3.16",
+        "3.17",
+        "3.18",
+        "3.19",
+        "3.20",
+        "3.21",
+        "3.22",
+        "3.23",
+        "3.24",
+        "3.25",
+        "3.26",
+        "3.27"
+      ],
+      "workbook_properties": {
+        "created": "2016-10-25T13:43:56Z",
+        "modified": "2022-11-17T10:27:15Z"
+      },
+      "original_last_modified": "Thu, 17 Nov 2022 10:53:35 GMT",
+      "failure_reason": null,
+      "attempts": [
+        {
+          "url": "https://web.archive.org/web/20221117131030id_/https://obr.uk/docs/dlm_uploads/Fiscal_supplementary_tables_expenditure_November_2022.xlsx",
+          "retrieved_at": "2026-10-11T23:55:50+00:00",
+          "http_status": 200,
+          "error": null
+        }
+      ],
+      "later_versions": [
+        {
+          "original_url": "https://obr.uk/docs/dlm_uploads/Fiscal_supplementary_tables_expenditure_November_2022_v3.xlsx",
+          "first_archived": "20221209171019",
+          "locked": false
+        }
+      ],
+      "unavailable_sheets": [
+        {
+          "sheet": "3.1",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.2",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.4",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.5",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.6",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.15",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.16",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.17",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        },
+        {
+          "sheet": "3.18",
+          "reason": "deferred_to_later_release",
+          "notice": "This table will be published at 11am on 24 November."
+        },
+        {
+          "sheet": "3.22",
+          "reason": "not_produced_for_this_forecast",
+          "notice": "This table will not be updated for the November 2022 forecast."
+        }
+      ]
+    },
+    {
+      "role": "policy_measures",
+      "original_url": "https://obr.uk/docs/dlm_uploads/Economic_and_fiscal_outlook_charts_and_tables_November_2022.xlsx",
+      "archive_capture_url": "https://web.archive.org/web/20221117122512id_/https://obr.uk/docs/dlm_uploads/Economic_and_fiscal_outlook_charts_and_tables_November_2022.xlsx",
+      "archive_timestamp": "20221117122512",
+      "edition": "November 2022",
+      "capture_status": "unknown",
+      "capture_status_evidence": "Event-day file with no placeholder sheet. A later file of the same forecast, Economic_and_fiscal_outlook_charts_and_tables_November_2022-2.xlsx, was first archived 2022-12-09 and is not locked here.",
+      "status": "obtained",
+      "retrieved_at": "2026-10-11T23:56:44+00:00",
+      "byte_size": 3975569,
+      "sha256": "5a5b4cb1ff409515c3e273dcc59c2598288197ec25fdabd45ecd595278ba89d5",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sheet_names": [
+        "Contents",
+        "Overview",
+        "C.1",
+        "C.2",
+        "Economic and fiscal outlook",
+        "T.1",
+        "C.3",
+        "C.4",
+        "C.A",
+        "C.B",
+        "C.C",
+        "C.5",
+        "C.6",
+        "C.7",
+        "C.8",
+        "C.9",
+        "C.10",
+        "C.11",
+        "C.12",
+        "C.13",
+        "C.14",
+        "C.15",
+        "C.16",
+        "T.2",
+        "C.17",
+        "C.18",
+        "C.D",
+        "C.19",
+        "T.3",
+        "T.4",
+        "C.20",
+        "T.5",
+        "C.21",
+        "T.6",
+        "C.22",
+        "T.7",
+        "C.23",
+        "T.A",
+        "C.E",
+        "Annex",
+        "TA.1",
+        "TA.2",
+        "TA.3",
+        "TA.4",
+        "TA.5",
+        "TA.6",
+        "TA.7",
+        "TA.8",
+        "TA.9"
+      ],
+      "workbook_properties": {
+        "created": "2022-11-15T11:39:53Z",
+        "modified": "2022-11-17T09:57:18Z"
+      },
+      "original_last_modified": "Thu, 17 Nov 2022 10:35:38 GMT",
+      "failure_reason": null,
+      "attempts": [
+        {
+          "url": "https://web.archive.org/web/20221117122512id_/https://obr.uk/docs/dlm_uploads/Economic_and_fiscal_outlook_charts_and_tables_November_2022.xlsx",
+          "retrieved_at": "2026-10-11T23:56:44+00:00",
+          "http_status": 200,
+          "error": null
+        }
+      ],
+      "later_versions": [
+        {
+          "original_url": "https://obr.uk/docs/dlm_uploads/Economic_and_fiscal_outlook_charts_and_tables_November_2022-2.xlsx",
+          "first_archived": "20221209153101",
+          "locked": false
+        }
+      ]
+    },
+    {
+      "role": "hofd_row",
+      "original_url": "https://obr.uk/docs/Historical_official_forecasts_database_March_2025.xlsx",
+      "archive_capture_url": "https://web.archive.org/web/20250404155002id_/https://obr.uk/docs/Historical_official_forecasts_database_March_2025.xlsx",
+      "archive_timestamp": "20250404155002",
+      "edition": "March 2025 cross-vintage database; historical forecast row selected",
+      "capture_status": "later_revision",
+      "capture_status_evidence": "March 2025 database edition postdates the event. Its historical event-labelled forecast rows are selected, never Outturn data*. Capture identity also appears in the read-only public harvest manifest.",
+      "selection": {
+        "forecast_label": "November 2022",
+        "verified_rows": [
+          {
+            "sheet": "£PSCR (2)",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "914.00383284094994",
+              "P30": "1004.8584980331459",
+              "Q30": "1058.746066071956",
+              "R30": "1096.0148937145693",
+              "S30": "1122.2861121801159",
+              "T30": "1159.3656530511234",
+              "U30": "1201.9515454375608"
+            }
+          },
+          {
+            "sheet": "£TME (2)",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "1047.2760000000003",
+              "P30": "1181.8924172661254",
+              "Q30": "1198.7741405681049",
+              "R30": "1180.341475702211",
+              "S30": "1199.2011224013552",
+              "T30": "1239.7110506859497",
+              "U30": "1271.1492839423695"
+            }
+          },
+          {
+            "sheet": "PSCR (2)",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "39.017240632100126",
+              "P30": "40.241352525275133",
+              "Q30": "41.649726713656833",
+              "R30": "41.705056469403807",
+              "S30": "41.363066844995885",
+              "T30": "41.160969222401143",
+              "U30": "41.05862503488337"
+            }
+          },
+          {
+            "sheet": "TME (2)",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "44.706398629877356",
+              "P30": "47.330991879203772",
+              "Q30": "47.158253471769775",
+              "R30": "44.913812923202769",
+              "S30": "44.197852622558877",
+              "T30": "44.013472598282007",
+              "U30": "43.422417493336056"
+            }
+          },
+          {
+            "sheet": "£PSNB (2)",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "133.27199999999999",
+              "P30": "177.03391923297974",
+              "Q30": "140.02807449614903",
+              "R30": "84.326581987641745",
+              "S30": "76.915010221239271",
+              "T30": "80.345397634826071",
+              "U30": "69.197738504808768"
+            }
+          },
+          {
+            "sheet": "PSNB (2)",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "5.689150862046886",
+              "P30": "7.0896393539286464",
+              "Q30": "5.5085267581129465",
+              "R30": "3.208756453798963",
+              "S30": "2.8347857775629959",
+              "T30": "2.8525033758808682",
+              "U30": "2.3637924584526839"
+            }
+          },
+          {
+            "sheet": "CACB (2)",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "4.182212895224577",
+              "P30": "4.9789012829348396",
+              "Q30": "1.1117259183212651",
+              "R30": "-1.1905324412078468",
+              "S30": "-0.75394352669540665",
+              "T30": "8.5238014052967381E-2",
+              "U30": "0.11332811153913123"
+            }
+          },
+          {
+            "sheet": "CAPSNB (2)",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "6.5328850646935868",
+              "P30": "7.4879386742581202",
+              "Q30": "4.0845552306202073",
+              "R30": "1.5064687739493419",
+              "S30": "1.7595089287171857",
+              "T30": "2.4247413438059389",
+              "U30": "2.2854497937197165"
+            }
+          },
+          {
+            "sheet": "PSND (2)",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "97.423344342052161",
+              "P30": "101.86249196661244",
+              "Q30": "106.70332284928068",
+              "R30": "105.787431958863",
+              "S30": "101.69865378669225",
+              "T30": "99.985431980943034",
+              "U30": "99.272593872837305"
+            }
+          },
+          {
+            "sheet": "NGDP (2)",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "2342.5639999999999",
+              "P30": "2497.0793349999999",
+              "Q30": "2542.0240410000001",
+              "R30": "2628.0144100000002",
+              "S30": "2713.2565300000001",
+              "T30": "2816.6626660000002",
+              "U30": "2927.4033030000001"
+            }
+          },
+          {
+            "sheet": "UKGDP (2)",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "7.5249103788767924",
+              "P30": "4.2146929871714311",
+              "Q30": "-1.4281759954235085",
+              "R30": "1.3065685793449022",
+              "S30": "2.6391556574681729",
+              "T30": "2.654254472131945",
+              "U30": "2.2354576991708397"
+            }
+          },
+          {
+            "sheet": "£PSNB",
+            "label_cell": "A102",
+            "raw_label": "November 2022",
+            "cells": {
+              "A102": "November 2022",
+              "BA102": "133.27199999999999",
+              "BB102": "177.03391923297974",
+              "BC102": "140.02807449614903",
+              "BD102": "84.326581987641745",
+              "BE102": "76.915010221239271",
+              "BF102": "80.345397634826071",
+              "BG102": "69.197738504808768"
+            }
+          },
+          {
+            "sheet": "PSNB",
+            "label_cell": "A91",
+            "raw_label": "November 2022",
+            "cells": {
+              "A91": "November 2022",
+              "AU91": "5.689150862046886",
+              "AV91": "7.0896393539286464",
+              "AW91": "5.5085267581129465",
+              "AX91": "3.208756453798963",
+              "AY91": "2.8347857775629959",
+              "AZ91": "2.8525033758808682",
+              "BA91": "2.3637924584526839"
+            }
+          },
+          {
+            "sheet": "£PSCR",
+            "label_cell": "A71",
+            "raw_label": "November 2022",
+            "cells": {
+              "A71": "November 2022",
+              "AH71": "914.00383284094994",
+              "AI71": "1004.8584980331459",
+              "AJ71": "1058.746066071956",
+              "AK71": "1096.0148937145693",
+              "AL71": "1122.2861121801159",
+              "AM71": "1159.3656530511234",
+              "AN71": "1201.9515454375608"
+            }
+          },
+          {
+            "sheet": "PSCR",
+            "label_cell": "A71",
+            "raw_label": "November 2022",
+            "cells": {
+              "A71": "November 2022",
+              "AH71": "39.017240632100126",
+              "AI71": "40.241352525275133",
+              "AJ71": "41.649726713656833",
+              "AK71": "41.705056469403807",
+              "AL71": "41.363066844995885",
+              "AM71": "41.160969222401143",
+              "AN71": "41.05862503488337"
+            }
+          },
+          {
+            "sheet": "£TME",
+            "label_cell": "A71",
+            "raw_label": "November 2022",
+            "cells": {
+              "A71": "November 2022",
+              "AH71": "1047.2760000000003",
+              "AI71": "1181.8924172661254",
+              "AJ71": "1198.7741405681049",
+              "AK71": "1180.341475702211",
+              "AL71": "1199.2011224013552",
+              "AM71": "1239.7110506859497",
+              "AN71": "1271.1492839423695"
+            }
+          },
+          {
+            "sheet": "TME",
+            "label_cell": "A71",
+            "raw_label": "November 2022",
+            "cells": {
+              "A71": "November 2022",
+              "AH71": "44.706398629877356",
+              "AI71": "47.330991879203772",
+              "AJ71": "47.158253471769775",
+              "AK71": "44.913812923202769",
+              "AL71": "44.197852622558877",
+              "AM71": "44.013472598282007",
+              "AN71": "43.422417493336056"
+            }
+          },
+          {
+            "sheet": "CACB",
+            "label_cell": "A55",
+            "raw_label": "November 2022",
+            "cells": {
+              "A55": "November 2022",
+              "Z55": "4.182212895224577",
+              "AA55": "4.9789012829348396",
+              "AB55": "1.1117259183212651",
+              "AC55": "-1.1905324412078468",
+              "AD55": "-0.75394352669540665",
+              "AE55": "8.5238014052967381E-2",
+              "AF55": "0.11332811153913123"
+            }
+          },
+          {
+            "sheet": "CAPSNB",
+            "label_cell": "A45",
+            "raw_label": "November 2022",
+            "cells": {
+              "A45": "November 2022",
+              "W45": "6.5328850646935868",
+              "X45": "7.4879386742581202",
+              "Y45": "4.0845552306202073",
+              "Z45": "1.5064687739493419",
+              "AA45": "1.7595089287171857",
+              "AB45": "2.4247413438059389",
+              "AC45": "2.2854497937197165"
+            }
+          },
+          {
+            "sheet": "PSNFL",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "84.892294392804175",
+              "P30": "89.022049741318938",
+              "Q30": "91.981603945753747",
+              "R30": "91.273902686384147",
+              "S30": "90.552622862150145",
+              "T30": "89.463500202363633",
+              "U30": "87.972541620337026"
+            }
+          },
+          {
+            "sheet": "PSND",
+            "label_cell": "A45",
+            "raw_label": "November 2022",
+            "cells": {
+              "A45": "November 2022",
+              "W45": "97.423344342052161",
+              "X45": "101.86249196661244",
+              "Y45": "106.70332284928068",
+              "Z45": "105.787431958863",
+              "AA45": "101.69865378669225",
+              "AB45": "99.985431980943034",
+              "AC45": "99.272593872837305"
+            }
+          },
+          {
+            "sheet": "PSNI",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "2.3506721694690089",
+              "P30": "2.5090373913232806",
+              "Q30": "2.9728293122989422",
+              "R30": "2.6970012151571887",
+              "S30": "2.5134524554125921",
+              "T30": "2.3395033297529717",
+              "U30": "2.1721216821805851"
+            }
+          },
+          {
+            "sheet": "£CB",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "78.206000000000003",
+              "P30": "114.381265026823",
+              "Q30": "64.458038679614944",
+              "R30": "13.449001415435728",
+              "S30": "8.7185973463117623",
+              "T30": "14.449480775847245",
+              "U30": "5.6109766354751631"
+            }
+          },
+          {
+            "sheet": "CB",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "3.3384786925778758",
+              "P30": "4.5806019626053658",
+              "Q30": "2.5356974458140042",
+              "R30": "0.51175523864177463",
+              "S30": "0.32133332215040356",
+              "T30": "0.51300004612789663",
+              "U30": "0.19167077627209889"
+            }
+          },
+          {
+            "sheet": "IT",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "224.99199999999999",
+              "P30": "247.51583147763986",
+              "Q30": "262.95265907728799",
+              "R30": "277.8109671015921",
+              "S30": "288.54211407900056",
+              "T30": "302.91196970299001",
+              "U30": "319.22322487970979"
+            }
+          },
+          {
+            "sheet": "SA IT",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "37.029000000000003",
+              "P30": "40.840086938459471",
+              "Q30": "43.410422642455849",
+              "R30": "51.20908690796297",
+              "S30": "53.859672965590285",
+              "T30": "56.997698859909399",
+              "U30": "60.843180709525043"
+            }
+          },
+          {
+            "sheet": "PAYE IT",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "192.60599999999999",
+              "P30": "211.57332043374569",
+              "Q30": "224.89489469091893",
+              "R30": "232.13204771802103",
+              "S30": "240.07558385546528",
+              "T30": "251.31343484835503",
+              "U30": "264.19483351208868"
+            }
+          },
+          {
+            "sheet": "NICS",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "159.69800000000001",
+              "P30": "174.60082348543796",
+              "Q30": "168.46275851624625",
+              "R30": "171.12612248178914",
+              "S30": "175.72756822321574",
+              "T30": "181.74002871134962",
+              "U30": "188.35121485216968"
+            }
+          },
+          {
+            "sheet": "HSC",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022"
+            }
+          },
+          {
+            "sheet": "VAT",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "142.554",
+              "P30": "156.73423360835497",
+              "Q30": "158.14896492872344",
+              "R30": "162.24832534680723",
+              "S30": "167.43749682263388",
+              "T30": "171.43410741511804",
+              "U30": "177.67901851706549"
+            }
+          },
+          {
+            "sheet": "Alcohol",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "13.178999999999998",
+              "P30": "12.560726820339607",
+              "Q30": "13.664162192027916",
+              "R30": "14.178047812363069",
+              "S30": "14.670741901677047",
+              "T30": "15.254294826183155",
+              "U30": "15.968703930469543"
+            }
+          },
+          {
+            "sheet": "Onshore",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "62.725000000000001",
+              "P30": "65.729808052139916",
+              "Q30": "78.551182223811395",
+              "R30": "90.005694780905955",
+              "S30": "95.003373015351613",
+              "T30": "98.966170118129881",
+              "U30": "101.43000705423931"
+            }
+          },
+          {
+            "sheet": "Oilandgas",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "2.569",
+              "P30": "14.93943377260659",
+              "Q30": "20.739954954022068",
+              "R30": "15.420428654101809",
+              "S30": "11.297336663355425",
+              "T30": "10.234574684315502",
+              "U30": "7.998733430977655"
+            }
+          },
+          {
+            "sheet": "Fuel",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "25.943000000000001",
+              "P30": "25.019070026211278",
+              "Q30": "30.205987433304504",
+              "R30": "30.210666773393676",
+              "S30": "29.525756600771583",
+              "T30": "29.087534963999012",
+              "U30": "27.918058697054047"
+            }
+          },
+          {
+            "sheet": "Business",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "25.353000000000002",
+              "P30": "28.457999999999998",
+              "Q30": "30.344003516110817",
+              "R30": "35.241589146127517",
+              "S30": "35.431748905843428",
+              "T30": "35.646495998230556",
+              "U30": "35.903337939854211"
+            }
+          },
+          {
+            "sheet": "CGT",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "15.263",
+              "P30": "15.875748013433",
+              "Q30": "14.461793167637209",
+              "R30": "13.288522061317302",
+              "S30": "14.216136486945512",
+              "T30": "15.759552400751016",
+              "U30": "17.904929829228362"
+            }
+          },
+          {
+            "sheet": "IHT",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "6.08",
+              "P30": "6.722999999899999",
+              "Q30": "6.7635133391392666",
+              "R30": "6.694320108264173",
+              "S30": "6.8349406852231862",
+              "T30": "7.2818083929642237",
+              "U30": "7.8351354306232075"
+            }
+          },
+          {
+            "sheet": "PTT",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "15.417",
+              "P30": "17.144627832626497",
+              "Q30": "12.562166921185391",
+              "R30": "12.388950094918048",
+              "S30": "14.680254596552722",
+              "T30": "17.850600887478016",
+              "U30": "20.194504917192557"
+            }
+          },
+          {
+            "sheet": "Shares",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "4.3710000000000004",
+              "P30": "4.0486514734399304",
+              "Q30": "4.0185903830211771",
+              "R30": "4.126171442596771",
+              "S30": "4.2333392350350785",
+              "T30": "4.3677275154913637",
+              "U30": "4.5074744896059364"
+            }
+          },
+          {
+            "sheet": "Tobacco",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "10.191000000000001",
+              "P30": "10.730069764311535",
+              "Q30": "11.423983106392376",
+              "R30": "11.183023260826445",
+              "S30": "10.698163080269367",
+              "T30": "10.429560751434535",
+              "U30": "10.337110408147279"
+            }
+          },
+          {
+            "sheet": "Spirits",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "4.4409999999999998",
+              "P30": "4.1830401471255785",
+              "Q30": "4.6773258613927284",
+              "R30": "4.966273901677611",
+              "S30": "5.1747629431331061",
+              "T30": "5.4526519693241413",
+              "U30": "5.7636284049047486"
+            }
+          },
+          {
+            "sheet": "Wine",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "4.6950000000000003",
+              "P30": "4.4162784012160898",
+              "Q30": "4.8436386568594951",
+              "R30": "4.9809152761858702",
+              "S30": "5.0923471456822265",
+              "T30": "5.1985259235992389",
+              "U30": "5.3709175789053125"
+            }
+          },
+          {
+            "sheet": "Beercider",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "4.0430000000000001",
+              "P30": "3.9614082719979375",
+              "Q30": "4.1431976737756937",
+              "R30": "4.2308586344995875",
+              "S30": "4.4036318128617138",
+              "T30": "4.603116933259777",
+              "U30": "4.8341579466594826"
+            }
+          },
+          {
+            "sheet": "VED",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "7.1",
+              "P30": "7.2469910532036694",
+              "Q30": "7.9353237770234495",
+              "R30": "7.8101843522329641",
+              "S30": "7.9972213640927237",
+              "T30": "8.2296572908200076",
+              "U30": "8.8041591513004605"
+            }
+          },
+          {
+            "sheet": "VATrefunds",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "22.43",
+              "P30": "22.96898802008856",
+              "Q30": "24.202753916868716",
+              "R30": "24.278547396984109",
+              "S30": "25.087388341333913",
+              "T30": "26.326724801320491",
+              "U30": "27.269926455208164"
+            }
+          },
+          {
+            "sheet": "Council",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "39.969000000000001",
+              "P30": "42.037801113692417",
+              "Q30": "44.210318968738775",
+              "R30": "46.461329664223243",
+              "S30": "48.897834473092686",
+              "T30": "51.446182994327195",
+              "U30": "54.128927433454329"
+            }
+          },
+          {
+            "sheet": "APD",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "1.1890000000000001",
+              "P30": "3.4890181140496033",
+              "Q30": "3.8296759297141296",
+              "R30": "4.2750913984738856",
+              "S30": "4.4616338939983882",
+              "T30": "4.6866495493901335",
+              "U30": "4.9930918866658702"
+            }
+          },
+          {
+            "sheet": "IPT",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "6.7919999999999998",
+              "P30": "7.4372494629785288",
+              "Q30": "7.7402698639362741",
+              "R30": "7.7521630896253093",
+              "S30": "7.7224943740094627",
+              "T30": "7.80941591016978",
+              "U30": "7.9235648810819699"
+            }
+          },
+          {
+            "sheet": "CCL",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "1.9470000000000001",
+              "P30": "2.1236253937345579",
+              "Q30": "2.0581785479806149",
+              "R30": "2.0900860182202958",
+              "S30": "2.2231259022087988",
+              "T30": "2.3220569760202858",
+              "U30": "2.2971750531207205"
+            }
+          },
+          {
+            "sheet": "Bank",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "1.341",
+              "P30": "1.2958084556797784",
+              "Q30": "1.2534257623105132",
+              "R30": "1.2099505787433076",
+              "S30": "1.1981040419064468",
+              "T30": "1.1895189462842104",
+              "U30": "1.1828791680281476"
+            }
+          },
+          {
+            "sheet": "Licence",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "3.8319999999999999",
+              "P30": "3.7842000000000002",
+              "Q30": "3.7524000000000002",
+              "R30": "3.826871016760041",
+              "S30": "3.8103022169754133",
+              "T30": "3.8517797892527565",
+              "U30": "3.9250986574389715"
+            }
+          },
+          {
+            "sheet": "ETS",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "1.036",
+              "P30": "6.0858720461805254",
+              "Q30": "6.0500120364089138",
+              "R30": "5.9213622594902722",
+              "S30": "5.8433872237387465",
+              "T30": "5.6378677557229624",
+              "U30": "5.4713200692989004"
+            }
+          },
+          {
+            "sheet": "EGL",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "P30": "1.0371790663854989",
+              "Q30": "4.0736671747502546",
+              "R30": "3.4438492589078469",
+              "S30": "2.1945347808776541",
+              "T30": "1.9334379186664166",
+              "U30": "1.5328645097589224"
+            }
+          },
+          {
+            "sheet": "CBAM",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022"
+            }
+          },
+          {
+            "sheet": "Vapes",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022"
+            }
+          },
+          {
+            "sheet": "Scotland",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "0.92414038830248457",
+              "P30": "0.96531657547150884",
+              "Q30": "0.7792154588986373",
+              "R30": "0.7564362302555252",
+              "S30": "0.82937689703326301",
+              "T30": "0.91702012017281509",
+              "U30": "1.0297696656384618"
+            }
+          },
+          {
+            "sheet": "RDEL",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "413.760448",
+              "P30": "415.47497423494411",
+              "Q30": "419.68700688438969",
+              "R30": "422.00137328095701",
+              "S30": "430.32555692311388",
+              "T30": "439.94670740392792",
+              "U30": "452.6674664823604"
+            }
+          },
+          {
+            "sheet": "CDEL",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "76.989229000000009",
+              "P30": "88.814115999999999",
+              "Q30": "94.447102944360509",
+              "R30": "94.722329242949357",
+              "S30": "95.604873065570359",
+              "T30": "96.017646115378568",
+              "U30": "96.197898874063284"
+            }
+          },
+          {
+            "sheet": "Total welfare",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "245.22493700973925",
+              "P30": "260.84526879381571",
+              "Q30": "292.32207589657884",
+              "R30": "306.03752492505691",
+              "S30": "314.78505770682557",
+              "T30": "320.71586188434782",
+              "U30": "327.49924695711678"
+            }
+          },
+          {
+            "sheet": "Welfare in",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "123.9714152721964",
+              "P30": "128.49260966077651",
+              "Q30": "139.74971786744294",
+              "R30": "148.7805909051813",
+              "S30": "149.73596794790137",
+              "T30": "150.89291943719721",
+              "U30": "154.90712953782668"
+            }
+          },
+          {
+            "sheet": "Welfare out",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "121.25352173754287",
+              "P30": "132.35265913303917",
+              "Q30": "152.5723580291359",
+              "R30": "157.25693401987559",
+              "S30": "165.04908975892417",
+              "T30": "169.82294244715058",
+              "U30": "172.5921174192901"
+            }
+          },
+          {
+            "sheet": "LASFEcurr",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "45.569437865720232",
+              "P30": "58.744393261547074",
+              "Q30": "59.685387362518497",
+              "R30": "64.205783633247052",
+              "S30": "65.275357602095951",
+              "T30": "68.006913790302974",
+              "U30": "70.25786822551963"
+            }
+          },
+          {
+            "sheet": "LASFEcap",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "11.361851474042663",
+              "P30": "10.945294210841974",
+              "Q30": "10.849027520673921",
+              "R30": "9.5817541434090874",
+              "S30": "9.6353271893503667",
+              "T30": "9.6390606770898781",
+              "U30": "9.7703961743555663"
+            }
+          },
+          {
+            "sheet": "PSDebtint",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "73.185999999999993",
+              "P30": "140.81659668036778",
+              "Q30": "129.71833997949372",
+              "R30": "104.54559095956787",
+              "S30": "100.02956129213111",
+              "T30": "119.30603192687869",
+              "U30": "126.72142307671642"
+            }
+          },
+          {
+            "sheet": "Debtint",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "69.878",
+              "P30": "115.71188071286693",
+              "Q30": "86.882905812175096",
+              "R30": "65.581933007549367",
+              "S30": "64.743456827372881",
+              "T30": "86.857720388206687",
+              "U30": "96.155024939339242"
+            }
+          },
+          {
+            "sheet": "APF",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "-15.940872221614333",
+              "P30": "4.659253212510702",
+              "Q30": "21.5673719466559",
+              "R30": "16.839999999999996",
+              "S30": "12.279999999999998",
+              "T30": "8.5300000000000029",
+              "U30": "5.6999999999999975"
+            }
+          },
+          {
+            "sheet": "Netdebtint",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "53.937127778385666",
+              "P30": "120.37113392537762",
+              "Q30": "108.45027775883099",
+              "R30": "82.42193300754937",
+              "S30": "77.023456827372883",
+              "T30": "95.387720388206688",
+              "U30": "101.85502493933924"
+            }
+          },
+          {
+            "sheet": "PCDebtint",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "0.127",
+              "P30": "0.16800000000000001",
+              "Q30": "0.16800000000000001",
+              "R30": "0.16800000000000001",
+              "S30": "0.16800000000000001",
+              "T30": "0.16800000000000001",
+              "U30": "0.16800000000000001"
+            }
+          },
+          {
+            "sheet": "Pensions",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "3.2959063498162942",
+              "P30": "3.2571153059336124",
+              "Q30": "6.182482810242302",
+              "R30": "8.3191475748994748",
+              "S30": "8.8396026906228506",
+              "T30": "8.1692671045648453",
+              "U30": "8.153574289041801"
+            }
+          },
+          {
+            "sheet": "EU",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "8.3148336934557889",
+              "P30": "8.8099245910697448",
+              "Q30": "6.4000942912916239",
+              "R30": "1.0902591610250443",
+              "S30": "1.3686599869151133",
+              "T30": "0.75747826927896422",
+              "U30": "0.40454315007519026"
+            }
+          },
+          {
+            "sheet": "PCcapex",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "11.089385",
+              "P30": "10.073768023352299",
+              "Q30": "11.162042881242794",
+              "R30": "11.319287968388263",
+              "S30": "11.296914721505093",
+              "T30": "11.338861223681846",
+              "U30": "11.457494925803887"
+            }
+          },
+          {
+            "sheet": "NRcap",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022"
+            }
+          },
+          {
+            "sheet": "NRcur",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022"
+            }
+          },
+          {
+            "sheet": "Ctaxcreds",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "7.9683285001217463",
+              "P30": "9.5735312349636974",
+              "Q30": "10.181255045880631",
+              "R30": "10.156362656040573",
+              "S30": "10.465611516115001",
+              "T30": "11.178284399416112",
+              "U30": "11.945535352554923"
+            }
+          },
+          {
+            "sheet": "BBCcur",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "3.8836322938500003",
+              "P30": "3.8836322938500003",
+              "Q30": "4.1145028366900007",
+              "R30": "4.3765028366899985",
+              "S30": "4.2926028366900004",
+              "T30": "4.4353028366900009",
+              "U30": "4.6530160058136332"
+            }
+          },
+          {
+            "sheet": "Lotterycur",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "1.3894169999999999",
+              "P30": "1.3894169999999999",
+              "Q30": "1.4258029999999999",
+              "R30": "1.36375",
+              "S30": "1.349526",
+              "T30": "1.243207",
+              "U30": "1.243207"
+            }
+          },
+          {
+            "sheet": "Lotterycap",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "0.46282899999999999",
+              "P30": "0.39408599999999999",
+              "Q30": "0.392291",
+              "R30": "0.39291899999999996",
+              "S30": "0.392428",
+              "T30": "0.37181000000000003",
+              "U30": "0.37181000000000003"
+            }
+          },
+          {
+            "sheet": "Studentloans",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "12.739809248883098",
+              "P30": "2.5096858110997746",
+              "Q30": "10.595951845178472",
+              "R30": "9.3776796984140773",
+              "S30": "8.2389148034777051",
+              "T30": "7.705202557622898",
+              "U30": "7.9483532516396069"
+            }
+          },
+          {
+            "sheet": "Fundedpensions",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "20.322697188785103",
+              "P30": "21.430373517529588",
+              "Q30": "22.646682260115881",
+              "R30": "23.229195069026296",
+              "S30": "23.841401494581234",
+              "T30": "24.734704949351922",
+              "U30": "25.164482990455369"
+            }
+          },
+          {
+            "sheet": "GGIpensions",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "1.0523459312853356",
+              "P30": "0.79688501757107288",
+              "Q30": "0.83652794223446036",
+              "R30": "0.8602352509286848",
+              "S30": "0.88453923233128418",
+              "T30": "0.91231660587454178",
+              "U30": "0.94390960984782624"
+            }
+          },
+          {
+            "sheet": "Taxlit",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "0",
+              "P30": "0.87597000000000014",
+              "Q30": "1.0004139999999999",
+              "R30": "1.0004139999999999",
+              "S30": "0.82812333333333332",
+              "T30": "0.82812333333333332",
+              "U30": "0.82812333333333332"
+            }
+          },
+          {
+            "sheet": "GGdepreciation",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "47.954000000000001",
+              "P30": "50.156901548386287",
+              "Q30": "52.409893918144355",
+              "R30": "54.631644528043246",
+              "S30": "56.611702650267119",
+              "T30": "58.739800530987615",
+              "U30": "61.072755520087917"
+            }
+          },
+          {
+            "sheet": "NGDP",
+            "label_cell": "A86",
+            "raw_label": "November 2022",
+            "cells": {
+              "A86": "November 2022",
+              "AP86": "2342.5639999999999",
+              "AQ86": "2497.0793349999999",
+              "AR86": "2542.0240410000001",
+              "AS86": "2628.0144100000002",
+              "AT86": "2713.2565300000001",
+              "AU86": "2816.6626660000002",
+              "AV86": "2927.4033030000001"
+            }
+          },
+          {
+            "sheet": "UKGDP",
+            "label_cell": "A84",
+            "raw_label": "November 2022",
+            "cells": {
+              "A84": "November 2022",
+              "AO84": "7.5249103788767924",
+              "AP84": "4.2146929871714311",
+              "AQ84": "-1.4281759954235085",
+              "AR84": "1.3065685793449022",
+              "AS84": "2.6391556574681729",
+              "AT84": "2.654254472131945",
+              "AU84": "2.2354576991708397"
+            }
+          },
+          {
+            "sheet": "Outputgap",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "P30": "0.97666601011461296",
+              "Q30": "-2.4826829347586141",
+              "R30": "-2.5489290984667292",
+              "S30": "-1.4979842248982465",
+              "T30": "-0.54574336232843734",
+              "U30": "-4.1821703195438431E-2"
+            }
+          },
+          {
+            "sheet": "Demand",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "8.6241413169833017",
+              "P30": "5.9334814038051187",
+              "Q30": "-2.3045279742646696",
+              "R30": "1.1960604580699252",
+              "S30": "2.5345350658554811",
+              "T30": "2.5337160166183148",
+              "U30": "2.1495882115451392"
+            }
+          },
+          {
+            "sheet": "HHconsumption",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "6.2219531448067578",
+              "P30": "4.7216063576677403",
+              "Q30": "-1.9233022233219543",
+              "R30": "1.0595121875523361",
+              "S30": "2.4775683600792853",
+              "T30": "2.1806683380924952",
+              "U30": "1.9428705086979914"
+            }
+          },
+          {
+            "sheet": "Govconsumption",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "12.630684987070939",
+              "P30": "2.1181024257061365",
+              "Q30": "4.8351451660735956",
+              "R30": "1.5533650979895341",
+              "S30": "0.8329312540810152",
+              "T30": "1.6103265596920435",
+              "U30": "1.5710593669882922"
+            }
+          },
+          {
+            "sheet": "Fixedinv",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "5.5622960537614841",
+              "P30": "4.512481917113198",
+              "Q30": "-1.3918333499388313",
+              "R30": "1.2134506688443514",
+              "S30": "4.673405889715454",
+              "T30": "4.8809818367784752",
+              "U30": "3.3756439518695336"
+            }
+          },
+          {
+            "sheet": "Businessinv",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "-0.11743182150363296",
+              "P30": "4.9362609748713204",
+              "Q30": "-2.1182073426038839",
+              "R30": "3.0760869469314445",
+              "S30": "8.2018648340159039",
+              "T30": "6.6442327378941846",
+              "U30": "4.7610331485183011"
+            }
+          },
+          {
+            "sheet": "Empl",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "32.406750000000002",
+              "P30": "32.731202449999998",
+              "Q30": "32.76531155",
+              "R30": "32.706859225000002",
+              "S30": "32.944048424999998",
+              "T30": "33.284964724999995",
+              "U30": "33.550641075000009"
+            }
+          },
+          {
+            "sheet": "Govtinv",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "7.2483095122295671",
+              "P30": "3.7678668500124246",
+              "Q30": "10.655601485152921",
+              "R30": "-0.84532884810362141",
+              "S30": "-2.239805166119746",
+              "T30": "-1.3718147179824558",
+              "U30": "-1.6338479357206004"
+            }
+          },
+          {
+            "sheet": "Privatedwellingsinv",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "15.655943223832391",
+              "P30": "3.9356310172656395",
+              "Q30": "-7.3104168365269899",
+              "R30": "-0.85136906871452478",
+              "S30": "2.8535077006581533",
+              "T30": "5.5788438927250938",
+              "U30": "3.7391862223685957"
+            }
+          },
+          {
+            "sheet": "Inventories",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "0.90989480471156781",
+              "P30": "1.6611807702168735",
+              "Q30": "-1.6140331278956457",
+              "R30": "9.3009380981922858E-3",
+              "S30": "3.320361729502809E-2",
+              "T30": "-1.1073379992796555E-3",
+              "U30": "3.0392167182577926E-2"
+            }
+          },
+          {
+            "sheet": "Exports",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "-0.30059712993957266",
+              "P30": "5.1250134776810397",
+              "Q30": "-2.7859480970482631",
+              "R30": "0.144730868809817",
+              "S30": "1.1261883076793877",
+              "T30": "0.53871521741148953",
+              "U30": "0.23381807462932169"
+            }
+          },
+          {
+            "sheet": "Imports",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "2.7809076074287065",
+              "P30": "11.151788756984526",
+              "Q30": "-5.5221684854715569",
+              "R30": "-0.15323104827243972",
+              "S30": "0.86407175325626806",
+              "T30": "0.24480240407580567",
+              "U30": "4.017178980815217E-2"
+            }
+          },
+          {
+            "sheet": "Currentacc£",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "-45.633000000000003",
+              "P30": "-144.53637039999998",
+              "Q30": "-132.6828519",
+              "R30": "-114.205611",
+              "S30": "-100.00869659999999",
+              "T30": "-95.870989199999997",
+              "U30": "-94.023535499999994"
+            }
+          },
+          {
+            "sheet": "Currentacc%GDP",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "-2.0043351934695384",
+              "P30": "-5.8342559195774788",
+              "Q30": "-5.2482915436797342",
+              "R30": "-4.3864378657659833",
+              "S30": "-3.713939825358143",
+              "T30": "-3.4381397258291493",
+              "U30": "-3.2416529784178998"
+            }
+          },
+          {
+            "sheet": "CPI",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "2.5882219500718229",
+              "P30": "9.1494468241667182",
+              "Q30": "7.3558308236357117",
+              "R30": "0.62762745056157421",
+              "S30": "-0.77520657641840796",
+              "T30": "0.17288173754161917",
+              "U30": "1.7158885150351688"
+            }
+          },
+          {
+            "sheet": "RPI",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "4.0452569031158125",
+              "P30": "11.636903442622959",
+              "Q30": "10.710615888928011",
+              "R30": "1.4955779746897546",
+              "S30": "-0.35319974581126123",
+              "T30": "0.96973912449365152",
+              "U30": "2.5721321559330601"
+            }
+          },
+          {
+            "sheet": "Deflator",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "0.14127619496115962",
+              "P30": "4.4069733636065145",
+              "Q30": "3.5342104021511389",
+              "R30": "1.653231797854926",
+              "S30": "0.7684119355967356",
+              "T30": "0.87183330997748776",
+              "U30": "1.7434283496292613"
+            }
+          },
+          {
+            "sheet": "Prod",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "0.89358939095893763",
+              "P30": "0.25706374868874615",
+              "Q30": "-0.78057724327798006",
+              "R30": "0.91589757096441904",
+              "S30": "1.5216643001711105",
+              "T30": "1.5681884240433597",
+              "U30": "1.3975533602190282"
+            }
+          },
+          {
+            "sheet": "Wages&Salaries",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "6.2152476349471408",
+              "P30": "7.1632400895274673",
+              "Q30": "4.2537902429260255",
+              "R30": "1.4386852549772344",
+              "S30": "2.1317436789185962",
+              "T30": "2.7096959254597097",
+              "U30": "3.201583452750012"
+            }
+          },
+          {
+            "sheet": "Earnings",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "5.2530931906025202",
+              "P30": "5.9431879554450617",
+              "Q30": "4.1848232683472375",
+              "R30": "1.7208186730395703",
+              "S30": "1.665341399788467",
+              "T30": "1.9279271406576814",
+              "U30": "2.6571719347663336"
+            }
+          },
+          {
+            "sheet": "Unemplrate",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "4.4929084545956899",
+              "P30": "3.6431121388952032",
+              "Q30": "4.0622473251752593",
+              "R30": "4.8696031560643638",
+              "S30": "4.7301936741988149",
+              "T30": "4.3364334907441844",
+              "U30": "4.1539833611426253"
+            }
+          },
+          {
+            "sheet": "RHHDI",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "1.0727534073394107",
+              "P30": "-3.1442224142787634",
+              "Q30": "-3.4366190008414566",
+              "R30": "1.1628495478984258",
+              "S30": "2.9074873288753356",
+              "T30": "2.2712878855196017",
+              "U30": "1.9558269851593701"
+            }
+          },
+          {
+            "sheet": "Savingratio",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "12.475743500275719",
+              "P30": "6.3523398806622389",
+              "Q30": "4.6806501956768489",
+              "R30": "4.7914459416557902",
+              "S30": "5.2920354533335763",
+              "T30": "5.4401592354764308",
+              "U30": "5.4123111456458464"
+            }
+          },
+          {
+            "sheet": "Houseprices",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "9.1561711206868743",
+              "P30": "10.67694103747896",
+              "Q30": "-1.2267522769737749",
+              "R30": "-5.6635581150423109",
+              "S30": "1.2190268711673502",
+              "T30": "3.0462163348501825",
+              "U30": "3.5133090286952218"
+            }
+          },
+          {
+            "sheet": "HHnetworthtoincome",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "824.80232514296483",
+              "P30": "762.92067112028576",
+              "Q30": "720.01717058179361",
+              "R30": "702.39271364085096",
+              "S30": "702.80938939197858",
+              "T30": "706.11674411571687",
+              "U30": "703.47563319513142"
+            }
+          },
+          {
+            "sheet": "WorldGDP",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "5.5922609231226224",
+              "P30": "3.1133886120621725",
+              "Q30": "2.6539258469485301",
+              "R30": "4.5562227335608014",
+              "S30": "4.4419449267443722",
+              "T30": "3.6720692411943583",
+              "U30": "3.2638353958634783"
+            }
+          },
+          {
+            "sheet": "Worldtrade",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "9.2140356741393514",
+              "P30": "5.5054747829049973",
+              "Q30": "2.9250132620252378",
+              "R30": "5.8388872833087868",
+              "S30": "4.6093111612595887",
+              "T30": "3.5924652941262942",
+              "U30": "3.8810966255080492"
+            }
+          },
+          {
+            "sheet": "EuroGDP",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "5.2169169747092514",
+              "P30": "3.0744316390139552",
+              "Q30": "0.91967830163018605",
+              "R30": "2.9559849944684311",
+              "S30": "2.7535296100206299",
+              "T30": "2.8295374400999531",
+              "U30": "2.8295374400999709"
+            }
+          },
+          {
+            "sheet": "UKexportmarkets",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "9.1230920353749578",
+              "P30": "5.3267496694124894",
+              "Q30": "0.92208215091027501",
+              "R30": "5.2377830208807596",
+              "S30": "5.3358351164774609",
+              "T30": "3.1627141858238561",
+              "U30": "3.27263663854378"
+            }
+          },
+          {
+            "sheet": "Non-oilPNFCprofits",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "4.9727503738142165",
+              "P30": "9.3730427455881671",
+              "Q30": "-4.8076241874948522",
+              "R30": "1.036268530096951",
+              "S30": "4.3336043983291272",
+              "T30": "4.9713901313122699",
+              "U30": "4.6730253618260331"
+            }
+          },
+          {
+            "sheet": "Oilprices($)",
+            "label_cell": "A30",
+            "raw_label": "November 2022**",
+            "cells": {
+              "A30": "November 2022**",
+              "O30": "70.831666666666663",
+              "P30": "100.5343373015873",
+              "Q30": "87.321333333333314",
+              "R30": "79.987333333333325",
+              "S30": "75.727666666666664",
+              "T30": "75.358102613177408",
+              "U30": "76.729741119878256"
+            }
+          },
+          {
+            "sheet": "Oilprices(£)",
+            "label_cell": "A30",
+            "raw_label": "November 2022**",
+            "cells": {
+              "A30": "November 2022**",
+              "O30": "51.478372518381235",
+              "P30": "81.741982940955111",
+              "Q30": "75.916257138532472",
+              "R30": "69.54015397335715",
+              "S30": "65.83684416753151",
+              "T30": "65.51554903101831",
+              "U30": "66.708037253550572"
+            }
+          },
+          {
+            "sheet": "Gas Prices",
+            "label_cell": "A30",
+            "raw_label": "November 2022**",
+            "cells": {
+              "A30": "November 2022**",
+              "O30": "0.91123333333333334",
+              "P30": "2.6437388888888886",
+              "Q30": "3.3982361111111112",
+              "R30": "2.7373500000000002",
+              "S30": "2.0088749999999997",
+              "T30": "1.8429777897515052",
+              "U30": "1.8765229456903914"
+            }
+          },
+          {
+            "sheet": "Equityprices",
+            "label_cell": "A30",
+            "raw_label": "November 2022**",
+            "cells": {
+              "A30": "November 2022**",
+              "O30": "4091.8953208975108",
+              "P30": "3963.5655053269579",
+              "Q30": "3919.932873722556",
+              "R30": "4052.4219316167773",
+              "S30": "4181.3889194691092",
+              "T30": "4342.5018702563375",
+              "U30": "4512.7481882187303"
+            }
+          },
+          {
+            "sheet": "Shorttermrates",
+            "label_cell": "A30",
+            "raw_label": "November 2022***",
+            "cells": {
+              "A30": "November 2022***",
+              "O30": "0.19492500000000001",
+              "P30": "2.4832914034020885",
+              "Q30": "4.773162858876967",
+              "R30": "4.4813087902161808",
+              "S30": "4.0902347551476277",
+              "T30": "3.7999427969471031",
+              "U30": "3.5546472935749547"
+            }
+          },
+          {
+            "sheet": "Gilts",
+            "label_cell": "A30",
+            "raw_label": "November 2022**",
+            "cells": {
+              "A30": "November 2022**",
+              "O30": "0.96196661149484441",
+              "P30": "3.0285601905278536",
+              "Q30": "3.6559082599475894",
+              "R30": "3.7026947977311582",
+              "S30": "3.7209198267862655",
+              "T30": "3.7282637101757814",
+              "U30": "3.7410523875038888"
+            }
+          },
+          {
+            "sheet": "£€rate",
+            "label_cell": "A30",
+            "raw_label": "November 2022**",
+            "cells": {
+              "A30": "November 2022**",
+              "O30": "1.1758",
+              "P30": "1.1597407749999999",
+              "Q30": "1.1424963299999999",
+              "R30": "1.1424963299999999",
+              "S30": "1.1424963299999999",
+              "T30": "1.1424963299999999",
+              "U30": "1.1424963299999999"
+            }
+          },
+          {
+            "sheet": "Nomconsumerspending",
+            "label_cell": "A30",
+            "raw_label": "November 2022",
+            "cells": {
+              "A30": "November 2022",
+              "O30": "8.9655969713742234",
+              "P30": "12.967500515947862",
+              "Q30": "4.5145121586102066",
+              "R30": "1.9110369861103704",
+              "S30": "2.1461707914638639",
+              "T30": "2.6337251478429025",
+              "U30": "3.7523507237694709"
+            }
+          }
+        ]
+      },
+      "status": "obtained",
+      "retrieved_at": "2026-10-11T23:54:53+00:00",
+      "byte_size": 2350760,
+      "sha256": "d69fa5112266c71fff0c74bffe416b7c7c0f663b44e0b87e7a82899d09ba39d5",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sheet_names": [
+        "£PSCR (2)",
+        "£TME (2)",
+        "PSCR (2)",
+        "TME (2)",
+        "£PSNB (2)",
+        "PSNB (2)",
+        "CACB (2)",
+        "CAPSNB (2)",
+        "PSND (2)",
+        "NGDP (2)",
+        "UKGDP (2)",
+        "Index",
+        "Contents",
+        "Aggregates",
+        "£PSNB",
+        "PSNB",
+        "£PSCR",
+        "PSCR",
+        "£TME",
+        "TME",
+        "CACB",
+        "CAPSNB",
+        "PSNFL",
+        "PSND",
+        "PSNI",
+        "£CB",
+        "CB",
+        "Receipts",
+        "IT",
+        "SA IT",
+        "PAYE IT",
+        "NICS",
+        "HSC",
+        "VAT",
+        "Alcohol",
+        "Onshore",
+        "Oilandgas",
+        "Fuel",
+        "Business",
+        "CGT",
+        "IHT",
+        "PTT",
+        "Shares",
+        "Tobacco",
+        "Spirits",
+        "Wine",
+        "Beercider",
+        "VED",
+        "VATrefunds",
+        "Council",
+        "APD",
+        "IPT",
+        "CCL",
+        "Bank",
+        "Licence",
+        "ETS",
+        "EGL",
+        "CBAM",
+        "Vapes",
+        "Scotland",
+        "Spending",
+        "RDEL",
+        "CDEL",
+        "Total welfare",
+        "Welfare in",
+        "Welfare out",
+        "LASFEcurr",
+        "LASFEcap",
+        "PSDebtint",
+        "Debtint",
+        "APF",
+        "Netdebtint",
+        "PCDebtint",
+        "Pensions",
+        "EU",
+        "PCcapex",
+        "NRcap",
+        "NRcur",
+        "Ctaxcreds",
+        "BBCcur",
+        "Lotterycur",
+        "Lotterycap",
+        "Studentloans",
+        "Fundedpensions",
+        "GGIpensions",
+        "Taxlit",
+        "GGdepreciation",
+        "R&D",
+        "SUME",
+        "Economy",
+        "NGDP",
+        "UKGDP",
+        "Outputgap",
+        "Demand",
+        "HHconsumption",
+        "Govconsumption",
+        "Fixedinv",
+        "Businessinv",
+        "Empl",
+        "Govtinv",
+        "Privatedwellingsinv",
+        "Inventories",
+        "Exports",
+        "Imports",
+        "Currentacc£",
+        "Currentacc%GDP",
+        "CPI",
+        "RPI",
+        "Deflator",
+        "Prod",
+        "Wages&Salaries",
+        "Earnings",
+        "Unemplrate",
+        "RHHDI",
+        "Savingratio",
+        "Houseprices",
+        "HHnetworthtoincome",
+        "WorldGDP",
+        "Worldtrade",
+        "EuroGDP",
+        "UKexportmarkets",
+        "Non-oilPNFCprofits",
+        "Oilprices($)",
+        "Oilprices(£)",
+        "Gas Prices",
+        "Equityprices",
+        "Shorttermrates",
+        "Gilts",
+        "£€rate",
+        "Nomconsumerspending",
+        "CC"
+      ],
+      "workbook_properties": {
+        "created": "2012-02-15T14:59:04Z",
+        "modified": "2025-04-02T15:20:55Z"
+      },
+      "original_last_modified": "Wed, 02 Apr 2025 15:23:53 GMT",
+      "failure_reason": null,
+      "attempts": [
+        {
+          "url": "https://web.archive.org/web/20250404155002id_/https://obr.uk/docs/Historical_official_forecasts_database_March_2025.xlsx",
+          "retrieved_at": "2026-10-11T23:54:53+00:00",
+          "http_status": 200,
+          "error": null
+        }
+      ]
+    },
+    {
+      "role": "dwp_benefit_expenditure_caseload",
+      "original_url": "https://assets.publishing.service.gov.uk/media/63a05310d3bf7f375f7c4359/outturn-and-forecast-tables-autumn-statement-2022.xlsx",
+      "archive_capture_url": "https://web.archive.org/web/20250903062039id_/https://assets.publishing.service.gov.uk/media/63a05310d3bf7f375f7c4359/outturn-and-forecast-tables-autumn-statement-2022.xlsx",
+      "archive_timestamp": "20250903062039",
+      "edition": "Outturn and forecast tables: autumn statement 2022; added 2022-12-21",
+      "capture_status": "unknown",
+      "capture_status_evidence": "DWP publication date recorded in research/archive_govuk.md; the later archive capture cannot establish first-release bytes.",
+      "status": "obtained",
+      "retrieved_at": "2026-10-11T23:57:33+00:00",
+      "byte_size": 1259807,
+      "sha256": "2ff7ad1510e080ca3352db190c29a360bdb43e8ee2cb80a92cc69757dd599a1b",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sheet_names": [
+        "Contents",
+        "Notes",
+        "UK_welfare_",
+        "GB_welfare",
+        "Benefit_summary_table",
+        "Table_1a",
+        "Table_1b",
+        "Table_1c",
+        "Table_2a",
+        "Table_2b",
+        "Table_2c",
+        "Table_3a",
+        "Table_3b",
+        "Table_3c",
+        "Table_4",
+        "Non-DWP_Welfare",
+        "Bereavement_benefits",
+        "Carers_Allowance",
+        "Council_Tax_Benefit",
+        "Disability_benefits",
+        "Housing_benefits",
+        "Incapacity_benefits",
+        "Income_Support",
+        "Industrial_injuries_benefits",
+        "Maternity_benefits",
+        "New_Deal_&_Emp_prog_allowances",
+        "Pension_Credit",
+        "Social_Fund",
+        "State_Pension",
+        "Unemployment_benefits",
+        "Universal_Credit_and_equivalent"
+      ],
+      "workbook_properties": {
+        "created": "2022-12-19T12:01:09Z",
+        "modified": "2022-12-19T12:01:24Z"
+      },
+      "original_last_modified": "Mon, 19 Dec 2022 12:03:28 GMT",
+      "failure_reason": null,
+      "attempts": [
+        {
+          "url": "https://web.archive.org/web/20250903062039id_/https://assets.publishing.service.gov.uk/media/63a05310d3bf7f375f7c4359/outturn-and-forecast-tables-autumn-statement-2022.xlsx",
+          "retrieved_at": "2026-10-11T23:57:33+00:00",
+          "http_status": 200,
+          "error": null
+        }
+      ]
+    }
+  ],
+  "collected_at": "2026-10-11",
+  "collector": {
+    "user_agent": "policyengine-scorecard-research/1.0",
+    "archive_replay_mode": "id_",
+    "pause_seconds": 4.0,
+    "max_attempts": 3
+  },
+  "receipt_sha256": "38a2a76143e2503c9300dff232df2afb2d33402e5aec623989af816a4d7a4169"
+}
