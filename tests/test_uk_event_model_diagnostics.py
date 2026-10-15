@@ -376,3 +376,22 @@ def test_integrated_execution_receipt_binds_observations_and_metadata_additions(
     }
     assert receipt["execution_exit_code"] == 0
     assert receipt["semantic_differences"] == []
+
+
+def test_a_plain_run_on_another_engine_is_refused(capsys):
+    # Review of 463fc8d, 3: without --reverify a run on another engine would
+    # stamp 2.89.2 interpretations with the new engine's version.
+    with pytest.raises(SystemExit) as exit_info:
+        diagnostics.main(
+            ["--expect-engine", "2.125.1", "--case", "cgt_main_rate_commencement"]
+        )
+    assert exit_info.value.code == 2
+    assert "use --reverify" in capsys.readouterr().err
+
+
+def test_reverification_starts_from_the_established_record():
+    # A re-verified file has lost the legacy fields to `established`;
+    # re-verifying from it would drop the 2.89.2 interpretation.
+    reverified = [{"id": "x", "engine_version": "2.125.1", "established": {}}]
+    with pytest.raises(ValueError, match="established diagnostics"):
+        diagnostics.reverify(reverified, expect_engine="2.130.1")

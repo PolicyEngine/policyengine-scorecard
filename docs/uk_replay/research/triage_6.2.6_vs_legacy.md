@@ -15,6 +15,13 @@ independently re-verified each of them. The later diagnostic separating run
 (`docs/uk_replay/SEPARATING_RUN.md`, when it lands) tests its "data
 difference" calls with an old-engine-on-new-population decomposition.
 
+Editor's notes. The 6.2.6 replay artifacts it cites at 49f1a5ad are on the
+branch of PR #164, not in this commit's ancestry. Its description of #2140
+("payment resuming when the charge fraction becomes zero") is narrower than
+the installed rule: in 2.125.1 an opted-out family stays opted out only while
+fully charged (`opt_out_charge_share` = 1), so payment resumes as soon as the
+charge share falls below one; see CONSTRUCTION_REVISIONS.md.
+
 ---
 
 Both structural moves are confirmed upstream fixes. The strongest evidence for the other moves is a changed childcare-cost tail among UC families, a much smaller capital-gains input base, and a changed self-employment distribution. LHA and the two UC measures remain only partly attributed.

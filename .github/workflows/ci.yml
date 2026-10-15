@@ -175,6 +175,14 @@ jobs:
       # plus a moving latest.db.gz, so consumers fetch + gunzip instead
       # of rebuilding. Skips with a notice until the
       # SUPABASE_SCORECARD_URL/KEY secrets are set.
+      #
+      # A failed upload is a warning, not a failed run: nothing in this
+      # repository reads the published copy, and the built database is
+      # already attached to the run as an artifact. Every main run from
+      # 6 October 2026 failed here with curl exit 6 (the storage host no
+      # longer resolves; the last upload that worked was 28 September),
+      # which hid whether main was otherwise green. curl stays silent so
+      # the host name in the secret URL is never printed.
       - run: |
           if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
             echo "::notice::Supabase secrets not set — skipping publish"
@@ -182,12 +190,19 @@ jobs:
           fi
           gzip -9 -c scorecard.db > scorecard.db.gz
           for name in "${GITHUB_SHA}.db.gz" "latest.db.gz"; do
+            status=0
             curl -sf -X POST \
               "$SUPABASE_URL/storage/v1/object/scorecard-artifacts/$name" \
               -H "Authorization: Bearer $SUPABASE_KEY" \
               -H "Content-Type: application/gzip" \
               -H "x-upsert: true" \
-              --data-binary @scorecard.db.gz > /dev/null
+              --data-binary @scorecard.db.gz > /dev/null || status=$?
+            if [ "$status" -ne 0 ]; then
+              message="curl exit $status uploading scorecard-artifacts/$name: the published database was not updated. This run's built database is its scorecard-db artifact."
+              echo "::warning title=Supabase publish failed::$message"
+              echo "**Supabase publish failed.** $message" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
             echo "uploaded scorecard-artifacts/$name"
           done
         env:

@@ -17,21 +17,29 @@ Flags (docs/uk_replay/RELEASE_REPLAY.md, "Release differences"):
 * structural: a sign reversal or zero crossing, a changed artifact schema or
   construction orientation;
 * coverage: a counterpart, artifact or source row on one side only, in a
-  year both sides support;
+  year both sides support, or every row of an event replayed on one side only;
 * mapping: changed head variables, channels, definitions or registry digest;
 * support: a year supported on one side only (never also coverage);
 * inertness: an inert in-force construction on one side only;
-* construction: changed executed reform dictionaries or premise checks.
-  A changed current-law value of a touched parameter is context, not a flag.
+* construction: changed executed reform dictionaries or premise checks, or
+  premise records for a measure on one side only. A changed current-law value
+  of a touched parameter is context, not a flag.
+
+Each side is refused before anything is written when its receipts do not
+verify, when its events differ from its NAMESPACE_MANIFEST.json (listed but
+not loaded, or loaded but not listed), or when its CONSTRUCTION_PREMISES.json
+names another engine or another registry than the run.
 
 Invariants: each side uses its receipt-bound registry and staging manifest;
 every inventory artifact is revalidated, and the run's identity, support and
 grid reconcile with regenerated staging rows and tallies. Identical sides
 have no flags. Swapping sides preserves flag sets and mirrors values. Every
-source row on either side appears once at source_row level; coverage requires
-shared year support, and rows incapable of counterparts never get support
-flags. Every flagged record belongs to exactly one measure-year packet,
-including support records. Input ordering cannot change output bytes.
+source row on either side appears once at source_row level. For an event on
+both sides, coverage requires shared year support; an event on one side only
+flags every one of its source rows as coverage. Rows incapable of
+counterparts never get support flags. Every flagged record belongs to exactly
+one measure-year packet, including support records. Input ordering cannot
+change output bytes.
 """
 
 from __future__ import annotations
@@ -1110,6 +1118,29 @@ def render_packet_markdown(name: str, packet: dict) -> str:
     return "\n".join(lines)
 
 
+def premises_note(diff: dict) -> str:
+    """Which construction premises the construction flags rest on."""
+    digests = {side: diff[side]["premises_sha256"] for side in ("base", "head")}
+    if not any(digests.values()):
+        return (
+            "Neither side has construction premises: premise checks were not "
+            "compared, and construction flags come from executed reform "
+            "dictionaries only."
+        )
+    if all(digests.values()):
+        return (
+            f"Construction premises compared: base `{digests['base']}`, "
+            f"head `{digests['head']}`."
+        )
+    present = "base" if digests["base"] else "head"
+    return (
+        f"Construction premises on the {present} side only "
+        f"(`{digests[present]}`): measures they cover carry "
+        f"`premises_on_{present}_only` construction flags, and no premise check "
+        "was compared."
+    )
+
+
 def render_markdown(diff: dict, packet_names: list[str], max_rows: int) -> str:
     base, head = diff["base"]["identity"], diff["head"]["identity"]
     lines = [
@@ -1131,6 +1162,7 @@ def render_markdown(diff: dict, packet_names: list[str], max_rows: int) -> str:
     ]
     for field in sorted(base):
         lines.append(f"| {field} | `{base[field]}` | `{head[field]}` |")
+    lines += ["", premises_note(diff)]
     lines += [
         "",
         "## Flags by event",
