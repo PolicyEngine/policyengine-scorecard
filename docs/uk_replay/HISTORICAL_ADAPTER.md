@@ -1,7 +1,30 @@
 # Historical event registry adapter
 
-Status: proposed design for phase 0, 11 October 2026. This slice changes no
-registry builder, runner or numerical artifact. The policy-world choice and
+Status: the first slice is implemented (15 October 2026); the selection
+interface below remains a design. Spring Statement 2022, Autumn Statement 2022
+and Autumn Budget 2021 have source-accounting registries
+(`data/uk/events/<event>_measures.json`), built by
+`pipeline/build_uk_event_registry.py --event <event>`:
+
+* Every original source cell and fiscal year is accounted, as for the
+  replayed events. `scoring_fys` is the event selector's, which must equal the
+  source's fiscal years, and `calendar_years` is the `fy_start_year.v1`
+  mapping of them (2021–2026 for Spring Statement 2022 and Autumn Budget 2021,
+  2022–2027 for Autumn Statement 2022), not the modern 2023–2030 window.
+* `execution` is `requires_event_population`, bound to the selector's
+  SHA-256. `compute_uk_event` refuses such a registry outright, so no guard,
+  dry run or simulation on the modern certified population stands in for an
+  event population. No measure has a construction yet.
+* The scorecard DB ingest joins only replay registries
+  (`scorecard_db/ingest_obr_pmd.is_replay_registry`). These events' published
+  scores keep the inventory's keys, which can differ by tax head within one
+  measure (the costings lane keys the income tax and NICs rows of a joint
+  threshold freeze separately), until an event can replay. Each registry's
+  measure keys are the inventory's per title
+  (`build_uk_event_registry.inventory_registry_keys`).
+* A replay namespace without results summarises only the replayable events.
+
+The rest of this document is the proposed design for running them. The policy-world choice and
 annualisation bridge were decided under cos d1344 on 15 October 2026
 ([decision record](HISTORICAL_DECISIONS.md)): `published_end_state_same_weights.v1`
 and `fy_start_year.v1`.

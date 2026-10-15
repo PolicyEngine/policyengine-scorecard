@@ -587,6 +587,15 @@ def grid_rows(pairs) -> list[dict]:
     return [{"measure_key": key, "year": year} for key, year in sorted(pairs)]
 
 
+def refuse_unexecutable(registry: dict) -> None:
+    """A registry whose execution needs an event population (a historical
+    event) is never run here: no guards, dry run or simulation on the modern
+    certified population stands in for it."""
+    execution = registry.get("execution") or {}
+    if execution.get("status") == registry_builder.REQUIRES_EVENT_POPULATION:
+        raise ValueError(f"{registry['event_slug']}: {execution['reason']}")
+
+
 def validate_years(requested: list[int], registry: dict) -> list[int]:
     allowed = registry.get("calendar_years")
     if not allowed:
@@ -730,6 +739,7 @@ def main(argv: list[str] | None = None) -> int:
     registry = json.loads(registry_payload)
     validate_event_identity(registry, args.event)
     registry_builder.validate_registry(registry)
+    refuse_unexecutable(registry)
     if (
         not (args.dry_run or args.guards)
         and (args.measures or args.years)

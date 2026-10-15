@@ -45,6 +45,22 @@ EVENTS = {
 AB2025_COSTINGS = ROOT / "data/uk/obr_measure_reforms.yaml"
 AB2025_REGISTRY = ROOT / "data/uk/ab2025_measures.json"
 INVENTORY = ROOT / "data/uk/events/inventory.jsonl"
+# Events whose registries froze their own measure keys before the scorecard
+# DB ingest joined registries to the inventory; every later registry takes
+# the inventory's keys (inventory_registry_keys).
+FROZEN_KEY_EVENTS = (
+    "autumn_budget_2024",
+    "autumn_statement_2023",
+    "spring_budget_2024",
+    "spring_statement_2025",
+    "spring_budget_2023",
+)
+# A historical event has a committed event-vintage selector
+# (docs/uk_replay/EVENT_VINTAGE_SELECTOR.md). It replays only on a certified
+# event population (docs/uk_replay/HISTORICAL_ADAPTER.md), never on the
+# modern certified population.
+SELECTORS = ROOT / "docs/uk_replay/selectors"
+REQUIRES_EVENT_POPULATION = "requires_event_population"
 AB2025_GAPS = {
     "Fuel Duty: Cancel uprating for 2026-27": (
         "The announcement is a within-year path (per the PMD title: the 5p cut extended to 31 August 2026, then 1p, 2p and 2p increases from 1 September 2026, 1 December 2026 and 1 March 2027). The replay executor takes only annual windows read at 1 January (pipeline/compute_uk_event.py annual_reform), which cannot express it, so an annual counterfactual is not guessed. #136 records a dated pre-Budget path from the OBR pre-measures forecast (ab2025__fuel_duty_freeze_extension_2026_27 in data/uk/ab2025_measures.json) for a later part-year construction.",
@@ -292,28 +308,84 @@ def _head(name, variables, channel="tax"):
 
 
 def inventory_registry_keys(event_slug):
-    """Autumn Budget 2025's measure keys are the replay inventory's: #136's
-    key where the inventory records one (existing_registry_key), else the
-    inventory's own measure_key. The scorecard DB ingest joins registry
-    measures to inventory rows on them and keys the published scores by them
+    """Every registry after the five frozen ones takes the replay inventory's
+    measure keys, which the scorecard DB ingest joins registry measures to
+    inventory rows on and keys published scores by
     (scorecard_db/ingest_obr_pmd.py), so any other key would re-key scores
-    that already publish. The five earlier events keep their frozen keys."""
-    if event_slug != "autumn_budget_2025":
+    that already publish.
+
+    A title takes its rows' existing_registry_key (#136's, or the costings
+    lane's) when they share exactly one and no other title uses it; else the
+    inventory's own measure_key, which is unique per title. A title whose
+    rows carry several existing keys (one per tax head) or whose key another
+    title shares therefore keeps the inventory key, and the ingest maps each
+    row to its existing claim."""
+    if event_slug in FROZEN_KEY_EVENTS:
         return {}
-    keys = defaultdict(set)
+    existing, own = defaultdict(set), defaultdict(set)
     with INVENTORY.open() as lines:
         for line in lines:
             row = json.loads(line)
             if row["event_key"] == event_slug:
-                keys[row["measure"].strip()].add(
-                    row.get("existing_registry_key") or row["measure_key"]
-                )
-    if any(len(k) != 1 for k in keys.values()):
-        raise ValueError("an inventory measure has more than one registry key")
-    canonical = {title: key for title, (key,) in keys.items()}
+                title = row["measure"].strip()
+                existing[title].add(row.get("existing_registry_key"))
+                own[title].add(row["measure_key"])
+    if any(len(keys) != 1 for keys in own.values()):
+        raise ValueError("an inventory measure has more than one measure_key")
+    users = defaultdict(set)
+    for title, keys in existing.items():
+        for key in keys - {None}:
+            users[key].add(title)
+    canonical = {}
+    for title, keys in existing.items():
+        (fallback,) = own[title]
+        (key,) = keys if len(keys) == 1 else (None,)
+        canonical[title] = key if key and users[key] == {title} else fallback
     if len(set(canonical.values())) != len(canonical):
         raise ValueError("two inventory measures share a registry key")
     return canonical
+
+
+def historical_execution(event_slug, rows):
+    """For an event with a committed selector: its scoring years, the
+    calendar periods its fy_start_year.v1 bridge maps them to, and the
+    execution gate bound to the selector's bytes. None for any other event.
+
+    The selector's scoring years must equal the source's fiscal years: the
+    registry accounts for every original cell and drops none."""
+    path = SELECTORS / f"{event_slug}.json"
+    if not path.is_file():
+        return None
+    payload = path.read_bytes()
+    selector = json.loads(payload)
+    if selector["event_slug"] != event_slug:
+        raise ValueError(f"{path}: selector names another event")
+    scoring_fys = selector["scoring_fys"]
+    if scoring_fys != sorted({row["fy"] for row in rows}):
+        raise ValueError(f"{event_slug}: selector scoring_fys differ from the source")
+    bridge = selector["annualisation_bridge"]
+    if (
+        bridge.get("status") != "resolved"
+        or bridge.get("bridge_id") != "fy_start_year.v1"
+    ):
+        raise ValueError(f"{event_slug}: no resolved fy_start_year.v1 bridge")
+    return {
+        "scoring_fys": scoring_fys,
+        "calendar_years": [int(fy[:4]) for fy in scoring_fys],
+        "execution": {
+            "status": REQUIRES_EVENT_POPULATION,
+            "selector": str(path.relative_to(ROOT)),
+            "selector_sha256": hashlib.sha256(payload).hexdigest(),
+            "selector_readiness": selector["readiness"],
+            "reason": (
+                "A historical event replays only on a certified event population "
+                "for each scoring fiscal year (docs/uk_replay/HISTORICAL_ADAPTER.md). "
+                "None exists for this event yet, so this registry is source "
+                "accounting only; the modern certified population is never "
+                "substituted."
+            ),
+        },
+    }
 
 
 def first_window_year(spec):
@@ -886,7 +958,14 @@ def build_registry(event_slug, engine_parameters, engine_variables, resolve):
     grouped = defaultdict(list)
     for row in rows:
         grouped[row["title"]].append(row)
-    years = sorted({int(r["fy"][:4]) for r in rows if 2023 <= int(r["fy"][:4]) <= 2030})
+    historical = historical_execution(event_slug, rows)
+    years = (
+        historical["calendar_years"]
+        if historical
+        else sorted(
+            {int(r["fy"][:4]) for r in rows if 2023 <= int(r["fy"][:4]) <= 2030}
+        )
+    )
     measures = []
     canonical_keys = inventory_registry_keys(event_slug)
     for title, rs in grouped.items():
@@ -1010,7 +1089,7 @@ def build_registry(event_slug, engine_parameters, engine_variables, resolve):
         raise ValueError("duplicate measure key")
     manifest = json.loads(SOURCE_MANIFEST.read_text())
     bundle = json.loads(CERTIFIED.read_text())
-    return {
+    registry = {
         "schema_version": 1,
         "event_slug": event_slug,
         "event_name": event_name,
@@ -1027,6 +1106,17 @@ def build_registry(event_slug, engine_parameters, engine_variables, resolve):
         "accounting": accounting(rows, measures),
         "measures": measures,
     }
+    if historical:
+        registry["years_note"] = (
+            "Each source fiscal year maps to its start year (fy_start_year.v1, "
+            "decided under cos d1344: docs/uk_replay/HISTORICAL_DECISIONS.md); "
+            "these are the periods an event population must cover. Every "
+            "source cell is accounted; none is simulated until a certified "
+            "event population exists."
+        )
+        registry["scoring_fys"] = historical["scoring_fys"]
+        registry["execution"] = historical["execution"]
+    return registry
 
 
 def engine_resolver(system=None):
