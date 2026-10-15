@@ -1197,3 +1197,156 @@ def test_a_shadowed_distribution_copy_does_not_count(tmp_path, monkeypatch):
     importlib.invalidate_caches()
     assert importlib.metadata.version("shadowed") == "2.0"
     assert rv.installed_distributions()["shadowed"] == "2.0"
+
+
+# --- review of eec87f4 -----------------------------------------------------------
+
+
+def test_a_readme_in_a_bytecode_cache_is_unlisted(tmp_path, monkeypatch):
+    # parameter_node.py reads any file whose stem is README before it filters
+    # extensions, and recurses into __pycache__; only conventionally named
+    # bytecode is skipped.
+    site = demo_site(tmp_path, monkeypatch)
+    cache = site / "demo" / "parameters" / "__pycache__"
+    cache.mkdir()
+    (cache / "rate.cpython-312.pyc").write_bytes(b"\0")
+    (cache / "rate.cpython-312.opt-1.pyc").write_bytes(b"\0")
+    assert rv.unlisted_package_files(("demo",)) == {}
+    for name in ("README.pyc", "readme.pyc", "evil.pyc"):
+        (cache / name).write_text("# label\ndescription\n")
+        assert rv.unlisted_package_files(("demo",)) == {
+            "demo": [f"demo/parameters/__pycache__/{name}"]
+        }, name
+        (cache / name).unlink()
+
+
+def test_dropping_every_variant_marker_does_not_make_a_manifest_legacy(
+    tmp_path, monkeypatch
+):
+    # An all-supported variant event with both identity markers removed must
+    # not stage as legacy while it still carries any variant field.
+    registry, manifest, output, digest, _ = staged_variant_run(tmp_path, monkeypatch)
+    registry = {**registry, "calendar_years": [2024]}
+    stripped = {
+        k: v
+        for k, v in manifest.items()
+        if k not in ("variant_id", "variant_identity_sha256")
+    }
+    stripped["unsupported_years"] = []
+    with pytest.raises(ValueError, match="legacy compute manifest lists variant"):
+        stage.manifest_variant(stripped, registry, variants_path=rv.VARIANTS_PATH)
+    for field in sorted(stage.VARIANT_MANIFEST_FIELDS):
+        bare = {
+            k: v
+            for k, v in manifest.items()
+            if k not in stage.VARIANT_MANIFEST_FIELDS and k != "variant_id"
+        }
+        bare[field] = manifest.get(field, [])
+        with pytest.raises(ValueError, match="legacy compute manifest lists"):
+            stage.manifest_variant(bare, registry, variants_path=rv.VARIANTS_PATH)
+
+
+def test_a_legacy_shaped_manifest_must_name_the_legacy_dataset():
+    legacy = record(LEGACY)["identity"]
+    good = {
+        "certified_dataset_sha256": legacy["dataset"]["sha256"],
+        "data_bundle": legacy["release_bundle"]["certified_data_build_id"],
+    }
+    registry = {"calendar_years": [2024]}
+    assert (
+        stage.manifest_variant(good, registry, variants_path=rv.VARIANTS_PATH) is None
+    )
+    for change in (
+        {"certified_dataset_sha256": "b" * 64},
+        {"data_bundle": "unrecorded-build"},
+    ):
+        with pytest.raises(ValueError, match="names another dataset"):
+            stage.manifest_variant(
+                {**good, **change}, registry, variants_path=rv.VARIANTS_PATH
+            )
+
+
+def test_every_committed_legacy_manifest_names_the_legacy_dataset():
+    legacy = record(LEGACY)
+    for path in sorted(
+        (rv.ROOT / "results" / "uk" / "events").glob("*/RUN_MANIFEST.json")
+    ):
+        manifest = json.loads(path.read_bytes())
+        registry = json.loads(
+            (
+                rv.ROOT / "data" / "uk" / "events" / f"{path.parent.name}_measures.json"
+            ).read_bytes()
+        )
+        assert (
+            stage.manifest_variant(manifest, registry, variants_path=rv.VARIANTS_PATH)
+            is None
+        ), path
+    assert legacy["identity"]["dataset"]["sha256"]
+
+
+def test_the_dataset_must_report_the_records_whole_year_range(monkeypatch, tmp_path):
+    # Review of eec87f4: a record whose data_years were shortened must not
+    # pass because the requested year is still present.
+    from pipeline import compute_uk_obr_costings as fiscal
+
+    data_file = tmp_path / "data.h5"
+    data_file.write_bytes(b"x")
+
+    class Sim:
+        policyengine_bundle = {
+            "certified_data_build_id": "build",
+            "runtime_dataset_source": str(data_file),
+        }
+        tax_benefit_system = type("System", (), {"variables": {"income_tax": None}})()
+        dataset = type("Dataset", (), {"years": list(range(2024, 2031))})()
+
+        def calculate(self, name, period):
+            import numpy as np
+
+            return np.array([1.0])
+
+    class Uk:
+        @staticmethod
+        def managed_microsimulation(**kwargs):
+            return Sim()
+
+    import types
+
+    monkeypatch.setitem(sys.modules, "policyengine", types.SimpleNamespace(uk=Uk))
+    monkeypatch.setattr(fiscal, "variable_metadata", lambda *a, **k: {})
+    kwargs = dict(
+        year=2025,
+        variables=["income_tax"],
+        reform=None,
+        runtime_dataset_source=data_file,
+        expected_dataset_sha256=hashlib.sha256(b"x").hexdigest(),
+        require_dataset_years=True,
+    )
+    assert fiscal.run_managed_simulation(
+        **kwargs, expected_dataset_years=list(range(2024, 2031))
+    )["aggregates_gbp"]
+    with pytest.raises(RuntimeError, match="differ from the variant's data years"):
+        fiscal.run_managed_simulation(
+            **kwargs, expected_dataset_years=list(range(2025, 2031))
+        )
+
+
+def test_run_sim_passes_the_records_data_years(monkeypatch):
+    seen = {}
+
+    def managed(**kwargs):
+        seen.update(kwargs)
+        return {"policyengine_bundle": {}}
+
+    monkeypatch.setattr(compute.fiscal, "run_managed_simulation", managed)
+    monkeypatch.setattr(compute.fiscal, "assert_managed_bundle", lambda *a: None)
+    pre = {
+        "runtime_dataset_source": "x.h5",
+        "sha256": "a" * 64,
+        "release_bundle": {},
+        "require_dataset_years": True,
+        "data_years": record()["data_years"],
+    }
+    compute.run_sim(2025, ["income_tax"], None, pre)
+    assert seen["expected_dataset_years"] == record()["data_years"]
+    assert seen["require_dataset_years"] is True

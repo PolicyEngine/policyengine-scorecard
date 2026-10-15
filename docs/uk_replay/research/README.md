@@ -1,3 +1,4 @@
 # Research notes (unreviewed)
 
 These are the working notes the scoping lanes wrote before the four documents in `docs/uk_replay/`. They are kept for provenance, not as findings. Where a note and a document disagree, the document's qualified statement governs. The PR #158 review narrowed three over-general claims in place (`peuk_mechanics.md`, `rulespec_uk.md`, `vintage_harvest.md`).
+- [triage_6.2.6_vs_legacy.md](triage_6.2.6_vs_legacy.md): independent investigation of the largest moves between the legacy and certified 6.2.6 replays (GPT-6.1 Sol, 11 October 2026).

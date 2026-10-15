@@ -525,8 +525,10 @@ def unlisted_package_files(names=PACKAGES) -> dict[str, list[str]]:
     add_variables_from_directory: glob "*.py", then glob "*/"). Both recurse
     into a ``__pycache__`` and follow a symlinked directory, so:
 
-    * only ``*.pyc`` files inside a ``__pycache__`` are skipped (runs never
-      read them: isolate_bytecode); anything else there is reported;
+    * only conventionally named bytecode inside a ``__pycache__`` is skipped
+      (BYTECODE_NAME; runs never import it: isolate_bytecode); anything else
+      there, including a README.pyc that the parameter loader would read, is
+      reported;
     * every symlink, to a file or a directory, is reported;
     * a file counts as listed only in its own package's RECORD, by its
       unresolved path: another distribution's RECORD is never hash-checked.
@@ -560,7 +562,7 @@ def unlisted_package_files(names=PACKAGES) -> dict[str, list[str]]:
                         extra.append(f"{relative} (symlink)")
                     elif entry in subdirectories:
                         continue
-                    elif cache and entry.endswith(".pyc"):
+                    elif cache and BYTECODE_NAME.fullmatch(entry):
                         continue
                     elif path not in listed:
                         extra.append(relative)
@@ -570,6 +572,11 @@ def unlisted_package_files(names=PACKAGES) -> dict[str, list[str]]:
 
 
 VIRTUALENV_SHIM = ("_virtualenv.pth", "import _virtualenv")
+# The names import writes into a __pycache__ (importlib.util.cache_from_source:
+# <module>.<cache_tag>[.opt-<n>].pyc). parameter_node.py reads any file whose
+# stem is README before it filters extensions, but these names always carry
+# the interpreter tag, so their stem is never README.
+BYTECODE_NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\.[a-z]+-[0-9]+(\.opt-[0-9]+)?\.pyc")
 
 
 def startup_files(names=PACKAGES) -> list[dict]:

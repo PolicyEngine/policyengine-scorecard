@@ -82,7 +82,7 @@ A variant record:
 | Field | Meaning |
 |---|---|
 | `variant_id` | `pe<wrapper>_uk<model>_<certified_data_build_id>`, recomputed from `identity`; when another identity already holds that slug (same versions, other wheels or numerical environment) the id adds `--<first 10 hex of identity_sha256>`. |
-| `identity` | Everything that determines execution. Its canonical-JSON SHA-256 is `identity_sha256`. `data_years`, `layout`, `status` and `executor` are outside it on purpose: they describe or file a run and do not change a computed byte. `data_years` is checked instead against the simulation's own `dataset.years` in every run, and staging recomputes the supported years from the record. |
+| `identity` | Everything that determines execution. Its canonical-JSON SHA-256 is `identity_sha256`. `data_years`, `layout`, `status` and `executor` are outside it on purpose: they describe or file a run and do not change a computed byte. `data_years` is checked instead: on a non-legacy variant every simulation compares the record's `data_years` with its dataset's whole `dataset.years` set and stops if they differ, and staging recomputes the supported years from the record. |
 | `identity.packages` | For `policyengine`, `policyengine-uk`, `policyengine-core`: exact `version`, and `record_sha256`: the SHA-256 of the distribution's own `RECORD` entries, sorted, excluding installer bookkeeping (`INSTALLER`, `REQUESTED`, `RECORD`, `direct_url.json`, `uv_cache.json`), bytecode, and the console-script wrappers the installer generates outside site-packages (their shebang names the environment's interpreter). Every listed file is checked on disk against its recorded hash when the identity is read, so the digest binds the wheel's installed contents, and pip and uv installs of one wheel agree. Optional `wheel_sha256`: the wheel's digest as published on PyPI, recorded at certification; the receiver verifies each downloaded wheel against it, and the runner, which never sees a wheel, checks only its format. |
 | `identity.packaged_bundle_manifest_sha256` | SHA-256 of `policyengine/data/bundle/manifest.json` as installed. |
 | `identity.release_bundle` | The exact `pe.uk.uk_latest.release_bundle` dict expected at runtime under **packaged (offline) certification**. |
@@ -168,8 +168,9 @@ managed-release preflight).
    runtime dataset source is that file.
 6. **Year support.** Requested years must lie in `data_years`, and inside
    every simulation `year in simulation.dataset.years` or the run stops; on a
-   non-legacy variant a dataset that does not state its years stops the run
-   too (the legacy check skips it, as it always has). Registry years outside `data_years` are not
+   non-legacy variant a dataset that does not state its years, or states a
+   year set other than the record's `data_years`, stops the run too (the
+   legacy check skips both, as it always has). Registry years outside `data_years` are not
    requested by default; they are reported as unsupported (below).
 
 A model/data combination is **incompatible** when no certified variant
@@ -223,12 +224,30 @@ FY2023–24 counterparts; that loss is shown, never hidden.
 ## Version-scoped diagnoses
 
 Every diagnosis and construction note carries the engine version it was
-established on. A comparison row attaches a diagnosis as current only when
-the artifact's `engine_version` is in that set. On any other engine the row
-carries `prior_diagnoses` with `established_on` and `status:
-"not_reverified"` until `diagnose_uk_event_models.py` has been rerun on that
-engine, whose per-case predicate records `persists`, `resolved` or
-`inconclusive`. The legacy event outputs remain byte-identical.
+established on. The legacy diagnoses also describe the legacy data bundle,
+so a comparison row attaches them as current only on the legacy run. On
+every certified variant, including one using 2.89.2 with another bundle, the
+row carries `prior_diagnoses` with `established_on` and `status:
+"not_reverified"`. Re-verification of measured model candidates is separate:
+`diagnose_uk_event_models.py` reruns each case's predicate and records
+`persists`, `resolved` or `inconclusive`. Re-verified records keep historical
+interpretation and policy citations under `established`, naming that
+observation's engine, and describe the new predicate observation separately.
+The legacy event outputs remain byte-identical.
+
+For the 6.2.6 variant, use the candidate environment named in
+[RECIPE.md](RECIPE.md) to reproduce a status, selecting a case if needed:
+
+```bash
+env -u HUGGING_FACE_TOKEN -u HF_TOKEN -u HUGGINGFACE_HUB_TOKEN \
+  PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py \
+  --reverify results/uk/events/MODEL_DIAGNOSTICS.json \
+  --expect-engine 2.125.1 --case cgt_main_rate_commencement
+```
+
+Variant summaries reject diagnostic records from another engine and count
+measured issue candidates as current only when the re-verified status is
+`persists`. A variant record without a status is shown as not re-verified.
 
 ## Construction premises
 
@@ -242,8 +261,20 @@ these checks:
 |---|---|
 | `forward_delta_changes_current_law` | A forward delta equals current law in every in-force supported year (inert by construction). |
 | `reversal_differs_from_current_law` | A reversal modifier equals current law in every in-force supported year. |
-| `derived_counterfactual_reproduces` | Re-deriving `counterfactual_derivation` with this engine's parameters differs from the frozen registry values. |
-| `annual_value_matches_30_april_sample` | The processed annual value differs from the raw 30 April value (the engine blends or annualises differently from the 2.89.2 note). |
+| `authored_construction_reproduces` | Re-authoring with this engine's parameters differs from the frozen modifier or reform delta. |
+| `annual_value_matches_30_april_sample` | An in-force touched path carries `fiscal_year_blend` or `preserve_calendar_dates` metadata that the installed converter reads. This historical key checks metadata, not value equality. |
+
+The annualisation check retains its historical name to keep legacy receipt
+bytes unchanged. Converter support is detected from executable metadata
+lookups in its parsed AST; a mention in a docstring does not count. A path
+can carry an annualisation flag while its annual and 30 April values are
+equal in a year with no rate change. Numerical evidence remains in the
+separate `current_law` and `raw_30_april` fields. The latter comes from the
+baseline clone before uprating, backdating and conversion
+(`policyengine_uk/tax_benefit_system.py:102-108` in 2.89.2; `109-115` in
+2.125.1), so differences can also reflect uprating. Installed-engine tests
+compare the CGT values directly and regenerate the corresponding committed
+premises; the engine-free suite reports an explicit skip for those checks.
 
 A failed check is a **construction revision candidate**, reported in the
 release diff's construction flags and summarised in
