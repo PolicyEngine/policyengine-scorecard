@@ -33,8 +33,14 @@ values from 2.125.1's parameters. That includes the counterfactuals derived
 from live engine values: the SB2023 UC childcare caps, the SS2025 UC standard
 allowance and the SS2025 UC health element.
 
-One premise changed: how 2.125.1 annualises the AB2024 Capital Gains Tax
-rates.
+One metadata premise changed: how 2.125.1 annualises the AB2024 Capital
+Gains Tax rates. The historical key `annual_value_matches_30_april_sample`
+is retained for legacy receipt compatibility. It checks whether an in-force
+touched path carries `fiscal_year_blend` or `preserve_calendar_dates`
+metadata read by the installed converter; it does not compare values.
+Metadata can select a different annualisation policy even when that year's
+annual and raw 30 April values happen to be equal. The recorded
+`current_law` and `raw_30_april` values give separate numerical evidence.
 
 | Measure | Premise | 2.89.2 | 2.125.1 |
 |---|---|---|---|
@@ -45,11 +51,13 @@ rates.
 **What changed in the engine.** In 2.125.1,
 `parameters/gov/hmrc/cgt/basic_rate.yaml` (and the higher and additional
 rate files) date the 18%/24% rates from 30 October 2024 and set
-`metadata.fiscal_year_blend: true`. `utils/parameters.convert_to_fiscal_year_parameters`
+`metadata.fiscal_year_blend: true` (`policyengine_uk/parameters/gov/hmrc/cgt/basic_rate.yaml:8-14`
+and `higher_rate.yaml:8-14`). `utils/parameters.convert_to_fiscal_year_parameters`
 day-weights such parameters across the fiscal year (6 April–5 April,
-`fiscal_year_average`) instead of sampling 30 April. 2.89.2's conversion
-reads no such metadata and sampled 30 April; its raw schedule started the
-higher rates on 6 April 2025.
+`fiscal_year_average`, `policyengine_uk/utils/parameters.py:28-54,106-119`
+in 2.125.1) instead of sampling 30 April. 2.89.2's conversion reads no such
+metadata and sampled 30 April (`policyengine_uk/utils/parameters.py:39-45`);
+its raw schedule started the higher rates on 6 April 2025.
 
 **What the frozen construction now measures.** The construction reverses the
 announced rates to 10%/20% from 30 October 2024; the executor moves that to
@@ -73,11 +81,14 @@ omits a part-year FY2024–25 effect that the new engine models.
 **Proposed revision.** Extend the reversal to CY2024 at the pre-announcement
 rates (`basic_rate` 0.10, `higher_rate` and `additional_rate` 0.20 from
 1 January 2024), keeping CY2025 onwards unchanged. On 2.125.1 that scores
-the blended FY2024–25 increase; on 2.89.2 it would remain inert for CY2024
-because current law already holds those rates, so the change is safe for the
-legacy record. Remove the measure from `DOCUMENTED_ANNUAL_ACTIVATIONS` only
-for variants whose engine blends these paths. Proposed; running it changes
-the construction and waits on d1344.
+the blended FY2024–25 increase. On 2.89.2 the CY2024 worlds would remain
+identical because current law already holds those rates. Editing the frozen
+registry nevertheless changes its SHA-256: every legacy comparison must be
+regenerated along with the registry-bound artifacts and staging receipts
+before the comparison provenance can verify again
+(`pipeline/compare_uk_event.py`, `load_verified_comparison`). This remains
+proposed under cos decision d1344; no registry or activation rule changes
+are applied here.
 
 ## Notes that state 2.89.2 facts
 
@@ -109,7 +120,7 @@ candidates on the installed engine; results are in the variant namespace's
 | `sdlt_additional_home_hike_absent` | persists |
 | `private_school_vat_current_law_lever_zero` | persists |
 | `dividend_band_threshold_lag` | persists |
-| `class4_threshold_indexation_from_2027` | resolved (limits held at £12,570/£50,270 through 2028) |
+| `class4_threshold_indexation_from_2027` | resolved (limits held at £12,570/£50,270 in 2027) |
 | `uc_lcwra_protection_stops_at_2030` | persists |
 | `employer_nics_state_pension_age_exemption` | resolved (employer NICs at age 70 equal those at 45) |
 | `pension_taper_omits_employer_contributions` | persists |
@@ -117,3 +128,26 @@ candidates on the installed engine; results are in the variant namespace's
 
 A status describes the case's own synthetic observation. It does not size a
 national effect or explain a replay movement on its own.
+
+The Class 4 fix is the 2027-04-06 entry, whose reference cites the Autumn
+Statement 2022 freeze to April 2028
+(`policyengine_uk/parameters/gov/hmrc/national_insurance/class_4/thresholds/lower_profits_limit.yaml:67-74`
+in 2.125.1). The 2028–2030 entries cite Budget 2025's later freeze to 2031
+(`lower_profits_limit.yaml:75-110`). For the AS2023 and SB2024 replays, those
+later entries are a baseline-vintage difference from 2028, separate from
+the correction observed by the 2027 predicate.
+
+## Independent investigation of the largest moves
+
+[`research/triage_6.2.6_vs_legacy.md`](research/triage_6.2.6_vs_legacy.md)
+records an independent investigation of the largest legacy-to-6.2.6 moves. It
+attributes both structural moves to upstream fixes: the Class 2 abolition's
+Class 4 head to policyengine-uk #1884 and #2058, and the HICBC Child Benefit
+head to #2140, which models payment resuming once the charge is zero (an
+assumption, since a real claim has to be restarted). It reads the AB2024 CGT
+decline (×0.51) as a smaller capital-gains base in the new population rather
+than day-weighting, and keeps the pooled-gains limitation. It finds the
+private-school VAT replay figure consistent with a zero dedicated baseline
+head; it does not show £2.0bn missing from total baseline VAT, because generic
+VAT is calibrated to whole OBR receipts. It names LHA (×2.45) as only partly
+attributed. These are its findings, not re-verified here.

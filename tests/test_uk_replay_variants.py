@@ -25,6 +25,7 @@ from pipeline import uk_replay_variants as rv
 
 LEGACY = "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
 CURRENT = "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+DATASET_SHA256 = rv.get_variant(CURRENT)["identity"]["dataset"]["sha256"]
 
 
 def record(variant_id=CURRENT):
@@ -454,8 +455,8 @@ def simulation(tax, benefit):
             "model_version": "2.125.1",
             "certified_data_build_id": "policyengine-uk-data-1.58.0",
         },
-        "dataset_sha256_before": "a" * 64,
-        "dataset_sha256_after": "a" * 64,
+        "dataset_sha256_before": DATASET_SHA256,
+        "dataset_sha256_after": DATASET_SHA256,
         "performance": {"wall_seconds": 1},
     }
 
@@ -480,7 +481,7 @@ def test_variant_run_skips_unsupported_years_and_stages_them_visibly(
         compute,
         "variant_preflight",
         lambda variant, dataset_source=None: {
-            "sha256": "a" * 64,
+            "sha256": variant["identity"]["dataset"]["sha256"],
             "release_bundle": {
                 "certified_data_build_id": "policyengine-uk-data-1.58.0"
             },
@@ -629,7 +630,7 @@ def staged_variant_run(tmp_path, monkeypatch):
         compute,
         "variant_preflight",
         lambda variant, dataset_source=None: {
-            "sha256": "a" * 64,
+            "sha256": variant["identity"]["dataset"]["sha256"],
             "release_bundle": {
                 "certified_data_build_id": "policyengine-uk-data-1.58.0"
             },
@@ -670,6 +671,8 @@ def staged_variant_run(tmp_path, monkeypatch):
         ("other data years", lambda m: m.update(data_years=[2023, 2030])),
         ("other identity", lambda m: m.update(variant_identity_sha256="f" * 64)),
         ("unknown variant", lambda m: m.update(variant_id="pe9_uk9_x")),
+        ("other dataset", lambda m: m.update(certified_dataset_sha256="b" * 64)),
+        ("other data bundle", lambda m: m.update(data_bundle="another-build")),
         # Deleting variant_id must not turn the identity check off.
         ("variant fields dropped", lambda m: m.pop("variant_id")),
     ],
@@ -712,10 +715,22 @@ def test_resume_refuses_a_receipt_for_an_unsupported_year(tmp_path, monkeypatch)
     (output / "RUN_MANIFEST.json").write_text(json.dumps(manifest))
     with pytest.raises(ValueError, match="outside the variant's supported years"):
         compute.main(args + ["--resume"])
-    # A progress receipt for 2023 is never read at all.
+    # A progress receipt for 2023 is never read, even one whose identity
+    # fields match this run exactly (it would be accepted for 2024).
     (output / "RUN_MANIFEST.json").unlink()
+    genuine = json.loads((output / "RUN_PROGRESS_2024.json").read_bytes())
     (output / "RUN_PROGRESS_2023.json").write_text(
-        json.dumps({"artifacts": {str(forged.relative_to(tmp_path)): "0" * 64}})
+        json.dumps(
+            {
+                **genuine,
+                "year": 2023,
+                "artifacts": {
+                    str(forged.relative_to(tmp_path)): hashlib.sha256(
+                        forged.read_bytes()
+                    ).hexdigest()
+                },
+            }
+        )
     )
     assert compute.main(args + ["--resume"]) == 0
     rerun = json.loads((output / "RUN_MANIFEST.json").read_bytes())
@@ -885,6 +900,69 @@ def test_an_unlisted_file_in_a_package_directory_is_found(tmp_path, monkeypatch)
     }
 
 
+def test_the_scan_sees_what_core_would_load(tmp_path, monkeypatch):
+    # Review of dc040de: core's loaders recurse into __pycache__ and follow
+    # symlinked directories, and only the package's own RECORD is hash-checked.
+    site = demo_site(tmp_path, monkeypatch)
+    cache = site / "demo" / "parameters" / "__pycache__"
+    cache.mkdir()
+    (cache / "ok.cpython-312.pyc").write_bytes(b"\0")
+    (cache / "x.py").write_text("raise SystemExit\n")
+    assert rv.unlisted_package_files(("demo",)) == {
+        "demo": ["demo/parameters/__pycache__/x.py"]
+    }
+    (cache / "x.py").unlink()
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "rate.yaml").write_text("values: {}\n")
+    (site / "demo" / "parameters" / "linked").symlink_to(
+        outside, target_is_directory=True
+    )
+    assert rv.unlisted_package_files(("demo",)) == {
+        "demo": ["demo/parameters/linked (symlink)"]
+    }
+    (site / "demo" / "parameters" / "linked").unlink()
+    # A symlink to a listed file is still a symlink, not that file.
+    (site / "demo" / "alias.py").symlink_to(site / "demo" / "__init__.py")
+    assert rv.unlisted_package_files(("demo",)) == {"demo": ["demo/alias.py (symlink)"]}
+    (site / "demo" / "alias.py").unlink()
+    # Another distribution listing a file inside this package does not count.
+    extra = site / "demo" / "parameters" / "from_other.yaml"
+    extra.write_text("values: {}\n")
+    info = site / "other-1.0.dist-info"
+    info.mkdir()
+    (info / "METADATA").write_text("Metadata-Version: 2.1\nName: other\nVersion: 1.0\n")
+    (info / "RECORD").write_text("demo/parameters/from_other.yaml,,\n")
+    importlib.invalidate_caches()
+    assert rv.unlisted_package_files(("demo",)) == {
+        "demo": ["demo/parameters/from_other.yaml"]
+    }
+
+
+def test_startup_files_must_belong_to_a_pinned_distribution(tmp_path, monkeypatch):
+    # site.py runs a .pth file's import lines before any check here.
+    site = demo_site(tmp_path, monkeypatch)
+    (site / "_virtualenv.pth").write_text("import _virtualenv\n")
+    (site / "hook.pth").write_text("import os; os.environ['X'] = '1'\n")
+    files = rv.startup_files(("demo",))
+    assert [f["name"] for f in files] == ["_virtualenv.pth", "hook.pth"]
+    assert rv.startup_file_problems(files, {"demo": "1.0"}) == [
+        "startup file hook.pth belongs to no pinned distribution"
+    ]
+    # The shim's name with other content is not the shim.
+    (site / "_virtualenv.pth").write_text("import evil\n")
+    assert len(rv.startup_file_problems(rv.startup_files(("demo",)), {})) == 2
+    # A .pth a pinned distribution lists is that distribution's own.
+    owned = [{"name": "x.pth", "owner": "demo", "text": "import x", "symlink": False}]
+    assert rv.startup_file_problems(owned, {"demo": "1.0"}) == []
+    assert rv.startup_file_problems(owned, {}) != []
+    r = record()
+    installed = installed_for(r)
+    installed["startup_files"] = files
+    with pytest.raises(rv.VariantError, match="startup file hook.pth"):
+        rv.verify_installed(r, installed=installed)
+
+
 def test_unlisted_files_fail_the_installed_check():
     r = record()
     installed = installed_for(r)
@@ -910,6 +988,24 @@ def test_bytecode_isolation_precedes_engine_import(tmp_path, monkeypatch):
     monkeypatch.setitem(sys.modules, "policyengine_uk", object())
     with pytest.raises(rv.VariantError, match="imported before isolation"):
         rv.isolate_bytecode(tmp_path, environ)
+
+
+def test_bytecode_isolation_refuses_a_symlinked_directory(tmp_path, monkeypatch):
+    # The guard runs before anything resolves or removes the path: a
+    # symlinked no-bytecode directory must not get its target deleted.
+    monkeypatch.setattr(sys, "pycache_prefix", sys.pycache_prefix)
+    monkeypatch.setattr(sys, "dont_write_bytecode", sys.dont_write_bytecode)
+    for module in rv.ENGINE_MODULES.values():
+        monkeypatch.delitem(sys.modules, module, raising=False)
+    precious = tmp_path / "precious"
+    precious.mkdir()
+    (precious / "keep.txt").write_text("keep")
+    runtime = tmp_path / "runtime"
+    runtime.mkdir()
+    (runtime / "no-bytecode").symlink_to(precious, target_is_directory=True)
+    with pytest.raises(rv.VariantError, match="symlink"):
+        rv.isolate_bytecode(runtime, {})
+    assert (precious / "keep.txt").read_text() == "keep"
 
 
 def test_an_engine_imported_from_another_tree_is_refused(tmp_path, monkeypatch):
@@ -1007,9 +1103,10 @@ def test_a_dataset_that_does_not_state_its_years_fails_when_required(
 
 
 def test_the_installed_engine_is_a_committed_variant_when_present():
-    """In a pinned venv (the CI replay-engine job, .venv-candidate,
-    .venv-replay), the real installed environment reproduces a committed
-    record's digests, with no unlisted files."""
+    """In a pinned venv (.venv-candidate, .venv-replay, and the CI
+    replay-engine job once the receiver change adds it), the real installed
+    environment reproduces a committed record's digests, with no unlisted
+    files. Without an engine installed this test skips."""
     try:
         version = importlib.metadata.version("policyengine-uk")
     except importlib.metadata.PackageNotFoundError:
@@ -1024,3 +1121,232 @@ def test_the_installed_engine_is_a_committed_variant_when_present():
     installed = rv.installed_identity()
     assert installed["unlisted_files"] == {}
     rv.verify_installed(matches[0], installed=installed)
+
+
+def test_the_legacy_preflight_is_isolated_and_checks_its_release_bundle(monkeypatch):
+    # Review of dc040de, M4: the legacy run uses the packaged certification
+    # and must match its record's release bundle exactly, like any variant.
+    calls = []
+    legacy = record(LEGACY)
+    bundle = dict(legacy["identity"]["release_bundle"])
+    monkeypatch.setattr(compute.fiscal, "configure_offline", lambda: None)
+    monkeypatch.setattr(compute.worlds, "configure_offline", lambda: None)
+    monkeypatch.setattr(
+        rv, "isolate_certification_environment", lambda: calls.append("certification")
+    )
+    monkeypatch.setattr(rv, "isolate_bytecode", lambda root: calls.append("bytecode"))
+    monkeypatch.setattr(
+        compute.worlds,
+        "preflight",
+        lambda: {
+            "sha256": legacy["identity"]["dataset"]["sha256"],
+            "revision": bundle["certified_data_build_id"],
+        },
+    )
+    managed = {
+        "sha256": legacy["identity"]["dataset"]["sha256"],
+        "release_bundle": bundle,
+    }
+    monkeypatch.setattr(
+        compute.fiscal,
+        "preflight_certified_dataset",
+        lambda: calls.append("engine") or dict(managed),
+    )
+    monkeypatch.setattr(compute, "import_engine", lambda: calls.append("origins"))
+    pre = compute.preflight(legacy)
+    assert calls == ["certification", "bytecode", "engine", "origins"]
+    assert pre["check_import_origins"] is True
+    managed["release_bundle"] = {**bundle, "compatibility_basis": "other"}
+    with pytest.raises(rv.VariantError, match="runtime release bundle differs"):
+        compute.preflight(legacy)
+    # Without a record (the Modal preflight-only path) it is the original check.
+    calls.clear()
+    managed["release_bundle"] = bundle
+    assert "check_import_origins" not in compute.preflight()
+    assert calls == ["engine"]
+
+
+def test_guards_check_the_environment_and_compile_from_source(monkeypatch):
+    calls = []
+    monkeypatch.setattr(
+        compute, "check_variant_environment", lambda variant: calls.append("installed")
+    )
+    monkeypatch.setattr(rv, "isolate_bytecode", lambda root: calls.append("bytecode"))
+    monkeypatch.setattr(
+        compute.worlds,
+        "engine_resolver",
+        lambda: calls.append("engine") or (lambda path, date: None),
+    )
+    monkeypatch.setattr(compute.worlds, "reversal_delta_mismatches", lambda *a, **k: [])
+    monkeypatch.setattr(compute, "import_engine", lambda: calls.append("origins"))
+    assert compute.main(["--event", "autumn_budget_2024", "--guards"]) == 0
+    assert calls == ["installed", "bytecode", "engine", "origins"]
+
+
+def test_a_shadowed_distribution_copy_does_not_count(tmp_path, monkeypatch):
+    # Found on Modal: the container's own client packages sit behind the
+    # pinned environment on sys.path; Python imports the first copy.
+    for index, version in enumerate(("2.0", "1.0")):
+        info = tmp_path / f"site{index}" / f"shadowed-{version}.dist-info"
+        info.mkdir(parents=True)
+        (info / "METADATA").write_text(
+            f"Metadata-Version: 2.1\nName: shadowed\nVersion: {version}\n"
+        )
+    monkeypatch.syspath_prepend(str(tmp_path / "site1"))
+    monkeypatch.syspath_prepend(str(tmp_path / "site0"))  # first on the path
+    importlib.invalidate_caches()
+    assert importlib.metadata.version("shadowed") == "2.0"
+    assert rv.installed_distributions()["shadowed"] == "2.0"
+
+
+# --- review of eec87f4 -----------------------------------------------------------
+
+
+def test_a_readme_in_a_bytecode_cache_is_unlisted(tmp_path, monkeypatch):
+    # parameter_node.py reads any file whose stem is README before it filters
+    # extensions, and recurses into __pycache__; only conventionally named
+    # bytecode is skipped.
+    site = demo_site(tmp_path, monkeypatch)
+    cache = site / "demo" / "parameters" / "__pycache__"
+    cache.mkdir()
+    (cache / "rate.cpython-312.pyc").write_bytes(b"\0")
+    (cache / "rate.cpython-312.opt-1.pyc").write_bytes(b"\0")
+    assert rv.unlisted_package_files(("demo",)) == {}
+    for name in ("README.pyc", "readme.pyc", "evil.pyc"):
+        (cache / name).write_text("# label\ndescription\n")
+        assert rv.unlisted_package_files(("demo",)) == {
+            "demo": [f"demo/parameters/__pycache__/{name}"]
+        }, name
+        (cache / name).unlink()
+
+
+def test_dropping_every_variant_marker_does_not_make_a_manifest_legacy(
+    tmp_path, monkeypatch
+):
+    # An all-supported variant event with both identity markers removed must
+    # not stage as legacy while it still carries any variant field.
+    registry, manifest, output, digest, _ = staged_variant_run(tmp_path, monkeypatch)
+    registry = {**registry, "calendar_years": [2024]}
+    stripped = {
+        k: v
+        for k, v in manifest.items()
+        if k not in ("variant_id", "variant_identity_sha256")
+    }
+    stripped["unsupported_years"] = []
+    with pytest.raises(ValueError, match="legacy compute manifest lists variant"):
+        stage.manifest_variant(stripped, registry, variants_path=rv.VARIANTS_PATH)
+    for field in sorted(stage.VARIANT_MANIFEST_FIELDS):
+        bare = {
+            k: v
+            for k, v in manifest.items()
+            if k not in stage.VARIANT_MANIFEST_FIELDS and k != "variant_id"
+        }
+        bare[field] = manifest.get(field, [])
+        with pytest.raises(ValueError, match="legacy compute manifest lists"):
+            stage.manifest_variant(bare, registry, variants_path=rv.VARIANTS_PATH)
+
+
+def test_a_legacy_shaped_manifest_must_name_the_legacy_dataset():
+    legacy = record(LEGACY)["identity"]
+    good = {
+        "certified_dataset_sha256": legacy["dataset"]["sha256"],
+        "data_bundle": legacy["release_bundle"]["certified_data_build_id"],
+    }
+    registry = {"calendar_years": [2024]}
+    assert (
+        stage.manifest_variant(good, registry, variants_path=rv.VARIANTS_PATH) is None
+    )
+    for change in (
+        {"certified_dataset_sha256": "b" * 64},
+        {"data_bundle": "unrecorded-build"},
+    ):
+        with pytest.raises(ValueError, match="names another dataset"):
+            stage.manifest_variant(
+                {**good, **change}, registry, variants_path=rv.VARIANTS_PATH
+            )
+
+
+def test_every_committed_legacy_manifest_names_the_legacy_dataset():
+    legacy = record(LEGACY)
+    for path in sorted(
+        (rv.ROOT / "results" / "uk" / "events").glob("*/RUN_MANIFEST.json")
+    ):
+        manifest = json.loads(path.read_bytes())
+        registry = json.loads(
+            (
+                rv.ROOT / "data" / "uk" / "events" / f"{path.parent.name}_measures.json"
+            ).read_bytes()
+        )
+        assert (
+            stage.manifest_variant(manifest, registry, variants_path=rv.VARIANTS_PATH)
+            is None
+        ), path
+    assert legacy["identity"]["dataset"]["sha256"]
+
+
+def test_the_dataset_must_report_the_records_whole_year_range(monkeypatch, tmp_path):
+    # Review of eec87f4: a record whose data_years were shortened must not
+    # pass because the requested year is still present.
+    from pipeline import compute_uk_obr_costings as fiscal
+
+    data_file = tmp_path / "data.h5"
+    data_file.write_bytes(b"x")
+
+    class Sim:
+        policyengine_bundle = {
+            "certified_data_build_id": "build",
+            "runtime_dataset_source": str(data_file),
+        }
+        tax_benefit_system = type("System", (), {"variables": {"income_tax": None}})()
+        dataset = type("Dataset", (), {"years": list(range(2024, 2031))})()
+
+        def calculate(self, name, period):
+            import numpy as np
+
+            return np.array([1.0])
+
+    class Uk:
+        @staticmethod
+        def managed_microsimulation(**kwargs):
+            return Sim()
+
+    import types
+
+    monkeypatch.setitem(sys.modules, "policyengine", types.SimpleNamespace(uk=Uk))
+    monkeypatch.setattr(fiscal, "variable_metadata", lambda *a, **k: {})
+    kwargs = dict(
+        year=2025,
+        variables=["income_tax"],
+        reform=None,
+        runtime_dataset_source=data_file,
+        expected_dataset_sha256=hashlib.sha256(b"x").hexdigest(),
+        require_dataset_years=True,
+    )
+    assert fiscal.run_managed_simulation(
+        **kwargs, expected_dataset_years=list(range(2024, 2031))
+    )["aggregates_gbp"]
+    with pytest.raises(RuntimeError, match="differ from the variant's data years"):
+        fiscal.run_managed_simulation(
+            **kwargs, expected_dataset_years=list(range(2025, 2031))
+        )
+
+
+def test_run_sim_passes_the_records_data_years(monkeypatch):
+    seen = {}
+
+    def managed(**kwargs):
+        seen.update(kwargs)
+        return {"policyengine_bundle": {}}
+
+    monkeypatch.setattr(compute.fiscal, "run_managed_simulation", managed)
+    monkeypatch.setattr(compute.fiscal, "assert_managed_bundle", lambda *a: None)
+    pre = {
+        "runtime_dataset_source": "x.h5",
+        "sha256": "a" * 64,
+        "release_bundle": {},
+        "require_dataset_years": True,
+        "data_years": record()["data_years"],
+    }
+    compute.run_sim(2025, ["income_tax"], None, pre)
+    assert seen["expected_dataset_years"] == record()["data_years"]
+    assert seen["require_dataset_years"] is True

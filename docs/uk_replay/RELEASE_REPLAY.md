@@ -82,7 +82,7 @@ A variant record:
 | Field | Meaning |
 |---|---|
 | `variant_id` | `pe<wrapper>_uk<model>_<certified_data_build_id>`, recomputed from `identity`; when another identity already holds that slug (same versions, other wheels or numerical environment) the id adds `--<first 10 hex of identity_sha256>`. |
-| `identity` | Everything that determines execution. Its canonical-JSON SHA-256 is `identity_sha256`. |
+| `identity` | Everything that determines execution. Its canonical-JSON SHA-256 is `identity_sha256`. `data_years`, `layout`, `status` and `executor` are outside it on purpose: they describe or file a run and do not change a computed byte. `data_years` is checked instead: on a non-legacy variant every simulation compares the record's `data_years` with its dataset's whole `dataset.years` set and stops if they differ, and staging recomputes the supported years from the record. |
 | `identity.packages` | For `policyengine`, `policyengine-uk`, `policyengine-core`: exact `version`, and `record_sha256`: the SHA-256 of the distribution's own `RECORD` entries, sorted, excluding installer bookkeeping (`INSTALLER`, `REQUESTED`, `RECORD`, `direct_url.json`, `uv_cache.json`), bytecode, and the console-script wrappers the installer generates outside site-packages (their shebang names the environment's interpreter). Every listed file is checked on disk against its recorded hash when the identity is read, so the digest binds the wheel's installed contents, and pip and uv installs of one wheel agree. Optional `wheel_sha256`: the wheel's digest as published on PyPI, recorded at certification; the receiver verifies each downloaded wheel against it, and the runner, which never sees a wheel, checks only its format. |
 | `identity.packaged_bundle_manifest_sha256` | SHA-256 of `policyengine/data/bundle/manifest.json` as installed. |
 | `identity.release_bundle` | The exact `pe.uk.uk_latest.release_bundle` dict expected at runtime under **packaged (offline) certification**. |
@@ -100,8 +100,13 @@ A variant record:
 
 ### What "validated exactly" means
 
-Before any simulation the runner checks, in order, and refuses on the first
-failure:
+Before any simulation the runner checks all of the following and refuses on
+the first failure. The numbering groups them by subject; the code runs record
+consistency, the installed environment, certification isolation, dataset
+materialisation, bytecode isolation, the engine import and its origins, then
+the release-bundle comparison (`compute_uk_event.variant_preflight`; the
+legacy variant's `preflight` runs the same checks around its original
+managed-release preflight).
 
 1. **Record consistency (engine-free).** `variant_id` and `identity_sha256`
    recompute; `release_bundle.model_version == packages["policyengine-uk"].version`;
@@ -116,15 +121,26 @@ failure:
    and `compatible_model_packages` agree with the record.
 2. **Installed environment.** Installed versions of the three packages equal
    the record; every installed file matches its `RECORD` hash and the
-   normalised `RECORD` hashes to `record_sha256`; no file sits in the three
-   packages' directories without a `RECORD` entry in some installed
-   distribution (policyengine-core loads every file in a parameter directory
-   and every module in a variable directory, listed or not); every
-   distribution pinned in the requirements freeze is installed at its pinned
-   version (extra distributions, such as the receipt tools, are allowed); the
-   installed packaged manifest hashes to `packaged_bundle_manifest_sha256`;
-   the interpreter minor version matches. The legacy variant is checked the
-   same way.
+   normalised `RECORD` hashes to `record_sha256`; nothing sits in the three
+   packages' directories that the package's own `RECORD` does not list:
+   policyengine-core loads every file in a parameter directory and every
+   module in a variable directory, recursing into subdirectories
+   (`__pycache__` included) and following symlinked ones, so an unlisted
+   file, any symlink, and anything but `*.pyc` inside a `__pycache__` are
+   refused, and another distribution's `RECORD` does not count; every
+   `*.pth` startup file beside the packages belongs to a distribution pinned
+   in the requirements freeze or is the virtual environment's own
+   `_virtualenv.pth`; every distribution pinned in the requirements freeze
+   is installed at its pinned version (extra distributions, such as the
+   receipt tools, are allowed); the installed packaged manifest hashes to
+   `packaged_bundle_manifest_sha256`; the interpreter minor version matches.
+   The legacy variant is checked the same way.
+
+   What this does not bind: the files of pinned distributions other than the
+   three packages are checked by version, not by hash, and an extra
+   distribution's importable modules are not inspected. The check catches a
+   drifted or mixed environment; it is not a defence against someone who
+   can edit the environment at will.
 3. **What is imported.** Before the engine is imported, bytecode caching is
    turned off and `sys.pycache_prefix` points at an empty directory, so
    Python compiles every engine module from the verified sources and never
@@ -143,14 +159,18 @@ failure:
    `certify_data_release_compatibility` falls back to the wrapper's packaged
    certification. Then
    `dict(pe.uk.uk_latest.release_bundle) == identity.release_bundle`, exactly.
+   The legacy variant runs under the same isolation and the same exact
+   comparison, in addition to its original check against
+   `data/uk/certified_bundle.json`.
 5. **Dataset bytes.** The materialised file hashes to `dataset.sha256` and
    has `size_bytes`, before construction and after the last aggregate
    (existing `run_managed_simulation` checks), and the simulation's reported
    runtime dataset source is that file.
 6. **Year support.** Requested years must lie in `data_years`, and inside
    every simulation `year in simulation.dataset.years` or the run stops; on a
-   non-legacy variant a dataset that does not state its years stops the run
-   too (the legacy check skips it, as it always has). Registry years outside `data_years` are not
+   non-legacy variant a dataset that does not state its years, or states a
+   year set other than the record's `data_years`, stops the run too (the
+   legacy check skips both, as it always has). Registry years outside `data_years` are not
    requested by default; they are reported as unsupported (below).
 
 A model/data combination is **incompatible** when no certified variant
@@ -215,12 +235,30 @@ FY2023–24 counterparts; that loss is shown, never hidden.
 ## Version-scoped diagnoses
 
 Every diagnosis and construction note carries the engine version it was
-established on. A comparison row attaches a diagnosis as current only when
-the artifact's `engine_version` is in that set. On any other engine the row
-carries `prior_diagnoses` with `established_on` and `status:
-"not_reverified"` until `diagnose_uk_event_models.py` has been rerun on that
-engine, whose per-case predicate records `persists`, `resolved` or
-`inconclusive`. The legacy event outputs remain byte-identical.
+established on. The legacy diagnoses also describe the legacy data bundle,
+so a comparison row attaches them as current only on the legacy run. On
+every certified variant, including one using 2.89.2 with another bundle, the
+row carries `prior_diagnoses` with `established_on` and `status:
+"not_reverified"`. Re-verification of measured model candidates is separate:
+`diagnose_uk_event_models.py` reruns each case's predicate and records
+`persists`, `resolved` or `inconclusive`. Re-verified records keep historical
+interpretation and policy citations under `established`, naming that
+observation's engine, and describe the new predicate observation separately.
+The legacy event outputs remain byte-identical.
+
+For the 6.2.6 variant, use the candidate environment named in
+[RECIPE.md](RECIPE.md) to reproduce a status, selecting a case if needed:
+
+```bash
+env -u HUGGING_FACE_TOKEN -u HF_TOKEN -u HUGGINGFACE_HUB_TOKEN \
+  PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py \
+  --reverify results/uk/events/MODEL_DIAGNOSTICS.json \
+  --expect-engine 2.125.1 --case cgt_main_rate_commencement
+```
+
+Variant summaries reject diagnostic records from another engine and count
+measured issue candidates as current only when the re-verified status is
+`persists`. A variant record without a status is shown as not re-verified.
 
 ## Construction premises
 
@@ -234,8 +272,20 @@ these checks:
 |---|---|
 | `forward_delta_changes_current_law` | A forward delta equals current law in every in-force supported year (inert by construction). |
 | `reversal_differs_from_current_law` | A reversal modifier equals current law in every in-force supported year. |
-| `derived_counterfactual_reproduces` | Re-deriving `counterfactual_derivation` with this engine's parameters differs from the frozen registry values. |
-| `annual_value_matches_30_april_sample` | The processed annual value differs from the raw 30 April value (the engine blends or annualises differently from the 2.89.2 note). |
+| `authored_construction_reproduces` | Re-authoring with this engine's parameters differs from the frozen modifier or reform delta. |
+| `annual_value_matches_30_april_sample` | An in-force touched path carries `fiscal_year_blend` or `preserve_calendar_dates` metadata that the installed converter reads. This historical key checks metadata, not value equality. |
+
+The annualisation check retains its historical name to keep legacy receipt
+bytes unchanged. Converter support is detected from executable metadata
+lookups in its parsed AST; a mention in a docstring does not count. A path
+can carry an annualisation flag while its annual and 30 April values are
+equal in a year with no rate change. Numerical evidence remains in the
+separate `current_law` and `raw_30_april` fields. The latter comes from the
+baseline clone before uprating, backdating and conversion
+(`policyengine_uk/tax_benefit_system.py:102-108` in 2.89.2; `109-115` in
+2.125.1), so differences can also reflect uprating. Installed-engine tests
+compare the CGT values directly and regenerate the corresponding committed
+premises; the engine-free suite reports an explicit skip for those checks.
 
 A failed check is a **construction revision candidate**, reported in the
 release diff's construction flags and summarised in
@@ -267,7 +317,15 @@ Observed on 2.125.1 on 11 October (parameter tree only):
 
 `pipeline/diff_uk_event_runs.py --base <variant or root> --head <variant or root>`
 compares two complete namespaces, engine-free, after re-verifying each side's
-staging and comparison receipts. Keys:
+staging and comparison receipts against that side's receipt-bound registry
+snapshot. The current event registry does not replace a historical snapshot.
+Every inventoried artifact is checked by the staging and comparison validators,
+including artifacts that supply no numeric source counterpart. Each run
+manifest's execution identity, registry and artifact inventory, supported and
+unsupported years, and measure-year grids must agree with the verified staging
+rows and tally. Inertness comes from the staging manifest named and verified by
+comparison provenance. Inconsistent receipts are refused before a diff is
+written. Keys:
 
 * source row: `(event, source_row_id)`;
 * measure-year total: `(event, measure_key, year)`;
@@ -281,9 +339,9 @@ bin transitions.
 |---|---|
 | `numerical` | Both sides numeric and `abs(head − base) > max(£1,000,000, 0.01 × max(abs(head), abs(base)))`. Strictly greater. |
 | `structural` | Sign reversal or a zero crossing (zero means `abs(x) ≤ £0.50`, accounting roundoff); artifact schema or orientation changed; non-finite value. Regardless of size. |
-| `coverage` | A counterpart, artifact pair or source row present on one side only, in a year both sides support. |
-| `mapping` | A row's `head_variables`, an artifact's `head_channels` or `head_definitions`, or the registry SHA-256 differs. |
-| `support` | A year supported on one side only. |
+| `coverage` | A counterpart, artifact pair or source row present on one side only, in a year both sides support. The shared-support requirement also applies to rows outside household scope or without an expressible counterpart. |
+| `mapping` | A row's `head_variables`, an artifact's `head_channels` or `head_definitions`, or the registry SHA-256 differs. Registry changes flag the event's affected records with both digests. |
+| `support` | A year supported on one side only. Source rows that cannot carry a counterpart do not receive this flag. |
 | `inertness` | `inert_construction` on one side only, or identical worlds in an in-force year on one side only. |
 | `construction` | Executed `baseline_world`/`reform_world` reform dicts differ, or a premise check's result differs. A changed current-law value of a touched parameter is recorded as context on the row, not flagged: it is what a model release is expected to change. |
 
@@ -292,13 +350,23 @@ recorded once per diff; they explain moves and are not flags on rows.
 
 Outputs: `DIFF.json` (canonical, sorted), `DIFF.md`, and one issue packet per
 flagged `(event, measure, year)` under `packets/`. A packet holds the source
-cells (table, column, row number, source-row id, OBR value), both execution
+cells (table, column, row number, source-row id, OBR value) and measure details
+from each registry with base/head attribution, both execution
 identities, registry and artifact digests, the executed reform dicts, the
 affected heads with base/head values, focused rerun commands for each
-variant, the statutory sources the registry already cites, and empty
+variant using that side's verified registry path and variant selection, the
+statutory sources each registry already cites with side attribution, and empty
 `minimal_case` and `statutory_evidence` sections for the investigating lane.
+Removed measures retain their base title, source cells and citations.
 Packets are evidence for the coordinating session, which files upstream
 issues; this pipeline files none.
+
+Diff invariants are checked with deterministic cases and Hypothesis properties
+in `tests/test_uk_event_diff.py`: identical sides raise no flags; swapping sides
+preserves each record's flag set and mirrors its values; every source row in
+either side appears once at source-row level; every flagged record appears in
+exactly one packet, including support-only records; numerical moves flag only
+strictly above the stated threshold; and coverage and support do not overlap.
 
 ## Qualification requests and receipts
 
@@ -423,8 +491,11 @@ Each has deterministic boundary cases and Hypothesis properties in
 * **Replay determinism.** For the same complete execution fingerprint
   (variant identity, registry bytes, measure, year), numerical artifact bytes
   are identical; timings stay in `RUN_LOG.json`.
-* **Legacy preservation.** Legacy event registries, staging and comparison
-  outputs regenerate byte-identically after these changes.
+* **Legacy preservation.** Legacy staging, comparison and summary outputs
+  regenerate byte-identically from the committed artifacts
+  (`tests/test_uk_replay_legacy.py` reruns all five events and compares
+  bytes), and no committed legacy artifact, manifest or receipt carries a
+  variant field.
 * **Diff flags.** `diff(a, a)` has no row flags. Flag sets are symmetric under
   swapping sides (with signs reversed). No numerical flag at or below the
   threshold; one strictly above it. Row order and file order do not change

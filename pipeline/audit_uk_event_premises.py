@@ -22,12 +22,14 @@ Parameter tree only: no dataset, no simulation.
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import importlib.metadata
 import inspect
 import json
 import math
 import sys
+import textwrap
 from pathlib import Path
 from typing import Any, Callable
 
@@ -65,15 +67,49 @@ def scalar(value: Any) -> Any:
     return type(value).__name__
 
 
+def converter_metadata_keys(source: str) -> frozenset[str]:
+    """Find literal keys actually read from parameter metadata in converter code.
+
+    Docstrings and unrelated string constants do not establish support. Both
+    ``param.metadata.get(key)`` (including ``metadata or {}``) and
+    ``param.metadata[key]`` count as reads.
+    """
+    keys = set()
+    for node in ast.walk(ast.parse(textwrap.dedent(source))):
+        receiver = key = None
+        if (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "get"
+            and node.args
+        ):
+            receiver, key = node.func.value, node.args[0]
+        elif isinstance(node, ast.Subscript):
+            receiver, key = node.value, node.slice
+        if (
+            isinstance(key, ast.Constant)
+            and isinstance(key.value, str)
+            and any(
+                isinstance(part, ast.Attribute) and part.attr == "metadata"
+                for part in ast.walk(receiver)
+            )
+        ):
+            keys.add(key.value)
+    return frozenset(keys)
+
+
 class EngineView:
     """The installed engine's parameters, as the replay sees them.
 
     ``current_law`` reads the processed tree that simulations use.
     ``raw_30_april`` reads ``parameters.baseline``, the clone each engine's
     ``process_parameters`` takes before uprating, backdating and fiscal-year
-    conversion (policyengine_uk/tax_benefit_system.py). ``annualisation``
+    conversion (2.89.2 policyengine_uk/tax_benefit_system.py:102-108;
+    2.125.1:109-115). ``annualisation``
     reports whether the engine's ``convert_to_fiscal_year_parameters`` reads
     the ``fiscal_year_blend``/``preserve_calendar_dates`` metadata at all.
+    Those reads are in 2.125.1 policyengine_uk/utils/parameters.py:106-108;
+    2.89.2's converter samples 30 April at utils/parameters.py:39-45.
     """
 
     def __init__(self, system=None):
@@ -82,8 +118,9 @@ class EngineView:
 
         self.system = system or policyengine_uk.CountryTaxBenefitSystem()
         source = inspect.getsource(parameter_utils.convert_to_fiscal_year_parameters)
-        self.reads_blend = "fiscal_year_blend" in source
-        self.reads_calendar = "preserve_calendar_dates" in source
+        metadata_keys = converter_metadata_keys(source)
+        self.reads_blend = "fiscal_year_blend" in metadata_keys
+        self.reads_calendar = "preserve_calendar_dates" in metadata_keys
         self.resolve = builder.engine_resolver(self.system)
 
     def _node(self, tree, path: str):
@@ -218,6 +255,9 @@ def audit_measure(
     checks["authored_construction_reproduces"] = authored_differences(
         event, measure, engine.resolve
     )
+    # Retain the historical serialized key to preserve legacy receipt bytes.
+    # It checks metadata on in-force touched paths, not numeric value equality;
+    # equal annual/raw values can still carry either annualisation flag.
     if not engine.reads_blend and not engine.reads_calendar:
         checks["annual_value_matches_30_april_sample"] = _check(
             True, "this engine samples every government parameter at 30 April"

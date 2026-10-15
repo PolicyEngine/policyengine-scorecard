@@ -118,6 +118,28 @@ def population_note(record: dict | None) -> str:
     )
 
 
+# Fields only a non-legacy run's manifest carries (compute_uk_event
+# variant_identity_fields and uk_replay_variants.manifest_fields).
+VARIANT_MANIFEST_FIELDS = frozenset(
+    {
+        "variant_identity_sha256",
+        "data_years",
+        "supported_years",
+        "unsupported_years",
+        "full_supported_grid",
+        "full_supported_grid_complete",
+    }
+)
+
+
+def legacy_dataset_identity(variants_path: Path) -> tuple[str, str]:
+    """The legacy record's dataset digest and data build."""
+    identity = variants.get_variant(path=variants_path)["identity"]
+    return identity["dataset"]["sha256"], fiscal.data_bundle_id(
+        identity["release_bundle"]
+    )
+
+
 def manifest_variant(
     manifest: dict | None, registry: dict, *, variants_path: Path
 ) -> dict | None:
@@ -129,8 +151,19 @@ def manifest_variant(
         return None
     variant_id = manifest.get("variant_id")
     if variant_id is None:
-        if manifest.get("unsupported_years") or "variant_identity_sha256" in manifest:
-            raise ValueError("a legacy compute manifest lists variant fields")
+        listed = sorted(set(manifest) & VARIANT_MANIFEST_FIELDS)
+        if listed:
+            raise ValueError(
+                f"a legacy compute manifest lists variant fields: {listed}"
+            )
+        # A manifest without variant fields claims the legacy variant: its
+        # dataset must be that record's, not an unrecorded one.
+        sha256, build = legacy_dataset_identity(variants_path)
+        if (
+            manifest.get("certified_dataset_sha256", sha256) != sha256
+            or manifest.get("data_bundle", build) != build
+        ):
+            raise ValueError("a legacy compute manifest names another dataset")
         return None
     record = variants.get_variant(
         variant_id, path=variants_path, allow_uncertified=True
@@ -139,6 +172,13 @@ def manifest_variant(
         raise ValueError("the legacy variant's manifest names no variant_id")
     if manifest.get("variant_identity_sha256") != record["identity_sha256"]:
         raise ValueError("compute manifest variant identity differs from its record")
+    identity = record["identity"]
+    if manifest.get("certified_dataset_sha256") != identity["dataset"][
+        "sha256"
+    ] or manifest.get("data_bundle") != fiscal.data_bundle_id(
+        identity["release_bundle"]
+    ):
+        raise ValueError("compute manifest dataset differs from the variant's record")
     supported, unsupported = variants.supported_years(
         record, registry["calendar_years"]
     )

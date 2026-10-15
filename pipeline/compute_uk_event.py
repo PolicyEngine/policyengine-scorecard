@@ -285,11 +285,14 @@ def build_artifact(
 def preflight(variant: dict | None = None) -> dict:
     """The committed pin and the managed release must agree before any run.
 
-    Given the legacy variant record, the engine is also compiled from its
-    verified sources and imported from its own distributions."""
+    Given the legacy variant record, the run is also isolated like any other
+    variant's (packaged certification, engine compiled from its verified
+    sources and imported from its own distributions) and the release bundle
+    must equal the record's exactly."""
     fiscal.configure_offline()
     worlds.configure_offline()
     if variant is not None:
+        variants.isolate_certification_environment()
         variants.isolate_bytecode(variants.RUNTIME_ROOT / variant["variant_id"])
     committed = worlds.preflight()
     managed = fiscal.preflight_certified_dataset()
@@ -300,6 +303,7 @@ def preflight(variant: dict | None = None) -> dict:
         raise RuntimeError("managed release differs from data/uk/certified_bundle.json")
     if variant is not None:
         import_engine()
+        variants.verify_release_bundle(variant, managed["release_bundle"])
         return {**managed, "check_import_origins": True}
     return managed
 
@@ -358,6 +362,9 @@ def variant_preflight(variant: dict, *, dataset_source: Path | None = None) -> d
         # A year outside the population's data years must fail, not
         # calculate defaults (compute_uk_obr_costings.run_managed_simulation).
         "require_dataset_years": True,
+        # The record's data years are checked against what the simulation's
+        # dataset reports, in every simulation.
+        "data_years": list(variant["data_years"]),
         "check_import_origins": True,
     }
 
@@ -378,6 +385,7 @@ def run_sim(year: int, variables: list[str], reform: dict | None, pre: dict) -> 
         expected_dataset_sha256=pre["sha256"],
         include_engine_provenance=True,
         require_dataset_years=pre.get("require_dataset_years", False),
+        expected_dataset_years=pre.get("data_years"),
         **scenario_kwargs,
     )
     fiscal.assert_managed_bundle(result["policyengine_bundle"], pre["release_bundle"])
@@ -713,7 +721,10 @@ def main(argv: list[str] | None = None) -> int:
         raise ValueError("\n".join(coverage))
     if args.dry_run or args.guards:
         if args.guards:
+            # --guards reads the installed engine: check it is the certified
+            # one and compile it from its verified sources.
             check_variant_environment(variant)
+            variants.isolate_bytecode(variants.RUNTIME_ROOT / variant["variant_id"])
         try:
             resolve = worlds.engine_resolver()
         except ImportError:
@@ -724,6 +735,8 @@ def main(argv: list[str] | None = None) -> int:
             gaps = worlds.reversal_delta_mismatches(index, resolve, years=years)
             if gaps:
                 raise ValueError("\n".join(gaps))
+            if args.guards:
+                import_engine()
             guard = "every reversal delta restates certified current law"
         plan = {
             "event": args.event,

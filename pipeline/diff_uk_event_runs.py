@@ -18,11 +18,20 @@ Flags (docs/uk_replay/RELEASE_REPLAY.md, "Release differences"):
   construction orientation;
 * coverage: a counterpart, artifact or source row on one side only, in a
   year both sides support;
-* mapping: changed head variables, channels or definitions;
+* mapping: changed head variables, channels, definitions or registry digest;
 * support: a year supported on one side only (never also coverage);
 * inertness: an inert in-force construction on one side only;
 * construction: changed executed reform dictionaries or premise checks.
   A changed current-law value of a touched parameter is context, not a flag.
+
+Invariants: each side uses its receipt-bound registry and staging manifest;
+every inventory artifact is revalidated, and the run's identity, support and
+grid reconcile with regenerated staging rows and tallies. Identical sides
+have no flags. Swapping sides preserves flag sets and mirrors values. Every
+source row on either side appears once at source_row level; coverage requires
+shared year support, and rows incapable of counterparts never get support
+flags. Every flagged record belongs to exactly one measure-year packet,
+including support records. Input ordering cannot change output bytes.
 """
 
 from __future__ import annotations
@@ -32,6 +41,7 @@ import hashlib
 import json
 import math
 import re
+import shlex
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -42,6 +52,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from pipeline import compare_uk_event as compare  # noqa: E402
+from pipeline import stage_uk_event as stage  # noqa: E402
 from pipeline.compare_uk_obr_costings import atomic_write_bytes  # noqa: E402
 
 NUMERICAL_FLOOR_GBP = 1_000_000.0
@@ -57,7 +68,7 @@ FLAGS = (
     "inertness",
     "construction",
 )
-PACKET_FLAGS = frozenset(FLAGS) - {"support"}
+PACKET_FLAGS = frozenset(FLAGS)
 COMPUTABLE_CLASSES = ("expressible", "partial")
 LEVELS = ("source_row", "measure_year", "head")
 DIFF_ROOT = ROOT / "results" / "uk" / "replays" / "diffs"
@@ -150,9 +161,198 @@ def resolve_root(value: str, *, artifact_root: Path = ROOT) -> Path:
     raise DiffError(f"{value!r} is neither a replay namespace nor a variant id")
 
 
-def load_side(root: Path, *, artifact_root: Path = ROOT) -> dict:
-    """Every event of a namespace, re-verified through its receipts."""
+def _revalidate_run(
+    event_dir: Path,
+    manifest: dict,
+    provenance: dict,
+    *,
+    artifact_root: Path,
+    variants_path: Path | None = None,
+) -> tuple[dict, dict, dict, Path]:
+    """Reconcile unbound run metadata with the receipt-bound staging inputs."""
+    registry_path = compare._receipt_path(provenance["registry_path"], artifact_root)
+    registry = _json(registry_path)
+    registry_years = sorted(registry["calendar_years"])
+    if (
+        "registry_path" in manifest
+        and compare._receipt_path(manifest["registry_path"], artifact_root)
+        != registry_path
+    ):
+        raise DiffError("run manifest registry path differs from verified snapshot")
+    if manifest.get("variant_id") is not None:
+        data_years = manifest["data_years"]
+        if (
+            not isinstance(data_years, list)
+            or not data_years
+            or any(type(year) is not int for year in data_years)
+            or data_years != sorted(set(data_years))
+        ):
+            raise DiffError("run manifest data years must be nonempty and ordered")
+        supported, unsupported = stage.compute.variants.supported_years(
+            manifest, registry_years
+        )
+        if (
+            manifest["supported_years"] != supported
+            or manifest["unsupported_years"] != unsupported
+        ):
+            raise DiffError("run manifest year support differs from its data years")
+    elif manifest.get(
+        "supported_years", registry_years
+    ) != registry_years or manifest.get("unsupported_years", []):
+        raise DiffError("legacy run manifest year support differs from registry")
+
+    # stage_event resolves inventory references against compute.ROOT. Absolute
+    # paths let it validate a separate artifact root without changing globals;
+    # restore receipt-relative paths before comparing its rows with STAGED.
+    inventory = {
+        str(compare._receipt_path(relative, artifact_root)): relative
+        for relative in manifest["artifacts"]
+    }
+    if len(inventory) != len(manifest["artifacts"]):
+        raise DiffError("run manifest repeats an artifact path")
+    staging_manifest = dict(manifest)
+    staging_manifest["artifacts"] = {
+        absolute: manifest["artifacts"][relative]
+        for absolute, relative in inventory.items()
+    }
+    rows, tally = stage.stage_event(
+        registry,
+        staging_manifest,
+        artifact_dir=event_dir,
+        registry_sha256=provenance["registry_sha256"],
+        variants_path=variants_path or stage.variants.VARIANTS_PATH,
+    )
+    pairs = set()
+    for absolute in inventory:
+        artifact = _json(Path(absolute))
+        pairs.add((artifact["measure_key"], artifact["year"]))
+    planned = stage.compute.worlds.computable(
+        {measure["measure_key"]: measure for measure in registry["measures"]},
+        years=registry_years,
+    )
+    full_pairs = {
+        (key, year)
+        for key, world in planned.items()
+        if "alias_of" not in world
+        for year in registry_years
+    }
+    supported_pairs = {
+        pair
+        for pair in full_pairs
+        if pair[1] in manifest.get("supported_years", registry_years)
+    }
+    for field, expected in (
+        ("artifact_grid", pairs),
+        ("full_event_grid", full_pairs),
+        ("full_supported_grid", supported_pairs),
+    ):
+        if field in manifest and manifest[field] != stage.compute.grid_rows(expected):
+            raise DiffError(f"run manifest {field} differs from verified grid")
+    for field, expected in (
+        ("years", sorted({year for _, year in pairs})),
+        ("measures", sorted({key for key, _ in pairs})),
+        ("full_event_complete", full_pairs <= pairs),
+        ("full_supported_grid_complete", supported_pairs <= pairs),
+    ):
+        if field in manifest and manifest[field] != expected:
+            raise DiffError(f"run manifest {field} differs from verified inventory")
+    for row in rows:
+        if row.get("artifact_path"):
+            row["artifact_path"] = inventory[row["artifact_path"]]
+    staged_path = compare._receipt_path(provenance["staged_path"], artifact_root)
+    if rows != compare.load_jsonl(staged_path):
+        raise DiffError("run manifest staging rows differ from verified staging")
+    staging_path = compare._receipt_path(
+        provenance["staging_manifest_path"], artifact_root
+    )
+    staging = _json(staging_path)
+    if staging.get("variant_id") != manifest.get("variant_id"):
+        raise DiffError("run manifest variant differs from verified staging")
+    if staging.get("event") != event_dir.name or any(
+        staging.get(field) != value for field, value in tally.items()
+    ):
+        raise DiffError("run manifest staging tally differs from verified staging")
+    if staging.get("inert_measure_years", []) != tally.get("inert_measure_years", []):
+        raise DiffError("verified staging inertness differs from run artifacts")
+
+    artifacts = {}
+    for absolute, relative in sorted(inventory.items()):
+        payload = Path(absolute).read_bytes()
+        digest = manifest["artifacts"][relative]
+        if sha256_bytes(payload) != digest:
+            raise DiffError(f"{relative}: artifact bytes differ from RUN_MANIFEST")
+        artifact = json.loads(payload)
+        compare.validate_artifact(artifact, relative)
+        for field in (
+            "policyengine_version",
+            "engine_version",
+            "policyengine_core_version",
+            "data_bundle",
+        ):
+            if artifact.get(field) != manifest[field]:
+                raise DiffError(f"{relative}: {field} differs from run manifest")
+        for field in ("variant_id", "variant_identity_sha256"):
+            if artifact.get(field) != manifest.get(field):
+                raise DiffError(f"{relative}: {field} differs from run manifest")
+        for field in ("dataset_sha256_before", "dataset_sha256_after"):
+            if artifact.get(field) != manifest["certified_dataset_sha256"]:
+                raise DiffError(f"{relative}: {field} differs from certified digest")
+        artifacts[(artifact["measure_key"], artifact["year"])] = {
+            "path": relative,
+            "sha256": digest,
+            "artifact": artifact,
+        }
+    return registry, staging, artifacts, staging_path
+
+
+def _verify_namespace_events(root: Path, events: dict) -> None:
+    """A sealed namespace lists its files: every event it lists must load,
+    and every event that loads must be listed."""
+    manifest_path = root / "NAMESPACE_MANIFEST.json"
+    if not manifest_path.exists():
+        return
+    listed = {
+        Path(relative).parts[0]
+        for relative in _json(manifest_path).get("files", {})
+        if Path(relative).name == "RUN_MANIFEST.json" and len(Path(relative).parts) == 2
+    }
+    if listed != set(events):
+        raise DiffError(
+            f"{root}: events on disk {sorted(events)} differ from "
+            f"NAMESPACE_MANIFEST.json {sorted(listed)}"
+        )
+
+
+def _verify_premises(premises: dict, identity: dict, events: dict, path: Path):
+    """Construction premises must come from this side's engine and the
+    registries its events verified against."""
+    engine = premises.get("engine") or {}
+    if (
+        engine.get("policyengine_uk") != identity["policyengine_uk_version"]
+        or engine.get("policyengine") != identity["policyengine_version"]
+        or engine.get("policyengine_core") != identity["policyengine_core_version"]
+    ):
+        raise DiffError(f"{path}: premises come from another engine: {engine}")
+    for event, record in (premises.get("events") or {}).items():
+        if (
+            event in events
+            and record.get("registry_sha256") != events[event]["registry_sha256"]
+        ):
+            raise DiffError(
+                f"{path}: {event} premises name another registry than the run"
+            )
+
+
+def load_side(
+    root: Path, *, artifact_root: Path = ROOT, variants_path: Path | None = None
+) -> dict:
+    """Every event of a namespace, re-verified through its receipts.
+
+    A variant run's manifest is checked against its record in
+    ``variants_path`` (default data/uk/replay_variants.json); a qualification
+    run passes its work file, which also holds the candidate's record."""
     root = root.resolve()
+    artifact_root = artifact_root.resolve()
     events = {}
     identities = set()
     for event_dir in sorted(p for p in root.iterdir() if p.is_dir()):
@@ -160,40 +360,39 @@ def load_side(root: Path, *, artifact_root: Path = ROOT) -> dict:
         if not manifest_path.exists():
             continue
         event = event_dir.name
-        manifest = _json(manifest_path)
-        if manifest.get("event") != event:
-            raise DiffError(f"{manifest_path}: event differs from its directory")
         try:
-            rows = compare.load_verified_comparison(
-                event_dir / "COMPARISON.json", artifact_root=artifact_root
+            manifest = _json(manifest_path)
+            if manifest.get("event") != event:
+                raise DiffError(f"{manifest_path}: event differs from its directory")
+            provenance_path = event_dir / "COMPARISON_PROVENANCE.json"
+            provenance = _json(provenance_path)
+            registry_path = compare._receipt_path(
+                provenance["registry_path"], artifact_root
             )
-        except (compare.EventComparisonError, FileNotFoundError, ValueError) as exc:
+            rows = compare.load_verified_comparison(
+                event_dir / "COMPARISON.json",
+                artifact_root=artifact_root,
+                registry_path=registry_path,
+            )
+            registry, staging, artifacts, staging_path = _revalidate_run(
+                event_dir,
+                manifest,
+                provenance,
+                artifact_root=artifact_root,
+                variants_path=variants_path,
+            )
+            identity = side_identity(manifest)
+        except (ValueError, KeyError, TypeError, OSError) as exc:
             raise DiffError(f"{event_dir}: comparison does not verify: {exc}") from exc
-        artifacts = {}
-        for relative, digest in sorted(manifest["artifacts"].items()):
-            payload = (artifact_root / relative).read_bytes()
-            if sha256_bytes(payload) != digest:
-                raise DiffError(f"{relative}: artifact bytes differ from RUN_MANIFEST")
-            artifact = json.loads(payload)
-            artifacts[(artifact["measure_key"], artifact["year"])] = {
-                "path": relative,
-                "sha256": digest,
-                "artifact": artifact,
-            }
-        staging_path = event_dir / "STAGING_MANIFEST.json"
-        staging = _json(staging_path)
-        provenance_path = event_dir / "COMPARISON_PROVENANCE.json"
-        provenance = _json(provenance_path)
-        registry = _json(artifact_root / provenance["registry_path"])
         registry_years = sorted(registry["calendar_years"])
         supported = manifest.get("supported_years", registry_years)
-        identity = side_identity(manifest)
         identities.add(json.dumps(identity, sort_keys=True))
         events[event] = {
             "manifest": manifest,
             "rows": {row["source_row_id"]: row for row in rows},
             "artifacts": artifacts,
             "registry": registry,
+            "registry_path": provenance["registry_path"],
             "registry_sha256": provenance["registry_sha256"],
             "registry_years": registry_years,
             "supported_years": sorted(supported),
@@ -213,10 +412,15 @@ def load_side(root: Path, *, artifact_root: Path = ROOT) -> dict:
         raise DiffError(f"{root}: no replayed events")
     if len(identities) != 1:
         raise DiffError(f"{root}: events were produced by different executions")
+    identity = json.loads(next(iter(identities)))
+    _verify_namespace_events(root, events)
     premises_path = root / "CONSTRUCTION_PREMISES.json"
     premises = _json(premises_path) if premises_path.exists() else None
+    if premises is not None:
+        _verify_premises(premises, identity, events, premises_path)
     return {
         "root": root,
+        "artifact_root": artifact_root,
         "identity": json.loads(identities.pop()),
         "events": events,
         "premises": premises,
@@ -266,6 +470,9 @@ def _support(event: str, year: int, base: dict | None, head: dict | None) -> lis
 def compare_source_rows(event: str, base: dict | None, head: dict | None) -> list:
     out = []
     ids = set(base["rows"] if base else ()) | set(head["rows"] if head else ())
+    # A whole event replayed on one side only: every source row lost (or
+    # gained) its counterpart, whatever the years.
+    one_sided = (base is None) != (head is None)
     for source_row_id in sorted(ids):
         b = base["rows"].get(source_row_id) if base else None
         h = head["rows"].get(source_row_id) if head else None
@@ -284,7 +491,7 @@ def compare_source_rows(event: str, base: dict | None, head: dict | None) -> lis
             side is not None and year in side["supported_years"]
             for side in (base, head)
         )
-        if not details and (supported_both or not computable):
+        if not details and supported_both:
             if b is None or h is None:
                 details.append(
                     {
@@ -328,6 +535,15 @@ def compare_source_rows(event: str, base: dict | None, head: dict | None) -> lis
                                 "head": h["head_variables"],
                             }
                         )
+        if one_sided:
+            details = [
+                {
+                    "flag": "coverage",
+                    "code": "event_on_base_only"
+                    if head is None
+                    else "event_on_head_only",
+                }
+            ]
         out.append(
             _record(
                 event,
@@ -368,7 +584,18 @@ def _premise_details(event, measure_key, year, base_premises, head_premises):
 
     b, h = measure(base_premises), measure(head_premises)
     details, context = [], {}
+    if b is None and h is None:
+        return details, context
     if b is None or h is None:
+        # The other side's checks (a failed one included) cannot be compared.
+        details.append(
+            {
+                "flag": "construction",
+                "code": "premises_on_base_only"
+                if h is None
+                else "premises_on_head_only",
+            }
+        )
         return details, context
     for name in sorted(set(b.get("checks", {})) | set(h.get("checks", {}))):
         before = (b.get("checks", {}).get(name) or {}).get("holds")
@@ -434,7 +661,11 @@ def compare_artifacts(
         bv = b["measure_total_gbp"] if b else None
         hv = h["measure_total_gbp"] if h else None
         head_records = []
-        if not details:
+        supported_both = all(
+            side is not None and year in side["supported_years"]
+            for side in (base, head)
+        )
+        if not details and supported_both:
             if b is None or h is None:
                 details.append(
                     {
@@ -555,12 +786,29 @@ def diff_sides(base: dict, head: dict) -> dict:
         event_records = compare_source_rows(event, b, h) + compare_artifacts(
             event, b, h, premises
         )
+        registry_changed = bool(
+            b and h and b["registry_sha256"] != h["registry_sha256"]
+        )
+        if registry_changed:
+            for record in event_records:
+                record["details"].append(
+                    {
+                        "flag": "mapping",
+                        "code": "registry_sha256_changed",
+                        "base": b["registry_sha256"],
+                        "head": h["registry_sha256"],
+                    }
+                )
+                record["details"].sort(
+                    key=lambda detail: (FLAGS.index(detail["flag"]), detail["code"])
+                )
+                record["flags"] = sorted(
+                    set(record["flags"]) | {"mapping"}, key=FLAGS.index
+                )
         records += event_records
         events[event] = {
             "present": {"base": b is not None, "head": h is not None},
-            "registry_changed": bool(
-                b and h and b["registry_sha256"] != h["registry_sha256"]
-            ),
+            "registry_changed": registry_changed,
             "supported_years": {
                 "base": b["supported_years"] if b else None,
                 "head": h["supported_years"] if h else None,
@@ -626,12 +874,33 @@ def _cited_sources(measure: dict | None) -> list[str]:
 
 
 def _reproduce(side: dict, event: str, measure_key: str, year: int) -> str:
+    data = side["events"].get(event)
+    if data is None:
+        return "# This event is absent from this namespace."
     variant = side["identity"]["variant_id"]
-    return (
-        f"PYTHONPATH=. python pipeline/compute_uk_event.py --event {event} "
-        f"--variant {variant} --measures {measure_key} --years {year} --workers 1 "
-        f"--output-dir .venv-replay-checks/reproductions/{variant}/{event}/{measure_key}_{year}"
-    )
+    # Receipt-relative, like every other path in the command: it runs from
+    # the repository root on any checkout, and packet bytes do not depend on
+    # the machine that rendered them.
+    registry = data["registry_path"]
+    arguments = [
+        "python",
+        "pipeline/compute_uk_event.py",
+        "--event",
+        event,
+        "--variant",
+        variant,
+        "--registry",
+        registry,
+        "--measures",
+        measure_key,
+        "--years",
+        str(year),
+        "--workers",
+        "1",
+        "--output-dir",
+        f".venv-replay-checks/reproductions/{variant}/{event}/{measure_key}_{year}",
+    ]
+    return "PYTHONPATH=. " + shlex.join(arguments)
 
 
 def build_packets(diff: dict, base: dict, head: dict) -> dict[str, dict]:
@@ -644,42 +913,52 @@ def build_packets(diff: dict, base: dict, head: dict) -> dict[str, dict]:
     packets = {}
     for (event, measure_key, year), records in sorted(groups.items()):
         sides = {"base": base["events"].get(event), "head": head["events"].get(event)}
-        registry = (sides["head"] or sides["base"])["registry"]
-        measure = next(
-            (m for m in registry["measures"] if m["measure_key"] == measure_key), None
-        )
+        measures = {
+            side: next(
+                (
+                    measure
+                    for measure in (data or {}).get("registry", {}).get("measures", [])
+                    if measure["measure_key"] == measure_key
+                ),
+                None,
+            )
+            for side, data in sides.items()
+        }
+        measure = measures["head"] or measures["base"]
         all_records = [
             r
             for r in diff["rows"]
             if (r["event"], r["measure_key"], r["year"]) == (event, measure_key, year)
         ]
         source_cells = []
-        for source in (measure or {}).get("source_rows", []):
-            if int(source["fy"][:4]) != year:
-                continue
-            row = next(
-                (
-                    r
-                    for r in all_records
-                    if r["level"] == "source_row"
-                    and r["key"] == source["source_row_id"]
-                ),
-                None,
-            )
-            source_cells.append(
-                {
-                    "source_row_id": source["source_row_id"],
-                    "source_row_number": source.get("source_row_number"),
-                    "source_table": source.get("source_table"),
-                    "source_column": source.get("source_column"),
-                    "fy": source["fy"],
-                    "tax_head": source.get("tax_head"),
-                    "obr_value_gbp": source["value_gbp"],
-                    "base_gbp": row["base_gbp"] if row else None,
-                    "head_gbp": row["head_gbp"] if row else None,
-                    "flags": row["flags"] if row else [],
-                }
-            )
+        for side, side_measure in measures.items():
+            for source in (side_measure or {}).get("source_rows", []):
+                if int(source["fy"][:4]) != year:
+                    continue
+                row = next(
+                    (
+                        r
+                        for r in all_records
+                        if r["level"] == "source_row"
+                        and r["key"] == source["source_row_id"]
+                    ),
+                    None,
+                )
+                source_cells.append(
+                    {
+                        "side": side,
+                        "source_row_id": source["source_row_id"],
+                        "source_row_number": source.get("source_row_number"),
+                        "source_table": source.get("source_table"),
+                        "source_column": source.get("source_column"),
+                        "fy": source["fy"],
+                        "tax_head": source.get("tax_head"),
+                        "obr_value_gbp": source["value_gbp"],
+                        "base_gbp": row["base_gbp"] if row else None,
+                        "head_gbp": row["head_gbp"] if row else None,
+                        "flags": row["flags"] if row else [],
+                    }
+                )
 
         def artifact_ref(side):
             entry = (side or {}).get("artifacts", {}).get((measure_key, year))
@@ -713,6 +992,7 @@ def build_packets(diff: dict, base: dict, head: dict) -> dict[str, dict]:
             "event": event,
             "measure_key": measure_key,
             "title": (measure or {}).get("title"),
+            "measures": measures,
             "year": year,
             "fy": f"{year}-{str(year + 1)[-2:]}",
             "flags": sorted({f for r in records for f in r["flags"]}, key=FLAGS.index),
@@ -732,7 +1012,11 @@ def build_packets(diff: dict, base: dict, head: dict) -> dict[str, dict]:
                 side: _reproduce(data, event, measure_key, year)
                 for side, data in (("base", base), ("head", head))
             },
-            "cited_sources": _cited_sources(measure),
+            "cited_sources": [
+                {"side": side, "url": url}
+                for side, side_measure in measures.items()
+                for url in _cited_sources(side_measure)
+            ],
             "minimal_case": {"status": PACKET_PENDING},
             "statutory_evidence": {"status": PACKET_PENDING},
             "filing": (
@@ -782,12 +1066,12 @@ def render_packet_markdown(name: str, packet: dict) -> str:
         "",
         "## OBR source cells",
         "",
-        "| Source row | Table / column | FY | Head | OBR £m | Base £m | Head £m |",
-        "|---|---|---|---|---:|---:|---:|",
+        "| Side | Source row | Table / column | FY | Head | OBR £m | Base £m | Head £m |",
+        "|---|---|---|---|---|---:|---:|---:|",
     ]
     for cell in packet["source_cells"]:
         lines.append(
-            f"| {cell['source_row_id']} (row {cell['source_row_number']}) | "
+            f"| {cell['side']} | {cell['source_row_id']} (row {cell['source_row_number']}) | "
             f"{compare._md(cell['source_table'])} / {compare._md(cell['source_column'])} | "
             f"{cell['fy']} | {compare._md(cell['tax_head'])} | {_gbp(cell['obr_value_gbp'])} | "
             f"{_gbp(cell['base_gbp'])} | {_gbp(cell['head_gbp'])} |"
@@ -809,7 +1093,9 @@ def render_packet_markdown(name: str, packet: dict) -> str:
     for side, command in packet["reproduce"].items():
         lines += [f"{side}:", "", "```bash", command, "```", ""]
     lines += ["## Sources the registry cites", ""]
-    lines += [f"* {url}" for url in packet["cited_sources"]] or ["* none recorded"]
+    lines += [
+        f"* {source['side']}: {source['url']}" for source in packet["cited_sources"]
+    ] or ["* none recorded"]
     lines += [
         "",
         "## Minimal case",
@@ -905,7 +1191,7 @@ def render_markdown(diff: dict, packet_names: list[str], max_rows: int) -> str:
         "",
         "## Years supported on one side only",
         "",
-        "These rows have no packet; the population of one release cannot supply the year.",
+        "Each has a packet; the population of one release cannot supply the year.",
         "",
         "| Event | CY | Level | Rows |",
         "|---|---:|---|---:|",
@@ -982,6 +1268,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--base", required=True, help="namespace path or variant id")
     parser.add_argument("--head", required=True, help="namespace path or variant id")
     parser.add_argument("--output-dir", type=Path)
+    parser.add_argument(
+        "--variants-file",
+        type=Path,
+        help="variant records the runs' manifests are checked against "
+        "(default data/uk/replay_variants.json)",
+    )
     parser.add_argument("--max-rows", type=int, default=200)
     parser.add_argument(
         "--check",
@@ -989,8 +1281,9 @@ def main(argv: list[str] | None = None) -> int:
         help="compare a fresh render with the files on disk",
     )
     args = parser.parse_args(argv)
-    base = load_side(resolve_root(args.base))
-    head = load_side(resolve_root(args.head))
+    variants_path = args.variants_file.resolve() if args.variants_file else None
+    base = load_side(resolve_root(args.base), variants_path=variants_path)
+    head = load_side(resolve_root(args.head), variants_path=variants_path)
     output_dir = args.output_dir or (
         DIFF_ROOT
         / f"{base['identity']['variant_id']}__{head['identity']['variant_id']}"
