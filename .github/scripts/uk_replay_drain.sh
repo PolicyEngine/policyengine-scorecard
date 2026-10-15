@@ -7,6 +7,8 @@
 # receipt's digest and that commit. Stops when the queue is empty or the time
 # budget is spent; the next scheduled run continues.
 set -euo pipefail
+# shellcheck source=.github/scripts/uk_replay_state.sh
+source "$(dirname "${BASH_SOURCE[0]}")/uk_replay_state.sh"
 
 STATE=state
 CONTROL=(uv run --with rfc8785==0.1.4 --with jsonschema --with huggingface_hub python)
@@ -16,24 +18,15 @@ started=$(date +%s)
 now() { date -u +%Y-%m-%dT%H:%M:%SZ; }
 
 push_state() {
-  git -C "$STATE" add -A
-  if git -C "$STATE" diff --cached --quiet; then
-    return 0
-  fi
-  git -C "$STATE" commit -qm "$1"
-  for _ in 1 2 3 4 5; do
-    if git -C "$STATE" push -q origin "HEAD:$STATE_BRANCH"; then
-      return 0
-    fi
-    git -C "$STATE" pull -q --rebase origin "$STATE_BRANCH" || true
-  done
-  echo "could not push the state branch after five attempts" >&2
-  return 1
+  push_replay_state "$STATE" "$1"
 }
 
 while :; do
-  if git ls-remote --exit-code --heads origin "$STATE_BRANCH" >/dev/null; then
-    git -C "$STATE" pull -q --rebase origin "$STATE_BRANCH"
+  if replay_git ls-remote --exit-code --heads origin "$STATE_BRANCH" >/dev/null; then
+    if ! replay_git -C "$STATE" pull -q --rebase origin "$STATE_BRANCH"; then
+      git -C "$STATE" rebase --abort
+      exit 1
+    fi
   fi
   request_id=$("${CONTROL[@]}" -m pipeline.uk_replay_queue pending --state "$STATE" --now "$(now)" | head -n 1)
   if [ -z "$request_id" ]; then
@@ -56,7 +49,7 @@ while :; do
   status=${outcome%% *}
   receipt_sha256=${outcome##* }
   push_state "Receipt for $request_id: $status"
-  receipt_commit=$(git -C "$STATE" rev-parse HEAD)
+  receipt_commit=$REPLAY_STATE_COMMIT
 
   "${CONTROL[@]}" -m pipeline.uk_replay_queue set-status --state "$STATE" \
     --request-id "$request_id" --status "$status" --run-url "$RUN_URL" --now "$(now)" \

@@ -52,6 +52,8 @@ jobs:
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@v5
       - run: bash .github/scripts/uk_replay_state.sh
       - name: Write the request
@@ -67,16 +69,23 @@ jobs:
             printf '%s' "$MANUAL_REQUEST" > "$RUNNER_TEMP/request.json"
           fi
       - run: bash .github/scripts/uk_replay_enqueue.sh "$RUNNER_TEMP/request.json"
+        env:
+          PUSH_TOKEN: ${{ github.token }}
 
   discover:
     name: catch up on undispatched releases
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.request == '')
     runs-on: ubuntu-latest
+    concurrency:
+      group: uk-replay-discover
+      cancel-in-progress: false
     env:
       PYTHONPATH: .
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@v5
       - run: bash .github/scripts/uk_replay_state.sh
       - name: Build requests for releases no request names yet
@@ -87,18 +96,20 @@ jobs:
           uv run --with rfc8785==0.1.4 --with jsonschema --with huggingface_hub --with packaging \
             python -m pipeline.uk_replay_discover --state state --work "$RUNNER_TEMP/discover" \
             --output-dir "$RUNNER_TEMP/discovered" --commit "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID"
+      - name: Push discovered requests and permanent skips
+        if: always()
+        env:
+          PUSH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
           shopt -s nullglob
           requests=("$RUNNER_TEMP"/discovered/*.json)
-          if [ "${#requests[@]}" -gt 0 ]; then
-            bash .github/scripts/uk_replay_enqueue.sh "${requests[@]}"
-          else
-            echo "no undispatched releases"
-          fi
+          bash .github/scripts/uk_replay_enqueue.sh "${requests[@]}"
 
   drain:
     name: run queued requests
     needs: [enqueue, discover]
-    if: always() && contains(fromJSON('["success", "skipped"]'), needs.enqueue.result) && contains(fromJSON('["success", "skipped"]'), needs.discover.result)
+    if: always() && contains(fromJSON('["success", "skipped"]'), needs.enqueue.result)
     runs-on: ubuntu-latest
     timeout-minutes: 340
     concurrency:
@@ -109,10 +120,13 @@ jobs:
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@v5
       - run: bash .github/scripts/uk_replay_state.sh
       - name: Drain the queue
         env:
           HUGGING_FACE_TOKEN: ${{ secrets.HUGGING_FACE_TOKEN }}
+          PUSH_TOKEN: ${{ github.token }}
           REPLAY_RUNNER: github-actions ${{ runner.os }} ${{ runner.arch }}
         run: bash .github/scripts/uk_replay_drain.sh

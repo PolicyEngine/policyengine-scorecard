@@ -319,6 +319,32 @@ the packaged manifest, and the data release manifest's SHA-256 and dataset
 size; the expected release bundle is read from a scratch install, so for a
 discovered request the receiver's bundle check repeats that reading.
 
+Discovery has its own concurrency group, `uk-replay-discover`, so overlapping
+scheduled or manual discovery jobs cannot queue two requests for the same
+release. It tries at most 30 candidates to build at most three requests per
+run. Verified artifact identity inconsistencies are recorded with their
+evidence digests in `replay-state:discovery/skipped/<version>.json` and excluded
+on later runs. These include missing or conflicting UK dependency pins and a
+model wheel digest that disagrees with the packaged manifest. A dataset
+certification disagreement is recorded only when the data release manifest
+is pinned to a commit. Network errors, unavailable manifests, incomplete
+PyPI uploads and unverified download bytes are retried. Yanked releases are
+excluded. Without a certified variant, discovery has no baseline and queues
+nothing. A discovery error never prevents the drain from running.
+
+A late W4 dispatch for a release that discovery already queued creates its
+own request and replay. W4 needs a receipt bound to its own `request_id`;
+matching the wrapper version does not substitute the discovery receipt for
+that receipt.
+
+The scratch bundle probe receives an environment without Hugging Face or
+GitHub tokens. Workflow checkouts do not persist Git credentials. The push
+credential is supplied only to steps that push state, and the scripts remove
+it from the exported environment before running qualification code. Git
+authentication is scoped to individual Git operations. A failed rebase is
+aborted and stops the push; a successful push is checked against the remote
+ref before a terminal status names its receipt commit.
+
 At most one drain job runs, with at most two simulation workers, so this
 workflow never runs more than two simulations at once. These runs use GitHub
 runners; manual replays on the shared Mac also respect the host reservation
