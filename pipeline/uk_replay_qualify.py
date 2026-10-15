@@ -1118,6 +1118,8 @@ def run_request(
                     str(root),
                     "--head",
                     str(namespace),
+                    "--variants-file",
+                    str(variants_file),
                     "--output-dir",
                     str(diff_dir),
                 ],
@@ -1231,6 +1233,8 @@ def main(argv: list[str] | None = None) -> int:
     diff_parser.add_argument("--base", type=Path, required=True)
     diff_parser.add_argument("--base-root", type=Path, required=True)
     diff_parser.add_argument("--head", type=Path, required=True)
+    # The head's record is the candidate's, held only in the work document.
+    diff_parser.add_argument("--variants-file", type=Path, required=True)
     diff_parser.add_argument("--output-dir", type=Path, required=True)
     receipt = commands.add_parser("receipt")
     receipt.add_argument("--request", type=Path, required=True)
@@ -1331,8 +1335,17 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "diff":
         from pipeline import diff_uk_event_runs as diff
 
-        base = diff.load_side(args.base, artifact_root=args.base_root)
-        head = diff.load_side(args.head, artifact_root=ROOT)
+        # Each side is verified against its own checkout: the base against the
+        # runner's committed variants document, the head against the work
+        # document that adds the candidate's record.
+        base = diff.load_side(
+            args.base,
+            artifact_root=args.base_root,
+            variants_path=args.base_root / "data" / "uk" / "replay_variants.json",
+        )
+        head = diff.load_side(
+            args.head, artifact_root=ROOT, variants_path=args.variants_file.resolve()
+        )
         # Loading verified each side against its own checkout. The published
         # diff names repository-relative roots rather than temporary runners.
         base["root"] = ROOT / args.base.resolve().relative_to(args.base_root.resolve())

@@ -340,6 +340,51 @@ def test_pending_never_returns_terminal_requests(tmp_path_factory, statuses):
     assert set(later) == set(ids[1:])
 
 
+@pytest.mark.parametrize("inert", [False, True])
+def test_an_inert_construction_makes_the_receipt_incomplete_and_names_the_pair(
+    tmp_path, monkeypatch, inert
+):
+    # Coordinator, 2026-10-11: identical worlds in an in-force year on the
+    # candidate's engine must not let a receipt claim a complete corpus.
+    import functools
+    import shutil
+
+    from test_uk_event_diff import EVENT, KEY, make_namespace, synthetic_record
+
+    from pipeline import compute_uk_event as compute
+    from pipeline import stage_uk_event as stage
+
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    monkeypatch.setattr(stage, "manifest_variant", synthetic_record)
+    make_namespace(
+        tmp_path, "candidate", variant=CURRENT, identical=(2025,) if inert else ()
+    )
+    record = rv.get_variant(CURRENT)
+    shutil.copytree(
+        tmp_path / "ns" / "candidate", rv.namespace_root(record, root=tmp_path)
+    )
+    monkeypatch.setattr(
+        qualify,
+        "event_results",
+        functools.partial(qualify.event_results, events=[EVENT]),
+    )
+    receipt = qualify.build_receipt(
+        golden_request(),
+        record=record,
+        root=tmp_path,
+        results_path="requests/x/results/",
+    )
+    event = receipt["corpus"]["events"][EVENT]
+    assert receipt["integrity"]["failures"] == []
+    if inert:
+        assert receipt["integrity"]["status"] == "incomplete"
+        assert event["full_supported_grid_complete"] is False
+        assert event["inert_measure_years"] == [{"measure_key": KEY, "year": 2025}]
+    else:
+        assert receipt["integrity"]["status"] == "complete"
+        assert event["inert_measure_years"] == []
+
+
 def test_rejection_discards_a_supplied_record_and_cli_accepts_candidate(tmp_path):
     request = golden_request()
     record = copy.deepcopy(rv.get_variant(CURRENT))
@@ -885,12 +930,24 @@ def test_legacy_requalification_preserves_original_diagnostics(tmp_path, monkeyp
 def test_diff_reads_base_and_head_artifacts_from_their_own_checkouts(
     tmp_path, monkeypatch
 ):
-    from test_uk_event_diff import make_namespace
+    from test_uk_event_diff import make_namespace, synthetic_record
     from pipeline import compute_uk_event as compute
     from pipeline import diff_uk_event_runs as diff
+    from pipeline import stage_uk_event as stage
 
     base_root = tmp_path / "runner"
     head_root = tmp_path / "checkout"
+    work_variants = tmp_path / "work" / "variants.json"
+    # The synthetic sides name synthetic datasets, so the variant lookup is
+    # stood in (as in test_uk_event_diff); what is checked here is that each
+    # side is looked up in its own checkout's document.
+    looked_up = []
+
+    def record(manifest, registry, *, variants_path):
+        looked_up.append(Path(variants_path))
+        return synthetic_record(manifest, registry, variants_path=variants_path)
+
+    monkeypatch.setattr(stage, "manifest_variant", record)
     monkeypatch.setattr(compute, "ROOT", base_root)
     base = make_namespace(base_root, "pair")
     monkeypatch.setattr(compute, "ROOT", head_root)
@@ -913,10 +970,17 @@ def test_diff_reads_base_and_head_artifacts_from_their_own_checkouts(
         str(base_root),
         "--head",
         str(head["root"]),
+        "--variants-file",
+        str(work_variants),
         "--output-dir",
         str(output),
     ]
+    looked_up.clear()
     assert qualify.main(command) == 0
+    assert set(looked_up) == {
+        base_root / "data" / "uk" / "replay_variants.json",
+        work_variants.resolve(),
+    }
     result = json.loads((output / "DIFF.json").read_bytes())
     assert result["flag_counts"]["numerical"] > 0
     row = next(

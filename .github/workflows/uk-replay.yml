@@ -7,8 +7,14 @@ name: UK replay qualification
 # One request runs per drain, with at most two simulation workers; the recorder
 # dispatches another drain while requests remain eligible. Stale runs retry
 # after seven hours, with three running attempts maximum.
-# Dataset access happens before the candidate job, in a separate job. The
-# candidate job has contents: read, no checkout credentials and no dataset token.
+# The dataset token (the org secret PE_UK_PRIVATE_HF_READ_TOKEN, read-only)
+# is used only in workflow_dispatch and repository_dispatch runs: the schedule
+# only dispatches a drain. In the run job it is in one step's environment,
+# which fetches and verifies the dataset before any candidate code is
+# installed; candidate steps never see it, and that job has contents: read and
+# no checkout credentials. Scorecard is public: the dataset and anything
+# household-level never leave the runner (no artifact, no cache); only the
+# request and the sealed aggregate results cross jobs, checked before upload.
 # Receipts are pushed before their terminal status names the pushed commit.
 # GitHub documents GITHUB_TOKEN-triggered workflow_dispatch runs at:
 # https://docs.github.com/en/actions/concepts/security/github_token
@@ -37,6 +43,19 @@ env:
   PYTHONPATH: .
 
 jobs:
+  tick:
+    name: dispatch a drain on schedule
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Start a drain run (workflow_dispatch, no request)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DRAIN_REF: ${{ github.event.repository.default_branch }}
+        run: gh workflow run uk-replay.yml --repo "$GITHUB_REPOSITORY" --ref "$DRAIN_REF"
+
   enqueue:
     name: record the request
     if: github.event_name == 'repository_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.request != '')
@@ -71,8 +90,8 @@ jobs:
           gh workflow run uk-replay.yml --repo "$GITHUB_REPOSITORY" --ref "$DRAIN_REF"
 
   prepare:
-    name: select a request and fetch its dataset
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.request == '')
+    name: select a request
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.request == ''
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -86,20 +105,12 @@ jobs:
         env:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: bash .github/scripts/uk_replay_prepare.sh
-      - name: Fetch and verify the dataset without candidate code
-        if: steps.select.outputs.request_id != ''
-        env:
-          HUGGING_FACE_TOKEN: ${{ secrets.HUGGING_FACE_TOKEN }}
-        run: |
-          uv run --with rfc8785==0.1.4 --with jsonschema --with huggingface_hub python \
-            -m pipeline.uk_replay_qualify fetch-dataset --request input/REQUEST.json \
-            --output input/dataset.h5 --result-file input/fetch-result.json
-      - name: Hand the verified dataset and request to the candidate job
+      - name: Hand the request (never the dataset) to the run job
         if: steps.select.outputs.request_id != ''
         uses: actions/upload-artifact@v4
         with:
           name: replay-input
-          path: input/
+          path: input/REQUEST.json
           if-no-files-found: error
           retention-days: 1
 
@@ -120,13 +131,27 @@ jobs:
         with:
           name: replay-input
           path: input/
+      - name: Fetch and verify the dataset before any candidate code
+        if: contains(fromJSON('["workflow_dispatch", "repository_dispatch"]'), github.event_name)
+        env:
+          HUGGING_FACE_TOKEN: ${{ secrets.PE_UK_PRIVATE_HF_READ_TOKEN }}
+        run: |
+          uv run --with rfc8785==0.1.4 --with jsonschema --with huggingface_hub python \
+            -m pipeline.uk_replay_qualify fetch-dataset --request input/REQUEST.json \
+            --output input/dataset.h5 --result-file input/fetch-result.json
       - name: Run the candidate and preserve logs and outcome
         env:
           REQUEST_ID: ${{ needs.prepare.outputs.request_id }}
           REPLAY_RUNNER: github-actions ${{ runner.os }} ${{ runner.arch }}
         run: bash .github/scripts/uk_replay_drain.sh
-      - name: Upload the receipt and results for the recorder
+      - name: Nothing household-level leaves the runner
+        id: guard
         if: always()
+        run: bash .github/scripts/uk_replay_output_guard.sh output
+      # A refused output is never uploaded; the recorder then finds no
+      # artifact and records the attempt as failed.
+      - name: Upload the receipt and results for the recorder
+        if: always() && steps.guard.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: replay-output

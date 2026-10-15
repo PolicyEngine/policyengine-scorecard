@@ -61,11 +61,16 @@ Two flows use the same receiver:
   `STATUS.json` is written in a later commit and names `receipt_sha256` and
   `receipt_commit`, so one contents read binds the status to the receipt
   bytes.
-* Dataset fetching and candidate execution are separate jobs. The control
-  job fetches and verifies the file with the dataset token; the run job has
-  `contents: read`, no persisted checkout credential and no Hugging Face
-  token. It receives the file through an artifact and supplies
-  `--dataset-file` to `run-request`. The qualifier writes a structured result
+* Dataset fetching and candidate execution are separate steps of the run
+  job, which has `contents: read` and no persisted checkout credential. The
+  fetch step runs first, before any candidate code is installed, and is the
+  only step holding the read-only dataset token (the organisation secret
+  `PE_UK_PRIVATE_HF_READ_TOKEN`, only in `workflow_dispatch` and
+  `repository_dispatch` runs). It verifies the file, which then goes to
+  `run-request` as `--dataset-file`. Scorecard is public: the dataset never
+  leaves the runner (no artifact, no cache), the control job hands over only
+  the request, and the run's output is checked for dataset-shaped files,
+  large files and symlinks before it is uploaded. The qualifier writes a structured result
   file with `status` and `receipt_sha256`, while logs remain visible in
   Actions. A separate recording job has `contents: write` and `actions: write`,
   validates the uploaded receipt, records it before terminal status and

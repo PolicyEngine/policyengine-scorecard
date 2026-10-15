@@ -385,14 +385,26 @@ GitHub's default concurrency queue can replace an older pending run; the
 request remains in `replay-state` for a later drain.
 ([GitHub concurrency documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency))
 
-The `prepare` job selects the oldest eligible request and marks it running.
-It fetches the dataset with `fetch-dataset` in a control step holding
-`HUGGING_FACE_TOKEN`, checks its size and SHA-256, and uploads the dataset,
-request and fetch outcome as an artifact. A fetch rejection is passed to the
-run without installing candidate code. The separate `run` job has
-`contents: read`, checks out with `persist-credentials: false`, receives no
-Hugging Face token, and runs `.github/scripts/uk_replay_drain.sh` for that one
-request. `pipeline/uk_replay_qualify.py run-request` then:
+The `prepare` job selects the oldest eligible request, marks it running and
+hands only `REQUEST.json` to the run job. The separate `run` job has
+`contents: read` and checks out with `persist-credentials: false`. Its first
+step after that fetches the dataset with `fetch-dataset`, checks its size and
+SHA-256, and records the fetch outcome, before any candidate code is
+installed. That one step holds the data token: the organisation secret
+`PE_UK_PRIVATE_HF_READ_TOKEN` (read-only, policyengine-uk-data-private only),
+passed as `HUGGING_FACE_TOKEN`, and only in `workflow_dispatch` and
+`repository_dispatch` runs; the schedule only dispatches a drain, and the
+workflow has no pull-request trigger. A fetch rejection is passed to the run
+without installing candidate code. The job then runs
+`.github/scripts/uk_replay_drain.sh` for that one request.
+
+Scorecard is public, so the dataset and anything household-level stay on the
+runner: nothing is cached, and the only artifacts are the request and the
+run's `output/` directory. Before that upload,
+`.github/scripts/uk_replay_output_guard.sh` refuses dataset-shaped files
+(`.h5`, `.hdf5`, `.parquet`, `.feather`, pickles), any file over 25 MB and
+any symlink; a refused output is not uploaded, and the recorder records the
+attempt as failed. `pipeline/uk_replay_qualify.py run-request` then:
 
 1. Validate the request (`schema_invalid`).
 2. Check the dataset file supplied by the control job against the request
@@ -419,7 +431,9 @@ request. `pipeline/uk_replay_qualify.py run-request` then:
    the summary, the construction premises, the re-verified diagnostics.
 6. Diff against the runner checkout's committed `compare_to` namespace
    (default: the newest certified variant with committed results, preferring
-   the matching certified variant itself for an exact re-qualification).
+   the matching certified variant itself for an exact re-qualification). The
+   base is verified against the runner's committed variants document and the
+   candidate against the work document that adds its record.
 7. Seal the namespace (`NAMESPACE_MANIFEST.json`, then
    `REPLAY_RECEIPT.json`) and copy it, the diff and the requirements to
    `replay-state:requests/<request_id>/results/`.
@@ -471,12 +485,13 @@ holds heavy local work back from 29 October to 2 November.
   freeze, checks the installed environment against the record, runs every
   event's construction guards, regenerates the committed construction
   premises byte for byte. Non-legacy variants also regenerate the re-verified
-  diagnostics and, with `HUGGING_FACE_TOKEN` and a committed sealed namespace,
-  replay one real measure-year on the certified dataset and compare its
-  artifact with the committed bytes. The legacy leg skips diagnostics and
-  this determinism step. Without the secret (pending an administrator), or
-  without a committed sealed namespace, the step emits a notice stating that
-  nothing was replayed.
+  diagnostics and, on pushes to main with the `PE_UK_PRIVATE_HF_READ_TOKEN`
+  secret and a committed sealed namespace, replay one real measure-year on
+  the certified dataset and compare its artifact with the committed bytes.
+  Pull requests never receive the token: their run emits a notice that
+  nothing was replayed. The legacy leg skips diagnostics and this
+  determinism step. Without the secret, or without a committed sealed
+  namespace, the step emits a notice stating that nothing was replayed.
 
 ## Invariants
 

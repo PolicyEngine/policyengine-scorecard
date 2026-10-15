@@ -212,7 +212,27 @@ def test_candidate_job_has_read_permission_and_no_dataset_token_or_credentials()
         step for step in candidate["steps"] if step.get("uses") == "actions/checkout@v4"
     )
     assert checkout["with"]["persist-credentials"] is False
-    assert "HUGGING_FACE_TOKEN" not in json.dumps(candidate)
+    # The read-only data token reaches only the dataset fetch, which runs
+    # before any candidate code and only on dispatches (never on a schedule
+    # tick or a pull request), and only from the scoped org secret.
+    with_token = [step for step in candidate["steps"] if "secrets." in json.dumps(step)]
+    assert [step["name"] for step in with_token] == [
+        "Fetch and verify the dataset before any candidate code"
+    ]
+    (fetch,) = with_token
+    assert fetch["env"] == {
+        "HUGGING_FACE_TOKEN": "${{ secrets.PE_UK_PRIVATE_HF_READ_TOKEN }}"
+    }
+    assert fetch["if"] == (
+        'contains(fromJSON(\'["workflow_dispatch", "repository_dispatch"]\'), '
+        "github.event_name)"
+    )
+    steps = [step.get("name") for step in candidate["steps"]]
+    assert steps.index(fetch["name"]) < steps.index(
+        "Run the candidate and preserve logs and outcome"
+    )
+    rest = {k: v for k, v in candidate.items() if k != "steps"}
+    assert "secrets." not in json.dumps(rest)
     assert workflow["jobs"]["record"]["permissions"] == {
         "contents": "write",
         "actions": "write",
@@ -543,3 +563,86 @@ def test_ci_regeneration_preserves_sealed_source_and_detects_every_changed_byte(
         if regeneration == "identical"
         else git(fresh, "status", "--porcelain") != ""
     )
+
+
+GUARD = ROOT / ".github/scripts/uk_replay_output_guard.sh"
+
+
+def guard(directory: Path) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        ["bash", str(GUARD), str(directory)], capture_output=True, text=True
+    )
+
+
+def test_output_guard_refuses_datasets_large_files_and_symlinks(tmp_path):
+    # Scorecard is public (d1383): only the receipt, status and sealed
+    # aggregate results may be uploaded from the run job.
+    output = tmp_path / "output"
+    results = output / "results" / "autumn_budget_2024"
+    results.mkdir(parents=True)
+    (results / "COMPARISON.json").write_text("{}")
+    (output / "REPLAY_RECEIPT.json").write_text("{}")
+    assert guard(output).returncode == 0
+    assert guard(tmp_path / "absent").returncode == 0
+    for name in ("dataset.h5", "frs.hdf5", "x.h5.partial", "people.parquet"):
+        bad = results / name
+        bad.write_bytes(b"\0")
+        refused = guard(output)
+        assert refused.returncode == 1 and name in refused.stdout
+        bad.unlink()
+    big = results / "artifact.json"
+    with big.open("wb") as handle:
+        handle.truncate(25 * 1024 * 1024 + 1)
+    assert guard(output).returncode == 1
+    big.unlink()
+    outside = tmp_path / "input.json"
+    outside.write_text("{}")
+    (results / "link.json").symlink_to(outside)
+    refused = guard(output)
+    assert refused.returncode == 1 and "symlink" in refused.stdout
+
+
+def test_nothing_crosses_jobs_but_the_request_and_guarded_output():
+    workflow = yaml.safe_load((ROOT / ".github/workflows/uk-replay.yml").read_text())
+    uploads = [
+        (name, step)
+        for name, job in workflow["jobs"].items()
+        for step in job["steps"]
+        if step.get("uses", "").startswith("actions/upload-artifact")
+    ]
+    assert [(name, step["with"]["path"]) for name, step in uploads] == [
+        ("prepare", "input/REQUEST.json"),
+        ("run", "output/"),
+    ]
+    steps = workflow["jobs"]["run"]["steps"]
+    names = [step.get("name") for step in steps]
+    guard_step = steps[names.index("Nothing household-level leaves the runner")]
+    upload = steps[names.index("Upload the receipt and results for the recorder")]
+    assert names.index(guard_step["name"]) < names.index(upload["name"])
+    assert "uk_replay_output_guard.sh output" in guard_step["run"]
+    assert upload["if"] == "always() && steps.guard.outcome == 'success'"
+    assert guard_step["id"] == "guard" and guard_step["if"] == "always()"
+    for path in (".github/workflows/uk-replay.yml", ".github/workflows/ci.yml"):
+        document = yaml.safe_load((ROOT / path).read_text())
+        for job in document["jobs"].values():
+            for step in job["steps"]:
+                assert not step.get("uses", "").startswith("actions/cache"), path
+
+
+def test_the_data_token_is_used_only_outside_pull_requests():
+    replay = yaml.safe_load((ROOT / ".github/workflows/uk-replay.yml").read_text())
+    # PyYAML reads the bare key `on` as True.
+    assert set(replay[True]) == {"repository_dispatch", "workflow_dispatch", "schedule"}
+    ci = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
+    for document in (replay, ci):
+        for job in document["jobs"].values():
+            for step in job["steps"]:
+                text = json.dumps(step)
+                if "HF_READ_TOKEN" in text or "HUGGING_FACE" in text:
+                    assert "secrets.HUGGING_FACE_TOKEN" not in text
+                if "secrets.PE_UK_PRIVATE_HF_READ_TOKEN" in text:
+                    assert "pull_request" not in step["if"]
+                    assert (
+                        step["if"].endswith("github.event_name == 'push'")
+                        or "workflow_dispatch" in step["if"]
+                    )
