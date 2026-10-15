@@ -1,0 +1,44 @@
+{
+ "by_status": {
+  "constructed": 8,
+  "inert_construction": 4,
+  "not_computed": 486
+ },
+ "computed_measure_years": 12,
+ "event": "spring_statement_2025",
+ "full_event_complete": false,
+ "full_event_grid_size": 12,
+ "full_supported_grid_complete": false,
+ "inert_measure_years": [
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2026
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2027
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2028
+  },
+  {
+   "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+   "year": 2029
+  }
+ ],
+ "missing_measure_years": [],
+ "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+ "source_rows": 498,
+ "source_value_gbp": 5575279133.025794,
+ "source_value_gbp_decimal": "5575279133.02579407146152",
+ "staged_path": "results/uk/replays/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/spring_statement_2025/STAGED.jsonl",
+ "staged_rows": 498,
+ "staged_sha256": "1659ccc7c2536f63fef48d68114d42a5f5807c4999fa8b012573d08a940e59c3",
+ "staged_value_gbp_decimal": "5575279133.02579407146152",
+ "supported_grid_size": 12,
+ "unsupported_measure_years": [],
+ "unsupported_source_rows": 0,
+ "unsupported_years": [],
+ "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+}
