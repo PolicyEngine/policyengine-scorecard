@@ -1026,11 +1026,13 @@ def run_managed_simulation(
     include_engine_provenance: bool = False,
     scenario: Any = None,
     require_dataset_years: bool = False,
+    expected_dataset_years: list[int] | None = None,
 ) -> dict[str, Any]:
     """Run, aggregate, delete, and collect exactly one managed sim.
 
     With ``require_dataset_years`` a simulation whose dataset does not state
-    its years fails instead of skipping the year check."""
+    its years fails instead of skipping the year check; with
+    ``expected_dataset_years`` its whole year set must equal that list."""
 
     if scenario is not None and reform is not None:
         raise ValueError("pass either reform or scenario, not both")
@@ -1082,6 +1084,17 @@ def run_managed_simulation(
                 raise RuntimeError(
                     "the simulation dataset does not state its years; "
                     f"cannot confirm {year} has inputs"
+                )
+            if (
+                expected_dataset_years is not None
+                and dataset_years is not None
+                and sorted(int(value) for value in dataset_years)
+                != list(expected_dataset_years)
+            ):
+                raise RuntimeError(
+                    "the simulation dataset's years "
+                    f"{sorted(int(value) for value in dataset_years)} differ from "
+                    f"the variant's data years {list(expected_dataset_years)}"
                 )
             if dataset_years is not None and int(year) not in {
                 int(value) for value in dataset_years

@@ -474,6 +474,19 @@ def distribution_record_sha256(distribution, *, verify_files: bool = True) -> st
     return hashlib.sha256(body).hexdigest()
 
 
+def installed_distributions() -> dict[str, str]:
+    """Version of each importable distribution. When a name appears twice on
+    sys.path the first one is what Python imports (and what
+    importlib.metadata.version reports), so the first wins here too: a
+    host's own packages behind the pinned environment, such as Modal's
+    client dependencies in its containers, do not count."""
+    versions = {}
+    for distribution in importlib.metadata.distributions():
+        name = re.sub(r"[-_.]+", "-", distribution.metadata["Name"]).lower()
+        versions.setdefault(name, distribution.version)
+    return versions
+
+
 def installed_identity(*, verify_files: bool = True) -> dict:
     packages = {}
     for name in PACKAGES:
@@ -494,54 +507,121 @@ def installed_identity(*, verify_files: bool = True) -> dict:
         "packages": packages,
         "packaged_bundle_manifest_sha256": sha256_file(manifest),
         "python": f"{sys.version_info.major}.{sys.version_info.minor}",
-        "distributions": {
-            re.sub(r"[-_.]+", "-", d.metadata["Name"]).lower(): d.version
-            for d in importlib.metadata.distributions()
-        },
+        "distributions": installed_distributions(),
         "unlisted_files": unlisted_package_files() if verify_files else {},
+        "startup_files": startup_files() if verify_files else [],
     }
 
 
 def unlisted_package_files(names=PACKAGES) -> dict[str, list[str]]:
-    """Files in each package's top-level directories that no installed
-    distribution's RECORD lists.
+    """Files and links in each package's top-level directories that the
+    package's own RECORD does not list.
 
     A listed file is checked against its hash, but policyengine-core also
-    loads files nobody listed: every file in a parameter directory
-    (parameters/parameter_node.py, sorted os.listdir) and every module in a
-    variable directory (taxbenefitsystems/tax_benefit_system.py,
-    add_variables_from_directory). Bytecode caches are skipped here because
-    runs never read them (isolate_bytecode)."""
-    listed = set()
-    for distribution in importlib.metadata.distributions():
-        for line in (distribution.read_text("RECORD") or "").splitlines():
-            relative = line.rsplit(",", 2)[0]
-            if relative:
-                listed.add(Path(distribution.locate_file(relative)).resolve())
+    loads files nobody listed: every file in a parameter directory and its
+    subdirectories (parameters/parameter_node.py: sorted os.listdir, then
+    os.path.isdir) and every module in a variable directory and its
+    subdirectories (taxbenefitsystems/tax_benefit_system.py,
+    add_variables_from_directory: glob "*.py", then glob "*/"). Both recurse
+    into a ``__pycache__`` and follow a symlinked directory, so:
+
+    * only conventionally named bytecode inside a ``__pycache__`` is skipped
+      (BYTECODE_NAME; runs never import it: isolate_bytecode); anything else
+      there, including a README.pyc that the parameter loader would read, is
+      reported;
+    * every symlink, to a file or a directory, is reported;
+    * a file counts as listed only in its own package's RECORD, by its
+      unresolved path: another distribution's RECORD is never hash-checked.
+    """
     found = {}
     for name in names:
         distribution = importlib.metadata.distribution(name)
+        rows = _record_rows(distribution)
+        listed = {
+            os.path.normpath(str(distribution.locate_file(row[0]))) for row in rows
+        }
         tops = {
             row[0].split("/", 1)[0]
-            for row in _record_rows(distribution)
+            for row in rows
             if "/" in row[0] and ".dist-info/" not in row[0]
         }
+        root = str(distribution.locate_file(""))
         extra = []
         for top in sorted(tops):
-            base = Path(distribution.locate_file(top))
+            base = str(distribution.locate_file(top))
+            if os.path.islink(base):
+                extra.append(f"{top} (symlink)")
+                continue
             for directory, subdirectories, files in os.walk(base):
-                subdirectories[:] = sorted(
-                    d for d in subdirectories if d != "__pycache__"
-                )
-                for file in sorted(files):
-                    path = Path(directory) / file
-                    if path.resolve() not in listed:
-                        extra.append(
-                            str(path.relative_to(distribution.locate_file("")))
-                        )
+                subdirectories.sort()
+                cache = "__pycache__" in Path(directory).parts
+                for entry in sorted([*subdirectories, *files]):
+                    path = os.path.normpath(os.path.join(directory, entry))
+                    relative = os.path.relpath(path, root)
+                    if os.path.islink(path):
+                        extra.append(f"{relative} (symlink)")
+                    elif entry in subdirectories:
+                        continue
+                    elif cache and BYTECODE_NAME.fullmatch(entry):
+                        continue
+                    elif path not in listed:
+                        extra.append(relative)
         if extra:
             found[name] = extra
     return found
+
+
+VIRTUALENV_SHIM = ("_virtualenv.pth", "import _virtualenv")
+# The names import writes into a __pycache__ (importlib.util.cache_from_source:
+# <module>.<cache_tag>[.opt-<n>].pyc). parameter_node.py reads any file whose
+# stem is README before it filters extensions, but these names always carry
+# the interpreter tag, so their stem is never README.
+BYTECODE_NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\.[a-z]+-[0-9]+(\.opt-[0-9]+)?\.pyc")
+
+
+def startup_files(names=PACKAGES) -> list[dict]:
+    """The ``*.pth`` files beside the engine packages. Python runs their
+    ``import`` lines at startup (site.py), before any check here, so each
+    must belong to a pinned distribution or be the virtual environment's
+    own shim; verify_installed decides."""
+    owners = {}
+    for distribution in importlib.metadata.distributions():
+        owner = re.sub(r"[-_.]+", "-", distribution.metadata["Name"]).lower()
+        for line in (distribution.read_text("RECORD") or "").splitlines():
+            relative = line.rsplit(",", 2)[0]
+            if relative.endswith(".pth"):
+                owners[os.path.normpath(str(distribution.locate_file(relative)))] = (
+                    owner
+                )
+    sites = sorted(
+        {str(importlib.metadata.distribution(name).locate_file("")) for name in names}
+    )
+    out = []
+    for site in sites:
+        for entry in sorted(os.listdir(site)):
+            if not entry.endswith(".pth"):
+                continue
+            path = os.path.normpath(os.path.join(site, entry))
+            out.append(
+                {
+                    "name": entry,
+                    "owner": owners.get(path),
+                    "text": Path(path).read_text(errors="replace").strip()[:200],
+                    "symlink": os.path.islink(path),
+                }
+            )
+    return out
+
+
+def startup_file_problems(files: list[dict], pins: dict[str, str]) -> list[str]:
+    problems = []
+    for file in files:
+        shim = (file["name"], file["text"]) == VIRTUALENV_SHIM
+        if file.get("symlink") or not (shim or file["owner"] in pins):
+            problems.append(
+                f"startup file {file['name']} belongs to no pinned distribution"
+            )
+    return problems
 
 
 def isolate_bytecode(runtime_root: Path, environ=os.environ) -> Path:
@@ -554,8 +634,8 @@ def isolate_bytecode(runtime_root: Path, environ=os.environ) -> Path:
     loaded = sorted(m for m in ENGINE_MODULES.values() if m in sys.modules)
     if loaded:
         raise VariantError(f"engine modules imported before isolation: {loaded}")
-    prefix = (runtime_root / "no-bytecode").resolve()
-    if prefix.is_symlink():
+    prefix = runtime_root.resolve() / "no-bytecode"
+    if prefix.is_symlink():  # before anything resolves or removes it
         raise VariantError(f"{prefix} is a symlink; refusing it")
     if prefix.exists():
         shutil.rmtree(prefix)
@@ -638,6 +718,7 @@ def verify_installed(
         + (f" and {len(paths) - 5} more" if len(paths) > 5 else "")
         for name, paths in sorted(installed.get("unlisted_files", {}).items())
     ]
+    mismatches += startup_file_problems(installed.get("startup_files", []), pins)
     if mismatches:
         raise VariantError(
             f"{record['variant_id']}: installed environment is not the certified one: "

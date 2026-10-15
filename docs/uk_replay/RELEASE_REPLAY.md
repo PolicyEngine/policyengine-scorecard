@@ -82,7 +82,7 @@ A variant record:
 | Field | Meaning |
 |---|---|
 | `variant_id` | `pe<wrapper>_uk<model>_<certified_data_build_id>`, recomputed from `identity`; when another identity already holds that slug (same versions, other wheels or numerical environment) the id adds `--<first 10 hex of identity_sha256>`. |
-| `identity` | Everything that determines execution. Its canonical-JSON SHA-256 is `identity_sha256`. |
+| `identity` | Everything that determines execution. Its canonical-JSON SHA-256 is `identity_sha256`. `data_years`, `layout`, `status` and `executor` are outside it on purpose: they describe or file a run and do not change a computed byte. `data_years` is checked instead: on a non-legacy variant every simulation compares the record's `data_years` with its dataset's whole `dataset.years` set and stops if they differ, and staging recomputes the supported years from the record. |
 | `identity.packages` | For `policyengine`, `policyengine-uk`, `policyengine-core`: exact `version`, and `record_sha256`: the SHA-256 of the distribution's own `RECORD` entries, sorted, excluding installer bookkeeping (`INSTALLER`, `REQUESTED`, `RECORD`, `direct_url.json`, `uv_cache.json`), bytecode, and the console-script wrappers the installer generates outside site-packages (their shebang names the environment's interpreter). Every listed file is checked on disk against its recorded hash when the identity is read, so the digest binds the wheel's installed contents, and pip and uv installs of one wheel agree. Optional `wheel_sha256`: the wheel's digest as published on PyPI, recorded at certification; the receiver verifies each downloaded wheel against it, and the runner, which never sees a wheel, checks only its format. |
 | `identity.packaged_bundle_manifest_sha256` | SHA-256 of `policyengine/data/bundle/manifest.json` as installed. |
 | `identity.release_bundle` | The exact `pe.uk.uk_latest.release_bundle` dict expected at runtime under **packaged (offline) certification**. |
@@ -100,8 +100,13 @@ A variant record:
 
 ### What "validated exactly" means
 
-Before any simulation the runner checks, in order, and refuses on the first
-failure:
+Before any simulation the runner checks all of the following and refuses on
+the first failure. The numbering groups them by subject; the code runs record
+consistency, the installed environment, certification isolation, dataset
+materialisation, bytecode isolation, the engine import and its origins, then
+the release-bundle comparison (`compute_uk_event.variant_preflight`; the
+legacy variant's `preflight` runs the same checks around its original
+managed-release preflight).
 
 1. **Record consistency (engine-free).** `variant_id` and `identity_sha256`
    recompute; `release_bundle.model_version == packages["policyengine-uk"].version`;
@@ -116,15 +121,26 @@ failure:
    and `compatible_model_packages` agree with the record.
 2. **Installed environment.** Installed versions of the three packages equal
    the record; every installed file matches its `RECORD` hash and the
-   normalised `RECORD` hashes to `record_sha256`; no file sits in the three
-   packages' directories without a `RECORD` entry in some installed
-   distribution (policyengine-core loads every file in a parameter directory
-   and every module in a variable directory, listed or not); every
-   distribution pinned in the requirements freeze is installed at its pinned
-   version (extra distributions, such as the receipt tools, are allowed); the
-   installed packaged manifest hashes to `packaged_bundle_manifest_sha256`;
-   the interpreter minor version matches. The legacy variant is checked the
-   same way.
+   normalised `RECORD` hashes to `record_sha256`; nothing sits in the three
+   packages' directories that the package's own `RECORD` does not list:
+   policyengine-core loads every file in a parameter directory and every
+   module in a variable directory, recursing into subdirectories
+   (`__pycache__` included) and following symlinked ones, so an unlisted
+   file, any symlink, and anything but `*.pyc` inside a `__pycache__` are
+   refused, and another distribution's `RECORD` does not count; every
+   `*.pth` startup file beside the packages belongs to a distribution pinned
+   in the requirements freeze or is the virtual environment's own
+   `_virtualenv.pth`; every distribution pinned in the requirements freeze
+   is installed at its pinned version (extra distributions, such as the
+   receipt tools, are allowed); the installed packaged manifest hashes to
+   `packaged_bundle_manifest_sha256`; the interpreter minor version matches.
+   The legacy variant is checked the same way.
+
+   What this does not bind: the files of pinned distributions other than the
+   three packages are checked by version, not by hash, and an extra
+   distribution's importable modules are not inspected. The check catches a
+   drifted or mixed environment; it is not a defence against someone who
+   can edit the environment at will.
 3. **What is imported.** Before the engine is imported, bytecode caching is
    turned off and `sys.pycache_prefix` points at an empty directory, so
    Python compiles every engine module from the verified sources and never
@@ -143,14 +159,18 @@ failure:
    `certify_data_release_compatibility` falls back to the wrapper's packaged
    certification. Then
    `dict(pe.uk.uk_latest.release_bundle) == identity.release_bundle`, exactly.
+   The legacy variant runs under the same isolation and the same exact
+   comparison, in addition to its original check against
+   `data/uk/certified_bundle.json`.
 5. **Dataset bytes.** The materialised file hashes to `dataset.sha256` and
    has `size_bytes`, before construction and after the last aggregate
    (existing `run_managed_simulation` checks), and the simulation's reported
    runtime dataset source is that file.
 6. **Year support.** Requested years must lie in `data_years`, and inside
    every simulation `year in simulation.dataset.years` or the run stops; on a
-   non-legacy variant a dataset that does not state its years stops the run
-   too (the legacy check skips it, as it always has). Registry years outside `data_years` are not
+   non-legacy variant a dataset that does not state its years, or states a
+   year set other than the record's `data_years`, stops the run too (the
+   legacy check skips both, as it always has). Registry years outside `data_years` are not
    requested by default; they are reported as unsupported (below).
 
 A model/data combination is **incompatible** when no certified variant
@@ -189,14 +209,16 @@ FY2023–24 counterparts; that loss is shown, never hidden.
   names its namespace (legacy: `results/uk/events`) and its `status`. A
   candidate's record and results live on the `replay-state` branch under
   `requests/<request_id>/results/` until it is certified.
-* A namespace with `REPLAY_RECEIPT.json` is **sealed**:
-  `NAMESPACE_MANIFEST.json` lists the SHA-256 of every file under it (and of
-  its release diff), the receipt binds that manifest's digest, the runner
-  refuses to write there (compute, staging, comparison and the summary all
-  check), and CI fails if any sealed byte changes. A rerun of
-  a sealed variant writes to an explicit separate output directory, and its
-  bytes against the sealed run are a determinism check (CI replays one real
-  measure-year this way).
+* A namespace with `REPLAY_RECEIPT.json` is **sealed**: the runner refuses
+  to write there (compute, staging, comparison and the summary all check).
+  A rerun of a sealed variant writes to an explicit separate output
+  directory, and its bytes against the sealed run are a determinism check.
+  The receiver (`pipeline/uk_replay_qualify.py`, which arrives with the
+  receiver change, PR #163) writes the seal itself:
+  `NAMESPACE_MANIFEST.json` lists the SHA-256 of every file under the
+  namespace (and of its release diff) and the receipt binds that manifest's
+  digest. The same change adds the CI job that fails when a sealed byte
+  changes and replays one real measure-year; until it lands, neither exists.
 * Release differences live in `results/uk/replays/diffs/<base>__<head>/`.
 
 ## Version-scoped diagnoses
@@ -335,8 +357,11 @@ Each has deterministic boundary cases and Hypothesis properties in
 * **Replay determinism.** For the same complete execution fingerprint
   (variant identity, registry bytes, measure, year), numerical artifact bytes
   are identical; timings stay in `RUN_LOG.json`.
-* **Legacy preservation.** Legacy event registries, staging and comparison
-  outputs regenerate byte-identically after these changes.
+* **Legacy preservation.** Legacy staging, comparison and summary outputs
+  regenerate byte-identically from the committed artifacts
+  (`tests/test_uk_replay_legacy.py` reruns all five events and compares
+  bytes), and no committed legacy artifact, manifest or receipt carries a
+  variant field.
 * **Diff flags.** `diff(a, a)` has no row flags. Flag sets are symmetric under
   swapping sides (with signs reversed). No numerical flag at or below the
   threshold; one strictly above it. Row order and file order do not change
