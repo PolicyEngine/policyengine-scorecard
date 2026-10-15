@@ -51,8 +51,11 @@ EVENTS = (
     "spring_budget_2024",
     "spring_statement_2025",
     "spring_budget_2023",
+    "autumn_budget_2025",
 )
-CORPUS_VERSION = "uk-fiscal-event-replay/1"
+# The version names the event set: /1 is the five events from Spring Budget
+# 2023 to Spring Statement 2025; /2 adds Autumn Budget 2025.
+CORPUS_VERSION = "uk-fiscal-event-replay/2"
 REJECTION_CODES = (
     "schema_invalid",
     "artifact_hash_mismatch",
@@ -609,7 +612,9 @@ def run_corpus(
             python,
             "-m",
             "pipeline.audit_uk_event_premises",
-            "--all",
+            # A sealed namespace's premises cover the events it replayed.
+            "--events",
+            *events,
             "--expect-engine",
             engine,
             "--output",

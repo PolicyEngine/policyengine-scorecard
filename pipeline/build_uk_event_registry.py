@@ -15,6 +15,7 @@ import argparse
 import gzip
 import hashlib
 import json
+import math
 import os
 import re
 from collections import Counter, defaultdict
@@ -39,18 +40,19 @@ EVENTS = {
     "autumn_budget_2025": "Autumn Budget 2025",
 }
 # Autumn Budget 2025's constructions are not re-authored here: the OBR
-# costings lane's reviewed reversals (#56) are read by verbatim PMD title,
+# costings lane's reviewed reversals (#56) are matched by verbatim PMD title,
 # and #136's high-value council tax surcharge reversal by its registry key.
 AB2025_COSTINGS = ROOT / "data/uk/obr_measure_reforms.yaml"
 AB2025_REGISTRY = ROOT / "data/uk/ab2025_measures.json"
+INVENTORY = ROOT / "data/uk/events/inventory.jsonl"
 AB2025_GAPS = {
     "Fuel Duty: Cancel uprating for 2026-27": (
-        "The announcement is a staggered within-year path (the 5p cut to 31 August 2026, then 1p, 2p and 2p steps from 1 September, 1 December and 1 March). This replay reads annual parameters at 1 January, which cannot express that path, and policyengine-uk 2.130.1 day-weights fuel duty across the fiscal year; an annual counterfactual is not guessed.",
+        "The announcement is a within-year path (per the PMD title: the 5p cut extended to 31 August 2026, then 1p, 2p and 2p increases from 1 September 2026, 1 December 2026 and 1 March 2027). The replay executor takes only annual windows read at 1 January (pipeline/compute_uk_event.py annual_reform), which cannot express it, so an annual counterfactual is not guessed. #136 records a dated pre-Budget path from the OBR pre-measures forecast (ab2025__fuel_duty_freeze_extension_2026_27 in data/uk/ab2025_measures.json) for a later part-year construction.",
         "fuel_duty",
         r"fuel_duty|petrol|diesel",
     ),
     "Universal Credit: Changes to the standard allowance and health element": (
-        "The measure changes protections inside the UC rebalancing (existing claimants and new health-element claimants meeting the severe conditions criteria). Switching rebalancing off is not the pre-Budget world: from April 2026 the engine's disabled element amount is already the cut rate (policyengine-uk #2427), so no reversal is established.",
+        "A reversal that restores the pre-Budget protections has not been established. #136's construction switches UC rebalancing off (ab2025__uc_standard_allowance_and_health_element_rebalancing in data/uk/ab2025_measures.json); the replay inventory's note at policyengine-uk 2.125.1 (data/uk/events/inventory.jsonl) records that this leaves the 217.26 health element for every claimant, which is not the pre-measure world. The OBR costings lane leaves the measure without a construction for the same reason (data/uk/obr_measure_reforms.yaml).",
         "universal_credit",
         r"rebalancing|health_element|severe_conditions",
     ),
@@ -114,6 +116,14 @@ def canonical_bytes(value):
     return (
         json.dumps(value, indent=2, ensure_ascii=False, allow_nan=False) + "\n"
     ).encode()
+
+
+def json_scalar(value):
+    """An engine value JSON can hold: infinities named as in the premises
+    audit (an abolished limit is +inf), so registry bytes stay strict JSON."""
+    if isinstance(value, float) and math.isinf(value):
+        return "inf" if value > 0 else "-inf"
+    return value
 
 
 def slugify(text):
@@ -276,13 +286,46 @@ def _head(name, variables, channel="tax"):
     return {"obr_head": name, "pe_variables": variables, "channel": channel}
 
 
+def inventory_registry_keys(event_slug):
+    """Autumn Budget 2025's measure keys are #136's, as the replay inventory
+    records them (existing_registry_key): the scorecard DB ingest joins
+    registry measures to inventory rows on them (scorecard_db/ingest_obr_pmd.py).
+    The five earlier events keep the keys their frozen registries have."""
+    if event_slug != "autumn_budget_2025":
+        return {}
+    keys = defaultdict(set)
+    with INVENTORY.open() as lines:
+        for line in lines:
+            row = json.loads(line)
+            if row["event_key"] == event_slug and row.get("existing_registry_key"):
+                keys[row["measure"].strip()].add(row["existing_registry_key"])
+    if any(len(k) != 1 for k in keys.values()):
+        raise ValueError("an inventory measure has more than one registry key")
+    return {title: key for title, (key,) in keys.items()}
+
+
+def first_window_year(spec):
+    """The first calendar year any of a construction's dated windows reads."""
+    return min(int(window[:4]) for windows in spec.values() for window in windows)
+
+
 def ab2025_construction(title):
-    """The reviewed Autumn Budget 2025 construction for a PMD title, if any."""
+    """The reviewed Autumn Budget 2025 construction for a PMD title, if any.
+
+    A measure commences in the first year its reversal windows read: the
+    costings lane's start_fy is the first year with a nonzero OBR costing,
+    which can precede the mechanism (an anticipatory row), and staging
+    treats identical worlds from commencement on as inert.
+    """
     import yaml
 
     for measure in yaml.safe_load(AB2025_COSTINGS.read_text())["measures"]:
-        if measure.get("obr_description") != title or "pe_reform" not in measure:
+        # The costings lane keeps the OBR description verbatim, padding
+        # included; the PMD title is matched without it.
+        if (measure.get("obr_description") or "").strip() != title.strip():
             continue
+        if not measure.get("pe_reform"):
+            return None
         heads = [
             {
                 "obr_head": h["obr_head"],
@@ -293,7 +336,7 @@ def ab2025_construction(title):
         ]
         partial = measure["computability"] == "partial"
         note = " ".join(str(measure.get("notes", "")).split())
-        m = _construct(
+        return _construct(
             measure["measure_key"].removeprefix("autumn_budget_2025__"),
             {"Income tax": "income_tax", "NICs": "national_insurance"}.get(
                 heads[0]["obr_head"] if heads else "", "tax_benefit"
@@ -303,9 +346,8 @@ def ab2025_construction(title):
             partial=[note] if partial else None,
             note=note
             + " Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
-            start=int(measure["start_fy"]),
+            start=first_window_year(measure["pe_reform"]),
         )
-        return m
     if title.startswith("High Value Council Tax Surcharge:"):
         registry = json.loads(AB2025_REGISTRY.read_text())
         (entry,) = [
@@ -313,18 +355,28 @@ def ab2025_construction(title):
             for e in registry["measures"]
             if e["measure_key"] == "ab2025__high_value_council_tax_surcharge"
         ]
+        # #136 keys values by year; the executor takes dated windows.
+        spec = {}
+        for path, by_year in entry["pe_baseline_modifier"].items():
+            years = sorted(int(y) for y in by_year)
+            if (
+                years != list(range(years[0], years[-1] + 1))
+                or len({by_year[str(y)] for y in years}) != 1
+            ):
+                raise ValueError(f"{path}: #136 values are not one constant run")
+            spec[path] = {f"{years[0]}-01-01.{years[-1]}-12-31": by_year[str(years[0])]}
         return _construct(
             "high_value_council_tax_surcharge",
             "council_tax",
-            entry["pe_baseline_modifier"],
+            spec,
             [
                 _head(
                     "High-value council tax surcharge",
                     ["high_value_council_tax_surcharge"],
                 )
             ],
-            note="Reverse the surcharge bands to zero from 2028, as in #136's registry (data/uk/ab2025_measures.json); the surcharge applies to residential properties valued over £2m in England from April 2028.",
-            start=2028,
+            note="Reverses the four surcharge band amounts to zero, as #136's registry does (ab2025__high_value_council_tax_surcharge in data/uk/ab2025_measures.json), from 2028, the PMD title's 1 April 2028 start.",
+            start=first_window_year(spec),
         )
     return None
 
@@ -824,6 +876,7 @@ def build_registry(event_slug, engine_parameters, engine_variables, resolve):
         grouped[row["title"]].append(row)
     years = sorted({int(r["fy"][:4]) for r in rows if 2023 <= int(r["fy"][:4]) <= 2030})
     measures = []
+    canonical_keys = inventory_registry_keys(event_slug)
     for title, rs in grouped.items():
         authored = authored_construction(event_slug, title, resolve)
         if authored:
@@ -876,7 +929,9 @@ def build_registry(event_slug, engine_parameters, engine_variables, resolve):
         vh = sorted(v for v in engine_variables if rx.search(v))
         m.update(
             {
-                "measure_key": f"{event_slug}__{key}",
+                "measure_key": canonical_keys.get(
+                    title.strip(), f"{event_slug}__{key}"
+                ),
                 "title": title,
                 "reported_status": "announced",
                 "fiscal_event": event_name,
@@ -922,7 +977,9 @@ def build_registry(event_slug, engine_parameters, engine_variables, resolve):
         spec = m.get("pe_baseline_modifier") or m.get("pe_reform_delta") or {}
         if spec:
             m["engine_baseline_by_year"] = {
-                str(y): {path: resolve(path, f"{y}-06-01") for path in spec}
+                str(y): {
+                    path: json_scalar(resolve(path, f"{y}-06-01")) for path in spec
+                }
                 for y in years
             }
             for path in spec:
@@ -988,7 +1045,7 @@ def main():
     p.add_argument(
         "--event",
         required=True,
-        help="Slug of any fiscal event in the pinned source; 'all' builds the five pilot events.",
+        help="Slug of any fiscal event in the pinned source; 'all' builds every replayed event.",
     )
     p.add_argument("--check", action="store_true")
     args = p.parse_args()

@@ -289,7 +289,7 @@ def test_every_replay_registry_source_cell_joins_once(
     source_cells, claims_by_line, legacy_by_line, cell_mapping
 ):
     files = sorted((ROOT / "data/uk/events").glob("*_measures.json"))
-    assert len(files) == 5
+    assert len(files) == 6
     total = 0
     frozen_aliases = 0
     for path in files:
@@ -320,7 +320,7 @@ def test_every_replay_registry_source_cell_joins_once(
                     pointer["value_gbp_decimal"]
                 )
         assert len(seen) == registry["accounting"]["rows_in"]
-    assert total == 4584
+    assert total == 6096  # 4584 in the five events, 1512 in Autumn Budget 2025
     assert frozen_aliases == 132
 
 

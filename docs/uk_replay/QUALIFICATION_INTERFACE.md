@@ -197,7 +197,7 @@ that file through the namespace manifest.
   "runner": "github-actions ubuntu-latest" 
  },
  "corpus": {
-  "corpus_version": "uk-fiscal-event-replay/1",
+  "corpus_version": "uk-fiscal-event-replay/2",
   "events": {
    "autumn_budget_2024": {
     "registry_sha256": "…",
@@ -231,6 +231,12 @@ that file through the namespace manifest.
  "receipt_sha256": "<64-hex of the canonical receipt without this field>"
 }
 ```
+
+`corpus_version` names the event set the run replayed.
+`uk-fiscal-event-replay/1` is the five events from Spring Budget 2023 to
+Spring Statement 2025; `uk-fiscal-event-replay/2` adds Autumn Budget 2025.
+In a diff against a base replayed under an earlier version, an added event
+has `present.base` false and its rows carry no base values.
 
 A complete receipt requires `variant_identity_sha256` and
 `results.manifest_sha256`. A failed receipt has `corpus: null` when no event

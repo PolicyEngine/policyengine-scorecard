@@ -582,7 +582,9 @@ holds heavy local work back from 29 October to 2 November.
   each variant's exact
   freeze, checks the installed environment against the record, runs every
   event's construction guards, regenerates the committed construction
-  premises byte for byte. Non-legacy variants also regenerate the re-verified
+  premises byte for byte (a sealed namespace's for the events its receipt's
+  corpus lists, since a run's premises cover the events it replayed; an
+  unsealed namespace's for every registered event). Non-legacy variants also regenerate the re-verified
   diagnostics and, on pushes to main with the `PE_UK_PRIVATE_HF_READ_TOKEN`
   secret and a committed sealed namespace, replay one real measure-year on
   the certified dataset and compare its artifact with the committed bytes.
