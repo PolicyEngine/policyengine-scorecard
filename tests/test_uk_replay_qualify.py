@@ -390,6 +390,84 @@ def test_an_inert_construction_makes_the_receipt_incomplete_and_names_the_pair(
     assert sealed["status"] == "complete"
 
 
+@pytest.mark.parametrize("premises_say_differ", [False, True])
+def test_an_inert_pair_whose_premises_say_the_worlds_differ_fails(
+    tmp_path, monkeypatch, premises_say_differ
+):
+    # Agreed with W4 (2026-10-15): an in-force pair that comes out inert
+    # while its construction premises set the two worlds differently is a
+    # broken construction (integrity failed, construction_inert); inertness
+    # the premises predict stays incomplete. Found by 6.4.1, where the UC
+    # health element reversal went inert on policyengine-uk 2.130.1.
+    import functools
+    import shutil
+
+    from test_uk_event_diff import EVENT, KEY, make_namespace, synthetic_record
+
+    from pipeline import compute_uk_event as compute
+    from pipeline import stage_uk_event as stage
+
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    monkeypatch.setattr(stage, "manifest_variant", synthetic_record)
+    make_namespace(tmp_path, "candidate", variant=CURRENT, identical=(2025,))
+    record = rv.get_variant(CURRENT)
+    namespace = rv.namespace_root(record, root=tmp_path)
+    shutil.copytree(tmp_path / "ns" / "candidate", namespace)
+    path = "gov.example.amount"
+    reform_value = 437.66 if premises_say_differ else 217.26
+    premises = {
+        "events": {
+            EVENT: {
+                "measures": {
+                    KEY: {
+                        "years": {
+                            "2025": {
+                                "in_force": True,
+                                "paths": {
+                                    path: {
+                                        "baseline_world": 217.26,
+                                        "reform_world": reform_value,
+                                    }
+                                },
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    (namespace / "CONSTRUCTION_PREMISES.json").write_text(json.dumps(premises))
+    monkeypatch.setattr(
+        qualify,
+        "event_results",
+        functools.partial(qualify.event_results, events=[EVENT]),
+    )
+    receipt = qualify.build_receipt(
+        golden_request(),
+        record=record,
+        root=tmp_path,
+        results_path="requests/x/results/",
+    )
+    if premises_say_differ:
+        assert receipt["status"] == "failed"
+        assert receipt["integrity"]["status"] == "failed"
+        (failure,) = receipt["integrity"]["failures"]
+        assert failure["code"] == "construction_inert"
+        assert (failure["event"], failure["measure_key"], failure["year"]) == (
+            EVENT,
+            KEY,
+            2025,
+        )
+        assert path in failure["detail"]
+        # Only W4's vendored failure fields, so old and new receipts validate.
+        assert set(failure) == {"code", "detail", "event", "measure_key", "year"}
+    else:
+        assert receipt["integrity"]["status"] == "incomplete"
+        assert receipt["integrity"]["failures"] == []
+    sealed = qualify.seal(namespace, receipt)
+    interface.validate(sealed, interface.RECEIPT_SCHEMA_ID)
+
+
 def test_rejection_discards_a_supplied_record_and_cli_accepts_candidate(tmp_path):
     request = golden_request()
     record = copy.deepcopy(rv.get_variant(CURRENT))

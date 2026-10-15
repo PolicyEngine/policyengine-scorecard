@@ -240,6 +240,15 @@ the receiver writes a minimal schema-valid failed receipt with
 run output is recorded as `run_artifact_failed`. The terminal status still
 names the receipt digest and the commit that was pushed before it.
 
+An in-force measure-year whose two worlds come out identical is inert. If
+the run's `CONSTRUCTION_PREMISES.json` sets any parameter to different values
+in the two worlds that year, the construction did not reach the engine: the
+receipt records an integrity failure `construction_inert` (with `event`,
+`measure_key`, `year` and the parameter in `detail`) and its status is
+`failed`. Inertness the premises predict (equal worlds) leaves the grid
+incomplete and is listed in `inert_measure_years`. Whether either blocks
+promotion is W4's qualification policy.
+
 ### Division of judgement
 
 How flags arise, so a gate built on them sees the intended events:
