@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-10-12",
+ "updated": "2026-10-15",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -58,8 +58,8 @@
    "mode": 1,
    "stage": "computed",
    "running": false,
-   "updated": "2026-10-07",
-   "note": "57 claims in 9 items: 50 pe_gap (SNAP saturation and person grain -> microcosm#647; no EITC non-filers -> microcosm#1133; TANF seed drift -> microcosm#643; SSI payable eligibility -> microcosm#644), 2 concept mismatch (SNAP households vs SPM units), 5 open (IA/WI SNAP, CT EITC, SSI couples); memos in diagnosis/batch3/"
+   "updated": "2026-10-15",
+   "note": "57 claims in 9 items: 54 pe_gap (SNAP saturation, person grain and the BBCE-wide take-up fill -> microcosm#647; no EITC non-filers -> microcosm#1133; TANF seed drift -> microcosm#643; SSI payable eligibility -> microcosm#644; SSI couples drawn at age-band priors in a frame 81% married at 65+ -> microcosm#1212), 2 concept mismatch (SNAP households vs SPM units), 1 open (CT EITC: flag-off mass on few records, no issue yet); memos in diagnosis/batch3/"
   },
   {
    "id": "urban-sotsn-solo-attribution",
