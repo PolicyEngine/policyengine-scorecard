@@ -574,8 +574,8 @@ def unlisted_package_files(names=PACKAGES) -> dict[str, list[str]]:
 VIRTUALENV_SHIM = ("_virtualenv.pth", "import _virtualenv")
 # The names import writes into a __pycache__ (importlib.util.cache_from_source:
 # <module>.<cache_tag>[.opt-<n>].pyc). parameter_node.py reads any file whose
-# stem is README before it filters extensions, but these names always carry
-# the interpreter tag, so their stem is never README.
+# stem is README before it filters extensions; every name this pattern
+# matches has at least two dots, so its stem is never README.
 BYTECODE_NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\.[a-z]+-[0-9]+(\.opt-[0-9]+)?\.pyc")
 
 

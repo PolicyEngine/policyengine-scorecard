@@ -1031,8 +1031,8 @@ def run_managed_simulation(
     """Run, aggregate, delete, and collect exactly one managed sim.
 
     With ``require_dataset_years`` a simulation whose dataset does not state
-    its years fails instead of skipping the year check; with
-    ``expected_dataset_years`` its whole year set must equal that list."""
+    its years fails instead of skipping the year check, and
+    ``expected_dataset_years`` (required then) must equal its whole year set."""
 
     if scenario is not None and reform is not None:
         raise ValueError("pass either reform or scenario, not both")
@@ -1079,6 +1079,10 @@ def run_managed_simulation(
             # A year outside the dataset's projected years has no inputs: it
             # calculates defaults without raising (a 2023 income tax of zero
             # on a 2024 dataset). Both pinned engines expose dataset.years.
+            if require_dataset_years and expected_dataset_years is None:
+                # A variant run always knows its record's data years; a
+                # missing list must not switch the whole-set check off.
+                raise RuntimeError("a variant run must pass its data years")
             dataset_years = getattr(getattr(sim, "dataset", None), "years", None)
             if dataset_years is None and require_dataset_years:
                 raise RuntimeError(

@@ -333,6 +333,24 @@ def check_variant_environment(variant: dict) -> dict:
     return variants.verify_installed(variant)
 
 
+def variant_pre(
+    variant: dict, *, release_bundle: dict, dataset: Path, installed: dict
+) -> dict:
+    """What every simulation of a non-legacy run is handed."""
+    return {
+        "release_bundle": release_bundle,
+        "sha256": variant["identity"]["dataset"]["sha256"],
+        "runtime_dataset_source": str(dataset),
+        "installed": installed,
+        # A year outside the population's data years must fail, not
+        # calculate defaults (compute_uk_obr_costings.run_managed_simulation),
+        # and the dataset's whole year set must be the record's data years.
+        "require_dataset_years": True,
+        "data_years": list(variant["data_years"]),
+        "check_import_origins": True,
+    }
+
+
 def variant_preflight(variant: dict, *, dataset_source: Path | None = None) -> dict:
     """Validate a non-legacy variant exactly before any simulation.
 
@@ -354,19 +372,9 @@ def variant_preflight(variant: dict, *, dataset_source: Path | None = None) -> d
     import_engine()
     release_bundle = dict(pe.uk.uk_latest.release_bundle)
     variants.verify_release_bundle(variant, release_bundle)
-    return {
-        "release_bundle": release_bundle,
-        "sha256": variant["identity"]["dataset"]["sha256"],
-        "runtime_dataset_source": str(dataset),
-        "installed": installed,
-        # A year outside the population's data years must fail, not
-        # calculate defaults (compute_uk_obr_costings.run_managed_simulation).
-        "require_dataset_years": True,
-        # The record's data years are checked against what the simulation's
-        # dataset reports, in every simulation.
-        "data_years": list(variant["data_years"]),
-        "check_import_origins": True,
-    }
+    return variant_pre(
+        variant, release_bundle=release_bundle, dataset=dataset, installed=installed
+    )
 
 
 def run_sim(year: int, variables: list[str], reform: dict | None, pre: dict) -> dict:
