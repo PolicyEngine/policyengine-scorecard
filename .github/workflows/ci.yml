@@ -114,17 +114,10 @@ jobs:
             .venv-variant/bin/python -m pipeline.compute_uk_event --event "$event" --variant "$VARIANT" --guards > /dev/null
             echo "guards hold: $event"
           done
-      # A sealed namespace's premises cover the events its run replayed (the
-      # receipt's corpus); an unsealed one's cover every registered event.
+      # A namespace's premises cover the events it holds results for, or
+      # every registered event when it holds none (namespace_events).
       - name: Construction premises regenerate
-        run: |
-          set -euo pipefail
-          selection=(--all)
-          if [ -f "$RESULT_ROOT/REPLAY_RECEIPT.json" ]; then
-            mapfile -t events < <(python3 -c "import json, sys; print('\n'.join(sorted(json.load(open(sys.argv[1]))['corpus']['events'])))" "$RESULT_ROOT/REPLAY_RECEIPT.json")
-            selection=(--events "${events[@]}")
-          fi
-          .venv-variant/bin/python -m pipeline.audit_uk_event_premises "${selection[@]}" --expect-engine "$ENGINE" --output "$RESULT_ROOT/CONSTRUCTION_PREMISES.json" --check
+        run: .venv-variant/bin/python -m pipeline.audit_uk_event_premises --namespace "$RESULT_ROOT" --expect-engine "$ENGINE" --output "$RESULT_ROOT/CONSTRUCTION_PREMISES.json" --check
       - name: Re-verified diagnostics regenerate
         if: env.LEGACY == 'False'
         run: |

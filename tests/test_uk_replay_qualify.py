@@ -643,6 +643,16 @@ def test_corpus_passes_candidate_and_work_variants_without_resume(
     staging = calls[1][0]
     assert staging[staging.index("--variants-file") + 1] == str(work_variants)
     assert all(cwd == tmp_path for _, cwd in calls)
+    # Premises cover the namespace's own events, and the summary comes last,
+    # after the diagnostics it renders, so CI regenerates the sealed bytes.
+    namespace = rv.namespace_root(record, root=tmp_path)
+    (premises,) = [c for c, _ in calls if "pipeline.audit_uk_event_premises" in c]
+    assert "--all" not in premises
+    assert premises[premises.index("--namespace") + 1] == str(namespace)
+    names = [" ".join(c) for c, _ in calls]
+    diagnose = next(i for i, c in enumerate(names) if "diagnose_uk_event_models" in c)
+    (summary,) = [i for i, c in enumerate(names) if "--summary" in c]
+    assert summary == len(calls) - 1 and summary > diagnose
 
 
 def local_runner(tmp_path, variant_id=CURRENT):

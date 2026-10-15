@@ -262,6 +262,14 @@ measured issue candidates as current only when the re-verified status is
 
 ## Construction premises
 
+A namespace's premises and its `SUMMARY.md` cover the events it holds
+results for (an event directory with `RUN_MANIFEST.json`), or every
+registered event when it holds none. A run's premises therefore cover what it
+replayed, and a namespace whose bytes a seal or a release diff binds (a diff
+records each side's premises digest) keeps them when a later event is
+registered. A qualification run writes its summary last, after the
+re-verified diagnostics, which the summary renders.
+
 `pipeline/audit_uk_event_premises.py` records, for each executable measure,
 year and parameter path the construction touches, on a given engine:
 current-law value at the annual lookup (1 January of the year), the raw
@@ -582,9 +590,7 @@ holds heavy local work back from 29 October to 2 November.
   each variant's exact
   freeze, checks the installed environment against the record, runs every
   event's construction guards, regenerates the committed construction
-  premises byte for byte (a sealed namespace's for the events its receipt's
-  corpus lists, since a run's premises cover the events it replayed; an
-  unsealed namespace's for every registered event). Non-legacy variants also regenerate the re-verified
+  premises byte for byte. Non-legacy variants also regenerate the re-verified
   diagnostics and, on pushes to main with the `PE_UK_PRIVATE_HF_READ_TOKEN`
   secret and a committed sealed namespace, replay one real measure-year on
   the certified dataset and compare its artifact with the committed bytes.

@@ -596,25 +596,16 @@ def run_corpus(
             failures.append(
                 {"code": "event_run_failed", "detail": str(exc), "event": event}
             )
-    run(
-        [
-            python,
-            "pipeline/compare_uk_event.py",
-            "--summary",
-            "--events-root",
-            str(namespace),
-        ],
-        cwd=root,
-    )
     engine = record["identity"]["packages"]["policyengine-uk"]["version"]
     run(
         [
             python,
             "-m",
             "pipeline.audit_uk_event_premises",
-            # A sealed namespace's premises cover the events it replayed.
-            "--events",
-            *events,
+            # The events this namespace holds results for (audit
+            # namespace_events), so a sealed namespace's premises regenerate.
+            "--namespace",
+            str(namespace),
             "--expect-engine",
             engine,
             "--output",
@@ -632,6 +623,18 @@ def run_corpus(
             engine,
             "--output",
             str(namespace / "MODEL_DIAGNOSTICS.json"),
+        ],
+        cwd=root,
+    )
+    # Last, so the summary renders the diagnostics beside it, as CI's
+    # regeneration of the sealed namespace does.
+    run(
+        [
+            python,
+            "pipeline/compare_uk_event.py",
+            "--summary",
+            "--events-root",
+            str(namespace),
         ],
         cwd=root,
     )

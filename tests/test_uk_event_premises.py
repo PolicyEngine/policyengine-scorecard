@@ -325,3 +325,28 @@ def test_installed_cgt_annual_values_against_raw_30_april(installed_engine_view)
         expected = old * 207 / 365 + new * 158 / 365 if installed == "2.125.1" else old
         assert annual == pytest.approx(expected, abs=1e-10)
         assert engine.reads_blend is (installed == "2.125.1")
+
+
+@given(
+    held=st.sets(st.sampled_from(premises.EVENTS)),
+    stray=st.booleans(),
+    bare=st.sets(st.sampled_from(premises.EVENTS)),
+)
+@settings(max_examples=60, deadline=None)
+def test_namespace_events_are_the_held_events_or_all(
+    tmp_path_factory, held, stray, bare
+):
+    root = tmp_path_factory.mktemp("namespace")
+    for event in held:
+        (root / event).mkdir()
+        (root / event / "RUN_MANIFEST.json").write_text("{}")
+    # A directory without a manifest, or an unregistered event, holds nothing.
+    for event in bare - held:
+        (root / event).mkdir()
+    if stray:
+        (root / "not_an_event").mkdir()
+        (root / "not_an_event" / "RUN_MANIFEST.json").write_text("{}")
+    events = premises.namespace_events(root)
+    assert events == (
+        [e for e in premises.EVENTS if e in held] or list(premises.EVENTS)
+    )

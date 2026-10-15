@@ -339,11 +339,26 @@ def canonical_bytes(value: Any) -> bytes:
     ).encode()
 
 
+def namespace_events(root: Path) -> list[str]:
+    """The events a namespace's premises cover: those it holds results for
+    (an event directory with RUN_MANIFEST.json), or every registered event
+    when it holds none. A run's premises then cover what it replayed, and a
+    namespace whose bytes a seal or a release diff binds keeps them when an
+    event is registered later."""
+    held = [event for event in EVENTS if (root / event / "RUN_MANIFEST.json").is_file()]
+    return held or list(EVENTS)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     selection = parser.add_mutually_exclusive_group(required=True)
     selection.add_argument("--events", nargs="+", choices=EVENTS)
     selection.add_argument("--all", action="store_true")
+    selection.add_argument(
+        "--namespace",
+        type=Path,
+        help="cover the events this namespace holds results for (every event if none)",
+    )
     parser.add_argument("--expect-engine", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--check", action="store_true")
@@ -354,7 +369,14 @@ def main(argv: list[str] | None = None) -> int:
             f"policyengine-uk {installed} installed; expected {args.expect_engine}"
         )
     payload = canonical_bytes(
-        audit(list(EVENTS) if args.all else args.events, EngineView())
+        audit(
+            list(EVENTS)
+            if args.all
+            else namespace_events(args.namespace)
+            if args.namespace
+            else args.events,
+            EngineView(),
+        )
     )
     if args.check:
         if not args.output.is_file() or args.output.read_bytes() != payload:
