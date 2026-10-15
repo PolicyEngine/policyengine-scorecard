@@ -7,6 +7,7 @@ pieces that decide identity, rejection and sealing are exercised directly.
 import copy
 import hashlib
 import json
+import shutil
 from pathlib import Path
 
 import jsonschema
@@ -755,6 +756,24 @@ def test_a_namespace_must_be_sealed_once_it_holds_replay_results(
     (namespace / "an_event" / "RUN_MANIFEST.json").write_text("{}")
     assert qualify.main(["verify-sealed"]) == 1
     assert "not sealed" in capsys.readouterr().out
+
+
+def test_a_once_sealed_namespace_stays_checked_after_its_events_go(
+    tmp_path, monkeypatch, capsys
+):
+    # Review of 2896610: deleting every event directory but keeping the
+    # receipt must not pass.
+    namespace, _, _ = sealed_namespace(tmp_path)
+    shutil.rmtree(namespace / "event")
+    monkeypatch.setattr(
+        rv,
+        "load_document",
+        lambda: {
+            "variants": [{"layout": "replay_namespace", "result_root": str(namespace)}]
+        },
+    )
+    assert qualify.main(["verify-sealed"]) == 1
+    capsys.readouterr()
 
 
 def test_the_committed_namespaces_pass_the_seal_check():

@@ -1394,13 +1394,21 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "verify-sealed":
         # A variant namespace holding replay results (any event's
-        # RUN_MANIFEST.json) must be sealed. Premises, diagnostics and an
-        # empty summary committed before the replay are not results.
+        # RUN_MANIFEST.json), or that was sealed once (its receipt or
+        # manifest is still there), must be sealed. Premises, diagnostics
+        # and an empty summary committed before the replay are not results.
+        def must_be_sealed(namespace: Path) -> bool:
+            return (
+                any(namespace.glob("*/RUN_MANIFEST.json"))
+                or (namespace / variants.RECEIPT_NAME).exists()
+                or (namespace / MANIFEST_NAME).exists()
+            )
+
         namespaces = args.namespaces or sorted(
             variants.namespace_root(record)
             for record in variants.load_document()["variants"]
             if record["layout"] == "replay_namespace"
-            and any(variants.namespace_root(record).glob("*/RUN_MANIFEST.json"))
+            and must_be_sealed(variants.namespace_root(record))
         )
         problems = []
         for namespace in namespaces:

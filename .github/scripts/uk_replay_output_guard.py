@@ -4,13 +4,15 @@ Scorecard is public, so the run job's upload, and the record job's commit to
 the public replay-state branch, may hold only the receipt, status and the
 sealed aggregate results. This is an allowlist: every entry must be a regular
 file (no symlink, device or other special file) with an allowed extension,
-whose bytes parse as that format, under a per-file and a total size cap. The
-committed sealed namespace has 30 MB over 316 files, the largest 3.3 MB.
+whose bytes parse as that format, under a per-file and a total size cap.
+Tables are allowed only under the names the pipeline writes them:
+COMPARISON.csv and STAGED.jsonl. The committed sealed namespace has 30 MB
+over 316 files, the largest 3.3 MB.
 
-It stops accidental publication (an honest run that writes a dataset,
-household-level table or binary). Content that parses can still carry
-anything a deliberately malicious candidate encodes in it; RELEASE_REPLAY.md
-states that limit.
+It stops an honest run from publishing a dataset copy, a binary, or a table
+under any other name. It does not read what a parsable file says: a
+household-level table written as COMPARISON.csv, or anything a deliberately
+malicious candidate encodes, would pass; RELEASE_REPLAY.md states that limit.
 
 Standard library only: it runs with the runner's system Python, before and
 independently of anything the candidate installed.
@@ -26,6 +28,8 @@ import sys
 from pathlib import Path
 
 ALLOWED_SUFFIXES = (".json", ".jsonl", ".csv", ".md", ".txt")
+# Tables only under the names the pipeline writes them.
+TABLE_NAMES = {".csv": {"COMPARISON.csv"}, ".jsonl": {"STAGED.jsonl"}}
 MAX_FILE_BYTES = 10 * 1024 * 1024
 MAX_TOTAL_BYTES = 100 * 1024 * 1024
 
@@ -65,6 +69,9 @@ def problems(root: Path) -> list[str]:
             continue
         if path.suffix not in ALLOWED_SUFFIXES:
             found.append(f"{path}: extension not allowed ({path.suffix or 'none'})")
+            continue
+        if path.suffix in TABLE_NAMES and path.name not in TABLE_NAMES[path.suffix]:
+            found.append(f"{path}: a table under an unexpected name")
             continue
         size = path.stat().st_size
         total += size

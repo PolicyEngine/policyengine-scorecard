@@ -4,11 +4,14 @@
 # The runner user has passwordless sudo, owns this job's workspace and its
 # command files ($GITHUB_ENV, $GITHUB_PATH), and owns the runner processes
 # that hold the job's secrets and the Actions runtime token. The candidate
-# account has none of these: no sudoers entry, a private copy of the
-# repository and the verified request inputs, an environment built from
-# nothing (env -i), and no read access to another user's process memory or
-# environment. Nothing it starts survives `collect`, and only a copy of its
-# output/ comes back, to be checked by the runner's own guard.
+# account has no sudoers entry, no supplementary groups (so no docker
+# socket), no cron or at jobs, a private copy of the repository and the
+# verified request inputs, and an environment built from nothing (env -i).
+# It cannot write the runner user's files or read another user's process
+# memory or environment; `setup` checks the first of these as the account
+# itself and fails the job otherwise. Its processes are killed in `collect`,
+# and only a copy of its output/, streamed out by the account itself, comes
+# back, to be checked by the runner's own guard.
 #
 #   uk_replay_sandbox.sh setup     # after the dataset fetch, before any candidate code
 #   uk_replay_sandbox.sh run       # the drain, as the candidate account
@@ -18,13 +21,17 @@ CANDIDATE=replay-candidate
 CANDIDATE_HOME=/home/$CANDIDATE
 COPY=$CANDIDATE_HOME/scorecard
 
+as_candidate() {
+  sudo -n -u "$CANDIDATE" env -i HOME="$CANDIDATE_HOME" PATH=/usr/bin:/bin "$@"
+}
+
 case "${1:?usage: uk_replay_sandbox.sh setup|run|collect}" in
   setup)
     sudo useradd --create-home --shell /bin/bash "$CANDIDATE"
-    if ! sudo -l -U "$CANDIDATE" | grep -q "not allowed to run sudo"; then
-      echo "::error::$CANDIDATE can use sudo"
-      exit 1
-    fi
+    # No scheduled jobs that could outlive `collect`.
+    for deny in /etc/cron.deny /etc/at.deny; do
+      echo "$CANDIDATE" | sudo tee -a "$deny" > /dev/null
+    done
     sudo chmod 700 "$CANDIDATE_HOME"
     # Its own uv, whatever the permissions of the runner's tool cache.
     sudo install -d -o "$CANDIDATE" -g "$CANDIDATE" "$CANDIDATE_HOME/bin"
@@ -34,6 +41,23 @@ case "${1:?usage: uk_replay_sandbox.sh setup|run|collect}" in
     sudo cp -a "$GITHUB_WORKSPACE/." "$COPY"
     sudo rm -rf "$COPY/output"
     sudo chown -R "$CANDIDATE:$CANDIDATE" "$COPY"
+    # Check the account as itself: no sudo, no group beyond its own, and no
+    # write access to the workspace, the runner's command files or docker.
+    if as_candidate sudo -n true 2> /dev/null; then
+      echo "::error::$CANDIDATE can use sudo"
+      exit 1
+    fi
+    if [ "$(as_candidate id -G)" != "$(as_candidate id -g)" ]; then
+      echo "::error::$CANDIDATE has supplementary groups: $(as_candidate id -Gn)"
+      exit 1
+    fi
+    for target in "$GITHUB_WORKSPACE" "$(dirname "$GITHUB_ENV")" "$GITHUB_ENV" /var/run/docker.sock; do
+      if [ -e "$target" ] && as_candidate test -w "$target"; then
+        echo "::error::$CANDIDATE can write $target"
+        exit 1
+      fi
+    done
+    echo "$CANDIDATE: no sudo, no supplementary groups, no write access to the runner's files"
     ;;
   run)
     status=0
@@ -59,11 +83,14 @@ case "${1:?usage: uk_replay_sandbox.sh setup|run|collect}" in
       exit 1
     fi
     rm -rf output
-    if sudo test -d "$COPY/output"; then
-      # -R copies links as links and special files as special files, which
-      # the guard then refuses; --no-preserve drops the candidate's modes.
-      sudo cp -R --no-preserve=all "$COPY/output" output
-      sudo chown -R "$(id -u):$(id -g)" output
+    # The account streams its own output/ out (tar keeps links as links and
+    # special files as special files, which the guard refuses); nothing runs
+    # as root inside its home. The runner user unpacks it as itself.
+    if as_candidate test -d "$COPY/output"; then
+      mkdir output
+      as_candidate tar -C "$COPY/output" -cf - . | tar -C output --no-same-owner --no-same-permissions -xf -
+      # Kill anything the stream itself might have started.
+      sudo pkill -KILL -u "$CANDIDATE" || true
     fi
     ;;
   *)

@@ -545,6 +545,100 @@ def test_empty_pending_cli_has_no_output_for_redispatch_decision(tmp_path, capsy
     assert capsys.readouterr().out == ""
 
 
+# Import names whose PyPI distribution has another name.
+DISTRIBUTIONS = {"yaml": "pyyaml"}
+
+
+def third_party_imports(entry: str) -> set[str]:
+    """Top-level non-standard-library modules imported at import time (not
+    inside functions) by the repository modules reachable from ``entry``."""
+    import ast
+
+    def import_time(body):
+        for node in body:
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            if isinstance(node, (ast.Import, ast.ImportFrom)):
+                yield node
+            for field in ("body", "orelse", "finalbody", "handlers"):
+                yield from import_time(getattr(node, field, []) or [])
+
+    def local(name: str) -> str | None:
+        """The repository file a module name refers to, if any."""
+        parts = name.split(".")
+        if parts[0] == "pipeline":
+            parts = parts[1:]
+        for candidate in (
+            "/".join(["pipeline", *parts]) + ".py",
+            "/".join(parts) + ".py",
+            "/".join([*parts, "__init__.py"]),
+        ):
+            if parts and (ROOT / candidate).is_file():
+                return candidate
+        return None
+
+    seen, pending, found = set(), [entry], set()
+    while pending:
+        relative = pending.pop()
+        if relative in seen:
+            continue
+        seen.add(relative)
+        tree = ast.parse((ROOT / relative).read_text())
+        for node in import_time(tree.body):
+            if isinstance(node, ast.Import):
+                names = [alias.name for alias in node.names]
+            elif node.level:
+                continue
+            else:
+                names = [node.module] + [
+                    f"{node.module}.{alias.name}" for alias in node.names
+                ]
+            for name in names:
+                path = local(name)
+                if path is not None:
+                    pending.append(path)
+                elif (
+                    name.split(".")[0] not in sys.stdlib_module_names
+                    and not local(name.split(".")[0])
+                    and name.split(".")[0] not in {"pipeline", "scorecard_db"}
+                ):
+                    found.add(name.split(".")[0])
+    return found
+
+
+def test_ci_regeneration_installs_every_package_its_scripts_import():
+    # Review of 2896610: the regeneration step failed in CI on numpy, which
+    # stage_uk_event reaches through compute_uk_event and compute_uk_ab2025.
+    script = (ROOT / ".github/scripts/uk_replay_regenerate.sh").read_text()
+    run = next(line for line in script.splitlines() if line.startswith("run() {"))
+    installed = {
+        word.split("==")[0]
+        for word, before in zip(run.split()[1:], run.split())
+        if before == "--with"
+    }
+    entries = [
+        "pipeline/uk_replay_qualify.py",
+        "pipeline/stage_uk_event.py",
+        "pipeline/compare_uk_event.py",
+        "pipeline/diff_uk_event_runs.py",
+    ]
+    # Engines are imported only inside functions the regeneration never
+    # calls (simulations); they are not regeneration dependencies.
+    engines = {
+        "policyengine",
+        "policyengine_uk",
+        "policyengine_core",
+        "huggingface_hub",
+        "modal",
+        "h5py",
+        "pandas",
+        "tables",
+    }
+    needed = set().union(*(third_party_imports(entry) for entry in entries))
+    needed = {DISTRIBUTIONS.get(name, name) for name in needed} - engines
+    assert needed <= installed, sorted(needed - installed)
+
+
 @pytest.mark.parametrize("regeneration", ["identical", "drift", "untracked"])
 def test_ci_regeneration_preserves_sealed_source_and_detects_every_changed_byte(
     tmp_path, regeneration
@@ -678,6 +772,9 @@ def test_output_guard_allows_only_parsable_aggregates(tmp_path):
         "broken.jsonl": b'{"row": 1}\nnot json\n',
         "binary.csv": b"a,b\n\xff\xfe\n",
         "nul.md": b"# x\x00\n",
+        # Tables only under the names the pipeline writes them.
+        "households.csv": b"id,income\n1,2\n",
+        "people.jsonl": b'{"id": 1}\n',
     }
     for name, data in refused.items():
         bad = results / name
@@ -711,22 +808,81 @@ def test_output_guard_caps_the_total(tmp_path):
 
 def test_candidate_code_runs_as_an_unprivileged_account_with_nothing_inherited():
     script = (ROOT / ".github/scripts/uk_replay_sandbox.sh").read_text()
-    # The account has no sudo; a check fails the job if it ever does.
-    assert 'sudo useradd --create-home --shell /bin/bash "$CANDIDATE"' in script
-    assert "not allowed to run sudo" in script
+    code = "\n".join(
+        line for line in script.splitlines() if not line.lstrip().startswith("#")
+    )
+    # A fresh account, denied cron and at, never added to a group.
+    assert 'sudo useradd --create-home --shell /bin/bash "$CANDIDATE"' in code
+    assert "/etc/cron.deny /etc/at.deny" in code
+    assert "usermod" not in code and " -G " not in code and "gpasswd" not in code
+    # setup checks the account as itself and fails the job otherwise.
+    assert "if as_candidate sudo -n true" in code
+    assert '"$(as_candidate id -G)" != "$(as_candidate id -g)"' in code
+    assert 'as_candidate test -w "$target"' in code
+    for target in ('"$GITHUB_WORKSPACE"', '"$GITHUB_ENV"', "/var/run/docker.sock"):
+        assert target in code
     # Its environment is built from nothing: no token, no runtime token, no
     # GITHUB_ENV or GITHUB_PATH, no uv cache directory from setup-uv.
-    assert 'sudo -n -u "$CANDIDATE" env -i' in script
-    assert "--preserve-env" not in script and "sudo -E" not in script
-    assert "exec bash .github/scripts/uk_replay_drain.sh" in script
-    # Nothing it starts outlives the run, and its output comes back as a
-    # copy that keeps links as links, for the guard to refuse.
-    assert 'sudo pkill -KILL -u "$CANDIDATE"' in script
-    assert 'sudo cp -R --no-preserve=all "$COPY/output" output' in script
-    result = subprocess.run(
-        ["bash", "-n", str(ROOT / ".github/scripts/uk_replay_sandbox.sh")]
+    assert 'sudo -n -u "$CANDIDATE" env -i' in code
+    assert "--preserve-env" not in code and "sudo -E" not in code
+    assert "exec bash .github/scripts/uk_replay_drain.sh" in code
+    # Nothing it starts outlives the run, and its output comes back streamed
+    # out by the account itself, links kept as links for the guard.
+    assert 'sudo pkill -KILL -u "$CANDIDATE"' in code
+    assert 'as_candidate tar -C "$COPY/output" -cf - .' in code
+    assert "sudo cp -R" not in code
+    assert (
+        subprocess.run(
+            ["bash", "-n", str(ROOT / ".github/scripts/uk_replay_sandbox.sh")]
+        ).returncode
+        == 0
     )
-    assert result.returncode == 0
+
+
+def test_the_sandbox_is_exercised_on_a_real_runner_image_without_secrets():
+    # The script needs sudo and useradd, so its behaviour is checked in CI on
+    # the runner image itself, with a stub drain that leaves a process.
+    job = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())["jobs"][
+        "receiver-sandbox"
+    ]
+    assert job["permissions"] == {"contents": "read"}
+    assert "secrets." not in json.dumps(job)
+    runs = [step.get("run", "") for step in job["steps"]]
+    joined = "\n".join(runs)
+    for command in ("sandbox.sh setup", "sandbox.sh run", "sandbox.sh collect"):
+        assert command in joined
+    assert "nohup sleep 600" in joined
+    assert "if pgrep -u replay-candidate" in joined
+    assert "python3 -I .github/scripts/uk_replay_output_guard.py output" in joined
+
+
+def test_the_recorder_drops_a_refused_output_and_keeps_a_good_one(tmp_path):
+    scripts = tmp_path / ".github/scripts"
+    scripts.mkdir(parents=True)
+    for name in ("uk_replay_recheck.sh", "uk_replay_output_guard.py"):
+        shutil.copyfile(ROOT / ".github/scripts" / name, scripts / name)
+    tools = tmp_path / "bin"
+    tools.mkdir()
+    (tools / "python3").symlink_to(sys.executable)
+    env = {**os.environ, "PATH": f"{tools}:{os.environ['PATH']}"}
+
+    def recheck():
+        return subprocess.run(
+            ["bash", ".github/scripts/uk_replay_recheck.sh"],
+            cwd=tmp_path,
+            env=env,
+            capture_output=True,
+            text=True,
+        )
+
+    output = tmp_path / "output"
+    output.mkdir()
+    (output / "outcome.json").write_text("{}")
+    assert recheck().returncode == 0 and (output / "outcome.json").exists()
+    (output / "dataset.h5").write_bytes(b"\x89HDF")
+    result = recheck()
+    assert result.returncode == 0 and not output.exists()
+    assert "recording a failed receipt" in result.stdout
 
 
 def test_nothing_crosses_jobs_but_the_request_and_guarded_output():
@@ -758,10 +914,7 @@ def test_nothing_crosses_jobs_but_the_request_and_guarded_output():
     recheck = record[
         record_names.index("Nothing household-level reaches the public branch")
     ]
-    assert (
-        "python3 -I .github/scripts/uk_replay_output_guard.py output" in recheck["run"]
-    )
-    assert "rm -rf output" in recheck["run"]
+    assert recheck["run"] == "bash .github/scripts/uk_replay_recheck.sh"
     assert record_names.index(recheck["name"]) < record_names.index(
         "Record the outcome and continue the queue"
     )

@@ -12,10 +12,11 @@ name: UK replay qualification
 # only dispatches a drain. In the run job it is in one step's environment,
 # which fetches and verifies the dataset before any candidate code is
 # installed. That job has contents: read and no checkout credentials, and
-# candidate code runs as an unprivileged account with no sudo, no access to
-# the workspace, the runner's command files or the processes holding the
-# job's secrets, and an environment built from nothing
-# (.github/scripts/uk_replay_sandbox.sh). Scorecard is public: the dataset and
+# candidate code runs as an unprivileged account with no sudo, no groups, no
+# write access to the workspace or the runner's command files, no access to
+# the processes holding the job's secrets, and an environment built from
+# nothing (.github/scripts/uk_replay_sandbox.sh; CI's receiver-sandbox job
+# checks it on the runner image). Scorecard is public: the dataset and
 # anything household-level never leave the runner. setup-uv's cache is off
 # everywhere here, so no job saves or restores a cache; the only artifacts are
 # the request and the run's output, which an allowlist guard checks before the
@@ -200,11 +201,7 @@ jobs:
       # public branch. A refused output is dropped: the recorder then records
       # a failed receipt.
       - name: Nothing household-level reaches the public branch
-        run: |
-          if ! python3 -I .github/scripts/uk_replay_output_guard.py output; then
-            echo "::error::the run's output was refused; recording a failed receipt"
-            rm -rf output
-          fi
+        run: bash .github/scripts/uk_replay_recheck.sh
       - name: Record the outcome and continue the queue
         env:
           REQUEST_ID: ${{ needs.prepare.outputs.request_id }}

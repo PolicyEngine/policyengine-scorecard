@@ -416,15 +416,22 @@ Candidate code then runs as an unprivileged account
 runner user has passwordless sudo, owns the workspace and the runner's
 command files (`$GITHUB_ENV`, `$GITHUB_PATH`), and owns the runner processes
 that keep the job's secrets in memory for the whole job and pass the Actions
-runtime token to later steps. The candidate account has no sudoers entry
-(checked: the job fails if it can use sudo), works in its own copy of the
-repository and of `input/` (the request, the verified dataset and the fetch
-outcome), starts from an empty environment (`env -i`), and cannot read
-another user's process memory or environment. It runs
-`.github/scripts/uk_replay_drain.sh` for that one request. Afterwards every
-process it started is killed and a copy of its `output/` comes back to the
-runner user; links are copied as links and special files as special files,
-for the guard to refuse.
+runtime token to later steps. The candidate account has no sudoers entry, no
+supplementary group (so no docker socket) and no cron or at jobs. `setup`
+checks, as the account itself, that it cannot use sudo, has no group beyond
+its own, and cannot write the workspace, the runner's command files or the
+docker socket, and fails the job otherwise. The account works in its own
+copy of the repository and of `input/` (the request, the verified dataset
+and the fetch outcome), starts from an empty environment (`env -i`), and
+cannot read another user's process memory or environment. It may be able to
+read the runner user's files if the runner image leaves them readable; none
+holds a secret. It runs `.github/scripts/uk_replay_drain.sh` for that one
+request. Afterwards every process it started is killed and the account
+streams its `output/` out with `tar`, which the runner user unpacks as
+itself; links stay links and special files stay special files, for the guard
+to refuse. CI's `receiver sandbox` job runs `setup`, `run` and `collect` on
+the runner image on every pull request, with a stub drain that leaves a
+process behind, and no secrets.
 
 Scorecard is public, so the dataset and anything household-level stay on the
 runner. No job saves or restores a cache (setup-uv's default cache is off on
@@ -434,9 +441,11 @@ to the jobs that can write. The only artifacts are the request and the run's
 library, run with the runner's own Python) is an allowlist: every entry must
 be a regular file ending `.json`, `.jsonl`, `.csv`, `.md` or `.txt` whose
 bytes parse as that format (UTF-8 text, no NUL bytes), at most 10 MB each and
-100 MB in all; the committed sealed namespace for 6.2.6 is 30 MB, its largest
-file 3.3 MB. The run job uploads only if the guard passes. The `record` job,
-where no candidate code has run, applies the guard again before committing
+100 MB in all; tables are allowed only as `COMPARISON.csv` and
+`STAGED.jsonl`, the names the pipeline writes. The committed sealed namespace
+for 6.2.6 is 30 MB, its largest file 3.3 MB. The run job uploads only if the
+guard passes. The `record` job, where no candidate code has run, applies the
+guard again (`.github/scripts/uk_replay_recheck.sh`) before committing
 anything to the public `replay-state` branch, and drops a refused output, so
 the attempt is recorded as `failed`.
 
@@ -446,15 +455,24 @@ repository can send one (`repository_dispatch` and `workflow_dispatch` both
 require it); requests are meant for PolicyEngine's own releases, from W4. A
 new candidate's dependencies resolve within the newest certified freeze
 where they can. The candidate and its dependencies are trusted with the
-dataset: they compute on it, and the guard stops accidental publication
-(an honest run that writes a dataset copy, a household-level table or a
-binary). Code in the candidate's dependency closure cannot reach the data
+dataset: they compute on it, and the guard stops an honest run from
+publishing a dataset copy, a binary or a table under any other name. The
+guard does not read what a parsable file says: a household-level table
+written as `COMPARISON.csv` would pass. Code in the candidate's dependency closure cannot reach the data
 token, the runtime token, the write jobs' credentials or a cache, and cannot
 alter the guard or what the recorder checks. A deliberately malicious
 candidate could still encode data in aggregates that parse, and could forge a
 schema-valid receipt for its own request, since the receipt and seal are
-produced beside it; neither is in scope, and both would require a malicious
-PolicyEngine release. `pipeline/uk_replay_qualify.py run-request` then:
+produced beside it. Neither is in scope. Each needs malicious code in the
+candidate's environment: a malicious PolicyEngine release, a commit reached
+through the wrapper's `PolicyEngine/policyengine.py` git source (which can
+name a fork's commit), or a malicious third-party dependency pulled in when
+installation falls back to free resolution.
+
+CI's `replay engine` job is weaker: the variant's engine runs as the runner
+user, so code in a certified freeze could reach the token held by the fetch
+step's runner process. That job runs only on pushes to main, with committed,
+certified freezes. `pipeline/uk_replay_qualify.py run-request` then:
 
 1. Validate the request (`schema_invalid`).
 2. Check the dataset file supplied by the control job against the request

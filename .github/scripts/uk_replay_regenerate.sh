@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Regenerate committed replay bytes in a disposable checkout, preserving seals.
 set -euo pipefail
-run() { uv run --with rfc8785==0.1.4 --with jsonschema python "$@"; }
+# Every third-party module the scripts below import (tests check the list).
+run() { uv run --with rfc8785==0.1.4 --with jsonschema --with numpy --with pyyaml python "$@"; }
 
 # Check the original receipts before making the disposable namespaces writable.
 run -m pipeline.uk_replay_qualify verify-sealed
