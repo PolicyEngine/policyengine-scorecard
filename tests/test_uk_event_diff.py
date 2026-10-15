@@ -629,6 +629,7 @@ def test_packets_cover_flagged_moves_including_support_only_rows(ns):
     markdown = files["DIFF.md"].decode()
     assert "Years supported on one side only" in markdown
     assert f"| {EVENT} | 2024 | source_row | 2 |" in markdown
+    assert "Neither side has construction premises" in markdown
 
 
 def test_unverifiable_side_is_refused(ns, tmp_path):
@@ -868,11 +869,12 @@ def test_a_sealed_namespace_must_load_every_event_it_lists(ns, tmp_path):
     (root / "NAMESPACE_MANIFEST.json").write_text(json.dumps(manifest))
     with pytest.raises(diff.DiffError, match="differ from NAMESPACE_MANIFEST"):
         diff.load_side(root, artifact_root=tmp_path)
-    # The other direction: an event on disk the manifest does not list.
+    # Both directions at once: one event unlisted, another listed but absent.
     manifest["files"] = {"another_event/RUN_MANIFEST.json": "0" * 64}
     (root / "NAMESPACE_MANIFEST.json").write_text(json.dumps(manifest))
     with pytest.raises(diff.DiffError, match="differ from NAMESPACE_MANIFEST"):
         diff.load_side(root, artifact_root=tmp_path)
+    # The other direction alone: an event on disk the manifest does not list.
     manifest["files"] = {}
     (root / "NAMESPACE_MANIFEST.json").write_text(json.dumps(manifest))
     with pytest.raises(diff.DiffError, match="differ from NAMESPACE_MANIFEST"):

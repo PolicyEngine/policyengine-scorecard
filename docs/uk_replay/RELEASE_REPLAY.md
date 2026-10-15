@@ -328,11 +328,12 @@ manifest's execution identity, registry and artifact inventory, supported and
 unsupported years, and measure-year grids must agree with the verified staging
 rows and tally. Inertness comes from the staging manifest named and verified by
 comparison provenance. Inconsistent receipts are refused before a diff is
-written. Two namespace files are verified when present:
+written. Two namespace files are checked when present:
 
 * `NAMESPACE_MANIFEST.json`: the events whose run manifests it lists must be
   exactly the events that load, so a sealed namespace with an event listed but
-  missing, or present but unlisted, is refused;
+  missing, or present but unlisted, is refused (the diff compares the event
+  sets and does not re-hash the listed digests);
 * `CONSTRUCTION_PREMISES.json`: its engine (policyengine, policyengine-uk and
   policyengine-core versions) must be the run's, and each event's premise
   record must name the registry digest that event verified against.

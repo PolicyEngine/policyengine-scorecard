@@ -1099,6 +1099,13 @@ def test_a_dataset_that_does_not_state_its_years_fails_when_required(
     )
     assert fiscal.run_managed_simulation(**kwargs)["aggregates_gbp"]  # legacy
     with pytest.raises(RuntimeError, match="does not state its years"):
+        fiscal.run_managed_simulation(
+            **kwargs,
+            require_dataset_years=True,
+            expected_dataset_years=list(range(2024, 2031)),
+        )
+    # A variant run without its data years must not silently skip the check.
+    with pytest.raises(RuntimeError, match="must pass its data years"):
         fiscal.run_managed_simulation(**kwargs, require_dataset_years=True)
 
 
@@ -1350,3 +1357,49 @@ def test_run_sim_passes_the_records_data_years(monkeypatch):
     compute.run_sim(2025, ["income_tax"], None, pre)
     assert seen["expected_dataset_years"] == record()["data_years"]
     assert seen["require_dataset_years"] is True
+
+
+def test_the_legacy_dataset_is_found_by_layout_not_as_the_default(tmp_path):
+    # Review of 6e9d9d2: a variants document whose (certified) default is a
+    # newer variant must still check legacy-shaped manifests against the
+    # legacy record.
+    document = rv.load_document()
+    document["default_variant"] = CURRENT
+    path = tmp_path / "variants.json"
+    path.write_text(json.dumps(document))
+    legacy = record(LEGACY)["identity"]
+    assert stage.legacy_dataset_identity(path) == (
+        legacy["dataset"]["sha256"],
+        legacy["release_bundle"]["certified_data_build_id"],
+    )
+    current = record(CURRENT)["identity"]
+    with pytest.raises(ValueError, match="names another dataset"):
+        stage.manifest_variant(
+            {
+                "certified_dataset_sha256": current["dataset"]["sha256"],
+                "data_bundle": current["release_bundle"]["certified_data_build_id"],
+            },
+            {"calendar_years": [2024]},
+            variants_path=path,
+        )
+    for path_ in sorted(
+        (rv.ROOT / "results" / "uk" / "events").glob("*/RUN_MANIFEST.json")
+    ):
+        manifest = json.loads(path_.read_bytes())
+        assert (
+            stage.manifest_variant(
+                manifest, {"calendar_years": [2024]}, variants_path=path
+            )
+            is None
+        )
+
+
+def test_variant_preflight_hands_the_records_data_years_to_every_run():
+    # Review of 6e9d9d2: dropping data_years from what a variant run hands
+    # its simulations must fail a test, not switch the check off.
+    pre = compute.variant_pre(
+        record(), release_bundle={}, dataset=Path("x.h5"), installed={}
+    )
+    assert pre["data_years"] == record()["data_years"]
+    assert pre["require_dataset_years"] is True
+    assert pre["check_import_origins"] is True
