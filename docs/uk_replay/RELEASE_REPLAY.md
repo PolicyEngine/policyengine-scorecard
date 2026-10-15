@@ -309,7 +309,25 @@ Observed on 2.125.1 on 11 October (parameter tree only):
 
 `pipeline/diff_uk_event_runs.py --base <variant or root> --head <variant or root>`
 compares two complete namespaces, engine-free, after re-verifying each side's
-staging and comparison receipts. Keys:
+staging and comparison receipts against that side's receipt-bound registry
+snapshot. The current event registry does not replace a historical snapshot.
+Every inventoried artifact is checked by the staging and comparison validators,
+including artifacts that supply no numeric source counterpart. Each run
+manifest's execution identity, registry and artifact inventory, supported and
+unsupported years, and measure-year grids must agree with the verified staging
+rows and tally. Inertness comes from the staging manifest named and verified by
+comparison provenance. Inconsistent receipts are refused before a diff is
+written. Two namespace files are checked when present:
+
+* `NAMESPACE_MANIFEST.json`: the events whose run manifests it lists must be
+  exactly the events that load, so a sealed namespace with an event listed but
+  missing, or present but unlisted, is refused (the diff compares the event
+  sets and does not re-hash the listed digests);
+* `CONSTRUCTION_PREMISES.json`: its engine (policyengine, policyengine-uk and
+  policyengine-core versions) must be the run's, and each event's premise
+  record must name the registry digest that event verified against.
+
+Keys:
 
 * source row: `(event, source_row_id)`;
 * measure-year total: `(event, measure_key, year)`;
@@ -323,24 +341,35 @@ bin transitions.
 |---|---|
 | `numerical` | Both sides numeric and `abs(head − base) > max(£1,000,000, 0.01 × max(abs(head), abs(base)))`. Strictly greater. |
 | `structural` | Sign reversal or a zero crossing (zero means `abs(x) ≤ £0.50`, accounting roundoff); artifact schema or orientation changed; non-finite value. Regardless of size. |
-| `coverage` | A counterpart, artifact pair or source row present on one side only, in a year both sides support. |
-| `mapping` | A row's `head_variables`, an artifact's `head_channels` or `head_definitions`, or the registry SHA-256 differs. |
-| `support` | A year supported on one side only. |
+| `coverage` | A counterpart, artifact pair or source row present on one side only, in a year both sides support. The shared-support requirement also applies to rows outside household scope or without an expressible counterpart. An event replayed on one side only flags every one of its source rows `event_on_base_only` or `event_on_head_only`, whatever the year. |
+| `mapping` | A row's `head_variables`, an artifact's `head_channels` or `head_definitions`, or the registry SHA-256 differs. Registry changes flag the event's affected records with both digests. |
+| `support` | A year supported on one side only. Source rows that cannot carry a counterpart do not receive this flag. |
 | `inertness` | `inert_construction` on one side only, or identical worlds in an in-force year on one side only. |
-| `construction` | Executed `baseline_world`/`reform_world` reform dicts differ, or a premise check's result differs. A changed current-law value of a touched parameter is recorded as context on the row, not flagged: it is what a model release is expected to change. |
+| `construction` | Executed `baseline_world`/`reform_world` reform dicts differ, a premise check's result differs, or a measure has premise records on one side only (`premises_on_base_only`/`premises_on_head_only`; the other side's checks cannot be compared). A changed current-law value of a touched parameter is recorded as context on the row, not flagged: it is what a model release is expected to change. When neither side has premises, `DIFF.md` says so: premise checks were not compared. |
 
 Identity changes (wrapper, engine, core, data build, dataset digest) are
 recorded once per diff; they explain moves and are not flags on rows.
 
 Outputs: `DIFF.json` (canonical, sorted), `DIFF.md`, and one issue packet per
 flagged `(event, measure, year)` under `packets/`. A packet holds the source
-cells (table, column, row number, source-row id, OBR value), both execution
+cells (table, column, row number, source-row id, OBR value) and measure details
+from each registry with base/head attribution, both execution
 identities, registry and artifact digests, the executed reform dicts, the
 affected heads with base/head values, focused rerun commands for each
-variant, the statutory sources the registry already cites, and empty
+variant using that side's verified registry path and variant selection, the
+statutory sources each registry already cites with side attribution, and empty
 `minimal_case` and `statutory_evidence` sections for the investigating lane.
+Removed measures retain their base title, source cells and citations.
 Packets are evidence for the coordinating session, which files upstream
 issues; this pipeline files none.
+
+Diff invariants are checked with deterministic cases and Hypothesis properties
+in `tests/test_uk_event_diff.py`: identical sides raise no flags; swapping sides
+preserves each record's flag set and mirrors its values; every source row in
+either side appears once at source-row level; every flagged record appears in
+exactly one packet, including support-only records; numerical moves flag only
+strictly above the stated threshold; coverage and support do not overlap; and,
+for events on both sides, coverage requires a year both sides support.
 
 ## Qualification requests and receipts
 
