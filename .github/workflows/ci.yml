@@ -192,7 +192,7 @@ jobs:
           uv venv --python 3.12 "$RUNNER_TEMP/venv"
           uv pip install --python "$RUNNER_TEMP/venv/bin/python" rfc8785==0.1.4
           git worktree add --detach "$RUNNER_TEMP/checkout" HEAD
-          "$RUNNER_TEMP/venv/bin/python" -c 'import multiprocessing as m, rfc8785; assert sum(m.Pool(2).map(abs, [-1, -2])) == 3'
+          "$RUNNER_TEMP/venv/bin/python" -c 'import multiprocessing as m, rfc8785; assert sum(m.get_context("spawn").Pool(2).map(abs, [-1, -2])) == 3'
           python3 -c 'import json; print(json.dumps({"status": "failed", "receipt_sha256": "a" * 64}))' > output/outcome.json
           echo 0 > output/run-exit.txt
           echo '{"uv_and_network": true, "git_worktree": true, "multiprocessing": true}' > output/probe.json

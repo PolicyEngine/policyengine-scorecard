@@ -411,9 +411,9 @@ passed as `HUGGING_FACE_TOKEN`, and only in `workflow_dispatch` and
 workflow has no pull-request trigger. A fetch rejection is passed to the run
 without installing candidate code.
 
-Candidate code then runs as an unprivileged account inside a systemd
-sandbox (`.github/scripts/uk_replay_sandbox.sh`), never as the runner user.
-The runner user has passwordless sudo, owns the workspace and the runner's
+Candidate code then runs as an unprivileged account inside a systemd sandbox
+(`.github/scripts/uk_replay_sandbox.sh`), never as the runner user. The
+runner user has passwordless sudo, owns the workspace and the runner's
 command files (`$GITHUB_ENV`, `$GITHUB_PATH`), and owns the runner processes
 that keep the job's secrets in memory for the whole job and pass the Actions
 runtime token to later steps. Later steps run as that user and search its
@@ -427,25 +427,26 @@ account's home (`ProtectSystem=strict`), the runner's home is inaccessible,
 (`ProtectProc=invisible`), and kernel tunables, modules, logs, the clock,
 namespaces and capabilities are locked down. `/dev/shm` and `/dev/mqueue`
 stay shared with the host (systemd binds them under `PrivateDevices`), so
-Python multiprocessing works; nothing later in the job runs from them. The account has no sudoers entry, no
-supplementary group (so no docker socket) and no cron or at jobs. `setup`
-checks from inside the sandbox that sudo fails, that the account has no
-group beyond its own, and that nothing is writable among every directory on
-the runner's `PATH` and its parents, the tool cache, `/opt`, `/usr`, `/etc`,
-the workspace, the command files and the docker socket; otherwise the job
-fails. The account works in its own copy of the repository and of `input/`
-(the request, the verified dataset and the fetch outcome), with an
-environment built from nothing. It runs `.github/scripts/uk_replay_drain.sh`
-for that one request. When the service's main process ends, systemd kills
-everything left in it; `collect` then checks that no process of the account
-survives, and the account streams its `output/` out with `tar`, which the
-runner user unpacks as itself; links stay links and special files stay
-special files, for the guard to refuse. The upload needs both `collect` and
-the guard to succeed. CI's `receiver sandbox` job runs `setup`, `run` and
-`collect` on the runner image on every pull request, with no secrets and a
-stub drain that does what a real run needs inside the sandbox (creates a uv
-environment and installs from PyPI, adds a git worktree of the copy, runs a
-multiprocessing pool) and leaves a process behind.
+Python multiprocessing works; nothing later in the job runs from them. The
+account has no sudoers entry, no supplementary group (so no docker socket)
+and no cron or at jobs. `setup` checks from inside the sandbox that sudo
+fails, that the account has no group beyond its own, and that nothing is
+writable among every directory on the runner's `PATH` and its parents, the
+tool cache, `/opt`, `/usr`, `/etc`, the workspace, the command files and the
+docker socket; otherwise the job fails. The account works in its own copy of
+the repository and of `input/` (the request, the verified dataset and the
+fetch outcome), with an environment built from nothing. It runs
+`.github/scripts/uk_replay_drain.sh` for that one request. When the
+service's main process ends, systemd kills everything left in it; `collect`
+then checks that no process of the account survives, and the account streams
+its `output/` out with `tar`, which the runner user unpacks as itself; links
+stay links and special files stay special files, for the guard to refuse.
+The upload needs both `collect` and the guard to succeed. CI's `receiver
+sandbox` job runs `setup`, `run` and `collect` on the runner image on every
+pull request, with no secrets and a stub drain that does what a real run
+needs inside the sandbox (creates a uv environment and installs from PyPI,
+adds a git worktree of the copy, runs a multiprocessing pool) and leaves a
+process behind.
 
 Scorecard is public, so the dataset and anything household-level stay on the
 runner. No job saves or restores a cache (setup-uv's default cache is off on

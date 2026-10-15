@@ -831,6 +831,10 @@ def test_candidate_code_runs_in_a_systemd_sandbox_with_nothing_writable_outside_
         "-p ProtectProc=invisible",
         "-p RestrictNamespaces=yes",
         "-p CapabilityBoundingSet= ",
+        "-p ProtectKernelModules=yes",
+        "-p ProtectKernelLogs=yes",
+        "-p ProtectClock=yes",
+        "-p LockPersonality=yes",
     ):
         assert setting in code, setting
     run = code[code.index("  run)") : code.index("  collect)")]
@@ -881,7 +885,7 @@ def test_the_sandbox_is_exercised_on_a_real_runner_image_without_secrets():
         "uv venv --python 3.12",
         "uv pip install",
         "git worktree add",
-        "m.Pool(2)",
+        'get_context("spawn").Pool(2)',
     ):
         assert joined.index(step) < joined.index("output/probe.json")
     assert "test -f output/probe.json" in joined
