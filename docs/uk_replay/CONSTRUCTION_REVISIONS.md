@@ -136,3 +136,18 @@ in 2.125.1). The 2028–2030 entries cite Budget 2025's later freeze to 2031
 (`lower_profits_limit.yaml:75-110`). For the AS2023 and SB2024 replays, those
 later entries are a baseline-vintage difference from 2028, separate from
 the correction observed by the 2027 predicate.
+
+## Independent investigation of the largest moves
+
+[`research/triage_6.2.6_vs_legacy.md`](research/triage_6.2.6_vs_legacy.md)
+records an independent investigation of the largest legacy-to-6.2.6 moves. It
+attributes both structural moves to upstream fixes: the Class 2 abolition's
+Class 4 head to policyengine-uk #1884 and #2058, and the HICBC Child Benefit
+head to #2140, which models payment resuming once the charge is zero (an
+assumption, since a real claim has to be restarted). It reads the AB2024 CGT
+decline (×0.51) as a smaller capital-gains base in the new population rather
+than day-weighting, and keeps the pooled-gains limitation. It finds the
+private-school VAT replay figure consistent with a zero dedicated baseline
+head; it does not show £2.0bn missing from total baseline VAT, because generic
+VAT is calibrated to whole OBR receipts. It names LHA (×2.45) as only partly
+attributed. These are its findings, not re-verified here.
