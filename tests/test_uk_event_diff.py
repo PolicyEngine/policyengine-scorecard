@@ -868,6 +868,15 @@ def test_a_sealed_namespace_must_load_every_event_it_lists(ns, tmp_path):
     (root / "NAMESPACE_MANIFEST.json").write_text(json.dumps(manifest))
     with pytest.raises(diff.DiffError, match="differ from NAMESPACE_MANIFEST"):
         diff.load_side(root, artifact_root=tmp_path)
+    # The other direction: an event on disk the manifest does not list.
+    manifest["files"] = {"another_event/RUN_MANIFEST.json": "0" * 64}
+    (root / "NAMESPACE_MANIFEST.json").write_text(json.dumps(manifest))
+    with pytest.raises(diff.DiffError, match="differ from NAMESPACE_MANIFEST"):
+        diff.load_side(root, artifact_root=tmp_path)
+    manifest["files"] = {}
+    (root / "NAMESPACE_MANIFEST.json").write_text(json.dumps(manifest))
+    with pytest.raises(diff.DiffError, match="differ from NAMESPACE_MANIFEST"):
+        diff.load_side(root, artifact_root=tmp_path)
 
 
 def premises_for(side_name, tmp_path, *, engine, registry_sha256):
@@ -893,10 +902,23 @@ def test_premises_must_come_from_the_sides_engine_and_registry(ns, tmp_path):
     }
     root = premises_for("premised", tmp_path, engine=own, registry_sha256=registry)
     assert diff.load_side(root, artifact_root=tmp_path)["premises"] is not None
+    for field, other in (
+        ("policyengine_uk", "2.89.2"),
+        ("policyengine", "6.4.1"),
+        ("policyengine_core", "3.24.1"),
+    ):
+        premises_for(
+            "premised",
+            tmp_path,
+            engine={**own, field: other},
+            registry_sha256=registry,
+        )
+        with pytest.raises(diff.DiffError, match="another engine"):
+            diff.load_side(root, artifact_root=tmp_path)
     premises_for(
         "premised",
         tmp_path,
-        engine={**own, "policyengine_uk": "2.89.2"},
+        engine={key: value for key, value in own.items() if key != "policyengine"},
         registry_sha256=registry,
     )
     with pytest.raises(diff.DiffError, match="another engine"):
@@ -914,6 +936,19 @@ def test_premises_on_one_side_only_flag_construction():
     details, _ = diff._premise_details(EVENT, KEY, 2024, None, premises)
     assert [d["code"] for d in details] == ["premises_on_head_only"]
     assert diff._premise_details(EVENT, KEY, 2024, None, None) == ([], {})
+
+
+def test_diff_markdown_says_which_premises_were_compared():
+    def note(base, head):
+        return diff.premises_note(
+            {"base": {"premises_sha256": base}, "head": {"premises_sha256": head}}
+        )
+
+    assert "were not compared" in note(None, None)
+    assert "base side only" in note("a" * 64, None)
+    assert "premises_on_head_only" in note(None, "b" * 64)
+    both = note("a" * 64, "b" * 64)
+    assert "a" * 64 in both and "b" * 64 in both
 
 
 @st.composite
@@ -1076,7 +1111,9 @@ def test_every_flagged_record_belongs_to_exactly_one_packet(base, head):
 
 @settings(max_examples=100, deadline=None)
 @given(replay_sides(), replay_sides())
-def test_coverage_flags_require_shared_year_support(base, head):
+def test_coverage_flags_require_shared_year_support_for_shared_events(base, head):
+    # Both drawn sides replay the same event; an event on one side only is
+    # coverage in every year (test_an_event_replayed_on_one_side_only_is_coverage).
     for record in diff.diff_sides(base, head)["rows"]:
         if "coverage" in record["flags"]:
             assert all(
