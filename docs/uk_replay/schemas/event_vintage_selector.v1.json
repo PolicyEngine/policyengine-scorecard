@@ -1,0 +1,386 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://policyengine.org/scorecard/uk_replay/schemas/event_vintage_selector.v1.json",
+  "title": "event vintage selector.v1",
+  "type": "object",
+  "description": "Event, forecast-byte identity, complete scoring horizon and pre-event survey admissibility. This is a build contract, not population certification.",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "event_vintage_selector.v1"
+    },
+    "event_slug": {
+      "type": "string",
+      "description": "Inventory event_key.",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "event_date": {
+      "type": "string",
+      "description": "Publication or event date, not a retrieval or capture date.",
+      "format": "date"
+    },
+    "forecast_vintage": {
+      "type": "object",
+      "description": "",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "OBR release identity, not the forecast year.",
+          "pattern": "^obr_efo_[a-z]+_[0-9]{4}$"
+        },
+        "label": {
+          "type": "string",
+          "description": "",
+          "minLength": 1
+        },
+        "published_at": {
+          "type": "string",
+          "description": "Publication or event date, not a retrieval or capture date.",
+          "format": "date"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "published_at"
+      ]
+    },
+    "source_locks": {
+      "type": "array",
+      "description": "",
+      "items": {
+        "type": "object",
+        "description": "",
+        "additionalProperties": false,
+        "properties": {
+          "lock_path": {
+            "type": "string",
+            "description": "Committed repository-relative lock path.",
+            "pattern": "^data/uk/events/vintage_locks/[a-z][a-z0-9_]*\\.json$"
+          },
+          "lock_sha256": {
+            "type": "string",
+            "description": "Lowercase SHA-256 of the identified bytes.",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "sources": {
+            "type": "array",
+            "description": "",
+            "items": {
+              "type": "object",
+              "description": "A source receipt within a committed lock. Unavailable sources have no digest.",
+              "additionalProperties": false,
+              "properties": {
+                "role": {
+                  "enum": [
+                    "economy",
+                    "receipts",
+                    "expenditure",
+                    "policy_measures",
+                    "hofd_row",
+                    "dwp_benefit_expenditure_caseload"
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "obtained",
+                    "unavailable"
+                  ]
+                },
+                "sha256": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "description": "Lowercase SHA-256 of the identified bytes.",
+                      "pattern": "^[0-9a-f]{64}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "role",
+                "status",
+                "sha256"
+              ],
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "status": {
+                        "const": "obtained"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "sha256": {
+                        "type": "string",
+                        "description": "Lowercase SHA-256 of the identified bytes.",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    }
+                  },
+                  "else": {
+                    "properties": {
+                      "sha256": {
+                        "type": "null"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "minItems": 6,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "lock_path",
+          "lock_sha256",
+          "sources"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "scoring_fys": {
+      "type": "array",
+      "description": "All original inventory FYs, in order; never clipped to an engine window.",
+      "items": {
+        "type": "string",
+        "description": "Original source fiscal year, with its end year abbreviated.",
+        "pattern": "^[12][0-9]{3}-[0-9]{2}$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "admissible_survey_releases": {
+      "type": "array",
+      "description": "Reviewed candidates in this slice; every publication must precede event_date.",
+      "items": {
+        "type": "object",
+        "description": "A reviewed survey release published before the event.",
+        "additionalProperties": false,
+        "properties": {
+          "release_id": {
+            "type": "string",
+            "description": "Named FRS release; fixes the release rather than just a model year.",
+            "pattern": "^frs_[0-9]{4}_[0-9]{2}$"
+          },
+          "survey_fy": {
+            "type": "string",
+            "description": "Original source fiscal year, with its end year abbreviated.",
+            "pattern": "^[12][0-9]{3}-[0-9]{2}$"
+          },
+          "published_at": {
+            "type": "string",
+            "description": "Publication or event date, not a retrieval or capture date.",
+            "format": "date"
+          },
+          "publication_url": {
+            "type": "string",
+            "description": "Public release page used by the existing evidence.",
+            "format": "uri"
+          },
+          "evidence": {
+            "type": "array",
+            "description": "",
+            "items": {
+              "type": "string",
+              "description": "Repository evidence path, optionally with a section."
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "release_id",
+          "survey_fy",
+          "published_at",
+          "publication_url",
+          "evidence"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "preferred_survey_release": {
+      "type": "string",
+      "description": "PLAN.md survey choice, drawn from the admissible candidates.",
+      "pattern": "^frs_[0-9]{4}_[0-9]{2}$"
+    },
+    "policy_world_contract": {
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "",
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "const": "pending"
+            },
+            "value": {
+              "const": "pending"
+            },
+            "proposal": {
+              "type": "string",
+              "description": "Repository path to the proposal requiring a decision.",
+              "pattern": "^docs/uk_replay/[A-Z_]+\\.md(#[a-z0-9-]+)?$"
+            },
+            "decision": {
+              "const": "cos d1344"
+            }
+          },
+          "required": [
+            "status",
+            "value",
+            "proposal",
+            "decision"
+          ]
+        },
+        {
+          "type": "object",
+          "description": "",
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "const": "resolved"
+            },
+            "contract_id": {
+              "enum": [
+                "published_end_state_same_weights.v1",
+                "documented_pre_measures_bridge.v1"
+              ]
+            },
+            "contract_sha256": {
+              "type": "string",
+              "description": "Lowercase SHA-256 of the identified bytes.",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "decision_receipt": {
+              "type": "string",
+              "description": "",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "status",
+            "contract_id",
+            "contract_sha256",
+            "decision_receipt"
+          ]
+        }
+      ]
+    },
+    "annualisation_bridge": {
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "An unresolved decision, never a substitute release or fabricated digest.",
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "const": "pending"
+            },
+            "value": {
+              "const": "pending"
+            },
+            "proposal": {
+              "type": "string",
+              "description": "Repository path to the proposal requiring a decision.",
+              "pattern": "^docs/uk_replay/[A-Z_]+\\.md(#[a-z0-9-]+)?$"
+            }
+          },
+          "required": [
+            "status",
+            "value",
+            "proposal"
+          ]
+        },
+        {
+          "type": "object",
+          "description": "",
+          "additionalProperties": false,
+          "properties": {
+            "bridge_id": {
+              "type": "string",
+              "description": "",
+              "minLength": 1
+            },
+            "receipt_sha256": {
+              "type": "string",
+              "description": "Lowercase SHA-256 of the identified bytes.",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "bridge_id",
+            "receipt_sha256"
+          ]
+        }
+      ]
+    },
+    "readiness": {
+      "enum": [
+        "contracts_pending",
+        "ready_for_population_build"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "description": "",
+      "items": {
+        "type": "string",
+        "description": "Read evidence supporting dates, release choice and FY accounting."
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "event_slug",
+    "event_date",
+    "forecast_vintage",
+    "source_locks",
+    "scoring_fys",
+    "admissible_survey_releases",
+    "preferred_survey_release",
+    "policy_world_contract",
+    "annualisation_bridge",
+    "readiness",
+    "evidence"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "readiness": {
+            "const": "ready_for_population_build"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "policy_world_contract": {
+            "properties": {
+              "status": {
+                "const": "resolved"
+              }
+            }
+          },
+          "annualisation_bridge": {
+            "required": [
+              "bridge_id",
+              "receipt_sha256"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

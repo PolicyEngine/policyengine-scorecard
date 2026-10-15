@@ -108,6 +108,14 @@ files, dates and integration gaps are in HISTORICAL_RULES.
 
 ## Worth doing before 28 October
 
+The first three-event slice is documented in the
+[source locks](VINTAGE_LOCKS.md), [event selector contract](EVENT_VINTAGE_SELECTOR.md),
+[population manifest contract](POPULATION_MANIFEST.md),
+[policy-world proposal](POLICY_WORLD_CONTRACT.md),
+[historical FRS requirements](HISTORICAL_FRS.md) and
+[registry adapter design](HISTORICAL_ADAPTER.md). Its methodology decisions
+remain pending; these contracts do not supply historical population builds.
+
 Finish phase 0, **8–12 lane-days**, with a small set of reviewable artifacts:
 lock the 2022 forecast releases and archive-access receipts; specify the
 post/pre-measures calibration contract; enumerate historical FRS source/schema

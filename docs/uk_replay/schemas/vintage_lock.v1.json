@@ -1,0 +1,399 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://policyengine.org/scorecard/uk-replay/schemas/vintage_lock.v1.json",
+  "title": "UK event source vintage lock, version 1",
+  "description": "One receipt per core source role. The byte digest identifies fetched source bytes; receipt_sha256 identifies canonical metadata excluding its own field. Unavailable entries never invent byte metadata. Capture status refers to proven file revision identity, separately from the event forecast label.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_slug",
+    "event_date",
+    "forecast_vintage",
+    "collected_at",
+    "collector",
+    "sources",
+    "receipt_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "vintage_lock.v1"
+    },
+    "event_slug": {
+      "enum": [
+        "spring_statement_2022",
+        "autumn_statement_2022",
+        "autumn_budget_2021"
+      ]
+    },
+    "event_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "forecast_vintage": {
+      "type": "object",
+      "required": [
+        "id",
+        "label",
+        "published_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^obr_efo_[a-z]+_[0-9]{4}$"
+        },
+        "label": {
+          "type": "string"
+        },
+        "published_at": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "additionalProperties": false
+    },
+    "collected_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "collector": {
+      "type": "object",
+      "required": [
+        "user_agent",
+        "archive_replay_mode",
+        "pause_seconds",
+        "max_attempts"
+      ],
+      "properties": {
+        "user_agent": {
+          "const": "policyengine-scorecard-research/1.0"
+        },
+        "archive_replay_mode": {
+          "const": "id_"
+        },
+        "pause_seconds": {
+          "type": "number",
+          "minimum": 3,
+          "maximum": 6
+        },
+        "max_attempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        }
+      },
+      "additionalProperties": false
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": [
+          "role",
+          "original_url",
+          "archive_capture_url",
+          "archive_timestamp",
+          "edition",
+          "capture_status",
+          "capture_status_evidence",
+          "status",
+          "retrieved_at",
+          "byte_size",
+          "sha256",
+          "media_type",
+          "sheet_names",
+          "workbook_properties",
+          "original_last_modified",
+          "failure_reason",
+          "attempts"
+        ],
+        "properties": {
+          "role": {
+            "enum": [
+              "economy",
+              "receipts",
+              "expenditure",
+              "policy_measures",
+              "hofd_row",
+              "dwp_benefit_expenditure_caseload"
+            ]
+          },
+          "original_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "archive_capture_url": {
+            "type": "string",
+            "pattern": "^https://web\\.archive\\.org/web/[0-9]{14}id_/https?://"
+          },
+          "archive_timestamp": {
+            "type": "string",
+            "pattern": "^[0-9]{14}$"
+          },
+          "edition": {
+            "type": "string",
+            "minLength": 1
+          },
+          "capture_status": {
+            "enum": [
+              "launch",
+              "later_revision",
+              "unknown"
+            ]
+          },
+          "capture_status_evidence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "obtained",
+              "unavailable"
+            ]
+          },
+          "retrieved_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "byte_size": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "media_type": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sheet_names": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "workbook_properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "original_last_modified": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "failure_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "selection": {
+            "type": "object",
+            "required": [
+              "forecast_label",
+              "verified_rows"
+            ],
+            "properties": {
+              "forecast_label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "verified_rows": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "sheet",
+                    "label_cell",
+                    "raw_label",
+                    "cells"
+                  ],
+                  "properties": {
+                    "sheet": {
+                      "type": "string"
+                    },
+                    "label_cell": {
+                      "type": "string",
+                      "pattern": "^A[0-9]+$"
+                    },
+                    "raw_label": {
+                      "type": "string"
+                    },
+                    "cells": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "attempts": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "url",
+                "retrieved_at",
+                "http_status",
+                "error"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "retrieved_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "http_status": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 100,
+                  "maximum": 599
+                },
+                "error": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "obtained"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "byte_size": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "media_type": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sheet_names": {
+                  "minItems": 1
+                },
+                "failure_reason": {
+                  "type": "null"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "byte_size": {
+                  "type": "null"
+                },
+                "sha256": {
+                  "type": "null"
+                },
+                "media_type": {
+                  "type": "null"
+                },
+                "sheet_names": {
+                  "maxItems": 0
+                },
+                "failure_reason": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "role": {
+                  "const": "hofd_row"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "selection"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "role": {
+                  "const": "hofd_row"
+                },
+                "status": {
+                  "const": "obtained"
+                }
+              },
+              "required": [
+                "role",
+                "status"
+              ]
+            },
+            "then": {
+              "properties": {
+                "selection": {
+                  "properties": {
+                    "verified_rows": {
+                      "minItems": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "receipt_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

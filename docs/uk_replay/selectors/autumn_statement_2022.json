@@ -1,0 +1,99 @@
+{
+  "schema_version": "event_vintage_selector.v1",
+  "event_slug": "autumn_statement_2022",
+  "event_date": "2022-11-17",
+  "forecast_vintage": {
+    "id": "obr_efo_november_2022",
+    "label": "November 2022",
+    "published_at": "2022-11-17"
+  },
+  "source_locks": [
+    {
+      "lock_path": "data/uk/events/vintage_locks/autumn_statement_2022.json",
+      "lock_sha256": "4527ff6bc95917ea9fee231484ee8396548658cf3e3ef3ffe9b2d877da55af6c",
+      "sources": [
+        {
+          "role": "economy",
+          "status": "obtained",
+          "sha256": "279db66221080e0e1050c98b26f14b2a1f5248598da3ef2a8f0f6974fbd4d3c3"
+        },
+        {
+          "role": "receipts",
+          "status": "obtained",
+          "sha256": "674e08e2510b34b286cb570546c5133d14d1eea145b8460aa622688b05dbf306"
+        },
+        {
+          "role": "expenditure",
+          "status": "obtained",
+          "sha256": "1faf683c50e896e863ff9967b7343cd8e3d17cabd942b33eb91f6a6e079272aa"
+        },
+        {
+          "role": "policy_measures",
+          "status": "obtained",
+          "sha256": "5a5b4cb1ff409515c3e273dcc59c2598288197ec25fdabd45ecd595278ba89d5"
+        },
+        {
+          "role": "hofd_row",
+          "status": "obtained",
+          "sha256": "d69fa5112266c71fff0c74bffe416b7c7c0f663b44e0b87e7a82899d09ba39d5"
+        },
+        {
+          "role": "dwp_benefit_expenditure_caseload",
+          "status": "obtained",
+          "sha256": "2ff7ad1510e080ca3352db190c29a360bdb43e8ee2cb80a92cc69757dd599a1b"
+        }
+      ]
+    }
+  ],
+  "scoring_fys": [
+    "2022-23",
+    "2023-24",
+    "2024-25",
+    "2025-26",
+    "2026-27",
+    "2027-28"
+  ],
+  "admissible_survey_releases": [
+    {
+      "release_id": "frs_2019_20",
+      "survey_fy": "2019-20",
+      "published_at": "2021-03-25",
+      "publication_url": "https://www.gov.uk/government/statistics/family-resources-survey-financial-year-2019-to-2020",
+      "evidence": [
+        "docs/uk_replay/PLAN.md#phases-and-effort",
+        "docs/uk_replay/POPULATIONS_AND_VINTAGES.md",
+        "docs/uk_replay/HISTORICAL_FRS.md"
+      ]
+    },
+    {
+      "release_id": "frs_2020_21",
+      "survey_fy": "2020-21",
+      "published_at": "2022-03-31",
+      "publication_url": "https://www.gov.uk/government/statistics/family-resources-survey-financial-year-2020-to-2021",
+      "evidence": [
+        "docs/uk_replay/PLAN.md#phases-and-effort",
+        "docs/uk_replay/HISTORICAL_FRS.md"
+      ]
+    }
+  ],
+  "preferred_survey_release": "frs_2020_21",
+  "policy_world_contract": {
+    "status": "pending",
+    "value": "pending",
+    "proposal": "docs/uk_replay/POLICY_WORLD_CONTRACT.md",
+    "decision": "cos d1344"
+  },
+  "annualisation_bridge": {
+    "status": "pending",
+    "value": "pending",
+    "proposal": "docs/uk_replay/HISTORICAL_ADAPTER.md#proposed-selection-interface"
+  },
+  "readiness": "contracts_pending",
+  "evidence": [
+    "docs/uk_replay/PLAN.md",
+    "docs/uk_replay/POPULATIONS_AND_VINTAGES.md",
+    "docs/uk_replay/evidence/population_receipts.json",
+    "docs/uk_replay/HISTORICAL_FRS.md",
+    "docs/uk_replay/VINTAGE_LOCKS.md"
+  ]
+}
