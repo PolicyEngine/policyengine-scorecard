@@ -1,6 +1,12 @@
 import { Fragment, useMemo, useState, type ReactNode } from "react";
 import { Button } from "@policyengine/ui-kit/primitives";
-import { defaultFilters, hasActiveFilters, type Filters } from "../filters";
+import {
+  METRIC_ORDER,
+  PROGRAM_ORDER,
+  defaultFilters,
+  hasActiveFilters,
+  type Filters,
+} from "../filters";
 import {
   divergenceScore,
   divergenceTextClass,
@@ -19,15 +25,6 @@ import {
 } from "../tableSort";
 import { LabeledSelect, StatusBadge, TableCard, Tag } from "./ui";
 
-const PROGRAM_ORDER = [
-  "snap", "ssi", "tanf", "wic", "ccdf", "housing", "liheap", "eitc",
-  "ctc_refund", "spm_poverty",
-];
-const METRIC_ORDER = [
-  "eligible_count", "eligibility_rate", "participation_rate",
-  "participation_gap_count", "poverty_rate", "poverty_rate_fullpart",
-  "poverty_rate_relative_change_fullpart", "poverty_count_change_fullpart",
-];
 const MAX_RENDER = 600;
 
 /**

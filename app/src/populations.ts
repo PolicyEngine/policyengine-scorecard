@@ -25,6 +25,20 @@ export function populationCounts(
   };
 }
 
+/**
+ * The country a linked claim (?claim=) belongs to, so a link without the
+ * right ?country= can still open it. Only the feed's initial rows are
+ * searched: archived fiscal-event scores load on demand, so an id found
+ * only there is unknown here (null), like any id the feed lacks.
+ */
+export function claimCountry(
+  rows: PopulationRow[],
+  claimId: string,
+): Country | null {
+  const row = rows.find((r) => r.claim_id === claimId);
+  return row ? countryOf(row) : null;
+}
+
 export function decodeArchive(feed: PopulationArchiveFeed): PopulationRow[] {
   return feed.rows.map((row) => ({
     ...feed.common,

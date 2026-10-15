@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { decodeArchive, populationCounts } from "./populations";
+import { claimCountry, decodeArchive, populationCounts } from "./populations";
 import type { PopulationRow, PopulationsFeed } from "./types";
 
 function row(id: string, value: number | null, history: boolean): PopulationRow {
@@ -62,4 +62,26 @@ test("event detail restores shared fields, explicit zero values and each cell's 
   expect(rows.map((row) => row.conditions.fy)).toEqual(["1970-71", "1971-72"]);
   expect(rows.every((row) => row.conditions.fiscal_event === "budget_1970")).toBe(true);
   expect(rows.every((row) => row.results.length === 0)).toBe(true);
+});
+
+describe("claim links", () => {
+  const rows = [
+    row("4290148a46a76bfa6ffa", null, false),
+    { ...row("2eed4d168d9d386cd57f", null, false), country: "BE" },
+    { ...row("87166869af304dad43b8", null, false), country: undefined },
+  ] as PopulationRow[];
+
+  test("a linked claim opens in its own country", () => {
+    expect(claimCountry(rows, "4290148a46a76bfa6ffa")).toBe("UK");
+    expect(claimCountry(rows, "2eed4d168d9d386cd57f")).toBe("BE");
+  });
+
+  test("a claim from a US-era export without a country key is a US claim", () => {
+    expect(claimCountry(rows, "87166869af304dad43b8")).toBe("US");
+  });
+
+  test("an id the feed does not have opens nothing", () => {
+    expect(claimCountry(rows, "0000000000000000000a")).toBeNull();
+    expect(claimCountry([], "4290148a46a76bfa6ffa")).toBeNull();
+  });
 });
