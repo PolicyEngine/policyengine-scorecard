@@ -4,11 +4,23 @@ import importlib.metadata
 import math
 
 
-def engine_dumps(pin="2.89.2", system=None):
+def variant_engine_pin(variant_id=None):
+    """The policyengine-uk version of a certified replay variant (default: the
+    variant registries are authored against)."""
+    try:
+        from pipeline import uk_replay_variants as variants
+    except ModuleNotFoundError:
+        import uk_replay_variants as variants
+    record = variants.get_variant(variant_id)
+    return record["identity"]["packages"]["policyengine-uk"]["version"]
+
+
+def engine_dumps(pin=None, system=None, variant=None):
     """(parameter path -> 2026 value, variable name -> info, year probe)."""
     import policyengine_uk
     from policyengine_core.parameters import Parameter, ParameterNode, ParameterScale
 
+    pin = pin or variant_engine_pin(variant)
     installed = importlib.metadata.version("policyengine-uk")
     if installed != pin:
         raise SystemExit(
