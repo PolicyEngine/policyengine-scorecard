@@ -411,27 +411,36 @@ passed as `HUGGING_FACE_TOKEN`, and only in `workflow_dispatch` and
 workflow has no pull-request trigger. A fetch rejection is passed to the run
 without installing candidate code.
 
-Candidate code then runs as an unprivileged account
-(`.github/scripts/uk_replay_sandbox.sh`), never as the runner user. The
-runner user has passwordless sudo, owns the workspace and the runner's
+Candidate code then runs as an unprivileged account inside a systemd
+sandbox (`.github/scripts/uk_replay_sandbox.sh`), never as the runner user.
+The runner user has passwordless sudo, owns the workspace and the runner's
 command files (`$GITHUB_ENV`, `$GITHUB_PATH`), and owns the runner processes
 that keep the job's secrets in memory for the whole job and pass the Actions
-runtime token to later steps. The candidate account has no sudoers entry, no
+runtime token to later steps. Later steps run as that user and search its
+`PATH`, which on the hosted image includes world-writable directories under
+`/opt`; a separate account alone could plant a program there for a later
+step to run. So the candidate runs as a transient systemd service
+(`systemd-run --uid`): the whole filesystem is read-only except the
+account's home (`ProtectSystem=strict`), the runner's home is inaccessible,
+`/tmp` is private, setuid programs such as sudo cannot gain privileges
+(`NoNewPrivileges`), and other users' processes are invisible
+(`ProtectProc=invisible`). The account has no sudoers entry, no
 supplementary group (so no docker socket) and no cron or at jobs. `setup`
-checks, as the account itself, that it cannot use sudo, has no group beyond
-its own, and cannot write the workspace, the runner's command files or the
-docker socket, and fails the job otherwise. The account works in its own
-copy of the repository and of `input/` (the request, the verified dataset
-and the fetch outcome), starts from an empty environment (`env -i`), and
-cannot read another user's process memory or environment. It may be able to
-read the runner user's files if the runner image leaves them readable; none
-holds a secret. It runs `.github/scripts/uk_replay_drain.sh` for that one
-request. Afterwards every process it started is killed and the account
-streams its `output/` out with `tar`, which the runner user unpacks as
-itself; links stay links and special files stay special files, for the guard
-to refuse. CI's `receiver sandbox` job runs `setup`, `run` and `collect` on
-the runner image on every pull request, with a stub drain that leaves a
-process behind, and no secrets.
+checks from inside the sandbox that sudo fails, that the account has no
+group beyond its own, and that nothing is writable among every directory on
+the runner's `PATH` and its parents, the tool cache, `/opt`, `/usr`, `/etc`,
+the workspace, the command files and the docker socket; otherwise the job
+fails. The account works in its own copy of the repository and of `input/`
+(the request, the verified dataset and the fetch outcome), with an
+environment built from nothing. It runs `.github/scripts/uk_replay_drain.sh`
+for that one request. When the service's main process ends, systemd kills
+everything left in it; `collect` then checks that no process of the account
+survives, and the account streams its `output/` out with `tar`, which the
+runner user unpacks as itself; links stay links and special files stay
+special files, for the guard to refuse. The upload needs both `collect` and
+the guard to succeed. CI's `receiver sandbox` job runs `setup`, `run` and
+`collect` on the runner image on every pull request, with a stub drain that
+leaves a process behind, and no secrets.
 
 Scorecard is public, so the dataset and anything household-level stay on the
 runner. No job saves or restores a cache (setup-uv's default cache is off on
@@ -456,9 +465,10 @@ require it); requests are meant for PolicyEngine's own releases, from W4. A
 new candidate's dependencies resolve within the newest certified freeze
 where they can. The candidate and its dependencies are trusted with the
 dataset: they compute on it, and the guard stops an honest run from
-publishing a dataset copy, a binary or a table under any other name. The
-guard does not read what a parsable file says: a household-level table
-written as `COMPARISON.csv` would pass. Code in the candidate's dependency closure cannot reach the data
+publishing a dataset copy, a binary, or a `.csv` or `.jsonl` table under
+any other name. It does not read what a parsable file says: a
+household-level table written as `COMPARISON.csv`, or as JSON or Markdown,
+would pass. Code in the candidate's dependency closure cannot reach the data
 token, the runtime token, the write jobs' credentials or a cache, and cannot
 alter the guard or what the recorder checks. A deliberately malicious
 candidate could still encode data in aggregates that parse, and could forge a

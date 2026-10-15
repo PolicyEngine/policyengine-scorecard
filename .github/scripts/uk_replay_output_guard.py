@@ -9,10 +9,11 @@ Tables are allowed only under the names the pipeline writes them:
 COMPARISON.csv and STAGED.jsonl. The committed sealed namespace has 30 MB
 over 316 files, the largest 3.3 MB.
 
-It stops an honest run from publishing a dataset copy, a binary, or a table
-under any other name. It does not read what a parsable file says: a
-household-level table written as COMPARISON.csv, or anything a deliberately
-malicious candidate encodes, would pass; RELEASE_REPLAY.md states that limit.
+It stops an honest run from publishing a dataset copy, a binary, or a .csv
+or .jsonl table under any other name. It does not read what a parsable file
+says: a household-level table written as COMPARISON.csv, or as JSON or
+Markdown, or anything a deliberately malicious candidate encodes, would pass;
+RELEASE_REPLAY.md states that limit.
 
 Standard library only: it runs with the runner's system Python, before and
 independently of anything the candidate installed.

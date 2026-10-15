@@ -12,11 +12,11 @@ name: UK replay qualification
 # only dispatches a drain. In the run job it is in one step's environment,
 # which fetches and verifies the dataset before any candidate code is
 # installed. That job has contents: read and no checkout credentials, and
-# candidate code runs as an unprivileged account with no sudo, no groups, no
-# write access to the workspace or the runner's command files, no access to
-# the processes holding the job's secrets, and an environment built from
-# nothing (.github/scripts/uk_replay_sandbox.sh; CI's receiver-sandbox job
-# checks it on the runner image). Scorecard is public: the dataset and
+# candidate code runs as an unprivileged account inside a systemd sandbox
+# (.github/scripts/uk_replay_sandbox.sh): read-only filesystem except its own
+# home, no sudo, no groups, the runner's home inaccessible, other processes
+# invisible, and an environment built from nothing. CI's receiver-sandbox job
+# checks it on the runner image. Scorecard is public: the dataset and
 # anything household-level never leave the runner. setup-uv's cache is off
 # everywhere here, so no job saves or restores a cache; the only artifacts are
 # the request and the run's output, which an allowlist guard checks before the
@@ -159,6 +159,7 @@ jobs:
           REPLAY_RUNNER: github-actions ${{ runner.os }} ${{ runner.arch }}
         run: bash .github/scripts/uk_replay_sandbox.sh run
       - name: Stop every candidate process and take its output back
+        id: collect
         if: always()
         run: bash .github/scripts/uk_replay_sandbox.sh collect
       - name: Nothing household-level leaves the runner
@@ -168,7 +169,7 @@ jobs:
       # A refused output is never uploaded; the recorder then finds no
       # artifact and records the attempt as failed.
       - name: Upload the receipt and results for the recorder
-        if: always() && steps.guard.outcome == 'success'
+        if: always() && steps.collect.outcome == 'success' && steps.guard.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: replay-output

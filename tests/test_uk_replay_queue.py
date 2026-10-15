@@ -247,6 +247,7 @@ def test_candidate_job_has_read_permission_and_no_dataset_token_or_credentials()
     assert by_name[order[2]]["run"] == "bash .github/scripts/uk_replay_sandbox.sh run"
     assert by_name[order[3]] == {
         "name": order[3],
+        "id": "collect",
         "if": "always()",
         "run": "bash .github/scripts/uk_replay_sandbox.sh collect",
     }
@@ -806,7 +807,7 @@ def test_output_guard_caps_the_total(tmp_path):
     assert result.returncode == 1 and "in all" in result.stdout
 
 
-def test_candidate_code_runs_as_an_unprivileged_account_with_nothing_inherited():
+def test_candidate_code_runs_in_a_systemd_sandbox_with_nothing_writable_outside_home():
     script = (ROOT / ".github/scripts/uk_replay_sandbox.sh").read_text()
     code = "\n".join(
         line for line in script.splitlines() if not line.lstrip().startswith("#")
@@ -815,17 +816,38 @@ def test_candidate_code_runs_as_an_unprivileged_account_with_nothing_inherited()
     assert 'sudo useradd --create-home --shell /bin/bash "$CANDIDATE"' in code
     assert "/etc/cron.deny /etc/at.deny" in code
     assert "usermod" not in code and " -G " not in code and "gpasswd" not in code
-    # setup checks the account as itself and fails the job otherwise.
-    assert "if as_candidate sudo -n true" in code
-    assert '"$(as_candidate id -G)" != "$(as_candidate id -g)"' in code
-    assert 'as_candidate test -w "$target"' in code
-    for target in ('"$GITHUB_WORKSPACE"', '"$GITHUB_ENV"', "/var/run/docker.sock"):
-        assert target in code
-    # Its environment is built from nothing: no token, no runtime token, no
-    # GITHUB_ENV or GITHUB_PATH, no uv cache directory from setup-uv.
-    assert 'sudo -n -u "$CANDIDATE" env -i' in code
-    assert "--preserve-env" not in code and "sudo -E" not in code
-    assert "exec bash .github/scripts/uk_replay_drain.sh" in code
+    # Review of c6a95cd: the hosted image leaves /opt world-writable and on
+    # the runner's PATH, so the candidate runs where only its home is
+    # writable, sudo cannot gain privileges and the runner's home is hidden.
+    for setting in (
+        "sudo systemd-run --quiet --collect --pipe --wait",
+        '--uid="$CANDIDATE"',
+        "-p ProtectSystem=strict",
+        '-p ReadWritePaths="$CANDIDATE_HOME"',
+        "-p InaccessiblePaths=-/home/runner",
+        "-p PrivateTmp=yes",
+        "-p NoNewPrivileges=yes",
+        "-p RestrictSUIDSGID=yes",
+        "-p ProtectProc=invisible",
+    ):
+        assert setting in code, setting
+    run = code[code.index("  run)") : code.index("  collect)")]
+    assert "in_sandbox PYTHONPATH=. " in run
+    assert "exec bash .github/scripts/uk_replay_drain.sh" in run
+    assert "sudo -n -u" not in run and "--preserve-env" not in code
+    # setup checks from inside the sandbox, over the runner's whole PATH.
+    setup = code[code.index("  setup)") : code.index("  run)")]
+    assert "if in_sandbox sudo -n true" in setup
+    assert 'IFS=: read -r -a path_entries <<< "$PATH"' in setup
+    assert "writable=$(in_sandbox /bin/sh -c" in setup
+    for target in (
+        "/opt",
+        "/usr",
+        "/etc",
+        '"$GITHUB_WORKSPACE"',
+        "/var/run/docker.sock",
+    ):
+        assert target in setup
     # Nothing it starts outlives the run, and its output comes back streamed
     # out by the account itself, links kept as links for the guard.
     assert 'sudo pkill -KILL -u "$CANDIDATE"' in code
@@ -905,7 +927,10 @@ def test_nothing_crosses_jobs_but_the_request_and_guarded_output():
     assert guard_step["run"] == (
         "python3 -I .github/scripts/uk_replay_output_guard.py output"
     )
-    assert upload["if"] == "always() && steps.guard.outcome == 'success'"
+    assert upload["if"] == (
+        "always() && steps.collect.outcome == 'success' "
+        "&& steps.guard.outcome == 'success'"
+    )
     assert guard_step["id"] == "guard" and guard_step["if"] == "always()"
     # The recorder checks again, where no candidate code has run, and drops
     # a refused output before anything reaches the public branch.
