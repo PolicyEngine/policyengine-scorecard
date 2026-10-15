@@ -269,11 +269,17 @@ def test_uc_health_reform_uses_managed_scenario_and_other_dicts_keep_path(monkey
 
 
 class FakeParameter:
+    """The simulation's value inside the reform's years, read at 1 January;
+    current law (217.26) on any other date, as a 30 April sample of an
+    edited annualised tree would not see a 1 January override."""
+
     def __init__(self, sim):
         self.sim = sim
 
     def __call__(self, instant):
-        return self.sim.health_parameter
+        if instant.endswith("-01-01") and 2026 <= int(instant[:4]) <= 2029:
+            return self.sim.health_parameter
+        return 217.26
 
 
 def uc_fakes(monkeypatch, calls, *, dated):
@@ -355,7 +361,6 @@ def test_a_route_that_misses_the_parameters_is_refused(monkeypatch):
     uc_fakes(monkeypatch, calls, dated=True)
     sim = uc_sim(calls)
     reform = {compute.UC_HEALTH_ELEMENT_PARAMETER: {"2026-01-01.2029-12-31": 437.66}}
-    scenario = compute.uc_health_scenario(reform)
     # Simulate the old call on the new engine: only the bare modifier runs.
     Scenario = sys.modules["policyengine_uk.utils.scenario"].Scenario  # the fake
     broken = Scenario.from_reform(reform)
@@ -364,7 +369,6 @@ def test_a_route_that_misses_the_parameters_is_refused(monkeypatch):
     with pytest.raises(RuntimeError, match="did not reach"):
         compute.uc_health_scenario(reform).simulation_modifier(sim)
     assert "uc_modifier" not in calls
-    assert scenario is not None
 
 
 @pytest.mark.skipif(
