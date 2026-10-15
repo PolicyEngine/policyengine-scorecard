@@ -168,11 +168,45 @@ _IRS_EITC_HELD = (
 )
 
 
-def us_source_relationship(source, program, metric):
+# Census STC individual income tax collections (lane census-stc, #176),
+# read 2026-10-15 from the same calibration_diagnostics.json: the FY2023
+# T40 collections of 44 jurisdictions (41 States with a broad income tax,
+# DC, New Hampshire and Washington) are targets
+# (census_stc.fy2023.individual_income_tax_collections.<st>.t40), matched
+# against the CY2024 State income tax. Other fiscal years of the series
+# are not targets, but they are the same quantity one or two years on.
+CENSUS_STC_TARGET_YEAR = 2023
+_CENSUS_STC_CONSUMED = (
+    CR.CONSUMED_AS_TARGET,
+    "us-6.2.1 calibrates to Census STC FY2023 T40 individual income tax "
+    "collections for 44 jurisdictions "
+    "(census_stc.fy2023.individual_income_tax_collections.<st>.t40), "
+    "matched against CY2024 State income tax; soft targets, so the "
+    "calibrated value can still miss",
+)
+_CENSUS_STC_HELD = (
+    CR.HELD_OUT,
+    "not a calibration target; the FY2023 value of this series is (44 "
+    "jurisdictions), so a later fiscal year is out of sample only by the "
+    "year's growth",
+)
+
+
+def us_source_relationship(source, program, metric, period=None):
     """(CalibrationRelationship, basis) for a US claim whose source has a
-    source-keyed rule; every other source takes effective_relationship."""
+    source-keyed rule; every other source takes effective_relationship.
+    ``period`` is needed only by rules that depend on the claim's year."""
     if metric is not None and never_calibrate(metric):
         return CR.HELD_OUT, PERMANENT_HOLDOUT_BASIS
+    if source == "census_stc":
+        if Metric(metric) is not Metric.TAX_COLLECTIONS or period is None:
+            raise ValueError(
+                f"census_stc {program}/{metric} needs a deliberate "
+                "relationship assignment (and the claim's period)"
+            )
+        if period == CENSUS_STC_TARGET_YEAR:
+            return _CENSUS_STC_CONSUMED
+        return _CENSUS_STC_HELD
     if source == "irs_eitc_participation":
         metric = Metric(metric)
         if program == "eitc" and metric in (

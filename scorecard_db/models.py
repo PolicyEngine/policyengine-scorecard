@@ -69,6 +69,12 @@ class Metric(str, Enum):
     TAX_LIABILITY = "tax_liability"
     RETURN_COUNT = "return_count"
     TAX_CREDITS_APPLIED = "tax_credits_applied"
+    # Census STC (lane census-stc, #176): a tax's cash collections in a
+    # government's fiscal year, net of refunds — a LEVEL, kept apart from
+    # tax_liability (what a tax year's units owe) because the two differ
+    # by timing (withholding, estimated payments, refunds across years).
+    # A liability counterpart is constructed, never comparable.
+    TAX_COLLECTIONS = "tax_collections"
     # …and program benefit statistics (conditions: program, per).
     AVERAGE_MONTHLY_BENEFIT = "average_monthly_benefit"
     MAXIMUM_MONTHLY_BENEFIT = "maximum_monthly_benefit"

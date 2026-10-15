@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-10-12",
+ "updated": "2026-10-15",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -566,6 +566,17 @@
    "running": false,
    "updated": "2026-10-11",
    "note": "23752 original PMD cells ingested; 24304 staged = 552 unchanged costings cells + 23752 here; all 84 events, Budget 1970 to Autumn Budget 2025; awaiting PolicyEngine counterparts"
+  },
+  {
+   "id": "census-stc",
+   "source": "Census STC",
+   "area": "State individual income tax collections",
+   "mode": 1,
+   "country": "US",
+   "stage": "computed",
+   "running": false,
+   "updated": "2026-10-15",
+   "note": "88 of 132 claims computed \u2014 State individual income tax collections (T40) for 41 States, DC, NH and WA, FY2023-FY2025; FY2023 (a us-6.2.1 calibration target) and FY2025 compared with PE's CY2024 State income tax on us-6.2.1; adapter QC checks the US column against the 50 States on all 25 items; admin outturns staged as claims by decision on #176"
   }
  ]
 }

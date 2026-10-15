@@ -1,0 +1,34 @@
+{
+  "id": "census-stc",
+  "name": "Census Bureau — Annual Survey of State Government Tax Collections (STC), item T40 Individual Income Taxes",
+  "organization": "U.S. Census Bureau",
+  "country": "US",
+  "url": "https://www.census.gov/programs-surveys/stc.html",
+  "data_urls": [
+    "https://www2.census.gov/programs-surveys/stc/datasets/2023/FY2023-Flat-File.txt",
+    "https://www2.census.gov/programs-surveys/stc/datasets/2024/FY2024-Flat-File.txt",
+    "https://www2.census.gov/programs-surveys/stc/datasets/2025/FY2025-Flat-File.txt",
+    "https://www2.census.gov/programs-surveys/stc/technical-documentation/complete-technical-documentation/statetaxtechdoc2025.pdf"
+  ],
+  "raw_sha256": {
+    "FY2023-Flat-File.txt": "45b8c87870ad02e6015f89097b48786aa95ef6be1fae9e32a223e5cb62406623",
+    "FY2024-Flat-File.txt": "ffe44ad5bdf003c54d2d283fa15d12ba853b5a7d7fcd7278d320b900ef081b84",
+    "FY2025-Flat-File.txt": "fff59c4d24c317dbd8c207f5d833fcd9c3239bfcccfec6a4aa4e7d0461fa2e0a",
+    "statetaxtechdoc2025.pdf": "3e12f8003ac8d864213d2c4a0dd8b40038ee9779e81cef611bc6bcd44c8adf6a"
+  },
+  "citation": "U.S. Census Bureau, Annual Survey of State Government Tax Collections, fiscal years 2023-2025 (flat files), and State Government Tax Collections: 2025 Technical Documentation.",
+  "published": "2026-04",
+  "fetched": "2026-10-15",
+  "latest_edition_note": "FY2025 was released in April 2026 together with revisions to FY2024 and FY2023 (technical documentation, 'Revisions'). The files staged here are the ones on the server on 2026-10-15; the FY2023 T40 values equal the us-6.2.1 calibration targets for all 44 targeted jurisdictions.",
+  "model": {
+    "name": "Census Bureau survey of state government tax collections (administrative reports)",
+    "open_source": false,
+    "method": "Each State's tax collections in its own fiscal year, by tax item, in thousands of dollars. Fiscal years end on June 30 except in New York (March 31), Texas (August 31), Alabama and Michigan (September 30). The statistics cover taxes a State collects from activity within the State, not necessarily from its residents. The US column is the sum of the 50 States and excludes DC (adapter QC 3).",
+    "method_basis": "statetaxtechdoc2025.pdf pp. 1-2; adapter QC on all 25 items"
+  },
+  "period": "State fiscal years 2023, 2024 and 2025",
+  "programs": ["<st>_income_tax for each jurisdiction (the policyengine-us variable)"],
+  "geographies": "45 States and DC with T40 collections, and the nation. AK, FL, NV, SD, TX and WY levy none ('X'). Tennessee's T40 is residual Hall-tax collections (the tax ended with tax year 2020) and has no engine variable; the ingest drops it with a tally. The national total is in the extract but not staged: the issue asks for one claim per State, and a national claim would match every State's reform in App v3.",
+  "claims_note": "One claim per jurisdiction and fiscal year. program is the per-State engine variable (<st>_income_tax), so App v3, which matches a reform's reached variables against program and policyengine_variables, links a State's reform only to that State's claims; state_income_tax is reached by every State's reform.",
+  "diagnosis_upstream": "Census statistics are administrative reports; a divergence that is a PE issue routes to microcosm (the FY2023 values are calibration targets) or policyengine-us."
+}

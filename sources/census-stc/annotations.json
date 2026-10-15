@@ -1,0 +1,64 @@
+{
+ "_schema": {
+  "applies_to": "matcher on {periods, geographies}; null = any. periods lists claim periods (fiscal-year end years); geographies lists State codes",
+  "severity": "period | definitional | construction | caution | gap",
+  "basis": "traceability: the STC technical documentation in raw/, engine metadata recorded in pe/<bundle>.json, or the us-6.2.1 calibration diagnostics"
+ },
+ "annotations": [
+  {
+   "id": "stc-collections-vs-liability",
+   "applies_to": {
+    "periods": null,
+    "geographies": null
+   },
+   "severity": "construction",
+   "text": "Census counts the cash a State collected in its fiscal year, net of refunds; PolicyEngine computes the tax-year 2024 liability. Withholding and estimated payments for one tax year fall in two fiscal years, and final payments and refunds arrive the next spring, so the two can differ even when the model is right.",
+   "basis": "statetaxtechdoc2025.pdf p. 1 (Fiscal Years: data pertain to state fiscal years); scorecard_db/models.py Metric.TAX_COLLECTIONS; sources/census-stc/pe/us-6.2.1.json (period 2024, pe_construction)"
+  },
+  {
+   "id": "stc-fiscal-years",
+   "applies_to": {
+    "periods": null,
+    "geographies": null
+   },
+   "severity": "period",
+   "text": "State fiscal years end on June 30 except in New York (March 31), Texas (August 31), Alabama and Michigan (September 30). PolicyEngine's calendar 2024 overlaps the second half of fiscal 2024 and the first half of fiscal 2025 in most States.",
+   "basis": "statetaxtechdoc2025.pdf p. 1 (Fiscal Years)"
+  },
+  {
+   "id": "stc-nonresidents",
+   "applies_to": {
+    "periods": null,
+    "geographies": null
+   },
+   "severity": "definitional",
+   "text": "Census counts the tax a State collects from activity within it, not only from its residents, so collections include nonresidents' tax. PolicyEngine computes the income tax of the State's residents. States where many nonresidents work collect more than their residents owe.",
+   "basis": "statetaxtechdoc2025.pdf p. 2 ('taxes a state collects from activity within the state, not necessarily from its people'); sources/census-stc/pe/us-6.2.1.json (pe_construction: tax units by State of residence)"
+  },
+  {
+   "id": "stc-fy2023-target",
+   "applies_to": {
+    "periods": [
+     2023
+    ],
+    "geographies": null
+   },
+   "severity": "caution",
+   "text": "This fiscal year is a us-6.2.1 calibration target, matched against the calendar-2024 State income tax. The targets are soft, so the calibrated value can still miss.",
+   "basis": "us-6.2.1 calibration_diagnostics.json (census_stc.fy2023.individual_income_tax_collections.<st>.t40); scorecard_db/relationships.py _CENSUS_STC_CONSUMED"
+  },
+  {
+   "id": "stc-state-tax-only",
+   "applies_to": {
+    "periods": null,
+    "geographies": [
+     "MD",
+     "NY"
+    ]
+   },
+   "severity": "definitional",
+   "text": "Census T40 counts the State government's own income tax. The PolicyEngine value is the State's own variable (md_income_tax, ny_income_tax), without the county income taxes (Maryland) or the New York City income tax that the engine's state_income_tax adds. The us-6.2.1 calibration measures this State's FY2023 target with state_income_tax, local taxes included, so its calibrated estimate is not comparable with the target.",
+   "basis": "policyengine-us 2.2.1 parameters gov/states/household/state_income_tax_before_refundable_credits.yaml (md_local_income_tax_before_refundable_credits, nyc_income_tax_before_refundable_credits); sources/census-stc/pe/us-6.2.1.json: the calibration's final_estimate equals state_income_tax_variable_total within 0.02% (MD) and 0.12% (NY), and is 1.65x (MD) and 1.21x (NY) the State variable"
+  }
+ ]
+}
