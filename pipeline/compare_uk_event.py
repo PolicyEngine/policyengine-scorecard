@@ -1526,7 +1526,7 @@ def render_summary(
             "",
             "| Candidate | Class | Variables | Evidence | Minimal reproducer |"
             if not variant
-            else "| Candidate | Class | Status on this engine | Variables | Evidence | Minimal reproducer |",
+            else "| Candidate | Class (established) | Status on this engine | Variables | Evidence | Minimal reproducer |",
             "|---|---|---|---|---|" if not variant else "|---|---|---|---|---|---|",
         ]
         for diagnostic in relevant:

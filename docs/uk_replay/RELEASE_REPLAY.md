@@ -269,10 +269,13 @@ bytes unchanged. Converter support is detected from executable metadata
 lookups in its parsed AST; a mention in a docstring does not count. A path
 can carry an annualisation flag while its annual and 30 April values are
 equal in a year with no rate change. Numerical evidence remains in the
-separate `current_law` and `raw_30_april` fields. The latter comes from the
-baseline clone before uprating, backdating and conversion
+separate `current_law` and `raw_30_april` fields. The latter reads the
+`baseline` clone, which `process_parameters` adds as a child of the parameter
+tree before uprating and backdating run over the whole tree, so it is
+uprated and backdated; only the fiscal-year conversion of `.gov` skips it
 (`policyengine_uk/tax_benefit_system.py:102-108` in 2.89.2; `109-115` in
-2.125.1), so differences can also reflect uprating. Installed-engine tests
+2.125.1). It is therefore the uprated, backdated value sampled on 30 April
+before fiscal-year conversion. Installed-engine tests
 compare the CGT values directly and regenerate the corresponding committed
 premises; the engine-free suite reports an explicit skip for those checks.
 

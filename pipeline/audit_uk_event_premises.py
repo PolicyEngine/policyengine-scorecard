@@ -102,10 +102,12 @@ class EngineView:
     """The installed engine's parameters, as the replay sees them.
 
     ``current_law`` reads the processed tree that simulations use.
-    ``raw_30_april`` reads ``parameters.baseline``, the clone each engine's
-    ``process_parameters`` takes before uprating, backdating and fiscal-year
-    conversion (2.89.2 policyengine_uk/tax_benefit_system.py:102-108;
-    2.125.1:109-115). ``annualisation``
+    ``raw_30_april`` reads ``parameters.baseline``: the clone each engine's
+    ``process_parameters`` adds as a child of the tree before uprating and
+    backdating run over the whole tree, and which only the fiscal-year
+    conversion of ``.gov`` skips (2.89.2 policyengine_uk/tax_benefit_system.py:
+    102-108; 2.125.1:109-115). It is the uprated, backdated value on 30 April
+    before fiscal-year conversion. ``annualisation``
     reports whether the engine's ``convert_to_fiscal_year_parameters`` reads
     the ``fiscal_year_blend``/``preserve_calendar_dates`` metadata at all.
     Those reads are in 2.125.1 policyengine_uk/utils/parameters.py:106-108;

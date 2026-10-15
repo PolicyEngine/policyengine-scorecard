@@ -725,6 +725,11 @@ def defect_status(result: dict) -> str:
 
 def reverify(prior: list[dict], *, expect_engine: str) -> list[dict]:
     """Rerun every case on the installed engine and record each status."""
+    if any("established" in record for record in prior):
+        raise ValueError(
+            "re-verify from the established diagnostics "
+            "(results/uk/events/MODEL_DIAGNOSTICS.json), not a re-verified file"
+        )
     established = {record["id"]: record for record in prior}
     results = investigate(None, expect_engine=expect_engine, tolerant=True)
     if {r["id"] for r in results} != set(established):
@@ -787,6 +792,14 @@ def main(argv: list[str] | None = None) -> int:
         help="prior MODEL_DIAGNOSTICS.json whose cases to rerun on this engine",
     )
     args = parser.parse_args(argv)
+    if args.expect_engine != LEGACY_ENGINE and not (args.reverify or args.from_json):
+        # Each case's interpretation describes what was observed on the
+        # legacy engine; on another engine only --reverify scopes it under
+        # `established` and reports a status (review of 463fc8d).
+        parser.error(
+            f"on policyengine-uk {args.expect_engine}, use --reverify "
+            "<established MODEL_DIAGNOSTICS.json>"
+        )
     if args.reverify:
         results = reverify(
             json.loads(args.reverify.read_text()), expect_engine=args.expect_engine

@@ -82,7 +82,7 @@ Evidence-backed PolicyEngine issue candidates recorded: 6. No upstream issues we
 
 These are engine observations reproduced separately from the national costing. Their national contribution remains unsized. The list contains only observed candidates; it is not padded to ten.
 
-| Candidate | Class | Status on this engine | Variables | Evidence | Minimal reproducer |
+| Candidate | Class (established) | Status on this engine | Variables | Evidence | Minimal reproducer |
 |---|---|---|---|---|---|
 | carers_allowance_earnings_test_absent | pe_gap | persists (established on 2.89.2) | carers_allowance | variables/gov/dwp/carers_allowance.py (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py --reverify results/uk/events/MODEL_DIAGNOSTICS.json --expect-engine 2.125.1 --case carers_allowance_earnings_test_absent` |
 | cgt_main_rate_commencement | pe_gap | resolved (established on 2.89.2) | capital_gains_tax | parameters/gov/hmrc/cgt/basic_rate.yaml (source SHA and measured values in MODEL_DIAGNOSTICS.json) | `PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py --reverify results/uk/events/MODEL_DIAGNOSTICS.json --expect-engine 2.125.1 --case cgt_main_rate_commencement` |
