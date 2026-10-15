@@ -305,6 +305,44 @@ def _revalidate_run(
     return registry, staging, artifacts, staging_path
 
 
+def _verify_namespace_events(root: Path, events: dict) -> None:
+    """A sealed namespace lists its files: every event it lists must load,
+    and every event that loads must be listed."""
+    manifest_path = root / "NAMESPACE_MANIFEST.json"
+    if not manifest_path.exists():
+        return
+    listed = {
+        Path(relative).parts[0]
+        for relative in _json(manifest_path).get("files", {})
+        if Path(relative).name == "RUN_MANIFEST.json" and len(Path(relative).parts) == 2
+    }
+    if listed != set(events):
+        raise DiffError(
+            f"{root}: events on disk {sorted(events)} differ from "
+            f"NAMESPACE_MANIFEST.json {sorted(listed)}"
+        )
+
+
+def _verify_premises(premises: dict, identity: dict, events: dict, path: Path):
+    """Construction premises must come from this side's engine and the
+    registries its events verified against."""
+    engine = premises.get("engine") or {}
+    if (
+        engine.get("policyengine_uk") != identity["policyengine_uk_version"]
+        or engine.get("policyengine") != identity["policyengine_version"]
+        or engine.get("policyengine_core") != identity["policyengine_core_version"]
+    ):
+        raise DiffError(f"{path}: premises come from another engine: {engine}")
+    for event, record in (premises.get("events") or {}).items():
+        if (
+            event in events
+            and record.get("registry_sha256") != events[event]["registry_sha256"]
+        ):
+            raise DiffError(
+                f"{path}: {event} premises name another registry than the run"
+            )
+
+
 def load_side(
     root: Path, *, artifact_root: Path = ROOT, variants_path: Path | None = None
 ) -> dict:
@@ -374,8 +412,12 @@ def load_side(
         raise DiffError(f"{root}: no replayed events")
     if len(identities) != 1:
         raise DiffError(f"{root}: events were produced by different executions")
+    identity = json.loads(next(iter(identities)))
+    _verify_namespace_events(root, events)
     premises_path = root / "CONSTRUCTION_PREMISES.json"
     premises = _json(premises_path) if premises_path.exists() else None
+    if premises is not None:
+        _verify_premises(premises, identity, events, premises_path)
     return {
         "root": root,
         "artifact_root": artifact_root,
@@ -428,6 +470,9 @@ def _support(event: str, year: int, base: dict | None, head: dict | None) -> lis
 def compare_source_rows(event: str, base: dict | None, head: dict | None) -> list:
     out = []
     ids = set(base["rows"] if base else ()) | set(head["rows"] if head else ())
+    # A whole event replayed on one side only: every source row lost (or
+    # gained) its counterpart, whatever the years.
+    one_sided = (base is None) != (head is None)
     for source_row_id in sorted(ids):
         b = base["rows"].get(source_row_id) if base else None
         h = head["rows"].get(source_row_id) if head else None
@@ -490,6 +535,15 @@ def compare_source_rows(event: str, base: dict | None, head: dict | None) -> lis
                                 "head": h["head_variables"],
                             }
                         )
+        if one_sided:
+            details = [
+                {
+                    "flag": "coverage",
+                    "code": "event_on_base_only"
+                    if head is None
+                    else "event_on_head_only",
+                }
+            ]
         out.append(
             _record(
                 event,
@@ -530,7 +584,18 @@ def _premise_details(event, measure_key, year, base_premises, head_premises):
 
     b, h = measure(base_premises), measure(head_premises)
     details, context = [], {}
+    if b is None and h is None:
+        return details, context
     if b is None or h is None:
+        # The other side's checks (a failed one included) cannot be compared.
+        details.append(
+            {
+                "flag": "construction",
+                "code": "premises_on_base_only"
+                if h is None
+                else "premises_on_head_only",
+            }
+        )
         return details, context
     for name in sorted(set(b.get("checks", {})) | set(h.get("checks", {}))):
         before = (b.get("checks", {}).get(name) or {}).get("holds")
@@ -813,7 +878,10 @@ def _reproduce(side: dict, event: str, measure_key: str, year: int) -> str:
     if data is None:
         return "# This event is absent from this namespace."
     variant = side["identity"]["variant_id"]
-    registry = (side["artifact_root"] / data["registry_path"]).resolve()
+    # Receipt-relative, like every other path in the command: it runs from
+    # the repository root on any checkout, and packet bytes do not depend on
+    # the machine that rendered them.
+    registry = data["registry_path"]
     arguments = [
         "python",
         "pipeline/compute_uk_event.py",
@@ -822,7 +890,7 @@ def _reproduce(side: dict, event: str, measure_key: str, year: int) -> str:
         "--variant",
         variant,
         "--registry",
-        str(registry),
+        registry,
         "--measures",
         measure_key,
         "--years",
@@ -1123,7 +1191,7 @@ def render_markdown(diff: dict, packet_names: list[str], max_rows: int) -> str:
         "",
         "## Years supported on one side only",
         "",
-        "These rows have no packet; the population of one release cannot supply the year.",
+        "Each has a packet; the population of one release cannot supply the year.",
         "",
         "| Event | CY | Level | Rows |",
         "|---|---:|---|---:|",

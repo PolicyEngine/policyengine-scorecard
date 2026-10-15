@@ -844,12 +844,76 @@ def test_missing_noncomputable_row_has_coverage_when_both_support_the_year(ns):
     assert record["flags"] == ["coverage"]
 
 
-def test_missing_event_has_no_coverage_without_shared_support(ns):
+def test_an_event_replayed_on_one_side_only_is_coverage(ns):
+    # Review of 8700d29, B: a head that lost an event (or never ran it) must
+    # not diff clean; every source row of that event is coverage.
     base = ns("missing_event_base")["events"][EVENT]
-    source_records = diff.compare_source_rows(EVENT, base, None)
-    artifact_records = diff.compare_artifacts(EVENT, base, None, (None, None))
-    assert source_records and artifact_records
-    assert not any(record["flags"] for record in source_records + artifact_records)
+    for b, h, code in (
+        (base, None, "event_on_base_only"),
+        (None, base, "event_on_head_only"),
+    ):
+        records = diff.compare_source_rows(EVENT, b, h)
+        assert records
+        assert all(record["flags"] == ["coverage"] for record in records)
+        assert {d["code"] for r in records for d in r["details"]} == {code}
+
+
+def test_a_sealed_namespace_must_load_every_event_it_lists(ns, tmp_path):
+    ns("listed")
+    root = tmp_path / "ns" / "listed"
+    manifest = {"schema_version": 1, "files": {f"{EVENT}/RUN_MANIFEST.json": "0" * 64}}
+    (root / "NAMESPACE_MANIFEST.json").write_text(json.dumps(manifest))
+    diff.load_side(root, artifact_root=tmp_path)
+    manifest["files"]["another_event/RUN_MANIFEST.json"] = "0" * 64
+    (root / "NAMESPACE_MANIFEST.json").write_text(json.dumps(manifest))
+    with pytest.raises(diff.DiffError, match="differ from NAMESPACE_MANIFEST"):
+        diff.load_side(root, artifact_root=tmp_path)
+
+
+def premises_for(side_name, tmp_path, *, engine, registry_sha256):
+    root = tmp_path / "ns" / side_name
+    document = {
+        "schema_version": 1,
+        "engine": engine,
+        "events": {EVENT: {"registry_sha256": registry_sha256, "measures": {}}},
+    }
+    (root / "CONSTRUCTION_PREMISES.json").write_text(json.dumps(document))
+    return root
+
+
+def test_premises_must_come_from_the_sides_engine_and_registry(ns, tmp_path):
+    # Review of 8700d29, D: a premises file from another engine, or naming
+    # another registry, must not drive construction flags.
+    side = ns("premised", variant="pe6_uk2_build")
+    registry = side["events"][EVENT]["registry_sha256"]
+    own = {
+        "policyengine": "6.2.6",
+        "policyengine_core": "3.33.0",
+        "policyengine_uk": "2.125.1",
+    }
+    root = premises_for("premised", tmp_path, engine=own, registry_sha256=registry)
+    assert diff.load_side(root, artifact_root=tmp_path)["premises"] is not None
+    premises_for(
+        "premised",
+        tmp_path,
+        engine={**own, "policyengine_uk": "2.89.2"},
+        registry_sha256=registry,
+    )
+    with pytest.raises(diff.DiffError, match="another engine"):
+        diff.load_side(root, artifact_root=tmp_path)
+    premises_for("premised", tmp_path, engine=own, registry_sha256="f" * 64)
+    with pytest.raises(diff.DiffError, match="another registry"):
+        diff.load_side(root, artifact_root=tmp_path)
+
+
+def test_premises_on_one_side_only_flag_construction():
+    record = {"checks": {"annual_value_matches_30_april_sample": {"holds": False}}}
+    premises = {"events": {EVENT: {"measures": {KEY: record}}}}
+    details, _ = diff._premise_details(EVENT, KEY, 2024, premises, None)
+    assert [d["code"] for d in details] == ["premises_on_base_only"]
+    details, _ = diff._premise_details(EVENT, KEY, 2024, None, premises)
+    assert [d["code"] for d in details] == ["premises_on_head_only"]
+    assert diff._premise_details(EVENT, KEY, 2024, None, None) == ([], {})
 
 
 @st.composite
@@ -1044,7 +1108,10 @@ def test_threshold_is_symmetric_and_strict(base, head):
 
 
 @settings(max_examples=300, deadline=None)
-@given(st.floats(min_value=0, max_value=1e12, allow_nan=False))
+# Whole pounds: below 2**53 their sums are exact, so "a move of exactly the
+# floor" is exactly the floor (with arbitrary floats, m + floor - m can round
+# above it).
+@given(st.integers(min_value=0, max_value=10**12).map(float))
 def test_no_flag_at_the_threshold_one_just_above(magnitude):
     threshold = diff.numerical_threshold(magnitude, magnitude)
     assert not diff.numerically_moved(magnitude, magnitude)
@@ -1126,12 +1193,12 @@ def test_reproduction_uses_each_verified_registry_and_variant(ns, tmp_path):
     for label, side in (("base", base), ("head", head)):
         argv = shlex.split(packet["reproduce"][label])
         registry_path = Path(argv[argv.index("--registry") + 1])
+        # Receipt-relative (review of 8700d29, C): runs from any checkout's
+        # root, and packet bytes do not depend on the rendering machine.
+        assert not registry_path.is_absolute()
+        assert str(registry_path) == side["events"][EVENT]["registry_path"]
         assert (
-            registry_path
-            == (tmp_path / side["events"][EVENT]["registry_path"]).resolve()
-        )
-        assert (
-            hashlib.sha256(registry_path.read_bytes()).hexdigest()
+            hashlib.sha256((tmp_path / registry_path).read_bytes()).hexdigest()
             == side["events"][EVENT]["registry_sha256"]
         )
         assert argv[argv.index("--variant") + 1] == side["identity"]["variant_id"]
