@@ -615,27 +615,26 @@ invocations never run more than two simulations at once. How the slots hold:
   can have expired, and a write that arrives days late lands in a chain that
   no longer governs anything. The guarantee needs no assumption about how
   long a step stalls.
-* Leases run on Modal's clock: each invocation measures its offset from
-  Modal with a small remote function, checks it again after waiting for a
-  slot (a drift over 30 seconds stops the run, exit 75), and takes over a
-  lapsed claim only 2 minutes after its expiry.
+* Leases run on Modal's clock: every lease decision reads the time from
+  Modal through a small remote function, so this machine's clock plays no
+  part, and a lapsed claim is taken over only 2 minutes after its expiry
+  (covering differences between Modal containers' clocks).
 * The lease is 4 hours. The remote function refuses to start unless its
   whole 3-hour timeout plus a 10-minute margin fits inside it, so a run
   ends before its slot can pass on, even if the client dies.
-* A finished or never-started run frees its slot at once. When `app.run()`
-  exits after ctrl-C, Modal's client has already asked the server to stop
-  the app's tasks, and the slot frees 10 minutes later. Anything else after
-  the run started (a lost connection, which Modal's runner re-raises
-  without that request; a remote error; a failed stop request; a client
-  killed outright) leaves the claim until the lease lapses. A failed
-  release never costs a returned result: it is downloaded and the claim
-  lapses.
+* A finished or never-started run frees its slot at once. Anything else
+  after the run started (ctrl-C, a lost connection, a remote error, a client
+  killed outright) leaves the claim until the lease lapses: Modal's client
+  asks the server to stop the app on ctrl-C, but nothing confirms the task
+  stopped, so the slot is not freed early. A failed release never costs a
+  returned result: it is downloaded and the claim lapses.
 * The slot is taken with the app already open, after the image build, so a
   build never eats into a lease; an invocation waits for a slot (polling
   every 30 seconds, in no set order) with its app open and idle.
 * `tests/test_modal_uk_event.py` checks this call by call: Hypothesis
-  interleaves several holders' Dict calls, each on its own clock within the
-  enforced drift, with clock jumps of any size at any point, midnight
+  interleaves several holders' Dict calls, each reading Modal time through a
+  container clock that may differ by 30 seconds, with clock jumps of any
+  size at any point, midnight
   crossings, crashes, interrupts, lost connections and Modal's 7-day expiry,
   and asserts that no two runs overlap on a slot and that both slots can be
   taken once every lease has lapsed.
