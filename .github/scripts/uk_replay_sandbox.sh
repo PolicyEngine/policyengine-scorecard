@@ -7,17 +7,19 @@
 # that hold the job's secrets and the Actions runtime token. Later steps run
 # as that user and search its PATH, which on the hosted image includes
 # world-writable directories under /opt. So a separate account is not
-# enough: the candidate runs as a transient systemd service
-# (systemd-run --uid) in which the whole filesystem is read-only except the
-# account's home (ProtectSystem=strict), the runner's home is inaccessible,
-# /tmp is private, setuid programs such as sudo cannot gain privileges, and
-# other users' processes are invisible. The account itself has no sudoers
-# entry, no supplementary group (so no docker socket) and no cron or at
-# jobs. `setup` checks all of this from inside the same sandbox and fails
-# the job otherwise. When the service's main process ends, systemd kills
-# everything left in it; `collect` then makes sure no process of the account
-# survives, and only a copy of its output/, streamed out by the account,
-# comes back to be checked by the runner's own guard.
+# enough: the candidate runs as a transient systemd service (systemd-run
+# --uid) in which the whole filesystem is read-only except the account's
+# home (ProtectSystem=strict), the runner's home is inaccessible, /tmp is
+# private, setuid programs such as sudo cannot gain privileges, and other
+# users' processes are invisible. /dev/shm and /dev/mqueue stay shared with
+# the host (systemd binds them under PrivateDevices), so Python
+# multiprocessing works; nothing later in the job runs from them. The
+# account itself has no sudoers entry, no supplementary group (so no docker
+# socket) and no cron or at jobs. `setup` checks all of this from inside the
+# same sandbox and fails the job otherwise. When the service's main process
+# ends, systemd kills everything left in it; `collect` then makes sure no
+# process of the account survives, and only a copy of its output/, streamed
+# out by the account, comes back to be checked by the runner's own guard.
 #
 #   uk_replay_sandbox.sh setup     # after the dataset fetch, before any candidate code
 #   uk_replay_sandbox.sh run       # the drain, in the sandbox
@@ -51,7 +53,13 @@ in_sandbox() {
     -p RestrictSUIDSGID=yes \
     -p ProtectProc=invisible \
     -p ProtectKernelTunables=yes \
+    -p ProtectKernelModules=yes \
+    -p ProtectKernelLogs=yes \
+    -p ProtectClock=yes \
     -p ProtectControlGroups=yes \
+    -p RestrictNamespaces=yes \
+    -p LockPersonality=yes \
+    -p CapabilityBoundingSet= \
     "$@"
 }
 

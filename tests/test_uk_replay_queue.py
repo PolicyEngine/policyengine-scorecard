@@ -829,6 +829,12 @@ def test_candidate_code_runs_in_a_systemd_sandbox_with_nothing_writable_outside_
         "-p NoNewPrivileges=yes",
         "-p RestrictSUIDSGID=yes",
         "-p ProtectProc=invisible",
+        "-p RestrictNamespaces=yes",
+        "-p CapabilityBoundingSet= ",
+        "-p ProtectKernelModules=yes",
+        "-p ProtectKernelLogs=yes",
+        "-p ProtectClock=yes",
+        "-p LockPersonality=yes",
     ):
         assert setting in code, setting
     run = code[code.index("  run)") : code.index("  collect)")]
@@ -874,6 +880,15 @@ def test_the_sandbox_is_exercised_on_a_real_runner_image_without_secrets():
     for command in ("sandbox.sh setup", "sandbox.sh run", "sandbox.sh collect"):
         assert command in joined
     assert "nohup sleep 600" in joined
+    # What a real run needs, inside the sandbox, before the probe is written.
+    for step in (
+        "uv venv --python 3.12",
+        "uv pip install",
+        "git worktree add",
+        'get_context("spawn").Pool(2)',
+    ):
+        assert joined.index(step) < joined.index("output/probe.json")
+    assert "test -f output/probe.json" in joined
     assert "if pgrep -u replay-candidate" in joined
     assert "python3 -I .github/scripts/uk_replay_output_guard.py output" in joined
 
