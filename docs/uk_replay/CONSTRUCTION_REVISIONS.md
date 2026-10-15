@@ -140,14 +140,29 @@ the correction observed by the 2027 predicate.
 ## Independent investigation of the largest moves
 
 [`research/triage_6.2.6_vs_legacy.md`](research/triage_6.2.6_vs_legacy.md)
-records an independent investigation of the largest legacy-to-6.2.6 moves. It
-attributes both structural moves to upstream fixes: the Class 2 abolition's
-Class 4 head to policyengine-uk #1884 and #2058, and the HICBC Child Benefit
-head to #2140, which models payment resuming once the charge is zero (an
-assumption, since a real claim has to be restarted). It reads the AB2024 CGT
-decline (×0.51) as a smaller capital-gains base in the new population rather
-than day-weighting, and keeps the pooled-gains limitation. It finds the
-private-school VAT replay figure consistent with a zero dedicated baseline
-head; it does not show £2.0bn missing from total baseline VAT, because generic
-VAT is calibrated to whole OBR receipts. It names LHA (×2.45) as only partly
-attributed. These are its findings, not re-verified here.
+records an independent investigation of the largest legacy-to-6.2.6 moves.
+Its headline: both structural moves are upstream fixes, the other large
+moves are best explained by population differences, and the certified pair
+keeps material current-law defects, so a smaller replay figure does not
+establish that a costing is correct. Its findings, not re-verified here
+except where noted:
+
+* Class 2 abolition: the Class 4 head moves because of policyengine-uk #1884
+  and #2058.
+* HICBC: the Child Benefit head moves because of #2140. In the installed
+  2.125.1 (`variables/gov/hmrc/child_benefit.py:30-35`, verified here), an
+  opted-out family stays opted out only while its charge share is at least
+  `gov.hmrc.child_benefit.opt_out_charge_share`, which is 1 and documented
+  as a behavioural assumption; payment therefore resumes as soon as the
+  family is not fully charged. A real claim has to be restarted.
+* UC childcare cap (×122.69, the largest move): the childcare-cost tail among
+  reported UC families in the new population; eligibility fixes contribute an
+  unsized share.
+* AB2024 CGT (×0.51): a smaller capital-gains base, not day-weighting; the
+  pooled-gains limitation stays.
+* Private-school VAT: the replay figure is consistent with a zero dedicated
+  baseline head, and the dedicated statutory mechanism defect persists. It
+  does not show £2.0bn missing from total baseline VAT: generic VAT targets
+  whole OBR receipts, though whether that target includes private-school VAT
+  is an inference and the overlap is unmeasured.
+* LHA (×2.45): only partly attributed.
