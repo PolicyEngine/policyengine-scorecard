@@ -291,10 +291,43 @@ def test_ready_selector_rejects_each_pending_contract(field):
         "receipt_sha256": "b" * 64,
     }
     validator("event_vintage_selector").validate(selector)
-    original = read_json(SELECTOR_DIR / f"{EVENTS[0]}.json")
-    selector[field] = original[field]
+    selector[field] = {
+        "status": "pending",
+        "value": "pending",
+        "proposal": "docs/uk_replay/POLICY_WORLD_CONTRACT.md",
+        **({"decision": "cos d1344"} if field == "policy_world_contract" else {}),
+    }
+    validator("event_vintage_selector").validate(
+        {**selector, "readiness": "contracts_pending"}
+    )
     with pytest.raises(ValidationError):
         validator("event_vintage_selector").validate(selector)
+
+
+@pytest.mark.parametrize("event", EVENTS)
+def test_selectors_bind_the_d1344_decisions_by_digest(event):
+    # cos d1344 (Max, 2026-10-15): the workstream makes the methodology calls;
+    # each selector binds the chosen contract and bridge by their bytes.
+    selector = read_json(SELECTOR_DIR / f"{event}.json")
+    contracts = ROOT / "docs/uk_replay/contracts"
+    contract = selector["policy_world_contract"]
+    assert contract["status"] == "resolved"
+    path = contracts / f"{contract['contract_id']}.md"
+    assert contract["contract_sha256"] == hashlib.sha256(path.read_bytes()).hexdigest()
+    assert "cos d1344" in contract["decision_receipt"]
+    bridge = selector["annualisation_bridge"]
+    receipt_path = contracts / "annualisation_fy_start_year.v1.json"
+    assert (
+        bridge["receipt_sha256"]
+        == hashlib.sha256(receipt_path.read_bytes()).hexdigest()
+    )
+    receipt = read_json(receipt_path)
+    assert receipt["bridge_id"] == bridge["bridge_id"]
+    # Every scoring FY maps to its start year, and nothing else is mapped.
+    assert receipt["event_years"][event] == {
+        fy: int(fy[:4]) for fy in selector["scoring_fys"]
+    }
+    assert selector["readiness"] == "ready_for_population_build"
 
 
 @pytest.mark.parametrize(

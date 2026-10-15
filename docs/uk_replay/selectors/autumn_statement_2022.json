@@ -78,22 +78,22 @@
   ],
   "preferred_survey_release": "frs_2020_21",
   "policy_world_contract": {
-    "status": "pending",
-    "value": "pending",
-    "proposal": "docs/uk_replay/POLICY_WORLD_CONTRACT.md",
-    "decision": "cos d1344"
+    "status": "resolved",
+    "contract_id": "published_end_state_same_weights.v1",
+    "contract_sha256": "6099d1ef71d3cdc15a17d43e9f72adccda4ba5559184194eb53a03fb4dd8d26b",
+    "decision_receipt": "cos d1344 (Max, 2026-10-15: delegated to the workstream with independent review); docs/uk_replay/HISTORICAL_DECISIONS.md"
   },
   "annualisation_bridge": {
-    "status": "pending",
-    "value": "pending",
-    "proposal": "docs/uk_replay/HISTORICAL_ADAPTER.md#proposed-selection-interface"
+    "bridge_id": "fy_start_year.v1",
+    "receipt_sha256": "8db214b0971407a9e1bcffd9a5a6585131767a4575405f9da70b71d53e5b6777"
   },
-  "readiness": "contracts_pending",
+  "readiness": "ready_for_population_build",
   "evidence": [
     "docs/uk_replay/PLAN.md",
     "docs/uk_replay/POPULATIONS_AND_VINTAGES.md",
     "docs/uk_replay/evidence/population_receipts.json",
     "docs/uk_replay/HISTORICAL_FRS.md",
-    "docs/uk_replay/VINTAGE_LOCKS.md"
+    "docs/uk_replay/VINTAGE_LOCKS.md",
+    "docs/uk_replay/HISTORICAL_DECISIONS.md"
   ]
 }

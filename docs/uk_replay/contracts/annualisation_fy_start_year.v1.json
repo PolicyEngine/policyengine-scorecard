@@ -1,0 +1,63 @@
+{
+  "schema_version": "annualisation_bridge.v1",
+  "bridge_id": "fy_start_year.v1",
+  "rule": "OBR fiscal year 'YYYY-YY' (6 April YYYY to 5 April YYYY+1) maps to the engine's annual period YYYY.",
+  "decision": "cos d1344 (Max, 2026-10-15: methodology calls delegated to the workstream sessions with independent review); recorded in docs/uk_replay/HISTORICAL_DECISIONS.md",
+  "engine_evidence": [
+    {
+      "package": "policyengine-uk",
+      "versions": [
+        "2.125.1",
+        "2.130.1"
+      ],
+      "where": "policyengine_uk/utils/parameters.py, convert_to_fiscal_year_parameters; called from policyengine_uk/tax_benefit_system.py on parameters.gov",
+      "establishes": "Annual period Y is the fiscal year starting 6 April Y: each government parameter is sampled at 30 April Y and that value is written over period Y, for 2015 to 2040; parameters with fiscal_year_blend: true are day-weighted across the fiscal year (6 parameter files in 2.130.1); parameters with preserve_calendar_dates: true keep statutory dates and their formulas annualise transactions.",
+      "read": "2.125.1 from its installed source; 2.130.1 from its PyPI wheel; 2026-10-15"
+    },
+    {
+      "package": "policyengine-uk",
+      "versions": [
+        "2.89.2"
+      ],
+      "where": "docs/uk_replay/YEARS.md (policyengine_uk/utils/parameters.py lines 26-47, tax_benefit_system.py lines 81-109)",
+      "establishes": "The same 30 April sampling in the legacy engine; the existing replays use calendar period Y for fiscal year Y-(Y+1)."
+    }
+  ],
+  "alternative_considered": {
+    "bridge_id": "two_period_blend.v1",
+    "rule": "fiscal year Y-(Y+1) = 9/12 of period Y + 3/12 of period Y+1",
+    "why_not": "The engine's period Y already carries fiscal-year policy (30 April sample or day-weighted). Blending two periods would mix two fiscal years' policy and double-count the April-to-March split the engine applies to its parameters."
+  },
+  "limitations": [
+    "Population inputs for period Y are annual projections uprated by the engine's indices; they are not records for 6 April to 5 April. Every comparison keeps the cy_proxies_fy divergence axis.",
+    "Cash versus liability timing (for example self-assessment receipts arriving after the year) is not bridged; it is recorded per head as a gap.",
+    "A measure commencing after 30 April Y is absent from period Y unless its parameter is day-weighted or explicitly dated; its timing limitation is recorded per measure, and no part-year coverage is claimed from an annual result.",
+    "A population built for these events must list every mapped period below in its certification's data_years, or the run stops with source accounting only (docs/uk_replay/HISTORICAL_ADAPTER.md)."
+  ],
+  "event_years": {
+    "spring_statement_2022": {
+      "2021-22": 2021,
+      "2022-23": 2022,
+      "2023-24": 2023,
+      "2024-25": 2024,
+      "2025-26": 2025,
+      "2026-27": 2026
+    },
+    "autumn_statement_2022": {
+      "2022-23": 2022,
+      "2023-24": 2023,
+      "2024-25": 2024,
+      "2025-26": 2025,
+      "2026-27": 2026,
+      "2027-28": 2027
+    },
+    "autumn_budget_2021": {
+      "2021-22": 2021,
+      "2022-23": 2022,
+      "2023-24": 2023,
+      "2024-25": 2024,
+      "2025-26": 2025,
+      "2026-27": 2026
+    }
+  }
+}
