@@ -660,6 +660,12 @@ def event_results(
 ) -> tuple[dict, list[dict]]:
     namespace = variants.namespace_root(record, root=root)
     out, failures = {}, []
+    premises_path = namespace / "CONSTRUCTION_PREMISES.json"
+    premises = (
+        json.loads(premises_path.read_bytes()).get("events", {})
+        if premises_path.exists()
+        else {}
+    )
     for event in events:
         directory = namespace / event
         try:
@@ -685,7 +691,58 @@ def event_results(
             ),
             "inert_measure_years": staging.get("inert_measure_years", []),
         }
+        failures += construction_inert(
+            event, out[event]["inert_measure_years"], premises.get(event, {})
+        )
     return out, failures
+
+
+def construction_inert(event: str, inert: list[dict], premises: dict) -> list[dict]:
+    """A failure for each inert pair whose own premises give its two worlds
+    different 1 January values in that year. The intended change then did
+    not show in the declared heads: the construction did not reach the
+    engine, it does not bind on this population, or it moves only variables
+    outside those heads. Equal premises values do
+    not prove a pair should be inert (a freeze can carry earlier years'
+    rates forward), so such a pair stays an incomplete grid, not a failure.
+
+    Invariants: every failure is one of the inert pairs; a pair fails
+    exactly when its own event, measure and year have a path whose two
+    worlds differ; premises for other years, measures and events do not
+    change the result."""
+    failures = []
+    measures = premises.get("measures", {})
+    for pair in inert:
+        record = measures.get(pair["measure_key"]) or {}
+        year = (record.get("years") or {}).get(str(pair["year"])) or {}
+        differing = sorted(
+            path
+            for path, values in (year.get("paths") or {}).items()
+            if values.get("baseline_world") != values.get("reform_world")
+        )
+        if not differing:
+            continue
+        path = differing[0]
+        values = year["paths"][path]
+        failures.append(
+            {
+                "code": "construction_inert",
+                "detail": (
+                    f"identical heads although CONSTRUCTION_PREMISES.json sets "
+                    f"{path} to {values.get('baseline_world')} in the baseline "
+                    f"world and {values.get('reform_world')} in the reform world"
+                    + (
+                        f" (and {len(differing) - 1} more paths)"
+                        if len(differing) > 1
+                        else ""
+                    )
+                ),
+                "event": event,
+                "measure_key": pair["measure_key"],
+                "year": pair["year"],
+            }
+        )
+    return failures
 
 
 def diff_summary(diff_dir: Path) -> dict:
