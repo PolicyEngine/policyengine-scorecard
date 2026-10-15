@@ -362,6 +362,9 @@ def variant_preflight(variant: dict, *, dataset_source: Path | None = None) -> d
         # A year outside the population's data years must fail, not
         # calculate defaults (compute_uk_obr_costings.run_managed_simulation).
         "require_dataset_years": True,
+        # The record's data years are checked against what the simulation's
+        # dataset reports, in every simulation.
+        "data_years": list(variant["data_years"]),
         "check_import_origins": True,
     }
 
@@ -382,6 +385,7 @@ def run_sim(year: int, variables: list[str], reform: dict | None, pre: dict) -> 
         expected_dataset_sha256=pre["sha256"],
         include_engine_provenance=True,
         require_dataset_years=pre.get("require_dataset_years", False),
+        expected_dataset_years=pre.get("data_years"),
         **scenario_kwargs,
     )
     fiscal.assert_managed_bundle(result["policyengine_bundle"], pre["release_bundle"])

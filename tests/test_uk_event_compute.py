@@ -21,6 +21,11 @@ def engine_free_environment(monkeypatch):
     """These tests stub the engine; the installed-environment check that
     precedes every real run is tested in test_uk_replay_variants.py."""
     monkeypatch.setattr(compute, "check_variant_environment", lambda variant: {})
+    # The synthetic legacy world below (build "certified-test") stands in for
+    # the legacy record's dataset.
+    monkeypatch.setattr(
+        stage, "legacy_dataset_identity", lambda path: ("a" * 64, "certified-test")
+    )
 
 
 def test_optional_engine_provenance_preserves_legacy_metadata(monkeypatch):

@@ -82,7 +82,7 @@ A variant record:
 | Field | Meaning |
 |---|---|
 | `variant_id` | `pe<wrapper>_uk<model>_<certified_data_build_id>`, recomputed from `identity`; when another identity already holds that slug (same versions, other wheels or numerical environment) the id adds `--<first 10 hex of identity_sha256>`. |
-| `identity` | Everything that determines execution. Its canonical-JSON SHA-256 is `identity_sha256`. `data_years`, `layout`, `status` and `executor` are outside it on purpose: they describe or file a run and do not change a computed byte. `data_years` is checked instead against the simulation's own `dataset.years` in every run, and staging recomputes the supported years from the record. |
+| `identity` | Everything that determines execution. Its canonical-JSON SHA-256 is `identity_sha256`. `data_years`, `layout`, `status` and `executor` are outside it on purpose: they describe or file a run and do not change a computed byte. `data_years` is checked instead: on a non-legacy variant every simulation compares the record's `data_years` with its dataset's whole `dataset.years` set and stops if they differ, and staging recomputes the supported years from the record. |
 | `identity.packages` | For `policyengine`, `policyengine-uk`, `policyengine-core`: exact `version`, and `record_sha256`: the SHA-256 of the distribution's own `RECORD` entries, sorted, excluding installer bookkeeping (`INSTALLER`, `REQUESTED`, `RECORD`, `direct_url.json`, `uv_cache.json`), bytecode, and the console-script wrappers the installer generates outside site-packages (their shebang names the environment's interpreter). Every listed file is checked on disk against its recorded hash when the identity is read, so the digest binds the wheel's installed contents, and pip and uv installs of one wheel agree. Optional `wheel_sha256`: the wheel's digest as published on PyPI, recorded at certification; the receiver verifies each downloaded wheel against it, and the runner, which never sees a wheel, checks only its format. |
 | `identity.packaged_bundle_manifest_sha256` | SHA-256 of `policyengine/data/bundle/manifest.json` as installed. |
 | `identity.release_bundle` | The exact `pe.uk.uk_latest.release_bundle` dict expected at runtime under **packaged (offline) certification**. |
@@ -168,8 +168,9 @@ managed-release preflight).
    runtime dataset source is that file.
 6. **Year support.** Requested years must lie in `data_years`, and inside
    every simulation `year in simulation.dataset.years` or the run stops; on a
-   non-legacy variant a dataset that does not state its years stops the run
-   too (the legacy check skips it, as it always has). Registry years outside `data_years` are not
+   non-legacy variant a dataset that does not state its years, or states a
+   year set other than the record's `data_years`, stops the run too (the
+   legacy check skips both, as it always has). Registry years outside `data_years` are not
    requested by default; they are reported as unsupported (below).
 
 A model/data combination is **incompatible** when no certified variant
