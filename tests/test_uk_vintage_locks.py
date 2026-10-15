@@ -115,9 +115,10 @@ def validate_selector(selector):
     if contract.get("status") == "resolved":
         path = contracts / f"{contract['contract_id']}.md"
         assert contract["contract_sha256"] == sha256_file(path), "contract digest"
-        record, digest = contract["decision_receipt"].rsplit(" sha256:", 1)
-        record_path = ROOT / record.rsplit("; ", 1)[1]
-        assert digest == sha256_file(record_path), "decision record digest"
+        record_path = ROOT / contract["decision_record"]
+        assert contract["decision_record_sha256"] == sha256_file(record_path), (
+            "decision record digest"
+        )
     bridge = selector["annualisation_bridge"]
     if bridge.get("status") == "resolved":
         path = contracts / f"annualisation_{bridge['bridge_id']}.json"
@@ -307,6 +308,8 @@ def test_ready_selector_rejects_each_pending_contract(field):
         "contract_id": "published_end_state_same_weights.v1",
         "contract_sha256": "a" * 64,
         "decision_receipt": "synthetic schema example",
+        "decision_record": "docs/uk_replay/HISTORICAL_DECISIONS.md",
+        "decision_record_sha256": "c" * 64,
     }
     selector["annualisation_bridge"] = {
         "status": "resolved",
@@ -352,10 +355,7 @@ def test_a_changed_methodology_file_breaks_the_binding(field):
     elif field == "receipt_sha256":
         selector["annualisation_bridge"]["receipt_sha256"] = "0" * 64
     else:
-        receipt = selector["policy_world_contract"]["decision_receipt"]
-        selector["policy_world_contract"]["decision_receipt"] = (
-            receipt.rsplit(" sha256:", 1)[0] + " sha256:" + "0" * 64
-        )
+        selector["policy_world_contract"]["decision_record_sha256"] = "0" * 64
     with pytest.raises(AssertionError):
         validate_selector(selector)
 

@@ -49,11 +49,14 @@ The readings, from [POLICY_WORLD_CONTRACT.md](POLICY_WORLD_CONTRACT.md):
   - the March 2022 devolved costings "are included in our pre-measures
     forecast" (Annex A `TA.4!B12`);
   - none of the three receipts workbooks labels a pre- or post-measures
-    basis.
+    basis;
+  - a lead for any future Option B, outside the locks: the Autumn Statement
+    2022 DWP edition says the OBR's 25 November 2022 supplementary caseloads
+    (PIP, DLA, UC LCW and LCWRA, ESA) were pre-measures (`Notes!B12`).
 
 Neither option makes the comparison independent of calibration.
 - Under A, the calibrated post-measures aggregate equals the OBR's
-  pre-measures level plus its costings. So for a measure acting on that
+  pre-measures level plus its costings and the indirect effects of policy. So for a measure acting on that
   aggregate, PolicyEngine's divergence from the OBR reappears as a level gap
   in the uncalibrated pre-measures world.
 - Under B, the same divergence would appear in the post-measures world.
@@ -119,8 +122,9 @@ The readings:
   - it samples parameters at 30 April Y by default;
   - it day-weights the six files flagged `fiscal_year_blend` (CGT rates and
     fuel duty in 2.130.1);
-  - it keeps statutory dates for the 33 files flagged
-    `preserve_calendar_dates`, including the energy price cap and guarantee.
+  - it keeps statutory dates for the files flagged `preserve_calendar_dates`
+    (33 in 2.130.1, including the energy price cap and guarantee; 32 in
+    2.125.1).
 
   The legacy 2.89.2 samples the same way ([YEARS.md](YEARS.md)).
   policyengine.py#617 certifies 2.130.1 with policyengine-uk-data 1.58.1;
@@ -129,7 +133,10 @@ The readings:
   mid-year change out of period Y, while the OBR's fiscal-year level
   includes it. Examples:
   - the National Insurance primary threshold rise from July 2022 (March
-    2022 Annex A `TA.2!C7`) is sampled at £190 a week in 2.130.1;
+    2022 Annex A `TA.2!C7`) is sampled at £190 a week in 2.130.1, whose
+    timeline keys the rise at 1 July 2022 although its own comment says
+    6 July (intended values therefore come from the statute, not the
+    engine's timeline);
   - the Universal Credit taper cut from late 2021 (October 2021 Annex A
     `TA.2!C21`) is sampled at 63% for period 2021;
   - the Health and Social Care Levy, repealed for earnings paid from
@@ -145,9 +152,11 @@ The readings:
 
 **Recorded exceptions**
 
-- **Reform routes differ by engine.** In 2.130.1, dated changes go onto the
-  statutory timeline and are reprocessed. In 2.125.1, `Scenario.apply` edits
-  the processed tree. So every population run must:
+- **Reform routes differ by entry point.** In 2.130.1 a reform passed when
+  the simulation is constructed goes onto the statutory timeline and is
+  reprocessed. `Scenario.apply` on a built simulation, in either engine,
+  edits the annualised parameters, read at 1 January. `parameter_changes`
+  apply to every period. So every population run must:
   - record each changed parameter's processed period-Y value against its
     intended value;
   - refuse a mismatch;

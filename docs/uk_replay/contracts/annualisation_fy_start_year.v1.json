@@ -3,19 +3,23 @@
   "bridge_id": "fy_start_year.v1",
   "rule": "OBR fiscal year 'YYYY-YY' (6 April YYYY to 5 April YYYY+1) maps to the engine's annual period YYYY.",
   "part_year_rule": {
-    "rule": "A flow parameter (a rate, threshold or amount applying to income, earnings or entitlement spread over the year) whose law changes within fiscal year Y-(Y+1) takes its day-weighted fiscal-year value in period Y, in the published world and the counterfactual alike. A point-in-time parameter (a tax charged on a transaction at the rate in force on its date) keeps the value in force on the date. A parameter whose engine file keeps statutory dates (preserve_calendar_dates) keeps them, and its formulas annualise the transactions. Where a change cannot be expressed this way, the targets it moves are flagged and excluded from that year's calibration.",
+    "rule": "A flow parameter (a rate, threshold or amount applying to income, earnings or entitlement spread over the year) whose law changes within fiscal year Y-(Y+1) takes its day-weighted fiscal-year value in period Y, in the published world and the counterfactual alike; such a measure-year is computed, compared and tagged part_year_day_weighted. A point-in-time parameter (a tax charged on a transaction at the rate in force on its date) is expressed through the engine's preserve_calendar_dates where the engine supports it; otherwise the targets it moves that year are flagged and excluded. The engine itself day-weights the CGT rates and fuel duty (fiscal_year_blend), although both are charged on transactions; those keep the engine's treatment and are recorded per measure. Where a change cannot be expressed in one of these ways, the targets it moves are flagged and excluded from that year's calibration.",
     "why": "The engine's default 30 April sample keeps a mid-year change out of period Y, so calibrating period Y to the OBR's fiscal-year level would push the change's effect into the weights and contaminate every other measure that year. Day-weighting is the engine's own annualisation for flow parameters (fiscal_year_blend).",
     "examples_verified": [
-      "National Insurance primary threshold to GBP 12,570 from July 2022 (March 2022 Annex A TA.2!C7); policyengine-uk 2.130.1 stores 190 per week from 2022-04-06 and the higher amount from 6 July 2022, so its 30 April sample gives 190 for period 2022.",
+      "National Insurance primary threshold to GBP 12,570 from July 2022 (March 2022 Annex A TA.2!C7); policyengine-uk 2.130.1 stores 190 per week from 2022-04-06 and the higher amount under the key 2022-07-01, while the file's own comment gives 6 July 2022, so day-weighting the engine's timeline would count five extra days at the new value; its 30 April sample gives 190 for period 2022.",
       "Universal Credit taper from 63% to 55% (October 2021 Annex A TA.2!C21, 'from 1 December 2021'); policyengine-uk 2.130.1 changes it on 2021-11-24, so its 30 April 2021 sample gives 0.63 for period 2021.",
       "Health and Social Care Levy rates in force only for earnings paid before 6 November 2022; policyengine-uk 2.130.1's own tests say model year 2022 takes the levy rate (a change within Autumn Statement 2022's 2022-23)."
-    ]
+    ],
+    "intended_values": "Intended fiscal-year values are computed from the statute or the event's documents, never from the engine's own timeline, so an engine date error shows up in the processed-value check."
   },
   "reform_route": {
-    "requirement": "Each world's parameter values for period Y must equal the intended fiscal-year value (term 4 of the policy-world contract). Every population run records, per measure-year and world, the processed period-Y value of every changed parameter beside its intended value, and refuses a mismatch.",
-    "policyengine_uk_2_130_1": "Dated changes are written onto the statutory timeline and reprocessed with current law (policyengine_uk/utils/dated_reforms.py): use 'start.stop' range keys or parameter_changes; a bare year key sets that fiscal year only; a single-day key such as '2027-04-06' overrides one day of the annualised parameter and changes nothing for the year.",
-    "policyengine_uk_2_125_1_and_earlier": "Scenario.apply (policyengine_uk/utils/scenario.py in 2.125.1) updates the already-processed parameter tree without fiscal-year reprocessing, and annual lookups read 1 January (docs/uk_replay/YEARS.md for 2.89.2). Use the executor's date-window convention and the processed-value check.",
-    "re_read": "The evidence in this receipt must be re-read for the engine actually certified for each population before it runs."
+    "requirement": "Each world's parameter values for period Y must equal the intended fiscal-year value (contract term 4). Every population run records, per measure-year and world, the processed period-Y value of every changed parameter beside its intended value, and refuses a mismatch.",
+    "routes_by_entry_point": {
+      "at_construction_2_130_1": "A reform passed when the Simulation is constructed (reform= or scenario=), or Simulation.apply_parameter_changes, is written onto the statutory timeline and reprocessed with current law (policyengine_uk/utils/dated_reforms.py): a change dated 6 April sets that fiscal year.",
+      "on_a_built_simulation": "Scenario.apply on an already-built simulation (2.130.1 and 2.125.1), and the 2.125.1 reform dict, edit the annualised parameters; dated keys are not annualised again and formulas read an annual parameter at 1 January, so a window must contain 1 January Y to change period Y. In 2.130.1 a dict scenario's bare simulation_modifier on a built simulation applies only single-day keys and paths the statutory tree does not define (the cause of the 6.4.1 inert UC health element; scorecard #173).",
+      "parameter_changes": "Scenario(parameter_changes=...) applies its value to every period, in both engines."
+    },
+    "re_read": "This evidence must be re-read for the engine actually certified for each population before it runs."
   },
   "decision": "cos d1344 (Max, 2026-10-15: methodology calls delegated to the workstream sessions with independent review); recorded in docs/uk_replay/HISTORICAL_DECISIONS.md",
   "engine_evidence": [
@@ -26,7 +30,7 @@
         "2.130.1"
       ],
       "where": "policyengine_uk/utils/parameters.py, convert_to_fiscal_year_parameters; called from policyengine_uk/tax_benefit_system.py on parameters.gov",
-      "establishes": "Annual period Y is the fiscal year starting 6 April Y. By default each government parameter is sampled at 30 April Y and that value is written over period Y, for 2015 to 2040; the 6 parameter files with fiscal_year_blend: true (CGT rates and fuel duty in 2.130.1) are day-weighted across the fiscal year; the 33 files with preserve_calendar_dates: true (including the Ofgem energy price cap and guarantee) keep statutory dates.",
+      "establishes": "Annual period Y is the fiscal year starting 6 April Y. By default each government parameter is sampled at 30 April Y and that value is written over period Y, for 2015 to 2040; the 6 parameter files with fiscal_year_blend: true (CGT rates and fuel duty) are day-weighted across the fiscal year; the files with preserve_calendar_dates: true keep statutory dates (33 in 2.130.1, including the Ofgem energy price cap and guarantee; 32 in 2.125.1, which lacks the UC rebalancing protected_health_element).",
       "read": "2.125.1 from its installed source; 2.130.1 from its PyPI wheel; 2026-10-15. 2.130.1 is the policyengine-uk version certified by policyengine.py#617 (with policyengine-uk-data 1.58.1); it is not yet a scorecard replay variant."
     },
     {

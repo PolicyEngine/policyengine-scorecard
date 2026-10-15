@@ -269,13 +269,25 @@
               "type": "string",
               "description": "",
               "minLength": 1
+            },
+            "decision_record": {
+              "type": "string",
+              "description": "Repository path of the decision record.",
+              "pattern": "^docs/uk_replay/[A-Z_]+\\.md$"
+            },
+            "decision_record_sha256": {
+              "type": "string",
+              "description": "Lowercase SHA-256 of the decision record's bytes.",
+              "pattern": "^[0-9a-f]{64}$"
             }
           },
           "required": [
             "status",
             "contract_id",
             "contract_sha256",
-            "decision_receipt"
+            "decision_receipt",
+            "decision_record",
+            "decision_record_sha256"
           ]
         }
       ]

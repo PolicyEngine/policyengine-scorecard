@@ -70,13 +70,15 @@
   "policy_world_contract": {
     "status": "resolved",
     "contract_id": "published_end_state_same_weights.v1",
-    "contract_sha256": "0fc737c03d971b9af69348da0958e18fcabfb32fb76b7d08d8619ceb3b8352f6",
-    "decision_receipt": "cos d1344 (Max, 2026-10-15: delegated to the workstream with independent review); docs/uk_replay/HISTORICAL_DECISIONS.md sha256:03f8575a743dfbdfd81675d7f3be57e0a6cddca9b40575f644b7b4c358143484"
+    "contract_sha256": "f83e0c9249983e386fec9f9f4c2c7a689ddda8f676640e3013e652e1fe35ba88",
+    "decision_receipt": "cos d1344 (Max, 2026-10-15: delegated to the workstream with independent review)",
+    "decision_record": "docs/uk_replay/HISTORICAL_DECISIONS.md",
+    "decision_record_sha256": "b6db48a92283d54fec78cab772d2c39698f94b0d9f8c08623f3b0be1dcd288a3"
   },
   "annualisation_bridge": {
     "status": "resolved",
     "bridge_id": "fy_start_year.v1",
-    "receipt_sha256": "b9cb42fe2af866c4d43bb04dfac892b179b6212070c10afc6eb34ec3f79165ae"
+    "receipt_sha256": "ffc885685c61b11358a6d3a5c6a4b9dd398e4a093a607ae10b47acfec609bca0"
   },
   "readiness": "ready_for_population_build",
   "evidence": [

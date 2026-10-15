@@ -25,10 +25,16 @@ by its SHA-256; any change to these terms is a new contract version.
      its current law is not that world.
 2. **Targets, classified one by one.**
    - **Pre/post classification.** Each target level is classified as post- or
-     pre-measures consistent from its source. Only post-measures-consistent
-     levels are calibration targets. Some published levels are pre-measures:
-     the Scottish Block Grant adjustments (`3.4!B38`, March 2022 and October
-     2021) and devolved-government costings (March 2022 Annex A `TA.4!B12`).
+     pre-measures consistent by citing the publisher's statement of its basis.
+     A level whose basis cannot be cited is excluded. Only
+     post-measures-consistent levels are calibration targets.
+     - Pre-measures examples: the Scottish Block Grant adjustments (`3.4!B38`,
+       March 2022 and October 2021) and devolved-government costings (March
+       2022 Annex A `TA.4!B12`).
+     - Post-measures examples: the Spring Statement 2022 DWP edition says its
+       forecasts are consistent with the March 2022 EFO (`Notes!B5`), and the
+       Autumn Statement 2022 edition says its caseloads are post-measures
+       (`Notes!B12`).
    - **Kept distinct.** Administrative observations and forecast levels are
      kept distinct and labelled.
    - **Never calibrate.** Every target is checked against the never-calibrate
@@ -40,6 +46,9 @@ by its SHA-256; any change to these terms is a new contract version.
        supplies. That covers a `later_revision` file, the March 2025
        historical forecasts database, and a DWP edition published after the
        event.
+     - No value from Autumn Budget 2021's later-revision receipts workbook is
+       a target until a release-equivalence review compares it with the
+       launch bytes.
      - Cash-basis receipts are not targets until a documented cash-to-liability
        bridge maps them to the liabilities the engine computes; until then
        they stay held-out level comparisons.
