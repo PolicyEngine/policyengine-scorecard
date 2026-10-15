@@ -268,31 +268,45 @@ def test_uc_health_reform_uses_managed_scenario_and_other_dicts_keep_path(monkey
     assert "scenario" not in calls[1]
 
 
-def test_uc_health_scenario_updates_parameters_before_refreshing_fixed_inputs(
-    monkeypatch,
-):
-    calls = []
-    sim = SimpleNamespace(
-        health_parameter=217.26,
-        fixed_health_input=217.26 * 12,
-        tax_benefit_system=SimpleNamespace(
-            reset_parameter_caches=lambda: calls.append("reset")
-        ),
-    )
+class FakeParameter:
+    def __init__(self, sim):
+        self.sim = sim
+
+    def __call__(self, instant):
+        return self.sim.health_parameter
+
+
+def uc_fakes(monkeypatch, calls, *, dated):
+    """policyengine-uk's Scenario before (dated=False) and from 2.130
+    (dated=True): there, a dict's dated keys reach a built simulation only
+    through Scenario.apply; the bare modifier drops them."""
 
     class Scenario:
-        def __init__(self, *, simulation_modifier):
+        def __init__(self, *, simulation_modifier, dated_reforms=None):
             self.simulation_modifier = simulation_modifier
+            self.dated_reforms = dated_reforms
 
         @classmethod
         def from_reform(cls, reform):
+            value = reform[compute.UC_HEALTH_ELEMENT_PARAMETER]["2026-01-01.2029-12-31"]
+
             def update(simulation):
                 calls.append("parameter_update")
-                simulation.health_parameter = reform[
-                    compute.UC_HEALTH_ELEMENT_PARAMETER
-                ]["2026-01-01.2029-12-31"]
+                simulation.health_parameter = value
 
-            return cls(simulation_modifier=update)
+            if not dated:
+                return cls(simulation_modifier=update)
+            scenario = cls(
+                simulation_modifier=lambda simulation: calls.append("legacy_only"),
+                dated_reforms=[reform],
+            )
+
+            def apply(simulation):
+                calls.append("scenario_apply")
+                update(simulation)
+
+            scenario.apply = apply
+            return scenario
 
     def uc_modifier(simulation):
         calls.append("uc_modifier")
@@ -308,10 +322,49 @@ def test_uc_health_scenario_updates_parameters_before_refreshing_fixed_inputs(
         "policyengine_uk.utils.scenario",
         SimpleNamespace(Scenario=Scenario),
     )
+
+
+def uc_sim(calls):
+    sim = SimpleNamespace(health_parameter=217.26, fixed_health_input=217.26 * 12)
+    sim.tax_benefit_system = SimpleNamespace(
+        reset_parameter_caches=lambda: calls.append("reset"),
+        parameters=SimpleNamespace(get_child=lambda path: FakeParameter(sim)),
+    )
+    return sim
+
+
+@pytest.mark.parametrize("dated", [False, True])
+def test_uc_health_scenario_updates_parameters_before_refreshing_fixed_inputs(
+    monkeypatch, dated
+):
+    # 6.4.1 qualification: on policyengine-uk 2.130.1 the bare modifier left
+    # the reversal inert in 2026-2029; Scenario.apply reaches the parameters.
+    calls = []
+    uc_fakes(monkeypatch, calls, dated=dated)
+    sim = uc_sim(calls)
     reform = {compute.UC_HEALTH_ELEMENT_PARAMETER: {"2026-01-01.2029-12-31": 437.66}}
     compute.uc_health_scenario(reform).simulation_modifier(sim)
-    assert calls == ["parameter_update", "reset", "uc_modifier"]
+    first = "scenario_apply" if dated else "parameter_update"
+    assert calls[0] == first and calls[-2:] == ["reset", "uc_modifier"]
+    assert "legacy_only" not in calls
     assert sim.fixed_health_input == 437.66 * 12
+
+
+def test_a_route_that_misses_the_parameters_is_refused(monkeypatch):
+    calls = []
+    uc_fakes(monkeypatch, calls, dated=True)
+    sim = uc_sim(calls)
+    reform = {compute.UC_HEALTH_ELEMENT_PARAMETER: {"2026-01-01.2029-12-31": 437.66}}
+    scenario = compute.uc_health_scenario(reform)
+    # Simulate the old call on the new engine: only the bare modifier runs.
+    Scenario = sys.modules["policyengine_uk.utils.scenario"].Scenario  # the fake
+    broken = Scenario.from_reform(reform)
+    broken.apply = lambda simulation: broken.simulation_modifier(simulation)
+    monkeypatch.setattr(Scenario, "from_reform", classmethod(lambda cls, r: broken))
+    with pytest.raises(RuntimeError, match="did not reach"):
+        compute.uc_health_scenario(reform).simulation_modifier(sim)
+    assert "uc_modifier" not in calls
+    assert scenario is not None
 
 
 @pytest.mark.skipif(
@@ -322,8 +375,7 @@ def test_uc_health_modifier_refresh_changes_awards_without_changing_cohorts():
     uk = pytest.importorskip("policyengine_uk")
     import numpy as np
 
-    # The pinned seed assigns some of these otherwise identical claimants
-    # to the new-claimant cohort. No population file is needed.
+    # Ten otherwise identical claimants; no population file is needed.
     situation = {"people": {}, "benunits": {}, "households": {}}
     for i in range(10):
         person = f"p{i}"
@@ -333,17 +385,41 @@ def test_uc_health_modifier_refresh_changes_awards_without_changing_cohorts():
         }
         situation["benunits"][f"b{i}"] = {"members": [person]}
         situation["households"][f"h{i}"] = {"members": [person]}
+    status = "uc_receives_new_claimant_health_element"
+    supplied_status = (
+        status in uk.Simulation(situation=situation).tax_benefit_system.variables
+    )
+    if supplied_status:
+        # policyengine-uk 2.130 onwards: a household situation gets the
+        # protected amount unless it says who is a new claimant.
+        cohort = np.array([True] * 3 + [False] * 7)
+        for i, flag in enumerate(cohort):
+            situation["benunits"][f"b{i}"][status] = {
+                str(y): bool(flag) for y in range(2026, 2030)
+            }
+    else:
+        # Earlier engines assign the cohort by the modifier's pinned seed.
+        cohort = np.random.default_rng(43).random(10) < 0.11
     reform = {compute.UC_HEALTH_ELEMENT_PARAMETER: {"2026-01-01.2029-12-31": 437.66}}
     certified = uk.Simulation(situation=situation)
-    broken = uk.Simulation(situation=situation, reform=reform)
+    at_construction = uk.Simulation(situation=situation, reform=reform)
     fixed = uk.Simulation(
         situation=situation, scenario=compute.uc_health_scenario(reform)
     )
     baseline_awards = certified.calculate("uc_LCWRA_element", 2026)
-    assert np.array_equal(broken.calculate("uc_LCWRA_element", 2026), baseline_awards)
     fixed_awards = fixed.calculate("uc_LCWRA_element", 2026)
-    changed = fixed_awards != baseline_awards
-    assert np.array_equal(changed, np.random.default_rng(43).random(10) < 0.11)
+    assert np.array_equal(fixed_awards != baseline_awards, cohort)
+    if supplied_status:
+        # 2.130 writes a dict reform onto the statutory timeline, so the
+        # construction-time route now agrees with the refreshed scenario.
+        assert np.array_equal(
+            at_construction.calculate("uc_LCWRA_element", 2026), fixed_awards
+        )
+    else:
+        # Before 2.130 the fixed inputs ignored a construction-time dict.
+        assert np.array_equal(
+            at_construction.calculate("uc_LCWRA_element", 2026), baseline_awards
+        )
     assert (
         fixed.calculate("universal_credit", 2026).sum()
         > certified.calculate("universal_credit", 2026).sum()

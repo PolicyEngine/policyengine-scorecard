@@ -92,11 +92,44 @@ def uc_health_scenario(reform: dict):
     parameter_scenario = Scenario.from_reform(reform)
 
     def apply_and_refresh(sim):
-        parameter_scenario.simulation_modifier(sim)
+        if getattr(parameter_scenario, "dated_reforms", None):
+            # policyengine-uk 2.130 onwards keeps a dict's dated keys in
+            # dated_reforms. On a built simulation only Scenario.apply turns
+            # every change into an override of the annualised values; the
+            # bare modifier applies just single-day keys and paths the
+            # statutory tree does not define (utils/scenario.py,
+            # _legacy_override_modifier), which would leave this reform inert.
+            parameter_scenario.apply(sim)
+        else:
+            parameter_scenario.simulation_modifier(sim)
         sim.tax_benefit_system.reset_parameter_caches()
+        assert_reform_reached(sim, reform)
         add_universal_credit_reform(sim)
 
     return Scenario(simulation_modifier=apply_and_refresh)
+
+
+def assert_reform_reached(sim, reform: dict) -> None:
+    """Refuse a route that left the simulation's processed parameters short
+    of the reform: every year whose 1 January lies in a window must read the
+    window's value. An engine that silently drops the change would otherwise
+    produce an inert reversal."""
+    parameters = sim.tax_benefit_system.parameters
+    for path, windows in reform.items():
+        parameter = parameters.get_child(path)
+        for key, value in windows.items():
+            start, stop = key.split(".")
+            for year in range(int(start[:4]), int(stop[:4]) + 1):
+                instant = f"{year}-01-01"
+                if not start <= instant <= stop:
+                    continue
+                actual = parameter(instant)
+                if actual is None or abs(float(actual) - float(value)) > 1e-9:
+                    raise RuntimeError(
+                        f"{path} reads {actual} for {year}, not the reform's "
+                        f"{value}: the scenario route did not reach the "
+                        "simulation's parameters"
+                    )
 
 
 def event_paths(event: str) -> tuple[Path, Path]:
