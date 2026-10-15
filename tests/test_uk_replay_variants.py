@@ -1403,3 +1403,27 @@ def test_variant_preflight_hands_the_records_data_years_to_every_run():
     assert pre["data_years"] == record()["data_years"]
     assert pre["require_dataset_years"] is True
     assert pre["check_import_origins"] is True
+
+
+def test_namespace_events_follow_the_recorded_corpus_first(tmp_path):
+    # Review of bfd6442: a sealed namespace whose events all failed before
+    # writing a run manifest keeps the corpus it recorded, so its premises and
+    # summary do not grow when another event is registered.
+    from pipeline.build_uk_event_registry import EVENTS
+
+    registered = list(EVENTS)
+    assert rv.namespace_events(tmp_path) == registered
+    (tmp_path / registered[2]).mkdir()
+    (tmp_path / registered[2] / "RUN_MANIFEST.json").write_text("{}")
+    assert rv.namespace_events(tmp_path) == [registered[2]]
+    corpus = [registered[3], registered[0]]
+    (tmp_path / rv.CORPUS_NAME).write_text(
+        json.dumps({"corpus_version": "x", "events": corpus})
+    )
+    # The recorded corpus decides, in registry order, whatever holds results.
+    assert rv.namespace_events(tmp_path) == [registered[0], registered[3]]
+    (tmp_path / rv.CORPUS_NAME).write_text(
+        json.dumps({"corpus_version": "x", "events": ["not_registered"]})
+    )
+    with pytest.raises(rv.VariantError, match="unregistered"):
+        rv.namespace_events(tmp_path)

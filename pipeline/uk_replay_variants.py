@@ -862,6 +862,33 @@ def event_output_dir(record: dict, event: str, *, root: Path = ROOT) -> Path:
     return namespace_root(record, root=root) / event
 
 
+CORPUS_NAME = "CORPUS.json"
+
+
+def namespace_events(root: Path) -> list[str]:
+    """The registered events a namespace's premises and summary cover.
+
+    A qualification run records its corpus in CORPUS.json before replaying
+    any event, so its event set never depends on which events produced
+    results: a sealed namespace whose events all failed regenerates the same
+    bytes after another event is registered. Without that record (the legacy
+    namespace, or an inventory namespace that holds no run), the events it
+    holds results for (an event directory with RUN_MANIFEST.json), or every
+    registered event when it holds none."""
+    from pipeline.build_uk_event_registry import EVENTS
+
+    registered = list(EVENTS)
+    corpus = root / CORPUS_NAME
+    if corpus.is_file():
+        listed = json.loads(corpus.read_bytes())["events"]
+        unknown = sorted(set(listed) - set(registered))
+        if unknown:
+            raise VariantError(f"{corpus}: unregistered events {unknown}")
+        return [event for event in registered if event in listed]
+    held = [e for e in registered if (root / e / "RUN_MANIFEST.json").is_file()]
+    return held or registered
+
+
 def sealing_receipt(path: Path, *, root: Path = ROOT) -> Path | None:
     """The REPLAY_RECEIPT.json sealing a directory or one of its parents."""
     path = path.resolve()

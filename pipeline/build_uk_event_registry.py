@@ -51,6 +51,11 @@ AB2025_GAPS = {
         "fuel_duty",
         r"fuel_duty|petrol|diesel",
     ),
+    "Carer’s Allowance Review: Reassess overpayments": (
+        "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction.",
+        "administration",
+        r"carers_allowance|overpayment|debt",
+    ),
     "Universal Credit: Changes to the standard allowance and health element": (
         "A reversal that restores the pre-Budget protections has not been established. #136's construction switches UC rebalancing off (ab2025__uc_standard_allowance_and_health_element_rebalancing in data/uk/ab2025_measures.json); the replay inventory's note at policyengine-uk 2.125.1 (data/uk/events/inventory.jsonl) records that this leaves the 217.26 health element for every claimant, which is not the pre-measure world. The OBR costings lane leaves the measure without a construction for the same reason (data/uk/obr_measure_reforms.yaml).",
         "universal_credit",

@@ -299,8 +299,11 @@ def test_committed_premises_regenerate(engine, path, installed_engine_view):
             f"installed policyengine-uk {installed}; this committed file belongs "
             f"to {engine} (checked in its pinned environment)"
         )
+    # A namespace's premises cover its own events (namespace_events).
     payload = premises.canonical_bytes(
-        premises.audit(list(premises.EVENTS), installed_engine_view)
+        premises.audit(
+            premises.namespace_events((ROOT / path).parent), installed_engine_view
+        )
     )
     assert payload == (ROOT / path).read_bytes()
 

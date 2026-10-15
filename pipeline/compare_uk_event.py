@@ -1639,15 +1639,15 @@ def write_summary(events_root: Path, *, artifact_root: Path = ROOT) -> None:
             (artifact_root / "data" / "uk" / "events").glob("*_measures.json")
         )
     }
-    # A namespace summarises the events it holds results for, or every
-    # registered event when it holds none, as its construction premises do:
-    # a sealed or diff-bound namespace's summary then regenerates byte for
-    # byte after a later event is registered.
-    held = {path.parent.name for path in events_root.glob("*/RUN_MANIFEST.json")} & set(
-        registries
-    )
-    if held:
-        registries = {event: registries[event] for event in sorted(held)}
+    # A namespace summarises the events its premises cover
+    # (uk_replay_variants.namespace_events): a sealed or diff-bound
+    # namespace's summary then regenerates byte for byte after a later event
+    # is registered, and historical registries (source accounting only)
+    # appear in no replay namespace's summary.
+    covered = set(variants.namespace_events(events_root))
+    registries = {
+        event: registry for event, registry in registries.items() if event in covered
+    }
     identities = {
         json.dumps(
             {

@@ -486,10 +486,20 @@ def test_ab2025_uses_every_reviewed_costings_construction_from_its_first_window(
 
 def test_ab2025_named_gaps_and_the_surcharge_reversal():
     measures = ab2025_registry()["measures"]
-    for prefix in registry.AB2025_GAPS:
+    kinds = {
+        "Fuel Duty": "construction_pending",
+        "Universal Credit": "construction_pending",
+        # An administrative review of past overpayments, as the builder's
+        # other administrative measures are classed.
+        "Carer’s Allowance Review": "model_or_data_gap",
+    }
+    assert len(kinds) == len(registry.AB2025_GAPS)
+    for prefix, (why, _, _) in registry.AB2025_GAPS.items():
         (measure,) = [m for m in measures if m["title"].startswith(prefix)]
         assert measure["classification"] == "not_expressible"
-        assert measure["gap_kind"] == "construction_pending"
+        assert measure["pe_gap"] == why
+        (kind,) = [k for start, k in kinds.items() if prefix.startswith(start)]
+        assert measure["gap_kind"] == kind
         assert not measure.get("pe_baseline_modifier")
     (surcharge,) = [
         m
@@ -497,10 +507,22 @@ def test_ab2025_named_gaps_and_the_surcharge_reversal():
         if m["title"].startswith("High Value Council Tax Surcharge:")
     ]
     assert surcharge["commences_fy"] == "2028-29"
-    assert surcharge["pe_baseline_modifier"] and all(
-        windows == {"2028-01-01.2030-12-31": 0}
-        for windows in surcharge["pe_baseline_modifier"].values()
-    )
+    # The complete conversion of #136's year-keyed reversal: every path, and
+    # each path's run of years as one window at its value.
+    (entry,) = [
+        e
+        for e in json.loads((ROOT / "data/uk/ab2025_measures.json").read_text())[
+            "measures"
+        ]
+        if e["measure_key"] == "ab2025__high_value_council_tax_surcharge"
+    ]
+    expected = {}
+    for path, by_year in entry["pe_baseline_modifier"].items():
+        years = sorted(int(y) for y in by_year)
+        (value,) = {by_year[str(y)] for y in years}
+        expected[path] = {f"{years[0]}-01-01.{years[-1]}-12-31": value}
+    assert len(expected) == 4
+    assert surcharge["pe_baseline_modifier"] == expected
 
 
 def test_ab2025_surcharge_conversion_refuses_a_run_it_cannot_window(

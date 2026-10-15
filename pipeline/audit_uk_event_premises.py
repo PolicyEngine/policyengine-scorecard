@@ -340,13 +340,10 @@ def canonical_bytes(value: Any) -> bytes:
 
 
 def namespace_events(root: Path) -> list[str]:
-    """The events a namespace's premises cover: those it holds results for
-    (an event directory with RUN_MANIFEST.json), or every registered event
-    when it holds none. A run's premises then cover what it replayed, and a
-    namespace whose bytes a seal or a release diff binds keeps them when an
-    event is registered later."""
-    held = [event for event in EVENTS if (root / event / "RUN_MANIFEST.json").is_file()]
-    return held or list(EVENTS)
+    """The events a namespace's premises cover (uk_replay_variants.namespace_events)."""
+    from pipeline import uk_replay_variants as variants
+
+    return variants.namespace_events(root)
 
 
 def main(argv: list[str] | None = None) -> int:

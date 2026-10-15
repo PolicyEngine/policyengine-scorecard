@@ -27071,23 +27071,23 @@
       "head_variables": []
     },
     {
-      "program": "carers_allowance",
+      "program": "administration",
       "classification": "not_expressible",
       "heads": [],
       "construction": null,
       "pe_reform_delta": null,
-      "pe_gap": "The pinned carers_allowance formula tests care hours or reported receipt, then pays the flat rate. It has no earnings-limit test; the announced £151-to-£196 weekly earnings limit cannot be expressed by changing its rate or care-hours parameter.",
+      "pe_gap": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction.",
       "missing_legs": [
-        "The pinned carers_allowance formula tests care hours or reported receipt, then pays the flat rate. It has no earnings-limit test; the announced £151-to-£196 weekly earnings limit cannot be expressed by changing its rate or care-hours parameter."
+        "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction."
       ],
-      "note": "The pinned carers_allowance formula tests care hours or reported receipt, then pays the flat rate. It has no earnings-limit test; the announced £151-to-£196 weekly earnings limit cannot be expressed by changing its rate or care-hours parameter.",
+      "note": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction.",
       "gap_kind": "model_or_data_gap",
       "measure_key": "ab2025__carers_allowance_overpayments_review",
       "title": "Carer’s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
       "reported_status": "announced",
       "fiscal_event": "Autumn Budget 2025",
       "computability": "not_expressible",
-      "measure_type": "carers_allowance",
+      "measure_type": "administration",
       "source_rows": [
         {
           "source_row_id": "obr_pmd_nov2025:23549:112d57419951fde5",
@@ -27206,7 +27206,7 @@
           "source_column": "2025-26",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "not_expressible",
-          "classification_reason": "The pinned carers_allowance formula tests care hours or reported receipt, then pays the flat rate. It has no earnings-limit test; the announced £151-to-£196 weekly earnings limit cannot be expressed by changing its rate or care-hours parameter."
+          "classification_reason": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23556:4ff9107569db4e50",
@@ -27223,7 +27223,7 @@
           "source_column": "2026-27",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "not_expressible",
-          "classification_reason": "The pinned carers_allowance formula tests care hours or reported receipt, then pays the flat rate. It has no earnings-limit test; the announced £151-to-£196 weekly earnings limit cannot be expressed by changing its rate or care-hours parameter."
+          "classification_reason": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23557:b4013104476436a7",
@@ -27240,7 +27240,7 @@
           "source_column": "2027-28",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "not_expressible",
-          "classification_reason": "The pinned carers_allowance formula tests care hours or reported receipt, then pays the flat rate. It has no earnings-limit test; the announced £151-to-£196 weekly earnings limit cannot be expressed by changing its rate or care-hours parameter."
+          "classification_reason": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23558:cfb15636c1b1f021",
@@ -27257,7 +27257,7 @@
           "source_column": "2028-29",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "not_expressible",
-          "classification_reason": "The pinned carers_allowance formula tests care hours or reported receipt, then pays the flat rate. It has no earnings-limit test; the announced £151-to-£196 weekly earnings limit cannot be expressed by changing its rate or care-hours parameter."
+          "classification_reason": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23559:51be39604064b82b",
@@ -27274,7 +27274,7 @@
           "source_column": "2029-30",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "not_expressible",
-          "classification_reason": "The pinned carers_allowance formula tests care hours or reported receipt, then pays the flat rate. It has no earnings-limit test; the announced £151-to-£196 weekly earnings limit cannot be expressed by changing its rate or care-hours parameter."
+          "classification_reason": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23560:9cd21dd8eda495b4",
@@ -27291,7 +27291,7 @@
           "source_column": "2030-31",
           "sign_convention": "positive_gain_to_exchequer",
           "classification": "not_expressible",
-          "classification_reason": "The pinned carers_allowance formula tests care hours or reported receipt, then pays the flat rate. It has no earnings-limit test; the announced £151-to-£196 weekly earnings limit cannot be expressed by changing its rate or care-hours parameter."
+          "classification_reason": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction."
         },
         {
           "source_row_id": "obr_pmd_nov2025:23561:9bae2101918d5839",
@@ -27404,21 +27404,14 @@
         "head_scope"
       ],
       "name_search": {
-        "pattern": "carers_allowance|carer_support_payment|earnings_limit",
+        "pattern": "carers_allowance|overpayment|debt",
         "parameter_matches": [
           "gov.dwp.carers_allowance.min_hours",
-          "gov.dwp.carers_allowance.rate",
-          "gov.hmrc.national_insurance.class_1.thresholds.lower_earnings_limit",
-          "gov.hmrc.national_insurance.class_1.thresholds.upper_earnings_limit",
-          "gov.social_security_scotland.carer_support_payment.min_hours",
-          "gov.social_security_scotland.carer_support_payment.rate",
-          "gov.social_security_scotland.carer_support_payment.supplement"
+          "gov.dwp.carers_allowance.rate"
         ],
         "variable_matches": [
-          "carer_support_payment",
           "carers_allowance",
           "carers_allowance_reported",
-          "receives_carer_support_payment",
           "receives_carers_allowance"
         ],
         "engine_version": "2.89.2",

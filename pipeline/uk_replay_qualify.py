@@ -543,6 +543,11 @@ def run_corpus(
     namespace = variants.namespace_root(record, root=root)
     variants.assert_not_sealed(namespace, root=root)
     namespace.mkdir(parents=True, exist_ok=True)
+    # Before any event runs, so the namespace's premises and summary cover
+    # this corpus whichever events produce results.
+    (namespace / variants.CORPUS_NAME).write_bytes(
+        canonical_bytes({"corpus_version": CORPUS_VERSION, "events": list(events)})
+    )
     failures = []
     for event in events:
         output = namespace / event
