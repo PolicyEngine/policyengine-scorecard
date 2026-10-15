@@ -1,7 +1,7 @@
 # scorecard_db
 
-The Scorecard database: every claim an external model makes that PolicyEngine
-can check, one SQLite file, reform-keyed.
+The Scorecard database: external model scores with provenance, including scores
+awaiting a PolicyEngine counterpart, in one reform-keyed SQLite file.
 
 ## Design (Max, 2026-08-01)
 
@@ -395,7 +395,7 @@ run from its artifacts (one simulation at a time, `HDF5_USE_FILE_LOCKING=FALSE`)
 ## 2026-09-25 population: OBR-certified measure costings (UK, #54/#56)
 
 `ingest_obr_costings` (chain position: after `uk_policy_effects`, before
-`uk_ab2025`) ingests the 621-row slice of the OBR Policy Measures Database
+`obr_pmd`) ingests the 621-row slice of the OBR Policy Measures Database
 (November 2025 vintage, 552 rows, source `obr_pmd`) and the EFO March 2026
 Table 3.17 re-estimates (69 rows, source `obr_efo`) that
 `data/uk/obr_measure_reforms.yaml` scores. The slice is DERIVED from the
@@ -429,3 +429,81 @@ this lane's compute (per OBR head, in OBR's conventions); every other claim on a
 `ab2025__` measure is answered ONLY by the AB2025 counterparts stager
 (`pipeline/stage_uk_ab2025.py`), which skips claims carrying `obr_measure_key`.
 One claim, one computed answer, never two.
+
+## 2026-10-11 population: the complete staged policy measures database (UK)
+
+`ingest_obr_pmd` runs immediately after `obr_costings`. Together they capture
+every PMD cell in the November 2025 harvest: 12,773 tax cells (2,579 measure ×
+head rows) across 84 events from Budget 1970 to Autumn Budget 2025, and 11,531
+spending cells (1,954 rows) across 32 events from June Budget 2010 to Autumn
+Budget 2025. The partition is exact, by full staged-row identity:
+24,304 staged PMD cells = 552 unchanged costings-slice claims + 23,752 new
+claims (12,449 tax and 11,303 spending). The 1,254 staged EFO cells are outside
+this lane. All 8,312 zero cells are retained. The workbook contains original
+costings only; its Notes sheet says later revised costings are excluded. The
+harvest also excludes the nominal-GDP extensions, so this population covers
+the staged original scorecards rather than every populated workbook cell.
+
+```bash
+uv run python -m scorecard_db.build_db data/scorecard.db
+```
+
+Measure keys call the [inventory builder](../data/uk/events/build_inventory.py)'s
+own `assign_measure_keys` function. Historical tax measures use that same
+function. For the 32 inventoried events, `inventory_measure_key` and `event_key`
+retain the inventory's identity; `measure_key` prefers `existing_registry_key`
+where supplied. Verified `source_rows` pointers also resolve to the five replay
+registries' canonical keys: 4,254 cells have a registry key that differs from
+the inventory key despite an empty `existing_registry_key`. Those cells retain
+both keys so future results attach to the replay's reform. Repeated workbook
+rows remain distinct through their source-cell identities. All 22,215 inventory
+FY cells and all 4,584 `source_rows` pointers in the five event replay registries
+join to exactly one claim. The existing 552 claims retain their original
+conditions, IDs, measure keys, reforms and results. For 132 frozen FY cells
+across three measures, the replay key differs from the existing claim's key;
+`cell_matches()` supplies that `replay_measure_key` alias alongside the inventory
+metadata. The alias preserves the exact source-cell join without changing
+identity-bearing conditions on those claims.
+
+New claims copy the inventory's household scope, class, scope reason,
+expressibility, readiness and missing machinery into the closed conditions
+vocabulary. The 2,089 historical cells outside the inventory explicitly say
+`not_yet_classified`. Outside-scope measures are scores too. Fiscal-year
+periods use the year the FY ends. Spending rows preserve the Treasury's
+positive-gain-to-the-Exchequer convention and identify `exchequer_impact`;
+the values are never converted to spending changes.
+
+All 84 events have registered pre-measures worlds: 78 new registrations and
+six reused OBR worlds. The 52 historical Treasury events use
+`hmt_pre_measures_<event>`; the 32 events from June 2010 use
+`obr_pre_measures_<event>`, adding 26 and preserving the existing six. Closed
+policy-effects and replay event slugs are reused. The remaining slugs follow
+the inventory builder's rule: lowercase the label, replace runs of
+non-alphanumeric characters with one underscore, and trim outer underscores.
+New claims retain the workbook URL, archive capture, manifest SHA-256, table,
+column, normalization, verbatim value, status and source-cell locator. The
+unchanged costings slice is resolved to that same pinned harvest through
+`cell_matches()`, which also supplies its inventory classifications.
+
+The new lane's registry mark is `obr_pmd_all_events` and its mission-control
+stage is `ingested`. Replacement is one transaction scoped to that mark;
+re-ingesting preserves the database's logical content. Tests check exact
+source identity, table/event accounting and Decimal GBP conservation by
+event, table and head, alongside unique IDs, registered worlds, vocabulary,
+FY-end periods and deterministic builds. No PolicyEngine results are created.
+Claims opt into publication with `publish_without_result = True`.
+
+The lane follows the existing costings writer's shared row helpers. To adopt
+the provenance interning in [#114](https://github.com/PolicyEngine/policyengine-scorecard/pull/114),
+prepare `ScorecardDB.provenance_rows(scores)`, call
+`db.insert_provenance(pub_rows, reform_rows)` alongside `SCORES_SQL` within the
+same transaction, then call `db.prune_provenance()` after replacing claims.
+Registry deletion and base-table export queries must join `publications` by
+`publication_id`; reform JSON queries must join `reforms` by `reform_key`.
+The interning branch has not been tested with this lane.
+
+The browser keeps the existing population rows in its initial feed and loads
+this lane's PMD scores by fiscal event from compact, lossless shards. All scores
+remain accessible. Coverage distinguishes scores with a numerical PE value,
+recorded findings and scores without a recorded result, so adding unanswered
+scores does not imply that a model comparison has been completed.

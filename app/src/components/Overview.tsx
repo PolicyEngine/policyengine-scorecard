@@ -16,11 +16,11 @@ import {
   COUNTRY_LABELS,
   METRIC_LABELS,
   PROGRAM_LABELS,
-  STATUS_LABELS,
   countryOf,
 } from "../types";
 import type { SpineBucket } from "../spine";
 import { sourceLabel } from "../sourceLabels";
+import { populationCounts } from "../populations";
 import { useNav } from "../navigation";
 import { CoverageSpine } from "./CoverageSpine";
 import { LinkButton, Panel, Provenance, Summary, Tag } from "./ui";
@@ -105,20 +105,15 @@ export function Overview({
     () => (populations?.rows ?? []).filter((r) => countryOf(r) === country),
     [populations, country],
   );
-  const claimsWithResult = claims.filter((r) => r.results.length > 0).length;
-  const claimsMulti = claims.filter((r) => r.results.length > 1).length;
+  const allClaims = populationCounts(populations, country);
   const claimsBySource = useMemo(() => {
     const out: Record<string, number> = {};
     for (const r of claims) out[r.source] = (out[r.source] ?? 0) + 1;
+    for (const archive of populations?.event_archives ?? [])
+      if (archive.country === country)
+        out[archive.source] = (out[archive.source] ?? 0) + archive.claims;
     return Object.entries(out).sort((a, b) => b[1] - a[1]);
-  }, [claims]);
-  const claimsByStatus = useMemo(() => {
-    const out: Record<string, number> = {};
-    for (const r of claims)
-      out[r.latest.status_effective] =
-        (out[r.latest.status_effective] ?? 0) + 1;
-    return out;
-  }, [claims]);
+  }, [claims, populations, country]);
 
   const pct = (a: number, b: number) =>
     b === 0 ? undefined : `${Math.round((a / b) * 100)}%`;
@@ -180,30 +175,22 @@ export function Overview({
           figures={[
             {
               label: "External claims",
-              value: claims.length.toLocaleString(),
+              value: allClaims.claims.toLocaleString(),
               sub: "On reform validation",
             },
             {
-              label: "With a PolicyEngine result",
-              value: claimsWithResult.toLocaleString(),
-              unit: pct(claimsWithResult, claims.length),
+              label: "With a PolicyEngine value",
+              value: allClaims.with_value.toLocaleString(),
+              sub: "Latest numerical results; gap findings are counted separately",
             },
             {
-              label: "Comparable or constructed",
-              value: (
-                (claimsByStatus.comparable ?? 0) +
-                (claimsByStatus.constructed ?? 0)
-              ).toLocaleString(),
-              sub: Object.entries(claimsByStatus)
-                .map(
-                  ([s, n]) =>
-                    `${n} ${(STATUS_LABELS[s as keyof typeof STATUS_LABELS] ?? s).toLowerCase()}`,
-                )
-                .join(" · "),
+              label: "Without a PolicyEngine result",
+              value: allClaims.without_result.toLocaleString(),
+              sub: `${allClaims.with_result.toLocaleString()} recorded results, including gaps without a value`,
             },
             {
               label: "Multi-release claims",
-              value: claimsMulti.toLocaleString(),
+              value: allClaims.multi_release_claims.toLocaleString(),
             },
           ]}
         >
@@ -417,12 +404,12 @@ function CountryScopeNote({
   if (country === "UK")
     return (
       <>
-        The first UK PolicyEngine results — 14 HMRC ready-reckoner scores,
-        held-out relationship on a constructed comparison basis (PolicyEngine
-        current-law statics against HMRC&apos;s indexed-baseline FY
-        projections) — are on Reform validation. The ingested DWP, HBAI, OBR
-        and UKMOD claims are waiting on PolicyEngine computes; a UK record
-        lands on this overview when UK comparisons join the feed.
+        UK reform scores and references live on Reform validation, including
+        the complete OBR Policy measures database back to Budget 1970. Its
+        historical HM Treasury scores and later OBR-certified scores remain
+        visible while awaiting PolicyEngine results. Coverage above counts
+        every published claim; recorded gap findings are separate from
+        claims with a PolicyEngine value.
       </>
     );
   return (

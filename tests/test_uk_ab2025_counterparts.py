@@ -19,6 +19,7 @@ import pytest
 from pipeline import compute_uk_ab2025 as comp
 from pipeline import stage_uk_ab2025 as stg
 from scorecard_db.baselines import BASELINES
+from scorecard_db.ingest_obr_pmd import REGISTRY_MARK as PMD_ARCHIVE
 from scorecard_db.models import baseline_key
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -86,11 +87,59 @@ def test_every_artifact_hashes_to_the_manifest_and_names_the_same_run():
 UNANSWERED = [json.loads(line) for line in stg.UNANSWERED.read_text().splitlines()]
 
 
-def test_staging_reproduces_the_committed_counterparts_byte_for_byte():
+def _archive_claim_ids(conn: sqlite3.Connection) -> set[str]:
+    """The new PMD archive cells in the stager's ab2025 measure cohort."""
+    return {
+        row[0]
+        for row in conn.execute(
+            "SELECT claim_id FROM external_scores"
+            " WHERE json_extract(publication, '$.registry') = ?"
+            " AND json_extract(conditions, '$.measure_key') LIKE 'ab2025%'",
+            (PMD_ARCHIVE,),
+        )
+    }
+
+
+def test_staging_reproduces_the_committed_counterparts_byte_for_byte(monkeypatch):
+    """Frozen campaign artifacts reproduce over their original claim cohort.
+
+    Comprehensive PMD capture subsequently adds claims, without adding any
+    artifacts or changing this campaign's committed counterparts/receipts.
+    """
+    current_claims = stg.claims
+
+    def original_cohort(conn):
+        archive_ids = _archive_claim_ids(conn)
+        return [c for c in current_claims(conn) if c["claim_id"] not in archive_ids]
+
+    monkeypatch.setattr(stg, "claims", original_cohort)
     rows, tally, unanswered = stg.stage(DB)
     assert rows == STAGED
     assert tally == TALLY
     assert unanswered == UNANSWERED
+
+
+def test_current_staging_keeps_archive_claims_unanswered_and_original_rows_unchanged():
+    """Every added archive claim has one receipt and no staged counterpart."""
+    with sqlite3.connect(DB) as conn:
+        archive_ids = _archive_claim_ids(conn)
+    assert archive_ids, "built database has no new ab2025 PMD archive claims"
+    rows, tally, unanswered = stg.stage(DB)
+    assert rows == STAGED
+    assert tally["attached"] == TALLY["attached"]
+    attached_ids = {r["external_claim_match"]["claim_id"] for r in rows}
+    assert attached_ids.isdisjoint(archive_ids)
+    current_ids = [u["claim_id"] for u in unanswered]
+    assert len(current_ids) == len(set(current_ids))
+    archive_receipts = [u for u in unanswered if u["claim_id"] in archive_ids]
+    assert {u["claim_id"] for u in archive_receipts} == archive_ids
+    assert all(u["reason"] for u in archive_receipts)
+    assert [u for u in unanswered if u["claim_id"] not in archive_ids] == UNANSWERED
+    assert len(unanswered) == len(UNANSWERED) + len(archive_ids)
+    assert sum(bm["claims"] for bm in tally["by_measure"].values()) == (
+        sum(bm["claims"] for bm in TALLY["by_measure"].values()) + len(archive_ids)
+    )
+    assert len(unanswered) == sum(tally["unmapped"].values()) + tally["owned_elsewhere"]
 
 
 def test_every_unanswered_claim_has_one_receipt_and_the_tally_adds_up():

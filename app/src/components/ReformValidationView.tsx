@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Label, Switch } from "@policyengine/ui-kit/primitives";
 import type { Country, PopulationRow, PopulationsFeed } from "../types";
 import {
@@ -10,6 +10,8 @@ import {
   countryOf,
 } from "../types";
 import { sourceLabel } from "../sourceLabels";
+import { decodeArchive, populationCounts } from "../populations";
+import { withBasePath } from "../basePath";
 import {
   LabeledSelect,
   Provenance,
@@ -36,7 +38,7 @@ export const BE_REFORM_DESCRIPTION =
 
 const SCOPE_COPY: Record<Country, string> = {
   US: "the populace reform-validation registry (JCT scores, state fiscal notes, agency actuals, IRS and Census references) plus the compute campaign's TPC, CPSP, PWBM and CBO comparisons",
-  UK: "the compute campaign's HMRC ready-reckoner comparisons (each PE score is a current-law static change; HMRC's are projected-FY direct effects against an indexed baseline, so every comparison is constructed-basis by design), and every Autumn Budget 2025 score from 27 producers keyed to the AB2025 measure registry: rows on a measure the certified engine cannot express carry a pe_gap verdict with a link to where the gap is tracked, the rest await their counterpart run",
+  UK: "the complete OBR Policy measures database from Budget 1970 to Autumn Budget 2025, including historical HM Treasury costings before the OBR existed, plus the HMRC ready-reckoner comparisons and Autumn Budget 2025 scores from 27 producers. Historical PMD scores load when a fiscal event is selected. Scores without a PolicyEngine result retain their external value and are labeled Not yet computed; a recorded gap finding does not count as a PolicyEngine value",
   BE: BE_REFORM_DESCRIPTION,
   NZ: "New Zealand Treasury official budget-score replication candidates, with fiscal timing and the IWTC termination scenario explicit before a PolicyEngine counterpart attaches",
 };
@@ -95,40 +97,85 @@ export function ReformValidationView({
   const [fiscalEvent, setFiscalEvent] = useState("all");
   const [benchmarkClass, setBenchmarkClass] = useState("all");
   const [expanded, setExpanded] = useState<string | null>(null);
-
-  // Everything below is computed from the COUNTRY-SCOPED slice, never the
-  // global summary: the country selection owns this view too, and
-  // source/status counts must describe what the table can actually show.
-  const inCountry = useMemo(
-    () => feed.rows.filter((r) => countryOf(r) === country),
+  const [archiveRows, setArchiveRows] = useState<{
+    event: string;
+    rows: PopulationRow[];
+  } | null>(null);
+  const [archiveError, setArchiveError] = useState<string | null>(null);
+  const archives = useMemo(
+    () => (feed.event_archives ?? []).filter((archive) => archive.country === country),
     [feed, country],
+  );
+  const selectedArchive = archives.find((archive) => archive.fiscal_event === fiscalEvent);
+  useEffect(() => {
+    setArchiveError(null);
+    if (!selectedArchive) return;
+    const controller = new AbortController();
+    fetch(withBasePath(selectedArchive.path), { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      })
+      .then((archive) => {
+        if (!controller.signal.aborted)
+          setArchiveRows({
+            event: selectedArchive.fiscal_event,
+            rows: decodeArchive(archive),
+          });
+      })
+      .catch((error) => {
+        if (!controller.signal.aborted) setArchiveError(String(error));
+      });
+    return () => controller.abort();
+  }, [selectedArchive]);
+
+  // Facet counts cover the country's complete score inventory. The table
+  // adds the selected event's detail to the country-scoped initial rows.
+  const inCountry = useMemo(
+    () => [
+      ...feed.rows.filter((r) => countryOf(r) === country),
+      ...(selectedArchive && archiveRows?.event === fiscalEvent
+        ? archiveRows.rows.filter((row) => countryOf(row) === country)
+        : []),
+    ],
+    [feed, country, archiveRows, fiscalEvent, selectedArchive],
   );
   const bySource = useMemo(() => {
     const out: Record<string, number> = {};
-    for (const r of inCountry) out[r.source] = (out[r.source] ?? 0) + 1;
+    for (const r of feed.rows.filter((row) => countryOf(row) === country))
+      out[r.source] = (out[r.source] ?? 0) + 1;
+    for (const archive of archives)
+      out[archive.source] = (out[archive.source] ?? 0) + archive.claims;
     return out;
-  }, [inCountry]);
+  }, [feed, country, archives]);
   const byStatus = useMemo(() => {
     const out: Record<string, number> = {};
-    for (const r of inCountry)
+    for (const r of feed.rows.filter((row) => countryOf(row) === country))
       out[r.latest.status_effective] = (out[r.latest.status_effective] ?? 0) + 1;
+    for (const archive of archives)
+      for (const [status, count] of Object.entries(archive.by_latest_status))
+        out[status] = (out[status] ?? 0) + count;
     return out;
-  }, [inCountry]);
+  }, [feed, country, archives]);
   const sources = useMemo(() => Object.keys(bySource).sort(), [bySource]);
-  const withResult = useMemo(
-    () => inCountry.filter((r) => r.results.length > 0).length,
-    [inCountry],
-  );
-  const multiRelease = useMemo(
-    () => inCountry.filter((r) => r.results.length > 1).length,
-    [inCountry],
-  );
+  const allClaims = populationCounts(feed, country);
   // Retrieval by event and by benchmark class (#136): both are claim
   // conditions, so the option lists come from the rows, like sources.
-  const byEvent = useMemo(() => conditionValues(inCountry, "fiscal_event"), [inCountry]);
+  const byEvent = useMemo(() => {
+    const out = conditionValues(feed.rows.filter((row) => countryOf(row) === country), "fiscal_event");
+    for (const archive of archives)
+      out[archive.fiscal_event] = (out[archive.fiscal_event] ?? 0) + archive.claims;
+    return out;
+  }, [feed, country, archives]);
   const byClass = useMemo(
-    () => conditionValues(inCountry, "benchmark_class"),
-    [inCountry],
+    () => {
+      const out = conditionValues(feed.rows.filter((row) => countryOf(row) === country), "benchmark_class");
+      for (const archive of archives)
+        for (const [classification, count] of Object.entries(archive.by_benchmark_class))
+          out[classification] = (out[classification] ?? 0) + count;
+      return out;
+    },
+    [feed, country, archives],
   );
   const rows = useMemo(
     () =>
@@ -151,17 +198,21 @@ export function ReformValidationView({
         figures={[
           {
             label: "External claims",
-            value: inCountry.length.toLocaleString(),
+            value: allClaims.claims.toLocaleString(),
             sub: `${COUNTRY_LABELS[country]} reform scores and references beyond the main comparison`,
           },
           {
-            label: "With a PolicyEngine result",
-            value: withResult.toLocaleString(),
-            sub: "Each result carries its certified release's exact engine pins",
+            label: "With a PolicyEngine value",
+            value: allClaims.with_value.toLocaleString(),
+            sub: `${allClaims.with_result.toLocaleString()} recorded results, including gaps without a value`,
+          },
+          {
+            label: "Without a PolicyEngine result",
+            value: allClaims.without_result.toLocaleString(),
           },
           {
             label: "Multi-release claims",
-            value: multiRelease.toLocaleString(),
+            value: allClaims.multi_release_claims.toLocaleString(),
             sub: "Drift across releases is queryable; a scoring-construction change is labeled, not read as drift",
           },
         ]}
@@ -186,6 +237,18 @@ export function ReformValidationView({
           />
         </details>
       </Summary>
+
+      {archives.length > 0 && (
+        <p className="text-sm text-muted-foreground" role="status">
+          {archiveError ? (
+            <>Could not load the selected event&apos;s scores ({archiveError}). Select another event and return to retry.</>
+          ) : selectedArchive && archiveRows?.event !== fiscalEvent ? (
+            <>Loading {selectedArchive.claims.toLocaleString()} scores for {selectedArchive.label}…</>
+          ) : fiscalEvent === "all" ? (
+            <>{archives.reduce((total, archive) => total + archive.claims, 0).toLocaleString()} additional PMD scores across {archives.length} fiscal events are included in the figures above. Select a fiscal event to view its scores.</>
+          ) : null}
+        </p>
+      )}
 
       <TableCard
         toolbar={
@@ -220,12 +283,15 @@ export function ReformValidationView({
                 value={fiscalEvent}
                 onChange={setFiscalEvent}
                 options={[
-                  { value: "all", label: "All events" },
+                  {
+                    value: "all",
+                    label: archives.length > 0 ? "Select an event for PMD scores" : "All events",
+                  },
                   ...Object.entries(byEvent)
                     .sort()
                     .map(([v, n]) => ({
                       value: v,
-                      label: `${v === "" ? "(none recorded)" : v.replace(/_/g, " ")} (${n})`,
+                      label: `${v === "" ? "(none recorded)" : archives.find((archive) => archive.fiscal_event === v)?.label ?? v.replace(/_/g, " ")} (${n})`,
                     })),
                 ]}
               />
@@ -256,7 +322,7 @@ export function ReformValidationView({
                 </Label>
               </div>
               <span className="fig ml-auto text-xs text-muted-foreground">
-                {rows.length.toLocaleString()} claims
+                {rows.length.toLocaleString()} claims shown
               </span>
             </div>
           </>
@@ -324,6 +390,9 @@ export function ReformValidationView({
                         r.name || r.source_column
                       )}
                     </span>
+                    {r.conditions.fiscal_measure === "exchequer_impact" && (
+                      <Tag className="mt-1">Exchequer impact</Tag>
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-3 py-2">
                     {sourceLabel(r.source)}
@@ -398,8 +467,7 @@ function RowDetail({ row }: { row: PopulationRow }) {
                   {row.results.length === 0 ? (
                     <tr className="border-t border-border">
                       <td colSpan={5} className="py-2 text-muted-foreground">
-                        No PolicyEngine result has been computed for this
-                        claim.
+                        No PolicyEngine result is recorded for this claim.
                       </td>
                     </tr>
                   ) : (
@@ -475,7 +543,10 @@ function RowDetail({ row }: { row: PopulationRow }) {
               )}
             </p>
             <p className="fig mt-2 break-words text-muted-foreground">
-              {row.source_column} · {METRIC_LABELS[row.metric] ?? row.metric} ·{" "}
+              {row.source_column} ·{" "}
+              {row.conditions.fiscal_measure === "exchequer_impact"
+                ? "Exchequer impact"
+                : METRIC_LABELS[row.metric] ?? row.metric} ·{" "}
               {row.time_basis} {row.period}
               {row.period_start !== null &&
                 ` (window ${row.period_start}–${row.period_end})`}
@@ -516,6 +587,8 @@ function RowDetail({ row }: { row: PopulationRow }) {
 }
 
 function windowFromPeriod(r: PopulationRow): string {
+  if (r.time_basis === "fiscal_year" && r.conditions.fy)
+    return `FY${r.conditions.fy}`;
   const basis = r.time_basis === "fiscal_year" ? "FY" : "";
   return `${basis}${r.period}`;
 }

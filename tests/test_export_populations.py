@@ -5,9 +5,16 @@ import json
 from dataclasses import replace
 
 import pytest
+from hypothesis import given, strategies as st
 
 from scorecard_db import ScorecardDB
-from scorecard_db.export_populations import REPO, export, release_label
+from scorecard_db.export_populations import (
+    PMD_REGISTRY,
+    REPO,
+    _compact_rows,
+    export,
+    release_label,
+)
 
 from scorecard_db.models import (
     BASELINE,
@@ -21,6 +28,49 @@ from scorecard_db.models import (
 )
 
 COMMITTED_DB = REPO / "data" / "scorecard.db"
+
+
+def _expand_archive(payload):
+    return [
+        {
+            **payload["common"],
+            **row,
+            "conditions": {**payload["common_conditions"], **row["conditions"]},
+        }
+        for row in payload["rows"]
+    ]
+
+
+def _all_rows(payload, directory):
+    rows = list(payload["rows"])
+    for archive in payload.get("event_archives", []):
+        rows.extend(
+            _expand_archive(
+                json.loads(
+                    (directory / archive["path"].removeprefix("data/")).read_text()
+                )
+            )
+        )
+    return rows
+
+
+@given(
+    st.lists(
+        st.fixed_dictionaries(
+            {
+                "claim_id": st.text(),
+                "external_value": st.one_of(st.none(), st.integers()),
+                "conditions": st.dictionaries(
+                    st.text(), st.one_of(st.text(), st.none()), max_size=5
+                ),
+            }
+        ),
+        min_size=1,
+        max_size=12,
+    )
+)
+def test_archive_factoring_preserves_every_value(rows):
+    assert _expand_archive(_compact_rows(rows)) == rows
 
 
 def _claim(source, column, value, **kw):
@@ -160,6 +210,95 @@ def test_export_shape_and_guards(tmp_path, small_db):
     assert payload["summary"]["by_latest_status"]["not_computed"] == 1
 
 
+def test_pmd_events_are_reachable_without_inflating_initial_feed(tmp_path, small_db):
+    db_path, _ = small_db
+    db = ScorecardDB(db_path)
+    claims = [
+        _claim(
+            "obr_pmd",
+            f"historical_{index}",
+            value,
+            publish_without_result=True,
+            conditions={
+                "country": "UK",
+                "fiscal_event": event,
+                "measure_key": f"historical_measure_{index}",
+                "measure": f"Historical measure {index}",
+            },
+        )
+        for index, (event, value) in enumerate(
+            [("budget_1970", 0), ("budget_1970", 12), ("spring_budget_2024", -4)]
+        )
+    ]
+    claims = [
+        replace(
+            claim,
+            publication={
+                **{
+                    key: value
+                    for key, value in claim.publication.items()
+                    if key != "name"
+                },
+                "registry": PMD_REGISTRY,
+                "title": "Policy measures database (November 2025)",
+                "fiscal_event_name": (
+                    "Budget 1970"
+                    if claim.conditions["fiscal_event"] == "budget_1970"
+                    else "Spring Budget 2024"
+                ),
+            },
+        )
+        for claim in claims
+    ]
+    db.upsert_scores(claims)
+    # A recorded gap history is visible but supplies no numerical counterpart.
+    db.add_results(
+        [
+            _result(
+                claims[2].claim_id(), None, "gap", "2026-10-11", ComparisonStatus.PE_GAP
+            )
+        ]
+    )
+    db.close()
+    out = tmp_path / "populations.json"
+    export(db_path, out_path=out, built="2026-10-11")
+    first = out.read_bytes()
+    payload = json.loads(first)
+    assert len(payload["rows"]) == 3
+    assert payload["summary"]["claims"] == 6
+    assert payload["summary"]["by_country"]["UK"] == {
+        "claims": 3,
+        "with_result": 1,
+        "with_value": 0,
+        "without_result": 2,
+        "multi_release_claims": 0,
+    }
+    assert {archive["label"] for archive in payload["event_archives"]} == {
+        "Budget 1970",
+        "Spring Budget 2024",
+    }
+    rows = _all_rows(payload, tmp_path)
+    assert len({row["claim_id"] for row in rows}) == len(rows) == 6
+    pmd = [row for row in rows if row["source"] == "obr_pmd"]
+    assert sorted(row["name"] for row in pmd) == [
+        "Historical measure 0",
+        "Historical measure 1",
+        "Historical measure 2",
+    ]
+    assert sorted(row["external_value"] for row in pmd) == [-4, 0, 12]
+    assert all(row["latest"]["value"] is None for row in pmd)
+    shard_bytes = {
+        archive["path"]: (tmp_path / archive["path"].removeprefix("data/")).read_bytes()
+        for archive in payload["event_archives"]
+    }
+    export(db_path, out_path=out, built="2026-10-11")
+    assert out.read_bytes() == first
+    assert all(
+        (tmp_path / path.removeprefix("data/")).read_bytes() == content
+        for path, content in shard_bytes.items()
+    )
+
+
 def test_lane_sync_merges_without_touching_other_lanes(tmp_path, small_db):
     db_path, _ = small_db
     db = ScorecardDB(db_path)
@@ -245,12 +384,13 @@ def test_integration_committed_db(tmp_path):
                                   '$.publish_without_result') = 1)"""
     ).fetchone()[0]
     db.close()
-    assert stats["rows"] == expected == len(payload["rows"])
+    all_rows = _all_rows(payload, tmp_path)
+    assert stats["rows"] == expected == len(all_rows)
     # Every row carries an explicit country (#42/#50 gate: 14 UK reckoner
     # rows shipped into a feed the exporter never country-tagged, so the
     # app's missing-key US default classified them all as US).
     dist: dict = {}
-    for r in payload["rows"]:
+    for r in all_rows:
         dist[r["country"]] = dist.get(r["country"], 0) + 1
     # UK: 14 reckoner rows + 3,994 national-grain Autumn Budget 2025 claims
     # opted into pre-result display (#136) + 483 UKMOD WP 3/26 rows (uk_ukmod_ab2025)
@@ -262,7 +402,7 @@ def test_integration_committed_db(tmp_path):
     # eligible counts) with federal-rules PE counterparts (#2) + 53 TY2022
     # IRS/Census EITC participation rates (52 ACS, 1 CPS headline) (#2) +
     # 14 ASPE Indicator 4 claims at their latest period (TANF, SNAP, SSI).
-    assert dist == {"US": 447, "UK": 5163, "BE": 9, "NZ": 12}
+    assert dist == {"US": 447, "UK": 5163 + 23_752, "BE": 9, "NZ": 12}
     nz = [row for row in payload["rows"] if row["country"] == "NZ"]
     assert len(nz) == 12
     assert {row["source"] for row in nz} == {"nz_treasury"}
@@ -295,6 +435,17 @@ def test_integration_committed_db(tmp_path):
     committed = json.loads((REPO / "data" / "populations.json").read_text())
     assert committed["rows"] == payload["rows"]
     assert committed["summary"] == payload["summary"]
+    assert committed["event_archives"] == payload["event_archives"]
+    # Every event is reachable in the deployed copy, with bounded requests.
+    assert len(payload["rows"]) == 5631
+    for archive in payload["event_archives"]:
+        relative = archive["path"].removeprefix("data/")
+        freshly_exported = (tmp_path / relative).read_bytes()
+        assert len(freshly_exported) < 5_000_000
+        assert (REPO / "data" / relative).read_bytes() == freshly_exported
+        assert (
+            REPO / "app" / "public" / "data" / relative
+        ).read_bytes() == freshly_exported
     # The reform-validation registry is in there with its release history.
     rv_multi = [r for r in payload["rows"] if len(r["results"]) > 1]
     assert payload["summary"]["multi_release_claims"] == len(rv_multi) > 0

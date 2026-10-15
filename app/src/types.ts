@@ -217,6 +217,32 @@ export interface PopulationsFeed {
     multi_release_claims: number;
     by_source: Record<string, number>;
     by_latest_status: Record<string, number>;
+    by_country?: Partial<Record<Country, PopulationCounts>>;
   };
+  event_archives?: PopulationArchive[];
   rows: PopulationRow[];
+}
+
+export interface PopulationCounts {
+  claims: number;
+  with_result: number;
+  with_value: number;
+  without_result: number;
+  multi_release_claims: number;
+}
+
+export interface PopulationArchive extends PopulationCounts {
+  source: string;
+  country: Country;
+  fiscal_event: string;
+  label: string;
+  path: string;
+  by_latest_status: Record<string, number>;
+  by_benchmark_class: Record<string, number>;
+}
+
+export interface PopulationArchiveFeed {
+  common: Partial<PopulationRow>;
+  common_conditions: Record<string, string>;
+  rows: Partial<PopulationRow>[];
 }
