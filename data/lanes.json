@@ -246,7 +246,7 @@
    "stage": "computed",
    "running": false,
    "updated": "2026-09-15",
-   "note": "1 of 2 claims computed \u2014 1 single-year claims from the PL 119-21 SNAP supplement (61367, Jan-2025 baseline vintage); OBBBA cost-estimate PDFs are period-ranged verbatim pointers pending period-window staging"
+   "note": "1 of 117 claims computed \u2014 1 single-year claim (TFP cap, 2034) and 115 period-window claims from publication 61367 (100 decile-distribution cells, 2026-34 annual averages; 15 SNAP section 10102-10105 statements), all vs CBO's January 2025 baseline; the other OBBBA PDFs are set aside with reasons in sources/cbo-pl119-21/source.json; no PE counterparts yet (they need the January-2025 world run over each window)"
   },
   {
    "id": "tpc-distribution",

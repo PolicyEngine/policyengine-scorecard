@@ -184,6 +184,17 @@ Operating rules for the agent stage:
   is seeded from this table, so the TANF rate is `seed_source`; PE's TANF
   counts are any-time-in-year (State programs mix periods) and are marked
   `concept_mismatch`.
+- **CBO publication 61367, P.L. 119-21** (`sources/cbo-pl119-21/`, lane
+  `cbo-cost-estimates`): period-window claims vs CBO's January 2025
+  baseline (registered as `cbo_january_2025_baseline`, because CBO
+  published after enactment). The distributional letter's figure data
+  gives 100 decile cells (four channels and the net effect, dollars and
+  percent of income, 2026-2034 annual averages). The SNAP supplement
+  gives 15 statements on sections 10102-10105, each read from its
+  verbatim sentence. The QC adds the channels to the net effect, checks
+  the letter's quoted deciles against the workbook, and adds section
+  10102's groups to its total. Claims flow through
+  `scorecard_db/ingest_cbo.py`; no PE counterparts yet.
 
 ### Staged for Chronicle, not claims
 

@@ -191,6 +191,23 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
         "set in scorecard_db/ingest_tpc.py (PRE_OBBBA).",
     ),
     (
+        {"policy": "cbo_january_2025_baseline"},
+        "cbo_january_2025_baseline",
+        "CBO's January 2025 baseline projections — pre-OBBBA current law "
+        "as CBO projected it in January 2025, the stated counterfactual of "
+        "CBO's post-enactment P.L. 119-21 analyses (publication 61367, "
+        "August 2025). Not the law in force when CBO published, so not "
+        "the null baseline; equivalence with pre_obbba_current_law or "
+        "pre_obbba_law is a deliberate future act, never assumed.",
+        "policy_ref",
+        "61367-SNAP.pdf p.1 ('relative to CBO's January 2025 baseline "
+        "projections') and 61367-Distributional-Effects.pdf p.1 "
+        "('relative to the Congressional Budget Office's January 2025 "
+        "baseline projections'); "
+        "sources/cbo-pl119-21/source.json; descriptor set in "
+        "scorecard_db/ingest_cbo.py (CBO_JAN_2025).",
+    ),
+    (
         {"policy": "ifs_2cl_fp_removal_rolled_out"},
         "ifs_2cl_fp_removal_rolled_out",
         "IFS Green-Budget-2025 options baseline: the current UK "

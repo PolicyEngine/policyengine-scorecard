@@ -203,6 +203,19 @@ class Metric(str, Enum):
     SHARE_NO_CHANGE = "share_no_change"
     ENERGY_BILL_CHANGE = "energy_bill_change"
     REVENUE_SHARE = "revenue_share"
+    # CBO's P.L. 119-21 SNAP supplement (lane cbo-cost-estimates). CHANGE
+    # siblings of participant_count and average_monthly_benefit, under the
+    # rule above: a change is not a level.
+    #   participant_count_change        — net change in participants in
+    #                                     an average month (section 10102:
+    #                                     2.4 million fewer)
+    #   average_monthly_benefit_change  — change in the monthly benefit
+    #                                     of the households a provision
+    #                                     reaches (section 10103: $100
+    #                                     less for 3 percent of them); the
+    #                                     unit rides in conditions["per"]
+    PARTICIPANT_COUNT_CHANGE = "participant_count_change"
+    AVERAGE_MONTHLY_BENEFIT_CHANGE = "average_monthly_benefit_change"
 
 
 class UnitConcept(str, Enum):
