@@ -407,6 +407,28 @@ receipts; corrected construction explanations are supplied by this recipe
 and comparison annotations. A current-builder `--check` applies to a rebuilt
 event registry, rather than regenerating those preserved input receipts.
 
+## Running on another certified variant
+
+`data/uk/replay_variants.json` lists the certified replay variants; the
+default is the populace-2023 world above. `--variant <id>` selects another
+one, validated exactly (see [RELEASE_REPLAY.md](RELEASE_REPLAY.md)): build an
+environment from the variant's requirements file, then
+
+```bash
+UV_CACHE_DIR=.venv-uv-cache uv venv --python 3.12 .venv-candidate
+UV_CACHE_DIR=.venv-uv-cache uv pip install --python .venv-candidate/bin/python -r docs/uk_replay/requirements/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0.txt
+PYTHONPATH=. .venv-candidate/bin/python -m pipeline.compute_uk_event --event autumn_budget_2024 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --guards
+PYTHONPATH=. .venv-candidate/bin/python -m pipeline.compute_uk_event --event autumn_budget_2024 --variant pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0 --workers 2
+PYTHONPATH=. .venv-candidate/bin/python pipeline/stage_uk_event.py --event autumn_budget_2024 --artifact-dir results/uk/replays/pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0/autumn_budget_2024
+```
+
+The dataset must already be local: the runner finds the certified bytes by
+SHA-256 in the Hugging Face cache, or takes `--dataset-file <path>`, and
+copies them into `.venv-replay-checks/runtime/<variant_id>/data/`. Results
+default to `results/uk/replays/<variant_id>/<event>/`. Years outside the
+variant's data years are not run; they are recorded in the manifest and
+staged as `unsupported_on_variant`.
+
 ## Commands and compute budget
 
 Use the existing `.venv-replay` and `.venv-replay-checks/modal-control` for

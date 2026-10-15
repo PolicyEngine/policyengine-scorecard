@@ -371,6 +371,10 @@ def test_dividend_lag_overrides_match_installed_engine_dates_per_path():
         from policyengine_uk import CountryTaxBenefitSystem
     except ImportError as exc:
         pytest.skip(f"policyengine-uk cannot be imported: {exc}")
+    # The overrides record the dates of the registry's pinned engine; a
+    # replay environment for another certified variant has other dates.
+    if compute.package_version("policyengine-uk") != "2.89.2":
+        pytest.skip("the OBR-costing registry's dividend overrides pin 2.89.2")
 
     system = CountryTaxBenefitSystem()
     rates = system.parameters.gov.hmrc.income_tax.rates

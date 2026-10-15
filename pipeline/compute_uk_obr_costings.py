@@ -1025,8 +1025,14 @@ def run_managed_simulation(
     expected_dataset_sha256: str,
     include_engine_provenance: bool = False,
     scenario: Any = None,
+    require_dataset_years: bool = False,
+    expected_dataset_years: list[int] | None = None,
 ) -> dict[str, Any]:
-    """Run, aggregate, delete, and collect exactly one managed sim."""
+    """Run, aggregate, delete, and collect exactly one managed sim.
+
+    With ``require_dataset_years`` a simulation whose dataset does not state
+    its years fails instead of skipping the year check, and
+    ``expected_dataset_years`` (required then) must equal its whole year set."""
 
     if scenario is not None and reform is not None:
         raise ValueError("pass either reform or scenario, not both")
@@ -1070,6 +1076,37 @@ def run_managed_simulation(
             ]
             if missing:
                 raise RuntimeError(f"managed sim lacks variables: {missing}")
+            # A year outside the dataset's projected years has no inputs: it
+            # calculates defaults without raising (a 2023 income tax of zero
+            # on a 2024 dataset). Both pinned engines expose dataset.years.
+            if require_dataset_years and expected_dataset_years is None:
+                # A variant run always knows its record's data years; a
+                # missing list must not switch the whole-set check off.
+                raise RuntimeError("a variant run must pass its data years")
+            dataset_years = getattr(getattr(sim, "dataset", None), "years", None)
+            if dataset_years is None and require_dataset_years:
+                raise RuntimeError(
+                    "the simulation dataset does not state its years; "
+                    f"cannot confirm {year} has inputs"
+                )
+            if (
+                expected_dataset_years is not None
+                and dataset_years is not None
+                and sorted(int(value) for value in dataset_years)
+                != list(expected_dataset_years)
+            ):
+                raise RuntimeError(
+                    "the simulation dataset's years "
+                    f"{sorted(int(value) for value in dataset_years)} differ from "
+                    f"the variant's data years {list(expected_dataset_years)}"
+                )
+            if dataset_years is not None and int(year) not in {
+                int(value) for value in dataset_years
+            }:
+                raise RuntimeError(
+                    f"{year} is outside the simulation dataset's years "
+                    f"{sorted(int(value) for value in dataset_years)}"
+                )
             aggregates: dict[str, float] = {}
             for name in variables:
                 calculated = sim.calculate(name, str(year))

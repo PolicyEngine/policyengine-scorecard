@@ -25,6 +25,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from pipeline.build_uk_event_registry import _sum as source_gbp_sum
+from pipeline import uk_replay_variants as variants
 from pipeline.compare_uk_obr_costings import atomic_write_bytes, ratio_and_bin
 
 AXES_PATH = ROOT / "data" / "uk" / "obr_divergence_axes.json"
@@ -1053,6 +1054,7 @@ def write_comparison(
     )
     if registry.get("event_slug") != event:
         raise EventComparisonError("registry event differs from --event")
+    variants.assert_not_sealed(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     staging_manifest = _json(staging_manifest_path)
     replay_grid = {
@@ -1387,6 +1389,7 @@ def write_summary(events_root: Path, *, artifact_root: Path = ROOT) -> None:
             (artifact_root / "data" / "uk" / "events").glob("*_measures.json")
         )
     }
+    variants.assert_not_sealed(events_root)
     events_root.mkdir(parents=True, exist_ok=True)
     atomic_write_bytes(
         events_root / "SUMMARY.md",

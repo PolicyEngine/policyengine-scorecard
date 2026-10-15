@@ -212,6 +212,15 @@ def downloaded_event(helper, monkeypatch, tmp_path):
     (tmp_path / "data/uk/certified_bundle.json").write_bytes(
         runner.canonical_bytes(cert)
     )
+    # This fixture's certified bundle stands in for the legacy record's
+    # dataset, which staging checks a legacy-shaped manifest against.
+    from pipeline import stage_uk_event
+
+    monkeypatch.setattr(
+        stage_uk_event,
+        "legacy_dataset_identity",
+        lambda path: (cert["sha256"], cert["revision"]),
+    )
     (tmp_path / "docs/uk_replay/OFFLINE_BUNDLE_AUDIT.json").write_bytes(
         runner.canonical_bytes(audit)
     )
