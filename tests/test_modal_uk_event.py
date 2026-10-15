@@ -270,6 +270,10 @@ def test_interrupted_modal_context_returns_130_without_downloading(
     def interrupted_remote(payload, lease_expires):
         raise KeyboardInterrupt
 
+    def wait(seconds):
+        raise AssertionError("main() waited for a simulation slot")
+
+    monkeypatch.setattr(runner.time, "sleep", wait)
     monkeypatch.setattr(runner, "validate_selection", lambda request: None)
     monkeypatch.setattr(
         runner, "input_manifest", lambda event, hf_cache=None: ({"event": event}, {})
@@ -364,6 +368,20 @@ def test_modal_factory_has_one_blocked_network_worker_and_explicit_uv_venv(
         assert refused == {
             "refused": "the simulation slot lease does not cover the timeout"
         }
+
+    # A lease that covers the timeout and the margin starts the run.
+    class Started(Exception):
+        pass
+
+    def start(*args, **kwargs):
+        raise Started
+
+    monkeypatch.setattr(sys.modules["subprocess"], "run", start)
+    with pytest.raises(Started):
+        replay(
+            {"request": {}},
+            time.time() + timeout + runner.GUARD_MARGIN_SECONDS + 60,
+        )
     configuration, clock_configuration = recorded["functions"]
     assert clock_configuration["block_network"] is True
     assert clock_configuration["timeout"] == 60
@@ -624,6 +642,36 @@ def test_a_step_that_outlasts_its_lease_grants_nothing():
     assert b.slot == 0
 
 
+def test_a_claim_left_too_short_by_a_stall_is_given_back():
+    # Review of 32d6e6f, nit 4: the step stalls between its create and the
+    # time-left check; the claim it made goes back, and the slot is free in
+    # the same day's chain.
+    clock = Clock()
+    store = FakeDict(clock)
+    a = slots_for(store, clock, "a", count=1)
+    steps = a._try_steps(0)
+    call = next(steps)
+    while call[0] == "get":
+        call = steps.send(store.get(call[1]))
+    created = store.put(call[1], call[2], skip_if_exists=call[3])
+    assert created
+    clock.now += runner.LEASE_SECONDS - a.minimum + 1  # asleep after the create
+    finished, lease = True, None
+    try:
+        call = steps.send(created)
+        while True:
+            if call[0] == "get":
+                call = steps.send(store.get(call[1]))
+            else:
+                call = steps.send(store.put(call[1], call[2], skip_if_exists=call[3]))
+    except StopIteration as done:
+        lease = done.value
+    assert finished and lease is None
+    assert claims_in(store) and all(c["released"] for c in claims_in(store))
+    b = slots_for(store, clock, "b", count=1).acquire(wait_seconds=0)
+    assert b.claims[0][1] == 1  # the next generation of the same day's chain
+
+
 def test_a_week_late_write_lands_in_a_day_that_no_longer_matters():
     # Review of bac8974, 1, and of 3e058b5, 3: a release that lands a week
     # late, and a contender that stalled almost a day, resume while the
@@ -723,9 +771,11 @@ def test_main_takes_every_lease_decision_on_modals_clock(monkeypatch, stub_main)
     assert f"claim-1-{day}-1" not in slots.data
 
 
-def test_a_refused_run_frees_its_slot_at_once(monkeypatch, stub_main, capsys):
-    # The remote guard returns its refusal: nothing ran, so the slot is
-    # given back now rather than when the lease lapses.
+def test_a_refused_run_keeps_its_slot_until_the_lease_lapses(
+    monkeypatch, stub_main, capsys
+):
+    # Review of 32d6e6f, N1: a refusal can come from a retried input whose
+    # earlier attempt is still running, so the slot is not freed early.
     slots = FakeDict()
     monkeypatch.setattr(
         runner,
@@ -734,8 +784,8 @@ def test_a_refused_run_frees_its_slot_at_once(monkeypatch, stub_main, capsys):
     )
     assert runner.main(ARGS) == 75
     assert stub_main == []
-    assert all(claim["released"] is True for claim in claims_in(slots))
-    assert "lease too short" in capsys.readouterr().err
+    assert claims_in(slots) and all(not c["released"] for c in claims_in(slots))
+    assert "stays held until its lease lapses" in capsys.readouterr().err
 
 
 def test_no_free_slot_for_the_whole_wait_exits_75(monkeypatch, stub_main, capsys):
@@ -800,12 +850,15 @@ def corner_gap(*, midnight=True):
     raise AssertionError("the slot was never taken over")
 
 
-def test_the_worst_clock_corner_leaves_a_gap_that_needs_both_margins(monkeypatch):
+def test_the_worst_clock_corner_leaves_a_gap_and_overlaps_without_the_margins(
+    monkeypatch,
+):
     # Review of 2d727d8, B2: computed on the real class, not argued.
     expected = runner.GUARD_MARGIN_SECONDS + MARGIN - 2 * HOST_SKEW
     assert corner_gap() == corner_gap(midnight=False) == expected > 0
     # Without the margins the same schedule overlaps, so this test (unlike
-    # the arithmetic one above) would see the margins go.
+    # the arithmetic one above) sees both margins go. Either margin alone
+    # still leaves a gap; only the arithmetic test checks each one.
     monkeypatch.setattr(runner, "GUARD_MARGIN_SECONDS", 0)
     monkeypatch.setattr(runner, "CLOCK_MARGIN_SECONDS", 0)
     assert corner_gap() == -2 * HOST_SKEW
@@ -850,10 +903,10 @@ def holder_program(slots):
     outcome = yield ("start", lease)
     if outcome == "running":
         outcome = yield ("await",)
-    # main(): a returned run, or one the guard refused, frees the slot now;
-    # after ctrl-C, a lost connection or a remote error nothing is written
-    # and the claim lapses.
-    if outcome in ("returned", "refused"):
+    # main(): a returned run frees the slot now; after ctrl-C, a lost
+    # connection, a remote error or a guard refusal nothing is written and
+    # the claim lapses.
+    if outcome == "returned":
         yield from slots._release_steps(lease)
 
 
@@ -1056,6 +1109,11 @@ def modal_fakes(slots, remote, run=nullcontext):
 
 @pytest.fixture
 def stub_main(monkeypatch, tmp_path):
+    # A main() test that would wait for a slot fails instead of polling.
+    def wait(seconds):
+        raise AssertionError("main() waited for a simulation slot")
+
+    monkeypatch.setattr(runner.time, "sleep", wait)
     monkeypatch.setattr(runner, "validate_selection", lambda request: None)
     monkeypatch.setattr(
         runner, "input_manifest", lambda event, hf_cache=None: ({"event": event}, {})

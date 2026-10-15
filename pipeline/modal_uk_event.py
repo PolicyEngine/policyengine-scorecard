@@ -159,9 +159,11 @@ class SimulationSlots:
 
     Assumptions: every invocation uses the same Modal workspace and
     environment (``Dict.from_name`` resolves in the active one), and Modal
-    container clocks are within CLOCK_SKEW_SECONDS of true time. A stale
-    read is harmless: a stale "absent" makes the following create fail, and
-    "released" and "lapsed" never revert.
+    container clocks are within CLOCK_SKEW_SECONDS of true time. Freeing a
+    slot when a run returns its result also assumes that Modal returns an
+    input's result only after any earlier attempt of that input has
+    stopped. A stale read is harmless: a stale "absent" makes the following
+    create fail, and "released" and "lapsed" never revert.
 
     Why this is safe:
 
@@ -187,8 +189,10 @@ class SimulationSlots:
 
     A slot can stay held longer than needed, never past its lease plus the
     margin: after ctrl-C during ``acquire``, after a create that succeeded
-    but reported failure (a retried request), or while a started run's end
-    is unconfirmed.
+    but reported failure (a retried request), after a release or give-back
+    whose Dict call failed, after the remote guard refused (Modal may have
+    retried the input after an earlier attempt that could still be
+    running), or while a started run's end is unconfirmed.
 
     Every Dict call is one step of a generator (``_try_steps``,
     ``_release_steps``), so tests interleave several holders call by call.
@@ -713,8 +717,10 @@ def modal_function(mounts: dict[str, Path]):
         from pathlib import Path
 
         # A run that could outlive its simulation slot does not start. The
-        # refusal is returned, not raised, so the caller knows nothing ran
-        # and frees the slot at once.
+        # refusal is returned, not raised, so the caller exits with a clear
+        # status. It does not show that nothing ran: Modal may have retried
+        # this input after an earlier attempt (a preemption or a lost input)
+        # that could still be running, so the caller keeps the slot.
         if time.time() + guard_seconds > lease_expires:
             return {"refused": "the simulation slot lease does not cover the timeout"}
         # Inherit stdout/stderr so Modal streams phase progress as it happens.
@@ -902,13 +908,14 @@ def main(argv: list[str] | None = None) -> int:
         # The run returned its result; only leaving the app failed.
         print(f"Modal app exit failed after the run returned: {error}", file=sys.stderr)
     finally:
-        # A returned (or guard-refused) or never-started run frees its slot
-        # now. Otherwise (ctrl-C, a lost connection, a remote error, a failed
-        # stop request) nothing confirms the remote run has stopped, so the
-        # claim stays until its lease lapses, which the remote guard puts
-        # after the run's end. A failed release never costs a result: the
-        # claim lapses.
-        if lease is not None and (not started or response is not None):
+        # A run that returned its result, or never started, frees its slot
+        # now. Otherwise (ctrl-C, a lost connection, a remote error, a guard
+        # refusal, a failed stop request) nothing confirms that every attempt
+        # has stopped, so the claim stays until its lease lapses, which each
+        # attempt's guard puts after that attempt's end. A failed release
+        # never costs a result: the claim lapses.
+        returned = response is not None and "refused" not in response
+        if lease is not None and (not started or returned):
             try:
                 slots.release(lease)
             except Exception as error:
@@ -920,7 +927,11 @@ def main(argv: list[str] | None = None) -> int:
         print("Modal run interrupted; no output downloaded", file=sys.stderr)
         return 130
     if "refused" in response:
-        print(f"Modal run not started: {response['refused']}", file=sys.stderr)
+        print(
+            f"Modal run refused: {response['refused']}; the simulation slot "
+            "stays held until its lease lapses",
+            file=sys.stderr,
+        )
         return 75
     paths = save_download(response, payload, args.download_root)
     print(

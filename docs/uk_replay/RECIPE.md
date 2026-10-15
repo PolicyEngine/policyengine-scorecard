@@ -635,7 +635,9 @@ invocations never run more than two simulations at once. How the slots hold:
 * Assumptions: every invocation uses the same Modal workspace and
   environment (the Dict is looked up by name in the active one), and the
   clocks of Modal's containers are within 30 seconds of true time
-  (`CLOCK_SKEW_SECONDS`).
+  (`CLOCK_SKEW_SECONDS`). Freeing a slot when a run returns also assumes
+  Modal returns an input's result only after any earlier attempt of that
+  input has stopped.
 * A day's chain matters for at most a day plus a lease, far inside the 7 days
   after which Modal expires an idle entry, so no claim that still matters
   can have expired, and a write that arrives days late lands in a chain that
@@ -646,15 +648,17 @@ invocations never run more than two simulations at once. How the slots hold:
   part, and a lapsed claim is taken over only 2 minutes after its expiry.
   Even with the run's guard container 30 seconds slow and the contender's
   reading container 30 seconds fast, a takeover comes 11 minutes after the
-  run's end (`test_the_worst_clock_corner_leaves_a_gap_that_needs_both_margins`
+  run's end (`test_the_worst_clock_corner_leaves_a_gap_and_overlaps_without_the_margins`
   computes this on the real class).
 * The lease is 4 hours. The remote function refuses to start unless its
   whole 3-hour timeout plus a 10-minute margin fits inside it, so a run
   ends before its slot can pass on, even if the client dies.
-* A finished run, a run the remote guard refused (it returns the refusal,
-  so nothing ran), and a run never started free the slot at once. Anything else
-  after the run started (ctrl-C, a lost connection, a remote error, a client
-  killed outright) leaves the claim until the lease lapses: Modal's client
+* A finished run and a run never started free the slot at once. Anything
+  else after the run started (ctrl-C, a lost connection, a remote error, a
+  refusal by the remote guard, a client killed outright) leaves the claim
+  until the lease lapses. A refusal exits with status 75 but does not show
+  that nothing ran: Modal may have retried the input after an earlier
+  attempt that could still be running. Modal's client
   asks the server to stop the app on ctrl-C, but nothing confirms the task
   stopped, so the slot is not freed early. A failed release never costs a
   returned result: it is downloaded and the claim lapses.
