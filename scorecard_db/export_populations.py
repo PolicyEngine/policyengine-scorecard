@@ -17,6 +17,13 @@ history (one row per certified release, engine pins and OBBBA scoring mode in
 the construction), plus the Belgian PIT-reform scorekeeper rows, so
 cross-release drift is visible.
 
+The comprehensive historical PMD lane is exported as compact fiscal-event
+files in populations-pmd/, indexed by event_archives in the main feed. Every
+score contributes to the summary before its detail is loaded. Existing
+costings-slice rows stay in the main feed. A shard factors only fields identical
+across its rows, so expanding common fields and conditions restores them
+without dropping values, zero cells, statuses or provenance shown by this feed.
+
 Doctrine (issues #1/#9): descriptive only. Recorded result statuses and
 calibration relationships are exported verbatim; a no-result claim receives
 only a synthetic latest status of not_computed, never a fabricated history
@@ -34,7 +41,9 @@ Usage:
 from __future__ import annotations
 
 import json
+from collections import defaultdict
 from datetime import date
+from hashlib import sha256
 from pathlib import Path
 
 from .db import CURRENT_LAW_KEY, ScorecardDB
@@ -42,6 +51,51 @@ from .ingest_harvest import sync_lane_feed
 
 REPO = Path(__file__).resolve().parent.parent
 URBAN_SOURCE = "urban_sotsn"
+PMD_REGISTRY = "obr_pmd_all_events"
+PMD_DIRECTORY = "populations-pmd"
+
+
+def _compact_rows(rows: list[dict]) -> dict:
+    """Factor only identical fields; decoding restores each row exactly."""
+    common = {
+        key: value
+        for key, value in rows[0].items()
+        if key != "conditions" and all(row[key] == value for row in rows)
+    }
+    conditions = {
+        key: value
+        for key, value in rows[0]["conditions"].items()
+        if all(
+            key in row["conditions"] and row["conditions"][key] == value for row in rows
+        )
+    }
+    return {
+        "common": common,
+        "common_conditions": conditions,
+        "rows": [
+            {
+                **{key: value for key, value in row.items() if key not in common},
+                "conditions": {
+                    key: value
+                    for key, value in row["conditions"].items()
+                    if key not in conditions
+                },
+            }
+            for row in rows
+        ],
+    }
+
+
+def _counts(rows: list[dict]) -> dict:
+    """A recorded gap result is distinct from a PolicyEngine value."""
+    return {
+        "claims": len(rows),
+        "with_result": sum(bool(row["results"]) for row in rows),
+        "with_value": sum(row["latest"]["value"] is not None for row in rows),
+        "without_result": sum(not row["results"] for row in rows),
+        "multi_release_claims": sum(len(row["results"]) > 1 for row in rows),
+    }
+
 
 _RELEASE_TOKEN = (
     "l0-refit",
@@ -113,6 +167,7 @@ def export(
     by_source: dict[str, int] = {}
     by_status: dict[str, int] = {}
     multi_release = 0
+    archive_events: dict[str, tuple[str, str]] = {}
     for c in claims:
         results = [
             {
@@ -159,12 +214,21 @@ def export(
         publication = json.loads(c["publication"])
         reform = json.loads(c["reform_json"])
         conditions = json.loads(c["conditions"])
+        if publication.get("registry") == PMD_REGISTRY:
+            event = conditions["fiscal_event"]
+            archive_events[c["claim_id"]] = (
+                event,
+                publication.get("fiscal_event_name", event),
+            )
         # Harvest OBBBA claims carry no per-claim name — the provision
         # label in conditions is their identity; the publication title is
         # the whole JCX document.
+        # PMD cells carry their measure in conditions; the source column
+        # identifies the fiscal year, and the title names the whole workbook.
         name = (
             publication.get("name")
             or conditions.get("provision")
+            or (conditions.get("measure") if c["source"] == "obr_pmd" else None)
             or publication.get("title")
             or ""
         )
@@ -225,13 +289,62 @@ def export(
             }
         )
 
+    # The historical PMD is comprehensive, including thousands of scores with
+    # no result. Keep every score reachable without adding them all to the
+    # initial browser request: load one fiscal event on demand. Existing
+    # costings-slice rows retain their place in the main feed.
+    archived: dict[str, list[dict]] = defaultdict(list)
+    main_rows = []
+    countries: dict[str, list[dict]] = defaultdict(list)
+    for row in rows:
+        countries[row["country"]].append(row)
+        if row["claim_id"] in archive_events:
+            archived[archive_events[row["claim_id"]][0]].append(row)
+        else:
+            main_rows.append(row)
+    archives = []
+    directory = out_path.parent / PMD_DIRECTORY
+    if archived:
+        directory.mkdir(exist_ok=True)
+    emitted = set()
+    for event, event_rows in sorted(archived.items()):
+        filename = sha256(event.encode()).hexdigest()[:16] + ".json"
+        emitted.add(filename)
+        (directory / filename).write_text(
+            json.dumps(_compact_rows(event_rows), separators=(",", ":")) + "\n"
+        )
+        event_status: dict[str, int] = defaultdict(int)
+        event_classes: dict[str, int] = defaultdict(int)
+        for row in event_rows:
+            event_status[row["latest"]["status_effective"]] += 1
+            event_classes[row["conditions"].get("benchmark_class", "")] += 1
+        archives.append(
+            {
+                "source": "obr_pmd",
+                "country": "UK",
+                "fiscal_event": event,
+                "label": archive_events[event_rows[0]["claim_id"]][1],
+                "path": f"data/{PMD_DIRECTORY}/{filename}",
+                **_counts(event_rows),
+                "by_latest_status": dict(sorted(event_status.items())),
+                "by_benchmark_class": dict(sorted(event_classes.items())),
+            }
+        )
+    # Remove only exporter-owned shards which no longer occur in the DB.
+    if directory.exists():
+        for stale in directory.glob("*.json"):
+            if stale.name not in emitted:
+                stale.unlink()
+
     payload = {
         "built": built or date.today().isoformat(),
         "note": (
             "Non-Urban populations exported from scorecard.db: the populace"
             " reform-validation registry (issue #20) plus the compute"
             " campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT;"
-            " UK: the HMRC ready-reckoner family; BE: JRC EUROMOD-BE claims"
+            " UK: the HMRC ready-reckoner family and the complete OBR Policy"
+            " measures database, including historical HM Treasury scores;"
+            " BE: JRC EUROMOD-BE claims"
             " with demo-grade Axiom concept-mismatch attachments and the"
             " 2026 PIT-reform scorekeeper claims; NZ: official budget"
             " scores). Claims explicitly opted into pre-result display remain"
@@ -244,8 +357,13 @@ def export(
             "multi_release_claims": multi_release,
             "by_source": dict(sorted(by_source.items())),
             "by_latest_status": dict(sorted(by_status.items())),
+            "by_country": {
+                country: _counts(country_rows)
+                for country, country_rows in sorted(countries.items())
+            },
         },
-        "rows": rows,
+        "event_archives": archives,
+        "rows": main_rows,
     }
     out_path.write_text(json.dumps(payload, indent=1) + "\n")
 
@@ -278,6 +396,8 @@ def export(
     db.close()
     return {
         "rows": len(rows),
+        "initial_rows": len(main_rows),
+        "event_archives": len(archives),
         "multi_release_claims": multi_release,
         "lanes_synced": n_lanes,
         "out": str(out_path),

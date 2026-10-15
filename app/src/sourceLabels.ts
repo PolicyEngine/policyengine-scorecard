@@ -34,6 +34,7 @@ const SOURCE_SPECIAL: Record<string, string> = {
   obr_policy_effects: "OBR policy effects",
   // Autumn Budget 2025 port (#136): every producer that scored the Budget
   obr_efo: "OBR (EFO tables)",
+  obr_pmd: "OBR Policy measures database",
   jrf: "JRF",
   ippr: "IPPR",
   cpag: "CPAG",

@@ -46,6 +46,7 @@ STEPS = (
     "ons_etb",
     "uk_policy_effects",
     "obr_costings",
+    "obr_pmd",
     "uk_ab2025",
     "produce_uk",
     "campaign_uk",

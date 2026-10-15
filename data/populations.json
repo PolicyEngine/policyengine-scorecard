@@ -1,8 +1,8 @@
 {
- "built": "2026-10-07",
- "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family; BE: JRC EUROMOD-BE claims with demo-grade Axiom concept-mismatch attachments and the 2026 PIT-reform scorekeeper claims; NZ: official budget scores). Claims explicitly opted into pre-result display remain in the feed with latest status not_computed and empty history. Recorded result statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
+ "built": "2026-10-12",
+ "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family and the complete OBR Policy measures database, including historical HM Treasury scores; BE: JRC EUROMOD-BE claims with demo-grade Axiom concept-mismatch attachments and the 2026 PIT-reform scorekeeper claims; NZ: official budget scores). Claims explicitly opted into pre-result display remain in the feed with latest status not_computed and empty history. Recorded result statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
  "summary": {
-  "claims": 5631,
+  "claims": 29383,
   "multi_release_claims": 270,
   "by_source": {
    "aspe_welfare_indicators": 14,
@@ -72,7 +72,7 @@
    "ny_admin": 2,
    "nz_treasury": 12,
    "obr_efo": 815,
-   "obr_pmd": 552,
+   "obr_pmd": 24304,
    "oh_admin": 1,
    "ok_admin": 1,
    "ok_fiscal_note": 1,
@@ -108,10 +108,1554 @@
    "comparable": 42,
    "concept_mismatch": 17,
    "constructed": 1574,
-   "not_computed": 3109,
+   "not_computed": 26861,
    "pe_gap": 889
+  },
+  "by_country": {
+   "BE": {
+    "claims": 9,
+    "with_result": 9,
+    "with_value": 9,
+    "without_result": 0,
+    "multi_release_claims": 0
+   },
+   "NZ": {
+    "claims": 12,
+    "with_result": 0,
+    "with_value": 0,
+    "without_result": 12,
+    "multi_release_claims": 0
+   },
+   "UK": {
+    "claims": 28915,
+    "with_result": 2162,
+    "with_value": 1177,
+    "without_result": 26753,
+    "multi_release_claims": 0
+   },
+   "US": {
+    "claims": 447,
+    "with_result": 447,
+    "with_value": 447,
+    "without_result": 0,
+    "multi_release_claims": 270
+   }
   }
  },
+ "event_archives": [
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "autumn_2010",
+   "label": "Autumn 2010",
+   "path": "data/populations-pmd/f2b6bfc8d62b8f37.json",
+   "claims": 234,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 234,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 234
+   },
+   "by_benchmark_class": {
+    "different_model": 234
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "autumn_2011",
+   "label": "Autumn 2011",
+   "path": "data/populations-pmd/e63f09c4a474c409.json",
+   "claims": 228,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 228,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 228
+   },
+   "by_benchmark_class": {
+    "different_model": 228
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "autumn_2012",
+   "label": "Autumn 2012",
+   "path": "data/populations-pmd/fa4b23356fbae89c.json",
+   "claims": 426,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 426,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 426
+   },
+   "by_benchmark_class": {
+    "different_model": 426
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "autumn_2013",
+   "label": "Autumn 2013",
+   "path": "data/populations-pmd/815d1624050e9373.json",
+   "claims": 654,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 654,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 654
+   },
+   "by_benchmark_class": {
+    "different_model": 654
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "autumn_2014",
+   "label": "Autumn 2014",
+   "path": "data/populations-pmd/02178d50294298cd.json",
+   "claims": 600,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 600,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 600
+   },
+   "by_benchmark_class": {
+    "different_model": 600
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "autumn_2015",
+   "label": "Autumn 2015",
+   "path": "data/populations-pmd/4fff3b7c6202a241.json",
+   "claims": 336,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 336,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 336
+   },
+   "by_benchmark_class": {
+    "different_model": 336
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "autumn_2016",
+   "label": "Autumn 2016",
+   "path": "data/populations-pmd/c285c497965b6ecc.json",
+   "claims": 540,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 540,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 540
+   },
+   "by_benchmark_class": {
+    "different_model": 540
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "autumn_budget_2017",
+   "label": "Autumn Budget 2017",
+   "path": "data/populations-pmd/7af39942ed3b512d.json",
+   "claims": 846,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 846,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 846
+   },
+   "by_benchmark_class": {
+    "different_model": 846
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "autumn_budget_2021",
+   "label": "Autumn Budget 2021",
+   "path": "data/populations-pmd/1a7259e229e5dcda.json",
+   "claims": 1080,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 1080,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 1080
+   },
+   "by_benchmark_class": {
+    "different_model": 1080
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "autumn_budget_2024",
+   "label": "Autumn Budget 2024",
+   "path": "data/populations-pmd/b9a024cfe7609994.json",
+   "claims": 1014,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 1014,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 1014
+   },
+   "by_benchmark_class": {
+    "different_model": 1014
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "autumn_budget_2025",
+   "label": "Autumn Budget 2025",
+   "path": "data/populations-pmd/eafc3a718f703712.json",
+   "claims": 1290,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 1290,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 1290
+   },
+   "by_benchmark_class": {
+    "different_model": 1290
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "autumn_statement_2022",
+   "label": "Autumn Statement 2022",
+   "path": "data/populations-pmd/9059c424890d46ca.json",
+   "claims": 1176,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 1176,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 1176
+   },
+   "by_benchmark_class": {
+    "different_model": 1176
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "autumn_statement_2023",
+   "label": "Autumn Statement 2023",
+   "path": "data/populations-pmd/d48b25d7ef1f5e94.json",
+   "claims": 990,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 990,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 990
+   },
+   "by_benchmark_class": {
+    "different_model": 990
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1970",
+   "label": "Budget 1970",
+   "path": "data/populations-pmd/8fd410f5f9be85d7.json",
+   "claims": 2,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 2,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 2
+   },
+   "by_benchmark_class": {
+    "different_model": 2
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1971",
+   "label": "Budget 1971",
+   "path": "data/populations-pmd/9a7bb45e4d51ea6f.json",
+   "claims": 6,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 6,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 6
+   },
+   "by_benchmark_class": {
+    "different_model": 6
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1972",
+   "label": "Budget 1972",
+   "path": "data/populations-pmd/e20727402987dd7a.json",
+   "claims": 10,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 10,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 10
+   },
+   "by_benchmark_class": {
+    "different_model": 10
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1973",
+   "label": "Budget 1973",
+   "path": "data/populations-pmd/20634a963c9e8b86.json",
+   "claims": 4,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 4,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 4
+   },
+   "by_benchmark_class": {
+    "different_model": 4
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1974",
+   "label": "Budget 1974",
+   "path": "data/populations-pmd/d3afedc417dfd787.json",
+   "claims": 28,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 28,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 28
+   },
+   "by_benchmark_class": {
+    "different_model": 28
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1975",
+   "label": "Budget 1975",
+   "path": "data/populations-pmd/6e04e199df3970bc.json",
+   "claims": 16,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 16,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 16
+   },
+   "by_benchmark_class": {
+    "different_model": 16
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1976",
+   "label": "Budget 1976",
+   "path": "data/populations-pmd/921c85fc44864266.json",
+   "claims": 24,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 24,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 24
+   },
+   "by_benchmark_class": {
+    "different_model": 24
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1977",
+   "label": "Budget 1977",
+   "path": "data/populations-pmd/4f4867a1c4347795.json",
+   "claims": 20,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 20,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 20
+   },
+   "by_benchmark_class": {
+    "different_model": 20
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1978",
+   "label": "Budget 1978",
+   "path": "data/populations-pmd/f0aa9987b4ca3fd1.json",
+   "claims": 12,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 12,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 12
+   },
+   "by_benchmark_class": {
+    "different_model": 12
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1979",
+   "label": "Budget 1979",
+   "path": "data/populations-pmd/b1edfc48619aac5b.json",
+   "claims": 30,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 30,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 30
+   },
+   "by_benchmark_class": {
+    "different_model": 30
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1980",
+   "label": "Budget 1980",
+   "path": "data/populations-pmd/4b6ba92e18ab981e.json",
+   "claims": 46,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 46,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 46
+   },
+   "by_benchmark_class": {
+    "different_model": 46
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1981",
+   "label": "Budget 1981",
+   "path": "data/populations-pmd/1466ee9619abf183.json",
+   "claims": 28,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 28,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 28
+   },
+   "by_benchmark_class": {
+    "different_model": 28
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1982",
+   "label": "Budget 1982",
+   "path": "data/populations-pmd/7467deec8971ce1b.json",
+   "claims": 36,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 36,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 36
+   },
+   "by_benchmark_class": {
+    "different_model": 36
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1983",
+   "label": "Budget 1983",
+   "path": "data/populations-pmd/0e55b547d0e506d2.json",
+   "claims": 26,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 26,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 26
+   },
+   "by_benchmark_class": {
+    "different_model": 26
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1984",
+   "label": "Budget 1984",
+   "path": "data/populations-pmd/71ec62ebf8802d8f.json",
+   "claims": 16,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 16,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 16
+   },
+   "by_benchmark_class": {
+    "different_model": 16
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1985",
+   "label": "Budget 1985",
+   "path": "data/populations-pmd/80188c720b9dc19b.json",
+   "claims": 14,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 14,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 14
+   },
+   "by_benchmark_class": {
+    "different_model": 14
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1986",
+   "label": "Budget 1986",
+   "path": "data/populations-pmd/fd01c190b8d50113.json",
+   "claims": 22,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 22,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 22
+   },
+   "by_benchmark_class": {
+    "different_model": 22
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1987",
+   "label": "Budget 1987",
+   "path": "data/populations-pmd/37fd8f8a50a4ee33.json",
+   "claims": 28,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 28,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 28
+   },
+   "by_benchmark_class": {
+    "different_model": 28
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1988",
+   "label": "Budget 1988",
+   "path": "data/populations-pmd/ecfff96546935e96.json",
+   "claims": 26,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 26,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 26
+   },
+   "by_benchmark_class": {
+    "different_model": 26
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1989",
+   "label": "Budget 1989",
+   "path": "data/populations-pmd/5b7584933abc6f6b.json",
+   "claims": 26,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 26,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 26
+   },
+   "by_benchmark_class": {
+    "different_model": 26
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1990",
+   "label": "Budget 1990",
+   "path": "data/populations-pmd/f62a0eae0a18b195.json",
+   "claims": 24,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 24,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 24
+   },
+   "by_benchmark_class": {
+    "different_model": 24
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1991",
+   "label": "Budget 1991",
+   "path": "data/populations-pmd/e088953db1235384.json",
+   "claims": 32,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 32,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 32
+   },
+   "by_benchmark_class": {
+    "different_model": 32
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1992",
+   "label": "Budget 1992",
+   "path": "data/populations-pmd/c9c6496e85d265c3.json",
+   "claims": 22,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 22,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 22
+   },
+   "by_benchmark_class": {
+    "different_model": 22
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1993",
+   "label": "Budget 1993",
+   "path": "data/populations-pmd/b5f2f59c74690a48.json",
+   "claims": 60,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 60,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 60
+   },
+   "by_benchmark_class": {
+    "different_model": 60
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1993_2",
+   "label": "Budget 1993 #2",
+   "path": "data/populations-pmd/959d3337a1166e51.json",
+   "claims": 60,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 60,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 60
+   },
+   "by_benchmark_class": {
+    "different_model": 60
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1994",
+   "label": "Budget 1994",
+   "path": "data/populations-pmd/9dd808e38945a75c.json",
+   "claims": 66,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 66,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 66
+   },
+   "by_benchmark_class": {
+    "different_model": 66
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1995",
+   "label": "Budget 1995",
+   "path": "data/populations-pmd/3e1754b1d2ac2dcc.json",
+   "claims": 51,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 51,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 51
+   },
+   "by_benchmark_class": {
+    "different_model": 51
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1996",
+   "label": "Budget 1996",
+   "path": "data/populations-pmd/e61e5eb873ad0f97.json",
+   "claims": 48,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 48,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 48
+   },
+   "by_benchmark_class": {
+    "different_model": 48
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1997",
+   "label": "Budget 1997",
+   "path": "data/populations-pmd/a81fa560c153498e.json",
+   "claims": 51,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 51,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 51
+   },
+   "by_benchmark_class": {
+    "different_model": 51
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1998",
+   "label": "Budget 1998",
+   "path": "data/populations-pmd/5d40df2eb33122d0.json",
+   "claims": 60,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 60,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 60
+   },
+   "by_benchmark_class": {
+    "different_model": 60
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_1999",
+   "label": "Budget 1999",
+   "path": "data/populations-pmd/e4d1b011073f047d.json",
+   "claims": 81,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 81,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 81
+   },
+   "by_benchmark_class": {
+    "different_model": 81
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2000",
+   "label": "Budget 2000",
+   "path": "data/populations-pmd/912120cd343a9cd5.json",
+   "claims": 90,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 90,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 90
+   },
+   "by_benchmark_class": {
+    "different_model": 90
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2001",
+   "label": "Budget 2001",
+   "path": "data/populations-pmd/d7187a8ee1c694f4.json",
+   "claims": 24,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 24,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 24
+   },
+   "by_benchmark_class": {
+    "different_model": 24
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2002",
+   "label": "Budget 2002",
+   "path": "data/populations-pmd/cd3cf5645bf341de.json",
+   "claims": 84,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 84,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 84
+   },
+   "by_benchmark_class": {
+    "different_model": 84
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2003",
+   "label": "Budget 2003",
+   "path": "data/populations-pmd/57afa16b60cac0ac.json",
+   "claims": 39,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 39,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 39
+   },
+   "by_benchmark_class": {
+    "different_model": 39
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2004",
+   "label": "Budget 2004",
+   "path": "data/populations-pmd/a3106dd3cf28ac09.json",
+   "claims": 45,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 45,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 45
+   },
+   "by_benchmark_class": {
+    "different_model": 45
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2005",
+   "label": "Budget 2005",
+   "path": "data/populations-pmd/2e82bf176b48abc6.json",
+   "claims": 57,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 57,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 57
+   },
+   "by_benchmark_class": {
+    "different_model": 57
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2006",
+   "label": "Budget 2006",
+   "path": "data/populations-pmd/43069b56600a6de0.json",
+   "claims": 60,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 60,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 60
+   },
+   "by_benchmark_class": {
+    "different_model": 60
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2007",
+   "label": "Budget 2007",
+   "path": "data/populations-pmd/9195aa29bfefbba0.json",
+   "claims": 87,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 87,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 87
+   },
+   "by_benchmark_class": {
+    "different_model": 87
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2008",
+   "label": "Budget 2008",
+   "path": "data/populations-pmd/77f905be69c3d76b.json",
+   "claims": 51,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 51,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 51
+   },
+   "by_benchmark_class": {
+    "different_model": 51
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2009",
+   "label": "Budget 2009",
+   "path": "data/populations-pmd/cb5d92cf36a48db1.json",
+   "claims": 60,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 60,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 60
+   },
+   "by_benchmark_class": {
+    "different_model": 60
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2010",
+   "label": "Budget 2010",
+   "path": "data/populations-pmd/d8f83b2ef594d2fc.json",
+   "claims": 80,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 80,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 80
+   },
+   "by_benchmark_class": {
+    "different_model": 80
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2010_2",
+   "label": "Budget 2010 #2",
+   "path": "data/populations-pmd/2cc21ebe3783d1cf.json",
+   "claims": 330,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 330,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 330
+   },
+   "by_benchmark_class": {
+    "different_model": 330
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2011",
+   "label": "Budget 2011",
+   "path": "data/populations-pmd/cd9288ad7b797c49.json",
+   "claims": 395,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 395,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 395
+   },
+   "by_benchmark_class": {
+    "different_model": 395
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2012",
+   "label": "Budget 2012",
+   "path": "data/populations-pmd/50d9f41e07c2251f.json",
+   "claims": 420,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 420,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 420
+   },
+   "by_benchmark_class": {
+    "different_model": 420
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2013",
+   "label": "Budget 2013",
+   "path": "data/populations-pmd/e304aef217ed5b60.json",
+   "claims": 545,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 545,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 545
+   },
+   "by_benchmark_class": {
+    "different_model": 545
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2014",
+   "label": "Budget 2014",
+   "path": "data/populations-pmd/667cba2146266a04.json",
+   "claims": 505,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 505,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 505
+   },
+   "by_benchmark_class": {
+    "different_model": 505
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2015",
+   "label": "Budget 2015",
+   "path": "data/populations-pmd/f5b3a9163ce5da07.json",
+   "claims": 365,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 365,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 365
+   },
+   "by_benchmark_class": {
+    "different_model": 365
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2015_2",
+   "label": "Budget 2015 #2",
+   "path": "data/populations-pmd/beae562b3ce55e07.json",
+   "claims": 660,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 660,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 660
+   },
+   "by_benchmark_class": {
+    "different_model": 660
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2016",
+   "label": "Budget 2016",
+   "path": "data/populations-pmd/7d24388f09269a12.json",
+   "claims": 682,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 682,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 682
+   },
+   "by_benchmark_class": {
+    "different_model": 682
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2017",
+   "label": "Budget 2017",
+   "path": "data/populations-pmd/db9ab2b089d63c3a.json",
+   "claims": 315,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 315,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 315
+   },
+   "by_benchmark_class": {
+    "different_model": 315
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2018",
+   "label": "Budget 2018",
+   "path": "data/populations-pmd/53b40a1252406193.json",
+   "claims": 1314,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 1314,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 1314
+   },
+   "by_benchmark_class": {
+    "different_model": 1314
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "budget_2020",
+   "label": "Budget 2020",
+   "path": "data/populations-pmd/54b43fcdc3f52f82.json",
+   "claims": 1464,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 1464,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 1464
+   },
+   "by_benchmark_class": {
+    "different_model": 1464
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "pbr_2000",
+   "label": "PBR 2000",
+   "path": "data/populations-pmd/e21d563b1892abbd.json",
+   "claims": 20,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 20,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 20
+   },
+   "by_benchmark_class": {
+    "different_model": 20
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "pbr_2001",
+   "label": "PBR 2001",
+   "path": "data/populations-pmd/0def253fd32b7a61.json",
+   "claims": 13,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 13,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 13
+   },
+   "by_benchmark_class": {
+    "different_model": 13
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "pbr_2002",
+   "label": "PBR 2002",
+   "path": "data/populations-pmd/bc65e35b19688a4a.json",
+   "claims": 28,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 28,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 28
+   },
+   "by_benchmark_class": {
+    "different_model": 28
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "pbr_2003",
+   "label": "PBR 2003",
+   "path": "data/populations-pmd/bcd78a0f0c4b5bb2.json",
+   "claims": 24,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 24,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 24
+   },
+   "by_benchmark_class": {
+    "different_model": 24
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "pbr_2004",
+   "label": "PBR 2004",
+   "path": "data/populations-pmd/4732238f349dc1e2.json",
+   "claims": 52,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 52,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 52
+   },
+   "by_benchmark_class": {
+    "different_model": 52
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "pbr_2005",
+   "label": "PBR 2005",
+   "path": "data/populations-pmd/8550636fd231f0ab.json",
+   "claims": 36,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 36,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 36
+   },
+   "by_benchmark_class": {
+    "different_model": 36
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "pbr_2006",
+   "label": "PBR 2006",
+   "path": "data/populations-pmd/55d2c52dab98a6f1.json",
+   "claims": 40,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 40,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 40
+   },
+   "by_benchmark_class": {
+    "different_model": 40
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "pbr_2007",
+   "label": "PBR 2007",
+   "path": "data/populations-pmd/45a9dbf0a0e5679a.json",
+   "claims": 32,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 32,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 32
+   },
+   "by_benchmark_class": {
+    "different_model": 32
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "pbr_2008",
+   "label": "PBR 2008",
+   "path": "data/populations-pmd/099c428d628a7221.json",
+   "claims": 108,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 108,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 108
+   },
+   "by_benchmark_class": {
+    "different_model": 108
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "pbr_2009",
+   "label": "PBR 2009",
+   "path": "data/populations-pmd/16c7fba5ef93a100.json",
+   "claims": 84,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 84,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 84
+   },
+   "by_benchmark_class": {
+    "different_model": 84
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "spending_review_2020",
+   "label": "Spending Review 2020",
+   "path": "data/populations-pmd/47df52088c544b21.json",
+   "claims": 1043,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 1043,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 1043
+   },
+   "by_benchmark_class": {
+    "different_model": 1043
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "spring_budget_2021",
+   "label": "Spring Budget 2021",
+   "path": "data/populations-pmd/1cad18d33a113b28.json",
+   "claims": 1020,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 1020,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 1020
+   },
+   "by_benchmark_class": {
+    "different_model": 1020
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "spring_budget_2023",
+   "label": "Spring Budget 2023",
+   "path": "data/populations-pmd/0a981886ee556b57.json",
+   "claims": 1020,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 1020,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 1020
+   },
+   "by_benchmark_class": {
+    "different_model": 1020
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "spring_budget_2024",
+   "label": "Spring Budget 2024",
+   "path": "data/populations-pmd/73e41d3c3f28c36b.json",
+   "claims": 732,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 732,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 732
+   },
+   "by_benchmark_class": {
+    "different_model": 732
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "spring_statement_2018",
+   "label": "Spring Statement 2018",
+   "path": "data/populations-pmd/5963de30e0d3db51.json",
+   "claims": 101,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 101,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 101
+   },
+   "by_benchmark_class": {
+    "different_model": 101
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "spring_statement_2019",
+   "label": "Spring Statement 2019",
+   "path": "data/populations-pmd/16f266dddf1daa1b.json",
+   "claims": 198,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 198,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 198
+   },
+   "by_benchmark_class": {
+    "different_model": 198
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "spring_statement_2022",
+   "label": "Spring Statement 2022",
+   "path": "data/populations-pmd/6f78828b96a907dc.json",
+   "claims": 642,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 642,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 642
+   },
+   "by_benchmark_class": {
+    "different_model": 642
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "spring_statement_2025",
+   "label": "Spring Statement 2025",
+   "path": "data/populations-pmd/3618debf7823c02e.json",
+   "claims": 498,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 498,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 498
+   },
+   "by_benchmark_class": {
+    "different_model": 498
+   }
+  }
+ ],
  "rows": [
   {
    "claim_id": "4290148a46a76bfa6ffa",
