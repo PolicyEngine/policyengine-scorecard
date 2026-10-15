@@ -183,7 +183,9 @@ FY2023–24 counterparts; that loss is shown, never hidden.
 * Every other variant writes to `results/uk/replays/<variant_id>/`:
   `<event>/` (the same files as a legacy event directory), `SUMMARY.md`,
   `SUPPORT.json`, `CONSTRUCTION_PREMISES.json`, `MODEL_DIAGNOSTICS.json`,
-  `REQUEST.json` (the qualification request the run answers), and finally
+  `REQUEST.json` (the re-serialised qualification request the run answers),
+  `INSTALL.json` (whether installation used the certified requirements,
+  certified constraints or free resolution), and finally
   `NAMESPACE_MANIFEST.json` and `REPLAY_RECEIPT.json`.
 * `data/uk/replay_variants.json` is the index: each record's `result_root`
   names its namespace (legacy: `results/uk/events`) and its `status`. A
@@ -193,10 +195,21 @@ FY2023–24 counterparts; that loss is shown, never hidden.
   `NAMESPACE_MANIFEST.json` lists the SHA-256 of every file under it (and of
   its release diff), the receipt binds that manifest's digest, the runner
   refuses to write there (compute, staging, comparison and the summary all
-  check), and CI fails if any sealed byte changes. A rerun of
-  a sealed variant writes to an explicit separate output directory, and its
-  bytes against the sealed run are a determinism check (CI replays one real
-  measure-year this way).
+  check), and CI fails if any sealed byte changes. `verify-sealed` derives
+  the expected namespaces from the variants index: every record with
+  `layout: "replay_namespace"` whose `result_root` exists must have both
+  sealing files. Deleting a receipt or manifest therefore fails the check.
+* Each corpus qualification creates a detached checkout of the runner's `HEAD`
+  under `<work>/checkout`. It deletes the candidate's namespace and selected
+  diff directory inside that checkout, computes every event there without
+  `--resume`, seals there, then copies the namespace and diff to the request's
+  `results/` directory. The previous attempt's `results/` directory is removed
+  before copying. Every pipeline subprocess uses that fresh checkout as its
+  working directory and module root, keeping artifact paths repository-relative.
+  The runner's committed namespaces are only read, including the diff's base.
+  Re-qualifying an exactly certified pair compares the fresh run against its
+  own committed run when `compare_to` is `latest_certified`; this doubles as
+  a determinism check.
 * Release differences live in `results/uk/replays/diffs/<base>__<head>/`.
 
 ## Version-scoped diagnoses
@@ -295,24 +308,37 @@ W4 sends before promotion and the receipt returned.
 ### The receiver
 
 `.github/workflows/uk-replay.yml` receives `repository_dispatch` events of
-type `uk-replay-qualification-request` (and manual requests). Its `enqueue`
-job writes the request to the persistent queue on the `replay-state` branch
-before anything else (`pipeline/uk_replay_queue.py`), so GitHub cancelling
-an older pending run never loses one. Its `drain` job, one at a time
-(concurrency group `uk-replay-drain`), runs `.github/scripts/uk_replay_drain.sh`.
-That script takes the oldest pending request, marks it running, and runs
-`pipeline/uk_replay_qualify.py run-request`:
+type `uk-replay-qualification-request` (and manual requests). An incoming
+request uses an `enqueue` job to write it to the persistent queue on the
+`replay-state` branch (`pipeline/uk_replay_queue.py`), then dispatches a drain
+run. Incoming runs have distinct concurrency groups; drain runs share
+`uk-replay-drain`, so only one prepare/run/record sequence executes at a time.
+GitHub's default concurrency queue can replace an older pending run; the
+request remains in `replay-state` for a later drain.
+([GitHub concurrency documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency))
+
+The `prepare` job selects the oldest eligible request and marks it running.
+It fetches the dataset with `fetch-dataset` in a control step holding
+`HUGGING_FACE_TOKEN`, checks its size and SHA-256, and uploads the dataset,
+request and fetch outcome as an artifact. A fetch rejection is passed to the
+run without installing candidate code. The separate `run` job has
+`contents: read`, checks out with `persist-credentials: false`, receives no
+Hugging Face token, and runs `.github/scripts/uk_replay_drain.sh` for that one
+request. `pipeline/uk_replay_qualify.py run-request` then:
 
 1. Validate the request (`schema_invalid`).
-2. Download the requested dataset with `HUGGING_FACE_TOKEN` into the Hugging
-   Face cache and check its size and SHA-256 (`data_access_failed`,
-   `artifact_hash_mismatch`).
+2. Check the dataset file supplied by the control job against the request
+   (`data_access_failed`, `artifact_hash_mismatch`).
 3. Build the candidate environment: download the model and core wheels
    without dependencies, check their SHA-256 against the request, then
    install them, the wrapper (its PyPI wheel or its public commit) and the
-   receipt tools. Re-qualifying a certified pair installs that pair's exact
-   requirements freeze; a new candidate resolves within the newest certified
-   freeze, falling back to a free resolution only if its own pins conflict.
+   receipt tools. A requested wheel missing from PyPI is an
+   `artifact_hash_mismatch` rejection. Re-qualifying a certified pair installs
+   that pair's exact requirements freeze; a new candidate first uses the
+   newest certified freeze as constraints and falls back to free resolution
+   if that installation fails. `INSTALL.json` records `exact_requirements`,
+   `certified_constraints` or `free_resolution`, the reference variant and
+   the environment file's digest; the namespace seal binds this provenance.
 4. Probe inside that environment: the installed identity, the release
    bundle under packaged certification (`release_bundle_mismatch`), the
    certification naming this model and this dataset (`incompatible_pair`),
@@ -320,23 +346,43 @@ That script takes the oldest pending request, marks it running, and runs
    environment reproduces a committed variant exactly, the run uses that
    record; otherwise it builds a candidate record whose requirements are the
    environment's normalised freeze.
-5. Run the corpus: every event's compute, staging and comparison, the
-   summary, the construction premises, the re-verified diagnostics.
-6. Diff against `compare_to` (default: the newest other certified variant
-   whose results are committed).
+5. Run the corpus in the fresh checkout: every event's compute (allowing the
+   candidate record), staging (using the work variants document), comparison,
+   the summary, the construction premises, the re-verified diagnostics.
+6. Diff against the runner checkout's committed `compare_to` namespace
+   (default: the newest certified variant with committed results, preferring
+   the matching certified variant itself for an exact re-qualification).
 7. Seal the namespace (`NAMESPACE_MANIFEST.json`, then
    `REPLAY_RECEIPT.json`) and copy it, the diff and the requirements to
    `replay-state:requests/<request_id>/results/`.
 
-The receipt is committed first; the terminal `STATUS.json` follows in a
-later commit naming the receipt's digest and that commit. A step that fails
-before the candidate's identity is known yields a `failed` receipt with no
-execution block; an unexpected exception also yields a `failed` receipt, so a
-request never loops. A request still `running` seven hours after its last
-update (a cancelled or crashed job) is retried. A scheduled run every three
-hours drains whatever is left.
+The qualifier writes a result file containing `status` and `receipt_sha256`;
+the drain handles a non-zero qualifier exit and leaves run logs visible in
+Actions. The separate `record` job, with `contents: write` and `actions: write`,
+reads that result file, validates the uploaded output and commits the receipt
+first. The terminal `STATUS.json` follows in a later commit naming the receipt's
+digest and the pushed receipt commit. Missing or invalid run output yields a
+minimal `failed` receipt.
 
-At most one drain job runs, with at most two simulation workers, so this
+A step that fails before the candidate's identity is known yields a `failed`
+receipt with no execution block. If no event outputs exist, `corpus` is null.
+An exception while building, sealing or copying the receipt's results yields
+a minimal `failed` receipt with `receipt_step_failed` and the error's first
+line. A request still `running` seven hours after its last update (a cancelled
+or crashed job) is eligible for retry; at most three `running` history entries
+are allowed. The next stale attempt records a minimal `failed` receipt with
+`attempt_limit_exceeded` and terminal status instead of running again.
+
+The recording job dispatches another drain run while pending requests remain;
+`workflow_dispatch` can create a run using `GITHUB_TOKEN`.
+([GitHub workflow-trigger documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow))
+A scheduled run every three hours also drains the queue. This schedule only
+processes recorded requests; undispatched release discovery is separate work
+in PR #165. Concurrent enqueues retry with backoff and, on a rebase conflict,
+abort, check out the latest state branch and enqueue the request again.
+Exhausting retries reports an error.
+
+At most one drain run executes, with at most two simulation workers, so this
 workflow never runs more than two simulations at once. These runs use GitHub
 runners; manual replays on the shared Mac also respect the host reservation
 (`python3 ~/reviews/fleet-ops/tools/reservation.py allowed w6-replay`), which
@@ -346,17 +392,23 @@ holds heavy local work back from 29 October to 2 November.
 
 `ci.yml` runs two kinds of replay check on every pull request and push:
 
-* Engine-free, in the main job: every committed namespace (legacy and each
-  variant) is re-staged and re-compared from its artifacts, every committed
-  release diff is re-rendered with `--check`, and every sealed namespace must
-  match its receipt byte for byte; the no-drift gate fails on any change.
-* `replay engine`, once per certified variant: installs the variant's exact
+* Engine-free, in the main job: every committed namespace with event run
+  manifests (legacy and each variant) is re-staged and re-compared from its
+  artifacts, every committed release diff is re-rendered with `--check`, and
+  every present namespace indexed as `replay_namespace` must have a receipt
+  and manifest matching its bytes. The no-drift gate uses
+  `git status --porcelain`, so newly generated untracked files fail too.
+* `replay engine`, for the two certified variants in its CI matrix: installs
+  each variant's exact
   freeze, checks the installed environment against the record, runs every
   event's construction guards, regenerates the committed construction
-  premises (and, for non-legacy variants, the re-verified diagnostics) byte
-  for byte, and, with the `HUGGING_FACE_TOKEN` secret, replays one real
-  measure-year on the certified dataset and compares the artifact with the
-  committed bytes. Without the secret that step says it did not run.
+  premises byte for byte. Non-legacy variants also regenerate the re-verified
+  diagnostics and, with `HUGGING_FACE_TOKEN` and a committed sealed namespace,
+  replay one real measure-year on the certified dataset and compare its
+  artifact with the committed bytes. The legacy leg skips diagnostics and
+  this determinism step. Without the secret (pending an administrator), or
+  without a committed sealed namespace, the step emits a notice stating that
+  nothing was replayed.
 
 ## Invariants
 

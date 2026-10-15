@@ -3,7 +3,7 @@
 GitHub keeps at most one pending run per concurrency group and cancels older
 pending runs, so a request must be written down before anything else can
 lose it. Each request lives at ``requests/<request_id>/`` in a checkout of
-the state branch: ``REQUEST.json`` (the request as received), ``STATUS.json``
+the state branch: ``REQUEST.json`` (the re-serialised received request), ``STATUS.json``
 (schema policyengine.uk-replay-status/v1) and, once terminal,
 ``REPLAY_RECEIPT.json`` and ``results/``. Enqueueing is idempotent: a
 request already present keeps its status. The workflow commits and pushes
@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -29,6 +30,47 @@ STATUSES = ("queued", "running", *TERMINAL)
 # A running request whose last update is older than this has lost its run
 # (a cancelled or crashed job never writes a terminal status).
 STALE_RUNNING = timedelta(hours=7)
+MAX_ATTEMPTS = 3
+
+
+def running_attempts(status: dict) -> int:
+    return sum(entry["status"] == "running" for entry in status["history"])
+
+
+def write_failure_receipt(
+    state: Path, request_id: str, *, code: str, detail: str
+) -> dict:
+    """Write a minimal failed receipt; the recorder commits it before status."""
+    directory = request_dir(state, request_id)
+    receipt = interface.seal_receipt(
+        {
+            "schema": interface.RECEIPT_SCHEMA_ID,
+            "request_id": request_id,
+            "status": "failed",
+            "rejection": None,
+            "variant_id": None,
+            "variant_identity_sha256": None,
+            "execution": None,
+            "corpus": None,
+            "integrity": {
+                "status": "failed",
+                "failures": [{"code": code, "detail": detail.splitlines()[0]}],
+            },
+            "diff": None,
+            "results": {
+                "repository": "PolicyEngine/policyengine-scorecard",
+                "ref": "replay-state",
+                "path": f"requests/{request_id}/results",
+            },
+        }
+    )
+    interface.validate(receipt, interface.RECEIPT_SCHEMA_ID)
+    directory.mkdir(parents=True, exist_ok=True)
+    results = directory / "results"
+    if results.exists():
+        shutil.rmtree(results)
+    (directory / "REPLAY_RECEIPT.json").write_bytes(canonical_bytes(receipt))
+    return receipt
 
 
 def canonical_bytes(value) -> bytes:
@@ -101,6 +143,8 @@ def set_status(
         )
     if status not in STATUSES:
         raise ValueError(f"unknown status {status}")
+    if status == "running" and running_attempts(current) >= MAX_ATTEMPTS:
+        raise ValueError(f"{request_id} exhausted its {MAX_ATTEMPTS} running attempts")
     updated = {
         **current,
         "status": status,
@@ -122,7 +166,11 @@ def _at(value: str) -> datetime:
 
 
 def pending(state: Path, *, now: str) -> list[str]:
-    """Requests to run, oldest first: queued, or running past the stale bound."""
+    """Requests to handle, oldest first: queued, or running past the stale bound.
+
+    Exhausted requests stay eligible so the control job can commit their
+    failure receipt, then terminal status. They cannot enter running again.
+    """
     out = []
     for path in sorted((state / "requests").glob("*/STATUS.json")):
         status = json.loads(path.read_bytes())
@@ -153,6 +201,14 @@ def main(argv: list[str] | None = None) -> int:
     mark.add_argument("--now", required=True)
     mark.add_argument("--receipt-sha256")
     mark.add_argument("--receipt-commit")
+    attempts = commands.add_parser("attempts")
+    attempts.add_argument("--state", type=Path, required=True)
+    attempts.add_argument("--request-id", required=True)
+    failure = commands.add_parser("failure-receipt")
+    failure.add_argument("--state", type=Path, required=True)
+    failure.add_argument("--request-id", required=True)
+    failure.add_argument("--code", required=True)
+    failure.add_argument("--detail", required=True)
     args = parser.parse_args(argv)
     if args.command == "enqueue":
         request = json.loads(args.request.read_text(encoding="utf-8"))
@@ -161,7 +217,19 @@ def main(argv: list[str] | None = None) -> int:
         )
         print(f"{request_id} {status}")
     elif args.command == "pending":
-        print("\n".join(pending(args.state, now=args.now)))
+        requests = pending(args.state, now=args.now)
+        if requests:
+            print("\n".join(requests))
+    elif args.command == "attempts":
+        status = read_status(args.state, args.request_id)
+        if status is None:
+            raise ValueError(f"{args.request_id} is not queued")
+        print(running_attempts(status))
+    elif args.command == "failure-receipt":
+        receipt = write_failure_receipt(
+            args.state, args.request_id, code=args.code, detail=args.detail
+        )
+        print(receipt["receipt_sha256"])
     else:
         set_status(
             args.state,

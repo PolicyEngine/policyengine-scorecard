@@ -338,3 +338,595 @@ def test_pending_never_returns_terminal_requests(tmp_path_factory, statuses):
     later = queue.pending(state, now="2026-10-12T09:00:00Z")
     assert finished not in later
     assert set(later) == set(ids[1:])
+
+
+def test_rejection_discards_a_supplied_record_and_cli_accepts_candidate(tmp_path):
+    request = golden_request()
+    record = copy.deepcopy(rv.get_variant(CURRENT))
+    record["status"] = "candidate"
+    document = rv.load_document()
+    document["variants"][-1] = record
+    variants_file = tmp_path / "variants.json"
+    variants_file.write_bytes(qualify.canonical_bytes(document))
+    request_file = tmp_path / "request.json"
+    request_file.write_bytes(qualify.canonical_bytes(request))
+    output = tmp_path / "receipt.json"
+    assert (
+        qualify.main(
+            [
+                "receipt",
+                "--request",
+                str(request_file),
+                "--variant",
+                CURRENT,
+                "--variants-file",
+                str(variants_file),
+                "--rejection",
+                "incompatible_pair: refused",
+                "--results-path",
+                "requests/x/results/",
+                "--output",
+                str(output),
+            ]
+        )
+        == 0
+    )
+    receipt = json.loads(output.read_bytes())
+    interface.validate(receipt, interface.RECEIPT_SCHEMA_ID)
+    assert receipt["variant_id"] is None
+    assert receipt["variant_identity_sha256"] is None
+    assert receipt["execution"] is None
+    assert receipt["integrity"] == {"status": "not_run", "failures": []}
+
+
+def test_identity_without_event_outputs_has_a_valid_failed_receipt(tmp_path):
+    record = rv.get_variant(CURRENT)
+    built = qualify.build_receipt(
+        golden_request(),
+        record=record,
+        root=tmp_path,
+        failures=[{"code": "event_run_failed", "detail": "preflight failed"}],
+        results_path="requests/x/results/",
+    )
+    assert built["corpus"] is None
+    assert built["execution"] is not None
+    assert built["variant_identity_sha256"] == record["identity_sha256"]
+    namespace = rv.namespace_root(record, root=tmp_path)
+    namespace.mkdir(parents=True)
+    receipt = qualify.seal(namespace, built)
+    interface.validate(receipt, interface.RECEIPT_SCHEMA_ID)
+    assert receipt["status"] == "failed"
+
+
+def test_corpus_passes_candidate_and_work_variants_without_resume(
+    tmp_path, monkeypatch
+):
+    record = rv.get_variant(CURRENT)
+    event = qualify.EVENTS[0]
+    directory = rv.namespace_root(record, root=tmp_path) / event
+    directory.mkdir(parents=True)
+    (directory / "RUN_MANIFEST.json").write_text(
+        json.dumps({"supported_years": [2024], "unsupported_years": []})
+    )
+    calls = []
+    monkeypatch.setattr(
+        qualify, "run", lambda command, *, cwd: calls.append((command, cwd))
+    )
+    work_variants = tmp_path / "variants.json"
+    assert (
+        qualify.run_corpus(record, work_variants, events=(event,), root=tmp_path) == []
+    )
+    compute = calls[0][0]
+    assert "--allow-uncertified" in compute
+    assert "--resume" not in compute
+    staging = calls[1][0]
+    assert staging[staging.index("--variants-file") + 1] == str(work_variants)
+    assert all(cwd == tmp_path for _, cwd in calls)
+
+
+def local_runner(tmp_path, variant_id=CURRENT):
+    import shutil
+    import subprocess
+
+    root = tmp_path / "runner"
+    root.mkdir()
+    record = rv.get_variant(variant_id)
+    for relative in (
+        "data/uk/replay_variants.json",
+        "data/uk/certified_bundle.json",
+        record["requirements"]["path"],
+        "results/uk/events/MODEL_DIAGNOSTICS.json",
+    ):
+        target = root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(qualify.ROOT / relative, target)
+    namespace = rv.namespace_root(record, root=root)
+    (namespace / qualify.EVENTS[0]).mkdir(parents=True)
+    (namespace / qualify.EVENTS[0] / "RUN_MANIFEST.json").write_text(
+        json.dumps({"variant_id": variant_id})
+    )
+    (namespace / qualify.EVENTS[0] / "COMPARISON.json").write_text(
+        "committed comparison"
+    )
+    (namespace / "committed-only.txt").write_text(
+        "old results must be deleted in the fresh checkout"
+    )
+    (namespace / rv.RECEIPT_NAME).write_text("committed receipt")
+    diff = root / rv.REPLAY_RESULT_ROOT / "diffs" / f"{variant_id}__{variant_id}"
+    diff.mkdir(parents=True)
+    (diff / "committed-only.txt").write_text("old diff")
+    for command in (
+        ["git", "init", "-q"],
+        ["git", "config", "user.email", "test@example.com"],
+        ["git", "config", "user.name", "Test"],
+        ["git", "add", "."],
+        ["git", "commit", "-qm", "fixture"],
+    ):
+        subprocess.run(command, cwd=root, check=True)
+    dataset = tmp_path / "dataset.h5"
+    dataset.write_bytes(b"dataset fixture")
+    request = golden_request()
+    request["candidate"]["data"]["sha256"] = rv.sha256_file(dataset)
+    request["candidate"]["data"]["size_bytes"] = dataset.stat().st_size
+    return root, record, dataset, request
+
+
+def stub_candidate(monkeypatch, root, record, *, no_outputs=False):
+    import subprocess
+
+    real_run = subprocess.run
+    calls = []
+
+    def prepare(request, venv, wheels, *, root):
+        (wheels.parent / "INSTALL.json").write_bytes(
+            qualify.canonical_bytes({"resolution": "certified_constraints"})
+        )
+        return {}
+
+    def process(command, **kwargs):
+        if "probe" not in command:
+            return real_run(command, **kwargs)
+        calls.append((command, kwargs["cwd"], kwargs["env"]))
+        document = rv.load_document(root / "data/uk/replay_variants.json")
+        Path(command[command.index("--variants-file") + 1]).write_bytes(
+            qualify.canonical_bytes(document)
+        )
+        return subprocess.CompletedProcess(command, 0, record["variant_id"] + "\n", "")
+
+    def run(command, *, cwd):
+        if command[0] == "git":
+            return real_run(command, cwd=cwd, check=True)
+        calls.append((command, cwd, qualify.candidate_environment(cwd)))
+        namespace = rv.namespace_root(record, root=cwd)
+        if "corpus" in command:
+            assert not (namespace / "committed-only.txt").exists()
+            assert not (namespace / rv.RECEIPT_NAME).exists()
+            if not no_outputs:
+                for event in qualify.EVENTS:
+                    directory = namespace / event
+                    directory.mkdir(parents=True)
+                    (directory / "RUN_MANIFEST.json").write_bytes(
+                        qualify.canonical_bytes(
+                            {
+                                "registry_sha256": "a" * 64,
+                                "supported_years": [2024],
+                                "unsupported_years": [],
+                                "artifacts": {},
+                            }
+                        )
+                    )
+                    (directory / "STAGING_MANIFEST.json").write_text(
+                        '{"full_supported_grid_complete":true}'
+                    )
+                    (directory / "COMPARISON_PROVENANCE.json").write_text("{}")
+            Path(command[command.index("--failures") + 1]).write_text("[]")
+        elif "diff" in command:
+            base = Path(command[command.index("--base") + 1])
+            assert base == rv.namespace_root(record, root=root)
+            assert (base / rv.RECEIPT_NAME).read_text() == "committed receipt"
+            assert command[command.index("--base-root") + 1] == str(root)
+            diff = Path(command[command.index("--output-dir") + 1])
+            assert not (diff / "committed-only.txt").exists()
+            diff.mkdir(parents=True)
+            (diff / "DIFF.json").write_bytes(
+                qualify.canonical_bytes(
+                    {
+                        "base": {"identity": {"variant_id": record["variant_id"]}},
+                        "flag_counts": {
+                            flag: 0
+                            for flag in (
+                                "numerical",
+                                "structural",
+                                "coverage",
+                                "mapping",
+                                "support",
+                                "inertness",
+                                "construction",
+                            )
+                        },
+                        "rows": [],
+                    }
+                )
+            )
+        else:
+            raise AssertionError(command)
+
+    monkeypatch.setattr(qualify, "prepare", prepare)
+    monkeypatch.setattr(qualify.subprocess, "run", process)
+    monkeypatch.setattr(qualify, "run", run)
+    return calls, real_run
+
+
+def test_requalification_uses_fresh_results_and_leaves_runner_unchanged(
+    tmp_path, monkeypatch
+):
+    root, record, dataset, request = local_runner(tmp_path)
+    for name in ("HUGGING_FACE_TOKEN", "HF_TOKEN", "HUGGINGFACE_HUB_TOKEN"):
+        monkeypatch.setenv(name, "secret")
+    calls, real_run = stub_candidate(monkeypatch, root, record)
+    state = tmp_path / "state"
+    rid = qualify.request_id(request)
+    target = state / "requests" / rid / "results"
+    target.mkdir(parents=True)
+    (target / "previous-attempt.txt").write_text("stale")
+    work = tmp_path / "work"
+    receipt = qualify.run_request(
+        request, state, work, runner="test", dataset_file=dataset, root=root
+    )
+    interface.validate(receipt, interface.RECEIPT_SCHEMA_ID)
+    assert receipt["status"] == "complete"
+    assert receipt["diff"]["base_variant_id"] == CURRENT
+    assert not (target / "previous-attempt.txt").exists()
+    copied = target / record["result_root"]
+    diff = target / rv.REPLAY_RESULT_ROOT / "diffs" / f"{CURRENT}__{CURRENT}"
+    assert qualify.verify_sealed(copied, diff_dir=diff) == []
+    assert (
+        "INSTALL.json"
+        in json.loads((copied / qualify.MANIFEST_NAME).read_bytes())["files"]
+    )
+    assert all(cwd == work / "checkout" for _, cwd, _ in calls)
+    assert all(
+        not any(
+            name in env
+            for name in ("HUGGING_FACE_TOKEN", "HF_TOKEN", "HUGGINGFACE_HUB_TOKEN")
+        )
+        for _, _, env in calls
+    )
+    assert (
+        real_run(
+            ["git", "status", "--porcelain"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+        == ""
+    )
+    assert (
+        rv.namespace_root(record, root=root) / rv.RECEIPT_NAME
+    ).read_text() == "committed receipt"
+
+
+@pytest.mark.parametrize(
+    "crash_step", ["build_receipt", "seal", "copytree", "event_results"]
+)
+def test_receipt_step_crashes_produce_minimal_valid_failed_receipts(
+    tmp_path, monkeypatch, crash_step
+):
+    root, record, dataset, request = local_runner(tmp_path)
+    stub_candidate(monkeypatch, root, record)
+
+    def crash(*args, **kwargs):
+        raise RuntimeError("first line\nprivate traceback details")
+
+    if crash_step == "copytree":
+        monkeypatch.setattr(qualify.shutil, "copytree", crash)
+    else:
+        monkeypatch.setattr(qualify, crash_step, crash)
+    state = tmp_path / "state"
+    receipt = qualify.run_request(
+        request,
+        state,
+        tmp_path / "work",
+        runner="test",
+        dataset_file=dataset,
+        root=root,
+    )
+    interface.validate(receipt, interface.RECEIPT_SCHEMA_ID)
+    assert receipt["status"] == "failed"
+    assert receipt["variant_id"] == CURRENT
+    assert receipt["corpus"] is None
+    assert receipt["integrity"]["failures"] == [
+        {"code": "receipt_step_failed", "detail": "RuntimeError: first line"}
+    ]
+    assert not (state / "requests" / qualify.request_id(request) / "results").exists()
+
+
+def test_run_request_with_identity_and_no_outputs_still_seals_failure(
+    tmp_path, monkeypatch
+):
+    root, record, dataset, request = local_runner(tmp_path)
+    stub_candidate(monkeypatch, root, record, no_outputs=True)
+    receipt = qualify.run_request(
+        request,
+        tmp_path / "state",
+        tmp_path / "work",
+        runner="test",
+        dataset_file=dataset,
+        root=root,
+    )
+    interface.validate(receipt, interface.RECEIPT_SCHEMA_ID)
+    assert receipt["status"] == "failed" and receipt["corpus"] is None
+    assert receipt["execution"] is not None
+    assert any(
+        f["code"] == "event_outputs_missing" for f in receipt["integrity"]["failures"]
+    )
+
+
+@pytest.mark.parametrize(
+    "missing", ["REPLAY_RECEIPT.json", "NAMESPACE_MANIFEST.json", "both"]
+)
+def test_verify_sealed_checks_expected_namespace_with_missing_seal(
+    tmp_path, monkeypatch, missing, capsys
+):
+    namespace, _, _ = sealed_namespace(tmp_path)
+    if missing in ("REPLAY_RECEIPT.json", "both"):
+        (namespace / rv.RECEIPT_NAME).unlink()
+    if missing in ("NAMESPACE_MANIFEST.json", "both"):
+        (namespace / qualify.MANIFEST_NAME).unlink()
+    monkeypatch.setattr(
+        rv,
+        "load_document",
+        lambda: {
+            "variants": [{"layout": "replay_namespace", "result_root": str(namespace)}]
+        },
+    )
+    assert qualify.main(["verify-sealed"]) == 1
+    assert "not sealed" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("code", [None, "artifact_hash_mismatch", "data_access_failed"])
+def test_dataset_fetch_cli_hands_file_or_rejection_to_run_request(
+    tmp_path, monkeypatch, code
+):
+    request_path = tmp_path / "request.json"
+    request_path.write_bytes(qualify.canonical_bytes(golden_request()))
+    source = tmp_path / "source.h5"
+    source.write_bytes(b"verified dataset")
+
+    def fetch(request):
+        if code:
+            raise qualify.Rejected(code, "fetch detail")
+        return source
+
+    monkeypatch.setattr(qualify, "fetch_dataset", fetch)
+    result = tmp_path / "fetch-result.json"
+    output = tmp_path / "output.h5"
+    assert (
+        qualify.main(
+            [
+                "fetch-dataset",
+                "--request",
+                str(request_path),
+                "--output",
+                str(output),
+                "--result-file",
+                str(result),
+            ]
+        )
+        == 0
+    )
+    fetched = json.loads(result.read_bytes())
+    if code:
+        assert fetched == {
+            "dataset_file": None,
+            "rejection": {"code": code, "detail": "fetch detail"},
+        }
+        receipt = qualify.run_request(
+            golden_request(),
+            tmp_path / "state",
+            tmp_path / "work",
+            runner="test",
+            dataset_file=output,
+            dataset_result=result,
+        )
+        interface.validate(receipt, interface.RECEIPT_SCHEMA_ID)
+        assert receipt["rejection"]["code"] == code
+    else:
+        assert output.read_bytes() == source.read_bytes()
+        assert fetched == {"dataset_file": str(output), "rejection": None}
+
+
+def test_run_request_cli_writes_outcome_file(tmp_path, monkeypatch):
+    request = tmp_path / "request.json"
+    request.write_bytes(qualify.canonical_bytes(golden_request()))
+    receipt = qualify.minimal_failed_receipt(
+        qualify.request_id(golden_request()),
+        record=None,
+        results_path="requests/x/results/",
+        detail="crash",
+    )
+    monkeypatch.setattr(qualify, "run_request", lambda *args, **kwargs: receipt)
+    outcome = tmp_path / "outcome.json"
+    assert (
+        qualify.main(
+            [
+                "run-request",
+                "--request",
+                str(request),
+                "--state-dir",
+                str(tmp_path / "state"),
+                "--work",
+                str(tmp_path / "work"),
+                "--result-file",
+                str(outcome),
+            ]
+        )
+        == 0
+    )
+    assert json.loads(outcome.read_bytes()) == {
+        "status": "failed",
+        "receipt_sha256": receipt["receipt_sha256"],
+    }
+
+
+@pytest.mark.parametrize(
+    "resolution", ["exact_requirements", "certified_constraints", "free_resolution"]
+)
+def test_prepare_records_resolution_mode(tmp_path, monkeypatch, resolution):
+    import subprocess
+
+    request = golden_request()
+    if resolution != "exact_requirements":
+        request["candidate"]["policyengine_uk"]["wheel_sha256"] = "0" * 64
+    attempts = []
+
+    def run(command, *, cwd):
+        if "-c" in command and resolution == "free_resolution":
+            raise subprocess.CalledProcessError(1, command)
+        attempts.append(command)
+
+    monkeypatch.setattr(qualify, "run", run)
+    monkeypatch.setattr(
+        qualify.subprocess,
+        "run",
+        lambda command, **kwargs: subprocess.CompletedProcess(command, 0, "", ""),
+    )
+    monkeypatch.setattr(qualify, "verify_wheels", lambda *args: {})
+    qualify.prepare(request, tmp_path / "venv", tmp_path / "wheels")
+    installation = json.loads((tmp_path / "INSTALL.json").read_bytes())
+    assert installation["resolution"] == resolution
+    assert installation["certified_variant_id"] == CURRENT
+    assert len(installation["environment_sha256"]) == 64
+    assert attempts
+
+
+def test_missing_pypi_wheel_is_artifact_hash_rejection(tmp_path, monkeypatch):
+    import subprocess
+
+    monkeypatch.setattr(qualify, "run", lambda *args, **kwargs: None)
+    monkeypatch.setattr(
+        qualify.subprocess,
+        "run",
+        lambda command, **kwargs: subprocess.CompletedProcess(
+            command,
+            1,
+            "",
+            "ERROR: No matching distribution found for policyengine-uk==0.0.1",
+        ),
+    )
+    with pytest.raises(qualify.Rejected) as raised:
+        qualify.prepare(golden_request(), tmp_path / "venv", tmp_path / "wheels")
+    assert raised.value.code == "artifact_hash_mismatch"
+
+
+def test_nested_receipt_named_files_are_bound_and_sealed_results_cannot_be_resealed(
+    tmp_path,
+):
+    namespace, diff, sealed = sealed_namespace(tmp_path)
+    original_manifest = (namespace / qualify.MANIFEST_NAME).read_bytes()
+    original_receipt = (namespace / rv.RECEIPT_NAME).read_bytes()
+    with pytest.raises(rv.VariantError, match="sealed"):
+        qualify.seal(namespace, sealed, diff_dir=diff)
+    assert (namespace / qualify.MANIFEST_NAME).read_bytes() == original_manifest
+    assert (namespace / rv.RECEIPT_NAME).read_bytes() == original_receipt
+    for name in (rv.RECEIPT_NAME, qualify.MANIFEST_NAME):
+        nested = namespace / "event" / name
+        nested.write_text("added file")
+        assert any(
+            "files differ" in problem
+            for problem in qualify.verify_sealed(namespace, diff_dir=diff)
+        )
+        nested.unlink()
+
+
+def test_corpus_refuses_a_sealed_namespace_before_any_subprocess(tmp_path, monkeypatch):
+    record = copy.deepcopy(rv.get_variant(CURRENT))
+    namespace, _, _ = sealed_namespace(tmp_path)
+    record["result_root"] = str(namespace)
+    monkeypatch.setattr(
+        qualify,
+        "run",
+        lambda *args, **kwargs: pytest.fail("must not start a subprocess"),
+    )
+    with pytest.raises(rv.VariantError, match="sealed"):
+        qualify.run_corpus(record, tmp_path / "variants.json", root=tmp_path)
+
+
+def test_legacy_requalification_preserves_original_diagnostics(tmp_path, monkeypatch):
+    legacy_id = rv.load_document()["default_variant"]
+    root, record, dataset, request = local_runner(tmp_path, variant_id=legacy_id)
+    _, real_run = stub_candidate(monkeypatch, root, record)
+    receipt = qualify.run_request(
+        request,
+        tmp_path / "state",
+        tmp_path / "work",
+        runner="test",
+        dataset_file=dataset,
+        root=root,
+    )
+    interface.validate(receipt, interface.RECEIPT_SCHEMA_ID)
+    assert receipt["status"] == "complete"
+    assert receipt["variant_id"] == legacy_id
+    diagnostics = root / "results/uk/events/MODEL_DIAGNOSTICS.json"
+    assert (tmp_path / "work/diagnostics.json").read_bytes() == diagnostics.read_bytes()
+    assert (
+        real_run(
+            ["git", "status", "--porcelain"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+        == ""
+    )
+
+
+def test_diff_reads_base_and_head_artifacts_from_their_own_checkouts(
+    tmp_path, monkeypatch
+):
+    from test_uk_event_diff import make_namespace
+    from pipeline import compute_uk_event as compute
+    from pipeline import diff_uk_event_runs as diff
+
+    base_root = tmp_path / "runner"
+    head_root = tmp_path / "checkout"
+    monkeypatch.setattr(compute, "ROOT", base_root)
+    base = make_namespace(base_root, "pair")
+    monkeypatch.setattr(compute, "ROOT", head_root)
+    head = make_namespace(
+        head_root,
+        "pair",
+        effects={
+            2024: {"income_tax": 200e6, "universal_credit": -60e6},
+            2025: {"income_tax": 220e6, "universal_credit": -66e6},
+        },
+    )
+    monkeypatch.setattr(qualify, "ROOT", head_root)
+    monkeypatch.setattr(diff, "ROOT", head_root)
+    output = head_root / "diff"
+    command = [
+        "diff",
+        "--base",
+        str(base["root"]),
+        "--base-root",
+        str(base_root),
+        "--head",
+        str(head["root"]),
+        "--output-dir",
+        str(output),
+    ]
+    assert qualify.main(command) == 0
+    result = json.loads((output / "DIFF.json").read_bytes())
+    assert result["flag_counts"]["numerical"] > 0
+    row = next(
+        row
+        for row in result["rows"]
+        if row["level"] == "head" and row["key"] == "income_tax" and row["year"] == 2024
+    )
+    assert row["base_gbp"] == -100e6 and row["head_gbp"] == -200e6
+    assert result["base"]["root"] == result["head"]["root"] == "ns/pair"
+    artifact = next((base["root"] / "test_event").glob("test_event__*.json"))
+    artifact.write_text("tampered committed artifact")
+    with pytest.raises(diff.DiffError):
+        qualify.main(command)

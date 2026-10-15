@@ -32,8 +32,8 @@ Two flows use the same receiver:
 * **Post-promotion consumer dispatch.** After a policyengine.py release,
   W4's NotifyConsumers sends the same event with `kind: "released_bundle"`,
   the policyengine PyPI wheel SHA-256 and the packaged manifest SHA-256. The
-  same receiver handles it, so scorecard ends up with a certified variant
-  and a sealed namespace for every release; there is no separate handler.
+  same receiver handles it and records the variant and sealed namespace for
+  each successfully replayed dispatched release; there is no separate handler.
 
 ## Transport
 
@@ -42,26 +42,46 @@ Two flows use the same receiver:
   `client_payload: {"request": <request>}`. W4 alone edits the policyengine.py
   dispatcher and its GitHub App token scope; scorecard needs
   `contents: read` on policyengine.py (public) and nothing else from W4.
-* GitHub keeps at most one pending run per concurrency group and cancels
-  older pending runs, so the receiver's first step writes the request to the
-  persistent queue on the `replay-state` branch before anything else. A
-  scheduled catch-up (every 3 hours) drains the queue and discovers
-  policyengine.py releases that were never dispatched.
+* The receiver writes incoming requests to the persistent queue on the
+  `replay-state` branch, then dispatches a drain run. Incoming runs have
+  distinct concurrency groups; the prepare/run/record drain sequence shares
+  `uk-replay-drain`. GitHub's default concurrency queue can replace an older
+  pending run, so requests remain in the persistent queue until handled.
+  ([GitHub concurrency documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency))
+  A scheduled catch-up every 3 hours drains recorded requests. Discovery of
+  policyengine.py releases that were never dispatched is separate work in
+  PR #165.
 * State for request `<request_id>` lives at
   `replay-state:requests/<request_id>/`:
-  `REQUEST.json` (the bytes received), `STATUS.json`
+  `REQUEST.json` (the received request re-serialised as sorted, indented JSON;
+  `request_id` remains the JCS digest of the received request), `STATUS.json`
   (`queued` → `running` → `complete` | `rejected` | `failed`, with a
   history of timestamps and Actions run URLs), and on completion
   `REPLAY_RECEIPT.json`. The receipt is committed first; a terminal
   `STATUS.json` is written in a later commit and names `receipt_sha256` and
   `receipt_commit`, so one contents read binds the status to the receipt
   bytes.
+* Dataset fetching and candidate execution are separate jobs. The control
+  job fetches and verifies the file with the dataset token; the run job has
+  `contents: read`, no persisted checkout credential and no Hugging Face
+  token. It receives the file through an artifact and supplies
+  `--dataset-file` to `run-request`. The qualifier writes a structured result
+  file with `status` and `receipt_sha256`, while logs remain visible in
+  Actions. A separate recording job has `contents: write` and `actions: write`,
+  validates the uploaded receipt, records it before terminal status and
+  dispatches another drain run while requests remain pending.
+  `workflow_dispatch` can trigger a run using `GITHUB_TOKEN`.
+  ([GitHub workflow-trigger documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow))
 * W4 polls `GET /repos/PolicyEngine/policyengine-scorecard/contents/requests/<request_id>/STATUS.json?ref=replay-state`
   (the repository is public). A receipt is addressed by the request's own
   digest, so W4 needs no callback and no scorecard token.
 * Duplicate requests (same `request_id`) are idempotent: an existing
   terminal status is returned, never rerun. A failed request can be retried
   only by a new request (a different `attempt`).
+* A running request becomes stale after 7 hours. The receiver permits at
+  most three `running` entries in its history; the next stale attempt records
+  a minimal `failed` receipt with `attempt_limit_exceeded`, followed by a
+  terminal status naming that receipt and its pushed commit.
 
 ## Request
 
@@ -100,11 +120,12 @@ Two flows use the same receiver:
 }
 ```
 
-* `request_id` is not a field: it is the SHA-256 of the request's JCS
-  bytes. Both sides test against the golden fixture.
+* `request_id` is not a field: it is the SHA-256 of the received request's
+  JCS bytes, independent of the formatting used to store `REQUEST.json`.
+  Both sides test against the golden fixture.
 * `requested_by` names the requesting repository and commit;
-  `workflow_run_id` is optional (a scorecard catch-up run started outside
-  Actions has none), and additional provenance fields such as `run_attempt`
+  `workflow_run_id` is optional (a manual request made outside Actions has
+  none), and additional provenance fields such as `run_attempt`
   are accepted. Every other object is closed.
 * The wrapper is identified by `version` plus either a PyPI wheel
   (`{"pypi": {"wheel_sha256": …}}`) or, for an unreleased candidate whose
@@ -122,13 +143,27 @@ The candidate becomes a `candidate` variant record (RELEASE_REPLAY.md). It is
 | Code | Condition |
 |---|---|
 | `schema_invalid` | The request fails the v1 schema. |
-| `artifact_hash_mismatch` | A downloaded wheel, the installed packaged manifest or the dataset bytes differ from the request. |
+| `artifact_hash_mismatch` | A requested wheel is missing from PyPI, or a downloaded wheel, the installed packaged manifest or the dataset bytes differ from the request. |
 | `release_bundle_mismatch` | `pe.uk.uk_latest.release_bundle` under packaged certification differs from `expected_release_bundle`. |
 | `incompatible_pair` | The packaged certification does not name the candidate model version, or the dataset is not the bundle's certified artifact. |
 | `data_access_failed` | The dataset could not be fetched with the receiver's credential. |
 | `no_supported_years` | No event year falls in the dataset's supported years. |
 
 A rejected request has no numerical results; its receipt says why.
+`variant_id`, `variant_identity_sha256`, `execution`, `corpus` and `diff`
+are null, and `integrity.status` is `not_run`, even if a record was known
+before the rejection.
+
+Every corpus replay runs in a fresh detached checkout of the same commit
+under its work directory. The candidate's copied namespace and diff are
+removed before running, no committed results are resumed, and the runner
+checkout supplies the read-only diff base. With `latest_certified`, an exact
+certified pair is compared with its own committed namespace, which also
+checks determinism. Sealing happens in the fresh checkout, and the request's
+previous `results/` directory is replaced before copying the sealed output.
+`INSTALL.json` records whether installation used exact certified requirements,
+certified constraints or a fallback to free resolution; the receipt binds
+that file through the namespace manifest.
 
 ## Receipt
 
@@ -179,12 +214,20 @@ A rejected request has no numerical results; its receipt says why.
  "results": {
   "repository": "PolicyEngine/policyengine-scorecard",
   "ref": "replay-state",
-  "commit": "<40-hex>",
-  "path": "requests/<request_id>/results/"
+  "path": "requests/<request_id>/results/",
+  "manifest_sha256": "<64-hex SHA-256 of NAMESPACE_MANIFEST.json>"
  },
  "receipt_sha256": "<64-hex of the canonical receipt without this field>"
 }
 ```
+
+A complete receipt requires `variant_identity_sha256` and
+`results.manifest_sha256`. A failed receipt has `corpus: null` when no event
+produced outputs. If receipt building, sealing or result copying crashes,
+the receiver writes a minimal schema-valid failed receipt with
+`receipt_step_failed` and the error's first line. Missing or invalid uploaded
+run output is recorded as `run_artifact_failed`. The terminal status still
+names the receipt digest and the commit that was pushed before it.
 
 ### Division of judgement
 
@@ -197,9 +240,10 @@ How flags arise, so a gate built on them sees the intended events:
   check changed its result. A change in the current-law value of a parameter
   the construction touches is recorded as context in the row's details, not
   as a flag, because it is what a model release is expected to change.
-* For a candidate, the base is the latest certified variant, normally on the
-  same data build; the first certified-variant run diffs against the legacy
-  populace variant, where the data family itself changes.
+* For a candidate, the default base is the newest certified variant with
+  committed results; an exact certified pair uses its own committed run.
+  The first certified-variant run diffs against the legacy populace variant,
+  where the data family itself changes.
 
 * `integrity.status` is `complete`, `incomplete` or `failed`. `failed` means
   a crash, a non-finite aggregate, an identity mismatch after the run started,

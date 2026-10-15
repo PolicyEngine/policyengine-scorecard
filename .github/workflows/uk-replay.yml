@@ -1,25 +1,17 @@
 name: UK replay qualification
 
-# WHY THIS EXISTS
-#
-# Release qualification in policyengine.py (W4) asks this repository to rerun
-# the OBR fiscal-event replay corpus on a candidate model/data pair before it
-# is promoted, and to return an artifact-bound receipt. The interface is
-# docs/uk_replay/QUALIFICATION_INTERFACE.md; the run is
-# pipeline/uk_replay_qualify.py.
-#
-# GitHub keeps at most one pending run per concurrency group and cancels the
-# older pending ones, so a request is first written to the persistent queue
-# on the `replay-state` branch (enqueue job, no concurrency group). The drain
-# job then runs queued requests one at a time. A scheduled run drains anything
-# a cancelled run left behind. A request whose run died mid-way is retried
-# after the stale bound in pipeline/uk_replay_queue.py.
-#
-# Simulations: one drain job at a time, at most two workers inside it, so
-# never more than two simulations at once from this workflow.
-#
-# Secrets: HUGGING_FACE_TOKEN reads the certified datasets. Without it a
-# request is rejected with data_access_failed rather than skipped.
+# Incoming request runs only enqueue, before dispatching an empty drain run.
+# Their concurrency groups are unique. Empty manual runs and scheduled drains
+# share a workflow concurrency group, held across preparation, run and recording.
+# This preserves the persistent queue even when a pending drain is cancelled.
+# One request runs per drain, with at most two simulation workers; the recorder
+# dispatches another drain while requests remain eligible. Stale runs retry
+# after seven hours, with three running attempts maximum.
+# Dataset access happens before the candidate job, in a separate job. The
+# candidate job has contents: read, no checkout credentials and no dataset token.
+# Receipts are pushed before their terminal status names the pushed commit.
+# GitHub documents GITHUB_TOKEN-triggered workflow_dispatch runs at:
+# https://docs.github.com/en/actions/concepts/security/github_token
 
 on:
   repository_dispatch:
@@ -34,94 +26,136 @@ on:
     - cron: "41 */3 * * *"
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: ${{ (github.event_name == 'repository_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.request != '')) && format('uk-replay-enqueue-{0}', github.run_id) || 'uk-replay-drain' }}
+  cancel-in-progress: false
 
 env:
   STATE_BRANCH: replay-state
+  PYTHONPATH: .
 
 jobs:
   enqueue:
     name: record the request
     if: github.event_name == 'repository_dispatch' || (github.event_name == 'workflow_dispatch' && github.event.inputs.request != '')
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - name: Check out the state branch
-        run: |
-          set -euo pipefail
-          if git ls-remote --exit-code --heads origin "$STATE_BRANCH" >/dev/null; then
-            git fetch -q origin "$STATE_BRANCH"
-            git worktree add -q state "origin/$STATE_BRANCH"
-            git -C state switch -q -C "$STATE_BRANCH"
-          else
-            git worktree add -q --orphan -b "$STATE_BRANCH" state
-          fi
-          git -C state config user.name "github-actions[bot]"
-          git -C state config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-      - name: Write the request
+      - name: Write the received request
         env:
+          EVENT_NAME: ${{ github.event_name }}
           DISPATCH_REQUEST: ${{ toJSON(github.event.client_payload.request) }}
           MANUAL_REQUEST: ${{ github.event.inputs.request }}
         run: |
           set -euo pipefail
-          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+          if [ "$EVENT_NAME" = repository_dispatch ]; then
             printf '%s' "$DISPATCH_REQUEST" > "$RUNNER_TEMP/request.json"
           else
             printf '%s' "$MANUAL_REQUEST" > "$RUNNER_TEMP/request.json"
           fi
-      - name: Enqueue and push
+      - name: Enqueue with conflict recovery and start a drain
         env:
-          PYTHONPATH: .
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GH_TOKEN: ${{ github.token }}
+          DRAIN_REF: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
-          now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          uv run --with rfc8785==0.1.4 --with jsonschema python -m pipeline.uk_replay_queue \
-            enqueue --state state --request "$RUNNER_TEMP/request.json" --run-url "$RUN_URL" --now "$now" \
-            | tee "$RUNNER_TEMP/enqueued.txt"
-          git -C state add -A
-          if git -C state diff --cached --quiet; then
-            echo "already recorded: $(cat "$RUNNER_TEMP/enqueued.txt")"
-            exit 0
-          fi
-          git -C state commit -qm "Queue $(cut -d' ' -f1 "$RUNNER_TEMP/enqueued.txt")"
-          for attempt in 1 2 3 4 5; do
-            git -C state push -q origin "HEAD:$STATE_BRANCH" && exit 0
-            git -C state pull -q --rebase origin "$STATE_BRANCH"
-          done
-          exit 1
+          export REQUEST_FILE="$RUNNER_TEMP/request.json"
+          bash .github/scripts/uk_replay_enqueue.sh
+          gh workflow run uk-replay.yml --repo "$GITHUB_REPOSITORY" --ref "$DRAIN_REF"
 
-  drain:
-    name: run queued requests
-    needs: [enqueue]
-    if: always() && (needs.enqueue.result == 'success' || needs.enqueue.result == 'skipped')
+  prepare:
+    name: select a request and fetch its dataset
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.request == '')
     runs-on: ubuntu-latest
-    timeout-minutes: 340
-    concurrency:
-      group: uk-replay-drain
-      cancel-in-progress: false
+    permissions:
+      contents: write
+    outputs:
+      request_id: ${{ steps.select.outputs.request_id }}
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - name: Check out the state branch
-        run: |
-          set -euo pipefail
-          if ! git ls-remote --exit-code --heads origin "$STATE_BRANCH" >/dev/null; then
-            echo "no state branch yet; nothing queued"
-            echo "EMPTY=1" >> "$GITHUB_ENV"
-            exit 0
-          fi
-          git fetch -q origin "$STATE_BRANCH"
-          git worktree add -q state "origin/$STATE_BRANCH"
-          git -C state switch -q -C "$STATE_BRANCH"
-          git -C state config user.name "github-actions[bot]"
-          git -C state config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-      - name: Drain the queue
-        if: env.EMPTY != '1'
+      - name: Mark the oldest eligible request running
+        id: select
         env:
-          PYTHONPATH: .
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: bash .github/scripts/uk_replay_prepare.sh
+      - name: Fetch and verify the dataset without candidate code
+        if: steps.select.outputs.request_id != ''
+        env:
           HUGGING_FACE_TOKEN: ${{ secrets.HUGGING_FACE_TOKEN }}
+        run: |
+          uv run --with rfc8785==0.1.4 --with jsonschema --with huggingface_hub python \
+            -m pipeline.uk_replay_qualify fetch-dataset --request input/REQUEST.json \
+            --output input/dataset.h5 --result-file input/fetch-result.json
+      - name: Hand the verified dataset and request to the candidate job
+        if: steps.select.outputs.request_id != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: replay-input
+          path: input/
+          if-no-files-found: error
+          retention-days: 1
+
+  run:
+    name: run one candidate with read permission
+    needs: prepare
+    if: needs.prepare.outputs.request_id != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/download-artifact@v4
+        with:
+          name: replay-input
+          path: input/
+      - name: Run the candidate and preserve logs and outcome
+        env:
+          REQUEST_ID: ${{ needs.prepare.outputs.request_id }}
           REPLAY_RUNNER: github-actions ${{ runner.os }} ${{ runner.arch }}
         run: bash .github/scripts/uk_replay_drain.sh
+      - name: Upload the receipt and results for the recorder
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: replay-output
+          path: output/
+          if-no-files-found: warn
+          retention-days: 7
+
+  record:
+    name: commit the receipt then terminal status
+    needs: [prepare, run]
+    if: always() && needs.prepare.outputs.request_id != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Download the run artifact
+        id: download
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: replay-output
+          path: output/
+      - name: Record the outcome and continue the queue
+        env:
+          REQUEST_ID: ${{ needs.prepare.outputs.request_id }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GH_TOKEN: ${{ github.token }}
+          DRAIN_REF: ${{ github.event.repository.default_branch }}
+        run: bash .github/scripts/uk_replay_record.sh
