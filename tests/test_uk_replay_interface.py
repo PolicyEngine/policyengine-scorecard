@@ -297,6 +297,10 @@ def test_receipts_carry_grid_lists_and_base_events_additively():
         with pytest.raises(jsonschema.ValidationError):
             ui.validate(ui.seal_receipt(broken), ui.RECEIPT_SCHEMA_ID)
     broken = copy.deepcopy(receipt)
+    broken["diff"]["base_events"]["spring_budget_2023"]["unexpected"] = True
+    with pytest.raises(jsonschema.ValidationError):
+        ui.validate(ui.seal_receipt(broken), ui.RECEIPT_SCHEMA_ID)
+    broken = copy.deepcopy(receipt)
     broken["diff"]["base_events"]["spring_budget_2023"]["inert_measure_years"] = [
         {"measure_key": "x"}
     ]

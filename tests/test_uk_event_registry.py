@@ -519,6 +519,7 @@ def test_ab2025_named_gaps_and_the_surcharge_reversal():
     expected = {}
     for path, by_year in entry["pe_baseline_modifier"].items():
         years = sorted(int(y) for y in by_year)
+        assert years == list(range(years[0], years[-1] + 1))
         (value,) = {by_year[str(y)] for y in years}
         expected[path] = {f"{years[0]}-01-01.{years[-1]}-12-31": value}
     assert len(expected) == 4
