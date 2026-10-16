@@ -203,8 +203,8 @@ def test_ci_compares_the_real_replay_through_the_module():
 
 @pytest.mark.parametrize("variant", [NEWEST])
 def test_the_next_qualification_compares_against_the_newest_committed_run(variant):
-    # Review of 500bf94: with 6.4.1's comparisons committed, a new candidate's
-    # latest_certified base is that namespace rather than the legacy run.
+    # Review of 500bf94: a new candidate's latest_certified base is the
+    # newest certified namespace with committed comparisons, not the legacy run.
     from pipeline import uk_replay_qualify as qualify
     from pipeline import uk_replay_variants as rv
 

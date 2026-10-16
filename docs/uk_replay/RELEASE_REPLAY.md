@@ -35,8 +35,8 @@ Read in code at `61c13e38`:
   still has the 3% surcharge scale") unconditionally.
 * `diagnose_uk_event_models.investigate` refuses any engine but 2.89.2.
 
-The newest certified pair is policyengine.py **6.2.6** (PR #555 and its
-version bump `481940ec`): `policyengine-uk 2.125.1`, `policyengine-core
+The pair examined in the initial 11 October audit was policyengine.py
+**6.2.6** (PR #555 and its version bump `481940ec`): `policyengine-uk 2.125.1`, `policyengine-core
 3.33.0`, data `policyengine-uk-data-1.58.0`, default dataset
 `enhanced_frs_2024_25` (SHA-256 `5ba399ea…60b6`, 128,369,110 bytes,
 `hf://policyengine/policyengine-uk-data-private/enhanced_frs_2024_25.h5@1.58.0`).
@@ -248,6 +248,8 @@ the receiver's qualification of policyengine.py 6.4.1: request `b1f9a93d…`,
 receipt SHA-256 `3b420b5e…`, `replay-state` commit `484eaa7`. Its release
 diff against the legacy variant is committed beside it. All six corpus events
 have complete supported grids and no inert measure-years.
+This is the newest certified variant and the current missed-dispatch discovery
+floor; the 6.2.6 audit above remains historical evidence.
 
 The run predates the processed-value readback and the AB2024 CGT construction
 revision (#186). Its AB2024 Capital Gains Tax row for period 2024 (FY2024–25)
@@ -498,17 +500,123 @@ type `uk-replay-qualification-request` (and manual requests). An incoming
 request uses an `enqueue` job to write it to the persistent queue on the
 `replay-state` branch (`pipeline/uk_replay_queue.py`), then dispatches a drain
 run. Incoming runs have distinct concurrency groups; drain runs share
-`uk-replay-drain`, so only one prepare/run/record sequence executes at a time.
+`uk-replay-drain`, so only one discovery/prepare/run/record sequence executes
+at a time.
 GitHub's default concurrency queue can replace an older pending run; the
 request remains in `replay-state` for a later drain.
 ([GitHub concurrency documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency))
+
+An empty-request `workflow_dispatch` drain first runs `discover`, then
+`discover_enqueue`, before `prepare`. The schedule's `tick` job only dispatches
+that empty drain: it does not check out code or hold the dataset token. Neither
+discovery nor dataset fetching runs on a schedule tick or a pull request.
+
+| Job | Authority and inputs |
+|---|---|
+| `tick` | `actions: write`; dispatches an empty drain, without a dataset token. |
+| `enqueue` | `contents: write`, `actions: write`; records a received request and dispatches a drain; runs only trusted control code. |
+| `discover` | `contents: read`, checkout credentials disabled; reads PyPI and wheel ZIP/JSON bytes, with one token step reading only the private data release manifest. It installs, imports and executes no release or candidate code. |
+| `discover_enqueue` | `contents: write`; validates public discovery metadata and writes `replay-state`; no dataset token or release/candidate code. |
+| `prepare` | `contents: write`; selects a queued request and marks it running. |
+| `run` | `contents: read`, checkout credentials disabled; one trusted token step fetches the dataset, then candidate code runs in the sandbox below. |
+| `record` | `contents: write`, `actions: write`; rechecks public output, records the receipt and dispatches the next drain; no release/candidate code. |
+
+For the 6.4.1 and 6.5.0 wheels, a successful packaged-certification
+`release_bundle` is a pure function of the packaged manifest. The loader reads
+`data_releases[country]` (`policyengine/provenance/manifest.py:321–335` in
+both wheels); local overlays cannot shadow the default or certified dataset
+(`:300–317`). Offline certification selects the bundled certification for the
+pinned model (`:395–422`); a fingerprint mismatch can raise, rather than
+produce a different successful bundle. Bundle construction fills those
+manifest fields (`policyengine/tax_benefit_models/common/model_version.py:126–158`
+in 6.4.1, `:127–164` in 6.5.0), and the property projects the exact dictionary
+(`policyengine/core/tax_benefit_model_version.py:137–210` in 6.4.1,
+`:148–222` in 6.5.0). In particular, `policyengine_version` comes from that
+manifest (`:156` and `:168` respectively), not an imported wrapper.
+Discovery mirrors that projection and checks it against the exact W4 6.4.1
+and 6.5.0 request fixtures in `tests/fixtures/uk_replay/discovery/`. The
+receiver still compares the request with the installed release's actual
+runtime bundle: a future release that changes this projection is rejected
+if they differ.
+
+`pipeline/uk_replay_discover.py` considers stable, non-yanked PyPI releases
+whose wheel upload is at least six hours old, oldest first. The grace period
+allows W4's normal dispatch and publication metadata to arrive before
+catch-up. A version must be strictly newer than both the newest certified
+variant and the newest version named by a recorded `released_bundle` request
+in any status (`queued`, `running`, `complete`, `failed` or `rejected`).
+Only `released_bundle` requests count, for this floor and for deduplication.
+A pre-promotion `candidate` request names the version the candidate will be
+released as but pins the candidate's wheels, while `push.yaml` rebuilds the
+released wheel, so a missed release dispatch is still caught and the
+released bytes replayed. A requested version raises the floor only while
+PyPI lists it and only if it is a plain final release (no epoch, local, pre,
+post or dev segment). A yanked release is still listed, so it still counts.
+A version PyPI no longer lists (removed or quarantined) stops counting, and
+the releases it superseded can then be discovered if they pass every other
+check. A stored request naming a version never published cannot stop
+discovery, yet still counts against duplicating itself. Requests are stored
+under their content digest, so a wrong request is recovered by removing it
+from `replay-state`, never by editing it in place. The current certified
+variant is `pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1`; a certified or
+released-bundle-requested 6.5.0 therefore suppresses discovery of 6.4.2 and
+6.4.3 as well as 6.5.0. A certified version suppresses older releases
+whatever PyPI lists; a requested one does so only while PyPI lists it. Each drain builds at most
+three requests and examines at most 30 releases.
+
+Before building a request, discovery reads the selected wheel's static PyPI
+integrity provenance JSON and requires an attestation bundle whose publisher
+has each of these fields with exactly these case-sensitive values (a field
+PyPI adds later is ignored, so it cannot permanently skip a genuine release):
+`kind: "GitHub"`,
+`repository: "PolicyEngine/policyengine.py"`, `workflow: "push.yaml"`, and
+`environment: "pypi"`. The
+[6.5.0 wheel provenance](https://pypi.org/integrity/policyengine/6.5.0/policyengine-6.5.0-py3-none-any.whl/provenance)
+is the checked example of those exact field names and values. Discovery runs
+nothing from this response. A 404 (PyPI: "file has no provenance"), another
+publisher and an unreadable provenance response are permanent skips,
+evidenced by the response bytes' SHA-256. Any other HTTP status, including
+403 (access "temporarily disabled by the PyPI administrators") and 406, and
+any network failure, leaves the release eligible next time
+([PyPI integrity API](https://docs.pypi.org/api/integrity/)).
+A read stopped at the size cap also remains retryable, since it has no digest
+of a complete response. Other contradictions in verified immutable artifacts
+are also recorded as permanent skips, with the artifact digests that support
+the decision.
+
+Accepted requests record the provenance response's SHA-256 in
+`requested_by.pypi_provenance_sha256`, so it is part of their request identity
+and public discovery metadata; discovery also logs the digest. The vendored
+[v1 request schema](schemas/qualification_request.v1.json) already permits
+additional provenance fields inside `requested_by`; no schema change is
+needed. Permanent skips record it as
+`evidence_sha256.policyengine_provenance`.
+
+Discovery derives public request fields from the wrapper wheel's packaged
+manifest and PyPI metadata without installing or importing the wheel. Its
+only token-holding step reads the private release manifest to bind its SHA-256
+and the certified dataset's size; it downloads no dataset. Downloaded wheels
+have a 64 MiB streaming-read cap; PyPI JSON responses have a 1 MiB cap.
+The packaged manifest and METADATA ZIP members must each be at most 1 MiB,
+with a compression ratio no greater than 100, before decompression. The
+artifact passed to `discover_enqueue` contains only requests and permanent skip evidence,
+checked by the receiver's output guard before upload. The write job guards
+that artifact again and validates **every** request against the vendored
+qualification schema before enqueueing any request. It refetches `replay-state`
+and checks covered versions again on each write attempt, so a W4
+`released_bundle` request that arrived before that attempt is not duplicated
+(a `candidate` request deliberately does not cover the released version). A
+dispatch arriving after discovery has pushed can still create a distinct
+request; the six-hour grace period reduces that overlap but does not rule it
+out. Failed discovery or discovery enqueueing
+does not block `prepare`: existing queued requests still drain.
 
 The `prepare` job selects the oldest eligible request, marks it running and
 hands only `REQUEST.json` to the run job. The separate `run` job has
 `contents: read` and checks out with `persist-credentials: false`. Its first
 step after that fetches the dataset with `fetch-dataset`, checks its size and
 SHA-256, and records the fetch outcome, before any candidate code is
-installed. That one step holds the data token: the organisation secret
+installed. That step holds the data token: the organisation secret
 `PE_UK_PRIVATE_HF_READ_TOKEN` (read-only, policyengine-uk-data-private only),
 passed as `HUGGING_FACE_TOKEN`, and only in `workflow_dispatch` and
 `repository_dispatch` runs; the schedule only dispatches a drain, and the
@@ -555,8 +663,9 @@ process behind.
 Scorecard is public, so the dataset and anything household-level stay on the
 runner. No job saves or restores a cache (setup-uv's default cache is off on
 every use, and nothing uses `actions/cache`), so no cache links a candidate
-to the jobs that can write. The only artifacts are the request and the run's
-`output/` directory. `.github/scripts/uk_replay_output_guard.py` (standard
+to the jobs that can write. The only artifacts are public discovery metadata,
+the selected request and the run's `output/` directory.
+`.github/scripts/uk_replay_output_guard.py` (standard
 library, run with the runner's own Python) is an allowlist: every entry must
 be a regular file ending `.json`, `.jsonl`, `.csv`, `.md` or `.txt` whose
 bytes parse as that format (UTF-8 text, no NUL bytes), at most 10 MB each and
@@ -569,10 +678,15 @@ anything to the public `replay-state` branch, and drops a refused output, so
 the attempt is recorded as `failed`.
 
 What this protects, and what it does not. A request names its candidate by
-version and wheel SHA-256, and only a caller with write access to this
-repository can send one (`repository_dispatch` and `workflow_dispatch` both
-require it); requests are meant for PolicyEngine's own releases, from W4. A
-new candidate's dependencies resolve within the newest certified freeze
+version and wheel SHA-256. W4's explicit dispatch and manual request paths are
+joined by discovery's automatic path: discovery trusts a release on PyPI only
+when its wheel has trusted-publisher provenance naming
+`PolicyEngine/policyengine.py`, workflow `push.yaml`, environment `pypi`, with
+publisher kind exactly `GitHub`, as in the
+[checked 6.5.0 response](https://pypi.org/integrity/policyengine/6.5.0/policyengine-6.5.0-py3-none-any.whl/provenance).
+A PyPI upload without that provenance cannot create a discovery request.
+These requests remain intended for PolicyEngine's own releases. A new
+candidate's dependencies resolve within the newest certified freeze
 where they can. The candidate and its dependencies are trusted with the
 dataset: they compute on it, and the guard stops an honest run from
 publishing a dataset copy, a binary, or a `.csv` or `.jsonl` table under
@@ -687,8 +801,9 @@ The recording job dispatches another drain run while pending requests remain;
 `workflow_dispatch` can create a run using `GITHUB_TOKEN`.
 ([GitHub workflow-trigger documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow))
 A scheduled run every three hours also drains the queue. This schedule only
-processes recorded requests; undispatched release discovery is separate work
-in PR #165. Concurrent enqueues retry with backoff and, on a rebase conflict,
+dispatches an empty `workflow_dispatch`; that drain discovers missed releases
+before selecting work. Concurrent enqueues retry with backoff and, on a
+rebase conflict,
 abort, check out the latest state branch and enqueue the request again.
 Exhausting retries reports an error.
 

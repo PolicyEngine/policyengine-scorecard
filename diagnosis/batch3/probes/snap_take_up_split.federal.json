@@ -1,0 +1,398 @@
+{
+ "world": "federal",
+ "bundle": {
+  "bundle_id": "us-6.2.1",
+  "country_id": "us",
+  "policyengine_version": "6.2.1",
+  "model_package": "policyengine-us",
+  "model_version": "2.2.1",
+  "data_package": "microcosm-data",
+  "data_version": "0.1.0",
+  "default_dataset": "populace_us_2024",
+  "default_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+  "certified_data_build_id": "populace-us-2024-spm-20260915",
+  "certified_data_artifact_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+  "data_build_model_version": "2.2.1",
+  "data_build_model_git_sha": "None",
+  "data_build_fingerprint": "None",
+  "compatibility_basis": "exact_build_model_version",
+  "certified_by": "None",
+  "managed_by": "policyengine.py",
+  "runtime_dataset": "populace_us_2024",
+  "runtime_dataset_uri": "hf://policyengine/populace-us/populace_us_2024.h5@populace-us-2024-spm-20260915",
+  "runtime_dataset_source": "data/populace_us_2024.h5",
+  "runtime_dataset_data_package": "microcosm-data",
+  "runtime_dataset_repo_type": "dataset",
+  "runtime_dataset_revision": "populace-us-2024-spm-20260915",
+  "runtime_dataset_sha256": "6496cc4393d4d3c6574f76eca231de5898c803b9067645591fd5c4d3e65aee84",
+  "spm": "{'forecast_content_sha256': '3d86d5c4c0423480e6b69b75d222ffa4a7a2639e4094df5ba2504af01be17173', 'scenario': 'ce_trend', 'geography_kind': 'county', 'geography_id': None, 'county_vintage': '2020', 'as_of': None}",
+  "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+ },
+ "units_anchored_share": 0.0,
+ "states": {
+  "AK": {
+   "eligible": 103844.57555363413,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 103626.00479267769,
+   "eligible_unanchored_flagged": 103626.00479267769,
+   "anchored_not_flagged": 0.0
+  },
+  "AL": {
+   "eligible": 773450.5892315438,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 773450.5892315438,
+   "eligible_unanchored_flagged": 773450.5892315438,
+   "anchored_not_flagged": 0.0
+  },
+  "AR": {
+   "eligible": 399459.75826248096,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 399459.75826248096,
+   "eligible_unanchored_flagged": 399459.75826248096,
+   "anchored_not_flagged": 0.0
+  },
+  "AZ": {
+   "eligible": 971482.3606550663,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 761063.4299616797,
+   "eligible_unanchored_flagged": 761063.4299616797,
+   "anchored_not_flagged": 0.0
+  },
+  "CA": {
+   "eligible": 4369822.700518018,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 4369822.700518018,
+   "eligible_unanchored_flagged": 4369822.700518018,
+   "anchored_not_flagged": 0.0
+  },
+  "CO": {
+   "eligible": 466302.7732851559,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 459363.7178645407,
+   "eligible_unanchored_flagged": 459363.7178645407,
+   "anchored_not_flagged": 0.0
+  },
+  "CT": {
+   "eligible": 275854.08972958906,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 270654.92660675535,
+   "eligible_unanchored_flagged": 270654.92660675535,
+   "anchored_not_flagged": 0.0
+  },
+  "DC": {
+   "eligible": 73320.63355878546,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 73320.63355878546,
+   "eligible_unanchored_flagged": 73320.63355878546,
+   "anchored_not_flagged": 0.0
+  },
+  "DE": {
+   "eligible": 112434.29710824875,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 107820.11941319569,
+   "eligible_unanchored_flagged": 107820.11941319569,
+   "anchored_not_flagged": 0.0
+  },
+  "FL": {
+   "eligible": 2643632.4107062086,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 2643632.4107062086,
+   "eligible_unanchored_flagged": 2643632.4107062086,
+   "anchored_not_flagged": 0.0
+  },
+  "GA": {
+   "eligible": 1311904.7325100827,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 1311904.7325100827,
+   "eligible_unanchored_flagged": 1311904.7325100827,
+   "anchored_not_flagged": 0.0
+  },
+  "HI": {
+   "eligible": 106741.84677101037,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 106741.84677101037,
+   "eligible_unanchored_flagged": 106741.84677101037,
+   "anchored_not_flagged": 0.0
+  },
+  "IA": {
+   "eligible": 254654.76273639378,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 216241.13400112116,
+   "eligible_unanchored_flagged": 216241.13400112116,
+   "anchored_not_flagged": 0.0
+  },
+  "ID": {
+   "eligible": 126495.052588281,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 126495.052588281,
+   "eligible_unanchored_flagged": 126495.052588281,
+   "anchored_not_flagged": 0.0
+  },
+  "IL": {
+   "eligible": 1463559.8560635624,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 1463559.8560635624,
+   "eligible_unanchored_flagged": 1463559.8560635624,
+   "anchored_not_flagged": 0.0
+  },
+  "IN": {
+   "eligible": 900139.5317177706,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 900139.5317177706,
+   "eligible_unanchored_flagged": 900139.5317177706,
+   "anchored_not_flagged": 0.0
+  },
+  "KS": {
+   "eligible": 278232.88661480736,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 239700.36736584496,
+   "eligible_unanchored_flagged": 239700.36736584496,
+   "anchored_not_flagged": 0.0
+  },
+  "KY": {
+   "eligible": 735332.9774483263,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 585921.2519191244,
+   "eligible_unanchored_flagged": 585921.2519191244,
+   "anchored_not_flagged": 0.0
+  },
+  "LA": {
+   "eligible": 784708.3787455505,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 784708.3787455505,
+   "eligible_unanchored_flagged": 784708.3787455505,
+   "anchored_not_flagged": 0.0
+  },
+  "MA": {
+   "eligible": 852921.1630467555,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 852921.1630467555,
+   "eligible_unanchored_flagged": 852921.1630467555,
+   "anchored_not_flagged": 0.0
+  },
+  "MD": {
+   "eligible": 706755.2090979618,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 679154.738704469,
+   "eligible_unanchored_flagged": 679154.738704469,
+   "anchored_not_flagged": 0.0
+  },
+  "ME": {
+   "eligible": 65056.8671442768,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 65047.97489692743,
+   "eligible_unanchored_flagged": 65047.97489692743,
+   "anchored_not_flagged": 0.0
+  },
+  "MI": {
+   "eligible": 1064987.9727503443,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 979295.6605648997,
+   "eligible_unanchored_flagged": 979295.6605648997,
+   "anchored_not_flagged": 0.0
+  },
+  "MN": {
+   "eligible": 403252.79872581805,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 375713.12353886274,
+   "eligible_unanchored_flagged": 375713.12353886274,
+   "anchored_not_flagged": 0.0
+  },
+  "MO": {
+   "eligible": 829963.0075263991,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 829963.0075263991,
+   "eligible_unanchored_flagged": 829963.0075263991,
+   "anchored_not_flagged": 0.0
+  },
+  "MS": {
+   "eligible": 467282.71376904286,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 467282.71376904286,
+   "eligible_unanchored_flagged": 467282.71376904286,
+   "anchored_not_flagged": 0.0
+  },
+  "MT": {
+   "eligible": 64486.11028365924,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 46430.38465353719,
+   "eligible_unanchored_flagged": 46430.38465353719,
+   "anchored_not_flagged": 0.0
+  },
+  "NC": {
+   "eligible": 1188386.4267159656,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 1188382.1972549246,
+   "eligible_unanchored_flagged": 1188382.1972549246,
+   "anchored_not_flagged": 0.0
+  },
+  "ND": {
+   "eligible": 33632.39048003263,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 33632.39048003263,
+   "eligible_unanchored_flagged": 33632.39048003263,
+   "anchored_not_flagged": 0.0
+  },
+  "NE": {
+   "eligible": 141718.58512629784,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 141713.5372593742,
+   "eligible_unanchored_flagged": 141713.5372593742,
+   "anchored_not_flagged": 0.0
+  },
+  "NH": {
+   "eligible": 75645.65091792449,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 68954.0962909122,
+   "eligible_unanchored_flagged": 68954.0962909122,
+   "anchored_not_flagged": 0.0
+  },
+  "NJ": {
+   "eligible": 986199.2430152417,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 923885.5786957825,
+   "eligible_unanchored_flagged": 923885.5786957825,
+   "anchored_not_flagged": 0.0
+  },
+  "NM": {
+   "eligible": 333567.88605855056,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 333567.88605855056,
+   "eligible_unanchored_flagged": 333567.88605855056,
+   "anchored_not_flagged": 0.0
+  },
+  "NV": {
+   "eligible": 531171.6555735667,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 531171.6555735667,
+   "eligible_unanchored_flagged": 531171.6555735667,
+   "anchored_not_flagged": 0.0
+  },
+  "NY": {
+   "eligible": 3081158.5590076894,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 3081158.5590076894,
+   "eligible_unanchored_flagged": 3081158.5590076894,
+   "anchored_not_flagged": 0.0
+  },
+  "OH": {
+   "eligible": 1260840.1872954168,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 1260840.1872954168,
+   "eligible_unanchored_flagged": 1260840.1872954168,
+   "anchored_not_flagged": 0.0
+  },
+  "OK": {
+   "eligible": 605191.6370582994,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 605191.6370582994,
+   "eligible_unanchored_flagged": 605191.6370582994,
+   "anchored_not_flagged": 0.0
+  },
+  "OR": {
+   "eligible": 490217.5697713868,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 490217.5697713868,
+   "eligible_unanchored_flagged": 490217.5697713868,
+   "anchored_not_flagged": 0.0
+  },
+  "PA": {
+   "eligible": 1607272.1104933785,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 1607272.1104933785,
+   "eligible_unanchored_flagged": 1607272.1104933785,
+   "anchored_not_flagged": 0.0
+  },
+  "RI": {
+   "eligible": 133639.3212082036,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 133639.3212082036,
+   "eligible_unanchored_flagged": 133639.3212082036,
+   "anchored_not_flagged": 0.0
+  },
+  "SC": {
+   "eligible": 568991.1867190704,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 568991.1867190704,
+   "eligible_unanchored_flagged": 568991.1867190704,
+   "anchored_not_flagged": 0.0
+  },
+  "SD": {
+   "eligible": 101569.35286765866,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 101569.14286138902,
+   "eligible_unanchored_flagged": 101569.14286138902,
+   "anchored_not_flagged": 0.0
+  },
+  "TN": {
+   "eligible": 1011569.5339830572,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 1011569.5339830572,
+   "eligible_unanchored_flagged": 1011569.5339830572,
+   "anchored_not_flagged": 0.0
+  },
+  "TX": {
+   "eligible": 3587296.087607487,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 3587296.087607487,
+   "eligible_unanchored_flagged": 3587296.087607487,
+   "anchored_not_flagged": 0.0
+  },
+  "UT": {
+   "eligible": 271022.44956870005,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 271022.44956870005,
+   "eligible_unanchored_flagged": 271022.44956870005,
+   "anchored_not_flagged": 0.0
+  },
+  "VA": {
+   "eligible": 765513.4557082232,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 577150.787210791,
+   "eligible_unanchored_flagged": 577150.787210791,
+   "anchored_not_flagged": 0.0
+  },
+  "VT": {
+   "eligible": 36356.142674948045,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 36356.142674948045,
+   "eligible_unanchored_flagged": 36356.142674948045,
+   "anchored_not_flagged": 0.0
+  },
+  "WA": {
+   "eligible": 660782.3765546159,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 660781.9371189687,
+   "eligible_unanchored_flagged": 660781.9371189687,
+   "anchored_not_flagged": 0.0
+  },
+  "WI": {
+   "eligible": 611574.6990579747,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 526182.8375494938,
+   "eligible_unanchored_flagged": 526182.8375494938,
+   "anchored_not_flagged": 0.0
+  },
+  "WV": {
+   "eligible": 270845.70018074923,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 270845.70018074923,
+   "eligible_unanchored_flagged": 270845.70018074923,
+   "anchored_not_flagged": 0.0
+  },
+  "WY": {
+   "eligible": 35327.27971054776,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 35327.27971054776,
+   "eligible_unanchored_flagged": 35327.27971054776,
+   "anchored_not_flagged": 0.0
+  },
+  "US": {
+   "eligible": 38995569.54350376,
+   "eligible_anchored": 0.0,
+   "eligible_flagged": 38040155.020931855,
+   "eligible_unanchored_flagged": 38040155.020931855,
+   "anchored_not_flagged": 0.0
+  }
+ }
+}

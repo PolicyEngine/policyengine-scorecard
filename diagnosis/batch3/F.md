@@ -28,11 +28,17 @@ Lane `fns-snap-rates`, source `fns_snap_rates`. Generated from `F.json` (the ing
 
 **Fix (upstream_issue):** Comment on microcosm#647: add SNAP participant (person) targets by State from the QC Table B.1 facts now staged for Chronicle, or calibrate household size, so person counts stop scaling with SPM-unit size.
 
-## F3. Iowa and Wisconsin: PE rates 13-14 points below FNS with matching participants
+## F3. Iowa and Wisconsin: PE puts too much of the SNAP caseload in BBCE-only units, so too few federally eligible people carry the take-up flag
 
-- **Class:** `open` (confidence low); **claims:** 2
+- **Class:** `pe_gap` (confidence medium); **claims:** 2; **route:** https://github.com/PolicyEngine/microcosm/issues/647
 
 **Evidence**
 
-- Iowa PE 84.9% vs FNS 97.6%; Wisconsin 86.0% vs 100% (capped). PE's federal-rules participants match FNS (0.99x, 1.00x Table A.3) while its eligible people are 1.14x and 1.16x FNS; neither State is saturated.
-- Wisconsin is capped at 100% by FNS (Exhibit A.3: implied 113.5%), so FNS's eligible count there is set to participants.
+- Iowa PE 84.9% vs FNS 97.6%; Wisconsin 86.0% vs 100% (capped by FNS; Exhibit A.3 implied 113.5%). Neither State is flag-saturated.
+- Eligibility is not the outlier: PE's eligible people are 1.135x (IA) and 1.159x (WI) FNS Table A.18, at the median of the 16 non-saturated States (1.15). Participants are: PE's federal-rules participants are 0.987x and 0.997x Table A.3, against a non-saturated median of 1.14x (sources/fns-snap-rates/pe/us-6.2.1.json).
+- PE's as-served participants are 1.296x (IA) and 1.403x (WI) FNS Table A.1, but only 59.8% and 52.9% of them are in federally eligible units; FNS Table A.2 puts 78.54% and 74.49% of participants under federal rules. PE's federal-rules share is below FNS's in 40 of 51 jurisdictions (median 60.3% vs 82.2%).
+- In the federal-rules world the take-up flag is on for 84.9% (IA) and 86.0% (WI) of federally eligible people and for 53.0% and 79.4% of BBCE-only eligible people (diagnosis/batch3/probes/snap_take_up_split.py, outputs alongside).
+- Mechanism: microcosm snap_state_take_up.py at the Build P commit cae8640 (docstring lines 13-25; unchanged from 8828dee) anchors ASEC reporters, fills non-reporters at one State rate (FNS household caseload over weighted modeled-eligible units, BBCE eligibility included) and calibrates to FNS household caseloads that include BBCE-only households. Nothing separates federal-rules participants, so where the fill rate does not saturate, the federal-rules rate is what the uniform draw leaves.
+- The anchor cannot be separated from the draw in the release: spm_unit_snap (the reported ASEC subsidy) is zero for every SPM unit in us-6.2.1 (probe outputs).
+
+**Fix (upstream_issue):** Comment on microcosm#647: the State take-up fill spreads draws uniformly over BBCE-expanded eligibility, so PE's BBCE-only share of participants (median 39.7%) is about twice FNS Table A.2's share outside federal rules (17.8%, which also counts erroneous payments); weight the fill toward federal-rules eligibility, or add the A.2 federal-rules share as a target or diagnostic.

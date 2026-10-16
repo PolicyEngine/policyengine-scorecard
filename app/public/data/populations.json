@@ -2397,9 +2397,9 @@
     }
    ],
    "diagnosis": {
-    "class": "undiagnosed",
-    "rationale": "[batch3 A3, confidence low] SSI couples: PE has twice TRIM3's participating couple units",
-    "action_link": "diagnosis/batch3/A.md"
+    "class": "pe_gap",
+    "rationale": "[batch3 A3, confidence medium] SSI couples: take-up is drawn per person at age-band priors with no couple dimension, so PE couples participate at the band rate, twice TRIM3's",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1212"
    }
   },
   {
@@ -2866,9 +2866,9 @@
     }
    ],
    "diagnosis": {
-    "class": "undiagnosed",
-    "rationale": "[batch3 A3, confidence low] SSI couples: PE has twice TRIM3's participating couple units",
-    "action_link": "diagnosis/batch3/A.md"
+    "class": "pe_gap",
+    "rationale": "[batch3 A3, confidence medium] SSI couples: take-up is drawn per person at age-band priors with no couple dimension, so PE couples participate at the band rate, twice TRIM3's",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/1212"
    }
   },
   {
@@ -36759,9 +36759,9 @@
     }
    ],
    "diagnosis": {
-    "class": "undiagnosed",
-    "rationale": "[batch3 F3, confidence low] Iowa and Wisconsin: PE rates 13-14 points below FNS with matching participants",
-    "action_link": "diagnosis/batch3/F.md"
+    "class": "pe_gap",
+    "rationale": "[batch3 F3, confidence medium] Iowa and Wisconsin: PE puts too much of the SNAP caseload in BBCE-only units, so too few federally eligible people carry the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
    }
   },
   {
@@ -39939,9 +39939,9 @@
     }
    ],
    "diagnosis": {
-    "class": "undiagnosed",
-    "rationale": "[batch3 F3, confidence low] Iowa and Wisconsin: PE rates 13-14 points below FNS with matching participants",
-    "action_link": "diagnosis/batch3/F.md"
+    "class": "pe_gap",
+    "rationale": "[batch3 F3, confidence medium] Iowa and Wisconsin: PE puts too much of the SNAP caseload in BBCE-only units, so too few federally eligible people carry the take-up flag",
+    "action_link": "https://github.com/PolicyEngine/microcosm/issues/647"
    }
   },
   {
@@ -156984,7 +156984,7 @@
    ],
    "diagnosis": {
     "class": "undiagnosed",
-    "rationale": "[batch3 E2, confidence low] Connecticut: PE EITC participation 15 points below IRS",
+    "rationale": "[batch3 E2, confidence medium] Connecticut: PE EITC participation 15 points below IRS; the flag-off mass rests on few records that the weight solve does not down-weight",
     "action_link": "diagnosis/batch3/E.md"
    }
   },

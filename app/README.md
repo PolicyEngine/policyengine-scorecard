@@ -14,7 +14,10 @@ bun run build
 ## Structure
 
 - `src/App.tsx` — the shell: PolicyEngine header/footer, title band, country
-  selector and the view tabs. Reads and writes `?country=` / `?view=`.
+  selector and the view tabs. Reads and writes `?country=` / `?view=`, plus
+  `?claim=` with `view=validation` (opens that claim's row) and
+  `?program=` / `?metric=` / `?geography=` with `view=scorecard` (the
+  comparison filters).
 - `src/components/Overview.tsx` — landing view: headline counts, the
   coverage bar, top divergences, pipeline lanes and gap counts.
 - `src/components/ComparisonTable.tsx` — every published cell next to its

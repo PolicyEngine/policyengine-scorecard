@@ -58,8 +58,8 @@
    "mode": 1,
    "stage": "computed",
    "running": false,
-   "updated": "2026-10-07",
-   "note": "57 claims in 9 items: 50 pe_gap (SNAP saturation and person grain -> microcosm#647; no EITC non-filers -> microcosm#1133; TANF seed drift -> microcosm#643; SSI payable eligibility -> microcosm#644), 2 concept mismatch (SNAP households vs SPM units), 5 open (IA/WI SNAP, CT EITC, SSI couples); memos in diagnosis/batch3/"
+   "updated": "2026-10-15",
+   "note": "57 claims in 9 items: 54 pe_gap (SNAP saturation, person grain and the BBCE-wide take-up fill -> microcosm#647; no EITC non-filers -> microcosm#1133; TANF seed drift -> microcosm#643; SSI payable eligibility -> microcosm#644; SSI couples drawn at age-band priors in a frame 81% married at 65+ -> microcosm#1212), 2 concept mismatch (SNAP households vs SPM units), 1 open (CT EITC: flag-off mass on few records, no issue yet); memos in diagnosis/batch3/"
   },
   {
    "id": "urban-sotsn-solo-attribution",
@@ -133,10 +133,10 @@
    "source": "Census",
    "area": "SPM state poverty",
    "mode": 1,
-   "stage": "registered",
+   "stage": "computed",
    "running": false,
-   "updated": "2026-08-01",
-   "note": "Permanent holdout \u2014 comparison only, never a target; deviations expected by construction (#2, doctrine 2026-08-02)"
+   "updated": "2026-10-15",
+   "note": "104 of 104 claims computed \u2014 Census State SPM poverty rates (all people and children under 18; 50 States, DC and US; 2022-2024 three-year averages), carried by the populace reform-validation registry with PE results on 2 releases (us-6.2.1 included); 15 diagnosed pe_gap in batch 2; permanent holdout \u2014 comparison only, never a target; deviations expected by construction (#2, doctrine 2026-08-02)"
   },
   {
    "id": "kff-medicaid",
@@ -246,7 +246,7 @@
    "stage": "computed",
    "running": false,
    "updated": "2026-09-15",
-   "note": "1 of 2 claims computed \u2014 1 single-year claims from the PL 119-21 SNAP supplement (61367, Jan-2025 baseline vintage); OBBBA cost-estimate PDFs are period-ranged verbatim pointers pending period-window staging"
+   "note": "1 of 117 claims computed \u2014 1 single-year claim (TFP cap, 2034) and 115 period-window claims from publication 61367 (100 decile-distribution cells, 2026-34 annual averages; 15 SNAP section 10102-10105 statements), all vs CBO's January 2025 baseline; the other OBBBA PDFs are set aside with reasons in sources/cbo-pl119-21/source.json; no PE counterparts yet (they need the January-2025 world run over each window)"
   },
   {
    "id": "tpc-distribution",

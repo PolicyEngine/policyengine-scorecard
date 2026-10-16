@@ -585,14 +585,15 @@ class TestFullIngest:
             "tpc": 1057,
             "budget_lab": 1229,
             "cpsp": 1033,
-            "cbo": 931,
+            "cbo": 1046,
             "pwbm": 717,
             "tax_foundation": 663,
         }
         # 12,937 staged (12,850 harvested - 48 defective T26-0009 rows
         # + 135 re-parsed) = claims + twin merges (2+48+18) + the TPC
-        # benefit-family drop.
-        assert sum(by_source.values()) + 2 + 48 + 18 + 468 == 12_937
+        # benefit-family drop. The CBO ingest also stages 115 period-window
+        # claims from sources/cbo-pl119-21, which the harvest never staged.
+        assert sum(by_source.values()) - 115 + 2 + 48 + 18 + 468 == 12_937
 
     def test_lanes_ingested_and_feed_synced(self, ingested):
         db, _, feed = ingested
