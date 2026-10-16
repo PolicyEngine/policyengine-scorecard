@@ -922,7 +922,7 @@ def test_the_recorder_drops_a_refused_output_and_keeps_a_good_one(tmp_path):
     assert "recording a failed receipt" in result.stdout
 
 
-def test_nothing_crosses_jobs_but_the_request_and_guarded_output():
+def test_only_public_metadata_request_and_guarded_output_cross_jobs():
     workflow = yaml.safe_load((ROOT / ".github/workflows/uk-replay.yml").read_text())
     uploads = [
         (name, step)
@@ -931,6 +931,7 @@ def test_nothing_crosses_jobs_but_the_request_and_guarded_output():
         if step.get("uses", "").startswith("actions/upload-artifact")
     ]
     assert [(name, step["with"]["path"]) for name, step in uploads] == [
+        ("discover", "discovery/"),
         ("prepare", "input/REQUEST.json"),
         ("run", "output/"),
     ]
@@ -967,7 +968,7 @@ def test_nothing_crosses_jobs_but_the_request_and_guarded_output():
         for step in job["steps"]
         if step.get("uses", "").startswith("astral-sh/setup-uv")
     ]
-    assert len(uses) == 4
+    assert len(uses) == 6
     ci = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
     uses += [
         step
@@ -987,7 +988,7 @@ def test_the_data_token_is_used_only_outside_pull_requests():
     assert set(replay[True]) == {"repository_dispatch", "workflow_dispatch", "schedule"}
     ci = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
     token = "secrets.PE_UK_PRIVATE_HF_READ_TOKEN"
-    # Exactly two steps hold it, each with exactly this condition.
+    # Exactly three steps hold it, each with exactly this condition.
     holders = {
         (step["name"], step["if"])
         for document in (replay, ci)
@@ -996,6 +997,10 @@ def test_the_data_token_is_used_only_outside_pull_requests():
         if token in json.dumps(step)
     }
     assert holders == {
+        (
+            "Discover missed releases from immutable metadata",
+            "github.event_name == 'workflow_dispatch' && github.event.inputs.request == ''",
+        ),
         (
             "Fetch and verify the dataset before any candidate code",
             'contains(fromJSON(\'["workflow_dispatch", "repository_dispatch"]\'), '

@@ -34,6 +34,8 @@ Two flows use the same receiver:
   the policyengine PyPI wheel SHA-256 and the packaged manifest SHA-256. The
   same receiver handles it and records the variant and sealed namespace for
   each successfully replayed dispatched release; there is no separate handler.
+  Missed-dispatch discovery constructs the same `released_bundle` request
+  from published artifacts and uses this queue and receiver.
 
 ## Transport
 
@@ -44,13 +46,61 @@ Two flows use the same receiver:
   `contents: read` on policyengine.py (public) and nothing else from W4.
 * The receiver writes incoming requests to the persistent queue on the
   `replay-state` branch, then dispatches a drain run. Incoming runs have
-  distinct concurrency groups; the prepare/run/record drain sequence shares
-  `uk-replay-drain`. GitHub's default concurrency queue can replace an older
+  distinct concurrency groups; the discovery/prepare/run/record drain sequence
+  shares `uk-replay-drain`. GitHub's default concurrency queue can replace an older
   pending run, so requests remain in the persistent queue until handled.
   ([GitHub concurrency documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency))
-  A scheduled catch-up every 3 hours drains recorded requests. Discovery of
-  policyengine.py releases that were never dispatched is separate work in
-  PR #165.
+  Every 3 hours a schedule-only `tick` job dispatches an empty
+  `workflow_dispatch` drain, without receiving the dataset token. Only an
+  empty-request `workflow_dispatch` runs `discover` → `discover_enqueue` →
+  `prepare`; incoming requests enqueue directly, and the workflow has no
+  pull-request trigger. Discovery failures do not block `prepare` from
+  draining requests already queued.
+* The read-only `discover` job checks out without persisted credentials. It
+  considers stable, non-yanked PyPI wrapper releases whose wheel upload is at
+  least six hours old, oldest first. A version must be strictly newer than
+  both the newest certified variant (currently 6.5.0) and the newest wrapper
+  version named by any recorded request, regardless of kind or status
+  (`queued`, `running`, `complete`, `failed` or `rejected`). A requested or
+  certified 6.5.0 suppresses 6.4.2 and 6.4.3 as well as 6.5.0; superseded
+  patch releases are not backfilled. Discovery builds at most three requests
+  from at most 30 release attempts per drain.
+  Before building a request it reads the wheel's static PyPI integrity JSON
+  and requires an attestation bundle whose publisher has each of these fields,
+  with exactly these values (other publisher fields are ignored):
+  `kind: "GitHub"`, `repository: "PolicyEngine/policyengine.py"`,
+  `workflow: "push.yaml"`, and `environment: "pypi"` (the
+  [checked 6.5.0 provenance response](https://pypi.org/integrity/policyengine/6.5.0/policyengine-6.5.0-py3-none-any.whl/provenance)).
+  A 404 (no provenance), another publisher and an unreadable provenance
+  response become permanent skips with the response's SHA-256 as evidence;
+  any other HTTP status (including PyPI's temporary 403) and any network
+  failure are retried. A requested version raises the discovery floor only
+  if PyPI lists it as a plain final release. A response stopped at the size cap is retryable
+  because no complete-response digest was obtained. The provenance response's
+  SHA-256 enters accepted requests as `requested_by.pypi_provenance_sha256`
+  and is also logged.
+  The job reads downloaded wheels as ZIP/JSON data and runs no provenance,
+  release or candidate code. Streaming responses are capped at 64 MiB for
+  wheels and 1 MiB for PyPI JSON; manifest and METADATA ZIP members are capped at
+  1 MiB each and a compression ratio of 100 before decompression. Its single
+  token-holding step uses the read-only org
+  secret `PE_UK_PRIVATE_HF_READ_TOKEN` only to read the private release
+  manifest, whose SHA-256 and dataset size enter the request. No dataset is
+  downloaded during discovery.
+  `expected_release_bundle` is computed statically from the packaged manifest;
+  `RELEASE_REPLAY.md` cites the reviewed 6.4.1/6.5.0 wheel source and the exact
+  W4 fixtures. The normal runtime bundle comparison remains mandatory.
+* Public discovered requests and permanent skip evidence pass the receiver's
+  output guard before upload and again in `discover_enqueue`. That separate
+  job has `contents: write`, no dataset token, and runs only trusted control
+  code. It validates every discovered request against the vendored request
+  schema before enqueueing any, and refetches `replay-state` to deduplicate
+  versions again on every write attempt. This covers a W4 request that
+  arrived before that attempt. A later dispatch can still create a distinct
+  request after discovery has pushed; the six-hour grace period reduces that
+  overlap. Immutable artifact contradictions can be
+  recorded with their digest evidence as permanent skips; transient failures
+  are retried on later drains.
 * State for request `<request_id>` lives at
   `replay-state:requests/<request_id>/`:
   `REQUEST.json` (the received request re-serialised as sorted, indented JSON;
@@ -64,8 +114,8 @@ Two flows use the same receiver:
 * Dataset fetching and candidate execution are separate steps of the run
   job, which has `contents: read` and no persisted checkout credential. The
   fetch step runs first, before any candidate code is installed, and is the
-  only step holding the read-only dataset token (the organisation secret
-  `PE_UK_PRIVATE_HF_READ_TOKEN`, only in `workflow_dispatch` and
+  only step in that job holding the read-only dataset token (the organisation
+  secret `PE_UK_PRIVATE_HF_READ_TOKEN`, only in `workflow_dispatch` and
   `repository_dispatch` runs). It verifies the file, which then goes to
   `run-request` as `--dataset-file`. Candidate code runs as an unprivileged
   account with no sudo, its own copy of the repository and inputs, and an
@@ -76,7 +126,9 @@ Two flows use the same receiver:
   uploaded and again before it is committed. RELEASE_REPLAY.md states what
   this protects and what it does not; in particular, a receipt is produced
   beside the candidate, so requests are for PolicyEngine's own releases
-  only. The qualifier writes a structured result
+  only. Automatic discovery additionally requires the exact trusted-publisher
+  provenance above; a PyPI upload alone does not authorize it. The qualifier
+  writes a structured result
   file with `status` and `receipt_sha256`, while logs remain visible in
   Actions. A separate recording job has `contents: write` and `actions: write`,
   validates the uploaded receipt, records it before terminal status and
@@ -137,7 +189,11 @@ Two flows use the same receiver:
 * `requested_by` names the requesting repository and commit;
   `workflow_run_id` is optional (a manual request made outside Actions has
   none), and additional provenance fields such as `run_attempt`
-  are accepted. Every other object is closed.
+  are accepted. Discovery uses this existing extension point for
+  `pypi_provenance_sha256`, the SHA-256 of the wheel's PyPI provenance response,
+  without changing the vendored schema. It is included in the request's JCS
+  digest and public discovery metadata. Permanent skip metadata uses
+  `evidence_sha256.policyengine_provenance`. Every other object is closed.
 * The wrapper is identified by `version` plus either a PyPI wheel
   (`{"pypi": {"wheel_sha256": …}}`) or, for an unreleased candidate whose
   regenerated manifest is not on PyPI yet, a public git commit. Scorecard
