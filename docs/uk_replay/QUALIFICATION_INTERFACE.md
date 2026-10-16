@@ -67,8 +67,9 @@ Two flows use the same receiver:
   released ones, so it neither covers nor floors the released version. A
   requested version raises the floor only while PyPI lists it (yanked
   included) as a plain final release. A certified or released-bundle-requested
-  6.5.0 suppresses 6.4.2 and 6.4.3 as well as 6.5.0; superseded patch
-  releases are not backfilled while the superseding version remains listed.
+  6.5.0 suppresses 6.4.2 and 6.4.3 as well as 6.5.0. A certified version
+  suppresses older releases whatever PyPI lists; a requested one does so only
+  while PyPI lists it.
   Discovery builds at most three requests from at most 30 release attempts
   per drain.
   Before building a request it reads the wheel's static PyPI integrity JSON
@@ -100,10 +101,11 @@ Two flows use the same receiver:
   job has `contents: write`, no dataset token, and runs only trusted control
   code. It validates every discovered request against the vendored request
   schema before enqueueing any, and refetches `replay-state` to deduplicate
-  versions again on every write attempt. This covers a W4 request that
-  arrived before that attempt. A later dispatch can still create a distinct
-  request after discovery has pushed; the six-hour grace period reduces that
-  overlap. Immutable artifact contradictions can be
+  versions again on every write attempt. This covers a W4 `released_bundle`
+  request that arrived before that attempt; a `candidate` request
+  deliberately does not cover the released version. A later dispatch can
+  still create a distinct request after discovery has pushed; the six-hour
+  grace period reduces that overlap but does not rule it out. Immutable artifact contradictions can be
   recorded with their digest evidence as permanent skips; transient failures
   are retried on later drains.
 * State for request `<request_id>` lives at

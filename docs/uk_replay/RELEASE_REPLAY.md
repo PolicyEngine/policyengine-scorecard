@@ -560,8 +560,8 @@ under their content digest, so a wrong request is recovered by removing it
 from `replay-state`, never by editing it in place. The current certified
 variant is `pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1`; a certified or
 released-bundle-requested 6.5.0 therefore suppresses discovery of 6.4.2 and
-6.4.3 as well as 6.5.0, so superseded patch releases are not backfilled
-while the superseding version remains listed. Each drain builds at most
+6.4.3 as well as 6.5.0. A certified version suppresses older releases
+whatever PyPI lists; a requested one does so only while PyPI lists it. Each drain builds at most
 three requests and examines at most 30 releases.
 
 Before building a request, discovery reads the selected wheel's static PyPI
@@ -603,10 +603,12 @@ artifact passed to `discover_enqueue` contains only requests and permanent skip 
 checked by the receiver's output guard before upload. The write job guards
 that artifact again and validates **every** request against the vendored
 qualification schema before enqueueing any request. It refetches `replay-state`
-and checks covered versions again on each write attempt, so a W4 qualification
-that arrived before that attempt is not duplicated. A dispatch arriving after
-discovery has pushed can still create a distinct request; the six-hour grace
-period reduces that overlap. Failed discovery or discovery enqueueing
+and checks covered versions again on each write attempt, so a W4
+`released_bundle` request that arrived before that attempt is not duplicated
+(a `candidate` request deliberately does not cover the released version). A
+dispatch arriving after discovery has pushed can still create a distinct
+request; the six-hour grace period reduces that overlap but does not rule it
+out. Failed discovery or discovery enqueueing
 does not block `prepare`: existing queued requests still drain.
 
 The `prepare` job selects the oldest eligible request, marks it running and

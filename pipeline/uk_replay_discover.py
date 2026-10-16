@@ -218,8 +218,8 @@ def floor_versions(requested: set[Version], published: set[Version]) -> set[Vers
     (no epoch, local, pre, post or dev segment) that PyPI actually lists. A
     stored request naming a version PyPI has never published, however large,
     cannot stop discovery; it still counts against duplicating itself through
-    requested_versions. A request for an unpublished candidate starts to count
-    once that version is published."""
+    requested_versions. A released_bundle request naming a version not yet
+    on PyPI starts to count once that version is published."""
     return {
         version
         for version in requested & published

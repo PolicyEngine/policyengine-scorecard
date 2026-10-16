@@ -446,7 +446,9 @@ def test_candidates_are_newer_unrequested_final_releases(tmp_path):
     "status", ["queued", "running", "complete", "failed", "rejected"]
 )
 @pytest.mark.parametrize("kind", ["candidate", "released_bundle"])
-def test_existing_qualification_in_any_status_sets_the_floor(tmp_path, status, kind):
+def test_only_a_released_bundle_request_in_any_status_sets_the_floor(
+    tmp_path, status, kind
+):
     # Keep the requested release above the current certified floor: otherwise
     # certification itself would hide a regression that ignored terminal states.
     # Only a released_bundle request counts: a pre-promotion candidate request
@@ -547,10 +549,15 @@ def test_candidates_respect_the_floor_and_never_repeat_a_request(published, data
     # Review of f3f21a7 (N5): invariants over published and requested sets.
     import tempfile
 
-    requested = data.draw(st.lists(st.sampled_from(published), unique=True, max_size=4))
+    # Review of 23cff0a: repeated versions (so one version can carry a
+    # candidate and a released_bundle request), unsupported and missing kinds,
+    # and versions PyPI never published.
+    requested = data.draw(
+        st.lists(st.sampled_from([*published, "9.9.9", "4.0.0"]), max_size=5)
+    )
     kinds = data.draw(
         st.lists(
-            st.sampled_from(["released_bundle", "candidate"]),
+            st.sampled_from(["released_bundle", "candidate", "unsupported", None]),
             min_size=len(requested),
             max_size=len(requested),
         )
@@ -559,7 +566,10 @@ def test_candidates_respect_the_floor_and_never_repeat_a_request(published, data
         state = Path(root)
         for index, (version, kind) in enumerate(zip(requested, kinds)):
             request = request_for(version)
-            request["kind"] = kind
+            if kind is None:
+                del request["kind"]
+            else:
+                request["kind"] = kind
             directory = state / "requests" / (f"{index:x}" * 64)[:64]
             directory.mkdir(parents=True)
             (directory / "REQUEST.json").write_text(json.dumps(request))
@@ -571,7 +581,8 @@ def test_candidates_respect_the_floor_and_never_repeat_a_request(published, data
         if r["status"] == "certified"
     )
     released = {Version(v) for v, k in zip(requested, kinds) if k == "released_bundle"}
-    floor = max({certified} | released)
+    listed = {Version(p) for p in published}
+    floor = max({certified} | (released & listed))
     assert out == sorted(out)
     for version in out:
         assert str(version) in published or version in {Version(p) for p in published}
@@ -600,6 +611,14 @@ def test_candidates_respect_the_floor_and_never_repeat_a_request(published, data
         {
             "kind": "released_bundle",
             "candidate": {"policyengine": {"version": "invalid"}},
+        },
+        # Review of 23cff0a (D3): a request without a released_bundle kind
+        # covers nothing, whatever version it names.
+        {"candidate": {"policyengine": {"version": "6.5.1"}}},
+        {"kind": None, "candidate": {"policyengine": {"version": "6.5.1"}}},
+        {
+            "kind": "Released_Bundle",
+            "candidate": {"policyengine": {"version": "6.5.1"}},
         },
     ],
 )

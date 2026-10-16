@@ -585,13 +585,27 @@ def test_enqueue_does_not_duplicate_a_release_already_in_the_queue(
     )
 
 
-def test_a_pre_promotion_candidate_request_does_not_cover_the_release(enqueue_runner):
+@pytest.mark.parametrize("kind", ["candidate", "unsupported", None])
+def test_a_pre_promotion_candidate_request_does_not_cover_the_release(
+    enqueue_runner, kind
+):
     # W4, 2026-10-16: the candidate qualification pins the candidate's wheels;
-    # the released wheel is rebuilt, so its discovered request is queued.
+    # the released wheel is rebuilt, so its discovered request is queued. Only
+    # a released_bundle request covers a version (review of 23cff0a: G3, G4).
     seed, remote, create = enqueue_runner
-    candidate = released_request("6.5.0")
-    candidate["kind"] = "candidate"
-    queue.enqueue(seed, candidate, run_url=RUN_URL, now="2026-10-16T00:00:00Z")
+    existing = released_request("6.5.0")
+    if kind == "candidate":
+        existing["kind"] = kind
+        queue.enqueue(seed, existing, run_url=RUN_URL, now="2026-10-16T00:00:00Z")
+    else:
+        if kind is None:
+            del existing["kind"]
+        else:
+            existing["kind"] = kind
+        # Stored as the queue stores an invalid request, under its own address.
+        directory = seed / "requests" / ("e" * 64)
+        directory.mkdir(parents=True)
+        (directory / "REQUEST.json").write_text(json.dumps(existing))
     git(seed, "add", ".")
     git(seed, "commit", "-qm", "W4 pre-promotion qualification")
     git(seed, "push", "-q", str(remote), "HEAD:replay-state")
