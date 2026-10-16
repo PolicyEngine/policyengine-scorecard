@@ -2,7 +2,7 @@
 
 Release qualification (W4) notifies this repository after each release, but
 a missing GitHub App, an outage or a cancelled run can lose that dispatch.
-The scheduled receiver therefore also looks at PyPI itself: for every
+The empty-request manual drain therefore also looks at PyPI itself: for every
 policyengine release newer than the newest certified replay variant that no
 request already names, it builds a ``released_bundle`` qualification request
 and leaves it for the queue.
@@ -12,10 +12,11 @@ The request is built from primary artifacts: the wheel's SHA-256 from PyPI
 that wheel (its SHA-256, the UK model and certified dataset), the model and
 core wheel digests from PyPI (the model digest must equal the one the
 manifest records), and the data release manifest from Hugging Face (its
-SHA-256 and the dataset's size). The expected release bundle is read from
-the wrapper installed in a scratch environment with tokens removed, so for
-a discovered request the receiver's bundle check repeats that reading; the
-artifact digests above are the independent part.
+SHA-256 and the dataset's size). The expected release bundle is projected
+statically from the wheel's packaged manifest. No package is installed or
+imported and no release code runs here, including in the step that holds
+the read-only data token. The receiver independently checks that projection
+against the installed release under packaged certification in its sandbox.
 """
 
 from __future__ import annotations
@@ -25,7 +26,6 @@ import hashlib
 import json
 import os
 import re
-import subprocess
 import sys
 import urllib.request
 import zipfile
@@ -37,8 +37,8 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from pipeline import uk_replay_qualify as qualify  # noqa: E402
-from pipeline import uk_replay_variants as variants  # noqa: E402
+from pipeline import uk_replay_qualify as qualify
+from pipeline import uk_replay_variants as variants
 
 PYPI = "https://pypi.org/pypi/{package}/json"
 MANIFEST_PATH = "policyengine/data/bundle/manifest.json"
@@ -47,14 +47,6 @@ MAX_ATTEMPTS_PER_RUN = 30
 EXTRA_PIN = re.compile(
     r"^(policyengine-uk|policyengine-core)\s*==\s*([^;\s]+)\s*;\s*extra\s*==\s*\"uk\"$"
 )
-BUNDLE_PROBE = """
-import json, warnings
-warnings.simplefilter("ignore")
-from pipeline import uk_replay_variants as variants
-variants.isolate_certification_environment()
-import policyengine as pe
-print(json.dumps(dict(pe.uk.uk_latest.release_bundle), sort_keys=True))
-"""
 
 
 class Skipped(Exception):
@@ -74,7 +66,7 @@ class Skipped(Exception):
 
 def pypi(package: str, version: str | None = None) -> dict:
     url = PYPI.format(package=package if version is None else f"{package}/{version}")
-    with urllib.request.urlopen(url, timeout=60) as response:  # noqa: S310 - fixed https host
+    with urllib.request.urlopen(url, timeout=60) as response:  # Fixed HTTPS host.
         return json.loads(response.read())
 
 
@@ -94,15 +86,19 @@ def wheel_entry(document: dict) -> dict:
 
 
 def requested_versions(state: Path) -> set[Version]:
-    """Wrapper versions that already have a released_bundle request."""
+    """Wrapper versions named by a candidate or released-bundle request.
+
+    W4 may already be qualifying a release before promotion. Its candidate
+    request counts too, including when it is queued or running.
+    """
     out = set()
     for path in (state / "requests").glob("*/REQUEST.json"):
         try:
             request = json.loads(path.read_text(encoding="utf-8"))
-            if (
-                not isinstance(request, dict)
-                or request.get("kind") != "released_bundle"
-            ):
+            if not isinstance(request, dict) or request.get("kind") not in {
+                "candidate",
+                "released_bundle",
+            }:
                 continue
             value = request["candidate"]["policyengine"]["version"]
             if isinstance(value, str):
@@ -201,7 +197,7 @@ def read_wheel(path: Path) -> tuple[bytes, str]:
 
 def fetch(url: str, destination: Path, sha256: str) -> Path:
     destination.parent.mkdir(parents=True, exist_ok=True)
-    with urllib.request.urlopen(url, timeout=300) as response:  # noqa: S310 - PyPI file URL
+    with urllib.request.urlopen(url, timeout=300) as response:  # PyPI file URL.
         payload = response.read()
     if hashlib.sha256(payload).hexdigest() != sha256:
         raise Skipped(f"{destination.name} bytes differ from PyPI's digest")
@@ -221,7 +217,7 @@ def release_manifest(data_package: dict, *, token: str | None) -> bytes:
             or data_package["version"],
             token=token or None,
         )
-    except Exception as exc:  # noqa: BLE001 - retryable, never a permanent skip
+    except Exception as exc:  # Retryable, never a permanent skip.
         raise Skipped(
             f"data release manifest unavailable: {type(exc).__name__}"
         ) from exc
@@ -231,7 +227,7 @@ def release_manifest(data_package: dict, *, token: str | None) -> bytes:
 def provisional_request(
     version: str, work: Path, *, token: str | None, requested_by: dict
 ) -> dict:
-    """Everything but the expected release bundle, from primary artifacts."""
+    """A complete request from wheel metadata and the data release manifest."""
     wrapper = wheel_entry(pypi("policyengine", version))
     wheel = fetch(wrapper["url"], work / wrapper["filename"], wrapper["sha256"])
     manifest_bytes, metadata = read_wheel(wheel)
@@ -239,7 +235,8 @@ def provisional_request(
         "policyengine_wheel": wrapper["sha256"],
         "packaged_bundle_manifest": hashlib.sha256(manifest_bytes).hexdigest(),
     }
-    uk = json.loads(manifest_bytes)["data_releases"]["uk"]
+    manifest = json.loads(manifest_bytes)
+    uk = manifest["data_releases"]["uk"]
     # Only contradictions in verified immutable artifacts are permanent:
     # the wheel's UK pins, model version/digest, and data certification at a
     # pinned HF commit. Wheel counts, corrupt downloads and HF availability
@@ -249,6 +246,13 @@ def provisional_request(
     if model["version"] != pins["policyengine-uk"]:
         raise Skipped(
             f"manifest model {model['version']} differs from the uk extra {pins['policyengine-uk']}",
+            permanent=True,
+            evidence_sha256=evidence,
+        )
+    bundle = expected_bundle(manifest, evidence_sha256=evidence)
+    if bundle["policyengine_version"] != version:
+        raise Skipped(
+            "the manifest's wrapper version differs from the PyPI release",
             permanent=True,
             evidence_sha256=evidence,
         )
@@ -307,60 +311,62 @@ def provisional_request(
                 "size_bytes": released["size_bytes"],
                 "release_manifest_sha256": hashlib.sha256(manifest_payload).hexdigest(),
             },
-            "expected_release_bundle": {},
+            "expected_release_bundle": bundle,
         },
         "compare_to": "latest_certified",
         "requested_by": requested_by,
     }
 
 
-def expected_bundle(request: dict, work: Path) -> dict:
-    """Install the release exactly as the receiver will, then read its bundle."""
-    venv = work / "venv"
-    credentials = {
-        "HUGGING_FACE_TOKEN",
-        "HF_TOKEN",
-        "HUGGING_FACE_HUB_TOKEN",
-        "HUGGINGFACE_HUB_TOKEN",
-        "GITHUB_TOKEN",
+def expected_bundle(
+    manifest: dict, *, evidence_sha256: dict[str, str] | None = None
+) -> dict:
+    """Project the successful packaged-certification bundle without release code.
+
+    Read from both policyengine 6.4.1 and 6.5.0 wheels: provenance/manifest.py
+    :321-335 reads this manifest, :395-422 returns its certification offline
+    for the pinned model, and :184-191 chooses the certified default URI.
+    core/tax_benefit_model_version.py:137-210 (6.4.1), :149-222 (6.5.0)
+    defines precisely these fields. Missing optional fields remain JSON null.
+    A nonlegacy runtime fingerprint mismatch can reject certification; it
+    never changes a successful bundle. The receiver still checks at runtime.
+    """
+    uk = manifest["data_releases"]["uk"]
+    model, data = uk["model_package"], uk["data_package"]
+    certification = uk.get("certification")
+    artifact = uk["certified_data_artifact"]
+    if (
+        uk.get("country_id") != "uk"
+        or model.get("name") != "policyengine-uk"
+        or certification is None
+        or certification.get("certified_for_model_version") != model["version"]
+        or uk.get("default_dataset") != artifact["dataset"]
+    ):
+        raise Skipped(
+            "the packaged manifest does not certify its pinned UK model and default dataset",
+            permanent=True,
+            evidence_sha256=evidence_sha256,
+        )
+    return {
+        "bundle_id": uk.get("bundle_id"),
+        "country_id": uk["country_id"],
+        "policyengine_version": uk["policyengine_version"],
+        "model_package": model["name"],
+        "model_version": model["version"],
+        "data_package": data["name"],
+        "data_version": data["version"],
+        "default_dataset": uk["default_dataset"],
+        "default_dataset_uri": artifact["uri"],
+        # A present certification's null build id does not fall back to the
+        # artifact's build id in the release_bundle property.
+        "certified_data_build_id": certification.get("data_build_id"),
+        "certified_data_artifact_sha256": artifact.get("sha256"),
+        "data_build_model_version": certification.get("built_with_model_version"),
+        "data_build_model_git_sha": certification.get("built_with_model_git_sha"),
+        "data_build_fingerprint": certification.get("data_build_fingerprint"),
+        "compatibility_basis": certification["compatibility_basis"],
+        "certified_by": certification.get("certified_by"),
     }
-    environment = {
-        **{key: value for key, value in os.environ.items() if key not in credentials},
-        "PYTHONPATH": str(ROOT),
-    }
-    work.mkdir(parents=True, exist_ok=True)
-    request_file = work / "REQUEST.json"
-    request_file.write_bytes(qualify.canonical_bytes(request))
-    # Installers can run release code too; run prepare in a credential-free
-    # control subprocess so its own children inherit the same environment.
-    subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "pipeline.uk_replay_qualify",
-            "prepare",
-            "--request",
-            str(request_file.resolve()),
-            "--venv",
-            str(venv.resolve()),
-            "--wheels",
-            str((work / "wheels").resolve()),
-            "--output",
-            str((work / "wheel-digests.json").resolve()),
-        ],
-        cwd=ROOT,
-        env=environment,
-        check=True,
-    )
-    result = subprocess.run(
-        [str(venv / "bin" / "python"), "-c", BUNDLE_PROBE],
-        cwd=ROOT,
-        env=environment,
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    return json.loads(result.stdout.strip().splitlines()[-1])
 
 
 def discover(
@@ -383,9 +389,6 @@ def discover(
         try:
             request = provisional_request(
                 version, work / version, token=token, requested_by=requested_by
-            )
-            request["candidate"]["expected_release_bundle"] = expected_bundle(
-                request, work / version
             )
             request_id = qualify.request_id(request)
         except Exception as exc:  # noqa: BLE001 - one bad release cannot stop catch-up
