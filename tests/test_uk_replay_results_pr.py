@@ -95,10 +95,25 @@ def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_dataset_to
     assert job["if"] == (
         "github.ref == format('refs/heads/{0}', github.event.repository.default_branch)"
     )
-    token, checkout, setup, run = job["steps"]
-    # The App's key reaches only the step that mints a token scoped to this
-    # repository: contents and pull requests to push and open the PR, and
-    # workflows because the commit edits ci.yml's matrix.
+    checkout, setup, build, token, propose = job["steps"]
+    # Build first, holding no write credential at all.
+    assert checkout["uses"] == "actions/checkout@v4"
+    assert checkout["with"] == {"fetch-depth": 0, "persist-credentials": False}
+    assert setup["uses"] == "astral-sh/setup-uv@v5"
+    assert setup["with"] == {"enable-cache": False}
+    assert build["id"] == "build"
+    assert build["run"] == "bash .github/scripts/uk_replay_results_pr.sh build"
+    assert build["env"] == {
+        "REQUEST_ID": "${{ github.event.inputs.request_id }}",
+        "STATE_BRANCH": "replay-state",
+        "BASE_BRANCH": "${{ github.event.repository.default_branch }}",
+    }
+    # Only a verified commit gets a token. The App's key reaches only the
+    # step that mints it, scoped to this repository: contents and pull
+    # requests to push and open the PR, workflows because the commit edits
+    # ci.yml's matrix.
+    built = "steps.build.outputs.action == 'build'"
+    assert token["if"] == built and propose["if"] == built
     assert token["uses"] == "actions/create-github-app-token@v2"
     assert token["id"] == "token"
     assert token["with"] == {
@@ -108,22 +123,19 @@ def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_dataset_to
         "permission-pull-requests": "write",
         "permission-workflows": "write",
     }
-    assert "owner" not in token["with"] and "repositories" not in token["with"]
     holders = [step for step in job["steps"] if "secrets." in json.dumps(step)]
     assert holders == [token]
     assert "secrets." not in json.dumps({k: v for k, v in job.items() if k != "steps"})
-    assert checkout["uses"] == "actions/checkout@v4"
-    assert checkout["with"] == {
-        "fetch-depth": 0,
-        "token": "${{ steps.token.outputs.token }}",
-    }
-    assert setup["uses"] == "astral-sh/setup-uv@v5"
-    assert setup["with"] == {"enable-cache": False}
-    assert run["run"] == "bash .github/scripts/uk_replay_results_pr.sh"
-    assert run["env"] == {
+    assert [step for step in job["steps"] if "steps.token" in json.dumps(step)] == [
+        propose
+    ]
+    assert propose["run"] == "bash .github/scripts/uk_replay_results_pr.sh propose"
+    assert propose["env"] == {
         "REQUEST_ID": "${{ github.event.inputs.request_id }}",
         "STATE_BRANCH": "replay-state",
         "BASE_BRANCH": "${{ github.event.repository.default_branch }}",
+        "BUILT_COMMIT": "${{ steps.build.outputs.commit }}",
+        "BUILT_BRANCH": "${{ steps.build.outputs.branch }}",
         "GH_TOKEN": "${{ steps.token.outputs.token }}",
     }
     for step in job["steps"]:
@@ -150,14 +162,25 @@ def test_the_builder_runs_no_release_code_and_never_merges():
         "upload-artifact",
     ):
         assert forbidden not in script, forbidden
-    # Branches it writes are its own; main is never pushed.
-    pushes = [
-        line
-        for line in script.splitlines()
-        if re.search(r"\bgit\b.* push ", line) and not line.lstrip().startswith("#")
+    # Branches it writes are its own; main is never pushed, and every push
+    # goes through the one helper that hands git the App token.
+    commands = [
+        line for line in script.splitlines() if not line.lstrip().startswith("#")
     ]
+    pushes = [line for line in commands if "pushgit push" in line]
     assert len(pushes) == 2
     assert all("refs/heads/$branch" in line for line in pushes)
+    assert not [line for line in commands if re.search(r"\bgit\b[^#]* push\b", line)]
+    # The build holds no token and calls no GitHub API; the propose step,
+    # which holds the token, runs only git, gh and the standard library.
+    build = script[script.index("build() {") : script.index("propose() {")]
+    propose = script[script.index("propose() {") : script.index("case ")]
+    assert "GH_TOKEN" not in build and "gh " not in build
+    for forbidden in ("uv ", "builder ", "CONTROL", "pipeline", "PYTHONPATH"):
+        assert forbidden not in propose, forbidden
+    assert all(
+        "python3 -I" in line for line in propose.splitlines() if "python" in line
+    )
     tree = ast.parse((ROOT / "pipeline/uk_replay_results_pr.py").read_text())
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -205,14 +228,19 @@ def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
         < at('pipeline.uk_replay_qualify verify-sealed "$(plan paths namespace)"')
         < at("uk_replay_regenerate.sh")
         < at("scorecard_db.build_db")
-        < at('git -C "$TREE" push -q origin')
+        < at("output action build")
+        < at("propose() {")
+        < at("the results commit changed after it was verified")
+        < at("pushgit push -q origin")
         < at("gh pr create")
     )
 
 
 def test_the_control_environment_installs_what_the_builder_imports():
     line = next(
-        line for line in SCRIPT.read_text().splitlines() if line.startswith("CONTROL=")
+        line.strip().removeprefix("local ")
+        for line in SCRIPT.read_text().splitlines()
+        if "CONTROL=(" in line
     )
     installed = {
         word.split("==")[0]
@@ -544,31 +572,49 @@ def released_request(version=VERSION):
 
 
 def certified_results(
-    directory, *, version=VERSION, status="certified", integrity="complete", extra=None
+    directory,
+    *,
+    version=VERSION,
+    status="certified",
+    integrity="complete",
+    extra=None,
+    data_build_id=None,
+    requalify=False,
 ):
     """A sealed, certified qualification of a synthetic release in
     ``directory`` (a replay-state checkout): request, receipt and results
     exactly as the receiver writes them, before STATUS.json is terminal."""
+    if requalify:
+        # An exactly certified pair qualified again: the receiver returns the
+        # committed record, note and original request digest included.
+        version = "6.5.0"
     request = released_request(version)
     rid = interface.request_id(request)
     record = committed_record(PE650)
-    record.pop("note")
     identity = record["identity"]
-    identity["packages"]["policyengine"]["version"] = version
-    identity["release_bundle"].update(
-        bundle_id=f"uk-{version}", policyengine_version=version
-    )
     freeze = (ROOT / record["requirements"]["path"]).read_text()
-    assert freeze.count("policyengine==6.5.0\n") == 1
-    freeze = freeze.replace("policyengine==6.5.0\n", f"policyengine=={version}\n")
-    variant_id = rv.variant_slug(identity)
-    identity["requirements_sha256"] = hashlib.sha256(freeze.encode()).hexdigest()
+    variant_id = PE650
+    if not requalify:
+        record.pop("note")
+        identity["packages"]["policyengine"]["version"] = version
+        identity["release_bundle"].update(
+            bundle_id=f"uk-{version}", policyengine_version=version
+        )
+        if data_build_id:
+            identity["release_bundle"]["certified_data_build_id"] = data_build_id
+            record["certification"]["data_build_id"] = data_build_id
+        assert freeze.count("policyengine==6.5.0\n") == 1
+        freeze = freeze.replace("policyengine==6.5.0\n", f"policyengine=={version}\n")
+        variant_id = rv.variant_slug(identity)
+        identity["requirements_sha256"] = hashlib.sha256(freeze.encode()).hexdigest()
     record.update(
         variant_id=variant_id,
         identity_sha256=rv.identity_sha256(identity),
         result_root=f"{rv.REPLAY_RESULT_ROOT}/{variant_id}",
         status=status,
-        qualification_request_sha256=rid,
+        qualification_request_sha256=record["qualification_request_sha256"]
+        if requalify
+        else rid,
         requirements={
             "path": f"docs/uk_replay/requirements/{variant_id}.txt",
             "sha256": identity["requirements_sha256"],
@@ -578,7 +624,8 @@ def certified_results(
     results = request_dir / "results"
     (results / record["requirements"]["path"]).parent.mkdir(parents=True)
     (results / record["requirements"]["path"]).write_text(freeze)
-    rv.validate_record(record, root=results)
+    if not data_build_id:
+        rv.validate_record(record, root=results)
     namespace = results / record["result_root"]
     (namespace / "autumn_budget_2024").mkdir(parents=True)
     (namespace / "autumn_budget_2024/RUN_MANIFEST.json").write_text("{}\n")
@@ -782,15 +829,38 @@ class Remote:
         }
         for name in ("PYTHONPATH", "HUGGING_FACE_TOKEN", "HF_TOKEN", "GH_TOKEN"):
             env.pop(name, None)
-        if "PYTHONPATH" in overrides:
-            env["PYTHONPATH"] = overrides["PYTHONPATH"]
-        return subprocess.run(
-            ["bash", ".github/scripts/uk_replay_results_pr.sh"],
-            cwd=self.runner,
-            env=env,
-            capture_output=True,
-            text=True,
-            check=False,
+
+        def step(phase, **extra):
+            return subprocess.run(
+                ["bash", ".github/scripts/uk_replay_results_pr.sh", phase],
+                cwd=self.runner,
+                env={**env, **extra},
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+        # As the workflow runs it: build with no token, then, only when it
+        # reports a built commit, propose with the token and its outputs.
+        outputs = temp / "github-output.txt"
+        built = step("build", GITHUB_OUTPUT=str(outputs))
+        self.outputs = dict(
+            line.split("=", 1)
+            for line in (outputs.read_text().splitlines() if outputs.exists() else [])
+        )
+        if built.returncode or self.outputs.get("action") != "build":
+            return built
+        proposed = step(
+            "propose",
+            BUILT_COMMIT=self.outputs["commit"],
+            BUILT_BRANCH=self.outputs["branch"],
+            GH_TOKEN="app-installation-token",
+        )
+        return subprocess.CompletedProcess(
+            proposed.args,
+            proposed.returncode,
+            built.stdout + proposed.stdout,
+            built.stderr + proposed.stderr,
         )
 
     def gh_calls(self):
@@ -978,6 +1048,85 @@ def test_an_ineligible_request_ends_with_a_notice_and_no_branch(remote, setup, r
     assert reason in result.stdout
     assert not remote.branch(record)
     assert remote.gh_calls() == []
+
+
+def test_an_exact_requalification_of_a_committed_pair_is_skipped(remote):
+    # W4 may qualify a certified pair again (a determinism check): the
+    # receiver then returns the committed record, note included.
+    rid, record, _ = remote.certify(requalify=True)
+    assert record["variant_id"] == PE650 and "note" in record
+    result = remote.run(rid)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert f"{PE650} is already in {builder.INDEX}" in result.stdout
+    assert remote.outputs == {"action": "skip"}
+    assert remote.gh_calls() == []
+
+
+def test_a_variant_id_that_cannot_name_a_branch_is_refused(remote):
+    rid, record, _ = remote.certify(data_build_id="data build;x")
+    assert record["variant_id"].endswith("_data build;x")
+    result = remote.run(rid)
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert "cannot name a branch and paths" in result.stderr
+    assert "action" not in remote.outputs
+
+
+def test_propose_pushes_only_the_commit_build_verified(remote):
+    rid, record, _ = remote.certify()
+    temp = remote.tmp / "runner-temp-1"
+    original = remote.run
+    result = original(rid)
+    assert result.returncode == 0
+    # Replay propose against a tree whose commit moved after verification.
+    tree = temp / "results-pr/tree"
+    git(
+        tree,
+        "-c",
+        "user.name=x",
+        "-c",
+        "user.email=x@example.org",
+        "commit",
+        "-q",
+        "--allow-empty",
+        "-m",
+        "later",
+    )
+    env = {
+        **{k: v for k, v in os.environ.items() if not k.startswith("GITHUB_")},
+        "PATH": f"{remote.tools}:{os.environ['PATH']}",
+        "REQUEST_ID": rid,
+        "STATE_BRANCH": "replay-state",
+        "BASE_BRANCH": "main",
+        "RUNNER_TEMP": str(temp),
+        "GITHUB_REPOSITORY": REPOSITORY,
+        "GH_LOG": str(temp / "gh-again.jsonl"),
+        "BUILT_COMMIT": remote.outputs["commit"],
+        "BUILT_BRANCH": remote.outputs["branch"],
+        "GH_TOKEN": "app-installation-token",
+    }
+    pushed = remote.branch(record)
+    again = subprocess.run(
+        ["bash", ".github/scripts/uk_replay_results_pr.sh", "propose"],
+        cwd=remote.runner,
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+    assert again.returncode == 1
+    assert "changed after it was verified" in again.stderr
+    assert remote.branch(record) == pushed
+    assert not (temp / "gh-again.jsonl").exists()
+    # And propose needs build's outputs and the token.
+    for missing in ("BUILT_COMMIT", "BUILT_BRANCH", "GH_TOKEN"):
+        bare = {k: v for k, v in env.items() if k != missing}
+        result = subprocess.run(
+            ["bash", ".github/scripts/uk_replay_results_pr.sh", "propose"],
+            cwd=remote.runner,
+            env=bare,
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode != 0 and missing in result.stderr
 
 
 def test_a_variant_already_on_main_is_skipped(remote):

@@ -185,12 +185,27 @@ def check(directory: Path, checkout: Path, request_id: str, state_commit: str) -
         and record["identity_sha256"] == receipt["variant_identity_sha256"],
         "VARIANT.json is not the receipt's variant",
     )
-    need(record["layout"] == "replay_namespace", "a certified result needs a namespace")
-    need("note" not in record, "VARIANT.json already carries a note")
+    # An exactly certified pair qualified again (a determinism check) returns
+    # the committed record, note included: its results are already on main.
     document = variants.load_document(checkout / INDEX)
     ids = [v["variant_id"] for v in document["variants"]]
     if record["variant_id"] in ids:
         raise Ineligible(f"{record['variant_id']} is already in {INDEX}")
+    need(record["layout"] == "replay_namespace", "a certified result needs a namespace")
+    need("note" not in record, "VARIANT.json already carries a note")
+    # The id names a branch and paths: plain characters, no traversal.
+    need(
+        bool(re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", record["variant_id"]))
+        and ".." not in record["variant_id"],
+        f"variant_id {record['variant_id']!r} cannot name a branch and paths",
+    )
+    need(
+        record["requirements"]["path"]
+        == f"docs/uk_replay/requirements/{record['variant_id']}.txt",
+        "VARIANT.json names its freeze somewhere other than docs/uk_replay/requirements/",
+    )
+    # results/ mirrors the repository, so the record validates against it.
+    variants.validate_record(record, root=directory / "results")
     need(
         record.get("qualification_request_sha256") == request_id,
         "VARIANT.json was built from another request",
@@ -203,8 +218,12 @@ def check(directory: Path, checkout: Path, request_id: str, state_commit: str) -
         f"policyengine {wrapper_version(record)} is older than the newest certified "
         f"{wrapper_version(previous)}; appended, it would become latest_certified",
     )
-    # results/ mirrors the repository: results/uk/replays/... and docs/...
     paths = result_paths(record, receipt)
+    if receipt.get("diff"):
+        need(
+            receipt["diff"]["base_variant_id"] in ids,
+            "the release diff's base is not a committed variant",
+        )
     namespace = results / paths["namespace"]
     allowed = [f"{paths['namespace']}/", paths["requirements"]]
     if paths["diff"]:
@@ -681,7 +700,7 @@ def main(argv: list[str] | None = None) -> int:
             plan = json.loads(args.plan.read_bytes())
             validation = json.loads(args.validation.read_bytes())
             args.output.write_text(body(args.request_dir, plan, validation))
-    except Refused as problem:
+    except (Refused, variants.VariantError) as problem:
         print(f"::error::{problem}", file=sys.stderr)
         return 1
     return 0

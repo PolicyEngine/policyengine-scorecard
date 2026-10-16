@@ -11,13 +11,17 @@ name: UK replay results PR
 #
 # It reads only committed public results from replay-state, runs main's own
 # checks on them and never installs, imports or runs candidate or release
-# code. It holds no dataset token. It writes only its own
-# uk-replay-results/<variant> branch, with a short-lived token for the
+# code. It holds no dataset token. The build step holds no write credential
+# at all (contents: read, checkout credentials not persisted). Only after it
+# has verified the commit does the job mint a short-lived token for the
 # organisation's policyengine GitHub App, scoped to this repository: contents
 # and pull-requests to push the branch and open the pull request, workflows
 # because the commit adds the variant to ci.yml's matrix (GITHUB_TOKEN can
-# hold none of workflows). A pull request opened with GITHUB_TOKEN would also
-# start no pull_request run, so it would never carry checks; the App's does.
+# never hold workflows). The propose step runs only git, gh and the standard
+# library, and pushes exactly the commit the build step reported, to its own
+# uk-replay-results/<variant> branch. A pull request opened with GITHUB_TOKEN
+# would also start no pull_request run, so it would never carry checks; the
+# App's does.
 # Nothing here merges: merging stays on the normal gates, CI and an
 # independent review.
 # https://docs.github.com/en/actions/concepts/security/github_token
@@ -47,8 +51,23 @@ jobs:
     permissions:
       contents: read
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
+      - name: Build and verify the results commit, holding no write credential
+        id: build
+        env:
+          REQUEST_ID: ${{ github.event.inputs.request_id }}
+          STATE_BRANCH: replay-state
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+        run: bash .github/scripts/uk_replay_results_pr.sh build
       - name: Mint a repository-scoped token to push the branch and open the PR
         id: token
+        if: steps.build.outputs.action == 'build'
         uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.APP_ID }}
@@ -56,17 +75,13 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
           permission-workflows: write
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ steps.token.outputs.token }}
-      - uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: false
-      - name: Build, verify and propose the results branch
+      - name: Push the verified commit and open the pull request
+        if: steps.build.outputs.action == 'build'
         env:
           REQUEST_ID: ${{ github.event.inputs.request_id }}
           STATE_BRANCH: replay-state
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
+          BUILT_COMMIT: ${{ steps.build.outputs.commit }}
+          BUILT_BRANCH: ${{ steps.build.outputs.branch }}
           GH_TOKEN: ${{ steps.token.outputs.token }}
-        run: bash .github/scripts/uk_replay_results_pr.sh
+        run: bash .github/scripts/uk_replay_results_pr.sh propose

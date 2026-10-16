@@ -829,7 +829,7 @@ runs only the default branch's code.
 
 | Job | Authority and inputs |
 |---|---|
-| `results_pr` | `GITHUB_TOKEN` `contents: read`; a short-lived token for the organisation's `policyengine` GitHub App, scoped to this repository with `contents: write`, `pull-requests: write` and `workflows: write`; reads committed public results from `replay-state`; holds no dataset token; installs, imports and runs no release/candidate code. |
+| `results_pr` | `GITHUB_TOKEN` `contents: read`, checkout credentials not persisted. Its build step holds no write credential. Then a short-lived token for the organisation's `policyengine` GitHub App, scoped to this repository with `contents: write`, `pull-requests: write` and `workflows: write`, reaches only the propose step, which runs git, gh and the standard library. Reads committed public results from `replay-state`; holds no dataset token; installs, imports and runs no release/candidate code. |
 
 The App token, not `GITHUB_TOKEN`, writes for two reasons. The commit edits
 `ci.yml`, and only a token with `workflows` permission may push a change to a
@@ -852,6 +852,10 @@ start CI as any other pull request does.
    the index already holds, ends the run with a notice and no pull request. A
    certified variant whose policyengine version is older than the newest
    certified one is refused: appended, it would become `latest_certified`.
+   So is a variant id that could not name a branch and paths (anything but
+   letters, digits, `.`, `_` and `-`, or a `..`). An exactly certified pair
+   qualified again returns the committed record, so it ends with a notice
+   too.
 2. **Results, byte for byte.** The request directory passes the receiver's
    output guard again, and its receipt and results must be unchanged since
    the receipt commit. `requests/<request_id>/results/{results,docs}` is
@@ -876,11 +880,13 @@ start CI as any other pull request does.
    every one), CI's `.github/scripts/uk_replay_regenerate.sh`, and two
    `scorecard_db.build_db` runs, which must agree on the content hash and
    leave no tracked-file drift.
-5. **Pull request.** The commit, by `github-actions[bot]` with a
-   `Replay-Request:` trailer, goes to `uk-replay-results/<variant_id>`, and a
-   pull request against main follows; CI runs on it as on any pull request,
-   without the dataset token. It is a draft when integrity is not
-   `complete`.
+5. **Pull request.** Only now is the App token minted. The propose step
+   refuses unless the worktree still holds exactly the commit the build step
+   reported, on the main it was verified on. It pushes that commit, by
+   `github-actions[bot]` with a `Replay-Request:` trailer, to
+   `uk-replay-results/<variant_id>`, and opens a pull request against main;
+   CI runs on it as on any pull request, without the dataset token. It is a
+   draft when integrity is not `complete`.
 
 Running the workflow again for the same request is safe. An identical tree
 pushes nothing. A branch built on an older main is rebuilt and force-pushed
