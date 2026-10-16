@@ -1,0 +1,46 @@
+{
+  "id": "cbo-pl119-21",
+  "name": "CBO — Distributional Effects of Public Law 119-21, and Estimated Effects of P.L. 119-21 on Participation and Benefits Under SNAP",
+  "organization": "Congressional Budget Office",
+  "country": "US",
+  "url": "https://www.cbo.gov/publication/61367",
+  "data_urls": [
+    "https://www.cbo.gov/system/files/2025-08/61367-data.xlsx",
+    "https://www.cbo.gov/system/files/2025-08/61367-Distributional-Effects.pdf",
+    "https://www.cbo.gov/system/files/2025-08/61367-SNAP.pdf"
+  ],
+  "fetch_route": "cbo.gov blocks scripted fetches, so each file came from its Wayback Machine capture (id_ form, the original bytes): 61367-data.xlsx 20250811200834; 61367-SNAP.pdf 20250811200834; 61367-Distributional-Effects.pdf 20250811200834. The two PDFs match the sha256 in sources/harvest-2026-08-02/cbo/manifest.jsonl; the workbook was not in that manifest.",
+  "raw_sha256": {
+    "61367-data.xlsx": "5f6310c3de988ddcb51bcd9c47f2606a9f56c4b92dc8fd653ffcc0e88355f4de",
+    "61367-Distributional-Effects.pdf": "6590de9602bc65418a1a9a22d4f8906fa47de843f9a5cd616b7fa449b40f11eb",
+    "61367-SNAP.pdf": "3a58581b80a60213ac307fb2099a4034d2d867eb0b502812b61cc69c00f2e446"
+  },
+  "citation": "Congressional Budget Office, letter to the Honorable Brendan F. Boyle, the Honorable Hakeem Jeffries, the Honorable Jeff Merkley, and the Honorable Chuck Schumer concerning the distributional effects of Public Law 119-21 (August 11, 2025), www.cbo.gov/publication/61367; and Supplemental Information, Estimated Effects of Public Law 119-21 on Participation and Benefits Under the Supplemental Nutrition Assistance Program (August 11, 2025).",
+  "published": "2025-08-11",
+  "fetched": "2026-10-15",
+  "counterfactual": "CBO's January 2025 baseline projections (supplement p. 1: 'relative to CBO's January 2025 baseline projections'; letter p. 1: 'relative to the Congressional Budget Office's January 2025 baseline projections'). The law was enacted on July 4, 2025, so this is not the law in force when CBO published; the claims carry the explicit baseline cbo_january_2025_baseline (scorecard_db/baselines.py), never the null current-law baseline.",
+  "reforms": {
+    "distribution": "obbba_enacted_pl119_21 — the whole law, the policy slug PWBM's enacted-law rows also use",
+    "snap": "one policy world per section, each 'as if implemented on its own' (supplement p. 1): pl119_21_snap_work_requirements (10102), pl119_21_snap_sua_energy_assistance (10103), pl119_21_snap_internet_expenses (10104), pl119_21_snap_state_matching_funds (10105); section 10101 is pl119_21_snap_tfp_cap, staged by the 2026-08-02 harvest"
+  },
+  "model": {
+    "name": "CBO distributional analysis (household income model) and CBO SNAP cost-estimate models",
+    "open_source": false,
+    "method": "Distribution: the average annual change in household resources over 2026-2034, in 2025 dollars (PCE price index), through four channels — federal taxes and cash transfers, federal and state in-kind transfers, states' fiscal responses, other spending and revenue. Deciles rank households by income after transfers and taxes, adjusted for household size (letter, note 7). Figure 2 divides by baseline income after transfers and taxes. SNAP: section estimates, each as if implemented alone, with no interactions among provisions.",
+    "method_basis": "Letter pp. 1-5 and notes 5-7; supplement pp. 1-3"
+  },
+  "periods": "Distribution: annual average, 2026-2034. SNAP: participation and affected counts are averages of months over the window the sentence names (2025-2034 or 2028-2034); benefit changes and affected shares are annual averages over 2026-2034; spending changes are totals over 2028-2034.",
+  "programs": ["snap", "child_nutrition"],
+  "staged": "100 distribution cells (10 deciles x 5 columns x 2 figures) and 15 SNAP statements; see adapter.py SNAP_STATEMENTS for the verbatim sentences",
+  "not_staged": {
+    "letter channel totals": "The letter's whole-population totals by channel (+$3.3 trillion, -$900 billion, +$11 billion, +$308 billion over 2026-2034) have no claim metric for an aggregate change in household resources; the decile table carries the same channels per household.",
+    "61367-Uninsured-Data.xlsx": "Changes in the number of uninsured people. Not fetched: PolicyEngine-US models Medicaid eligibility, not insurance coverage.",
+    "61537-hr1-Senate-passed-additional-info7-1-25.pdf": "Whole-bill deficit totals for the Senate-passed text (-$0.4 trillion vs the Senate's budget-enforcement baseline; +$3.4 trillion vs the January 2025 baseline) and the floor amendments' change against the June 27 substitute. The letter does not state whether debt service is included, so no deficit metric fits without an assumption, and most of the bill (defense, border, spectrum, health-provider provisions) is outside the household model. Fetched and checked against the manifest hash; not committed.",
+    "61536-HR1.pdf": "The June 27 Senate substitute against the Senate's budget-enforcement baseline: a draft text that floor amendments changed before enactment.",
+    "61505-SNAP.pdf": "Dynamic analysis of the House-passed H.R. 1 SNAP provisions: a text that was not enacted.",
+    "Arrington-Guthrie-Letter-Medicaid.pdf": "Medicaid provisions of the House-passed H.R. 1: a text that was not enacted.",
+    "HSGAC-and-Judiciary-Reconciliation.pdf": "Immigration-fee reconciliation (May 2026): outside the household model."
+  },
+  "vintage_note": "The workbook's own header calls the letter 'CBO's June 2025 letter'; the letter is dated August 11, 2025 and 'builds on analysis provided in the agency's letter dated June 12, 2025'. The workbook's cells equal the August letter's quoted deciles (adapter QC 3), so the staged publication date is the August letter's.",
+  "diagnosis_upstream": "CBO's models are closed-source; a divergence classified as an external-model issue becomes a comparison memo, not an upstream PR."
+}
