@@ -442,8 +442,8 @@ def measure():
     }
 
 
-def simulation(tax, benefit):
-    return {
+def simulation(tax, benefit, pre=None):
+    result = {
         "aggregates_gbp": {
             "income_tax": float(tax),
             "universal_credit": float(benefit),
@@ -460,6 +460,17 @@ def simulation(tax, benefit):
         "dataset_sha256_after": DATASET_SHA256,
         "performance": {"wall_seconds": 1},
     }
+    if pre is not None:
+        result["processed_parameter_values"] = {
+            path: value
+            for check in pre["parameter_checks"]
+            for path, value in check["intended_values"].items()
+        }
+        result["parameter_reform_route"] = {
+            "entry_point": "fake",
+            "submitted_reform": None,
+        }
+    return result
 
 
 def test_variant_run_skips_unsupported_years_and_stages_them_visibly(
@@ -492,7 +503,7 @@ def test_variant_run_skips_unsupported_years_and_stages_them_visibly(
 
     def fake_run(year, variables, reform, pre):
         years.append(year)
-        return simulation(900, 1000) if reform else simulation(1000, 1030)
+        return simulation(900, 1000, pre) if reform else simulation(1000, 1030, pre)
 
     monkeypatch.setattr(compute, "run_sim", fake_run)
     output = tmp_path / "results" / "uk" / "replays" / CURRENT / "test_event"
@@ -641,7 +652,7 @@ def staged_variant_run(tmp_path, monkeypatch):
         compute,
         "run_sim",
         lambda year, variables, reform, pre: (
-            simulation(900, 1000) if reform else simulation(1000, 1030)
+            simulation(900, 1000, pre) if reform else simulation(1000, 1030, pre)
         ),
     )
     output = tmp_path / "results" / "uk" / "replays" / CURRENT / "test_event"
@@ -1176,6 +1187,7 @@ def test_the_legacy_preflight_is_isolated_and_checks_its_release_bundle(monkeypa
 
 def test_guards_check_the_environment_and_compile_from_source(monkeypatch):
     calls = []
+    monkeypatch.setattr(compute, "revised_worlds", lambda runnable: runnable)
     monkeypatch.setattr(
         compute, "check_variant_environment", lambda variant: calls.append("installed")
     )

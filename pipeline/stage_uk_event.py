@@ -17,6 +17,7 @@ from pathlib import Path
 from pipeline import compute_uk_event as compute
 from pipeline import compute_uk_obr_costings as fiscal
 from pipeline import stage_uk_ab2025 as ab_stage
+from pipeline import uk_construction_revisions as revisions
 from pipeline import uk_replay_variants as variants
 
 AXES = [
@@ -244,6 +245,11 @@ def stage_event(
             artifacts[key] = artifact
             paths[key] = (relative, digest)
     index = {measure["measure_key"]: measure for measure in registry["measures"]}
+    selected_revisions = (manifest or {}).get("construction_revisions", {})
+    if not isinstance(selected_revisions, dict) or set(selected_revisions) - set(index):
+        raise ValueError("compute manifest construction revisions differ from registry")
+    for key, evidence in selected_revisions.items():
+        revisions.get_revision(key, evidence)
     for (key, year), artifact in artifacts.items():
         if key not in index:
             raise ValueError("manifest contains a measure outside the registry")
@@ -267,7 +273,17 @@ def stage_event(
             raise ValueError(
                 f"{key} {year}: artifact in a year the variant's population does not support"
             )
+        if artifact.get("construction_revision") != selected_revisions.get(key):
+            raise ValueError(
+                "artifact construction revision differs from compute manifest"
+            )
     planned = compute.worlds.computable(index, years=registry["calendar_years"])
+    for key, evidence in selected_revisions.items():
+        if key not in planned or "alias_of" in planned[key]:
+            raise ValueError(
+                "compute manifest revision names an unexecuted construction"
+            )
+        planned[key] = revisions.apply_selected_revision(key, planned[key], evidence)
     full_pairs = {
         (key, year)
         for key, world in planned.items()
@@ -298,8 +314,10 @@ def stage_event(
             for windows in (compute.annual_reform(world[field]) or {}).values()
             for window in windows
         ]
-        activation_fy = index[key].get("annual_activation_fy") or (
-            DOCUMENTED_ANNUAL_ACTIVATIONS.get(key)
+        activation_fy = (
+            (world.get("construction_revision") or {}).get("activation_fy")
+            or index[key].get("annual_activation_fy")
+            or DOCUMENTED_ANNUAL_ACTIVATIONS.get(key)
         )
         if activation_fy is not None:
             try:

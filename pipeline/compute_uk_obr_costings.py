@@ -1027,6 +1027,7 @@ def run_managed_simulation(
     scenario: Any = None,
     require_dataset_years: bool = False,
     expected_dataset_years: list[int] | None = None,
+    parameter_check: Any = None,
 ) -> dict[str, Any]:
     """Run, aggregate, delete, and collect exactly one managed sim.
 
@@ -1056,6 +1057,10 @@ def run_managed_simulation(
                 if reform is None
                 else pe.uk.managed_microsimulation(reform=reform)
             )
+            # Inspect the simulation's own processed tree before any aggregate
+            # calculation. The event runner supplies the intended values; the
+            # managed runner does not infer them from the reform entry point.
+            parameter_values = parameter_check(sim) if parameter_check else None
             bundle = dict(getattr(sim, "policyengine_bundle", {}) or {})
             if not bundle.get("certified_data_build_id"):
                 raise RuntimeError(
@@ -1143,7 +1148,7 @@ def run_managed_simulation(
         "rss_after_gc_bytes": rss_after_gc,
         "rss_after_gc_method": rss_method,
     }
-    return {
+    result = {
         "aggregates_gbp": aggregates,
         "variable_metadata": metadata,
         "policyengine_bundle": bundle,
@@ -1151,6 +1156,9 @@ def run_managed_simulation(
         "dataset_sha256_after": dataset_sha256_after,
         "performance": performance,
     }
+    if parameter_check is not None:
+        result["processed_parameter_values"] = parameter_values
+    return result
 
 
 def assert_managed_bundle(
