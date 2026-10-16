@@ -110,11 +110,12 @@ def test_discovery_and_enqueue_are_separate_and_failure_cannot_block_the_drain()
     assert enqueue["permissions"] == {"contents": "write"}
     assert enqueue["needs"] == "discover"
     assert prepare["needs"] == "discover_enqueue"
-    assert prepare["if"] == f"always() && {EMPTY_DRAIN}"
+    # always() is true even in a cancelled run; !cancelled() is not.
+    assert prepare["if"] == f"${{{{ !cancelled() && {EMPTY_DRAIN} }}}}"
     assert "needs.discover" not in prepare["if"]
     assert jobs["run"]["if"] == (
-        "always() && needs.prepare.result == 'success' "
-        "&& needs.prepare.outputs.request_id != ''"
+        "${{ !cancelled() && needs.prepare.result == 'success' "
+        "&& needs.prepare.outputs.request_id != '' }}"
     )
     assert "secrets." not in json.dumps(enqueue)
     download = next(

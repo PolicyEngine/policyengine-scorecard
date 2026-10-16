@@ -159,7 +159,8 @@ jobs:
     needs: discover_enqueue
     # Discovery, artifact transfer or enqueue failure must never strand a
     # request already queued. The drain still selects from replay-state.
-    if: always() && github.event_name == 'workflow_dispatch' && github.event.inputs.request == ''
+    # !cancelled(), not always(): always() is also true in a cancelled run.
+    if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && github.event.inputs.request == '' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -187,7 +188,7 @@ jobs:
   run:
     name: run one candidate with read permission
     needs: prepare
-    if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.request_id != ''
+    if: ${{ !cancelled() && needs.prepare.result == 'success' && needs.prepare.outputs.request_id != '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 340
     permissions:
