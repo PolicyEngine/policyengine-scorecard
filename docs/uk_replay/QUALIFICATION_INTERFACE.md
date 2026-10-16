@@ -66,7 +66,8 @@ Two flows use the same receiver:
   patch releases are not backfilled. Discovery builds at most three requests
   from at most 30 release attempts per drain.
   Before building a request it reads the wheel's static PyPI integrity JSON
-  and requires an attestation bundle whose publisher fields match exactly:
+  and requires an attestation bundle whose publisher has each of these fields,
+  with exactly these values (other publisher fields are ignored):
   `kind: "GitHub"`, `repository: "PolicyEngine/policyengine.py"`,
   `workflow: "push.yaml"`, and `environment: "pypi"` (the
   [checked 6.5.0 provenance response](https://pypi.org/integrity/policyengine/6.5.0/policyengine-6.5.0-py3-none-any.whl/provenance)).

@@ -134,7 +134,15 @@ def trusted_provenance(version: str, filename: str) -> str:
         bundles = document["attestation_bundles"]
         accepted = isinstance(bundles, list) and any(
             isinstance(bundle, dict)
-            and bundle.get("publisher") == TRUSTED_PUBLISHER
+            # Every reviewed identity field must be present and equal. A field
+            # PyPI adds later cannot change which repository, workflow and
+            # environment published the wheel, and refusing it would record a
+            # permanent skip for a genuine release.
+            and isinstance(bundle.get("publisher"), dict)
+            and all(
+                key in bundle["publisher"] and bundle["publisher"][key] == value
+                for key, value in TRUSTED_PUBLISHER.items()
+            )
             and isinstance(bundle.get("attestations"), list)
             and any(
                 isinstance(attestation, dict) and bool(attestation)

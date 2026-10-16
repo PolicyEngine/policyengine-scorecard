@@ -239,6 +239,35 @@ def test_a_release_becomes_a_valid_released_bundle_request(stubs, tmp_path):
     )
 
 
+@pytest.mark.parametrize("missing", sorted(discover.TRUSTED_PUBLISHER))
+def test_a_publisher_missing_any_identity_field_is_refused(stubs, tmp_path, missing):
+    document = json.loads(PROVENANCE_BYTES)
+    del document["attestation_bundles"][0]["publisher"][missing]
+    stubs["provenance"] = json.dumps(document).encode()
+    with pytest.raises(discover.Skipped, match="required trusted publisher") as caught:
+        discover.provisional_request(
+            "6.5.0", tmp_path, token=None, requested_by=REQUESTED_BY, now=NOW
+        )
+    assert caught.value.permanent
+
+
+def test_a_field_pypi_adds_to_the_publisher_does_not_refuse_a_release(stubs, tmp_path):
+    # The identity fields decide; an added field must not permanently skip a
+    # genuine release.
+    document = json.loads(PROVENANCE_BYTES)
+    document["attestation_bundles"][0]["publisher"]["claims"] = {
+        "ref": "refs/heads/main"
+    }
+    stubs["provenance"] = payload = json.dumps(document).encode()
+    request = discover.provisional_request(
+        "6.5.0", tmp_path, token=None, requested_by=REQUESTED_BY, now=NOW
+    )
+    assert (
+        request["requested_by"]["pypi_provenance_sha256"]
+        == hashlib.sha256(payload).hexdigest()
+    )
+
+
 @pytest.mark.parametrize("version", ["6.4.1", "6.5.0"])
 def test_static_bundle_reproduces_w4_requests_byte_for_byte(version):
     fixture = FIXTURES / "discovery"
@@ -799,7 +828,8 @@ def test_candidates_are_sorted_strictly_above_the_floor(tmp_path_factory, triple
         ("workflow", "release.yaml"),
         ("environment", "production"),
         ("kind", "GitLab"),
-        ("extra", "unexpected"),
+        ("environment", None),
+        ("repository", "PolicyEngine/policyengine.py "),
     ],
 )
 def test_wrong_publisher_is_permanently_refused_before_bundle_building(

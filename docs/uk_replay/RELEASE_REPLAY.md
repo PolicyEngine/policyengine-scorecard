@@ -552,8 +552,10 @@ Superseded patch releases are not backfilled. Each drain builds at most three
 requests and examines at most 30 releases.
 
 Before building a request, discovery reads the selected wheel's static PyPI
-integrity provenance JSON and requires an attestation bundle with these
-case-sensitive publisher fields: `kind: "GitHub"`,
+integrity provenance JSON and requires an attestation bundle whose publisher
+has each of these fields with exactly these case-sensitive values (a field
+PyPI adds later is ignored, so it cannot permanently skip a genuine release):
+`kind: "GitHub"`,
 `repository: "PolicyEngine/policyengine.py"`, `workflow: "push.yaml"`, and
 `environment: "pypi"`. The
 [6.5.0 wheel provenance](https://pypi.org/integrity/policyengine/6.5.0/policyengine-6.5.0-py3-none-any.whl/provenance)
