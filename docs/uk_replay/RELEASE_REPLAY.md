@@ -316,12 +316,13 @@ describe the construction's intent; a parameter-only annual lookup does
 not prove a simulation executed it. This distinction matters when a reform
 is written to the statutory timeline and annualised again.
 
-For every replay, immediately after constructing each world's simulation,
-the executor reads period Y from that
+For every replay, immediately after constructing each world's simulation
+and before any aggregate is calculated, the executor reads period Y from that
 simulation's own processed parameter tree for every path touched by either
 world. It records both the intended and processed values, per path and
-world, in the measure-year artifact and requires relative agreement within
-`1e-9`. It reads the tree the engine actually built, so it checks both the
+world, in the measure-year artifact; agreement means relative difference
+within `1e-9`, or both values absent. It reads the tree the engine actually
+built, so it checks both the
 annual-lookup and statutory-reprocessing routes without predicting either
 from a version string. Legacy-layout runs omit the field and retain their
 artifact bytes.
@@ -592,13 +593,28 @@ such a pair leaves the grid incomplete and is listed in
 policy.
 
 A processed parameter value that differs from its intended value is an
-integrity failure before aggregation. The executor refuses to write the
-measure-year artifact; qualification records `processed_value_mismatch`
-with `event`, `measure_key` and `year`, plus `world`, `path`, `intended` and
-`processed` as JSON in the receipt schema's `detail` field, and returns a
-failed receipt. This check does not depend on a
-nonzero fiscal-head result: it also catches a construction routed to a
-different annual value when its population effect happens to be zero.
+integrity failure. The values are read before aggregation; whether a
+mismatch refuses the measure-year is decided once both worlds are computed
+(`compute_uk_event.processed_value_failures`). It refuses when the mismatch
+is in the certified current law, when the measure is in force that year
+(from its `commences_fy`), or when the two worlds' totals differ (gov_tax,
+gov_spending, household net income or any declared head). The executor then
+refuses to write the measure-year artifact; qualification records
+`processed_value_mismatch` with `event`, `measure_key` and `year`, plus
+`world`, `path`, `intended` and `processed` as JSON in the receipt schema's
+`detail` field, and returns a failed receipt. This check does not depend on
+a nonzero fiscal-head result: an in-force construction routed to a different
+annual value fails even when its population effect happens to be zero.
+
+The one accepted mismatch is in a year before the measure commences whose
+two worlds come out identical: it moved none of those totals. The artifact
+is written and lists each such mismatch under `processed_value_notes`, with
+the same fields and `"accepted": "not_in_force_identical_worlds"`. In
+policyengine-uk 2.130.1, a construction-time change starting on a
+parameter's first stated date is rebuilt without its prior law, so a
+reversal's value also appears in earlier years. AB2025's high-value council
+tax surcharge shows this in 2025 to 2027, where its formula returns zero
+before 2028.
 
 A step that fails before the candidate's identity is known yields a `failed`
 receipt with no execution block. If no event outputs exist, `corpus` is null.

@@ -49,7 +49,11 @@ def parameter_scalar(value):
 
 
 def processed_values_match(intended, processed) -> bool:
-    """Relative tolerance only: a zero intended value must remain zero."""
+    """Relative tolerance only: a zero intended value must remain zero. A path
+    with no value on either side agrees; a missing processed value against an
+    intended one does not."""
+    if intended is None and processed is None:
+        return True
     if intended is None or processed is None:
         return False
     if isinstance(intended, (int, float)) and isinstance(processed, (int, float)):
@@ -62,14 +66,16 @@ def processed_values_match(intended, processed) -> bool:
 
 
 def check_processed_parameters(sim, checks: list[dict]) -> dict:
-    """Read period Y through the same January lookup used by formulas.
+    """Read each touched path's period-Y value at 1 January Y from this
+    simulation's own processed parameter tree, after its actual reform route.
 
-    The parameter tree belongs to this simulation, after its actual reform
-    route has processed it. Never sample April or rebuild a parallel world.
+    It only reads: whether a difference from the intended value refuses the
+    artifact is decided after both worlds are computed
+    (processed_value_failures). Never sample April or rebuild a parallel world.
     """
     values = {}
     for check in checks:
-        for path, intended in check["intended_values"].items():
+        for path in check["intended_values"]:
             if path not in values:
                 try:
                     node = worlds._resolve_parameter(
@@ -79,21 +85,55 @@ def check_processed_parameters(sim, checks: list[dict]) -> dict:
                     values[path] = None
                 else:
                     values[path] = parameter_scalar(node(f"{check['year']}-01-01"))
-            processed = values[path]
-            if not processed_values_match(intended, processed):
-                raise ProcessedValueMismatch(
-                    {
-                        "code": "processed_value_mismatch",
-                        **{
-                            k: check[k]
-                            for k in ("event", "measure_key", "year", "world")
-                        },
-                        "path": path,
-                        "intended": intended,
-                        "processed": processed,
-                    }
-                )
     return values
+
+
+def processed_mismatches(check: dict, values: dict) -> list[dict]:
+    """Every path whose processed value differs from the check's intended one."""
+    return [
+        {
+            "code": "processed_value_mismatch",
+            **{k: check[k] for k in ("event", "measure_key", "year", "world")},
+            "path": path,
+            "intended": intended,
+            "processed": values.get(path),
+        }
+        for path, intended in check["intended_values"].items()
+        if not processed_values_match(intended, values.get(path))
+    ]
+
+
+def processed_value_failures(
+    measure: dict, year: int, artifact: dict, mismatches: list[dict]
+) -> tuple[list[dict], list[dict]]:
+    """Split a measure-year's mismatches into refusals and recorded notes.
+
+    A mismatch refuses the artifact when it is in the certified current law,
+    when the measure is in force that year (from its commences_fy), or when
+    the two worlds' totals differ (stage_uk_ab2025.identical_worlds: gov_tax,
+    gov_spending, household_net_income and every declared head). A mismatch
+    in a year before the measure commences whose worlds come out identical
+    moved none of those totals, so it is recorded on the artifact, not
+    refused. (policyengine-uk
+    2.130.1 rebuilds a construction-time change that starts on a parameter's
+    first stated date without its prior law, so a reversal's value appears in
+    earlier years: AB2025's high-value council tax surcharge, whose formula
+    returns zero before 2028, shows this in 2025 to 2027.)"""
+    from pipeline import stage_uk_ab2025 as ab_stage
+
+    commences = measure.get("commences_fy")
+    in_force = commences is None or year >= int(commences[:4])
+    refusals, notes = [], []
+    for mismatch in mismatches:
+        if (
+            mismatch["world"] == "certified_current_law"
+            or in_force
+            or not ab_stage.identical_worlds(artifact)
+        ):
+            refusals.append(mismatch)
+        else:
+            notes.append({**mismatch, "accepted": "not_in_force_identical_worlds"})
+    return refusals, notes
 
 
 def intended_parameter_check(
@@ -216,10 +256,8 @@ def uc_health_scenario(reform: dict, *, parameter_checks: list[dict] | None = No
         sim.tax_benefit_system.reset_parameter_caches()
         if parameter_checks is None:
             assert_reform_reached(sim, reform)
-        else:
-            # This modifier runs inside simulation construction, before the
-            # managed runner's general readback hook can see the simulation.
-            check_processed_parameters(sim, parameter_checks)
+        # Otherwise the managed runner's readback hook reads this same
+        # simulation's tree after construction (check_processed_parameters).
         add_universal_credit_reform(sim)
 
     return Scenario(simulation_modifier=apply_and_refresh)
@@ -714,6 +752,37 @@ def run_year_job(job: dict) -> dict:
             variant_fields=job.get("variant_fields"),
             intended_current_law=current,
         )
+        # run_sim refuses a result without processed values whenever checks
+        # were requested, so every real run is evaluated here.
+        if checks and all(
+            "processed_parameter_values" in result
+            for result in (baseline, base, reform)
+        ):
+            # Each world's check against the simulation that computed it;
+            # current law against the certified baseline.
+            mismatches = processed_mismatches(
+                checks[key]["baseline_world"], base["processed_parameter_values"]
+            ) + processed_mismatches(
+                checks[key]["reform_world"], reform["processed_parameter_values"]
+            )
+            mismatches += processed_mismatches(
+                {
+                    **checks[key]["baseline_world"],
+                    "world": "certified_current_law",
+                    "intended_values": {
+                        path: current[path]
+                        for path in checks[key]["baseline_world"]["intended_values"]
+                    },
+                },
+                baseline["processed_parameter_values"],
+            )
+            refusals, notes = processed_value_failures(
+                measure, year, artifact, mismatches
+            )
+            if refusals:
+                raise ProcessedValueMismatch(refusals[0])
+            if notes:
+                artifact["processed_value_notes"] = notes
         path = job["output_dir"] / f"{key}_{year}.json"
         fiscal.atomic_write_bytes(path, canonical_bytes(artifact))
         relative = str(path.relative_to(ROOT))

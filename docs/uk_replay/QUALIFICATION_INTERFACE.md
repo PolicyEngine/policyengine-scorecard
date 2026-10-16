@@ -260,6 +260,14 @@ such a pair leaves the grid incomplete and is listed in
 `inert_measure_years`. Whether either blocks promotion is W4's qualification
 policy.
 
+A world whose processed parameter value differs from its intended value
+records an integrity failure `processed_value_mismatch` (with `event`,
+`measure_key`, `year`, and `world`, `path`, `intended` and `processed` as
+JSON in `detail`), and the status is `failed`. The exception is a mismatch
+in a year before the measure commences whose two worlds come out identical;
+the measure-year's artifact lists it under `processed_value_notes` instead.
+`RELEASE_REPLAY.md` gives the rule.
+
 ### Division of judgement
 
 How flags arise, so a gate built on them sees the intended events:
@@ -278,8 +286,8 @@ How flags arise, so a gate built on them sees the intended events:
 
 * `integrity.status` is `complete`, `incomplete` or `failed`. `failed` means
   a crash, a non-finite aggregate, an identity mismatch after the run started,
-  an accounting identity broken in staging, or a `construction_inert`
-  measure-year. These are structural failures; W4 blocks promotion on
+  an accounting identity broken in staging, a `construction_inert`
+  measure-year, or a `processed_value_mismatch`. These are structural failures; W4 blocks promotion on
   them.
 * `diff.flag_counts` and `flagged_rows` describe movements against the base
   variant. They carry no verdict. Whether an unexplained material move blocks

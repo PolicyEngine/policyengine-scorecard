@@ -43,21 +43,22 @@ def check(value, year=2024):
 def test_exact_readback_accepts_and_bleed_shaped_readback_refuses():
     intended = 0.1 * 207 / 365 + 0.18 * 158 / 365
     bleed = 0.1 * 302 / 365 + 0.18 * 63 / 365
-    assert compute.check_processed_parameters(
-        simulation(intended), [check(intended)]
-    ) == {PATH: intended}
-    with pytest.raises(compute.ProcessedValueMismatch) as caught:
-        compute.check_processed_parameters(simulation(bleed), [check(intended)])
-    assert caught.value.failure == {
-        "code": "processed_value_mismatch",
-        "event": "autumn_budget_2024",
-        "measure_key": KEY,
-        "year": 2024,
-        "world": "baseline_world",
-        "path": PATH,
-        "intended": intended,
-        "processed": bleed,
-    }
+    exact = compute.check_processed_parameters(simulation(intended), [check(intended)])
+    assert exact == {PATH: intended}
+    assert compute.processed_mismatches(check(intended), exact) == []
+    read = compute.check_processed_parameters(simulation(bleed), [check(intended)])
+    assert compute.processed_mismatches(check(intended), read) == [
+        {
+            "code": "processed_value_mismatch",
+            "event": "autumn_budget_2024",
+            "measure_key": KEY,
+            "year": 2024,
+            "world": "baseline_world",
+            "path": PATH,
+            "intended": intended,
+            "processed": bleed,
+        }
+    ]
 
 
 @pytest.mark.parametrize("intended", [1e-12, 0.1, 1.0, 1e12, -0.1])
@@ -69,9 +70,15 @@ def test_tolerance_is_relative_and_one_part_per_billion(intended):
     assert compute.processed_values_match(0.0, 0.0)
 
 
-@pytest.mark.parametrize("value", [None, math.nan, math.inf, -math.inf])
-def test_missing_and_nonfinite_numeric_values_do_not_pass(value):
+@pytest.mark.parametrize("value", [math.nan, math.inf, -math.inf])
+def test_nonfinite_numeric_values_do_not_pass(value):
     assert not compute.processed_values_match(value, value)
+
+
+def test_a_missing_value_agrees_only_with_a_missing_value():
+    assert compute.processed_values_match(None, None)
+    assert not compute.processed_values_match(0.1, None)
+    assert not compute.processed_values_match(None, 0.1)
 
 
 @settings(max_examples=100, deadline=None)
@@ -167,7 +174,7 @@ def test_revised_cgt_2024_matches_intent_and_preserves_neighboring_years(
         assert submitted == annual
 
 
-def test_managed_check_runs_before_any_aggregate(tmp_path, monkeypatch):
+def test_managed_readback_runs_before_any_aggregate(tmp_path, monkeypatch):
     data = tmp_path / "certified.h5"
     data.write_bytes(b"fake certified data")
     sim = simulation(0.11)
@@ -176,8 +183,16 @@ def test_managed_check_runs_before_any_aggregate(tmp_path, monkeypatch):
         "runtime_dataset_source": str(data),
     }
     sim.tax_benefit_system.variables = {"capital_gains_tax": object()}
-    calculated = []
-    sim.calculate = lambda *args: calculated.append(args)
+    order, read_values = [], []
+
+    class FirstAggregate(Exception):
+        pass
+
+    def calculate(*args, **kwargs):
+        order.append("calculate")
+        raise FirstAggregate
+
+    sim.calculate = calculate
     monkeypatch.setitem(
         sys.modules,
         "policyengine",
@@ -185,18 +200,24 @@ def test_managed_check_runs_before_any_aggregate(tmp_path, monkeypatch):
             uk=SimpleNamespace(managed_microsimulation=lambda **kwargs: sim)
         ),
     )
-    with pytest.raises(compute.ProcessedValueMismatch):
+
+    def read(own_sim):
+        order.append("read")
+        read_values.append(compute.check_processed_parameters(own_sim, [check(0.1)]))
+        return read_values[-1]
+
+    with pytest.raises(FirstAggregate):
         compute.fiscal.run_managed_simulation(
             year=2024,
             variables=["capital_gains_tax"],
             reform=None,
             runtime_dataset_source=data,
             expected_dataset_sha256=compute.fiscal.sha256_file(data),
-            parameter_check=lambda own_sim: compute.check_processed_parameters(
-                own_sim, [check(0.1)]
-            ),
+            parameter_check=read,
         )
-    assert calculated == []
+    # The simulation's own tree is read before any aggregate is calculated.
+    assert order == ["read", "calculate"]
+    assert read_values == [{PATH: 0.11}]
 
 
 def test_artifact_records_both_worlds_and_legacy_omits_new_fields():
@@ -293,11 +314,12 @@ def test_missing_processed_path_is_a_structured_mismatch():
     sim = SimpleNamespace(
         tax_benefit_system=SimpleNamespace(parameters=SimpleNamespace())
     )
-    with pytest.raises(compute.ProcessedValueMismatch) as caught:
-        compute.check_processed_parameters(sim, [check(0.1)])
-    assert caught.value.failure["path"] == PATH
-    assert caught.value.failure["intended"] == 0.1
-    assert caught.value.failure["processed"] is None
+    read = compute.check_processed_parameters(sim, [check(0.1)])
+    assert read == {PATH: None}
+    (failure,) = compute.processed_mismatches(check(0.1), read)
+    assert failure["path"] == PATH
+    assert failure["intended"] == 0.1
+    assert failure["processed"] is None
 
 
 def test_uc_constructor_guard_uses_structured_relative_check(monkeypatch):
@@ -337,19 +359,282 @@ def test_uc_constructor_guard_uses_structured_relative_check(monkeypatch):
         ),
     )
     checks = [{**check(intended, 2026), "intended_values": {path: intended}}]
-    with pytest.raises(compute.ProcessedValueMismatch) as caught:
-        compute.uc_health_scenario(reform, parameter_checks=checks).simulation_modifier(
-            sim
-        )
-    assert caught.value.failure["path"] == path
-    assert caught.value.failure["processed"] == 217.26
-    assert "uc_modifier" not in calls
-
-    # A difference within 1e-9 relative passes, although the previous absolute
-    # assertion would have refused it before the general check ran.
+    # The modifier no longer refuses inside construction: the managed runner's
+    # readback reads this same simulation afterwards, and the decision is made
+    # once both worlds are computed.
+    compute.uc_health_scenario(reform, parameter_checks=checks).simulation_modifier(sim)
+    assert "uc_modifier" in calls
+    (failure,) = compute.processed_mismatches(
+        checks[0], compute.check_processed_parameters(sim, checks)
+    )
+    assert failure["path"] == path
+    assert failure["processed"] == 217.26
+    # A difference within 1e-9 relative passes.
     sim.tax_benefit_system.parameters.gov.dwp.universal_credit.rebalancing.new_claimant_health_element = (
         lambda instant: intended * (1 + 0.5e-9)
     )
-    sim.health_parameter = intended
-    compute.uc_health_scenario(reform, parameter_checks=checks).simulation_modifier(sim)
-    assert "uc_modifier" in calls
+    assert (
+        compute.processed_mismatches(
+            checks[0], compute.check_processed_parameters(sim, checks)
+        )
+        == []
+    )
+
+
+def artifact_with(identical):
+    heads = {"income_tax": 1.0}
+    baseline = {
+        "gov_tax": 1.0,
+        "gov_spending": 2.0,
+        "household_net_income": 3.0,
+        "heads": dict(heads),
+    }
+    reform = (
+        {**baseline, "heads": dict(heads)}
+        if identical
+        else {**baseline, "gov_tax": 1.5, "heads": {"income_tax": 1.5}}
+    )
+    return {"totals": {"baseline": baseline, "reform": reform}}
+
+
+@pytest.mark.parametrize(
+    "world", ["baseline_world", "reform_world", "certified_current_law"]
+)
+@pytest.mark.parametrize("year", [2025, 2027, 2028, 2030])
+@pytest.mark.parametrize("identical", [True, False])
+def test_a_mismatch_is_recorded_only_before_commencement_with_identical_worlds(
+    world, year, identical
+):
+    measure = {"commences_fy": "2028-29"}
+    mismatch = {
+        "code": "processed_value_mismatch",
+        "event": "autumn_budget_2025",
+        "measure_key": "ab2025__high_value_council_tax_surcharge",
+        "year": year,
+        "world": world,
+        "path": "gov.hmrc.council_tax.high_value_surcharge.amount[1].amount",
+        "intended": 2500,
+        "processed": 0,
+    }
+    refusals, notes = compute.processed_value_failures(
+        measure, year, artifact_with(identical), [mismatch]
+    )
+    accepted = world != "certified_current_law" and year < 2028 and identical
+    assert refusals == ([] if accepted else [mismatch])
+    assert notes == (
+        [{**mismatch, "accepted": "not_in_force_identical_worlds"}] if accepted else []
+    )
+
+
+def test_a_measure_without_commencement_is_always_in_force():
+    mismatch = {"world": "baseline_world", "year": 2020}
+    refusals, notes = compute.processed_value_failures(
+        {}, 2020, artifact_with(True), [mismatch]
+    )
+    assert refusals == [mismatch] and notes == []
+
+
+BLENDED = {
+    "gov.hmrc.cgt.basic_rate": 0.1 * 207 / 365 + 0.18 * 158 / 365,
+    "gov.hmrc.cgt.higher_rate": 0.2 * 207 / 365 + 0.24 * 158 / 365,
+    "gov.hmrc.cgt.additional_rate": 0.2 * 207 / 365 + 0.24 * 158 / 365,
+}
+
+
+def window_value(reform, path, year):
+    """A submitted window's value for period Y (1 January, or 6 April when the
+    statutory route submits fiscal-year windows), else None."""
+    for window, value in ((reform or {}).get(path) or {}).items():
+        start, stop = window.split(".")
+        anchor = f"{year}-04-06" if start.endswith("-04-06") else f"{year}-01-01"
+        if start <= anchor <= stop:
+            return value
+    return None
+
+
+@pytest.mark.parametrize("statutory", [False, True])
+@pytest.mark.parametrize("blend", [True, False])
+def test_a_variant_run_selects_the_revision_and_checks_each_world(
+    tmp_path, monkeypatch, statutory, blend
+):
+    # Review of cce7cbb: the run path is pinned at compute.main with the real
+    # AB2024 CGT measure, so dropping the revision selection or swapping the
+    # worlds' checks fails here.
+    from test_uk_replay_variants import CURRENT, simulation as aggregates
+
+    monkeypatch.setattr(compute, "ROOT", tmp_path)
+    source = json.loads(
+        (
+            compute.registry_builder.ROOT
+            / "data/uk/events/autumn_budget_2024_measures.json"
+        ).read_text()
+    )
+    (cgt,) = [m for m in source["measures"] if m["measure_key"] == KEY]
+    registry_path = tmp_path / "registry.json"
+    registry_path.write_text(
+        json.dumps(
+            {
+                "event_slug": "autumn_budget_2024",
+                "calendar_years": [2024],
+                "measures": [cgt],
+            }
+        )
+    )
+    monkeypatch.setattr(compute.registry_builder, "validate_registry", lambda d: None)
+    monkeypatch.setattr(
+        compute.worlds,
+        "engine_resolver",
+        lambda: lambda path, instant: BLENDED.get(path),
+    )
+    data = tmp_path / "certified.h5"
+    data.write_bytes(b"fake")
+    release = {"certified_data_build_id": "policyengine-uk-data-1.58.0"}
+    monkeypatch.setattr(
+        compute,
+        "variant_preflight",
+        lambda variant, dataset_source=None: {
+            "sha256": variant["identity"]["dataset"]["sha256"],
+            "release_bundle": release,
+            "runtime_dataset_source": str(data),
+        },
+    )
+    tree = SimpleNamespace(
+        gov=SimpleNamespace(
+            hmrc=SimpleNamespace(
+                cgt=SimpleNamespace(
+                    **{
+                        name: SimpleNamespace(
+                            metadata={"fiscal_year_blend": True} if blend else {}
+                        )
+                        for name in ("basic_rate", "higher_rate", "additional_rate")
+                    }
+                )
+            )
+        )
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "policyengine_uk",
+        SimpleNamespace(
+            CountryTaxBenefitSystem=lambda: SimpleNamespace(parameters=tree)
+        ),
+    )
+    install_scenario(monkeypatch, statutory=statutory)
+    submitted = []
+
+    def managed(**kwargs):
+        reform = kwargs.get("reform")
+        submitted.append(reform)
+        values = {
+            path: (
+                window_value(reform, path, kwargs["year"])
+                if window_value(reform, path, kwargs["year"]) is not None
+                else BLENDED[path]
+            )
+            for path in BLENDED
+        }
+        sim = SimpleNamespace(
+            tax_benefit_system=SimpleNamespace(
+                parameters=SimpleNamespace(
+                    gov=SimpleNamespace(
+                        hmrc=SimpleNamespace(
+                            cgt=SimpleNamespace(
+                                **{
+                                    path.rsplit(".", 1)[1]: (
+                                        lambda v: lambda instant: v
+                                    )(value)
+                                    for path, value in values.items()
+                                }
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        result = aggregates(900, 1000) if reform else aggregates(1000, 1030)
+        result["aggregates_gbp"] = {
+            variable: 900.0 if reform else 1000.0 for variable in kwargs["variables"]
+        }
+        result["variable_metadata"] = {
+            variable: {"entity": "person", "definition_period": "year"}
+            for variable in kwargs["variables"]
+        }
+        result["policyengine_bundle"] = dict(release)
+        if kwargs.get("parameter_check"):
+            result["processed_parameter_values"] = kwargs["parameter_check"](sim)
+        return result
+
+    monkeypatch.setattr(compute.fiscal, "run_managed_simulation", managed)
+    calls = []
+    run_sim = compute.run_sim
+
+    def recording(year, variables, reform, pre):
+        calls.append(
+            {
+                "reform": reform is not None,
+                "checks": [
+                    (check["world"], check["measure_key"])
+                    for check in pre["parameter_checks"]
+                ],
+                "revision": pre.get("construction_revision"),
+            }
+        )
+        return run_sim(year, variables, reform, pre)
+
+    monkeypatch.setattr(compute, "run_sim", recording)
+    output = tmp_path / "results" / "uk" / "replays" / CURRENT / "autumn_budget_2024"
+    assert (
+        compute.main(
+            [
+                "--event",
+                "autumn_budget_2024",
+                "--variant",
+                CURRENT,
+                "--registry",
+                str(registry_path),
+                "--output-dir",
+                str(output),
+            ]
+        )
+        == 0
+    )
+    manifest = json.loads((output / "RUN_MANIFEST.json").read_bytes())
+    artifact = json.loads((output / f"{KEY}_2024.json").read_bytes())
+    # The certified baseline is the reform world (current law) and also reads
+    # current law; the reversal world carries its own check and the revision.
+    assert calls == [
+        {
+            "reform": False,
+            "checks": [("reform_world", KEY), ("certified_current_law", KEY)],
+            "revision": None,
+        },
+        {
+            "reform": True,
+            "checks": [("baseline_world", KEY)],
+            "revision": artifact.get("construction_revision"),
+        },
+    ]
+    (reversal,) = [r for r in submitted if r]
+    recorded = artifact["processed_parameter_values"]
+    if blend:
+        assert KEY in manifest["construction_revisions"]
+        assert artifact["construction_revision"]["revision_id"] == (
+            "ab2024_cgt_fiscal_year_blend.v1"
+        )
+        window = "2024-04-06.2036-04-05" if statutory else "2024-01-01.2035-12-31"
+        assert reversal[PATH] == {window: 0.1}
+        # The reversal world holds the pre-announcement rate through FY2024-25.
+        assert recorded["baseline_world"][PATH] == {"intended": 0.1, "processed": 0.1}
+    else:
+        assert "construction_revisions" not in manifest
+        assert "construction_revision" not in artifact
+        # The frozen reversal reads from 2025: period 2024 keeps current law.
+        assert recorded["baseline_world"][PATH] == {
+            "intended": BLENDED[PATH],
+            "processed": BLENDED[PATH],
+        }
+    # The reform world is the certified current law in both cases.
+    assert recorded["reform_world"][PATH] == {
+        "intended": BLENDED[PATH],
+        "processed": BLENDED[PATH],
+    }

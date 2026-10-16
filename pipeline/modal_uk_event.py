@@ -70,6 +70,7 @@ REPOSITORY_FILES = (
     "pipeline/modal_uk_event.py",
     "pipeline/compute_uk_event.py",
     "pipeline/compute_uk_ab2025.py",
+    "pipeline/stage_uk_ab2025.py",
     "pipeline/compute_uk_obr_costings.py",
     "pipeline/build_uk_event_registry.py",
     "pipeline/uk_engine_registry.py",

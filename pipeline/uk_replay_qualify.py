@@ -606,6 +606,9 @@ def run_corpus(
     failures = []
     for event in events:
         output = namespace / event
+        # A failure file from an earlier attempt must not be read as this
+        # run's (compute writes it only on a processed-value refusal).
+        (output / "INTEGRITY_FAILURES.json").unlink(missing_ok=True)
         try:
             command = [
                 python,

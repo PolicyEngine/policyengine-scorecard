@@ -309,13 +309,16 @@ def construction_note(
     note = measure.get("note", "")
     revision = (identity or {}).get("construction_revisions", {}).get(key)
     if revision is not None:
-        return (
-            f"Construction revision {revision['revision_id']} ran: the installed "
-            "CGT rates carry fiscal_year_blend; the reversal holds the "
-            "pre-announcement 10%/20% rates through fiscal 2024–25, retaining "
-            "the engine's day-weighted fiscal-year treatment. The pooled-gains "
-            "limitation and unreversed reliefs remain. Evidence is recorded in "
-            "CONSTRUCTION_PREMISES.json."
+        from pipeline import uk_construction_revisions as revisions
+
+        recorded = revisions.get_revision(key, revision)
+        return " ".join(
+            [
+                f"Construction revision {recorded['revision_id']} ran:",
+                recorded["intent"],
+                *recorded.get("limitations", []),
+                "Evidence is recorded in CONSTRUCTION_PREMISES.json.",
+            ]
         )
     if is_variant(identity) or engine_version != LEGACY_ENGINE:
         if not note:

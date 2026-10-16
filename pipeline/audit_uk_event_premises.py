@@ -360,10 +360,30 @@ def audit(
         payload = (events_dir / f"{event}_measures.json").read_bytes()
         # A namespace records execution, including old sparse namespaces
         # whose retained premises have no event manifests beside them.
-        # Missing selection evidence means the frozen construction ran.
+        # Missing selection evidence means the frozen construction ran,
+        # except for an event a qualification run's recorded corpus lists:
+        # that run, on this engine, selected what this engine's metadata
+        # selects even when the event failed before writing its manifest.
         selection = {} if namespace is not None else None
         if namespace is not None:
             manifest_path = namespace / event / "RUN_MANIFEST.json"
+            corpus_path = namespace / "CORPUS.json"
+            if not manifest_path.is_file() and corpus_path.is_file():
+                if event in json.loads(corpus_path.read_bytes())["events"]:
+                    metadata = (
+                        engine.metadata
+                        if hasattr(engine, "metadata")
+                        else engine.annualisation
+                    )
+                    selection = {
+                        measure["measure_key"]: chosen
+                        for measure in json.loads(payload)["measures"]
+                        if (
+                            chosen := revisions.select_revision(
+                                measure["measure_key"], metadata
+                            )
+                        )
+                    }
             if manifest_path.is_file():
                 manifest = json.loads(manifest_path.read_bytes())
                 selection = manifest.get("construction_revisions", {})

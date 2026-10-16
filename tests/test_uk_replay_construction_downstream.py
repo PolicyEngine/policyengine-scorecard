@@ -111,9 +111,12 @@ def test_comparison_note_reports_the_revision_that_ran(tmp_path):
     )
     identity = compare.run_identity(tmp_path)
     note = compare.construction_note({"measure_key": KEY}, identity=identity)
-    assert evidence["revision_id"] in note
-    assert "fiscal 2024–25" in note and "day-weighted" in note
-    assert "pooled-gains" in note and "unreversed reliefs" in note
+    # The note is the registry's own record of the revision that ran.
+    recorded = revisions.get_revision(KEY, evidence)
+    assert note.startswith(f"Construction revision {evidence['revision_id']} ran:")
+    assert recorded["intent"] in note and "FY2024-25" in note
+    assert all(limitation in note for limitation in recorded["limitations"])
+    assert "Business Asset Disposal Relief" in note
     assert compare.construction_note({"measure_key": KEY, "note": "frozen"}) != note
 
 
