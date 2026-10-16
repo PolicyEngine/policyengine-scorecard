@@ -175,6 +175,15 @@ Operating rules for the agent stage:
   SOI State EITC claims by number of children, so the rate's numerator is
   consumed; eligibility is held out.
 
+- **Census STC State income tax collections** (`sources/census-stc/`, lane
+  `census-stc`, issue #176): item T40 for 44 jurisdictions, FY2023-FY2025.
+  The QC checks the US column against the 50 States on all 25 items. The
+  counterpart is each State's own `<st>_income_tax` (the State government's
+  tax, as Census counts it), from `pipeline/campaign_us/census_stc.py`;
+  `program` carries that name, so App v3 links a State's reform only to
+  that State. FY2023 is a us-6.2.1 calibration target (`consumed_as_target`).
+  Collections are administrative outturns, staged as claims by decision on
+  #176, a departure from the boundary rule below.
 - **ASPE Welfare Indicators, Indicator 4** (`sources/aspe-welfare-indicators/`,
   lane `aspe-welfare-indicators`): TANF families and SSI adult units
   (TRIM3) and SNAP households (FNS series), participation among the

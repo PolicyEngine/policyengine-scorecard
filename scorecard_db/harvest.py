@@ -158,6 +158,15 @@ def normalize_geography(geo: str) -> str:
     raise ValueError(f"unmapped geography: {geo!r}")
 
 
+_STATE_NAMES = {code: name for name, code in _STATES.items()}
+
+
+def state_name(code: str) -> str:
+    """USPS code -> State name ('VT' -> 'Vermont'; 'DC' -> 'District of
+    Columbia'), the inverse of normalize_geography's map."""
+    return _STATE_NAMES[code]
+
+
 def merge_republications(
     scores: list[ExternalScore],
     source: str,

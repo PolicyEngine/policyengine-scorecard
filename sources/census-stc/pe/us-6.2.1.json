@@ -1,0 +1,467 @@
+{
+ "family": "census_stc",
+ "run_id": "census-stc-20261015",
+ "computed_at": "2026-10-15T17:33:01.520566+00:00",
+ "period": 2024,
+ "time_basis": "annual",
+ "provenance": {
+  "engine_version": "2.2.1",
+  "data_bundle": "populace-us-2024-spm-20260915",
+  "bundle_id": "us-6.2.1",
+  "policyengine_version": "6.2.1",
+  "legacy_input_renames": "{'would_claim_wic': 'takes_up_wic_if_eligible'}"
+ },
+ "policyengine_variables": [
+  "state_income_tax",
+  "state_code_str",
+  "is_tax_unit_head",
+  "al_income_tax",
+  "az_income_tax",
+  "ar_income_tax",
+  "ca_income_tax",
+  "co_income_tax",
+  "ct_income_tax",
+  "de_income_tax",
+  "dc_income_tax",
+  "ga_income_tax",
+  "hi_income_tax",
+  "id_income_tax",
+  "il_income_tax",
+  "in_income_tax",
+  "ia_income_tax",
+  "ks_income_tax",
+  "ky_income_tax",
+  "la_income_tax",
+  "me_income_tax",
+  "md_income_tax",
+  "ma_income_tax",
+  "mi_income_tax",
+  "mn_income_tax",
+  "ms_income_tax",
+  "mo_income_tax",
+  "mt_income_tax",
+  "ne_income_tax",
+  "nh_income_tax",
+  "nj_income_tax",
+  "nm_income_tax",
+  "ny_income_tax",
+  "nc_income_tax",
+  "nd_income_tax",
+  "oh_income_tax",
+  "ok_income_tax",
+  "or_income_tax",
+  "pa_income_tax",
+  "ri_income_tax",
+  "sc_income_tax",
+  "ut_income_tax",
+  "vt_income_tax",
+  "va_income_tax",
+  "wa_income_tax",
+  "wv_income_tax",
+  "wi_income_tax"
+ ],
+ "pe_construction": "Weighted CY2024 total of <st>_income_tax (tax units; the variable is defined for that State only) on the certified bundle: the State government's tax, as Census T40 counts it. state_income_tax summed over the State's tax units (state_code_str) is recorded beside it; it differs where the engine's sum adds local taxes (Maryland counties, New York City) or a State variable adds a fee (Idaho's $10 Permanent Building Fund tax, id_pbf). A tax-year liability, compared with fiscal-year collections.",
+ "national_state_income_tax": 536182088363.12683,
+ "calibration_source": {
+  "path": "releases/populace-us-2024-spm-20260915/calibration_diagnostics.json",
+  "revision": "populace-us-2024-spm-20260915"
+ },
+ "geographies": {
+  "AL": {
+   "state_income_tax": 6149327668.9033375,
+   "state_income_tax_variable_total": 6149327659.78347,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.al.t40.collections",
+    "target": 5119611000.0,
+    "final_estimate": 6152212875.342894
+   }
+  },
+  "AZ": {
+   "state_income_tax": 5617449706.875348,
+   "state_income_tax_variable_total": 5617449707.912624,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.az.t40.collections",
+    "target": 5239526000.0,
+    "final_estimate": 5617456443.7385235
+   }
+  },
+  "AR": {
+   "state_income_tax": 2571103499.8804398,
+   "state_income_tax_variable_total": 2571103499.8804398,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ar.t40.collections",
+    "target": 2930657000.0,
+    "final_estimate": 2573763346.8160763
+   }
+  },
+  "CA": {
+   "state_income_tax": 121198406078.06583,
+   "state_income_tax_variable_total": 121198406078.06584,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ca.t40.collections",
+    "target": 96379294000.0,
+    "final_estimate": 122340297352.24144
+   }
+  },
+  "CO": {
+   "state_income_tax": 7836233706.175234,
+   "state_income_tax_variable_total": 7836233820.655165,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.co.t40.collections",
+    "target": 6780832000.0,
+    "final_estimate": 7829100385.577585
+   }
+  },
+  "CT": {
+   "state_income_tax": 12507579724.73016,
+   "state_income_tax_variable_total": 12507579724.730158,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ct.t40.collections",
+    "target": 9584927000.0,
+    "final_estimate": 12507579731.229836
+   }
+  },
+  "DE": {
+   "state_income_tax": 2103452509.2365518,
+   "state_income_tax_variable_total": 2103452509.2365518,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.de.t40.collections",
+    "target": 2425836000.0,
+    "final_estimate": 2102798065.9704926
+   }
+  },
+  "DC": {
+   "state_income_tax": 3245098502.954582,
+   "state_income_tax_variable_total": 3245098502.954582,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.dc.t40.collections",
+    "target": 3048229000.0,
+    "final_estimate": 3245012820.3379464
+   }
+  },
+  "GA": {
+   "state_income_tax": 16948745463.226126,
+   "state_income_tax_variable_total": 16948745463.226122,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ga.t40.collections",
+    "target": 16970544000.0,
+    "final_estimate": 16953051251.54917
+   }
+  },
+  "HI": {
+   "state_income_tax": 3102509174.3252964,
+   "state_income_tax_variable_total": 3102509175.6044545,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.hi.t40.collections",
+    "target": 3099978000.0,
+    "final_estimate": 3097894533.370902
+   }
+  },
+  "ID": {
+   "state_income_tax": 2773905628.023654,
+   "state_income_tax_variable_total": 2766825961.1609163,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.id.t40.collections",
+    "target": 2141870000.0,
+    "final_estimate": 2719144941.825049
+   }
+  },
+  "IL": {
+   "state_income_tax": 26886980299.596394,
+   "state_income_tax_variable_total": 26886980299.596394,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.il.t40.collections",
+    "target": 23264505000.0,
+    "final_estimate": 26886979754.157436
+   }
+  },
+  "IN": {
+   "state_income_tax": 7632680896.791352,
+   "state_income_tax_variable_total": 7632680896.791352,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.in.t40.collections",
+    "target": 7575900000.0,
+    "final_estimate": 7632680182.198942
+   }
+  },
+  "IA": {
+   "state_income_tax": 4760918465.774061,
+   "state_income_tax_variable_total": 4760918465.774061,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ia.t40.collections",
+    "target": 4635011000.0,
+    "final_estimate": 4760911216.396842
+   }
+  },
+  "KS": {
+   "state_income_tax": 4780152951.509518,
+   "state_income_tax_variable_total": 4780152951.509517,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ks.t40.collections",
+    "target": 4507007000.0,
+    "final_estimate": 4780180310.581742
+   }
+  },
+  "KY": {
+   "state_income_tax": 5162486670.999652,
+   "state_income_tax_variable_total": 5162486670.999652,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ky.t40.collections",
+    "target": 6037886000.0,
+    "final_estimate": 5162181413.214519
+   }
+  },
+  "LA": {
+   "state_income_tax": 5012616585.315062,
+   "state_income_tax_variable_total": 5012616585.315062,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.la.t40.collections",
+    "target": 4678963000.0,
+    "final_estimate": 5012616589.189983
+   }
+  },
+  "ME": {
+   "state_income_tax": 2425586872.058895,
+   "state_income_tax_variable_total": 2425586873.9049273,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.me.t40.collections",
+    "target": 2481964000.0,
+    "final_estimate": 2429946918.6907063
+   }
+  },
+  "MD": {
+   "state_income_tax": 12635447047.635504,
+   "state_income_tax_variable_total": 20908353244.893856,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.md.t40.collections",
+    "target": 9711372000.0,
+    "final_estimate": 20912557559.85637
+   }
+  },
+  "MA": {
+   "state_income_tax": 21185004931.928116,
+   "state_income_tax_variable_total": 21185004931.928116,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ma.t40.collections",
+    "target": 19753739000.0,
+    "final_estimate": 21320737837.814453
+   }
+  },
+  "MI": {
+   "state_income_tax": 12867678412.15971,
+   "state_income_tax_variable_total": 12870405396.60154,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.mi.t40.collections",
+    "target": 11516497000.0,
+    "final_estimate": 12761913654.664278
+   }
+  },
+  "MN": {
+   "state_income_tax": 14871712010.908852,
+   "state_income_tax_variable_total": 14871712101.328426,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.mn.t40.collections",
+    "target": 13250842000.0,
+    "final_estimate": 14871681755.40987
+   }
+  },
+  "MS": {
+   "state_income_tax": 2113144258.1823113,
+   "state_income_tax_variable_total": 2116921893.0312924,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ms.t40.collections",
+    "target": 2459002000.0,
+    "final_estimate": 2116963608.8297784
+   }
+  },
+  "MO": {
+   "state_income_tax": 8436205679.973241,
+   "state_income_tax_variable_total": 8436205679.973241,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.mo.t40.collections",
+    "target": 8677784000.0,
+    "final_estimate": 8428219985.514085
+   }
+  },
+  "MT": {
+   "state_income_tax": 2183611548.2519712,
+   "state_income_tax_variable_total": 2183611548.2519712,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.mt.t40.collections",
+    "target": 2286844000.0,
+    "final_estimate": 2180181764.7114844
+   }
+  },
+  "NE": {
+   "state_income_tax": 3089034186.964197,
+   "state_income_tax_variable_total": 3089034186.9641976,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ne.t40.collections",
+    "target": 3005952000.0,
+    "final_estimate": 3088960184.8583603
+   }
+  },
+  "NH": {
+   "state_income_tax": 92893678.92235962,
+   "state_income_tax_variable_total": 92893678.9223596,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.nh.t40.collections",
+    "target": 149485000.0,
+    "final_estimate": 92893678.91801488
+   }
+  },
+  "NJ": {
+   "state_income_tax": 24212850666.72048,
+   "state_income_tax_variable_total": 24204480578.240593,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.nj.t40.collections",
+    "target": 18506010000.0,
+    "final_estimate": 24212363162.202194
+   }
+  },
+  "NM": {
+   "state_income_tax": 1962187263.2602901,
+   "state_income_tax_variable_total": 1964949450.486036,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.nm.t40.collections",
+    "target": 2646300000.0,
+    "final_estimate": 1962185173.6456144
+   }
+  },
+  "NY": {
+   "state_income_tax": 59189132991.12659,
+   "state_income_tax_variable_total": 71359779732.2492,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ny.t40.collections",
+    "target": 58775670000.0,
+    "final_estimate": 71271626471.89766
+   }
+  },
+  "NC": {
+   "state_income_tax": 16298991343.434587,
+   "state_income_tax_variable_total": 16298991343.43459,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.nc.t40.collections",
+    "target": 16855693000.0,
+    "final_estimate": 16197404638.326393
+   }
+  },
+  "ND": {
+   "state_income_tax": 293772783.2827058,
+   "state_income_tax_variable_total": 293772783.2827058,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.nd.t40.collections",
+    "target": 495437000.0,
+    "final_estimate": 293767456.42674375
+   }
+  },
+  "OH": {
+   "state_income_tax": 11326683212.3455,
+   "state_income_tax_variable_total": 11326683212.3455,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.oh.t40.collections",
+    "target": 11310241000.0,
+    "final_estimate": 11326683208.648006
+   }
+  },
+  "OK": {
+   "state_income_tax": 4842929361.512363,
+   "state_income_tax_variable_total": 4842929361.787031,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ok.t40.collections",
+    "target": 4393714000.0,
+    "final_estimate": 4842929287.771937
+   }
+  },
+  "OR": {
+   "state_income_tax": 13219011890.586508,
+   "state_income_tax_variable_total": 13219011890.586506,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.or.t40.collections",
+    "target": 13173132000.0,
+    "final_estimate": 13179284834.657125
+   }
+  },
+  "PA": {
+   "state_income_tax": 16970149645.558252,
+   "state_income_tax_variable_total": 16970149645.558252,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.pa.t40.collections",
+    "target": 17006745000.0,
+    "final_estimate": 16996883197.387909
+   }
+  },
+  "RI": {
+   "state_income_tax": 1806786513.7744448,
+   "state_income_tax_variable_total": 1806786513.774445,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ri.t40.collections",
+    "target": 1611789000.0,
+    "final_estimate": 1806764426.8651447
+   }
+  },
+  "SC": {
+   "state_income_tax": 7321182304.339768,
+   "state_income_tax_variable_total": 7321182304.339767,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.sc.t40.collections",
+    "target": 5782274000.0,
+    "final_estimate": 7309854238.025443
+   }
+  },
+  "UT": {
+   "state_income_tax": 6077070180.038615,
+   "state_income_tax_variable_total": 6077070180.038615,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.ut.t40.collections",
+    "target": 5915817000.0,
+    "final_estimate": 6077114909.825679
+   }
+  },
+  "VT": {
+   "state_income_tax": 1244848114.7689247,
+   "state_income_tax_variable_total": 1243673238.2739472,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.vt.t40.collections",
+    "target": 1210585000.0,
+    "final_estimate": 1239652493.0631666
+   }
+  },
+  "VA": {
+   "state_income_tax": 19150267465.445896,
+   "state_income_tax_variable_total": 19150267465.445896,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.va.t40.collections",
+    "target": 16645280000.0,
+    "final_estimate": 19150204245.90996
+   }
+  },
+  "WA": {
+   "state_income_tax": 785374574.2910018,
+   "state_income_tax_variable_total": 785374574.2910018,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.wa.t40.collections",
+    "target": 846835000.0,
+    "final_estimate": 847667629.8296145
+   }
+  },
+  "WV": {
+   "state_income_tax": 2194051348.176288,
+   "state_income_tax_variable_total": 2194051348.1762886,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.wv.t40.collections",
+    "target": 2693568000.0,
+    "final_estimate": 2194051346.946741
+   }
+  },
+  "WI": {
+   "state_income_tax": 10660637231.82012,
+   "state_income_tax_variable_total": 10660637231.82012,
+   "calibration": {
+    "target_name": "census_stc.fy2023.individual_income_tax_collections.wi.t40.collections",
+    "target": 9191233000.0,
+    "final_estimate": 10470935955.549343
+   }
+  }
+ }
+}
