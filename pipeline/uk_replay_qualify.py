@@ -51,8 +51,11 @@ EVENTS = (
     "spring_budget_2024",
     "spring_statement_2025",
     "spring_budget_2023",
+    "autumn_budget_2025",
 )
-CORPUS_VERSION = "uk-fiscal-event-replay/1"
+# The version names the event set: /1 is the five events from Spring Budget
+# 2023 to Spring Statement 2025; /2 adds Autumn Budget 2025.
+CORPUS_VERSION = "uk-fiscal-event-replay/2"
 REJECTION_CODES = (
     "schema_invalid",
     "artifact_hash_mismatch",
@@ -540,6 +543,11 @@ def run_corpus(
     namespace = variants.namespace_root(record, root=root)
     variants.assert_not_sealed(namespace, root=root)
     namespace.mkdir(parents=True, exist_ok=True)
+    # Before any event runs, so the namespace's premises and summary cover
+    # this corpus whichever events produce results.
+    (namespace / variants.CORPUS_NAME).write_bytes(
+        canonical_bytes({"corpus_version": CORPUS_VERSION, "events": list(events)})
+    )
     failures = []
     for event in events:
         output = namespace / event
@@ -593,23 +601,16 @@ def run_corpus(
             failures.append(
                 {"code": "event_run_failed", "detail": str(exc), "event": event}
             )
-    run(
-        [
-            python,
-            "pipeline/compare_uk_event.py",
-            "--summary",
-            "--events-root",
-            str(namespace),
-        ],
-        cwd=root,
-    )
     engine = record["identity"]["packages"]["policyengine-uk"]["version"]
     run(
         [
             python,
             "-m",
             "pipeline.audit_uk_event_premises",
-            "--all",
+            # The events this namespace holds results for (audit
+            # namespace_events), so a sealed namespace's premises regenerate.
+            "--namespace",
+            str(namespace),
             "--expect-engine",
             engine,
             "--output",
@@ -627,6 +628,18 @@ def run_corpus(
             engine,
             "--output",
             str(namespace / "MODEL_DIAGNOSTICS.json"),
+        ],
+        cwd=root,
+    )
+    # Last, so the summary renders the diagnostics beside it, as CI's
+    # regeneration of the sealed namespace does.
+    run(
+        [
+            python,
+            "pipeline/compare_uk_event.py",
+            "--summary",
+            "--events-root",
+            str(namespace),
         ],
         cwd=root,
     )

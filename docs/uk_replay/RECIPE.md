@@ -499,8 +499,8 @@ only when the host has capacity and no other lane is simulating. Each worker
 holds one live managed simulation and reuses one certified baseline
 extraction per year across measures. Keep independently launched event
 processes within that same global two-simulation cap. Follow the requested event order: Autumn Budget 2024,
-Autumn Statement 2023, Spring Budget 2024, Spring Statement 2025, then Spring
-Budget 2023.
+Autumn Statement 2023, Spring Budget 2024, Spring Statement 2025, Spring
+Budget 2023, then Autumn Budget 2025.
 
 Expected run time is proportional to supported years times changed worlds,
 plus one baseline per year. Historical mode-2 runs recorded a 36.99s median

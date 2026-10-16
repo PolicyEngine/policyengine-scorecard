@@ -59,6 +59,7 @@ EVENTS = (
     "spring_budget_2024",
     "spring_statement_2025",
     "spring_budget_2023",
+    "autumn_budget_2025",
 )
 ENGINE_PINS = {
     "policyengine": "5.0.2",

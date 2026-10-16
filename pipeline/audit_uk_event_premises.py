@@ -339,11 +339,23 @@ def canonical_bytes(value: Any) -> bytes:
     ).encode()
 
 
+def namespace_events(root: Path) -> list[str]:
+    """The events a namespace's premises cover (uk_replay_variants.namespace_events)."""
+    from pipeline import uk_replay_variants as variants
+
+    return variants.namespace_events(root)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     selection = parser.add_mutually_exclusive_group(required=True)
     selection.add_argument("--events", nargs="+", choices=EVENTS)
     selection.add_argument("--all", action="store_true")
+    selection.add_argument(
+        "--namespace",
+        type=Path,
+        help="cover the events this namespace holds results for (every event if none)",
+    )
     parser.add_argument("--expect-engine", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--check", action="store_true")
@@ -354,7 +366,14 @@ def main(argv: list[str] | None = None) -> int:
             f"policyengine-uk {installed} installed; expected {args.expect_engine}"
         )
     payload = canonical_bytes(
-        audit(list(EVENTS) if args.all else args.events, EngineView())
+        audit(
+            list(EVENTS)
+            if args.all
+            else namespace_events(args.namespace)
+            if args.namespace
+            else args.events,
+            EngineView(),
+        )
     )
     if args.check:
         if not args.output.is_file() or args.output.read_bytes() != payload:

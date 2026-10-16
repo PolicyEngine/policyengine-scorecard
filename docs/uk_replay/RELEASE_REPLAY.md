@@ -202,7 +202,9 @@ FY2023–24 counterparts; that loss is shown, never hidden.
 * Legacy results stay where they are, in `results/uk/events/<event>/`.
 * Every other variant writes to `results/uk/replays/<variant_id>/`:
   `<event>/` (the same files as a legacy event directory), `SUMMARY.md`,
-  `SUPPORT.json`, `CONSTRUCTION_PREMISES.json`, `MODEL_DIAGNOSTICS.json`,
+  `SUPPORT.json`, `CORPUS.json` (a qualification run's corpus version and
+  events, written before any event runs), `CONSTRUCTION_PREMISES.json`,
+  `MODEL_DIAGNOSTICS.json`,
   `REQUEST.json` (the re-serialised qualification request the run answers),
   `INSTALL.json` (whether installation used the certified requirements,
   certified constraints or free resolution), and finally
@@ -261,6 +263,18 @@ measured issue candidates as current only when the re-verified status is
 `persists`. A variant record without a status is shown as not re-verified.
 
 ## Construction premises
+
+A namespace's premises and its `SUMMARY.md` cover the same events
+(`uk_replay_variants.namespace_events`). A qualification run records its
+corpus in `CORPUS.json` (corpus version and events) before replaying any
+event, and that record decides. Without one (the legacy namespace, or a
+namespace holding no run), they cover the events it holds results for (an
+event directory with `RUN_MANIFEST.json`), or every registered replay event
+when it holds none. A namespace whose bytes a seal or a release diff binds (a
+diff records each side's premises digest) therefore keeps them when a later
+event is registered, even if every event of its run failed. A qualification
+run writes its summary last, after the re-verified diagnostics, which the
+summary renders.
 
 `pipeline/audit_uk_event_premises.py` records, for each executable measure,
 year and parameter path the construction touches, on a given engine:

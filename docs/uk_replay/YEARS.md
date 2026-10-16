@@ -3,7 +3,8 @@
 The supported calendar-year window for this lane is **2023 through 2030**,
 inclusive. Calendar year Y proxies OBR fiscal year Y–(Y+1). Autumn Budget
 2024 can therefore be run across its complete 2024–25 through 2029–30
-costing window. This is support for a projection of one population, with
+costing window, and Autumn Budget 2025, the sixth replayed event, across its
+2025–26 through 2030–31 window. This is support for a projection of one population, with
 named vintage differences; it does not establish a population or forecast
 matched to each historical event.
 

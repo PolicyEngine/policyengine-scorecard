@@ -630,19 +630,40 @@ def test_corpus_passes_candidate_and_work_variants_without_resume(
         json.dumps({"supported_years": [2024], "unsupported_years": []})
     )
     calls = []
-    monkeypatch.setattr(
-        qualify, "run", lambda command, *, cwd: calls.append((command, cwd))
-    )
+    corpus_file = rv.namespace_root(record, root=tmp_path) / rv.CORPUS_NAME
+    corpus_before_each_call = []
+
+    def run(command, *, cwd):
+        corpus_before_each_call.append(corpus_file.is_file())
+        calls.append((command, cwd))
+
+    monkeypatch.setattr(qualify, "run", run)
     work_variants = tmp_path / "variants.json"
     assert (
         qualify.run_corpus(record, work_variants, events=(event,), root=tmp_path) == []
     )
+    # The corpus is recorded before any event runs.
+    assert corpus_before_each_call and all(corpus_before_each_call)
+    assert json.loads(corpus_file.read_bytes()) == {
+        "corpus_version": qualify.CORPUS_VERSION,
+        "events": [event],
+    }
     compute = calls[0][0]
     assert "--allow-uncertified" in compute
     assert "--resume" not in compute
     staging = calls[1][0]
     assert staging[staging.index("--variants-file") + 1] == str(work_variants)
     assert all(cwd == tmp_path for _, cwd in calls)
+    # Premises cover the namespace's own events, and the summary comes last,
+    # after the diagnostics it renders, so CI regenerates the sealed bytes.
+    namespace = rv.namespace_root(record, root=tmp_path)
+    (premises,) = [c for c, _ in calls if "pipeline.audit_uk_event_premises" in c]
+    assert "--all" not in premises
+    assert premises[premises.index("--namespace") + 1] == str(namespace)
+    names = [" ".join(c) for c, _ in calls]
+    diagnose = next(i for i, c in enumerate(names) if "diagnose_uk_event_models" in c)
+    (summary,) = [i for i, c in enumerate(names) if "--summary" in c]
+    assert summary == len(calls) - 1 and summary > diagnose
 
 
 def local_runner(tmp_path, variant_id=CURRENT):

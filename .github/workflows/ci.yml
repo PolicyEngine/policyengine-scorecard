@@ -110,12 +110,14 @@ jobs:
       - name: Construction guards on the variant's engine
         run: |
           set -euo pipefail
-          for event in autumn_budget_2024 autumn_statement_2023 spring_budget_2024 spring_statement_2025 spring_budget_2023; do
+          for event in autumn_budget_2024 autumn_statement_2023 spring_budget_2024 spring_statement_2025 spring_budget_2023 autumn_budget_2025; do
             .venv-variant/bin/python -m pipeline.compute_uk_event --event "$event" --variant "$VARIANT" --guards > /dev/null
             echo "guards hold: $event"
           done
+      # A namespace's premises cover the events it holds results for, or
+      # every registered event when it holds none (namespace_events).
       - name: Construction premises regenerate
-        run: .venv-variant/bin/python -m pipeline.audit_uk_event_premises --all --expect-engine "$ENGINE" --output "$RESULT_ROOT/CONSTRUCTION_PREMISES.json" --check
+        run: .venv-variant/bin/python -m pipeline.audit_uk_event_premises --namespace "$RESULT_ROOT" --expect-engine "$ENGINE" --output "$RESULT_ROOT/CONSTRUCTION_PREMISES.json" --check
       - name: Re-verified diagnostics regenerate
         if: env.LEGACY == 'False'
         run: |
