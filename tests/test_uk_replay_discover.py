@@ -446,9 +446,13 @@ def test_candidates_are_newer_unrequested_final_releases(tmp_path):
     "status", ["queued", "running", "complete", "failed", "rejected"]
 )
 @pytest.mark.parametrize("kind", ["candidate", "released_bundle"])
-def test_existing_qualification_in_any_status_sets_the_floor(tmp_path, status, kind):
+def test_only_a_released_bundle_request_in_any_status_sets_the_floor(
+    tmp_path, status, kind
+):
     # Keep the requested release above the current certified floor: otherwise
     # certification itself would hide a regression that ignored terminal states.
+    # Only a released_bundle request counts: a pre-promotion candidate request
+    # pins the candidate's wheels, not the rebuilt released ones (W4).
     request = request_for("6.6.0")
     request["kind"] = kind
     directory = tmp_path / "requests" / qualify.request_id(request)
@@ -457,7 +461,7 @@ def test_existing_qualification_in_any_status_sets_the_floor(tmp_path, status, k
     (directory / "STATUS.json").write_text(json.dumps({"status": status}))
     assert discover.candidates(
         ["6.5.0", "6.5.1", "6.6.0", "6.6.1"], rv.load_document(), tmp_path
-    ) == ["6.6.1"]
+    ) == (["6.6.1"] if kind == "released_bundle" else ["6.5.1", "6.6.0", "6.6.1"])
 
 
 @pytest.mark.parametrize(
@@ -484,9 +488,8 @@ def test_a_request_naming_an_unpublished_or_odd_version_cannot_raise_the_floor(
     ]
 
 
-def test_an_unpublished_candidate_request_counts_once_published(tmp_path):
+def test_a_released_bundle_request_counts_once_its_version_is_published(tmp_path):
     request = request_for("6.6.0")
-    request["kind"] = "candidate"
     directory = tmp_path / "requests" / ("b" * 64)
     directory.mkdir(parents=True)
     (directory / "REQUEST.json").write_text(json.dumps(request))
@@ -497,6 +500,95 @@ def test_an_unpublished_candidate_request_counts_once_published(tmp_path):
     assert discover.candidates(
         ["6.5.0", "6.5.1", "6.6.0", "6.6.1"], document, tmp_path
     ) == ["6.6.1"]
+
+
+@pytest.mark.parametrize("kind", ["candidate", "unsupported"])
+def test_a_pre_promotion_or_other_request_neither_covers_nor_floors_a_release(
+    tmp_path, kind
+):
+    # W4, 2026-10-16: a candidate qualification names the version it will be
+    # released as, but the released wheel is rebuilt, so a missed release
+    # dispatch must still be caught.
+    request = request_for("6.6.0")
+    request["kind"] = kind
+    directory = tmp_path / "requests" / ("c" * 64)
+    directory.mkdir(parents=True)
+    (directory / "REQUEST.json").write_text(json.dumps(request))
+    (directory / "STATUS.json").write_text(json.dumps({"status": "complete"}))
+    assert discover.candidates(
+        ["6.5.0", "6.5.1", "6.6.0"], rv.load_document(), tmp_path
+    ) == ["6.5.1", "6.6.0"]
+
+
+def test_an_epoch_version_cannot_raise_the_floor_even_when_published(tmp_path):
+    # Review of f3f21a7 (N4): the epoch check, not the PyPI listing, excludes it.
+    request = request_for("6.6.0")
+    request["candidate"]["policyengine"]["version"] = "1!0.1"
+    directory = tmp_path / "requests" / ("d" * 64)
+    directory.mkdir(parents=True)
+    (directory / "REQUEST.json").write_text(json.dumps(request))
+    assert discover.candidates(
+        ["6.5.0", "6.5.1", "1!0.1"], rv.load_document(), tmp_path
+    ) == ["6.5.1"]
+
+
+versions_strategy = st.lists(
+    st.tuples(st.integers(5, 7), st.integers(0, 6), st.integers(0, 3)),
+    min_size=1,
+    max_size=12,
+    unique=True,
+).map(lambda parts: [f"{a}.{b}.{c}" for a, b, c in parts])
+
+
+@settings(max_examples=150, deadline=None)
+@given(
+    versions_strategy,
+    st.data(),
+)
+def test_candidates_respect_the_floor_and_never_repeat_a_request(published, data):
+    # Review of f3f21a7 (N5): invariants over published and requested sets.
+    import tempfile
+
+    # Review of 23cff0a: repeated versions (so one version can carry a
+    # candidate and a released_bundle request), unsupported and missing kinds,
+    # and versions PyPI never published.
+    requested = data.draw(
+        st.lists(st.sampled_from([*published, "9.9.9", "4.0.0"]), max_size=5)
+    )
+    kinds = data.draw(
+        st.lists(
+            st.sampled_from(["released_bundle", "candidate", "unsupported", None]),
+            min_size=len(requested),
+            max_size=len(requested),
+        )
+    )
+    with tempfile.TemporaryDirectory() as root:
+        state = Path(root)
+        for index, (version, kind) in enumerate(zip(requested, kinds)):
+            request = request_for(version)
+            if kind is None:
+                del request["kind"]
+            else:
+                request["kind"] = kind
+            directory = state / "requests" / (f"{index:x}" * 64)[:64]
+            directory.mkdir(parents=True)
+            (directory / "REQUEST.json").write_text(json.dumps(request))
+        document = rv.load_document()
+        out = [Version(v) for v in discover.candidates(published, document, state)]
+    certified = max(
+        Version(r["identity"]["packages"]["policyengine"]["version"])
+        for r in document["variants"]
+        if r["status"] == "certified"
+    )
+    released = {Version(v) for v, k in zip(requested, kinds) if k == "released_bundle"}
+    listed = {Version(p) for p in published}
+    floor = max({certified} | (released & listed))
+    assert out == sorted(out)
+    for version in out:
+        assert str(version) in published or version in {Version(p) for p in published}
+        assert version > floor and version not in released
+    expected = sorted({Version(p) for p in published if Version(p) > floor} - released)
+    assert out == expected
 
 
 @pytest.mark.parametrize(
@@ -519,6 +611,14 @@ def test_an_unpublished_candidate_request_counts_once_published(tmp_path):
         {
             "kind": "released_bundle",
             "candidate": {"policyengine": {"version": "invalid"}},
+        },
+        # Review of 23cff0a (D3): a request without a released_bundle kind
+        # covers nothing, whatever version it names.
+        {"candidate": {"policyengine": {"version": "6.5.1"}}},
+        {"kind": None, "candidate": {"policyengine": {"version": "6.5.1"}}},
+        {
+            "kind": "Released_Bundle",
+            "candidate": {"policyengine": {"version": "6.5.1"}},
         },
     ],
 )
@@ -1045,10 +1145,9 @@ def test_642_and_643_are_not_backfilled_after_650(tmp_path, floor_source):
     if floor_source == "requested":
         directory = tmp_path / "requests" / ("a" * 64)
         directory.mkdir(parents=True)
+        # A released_bundle request sets the floor in any status, including
+        # one the queue rejected.
         request = request_for("6.5.0")
-        # Every named request sets the floor, including one the queue will
-        # reject for an unsupported kind.
-        request["kind"] = "unsupported"
         (directory / "REQUEST.json").write_text(json.dumps(request))
         (directory / "STATUS.json").write_text(json.dumps({"status": "rejected"}))
     assert discover.candidates(

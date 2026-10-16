@@ -12,8 +12,9 @@ python3 -I .github/scripts/uk_replay_output_guard.py "$DISCOVERY_DIR"
 checkout_state
 
 for attempt in 1 2 3 4 5; do
-  # Recheck against the latest queue on each retry, including requests that
-  # arrived from W4 after the discovery snapshot, irrespective of status.
+  # Recheck against the latest queue on each retry, including released_bundle
+  # requests that arrived from W4 after the discovery snapshot, in any status.
+  # A pre-promotion candidate request does not cover the released version.
   "${CONTROL[@]}" .github/scripts/uk_replay_discovery_guard.py enqueue \
     "$DISCOVERY_DIR" --state "$STATE" --run-url "$RUN_URL" --now "$(now)"
   git -C "$STATE" add -A

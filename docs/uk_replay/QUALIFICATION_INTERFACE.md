@@ -60,11 +60,18 @@ Two flows use the same receiver:
   considers stable, non-yanked PyPI wrapper releases whose wheel upload is at
   least six hours old, oldest first. A version must be strictly newer than
   both the newest certified variant (currently 6.5.0) and the newest wrapper
-  version named by any recorded request, regardless of kind or status
-  (`queued`, `running`, `complete`, `failed` or `rejected`). A requested or
-  certified 6.5.0 suppresses 6.4.2 and 6.4.3 as well as 6.5.0; superseded
-  patch releases are not backfilled. Discovery builds at most three requests
-  from at most 30 release attempts per drain.
+  version named by a recorded `released_bundle` request in any status
+  (`queued`, `running`, `complete`, `failed` or `rejected`). Only
+  `released_bundle` requests count, for the floor and for deduplication: a
+  pre-promotion `candidate` request pins the candidate's wheels, not the
+  released ones, so it neither covers nor floors the released version. A
+  requested version raises the floor only while PyPI lists it (yanked
+  included) as a plain final release. A certified or released-bundle-requested
+  6.5.0 suppresses 6.4.2 and 6.4.3 as well as 6.5.0. A certified version
+  suppresses older releases whatever PyPI lists; a requested one does so only
+  while PyPI lists it.
+  Discovery builds at most three requests from at most 30 release attempts
+  per drain.
   Before building a request it reads the wheel's static PyPI integrity JSON
   and requires an attestation bundle whose publisher has each of these fields,
   with exactly these values (other publisher fields are ignored):
@@ -74,8 +81,7 @@ Two flows use the same receiver:
   A 404 (no provenance), another publisher and an unreadable provenance
   response become permanent skips with the response's SHA-256 as evidence;
   any other HTTP status (including PyPI's temporary 403) and any network
-  failure are retried. A requested version raises the discovery floor only
-  if PyPI lists it as a plain final release. A response stopped at the size cap is retryable
+  failure are retried. A response stopped at the size cap is retryable
   because no complete-response digest was obtained. The provenance response's
   SHA-256 enters accepted requests as `requested_by.pypi_provenance_sha256`
   and is also logged.
@@ -95,10 +101,11 @@ Two flows use the same receiver:
   job has `contents: write`, no dataset token, and runs only trusted control
   code. It validates every discovered request against the vendored request
   schema before enqueueing any, and refetches `replay-state` to deduplicate
-  versions again on every write attempt. This covers a W4 request that
-  arrived before that attempt. A later dispatch can still create a distinct
-  request after discovery has pushed; the six-hour grace period reduces that
-  overlap. Immutable artifact contradictions can be
+  versions again on every write attempt. This covers a W4 `released_bundle`
+  request that arrived before that attempt; a `candidate` request
+  deliberately does not cover the released version. A later dispatch can
+  still create a distinct request after discovery has pushed; the six-hour
+  grace period reduces that overlap but does not rule it out. Immutable artifact contradictions can be
   recorded with their digest evidence as permanent skips; transient failures
   are retried on later drains.
 * State for request `<request_id>` lives at
