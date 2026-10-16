@@ -274,6 +274,22 @@ committed artifact from before that check is compared with exactly those
 fields removed, and the step says so in a notice; every other byte must match
 (`pipeline/uk_replay_determinism.py`).
 
+`results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/` holds
+the qualification of policyengine.py 6.5.0: request `d83eaf59…`, receipt
+SHA-256 `a7a67c26…`, `replay-state` commit `19a9ccd`. It ran with #186, so
+every artifact carries its processed values and the AB2024 CGT revision
+`ab2024_cgt_fiscal_year_blend.v1` is selected. Integrity is complete with no
+failures, and all six events have complete supported grids and no inert
+measure-years. Its release diff is against 6.4.1, the newest certified
+variant with committed results at the time. That diff flags eight rows, all
+of them AB2024 CGT main rates. Period 2024 moves from +£0.575bn to +£0.956bn,
+the blended FY2024–25 increase, with processed rates equal to intended in
+both worlds. Periods 2025 to 2029 carry only the construction flag, and their
+values are unchanged. No other row in any event moved. AB2025's high-value
+council tax surcharge artifacts for 2025 to 2027 record
+`processed_value_notes` (policyengine-uk#2435); their totals are zero. CI's
+real replay of this variant compares whole bytes.
+
 ## Version-scoped diagnoses
 
 Every diagnosis and construction note carries the engine version it was
