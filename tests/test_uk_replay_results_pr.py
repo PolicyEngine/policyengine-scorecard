@@ -74,6 +74,10 @@ def flat(text):
 # --- the permission boundary ---------------------------------------------------
 
 
+CHECKOUT_PIN = "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
+TOKEN_PIN = "actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349"
+
+
 def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_dataset_token():
     text = WORKFLOW.read_text()
     document = yaml.safe_load(text)
@@ -88,15 +92,21 @@ def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_dataset_to
     }
     assert "PE_UK_PRIVATE_HF_READ_TOKEN" not in text
     assert "HUGGING_FACE_TOKEN" not in text
-    (name,) = document["jobs"]
-    job = document["jobs"][name]
-    # GITHUB_TOKEN reads; only the App token writes.
-    assert job["permissions"] == {"contents": "read"}
-    assert job["if"] == (
+    jobs = document["jobs"]
+    assert set(jobs) == {"build", "propose"}
+    build_job, propose_job = jobs["build"], jobs["propose"]
+    # GITHUB_TOKEN reads in both; only the App token, in its own job, writes.
+    assert (
+        build_job["permissions"] == propose_job["permissions"] == {"contents": "read"}
+    )
+    assert build_job["if"] == (
         "github.ref == format('refs/heads/{0}', github.event.repository.default_branch)"
     )
-    checkout, setup, build, token, propose = job["steps"]
-    # Build first, holding no write credential at all.
+    assert propose_job["needs"] == "build"
+    assert propose_job["if"] == "needs.build.outputs.action == 'build'"
+
+    # Job 1 runs the checks and their PyPI packages, with no credential.
+    checkout, setup, build = build_job["steps"]
     assert checkout["uses"] == "actions/checkout@v4"
     assert checkout["with"] == {"fetch-depth": 0, "persist-credentials": False}
     assert setup["uses"] == "astral-sh/setup-uv@v5"
@@ -108,13 +118,36 @@ def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_dataset_to
         "STATE_BRANCH": "replay-state",
         "BASE_BRANCH": "${{ github.event.repository.default_branch }}",
     }
-    # Only a verified commit gets a token. The App's key reaches only the
-    # step that mints it, scoped to this repository: contents and pull
-    # requests to push and open the PR, workflows because the commit edits
-    # ci.yml's matrix.
-    built = "steps.build.outputs.action == 'build'"
-    assert token["if"] == built and propose["if"] == built
-    assert token["uses"] == "actions/create-github-app-token@v2"
+    assert "secrets." not in json.dumps(build_job)
+    assert set(build_job["outputs"]) == {
+        "action",
+        "base",
+        "state",
+        "tree",
+        "sealed",
+        "content_hash",
+    }
+
+    # Job 2, on a fresh runner: no uv, actions pinned to commits, and the
+    # token minted only after its own stdlib rebuild matched job 1's tree.
+    checkout2, rebuild, token, propose = propose_job["steps"]
+    assert checkout2["uses"] == CHECKOUT_PIN
+    assert checkout2["with"] == {"fetch-depth": 0, "persist-credentials": False}
+    assert rebuild["id"] == "rebuild"
+    assert rebuild["run"] == "bash .github/scripts/uk_replay_results_pr.sh rebuild"
+    assert rebuild["env"] == {
+        "REQUEST_ID": "${{ github.event.inputs.request_id }}",
+        "STATE_BRANCH": "replay-state",
+        "BASE_BRANCH": "${{ github.event.repository.default_branch }}",
+        "BUILT_TREE": "${{ needs.build.outputs.tree }}",
+        "BUILT_BASE": "${{ needs.build.outputs.base }}",
+        "BUILT_STATE": "${{ needs.build.outputs.state }}",
+        "BUILT_SEALED": "${{ needs.build.outputs.sealed }}",
+        "BUILT_CONTENT_HASH": "${{ needs.build.outputs.content_hash }}",
+    }
+    rebuilt = "steps.rebuild.outputs.action == 'build'"
+    assert token["if"] == rebuilt and propose["if"] == rebuilt
+    assert token["uses"] == TOKEN_PIN
     assert token["id"] == "token"
     assert token["with"] == {
         "app-id": "${{ secrets.APP_ID }}",
@@ -123,24 +156,28 @@ def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_dataset_to
         "permission-pull-requests": "write",
         "permission-workflows": "write",
     }
-    holders = [step for step in job["steps"] if "secrets." in json.dumps(step)]
-    assert holders == [token]
-    assert "secrets." not in json.dumps({k: v for k, v in job.items() if k != "steps"})
-    assert [step for step in job["steps"] if "steps.token" in json.dumps(step)] == [
-        propose
-    ]
+    steps = [*build_job["steps"], *propose_job["steps"]]
+    assert [step for step in steps if "secrets." in json.dumps(step)] == [token]
+    assert [step for step in steps if "steps.token" in json.dumps(step)] == [propose]
     assert propose["run"] == "bash .github/scripts/uk_replay_results_pr.sh propose"
     assert propose["env"] == {
         "REQUEST_ID": "${{ github.event.inputs.request_id }}",
         "STATE_BRANCH": "replay-state",
         "BASE_BRANCH": "${{ github.event.repository.default_branch }}",
-        "BUILT_COMMIT": "${{ steps.build.outputs.commit }}",
-        "BUILT_BRANCH": "${{ steps.build.outputs.branch }}",
+        "BUILT_COMMIT": "${{ steps.rebuild.outputs.commit }}",
+        "BUILT_BRANCH": "${{ steps.rebuild.outputs.branch }}",
         "GH_TOKEN": "${{ steps.token.outputs.token }}",
     }
-    for step in job["steps"]:
+    for step in steps:
         assert "${{" not in step.get("run", "")
         assert not step.get("uses", "").startswith(("actions/cache", "actions/upload"))
+    assert not any("setup-uv" in step.get("uses", "") for step in propose_job["steps"])
+
+
+def phase(script, name):
+    """The body of one function in the builder script."""
+    start = script.index(f"\n{name}() {{\n")
+    return script[start : script.index("\n}\n", start)]
 
 
 def test_the_builder_runs_no_release_code_and_never_merges():
@@ -171,16 +208,23 @@ def test_the_builder_runs_no_release_code_and_never_merges():
     assert len(pushes) == 2
     assert all("refs/heads/$branch" in line for line in pushes)
     assert not [line for line in commands if re.search(r"\bgit\b[^#]* push\b", line)]
-    # The build holds no token and calls no GitHub API; the propose step,
-    # which holds the token, runs only git, gh and the standard library.
-    build = script[script.index("build() {") : script.index("propose() {")]
-    propose = script[script.index("propose() {") : script.index("case ")]
-    assert "GH_TOKEN" not in build and "gh " not in build
-    for forbidden in ("uv ", "builder ", "CONTROL", "pipeline", "PYTHONPATH"):
-        assert forbidden not in propose, forbidden
-    assert all(
-        "python3 -I" in line for line in propose.splitlines() if "python" in line
+    # Job 1 holds no token and calls no GitHub API. Job 2, which holds the
+    # token, runs git, gh and the standard library: no uv, no PYTHONPATH,
+    # and every Python is isolated, the builder without site-packages.
+    build, rebuild, propose = (
+        phase(script, n) for n in ("build", "rebuild", "propose")
     )
+    assemble = phase(script, "assemble")
+    for section in (build, assemble):
+        assert "GH_TOKEN" not in section and "gh " not in section
+    for section in (rebuild, propose, assemble):
+        for forbidden in ("uv ", "CONTROL", "PYTHONPATH", "--with"):
+            assert forbidden not in section, forbidden
+        for line in section.splitlines():
+            if "python" in line and not line.lstrip().startswith("#"):
+                assert "python3 -I" in line, line
+    assert 'python3 -I -S "$HERE/pipeline/uk_replay_results_pr.py"' in rebuild
+    assert "pipeline" not in propose and "builder" not in propose
     tree = ast.parse((ROOT / "pipeline/uk_replay_results_pr.py").read_text())
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -204,35 +248,56 @@ def test_the_builder_runs_no_release_code_and_never_merges():
 def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
     # Defense in depth that correct code never trips (scope) still has to be
     # wired in, in this order.
-    lines = SCRIPT.read_text().splitlines()
+    script = SCRIPT.read_text()
 
-    def at(fragment):
-        found = [
-            i
-            for i, line in enumerate(lines)
-            if fragment in line and not line.lstrip().startswith("#")
+    def order(section, *fragments):
+        lines = [
+            line for line in section.splitlines() if not line.lstrip().startswith("#")
         ]
-        assert found, fragment
-        return found[0]
+        positions = []
+        for fragment in fragments:
+            found = [i for i, line in enumerate(lines) if fragment in line]
+            assert found, fragment
+            positions.append(found[0])
+        assert positions == sorted(positions), fragments
 
-    assert (
-        at("uk_replay_output_guard.py")
-        < at("builder check ")
-        < at('git merge-base --is-ancestor "$receipt_commit"')
-        < at('| tar -x -C "$TREE" --strip-components=3')
-        < at("builder apply ")
-        < at('git -C "$TREE" add -A')
-        < at("builder scope ")
-        < at("commit -q -F")
-        < at('if [ "$expected" != "$committed" ]')
-        < at('pipeline.uk_replay_qualify verify-sealed "$(plan paths namespace)"')
-        < at("uk_replay_regenerate.sh")
-        < at("scorecard_db.build_db")
-        < at("output action build")
-        < at("propose() {")
-        < at("the results commit changed after it was verified")
-        < at("pushgit push -q origin")
-        < at("gh pr create")
+    order(
+        phase(script, "assemble"),
+        "uk_replay_output_guard.py",
+        "builder check ",
+        'git merge-base --is-ancestor "$receipt_commit"',
+        '| tar -x -C "$TREE" --strip-components=3',
+        "builder apply ",
+        'git -C "$TREE" add -A',
+        "builder scope ",
+        "commit -q -F",
+        'if [ "$expected" != "$committed" ]',
+    )
+    order(
+        phase(script, "build"),
+        "assemble ",
+        'verify-sealed "$(plan paths namespace)"',
+        "uk_replay_regenerate.sh",
+        "scorecard_db.build_db",
+        "output tree",
+        "output action build",
+    )
+    order(
+        phase(script, "rebuild"),
+        "the build job's outputs are malformed",
+        'git merge-base --is-ancestor "$BUILT_BASE"',
+        "assemble ",
+        "not the tree the build job verified",
+        " body ",
+        "output action build",
+    )
+    order(
+        phase(script, "propose"),
+        "the results commit changed after it was assembled",
+        "pushgit push -q origin",
+        "holds work this builder did not write",
+        "pushgit push -q --force-with-lease",
+        "gh pr create",
     )
 
 
@@ -315,6 +380,40 @@ def plan_for(variant_id, *, completed="2026-10-16T05:55:28Z", compare_to=None):
         "compare_to": compare_to or "latest_certified",
         "legacy_variant": rv.load_document()["default_variant"],
     }
+
+
+def test_the_builders_canonical_form_is_compute_uk_events():
+    # The index's canonical form is compute_uk_event.canonical_bytes (a test
+    # pins it). The builder keeps its own copy so the job holding the token
+    # imports no numpy; the two must agree byte for byte.
+    from pipeline.compute_uk_event import canonical_bytes as event_canonical
+
+    document = json.loads(rv.VARIANTS_PATH.read_bytes())
+    assert builder.canonical_bytes(document) == event_canonical(document)
+    assert builder.canonical_bytes(document) == rv.VARIANTS_PATH.read_bytes()
+
+
+@settings(max_examples=200, deadline=None)
+@given(
+    st.recursive(
+        st.one_of(
+            st.none(),
+            st.booleans(),
+            st.integers(-(10**18), 10**18),
+            st.floats(allow_nan=False, allow_infinity=False),
+            st.text(max_size=8),
+        ),
+        lambda children: st.one_of(
+            st.lists(children, max_size=4),
+            st.dictionaries(st.text(max_size=6), children, max_size=4),
+        ),
+        max_leaves=12,
+    )
+)
+def test_both_canonical_forms_agree_on_any_json(value):
+    from pipeline.compute_uk_event import canonical_bytes as event_canonical
+
+    assert builder.canonical_bytes(value) == event_canonical(value)
 
 
 @pytest.mark.parametrize("variant_id", [PE641])
@@ -593,6 +692,7 @@ def certified_results(
     extra=None,
     data_build_id=None,
     requalify=False,
+    other_identity=False,
 ):
     """A sealed, certified qualification of a synthetic release in
     ``directory`` (a replay-state checkout): request, receipt and results
@@ -616,6 +716,9 @@ def certified_results(
         if data_build_id:
             identity["release_bundle"]["certified_data_build_id"] = data_build_id
             record["certification"]["data_build_id"] = data_build_id
+        if other_identity:
+            # The same versions installed from other bytes: the same slug.
+            identity["packages"]["policyengine"]["record_sha256"] = "f" * 64
         assert freeze.count("policyengine==6.5.0\n") == 1
         freeze = freeze.replace("policyengine==6.5.0\n", f"policyengine=={version}\n")
         variant_id = rv.variant_slug(identity)
@@ -802,6 +905,9 @@ class Remote:
         gh.write_text(f"#!{sys.executable}\n{GH_STUB}")
         for tool in (uv, gh):
             tool.chmod(0o755)
+        # python3 is the test interpreter: under -I -S it sees no
+        # site-packages, so the stdlib rebuild cannot import a package.
+        (self.tools / "python3").symlink_to(sys.executable)
         self.runs = 0
 
     def publish_state(self):
@@ -821,12 +927,7 @@ class Remote:
         self.publish_state()
         return rid, record, receipt
 
-    def run(self, rid, **overrides):
-        self.runs += 1
-        temp = self.tmp / f"runner-temp-{self.runs}"
-        temp.mkdir()
-        self.gh_log = temp / "gh.jsonl"
-        self.check_log = temp / "checks.log"
+    def environment(self, temp, rid, **overrides):
         env = {
             **{k: v for k, v in os.environ.items() if not k.startswith("GITHUB_")},
             "PATH": f"{self.tools}:{os.environ['PATH']}",
@@ -842,39 +943,83 @@ class Remote:
         }
         for name in ("PYTHONPATH", "HUGGING_FACE_TOKEN", "HF_TOKEN", "GH_TOKEN"):
             env.pop(name, None)
+        return env
 
-        def step(phase, **extra):
-            return subprocess.run(
-                ["bash", ".github/scripts/uk_replay_results_pr.sh", phase],
-                cwd=self.runner,
-                env={**env, **extra},
-                capture_output=True,
-                text=True,
-                check=False,
-            )
-
-        # As the workflow runs it: build with no token, then, only when it
-        # reports a built commit, propose with the token and its outputs.
-        outputs = temp / "github-output.txt"
-        built = step("build", GITHUB_OUTPUT=str(outputs))
-        self.outputs = dict(
-            line.split("=", 1)
-            for line in (outputs.read_text().splitlines() if outputs.exists() else [])
+    @staticmethod
+    def step(runner, phase, env, outputs=None, **extra):
+        if outputs is not None:
+            extra["GITHUB_OUTPUT"] = str(outputs)
+        result = subprocess.run(
+            ["bash", ".github/scripts/uk_replay_results_pr.sh", phase],
+            cwd=runner,
+            env={**env, **extra},
+            capture_output=True,
+            text=True,
+            check=False,
         )
+        values = {}
+        if outputs is not None and outputs.exists():
+            values = dict(
+                line.split("=", 1) for line in outputs.read_text().splitlines()
+            )
+        return result, values
+
+    def run(self, rid, forge=None, **overrides):
+        """As the workflow runs it. Job 1 builds and verifies in this
+        runner's checkout. Job 2 runs on a fresh clone with its own temp
+        directory: it rebuilds with the standard library and, only when its
+        tree is job 1's, proposes with the token. ``forge`` overrides job 1's
+        outputs as job 2 receives them."""
+        self.runs += 1
+        temp = self.tmp / f"runner-temp-{self.runs}"
+        temp.mkdir()
+        self.gh_log = temp / "gh.jsonl"
+        self.check_log = temp / "checks.log"
+        env = self.environment(temp, rid, **overrides)
+        built, self.outputs = self.step(
+            self.runner, "build", env, temp / "build-output.txt"
+        )
+        self.rebuilt = {}
         if built.returncode or self.outputs.get("action") != "build":
             return built
-        proposed = step(
-            "propose",
-            BUILT_COMMIT=self.outputs["commit"],
-            BUILT_BRANCH=self.outputs["branch"],
-            GH_TOKEN="app-installation-token",
+        fresh = self.tmp / f"job2-{self.runs}"
+        subprocess.run(["git", "clone", "-q", str(self.remote), str(fresh)], check=True)
+        temp2 = self.tmp / f"runner-temp-{self.runs}-job2"
+        temp2.mkdir()
+        env2 = self.environment(temp2, rid, **overrides)
+        received = {**self.outputs, **(forge or {})}
+        self.job2 = (fresh, env2, temp2)
+        rebuilt, self.rebuilt = self.step(
+            fresh,
+            "rebuild",
+            env2,
+            temp2 / "rebuild-output.txt",
+            BUILT_TREE=received["tree"],
+            BUILT_BASE=received["base"],
+            BUILT_STATE=received["state"],
+            BUILT_SEALED=received["sealed"],
+            BUILT_CONTENT_HASH=received["content_hash"],
         )
+        outs = [built, rebuilt]
+        if not rebuilt.returncode and self.rebuilt.get("action") == "build":
+            proposed, _ = self.step(
+                fresh,
+                "propose",
+                env2,
+                BUILT_COMMIT=self.rebuilt["commit"],
+                BUILT_BRANCH=self.rebuilt["branch"],
+                GH_TOKEN="app-installation-token",
+            )
+            outs.append(proposed)
         return subprocess.CompletedProcess(
-            proposed.args,
-            proposed.returncode,
-            built.stdout + proposed.stdout,
-            built.stderr + proposed.stderr,
+            outs[-1].args,
+            outs[-1].returncode,
+            "".join(o.stdout for o in outs),
+            "".join(o.stderr for o in outs),
         )
+
+    def body(self):
+        return (self.job2[2] / "results-pr/BODY.md").read_text()
 
     def gh_calls(self):
         if not self.gh_log.exists():
@@ -967,9 +1112,14 @@ def test_a_certified_request_becomes_one_bot_commit_and_a_pull_request(remote):
         f"`{namespace}/` holds the qualification of policyengine.py {VERSION}"
         in flat(section)
     )
-    # Main's checks ran on the commit, and the pull request and CI followed.
+    # Main's checks ran in job 1 on a commit with exactly the tree job 2
+    # pushed, and the pull request followed.
     checks = remote.check_log.read_text().splitlines()
-    assert checks[0] == f"regenerate {head}"
+    verified = checks[0].split()[1]
+    assert checks[0] == f"regenerate {verified}"
+    assert git(remote.runner, "rev-parse", f"{verified}^{{tree}}") == git(
+        remote.remote, "rev-parse", f"{head}^{{tree}}"
+    )
     assert [line.split()[0] for line in checks[1:]] == ["build_db", "build_db"]
     calls = remote.gh_calls()
     assert [call[:2] for call in calls] == [["pr", "list"], ["pr", "create"]]
@@ -980,7 +1130,7 @@ def test_a_certified_request_becomes_one_bot_commit_and_a_pull_request(remote):
         == f"uk-replay-results/{record['variant_id']}"
     )
     assert "--draft" not in create
-    body = (remote.tmp / "runner-temp-1/results-pr/BODY.md").read_text()
+    body = remote.body()
     assert "1 sealed namespace(s) checked" in body
     assert "all 8 committed result files" in body
     assert "axiom: n/a" in body
@@ -1042,8 +1192,120 @@ def test_a_rerun_after_main_moves_rebuilds_only_its_own_branch(remote):
     git(remote.seed, "push", "-q", str(remote.remote), "HEAD:main")
     result = remote.run(rid, GH_OPEN_PR="999")
     assert result.returncode == 1
-    assert "which this builder did not write" in result.stderr
+    assert "holds work this builder did not write" in result.stderr
     assert remote.branch(record) == reviewed
+
+
+def test_an_amended_bot_commit_is_a_persons_work(remote):
+    # Review of 97c351b9 (2): `git commit --amend` keeps the author and the
+    # trailer and changes only the committer; the rerun must not discard it.
+    rid, record, _ = remote.certify()
+    assert remote.run(rid).returncode == 0
+    person = remote.tmp / "person"
+    subprocess.run(["git", "clone", "-q", str(remote.remote), str(person)], check=True)
+    git(person, "switch", "-q", f"uk-replay-results/{record['variant_id']}")
+    for key, value in (
+        ("user.name", "Reviewer"),
+        ("user.email", "reviewer@example.org"),
+    ):
+        git(person, "config", key, value)
+    (person / "docs/uk_replay/RELEASE_REPLAY.md").write_text("interpreted\n")
+    git(person, "commit", "-q", "-a", "--amend", "--no-edit")
+    assert git(person, "log", "-1", "--format=%ae") == BOT_EMAIL
+    git(person, "push", "-q", "-f", "origin", "HEAD")
+    amended = remote.branch(record)
+    (remote.seed / "NOTES.md").write_text("main moved\n")
+    git(remote.seed, "add", ".")
+    git(remote.seed, "commit", "-qm", "Main moves")
+    git(remote.seed, "push", "-q", str(remote.remote), "HEAD:main")
+    result = remote.run(rid, GH_OPEN_PR="999")
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert "holds work this builder did not write" in result.stderr
+    assert remote.branch(record) == amended
+
+
+def test_the_push_never_overwrites_a_branch_that_moved_after_it_was_read(remote):
+    # Review of 97c351b9 (6): --force-with-lease, not --force. Someone pushes
+    # to the branch between propose reading it and propose pushing.
+    rid, record, _ = remote.certify()
+    assert remote.run(rid).returncode == 0
+    branch = f"uk-replay-results/{record['variant_id']}"
+    (remote.seed / "NOTES.md").write_text("main moved\n")
+    git(remote.seed, "add", ".")
+    git(remote.seed, "commit", "-qm", "Main moves")
+    git(remote.seed, "push", "-q", str(remote.remote), "HEAD:main")
+    racer = remote.tmp / "racer"
+    subprocess.run(["git", "clone", "-q", str(remote.remote), str(racer)], check=True)
+    git(racer, "switch", "-q", branch)
+    for key, value in (("user.name", "Racer"), ("user.email", "racer@example.org")):
+        git(racer, "config", key, value)
+    git(racer, "commit", "-q", "--allow-empty", "-m", "Pushed mid-propose")
+    real_git = shutil.which("git")
+    wrapper = remote.tools / "git"
+    wrapper.write_text(
+        f"#!{sys.executable}\n"
+        "import os, subprocess, sys\n"
+        "args = sys.argv[1:]\n"
+        "if any(a.startswith('--force-with-lease') for a in args):\n"
+        f"    subprocess.run([{real_git!r}, '-C', {str(racer)!r}, 'push', '-q', 'origin', 'HEAD'], check=True)\n"
+        f"os.execv({real_git!r}, [{real_git!r}, *args])\n"
+    )
+    wrapper.chmod(0o755)
+    try:
+        result = remote.run(rid, GH_OPEN_PR="999")
+    finally:
+        wrapper.unlink()
+    assert result.returncode != 0, result.stdout + result.stderr
+    assert (
+        git(remote.remote, "log", "-1", "--format=%s", branch) == "Pushed mid-propose"
+    )
+    assert ["pr", "edit"] not in [call[:2] for call in remote.gh_calls()]
+
+
+def test_the_push_hands_git_the_token_only_through_gh(remote, tmp_path):
+    # Review of 97c351b9 (6): the credential path the tests' file remote
+    # never exercises. git must ask gh, and gh answers from GH_TOKEN.
+    script = SCRIPT.read_text()
+    helper = "-c credential.helper= -c 'credential.helper=!gh auth git-credential'"
+    assert helper in script
+    log = tmp_path / "gh-credential.jsonl"
+    stub = tmp_path / "bin"
+    stub.mkdir()
+    (stub / "gh").write_text(
+        f"#!{sys.executable}\nimport json, os, sys\n"
+        f"open({str(log)!r}, 'a').write(json.dumps(sys.argv[1:]) + '\\n')\n"
+        "sys.stdin.read()\n"
+        "print('protocol=https\\nhost=github.com\\nusername=x-access-token')\n"
+        "print('password=' + os.environ['GH_TOKEN'])\n"
+    )
+    (stub / "gh").chmod(0o755)
+    filled = subprocess.run(
+        [
+            "git",
+            "-c",
+            "credential.helper=",
+            "-c",
+            "credential.helper=!gh auth git-credential",
+            "credential",
+            "fill",
+        ],
+        input="protocol=https\nhost=github.com\npath=PolicyEngine/policyengine-scorecard.git\n\n",
+        env={
+            **os.environ,
+            "PATH": f"{stub}:{os.environ['PATH']}",
+            "GH_TOKEN": "app-token",
+            "GIT_TERMINAL_PROMPT": "0",
+        },
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert "password=app-token" in filled.stdout
+    assert json.loads(log.read_text().splitlines()[0]) == [
+        "auth",
+        "git-credential",
+        "get",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -1075,6 +1337,19 @@ def test_an_exact_requalification_of_a_committed_pair_is_skipped(remote):
     assert remote.gh_calls() == []
 
 
+def test_an_id_main_holds_for_another_identity_is_refused_not_skipped(remote):
+    # Review of 97c351b9 (3): the digest suffix is added only when main
+    # already holds the slug, so two runs that finish before either merges
+    # share an id. The second must not be skipped green.
+    rid, record, _ = remote.certify(version="6.5.0", other_identity=True)
+    assert record["variant_id"] == PE650
+    assert record["identity_sha256"] != committed_record(PE650)["identity_sha256"]
+    result = remote.run(rid)
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert f"{PE650} already names another record" in result.stderr
+    assert "action" not in remote.outputs
+
+
 def test_a_variant_id_that_cannot_name_a_branch_is_refused(remote):
     rid, record, _ = remote.certify(data_build_id="data build;x")
     assert record["variant_id"].endswith("_data build;x")
@@ -1084,16 +1359,73 @@ def test_a_variant_id_that_cannot_name_a_branch_is_refused(remote):
     assert "action" not in remote.outputs
 
 
-def test_propose_pushes_only_the_commit_build_verified(remote):
+@pytest.mark.parametrize(
+    ("forge", "message"),
+    [
+        ({"tree": "0" * 40}, "not the tree the build job verified"),
+        ({"base": "1" * 40}, "is not on main or replay-state"),
+        ({"state": "2" * 40}, "is not on main or replay-state"),
+        ({"sealed": "all fine; rm -rf /"}, "outputs are malformed"),
+        ({"content_hash": "not hex"}, "outputs are malformed"),
+        ({"tree": "abc"}, "outputs are malformed"),
+    ],
+)
+def test_job_2_pushes_only_what_it_rebuilt_and_job_1_verified(remote, forge, message):
+    # Job 1's outputs reach the job holding the token as untrusted strings.
     rid, record, _ = remote.certify()
-    temp = remote.tmp / "runner-temp-1"
-    original = remote.run
-    result = original(rid)
-    assert result.returncode == 0
-    # Replay propose against a tree whose commit moved after verification.
-    tree = temp / "results-pr/tree"
+    result = remote.run(rid, forge=forge)
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert message in result.stderr
+    assert not remote.branch(record)
+    assert remote.gh_calls() == []
+
+
+def test_main_moving_between_the_jobs_still_rebuilds_on_the_verified_base(remote):
+    # Job 2 rebuilds on the main job 1 verified, provided that commit is in
+    # main's history; main moving in between does not fail the run.
+    rid, record, _ = remote.certify()
+    temp = remote.tmp / "job1"
+    temp.mkdir()
+    remote.gh_log, remote.check_log = temp / "gh.jsonl", temp / "checks.log"
+    built, outputs = remote.step(
+        remote.runner, "build", remote.environment(temp, rid), temp / "out.txt"
+    )
+    assert built.returncode == 0, built.stdout + built.stderr
+    (remote.seed / "NOTES.md").write_text("main moved\n")
+    git(remote.seed, "add", ".")
+    git(remote.seed, "commit", "-qm", "Main moves")
+    git(remote.seed, "push", "-q", str(remote.remote), "HEAD:main")
+    assert git(remote.remote, "rev-parse", "main") != outputs["base"]
+    fresh = remote.tmp / "job2"
+    subprocess.run(["git", "clone", "-q", str(remote.remote), str(fresh)], check=True)
+    temp2 = remote.tmp / "job2-temp"
+    temp2.mkdir()
+    rebuilt, values = remote.step(
+        fresh,
+        "rebuild",
+        remote.environment(temp2, rid),
+        temp2 / "out.txt",
+        BUILT_TREE=outputs["tree"],
+        BUILT_BASE=outputs["base"],
+        BUILT_STATE=outputs["state"],
+        BUILT_SEALED=outputs["sealed"],
+        BUILT_CONTENT_HASH=outputs["content_hash"],
+    )
+    assert rebuilt.returncode == 0, rebuilt.stdout + rebuilt.stderr
+    assert values["action"] == "build"
+    tree = temp2 / "results-pr/tree"
+    assert git(tree, "rev-parse", "HEAD^") == outputs["base"]
+    assert git(tree, "rev-parse", "HEAD^{tree}") == outputs["tree"]
+
+
+def test_propose_pushes_only_the_commit_rebuild_assembled(remote):
+    rid, record, _ = remote.certify()
+    assert remote.run(rid).returncode == 0
+    fresh, env, temp = remote.job2
+    pushed = remote.branch(record)
+    # A commit appears on top of the rebuilt one before propose runs again.
     git(
-        tree,
+        temp / "results-pr/tree",
         "-c",
         "user.name=x",
         "-c",
@@ -1104,41 +1436,26 @@ def test_propose_pushes_only_the_commit_build_verified(remote):
         "-m",
         "later",
     )
-    env = {
-        **{k: v for k, v in os.environ.items() if not k.startswith("GITHUB_")},
-        "PATH": f"{remote.tools}:{os.environ['PATH']}",
-        "REQUEST_ID": rid,
-        "STATE_BRANCH": "replay-state",
-        "BASE_BRANCH": "main",
-        "RUNNER_TEMP": str(temp),
-        "GITHUB_REPOSITORY": REPOSITORY,
-        "GH_LOG": str(temp / "gh-again.jsonl"),
-        "BUILT_COMMIT": remote.outputs["commit"],
-        "BUILT_BRANCH": remote.outputs["branch"],
-        "GH_TOKEN": "app-installation-token",
-    }
-    pushed = remote.branch(record)
-    again = subprocess.run(
-        ["bash", ".github/scripts/uk_replay_results_pr.sh", "propose"],
-        cwd=remote.runner,
-        env=env,
-        capture_output=True,
-        text=True,
+    again, _ = remote.step(
+        fresh,
+        "propose",
+        env,
+        BUILT_COMMIT=remote.rebuilt["commit"],
+        BUILT_BRANCH=remote.rebuilt["branch"],
+        GH_TOKEN="app-installation-token",
     )
     assert again.returncode == 1
-    assert "changed after it was verified" in again.stderr
+    assert "changed after it was assembled" in again.stderr
     assert remote.branch(record) == pushed
-    assert not (temp / "gh-again.jsonl").exists()
-    # And propose needs build's outputs and the token.
+    # And propose needs rebuild's outputs and the token.
     for missing in ("BUILT_COMMIT", "BUILT_BRANCH", "GH_TOKEN"):
-        bare = {k: v for k, v in env.items() if k != missing}
-        result = subprocess.run(
-            ["bash", ".github/scripts/uk_replay_results_pr.sh", "propose"],
-            cwd=remote.runner,
-            env=bare,
-            capture_output=True,
-            text=True,
-        )
+        extra = {
+            "BUILT_COMMIT": remote.rebuilt["commit"],
+            "BUILT_BRANCH": remote.rebuilt["branch"],
+            "GH_TOKEN": "app-installation-token",
+        }
+        del extra[missing]
+        result, _ = remote.step(fresh, "propose", env, **extra)
         assert result.returncode != 0 and missing in result.stderr
 
 
@@ -1271,8 +1588,7 @@ def test_an_incomplete_integrity_opens_a_draft(remote):
     assert result.returncode == 0, result.stdout + result.stderr
     create = next(call for call in remote.gh_calls() if call[:2] == ["pr", "create"])
     assert "--draft" in create
-    body = (remote.tmp / "runner-temp-1/results-pr/BODY.md").read_text()
-    assert "this pull request is a draft" in body
+    assert "this pull request is a draft" in remote.body()
 
 
 def test_a_malformed_or_unknown_request_id_fails(remote):
@@ -1380,6 +1696,78 @@ def test_the_recorder_dispatches_the_results_workflow_for_a_complete_request(
         ]
     ]
     assert ("could not start the results workflow" in result.stdout) == dispatch_fails
+
+
+def test_the_recorder_dispatches_nothing_for_a_failed_request(tmp_path):
+    from pipeline import uk_replay_queue as queue
+
+    seed = tmp_path / "state"
+    seed.mkdir()
+    git(seed, "init", "-q", "-b", "replay-state")
+    for key, value in (("user.name", "Test"), ("user.email", "test@example.org")):
+        git(seed, "config", key, value)
+    request_id, _ = queue.enqueue(
+        seed, {"invalid": "request"}, run_url=RUN, now="2026-10-17T00:00:00Z"
+    )
+    queue.set_status(
+        seed, request_id, "running", run_url=RUN, now="2026-10-17T01:00:00Z"
+    )
+    git(seed, "add", ".")
+    git(seed, "commit", "-qm", "Running")
+    remote = tmp_path / "remote.git"
+    subprocess.run(["git", "clone", "-q", "--bare", str(seed), str(remote)], check=True)
+    runner = tmp_path / "runner"
+    subprocess.run(["git", "clone", "-q", str(remote), str(runner)], check=True)
+    git(runner, "switch", "-q", "--detach")
+    for relative in ("pipeline/uk_replay_queue.py", "pipeline/uk_replay_interface.py"):
+        (runner / relative).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / relative, runner / relative)
+    shutil.copytree(ROOT / "docs/uk_replay/schemas", runner / "docs/uk_replay/schemas")
+    shutil.copytree(ROOT / ".github/scripts", runner / ".github/scripts")
+    receipt = queue.write_failure_receipt(
+        tmp_path / "scratch", request_id, code="event_run_failed", detail="failed"
+    )
+    uploaded = runner / "output/state/requests" / request_id
+    uploaded.mkdir(parents=True)
+    (uploaded / rv.RECEIPT_NAME).write_text(json.dumps(receipt))
+    (runner / "output/outcome.json").write_text(
+        json.dumps({"status": "failed", "receipt_sha256": receipt["receipt_sha256"]})
+    )
+    tools = tmp_path / "bin"
+    tools.mkdir()
+    (tools / "uv").write_text(
+        f"#!{sys.executable}\nimport os, sys\nargs = sys.argv[1:]\n"
+        f"os.execv({sys.executable!r}, [{sys.executable!r}, "
+        "*args[args.index('python') + 1:]])\n"
+    )
+    (tools / "gh").write_text(
+        '#!/usr/bin/env bash\necho unexpected gh "$@" >&2\nexit 93\n'
+    )
+    for tool in tools.iterdir():
+        tool.chmod(0o755)
+    result = subprocess.run(
+        ["bash", ".github/scripts/uk_replay_record.sh"],
+        cwd=runner,
+        env={
+            **os.environ,
+            "PATH": f"{tools}:{os.environ['PATH']}",
+            "PYTHONPATH": str(runner),
+            "STATE_BRANCH": "replay-state",
+            "RUNNER_TEMP": str(tmp_path),
+            "RUN_URL": RUN,
+            "REQUEST_ID": request_id,
+            "GITHUB_REPOSITORY": REPOSITORY,
+            "DRAIN_REF": "main",
+        },
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "unexpected gh" not in result.stderr
+    status = json.loads(
+        git(remote, "show", f"replay-state:requests/{request_id}/STATUS.json")
+    )
+    assert status["status"] == "failed"
 
 
 def test_no_branch_name_or_path_the_builder_writes_escapes_its_prefix():

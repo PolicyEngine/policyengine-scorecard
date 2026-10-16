@@ -2,22 +2,26 @@
 # Propose one certified qualification's sealed results to main as a pull
 # request, as #188 (6.4.1) and #190 (6.5.0) were proposed by hand. Trusted
 # control code only: it reads committed public results from replay-state,
-# runs main's own checks on them (verify-sealed, CI's regeneration, two
-# database builds) and never installs, imports or runs candidate or release
-# code; it holds no dataset token. It never merges: that stays on the normal
-# gates.
+# runs main's own checks on them and never installs, imports or runs
+# candidate or release code; it holds no dataset token. It never merges:
+# that stays on the normal gates.
 #
-#   uk_replay_results_pr.sh build    # holds no write credential
-#   uk_replay_results_pr.sh propose  # holds the App token; git, gh and the
-#                                    # standard library only
+#   uk_replay_results_pr.sh build    # job 1: the commit and every check;
+#                                    # PyPI packages, no write credential
+#   uk_replay_results_pr.sh rebuild  # job 2: the same commit from the same
+#                                    # inputs, git and the standard library
+#                                    # only; its tree must be job 1's
+#   uk_replay_results_pr.sh propose  # job 2, after the App token is minted:
+#                                    # push that commit and open the PR
 #
-# `build` makes and verifies the commit in a worktree of main and reports it
-# as step outputs. Only then does the workflow mint the App token, and
-# `propose` pushes exactly that commit and opens the pull request, so the
-# token never coexists with the packages the checks install.
+# The two jobs run on separate runners, so nothing the build job's packages
+# do (a $GITHUB_PATH or $GITHUB_ENV write, a planted program) reaches the job
+# that holds the App token. Job 2 pushes only a commit it assembled itself,
+# and only if its tree is the one job 1 verified.
 set -euo pipefail
 : "${REQUEST_ID:?}" "${STATE_BRANCH:?}" "${RUNNER_TEMP:?}" "${GITHUB_REPOSITORY:?}"
 BASE=${BASE_BRANCH:-main}
+BOT_NAME='github-actions[bot]'
 BOT_EMAIL='41898282+github-actions[bot]@users.noreply.github.com'
 TRAILER="Replay-Request: $REQUEST_ID"
 WORK="$RUNNER_TEMP/results-pr"
@@ -26,6 +30,7 @@ TREE="$WORK/tree"
 REQUEST="requests/$REQUEST_ID"
 STATE_REF="refs/remotes/origin/$STATE_BRANCH"
 BASE_REF="refs/remotes/origin/$BASE"
+HERE=$(pwd)
 
 if ! [[ "$REQUEST_ID" =~ ^[0-9a-f]{64}$ ]]; then
   echo "::error::REQUEST_ID must be 64 lowercase hex characters" >&2
@@ -43,21 +48,14 @@ output() {
     printf '%s=%s\n' "$1" "$2" >> "$GITHUB_OUTPUT"
   fi
 }
+hex() { [[ "$1" =~ ^[0-9a-f]{40}$ ]]; }
 
-build() {
-  # Every third-party module the builder and the checks import (tests check).
-  local CONTROL=(uv run --with rfc8785==0.1.4 --with jsonschema --with numpy --with pyyaml python)
-  local HERE TAB
-  # The builder is this checkout's code; the checks are the results tree's own.
-  HERE=$(pwd)
-  TAB=$(printf '\t')
-  builder() { PYTHONPATH="$HERE" "${CONTROL[@]}" -m pipeline.uk_replay_results_pr "$@"; }
-
+# Fetch, guard, decide, extract, edit and commit on $1 (main) from $2
+# (replay-state), with builder() as the Python that runs the builder.
+assemble() {
+  local base_commit=$1 state_commit=$2 tab
+  tab=$(printf '\t')
   mkdir -p "$STAGE"
-  git fetch -q --no-tags origin "+refs/heads/$BASE:$BASE_REF" \
-    "+refs/heads/$STATE_BRANCH:$STATE_REF"
-  local state_commit
-  state_commit=$(git rev-parse "$STATE_REF")
   if ! git cat-file -e "$state_commit:$REQUEST/STATUS.json" 2>/dev/null; then
     echo "::error::$STATE_BRANCH has no request $REQUEST_ID" >&2
     exit 1
@@ -68,7 +66,7 @@ build() {
   # before any of it is copied towards main.
   python3 -I .github/scripts/uk_replay_output_guard.py "$STAGE/$REQUEST"
 
-  git worktree add -q --detach "$TREE" "$BASE_REF"
+  git worktree add -q --detach "$TREE" "$base_commit"
   builder check --request-dir "$STAGE/$REQUEST" --checkout "$TREE" \
     --request-id "$REQUEST_ID" --state-commit "$state_commit" --plan "$WORK/plan.json"
   if [ "$(plan action)" != build ]; then
@@ -96,7 +94,7 @@ build() {
     --plan "$WORK/plan.json" --commit-message "$WORK/COMMIT_MESSAGE"
   git -C "$TREE" add -A
   git -C "$TREE" diff --cached --name-only | builder scope --plan "$WORK/plan.json"
-  git -C "$TREE" -c user.name='github-actions[bot]' -c user.email="$BOT_EMAIL" \
+  git -C "$TREE" -c user.name="$BOT_NAME" -c user.email="$BOT_EMAIL" \
     commit -q -F "$WORK/COMMIT_MESSAGE"
 
   # Every committed result file is the blob replay-state holds.
@@ -104,15 +102,27 @@ build() {
   if [ -n "$(plan paths diff)" ]; then
     targets+=("$(plan paths diff)")
   fi
-  local expected committed identical
+  local expected committed
   expected=$(git ls-tree -r "$state_commit" -- "$REQUEST/results/results" "$REQUEST/results/docs" \
-    | sed "s#$TAB$REQUEST/results/#$TAB#" | LC_ALL=C sort)
+    | sed "s#$tab$REQUEST/results/#$tab#" | LC_ALL=C sort)
   committed=$(git -C "$TREE" ls-tree -r HEAD -- "${targets[@]}" | LC_ALL=C sort)
   if [ "$expected" != "$committed" ]; then
     echo "::error::the committed results are not replay-state's bytes" >&2
     exit 1
   fi
-  identical=$(printf '%s\n' "$committed" | grep -c .)
+  IDENTICAL=$(printf '%s\n' "$committed" | grep -c .)
+}
+
+build() {
+  # Every third-party module the builder and the checks import (tests check).
+  local CONTROL=(uv run --with rfc8785==0.1.4 --with jsonschema --with numpy --with pyyaml python)
+  builder() { PYTHONPATH="$HERE" "${CONTROL[@]}" -m pipeline.uk_replay_results_pr "$@"; }
+  git fetch -q --no-tags origin "+refs/heads/$BASE:$BASE_REF" \
+    "+refs/heads/$STATE_BRANCH:$STATE_REF"
+  local base_commit state_commit
+  base_commit=$(git rev-parse "$BASE_REF")
+  state_commit=$(git rev-parse "$STATE_REF")
+  assemble "$base_commit" "$state_commit"
 
   # Main's own checks, as the hand-built results PRs ran them.
   (
@@ -142,8 +152,48 @@ build() {
     echo "::error::scorecard_db.build_db is nondeterministic on the results branch" >&2
     exit 1
   fi
-  python3 -I - "$WORK/validation.json" "$identical" "$(cat "$WORK/verify-sealed.txt")" \
-    "$(content_hash "$WORK/build1.json")" <<'PY'
+  # The verified commit, for the job that holds the token to reproduce.
+  output base "$base_commit"
+  output state "$state_commit"
+  output tree "$(git -C "$TREE" rev-parse 'HEAD^{tree}')"
+  output sealed "$(cat "$WORK/verify-sealed.txt")"
+  output content_hash "$(content_hash "$WORK/build1.json")"
+  output action build
+  echo "verified tree $(git -C "$TREE" rev-parse 'HEAD^{tree}') for $(plan branch)"
+}
+
+rebuild() {
+  : "${BUILT_TREE:?}" "${BUILT_BASE:?}" "${BUILT_STATE:?}" "${BUILT_SEALED:?}" "${BUILT_CONTENT_HASH:?}"
+  # The standard library alone: no site-packages, nothing installed. check
+  # and apply skip the schema, digest and YAML checks the build job made.
+  builder() {
+    local command=$1
+    shift
+    case "$command" in
+      check | apply) set -- "$@" --stdlib ;;
+    esac
+    python3 -I -S "$HERE/pipeline/uk_replay_results_pr.py" "$command" "$@"
+  }
+  if ! hex "$BUILT_TREE" || ! hex "$BUILT_BASE" || ! hex "$BUILT_STATE" \
+    || ! [[ "$BUILT_SEALED" =~ ^[0-9]+\ sealed\ namespace\(s\)\ checked$ ]] \
+    || ! [[ "$BUILT_CONTENT_HASH" =~ ^[0-9a-f]{16,128}$ ]]; then
+    echo "::error::the build job's outputs are malformed" >&2
+    exit 1
+  fi
+  git fetch -q --no-tags origin "+refs/heads/$BASE:$BASE_REF" \
+    "+refs/heads/$STATE_BRANCH:$STATE_REF"
+  # The commits the build job used must be real history of both branches.
+  if ! git merge-base --is-ancestor "$BUILT_BASE" "$BASE_REF" \
+    || ! git merge-base --is-ancestor "$BUILT_STATE" "$STATE_REF"; then
+    echo "::error::the build job's base or state commit is not on $BASE or $STATE_BRANCH" >&2
+    exit 1
+  fi
+  assemble "$BUILT_BASE" "$BUILT_STATE"
+  if [ "$(git -C "$TREE" rev-parse 'HEAD^{tree}')" != "$BUILT_TREE" ]; then
+    echo "::error::this job's commit is not the tree the build job verified" >&2
+    exit 1
+  fi
+  python3 -I - "$WORK/validation.json" "$IDENTICAL" "$BUILT_SEALED" "$BUILT_CONTENT_HASH" <<'PY'
 import json
 import sys
 
@@ -158,28 +208,27 @@ with open(path, "w") as handle:
         handle,
     )
 PY
-  builder body --request-dir "$STAGE/$REQUEST" --plan "$WORK/plan.json" \
-    --validation "$WORK/validation.json" --output "$WORK/BODY.md"
-  output branch "$(plan branch)"
+  python3 -I -S "$HERE/pipeline/uk_replay_results_pr.py" body --request-dir "$STAGE/$REQUEST" \
+    --plan "$WORK/plan.json" --validation "$WORK/validation.json" --output "$WORK/BODY.md"
   output commit "$(git -C "$TREE" rev-parse HEAD)"
+  output branch "$(plan branch)"
   output action build
-  echo "built $(plan branch) at $(git -C "$TREE" rev-parse HEAD)"
+  echo "rebuilt $(plan branch) at $(git -C "$TREE" rev-parse HEAD), tree $BUILT_TREE"
 }
 
 propose() {
   : "${BUILT_COMMIT:?}" "${BUILT_BRANCH:?}" "${GH_TOKEN:?}"
   local branch=$BUILT_BRANCH head
-  # Push exactly the commit build verified, on the main it verified it on.
+  # Push exactly the commit this job assembled, on the main it assembled it on.
   head=$(git -C "$TREE" rev-parse HEAD)
-  if [ "$head" != "$BUILT_COMMIT" ] || [ "$branch" != "$(plan branch)" ] \
-    || [ "$(git -C "$TREE" rev-parse HEAD^)" != "$(git rev-parse "$BASE_REF")" ]; then
-    echo "::error::the results commit changed after it was verified" >&2
+  if [ "$head" != "$BUILT_COMMIT" ] || [ "$branch" != "$(plan branch)" ]; then
+    echo "::error::the results commit changed after it was assembled" >&2
     exit 1
   fi
   # The token reaches git only through gh, for these commands alone.
   pushgit() { git -C "$TREE" -c credential.helper= -c 'credential.helper=!gh auth git-credential' "$@"; }
 
-  # Push: a new branch, or a rebuild over one that only this builder wrote.
+  # Push: a new branch, or a rebuild over the one commit this builder wrote.
   local remote pushed=false
   remote=$(git ls-remote --heads origin "refs/heads/$branch" | cut -f1)
   if [ -z "$remote" ]; then
@@ -191,13 +240,17 @@ propose() {
       echo "$branch already holds this tree"
       head=$remote
     else
-      for commit in $(git rev-list "$BASE_REF..$remote"); do
-        if [ "$(git log -1 --format=%ae "$commit")" != "$BOT_EMAIL" ] \
-          || ! git log -1 --format=%B "$commit" | grep -qxF "$TRAILER"; then
-          echo "::error::$branch holds $commit, which this builder did not write; update the branch by hand" >&2
-          exit 1
-        fi
-      done
+      # Exactly one commit, authored and committed by the bot with this
+      # request's trailer: an amended or added commit is a person's work.
+      local commits
+      commits=$(git rev-list "$BASE_REF..$remote")
+      if [ "$(printf '%s\n' "$commits" | grep -c .)" != 1 ] \
+        || [ "$(git log -1 --format=%ae "$remote")" != "$BOT_EMAIL" ] \
+        || [ "$(git log -1 --format=%ce "$remote")" != "$BOT_EMAIL" ] \
+        || ! git log -1 --format=%B "$remote" | grep -qxF "$TRAILER"; then
+        echo "::error::$branch holds work this builder did not write; update the branch by hand" >&2
+        exit 1
+      fi
       pushgit push -q --force-with-lease="refs/heads/$branch:$remote" \
         origin "HEAD:refs/heads/$branch"
       pushed=true
@@ -229,9 +282,10 @@ propose() {
 
 case "${1:-}" in
   build) build ;;
+  rebuild) rebuild ;;
   propose) propose ;;
   *)
-    echo "usage: uk_replay_results_pr.sh build|propose" >&2
+    echo "usage: uk_replay_results_pr.sh build|rebuild|propose" >&2
     exit 2
     ;;
 esac

@@ -11,19 +11,21 @@ name: UK replay results PR
 #
 # It reads only committed public results from replay-state, runs main's own
 # checks on them and never installs, imports or runs candidate or release
-# code. It holds no dataset token. The build step holds no write credential
-# at all (contents: read, checkout credentials not persisted). Only after it
-# has verified the commit does the job mint a short-lived token for the
-# organisation's policyengine GitHub App, scoped to this repository: contents
-# and pull-requests to push the branch and open the pull request, workflows
+# code. It holds no dataset token.
+#
+# Two jobs, two runners. `build` assembles the commit and runs every check,
+# with PyPI packages and no write credential. `propose` runs on a fresh
+# runner, so nothing those packages did can reach it: with git and the
+# standard library alone it assembles the same commit from the same inputs,
+# refuses unless its tree is the one `build` verified, and only then mints a
+# short-lived token for the organisation's policyengine GitHub App, scoped to
+# this repository: contents and pull-requests to push its own
+# uk-replay-results/<variant> branch and open the pull request, workflows
 # because the commit adds the variant to ci.yml's matrix (GITHUB_TOKEN can
-# never hold workflows). The propose step runs only git, gh and the standard
-# library, and pushes exactly the commit the build step reported, to its own
-# uk-replay-results/<variant> branch. A pull request opened with GITHUB_TOKEN
-# would also start no pull_request run, so it would never carry checks; the
-# App's does.
-# Nothing here merges: merging stays on the normal gates, CI and an
-# independent review.
+# never hold workflows). A pull request opened with GITHUB_TOKEN would also
+# start no pull_request run, so it would never carry checks; the App's does.
+# The actions in `propose` are pinned to commits. Nothing here merges:
+# merging stays on the normal gates, CI and an independent review.
 # https://docs.github.com/en/actions/concepts/security/github_token
 # https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks
 
@@ -42,14 +44,21 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  results_pr:
-    name: propose certified results to main
-    # Only the default branch's builder writes a branch and opens a PR.
+  build:
+    name: build and verify the results commit
+    # Only the default branch's builder proposes anything.
     if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
     timeout-minutes: 45
     permissions:
       contents: read
+    outputs:
+      action: ${{ steps.build.outputs.action }}
+      base: ${{ steps.build.outputs.base }}
+      state: ${{ steps.build.outputs.state }}
+      tree: ${{ steps.build.outputs.tree }}
+      sealed: ${{ steps.build.outputs.sealed }}
+      content_hash: ${{ steps.build.outputs.content_hash }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -65,23 +74,49 @@ jobs:
           STATE_BRANCH: replay-state
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
         run: bash .github/scripts/uk_replay_results_pr.sh build
+
+  propose:
+    name: rebuild with the standard library, push and open the pull request
+    needs: build
+    if: needs.build.outputs.action == 'build'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Rebuild the verified commit with git and the standard library
+        id: rebuild
+        env:
+          REQUEST_ID: ${{ github.event.inputs.request_id }}
+          STATE_BRANCH: replay-state
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+          BUILT_TREE: ${{ needs.build.outputs.tree }}
+          BUILT_BASE: ${{ needs.build.outputs.base }}
+          BUILT_STATE: ${{ needs.build.outputs.state }}
+          BUILT_SEALED: ${{ needs.build.outputs.sealed }}
+          BUILT_CONTENT_HASH: ${{ needs.build.outputs.content_hash }}
+        run: bash .github/scripts/uk_replay_results_pr.sh rebuild
       - name: Mint a repository-scoped token to push the branch and open the PR
         id: token
-        if: steps.build.outputs.action == 'build'
-        uses: actions/create-github-app-token@v2
+        if: steps.rebuild.outputs.action == 'build'
+        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2.2.2
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
           permission-contents: write
           permission-pull-requests: write
           permission-workflows: write
-      - name: Push the verified commit and open the pull request
-        if: steps.build.outputs.action == 'build'
+      - name: Push the rebuilt commit and open the pull request
+        if: steps.rebuild.outputs.action == 'build'
         env:
           REQUEST_ID: ${{ github.event.inputs.request_id }}
           STATE_BRANCH: replay-state
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
-          BUILT_COMMIT: ${{ steps.build.outputs.commit }}
-          BUILT_BRANCH: ${{ steps.build.outputs.branch }}
+          BUILT_COMMIT: ${{ steps.rebuild.outputs.commit }}
+          BUILT_BRANCH: ${{ steps.rebuild.outputs.branch }}
           GH_TOKEN: ${{ steps.token.outputs.token }}
         run: bash .github/scripts/uk_replay_results_pr.sh propose

@@ -21,6 +21,11 @@ whether to build; ``apply`` makes edits 2 to 5 after the extraction;
 pull request. ``.github/scripts/uk_replay_results_pr.sh`` does the git work,
 the verification, the push and the pull request. Nothing here installs,
 imports or runs candidate or release code, and nothing here merges.
+
+With ``--stdlib``, ``check`` and ``apply`` skip what needs a third-party
+package (JSON Schema and RFC 8785 digests, the YAML comparison), so the job
+that holds the App token can rebuild the same commit under ``python3 -I -S``.
+The build job runs them in full on the same inputs.
 """
 
 from __future__ import annotations
@@ -41,7 +46,6 @@ if str(ROOT) not in sys.path:
 from pipeline import uk_replay_interface as interface  # noqa: E402
 from pipeline import uk_replay_qualify as qualify  # noqa: E402
 from pipeline import uk_replay_variants as variants  # noqa: E402
-from pipeline.compute_uk_event import canonical_bytes  # noqa: E402
 
 INDEX = "data/uk/replay_variants.json"
 CI = ".github/workflows/ci.yml"
@@ -80,6 +84,19 @@ def need(condition: bool, message: str) -> None:
 
 def sha256_bytes(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
+
+
+def canonical_bytes(value: object) -> bytes:
+    """compute_uk_event.canonical_bytes, byte for byte (a test checks): the
+    index's canonical form, without importing that module's numpy."""
+    return (
+        json.dumps(value, indent=1, sort_keys=True, allow_nan=False) + "\n"
+    ).encode()
+
+
+def tally(n: int, noun: str) -> str:
+    """``n`` in digits with its noun, singular for one."""
+    return f"{n:,} {noun if n == 1 else noun + 's'}"
 
 
 def number(n: int) -> str:
@@ -137,11 +154,19 @@ def day(timestamp: str) -> str:
 # --- deciding -------------------------------------------------------------------
 
 
-def check(directory: Path, checkout: Path, request_id: str, state_commit: str) -> dict:
+def check(
+    directory: Path,
+    checkout: Path,
+    request_id: str,
+    state_commit: str,
+    *,
+    strict: bool = True,
+) -> dict:
     """The build plan, or Ineligible / Refused.
 
     ``directory`` is ``requests/<request_id>`` as extracted from replay-state;
-    ``checkout`` is a worktree of main before any extraction."""
+    ``checkout`` is a worktree of main before any extraction. ``strict``
+    adds the schema and digest checks that need jsonschema and rfc8785."""
     need(
         bool(re.fullmatch(r"[0-9a-f]{64}", request_id)),
         "request_id must be 64 lowercase hex characters",
@@ -151,13 +176,15 @@ def check(directory: Path, checkout: Path, request_id: str, state_commit: str) -
         "state_commit must be a full commit id",
     )
     status = json.loads((directory / "STATUS.json").read_bytes())
-    interface.validate(status, interface.STATUS_SCHEMA_ID)
+    if strict:
+        interface.validate(status, interface.STATUS_SCHEMA_ID)
     need(status["request_id"] == request_id, "STATUS.json names another request")
     if status["status"] != "complete":
         raise Ineligible(f"request {request_id} is {status['status']}, not complete")
     receipt_bytes = (directory / variants.RECEIPT_NAME).read_bytes()
     receipt = json.loads(receipt_bytes)
-    interface.validate(receipt, interface.RECEIPT_SCHEMA_ID)
+    if strict:
+        interface.validate(receipt, interface.RECEIPT_SCHEMA_ID)
     need(receipt["request_id"] == request_id, "the receipt names another request")
     need(
         receipt["receipt_sha256"] == status["receipt_sha256"],
@@ -170,10 +197,11 @@ def check(directory: Path, checkout: Path, request_id: str, state_commit: str) -
         "the receipt's results are not this request's on replay-state",
     )
     request = json.loads((directory / "REQUEST.json").read_bytes())
-    need(
-        interface.validate_request(request) == request_id,
-        "REQUEST.json is not the request its directory names",
-    )
+    if strict:
+        need(
+            interface.validate_request(request) == request_id,
+            "REQUEST.json is not the request its directory names",
+        )
     results = directory / "results"
     variant_path = results / "VARIANT.json"
     need(variant_path.is_file(), "a complete receipt without results/VARIANT.json")
@@ -192,9 +220,17 @@ def check(directory: Path, checkout: Path, request_id: str, state_commit: str) -
     )
     # An exactly certified pair qualified again (a determinism check) returns
     # the committed record, note included: its results are already on main.
+    # The id gains its digest suffix only when main already holds the slug,
+    # so two runs that finish before either merges can share an id with
+    # different identities: the second is refused, to be qualified again.
     document = variants.load_document(checkout / INDEX)
     ids = [v["variant_id"] for v in document["variants"]]
     if record["variant_id"] in ids:
+        need(
+            document["variants"][ids.index(record["variant_id"])] == record,
+            f"{record['variant_id']} already names another record in {INDEX}; "
+            "qualify this pair again so it gets its own id",
+        )
         raise Ineligible(f"{record['variant_id']} is already in {INDEX}")
     need(record["layout"] == "replay_namespace", "a certified result needs a namespace")
     need("note" not in record, "VARIANT.json already carries a note")
@@ -337,17 +373,26 @@ def append_variant(raw: bytes, record: dict, note_text: str) -> bytes:
     return canonical_bytes(document)
 
 
-def add_matrix_variant(text: str, variant_id: str, certified: list[str]) -> str:
+def add_matrix_variant(
+    text: str, variant_id: str, certified: list[str], *, strict: bool = True
+) -> str:
     """Append ``variant_id`` to the replay-engine matrix; the matrix must
-    then list exactly ``certified`` (a test requires it) and nothing else in
-    the workflow may change."""
-    import yaml
-
+    then list exactly ``certified`` (a test requires it). ``strict`` also
+    parses both workflows and requires that nothing else changed."""
     matches = list(MATRIX.finditer(text))
     need(len(matches) == 1, f"{CI} must have exactly one matrix variant list")
     match = matches[0]
+    listed = [line.split("- ", 1)[1] for line in match.group(2).splitlines()]
+    need(
+        [*listed, variant_id] == certified,
+        "the engine matrix would not list every certified variant",
+    )
     entry = f"{match.group(1)}  - {variant_id}\n"
     edited = text[: match.end()] + entry + text[match.end() :]
+    if not strict:
+        return edited
+    import yaml
+
     before, after = yaml.safe_load(text), yaml.safe_load(edited)
     old = before["jobs"]["replay-engine"]["strategy"]["matrix"]["variant"]
     new = after["jobs"]["replay-engine"]["strategy"]["matrix"]["variant"]
@@ -495,7 +540,7 @@ def commit_message(plan: dict) -> str:
     )
 
 
-def apply(directory: Path, checkout: Path, plan: dict) -> None:
+def apply(directory: Path, checkout: Path, plan: dict, *, strict: bool = True) -> None:
     """Edits 2 to 5, after the workflow extracted the results into checkout."""
     record = json.loads((directory / "results" / "VARIANT.json").read_bytes())
     receipt = json.loads((directory / variants.RECEIPT_NAME).read_bytes())
@@ -513,7 +558,9 @@ def apply(directory: Path, checkout: Path, plan: dict) -> None:
         v["variant_id"] for v in document["variants"] if v["status"] == "certified"
     ]
     ci = checkout / CI
-    ci.write_text(add_matrix_variant(ci.read_text(), plan["variant_id"], certified))
+    ci.write_text(
+        add_matrix_variant(ci.read_text(), plan["variant_id"], certified, strict=strict)
+    )
     for name in NEWEST_TESTS:
         path = checkout / name
         path.write_text(
@@ -593,9 +640,9 @@ def body(directory: Path, plan: dict, validation: dict) -> str:
         ),
         (
             "Integrity",
-            f"{integrity['status']}, {len(integrity['failures'])} failures; "
-            f"complete supported grids for {complete} of {len(events)} events, "
-            f"{inert} inert measure-years",
+            f"{integrity['status']}, {tally(len(integrity['failures']), 'failure')}; "
+            f"complete supported grids for {complete} of {tally(len(events), 'event')}, "
+            f"{tally(inert, 'inert measure-year')}",
         ),
     ]
     if diff:
@@ -605,7 +652,7 @@ def body(directory: Path, plan: dict, validation: dict) -> str:
         rows.append(
             (
                 f"Diff vs `{diff['base_variant_id']}`",
-                f"{counts}; {len(diff['flagged_rows']):,} flagged rows",
+                f"{counts}; {tally(len(diff['flagged_rows']), 'flagged row')}",
             )
         )
     table = "\n".join(f"| {key} | {value} |" for key, value in rows)
@@ -630,9 +677,9 @@ def body(directory: Path, plan: dict, validation: dict) -> str:
     checks = [
         "- The receiver's output guard, applied again to the request's tree: "
         "every file an allowed, parsable aggregate.",
-        f"- Byte identity: all {validation['identical_files']:,} committed result "
-        "files have the blob replay-state holds; the receipt and results are "
-        "unchanged since the receipt commit.",
+        f"- Byte identity: all {tally(validation['identical_files'], 'committed result file')} "
+        "have the blob replay-state holds; the receipt and results are unchanged "
+        "since the receipt commit.",
         f"- `uk_replay_qualify verify-sealed`: {validation['verify_sealed']}.",
         "- CI's `.github/scripts/uk_replay_regenerate.sh` leaves the tree unchanged.",
         "- `scorecard_db.build_db`: two builds agree "
@@ -682,6 +729,9 @@ def main(argv: list[str] | None = None) -> int:
             sub.add_argument("--state-commit", required=True)
         if name == "apply":
             sub.add_argument("--commit-message", type=Path, required=True)
+        if name != "body":
+            # The propose job: standard library only (python3 -I -S).
+            sub.add_argument("--stdlib", action="store_true")
         if name == "body":
             sub.add_argument("--validation", type=Path, required=True)
             sub.add_argument("--output", type=Path, required=True)
@@ -692,7 +742,11 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "check":
             try:
                 plan = check(
-                    args.request_dir, args.checkout, args.request_id, args.state_commit
+                    args.request_dir,
+                    args.checkout,
+                    args.request_id,
+                    args.state_commit,
+                    strict=not args.stdlib,
                 )
             except Ineligible as reason:
                 plan = {"action": "skip", "reason": str(reason)}
@@ -700,7 +754,7 @@ def main(argv: list[str] | None = None) -> int:
             print(plan["action"], plan.get("reason", plan.get("variant_id")))
         elif args.command == "apply":
             plan = json.loads(args.plan.read_bytes())
-            apply(args.request_dir, args.checkout, plan)
+            apply(args.request_dir, args.checkout, plan, strict=not args.stdlib)
             args.commit_message.write_text(commit_message(plan))
         elif args.command == "scope":
             plan = json.loads(args.plan.read_bytes())
