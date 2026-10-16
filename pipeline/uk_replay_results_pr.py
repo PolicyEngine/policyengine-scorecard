@@ -86,6 +86,11 @@ def number(n: int) -> str:
     return WORDS[n] if 0 <= n < len(WORDS) else f"{n:,}"
 
 
+def counted(n: int, noun: str) -> str:
+    """``n`` in words with its noun, singular for one."""
+    return f"{number(n)} {noun if n == 1 else noun + 's'}"
+
+
 def version_key(version: str) -> tuple[int, ...]:
     """Plain final releases only: discovery and W4 dispatch nothing else."""
     need(
@@ -388,8 +393,8 @@ def paragraph(record: dict, receipt: dict, plan: dict) -> str:
             codes[failure["code"]] = codes.get(failure["code"], 0) + 1
         listed = ", ".join(f"{code} {count}" for code, count in sorted(codes.items()))
         integrity_text = (
-            f"Integrity is {integrity['status']} with {number(len(failures))} "
-            f"failure{'s' if len(failures) != 1 else ''} ({listed})"
+            f"Integrity is {integrity['status']} with "
+            f"{counted(len(failures), 'failure')} ({listed})"
         )
     else:
         integrity_text = f"Integrity is {integrity['status']} with no failures"
@@ -400,13 +405,17 @@ def paragraph(record: dict, receipt: dict, plan: dict) -> str:
         grids = "; the receipt records no event results."
     elif complete == len(events) and not inert:
         grids = (
-            f", and all {number(len(events))} events have complete supported grids "
-            "and no inert measure-years."
+            f", and all {counted(len(events), 'event')} have complete supported "
+            "grids and no inert measure-years."
+            if len(events) > 1
+            else ", and its one event has a complete supported grid and no inert "
+            "measure-years."
         )
     else:
         grids = (
-            f"; {number(complete)} of {number(len(events))} events have complete "
-            f"supported grids, with {number(inert)} inert measure-years in all."
+            f"; {number(complete)} of {counted(len(events), 'event')} "
+            f"{'has a complete supported grid' if complete == 1 else 'have complete supported grids'}"
+            f", with {counted(inert, 'inert measure-year')} in all."
         )
     diff = receipt.get("diff")
     if diff:
@@ -428,8 +437,8 @@ def paragraph(record: dict, receipt: dict, plan: dict) -> str:
                 else ", ".join(counts[:-1]) + f" and {counts[-1]}"
             )
             flags = (
-                f"That diff flags {number(rows)} rows; its flag counts are {listed}, "
-                "and every other flag count is zero."
+                f"That diff flags {counted(rows, 'row')}; its flag counts are "
+                f"{listed}, and every other flag count is zero."
             )
         else:
             flags = "That diff flags no rows."
@@ -585,7 +594,7 @@ def body(directory: Path, plan: dict, validation: dict) -> str:
         (
             "Integrity",
             f"{integrity['status']}, {len(integrity['failures'])} failures; "
-            f"{complete} of {len(events)} events have complete supported grids, "
+            f"complete supported grids for {complete} of {len(events)} events, "
             f"{inert} inert measure-years",
         ),
     ]

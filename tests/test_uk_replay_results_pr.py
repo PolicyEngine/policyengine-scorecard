@@ -458,11 +458,21 @@ def test_the_paragraph_states_every_nonzero_count_and_no_zero_one(
     complete = sum(c for c, _ in grids)
     inert = sum(i for _, i in grids)
     if complete == len(grids) and not inert:
-        assert "events have complete supported grids and no inert" in text
+        assert (
+            "events have complete supported grids and no inert"
+            if len(grids) > 1
+            else "its one event has a complete supported grid and no inert"
+        ) in text
     else:
         assert (
-            f"{builder.number(complete)} of {builder.number(len(grids))} events" in text
+            f"{builder.number(complete)} of {builder.counted(len(grids), 'event')}"
+            in text
         )
+        assert f"{builder.counted(inert, 'inert measure-year')} in all" in text
+    # Agreement in number: never "one rows" or "two row".
+    assert not re.search(r"\bone (rows|events|failures|inert measure-years)\b", text)
+    words = "zero|two|three|four|five|six|seven|eight|nine|ten"
+    assert not re.search(rf"\b({words}) (row|event|failure|inert measure-year)\b", text)
 
 
 @settings(max_examples=100, deadline=None)
