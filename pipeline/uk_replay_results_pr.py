@@ -203,11 +203,12 @@ def check(directory: Path, checkout: Path, request_id: str, state_commit: str) -
         f"policyengine {wrapper_version(record)} is older than the newest certified "
         f"{wrapper_version(previous)}; appended, it would become latest_certified",
     )
+    # results/ mirrors the repository: results/uk/replays/... and docs/...
     paths = result_paths(record, receipt)
-    namespace = results / "results" / paths["namespace"]
-    allowed = [f"results/{paths['namespace']}/", f"docs/{paths['requirements']}"]
+    namespace = results / paths["namespace"]
+    allowed = [f"{paths['namespace']}/", paths["requirements"]]
     if paths["diff"]:
-        allowed.append(f"results/{paths['diff']}/")
+        allowed.append(f"{paths['diff']}/")
     files = 0
     total = 0
     for path in sorted(results.rglob("*")):
@@ -239,14 +240,14 @@ def check(directory: Path, checkout: Path, request_id: str, state_commit: str) -
         == receipt["results"]["manifest_sha256"],
         "the namespace manifest is not the one the receipt binds",
     )
-    requirements = results / "docs" / paths["requirements"]
+    requirements = results / paths["requirements"]
     need(
         requirements.is_file()
         and sha256_bytes(requirements.read_bytes()) == record["requirements"]["sha256"],
         "the requirements freeze is missing or differs from VARIANT.json",
     )
     if paths["diff"]:
-        diff_json = results / "results" / paths["diff"] / "DIFF.json"
+        diff_json = results / paths["diff"] / "DIFF.json"
         need(
             diff_json.is_file()
             and sha256_bytes(diff_json.read_bytes()) == receipt["diff"]["diff_sha256"],
