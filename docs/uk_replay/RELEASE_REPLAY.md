@@ -222,9 +222,12 @@ FY2023–24 counterparts; that loss is shown, never hidden.
   its release diff), the receipt binds that manifest's digest, the runner
   refuses to write there (compute, staging, comparison and the summary all
   check), and CI fails if any sealed byte changes. `verify-sealed` derives
-  the expected namespaces from the variants index: every record with
-  `layout: "replay_namespace"` whose `result_root` exists must have both
-  sealing files. Deleting a receipt or manifest therefore fails the check.
+  the expected namespaces from the variants index: a record with
+  `layout: "replay_namespace"` must have both sealing files when its
+  namespace holds an event `RUN_MANIFEST.json`, a `CORPUS.json`, a receipt or
+  a namespace manifest (`uk_replay_qualify`, `must_be_sealed`). A namespace
+  holding only premises, diagnostics or a summary stays unsealed. Deleting a
+  receipt or manifest therefore fails the check.
 * Each corpus qualification creates a detached checkout of the runner's `HEAD`
   under `<work>/checkout`. It deletes the candidate's namespace and selected
   diff directory inside that checkout, computes every event there without
