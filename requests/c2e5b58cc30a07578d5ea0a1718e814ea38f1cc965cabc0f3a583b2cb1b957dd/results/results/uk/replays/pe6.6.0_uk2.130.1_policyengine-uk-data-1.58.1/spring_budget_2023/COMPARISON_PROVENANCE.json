@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "d3fcc39d3f672e82d0e895612ab029638b1e65929b783faa3064bd7879b8938c",
+  "COMPARISON.json": "aa79af7fd275e288a4cba30fd018a8464b063df6824789d390a7e52195588fac",
+  "COMPARISON.md": "265bf9771a9fdd41ee72a4d8bcc414472454767ac5ec13437bdcc104c5356fc0"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "16fd9ea4b2aa801249ef253f1c030b727b49baf66660d599b2941efff794fbc9",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "9dff24c1c6895fabb8d2d1d11cbd1b19a78c7ff515eac559f3adefe7eb76da25",
+ "staging_manifest_path": "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "f5523a9dd84bd61fd9bcf7846f743b76dccaa59fe64e55eed4144b6441f0f5a1"
+}

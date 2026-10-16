@@ -1,0 +1,433 @@
+{
+ "artifact_grid": [
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2028
+  }
+ ],
+ "artifacts": {
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2024.json": "39236ecab9e279fa150a0039270fd3ac2b7967939c5a76bc5c89c5b1ff142495",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2025.json": "6479b3be00e047e16c3eb390417b589c9aa69e756902dbd5116d043921295d01",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2026.json": "a68d2d0cb0c2addedac9399057a7556fb778c801f84af5c1cf7c86c4c8d99994",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2027.json": "05449c9f807adf7dd93ffb4b761365c77e109164a094e470023d9929fe5f728c",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p_2028.json": "2ebcad7557b67fdae45a80d1d7805593719930b02905c2f6f493d0977b2d54c2",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2024.json": "e4a560e7a9ba5df2aac5ec92e51aff273f0695e849752d601431b9e873f7612f",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2025.json": "f8ea382bc4dd201d3f74c047fc63196b87d4752d812f280f442a36568ceab816",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2026.json": "f7ff5db24d749f374d7fb3035091b7baa064c6e09b27e9f429728e84876b5fb6",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2027.json": "61d893bb9a9ce90887c8c767086aa12715f3c162ce97316a546504811fe8eae7",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_2_self_employed_nics_abolition_2028.json": "6ceac2c857416d763434413800d26a1fe374cbf4cd01460d38d9a1aa0a004673",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2024.json": "fb161a21d0981cdfd836c8db89b446203dbbaff96999eb9ec67a4707fee9323b",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2025.json": "e1b90def482d6c76c91e70a3522aea295e53c4baea91365482281a3e70680762",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2026.json": "5e51fa519e6e153c012bcebfd2a4918a467d363b2844f1b1660f53eb540ad227",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2027.json": "c4a638c3266af2d17051535b4f30d53396a4f38afd7aa03cfc21a68f94b9b4ba",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p_2028.json": "2ce2c073da676ff1f157722498f4e6740f6c341062f475f3dcd5c80f9126f744",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__lha_reset_to_30th_percentile_2024.json": "f0cc4ed09542a279fd8ec28fdca8513932f54d45ba86b3d0c20acd507ad2d5de",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__lha_reset_to_30th_percentile_2025.json": "0df84b4b88baedbc81d5ec910ab77b2d3f327c18ae9813135cdd9abfdf135cfd",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__lha_reset_to_30th_percentile_2026.json": "cc88cd27e9aee2fb5a1736e36e015f0ebd750530d4e227f01cb9302efd6bf48f",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__lha_reset_to_30th_percentile_2027.json": "af11ec8bd292d6835f1f244d54c87cc6bf8d1f33315bc5979b611d40a659144c",
+  "results/uk/replays/pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_statement_2023/autumn_statement_2023__lha_reset_to_30th_percentile_2028.json": "e66b128ef45ba0aa41b577adf3cc7e61997f953e53390e09c81aad8c25114134"
+ },
+ "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+ "data_bundle": "policyengine-uk-data-1.58.1",
+ "data_years": [
+  2024,
+  2025,
+  2026,
+  2027,
+  2028,
+  2029,
+  2030,
+  2031,
+  2032
+ ],
+ "engine_version": "2.130.1",
+ "event": "autumn_statement_2023",
+ "full_event_complete": false,
+ "full_event_grid": [
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2023
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2023
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2023
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2023
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2028
+  }
+ ],
+ "full_supported_grid": [
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2028
+  }
+ ],
+ "full_supported_grid_complete": true,
+ "measures": [
+  "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+  "autumn_statement_2023__class_2_self_employed_nics_abolition",
+  "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+  "autumn_statement_2023__lha_reset_to_30th_percentile"
+ ],
+ "not_computable": {},
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.6.0",
+ "processed_value_check": "processed_period_values.v1",
+ "registry_path": "data/uk/events/autumn_statement_2023_measures.json",
+ "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+ "requested_grid": [
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+   "year": 2028
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2024
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2025
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2026
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2027
+  },
+  {
+   "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+   "year": 2028
+  }
+ ],
+ "requested_measures": [
+  "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+  "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+  "autumn_statement_2023__class_2_self_employed_nics_abolition",
+  "autumn_statement_2023__lha_reset_to_30th_percentile"
+ ],
+ "requested_years": [
+  2024,
+  2025,
+  2026,
+  2027,
+  2028
+ ],
+ "schema_version": 1,
+ "supported_years": [
+  2024,
+  2025,
+  2026,
+  2027,
+  2028
+ ],
+ "unsupported_years": [
+  {
+   "reason": "before_data_year",
+   "year": 2023
+  }
+ ],
+ "variant_id": "pe6.6.0_uk2.130.1_policyengine-uk-data-1.58.1",
+ "variant_identity_sha256": "d4cb520d1f87380908f1a18b60171826625a84dea9544db0588eeda027c1f949",
+ "years": [
+  2024,
+  2025,
+  2026,
+  2027,
+  2028
+ ]
+}
