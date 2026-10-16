@@ -74,7 +74,7 @@ def flat(text):
 # --- the permission boundary ---------------------------------------------------
 
 
-def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_secret():
+def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_dataset_token():
     text = WORKFLOW.read_text()
     document = yaml.safe_load(text)
     # PyYAML reads the bare key `on` as True. Never pull_request (or its
@@ -86,31 +86,49 @@ def test_the_results_workflow_is_dispatch_only_main_only_and_holds_no_secret():
         "group": "uk-replay-results-${{ github.event.inputs.request_id }}",
         "cancel-in-progress": False,
     }
-    # No dataset token, no other secret: only the job's own GITHUB_TOKEN.
-    assert "secrets." not in text
     assert "PE_UK_PRIVATE_HF_READ_TOKEN" not in text
+    assert "HUGGING_FACE_TOKEN" not in text
     (name,) = document["jobs"]
     job = document["jobs"][name]
-    assert job["permissions"] == {
-        "contents": "write",
-        "pull-requests": "write",
-        "actions": "write",
-    }
+    # GITHUB_TOKEN reads; only the App token writes.
+    assert job["permissions"] == {"contents": "read"}
     assert job["if"] == (
         "github.ref == format('refs/heads/{0}', github.event.repository.default_branch)"
     )
-    uses = [step.get("uses") for step in job["steps"] if "uses" in step]
-    assert uses == ["actions/checkout@v4", "astral-sh/setup-uv@v5"]
-    checkout, setup, run = job["steps"]
-    assert checkout["with"] == {"fetch-depth": 0}
+    token, checkout, setup, run = job["steps"]
+    # The App's key reaches only the step that mints a token scoped to this
+    # repository: contents and pull requests to push and open the PR, and
+    # workflows because the commit edits ci.yml's matrix.
+    assert token["uses"] == "actions/create-github-app-token@v2"
+    assert token["id"] == "token"
+    assert token["with"] == {
+        "app-id": "${{ secrets.APP_ID }}",
+        "private-key": "${{ secrets.APP_PRIVATE_KEY }}",
+        "permission-contents": "write",
+        "permission-pull-requests": "write",
+        "permission-workflows": "write",
+    }
+    assert "owner" not in token["with"] and "repositories" not in token["with"]
+    holders = [step for step in job["steps"] if "secrets." in json.dumps(step)]
+    assert holders == [token]
+    assert "secrets." not in json.dumps({k: v for k, v in job.items() if k != "steps"})
+    assert checkout["uses"] == "actions/checkout@v4"
+    assert checkout["with"] == {
+        "fetch-depth": 0,
+        "token": "${{ steps.token.outputs.token }}",
+    }
+    assert setup["uses"] == "astral-sh/setup-uv@v5"
     assert setup["with"] == {"enable-cache": False}
     assert run["run"] == "bash .github/scripts/uk_replay_results_pr.sh"
     assert run["env"] == {
         "REQUEST_ID": "${{ github.event.inputs.request_id }}",
         "STATE_BRANCH": "replay-state",
         "BASE_BRANCH": "${{ github.event.repository.default_branch }}",
-        "GH_TOKEN": "${{ github.token }}",
+        "GH_TOKEN": "${{ steps.token.outputs.token }}",
     }
+    for step in job["steps"]:
+        assert "${{" not in step.get("run", "")
+        assert not step.get("uses", "").startswith(("actions/cache", "actions/upload"))
 
 
 def test_the_builder_runs_no_release_code_and_never_merges():
@@ -126,14 +144,20 @@ def test_the_builder_runs_no_release_code_and_never_merges():
         "HUGGING_FACE_TOKEN",
         "secrets",
         "gh pr merge",
+        "gh workflow run",
         "--auto",
         "--admin",
         "upload-artifact",
     ):
         assert forbidden not in script, forbidden
     # Branches it writes are its own; main is never pushed.
-    pushes = [line for line in script.splitlines() if " push " in line]
-    assert pushes and all("refs/heads/$branch" in line for line in pushes)
+    pushes = [
+        line
+        for line in script.splitlines()
+        if re.search(r"\bgit\b.* push ", line) and not line.lstrip().startswith("#")
+    ]
+    assert len(pushes) == 2
+    assert all("refs/heads/$branch" in line for line in pushes)
     tree = ast.parse((ROOT / "pipeline/uk_replay_results_pr.py").read_text())
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -204,22 +228,12 @@ def test_the_record_job_dispatches_the_results_workflow_only_when_complete():
     }
 
 
-def test_ci_accepts_the_dispatch_and_keeps_the_token_on_pushes():
+def test_ci_runs_on_the_pull_request_itself():
+    # The bot's pull request gets ordinary pull_request checks (the App token
+    # starts them); CI needs, and has, no dispatch trigger for it.
     ci = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
-    assert set(ci[True]) == {"pull_request", "push", "workflow_dispatch"}
+    assert set(ci[True]) == {"pull_request", "push"}
     assert ci[True]["push"] == {"branches": ["main"]}
-    holders = [
-        step
-        for job in ci["jobs"].values()
-        for step in job["steps"]
-        if "secrets.PE_UK_PRIVATE_HF_READ_TOKEN" in json.dumps(step)
-    ]
-    assert [step["if"] for step in holders] == [
-        "env.LEGACY == 'False' && github.event_name == 'push'"
-    ]
-    assert ci["jobs"]["publish-db"]["if"] == (
-        "github.event_name == 'push' && github.ref == 'refs/heads/main'"
-    )
 
 
 # --- the edits, checked against the hand-built results PRs --------------------
@@ -621,11 +635,9 @@ with open(os.environ["GH_LOG"], "a") as log:
     log.write(json.dumps(args) + "\\n")
 if args[:2] == ["pr", "list"]:
     print(os.environ.get("GH_OPEN_PR", ""))
-elif args[:2] == ["run", "list"]:
-    print(os.environ.get("GH_RUNS", "0"))
 elif args[:2] == ["pr", "create"]:
     print("https://github.com/PolicyEngine/policyengine-scorecard/pull/999")
-elif args[:2] not in (["pr", "edit"], ["workflow", "run"]):
+elif args[:2] != ["pr", "edit"]:
     sys.exit(97)
 """
 
@@ -665,7 +677,7 @@ class Remote:
         (self.seed / "scorecard_db").mkdir()
         (self.seed / "scorecard_db/__init__.py").write_text("")
         (self.seed / "scorecard_db/build_db.py").write_text(BUILD_STUB)
-        (self.seed / ".gitignore").write_text("__pycache__/\n")
+        shutil.copyfile(ROOT / ".gitignore", self.seed / ".gitignore")
         git(self.seed, "add", ".")
         git(self.seed, "commit", "-qm", "Main")
         self.state = tmp_path / "state"
@@ -845,11 +857,7 @@ def test_a_certified_request_becomes_one_bot_commit_and_a_pull_request(remote):
     assert checks[0] == f"regenerate {head}"
     assert [line.split()[0] for line in checks[1:]] == ["build_db", "build_db"]
     calls = remote.gh_calls()
-    assert [call[:2] for call in calls] == [
-        ["pr", "list"],
-        ["pr", "create"],
-        ["workflow", "run"],
-    ]
+    assert [call[:2] for call in calls] == [["pr", "list"], ["pr", "create"]]
     create = calls[1]
     assert create[create.index("--base") + 1] == "main"
     assert (
@@ -857,15 +865,6 @@ def test_a_certified_request_becomes_one_bot_commit_and_a_pull_request(remote):
         == f"uk-replay-results/{record['variant_id']}"
     )
     assert "--draft" not in create
-    assert calls[2] == [
-        "workflow",
-        "run",
-        "ci.yml",
-        "--repo",
-        REPOSITORY,
-        "--ref",
-        f"uk-replay-results/{record['variant_id']}",
-    ]
     body = (remote.tmp / "runner-temp-1/results-pr/BODY.md").read_text()
     assert "1 sealed namespace(s) checked" in body
     assert "all 8 committed result files" in body
@@ -879,14 +878,19 @@ def test_the_same_request_on_the_same_main_pushes_nothing_again(remote):
     rid, record, _ = remote.certify()
     assert remote.run(rid).returncode == 0
     head = remote.branch(record)
-    result = remote.run(rid, GH_OPEN_PR="999", GH_RUNS="1")
+    result = remote.run(rid, GH_OPEN_PR="999")
     assert result.returncode == 0, result.stdout + result.stderr
     assert remote.branch(record) == head
     assert "already holds this tree" in result.stdout
-    assert [call[:2] for call in remote.gh_calls()] == [["pr", "list"], ["run", "list"]]
-    # With no CI run on the head yet, the rerun starts one.
-    assert remote.run(rid, GH_OPEN_PR="999", GH_RUNS="0").returncode == 0
-    assert remote.gh_calls()[-1][:3] == ["workflow", "run", "ci.yml"]
+    assert [call[:2] for call in remote.gh_calls()] == [["pr", "list"]]
+    # A pushed branch whose pull request was never opened gets one.
+    result = remote.run(rid)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert remote.branch(record) == head
+    assert [call[:2] for call in remote.gh_calls()] == [
+        ["pr", "list"],
+        ["pr", "create"],
+    ]
 
 
 def test_a_rerun_after_main_moves_rebuilds_only_its_own_branch(remote):
@@ -904,11 +908,7 @@ def test_a_rerun_after_main_moves_rebuilds_only_its_own_branch(remote):
     assert git(remote.remote, "rev-parse", f"{second}^") == git(
         remote.remote, "rev-parse", "main"
     )
-    assert [call[:2] for call in remote.gh_calls()] == [
-        ["pr", "list"],
-        ["pr", "edit"],
-        ["workflow", "run"],
-    ]
+    assert [call[:2] for call in remote.gh_calls()] == [["pr", "list"], ["pr", "edit"]]
     # A person's commit on the branch is never overwritten.
     person = remote.tmp / "person"
     subprocess.run(["git", "clone", "-q", str(remote.remote), str(person)], check=True)
@@ -1016,6 +1016,20 @@ def test_results_outside_the_contract_are_refused(remote, setup, message):
     result = remote.run(rid)
     assert result.returncode == 1, result.stdout + result.stderr
     assert message in result.stdout + result.stderr
+    assert not remote.branch(record)
+
+
+def test_a_result_file_main_would_ignore_fails_the_byte_identity_check(remote):
+    # main's .gitignore ignores dist/: `git add -A` would leave this sealed
+    # file out, and the commit would no longer be replay-state's bytes.
+    variant_id = f"pe{VERSION}_uk2.130.1_policyengine-uk-data-1.58.1"
+    rid, record, _ = remote.certify(
+        extra={f"results/uk/replays/{variant_id}/dist/a.json": b"{}\n"}
+    )
+    assert record["variant_id"] == variant_id
+    result = remote.run(rid)
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert "the committed results are not replay-state's bytes" in result.stderr
     assert not remote.branch(record)
 
 

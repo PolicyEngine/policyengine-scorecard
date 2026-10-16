@@ -4,11 +4,6 @@ on:
   pull_request:
   push:
     branches: [main]
-  # The results workflow (uk-replay-results.yml) opens its pull request with
-  # GITHUB_TOKEN, which starts no pull_request run, and dispatches CI on the
-  # branch instead. Such a run behaves as a pull request run: the dataset
-  # token is used on pushes only.
-  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}

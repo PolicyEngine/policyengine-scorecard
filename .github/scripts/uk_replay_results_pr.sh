@@ -4,8 +4,9 @@
 # control code only: it reads committed public results from replay-state,
 # runs main's own checks on them (verify-sealed, CI's regeneration, two
 # database builds) and never installs, imports or runs candidate or release
-# code; it holds no dataset token. It opens the pull request and starts CI on
-# it. It never merges: that stays on the normal gates.
+# code; it holds no dataset token. Its pushes and pull request use the
+# workflow's GitHub App token, so CI runs on the pull request as on any other.
+# It never merges: that stays on the normal gates.
 #
 #   REQUEST_ID=<64 hex> STATE_BRANCH=replay-state \
 #     bash .github/scripts/uk_replay_results_pr.sh
@@ -171,11 +172,11 @@ else
   fi
 fi
 
-# The pull request. Nothing here merges it.
+# The pull request: opening it, or the push to its branch, starts CI on it.
+# Nothing here merges it.
 title=$(plan title)
 number=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$branch" --base "$BASE" \
   --state open --json number --jq '.[0].number // empty')
-created=false
 if [ -z "$number" ]; then
   create=(--repo "$GITHUB_REPOSITORY" --base "$BASE" --head "$branch"
     --title "$title" --body-file "$WORK/BODY.md")
@@ -183,17 +184,9 @@ if [ -z "$number" ]; then
     create+=(--draft)
   fi
   gh pr create "${create[@]}"
-  created=true
 elif [ "$pushed" = true ]; then
   gh pr edit "$number" --repo "$GITHUB_REPOSITORY" --title "$title" \
     --body-file "$WORK/BODY.md"
-fi
-# A pull request opened with GITHUB_TOKEN starts no pull_request workflow, so
-# start CI on the branch; its checks attach to the head commit.
-if [ "$pushed" = true ] || [ "$created" = true ] \
-  || [ "$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml --branch "$branch" \
-    --commit "$head" --json databaseId --jq 'length')" = 0 ]; then
-  gh workflow run ci.yml --repo "$GITHUB_REPOSITORY" --ref "$branch"
 fi
 echo "::notice::Results pull request for $REQUEST_ID on $branch at $head"
 if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then

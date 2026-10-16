@@ -829,7 +829,17 @@ runs only the default branch's code.
 
 | Job | Authority and inputs |
 |---|---|
-| `results_pr` | `contents: write`, `pull-requests: write`, `actions: write`; reads committed public results from `replay-state`; references no secret, so holds no dataset token; installs, imports and runs no release/candidate code. |
+| `results_pr` | `GITHUB_TOKEN` `contents: read`; a short-lived token for the organisation's `policyengine` GitHub App, scoped to this repository with `contents: write`, `pull-requests: write` and `workflows: write`; reads committed public results from `replay-state`; holds no dataset token; installs, imports and runs no release/candidate code. |
+
+The App token, not `GITHUB_TOKEN`, writes for two reasons. The commit edits
+`ci.yml`, and only a token with `workflows` permission may push a change to a
+workflow file, which `GITHUB_TOKEN` can never hold. And a pull request opened
+with `GITHUB_TOKEN` starts no `pull_request` workflow
+([GitHub documentation](https://docs.github.com/en/actions/concepts/security/github_token)),
+while checks from a `workflow_dispatch` run do not count for a pull request
+([GitHub documentation](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks)),
+so its pull request would never carry checks. The App's push and pull request
+start CI as any other pull request does.
 
 `.github/scripts/uk_replay_results_pr.sh` and
 `pipeline/uk_replay_results_pr.py` build the pull request as #188 (6.4.1) and
@@ -868,13 +878,9 @@ runs only the default branch's code.
    leave no tracked-file drift.
 5. **Pull request.** The commit, by `github-actions[bot]` with a
    `Replay-Request:` trailer, goes to `uk-replay-results/<variant_id>`, and a
-   pull request against main follows. It is a draft when integrity is not
-   `complete`. A pull request opened with `GITHUB_TOKEN` starts no
-   `pull_request` workflow
-   ([GitHub documentation](https://docs.github.com/en/actions/concepts/security/github_token)),
-   so the job then dispatches `ci.yml` on the branch; that run's checks
-   attach to the head commit, and it behaves as a pull request run (the
-   dataset token is used on pushes only).
+   pull request against main follows; CI runs on it as on any pull request,
+   without the dataset token. It is a draft when integrity is not
+   `complete`.
 
 Running the workflow again for the same request is safe. An identical tree
 pushes nothing. A branch built on an older main is rebuilt and force-pushed
@@ -887,8 +893,7 @@ independent review.
 
 ### Replay in CI
 
-`ci.yml` runs two kinds of replay check on every pull request and push, and
-when the results workflow dispatches it:
+`ci.yml` runs two kinds of replay check on every pull request and push:
 
 * Engine-free, in the main job: every committed namespace with event run
   manifests (legacy and each variant) is re-staged and re-compared from its
