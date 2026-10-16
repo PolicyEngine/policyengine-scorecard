@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "4dc4fc5de368bc0abf362885559f1dc8723bf9ae326d0ca14065b449e4834fd0",
+  "COMPARISON.json": "4c2da3756d1327bd17c56ab2a094d2028d5a63b40ec91e9ae3fabad02bbdb14b",
+  "COMPARISON.md": "f8ed93203d60f35978c4cff2c5d006b5474bbe86b252236e4f76c304f456d12c"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "29944c4e0393091d621f260f658f700549c207dda4996dce198907665a2b3baa",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "74aa717bdbe09c04d0f9333632c603845c8843a39657833ae6ef8fee6c68a301",
+ "staging_manifest_path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "a298924c7ed24832820ddb95196db1d9e9b7b40d32103762e7a5ac59477ef8fd"
+}

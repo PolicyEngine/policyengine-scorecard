@@ -1,0 +1,252 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__rail_fares_freeze_2026",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "out_of_household_scope",
+   "computability": "out_of_household_scope",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "out_of_household_scope",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__rail_fares_freeze_2026",
+   "measure_type": "scope",
+   "missing_legs": [
+    "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "firm|corporation|department|block_grant",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_gap": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_reform_delta": null,
+   "program": "scope",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23513:663d4c777d2304a2",
+     "source_row_number": 23513,
+     "source_row_sha256": "663d4c777d2304a216ee770b83e2e411bd003cdd7a0302a3c1ec6eb4b5d9f9b1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Rail Fares: Freeze rail fares in England for one year from 1 March 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23514:c97b7683c596497b",
+     "source_row_number": 23514,
+     "source_row_sha256": "c97b7683c596497b7eb6eba2e68bc18008a4ec768d61b7c9462251d6c40d86ae",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Rail Fares: Freeze rail fares in England for one year from 1 March 2026",
+     "value_gbp": -142975572.993298,
+     "value_gbp_decimal": "-142975572.993298"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23515:bbd507270f745fe0",
+     "source_row_number": 23515,
+     "source_row_sha256": "bbd507270f745fe0960ad9dd759dc82b02501ce78a86cb385592196d501e0f06",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Rail Fares: Freeze rail fares in England for one year from 1 March 2026",
+     "value_gbp": -151315814.75124037,
+     "value_gbp_decimal": "-151315814.75124037"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23516:6af651dfc980eb88",
+     "source_row_number": 23516,
+     "source_row_sha256": "6af651dfc980eb88f1f31051ed57f1ee0074264e53662c66b4a3b5a7c34de16c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Rail Fares: Freeze rail fares in England for one year from 1 March 2026",
+     "value_gbp": -157273130.29262778,
+     "value_gbp_decimal": "-157273130.29262778"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23517:66b1ae138719d2e1",
+     "source_row_number": 23517,
+     "source_row_sha256": "66b1ae138719d2e1ee81ba05f9f2c93bae4f351a122d84203a3f289d64895f63",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Rail Fares: Freeze rail fares in England for one year from 1 March 2026",
+     "value_gbp": -160976323.5955017,
+     "value_gbp_decimal": "-160976323.5955017"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23518:94c38194bb98ec54",
+     "source_row_number": 23518,
+     "source_row_sha256": "94c38194bb98ec54a22166b4283762557cc9e92809295123357b54b1f0bb73bf",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Rail Fares: Freeze rail fares in England for one year from 1 March 2026",
+     "value_gbp": -166606147.69654304,
+     "value_gbp_decimal": "-166606147.69654304"
+    }
+   ],
+   "title": "Rail Fares: Freeze rail fares in England for one year from 1 March 2026",
+   "unmapped_obr_heads": [
+    "PSCE in RDEL"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -157273130.29262778,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23516:6af651dfc980eb88",
+   "level": "source_row",
+   "measure_key": "ab2025__rail_fares_freeze_2026",
+   "threshold_gbp": null,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__rail_fares_freeze_2026 --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__rail_fares_freeze_2026_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -157273130.29262778,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:23516:6af651dfc980eb88",
+   "source_row_number": 23516,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Rail Fares: Freeze rail fares in England for one year from 1 March 2026",
+ "year": 2028
+}

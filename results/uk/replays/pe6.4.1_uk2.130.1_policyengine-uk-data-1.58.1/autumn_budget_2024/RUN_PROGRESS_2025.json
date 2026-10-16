@@ -1,0 +1,21 @@
+{
+ "artifacts": {
+  "results/uk/replays/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/autumn_budget_2024__capital_gains_main_rates_and_reliefs_2025.json": "a6582fe1dcc7b6502819d526de79565d05eb2e1579ea2d9dbaabfe8ba15607fa",
+  "results/uk/replays/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/autumn_budget_2024__employer_nics_package_2025.json": "8fbcabccac5bcc82aae3a7c188223454728f04c630ff6371a158186788e53cfb",
+  "results/uk/replays/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2025.json": "fe2d9e782e4eef3c0b374a5bba97a3509a07206edf97a5409e0912bc643dfacf",
+  "results/uk/replays/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/autumn_budget_2024__sdlt_additional_dwelling_surcharge_2pp_2025.json": "974f9aac4cc58a47b5419cfd82598d5c15b6c400b0923eca67cf8913ec140d38",
+  "results/uk/replays/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/autumn_budget_2024__winter_fuel_means_test_2025.json": "aa5ce0ebc48512cec90f103bf6511bc982182bd121bd9756afcb4c2f6e8ce525"
+ },
+ "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+ "data_bundle": "policyengine-uk-data-1.58.1",
+ "engine_version": "2.130.1",
+ "event": "autumn_budget_2024",
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.4.1",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "schema_version": 1,
+ "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1",
+ "variant_identity_sha256": "fb1d19d6469a82dd447fdba3aff65daab22da9ed654a718a572da8d0da40d774",
+ "year": 2025
+}

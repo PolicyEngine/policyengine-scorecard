@@ -1,0 +1,252 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__nhs_england_abolition_funding_brought_forward",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "out_of_household_scope",
+   "computability": "out_of_household_scope",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "out_of_household_scope",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__nhs_england_abolition_funding_brought_forward",
+   "measure_type": "scope",
+   "missing_legs": [
+    "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "firm|corporation|department|block_grant",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_gap": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_reform_delta": null,
+   "program": "scope",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23837:da789a029d7cfee3",
+     "source_row_number": 23837,
+     "source_row_sha256": "da789a029d7cfee37530b6f53a8363d83d238da809e7e621074980b31d7d82a1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Health and Social Care: Bringing forward SR25 funding to support the abolition of NHS England and unlock savings",
+     "value_gbp": -512329136.5593178,
+     "value_gbp_decimal": "-512329136.5593178"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23838:b3448eb5c4d71c68",
+     "source_row_number": 23838,
+     "source_row_sha256": "b3448eb5c4d71c687bc5af88a31e725bb796192b7d496109ab65006e9180fe35",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Health and Social Care: Bringing forward SR25 funding to support the abolition of NHS England and unlock savings",
+     "value_gbp": -512329136.5593178,
+     "value_gbp_decimal": "-512329136.5593178"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23839:299e4eb390f54bfa",
+     "source_row_number": 23839,
+     "source_row_sha256": "299e4eb390f54bfa306e87fafcbe2a2d127b1a440c189032d6c01fa88c3d431f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Health and Social Care: Bringing forward SR25 funding to support the abolition of NHS England and unlock savings",
+     "value_gbp": 71487786.496649,
+     "value_gbp_decimal": "71487786.496649"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23840:e8b145eacfd0685f",
+     "source_row_number": 23840,
+     "source_row_sha256": "e8b145eacfd0685fba431d613fdd4718c69022d97ab8f14869cb5a1934927ab2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Health and Social Care: Bringing forward SR25 funding to support the abolition of NHS England and unlock savings",
+     "value_gbp": 953170486.6219866,
+     "value_gbp_decimal": "953170486.6219866"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23841:a61a0b41c61bc70f",
+     "source_row_number": 23841,
+     "source_row_sha256": "a61a0b41c61bc70f53de2ff61982995e5a7000cdfe58a5f1a50e9b9b24216a73",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Health and Social Care: Bringing forward SR25 funding to support the abolition of NHS England and unlock savings",
+     "value_gbp": 975715418.4142363,
+     "value_gbp_decimal": "975715418.4142363"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23842:9f3a1173b9417bc2",
+     "source_row_number": 23842,
+     "source_row_sha256": "9f3a1173b9417bc246df3efea4c4706ac6a35b2c1acba491d256e6d1dfb301b6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Health and Social Care: Bringing forward SR25 funding to support the abolition of NHS England and unlock savings",
+     "value_gbp": 1009931940.4101173,
+     "value_gbp_decimal": "1009931940.4101173"
+    }
+   ],
+   "title": "Health and Social Care: Bringing forward SR25 funding to support the abolition of NHS England and unlock savings",
+   "unmapped_obr_heads": [
+    "PSCE in RDEL"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 975715418.4142363,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23841:a61a0b41c61bc70f",
+   "level": "source_row",
+   "measure_key": "ab2025__nhs_england_abolition_funding_brought_forward",
+   "threshold_gbp": null,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__nhs_england_abolition_funding_brought_forward --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__nhs_england_abolition_funding_brought_forward_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 975715418.4142363,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23841:a61a0b41c61bc70f",
+   "source_row_number": 23841,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Health and Social Care: Bringing forward SR25 funding to support the abolition of NHS England and unlock savings",
+ "year": 2029
+}

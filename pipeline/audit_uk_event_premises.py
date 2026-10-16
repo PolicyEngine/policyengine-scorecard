@@ -7,7 +7,7 @@ reversal assumes the measure is present, derived counterfactuals were
 computed from 2.89.2's parameter values, and the notes assume every
 government parameter is sampled at 30 April. A rerun on another engine runs
 the same frozen dictionaries against a different current law. This audit
-records, per engine, what the executed worlds hold at each annual lookup and
+records, per engine, what the intended worlds hold at each annual lookup and
 whether each premise still holds, so the release diff can show where the
 experiment itself moved. It changes no construction; a failed premise is a
 revision candidate (docs/uk_replay/CONSTRUCTION_REVISIONS.md).
@@ -27,7 +27,6 @@ import hashlib
 import importlib.metadata
 import inspect
 import json
-import math
 import sys
 import textwrap
 from pathlib import Path
@@ -40,6 +39,7 @@ if str(ROOT) not in sys.path:
 from pipeline import build_uk_event_registry as builder  # noqa: E402
 from pipeline import compute_uk_ab2025 as worlds  # noqa: E402
 from pipeline import compute_uk_event as compute  # noqa: E402
+from pipeline import uk_construction_revisions as revisions  # noqa: E402
 
 EVENTS_DIR = ROOT / "data" / "uk" / "events"
 EVENTS = tuple(builder.EVENTS)
@@ -51,20 +51,13 @@ CHECKS = (
 )
 FORWARD = ("forward_delta_on_certified_world",)
 REVERSAL = ("reversal_on_certified_world",)
+AUTO_REVISION = object()
 
 
-def scalar(value: Any) -> Any:
-    """A JSON scalar: numpy scalars unwrapped, infinities named, NaN null."""
-    if hasattr(value, "item"):
-        value = value.item()
-    if isinstance(value, float):
-        if math.isnan(value):
-            return None
-        if math.isinf(value):
-            return "inf" if value > 0 else "-inf"
-    if value is None or isinstance(value, (bool, int, float, str)):
-        return value
-    return type(value).__name__
+# Public historical names remain available to callers; runtime uses the same
+# implementation without importing this audit (which itself imports compute).
+scalar = revisions.scalar
+window_value = revisions.window_value
 
 
 def converter_metadata_keys(source: str) -> frozenset[str]:
@@ -155,15 +148,6 @@ class EngineView:
         }
 
 
-def window_value(reform: dict | None, path: str, date: str) -> tuple[bool, Any]:
-    """The value an annual reform dictionary sets at a date, if it sets one."""
-    for window, value in ((reform or {}).get(path) or {}).items():
-        start, stop = window.split(".")
-        if start <= date <= stop:
-            return True, scalar(worlds.NO_LIMIT if value is None else value)
-    return False, None
-
-
 def _check(holds: bool | None, detail: str, **extra) -> dict:
     return {"holds": holds, "detail": detail, **extra}
 
@@ -196,8 +180,36 @@ def authored_differences(event: str, measure: dict, resolve: Callable) -> dict:
 
 
 def audit_measure(
-    event: str, measure: dict, world: dict, years: list[int], engine: EngineView
+    event: str,
+    measure: dict,
+    world: dict,
+    years: list[int],
+    engine: EngineView,
+    *,
+    revision_selection: dict | None | object = AUTO_REVISION,
 ) -> dict:
+    if revision_selection is AUTO_REVISION:
+        world = revisions.apply_revision(
+            measure["measure_key"],
+            world,
+            engine.metadata if hasattr(engine, "metadata") else engine.annualisation,
+        )
+    else:
+        if revision_selection is not None:
+            selected_here = revisions.select_revision(
+                measure["measure_key"],
+                engine.metadata
+                if hasattr(engine, "metadata")
+                else engine.annualisation,
+            )
+            if selected_here != revision_selection:
+                raise ValueError(
+                    f"{measure['measure_key']}: recorded construction revision "
+                    "does not match installed parameter metadata or revision registry"
+                )
+        world = revisions.apply_selected_revision(
+            measure["measure_key"], world, revision_selection
+        )
     baseline = compute.annual_reform(world["baseline_reform"]) or {}
     reform = compute.annual_reform(world["reform_reform"]) or {}
     paths = sorted(set(baseline) | set(reform))
@@ -211,12 +223,14 @@ def audit_measure(
         records = {}
         for path in paths:
             current = engine.current_law(path, date)
-            found_b, base = window_value(baseline, path, date)
-            found_r, ref = window_value(reform, path, date)
             records[path] = {
                 "current_law": current,
-                "baseline_world": base if found_b else current,
-                "reform_world": ref if found_r else current,
+                "baseline_world": revisions.intended_value(
+                    baseline, path, year, engine.current_law
+                ),
+                "reform_world": revisions.intended_value(
+                    reform, path, year, engine.current_law
+                ),
                 "raw_30_april": engine.raw_30_april(path, year),
                 **engine.annualisation(path),
             }
@@ -282,19 +296,44 @@ def audit_measure(
             if other
             else _check(True, "every touched path is sampled at 30 April")
         )
-    return {"construction": construction, "checks": checks, "years": year_records}
+    result = {"construction": construction, "checks": checks, "years": year_records}
+    if world.get("construction_revision"):
+        result["construction_revision"] = world["construction_revision"]
+    return result
 
 
 def audit_event(
-    event: str, registry: dict, registry_sha256: str, engine: EngineView
+    event: str,
+    registry: dict,
+    registry_sha256: str,
+    engine: EngineView,
+    *,
+    revision_selections: dict | None = None,
 ) -> dict:
     index = {measure["measure_key"]: measure for measure in registry["measures"]}
     years = sorted(registry["calendar_years"])
     planned = worlds.computable(index, years=years)
+    if revision_selections is not None:
+        unknown = set(revision_selections) - set(planned)
+        if unknown:
+            raise ValueError(
+                f"{event}: recorded revisions name unknown measures: {sorted(unknown)}"
+            )
     return {
         "registry_sha256": registry_sha256,
         "measures": {
-            key: audit_measure(event, index[key], world, years, engine)
+            key: audit_measure(
+                event,
+                index[key],
+                world,
+                years,
+                engine,
+                revision_selection=(
+                    AUTO_REVISION
+                    if revision_selections is None
+                    else revision_selections.get(key)
+                ),
+            )
             for key, world in sorted(planned.items())
             if "alias_of" not in world
         },
@@ -302,13 +341,66 @@ def audit_event(
 
 
 def audit(
-    events: list[str], engine: EngineView, *, events_dir: Path = EVENTS_DIR
+    events: list[str],
+    engine: EngineView,
+    *,
+    events_dir: Path = EVENTS_DIR,
+    namespace: Path | None = None,
 ) -> dict:
+    """Audit fresh intent, or the exact constructions a namespace recorded.
+
+    A namespace's event manifests bind which revisions actually ran. A
+    historical manifest without that field executed the frozen registry;
+    auditing it must not retrospectively select newly authored revisions.
+    """
     out = {}
+    selected = False
+    processed_check = False
     for event in events:
         payload = (events_dir / f"{event}_measures.json").read_bytes()
+        # A namespace records execution, including old sparse namespaces
+        # whose retained premises have no event manifests beside them.
+        # Missing selection evidence means the frozen construction ran,
+        # except for an event a qualification run's recorded corpus lists:
+        # that run, on this engine, selected what this engine's metadata
+        # selects even when the event failed before writing its manifest.
+        selection = {} if namespace is not None else None
+        if namespace is not None:
+            manifest_path = namespace / event / "RUN_MANIFEST.json"
+            corpus_path = namespace / "CORPUS.json"
+            if not manifest_path.is_file() and corpus_path.is_file():
+                if event in json.loads(corpus_path.read_bytes())["events"]:
+                    metadata = (
+                        engine.metadata
+                        if hasattr(engine, "metadata")
+                        else engine.annualisation
+                    )
+                    selection = {
+                        measure["measure_key"]: chosen
+                        for measure in json.loads(payload)["measures"]
+                        if (
+                            chosen := revisions.select_revision(
+                                measure["measure_key"], metadata
+                            )
+                        )
+                    }
+            if manifest_path.is_file():
+                manifest = json.loads(manifest_path.read_bytes())
+                selection = manifest.get("construction_revisions", {})
+                if not isinstance(selection, dict):
+                    raise ValueError(
+                        f"{event}: invalid recorded construction revisions"
+                    )
+                processed_check = processed_check or bool(
+                    manifest.get("processed_value_check")
+                )
+        selected = selected or bool(selection)
         out[event] = audit_event(
-            event, json.loads(payload), hashlib.sha256(payload).hexdigest(), engine
+            event,
+            json.loads(payload),
+            hashlib.sha256(payload).hexdigest(),
+            engine,
+            revision_selections=selection,
         )
     return {
         "schema_version": 1,
@@ -318,7 +410,18 @@ def audit(
             "policyengine_core": _version("policyengine-core"),
         },
         "description": (
-            "Executed-world values at each annual lookup (1 January) and premise "
+            "Intended-world values at each annual lookup (1 January), computed "
+            "by the shared runtime intended-value rule. Current law is already "
+            "fiscal-year processed; construction windows override that annual "
+            "value. These are not simulation readbacks: measure-year artifacts "
+            "record each world's actual processed values and refuse a mismatch, "
+            "except one in an announcement world before the measure commences "
+            "whose worlds come out identical, listed under processed_value_notes. "
+            "Selected metadata-based construction revisions are digest-bound."
+            if (namespace is None and (engine.reads_blend or engine.reads_calendar))
+            or selected
+            or processed_check
+            else "Executed-world values at each annual lookup (1 January) and premise "
             "checks for the frozen event constructions on this engine. A failed "
             "check is a construction revision candidate, not a model verdict."
         ),
@@ -339,11 +442,26 @@ def canonical_bytes(value: Any) -> bytes:
     ).encode()
 
 
+def namespace_events(root: Path) -> list[str]:
+    """The events a namespace's premises cover (uk_replay_variants.namespace_events)."""
+    from pipeline import uk_replay_variants as variants
+
+    return variants.namespace_events(root)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     selection = parser.add_mutually_exclusive_group(required=True)
     selection.add_argument("--events", nargs="+", choices=EVENTS)
     selection.add_argument("--all", action="store_true")
+    selection.add_argument(
+        "--namespace",
+        type=Path,
+        help=(
+            "cover this namespace's events: its recorded corpus (CORPUS.json), "
+            "else the events it holds results for, else every registered event"
+        ),
+    )
     parser.add_argument("--expect-engine", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--check", action="store_true")
@@ -354,7 +472,15 @@ def main(argv: list[str] | None = None) -> int:
             f"policyengine-uk {installed} installed; expected {args.expect_engine}"
         )
     payload = canonical_bytes(
-        audit(list(EVENTS) if args.all else args.events, EngineView())
+        audit(
+            list(EVENTS)
+            if args.all
+            else namespace_events(args.namespace)
+            if args.namespace
+            else args.events,
+            EngineView(),
+            namespace=args.namespace,
+        )
     )
     if args.check:
         if not args.output.is_file() or args.output.read_bytes() != payload:

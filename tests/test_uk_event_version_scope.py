@@ -20,6 +20,7 @@ EVENTS = (
     "spring_budget_2024",
     "spring_statement_2025",
     "spring_budget_2023",
+    "autumn_budget_2025",
 )
 VARIANT = {
     "engine_version": "2.125.1",

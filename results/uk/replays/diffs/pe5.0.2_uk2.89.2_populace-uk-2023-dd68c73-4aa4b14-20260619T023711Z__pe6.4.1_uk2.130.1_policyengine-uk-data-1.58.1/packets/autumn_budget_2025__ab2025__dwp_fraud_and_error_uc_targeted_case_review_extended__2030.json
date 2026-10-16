@@ -1,0 +1,582 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2030-31",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__dwp_fraud_and_error_uc_targeted_case_review_extended",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "model_or_data_gap",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__dwp_fraud_and_error_uc_targeted_case_review_extended",
+   "measure_type": "administration",
+   "missing_legs": [
+    "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "compliance|fraud|debt|error|penalt|report",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "afcs_reported",
+     "bsp_reported",
+     "carers_allowance_reported",
+     "child_benefit_reported",
+     "child_tax_credit_reported",
+     "council_tax_benefit_reported",
+     "employee_pension_contributions_reported",
+     "esa_contrib_reported",
+     "esa_income_reported",
+     "household_uc_reported_capital",
+     "household_uc_unreported_adults",
+     "housing_benefit_reported",
+     "iidb_reported",
+     "incapacity_benefit_reported",
+     "income_support_reported",
+     "jsa_contrib_reported",
+     "jsa_income_reported",
+     "maternity_allowance_reported",
+     "pension_credit_reported",
+     "sda_reported",
+     "ssmg_reported",
+     "state_pension_reported",
+     "tax_reported",
+     "uc_reported_capital",
+     "universal_credit_reported",
+     "winter_fuel_allowance_reported",
+     "working_tax_credit_reported"
+    ]
+   },
+   "note": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+   "pe_gap": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+   "pe_reform_delta": null,
+   "program": "administration",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23573:bdc36113c022666a",
+     "source_row_number": 23573,
+     "source_row_sha256": "bdc36113c022666aab4934c1c3c4816985b9dbcabd6a60b802df056eeb4aa843",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23574:9947949a4c79e628",
+     "source_row_number": 23574,
+     "source_row_sha256": "9947949a4c79e628bac5e40327b28c5db8db4b9a4af791b9c8a3d3e767da25ce",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23575:a4365dd38dea17f3",
+     "source_row_number": 23575,
+     "source_row_sha256": "a4365dd38dea17f3a2926cf9cb57780c610180ded496f5af418b464f3140877d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23576:128be2798e30ced8",
+     "source_row_number": 23576,
+     "source_row_sha256": "128be2798e30ced808147467f804faf72fc76dcaa816a0dd0fce4bb354693f8a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23577:2baca8232353bef9",
+     "source_row_number": 23577,
+     "source_row_sha256": "2baca8232353bef9d1a25dd1eb1ad6aa2eca7652e3b4106a937f0fad7639bd1e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23578:fd812c4c9b0f3deb",
+     "source_row_number": 23578,
+     "source_row_sha256": "fd812c4c9b0f3deb107725e9d31adc65359ba9d93d7968b3be07548a293540e5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23579:81d6d53acae294df",
+     "source_row_number": 23579,
+     "source_row_sha256": "81d6d53acae294df9f6cd2cd8eb756cff3a6a1ab615d0a226504f07a4f3d9618",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23580:99c57ab7d3d049df",
+     "source_row_number": 23580,
+     "source_row_sha256": "99c57ab7d3d049df385423583be201ef8e5bd4079efe50304a35fbdece1b36bf",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23581:4509744fdf37720e",
+     "source_row_number": 23581,
+     "source_row_sha256": "4509744fdf37720efdb38320371a9c3449f90f5535fe997e22ea9cabcc2c2274",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23582:13d5fa469d6f7caa",
+     "source_row_number": 23582,
+     "source_row_sha256": "13d5fa469d6f7caa8e468246cddc6b06f197813d1c157a7d29d41f79c5863fff",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23583:62ccf5416fc9c306",
+     "source_row_number": 23583,
+     "source_row_sha256": "62ccf5416fc9c3068e28bd56d8990a1ed6783fca2cfeb2cd95b4d9a70aa3556c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23584:396037c36bb2353d",
+     "source_row_number": 23584,
+     "source_row_sha256": "396037c36bb2353de34c971723b9706f7d7566b218e548c8712998e1987a3e50",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 948037500.0,
+     "value_gbp_decimal": "948037500.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23585:b5f7b29320e6b183",
+     "source_row_number": 23585,
+     "source_row_sha256": "b5f7b29320e6b183a4faf27e5b7f79cc7c8594d07450d99cef5e56c0eda18f0c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23586:9091b2d972d66f4b",
+     "source_row_number": 23586,
+     "source_row_sha256": "9091b2d972d66f4bbccdd78a0ee4b6d69f1daedb10cb1f300bb51b1d0109d322",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23587:bacea64db3db565b",
+     "source_row_number": 23587,
+     "source_row_sha256": "bacea64db3db565b7ca88cd09729595d1e5770c208067240b7b2b0f110b8e52e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23588:e9169e5d4c26c3ae",
+     "source_row_number": 23588,
+     "source_row_sha256": "e9169e5d4c26c3ae85fc9ef261d3451e70aa46db0047d2db0bd34bb45aa902cd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23589:b9195b214a3aca52",
+     "source_row_number": 23589,
+     "source_row_sha256": "b9195b214a3aca52e02811f436f6f0716e81357d12dbfa3df1e3e9b87963f227",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23590:44f27f172bc14e26",
+     "source_row_number": 23590,
+     "source_row_sha256": "44f27f172bc14e26aaea319caaa476c025a3a90bc6ddeebe240c85a5d53612fb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+     "value_gbp": 319000000.0,
+     "value_gbp_decimal": "319000000.0"
+    }
+   ],
+   "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+   "unmapped_obr_heads": [
+    "PSCE in RDEL",
+    "Welfare inside cap",
+    "Welfare outside cap"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23578:fd812c4c9b0f3deb",
+   "level": "source_row",
+   "measure_key": "ab2025__dwp_fraud_and_error_uc_targeted_case_review_extended",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 948037500.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23584:396037c36bb2353d",
+   "level": "source_row",
+   "measure_key": "ab2025__dwp_fraud_and_error_uc_targeted_case_review_extended",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 319000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Welfare outside cap"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23590:44f27f172bc14e26",
+   "level": "source_row",
+   "measure_key": "ab2025__dwp_fraud_and_error_uc_targeted_case_review_extended",
+   "threshold_gbp": null,
+   "year": 2030
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__dwp_fraud_and_error_uc_targeted_case_review_extended --years 2030 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__dwp_fraud_and_error_uc_targeted_case_review_extended_2030"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23578:fd812c4c9b0f3deb",
+   "source_row_number": 23578,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 948037500.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23584:396037c36bb2353d",
+   "source_row_number": 23584,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 319000000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23590:44f27f172bc14e26",
+   "source_row_number": 23590,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare outside cap"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "DWP Fraud and Error: Extend Targeted Case Review of Universal Credit to 2030-31",
+ "year": 2030
+}

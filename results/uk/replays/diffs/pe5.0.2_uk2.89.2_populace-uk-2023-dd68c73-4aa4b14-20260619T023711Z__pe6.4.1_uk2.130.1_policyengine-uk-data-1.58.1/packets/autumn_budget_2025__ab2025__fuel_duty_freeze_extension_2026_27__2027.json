@@ -1,0 +1,270 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2027-28",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__fuel_duty_freeze_extension_2026_27",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "construction_pending",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__fuel_duty_freeze_extension_2026_27",
+   "measure_type": "fuel_duty",
+   "missing_legs": [
+    "The announcement is a within-year path (per the PMD title: the 5p cut extended to 31 August 2026, then 1p, 2p and 2p increases from 1 September 2026, 1 December 2026 and 1 March 2027). The replay executor takes only annual windows read at 1 January (pipeline/compute_uk_event.py annual_reform), which cannot express it, so an annual counterfactual is not guessed. #136 records a dated pre-Budget path from the OBR pre-measures forecast (ab2025__fuel_duty_freeze_extension_2026_27 in data/uk/ab2025_measures.json) for a later part-year construction."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.economic_assumptions.indices.obr.diesel_spending_litre_proxy",
+     "gov.economic_assumptions.indices.obr.petrol_spending_litre_proxy",
+     "gov.economic_assumptions.yoy_growth.obr.diesel_spending_litre_proxy",
+     "gov.economic_assumptions.yoy_growth.obr.petrol_spending_litre_proxy",
+     "gov.hmrc.fuel_duty.petrol_and_diesel",
+     "gov.hmrc.fuel_duty.rural_fuel_duty_relief",
+     "household.consumption.fuel.prices.diesel",
+     "household.consumption.fuel.prices.petrol"
+    ],
+    "pattern": "fuel_duty|petrol|diesel",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "diesel_litres",
+     "diesel_price",
+     "diesel_spending",
+     "fuel_duty",
+     "in_rural_fuel_duty_relief_area",
+     "petrol_litres",
+     "petrol_price",
+     "petrol_spending"
+    ]
+   },
+   "note": "The announcement is a within-year path (per the PMD title: the 5p cut extended to 31 August 2026, then 1p, 2p and 2p increases from 1 September 2026, 1 December 2026 and 1 March 2027). The replay executor takes only annual windows read at 1 January (pipeline/compute_uk_event.py annual_reform), which cannot express it, so an annual counterfactual is not guessed. #136 records a dated pre-Budget path from the OBR pre-measures forecast (ab2025__fuel_duty_freeze_extension_2026_27 in data/uk/ab2025_measures.json) for a later part-year construction.",
+   "pe_gap": "The announcement is a within-year path (per the PMD title: the 5p cut extended to 31 August 2026, then 1p, 2p and 2p increases from 1 September 2026, 1 December 2026 and 1 March 2027). The replay executor takes only annual windows read at 1 January (pipeline/compute_uk_event.py annual_reform), which cannot express it, so an annual counterfactual is not guessed. #136 records a dated pre-Budget path from the OBR pre-measures forecast (ab2025__fuel_duty_freeze_extension_2026_27 in data/uk/ab2025_measures.json) for a later part-year construction.",
+   "pe_reform_delta": null,
+   "program": "fuel_duty",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement is a within-year path (per the PMD title: the 5p cut extended to 31 August 2026, then 1p, 2p and 2p increases from 1 September 2026, 1 December 2026 and 1 March 2027). The replay executor takes only annual windows read at 1 January (pipeline/compute_uk_event.py annual_reform), which cannot express it, so an annual counterfactual is not guessed. #136 records a dated pre-Budget path from the OBR pre-measures forecast (ab2025__fuel_duty_freeze_extension_2026_27 in data/uk/ab2025_measures.json) for a later part-year construction.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12078:7816dd924efe1592",
+     "source_row_number": 12078,
+     "source_row_sha256": "7816dd924efe15928f011d46a1fadcff2880fb81777baf9c8705c36c760ae212",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Fuel Duty",
+     "title": "Fuel Duty: Cancel uprating for 2026-27; extend the 5p cut in rates to 31 August 2026, then increase by 1p from 1 September 2026, 2p from 1 December 2026, and 2p from 1 March 2027",
+     "value_gbp": -47000000.0,
+     "value_gbp_decimal": "-47000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement is a within-year path (per the PMD title: the 5p cut extended to 31 August 2026, then 1p, 2p and 2p increases from 1 September 2026, 1 December 2026 and 1 March 2027). The replay executor takes only annual windows read at 1 January (pipeline/compute_uk_event.py annual_reform), which cannot express it, so an annual counterfactual is not guessed. #136 records a dated pre-Budget path from the OBR pre-measures forecast (ab2025__fuel_duty_freeze_extension_2026_27 in data/uk/ab2025_measures.json) for a later part-year construction.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12079:9101b30033fb1a66",
+     "source_row_number": 12079,
+     "source_row_sha256": "9101b30033fb1a66d4ef812b9ae527dbb6ee4332e9ab2d2b33a08e3e2330aa83",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Fuel Duty",
+     "title": "Fuel Duty: Cancel uprating for 2026-27; extend the 5p cut in rates to 31 August 2026, then increase by 1p from 1 September 2026, 2p from 1 December 2026, and 2p from 1 March 2027",
+     "value_gbp": -2369000000.0,
+     "value_gbp_decimal": "-2369000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement is a within-year path (per the PMD title: the 5p cut extended to 31 August 2026, then 1p, 2p and 2p increases from 1 September 2026, 1 December 2026 and 1 March 2027). The replay executor takes only annual windows read at 1 January (pipeline/compute_uk_event.py annual_reform), which cannot express it, so an annual counterfactual is not guessed. #136 records a dated pre-Budget path from the OBR pre-measures forecast (ab2025__fuel_duty_freeze_extension_2026_27 in data/uk/ab2025_measures.json) for a later part-year construction.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12080:d8fe3fe28bc27f6d",
+     "source_row_number": 12080,
+     "source_row_sha256": "d8fe3fe28bc27f6de7a6547e4640b74ede0afd205acb34a5b261af198663e2a0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Fuel Duty",
+     "title": "Fuel Duty: Cancel uprating for 2026-27; extend the 5p cut in rates to 31 August 2026, then increase by 1p from 1 September 2026, 2p from 1 December 2026, and 2p from 1 March 2027",
+     "value_gbp": -856000000.0,
+     "value_gbp_decimal": "-856000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement is a within-year path (per the PMD title: the 5p cut extended to 31 August 2026, then 1p, 2p and 2p increases from 1 September 2026, 1 December 2026 and 1 March 2027). The replay executor takes only annual windows read at 1 January (pipeline/compute_uk_event.py annual_reform), which cannot express it, so an annual counterfactual is not guessed. #136 records a dated pre-Budget path from the OBR pre-measures forecast (ab2025__fuel_duty_freeze_extension_2026_27 in data/uk/ab2025_measures.json) for a later part-year construction.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12081:9ac514abf27653f6",
+     "source_row_number": 12081,
+     "source_row_sha256": "9ac514abf27653f6564a70c2f9cd2826032280c9a847154f23f631b3a3d61a04",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Fuel Duty",
+     "title": "Fuel Duty: Cancel uprating for 2026-27; extend the 5p cut in rates to 31 August 2026, then increase by 1p from 1 September 2026, 2p from 1 December 2026, and 2p from 1 March 2027",
+     "value_gbp": -857000000.0,
+     "value_gbp_decimal": "-857000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement is a within-year path (per the PMD title: the 5p cut extended to 31 August 2026, then 1p, 2p and 2p increases from 1 September 2026, 1 December 2026 and 1 March 2027). The replay executor takes only annual windows read at 1 January (pipeline/compute_uk_event.py annual_reform), which cannot express it, so an annual counterfactual is not guessed. #136 records a dated pre-Budget path from the OBR pre-measures forecast (ab2025__fuel_duty_freeze_extension_2026_27 in data/uk/ab2025_measures.json) for a later part-year construction.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12082:bfb20b4a543d6d4d",
+     "source_row_number": 12082,
+     "source_row_sha256": "bfb20b4a543d6d4d8dd232c3511b484d4d1a2b594a9e0a290ce63f47cae91541",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Fuel Duty",
+     "title": "Fuel Duty: Cancel uprating for 2026-27; extend the 5p cut in rates to 31 August 2026, then increase by 1p from 1 September 2026, 2p from 1 December 2026, and 2p from 1 March 2027",
+     "value_gbp": -850000000.0,
+     "value_gbp_decimal": "-850000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement is a within-year path (per the PMD title: the 5p cut extended to 31 August 2026, then 1p, 2p and 2p increases from 1 September 2026, 1 December 2026 and 1 March 2027). The replay executor takes only annual windows read at 1 January (pipeline/compute_uk_event.py annual_reform), which cannot express it, so an annual counterfactual is not guessed. #136 records a dated pre-Budget path from the OBR pre-measures forecast (ab2025__fuel_duty_freeze_extension_2026_27 in data/uk/ab2025_measures.json) for a later part-year construction.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12083:8850f81a896a7ecb",
+     "source_row_number": 12083,
+     "source_row_sha256": "8850f81a896a7ecbfa8ec50eeb3d641f8c0a69acb246e74d579cdc1b1ed96a40",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Fuel Duty",
+     "title": "Fuel Duty: Cancel uprating for 2026-27; extend the 5p cut in rates to 31 August 2026, then increase by 1p from 1 September 2026, 2p from 1 December 2026, and 2p from 1 March 2027",
+     "value_gbp": -841000000.0,
+     "value_gbp_decimal": "-841000000.0"
+    }
+   ],
+   "title": "Fuel Duty: Cancel uprating for 2026-27; extend the 5p cut in rates to 31 August 2026, then increase by 1p from 1 September 2026, 2p from 1 December 2026, and 2p from 1 March 2027",
+   "unmapped_obr_heads": [
+    "Fuel Duty"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": -856000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Fuel Duty"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12080:d8fe3fe28bc27f6d",
+   "level": "source_row",
+   "measure_key": "ab2025__fuel_duty_freeze_extension_2026_27",
+   "threshold_gbp": null,
+   "year": 2027
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__fuel_duty_freeze_extension_2026_27 --years 2027 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__fuel_duty_freeze_extension_2026_27_2027"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": -856000000.0,
+   "side": "head",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:12080:d8fe3fe28bc27f6d",
+   "source_row_number": 12080,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Fuel Duty"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Fuel Duty: Cancel uprating for 2026-27; extend the 5p cut in rates to 31 August 2026, then increase by 1p from 1 September 2026, 2p from 1 December 2026, and 2p from 1 March 2027",
+ "year": 2027
+}

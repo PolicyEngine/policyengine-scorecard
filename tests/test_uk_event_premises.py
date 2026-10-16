@@ -299,10 +299,37 @@ def test_committed_premises_regenerate(engine, path, installed_engine_view):
             f"installed policyengine-uk {installed}; this committed file belongs "
             f"to {engine} (checked in its pinned environment)"
         )
+    namespace = (ROOT / path).parent
     payload = premises.canonical_bytes(
-        premises.audit(list(premises.EVENTS), installed_engine_view)
+        premises.audit(
+            premises.namespace_events(namespace),
+            installed_engine_view,
+            namespace=namespace,
+        )
     )
     assert payload == (ROOT / path).read_bytes()
+    if engine == "2.125.1":
+        # The sealed snapshot predates this approved revision. Keep its bytes
+        # as historical evidence; fresh runs now bind and execute the revision.
+        key = "autumn_budget_2024__capital_gains_main_rates_and_reliefs"
+        fresh = premises.audit(["autumn_budget_2024"], installed_engine_view)["events"][
+            "autumn_budget_2024"
+        ]["measures"][key]
+        historical = json.loads((ROOT / path).read_bytes())["events"][
+            "autumn_budget_2024"
+        ]["measures"][key]
+        assert "construction_revision" not in historical
+        assert fresh["construction_revision"]["activation_fy"] == "2024-25"
+        for name, old in [
+            ("basic_rate", 0.1),
+            ("higher_rate", 0.2),
+            ("additional_rate", 0.2),
+        ]:
+            parameter = f"gov.hmrc.cgt.{name}"
+            assert fresh["years"]["2024"]["paths"][parameter]["baseline_world"] == old
+            assert (
+                historical["years"]["2024"]["paths"][parameter]["baseline_world"] > old
+            )
 
 
 def test_installed_cgt_annual_values_against_raw_30_april(installed_engine_view):
@@ -325,3 +352,28 @@ def test_installed_cgt_annual_values_against_raw_30_april(installed_engine_view)
         expected = old * 207 / 365 + new * 158 / 365 if installed == "2.125.1" else old
         assert annual == pytest.approx(expected, abs=1e-10)
         assert engine.reads_blend is (installed == "2.125.1")
+
+
+@given(
+    held=st.sets(st.sampled_from(premises.EVENTS)),
+    stray=st.booleans(),
+    bare=st.sets(st.sampled_from(premises.EVENTS)),
+)
+@settings(max_examples=60, deadline=None)
+def test_namespace_events_are_the_held_events_or_all(
+    tmp_path_factory, held, stray, bare
+):
+    root = tmp_path_factory.mktemp("namespace")
+    for event in held:
+        (root / event).mkdir()
+        (root / event / "RUN_MANIFEST.json").write_text("{}")
+    # A directory without a manifest, or an unregistered event, holds nothing.
+    for event in bare - held:
+        (root / event).mkdir()
+    if stray:
+        (root / "not_an_event").mkdir()
+        (root / "not_an_event" / "RUN_MANIFEST.json").write_text("{}")
+    events = premises.namespace_events(root)
+    assert events == (
+        [e for e in premises.EVENTS if e in held] or list(premises.EVENTS)
+    )

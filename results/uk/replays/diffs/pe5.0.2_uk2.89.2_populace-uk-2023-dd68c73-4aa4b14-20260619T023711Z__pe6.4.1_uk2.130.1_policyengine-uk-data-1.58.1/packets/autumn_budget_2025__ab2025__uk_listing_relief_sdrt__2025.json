@@ -1,0 +1,375 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2025-26",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__uk_listing_relief_sdrt",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "construction_pending",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__uk_listing_relief_sdrt",
+   "measure_type": "other",
+   "missing_legs": [
+    "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.ma_rate",
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.max_child_age",
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.remove_income_condition",
+     "gov.contrib.cps.marriage_tax_reforms.marriage_neutral_it.max_child_age",
+     "gov.contrib.cps.marriage_tax_reforms.marriage_neutral_it.neutralise_income_tax",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[0].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[0].threshold",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[1].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[1].threshold",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[2].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[2].threshold",
+     "gov.dwp.ESA.eligibility.min_age",
+     "gov.dwp.JSA.eligibility.min_age",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.severe.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.child_age_limit",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.child_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.child_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.terminal_date_age_limit",
+     "gov.dwp.winter_fuel_payment.eligibility.higher_age_requirement",
+     "gov.dwp.winter_fuel_payment.eligibility.require_benefits",
+     "gov.dwp.winter_fuel_payment.eligibility.state_pension_age_requirement",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income",
+     "gov.hmrc.child_benefit.eligibility.child_age_limit",
+     "gov.hmrc.child_benefit.eligibility.education_or_training_start_age_limit",
+     "gov.hmrc.child_benefit.eligibility.qualifying_young_person_age_limit",
+     "gov.hmrc.stamp_duty.statistics.non_residential.corporate.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.non_residential.corporate.transactions",
+     "gov.hmrc.stamp_duty.statistics.non_residential.household.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.non_residential.household.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.corporate.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.residential.corporate.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[0].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[0].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[10].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[10].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[11].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[11].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[12].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[12].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[13].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[13].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[1].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[1].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[2].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[2].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[3].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[3].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[4].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[4].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[5].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[5].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[6].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[6].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[7].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[7].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[8].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[8].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[9].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[9].threshold",
+     "gov.social_security_scotland.pawhp.eligibility.higher_age_requirement",
+     "gov.social_security_scotland.pawhp.eligibility.require_benefits",
+     "gov.social_security_scotland.pawhp.eligibility.state_pension_age_requirement",
+     "gov.wra.land_transaction_tax.non_residential[0].rate",
+     "gov.wra.land_transaction_tax.non_residential[0].threshold",
+     "gov.wra.land_transaction_tax.non_residential[1].rate",
+     "gov.wra.land_transaction_tax.non_residential[1].threshold",
+     "gov.wra.land_transaction_tax.non_residential[2].rate",
+     "gov.wra.land_transaction_tax.non_residential[2].threshold",
+     "gov.wra.land_transaction_tax.non_residential[3].rate",
+     "gov.wra.land_transaction_tax.non_residential[3].threshold",
+     "gov.wra.land_transaction_tax.rent[0].rate",
+     "gov.wra.land_transaction_tax.rent[0].threshold",
+     "gov.wra.land_transaction_tax.rent[1].rate",
+     "gov.wra.land_transaction_tax.rent[1].threshold",
+     "gov.wra.land_transaction_tax.rent[2].rate",
+     "gov.wra.land_transaction_tax.rent[2].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[0].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[0].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[1].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[1].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[2].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[2].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[3].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[3].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[4].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[4].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[5].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[5].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[0].rate",
+     "gov.wra.land_transaction_tax.residential.primary[0].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[1].rate",
+     "gov.wra.land_transaction_tax.residential.primary[1].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[2].rate",
+     "gov.wra.land_transaction_tax.residential.primary[2].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[3].rate",
+     "gov.wra.land_transaction_tax.residential.primary[3].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[4].rate",
+     "gov.wra.land_transaction_tax.residential.primary[4].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[5].rate",
+     "gov.wra.land_transaction_tax.residential.primary[5].threshold"
+    ],
+    "pattern": "transaction|eligibility|reform",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "land_and_buildings_transaction_tax",
+     "land_transaction_tax",
+     "lbtt_on_non_residential_property_transactions",
+     "lbtt_on_residential_property_transactions",
+     "lbtt_on_transactions",
+     "ltt_on_non_residential_property_transactions",
+     "ltt_on_residential_property_transactions",
+     "ltt_on_transactions",
+     "sdlt_on_non_residential_property_transactions",
+     "sdlt_on_residential_property_transactions",
+     "sdlt_on_transactions"
+    ]
+   },
+   "note": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+   "pe_gap": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+   "pe_reform_delta": null,
+   "program": "other",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12204:ac984aa593fc1e51",
+     "source_row_number": 12204,
+     "source_row_sha256": "ac984aa593fc1e51f8f539047ad0226e0191635efd5152b18674d950980f79ca",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "UK Listing Relief: Stamp Duty Reserve Tax relief for transfers of a company's securities for a three-year period from the point of listing, effective from 27 November 2025",
+     "value_gbp": -22616530.676562913,
+     "value_gbp_decimal": "-22616530.676562913"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12205:ce27984cae270735",
+     "source_row_number": 12205,
+     "source_row_sha256": "ce27984cae2707352a9cc0ca8f8d18b2c2be3d84a283c5e82bd0cc3807fd4a50",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "UK Listing Relief: Stamp Duty Reserve Tax relief for transfers of a company's securities for a three-year period from the point of listing, effective from 27 November 2025",
+     "value_gbp": -32692426.44053667,
+     "value_gbp_decimal": "-32692426.44053667"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12206:0ee97474b945b187",
+     "source_row_number": 12206,
+     "source_row_sha256": "0ee97474b945b1879ce920ecc7fdfed7fe6b116b885e82b424a1a644d8723d33",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "UK Listing Relief: Stamp Duty Reserve Tax relief for transfers of a company's securities for a three-year period from the point of listing, effective from 27 November 2025",
+     "value_gbp": -42784558.915136866,
+     "value_gbp_decimal": "-42784558.915136866"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12207:1ae1e0f0523b1f78",
+     "source_row_number": 12207,
+     "source_row_sha256": "1ae1e0f0523b1f7895b5caf8beb72eaf2bb4642c4c8e65d1f1d9f9863a857833",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "UK Listing Relief: Stamp Duty Reserve Tax relief for transfers of a company's securities for a three-year period from the point of listing, effective from 27 November 2025",
+     "value_gbp": -49085131.54346514,
+     "value_gbp_decimal": "-49085131.54346514"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12208:78f1399baf8e6b2b",
+     "source_row_number": 12208,
+     "source_row_sha256": "78f1399baf8e6b2b3f32f1d67391081f1379fe092f029c5a8460936a2e54c4cb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "UK Listing Relief: Stamp Duty Reserve Tax relief for transfers of a company's securities for a three-year period from the point of listing, effective from 27 November 2025",
+     "value_gbp": -50735172.94974937,
+     "value_gbp_decimal": "-50735172.94974937"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12209:39fcd3e58e79f907",
+     "source_row_number": 12209,
+     "source_row_sha256": "39fcd3e58e79f907b5024ac49524fa74a75e3d066940f1ff30d845f94b076336",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "UK Listing Relief: Stamp Duty Reserve Tax relief for transfers of a company's securities for a three-year period from the point of listing, effective from 27 November 2025",
+     "value_gbp": -52386183.34203373,
+     "value_gbp_decimal": "-52386183.34203373"
+    }
+   ],
+   "title": "UK Listing Relief: Stamp Duty Reserve Tax relief for transfers of a company's securities for a three-year period from the point of listing, effective from 27 November 2025",
+   "unmapped_obr_heads": [
+    "Stamp duty"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": -22616530.676562913,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Stamp duty"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12204:ac984aa593fc1e51",
+   "level": "source_row",
+   "measure_key": "ab2025__uk_listing_relief_sdrt",
+   "threshold_gbp": null,
+   "year": 2025
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__uk_listing_relief_sdrt --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__uk_listing_relief_sdrt_2025"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": -22616530.676562913,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:12204:ac984aa593fc1e51",
+   "source_row_number": 12204,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Stamp duty"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "UK Listing Relief: Stamp Duty Reserve Tax relief for transfers of a company's securities for a three-year period from the point of listing, effective from 27 November 2025",
+ "year": 2025
+}

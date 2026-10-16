@@ -1,0 +1,406 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__motability_vat_on_advance_payments_and_ipt",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "model_or_data_gap",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__motability_vat_on_advance_payments_and_ipt",
+   "measure_type": "transport",
+   "missing_legs": [
+    "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "vehicle|company_car|van_benefit|air_passenger",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "num_vehicles",
+     "owns_vehicle"
+    ]
+   },
+   "note": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+   "pe_gap": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+   "pe_reform_delta": null,
+   "program": "transport",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12090:1188631cef7c0330",
+     "source_row_number": 12090,
+     "source_row_sha256": "1188631cef7c0330b7916543ffe3a15b48dac952c936e18e764b377c94908a92",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Insurance premium tax",
+     "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12091:8f0f2d1e6251bf3a",
+     "source_row_number": 12091,
+     "source_row_sha256": "8f0f2d1e6251bf3a0461fccce753e758de0bdc5d6db41f68b31110b14bd7d8fd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Insurance premium tax",
+     "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+     "value_gbp": 9683643.803497432,
+     "value_gbp_decimal": "9683643.803497432"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12092:0148eb904b4af145",
+     "source_row_number": 12092,
+     "source_row_sha256": "0148eb904b4af1457c706e4776fb60d5238b2e7dd67a0ea0011e63c9c3eedecf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Insurance premium tax",
+     "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+     "value_gbp": 49654668.810665876,
+     "value_gbp_decimal": "49654668.810665876"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12093:2173b5f0d15eccbb",
+     "source_row_number": 12093,
+     "source_row_sha256": "2173b5f0d15eccbbfff31f2cec4d36a6c319a6dd87a4e43a7bb05bd2df82f4fd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Insurance premium tax",
+     "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+     "value_gbp": 101374963.24502285,
+     "value_gbp_decimal": "101374963.24502285"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12094:54ccc03072709490",
+     "source_row_number": 12094,
+     "source_row_sha256": "54ccc03072709490fd21ae057566b78290108f45beb3573f4ebd8f5a1e974a12",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Insurance premium tax",
+     "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+     "value_gbp": 149878128.31188342,
+     "value_gbp_decimal": "149878128.31188342"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12095:9091edbd7f09f77e",
+     "source_row_number": 12095,
+     "source_row_sha256": "9091edbd7f09f77edfca853f624222342b0f42824d6f6a7f2ca8370de578c25d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Insurance premium tax",
+     "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+     "value_gbp": 163901559.1445159,
+     "value_gbp_decimal": "163901559.1445159"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12096:373b025f9677162a",
+     "source_row_number": 12096,
+     "source_row_sha256": "373b025f9677162a8f89e6cfb40c06acb55a94681925057777533eff9cb0ca9d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12097:c35d9fec5881d071",
+     "source_row_number": 12097,
+     "source_row_sha256": "c35d9fec5881d071db2d9970dcf508356b9887ec6acea03845db55098745d699",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+     "value_gbp": 82695466.10369064,
+     "value_gbp_decimal": "82695466.10369064"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12098:bbcd627d982ad8ec",
+     "source_row_number": 12098,
+     "source_row_sha256": "bbcd627d982ad8ec4338ae952c8146a795a731082848843dd1eb5f0da65a2a1c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+     "value_gbp": 117344550.37474902,
+     "value_gbp_decimal": "117344550.37474902"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12099:4a38c556a65078b3",
+     "source_row_number": 12099,
+     "source_row_sha256": "4a38c556a65078b32401b9f177a72d2ffa25138cf57c8a5920328b5e112aa052",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+     "value_gbp": 124414649.82557337,
+     "value_gbp_decimal": "124414649.82557337"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12100:e3eaa4d9ae92d93d",
+     "source_row_number": 12100,
+     "source_row_sha256": "e3eaa4d9ae92d93ddf0e66950dedc39f3bdab4fd9550e80cb0333cfd805a0ccf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+     "value_gbp": 130570424.6330217,
+     "value_gbp_decimal": "130570424.6330217"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12101:21f26ae3552fa39e",
+     "source_row_number": 12101,
+     "source_row_sha256": "21f26ae3552fa39e15475adf86bba34dd80de862e5981027cfd6622ff95cded3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+     "value_gbp": 138951061.6268342,
+     "value_gbp_decimal": "138951061.6268342"
+    }
+   ],
+   "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+   "unmapped_obr_heads": [
+    "Insurance premium tax",
+    "VAT"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 101374963.24502285,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Insurance premium tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12093:2173b5f0d15eccbb",
+   "level": "source_row",
+   "measure_key": "ab2025__motability_vat_on_advance_payments_and_ipt",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 124414649.82557337,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "VAT"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12099:4a38c556a65078b3",
+   "level": "source_row",
+   "measure_key": "ab2025__motability_vat_on_advance_payments_and_ipt",
+   "threshold_gbp": null,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__motability_vat_on_advance_payments_and_ipt --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__motability_vat_on_advance_payments_and_ipt_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 101374963.24502285,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12093:2173b5f0d15eccbb",
+   "source_row_number": 12093,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Insurance premium tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 124414649.82557337,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12099:4a38c556a65078b3",
+   "source_row_number": 12099,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "VAT"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Motability: Introduce VAT at the standard rate on Advance Payments paid to Motability or equivalent schemes, and Insurance Premium Tax at the standard rate on insurance related to vehicle leases, from 1 July 2026",
+ "year": 2028
+}

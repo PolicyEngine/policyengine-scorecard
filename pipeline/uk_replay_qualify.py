@@ -51,8 +51,13 @@ EVENTS = (
     "spring_budget_2024",
     "spring_statement_2025",
     "spring_budget_2023",
+    "autumn_budget_2025",
 )
-CORPUS_VERSION = "uk-fiscal-event-replay/1"
+# The version names the event set: /1 is the five events from Spring Budget
+# 2023 to Spring Statement 2025; /2 adds Autumn Budget 2025.
+CORPUS_VERSION = "uk-fiscal-event-replay/2"
+# Staging's grid lists a receipt carries for each event, on both sides.
+GRID_FIELDS = ("missing_measure_years", "unsupported_measure_years")
 REJECTION_CODES = (
     "schema_invalid",
     "artifact_hash_mismatch",
@@ -525,6 +530,61 @@ def run(command: list[str], *, cwd: Path = ROOT) -> None:
     subprocess.run(command, check=True, cwd=cwd, env=candidate_environment(cwd))
 
 
+def processed_value_failures(path: Path, event: str) -> list[dict]:
+    """Translate compute's refused-world evidence to the shared v1 receipt.
+
+    The receipt's closed failure schema has a string detail field. Keep the
+    path, world and both values there as JSON, preserving machine-readable
+    evidence without changing the receiver's versioned interface.
+    """
+    records = json.loads(path.read_bytes())
+    if not isinstance(records, list) or not records:
+        raise ValueError("processed-value evidence must be a nonempty list")
+    failures = []
+    required = {
+        "code",
+        "event",
+        "measure_key",
+        "year",
+        "world",
+        "path",
+        "intended",
+        "processed",
+    }
+    for record in records:
+        if (
+            not isinstance(record, dict)
+            or not required <= record.keys()
+            or record["code"] != "processed_value_mismatch"
+            or record["event"] != event
+            or not isinstance(record["measure_key"], str)
+            or not record["measure_key"]
+            or type(record["year"]) is not int
+            or record["world"]
+            not in ("baseline_world", "reform_world", "certified_current_law")
+            or not isinstance(record["path"], str)
+            or not record["path"]
+        ):
+            raise ValueError("invalid processed-value evidence for this event")
+        failures.append(
+            {
+                **{
+                    key: record[key] for key in ("code", "event", "measure_key", "year")
+                },
+                "detail": json.dumps(
+                    {
+                        key: record[key]
+                        for key in ("world", "path", "intended", "processed")
+                    },
+                    sort_keys=True,
+                    separators=(",", ":"),
+                    allow_nan=False,
+                ),
+            }
+        )
+    return failures
+
+
 def run_corpus(
     record: dict,
     variants_file: Path,
@@ -540,9 +600,17 @@ def run_corpus(
     namespace = variants.namespace_root(record, root=root)
     variants.assert_not_sealed(namespace, root=root)
     namespace.mkdir(parents=True, exist_ok=True)
+    # Before any event runs, so the namespace's premises and summary cover
+    # this corpus whichever events produce results.
+    (namespace / variants.CORPUS_NAME).write_bytes(
+        canonical_bytes({"corpus_version": CORPUS_VERSION, "events": list(events)})
+    )
     failures = []
     for event in events:
         output = namespace / event
+        # A failure file from an earlier attempt must not be read as this
+        # run's (compute writes it only on a processed-value refusal).
+        (output / "INTEGRITY_FAILURES.json").unlink(missing_ok=True)
         try:
             command = [
                 python,
@@ -590,26 +658,29 @@ def run_corpus(
                 cwd=root,
             )
         except subprocess.CalledProcessError as exc:
+            evidence = output / "INTEGRITY_FAILURES.json"
+            if evidence.exists():
+                try:
+                    failures += processed_value_failures(evidence, event)
+                    continue
+                except (ValueError, TypeError, OSError) as invalid:
+                    detail = f"{exc}; invalid processed-value evidence: {invalid}"
+            else:
+                detail = str(exc)
             failures.append(
-                {"code": "event_run_failed", "detail": str(exc), "event": event}
+                {"code": "event_run_failed", "detail": detail, "event": event}
             )
-    run(
-        [
-            python,
-            "pipeline/compare_uk_event.py",
-            "--summary",
-            "--events-root",
-            str(namespace),
-        ],
-        cwd=root,
-    )
     engine = record["identity"]["packages"]["policyengine-uk"]["version"]
     run(
         [
             python,
             "-m",
             "pipeline.audit_uk_event_premises",
-            "--all",
+            # This namespace's recorded corpus (CORPUS.json, written before
+            # any event ran; uk_replay_variants.namespace_events), so a
+            # sealed namespace's premises regenerate byte for byte.
+            "--namespace",
+            str(namespace),
             "--expect-engine",
             engine,
             "--output",
@@ -627,6 +698,18 @@ def run_corpus(
             engine,
             "--output",
             str(namespace / "MODEL_DIAGNOSTICS.json"),
+        ],
+        cwd=root,
+    )
+    # Last, so the summary renders the diagnostics beside it, as CI's
+    # regeneration of the sealed namespace does.
+    run(
+        [
+            python,
+            "pipeline/compare_uk_event.py",
+            "--summary",
+            "--events-root",
+            str(namespace),
         ],
         cwd=root,
     )
@@ -691,6 +774,12 @@ def event_results(
             ),
             "inert_measure_years": staging.get("inert_measure_years", []),
         }
+        # Staging's own grid lists, with staging's meanings (a missing pair
+        # is in the full event grid but has no artifact, so it includes the
+        # unsupported pairs); W4 matches them pair for pair to base_events.
+        for field in GRID_FIELDS:
+            if field in staging:
+                out[event][field] = staging[field]
         failures += construction_inert(
             event, out[event]["inert_measure_years"], premises.get(event, {})
         )
@@ -745,11 +834,34 @@ def construction_inert(event: str, inert: list[dict], premises: dict) -> list[di
     return failures
 
 
+def base_events(diff: dict) -> dict:
+    """The base side's own record of each event's grid, as the release diff
+    recorded it from the base's verified staging (diff_uk_event_runs
+    staging_grid), bound to the manifest digests the diff recorded. It is
+    copied from DIFF.json, which diff_sha256 binds, never re-read from a
+    checkout: when a certified pair requalifies, the base and the candidate
+    share one result root.
+
+    An event has no entry when the base is a legacy-layout run or did not
+    replay it: W4 then treats no gap as known."""
+    base = diff["base"]
+    inputs = base.get("inputs") or {}
+    return {
+        event: {
+            "staging_manifest_sha256": inputs[event]["staging_manifest_sha256"],
+            "run_manifest_sha256": inputs[event]["run_manifest_sha256"],
+            **grid,
+        }
+        for event, grid in sorted((base.get("grids") or {}).items())
+    }
+
+
 def diff_summary(diff_dir: Path) -> dict:
     payload = (diff_dir / "DIFF.json").read_bytes()
     diff = json.loads(payload)
     return {
         "base_variant_id": diff["base"]["identity"]["variant_id"],
+        "base_events": base_events(diff),
         "diff_sha256": sha256_bytes(payload),
         "flag_counts": diff["flag_counts"],
         "flagged_rows": [
@@ -1455,8 +1567,11 @@ def main(argv: list[str] | None = None) -> int:
         # manifest is still there), must be sealed. Premises, diagnostics
         # and an empty summary committed before the replay are not results.
         def must_be_sealed(namespace: Path) -> bool:
+            # CORPUS.json is evidence of a qualification run even when every
+            # event failed before writing a manifest.
             return (
                 any(namespace.glob("*/RUN_MANIFEST.json"))
+                or (namespace / variants.CORPUS_NAME).exists()
                 or (namespace / variants.RECEIPT_NAME).exists()
                 or (namespace / MANIFEST_NAME).exists()
             )

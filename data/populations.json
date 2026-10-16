@@ -1,8 +1,8 @@
 {
- "built": "2026-10-15",
+ "built": "2026-10-16",
  "note": "Non-Urban populations exported from scorecard.db: the populace reform-validation registry (issue #20) plus the compute campaign's attached comparisons (US: TPC/CPSP/PWBM/CBO/JCT; UK: the HMRC ready-reckoner family and the complete OBR Policy measures database, including historical HM Treasury scores; BE: JRC EUROMOD-BE claims with demo-grade Axiom concept-mismatch attachments and the 2026 PIT-reform scorekeeper claims; NZ: official budget scores). Claims explicitly opted into pre-result display remain in the feed with latest status not_computed and empty history. Recorded result statuses and calibration relationships are verbatim; nothing here is a pass/fail grade.",
  "summary": {
-  "claims": 29471,
+  "claims": 29717,
   "multi_release_claims": 270,
   "by_source": {
    "aspe_welfare_indicators": 14,
@@ -73,7 +73,7 @@
    "ny_admin": 2,
    "nz_treasury": 12,
    "obr_efo": 815,
-   "obr_pmd": 24304,
+   "obr_pmd": 24550,
    "oh_admin": 1,
    "ok_admin": 1,
    "ok_fiscal_note": 1,
@@ -109,7 +109,7 @@
    "comparable": 42,
    "concept_mismatch": 17,
    "constructed": 1662,
-   "not_computed": 26861,
+   "not_computed": 27107,
    "pe_gap": 889
   },
   "by_country": {
@@ -128,10 +128,10 @@
     "multi_release_claims": 0
    },
    "UK": {
-    "claims": 28915,
+    "claims": 29161,
     "with_result": 2162,
     "with_value": 1177,
-    "without_result": 26753,
+    "without_result": 26999,
     "multi_release_claims": 0
    },
    "US": {
@@ -1582,6 +1582,24 @@
    },
    "by_benchmark_class": {
     "different_model": 732
+   }
+  },
+  {
+   "source": "obr_pmd",
+   "country": "UK",
+   "fiscal_event": "spring_forecast_2026",
+   "label": "Spring Forecast 2026",
+   "path": "data/populations-pmd/1f71a7183b4b59ca.json",
+   "claims": 246,
+   "with_result": 0,
+   "with_value": 0,
+   "without_result": 246,
+   "multi_release_claims": 0,
+   "by_latest_status": {
+    "not_computed": 246
+   },
+   "by_benchmark_class": {
+    "different_model": 246
    }
   },
   {

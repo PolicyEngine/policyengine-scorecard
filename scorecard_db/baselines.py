@@ -1058,7 +1058,9 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
 from .obr_pmd_identity import (  # noqa: E402
     EVENTS as PMD_EVENTS,
     HISTORICAL_EVENTS as PMD_HISTORICAL_EVENTS,
+    MARCH_EVENTS as PMD_MARCH_EVENTS,
     baseline_descriptor as pmd_baseline_descriptor,
+    march_baseline_descriptor as pmd_march_baseline_descriptor,
 )
 
 _PMD_REGISTERED = {baseline_key(descriptor) for descriptor, *_ in BASELINES}
@@ -1084,6 +1086,23 @@ for _event in PMD_EVENTS:
             "sources/harvest-uk-2026-08-02/uk_obr/NOTES.md "
             "(pre-June-2010 Treasury scorecards and post-2010 OBR-scrutinised "
             "original costings). Descriptor follows ingest_obr_costings.py.",
+        )
+    )
+
+
+for _event in PMD_MARCH_EVENTS:
+    _descriptor = pmd_march_baseline_descriptor(_event)
+    BASELINES.append(
+        (
+            _descriptor,
+            f"{_descriptor['policy']}__policy_parameters",
+            f"The pre-measures forecast for {_event}, against which "
+            "HM Treasury's OBR-scrutinised scorecard measures are costed; "
+            "counterfactual kind: pre-announcement policy parameters.",
+            "policy_ref",
+            "Policy measures database March 2026, Notes worksheet; "
+            "sources/obr-pmd-march-2026/receipt.json. Edition-delta claims "
+            "only; no replay registry is implied.",
         )
     )
 

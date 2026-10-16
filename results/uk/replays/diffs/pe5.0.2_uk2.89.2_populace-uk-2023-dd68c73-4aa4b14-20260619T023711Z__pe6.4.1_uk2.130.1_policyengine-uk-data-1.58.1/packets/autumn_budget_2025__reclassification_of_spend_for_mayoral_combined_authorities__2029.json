@@ -1,0 +1,403 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "autumn_budget_2025__reclassification_of_spend_for_mayoral_combined_authorities",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "out_of_household_scope",
+   "computability": "out_of_household_scope",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "out_of_household_scope",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "autumn_budget_2025__reclassification_of_spend_for_mayoral_combined_authorities",
+   "measure_type": "scope",
+   "missing_legs": [
+    "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "firm|corporation|department|block_grant",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_gap": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_reform_delta": null,
+   "program": "scope",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24221:4b392866221eae13",
+     "source_row_number": 24221,
+     "source_row_sha256": "4b392866221eae135166b607a695ee7f4e79a3f4b8541c95671da15685821366",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Reclassification of spend for Mayoral Combined Authorities",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24222:166189e1ca4c4876",
+     "source_row_number": 24222,
+     "source_row_sha256": "166189e1ca4c4876d19cd89ffcbea149a3ba6bd8922e57b4fe953ac801228e17",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Reclassification of spend for Mayoral Combined Authorities",
+     "value_gbp": -145000000.0,
+     "value_gbp_decimal": "-145000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24223:0e42a581b51ed748",
+     "source_row_number": 24223,
+     "source_row_sha256": "0e42a581b51ed748b421d598f0fb79ee274e8e36b1be160b5cd75a409c3e05e8",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Reclassification of spend for Mayoral Combined Authorities",
+     "value_gbp": -180000000.0,
+     "value_gbp_decimal": "-180000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24224:a203f282a9f6d6cf",
+     "source_row_number": 24224,
+     "source_row_sha256": "a203f282a9f6d6cf83a9d83d1094b282e6743b9b11e83dd56f49a416ebcc29b0",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Reclassification of spend for Mayoral Combined Authorities",
+     "value_gbp": -247000000.0,
+     "value_gbp_decimal": "-247000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24225:20848a5e379897b3",
+     "source_row_number": 24225,
+     "source_row_sha256": "20848a5e379897b39c2f16b9b6bc04c8e8cee2c234b2f4473793b1f67177b434",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Reclassification of spend for Mayoral Combined Authorities",
+     "value_gbp": -309000000.0,
+     "value_gbp_decimal": "-309000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24226:ad23f478ae7266dc",
+     "source_row_number": 24226,
+     "source_row_sha256": "ad23f478ae7266dc3cc8267de437160cdfe113230c4f1fff0a8bd53a57d05f8e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Reclassification of spend for Mayoral Combined Authorities",
+     "value_gbp": -309000000.0,
+     "value_gbp_decimal": "-309000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24227:3a5bbf593d90b5b0",
+     "source_row_number": 24227,
+     "source_row_sha256": "3a5bbf593d90b5b098360c2e61e1b25fd01f16259a528867cb941f37bdd6828b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Reclassification of spend for Mayoral Combined Authorities",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24228:72e547901a0153a9",
+     "source_row_number": 24228,
+     "source_row_sha256": "72e547901a0153a9295862201d55c5d988b56eb4a9839d3e1adfab48197fa1df",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Reclassification of spend for Mayoral Combined Authorities",
+     "value_gbp": 145000000.0,
+     "value_gbp_decimal": "145000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24229:d52d5461782fe9e2",
+     "source_row_number": 24229,
+     "source_row_sha256": "d52d5461782fe9e21732d2816f3617a2effe456f6c15e29cf43951104c24f9c8",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Reclassification of spend for Mayoral Combined Authorities",
+     "value_gbp": 180000000.0,
+     "value_gbp_decimal": "180000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24230:100b29ad79495fab",
+     "source_row_number": 24230,
+     "source_row_sha256": "100b29ad79495fab53616f9c0d7bfb586ccd94e208fd3506cff02e8a3178ba3b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Reclassification of spend for Mayoral Combined Authorities",
+     "value_gbp": 247000000.0,
+     "value_gbp_decimal": "247000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24231:b3fb378ebf43891a",
+     "source_row_number": 24231,
+     "source_row_sha256": "b3fb378ebf43891a1d2785b7649672f30e7d43d5b27b4926df8ecee6912c6db5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Reclassification of spend for Mayoral Combined Authorities",
+     "value_gbp": 309000000.0,
+     "value_gbp_decimal": "309000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24232:1b075024a4efa7a9",
+     "source_row_number": 24232,
+     "source_row_sha256": "1b075024a4efa7a9731ffc7885ccda0faae5e3e75f1e484cf45162eb7b7ec6ea",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Reclassification of spend for Mayoral Combined Authorities",
+     "value_gbp": 309000000.0,
+     "value_gbp_decimal": "309000000.0"
+    }
+   ],
+   "title": "Reclassification of spend for Mayoral Combined Authorities",
+   "unmapped_obr_heads": [
+    "PSCE in RDEL",
+    "PSGI in CDEL"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -309000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24225:20848a5e379897b3",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2025__reclassification_of_spend_for_mayoral_combined_authorities",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 309000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSGI in CDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24231:b3fb378ebf43891a",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2025__reclassification_of_spend_for_mayoral_combined_authorities",
+   "threshold_gbp": null,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures autumn_budget_2025__reclassification_of_spend_for_mayoral_combined_authorities --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/autumn_budget_2025__reclassification_of_spend_for_mayoral_combined_authorities_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -309000000.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:24225:20848a5e379897b3",
+   "source_row_number": 24225,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 309000000.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:24231:b3fb378ebf43891a",
+   "source_row_number": 24231,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSGI in CDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Reclassification of spend for Mayoral Combined Authorities",
+ "year": 2029
+}

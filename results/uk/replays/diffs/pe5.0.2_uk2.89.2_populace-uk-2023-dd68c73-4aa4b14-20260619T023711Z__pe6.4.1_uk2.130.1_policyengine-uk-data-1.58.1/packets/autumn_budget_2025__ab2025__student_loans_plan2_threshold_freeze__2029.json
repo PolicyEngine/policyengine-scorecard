@@ -1,0 +1,403 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__student_loans_plan2_threshold_freeze",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "out_of_household_scope",
+   "computability": "out_of_household_scope",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "out_of_household_scope",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__student_loans_plan2_threshold_freeze",
+   "measure_type": "scope",
+   "missing_legs": [
+    "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "firm|corporation|department|block_grant",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_gap": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_reform_delta": null,
+   "program": "scope",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12270:5abd44c182a198bb",
+     "source_row_number": 12270,
+     "source_row_sha256": "5abd44c182a198bbc706c0d168b78a3368407c40f6a4ea92d3ca2fc85624e9b6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Interest and dividend receipts",
+     "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+     "value_gbp": 262000000.0,
+     "value_gbp_decimal": "262000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12271:2c2d8ba3bd19be94",
+     "source_row_number": 12271,
+     "source_row_sha256": "2c2d8ba3bd19be94f859f224b9ce47521be3992474dc88206d10be8a17643df5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Interest and dividend receipts",
+     "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+     "value_gbp": 275000000.0,
+     "value_gbp_decimal": "275000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12272:ae383ef905e2bd84",
+     "source_row_number": 12272,
+     "source_row_sha256": "ae383ef905e2bd84738e56187b9ac2a6af753461521192dc7fb948fad6614525",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Interest and dividend receipts",
+     "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+     "value_gbp": 353000000.0,
+     "value_gbp_decimal": "353000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12273:0fe8baaa06b4474a",
+     "source_row_number": 12273,
+     "source_row_sha256": "0fe8baaa06b4474a49fc0131e057d751c2d0929533cbf72f4ba49110f3dd4fb1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Interest and dividend receipts",
+     "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+     "value_gbp": 376000000.0,
+     "value_gbp_decimal": "376000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12274:e5de6d75ca9d0e40",
+     "source_row_number": 12274,
+     "source_row_sha256": "e5de6d75ca9d0e405f01d33b6d87df3b9a6df8857f9630e6f722a04ea7061063",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Interest and dividend receipts",
+     "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+     "value_gbp": 420000000.0,
+     "value_gbp_decimal": "420000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12275:4c77a84d1aeff45b",
+     "source_row_number": 12275,
+     "source_row_sha256": "4c77a84d1aeff45b7fa7c2199382d04121a6da5e2bac27d1e66a28264399d70c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Interest and dividend receipts",
+     "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+     "value_gbp": 413000000.0,
+     "value_gbp_decimal": "413000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23939:4445f009b47b271c",
+     "source_row_number": 23939,
+     "source_row_sha256": "4445f009b47b271ce7eac025b17ab7fc8c977cc37a2f889d5f21eab166e3449c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Student loans",
+     "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+     "value_gbp": 21000000.0,
+     "value_gbp_decimal": "21000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23940:041012f7de44ed80",
+     "source_row_number": 23940,
+     "source_row_sha256": "041012f7de44ed80972b7998c2b75fef7b604f288874d27d5b58eb58e572283f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Student loans",
+     "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+     "value_gbp": 5640000000.0,
+     "value_gbp_decimal": "5640000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23941:612f7a1f4368570e",
+     "source_row_number": 23941,
+     "source_row_sha256": "612f7a1f4368570e4a0688a8f32ec8203ea58da41530cd79cb4a9de869868c65",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Student loans",
+     "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+     "value_gbp": -100000000.0,
+     "value_gbp_decimal": "-100000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23942:e022282e835900e4",
+     "source_row_number": 23942,
+     "source_row_sha256": "e022282e835900e47520a35860ccca8ee9592245ce09e3049b5ab9fe64d0a997",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Student loans",
+     "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+     "value_gbp": -87000000.0,
+     "value_gbp_decimal": "-87000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23943:f77e9b8d21c3a0a8",
+     "source_row_number": 23943,
+     "source_row_sha256": "f77e9b8d21c3a0a8cfffbeef0913c0bd8f8da8822c081cf3fa1a3fdc5142b791",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Student loans",
+     "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+     "value_gbp": -63000000.0,
+     "value_gbp_decimal": "-63000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23944:4ffb63b906557596",
+     "source_row_number": 23944,
+     "source_row_sha256": "4ffb63b906557596cf621036cc3411c113c67365c7260ce0444548831d8e6786",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Student loans",
+     "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+     "value_gbp": -35000000.0,
+     "value_gbp_decimal": "-35000000.0"
+    }
+   ],
+   "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+   "unmapped_obr_heads": [
+    "Interest and dividend receipts",
+    "Student loans"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 420000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Interest and dividend receipts"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12274:e5de6d75ca9d0e40",
+   "level": "source_row",
+   "measure_key": "ab2025__student_loans_plan2_threshold_freeze",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -63000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Student loans"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23943:f77e9b8d21c3a0a8",
+   "level": "source_row",
+   "measure_key": "ab2025__student_loans_plan2_threshold_freeze",
+   "threshold_gbp": null,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__student_loans_plan2_threshold_freeze --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__student_loans_plan2_threshold_freeze_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 420000000.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12274:e5de6d75ca9d0e40",
+   "source_row_number": 12274,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Interest and dividend receipts"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -63000000.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23943:f77e9b8d21c3a0a8",
+   "source_row_number": 23943,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Student loans"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Student Loans: Freeze Plan 2 repayment threshold for three years from 6 April 2027",
+ "year": 2029
+}

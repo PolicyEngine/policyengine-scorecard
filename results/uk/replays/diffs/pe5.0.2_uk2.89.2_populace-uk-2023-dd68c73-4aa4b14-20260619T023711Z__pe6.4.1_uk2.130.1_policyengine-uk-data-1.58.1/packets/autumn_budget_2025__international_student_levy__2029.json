@@ -1,0 +1,486 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "autumn_budget_2025__international_student_levy",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "construction_pending",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "autumn_budget_2025__international_student_levy",
+   "measure_type": "indirect_tax",
+   "missing_legs": [
+    "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.conservatives.cb_hitc_household",
+     "gov.contrib.conservatives.pensioner_personal_allowance",
+     "gov.contrib.labour.private_school_vat",
+     "gov.economic_assumptions.indices.obr.private_pension_index",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.EAST_MIDLANDS",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.EAST_OF_ENGLAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.ENGLAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.LONDON",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.NORTHERN_IRELAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.NORTH_EAST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.NORTH_WEST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.SCOTLAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.SOUTH_EAST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.SOUTH_WEST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.UNITED_KINGDOM",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.WALES",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.WEST_MIDLANDS",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.YORKSHIRE",
+     "gov.economic_assumptions.yoy_growth.obr.private_pension_index",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.EAST_MIDLANDS",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.EAST_OF_ENGLAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.ENGLAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.LONDON",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTHERN_IRELAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTH_EAST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTH_WEST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.SCOTLAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.SOUTH_EAST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.SOUTH_WEST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.UNITED_KINGDOM",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.WALES",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.WEST_MIDLANDS",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.YORKSHIRE",
+     "gov.hmrc.vat.reduced_rate",
+     "gov.hmrc.vat.reduced_rate_share",
+     "gov.hmrc.vat.standard_rate",
+     "gov.indices.private_rent_index",
+     "gov.simulation.microdata_vat_coverage",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.0",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.10",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.100",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.15",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.20",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.25",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.30",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.35",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.40",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.45",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.5",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.50",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.55",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.60",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.65",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.70",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.75",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.80",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.85",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.90",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.95",
+     "gov.simulation.private_school_vat.private_school_factor",
+     "gov.simulation.private_school_vat.private_school_fees",
+     "gov.simulation.private_school_vat.private_school_vat_basis",
+     "household.consumption.carbon.emissions.alcohol_and_tobacco",
+     "household.consumption.carbon.emissions.food_and_non_alcoholic_beverages",
+     "household.consumption.carbon.intensity.alcohol_and_tobacco_consumption",
+     "household.consumption.carbon.intensity.food_and_non_alcoholic_beverages_consumption",
+     "household.consumption.total_by_category.alcohol_and_tobacco_consumption",
+     "household.consumption.total_by_category.food_and_non_alcoholic_beverages_consumption"
+    ],
+    "pattern": "alcohol|tobacco|vaping|vat|levy",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "alcohol_and_tobacco_consumption",
+     "attends_private_school",
+     "attends_private_school_random_draw",
+     "baseline_vat",
+     "food_and_non_alcoholic_beverages_consumption",
+     "full_rate_vat_consumption",
+     "full_rate_vat_expenditure_rate",
+     "private_pension_income",
+     "private_school_vat",
+     "private_transfer_income",
+     "reduced_rate_vat_consumption",
+     "vat",
+     "vat_change"
+    ]
+   },
+   "note": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+   "pe_gap": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+   "pe_reform_delta": null,
+   "program": "indirect_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12762:580a266afb389a02",
+     "source_row_number": 12762,
+     "source_row_sha256": "580a266afb389a02f041f7338e93d521ce81b2e5fca918bfa4a49ccd3606c03e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "International student levy",
+     "title": "International Student Levy",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12763:9192de93b9a2505e",
+     "source_row_number": 12763,
+     "source_row_sha256": "9192de93b9a2505e7d8d7e1833cd0f595d10091f8135739b298f631b8f13d147",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "International student levy",
+     "title": "International Student Levy",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12764:79c7a37a758b7423",
+     "source_row_number": 12764,
+     "source_row_sha256": "79c7a37a758b742351a2042fa8b3072ed78a99efaf0f098a34e2c6deb99c006f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "International student levy",
+     "title": "International Student Levy",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12765:e0c1019f4438b50b",
+     "source_row_number": 12765,
+     "source_row_sha256": "e0c1019f4438b50bf2885a4d7b15444f026bc0501a64a1f23264cd2436395a40",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "International student levy",
+     "title": "International Student Levy",
+     "value_gbp": 445000000.0,
+     "value_gbp_decimal": "445000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12766:62c4a838fb654039",
+     "source_row_number": 12766,
+     "source_row_sha256": "62c4a838fb6540397ba4a6cb08c3432e97d6a875fe0e43f7d1fa1f6f841190fb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "International student levy",
+     "title": "International Student Levy",
+     "value_gbp": 465000000.0,
+     "value_gbp_decimal": "465000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12767:655374b26b2912c3",
+     "source_row_number": 12767,
+     "source_row_sha256": "655374b26b2912c3b1724f3a442bd0b37681a793166011b0ec6ead2a290afcc2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "International student levy",
+     "title": "International Student Levy",
+     "value_gbp": 480000000.0,
+     "value_gbp_decimal": "480000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24215:1a53b664fdfa1026",
+     "source_row_number": 24215,
+     "source_row_sha256": "1a53b664fdfa102648d2c195d9805fcb28cef48be90deb7cc8fe7594f9a7cb7f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "International Student Levy",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24216:110c4edb8f6e823c",
+     "source_row_number": 24216,
+     "source_row_sha256": "110c4edb8f6e823c0df033b6886c6be864a670cffa5f8d14e33593f6c766b1cd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "International Student Levy",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24217:e48ea52df359a571",
+     "source_row_number": 24217,
+     "source_row_sha256": "e48ea52df359a5713b8a907b6fe2c329407fe10a0d00c47d2f15fbd893bf9dec",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "International Student Levy",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24218:a49e7c91a2445b00",
+     "source_row_number": 24218,
+     "source_row_sha256": "a49e7c91a2445b00e763cee43125166afa1307d25a467a036964cf5d563fbf69",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "International Student Levy",
+     "value_gbp": -445000000.0,
+     "value_gbp_decimal": "-445000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24219:e54f479257f7c11c",
+     "source_row_number": 24219,
+     "source_row_sha256": "e54f479257f7c11cff55939d521c3c70e94030fe42da05bee1f63bd2c26be884",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "International Student Levy",
+     "value_gbp": -465000000.0,
+     "value_gbp_decimal": "-465000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24220:59ba0511110e7dbe",
+     "source_row_number": 24220,
+     "source_row_sha256": "59ba0511110e7dbeb55ac81a6538c7f115eeb04ad4b92bccdf59f5674a9c9734",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "International Student Levy",
+     "value_gbp": -480000000.0,
+     "value_gbp_decimal": "-480000000.0"
+    }
+   ],
+   "title": "International Student Levy",
+   "unmapped_obr_heads": [
+    "International student levy",
+    "PSCE in RDEL"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 465000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "International student levy"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12766:62c4a838fb654039",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2025__international_student_levy",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -465000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24219:e54f479257f7c11c",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2025__international_student_levy",
+   "threshold_gbp": null,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures autumn_budget_2025__international_student_levy --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/autumn_budget_2025__international_student_levy_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 465000000.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12766:62c4a838fb654039",
+   "source_row_number": 12766,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "International student levy"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -465000000.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:24219:e54f479257f7c11c",
+   "source_row_number": 24219,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "International Student Levy",
+ "year": 2029
+}

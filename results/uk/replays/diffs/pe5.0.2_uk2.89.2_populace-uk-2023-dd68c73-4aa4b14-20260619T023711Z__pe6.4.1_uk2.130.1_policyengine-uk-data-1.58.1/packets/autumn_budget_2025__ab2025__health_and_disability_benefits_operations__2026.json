@@ -1,0 +1,644 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2026-27",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__health_and_disability_benefits_operations",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "model_or_data_gap",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__health_and_disability_benefits_operations",
+   "measure_type": "welfare",
+   "missing_legs": [
+    "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.dwp.housing_benefit.non_dep_deduction.age_threshold",
+     "gov.dwp.housing_benefit.non_dep_deduction.amount[0].amount",
+     "gov.dwp.housing_benefit.non_dep_deduction.amount[0].threshold",
+     "gov.dwp.housing_benefit.non_dep_deduction.amount[1].amount",
+     "gov.dwp.housing_benefit.non_dep_deduction.amount[1].threshold",
+     "gov.dwp.housing_benefit.non_dep_deduction.amount[2].amount",
+     "gov.dwp.housing_benefit.non_dep_deduction.amount[2].threshold",
+     "gov.dwp.housing_benefit.non_dep_deduction.amount[3].amount",
+     "gov.dwp.housing_benefit.non_dep_deduction.amount[3].threshold",
+     "gov.dwp.housing_benefit.non_dep_deduction.amount[4].amount",
+     "gov.dwp.housing_benefit.non_dep_deduction.amount[4].threshold",
+     "gov.dwp.housing_benefit.non_dep_deduction.amount[5].amount",
+     "gov.dwp.housing_benefit.non_dep_deduction.amount[5].threshold",
+     "gov.dwp.pension_credit.income.pension_contributions_deduction",
+     "gov.dwp.universal_credit.elements.housing.non_dep_deduction.age_threshold",
+     "gov.dwp.universal_credit.elements.housing.non_dep_deduction.amount",
+     "gov.hmrc.income_tax.allowances.married_couples_allowance.deduction_rate",
+     "gov.hmrc.income_tax.bases.taxable_self_employment_income_deductions",
+     "gov.local_authorities.kingston_upon_thames.council_tax_reduction.non_dep_deduction.amount[0].amount",
+     "gov.local_authorities.kingston_upon_thames.council_tax_reduction.non_dep_deduction.amount[0].threshold",
+     "gov.local_authorities.kingston_upon_thames.council_tax_reduction.non_dep_deduction.amount[1].amount",
+     "gov.local_authorities.kingston_upon_thames.council_tax_reduction.non_dep_deduction.amount[1].threshold",
+     "gov.local_authorities.kingston_upon_thames.council_tax_reduction.non_dep_deduction.amount[2].amount",
+     "gov.local_authorities.kingston_upon_thames.council_tax_reduction.non_dep_deduction.amount[2].threshold",
+     "gov.local_authorities.kingston_upon_thames.council_tax_reduction.non_dep_deduction.amount[3].amount",
+     "gov.local_authorities.kingston_upon_thames.council_tax_reduction.non_dep_deduction.amount[3].threshold",
+     "gov.local_authorities.kingston_upon_thames.council_tax_reduction.non_dep_deduction.remunerative_work_hours",
+     "gov.local_authorities.merton.council_tax_reduction.non_dep_deduction.amount[0].amount",
+     "gov.local_authorities.merton.council_tax_reduction.non_dep_deduction.amount[0].threshold",
+     "gov.local_authorities.merton.council_tax_reduction.non_dep_deduction.amount[1].amount",
+     "gov.local_authorities.merton.council_tax_reduction.non_dep_deduction.amount[1].threshold",
+     "gov.local_authorities.merton.council_tax_reduction.non_dep_deduction.amount[2].amount",
+     "gov.local_authorities.merton.council_tax_reduction.non_dep_deduction.amount[2].threshold",
+     "gov.local_authorities.merton.council_tax_reduction.non_dep_deduction.amount[3].amount",
+     "gov.local_authorities.merton.council_tax_reduction.non_dep_deduction.amount[3].threshold",
+     "gov.local_authorities.merton.council_tax_reduction.non_dep_deduction.remunerative_work_hours",
+     "gov.local_authorities.newham.council_tax_reduction.non_dep_deduction.amount[0].amount",
+     "gov.local_authorities.newham.council_tax_reduction.non_dep_deduction.amount[0].threshold",
+     "gov.local_authorities.newham.council_tax_reduction.non_dep_deduction.amount[1].amount",
+     "gov.local_authorities.newham.council_tax_reduction.non_dep_deduction.amount[1].threshold",
+     "gov.local_authorities.newham.council_tax_reduction.non_dep_deduction.amount[2].amount",
+     "gov.local_authorities.newham.council_tax_reduction.non_dep_deduction.amount[2].threshold",
+     "gov.local_authorities.newham.council_tax_reduction.non_dep_deduction.amount[3].amount",
+     "gov.local_authorities.newham.council_tax_reduction.non_dep_deduction.amount[3].threshold",
+     "gov.local_authorities.newham.council_tax_reduction.non_dep_deduction.remunerative_work_hours",
+     "gov.local_authorities.oxford.council_tax_reduction.non_dep_deduction.amount[0].amount",
+     "gov.local_authorities.oxford.council_tax_reduction.non_dep_deduction.amount[0].threshold",
+     "gov.local_authorities.oxford.council_tax_reduction.non_dep_deduction.amount[1].amount",
+     "gov.local_authorities.oxford.council_tax_reduction.non_dep_deduction.amount[1].threshold",
+     "gov.local_authorities.oxford.council_tax_reduction.non_dep_deduction.amount[2].amount",
+     "gov.local_authorities.oxford.council_tax_reduction.non_dep_deduction.amount[2].threshold",
+     "gov.local_authorities.oxford.council_tax_reduction.non_dep_deduction.amount[3].amount",
+     "gov.local_authorities.oxford.council_tax_reduction.non_dep_deduction.amount[3].threshold",
+     "gov.local_authorities.oxford.council_tax_reduction.non_dep_deduction.remunerative_work_hours",
+     "gov.local_authorities.westminster.council_tax_reduction.non_dep_deduction.amount[0].amount",
+     "gov.local_authorities.westminster.council_tax_reduction.non_dep_deduction.amount[0].threshold",
+     "gov.local_authorities.westminster.council_tax_reduction.non_dep_deduction.amount[1].amount",
+     "gov.local_authorities.westminster.council_tax_reduction.non_dep_deduction.amount[1].threshold",
+     "gov.local_authorities.westminster.council_tax_reduction.non_dep_deduction.amount[2].amount",
+     "gov.local_authorities.westminster.council_tax_reduction.non_dep_deduction.amount[2].threshold",
+     "gov.local_authorities.westminster.council_tax_reduction.non_dep_deduction.amount[3].amount",
+     "gov.local_authorities.westminster.council_tax_reduction.non_dep_deduction.amount[3].threshold",
+     "gov.local_authorities.westminster.council_tax_reduction.non_dep_deduction.remunerative_work_hours"
+    ],
+    "pattern": "surplus|transitional|claim_history|descriptor|assessment|deduction",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "council_tax_reduction_individual_non_dep_deduction",
+     "council_tax_reduction_individual_non_dep_deduction_eligible",
+     "council_tax_reduction_non_dep_deductions",
+     "employment_deductions",
+     "household_benefits_individual_non_dep_deduction",
+     "housing_benefit_individual_non_dep_deduction_eligible",
+     "housing_benefit_non_dep_deductions",
+     "kingston_upon_thames_council_tax_reduction_individual_non_dep_deduction",
+     "kingston_upon_thames_council_tax_reduction_non_dep_deductions",
+     "married_couples_allowance_deduction",
+     "merton_council_tax_reduction_individual_non_dep_deduction",
+     "merton_council_tax_reduction_non_dep_deductions",
+     "newham_council_tax_reduction_individual_non_dep_deduction",
+     "newham_council_tax_reduction_non_dep_deductions",
+     "other_deductions",
+     "oxford_council_tax_reduction_individual_non_dep_deduction",
+     "oxford_council_tax_reduction_non_dep_deductions",
+     "property_allowance_deduction",
+     "trading_allowance_deduction",
+     "uc_individual_non_dep_deduction",
+     "uc_individual_non_dep_deduction_eligible",
+     "uc_non_dep_deduction_exempt",
+     "uc_non_dep_deductions",
+     "westminster_council_tax_reduction_individual_non_dep_deduction",
+     "westminster_council_tax_reduction_non_dep_deductions"
+    ]
+   },
+   "note": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+   "pe_gap": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+   "pe_reform_delta": null,
+   "program": "welfare",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23603:84c256ec61b86be4",
+     "source_row_number": 23603,
+     "source_row_sha256": "84c256ec61b86be43a164c77b108e6a1ee1fe151947e143c320abc16097ab6f7",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23604:2e87cb39f5660079",
+     "source_row_number": 23604,
+     "source_row_sha256": "2e87cb39f5660079646cf1d305ec60bcefdeebf60466ff8f0407fadb4499e9c4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": 80780500.0,
+     "value_gbp_decimal": "80780500.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23605:56641627d2f5104e",
+     "source_row_number": 23605,
+     "source_row_sha256": "56641627d2f5104ecff1d97026429fc223583f840a84a68208413f829cf21d01",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": 339648000.0,
+     "value_gbp_decimal": "339648000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23606:fcd53df4e36de0e3",
+     "source_row_number": 23606,
+     "source_row_sha256": "fcd53df4e36de0e3ab6e28728b4fab4baacb563f9f2143917b8c4545941fd16d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": 609348000.0000001,
+     "value_gbp_decimal": "609348000.0000001"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23607:eeaf4686207d74d0",
+     "source_row_number": 23607,
+     "source_row_sha256": "eeaf4686207d74d0c32a740f30d40bac16c22c946fc637b37bfb77bad2922441",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": 708492000.0000001,
+     "value_gbp_decimal": "708492000.0000001"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23608:68c08ee78ad1f03d",
+     "source_row_number": 23608,
+     "source_row_sha256": "68c08ee78ad1f03dd426e6c76a0855737db5caedbababf800398e5cf20152949",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": 639008000.0,
+     "value_gbp_decimal": "639008000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23609:9a68d10cd41266fc",
+     "source_row_number": 23609,
+     "source_row_sha256": "9a68d10cd41266fc398fe93cb0869933b322aeddc4a119d48a544584af8e5e7f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23610:248daa3c8c1a4425",
+     "source_row_number": 23610,
+     "source_row_sha256": "248daa3c8c1a44256137799d22aca57f3aad116b70322cf1fcdd6b1e9c5e37f9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": -5000000.0,
+     "value_gbp_decimal": "-5000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23611:6095e0a0fa50165c",
+     "source_row_number": 23611,
+     "source_row_sha256": "6095e0a0fa50165cafb6c5bb610532641215bcda121dffb9f932e285517c6848",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": -56000000.0,
+     "value_gbp_decimal": "-56000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23612:63827cc9efa731f1",
+     "source_row_number": 23612,
+     "source_row_sha256": "63827cc9efa731f1fc019d97e2d682fa74aaf6ed64ce6fa1dc2423c9918cf7af",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": -125000000.0,
+     "value_gbp_decimal": "-125000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23613:436712e7337a719c",
+     "source_row_number": 23613,
+     "source_row_sha256": "436712e7337a719c98820c8a783ae5c6d53e2ddfda500ea1d9dbaff8d05137d4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": -165000000.0,
+     "value_gbp_decimal": "-165000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Requires claim history, previous awards, assessment descriptors, administrative process or an announcement-specific caseload response; a current annual liability parameter alone cannot replay it.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23614:f761aee3a011d206",
+     "source_row_number": 23614,
+     "source_row_sha256": "f761aee3a011d20669c9ec71fdccc1b4a5548e26b1e357cce5499bd78a4a0491",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": -208000000.0,
+     "value_gbp_decimal": "-208000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23615:b47fd78d3b45e22d",
+     "source_row_number": 23615,
+     "source_row_sha256": "b47fd78d3b45e22db923a5220187daca6aa956690dd4d152ca48b6ebbb899332",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23616:bbb83c0424b857b2",
+     "source_row_number": 23616,
+     "source_row_sha256": "bbb83c0424b857b29f0e1ff79ac22dc36555f4d445734aa89419544877ba7667",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": 8000000.0,
+     "value_gbp_decimal": "8000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23617:1a9e4e41a502af9a",
+     "source_row_number": 23617,
+     "source_row_sha256": "1a9e4e41a502af9a1e047763e05bbea1e7de64f427de6bdf72968c1eb4af1550",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": 24000000.0,
+     "value_gbp_decimal": "24000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23618:153bd55ebb4df1d3",
+     "source_row_number": 23618,
+     "source_row_sha256": "153bd55ebb4df1d3f793fe9ea7685e9fa02c429241b4387ddd8fb8ef496f6ffa",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": 37000000.0,
+     "value_gbp_decimal": "37000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23619:fbe6b17a75c755b6",
+     "source_row_number": 23619,
+     "source_row_sha256": "fbe6b17a75c755b6644ef3baa78308a1836a27239a5f608c4768c3f59dfc8547",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": 39000000.0,
+     "value_gbp_decimal": "39000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23620:d89565f1efbb2fe9",
+     "source_row_number": 23620,
+     "source_row_sha256": "d89565f1efbb2fe9a91caced82e95ff070b1a139675e81c5b2c5bfd3f43b3131",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+     "value_gbp": 23000000.0,
+     "value_gbp_decimal": "23000000.0"
+    }
+   ],
+   "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+   "unmapped_obr_heads": [
+    "Scottish BGA (current)",
+    "Welfare inside cap",
+    "Welfare outside cap"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 80780500.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23604:2e87cb39f5660079",
+   "level": "source_row",
+   "measure_key": "ab2025__health_and_disability_benefits_operations",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": -5000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Welfare outside cap"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23610:248daa3c8c1a4425",
+   "level": "source_row",
+   "measure_key": "ab2025__health_and_disability_benefits_operations",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 8000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23616:bbb83c0424b857b2",
+   "level": "source_row",
+   "measure_key": "ab2025__health_and_disability_benefits_operations",
+   "threshold_gbp": null,
+   "year": 2026
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__health_and_disability_benefits_operations --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__health_and_disability_benefits_operations_2026"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 80780500.0,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:23604:2e87cb39f5660079",
+   "source_row_number": 23604,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": -5000000.0,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:23610:248daa3c8c1a4425",
+   "source_row_number": 23610,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare outside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 8000000.0,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:23616:bbb83c0424b857b2",
+   "source_row_number": 23616,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Health and Disability Benefits: Improve operations by increasing face-to-face assessments, increasing WCA reassessment capability, and PIP award review changes, starting from April 2026",
+ "year": 2026
+}

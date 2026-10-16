@@ -59,6 +59,7 @@ EVENTS = (
     "spring_budget_2024",
     "spring_statement_2025",
     "spring_budget_2023",
+    "autumn_budget_2025",
 )
 ENGINE_PINS = {
     "policyengine": "5.0.2",
@@ -69,12 +70,15 @@ REPOSITORY_FILES = (
     "pipeline/modal_uk_event.py",
     "pipeline/compute_uk_event.py",
     "pipeline/compute_uk_ab2025.py",
+    "pipeline/stage_uk_ab2025.py",
     "pipeline/compute_uk_obr_costings.py",
     "pipeline/build_uk_event_registry.py",
     "pipeline/uk_engine_registry.py",
     "pipeline/uk_replay_variants.py",
+    "pipeline/uk_construction_revisions.py",
     "data/uk/certified_bundle.json",
     "data/uk/replay_variants.json",
+    "data/uk/events/construction_revisions.json",
     "docs/uk_replay/requirements.txt",
     "docs/uk_replay/OFFLINE_BUNDLE_AUDIT.json",
     "sources/uk_replay/source.json",

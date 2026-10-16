@@ -1,0 +1,1166 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__business_rates_rhl_lower_multipliers_and_high_value_multiplier",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "out_of_household_scope",
+   "computability": "out_of_household_scope",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "out_of_household_scope",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__business_rates_rhl_lower_multipliers_and_high_value_multiplier",
+   "measure_type": "business_tax",
+   "missing_legs": [
+    "Business/sector tax, firm allowance or credit; household income-tax spillovers in the PMD do not make the underlying business measure a household reform."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.hmrc.business_rates.statistics.revenue.ENGLAND",
+     "gov.hmrc.business_rates.statistics.revenue.NORTHERN_IRELAND",
+     "gov.hmrc.business_rates.statistics.revenue.SCOTLAND",
+     "gov.hmrc.business_rates.statistics.revenue.WALES"
+    ],
+    "pattern": "corporation|business|research|firm",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "baseline_business_rates",
+     "business_rates"
+    ]
+   },
+   "note": "Business/sector tax, firm allowance or credit; household income-tax spillovers in the PMD do not make the underlying business measure a household reform.",
+   "pe_gap": "Business/sector tax, firm allowance or credit; household income-tax spillovers in the PMD do not make the underlying business measure a household reform.",
+   "pe_reform_delta": null,
+   "program": "business_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12138:29edd34b16460548",
+     "source_row_number": 12138,
+     "source_row_sha256": "29edd34b16460548e069bd10951547c6b078e4da1a668e60113790b93e78fd6d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Business rates",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": -2878060.734792677,
+     "value_gbp_decimal": "-2878060.734792677"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12139:d6efa97ddf121464",
+     "source_row_number": 12139,
+     "source_row_sha256": "d6efa97ddf121464b4f82a6450508bad8dcd3bda95005108386f0a21fb48ada5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Business rates",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 36600000.00000002,
+     "value_gbp_decimal": "36600000.00000002"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12140:a3d782103cef363f",
+     "source_row_number": 12140,
+     "source_row_sha256": "a3d782103cef363f8150838004259f28d3840d2010c44358a6df73177a1c5639",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Business rates",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 30590034.53936839,
+     "value_gbp_decimal": "30590034.53936839"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12141:20ff4a4e84d4354f",
+     "source_row_number": 12141,
+     "source_row_sha256": "20ff4a4e84d4354fa8d16fa401cc42bb601743ae3a8131b0ec349fb90bb2b627",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Business rates",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 31499921.5050334,
+     "value_gbp_decimal": "31499921.5050334"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12142:b040aec451138a46",
+     "source_row_number": 12142,
+     "source_row_sha256": "b040aec451138a4678f36b0dca9de8f0aadd7d162db3f2ccc216da3277ed5bc6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Business rates",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 31428516.38638672,
+     "value_gbp_decimal": "31428516.38638672"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12143:d35d40c4b97b2944",
+     "source_row_number": 12143,
+     "source_row_sha256": "d35d40c4b97b294442ca16533eca78c411f7684fb867552e39fa24f38b1d78bb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Business rates",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 31390017.28183439,
+     "value_gbp_decimal": "31390017.28183439"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12144:2cd41ec9f17ba80a",
+     "source_row_number": 12144,
+     "source_row_sha256": "2cd41ec9f17ba80a1b2fd61ae8d2917bfaeb277fc1b2750fc975e549639bef3e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12145:c5150d3f922204ea",
+     "source_row_number": 12145,
+     "source_row_sha256": "c5150d3f922204eab08c9fed745752dc0c43c04d5d627720e61d49cfb1832ec4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12146:2d219d4b4f3ab417",
+     "source_row_number": 12146,
+     "source_row_sha256": "2d219d4b4f3ab41713eedc19ef57d59194da6f6d2b1111dd249a8efd1573cf4a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 22457522.92188447,
+     "value_gbp_decimal": "22457522.92188447"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12147:61698b7debaf0a15",
+     "source_row_number": 12147,
+     "source_row_sha256": "61698b7debaf0a1564f140ce410d2f90e45cdb3aa919b8f85cb79dd870900517",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 16157051.085344816,
+     "value_gbp_decimal": "16157051.085344816"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12148:de078921d50bc912",
+     "source_row_number": 12148,
+     "source_row_sha256": "de078921d50bc912e90092f1a2bd03eef818aa0d6eb1a35d22ee0ba214bd2540",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 16208607.0903122,
+     "value_gbp_decimal": "16208607.0903122"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12149:3076e2aea9d6a237",
+     "source_row_number": 12149,
+     "source_row_sha256": "3076e2aea9d6a237da9408e371890066d930a44554d40437925b6b321ab95f39",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 16208911.818810772,
+     "value_gbp_decimal": "16208911.818810772"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12150:a04cf0f76a09ce06",
+     "source_row_number": 12150,
+     "source_row_sha256": "a04cf0f76a09ce068afe3cea37e2a86cbb84f95df57f1c8603aba20e351f009c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12151:032a6e2e551de9e9",
+     "source_row_number": 12151,
+     "source_row_sha256": "032a6e2e551de9e9809a2b4c8039cfbd59e3d246aeb0252842a051696a13c1e9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12152:1844c70b0f3ad4f0",
+     "source_row_number": 12152,
+     "source_row_sha256": "1844c70b0f3ad4f0085d92fd17f3f3b8c74914a11e0b5445df2e0e975b90d885",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 4481996.196871995,
+     "value_gbp_decimal": "4481996.196871995"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12153:01a3574b35124ea7",
+     "source_row_number": 12153,
+     "source_row_sha256": "01a3574b35124ea7f523fdc8b16cdba8c00ab947cb4a43cbf8d1858ff4b3dd9d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 3112193.6331440164,
+     "value_gbp_decimal": "3112193.6331440164"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12154:b49b9ec252821534",
+     "source_row_number": 12154,
+     "source_row_sha256": "b49b9ec25282153462a4d393d1360d1e81e4bbe10da8a275df33e13adc81e62c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 3122129.417488391,
+     "value_gbp_decimal": "3122129.417488391"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12155:87fc96014f9a8ce1",
+     "source_row_number": 12155,
+     "source_row_sha256": "87fc96014f9a8ce1057436b3ed51d13e6634f96d516b20b8002615b7a30a3bf5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 3122320.837460409,
+     "value_gbp_decimal": "3122320.837460409"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12156:1636bb1429a3e00a",
+     "source_row_number": 12156,
+     "source_row_sha256": "1636bb1429a3e00a7c02380698e0f5926853e4e0619d1d9312f292c9b006bcfd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 1649459.9691284995,
+     "value_gbp_decimal": "1649459.9691284995"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12157:598b098a7db201ba",
+     "source_row_number": 12157,
+     "source_row_sha256": "598b098a7db201ba6161a5960a04df30205307a962661b00ee87b74f99f9900e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": -22859788.900852975,
+     "value_gbp_decimal": "-22859788.900852975"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12158:1f8914465750eaf4",
+     "source_row_number": 12158,
+     "source_row_sha256": "1f8914465750eaf453951d1c9f8e3e58477c067604236af1b5b9e33bd7b4f731",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": -22205759.06880512,
+     "value_gbp_decimal": "-22205759.06880512"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12159:3b975ad45201533e",
+     "source_row_number": 12159,
+     "source_row_sha256": "3b975ad45201533e537e0f9491efc61f70c9afa4aa3ea003e64de481709cd5a3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": -22427920.737292424,
+     "value_gbp_decimal": "-22427920.737292424"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12160:28604b116a593dc1",
+     "source_row_number": 12160,
+     "source_row_sha256": "28604b116a593dc18d3f522407bd9247d2b55a8347cb417d8fc8e1eaece408cd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": -22883974.68820571,
+     "value_gbp_decimal": "-22883974.68820571"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12161:560c0e5e5d795172",
+     "source_row_number": 12161,
+     "source_row_sha256": "560c0e5e5d79517216272c7e25c0eac68d62cb449907ab0a379af0b58f56f435",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": -22511828.45211619,
+     "value_gbp_decimal": "-22511828.45211619"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23663:e6ff42b91f753547",
+     "source_row_number": 23663,
+     "source_row_sha256": "e6ff42b91f7535476e580936b46277b8f8d1e95b9bb28fc9e9aff69518d2c56f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": -551042.4540947832,
+     "value_gbp_decimal": "-551042.4540947832"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23664:7d0cd59ed5ffd23f",
+     "source_row_number": 23664,
+     "source_row_sha256": "7d0cd59ed5ffd23f3202d7cbb3bedd8dcc75664829acefe094b1a6554b3b673d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": -64480236.73369309,
+     "value_gbp_decimal": "-64480236.73369309"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23665:62c9ac17549a3961",
+     "source_row_number": 23665,
+     "source_row_sha256": "62c9ac17549a3961ce4a3d04410f97985175b1df044d47bcef717dd2c287c7a4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 5856863.095223048,
+     "value_gbp_decimal": "5856863.095223048"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23666:a3b10dc4e33de161",
+     "source_row_number": 23666,
+     "source_row_sha256": "a3b10dc4e33de1616be9e2679fe991bfb92bc05a5e2628d5a86ac074b4db99a7",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 6031072.8818504345,
+     "value_gbp_decimal": "6031072.8818504345"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23667:9603969948beddca",
+     "source_row_number": 23667,
+     "source_row_sha256": "9603969948beddca1e0279d1694ac624261291f3f977a4f6dca0fa99f4218b2a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 6017401.4358874215,
+     "value_gbp_decimal": "6017401.4358874215"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23668:ca598a45756bff3a",
+     "source_row_number": 23668,
+     "source_row_sha256": "ca598a45756bff3a269e7656b1bb09a6285cfe8588bd01b6aba69b7142448b2a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 6010030.277663929,
+     "value_gbp_decimal": "6010030.277663929"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23669:12f6f13c23b9cfc2",
+     "source_row_number": 23669,
+     "source_row_sha256": "12f6f13c23b9cfc2b54f2e8cbe7dfaa55c3e9fa4bff5a40ee27f92f866da719a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Locally-financed current expenditure",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23670:320d01eb5696465c",
+     "source_row_number": 23670,
+     "source_row_sha256": "320d01eb5696465cd52a255a81a2049428139aacb1bb1255e8464ad6428f528f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Locally-financed current expenditure",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": -19459000.00000006,
+     "value_gbp_decimal": "-19459000.00000006"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23671:f9a3ec3888ff65c7",
+     "source_row_number": 23671,
+     "source_row_sha256": "f9a3ec3888ff65c78178a2d737daac7ab0f7456e0c7def7f7e0d79b94d8fdf32",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Locally-financed current expenditure",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": -19459000.00000006,
+     "value_gbp_decimal": "-19459000.00000006"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23672:523114267babffd1",
+     "source_row_number": 23672,
+     "source_row_sha256": "523114267babffd12deb5f682b6453000c329543c659db4d1289bfb3e52ba1e1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Locally-financed current expenditure",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": -19459000.00000006,
+     "value_gbp_decimal": "-19459000.00000006"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23673:7429908588fa3a50",
+     "source_row_number": 23673,
+     "source_row_sha256": "7429908588fa3a50c31179216d157792b7e9f4199bd113d6fa00fa0f007ea127",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Locally-financed current expenditure",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": -17226000.000000056,
+     "value_gbp_decimal": "-17226000.000000056"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23674:502419d2560889ad",
+     "source_row_number": 23674,
+     "source_row_sha256": "502419d2560889ad9ea03ea6fa0f7dcfde4c40bf9d610518ff30646c39e4576e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Locally-financed current expenditure",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": -17226000.000000056,
+     "value_gbp_decimal": "-17226000.000000056"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23675:517450fa7a3a4792",
+     "source_row_number": 23675,
+     "source_row_sha256": "517450fa7a3a479260a51f9c0c07d3d26f96676d2159dd91b2f47a9fa4701153",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23676:96495bb03656997b",
+     "source_row_number": 23676,
+     "source_row_sha256": "96495bb03656997b6539bcf9855436f9f7735602ccbcb70287d40130f8bc0c52",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 19459000.00000006,
+     "value_gbp_decimal": "19459000.00000006"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23677:cab316c5284835ef",
+     "source_row_number": 23677,
+     "source_row_sha256": "cab316c5284835ef017df69484ac35f03763b06261cf05b7ead5b24ac7e5981d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 19459000.00000006,
+     "value_gbp_decimal": "19459000.00000006"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23678:c94c3ed3310bd3e9",
+     "source_row_number": 23678,
+     "source_row_sha256": "c94c3ed3310bd3e98b1300342893e2c47e74cb43f3dae6beea130aa8af94a448",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 19459000.00000006,
+     "value_gbp_decimal": "19459000.00000006"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23679:2fde307c7ecea996",
+     "source_row_number": 23679,
+     "source_row_sha256": "2fde307c7ecea996eb9fbc3b873d8f39b7d1b95b8e157e583c64db58250296dd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 17226000.000000056,
+     "value_gbp_decimal": "17226000.000000056"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23680:06bcf16e369a3578",
+     "source_row_number": 23680,
+     "source_row_sha256": "06bcf16e369a3578492aa9f6e9eac2c80bebeb6d010d2a41cc541848db5b8fe2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+     "value_gbp": 17226000.000000056,
+     "value_gbp_decimal": "17226000.000000056"
+    }
+   ],
+   "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+   "unmapped_obr_heads": [
+    "Business rates",
+    "Corporation tax (onshore)",
+    "Income tax",
+    "Locally-financed current expenditure",
+    "NICs",
+    "Other AME (current)",
+    "PSCE in RDEL"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 31428516.38638672,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Business rates"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12142:b040aec451138a46",
+   "level": "source_row",
+   "measure_key": "ab2025__business_rates_rhl_lower_multipliers_and_high_value_multiplier",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 16208607.0903122,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12148:de078921d50bc912",
+   "level": "source_row",
+   "measure_key": "ab2025__business_rates_rhl_lower_multipliers_and_high_value_multiplier",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 3122129.417488391,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12154:b49b9ec252821534",
+   "level": "source_row",
+   "measure_key": "ab2025__business_rates_rhl_lower_multipliers_and_high_value_multiplier",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -22883974.68820571,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12160:28604b116a593dc1",
+   "level": "source_row",
+   "measure_key": "ab2025__business_rates_rhl_lower_multipliers_and_high_value_multiplier",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 6017401.4358874215,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23667:9603969948beddca",
+   "level": "source_row",
+   "measure_key": "ab2025__business_rates_rhl_lower_multipliers_and_high_value_multiplier",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -17226000.000000056,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Locally-financed current expenditure"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23673:7429908588fa3a50",
+   "level": "source_row",
+   "measure_key": "ab2025__business_rates_rhl_lower_multipliers_and_high_value_multiplier",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 17226000.000000056,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Other AME (current)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23679:2fde307c7ecea996",
+   "level": "source_row",
+   "measure_key": "ab2025__business_rates_rhl_lower_multipliers_and_high_value_multiplier",
+   "threshold_gbp": null,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__business_rates_rhl_lower_multipliers_and_high_value_multiplier --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__business_rates_rhl_lower_multipliers_and_high_value_multiplier_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 31428516.38638672,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12142:b040aec451138a46",
+   "source_row_number": 12142,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Business rates"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 16208607.0903122,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12148:de078921d50bc912",
+   "source_row_number": 12148,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 3122129.417488391,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12154:b49b9ec252821534",
+   "source_row_number": 12154,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -22883974.68820571,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12160:28604b116a593dc1",
+   "source_row_number": 12160,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 6017401.4358874215,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23667:9603969948beddca",
+   "source_row_number": 23667,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -17226000.000000056,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23673:7429908588fa3a50",
+   "source_row_number": 23673,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Locally-financed current expenditure"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 17226000.000000056,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23679:2fde307c7ecea996",
+   "source_row_number": 23679,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Other AME (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Business Rates: Introduce two new lower multipliers for eligible retail, hospitality and leisure properties funded by a new high-value multiplier from 1 April 2026",
+ "year": 2029
+}

@@ -7,11 +7,15 @@ Status: design contract for workstream W6 of the Autumn Budget 2026 CI plan,
 that release qualification (W4, policyengine.py) can consume before a
 model/data pair is promoted.
 
-Nothing here changes a registered construction. A variant reruns the same
-frozen registries; where a construction's premise no longer holds on a
-variant, that is reported as a construction revision for review, never
-silently repaired. Methodology changes (counterfactual intent, annualisation
-semantics, acceptance policy) wait on cos d1344.
+The registries remain frozen. An explicit construction revision may be
+selected from `data/uk/events/construction_revisions.json` by metadata in
+the installed engine; its SHA-256 is bound in the run manifest and
+premises, and the comparison and release diff identify it. The AB2024 CGT
+revision follows W6's methodology choice under cos d1344 (Max, 15 October
+2026): use the reading supported by the law and land on independent review.
+Other failed premises remain revision candidates. See
+[CONSTRUCTION_REVISIONS.md](CONSTRUCTION_REVISIONS.md) for the decision,
+statutory citation and recorded limits.
 
 ## Why the existing runner cannot rerun
 
@@ -202,7 +206,9 @@ FY2023–24 counterparts; that loss is shown, never hidden.
 * Legacy results stay where they are, in `results/uk/events/<event>/`.
 * Every other variant writes to `results/uk/replays/<variant_id>/`:
   `<event>/` (the same files as a legacy event directory), `SUMMARY.md`,
-  `SUPPORT.json`, `CONSTRUCTION_PREMISES.json`, `MODEL_DIAGNOSTICS.json`,
+  `SUPPORT.json`, `CORPUS.json` (a qualification run's corpus version and
+  events, written before any event runs), `CONSTRUCTION_PREMISES.json`,
+  `MODEL_DIAGNOSTICS.json`,
   `REQUEST.json` (the re-serialised qualification request the run answers),
   `INSTALL.json` (whether installation used the certified requirements,
   certified constraints or free resolution), and finally
@@ -216,9 +222,12 @@ FY2023–24 counterparts; that loss is shown, never hidden.
   its release diff), the receipt binds that manifest's digest, the runner
   refuses to write there (compute, staging, comparison and the summary all
   check), and CI fails if any sealed byte changes. `verify-sealed` derives
-  the expected namespaces from the variants index: every record with
-  `layout: "replay_namespace"` whose `result_root` exists must have both
-  sealing files. Deleting a receipt or manifest therefore fails the check.
+  the expected namespaces from the variants index: a record with
+  `layout: "replay_namespace"` must have both sealing files when its
+  namespace holds an event `RUN_MANIFEST.json`, a `CORPUS.json`, a receipt or
+  a namespace manifest (`uk_replay_qualify`, `must_be_sealed`). A namespace
+  holding only premises, diagnostics or a summary stays unsealed. Deleting a
+  receipt or manifest therefore fails the check.
 * Each corpus qualification creates a detached checkout of the runner's `HEAD`
   under `<work>/checkout`. It deletes the candidate's namespace and selected
   diff directory inside that checkout, computes every event there without
@@ -231,6 +240,53 @@ FY2023–24 counterparts; that loss is shown, never hidden.
   own committed run when `compare_to` is `latest_certified`; this doubles as
   a determinism check.
 * Release differences live in `results/uk/replays/diffs/<base>__<head>/`.
+
+### Committed certified results
+
+`results/uk/replays/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/` holds
+the receiver's qualification of policyengine.py 6.4.1: request `b1f9a93d…`,
+receipt SHA-256 `3b420b5e…`, `replay-state` commit `484eaa7`. Its release
+diff against the legacy variant is committed beside it. All six corpus events
+have complete supported grids and no inert measure-years.
+
+The run predates the processed-value readback and the AB2024 CGT construction
+revision (#186). Its AB2024 Capital Gains Tax row for period 2024 (FY2024–25)
+therefore executes the frozen reversal on policyengine-uk 2.130.1's statutory
+reprocessing route, and carries that route's rate blend. The registry's
+30 October 2024 start (which the artifacts record) is executed as the window
+1 January 2025 to 31 December 2035 (`compute_uk_event.annual_reform`).
+Reprocessed with `fiscal_year_blend`, that window also covers 95 of
+FY2024–25's 365 days. By the day-weighting rule, the reversal world's
+FY2024–25 rates are basic 0.1138 against an intended 0.1346, and higher and
+additional 0.2069 against 0.2173. The frozen construction intends identical
+worlds in period 2024, yet the row records +£0.575bn. That figure comes from
+the route; it is not a PolicyEngine costing of the FY2024–25 increase.
+
+Periods 2025 to 2029 (FY2025–26 to FY2029–30) fall wholly inside the window,
+so their reversal rates are the intended 0.10 and 0.20. A rerun with #186
+executes the revision and refuses any processed mismatch in an in-force year.
+
+CI's real replay of this variant (pushes only) recomputes one artifact with
+the current code, which also writes the processed-value evidence fields. A
+committed artifact from before that check is compared with exactly those
+fields removed, and the step says so in a notice; every other byte must match
+(`pipeline/uk_replay_determinism.py`).
+
+`results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/` holds
+the qualification of policyengine.py 6.5.0: request `d83eaf59…`, receipt
+SHA-256 `a7a67c26…`, `replay-state` commit `19a9ccd`. It ran with #186, so
+every artifact carries its processed values and the AB2024 CGT revision
+`ab2024_cgt_fiscal_year_blend.v1` is selected. Integrity is complete with no
+failures, and all six events have complete supported grids and no inert
+measure-years. Its release diff is against 6.4.1, the newest certified
+variant with committed results at the time. That diff flags eight rows, all
+of them AB2024 CGT main rates. Period 2024 moves from +£0.575bn to +£0.956bn,
+the blended FY2024–25 increase, with processed rates equal to intended in
+both worlds. Periods 2025 to 2029 carry only the construction flag, and their
+values are unchanged. No other row in any event moved. AB2025's high-value
+council tax surcharge artifacts for 2025 to 2027 record
+`processed_value_notes` (policyengine-uk#2435); their totals are zero. CI's
+real replay of this variant compares whole bytes.
 
 ## Version-scoped diagnoses
 
@@ -262,10 +318,22 @@ measured issue candidates as current only when the re-verified status is
 
 ## Construction premises
 
+A namespace's premises and its `SUMMARY.md` cover the same events
+(`uk_replay_variants.namespace_events`). A qualification run records its
+corpus in `CORPUS.json` (corpus version and events) before replaying any
+event, and that record decides. Without one (the legacy namespace, or a
+namespace holding no run), they cover the events it holds results for (an
+event directory with `RUN_MANIFEST.json`), or every registered replay event
+when it holds none. A namespace whose bytes a seal or a release diff binds (a
+diff records each side's premises digest) therefore keeps them when a later
+event is registered, even if every event of its run failed. A qualification
+run writes its summary last, after the re-verified diagnostics, which the
+summary renders.
+
 `pipeline/audit_uk_event_premises.py` records, for each executable measure,
 year and parameter path the construction touches, on a given engine:
 current-law value at the annual lookup (1 January of the year), the raw
-value at 30 April, the executed baseline-world and reform-world values, and
+value at 30 April, the intended baseline-world and reform-world values, and
 these checks:
 
 | Check | Fails when |
@@ -290,10 +358,38 @@ before fiscal-year conversion. Installed-engine tests
 compare the CGT values directly and regenerate the corresponding committed
 premises; the engine-free suite reports an explicit skip for those checks.
 
+`baseline_world` and `reform_world` are the intended processed period-Y
+values: the construction's value at 1 January Y when its annual override
+contains that date, otherwise the current-law annual value. The premises
+audit and executor use one shared function to compute them. These fields
+describe the construction's intent; a parameter-only annual lookup does
+not prove a simulation executed it. This distinction matters when a reform
+is written to the statutory timeline and annualised again.
+
+For every replay, immediately after constructing each world's simulation
+and before any aggregate is calculated, the executor reads period Y from that
+simulation's own processed parameter tree for every path touched by either
+world. It records both the intended and processed values, per path and
+world, in the measure-year artifact; agreement means relative difference
+within `1e-9`, or both values absent. It reads the tree the engine actually
+built, so it checks both the
+annual-lookup and statutory-reprocessing routes without predicting either
+from a version string. Legacy-layout runs omit the field and retain their
+artifact bytes.
+
+In policyengine-uk 2.130.1, a construction-time reform's `start.stop`
+interval is written onto the statutory timeline before processing
+(`utils/dated_reforms.py`, `read_reform_dict`, and
+`tax_benefit_system.py`, `_rebuild`). A 1 January Y interval on a
+`fiscal_year_blend` path therefore also changes part of period Y−1. The
+AB2024 CGT revision uses complete fiscal-year intervals on that route;
+the annual-lookup route uses intervals containing 1 January of the intended
+year. The executed processed-value check remains mandatory in either case.
+
 A failed check is a **construction revision candidate**, reported in the
 release diff's construction flags and summarised in
-`docs/uk_replay/CONSTRUCTION_REVISIONS.md` with a proposed revision. Running
-a revised construction is a methodology change and waits on d1344.
+`docs/uk_replay/CONSTRUCTION_REVISIONS.md`. A selected revision is recorded
+there with its d1344 basis and exceptions; it never edits a frozen registry.
 
 Observed on 2.125.1 on 11 October (parameter tree only):
 
@@ -308,8 +404,10 @@ Observed on 2.125.1 on 11 October (parameter tree only):
   parameters over 6 April–5 April (`fiscal_year_average`) instead of
   sampling 30 April: 0.10 × 207/365 + 0.18 × 158/365 = 0.1346. The AB2024
   note assumes 2.89.2's raw 2025-04-06 date and 30 April sampling. The
-  reversal, first selected in January 2025, leaves the blended 2024 increase
-  in both worlds, so CY2024 shows no effect although current law has one.
+  frozen reversal, first selected in January 2025, leaves the blended 2024
+  increase in both worlds on this engine's annual-lookup route. The selected
+  construction revision instead holds the pre-announcement 10%/20% through
+  FY2024–25, activating FY2024–25 on blend engines. FY2023–24 is unchanged.
 * The UC childcare cap path (2024 £1,014.63 for one child) and the benefit
   CPI path feed the SB2023 and SS2025 frozen counterfactuals, which were
   derived from 2.89.2's values.
@@ -373,6 +471,12 @@ statutory sources each registry already cites with side attribution, and empty
 Removed measures retain their base title, source cells and citations.
 Packets are evidence for the coordinating session, which files upstream
 issues; this pipeline files none.
+
+`DIFF.json` also records, per side, `grids`: each event's grid as that side's
+verified staging recorded it (`diff_uk_event_runs.staging_grid`: supported
+years from the run manifest, `full_supported_grid_complete`, and the inert,
+missing and unsupported measure-years), for variant runs only. A
+qualification receipt copies the base side's into `diff.base_events`.
 
 Diff invariants are checked with deterministic cases and Hypothesis properties
 in `tests/test_uk_event_diff.py`: identical sides raise no flags; swapping sides
@@ -544,6 +648,32 @@ such a pair leaves the grid incomplete and is listed in
 `inert_measure_years`. Whether either blocks promotion is W4's qualification
 policy.
 
+A processed parameter value that differs from its intended value is an
+integrity failure. The values are read before aggregation; whether a
+mismatch refuses the measure-year is decided once both worlds are computed
+(`compute_uk_event.processed_value_failures`). It refuses when the mismatch
+is in the certified current law, when the measure is in force that year
+(from its `commences_fy`), or when the two worlds' totals differ (gov_tax,
+gov_spending, household net income or any declared head). The executor then
+refuses to write the measure-year artifact; qualification records
+`processed_value_mismatch` with `event`, `measure_key` and `year`, plus
+`world`, `path`, `intended` and `processed` as JSON in the receipt schema's
+`detail` field, and returns a failed receipt. This check does not depend on
+a nonzero fiscal-head result: an in-force construction routed to a different
+annual value fails even when its population effect happens to be zero.
+
+The one accepted mismatch is in an announcement world, never the certified
+current law, in a year before the measure commences whose two worlds come
+out identical: it moved none of those totals. A `commences_fy` that is not a
+complete `YYYY-YY` label for consecutive years is an error, not a deferral. The artifact
+is written and lists each such mismatch under `processed_value_notes`, with
+the same fields and `"accepted": "not_in_force_identical_worlds"`. In
+policyengine-uk 2.130.1, a construction-time change starting on a
+parameter's first stated date is rebuilt without its prior law, so a
+reversal's value also appears in earlier years. AB2025's high-value council
+tax surcharge shows this in 2025 to 2027, where its formula returns zero
+before 2028.
+
 A step that fails before the candidate's identity is known yields a `failed`
 receipt with no execution block. If no event outputs exist, `corpus` is null.
 An exception while building, sealing or copying the receipt's results yields
@@ -578,7 +708,7 @@ holds heavy local work back from 29 October to 2 November.
   every present namespace indexed as `replay_namespace` must have a receipt
   and manifest matching its bytes. The no-drift gate uses
   `git status --porcelain`, so newly generated untracked files fail too.
-* `replay engine`, for the two certified variants in its CI matrix: installs
+* `replay engine`, for each certified variant in its CI matrix: installs
   each variant's exact
   freeze, checks the installed environment against the record, runs every
   event's construction guards, regenerates the committed construction

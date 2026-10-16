@@ -404,7 +404,9 @@ def test_integration_committed_db(tmp_path):
     # 14 ASPE Indicator 4 claims at their latest period (TANF, SNAP, SSI) +
     # 88 Census STC State income tax collections (44 jurisdictions, FY2023
     # and FY2025) with CY2024 counterparts (#176).
-    assert dist == {"US": 535, "UK": 5163 + 23_752, "BE": 9, "NZ": 12}
+    # The March 2026 PMD contributes only its 246 new cells; November's
+    # historical/comprehensive claims and the existing main feed stay intact.
+    assert dist == {"US": 535, "UK": 5163 + 23_752 + 246, "BE": 9, "NZ": 12}
     nz = [row for row in payload["rows"] if row["country"] == "NZ"]
     assert len(nz) == 12
     assert {row["source"] for row in nz} == {"nz_treasury"}

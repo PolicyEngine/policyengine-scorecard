@@ -350,6 +350,17 @@ def _verify_premises(premises: dict, identity: dict, events: dict, path: Path):
             raise DiffError(
                 f"{path}: {event} premises name another registry than the run"
             )
+        if event in events:
+            selected = events[event]["manifest"].get("construction_revisions", {})
+            recorded = {
+                key: measure["construction_revision"]
+                for key, measure in (record.get("measures") or {}).items()
+                if measure.get("construction_revision") is not None
+            }
+            if recorded != selected:
+                raise DiffError(
+                    f"{path}: {event} premises construction revisions differ from the run"
+                )
 
 
 def load_side(
@@ -416,6 +427,7 @@ def load_side(
                     provenance_path.read_bytes()
                 ),
             },
+            "grid": staging_grid(manifest, staging),
         }
     if not events:
         raise DiffError(f"{root}: no replayed events")
@@ -436,6 +448,26 @@ def load_side(
         "premises_sha256": sha256_bytes(premises_path.read_bytes())
         if premises is not None
         else None,
+    }
+
+
+def staging_grid(manifest: dict, staging: dict) -> dict | None:
+    """An event's grid from a variant run's verified staging tally (stage_uk_event:
+    the run's supported years come from its RUN_MANIFEST.json, as staging
+    does not record them). None for a legacy-layout run, whose staging has no
+    variant grid fields: no gap is ever inferred for it.
+
+    missing_measure_years is the full event grid without an artifact, so it
+    includes the unsupported pairs; a supported-grid gap is a missing pair
+    that is not unsupported."""
+    if staging.get("variant_id") is None:
+        return None
+    return {
+        "supported_years": sorted(manifest["supported_years"]),
+        "full_supported_grid_complete": bool(staging["full_supported_grid_complete"]),
+        "inert_measure_years": staging.get("inert_measure_years", []),
+        "missing_measure_years": staging["missing_measure_years"],
+        "unsupported_measure_years": staging["unsupported_measure_years"],
     }
 
 
@@ -710,6 +742,15 @@ def compare_artifacts(
                                 "code": f"{world}_reform_dict_changed",
                             }
                         )
+                if b.get("construction_revision") != h.get("construction_revision"):
+                    details.append(
+                        {
+                            "flag": "construction",
+                            "code": "construction_revision_changed",
+                            "base": b.get("construction_revision"),
+                            "head": h.get("construction_revision"),
+                        }
+                    )
                 inert = (
                     (measure_key, year) in base["inert_pairs"],
                     (measure_key, year) in head["inert_pairs"],
@@ -850,6 +891,13 @@ def diff_sides(base: dict, head: dict) -> dict:
                 event: data["inputs"] for event, data in sorted(side["events"].items())
             },
             "premises_sha256": side["premises_sha256"],
+            # Each event's grid as this side's own verified staging recorded
+            # it; the replay receipt carries the base side's as base_events.
+            "grids": {
+                event: data["grid"]
+                for event, data in sorted(side["events"].items())
+                if data.get("grid") is not None
+            },
         }
 
     return {

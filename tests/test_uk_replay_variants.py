@@ -25,6 +25,8 @@ from pipeline import uk_replay_variants as rv
 
 LEGACY = "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
 CURRENT = "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+PREVIOUS = "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+NEWEST = "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
 DATASET_SHA256 = rv.get_variant(CURRENT)["identity"]["dataset"]["sha256"]
 
 
@@ -45,13 +47,26 @@ def reseal(r):
 def test_committed_variants_validate_and_default_is_legacy():
     document = rv.load_document()
     assert document["default_variant"] == LEGACY
-    assert {v["variant_id"] for v in document["variants"]} == {LEGACY, CURRENT}
+    assert [v["variant_id"] for v in document["variants"]] == [
+        LEGACY,
+        CURRENT,
+        PREVIOUS,
+        NEWEST,
+    ]
     for variant in document["variants"]:
         rv.validate_record(variant)
     assert rv.is_legacy(rv.get_variant())
     assert not rv.is_legacy(rv.get_variant(CURRENT))
     with pytest.raises(rv.VariantError, match="no replay variant"):
         rv.get_variant("pe9.9.9_uk9.9.9_unknown")
+
+
+def test_the_committed_index_is_in_canonical_form():
+    # Review of 500bf94: a hand-added field must sit in its sorted position.
+    from pipeline.compute_uk_event import canonical_bytes
+
+    raw = rv.VARIANTS_PATH.read_bytes()
+    assert raw == canonical_bytes(json.loads(raw))
 
 
 def test_identity_bytes_equal_rfc8785_for_committed_identities():
@@ -441,8 +456,8 @@ def measure():
     }
 
 
-def simulation(tax, benefit):
-    return {
+def simulation(tax, benefit, pre=None):
+    result = {
         "aggregates_gbp": {
             "income_tax": float(tax),
             "universal_credit": float(benefit),
@@ -459,6 +474,17 @@ def simulation(tax, benefit):
         "dataset_sha256_after": DATASET_SHA256,
         "performance": {"wall_seconds": 1},
     }
+    if pre is not None:
+        result["processed_parameter_values"] = {
+            path: value
+            for check in pre["parameter_checks"]
+            for path, value in check["intended_values"].items()
+        }
+        result["parameter_reform_route"] = {
+            "entry_point": "fake",
+            "submitted_reform": None,
+        }
+    return result
 
 
 def test_variant_run_skips_unsupported_years_and_stages_them_visibly(
@@ -491,7 +517,7 @@ def test_variant_run_skips_unsupported_years_and_stages_them_visibly(
 
     def fake_run(year, variables, reform, pre):
         years.append(year)
-        return simulation(900, 1000) if reform else simulation(1000, 1030)
+        return simulation(900, 1000, pre) if reform else simulation(1000, 1030, pre)
 
     monkeypatch.setattr(compute, "run_sim", fake_run)
     output = tmp_path / "results" / "uk" / "replays" / CURRENT / "test_event"
@@ -640,7 +666,7 @@ def staged_variant_run(tmp_path, monkeypatch):
         compute,
         "run_sim",
         lambda year, variables, reform, pre: (
-            simulation(900, 1000) if reform else simulation(1000, 1030)
+            simulation(900, 1000, pre) if reform else simulation(1000, 1030, pre)
         ),
     )
     output = tmp_path / "results" / "uk" / "replays" / CURRENT / "test_event"
@@ -1175,6 +1201,7 @@ def test_the_legacy_preflight_is_isolated_and_checks_its_release_bundle(monkeypa
 
 def test_guards_check_the_environment_and_compile_from_source(monkeypatch):
     calls = []
+    monkeypatch.setattr(compute, "revised_worlds", lambda runnable: runnable)
     monkeypatch.setattr(
         compute, "check_variant_environment", lambda variant: calls.append("installed")
     )
@@ -1403,3 +1430,27 @@ def test_variant_preflight_hands_the_records_data_years_to_every_run():
     assert pre["data_years"] == record()["data_years"]
     assert pre["require_dataset_years"] is True
     assert pre["check_import_origins"] is True
+
+
+def test_namespace_events_follow_the_recorded_corpus_first(tmp_path):
+    # Review of bfd6442: a sealed namespace whose events all failed before
+    # writing a run manifest keeps the corpus it recorded, so its premises and
+    # summary do not grow when another event is registered.
+    from pipeline.build_uk_event_registry import EVENTS
+
+    registered = list(EVENTS)
+    assert rv.namespace_events(tmp_path) == registered
+    (tmp_path / registered[2]).mkdir()
+    (tmp_path / registered[2] / "RUN_MANIFEST.json").write_text("{}")
+    assert rv.namespace_events(tmp_path) == [registered[2]]
+    corpus = [registered[3], registered[0]]
+    (tmp_path / rv.CORPUS_NAME).write_text(
+        json.dumps({"corpus_version": "x", "events": corpus})
+    )
+    # The recorded corpus decides, in registry order, whatever holds results.
+    assert rv.namespace_events(tmp_path) == [registered[0], registered[3]]
+    (tmp_path / rv.CORPUS_NAME).write_text(
+        json.dumps({"corpus_version": "x", "events": ["not_registered"]})
+    )
+    with pytest.raises(rv.VariantError, match="unregistered"):
+        rv.namespace_events(tmp_path)

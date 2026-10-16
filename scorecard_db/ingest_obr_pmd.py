@@ -292,6 +292,17 @@ def partition() -> tuple[list[Cell], dict[int, ExternalScore], list[Cell]]:
     return cells, legacy, complement
 
 
+def is_replay_registry(registry: dict) -> bool:
+    """A registry the replay can run. A historical registry whose execution
+    needs an event population is source accounting only
+    (pipeline/build_uk_event_registry.py historical_execution): its cells keep
+    the inventory's keys, which can differ by tax head within one measure,
+    until the event replays."""
+    execution = registry.get("execution") or {}
+    # build_uk_event_registry.REQUIRES_EVENT_POPULATION; a test pins the two.
+    return execution.get("status") != "requires_event_population"
+
+
 def inventory_by_line(cells: list[Cell] | None = None) -> dict[int, dict]:
     """The inventory source pointers, verified against the full staged cell."""
     cells = cells if cells is not None else load_cells()
@@ -403,6 +414,8 @@ def _metadata(
     registry_lines = set()
     for path in sorted((REPO / "data" / "uk" / "events").glob("*_measures.json")):
         registry = json.loads(path.read_text())
+        if not is_replay_registry(registry):
+            continue
         for measure in registry["measures"]:
             for pointer in measure["source_rows"]:
                 n = pointer["source_row_number"]

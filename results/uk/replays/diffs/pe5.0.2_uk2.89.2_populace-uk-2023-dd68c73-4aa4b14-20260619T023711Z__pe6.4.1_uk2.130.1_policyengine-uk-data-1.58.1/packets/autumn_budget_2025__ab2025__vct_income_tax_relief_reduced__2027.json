@@ -1,0 +1,677 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2027-28",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__vct_income_tax_relief_reduced",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "construction_pending",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__vct_income_tax_relief_reduced",
+   "measure_type": "other",
+   "missing_legs": [
+    "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.ma_rate",
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.max_child_age",
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.remove_income_condition",
+     "gov.contrib.cps.marriage_tax_reforms.marriage_neutral_it.max_child_age",
+     "gov.contrib.cps.marriage_tax_reforms.marriage_neutral_it.neutralise_income_tax",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[0].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[0].threshold",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[1].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[1].threshold",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[2].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[2].threshold",
+     "gov.dwp.ESA.eligibility.min_age",
+     "gov.dwp.JSA.eligibility.min_age",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.severe.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.child_age_limit",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.child_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.child_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.terminal_date_age_limit",
+     "gov.dwp.winter_fuel_payment.eligibility.higher_age_requirement",
+     "gov.dwp.winter_fuel_payment.eligibility.require_benefits",
+     "gov.dwp.winter_fuel_payment.eligibility.state_pension_age_requirement",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income",
+     "gov.hmrc.child_benefit.eligibility.child_age_limit",
+     "gov.hmrc.child_benefit.eligibility.education_or_training_start_age_limit",
+     "gov.hmrc.child_benefit.eligibility.qualifying_young_person_age_limit",
+     "gov.hmrc.stamp_duty.statistics.non_residential.corporate.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.non_residential.corporate.transactions",
+     "gov.hmrc.stamp_duty.statistics.non_residential.household.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.non_residential.household.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.corporate.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.residential.corporate.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[0].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[0].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[10].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[10].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[11].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[11].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[12].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[12].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[13].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[13].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[1].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[1].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[2].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[2].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[3].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[3].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[4].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[4].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[5].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[5].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[6].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[6].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[7].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[7].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[8].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[8].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[9].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[9].threshold",
+     "gov.social_security_scotland.pawhp.eligibility.higher_age_requirement",
+     "gov.social_security_scotland.pawhp.eligibility.require_benefits",
+     "gov.social_security_scotland.pawhp.eligibility.state_pension_age_requirement",
+     "gov.wra.land_transaction_tax.non_residential[0].rate",
+     "gov.wra.land_transaction_tax.non_residential[0].threshold",
+     "gov.wra.land_transaction_tax.non_residential[1].rate",
+     "gov.wra.land_transaction_tax.non_residential[1].threshold",
+     "gov.wra.land_transaction_tax.non_residential[2].rate",
+     "gov.wra.land_transaction_tax.non_residential[2].threshold",
+     "gov.wra.land_transaction_tax.non_residential[3].rate",
+     "gov.wra.land_transaction_tax.non_residential[3].threshold",
+     "gov.wra.land_transaction_tax.rent[0].rate",
+     "gov.wra.land_transaction_tax.rent[0].threshold",
+     "gov.wra.land_transaction_tax.rent[1].rate",
+     "gov.wra.land_transaction_tax.rent[1].threshold",
+     "gov.wra.land_transaction_tax.rent[2].rate",
+     "gov.wra.land_transaction_tax.rent[2].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[0].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[0].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[1].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[1].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[2].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[2].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[3].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[3].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[4].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[4].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[5].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[5].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[0].rate",
+     "gov.wra.land_transaction_tax.residential.primary[0].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[1].rate",
+     "gov.wra.land_transaction_tax.residential.primary[1].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[2].rate",
+     "gov.wra.land_transaction_tax.residential.primary[2].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[3].rate",
+     "gov.wra.land_transaction_tax.residential.primary[3].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[4].rate",
+     "gov.wra.land_transaction_tax.residential.primary[4].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[5].rate",
+     "gov.wra.land_transaction_tax.residential.primary[5].threshold"
+    ],
+    "pattern": "transaction|eligibility|reform",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "land_and_buildings_transaction_tax",
+     "land_transaction_tax",
+     "lbtt_on_non_residential_property_transactions",
+     "lbtt_on_residential_property_transactions",
+     "lbtt_on_transactions",
+     "ltt_on_non_residential_property_transactions",
+     "ltt_on_residential_property_transactions",
+     "ltt_on_transactions",
+     "sdlt_on_non_residential_property_transactions",
+     "sdlt_on_residential_property_transactions",
+     "sdlt_on_transactions"
+    ]
+   },
+   "note": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+   "pe_gap": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+   "pe_reform_delta": null,
+   "program": "other",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12198:a2d617e54bb54c7c",
+     "source_row_number": 12198,
+     "source_row_sha256": "a2d617e54bb54c7c109c495aeff5c745197e955667dcd6f721f178f0609654c6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12199:ad3a3414f5407811",
+     "source_row_number": 12199,
+     "source_row_sha256": "ad3a3414f54078111868a06eddc8db19e1b0671d7489cb7c0fc260deb478a51c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12200:7bba23cebdfa37a7",
+     "source_row_number": 12200,
+     "source_row_sha256": "7bba23cebdfa37a7ddac3761adca3800801e140bd8caf6d394369489eabbc063",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 115000000.0,
+     "value_gbp_decimal": "115000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12201:881693ed0faea105",
+     "source_row_number": 12201,
+     "source_row_sha256": "881693ed0faea10560fc01085441042d770cc1377b5820ba9bbb351e962c7ff2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 86000000.0,
+     "value_gbp_decimal": "86000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12202:6af04195630ffd0f",
+     "source_row_number": 12202,
+     "source_row_sha256": "6af04195630ffd0fb9dca648f9ea7ae3d9af425accf72f65c24930f62908fd00",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 89000000.0,
+     "value_gbp_decimal": "89000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12203:f32083ee3e7fdd78",
+     "source_row_number": 12203,
+     "source_row_sha256": "f32083ee3e7fdd78ef517cf6187d92c3572424e29e87d519d87c41a4b314ac9b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 92000000.0,
+     "value_gbp_decimal": "92000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23705:c261c04dab55a0e9",
+     "source_row_number": 23705,
+     "source_row_sha256": "c261c04dab55a0e9c52412f650ee5ced19c0cc353cbd5ef8718b98eebd21b53e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23706:8995ed1899e03b8f",
+     "source_row_number": 23706,
+     "source_row_sha256": "8995ed1899e03b8fee855b23147ecbefca964e1eef458d2102df6540e6467085",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23707:0897206211f1f7fa",
+     "source_row_number": 23707,
+     "source_row_sha256": "0897206211f1f7fa29d85c20a75430183451d77326216eae1f0c6ab510b1b2f5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 2000000.0,
+     "value_gbp_decimal": "2000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23708:c665bda6e0c3ccf7",
+     "source_row_number": 23708,
+     "source_row_sha256": "c665bda6e0c3ccf7c37148deb1fdfc72bbe18858fa69043e040e4cf68c78ea18",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 1000000.0,
+     "value_gbp_decimal": "1000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23709:e04856666ae93ed2",
+     "source_row_number": 23709,
+     "source_row_sha256": "e04856666ae93ed282768392c85689993e0a716fc993bca3a591355b8c595ff8",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 1000000.0,
+     "value_gbp_decimal": "1000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23710:5bd61da0191a57f2",
+     "source_row_number": 23710,
+     "source_row_sha256": "5bd61da0191a57f213b00d96c15bb827b279bfab8a01d054f2279a9143621322",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 1000000.0,
+     "value_gbp_decimal": "1000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23711:38ae5dc9d21665d5",
+     "source_row_number": 23711,
+     "source_row_sha256": "38ae5dc9d21665d51628e74cb79478191c0ff4bb366b39e89501c42d5f9515e7",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23712:07eeefc006d91e1e",
+     "source_row_number": 23712,
+     "source_row_sha256": "07eeefc006d91e1eca9c5c7be7df55be2e9f37d0fa5e8fbd972a5bc0b8306f53",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23713:aa115a0100443401",
+     "source_row_number": 23713,
+     "source_row_sha256": "aa115a01004434015198cc4737b223505f9c4a021ef27d888b5afd2934fdc8dc",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 9000000.0,
+     "value_gbp_decimal": "9000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23714:a1161de3029160de",
+     "source_row_number": 23714,
+     "source_row_sha256": "a1161de3029160dee28b80d7b2175bb839d7f974a0c1b1da77daa686b87b6a03",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 6000000.0,
+     "value_gbp_decimal": "6000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23715:0d4cd6e131ee1a4e",
+     "source_row_number": 23715,
+     "source_row_sha256": "0d4cd6e131ee1a4e22418bfa872f1e87296dce1154f994e7382dd78a1154fcc1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 7000000.0,
+     "value_gbp_decimal": "7000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23716:5b5abd5e1c372e8b",
+     "source_row_number": 23716,
+     "source_row_sha256": "5b5abd5e1c372e8ba5a18a6cd0eafd80b7beaff3f65e839e1a7311fe028d5010",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+     "value_gbp": 7000000.0,
+     "value_gbp_decimal": "7000000.0"
+    }
+   ],
+   "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+   "unmapped_obr_heads": [
+    "Income tax",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": 115000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12200:7bba23cebdfa37a7",
+   "level": "source_row",
+   "measure_key": "ab2025__vct_income_tax_relief_reduced",
+   "threshold_gbp": null,
+   "year": 2027
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": 2000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23707:0897206211f1f7fa",
+   "level": "source_row",
+   "measure_key": "ab2025__vct_income_tax_relief_reduced",
+   "threshold_gbp": null,
+   "year": 2027
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2027-28",
+    "obr_value_gbp": 9000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23713:aa115a0100443401",
+   "level": "source_row",
+   "measure_key": "ab2025__vct_income_tax_relief_reduced",
+   "threshold_gbp": null,
+   "year": 2027
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__vct_income_tax_relief_reduced --years 2027 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__vct_income_tax_relief_reduced_2027"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": 115000000.0,
+   "side": "head",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:12200:7bba23cebdfa37a7",
+   "source_row_number": 12200,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": 2000000.0,
+   "side": "head",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:23707:0897206211f1f7fa",
+   "source_row_number": 23707,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2027-28",
+   "head_gbp": null,
+   "obr_value_gbp": 9000000.0,
+   "side": "head",
+   "source_column": "2027-28",
+   "source_row_id": "obr_pmd_nov2025:23713:aa115a0100443401",
+   "source_row_number": 23713,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Venture Capital Schemes: Reduce the VCT scheme Income Tax relief from 6 April 2026",
+ "year": 2027
+}

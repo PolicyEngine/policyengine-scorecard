@@ -97,7 +97,7 @@ def run_identity(directory: Path) -> dict:
     is treated as the legacy run, as before."""
     path = directory / "RUN_MANIFEST.json"
     manifest = json.loads(path.read_bytes()) if path.exists() else {}
-    return {
+    identity = {
         "engine_version": manifest.get("engine_version", LEGACY_ENGINE),
         "policyengine_version": manifest.get("policyengine_version"),
         "data_bundle": manifest.get("data_bundle"),
@@ -106,6 +106,9 @@ def run_identity(directory: Path) -> dict:
         "unsupported_years": manifest.get("unsupported_years", []),
         "run_manifest": path if "variant_id" in manifest else None,
     }
+    if manifest.get("construction_revisions"):
+        identity["construction_revisions"] = manifest["construction_revisions"]
+    return identity
 
 
 def is_variant(identity: dict | None) -> bool:
@@ -304,6 +307,19 @@ def construction_note(
     about this run."""
     key = measure["measure_key"]
     note = measure.get("note", "")
+    revision = (identity or {}).get("construction_revisions", {}).get(key)
+    if revision is not None:
+        from pipeline import uk_construction_revisions as revisions
+
+        recorded = revisions.get_revision(key, revision)
+        return " ".join(
+            [
+                f"Construction revision {recorded['revision_id']} ran:",
+                recorded["intent"],
+                *recorded.get("limitations", []),
+                "Evidence is recorded in CONSTRUCTION_PREMISES.json.",
+            ]
+        )
     if is_variant(identity) or engine_version != LEGACY_ENGINE:
         if not note:
             return ""
@@ -1639,12 +1655,22 @@ def write_summary(events_root: Path, *, artifact_root: Path = ROOT) -> None:
             (artifact_root / "data" / "uk" / "events").glob("*_measures.json")
         )
     }
+    # A namespace summarises the events its premises cover
+    # (uk_replay_variants.namespace_events): a sealed or diff-bound
+    # namespace's summary then regenerates byte for byte after a later event
+    # is registered, and historical registries (source accounting only)
+    # appear in no replay namespace's summary.
+    covered = set(variants.namespace_events(events_root))
+    registries = {
+        event: registry for event, registry in registries.items() if event in covered
+    }
     identities = {
         json.dumps(
             {
                 k: v
                 for k, v in run_identity(path.parent).items()
-                if k not in ("run_manifest", "unsupported_years")
+                if k
+                not in ("run_manifest", "unsupported_years", "construction_revisions")
             },
             sort_keys=True,
         )
