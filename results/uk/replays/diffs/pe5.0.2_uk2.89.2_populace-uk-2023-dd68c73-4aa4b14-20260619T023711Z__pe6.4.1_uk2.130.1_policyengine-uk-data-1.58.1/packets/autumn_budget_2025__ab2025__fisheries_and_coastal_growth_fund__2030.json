@@ -1,0 +1,403 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2030-31",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__fisheries_and_coastal_growth_fund",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "out_of_household_scope",
+   "computability": "out_of_household_scope",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "out_of_household_scope",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__fisheries_and_coastal_growth_fund",
+   "measure_type": "scope",
+   "missing_legs": [
+    "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "firm|corporation|department|block_grant",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_gap": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_reform_delta": null,
+   "program": "scope",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23753:ff8478d2fe8e538e",
+     "source_row_number": 23753,
+     "source_row_sha256": "ff8478d2fe8e538ee2789dc441448fe4ddec09c89d462254935982a632203437",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23754:2c1e5cd6fe493ee1",
+     "source_row_number": 23754,
+     "source_row_sha256": "2c1e5cd6fe493ee1c25cf922092084de9ebc00fb9ef2ba0f9e3d2026d67f6d8e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+     "value_gbp": -12629508.947741324,
+     "value_gbp_decimal": "-12629508.947741324"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23755:8f3ce8ae300cd385",
+     "source_row_number": 23755,
+     "source_row_sha256": "8f3ce8ae300cd3858d31b7dcf53d5e1365a5e5c8fcfce9d07aa0316087ce83c3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+     "value_gbp": -13463533.123535562,
+     "value_gbp_decimal": "-13463533.123535562"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23756:432a685b91a46df1",
+     "source_row_number": 23756,
+     "source_row_sha256": "432a685b91a46df13f5c51f1cb8bdd532657a72de38c1634635314b10295e43b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+     "value_gbp": -13940118.366846554,
+     "value_gbp_decimal": "-13940118.366846554"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23757:eb47248b610c2b68",
+     "source_row_number": 23757,
+     "source_row_sha256": "eb47248b610c2b68ae06a86fb911450e8575a78be07081ed5942283959bc9086",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+     "value_gbp": -14268355.955055833,
+     "value_gbp_decimal": "-14268355.955055833"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23758:6bb3a0e7599e839f",
+     "source_row_number": 23758,
+     "source_row_sha256": "6bb3a0e7599e839fd5184d769f2a1c2294c0d4c9e4ccbb9a65bb9d7a43529d3b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+     "value_gbp": -14767363.0912845,
+     "value_gbp_decimal": "-14767363.0912845"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23759:449b7ff1f383ad11",
+     "source_row_number": 23759,
+     "source_row_sha256": "449b7ff1f383ad11c6fdcc96ee1d81383064745816aab2612cea934922be7232",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23760:3fbba9ca33b53b03",
+     "source_row_number": 23760,
+     "source_row_sha256": "3fbba9ca33b53b03360206167c81a51bb9cc24e4f595dfe6906a68150c0c0862",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+     "value_gbp": -14297557.299329799,
+     "value_gbp_decimal": "-14297557.299329799"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23761:169eaa53d9dc4267",
+     "source_row_number": 23761,
+     "source_row_sha256": "169eaa53d9dc4267f1b32fb53a58fd86c5b4c61383fe58d1d53fc1a0f82f45cd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+     "value_gbp": -20374019.151544962,
+     "value_gbp_decimal": "-20374019.151544962"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23762:9183d28bfe0fe9a6",
+     "source_row_number": 23762,
+     "source_row_sha256": "9183d28bfe0fe9a67f8243f4dc07a77c3ab34c67e2af053aa3bbb26948d0ef26",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+     "value_gbp": -20731458.084028207,
+     "value_gbp_decimal": "-20731458.084028207"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23763:c4ef257a3c6b8bc2",
+     "source_row_number": 23763,
+     "source_row_sha256": "c4ef257a3c6b8bc27e242e16ad97f9c964342a7ce5a9af246cf509ea39a31f9d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+     "value_gbp": -28356821.977004103,
+     "value_gbp_decimal": "-28356821.977004103"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23764:fde1ed77dba77588",
+     "source_row_number": 23764,
+     "source_row_sha256": "fde1ed77dba7758870542361f0696ad1620b268a7545d1c699228960550998b8",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+     "value_gbp": -10365729.042014103,
+     "value_gbp_decimal": "-10365729.042014103"
+    }
+   ],
+   "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+   "unmapped_obr_heads": [
+    "PSCE in RDEL",
+    "PSGI in CDEL"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -14767363.0912845,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23758:6bb3a0e7599e839f",
+   "level": "source_row",
+   "measure_key": "ab2025__fisheries_and_coastal_growth_fund",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -10365729.042014103,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSGI in CDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23764:fde1ed77dba77588",
+   "level": "source_row",
+   "measure_key": "ab2025__fisheries_and_coastal_growth_fund",
+   "threshold_gbp": null,
+   "year": 2030
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__fisheries_and_coastal_growth_fund --years 2030 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__fisheries_and_coastal_growth_fund_2030"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -14767363.0912845,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23758:6bb3a0e7599e839f",
+   "source_row_number": 23758,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -10365729.042014103,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23764:fde1ed77dba77588",
+   "source_row_number": 23764,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSGI in CDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Fisheries and Coastal Growth: Launch a fund to support the domestic fishing sector and coastal communities",
+ "year": 2030
+}

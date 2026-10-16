@@ -1,0 +1,2640 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "construction_pending",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "measure_type": "other",
+   "missing_legs": [
+    "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.ma_rate",
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.max_child_age",
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.remove_income_condition",
+     "gov.contrib.cps.marriage_tax_reforms.marriage_neutral_it.max_child_age",
+     "gov.contrib.cps.marriage_tax_reforms.marriage_neutral_it.neutralise_income_tax",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[0].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[0].threshold",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[1].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[1].threshold",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[2].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[2].threshold",
+     "gov.dwp.ESA.eligibility.min_age",
+     "gov.dwp.JSA.eligibility.min_age",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.severe.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.child_age_limit",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.child_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.child_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.terminal_date_age_limit",
+     "gov.dwp.winter_fuel_payment.eligibility.higher_age_requirement",
+     "gov.dwp.winter_fuel_payment.eligibility.require_benefits",
+     "gov.dwp.winter_fuel_payment.eligibility.state_pension_age_requirement",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income",
+     "gov.hmrc.child_benefit.eligibility.child_age_limit",
+     "gov.hmrc.child_benefit.eligibility.education_or_training_start_age_limit",
+     "gov.hmrc.child_benefit.eligibility.qualifying_young_person_age_limit",
+     "gov.hmrc.stamp_duty.statistics.non_residential.corporate.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.non_residential.corporate.transactions",
+     "gov.hmrc.stamp_duty.statistics.non_residential.household.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.non_residential.household.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.corporate.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.residential.corporate.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[0].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[0].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[10].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[10].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[11].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[11].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[12].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[12].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[13].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[13].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[1].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[1].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[2].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[2].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[3].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[3].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[4].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[4].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[5].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[5].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[6].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[6].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[7].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[7].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[8].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[8].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[9].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[9].threshold",
+     "gov.social_security_scotland.pawhp.eligibility.higher_age_requirement",
+     "gov.social_security_scotland.pawhp.eligibility.require_benefits",
+     "gov.social_security_scotland.pawhp.eligibility.state_pension_age_requirement",
+     "gov.wra.land_transaction_tax.non_residential[0].rate",
+     "gov.wra.land_transaction_tax.non_residential[0].threshold",
+     "gov.wra.land_transaction_tax.non_residential[1].rate",
+     "gov.wra.land_transaction_tax.non_residential[1].threshold",
+     "gov.wra.land_transaction_tax.non_residential[2].rate",
+     "gov.wra.land_transaction_tax.non_residential[2].threshold",
+     "gov.wra.land_transaction_tax.non_residential[3].rate",
+     "gov.wra.land_transaction_tax.non_residential[3].threshold",
+     "gov.wra.land_transaction_tax.rent[0].rate",
+     "gov.wra.land_transaction_tax.rent[0].threshold",
+     "gov.wra.land_transaction_tax.rent[1].rate",
+     "gov.wra.land_transaction_tax.rent[1].threshold",
+     "gov.wra.land_transaction_tax.rent[2].rate",
+     "gov.wra.land_transaction_tax.rent[2].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[0].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[0].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[1].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[1].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[2].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[2].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[3].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[3].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[4].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[4].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[5].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[5].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[0].rate",
+     "gov.wra.land_transaction_tax.residential.primary[0].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[1].rate",
+     "gov.wra.land_transaction_tax.residential.primary[1].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[2].rate",
+     "gov.wra.land_transaction_tax.residential.primary[2].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[3].rate",
+     "gov.wra.land_transaction_tax.residential.primary[3].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[4].rate",
+     "gov.wra.land_transaction_tax.residential.primary[4].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[5].rate",
+     "gov.wra.land_transaction_tax.residential.primary[5].threshold"
+    ],
+    "pattern": "transaction|eligibility|reform",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "land_and_buildings_transaction_tax",
+     "land_transaction_tax",
+     "lbtt_on_non_residential_property_transactions",
+     "lbtt_on_residential_property_transactions",
+     "lbtt_on_transactions",
+     "ltt_on_non_residential_property_transactions",
+     "ltt_on_residential_property_transactions",
+     "ltt_on_transactions",
+     "sdlt_on_non_residential_property_transactions",
+     "sdlt_on_residential_property_transactions",
+     "sdlt_on_transactions"
+    ]
+   },
+   "note": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+   "pe_gap": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+   "pe_reform_delta": null,
+   "program": "other",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12432:14675563f63e2b4a",
+     "source_row_number": 12432,
+     "source_row_sha256": "14675563f63e2b4a63a6249c5b5fc80600c234b10501d932c6f7377502d5144a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Alcohol duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12433:96746a6b4b0ac3fb",
+     "source_row_number": 12433,
+     "source_row_sha256": "96746a6b4b0ac3fb7b194173bae302892110a33b6cb7e8e75de7b811d43c61fd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Alcohol duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 2529.0863577393807,
+     "value_gbp_decimal": "2529.0863577393807"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12434:6f37486b7d132337",
+     "source_row_number": 12434,
+     "source_row_sha256": "6f37486b7d1323378c1d248bfec45dc7c7fa32de575a137a5d922990d50a2a78",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Alcohol duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 72771.02531064455,
+     "value_gbp_decimal": "72771.02531064455"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12435:461005d262361e47",
+     "source_row_number": 12435,
+     "source_row_sha256": "461005d262361e47376c474da7bff3dc1df018fc39e1120c6385de0d928919e4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Alcohol duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 582601.3544380075,
+     "value_gbp_decimal": "582601.3544380075"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12436:fcfe9ac7e4292566",
+     "source_row_number": 12436,
+     "source_row_sha256": "fcfe9ac7e42925664efc0f4df653ce30e4081c61aeb70564e60f3b510cd5ca12",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Alcohol duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 1085612.4550987985,
+     "value_gbp_decimal": "1085612.4550987985"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12437:fb8b7adbd6923e99",
+     "source_row_number": 12437,
+     "source_row_sha256": "fb8b7adbd6923e992912b969cf48f630597aa5116b21558bd85afa05a18e8bd7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Alcohol duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 736240.1754127947,
+     "value_gbp_decimal": "736240.1754127947"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12438:9defc5a81908821a",
+     "source_row_number": 12438,
+     "source_row_sha256": "9defc5a81908821ad7b80454e88fce426d5d9dde1bbba5bd9ba66c1263d39afc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Bank surcharge",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 1884562.4999999998,
+     "value_gbp_decimal": "1884562.4999999998"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12439:bc140d33360e02f7",
+     "source_row_number": 12439,
+     "source_row_sha256": "bc140d33360e02f7451290ae2327656ba0e24a07c6820820e492c6dca6cda8ab",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Bank surcharge",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 5735624.999999999,
+     "value_gbp_decimal": "5735624.999999999"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12440:50c935cb9f9ec2ad",
+     "source_row_number": 12440,
+     "source_row_sha256": "50c935cb9f9ec2ad815175d436f2ee3cc29bebd7d4d56faba6659997210a57b9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Bank surcharge",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 7991332.008568763,
+     "value_gbp_decimal": "7991332.008568763"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12441:0f1a553a09001e5e",
+     "source_row_number": 12441,
+     "source_row_sha256": "0f1a553a09001e5e8b414ed7ca235e1457518551c9b6b87fcf4b377cbf423a7f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Bank surcharge",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 15579175.732647348,
+     "value_gbp_decimal": "15579175.732647348"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12442:72a849b95dfc008e",
+     "source_row_number": 12442,
+     "source_row_sha256": "72a849b95dfc008e87d8368c51130c06a0ebb78451477298d5f214ebf9c7aa99",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Bank surcharge",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 11851289.12082318,
+     "value_gbp_decimal": "11851289.12082318"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12443:ea24d0f3dba85ab3",
+     "source_row_number": 12443,
+     "source_row_sha256": "ea24d0f3dba85ab30b4b645ba31c36e645111a1d8af69f787f51d85294a4eadd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Bank surcharge",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 6554999.999999997,
+     "value_gbp_decimal": "6554999.999999997"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12444:190571213ccb637f",
+     "source_row_number": 12444,
+     "source_row_sha256": "190571213ccb637f8310e99eba21382c6ab06aa4d495499aa1c979d104664508",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12445:c88d585d16661828",
+     "source_row_number": 12445,
+     "source_row_sha256": "c88d585d166618281e353300ca0cf7f8aad4831f5e5d66bd81ea408f7f659da7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 20000000.0,
+     "value_gbp_decimal": "20000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12446:121636be1015c8d8",
+     "source_row_number": 12446,
+     "source_row_sha256": "121636be1015c8d88bd900b50b20539578b4f4680279ba407ca4be19b4bfc9f3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 18116932.364498664,
+     "value_gbp_decimal": "18116932.364498664"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12447:5f7c03fcfb86718a",
+     "source_row_number": 12447,
+     "source_row_sha256": "5f7c03fcfb86718a9ff13fb2c7e5b014136db472fbfb925871ba923f40b37d68",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 20130141.670774862,
+     "value_gbp_decimal": "20130141.670774862"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12448:c4d0666d0436146e",
+     "source_row_number": 12448,
+     "source_row_sha256": "c4d0666d0436146e3f204cf69d4c1e4300d4b42d190650fa567a54f110aaf5d7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 133449166.64164822,
+     "value_gbp_decimal": "133449166.64164822"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12449:c815d6671db7723f",
+     "source_row_number": 12449,
+     "source_row_sha256": "c815d6671db7723fc851a5ed68084d4a9909e9262d33ca69f9fcc062572b4929",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 141224478.1707649,
+     "value_gbp_decimal": "141224478.1707649"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12450:4893579584e56ed5",
+     "source_row_number": 12450,
+     "source_row_sha256": "4893579584e56ed55a32719680bf8cfc3833ffeb2e6afec616c26620009a5560",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Customs duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12451:5ff8fca72e22303b",
+     "source_row_number": 12451,
+     "source_row_sha256": "5ff8fca72e22303b5b244189c1f194e4a650992098feaebb67e0c263936407e2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Customs duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 2627.730255904861,
+     "value_gbp_decimal": "2627.730255904861"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12452:ab4e10d8a95249e8",
+     "source_row_number": 12452,
+     "source_row_sha256": "ab4e10d8a95249e82f26ea8d33b5ad23f81de7cb43d05a5de2913525eace5dd8",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Customs duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 77885.4437457788,
+     "value_gbp_decimal": "77885.4437457788"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12453:5446de6d32752e6e",
+     "source_row_number": 12453,
+     "source_row_sha256": "5446de6d32752e6e435f782851552380024be3bfafe084f7b828181098e53560",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Customs duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 646787.9507508344,
+     "value_gbp_decimal": "646787.9507508344"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12454:6b8adc4eb2a5ce3b",
+     "source_row_number": 12454,
+     "source_row_sha256": "6b8adc4eb2a5ce3bd2f32a1fd77d29f3ad2b80b97fc672975b92ea8421e4eb0b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Customs duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 1214557.9183363833,
+     "value_gbp_decimal": "1214557.9183363833"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12455:280ddbd980b79f05",
+     "source_row_number": 12455,
+     "source_row_sha256": "280ddbd980b79f05c15da0728a1d6d2122de2a8ccfd797a4395c207cc19ae9b0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Customs duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 827720.3913411387,
+     "value_gbp_decimal": "827720.3913411387"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12456:884af256b328817a",
+     "source_row_number": 12456,
+     "source_row_sha256": "884af256b328817ae64db5d409d69a0e0a9006af8582036a6b2fbd8c74dcd282",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 41359879.50667361,
+     "value_gbp_decimal": "41359879.50667361"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12457:85fc1ca0d19a1fda",
+     "source_row_number": 12457,
+     "source_row_sha256": "85fc1ca0d19a1fda956e218ec032a820805551edee349a83ffd0e8f41ba15fca",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 218052592.63397956,
+     "value_gbp_decimal": "218052592.63397956"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12458:cf6743f7cb8398f5",
+     "source_row_number": 12458,
+     "source_row_sha256": "cf6743f7cb8398f5be02180fc67fbb6465a2f587b8f62eedb1a286a638ad36b6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 234224436.01880416,
+     "value_gbp_decimal": "234224436.01880416"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12459:749243b833e52846",
+     "source_row_number": 12459,
+     "source_row_sha256": "749243b833e52846f88ebee29637af9fba6045bb3bce9405f3acd92832c24338",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 460295610.11882883,
+     "value_gbp_decimal": "460295610.11882883"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12460:519880f9773148ae",
+     "source_row_number": 12460,
+     "source_row_sha256": "519880f9773148ae46f7ef9fa4dc780880a5d1c47a6e491bcbe847f725346f93",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 1216034349.8594375,
+     "value_gbp_decimal": "1216034349.8594375"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12461:9d4d93e52931d359",
+     "source_row_number": 12461,
+     "source_row_sha256": "9d4d93e52931d35900c317fb4a18cf65b7b00ca60ddef19f21dd819676896aef",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 1368720242.9689252,
+     "value_gbp_decimal": "1368720242.9689252"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12462:cdd6c15eb9aaf922",
+     "source_row_number": 12462,
+     "source_row_sha256": "cdd6c15eb9aaf92211c54d6bce40a283f1b1d5faf99d8d23ac134a0b24117d4e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12463:967f8160b6c669de",
+     "source_row_number": 12463,
+     "source_row_sha256": "967f8160b6c669deb526bc4f7b6751e69dc642f373fc139521934f4e1ef88701",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12464:82e0dd6d0f991a9d",
+     "source_row_number": 12464,
+     "source_row_sha256": "82e0dd6d0f991a9d808a8a18ceaa303af3abeaac20180f55e212a6a73b7186b1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 165387.33677277475,
+     "value_gbp_decimal": "165387.33677277475"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12465:489fdd7dd59be382",
+     "source_row_number": 12465,
+     "source_row_sha256": "489fdd7dd59be382bc9fea03244684a5d9d8a0a84b970b52e7a5e5afe9e4a1e0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 3012839.596536132,
+     "value_gbp_decimal": "3012839.596536132"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12466:75dd4077cce10103",
+     "source_row_number": 12466,
+     "source_row_sha256": "75dd4077cce10103566691c944f374a0e002859c896fc8b753ae8d4ae88e3000",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 6292832.825841732,
+     "value_gbp_decimal": "6292832.825841732"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12467:c267749539eca524",
+     "source_row_number": 12467,
+     "source_row_sha256": "c267749539eca524754f32b4648385cc9bd0e979987bc38b1f5a4977f3eb91d6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Inheritance tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 4560652.300423282,
+     "value_gbp_decimal": "4560652.300423282"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12468:a9c01e3a9508fc0d",
+     "source_row_number": 12468,
+     "source_row_sha256": "a9c01e3a9508fc0d50245ae9f72f17b66de84d397801f0cba3a5682acdddab2c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Landfill tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12469:138cb4bdeeb3b5fc",
+     "source_row_number": 12469,
+     "source_row_sha256": "138cb4bdeeb3b5fcf4253fc77cd3d50a10c935053535e0f47392512d097c4f0c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Landfill tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 6724.264475695691,
+     "value_gbp_decimal": "6724.264475695691"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12470:5b87c4775ce85509",
+     "source_row_number": 12470,
+     "source_row_sha256": "5b87c4775ce85509928bb6a283fe19bf0ef7ca8572a56b50a67a957ea0ffc320",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Landfill tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 144544.7298351064,
+     "value_gbp_decimal": "144544.7298351064"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12471:75fc68a2448f42ed",
+     "source_row_number": 12471,
+     "source_row_sha256": "75fc68a2448f42eddc0b6097bde376dfc76a6de7f83d5363096a58230701fe57",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Landfill tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 657528.0763078498,
+     "value_gbp_decimal": "657528.0763078498"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12472:897d2d35df9468de",
+     "source_row_number": 12472,
+     "source_row_sha256": "897d2d35df9468de0e99730d2c22e3f4051c7281f41bdedc3445730097dd38dc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Landfill tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 1024395.0817108067,
+     "value_gbp_decimal": "1024395.0817108067"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12473:bfc522ab29b9fd29",
+     "source_row_number": 12473,
+     "source_row_sha256": "bfc522ab29b9fd29d745a86a066df8e32ed5a6ae9b1066e5006f88f282d43f72",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Landfill tax",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 608032.7550480812,
+     "value_gbp_decimal": "608032.7550480812"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12474:8b5740feed1eb91b",
+     "source_row_number": 12474,
+     "source_row_sha256": "8b5740feed1eb91beae868f6ca17366994f0f72c9b2a124c61bff94d44fef8af",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12475:5d8f11d5269c3a91",
+     "source_row_number": 12475,
+     "source_row_sha256": "5d8f11d5269c3a918ed928c965aad3853e133f5e247ac1804ca3688fd0dd0973",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": -5315497.826263261,
+     "value_gbp_decimal": "-5315497.826263261"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12476:f645fbaca1b2f09c",
+     "source_row_number": 12476,
+     "source_row_sha256": "f645fbaca1b2f09c31acc7ba710476fda6128e902b09a2e6d8fab543c2eaa808",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": -661499.3736021902,
+     "value_gbp_decimal": "-661499.3736021902"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12477:acb5b43820925ae8",
+     "source_row_number": 12477,
+     "source_row_sha256": "acb5b43820925ae8cf50467c1f600e6105cf4d8d26e5811f1e4d3ff957441776",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": -20041836.195471033,
+     "value_gbp_decimal": "-20041836.195471033"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12478:00b084f42bcde7f4",
+     "source_row_number": 12478,
+     "source_row_sha256": "00b084f42bcde7f4b8fb74bde5031af7ac0b7ccf7420724ea3a006a94e3644c8",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": -57668069.26791685,
+     "value_gbp_decimal": "-57668069.26791685"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12479:40cec32ec57c454a",
+     "source_row_number": 12479,
+     "source_row_sha256": "40cec32ec57c454aaf62123b359f0ad84cb1613cbd2ce2eb68e25a1f63a9d7a4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": -56586986.31405071,
+     "value_gbp_decimal": "-56586986.31405071"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12480:e6038da670bbe8b6",
+     "source_row_number": 12480,
+     "source_row_sha256": "e6038da670bbe8b65747c0e978e72b58df500b9c669f071532cf7c5f9501546c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 28594637.134635158,
+     "value_gbp_decimal": "28594637.134635158"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12481:30b7479f16200349",
+     "source_row_number": 12481,
+     "source_row_sha256": "30b7479f16200349136a9a81abb71910a79c23e4d8329d2e17586e692019d90d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 120758763.32603393,
+     "value_gbp_decimal": "120758763.32603393"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12482:9babf4bd51cbdf7f",
+     "source_row_number": 12482,
+     "source_row_sha256": "9babf4bd51cbdf7f36b0e49ce60f1a30acad2bf13247c3ff2ecd795a88773494",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 289036578.7867154,
+     "value_gbp_decimal": "289036578.7867154"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12483:00055327d31bc312",
+     "source_row_number": 12483,
+     "source_row_sha256": "00055327d31bc312be7f3aa6eebf8f5a037f7076be127f5eb4e25706b72f24bd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 506530119.73395437,
+     "value_gbp_decimal": "506530119.73395437"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12484:fb13de6b8cad955f",
+     "source_row_number": 12484,
+     "source_row_sha256": "fb13de6b8cad955f64a228ed22a1760d362108e6bd6b8b3604e90e6268d06148",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 742671666.3979583,
+     "value_gbp_decimal": "742671666.3979583"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12485:e4c0980d084d6796",
+     "source_row_number": 12485,
+     "source_row_sha256": "e4c0980d084d67966172bdd15c5f92dab0149bcf19e16b2f7157b725b59d2f76",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 649018188.8514667,
+     "value_gbp_decimal": "649018188.8514667"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12486:4e0656d511d54a6a",
+     "source_row_number": 12486,
+     "source_row_sha256": "4e0656d511d54a6a9af23e642d5c8b1142f4e0567c9e6dce01695edfb914be1d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Penalties",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12487:8daaa51430f0250a",
+     "source_row_number": 12487,
+     "source_row_sha256": "8daaa51430f0250a957bdeb3ea56854e45a6669f45886a0d2676dccc6790ca7e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Penalties",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 43900000.0,
+     "value_gbp_decimal": "43900000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12488:f88f866686ad3812",
+     "source_row_number": 12488,
+     "source_row_sha256": "f88f866686ad3812dd7ac7aeeaab1af0e182f0e3bb833d049c68a954fadf58f4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Penalties",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 64200000.0,
+     "value_gbp_decimal": "64200000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12489:c394984d3d0f4818",
+     "source_row_number": 12489,
+     "source_row_sha256": "c394984d3d0f4818ea7487748ee71e390fe6ad1d8245e2ff745b64c97fd62bab",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Penalties",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 115600000.0,
+     "value_gbp_decimal": "115600000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12490:bfaafedc08f2a361",
+     "source_row_number": 12490,
+     "source_row_sha256": "bfaafedc08f2a361d8c14a337a1d90f99202c5e811601713599c63dd3121ec7b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Penalties",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 112100000.0,
+     "value_gbp_decimal": "112100000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12491:9a3ba987db52f129",
+     "source_row_number": 12491,
+     "source_row_sha256": "9a3ba987db52f1290eb6609f62a38e061ff6e8d28b7574ba184faaf894c0bb9d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Penalties",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 150600000.0,
+     "value_gbp_decimal": "150600000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12492:01701a6e69ef3fea",
+     "source_row_number": 12492,
+     "source_row_sha256": "01701a6e69ef3fea79428865a7151d309df2b45705f4711a17ff0982a94ff811",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12493:acc009d5761caf86",
+     "source_row_number": 12493,
+     "source_row_sha256": "acc009d5761caf8691dca027ea812beba106a9911bca0c0954952db8c7fe0fe9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12494:e2697080ac6c5b01",
+     "source_row_number": 12494,
+     "source_row_sha256": "e2697080ac6c5b01c4b57fd05d2b774af9dba2af1cf84c53cfe0315b25c18bee",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 78011.17628208626,
+     "value_gbp_decimal": "78011.17628208626"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12495:134f45be1cedb803",
+     "source_row_number": 12495,
+     "source_row_sha256": "134f45be1cedb803a1dcdf3c9c03e680e7d8ac80d05d80e8abd42deecbf0f1fe",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 1421119.4488121183,
+     "value_gbp_decimal": "1421119.4488121183"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12496:7083aca59f74749a",
+     "source_row_number": 12496,
+     "source_row_sha256": "7083aca59f74749ad84673921939c5baae8ee38ee0362d12736c758085047ed4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 2968251.986334964,
+     "value_gbp_decimal": "2968251.986334964"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12497:4165293e4c4ccd34",
+     "source_row_number": 12497,
+     "source_row_sha256": "4165293e4c4ccd340a99b71cac52b07cf53293d219c3a2190509eab67da840fe",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Stamp duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 2151203.6986146686,
+     "value_gbp_decimal": "2151203.6986146686"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12498:0c9b0b1e8992576d",
+     "source_row_number": 12498,
+     "source_row_sha256": "0c9b0b1e8992576df530f77b2c9fbe3b57915dd9a8890a4f637aa4a5a8c81f76",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Tobacco duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12499:5f541c6d61625461",
+     "source_row_number": 12499,
+     "source_row_sha256": "5f541c6d61625461c35db2346465e5e401eb9632f550e315277ede53a77651a2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Tobacco duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 4796.573281135236,
+     "value_gbp_decimal": "4796.573281135236"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12500:a70eff6a05a24981",
+     "source_row_number": 12500,
+     "source_row_sha256": "a70eff6a05a24981f7a329daedd3ef391ba945c446cadc1a2332de941c8bd09b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Tobacco duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 121531.23160620114,
+     "value_gbp_decimal": "121531.23160620114"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12501:4b4d2c03f05b5822",
+     "source_row_number": 12501,
+     "source_row_sha256": "4b4d2c03f05b58221d3db931a4f2ca50a5d5eafd8dba2a8a210375e92d64eb1d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Tobacco duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 804660.0399333263,
+     "value_gbp_decimal": "804660.0399333263"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12502:0a1962241abf0d1f",
+     "source_row_number": 12502,
+     "source_row_sha256": "0a1962241abf0d1fa96f4c299b10ac47e78b01a6f7c0328f381dfaa4d4572c37",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Tobacco duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 1431745.710439209,
+     "value_gbp_decimal": "1431745.710439209"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12503:991ebcdead94f81c",
+     "source_row_number": 12503,
+     "source_row_sha256": "991ebcdead94f81c5b79f4b7663804d5245e378bb2c17860fe12cdd1e2f7f3c1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Tobacco duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 941780.0814300583,
+     "value_gbp_decimal": "941780.0814300583"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12504:eaea9ef5148d6e01",
+     "source_row_number": 12504,
+     "source_row_sha256": "eaea9ef5148d6e01c6d2c2cbc2934c765ade889e026061ea1e44a2fa596053c1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vaping duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12505:92423549ea724ac0",
+     "source_row_number": 12505,
+     "source_row_sha256": "92423549ea724ac0539a82fad94a9a2bf0441a6a11d166753038a685cab4fac9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vaping duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 6797096.635612636,
+     "value_gbp_decimal": "6797096.635612636"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12506:2c5306a39eadd3ea",
+     "source_row_number": 12506,
+     "source_row_sha256": "2c5306a39eadd3ea81411dfcd67dd8e161fa007833f102b60c75813d7e53295e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vaping duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 27142761.08585942,
+     "value_gbp_decimal": "27142761.08585942"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12507:54cdc3ae0602ec44",
+     "source_row_number": 12507,
+     "source_row_sha256": "54cdc3ae0602ec440765aeab7cc0eb3a81d3a749b6b8a774b62b424e2c194ee1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vaping duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 23834436.873185433,
+     "value_gbp_decimal": "23834436.873185433"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12508:231c3a4d27f7a2a0",
+     "source_row_number": 12508,
+     "source_row_sha256": "231c3a4d27f7a2a0e73ba2dd42a7f40ce22b60858bb2ae9dc6c0e71cc7b2b0e6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vaping duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 21672167.51835734,
+     "value_gbp_decimal": "21672167.51835734"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12509:caf8ec5cb1e66d4a",
+     "source_row_number": 12509,
+     "source_row_sha256": "caf8ec5cb1e66d4ac624b22c9213534143a83f161b2c7823679af99e21773ad2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vaping duty",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 21860143.4888804,
+     "value_gbp_decimal": "21860143.4888804"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12510:72d39b330b46a265",
+     "source_row_number": 12510,
+     "source_row_sha256": "72d39b330b46a265ee5c808aedbb18897ffe1e0a684ead5be377889f403fea40",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 1000000.0,
+     "value_gbp_decimal": "1000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12511:147c487763fbfdd7",
+     "source_row_number": 12511,
+     "source_row_sha256": "147c487763fbfdd732abdc29f40e16f83673f38cbeae6ba2d7526f452ea1d491",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 7178116.982113392,
+     "value_gbp_decimal": "7178116.982113392"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12512:ba4c48400e21f552",
+     "source_row_number": 12512,
+     "source_row_sha256": "ba4c48400e21f5523acb21c69bfd3c76a1e8c1b711c92f35bcda31ff81b4ebca",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 33710893.96268937,
+     "value_gbp_decimal": "33710893.96268937"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12513:1b3f1906367a8fd0",
+     "source_row_number": 12513,
+     "source_row_sha256": "1b3f1906367a8fd09244a2b47fa4d1f61f77d2ce78032b4061303a3149dc3da1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 85216581.22540395,
+     "value_gbp_decimal": "85216581.22540395"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12514:d488d53e02217676",
+     "source_row_number": 12514,
+     "source_row_sha256": "d488d53e022176766827798e7a8ca80778d1efd3bb85bb2a03394bb49887ce2b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 133758156.62232457,
+     "value_gbp_decimal": "133758156.62232457"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12515:627a75dd11dac478",
+     "source_row_number": 12515,
+     "source_row_sha256": "627a75dd11dac4783ee02f533001c92ea41868f8a9417fa803037c505ec380e7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 204150299.65697446,
+     "value_gbp_decimal": "204150299.65697446"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24005:ac2777efc88a4dfa",
+     "source_row_number": 24005,
+     "source_row_sha256": "ac2777efc88a4dfa6c2e9619231bc58e1e9d79b704f13dfed4012a0dd3407192",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 314494.1216549621,
+     "value_gbp_decimal": "314494.1216549621"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24006:e900b707decfeca5",
+     "source_row_number": 24006,
+     "source_row_sha256": "e900b707decfeca59e1c035ab5f0e6c6678e5d54b35d7aa9b4c994a9c5d49a5b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 2099377.3638960463,
+     "value_gbp_decimal": "2099377.3638960463"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24007:76d12adc70af696d",
+     "source_row_number": 24007,
+     "source_row_sha256": "76d12adc70af696d395188aa5575f6156deed8a4fbc1994916a7081e753fed7f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 2652459.0177464765,
+     "value_gbp_decimal": "2652459.0177464765"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24008:7bafca156826a0ee",
+     "source_row_number": 24008,
+     "source_row_sha256": "7bafca156826a0ee5ee70636beeacafb44a6c7f99a9d889157a24ed0e3281e72",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 4293103.859774637,
+     "value_gbp_decimal": "4293103.859774637"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24009:f7a3e6524bf86789",
+     "source_row_number": 24009,
+     "source_row_sha256": "f7a3e6524bf8678943800d52bcf79c3ba1ac5035ef896a945e3fbf2118004172",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 11918209.955443263,
+     "value_gbp_decimal": "11918209.955443263"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24010:5612e0ddc642cdf4",
+     "source_row_number": 24010,
+     "source_row_sha256": "5612e0ddc642cdf4b6c0c3518b4596a4aacc125202e5837bf01482f2b4f9a076",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 12564397.877725272,
+     "value_gbp_decimal": "12564397.877725272"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24011:2167ae45c1e45ec8",
+     "source_row_number": 24011,
+     "source_row_sha256": "2167ae45c1e45ec889abaeaa52320dbb8c253edf37b2141081447be7b79e2fe4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 3021445.044184766,
+     "value_gbp_decimal": "3021445.044184766"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24012:f8bb926735f4e2e5",
+     "source_row_number": 24012,
+     "source_row_sha256": "f8bb926735f4e2e55b04dd1902fc0f28f8d85faa4f2aecaf66a2062d2137d949",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 14582462.054778578,
+     "value_gbp_decimal": "14582462.054778578"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24013:d2ffb9cb2938af4e",
+     "source_row_number": 24013,
+     "source_row_sha256": "d2ffb9cb2938af4e9ba6690748081d39abf1ee640e8aacc0a4b3bc0ab54c44f1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 15781999.345935218,
+     "value_gbp_decimal": "15781999.345935218"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24014:b5fd8082c9c2f8d2",
+     "source_row_number": 24014,
+     "source_row_sha256": "b5fd8082c9c2f8d24f33a620f4d71266528125a59eea175aa803e1f986c815af",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 31410188.01767129,
+     "value_gbp_decimal": "31410188.01767129"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24015:5dfa07fe1973c07f",
+     "source_row_number": 24015,
+     "source_row_sha256": "5dfa07fe1973c07f1824b0f6eab66688a4ec159fef9022ac9c413ced4e6e7201",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 76926461.31469372,
+     "value_gbp_decimal": "76926461.31469372"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24016:91a503e61a8092d0",
+     "source_row_number": 24016,
+     "source_row_sha256": "91a503e61a8092d0595348a9641f194e0eedb4f3dc37e6eb0de4e0fc69c43039",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "HMRC: Further measures to close the tax gap",
+     "value_gbp": 83229885.28019501,
+     "value_gbp_decimal": "83229885.28019501"
+    }
+   ],
+   "title": "HMRC: Further measures to close the tax gap",
+   "unmapped_obr_heads": [
+    "Alcohol duty",
+    "Bank surcharge",
+    "Capital gains tax",
+    "Corporation tax (onshore)",
+    "Customs duty",
+    "Income tax",
+    "Inheritance tax",
+    "Landfill tax",
+    "NICs",
+    "PSCE in RDEL",
+    "Penalties",
+    "Scottish BGA (current)",
+    "Stamp duty",
+    "Tobacco duty",
+    "VAT",
+    "Vaping duty"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 1085612.4550987985,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Alcohol duty"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12436:fcfe9ac7e4292566",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 11851289.12082318,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Bank surcharge"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12442:72a849b95dfc008e",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 133449166.64164822,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12448:c4d0666d0436146e",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 1214557.9183363833,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Customs duty"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12454:6b8adc4eb2a5ce3b",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 1216034349.8594375,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12460:519880f9773148ae",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 6292832.825841732,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Inheritance tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12466:75dd4077cce10103",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 1024395.0817108067,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Landfill tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12472:897d2d35df9468de",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -57668069.26791685,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12478:00b084f42bcde7f4",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 742671666.3979583,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12484:fb13de6b8cad955f",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 112100000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Penalties"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12490:bfaafedc08f2a361",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 2968251.986334964,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Stamp duty"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12496:7083aca59f74749a",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 1431745.710439209,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Tobacco duty"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12502:0a1962241abf0d1f",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 21672167.51835734,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Vaping duty"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12508:231c3a4d27f7a2a0",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 133758156.62232457,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "VAT"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12514:d488d53e02217676",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 11918209.955443263,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24009:f7a3e6524bf86789",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 76926461.31469372,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24015:5dfa07fe1973c07f",
+   "level": "source_row",
+   "measure_key": "ab2025__hmrc_further_measures_to_close_the_tax_gap",
+   "threshold_gbp": null,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__hmrc_further_measures_to_close_the_tax_gap --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__hmrc_further_measures_to_close_the_tax_gap_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 1085612.4550987985,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12436:fcfe9ac7e4292566",
+   "source_row_number": 12436,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Alcohol duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 11851289.12082318,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12442:72a849b95dfc008e",
+   "source_row_number": 12442,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Bank surcharge"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 133449166.64164822,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12448:c4d0666d0436146e",
+   "source_row_number": 12448,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 1214557.9183363833,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12454:6b8adc4eb2a5ce3b",
+   "source_row_number": 12454,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Customs duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 1216034349.8594375,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12460:519880f9773148ae",
+   "source_row_number": 12460,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 6292832.825841732,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12466:75dd4077cce10103",
+   "source_row_number": 12466,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Inheritance tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 1024395.0817108067,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12472:897d2d35df9468de",
+   "source_row_number": 12472,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Landfill tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -57668069.26791685,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12478:00b084f42bcde7f4",
+   "source_row_number": 12478,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 742671666.3979583,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12484:fb13de6b8cad955f",
+   "source_row_number": 12484,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 112100000.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12490:bfaafedc08f2a361",
+   "source_row_number": 12490,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Penalties"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 2968251.986334964,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12496:7083aca59f74749a",
+   "source_row_number": 12496,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Stamp duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 1431745.710439209,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12502:0a1962241abf0d1f",
+   "source_row_number": 12502,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Tobacco duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 21672167.51835734,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12508:231c3a4d27f7a2a0",
+   "source_row_number": 12508,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Vaping duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 133758156.62232457,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12514:d488d53e02217676",
+   "source_row_number": 12514,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "VAT"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 11918209.955443263,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:24009:f7a3e6524bf86789",
+   "source_row_number": 24009,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 76926461.31469372,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:24015:5dfa07fe1973c07f",
+   "source_row_number": 24015,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "HMRC: Further measures to close the tax gap",
+ "year": 2029
+}

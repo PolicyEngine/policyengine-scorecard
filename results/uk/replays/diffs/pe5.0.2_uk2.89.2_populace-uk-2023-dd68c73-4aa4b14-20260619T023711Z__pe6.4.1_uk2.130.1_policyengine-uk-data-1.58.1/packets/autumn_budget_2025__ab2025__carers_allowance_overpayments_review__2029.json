@@ -1,0 +1,561 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__carers_allowance_overpayments_review",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "model_or_data_gap",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__carers_allowance_overpayments_review",
+   "measure_type": "administration",
+   "missing_legs": [
+    "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.dwp.carers_allowance.min_hours",
+     "gov.dwp.carers_allowance.rate"
+    ],
+    "pattern": "carers_allowance|overpayment|debt",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "carers_allowance",
+     "carers_allowance_reported",
+     "receives_carers_allowance"
+    ]
+   },
+   "note": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction.",
+   "pe_gap": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction.",
+   "pe_reform_delta": null,
+   "program": "administration",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23549:112d57419951fde5",
+     "source_row_number": 23549,
+     "source_row_sha256": "112d57419951fde5f95cec9cb3f61a3fbad8958de0a0304ddcf575cfa1b76568",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23550:cd6402cbacc8e48e",
+     "source_row_number": 23550,
+     "source_row_sha256": "cd6402cbacc8e48e5aaa0503137f66820a6066b162bbeb593720face79ae376a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": -14000000.0,
+     "value_gbp_decimal": "-14000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23551:58a4336802093431",
+     "source_row_number": 23551,
+     "source_row_sha256": "58a43368020934310f4506b1875996c7bdaa4547513fe10e610d7bfe7b92d20e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": -20000000.0,
+     "value_gbp_decimal": "-20000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23552:e13352560d197fc5",
+     "source_row_number": 23552,
+     "source_row_sha256": "e13352560d197fc5a82b484d3a03d75278d64597d2717e4e08d67d5d922a792c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": -13000000.0,
+     "value_gbp_decimal": "-13000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23553:4e75e3b2af35f2e0",
+     "source_row_number": 23553,
+     "source_row_sha256": "4e75e3b2af35f2e07d1c1b359ca9cf746bc7e23366912ca370e4f068d214f0ae",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23554:86904a2977990d0c",
+     "source_row_number": 23554,
+     "source_row_sha256": "86904a2977990d0c5cafbea44d98fc08361bfcbb3a89e17c8dd7b40db359404c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23555:b831fbbbf86eb6c8",
+     "source_row_number": 23555,
+     "source_row_sha256": "b831fbbbf86eb6c86579f8e757e24de7989df91fda3083c0720cbe6ff972d84a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23556:4ff9107569db4e50",
+     "source_row_number": 23556,
+     "source_row_sha256": "4ff9107569db4e5025049bb3219556d39bb9259f80de58dfceedf81431874815",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": -5000000.0,
+     "value_gbp_decimal": "-5000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23557:b4013104476436a7",
+     "source_row_number": 23557,
+     "source_row_sha256": "b4013104476436a7880d3d38bcacc5f36299e0eeae1c046b791c5f7eaa05416a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": -14000000.0,
+     "value_gbp_decimal": "-14000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23558:cfb15636c1b1f021",
+     "source_row_number": 23558,
+     "source_row_sha256": "cfb15636c1b1f021c554805628595d69c6652d9ba0d9c1218f048638047a1ff6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": -7000000.0,
+     "value_gbp_decimal": "-7000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23559:51be39604064b82b",
+     "source_row_number": 23559,
+     "source_row_sha256": "51be39604064b82b7cfa886c968c7b6675f6473264bb1cb84b4b0a23a148fe51",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative reassessment of past Carer's Allowance overpayments (per the PMD title, 2015 to 2025); liability rules do not identify recovered debts or the reassessment process, so there is no household tax-benefit construction.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23560:9cd21dd8eda495b4",
+     "source_row_number": 23560,
+     "source_row_sha256": "9cd21dd8eda495b424dc13c84bf758d3e2678fbef85adb2e0a936050ef69054d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23561:9bae2101918d5839",
+     "source_row_number": 23561,
+     "source_row_sha256": "9bae2101918d58398e337e08477f5a4d30811e1dc6b30a9f5ebc6b431f0b4572",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23562:097f75acd04d91ec",
+     "source_row_number": 23562,
+     "source_row_sha256": "097f75acd04d91ec317292e00bd1234a43d0ca3c0e5056e2753a703681eb31f4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23563:2e13daff8edafd6d",
+     "source_row_number": 23563,
+     "source_row_sha256": "2e13daff8edafd6da14924307f70cb9805584b75681a4cfc5ed58d0ef444944e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": -1000000.0,
+     "value_gbp_decimal": "-1000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23564:2d9cdc796eeee56e",
+     "source_row_number": 23564,
+     "source_row_sha256": "2d9cdc796eeee56ef5e7bb16b1d108f0eb3faafefe42c8117797a705c0c23e15",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23565:b42823e157f61608",
+     "source_row_number": 23565,
+     "source_row_sha256": "b42823e157f61608fc17c6490aec7a2d5a1dc3e9011cac4dc6c40ad0a262b8a5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23566:2559d0cd19719b74",
+     "source_row_number": 23566,
+     "source_row_sha256": "2559d0cd19719b7419d1423b495274d340a1aa2bc3a3bba221880a086d401472",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    }
+   ],
+   "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+   "unmapped_obr_heads": [
+    "PSCE in RDEL",
+    "Scottish BGA (current)",
+    "Welfare inside cap"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23553:4e75e3b2af35f2e0",
+   "level": "source_row",
+   "measure_key": "ab2025__carers_allowance_overpayments_review",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23559:51be39604064b82b",
+   "level": "source_row",
+   "measure_key": "ab2025__carers_allowance_overpayments_review",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23565:b42823e157f61608",
+   "level": "source_row",
+   "measure_key": "ab2025__carers_allowance_overpayments_review",
+   "threshold_gbp": null,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__carers_allowance_overpayments_review --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__carers_allowance_overpayments_review_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23553:4e75e3b2af35f2e0",
+   "source_row_number": 23553,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23559:51be39604064b82b",
+   "source_row_number": 23559,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23565:b42823e157f61608",
+   "source_row_number": 23565,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Carer\u2019s Allowance Review: Reassess overpayments from 2015 to 2025 caused by incorrect operational guidance",
+ "year": 2029
+}

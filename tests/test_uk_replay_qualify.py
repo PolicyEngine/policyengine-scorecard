@@ -22,6 +22,8 @@ from pipeline import uk_replay_variants as rv
 
 FIXTURES = Path(__file__).parent / "fixtures" / "uk_replay"
 CURRENT = "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
+# The newest certified pair; the variants file is append-only, newest last.
+NEWEST = "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
 RUN = "https://github.com/PolicyEngine/policyengine-scorecard/actions/runs/1"
 
 
@@ -110,7 +112,7 @@ def test_golden_candidate_matches_the_committed_certified_pair():
     other = golden_request()
     other["candidate"]["policyengine_uk"]["wheel_sha256"] = "0" * 64
     assert qualify.matching_certified(other, document) is None
-    assert qualify.latest_certified(document)["variant_id"] == CURRENT
+    assert qualify.latest_certified(document)["variant_id"] == NEWEST
 
 
 def test_install_uses_exact_pins_for_a_certified_pair_and_constraints_otherwise(
@@ -566,7 +568,9 @@ def test_rejection_discards_a_supplied_record_and_cli_accepts_candidate(tmp_path
     record = copy.deepcopy(rv.get_variant(CURRENT))
     record["status"] = "candidate"
     document = rv.load_document()
-    document["variants"][-1] = record
+    document["variants"] = [
+        record if v["variant_id"] == CURRENT else v for v in document["variants"]
+    ]
     variants_file = tmp_path / "variants.json"
     variants_file.write_bytes(qualify.canonical_bytes(document))
     request_file = tmp_path / "request.json"
@@ -1090,7 +1094,11 @@ def test_prepare_records_resolution_mode(tmp_path, monkeypatch, resolution):
     qualify.prepare(request, tmp_path / "venv", tmp_path / "wheels")
     installation = json.loads((tmp_path / "INSTALL.json").read_bytes())
     assert installation["resolution"] == resolution
-    assert installation["certified_variant_id"] == CURRENT
+    # The golden request matches 6.2.6 exactly; a mismatched wheel falls back
+    # to the newest certified pair's constraints.
+    assert installation["certified_variant_id"] == (
+        CURRENT if resolution == "exact_requirements" else NEWEST
+    )
     assert len(installation["environment_sha256"]) == 64
     assert attempts
 

@@ -1,0 +1,406 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2030-31",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__eved_mileage_supplement_electric_and_phev",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "model_or_data_gap",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__eved_mileage_supplement_electric_and_phev",
+   "measure_type": "transport",
+   "missing_legs": [
+    "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "vehicle|company_car|van_benefit|air_passenger",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "num_vehicles",
+     "owns_vehicle"
+    ]
+   },
+   "note": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+   "pe_gap": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+   "pe_reform_delta": null,
+   "program": "transport",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12594:df95a29a8a4fd909",
+     "source_row_number": 12594,
+     "source_row_sha256": "df95a29a8a4fd9095a6813d02461b0dabd0f340b513898ba2c95126653adb2f2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Fuel Duty",
+     "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+     "value_gbp": -3000000.0,
+     "value_gbp_decimal": "-3000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12595:f7030f74d5533c3c",
+     "source_row_number": 12595,
+     "source_row_sha256": "f7030f74d5533c3c730babbbd2f1358e0165bda23ac5e2d4bb940bedd814a6ff",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Fuel Duty",
+     "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+     "value_gbp": -10000000.0,
+     "value_gbp_decimal": "-10000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12596:dabb2ee85da800d3",
+     "source_row_number": 12596,
+     "source_row_sha256": "dabb2ee85da800d34b1309700512bd47db0b9bcfada220f55b88644efb3ef8ac",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Fuel Duty",
+     "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+     "value_gbp": -16000000.0,
+     "value_gbp_decimal": "-16000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12597:754e32c16ab051e1",
+     "source_row_number": 12597,
+     "source_row_sha256": "754e32c16ab051e14f504e9c9c5e3f07af23def4944f6431fed5c42d3aa8039a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Fuel Duty",
+     "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+     "value_gbp": -25000000.0,
+     "value_gbp_decimal": "-25000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12598:aadebf8d3185aa29",
+     "source_row_number": 12598,
+     "source_row_sha256": "aadebf8d3185aa295e91fc0236ecbc4894dbf4de864dfeaeb98425aeb2bea005",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Fuel Duty",
+     "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+     "value_gbp": -31000000.0,
+     "value_gbp_decimal": "-31000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12599:162b3b53a1479bdc",
+     "source_row_number": 12599,
+     "source_row_sha256": "162b3b53a1479bdc50fd10dc22a184dbf049a5c4de6fdb4cffaa47ca4ffabac8",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Fuel Duty",
+     "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+     "value_gbp": -8000000.0,
+     "value_gbp_decimal": "-8000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12600:723f525c10db3584",
+     "source_row_number": 12600,
+     "source_row_sha256": "723f525c10db3584bab8fee7a0614bd345247494303a3075df71e28c68beb527",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12601:8453e071a5475197",
+     "source_row_number": 12601,
+     "source_row_sha256": "8453e071a54751974d2cf853216edf2a1df61fbdc05147a1c77fabf7496ccd66",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12602:e12af7b2db6a5f0d",
+     "source_row_number": 12602,
+     "source_row_sha256": "e12af7b2db6a5f0d4ac885f8ae06d44c4516bb3e87358c28f34351fd9b832f3f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12603:16309c752eed5573",
+     "source_row_number": 12603,
+     "source_row_sha256": "16309c752eed5573c3391dcfe4b669fbe383975671bf80af3702e4623b36135e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+     "value_gbp": 1123000000.0,
+     "value_gbp_decimal": "1123000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12604:154f1d587dbfb87f",
+     "source_row_number": 12604,
+     "source_row_sha256": "154f1d587dbfb87f46f5c086aafbaef43adbdabc7c84818ab0a3ee2bd155f819",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+     "value_gbp": 1468000000.0,
+     "value_gbp_decimal": "1468000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12605:224aecda7124922a",
+     "source_row_number": 12605,
+     "source_row_sha256": "224aecda7124922a712218c3b55f056d51bfde7bfb8b0eff1c294eb38427cdec",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+     "value_gbp": 1875000000.0,
+     "value_gbp_decimal": "1875000000.0"
+    }
+   ],
+   "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+   "unmapped_obr_heads": [
+    "Fuel Duty",
+    "Vehicle excise duty"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -8000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Fuel Duty"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12599:162b3b53a1479bdc",
+   "level": "source_row",
+   "measure_key": "ab2025__eved_mileage_supplement_electric_and_phev",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 1875000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Vehicle excise duty"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12605:224aecda7124922a",
+   "level": "source_row",
+   "measure_key": "ab2025__eved_mileage_supplement_electric_and_phev",
+   "threshold_gbp": null,
+   "year": 2030
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__eved_mileage_supplement_electric_and_phev --years 2030 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__eved_mileage_supplement_electric_and_phev_2030"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -8000000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12599:162b3b53a1479bdc",
+   "source_row_number": 12599,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Fuel Duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 1875000000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12605:224aecda7124922a",
+   "source_row_number": 12605,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Vehicle excise duty"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Electric Vehicle Excise Duty (eVED): Introduce a new mileage supplement for electric and plug-in hybrid cars from 1 April 2028",
+ "year": 2030
+}

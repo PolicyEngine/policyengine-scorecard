@@ -234,6 +234,29 @@ FY2023–24 counterparts; that loss is shown, never hidden.
   a determinism check.
 * Release differences live in `results/uk/replays/diffs/<base>__<head>/`.
 
+### Committed certified results
+
+`results/uk/replays/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/` holds
+the receiver's qualification of policyengine.py 6.4.1: request `b1f9a93d…`,
+receipt SHA-256 `3b420b5e…`, `replay-state` commit `484eaa7`. Its release
+diff against the legacy variant is committed beside it. All six corpus events
+have complete supported grids and no inert measure-years.
+
+The run predates the processed-value readback and the AB2024 CGT construction
+revision (#186). Its AB2024 Capital Gains Tax row for period 2024 (FY2024–25)
+therefore executes the frozen reversal on policyengine-uk 2.130.1's statutory
+reprocessing route, and carries that route's rate blend. The reversal window
+is 1 January 2025 to 31 December 2035. Reprocessed with `fiscal_year_blend`, it also covers
+95 of FY2024–25's 365 days. By the day-weighting rule, the reversal world's
+FY2024–25 rates are basic 0.1138 against an intended 0.1346, and higher and
+additional 0.2069 against 0.2173. The frozen construction intends identical
+worlds in period 2024, yet the row records +£0.575bn. That figure comes from
+the route; it is not a PolicyEngine costing of the FY2024–25 increase.
+
+Periods 2025 to 2029 (FY2025–26 to FY2029–30) fall wholly inside the window,
+so their reversal rates are the intended 0.10 and 0.20. A rerun with #186
+executes the revision and refuses any processed mismatch in an in-force year.
+
 ## Version-scoped diagnoses
 
 Every diagnosis and construction note carries the engine version it was
@@ -598,7 +621,7 @@ holds heavy local work back from 29 October to 2 November.
   every present namespace indexed as `replay_namespace` must have a receipt
   and manifest matching its bytes. The no-drift gate uses
   `git status --porcelain`, so newly generated untracked files fail too.
-* `replay engine`, for the two certified variants in its CI matrix: installs
+* `replay engine`, for each certified variant in its CI matrix: installs
   each variant's exact
   freeze, checks the installed environment against the record, runs every
   event's construction guards, regenerates the committed construction
