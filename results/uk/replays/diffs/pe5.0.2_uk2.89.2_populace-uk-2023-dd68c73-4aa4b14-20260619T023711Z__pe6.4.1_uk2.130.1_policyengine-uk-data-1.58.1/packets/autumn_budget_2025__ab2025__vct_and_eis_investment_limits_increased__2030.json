@@ -1,0 +1,828 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2030-31",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__vct_and_eis_investment_limits_increased",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "construction_pending",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__vct_and_eis_investment_limits_increased",
+   "measure_type": "other",
+   "missing_legs": [
+    "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.ma_rate",
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.max_child_age",
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.remove_income_condition",
+     "gov.contrib.cps.marriage_tax_reforms.marriage_neutral_it.max_child_age",
+     "gov.contrib.cps.marriage_tax_reforms.marriage_neutral_it.neutralise_income_tax",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[0].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[0].threshold",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[1].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[1].threshold",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[2].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[2].threshold",
+     "gov.dwp.ESA.eligibility.min_age",
+     "gov.dwp.JSA.eligibility.min_age",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.severe.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.child_age_limit",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.child_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.child_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.terminal_date_age_limit",
+     "gov.dwp.winter_fuel_payment.eligibility.higher_age_requirement",
+     "gov.dwp.winter_fuel_payment.eligibility.require_benefits",
+     "gov.dwp.winter_fuel_payment.eligibility.state_pension_age_requirement",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income",
+     "gov.hmrc.child_benefit.eligibility.child_age_limit",
+     "gov.hmrc.child_benefit.eligibility.education_or_training_start_age_limit",
+     "gov.hmrc.child_benefit.eligibility.qualifying_young_person_age_limit",
+     "gov.hmrc.stamp_duty.statistics.non_residential.corporate.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.non_residential.corporate.transactions",
+     "gov.hmrc.stamp_duty.statistics.non_residential.household.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.non_residential.household.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.corporate.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.residential.corporate.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[0].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[0].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[10].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[10].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[11].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[11].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[12].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[12].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[13].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[13].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[1].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[1].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[2].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[2].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[3].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[3].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[4].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[4].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[5].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[5].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[6].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[6].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[7].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[7].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[8].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[8].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[9].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[9].threshold",
+     "gov.social_security_scotland.pawhp.eligibility.higher_age_requirement",
+     "gov.social_security_scotland.pawhp.eligibility.require_benefits",
+     "gov.social_security_scotland.pawhp.eligibility.state_pension_age_requirement",
+     "gov.wra.land_transaction_tax.non_residential[0].rate",
+     "gov.wra.land_transaction_tax.non_residential[0].threshold",
+     "gov.wra.land_transaction_tax.non_residential[1].rate",
+     "gov.wra.land_transaction_tax.non_residential[1].threshold",
+     "gov.wra.land_transaction_tax.non_residential[2].rate",
+     "gov.wra.land_transaction_tax.non_residential[2].threshold",
+     "gov.wra.land_transaction_tax.non_residential[3].rate",
+     "gov.wra.land_transaction_tax.non_residential[3].threshold",
+     "gov.wra.land_transaction_tax.rent[0].rate",
+     "gov.wra.land_transaction_tax.rent[0].threshold",
+     "gov.wra.land_transaction_tax.rent[1].rate",
+     "gov.wra.land_transaction_tax.rent[1].threshold",
+     "gov.wra.land_transaction_tax.rent[2].rate",
+     "gov.wra.land_transaction_tax.rent[2].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[0].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[0].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[1].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[1].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[2].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[2].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[3].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[3].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[4].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[4].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[5].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[5].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[0].rate",
+     "gov.wra.land_transaction_tax.residential.primary[0].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[1].rate",
+     "gov.wra.land_transaction_tax.residential.primary[1].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[2].rate",
+     "gov.wra.land_transaction_tax.residential.primary[2].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[3].rate",
+     "gov.wra.land_transaction_tax.residential.primary[3].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[4].rate",
+     "gov.wra.land_transaction_tax.residential.primary[4].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[5].rate",
+     "gov.wra.land_transaction_tax.residential.primary[5].threshold"
+    ],
+    "pattern": "transaction|eligibility|reform",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "land_and_buildings_transaction_tax",
+     "land_transaction_tax",
+     "lbtt_on_non_residential_property_transactions",
+     "lbtt_on_residential_property_transactions",
+     "lbtt_on_transactions",
+     "ltt_on_non_residential_property_transactions",
+     "ltt_on_residential_property_transactions",
+     "ltt_on_transactions",
+     "sdlt_on_non_residential_property_transactions",
+     "sdlt_on_residential_property_transactions",
+     "sdlt_on_transactions"
+    ]
+   },
+   "note": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+   "pe_gap": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+   "pe_reform_delta": null,
+   "program": "other",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12186:4696d7f8e8918628",
+     "source_row_number": 12186,
+     "source_row_sha256": "4696d7f8e8918628bd1179a48726d3828450635a4ab1ad9bdcc43533727bcf1a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12187:4a024d61d872c669",
+     "source_row_number": 12187,
+     "source_row_sha256": "4a024d61d872c6696b482d2fdf6817ace0b0828b75b4034771d7e1e34e21fada",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12188:572e4dcb78229daf",
+     "source_row_number": 12188,
+     "source_row_sha256": "572e4dcb78229daf949fb628875223114b17e65f23e4df4578f4e04ea7fb1c0b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12189:1ebb14219911bb9b",
+     "source_row_number": 12189,
+     "source_row_sha256": "1ebb14219911bb9b0f93f6b46d9faaf3a3a1efd692cd3ac3c855b4100dd19cf5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12190:1a6af42d1f6c4619",
+     "source_row_number": 12190,
+     "source_row_sha256": "1a6af42d1f6c4619d4cf5182455ddfcc9aba49f6187a1f748d0b0eeda3a19bb2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -5000000.0,
+     "value_gbp_decimal": "-5000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12191:8fbd5bf202e70e75",
+     "source_row_number": 12191,
+     "source_row_sha256": "8fbd5bf202e70e75ae7fa753d28737d8f460f27e9aec7dd935d7abed10dccb42",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -5000000.0,
+     "value_gbp_decimal": "-5000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12192:6c94267e428e16e3",
+     "source_row_number": 12192,
+     "source_row_sha256": "6c94267e428e16e3b8c8d86cfa1cc5c3a8f0a7154a90facf69ea99cd6834b8a9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12193:fdabf9588b22decb",
+     "source_row_number": 12193,
+     "source_row_sha256": "fdabf9588b22decba3ed2d0014c6fe1e6bde89af42302f0f31bdf141b65311ab",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12194:2446b4fc21bc2b6d",
+     "source_row_number": 12194,
+     "source_row_sha256": "2446b4fc21bc2b6d2c688db4b7823fe48127956f5186ab87b76594c62ccc6c6d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -53000000.0,
+     "value_gbp_decimal": "-53000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12195:c8194f2514775c90",
+     "source_row_number": 12195,
+     "source_row_sha256": "c8194f2514775c90484cf9208879ad38e15a4c8a1282b276deea545eef65eb5f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -42000000.0,
+     "value_gbp_decimal": "-42000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12196:2474c0294ef876ba",
+     "source_row_number": 12196,
+     "source_row_sha256": "2474c0294ef876baf4a576bd819943cc11d84ca0e32cad2dcea7c294b199dac7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -43000000.0,
+     "value_gbp_decimal": "-43000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12197:69346527ee678da2",
+     "source_row_number": 12197,
+     "source_row_sha256": "69346527ee678da2358b05fc83056a381469def31a47a66037a80aedbd65ce7a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -44000000.0,
+     "value_gbp_decimal": "-44000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23693:6039055e2cbe7056",
+     "source_row_number": 23693,
+     "source_row_sha256": "6039055e2cbe7056251cabb389bb443d494af6904a8abe821e1d5e3031837408",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23694:c5c419c5d6c10e7b",
+     "source_row_number": 23694,
+     "source_row_sha256": "c5c419c5d6c10e7bb3da1a646089adb37d38caad4a8eb592f62f240268980bb9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23695:cab75fedc3c96cf1",
+     "source_row_number": 23695,
+     "source_row_sha256": "cab75fedc3c96cf1b52a59013441d65072d16343a846e2f615e8df44eb6846d3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -1000000.0,
+     "value_gbp_decimal": "-1000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23696:c8db8ef9be1ab61f",
+     "source_row_number": 23696,
+     "source_row_sha256": "c8db8ef9be1ab61f24f4b6a9f644c5a13115c5ac70b9a0128d7991da38f00757",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -1000000.0,
+     "value_gbp_decimal": "-1000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23697:3b20fad56d800e9a",
+     "source_row_number": 23697,
+     "source_row_sha256": "3b20fad56d800e9aa5fa2d92489b59032f052094c5b7e99df91c680cd222237b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -1000000.0,
+     "value_gbp_decimal": "-1000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23698:9b82a435a0eb22db",
+     "source_row_number": 23698,
+     "source_row_sha256": "9b82a435a0eb22dbff6b975a8613ec1548bb50c4a3d26489ba542cc802014870",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -1000000.0,
+     "value_gbp_decimal": "-1000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23699:88e3a06d83247c3b",
+     "source_row_number": 23699,
+     "source_row_sha256": "88e3a06d83247c3b1d3fc0a0454089e447af81b615a1d38f66e264b003ce0dd5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23700:f247db930c37dbac",
+     "source_row_number": 23700,
+     "source_row_sha256": "f247db930c37dbac39161df2171150f4decedfcedba278983babdc28ea368dc6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23701:95e4b32ae876c8e0",
+     "source_row_number": 23701,
+     "source_row_sha256": "95e4b32ae876c8e0d7eb38bafa5d5c810d9bb613186f8a9bcb195142ea0a3f4e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -4000000.0,
+     "value_gbp_decimal": "-4000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23702:5a579cf4e775ce5a",
+     "source_row_number": 23702,
+     "source_row_sha256": "5a579cf4e775ce5a62ad28d679b1a91766e6430273ddbaa81cc9546f5fbffccb",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -3000000.0,
+     "value_gbp_decimal": "-3000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23703:aa36103f1ea2589f",
+     "source_row_number": 23703,
+     "source_row_sha256": "aa36103f1ea2589f4266c81d960768da9613f55cf0622cddde8e4f8eed71f1c0",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -3000000.0,
+     "value_gbp_decimal": "-3000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23704:643dbb20a4b301d0",
+     "source_row_number": 23704,
+     "source_row_sha256": "643dbb20a4b301d041063757f5d60e9b2d275282cd257996e39f34d9b7fa91bf",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+     "value_gbp": -3000000.0,
+     "value_gbp_decimal": "-3000000.0"
+    }
+   ],
+   "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Income tax",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -5000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12191:8fbd5bf202e70e75",
+   "level": "source_row",
+   "measure_key": "ab2025__vct_and_eis_investment_limits_increased",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -44000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12197:69346527ee678da2",
+   "level": "source_row",
+   "measure_key": "ab2025__vct_and_eis_investment_limits_increased",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -1000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23698:9b82a435a0eb22db",
+   "level": "source_row",
+   "measure_key": "ab2025__vct_and_eis_investment_limits_increased",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -3000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23704:643dbb20a4b301d0",
+   "level": "source_row",
+   "measure_key": "ab2025__vct_and_eis_investment_limits_increased",
+   "threshold_gbp": null,
+   "year": 2030
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__vct_and_eis_investment_limits_increased --years 2030 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__vct_and_eis_investment_limits_increased_2030"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -5000000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12191:8fbd5bf202e70e75",
+   "source_row_number": 12191,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -44000000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12197:69346527ee678da2",
+   "source_row_number": 12197,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -1000000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23698:9b82a435a0eb22db",
+   "source_row_number": 23698,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -3000000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23704:643dbb20a4b301d0",
+   "source_row_number": 23704,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Venture Capital Schemes: Increase the Venture Capital Trust (VCT) scheme and the Enterprise Investment Scheme (EIS) annual and lifetime investment limits and the gross assets test from 6 April 2026",
+ "year": 2030
+}

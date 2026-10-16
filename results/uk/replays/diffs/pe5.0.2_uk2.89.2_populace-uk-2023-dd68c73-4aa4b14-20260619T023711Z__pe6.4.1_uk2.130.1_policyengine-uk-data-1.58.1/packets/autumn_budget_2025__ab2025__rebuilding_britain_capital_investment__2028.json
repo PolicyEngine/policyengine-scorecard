@@ -1,0 +1,677 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__rebuilding_britain_capital_investment",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "construction_pending",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__rebuilding_britain_capital_investment",
+   "measure_type": "other",
+   "missing_legs": [
+    "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.ma_rate",
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.max_child_age",
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.remove_income_condition",
+     "gov.contrib.cps.marriage_tax_reforms.marriage_neutral_it.max_child_age",
+     "gov.contrib.cps.marriage_tax_reforms.marriage_neutral_it.neutralise_income_tax",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[0].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[0].threshold",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[1].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[1].threshold",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[2].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[2].threshold",
+     "gov.dwp.ESA.eligibility.min_age",
+     "gov.dwp.JSA.eligibility.min_age",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.severe.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.child_age_limit",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.child_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.child_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.terminal_date_age_limit",
+     "gov.dwp.winter_fuel_payment.eligibility.higher_age_requirement",
+     "gov.dwp.winter_fuel_payment.eligibility.require_benefits",
+     "gov.dwp.winter_fuel_payment.eligibility.state_pension_age_requirement",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income",
+     "gov.hmrc.child_benefit.eligibility.child_age_limit",
+     "gov.hmrc.child_benefit.eligibility.education_or_training_start_age_limit",
+     "gov.hmrc.child_benefit.eligibility.qualifying_young_person_age_limit",
+     "gov.hmrc.stamp_duty.statistics.non_residential.corporate.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.non_residential.corporate.transactions",
+     "gov.hmrc.stamp_duty.statistics.non_residential.household.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.non_residential.household.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.corporate.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.residential.corporate.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[0].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[0].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[10].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[10].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[11].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[11].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[12].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[12].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[13].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[13].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[1].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[1].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[2].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[2].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[3].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[3].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[4].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[4].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[5].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[5].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[6].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[6].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[7].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[7].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[8].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[8].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[9].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[9].threshold",
+     "gov.social_security_scotland.pawhp.eligibility.higher_age_requirement",
+     "gov.social_security_scotland.pawhp.eligibility.require_benefits",
+     "gov.social_security_scotland.pawhp.eligibility.state_pension_age_requirement",
+     "gov.wra.land_transaction_tax.non_residential[0].rate",
+     "gov.wra.land_transaction_tax.non_residential[0].threshold",
+     "gov.wra.land_transaction_tax.non_residential[1].rate",
+     "gov.wra.land_transaction_tax.non_residential[1].threshold",
+     "gov.wra.land_transaction_tax.non_residential[2].rate",
+     "gov.wra.land_transaction_tax.non_residential[2].threshold",
+     "gov.wra.land_transaction_tax.non_residential[3].rate",
+     "gov.wra.land_transaction_tax.non_residential[3].threshold",
+     "gov.wra.land_transaction_tax.rent[0].rate",
+     "gov.wra.land_transaction_tax.rent[0].threshold",
+     "gov.wra.land_transaction_tax.rent[1].rate",
+     "gov.wra.land_transaction_tax.rent[1].threshold",
+     "gov.wra.land_transaction_tax.rent[2].rate",
+     "gov.wra.land_transaction_tax.rent[2].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[0].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[0].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[1].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[1].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[2].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[2].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[3].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[3].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[4].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[4].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[5].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[5].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[0].rate",
+     "gov.wra.land_transaction_tax.residential.primary[0].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[1].rate",
+     "gov.wra.land_transaction_tax.residential.primary[1].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[2].rate",
+     "gov.wra.land_transaction_tax.residential.primary[2].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[3].rate",
+     "gov.wra.land_transaction_tax.residential.primary[3].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[4].rate",
+     "gov.wra.land_transaction_tax.residential.primary[4].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[5].rate",
+     "gov.wra.land_transaction_tax.residential.primary[5].threshold"
+    ],
+    "pattern": "transaction|eligibility|reform",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "land_and_buildings_transaction_tax",
+     "land_transaction_tax",
+     "lbtt_on_non_residential_property_transactions",
+     "lbtt_on_residential_property_transactions",
+     "lbtt_on_transactions",
+     "ltt_on_non_residential_property_transactions",
+     "ltt_on_residential_property_transactions",
+     "ltt_on_transactions",
+     "sdlt_on_non_residential_property_transactions",
+     "sdlt_on_residential_property_transactions",
+     "sdlt_on_transactions"
+    ]
+   },
+   "note": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+   "pe_gap": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+   "pe_reform_delta": null,
+   "program": "other",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12108:94a0eff38f3a0bb7",
+     "source_row_number": 12108,
+     "source_row_sha256": "94a0eff38f3a0bb70717f2c8571a58c0973e066e1dfb536ba056089521e549b5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12109:8025c50f2be67ea2",
+     "source_row_number": 12109,
+     "source_row_sha256": "8025c50f2be67ea2f2834cb74f72a54cbf7f13d43be6ee404e5c3eb4f44ef90a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12110:26b198e29bb6f957",
+     "source_row_number": 12110,
+     "source_row_sha256": "26b198e29bb6f95722b2076224c5dc93b07767f3d9958804fe7567ed0e986907",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": 19500000.0,
+     "value_gbp_decimal": "19500000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12111:c19e1cd4ca91457e",
+     "source_row_number": 12111,
+     "source_row_sha256": "c19e1cd4ca91457e3052dd5f5f690a4f38281eeb36acaa6baed5b4ddaf7081e9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": 19500000.0,
+     "value_gbp_decimal": "19500000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12112:a399b129c64ed3a5",
+     "source_row_number": 12112,
+     "source_row_sha256": "a399b129c64ed3a5c5984554d66c5a32d5b69eec95eba7f2311c420033edb6fa",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": 19500000.0,
+     "value_gbp_decimal": "19500000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12113:279fe1737c065e14",
+     "source_row_number": 12113,
+     "source_row_sha256": "279fe1737c065e146bafe697177a3b128e55496a4b4eac3fc1086644052807e6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": 19500000.0,
+     "value_gbp_decimal": "19500000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23633:c51669c4a0793c2f",
+     "source_row_number": 23633,
+     "source_row_sha256": "c51669c4a0793c2f8e967e0bb807fab4483fb0f42985db96800916f65221dd4f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23634:fda4d30b1be221d1",
+     "source_row_number": 23634,
+     "source_row_sha256": "fda4d30b1be221d16337249b52e3cd17ff843ab360d727d47b2345cd1d148f96",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23635:29a8c7cebab9d757",
+     "source_row_number": 23635,
+     "source_row_sha256": "29a8c7cebab9d757aa9d95263b2d438378dd480dd3ed3e823f9402891ed7b76d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": -83000000.0,
+     "value_gbp_decimal": "-83000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23636:c38dc5afc1de69f5",
+     "source_row_number": 23636,
+     "source_row_sha256": "c38dc5afc1de69f506155f51ea7897c6e96bd0d171dbb281a82fc520ef353aa4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": -83000000.0,
+     "value_gbp_decimal": "-83000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23637:8623dae9cc846018",
+     "source_row_number": 23637,
+     "source_row_sha256": "8623dae9cc8460188c53fa7607a91f15778afb68c037956f9e663fa994308c77",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": -83000000.0,
+     "value_gbp_decimal": "-83000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23638:dce9bcef55e7347f",
+     "source_row_number": 23638,
+     "source_row_sha256": "dce9bcef55e7347f2331be0291b6fc3bee32137a14a042fa1f80389d97ec1490",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": -83000000.0,
+     "value_gbp_decimal": "-83000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23639:e9f41e4cce132032",
+     "source_row_number": 23639,
+     "source_row_sha256": "e9f41e4cce132032fd846b91d30fe64ac60696ff7d571d04d98843a4089b4077",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23640:0062624b3a3a10e3",
+     "source_row_number": 23640,
+     "source_row_sha256": "0062624b3a3a10e318a66749cbac8a8fdf9eaeb11e7423f2689649d83a0e69c2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": -3208877661.5064845,
+     "value_gbp_decimal": "-3208877661.5064845"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23641:dc2b468c50338778",
+     "source_row_number": 23641,
+     "source_row_sha256": "dc2b468c503387788067b078fee25c1170467cf6c21e481b107fa40b5a34e618",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": -949890934.178913,
+     "value_gbp_decimal": "-949890934.178913"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23642:d4ff1540c9d3179f",
+     "source_row_number": 23642,
+     "source_row_sha256": "d4ff1540c9d3179f0778e4de1941717784eb2546454021d1fd38ced36e7fc43d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": 1164314770.0481455,
+     "value_gbp_decimal": "1164314770.0481455"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23643:ca6ac37cb3f11ea1",
+     "source_row_number": 23643,
+     "source_row_sha256": "ca6ac37cb3f11ea1bacef226a5215ad1e62c3dc9f36d98dad99e9ffbedd1e2b6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": 1589784090.3289,
+     "value_gbp_decimal": "1589784090.3289"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23644:5e8c13da70166bc0",
+     "source_row_number": 23644,
+     "source_row_sha256": "5e8c13da70166bc0900ee1a1dd7946feb23d206f3ed1f2db97af8f4f9e7898bd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+     "value_gbp": -244000000.0,
+     "value_gbp_decimal": "-244000000.0"
+    }
+   ],
+   "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+   "unmapped_obr_heads": [
+    "Income tax",
+    "Other AME (current)",
+    "PSGI in CDEL"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 19500000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12111:c19e1cd4ca91457e",
+   "level": "source_row",
+   "measure_key": "ab2025__rebuilding_britain_capital_investment",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -83000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Other AME (current)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23636:c38dc5afc1de69f5",
+   "level": "source_row",
+   "measure_key": "ab2025__rebuilding_britain_capital_investment",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 1164314770.0481455,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSGI in CDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23642:d4ff1540c9d3179f",
+   "level": "source_row",
+   "measure_key": "ab2025__rebuilding_britain_capital_investment",
+   "threshold_gbp": null,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__rebuilding_britain_capital_investment --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__rebuilding_britain_capital_investment_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 19500000.0,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12111:c19e1cd4ca91457e",
+   "source_row_number": 12111,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -83000000.0,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:23636:c38dc5afc1de69f5",
+   "source_row_number": 23636,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Other AME (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 1164314770.0481455,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:23642:d4ff1540c9d3179f",
+   "source_row_number": 23642,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSGI in CDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Rebuilding Britain: Accelerate delivery of growth-enhancing capital investment, including the Lower Thames Crossing",
+ "year": 2028
+}

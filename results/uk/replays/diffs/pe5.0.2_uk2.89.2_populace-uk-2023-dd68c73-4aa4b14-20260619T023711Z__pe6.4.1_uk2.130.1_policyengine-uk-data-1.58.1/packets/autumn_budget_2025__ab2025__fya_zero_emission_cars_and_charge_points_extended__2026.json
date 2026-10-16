@@ -1,0 +1,708 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2026-27",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__fya_zero_emission_cars_and_charge_points_extended",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "model_or_data_gap",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__fya_zero_emission_cars_and_charge_points_extended",
+   "measure_type": "transport",
+   "missing_legs": [
+    "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "vehicle|company_car|van_benefit|air_passenger",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "num_vehicles",
+     "owns_vehicle"
+    ]
+   },
+   "note": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+   "pe_gap": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+   "pe_reform_delta": null,
+   "program": "transport",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12624:44c18f9edc576e4c",
+     "source_row_number": 12624,
+     "source_row_sha256": "44c18f9edc576e4c8de1d5b48b9fe428ddd6d9299fc7f83fb6de94c35a16b6e6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12625:8313f00454103626",
+     "source_row_number": 12625,
+     "source_row_sha256": "8313f00454103626c70559d6a28dcc31c55ecf50285e07f20f8fd8c3c13a1d39",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12626:0f0ccb80c9800320",
+     "source_row_number": 12626,
+     "source_row_sha256": "0f0ccb80c98003202043fbb13bf04921d8e1528f891d08943b14701982df203a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": -28065609.207119796,
+     "value_gbp_decimal": "-28065609.207119796"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12627:b7b7e37787bd5038",
+     "source_row_number": 12627,
+     "source_row_sha256": "b7b7e37787bd503866603a148ae7d48b5d79ef245491da463503b0b050c659fb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 6521188.123813903,
+     "value_gbp_decimal": "6521188.123813903"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12628:b14116974b97329f",
+     "source_row_number": 12628,
+     "source_row_sha256": "b14116974b97329ff1590306800d8d6448254320adc381bc1158dd15e76f6e73",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 1746119.4074445537,
+     "value_gbp_decimal": "1746119.4074445537"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12629:83d921567056053d",
+     "source_row_number": 12629,
+     "source_row_sha256": "83d921567056053dccd08694f306830bd10ad0a0925ba398d429461d65764a72",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 2041769.277421873,
+     "value_gbp_decimal": "2041769.277421873"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12630:b643cbc91f84ddd9",
+     "source_row_number": 12630,
+     "source_row_sha256": "b643cbc91f84ddd99f7c845d37d470cc8631a93bd19d3be828dd6c8546d13afc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": -6050858.593565048,
+     "value_gbp_decimal": "-6050858.593565048"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12631:067b65ed2d7b72bd",
+     "source_row_number": 12631,
+     "source_row_sha256": "067b65ed2d7b72bdc51d4b21fa70122943f5bb241450355fe7976872a976e727",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": -142760757.7715661,
+     "value_gbp_decimal": "-142760757.7715661"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12632:4f2d0e9bff6cc0db",
+     "source_row_number": 12632,
+     "source_row_sha256": "4f2d0e9bff6cc0db4427afa8ac3f45570992c39668ac83fb89105d3f8da274f3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": -67327685.30651638,
+     "value_gbp_decimal": "-67327685.30651638"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12633:9e44d2a5ee1e4fb7",
+     "source_row_number": 12633,
+     "source_row_sha256": "9e44d2a5ee1e4fb7d7667fb60dad5e1436b6f6b0b489793b59323c89af55f03c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 8208292.446737481,
+     "value_gbp_decimal": "8208292.446737481"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12634:38b734e118ddd810",
+     "source_row_number": 12634,
+     "source_row_sha256": "38b734e118ddd810a04dd7985636563a1eea5fe93a249050cdcea3ad42fbbdc3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 17574788.75169031,
+     "value_gbp_decimal": "17574788.75169031"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12635:1305ee6a1d09a9f1",
+     "source_row_number": 12635,
+     "source_row_sha256": "1305ee6a1d09a9f1e85cf6c881efc7e5473abc0afaa42b4afcba91973e55a2ad",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 20733360.360543724,
+     "value_gbp_decimal": "20733360.360543724"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24071:e09de58693dad915",
+     "source_row_number": 24071,
+     "source_row_sha256": "e09de58693dad9159c30a3dfdb49cf459fccea31887a4212b426e4f878c7b18c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24072:f0506140ff20c68d",
+     "source_row_number": 24072,
+     "source_row_sha256": "f0506140ff20c68d8e14cdfa3d07769d51499ee3f1a4521a45df4972b0323991",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24073:35283f4106e8c037",
+     "source_row_number": 24073,
+     "source_row_sha256": "35283f4106e8c03786d48ef31a20acc2432e4fba8f0a76aca59a4e0978b4d6a1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": -297007.76292152196,
+     "value_gbp_decimal": "-297007.76292152196"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24074:5ed11dcb88596087",
+     "source_row_number": 24074,
+     "source_row_sha256": "5ed11dcb88596087b3e263359c41aaec2c3818e2ca10ea09ed4fc87bc95d3085",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 68662.84765450995,
+     "value_gbp_decimal": "68662.84765450995"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24075:dfbe5f6dc2664eb9",
+     "source_row_number": 24075,
+     "source_row_sha256": "dfbe5f6dc2664eb96f19e924ab733003e0f058e18e5e6c0d0504b846e4d75108",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 18327.60750451558,
+     "value_gbp_decimal": "18327.60750451558"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24076:ae5f68f5a2be8e68",
+     "source_row_number": 24076,
+     "source_row_sha256": "ae5f68f5a2be8e68f5254297c278b943fb769d8a698c2c25bcc1d6776cdbe633",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 21320.699066296947,
+     "value_gbp_decimal": "21320.699066296947"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24077:800a5d44ca5d52e9",
+     "source_row_number": 24077,
+     "source_row_sha256": "800a5d44ca5d52e9995237fd6609bf0fad087e940bb7f547a205de37c03f0d47",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24078:a7d549b89089b76f",
+     "source_row_number": 24078,
+     "source_row_sha256": "a7d549b89089b76f1bfcf28bfbdcf9d496d521fb1475ae3cf16254ad8732148e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24079:687366ac07cbf4ba",
+     "source_row_number": 24079,
+     "source_row_sha256": "687366ac07cbf4ba43133629fd299bb29652996e05f45b7247c2aa835e31e5b5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": -1929126.6276523506,
+     "value_gbp_decimal": "-1929126.6276523506"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24080:da50c839abf55bb4",
+     "source_row_number": 24080,
+     "source_row_sha256": "da50c839abf55bb459bdf2a0e89d66588b6d626cd56b580f15fad1d2e96d8875",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 446557.7916912001,
+     "value_gbp_decimal": "446557.7916912001"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24081:160559ff913f96f0",
+     "source_row_number": 24081,
+     "source_row_sha256": "160559ff913f96f096e8456e6b3a6cb09fb7efb7d4ae17d37e21a18cfea3b41b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 119178.74815453064,
+     "value_gbp_decimal": "119178.74815453064"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24082:1d0334c85e10013f",
+     "source_row_number": 24082,
+     "source_row_sha256": "1d0334c85e10013f1593f402644a8572c54214efd3a83c9d56828e9b8b42c768",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+     "value_gbp": 138851.87701656672,
+     "value_gbp_decimal": "138851.87701656672"
+    }
+   ],
+   "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+   "unmapped_obr_heads": [
+    "Corporation tax (onshore)",
+    "Income tax",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12625:8313f00454103626",
+   "level": "source_row",
+   "measure_key": "ab2025__fya_zero_emission_cars_and_charge_points_extended",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": -142760757.7715661,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12631:067b65ed2d7b72bd",
+   "level": "source_row",
+   "measure_key": "ab2025__fya_zero_emission_cars_and_charge_points_extended",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24072:f0506140ff20c68d",
+   "level": "source_row",
+   "measure_key": "ab2025__fya_zero_emission_cars_and_charge_points_extended",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24078:a7d549b89089b76f",
+   "level": "source_row",
+   "measure_key": "ab2025__fya_zero_emission_cars_and_charge_points_extended",
+   "threshold_gbp": null,
+   "year": 2026
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__fya_zero_emission_cars_and_charge_points_extended --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__fya_zero_emission_cars_and_charge_points_extended_2026"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:12625:8313f00454103626",
+   "source_row_number": 12625,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": -142760757.7715661,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:12631:067b65ed2d7b72bd",
+   "source_row_number": 12631,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:24072:f0506140ff20c68d",
+   "source_row_number": 24072,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:24078:a7d549b89089b76f",
+   "source_row_number": 24078,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Support for British automotive industry: Extend 100% first-year allowances for zero-emission cars and electric vehicle charge points to 31 March 2027 for Corporation Tax and 5 April 2027 for Income Tax",
+ "year": 2026
+}

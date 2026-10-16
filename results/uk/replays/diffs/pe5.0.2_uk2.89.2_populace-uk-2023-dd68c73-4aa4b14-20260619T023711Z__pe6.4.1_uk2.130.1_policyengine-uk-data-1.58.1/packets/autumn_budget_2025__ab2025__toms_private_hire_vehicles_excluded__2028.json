@@ -1,0 +1,255 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__toms_private_hire_vehicles_excluded",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "model_or_data_gap",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__toms_private_hire_vehicles_excluded",
+   "measure_type": "transport",
+   "missing_legs": [
+    "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "vehicle|company_car|van_benefit|air_passenger",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "num_vehicles",
+     "owns_vehicle"
+    ]
+   },
+   "note": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+   "pe_gap": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+   "pe_reform_delta": null,
+   "program": "transport",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12528:d7e1e89371b2fe32",
+     "source_row_number": 12528,
+     "source_row_sha256": "d7e1e89371b2fe32337c11439f24fa9a1cd47ccf3ed5938904a55574d3bb9f7d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "Tour Operators' Margin Scheme: Exclude Private Hire Vehicle Services from the scope of the scheme from 2 January 2026",
+     "value_gbp": 188418041.45718548,
+     "value_gbp_decimal": "188418041.45718548"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12529:ac9801dd26aa4334",
+     "source_row_number": 12529,
+     "source_row_sha256": "ac9801dd26aa4334b34f0064761780b901201f2d62f463129fa8d2f00ea1ff77",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "Tour Operators' Margin Scheme: Exclude Private Hire Vehicle Services from the scope of the scheme from 2 January 2026",
+     "value_gbp": 725008500.0025563,
+     "value_gbp_decimal": "725008500.0025563"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12530:02a1536fbcb08f87",
+     "source_row_number": 12530,
+     "source_row_sha256": "02a1536fbcb08f8771ac0b05ac0a41c55f05aeda220c5749770d34ed1d309e10",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "Tour Operators' Margin Scheme: Exclude Private Hire Vehicle Services from the scope of the scheme from 2 January 2026",
+     "value_gbp": 662546531.9733329,
+     "value_gbp_decimal": "662546531.9733329"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12531:c7076765d947212c",
+     "source_row_number": 12531,
+     "source_row_sha256": "c7076765d947212cd59007e70fac4ea029cb5eedf1ca8ac524fc3d50a6660b21",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "Tour Operators' Margin Scheme: Exclude Private Hire Vehicle Services from the scope of the scheme from 2 January 2026",
+     "value_gbp": 653539188.0900911,
+     "value_gbp_decimal": "653539188.0900911"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12532:a419320dbcb79046",
+     "source_row_number": 12532,
+     "source_row_sha256": "a419320dbcb790462d1c627fb80b5951d3a723988d671cbf80964fd7e3540034",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "Tour Operators' Margin Scheme: Exclude Private Hire Vehicle Services from the scope of the scheme from 2 January 2026",
+     "value_gbp": 652196181.4514812,
+     "value_gbp_decimal": "652196181.4514812"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12533:8dd740c3020d5002",
+     "source_row_number": 12533,
+     "source_row_sha256": "8dd740c3020d5002488f431016ffe89a4ec816c2101ee00ae4d3f5731d94c675",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "Tour Operators' Margin Scheme: Exclude Private Hire Vehicle Services from the scope of the scheme from 2 January 2026",
+     "value_gbp": 676677452.8686817,
+     "value_gbp_decimal": "676677452.8686817"
+    }
+   ],
+   "title": "Tour Operators' Margin Scheme: Exclude Private Hire Vehicle Services from the scope of the scheme from 2 January 2026",
+   "unmapped_obr_heads": [
+    "VAT"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 653539188.0900911,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "VAT"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12531:c7076765d947212c",
+   "level": "source_row",
+   "measure_key": "ab2025__toms_private_hire_vehicles_excluded",
+   "threshold_gbp": null,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__toms_private_hire_vehicles_excluded --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__toms_private_hire_vehicles_excluded_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 653539188.0900911,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12531:c7076765d947212c",
+   "source_row_number": 12531,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "VAT"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Tour Operators' Margin Scheme: Exclude Private Hire Vehicle Services from the scope of the scheme from 2 January 2026",
+ "year": 2028
+}

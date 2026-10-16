@@ -1,0 +1,252 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2030-31",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "autumn_budget_2025__hm_treasury_allowance_for_shortfall_assumption_psgi_in_cdel",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "out_of_household_scope",
+   "computability": "out_of_household_scope",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "out_of_household_scope",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "autumn_budget_2025__hm_treasury_allowance_for_shortfall_assumption_psgi_in_cdel",
+   "measure_type": "scope",
+   "missing_legs": [
+    "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "firm|corporation|department|block_grant",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_gap": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_reform_delta": null,
+   "program": "scope",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24281:90d216c5d511c647",
+     "source_row_number": 24281,
+     "source_row_sha256": "90d216c5d511c647105929b4c63f25a457442a5324fecea1d74b100cca4a1491",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "HM Treasury Allowance for Shortfall assumption - PSGI in CDEL",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24282:41dac5854bad92a0",
+     "source_row_number": 24282,
+     "source_row_sha256": "41dac5854bad92a045d8919993d69e3ce0748870a2235826db05f35e5c68d23b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "HM Treasury Allowance for Shortfall assumption - PSGI in CDEL",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24283:6927d8538f581e99",
+     "source_row_number": 24283,
+     "source_row_sha256": "6927d8538f581e9960a0a07eb5e89cbf9a6e1c71ea67aacdc1682a4c0a0dcd48",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "HM Treasury Allowance for Shortfall assumption - PSGI in CDEL",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24284:9ef1c1c53d58ad3a",
+     "source_row_number": 24284,
+     "source_row_sha256": "9ef1c1c53d58ad3aed33973b6c224beda5c6e66e57f4115a9def9e9ee308970e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "HM Treasury Allowance for Shortfall assumption - PSGI in CDEL",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24285:bde5c8529377a1b3",
+     "source_row_number": 24285,
+     "source_row_sha256": "bde5c8529377a1b344e58fd37d14b7e9da961accddd8057be3ed4011bddffb14",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "HM Treasury Allowance for Shortfall assumption - PSGI in CDEL",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24286:27303b1b5b9c63a1",
+     "source_row_number": 24286,
+     "source_row_sha256": "27303b1b5b9c63a182794861e864ebc928a725dc59ace7a050b0f4572e10bfd8",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "HM Treasury Allowance for Shortfall assumption - PSGI in CDEL",
+     "value_gbp": -3250511000.0,
+     "value_gbp_decimal": "-3250511000.0"
+    }
+   ],
+   "title": "HM Treasury Allowance for Shortfall assumption - PSGI in CDEL",
+   "unmapped_obr_heads": [
+    "PSGI in CDEL"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -3250511000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSGI in CDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24286:27303b1b5b9c63a1",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2025__hm_treasury_allowance_for_shortfall_assumption_psgi_in_cdel",
+   "threshold_gbp": null,
+   "year": 2030
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures autumn_budget_2025__hm_treasury_allowance_for_shortfall_assumption_psgi_in_cdel --years 2030 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/autumn_budget_2025__hm_treasury_allowance_for_shortfall_assumption_psgi_in_cdel_2030"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -3250511000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:24286:27303b1b5b9c63a1",
+   "source_row_number": 24286,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSGI in CDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "HM Treasury Allowance for Shortfall assumption - PSGI in CDEL",
+ "year": 2030
+}

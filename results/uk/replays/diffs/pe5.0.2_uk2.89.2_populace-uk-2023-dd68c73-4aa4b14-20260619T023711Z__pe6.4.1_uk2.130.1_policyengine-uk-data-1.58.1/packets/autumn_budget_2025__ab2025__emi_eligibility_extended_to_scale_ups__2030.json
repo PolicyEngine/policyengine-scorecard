@@ -1,0 +1,1130 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2030-31",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__emi_eligibility_extended_to_scale_ups",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "construction_pending",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__emi_eligibility_extended_to_scale_ups",
+   "measure_type": "other",
+   "missing_legs": [
+    "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.ma_rate",
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.max_child_age",
+     "gov.contrib.cps.marriage_tax_reforms.expanded_ma.remove_income_condition",
+     "gov.contrib.cps.marriage_tax_reforms.marriage_neutral_it.max_child_age",
+     "gov.contrib.cps.marriage_tax_reforms.marriage_neutral_it.neutralise_income_tax",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[0].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[0].threshold",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[1].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[1].threshold",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[2].amount",
+     "gov.dfe.targeted_childcare_entitlement.age_eligibility[2].threshold",
+     "gov.dwp.ESA.eligibility.min_age",
+     "gov.dwp.JSA.eligibility.min_age",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.severe.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.child_age_limit",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.pension_credit.guarantee_credit.child.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.child_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.tax_credits.child_tax_credit.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.child_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.education_or_training_start_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.qualifying_young_person_age_limit",
+     "gov.dwp.universal_credit.elements.child.eligibility.terminal_date_age_limit",
+     "gov.dwp.winter_fuel_payment.eligibility.higher_age_requirement",
+     "gov.dwp.winter_fuel_payment.eligibility.require_benefits",
+     "gov.dwp.winter_fuel_payment.eligibility.state_pension_age_requirement",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income",
+     "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income",
+     "gov.hmrc.child_benefit.eligibility.child_age_limit",
+     "gov.hmrc.child_benefit.eligibility.education_or_training_start_age_limit",
+     "gov.hmrc.child_benefit.eligibility.qualifying_young_person_age_limit",
+     "gov.hmrc.stamp_duty.statistics.non_residential.corporate.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.non_residential.corporate.transactions",
+     "gov.hmrc.stamp_duty.statistics.non_residential.household.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.non_residential.household.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.corporate.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.residential.corporate.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transaction_values",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[0].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[0].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[10].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[10].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[11].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[11].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[12].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[12].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[13].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[13].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[1].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[1].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[2].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[2].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[3].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[3].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[4].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[4].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[5].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[5].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[6].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[6].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[7].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[7].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[8].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[8].threshold",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[9].amount",
+     "gov.hmrc.stamp_duty.statistics.residential.household.transactions_by_age[9].threshold",
+     "gov.social_security_scotland.pawhp.eligibility.higher_age_requirement",
+     "gov.social_security_scotland.pawhp.eligibility.require_benefits",
+     "gov.social_security_scotland.pawhp.eligibility.state_pension_age_requirement",
+     "gov.wra.land_transaction_tax.non_residential[0].rate",
+     "gov.wra.land_transaction_tax.non_residential[0].threshold",
+     "gov.wra.land_transaction_tax.non_residential[1].rate",
+     "gov.wra.land_transaction_tax.non_residential[1].threshold",
+     "gov.wra.land_transaction_tax.non_residential[2].rate",
+     "gov.wra.land_transaction_tax.non_residential[2].threshold",
+     "gov.wra.land_transaction_tax.non_residential[3].rate",
+     "gov.wra.land_transaction_tax.non_residential[3].threshold",
+     "gov.wra.land_transaction_tax.rent[0].rate",
+     "gov.wra.land_transaction_tax.rent[0].threshold",
+     "gov.wra.land_transaction_tax.rent[1].rate",
+     "gov.wra.land_transaction_tax.rent[1].threshold",
+     "gov.wra.land_transaction_tax.rent[2].rate",
+     "gov.wra.land_transaction_tax.rent[2].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[0].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[0].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[1].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[1].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[2].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[2].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[3].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[3].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[4].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[4].threshold",
+     "gov.wra.land_transaction_tax.residential.higher_rate[5].rate",
+     "gov.wra.land_transaction_tax.residential.higher_rate[5].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[0].rate",
+     "gov.wra.land_transaction_tax.residential.primary[0].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[1].rate",
+     "gov.wra.land_transaction_tax.residential.primary[1].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[2].rate",
+     "gov.wra.land_transaction_tax.residential.primary[2].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[3].rate",
+     "gov.wra.land_transaction_tax.residential.primary[3].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[4].rate",
+     "gov.wra.land_transaction_tax.residential.primary[4].threshold",
+     "gov.wra.land_transaction_tax.residential.primary[5].rate",
+     "gov.wra.land_transaction_tax.residential.primary[5].threshold"
+    ],
+    "pattern": "transaction|eligibility|reform",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "land_and_buildings_transaction_tax",
+     "land_transaction_tax",
+     "lbtt_on_non_residential_property_transactions",
+     "lbtt_on_residential_property_transactions",
+     "lbtt_on_transactions",
+     "ltt_on_non_residential_property_transactions",
+     "ltt_on_residential_property_transactions",
+     "ltt_on_transactions",
+     "sdlt_on_non_residential_property_transactions",
+     "sdlt_on_residential_property_transactions",
+     "sdlt_on_transactions"
+    ]
+   },
+   "note": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+   "pe_gap": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+   "pe_reform_delta": null,
+   "program": "other",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12162:5184fd647356d18d",
+     "source_row_number": 12162,
+     "source_row_sha256": "5184fd647356d18de8deda53a62000786e46cb72c75cf116ce7f42b678e77dbf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12163:a68d35b2f07b7808",
+     "source_row_number": 12163,
+     "source_row_sha256": "a68d35b2f07b7808a409ff7b039925dfcd1977d2b794e2c77e0cb3f1d32b0819",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12164:db95099900e172a6",
+     "source_row_number": 12164,
+     "source_row_sha256": "db95099900e172a617d416079ada17a6e563b78b6483367095f4301c8434bd8c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -2000000.0,
+     "value_gbp_decimal": "-2000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12165:541f65cfa45a8a9f",
+     "source_row_number": 12165,
+     "source_row_sha256": "541f65cfa45a8a9f196e79e80dd08d5f6d139442eef182b9469eee6921d0afcf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -9000000.0,
+     "value_gbp_decimal": "-9000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12166:2fb34ced85907504",
+     "source_row_number": 12166,
+     "source_row_sha256": "2fb34ced85907504d5d8a2a80f4b72ef43c3460e34c2a0d38ab953da33bd9397",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -16000000.0,
+     "value_gbp_decimal": "-16000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12167:c8da8884460e5a7d",
+     "source_row_number": 12167,
+     "source_row_sha256": "c8da8884460e5a7dafd3de555987a70c7003e9453f374e25c3e4bc3428002651",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -20000000.0,
+     "value_gbp_decimal": "-20000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12168:a705b253d68c0652",
+     "source_row_number": 12168,
+     "source_row_sha256": "a705b253d68c06524f122ba1bf8db4434629f51972bacad6c6636d357fdc173b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12169:d0eacebc60e9793b",
+     "source_row_number": 12169,
+     "source_row_sha256": "d0eacebc60e9793b5734f9450987661798eeb6c43f4f1601485e2b669077bdfd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -34000000.0,
+     "value_gbp_decimal": "-34000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12170:bd9be59407d40b09",
+     "source_row_number": 12170,
+     "source_row_sha256": "bd9be59407d40b09139a7932480255b7ed9b48c872ccf5e9272389b3877affd3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -117000000.0,
+     "value_gbp_decimal": "-117000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12171:963b86591caaaefc",
+     "source_row_number": 12171,
+     "source_row_sha256": "963b86591caaaefca4cc74fe1fa476d559926d466f59ca12b0840682b3208ccd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -209000000.0,
+     "value_gbp_decimal": "-209000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12172:4797dd76d06cf68b",
+     "source_row_number": 12172,
+     "source_row_sha256": "4797dd76d06cf68bfe187b7e5390324f45a1c194d43d63431ff6ccfd7db1a103",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -302000000.0,
+     "value_gbp_decimal": "-302000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12173:8baa4b257bf95636",
+     "source_row_number": 12173,
+     "source_row_sha256": "8baa4b257bf95636c970d63df951901fefcdc882a5bbcd9fb45c9d694b20063b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -362000000.0,
+     "value_gbp_decimal": "-362000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12174:19877519c69beb4f",
+     "source_row_number": 12174,
+     "source_row_sha256": "19877519c69beb4f84632c8f59ba7828cd37af96e1fc4658321ea88638f21b6c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12175:b31dad0160244cd7",
+     "source_row_number": 12175,
+     "source_row_sha256": "b31dad0160244cd764895a5f1e5d4339842a3d3172689ec6a407bddf4827944f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -18000000.0,
+     "value_gbp_decimal": "-18000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12176:640cb4e39ce5953c",
+     "source_row_number": 12176,
+     "source_row_sha256": "640cb4e39ce5953c6e6f13a182d57f79eb5bbfe7d3befdaf1cf081e44042f9c8",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -62000000.0,
+     "value_gbp_decimal": "-62000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12177:b8c3eef2bad978e8",
+     "source_row_number": 12177,
+     "source_row_sha256": "b8c3eef2bad978e898c19e040d7171b88fbb64c26426800f30e3d3f2c5426516",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -108000000.0,
+     "value_gbp_decimal": "-108000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12178:f7e841b5a31f4f1b",
+     "source_row_number": 12178,
+     "source_row_sha256": "f7e841b5a31f4f1b6748668888331728baad1d5f3c4315f7d54d1f064ac4eaa6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -156000000.0,
+     "value_gbp_decimal": "-156000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "The announcement needs a targeted tax-base, entitlement, transaction or programme mechanism not established as an executable reform on the certified household population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12179:2e02e7e2f1fef92f",
+     "source_row_number": 12179,
+     "source_row_sha256": "2e02e7e2f1fef92f1f76e19f97640b7c988a211745b7e1bf0b79b30be1a859d7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -188000000.0,
+     "value_gbp_decimal": "-188000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12180:4e53787b396b58b9",
+     "source_row_number": 12180,
+     "source_row_sha256": "4e53787b396b58b98f6d20db80e2c1effbd03efc7d395a6d48bda6e96256d50e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12181:6022aeb141db9c53",
+     "source_row_number": 12181,
+     "source_row_sha256": "6022aeb141db9c534fdaa0003343b01b8b66c0dcda2188337b2934ecbe8d0cbf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -17000000.0,
+     "value_gbp_decimal": "-17000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12182:e1e4607ea824e5ce",
+     "source_row_number": 12182,
+     "source_row_sha256": "e1e4607ea824e5ce5cf2aca4b10e3fd9d64908fec2153c4e178f5a3a65048d36",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -42000000.0,
+     "value_gbp_decimal": "-42000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12183:4dd8b3b02d2ec2c3",
+     "source_row_number": 12183,
+     "source_row_sha256": "4dd8b3b02d2ec2c303768e2450d73375751c486b1a08a2a93472bf8ddb43f383",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -67000000.0,
+     "value_gbp_decimal": "-67000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12184:86e9bafdc19543a9",
+     "source_row_number": 12184,
+     "source_row_sha256": "86e9bafdc19543a9e1be0c6600d806a6d8730cee0494b8b82bb4211bcad73954",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -89000000.0,
+     "value_gbp_decimal": "-89000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12185:a740034aabdf7c4c",
+     "source_row_number": 12185,
+     "source_row_sha256": "a740034aabdf7c4c4776338bcbabee6798386809027758e6ad8ce156d82c10b3",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -96000000.0,
+     "value_gbp_decimal": "-96000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23681:d01d2c20d97f3e8f",
+     "source_row_number": 23681,
+     "source_row_sha256": "d01d2c20d97f3e8f72cce587439c20dd51b15739e8c1945db8fcb50ffa04dfe4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23682:104054802f03392d",
+     "source_row_number": 23682,
+     "source_row_sha256": "104054802f03392da7a6a2b30693a724cdc76ba9b506f46a6b815bfe88cdca93",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23683:9dec559c3669d298",
+     "source_row_number": 23683,
+     "source_row_sha256": "9dec559c3669d298cc21dc54a95ea36b80be6aa95edf2e6b669d916feaab70a0",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -1000000.0,
+     "value_gbp_decimal": "-1000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23684:02ab888415917c1c",
+     "source_row_number": 23684,
+     "source_row_sha256": "02ab888415917c1c939eef94a1475c217cf6f3c13f0eb8354e0aeab899d865df",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -2000000.0,
+     "value_gbp_decimal": "-2000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23685:600a246e78d84074",
+     "source_row_number": 23685,
+     "source_row_sha256": "600a246e78d84074aaa7eeaef49279c102cf60dfd2dfae3447539433891cc73f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -3000000.0,
+     "value_gbp_decimal": "-3000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23686:482215ec44d36abe",
+     "source_row_number": 23686,
+     "source_row_sha256": "482215ec44d36abee291b578a9d97887b4ca61a0e0e76101e4fbf67ae38b63b7",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -4000000.0,
+     "value_gbp_decimal": "-4000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23687:74d4355e43338a61",
+     "source_row_number": 23687,
+     "source_row_sha256": "74d4355e43338a61e1b33a1a4e00bb6f08a46f0b86e7a93c9829cedd51f173c6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23688:57c282d7ffddb30c",
+     "source_row_number": 23688,
+     "source_row_sha256": "57c282d7ffddb30cd5a2902027f217a0e12844c2d58e49488b08b426b0934264",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -2000000.0,
+     "value_gbp_decimal": "-2000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23689:6195a79cc5cd21c2",
+     "source_row_number": 23689,
+     "source_row_sha256": "6195a79cc5cd21c25aa5798f450d586b1206264d33c19a8573fb5436329ce5a7",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -8000000.0,
+     "value_gbp_decimal": "-8000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23690:7f66e9b0f1955411",
+     "source_row_number": 23690,
+     "source_row_sha256": "7f66e9b0f19554113c367066c4ea0b878a814ac1d6f5a360af081c70555c04ad",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -14000000.0,
+     "value_gbp_decimal": "-14000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23691:1c909aed1bb67c29",
+     "source_row_number": 23691,
+     "source_row_sha256": "1c909aed1bb67c2981cd7d500eb85d4209ac1891a692dfa34259a52216627697",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -21000000.0,
+     "value_gbp_decimal": "-21000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23692:bd30a78d8c67f4ad",
+     "source_row_number": 23692,
+     "source_row_sha256": "bd30a78d8c67f4ad5775b6cc08830ba0c62a2be8f8727f6368691ee0fe1be190",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+     "value_gbp": -25000000.0,
+     "value_gbp_decimal": "-25000000.0"
+    }
+   ],
+   "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Corporation tax (onshore)",
+    "Income tax",
+    "NICs",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -20000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12167:c8da8884460e5a7d",
+   "level": "source_row",
+   "measure_key": "ab2025__emi_eligibility_extended_to_scale_ups",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -362000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12173:8baa4b257bf95636",
+   "level": "source_row",
+   "measure_key": "ab2025__emi_eligibility_extended_to_scale_ups",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -188000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12179:2e02e7e2f1fef92f",
+   "level": "source_row",
+   "measure_key": "ab2025__emi_eligibility_extended_to_scale_ups",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -96000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12185:a740034aabdf7c4c",
+   "level": "source_row",
+   "measure_key": "ab2025__emi_eligibility_extended_to_scale_ups",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -4000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23686:482215ec44d36abe",
+   "level": "source_row",
+   "measure_key": "ab2025__emi_eligibility_extended_to_scale_ups",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -25000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23692:bd30a78d8c67f4ad",
+   "level": "source_row",
+   "measure_key": "ab2025__emi_eligibility_extended_to_scale_ups",
+   "threshold_gbp": null,
+   "year": 2030
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__emi_eligibility_extended_to_scale_ups --years 2030 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__emi_eligibility_extended_to_scale_ups_2030"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -20000000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12167:c8da8884460e5a7d",
+   "source_row_number": 12167,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -362000000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12173:8baa4b257bf95636",
+   "source_row_number": 12173,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -188000000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12179:2e02e7e2f1fef92f",
+   "source_row_number": 12179,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -96000000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12185:a740034aabdf7c4c",
+   "source_row_number": 12185,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -4000000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23686:482215ec44d36abe",
+   "source_row_number": 23686,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -25000000.0,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:23692:bd30a78d8c67f4ad",
+   "source_row_number": 23692,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Enterprise Management Incentives (EMI): Increase eligibility to allow scale-ups, as well as start-ups, to access the scheme from 6 April 2026",
+ "year": 2030
+}

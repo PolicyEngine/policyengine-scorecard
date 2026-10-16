@@ -1,0 +1,612 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2026-27",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__supporting_savers_help_to_save_and_cash_isa_limit",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "model_or_data_gap",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__supporting_savers_help_to_save_and_cash_isa_limit",
+   "measure_type": "savings",
+   "missing_legs": [
+    "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.disability_basic_income.amount",
+     "gov.contrib.policyengine.disable_simulated_benefits",
+     "gov.dfe.disabled_students_allowance.maximum",
+     "gov.dfe.extended_childcare_entitlement.disability_criteria",
+     "gov.dwp.disability_premia.disability_couple",
+     "gov.dwp.disability_premia.disability_single",
+     "gov.dwp.disability_premia.enhanced_couple",
+     "gov.dwp.disability_premia.enhanced_single",
+     "gov.dwp.disability_premia.severe_couple",
+     "gov.dwp.disability_premia.severe_single",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.addition",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.severe.addition",
+     "gov.dwp.pension_credit.guarantee_credit.child.disability.severe.eligibility",
+     "gov.dwp.pension_credit.guarantee_credit.severe_disability.addition",
+     "gov.dwp.pension_credit.guarantee_credit.severe_disability.relevant_benefits",
+     "gov.dwp.tax_credits.working_tax_credit.elements.disabled",
+     "gov.dwp.tax_credits.working_tax_credit.elements.severely_disabled",
+     "gov.dwp.universal_credit.elements.child.disabled.amount",
+     "gov.dwp.universal_credit.elements.child.severely_disabled.amount",
+     "gov.dwp.universal_credit.elements.disabled.amount",
+     "gov.hmrc.tax_free_childcare.age.disability",
+     "gov.hmrc.tax_free_childcare.contribution.disabled_child",
+     "gov.treasury.cost_of_living_support.disabled.amount",
+     "gov.treasury.cost_of_living_support.disabled.qualifying_benefits"
+    ],
+    "pattern": "isa|subscription|help_to_save|child_trust",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "CTC_disabled_child_element",
+     "CTC_severely_disabled_child_element",
+     "WTC_disabled_element",
+     "WTC_severely_disabled_element",
+     "disability_basic_income",
+     "disability_premium",
+     "disabled_students_allowance",
+     "disabled_students_allowance_course_eligible",
+     "disabled_students_allowance_eligible",
+     "disabled_students_allowance_eligible_expenses",
+     "disabled_students_allowance_has_qualifying_condition",
+     "disabled_students_allowance_receives_equivalent_support",
+     "enhanced_disability_premium",
+     "household_equivalisation_ahc",
+     "household_equivalisation_bhc",
+     "is_benefit_cap_exempt_health_disability",
+     "is_disabled_for_benefits",
+     "is_enhanced_disabled_for_benefits",
+     "is_severely_disabled_for_benefits",
+     "num_disabled_adults",
+     "num_disabled_children",
+     "num_enhanced_disabled_adults",
+     "num_enhanced_disabled_children",
+     "num_severely_disabled_adults",
+     "num_severely_disabled_children",
+     "severe_disability_minimum_guarantee_addition",
+     "severe_disability_premium",
+     "uc_disability_elements",
+     "uc_individual_disabled_child_element",
+     "uc_individual_severely_disabled_child_element",
+     "would_claim_disabled_students_allowance"
+    ]
+   },
+   "note": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+   "pe_gap": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+   "pe_reform_delta": null,
+   "program": "savings",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12672:9998e441cc981fd2",
+     "source_row_number": 12672,
+     "source_row_sha256": "9998e441cc981fd2496ca8a08063e96700752cb5494bebc84c4f7bff24de8dca",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12673:90dca08858b65415",
+     "source_row_number": 12673,
+     "source_row_sha256": "90dca08858b65415bbbd21dc323581f15be3571459c06b15fff1888027e9ab76",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12674:a5d517681108adc7",
+     "source_row_number": 12674,
+     "source_row_sha256": "a5d517681108adc7a8a2956b8df047c57a6aca00e407c4a1fabd3b63215fd5dd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": -1000000.0,
+     "value_gbp_decimal": "-1000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12675:3ab7474c4baac73b",
+     "source_row_number": 12675,
+     "source_row_sha256": "3ab7474c4baac73bc71020ee9430c72585767272775d370679b0a1113929c662",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": -2000000.0,
+     "value_gbp_decimal": "-2000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12676:c56a07f7b7eb2180",
+     "source_row_number": 12676,
+     "source_row_sha256": "c56a07f7b7eb2180a50407141a43f9bf5e9745489b7aa7b5d7f6b3800702ec4b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": -2000000.0,
+     "value_gbp_decimal": "-2000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12677:1b07210d36fdd356",
+     "source_row_number": 12677,
+     "source_row_sha256": "1b07210d36fdd356eb43d3725a903d179a4352e7a373340eb16236baa301db7c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Capital gains tax",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": -2000000.0,
+     "value_gbp_decimal": "-2000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12678:769754e3ea55cd61",
+     "source_row_number": 12678,
+     "source_row_sha256": "769754e3ea55cd61ccf82d321a815fb3b28894eee8a60555e7d196ada8fc4c7c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12679:555d9557796ca252",
+     "source_row_number": 12679,
+     "source_row_sha256": "555d9557796ca25226febd1d6d618633b389839899a1561630b7c2f5a1e4f2cd",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": -6000000.0,
+     "value_gbp_decimal": "-6000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12680:9c068badb9bb6d21",
+     "source_row_number": 12680,
+     "source_row_sha256": "9c068badb9bb6d215d6471f6958f76cd3367953288fc0a718e94d5bbc8fb20ad",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": -8941514.149219923,
+     "value_gbp_decimal": "-8941514.149219923"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12681:9f9db1c99ae496f3",
+     "source_row_number": 12681,
+     "source_row_sha256": "9f9db1c99ae496f3345f1e8b57167edbf1e547e696a7b459924cfaea1384a0aa",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": 3095119.310193482,
+     "value_gbp_decimal": "3095119.310193482"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12682:3c530b97f92875b7",
+     "source_row_number": 12682,
+     "source_row_sha256": "3c530b97f92875b76b4b7c2015696bfaf08fbb6a75b47ef88daf8fe4f3de6b7a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": 14021482.560495969,
+     "value_gbp_decimal": "14021482.560495969"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12683:5aad9542f1d5b159",
+     "source_row_number": 12683,
+     "source_row_sha256": "5aad9542f1d5b159a73fc7d4dd89d1919bdd47146bc07d4a55474d09ad25f1e1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": 28726372.754246525,
+     "value_gbp_decimal": "28726372.754246525"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24119:6a389a78d36456bb",
+     "source_row_number": 24119,
+     "source_row_sha256": "6a389a78d36456bb10378de5a548dba0fbbb12ef4ebea828a8219bac8a26c6a8",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (capital)",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24120:761a073847bd881a",
+     "source_row_number": 24120,
+     "source_row_sha256": "761a073847bd881a5b8bb931c3eacd641e275138035afaa07748c50f4dc61551",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (capital)",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24121:619e66a48270eaef",
+     "source_row_number": 24121,
+     "source_row_sha256": "619e66a48270eaef89fd4bd2be3374ec346cff80e3bc2558bef81099587851ef",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (capital)",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24122:b54220285a0e53c7",
+     "source_row_number": 24122,
+     "source_row_sha256": "b54220285a0e53c71905b137ccf12142c579db966bcb2eebe925c82fc41e360e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (capital)",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": -4482739.32690023,
+     "value_gbp_decimal": "-4482739.32690023"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24123:04565c64e30843ae",
+     "source_row_number": 24123,
+     "source_row_sha256": "04565c64e30843ae19d00459b456da6416841a3e3a4b355ed53f2049c74e020e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (capital)",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": -48157494.61907955,
+     "value_gbp_decimal": "-48157494.61907955"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "No ISA subscriptions, product holdings or Help to Save savings/bonus history on the certified population.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24124:af9ce492f3106093",
+     "source_row_number": 24124,
+     "source_row_sha256": "af9ce492f3106093a3a3267a07a9b27036fdbed92ed4f9cae26400190fcd40e3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (capital)",
+     "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+     "value_gbp": -39700939.73430899,
+     "value_gbp_decimal": "-39700939.73430899"
+    }
+   ],
+   "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+   "unmapped_obr_heads": [
+    "Capital gains tax",
+    "Income tax",
+    "Other AME (capital)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Capital gains tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12673:90dca08858b65415",
+   "level": "source_row",
+   "measure_key": "ab2025__supporting_savers_help_to_save_and_cash_isa_limit",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": -6000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12679:555d9557796ca252",
+   "level": "source_row",
+   "measure_key": "ab2025__supporting_savers_help_to_save_and_cash_isa_limit",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Other AME (capital)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24120:761a073847bd881a",
+   "level": "source_row",
+   "measure_key": "ab2025__supporting_savers_help_to_save_and_cash_isa_limit",
+   "threshold_gbp": null,
+   "year": 2026
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__supporting_savers_help_to_save_and_cash_isa_limit --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__supporting_savers_help_to_save_and_cash_isa_limit_2026"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:12673:90dca08858b65415",
+   "source_row_number": 12673,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Capital gains tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": -6000000.0,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:12679:555d9557796ca252",
+   "source_row_number": 12679,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:24120:761a073847bd881a",
+   "source_row_number": 24120,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Other AME (capital)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Supporting Savers: Make the Help to Save scheme permanent, maintain total ISA annual subscription limit at \u00a320,000 with cash limit reduced to \u00a312,000 for under-65s from April 2027, delay ISA digitalisation until April 2028 and maintain the ISA subscription limits until 2030/31",
+ "year": 2026
+}

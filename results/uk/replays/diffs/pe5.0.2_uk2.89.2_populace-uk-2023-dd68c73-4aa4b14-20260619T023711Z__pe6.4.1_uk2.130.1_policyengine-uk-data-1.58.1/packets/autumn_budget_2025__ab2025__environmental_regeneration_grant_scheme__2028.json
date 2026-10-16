@@ -1,0 +1,554 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__environmental_regeneration_grant_scheme",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "out_of_household_scope",
+   "computability": "out_of_household_scope",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "out_of_household_scope",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__environmental_regeneration_grant_scheme",
+   "measure_type": "scope",
+   "missing_legs": [
+    "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "firm|corporation|department|block_grant",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_gap": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_reform_delta": null,
+   "program": "scope",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12222:05026bea520775b4",
+     "source_row_number": 12222,
+     "source_row_sha256": "05026bea520775b4f67c501fbe7e406983fe3634c853382ec1eb57894083312d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Landfill tax",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12223:25cfbb4975e6c23b",
+     "source_row_number": 12223,
+     "source_row_sha256": "25cfbb4975e6c23b7bc5c47c83875939a390bf6d106d394d449afdc69fe699ec",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Landfill tax",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12224:5fcbdc8e9ff72b4d",
+     "source_row_number": 12224,
+     "source_row_sha256": "5fcbdc8e9ff72b4d989bfa5777892a63b76ab7b9925f2db54ef33d3bb197987c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Landfill tax",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": 26800000.0,
+     "value_gbp_decimal": "26800000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12225:823e4e4b5b3283c9",
+     "source_row_number": 12225,
+     "source_row_sha256": "823e4e4b5b3283c9eb643a7517cda0e63ad238d113eebb6fd710bbdcbb2e3abb",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Landfill tax",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": 88600000.0,
+     "value_gbp_decimal": "88600000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12226:20645b9d44b3ac12",
+     "source_row_number": 12226,
+     "source_row_sha256": "20645b9d44b3ac127d06b3ce90b77f7eb56a8eb89045693784f5598ba90e1d0f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Landfill tax",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": 25600000.0,
+     "value_gbp_decimal": "25600000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12227:8ebcc571f69cee8e",
+     "source_row_number": 12227,
+     "source_row_sha256": "8ebcc571f69cee8ecc393623d968550f69503344a01b7593ea761c3976e2d477",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Landfill tax",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": 19400000.0,
+     "value_gbp_decimal": "19400000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23891:f534b0e401ca9b1e",
+     "source_row_number": 23891,
+     "source_row_sha256": "f534b0e401ca9b1e5e394ba1baec8b6fc3ba613970b0afd07672705b533080a2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23892:e852cce098a141dc",
+     "source_row_number": 23892,
+     "source_row_sha256": "e852cce098a141dc6881c5e95494b56de86aac9f37af157705b3e408d233685c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": -13106094.191052299,
+     "value_gbp_decimal": "-13106094.191052299"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23893:da8da066bd7bc382",
+     "source_row_number": 23893,
+     "source_row_sha256": "da8da066bd7bc38261f75718aa55f0f051a2125617f5d9877dec1ad5a8094433",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": -30197557.299329802,
+     "value_gbp_decimal": "-30197557.299329802"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23894:25897c9cee1b6ed4",
+     "source_row_number": 23894,
+     "source_row_sha256": "25897c9cee1b6ed487bd040b9c0ab09dee3ebab909e75a8b9a9dca113a5e01dd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": -52599999.99999999,
+     "value_gbp_decimal": "-52599999.99999999"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23895:f36e510e14c4cac0",
+     "source_row_number": 23895,
+     "source_row_sha256": "f36e510e14c4cac07fc58f1e9f24e3affa2be9d9b7633cc626f4b6166f0e2a35",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": -15200000.000000002,
+     "value_gbp_decimal": "-15200000.000000002"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23896:116acfbd0822a27f",
+     "source_row_number": 23896,
+     "source_row_sha256": "116acfbd0822a27f8a964109fd0b85d3ed6689db91f9d545d07b87955bb51437",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": -11500000.0,
+     "value_gbp_decimal": "-11500000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23897:5202a047fb1690c3",
+     "source_row_number": 23897,
+     "source_row_sha256": "5202a047fb1690c3cbebf796af95889f0a7a7f31fd12ac7ab0acbed150089852",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23898:7a0aa582269b8cfe",
+     "source_row_number": 23898,
+     "source_row_sha256": "7a0aa582269b8cfea99696ce1c2649436478b734f2cfbfa4bbd75562c71e0cf1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": -4765852.43310993,
+     "value_gbp_decimal": "-4765852.43310993"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23899:c13bb942973d9ca8",
+     "source_row_number": 23899,
+     "source_row_sha256": "c13bb942973d9ca8a96b07f141a962e38c522043cc42f467ad205734a2d92448",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": -2382926.21655497,
+     "value_gbp_decimal": "-2382926.21655497"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23900:313b8df7108336cb",
+     "source_row_number": 23900,
+     "source_row_sha256": "313b8df7108336cb54bf3dc80603dff2c9482158458d62c8700635048cb16985",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23901:9bdaecc6774ef98e",
+     "source_row_number": 23901,
+     "source_row_sha256": "9bdaecc6774ef98e9cadfc114ebfcd19ff319d9a5b980f3d390147c61540214d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23902:e66184b8d59d62dd",
+     "source_row_number": 23902,
+     "source_row_sha256": "e66184b8d59d62dd662557acfb0a1243aa324dba5a521e55f175539a09ba753b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    }
+   ],
+   "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+   "unmapped_obr_heads": [
+    "Landfill tax",
+    "PSCE in RDEL",
+    "PSGI in CDEL"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 88600000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Landfill tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12225:823e4e4b5b3283c9",
+   "level": "source_row",
+   "measure_key": "ab2025__environmental_regeneration_grant_scheme",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -52599999.99999999,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23894:25897c9cee1b6ed4",
+   "level": "source_row",
+   "measure_key": "ab2025__environmental_regeneration_grant_scheme",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 0.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSGI in CDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23900:313b8df7108336cb",
+   "level": "source_row",
+   "measure_key": "ab2025__environmental_regeneration_grant_scheme",
+   "threshold_gbp": null,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__environmental_regeneration_grant_scheme --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__environmental_regeneration_grant_scheme_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 88600000.0,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12225:823e4e4b5b3283c9",
+   "source_row_number": 12225,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Landfill tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -52599999.99999999,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:23894:25897c9cee1b6ed4",
+   "source_row_number": 23894,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 0.0,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:23900:313b8df7108336cb",
+   "source_row_number": 23900,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSGI in CDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Environmental Regeneration: Launch a new grant scheme for public bodies to support land remediation and reinvest water company fines in projects to clean up rivers, lakes and seas",
+ "year": 2028
+}

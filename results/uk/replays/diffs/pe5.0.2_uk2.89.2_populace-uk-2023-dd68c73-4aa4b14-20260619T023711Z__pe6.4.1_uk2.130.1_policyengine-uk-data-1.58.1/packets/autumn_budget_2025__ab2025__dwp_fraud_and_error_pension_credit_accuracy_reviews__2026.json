@@ -1,0 +1,431 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2026-27",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__dwp_fraud_and_error_pension_credit_accuracy_reviews",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "model_or_data_gap",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__dwp_fraud_and_error_pension_credit_accuracy_reviews",
+   "measure_type": "administration",
+   "missing_legs": [
+    "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "compliance|fraud|debt|error|penalt|report",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "afcs_reported",
+     "bsp_reported",
+     "carers_allowance_reported",
+     "child_benefit_reported",
+     "child_tax_credit_reported",
+     "council_tax_benefit_reported",
+     "employee_pension_contributions_reported",
+     "esa_contrib_reported",
+     "esa_income_reported",
+     "household_uc_reported_capital",
+     "household_uc_unreported_adults",
+     "housing_benefit_reported",
+     "iidb_reported",
+     "incapacity_benefit_reported",
+     "income_support_reported",
+     "jsa_contrib_reported",
+     "jsa_income_reported",
+     "maternity_allowance_reported",
+     "pension_credit_reported",
+     "sda_reported",
+     "ssmg_reported",
+     "state_pension_reported",
+     "tax_reported",
+     "uc_reported_capital",
+     "universal_credit_reported",
+     "winter_fuel_allowance_reported",
+     "working_tax_credit_reported"
+    ]
+   },
+   "note": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+   "pe_gap": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+   "pe_reform_delta": null,
+   "program": "administration",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23591:aec013b829118100",
+     "source_row_number": 23591,
+     "source_row_sha256": "aec013b82911810084a900e14ed4b708feea9f5889b3b6e7db2ceaa5ef6a5496",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23592:60df8ef71c323e28",
+     "source_row_number": 23592,
+     "source_row_sha256": "60df8ef71c323e288e31741ad3988cf900b88687d1656183ef9729f13e309cd2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+     "value_gbp": -17000000.0,
+     "value_gbp_decimal": "-17000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23593:df9a4cd429123b9b",
+     "source_row_number": 23593,
+     "source_row_sha256": "df9a4cd429123b9b44b2a943162d52525bdd657d803caaad476fd0f1d02d6870",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+     "value_gbp": -54000000.0,
+     "value_gbp_decimal": "-54000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23594:86dd8c7bf0190b88",
+     "source_row_number": 23594,
+     "source_row_sha256": "86dd8c7bf0190b885b78db46dece4f9192a4e28f5152e269ea6b17b71d4bf44d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+     "value_gbp": -69000000.0,
+     "value_gbp_decimal": "-69000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23595:f2215d50d58784a1",
+     "source_row_number": 23595,
+     "source_row_sha256": "f2215d50d58784a18e45c57d47928d7bff4ed74389c61bfd073d9916eb689837",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23596:4da9d4fd0dc54d59",
+     "source_row_number": 23596,
+     "source_row_sha256": "4da9d4fd0dc54d596948159b48c96684ab1ced2cde0e437a78b8dcf2a1aaa328",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23597:203620f2fa76074b",
+     "source_row_number": 23597,
+     "source_row_sha256": "203620f2fa76074b6046acc9c9bfc0d891ee6949e8bad369a913f076f4c1f291",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23598:22e8d0b414854b5f",
+     "source_row_number": 23598,
+     "source_row_sha256": "22e8d0b414854b5f4cfab0eaea6c173a2262b3d7a3fa28a7e1cdf7d25bd8cd6e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+     "value_gbp": 29661450.0,
+     "value_gbp_decimal": "29661450.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23599:95abbade354d0b0f",
+     "source_row_number": 23599,
+     "source_row_sha256": "95abbade354d0b0f7a198885421f04e5d66ce8d85950c0f57bfc62cdff145978",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+     "value_gbp": 140866050.0,
+     "value_gbp_decimal": "140866050.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23600:78a52452f806f18b",
+     "source_row_number": 23600,
+     "source_row_sha256": "78a52452f806f18bf7b1fed997830288ccebba2f1b2e12a16ea68d78f6ad9b08",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+     "value_gbp": 202462650.0,
+     "value_gbp_decimal": "202462650.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23601:11e01d7955368e44",
+     "source_row_number": 23601,
+     "source_row_sha256": "11e01d7955368e4442e883a97329735c45f04eec415e84fef0363e28ac6f0c2d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+     "value_gbp": 76789050.0,
+     "value_gbp_decimal": "76789050.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Administrative collection, compliance, reporting or debt intervention; liability rules do not identify recovered debts, extra staff productivity or compliance behaviour.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23602:d26d892fc1bc016a",
+     "source_row_number": 23602,
+     "source_row_sha256": "d26d892fc1bc016af33fcd70fc93426e4769c5b831a6ead6b1e7aa3f3e2bd673",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare inside cap",
+     "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+     "value_gbp": 61699950.0,
+     "value_gbp_decimal": "61699950.0"
+    }
+   ],
+   "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+   "unmapped_obr_heads": [
+    "PSCE in RDEL",
+    "Welfare inside cap"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": -17000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23592:60df8ef71c323e28",
+   "level": "source_row",
+   "measure_key": "ab2025__dwp_fraud_and_error_pension_credit_accuracy_reviews",
+   "threshold_gbp": null,
+   "year": 2026
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2026-27",
+    "obr_value_gbp": 29661450.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Welfare inside cap"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23598:22e8d0b414854b5f",
+   "level": "source_row",
+   "measure_key": "ab2025__dwp_fraud_and_error_pension_credit_accuracy_reviews",
+   "threshold_gbp": null,
+   "year": 2026
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__dwp_fraud_and_error_pension_credit_accuracy_reviews --years 2026 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__dwp_fraud_and_error_pension_credit_accuracy_reviews_2026"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": -17000000.0,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:23592:60df8ef71c323e28",
+   "source_row_number": 23592,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2026-27",
+   "head_gbp": null,
+   "obr_value_gbp": 29661450.0,
+   "side": "head",
+   "source_column": "2026-27",
+   "source_row_id": "obr_pmd_nov2025:23598:22e8d0b414854b5f",
+   "source_row_number": 23598,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare inside cap"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "DWP Fraud and Error: Improve accuracy in Pension Credit claims from April 2026",
+ "year": 2026
+}
