@@ -299,13 +299,37 @@ def test_committed_premises_regenerate(engine, path, installed_engine_view):
             f"installed policyengine-uk {installed}; this committed file belongs "
             f"to {engine} (checked in its pinned environment)"
         )
-    # A namespace's premises cover its own events (namespace_events).
+    namespace = (ROOT / path).parent
     payload = premises.canonical_bytes(
         premises.audit(
-            premises.namespace_events((ROOT / path).parent), installed_engine_view
+            premises.namespace_events(namespace),
+            installed_engine_view,
+            namespace=namespace,
         )
     )
     assert payload == (ROOT / path).read_bytes()
+    if engine == "2.125.1":
+        # The sealed snapshot predates this approved revision. Keep its bytes
+        # as historical evidence; fresh runs now bind and execute the revision.
+        key = "autumn_budget_2024__capital_gains_main_rates_and_reliefs"
+        fresh = premises.audit(["autumn_budget_2024"], installed_engine_view)["events"][
+            "autumn_budget_2024"
+        ]["measures"][key]
+        historical = json.loads((ROOT / path).read_bytes())["events"][
+            "autumn_budget_2024"
+        ]["measures"][key]
+        assert "construction_revision" not in historical
+        assert fresh["construction_revision"]["activation_fy"] == "2024-25"
+        for name, old in [
+            ("basic_rate", 0.1),
+            ("higher_rate", 0.2),
+            ("additional_rate", 0.2),
+        ]:
+            parameter = f"gov.hmrc.cgt.{name}"
+            assert fresh["years"]["2024"]["paths"][parameter]["baseline_world"] == old
+            assert (
+                historical["years"]["2024"]["paths"][parameter]["baseline_world"] > old
+            )
 
 
 def test_installed_cgt_annual_values_against_raw_30_april(installed_engine_view):

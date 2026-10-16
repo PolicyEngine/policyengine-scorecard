@@ -1,16 +1,21 @@
 # Construction revisions for new engines
 
-The five event registries freeze constructions authored against
+The event registries freeze constructions authored against
 policyengine-uk 2.89.2. When a certified variant runs them on another engine,
-`pipeline/audit_uk_event_premises.py` records what each executed world holds
+`pipeline/audit_uk_event_premises.py` records each world's intended value
 at every annual lookup and whether the construction's premises still hold.
-This document reviews the premises that changed and proposes revisions.
+The executor separately reads the processed values from each simulation's
+own parameter tree and refuses differences (see [RELEASE_REPLAY.md](RELEASE_REPLAY.md)).
 
-**Every revision below is proposed, not applied.** Running a revised
-construction changes the experiment, which is a methodology call under cos
-decision d1344. Until that is ruled, variant reruns execute the frozen
-registries unchanged, and the release diff carries the premise changes as
-construction flags.
+**The CGT revision below is selected when the installed rate parameters
+carry `fiscal_year_blend`; the frozen registries remain unchanged.** It is
+the W6 methodology choice under cos d1344 (Max, 15 October 2026): choose the
+reading supported by the law, record exceptions, and obtain agreement from
+independent review. The revision is stored beside the registries in
+`data/uk/events/construction_revisions.json`; its SHA-256 is bound in the
+run manifest and construction premises. Selection reads installed engine
+metadata, never its version string. A failed premise without a selected
+revision remains a construction revision candidate.
 
 Inputs (both parameter-tree only; no dataset or simulation):
 
@@ -59,7 +64,7 @@ in 2.125.1) instead of sampling 30 April. 2.89.2's conversion reads no such
 metadata and sampled 30 April (`policyengine_uk/utils/parameters.py:39-45`);
 its raw schedule started the higher rates on 6 April 2025.
 
-**What the frozen construction now measures.** The construction reverses the
+**What the frozen construction measured.** The construction reverses the
 announced rates to 10%/20% from 30 October 2024; the executor moves that to
 the next 1 January annual lookup (`compute_uk_event.annual_reform`), so the
 reversal applies from CY2025.
@@ -78,17 +83,63 @@ law does carry a 2024 increase (0.1346 = 0.10 × 207/365 + 0.18 × 158/365),
 but the reversal leaves it in both worlds. The frozen construction therefore
 omits a part-year FY2024–25 effect that the new engine models.
 
-**Proposed revision.** Extend the reversal to CY2024 at the pre-announcement
-rates (`basic_rate` 0.10, `higher_rate` and `additional_rate` 0.20 from
-1 January 2024), keeping CY2025 onwards unchanged. On 2.125.1 that scores
-the blended FY2024–25 increase. On 2.89.2 the CY2024 worlds would remain
-identical because current law already holds those rates. Editing the frozen
-registry nevertheless changes its SHA-256: every legacy comparison must be
-regenerated along with the registry-bound artifacts and staging receipts
-before the comparison provenance can verify again
-(`pipeline/compare_uk_event.py`, `load_verified_comparison`). This remains
-proposed under cos decision d1344; no registry or activation rule changes
-are applied here.
+That description applies to the annual-lookup route in 2.125.1. It does not
+describe construction-time reform dictionaries in 2.130.1. In that engine,
+`utils/dated_reforms.read_reform_dict` reads a `start.stop` interval as a
+statutory-timeline assignment; `CountryTaxBenefitSystem._rebuild` writes the
+assignment before `process_parameter_tree` reannualises it. Thus a reversal
+starting on 1 January 2025 also changes 95 days of FY2024–25. Its processed
+2024 baseline rate would be 0.11380821917808219 (basic) or
+0.2069041095890411 (higher/additional), rather than the intended unchanged
+2024 current-law values above. An annual-lookup audit alone could report
+equal worlds while this route executes different values. The processed-value
+check refuses that mismatch.
+
+**Law and d1344 choice.** [Finance Act 2025, section 7(1)(b) and (3)](https://www.legislation.gov.uk/ukpga/2025/8/section/7)
+raises the main rates from 10%/20% to 18%/24% for disposals on or after
+30 October 2024. This was verified against the [enacted Act](https://www.legislation.gov.uk/ukpga/2025/8/pdfs/ukpga_20250008_en.pdf),
+and the 2.125.1 installed files and 2.130.1 wheel files cite section 7.
+The [annualisation contract](contracts/annualisation_fy_start_year.v1.json)
+keeps the engine's own `fiscal_year_blend` treatment for CGT, although CGT
+is charged on transactions. Under that recorded exception, period 2024
+takes the day-weighted FY2024–25 rate in both worlds. There are 207 days
+from 6 April to 29 October 2024 and 158 from 30 October to 5 April 2025.
+
+**Selected revision.** On engines carrying `fiscal_year_blend` on the CGT
+rate files, hold the baseline's pre-announcement rates (`basic_rate` 0.10;
+`higher_rate` and `additional_rate` 0.20) through the whole of FY2024–25
+and later years in the construction's existing window. The executor uses
+the engine's actual reform route to express those annual values. On a
+statutory-reprocessing route the interval starts on 6 April 2024, so it
+does not alter FY2023–24. On an annual-lookup route the override includes
+1 January 2024. Staging reads the selected revision's activation of
+FY2024–25, comparison notes identify the revision, and the release diff
+flags the construction change.
+
+The check's expected 2024 records are below. Baseline means the reversal
+world; reform means current law. Each cell gives intended = processed.
+
+| Engine route | Basic baseline | Basic reform | Higher/additional baseline | Higher/additional reform |
+|---|---:|---:|---:|---:|
+| 2.89.2, sampled annual lookup; no revision | 0.10 | 0.10 | 0.20 | 0.20 |
+| 2.125.1, annual lookup; blend revision | 0.10 | 0.13463013698630139 | 0.20 | 0.21731506849315071 |
+| 2.130.1, statutory reprocessing; blend revision | 0.10 | 0.13463013698630139 | 0.20 | 0.21731506849315071 |
+
+The latter two current-law rates are 0.10 × 207/365 + 0.18 × 158/365
+and 0.20 × 207/365 + 0.24 × 158/365, within floating-point rounding.
+2.89.2 has no blend metadata: the revision and new artifact fields are
+omitted, and legacy registries, namespaces and artifacts keep their bytes.
+
+**Verification and limits.** Parameter-only reads of the installed 2.89.2
+and 2.125.1 trees established the table's current-law values. The 2.130.1
+route and rate files were read from its PyPI wheel on 15 October 2026
+(wheel SHA-256 `f8b1b8b917c9297ff66937811dbebd9a62d3b1796ce894c326e98051cac4c873`).
+Its table row is the route-derived expectation, tested with fakes, rather
+than a local simulation observation; CI and the receiver must verify the
+real installed 2.130.1 run. No microsimulation was run for this change.
+The pooled-gains limitation and the unreversed reliefs remain: this
+revision changes annualisation of the three main rates and does not
+implement the full rates-and-reliefs package.
 
 ## Notes that state 2.89.2 facts
 
