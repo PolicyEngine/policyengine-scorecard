@@ -14,6 +14,10 @@ from pipeline.compute_uk_event import canonical_bytes
 ROOT = Path(__file__).resolve().parent.parent
 # Sealed before #186 (its artifacts carry no processed-value evidence).
 PRE_EVIDENCE = "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+# The first namespace sealed after #186 (its artifacts carry the evidence).
+POST_EVIDENCE = "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+# The newest certified variant; the results pull request
+# (pipeline/uk_replay_results_pr.py) moves it to each newly certified one.
 NEWEST = "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
 KEY = "autumn_budget_2024__private_school_vat_20pct"
 COMMITTED = (
@@ -86,7 +90,11 @@ def test_a_namespace_sealed_after_186_is_compared_whole():
     # The 6.5.0 artifacts carry the evidence, so the replay must match every
     # byte: removing the fields never makes a replay match one of them.
     committed = (
-        ROOT / "results/uk/replays" / NEWEST / "autumn_budget_2024" / f"{KEY}_2026.json"
+        ROOT
+        / "results/uk/replays"
+        / POST_EVIDENCE
+        / "autumn_budget_2024"
+        / f"{KEY}_2026.json"
     ).read_bytes()
     record = json.loads(committed)
     assert {"processed_parameter_values", "parameter_reform_routes"} <= set(record)

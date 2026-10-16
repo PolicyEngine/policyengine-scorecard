@@ -359,6 +359,10 @@ How flags arise, so a gate built on them sees the intended events:
   as a flag, because it is what a model release is expected to change.
 * For a candidate, the default base is the newest certified variant with
   committed results; an exact certified pair uses its own committed run.
+  A certified run's results reach main only through its results pull
+  request ([RELEASE_REPLAY.md](RELEASE_REPLAY.md#the-results-pull-request)),
+  so the base moves when that pull request merges, not when the receipt is
+  recorded.
   The first certified-variant run diffs against the legacy populace variant,
   where the data family itself changes.
 
