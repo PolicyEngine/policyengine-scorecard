@@ -944,6 +944,12 @@ def test_a_namespace_must_be_sealed_once_it_holds_replay_results(
         },
     )
     assert qualify.main(["verify-sealed"]) == 0
+    # A recorded corpus is a run, even if every event failed before writing
+    # a manifest (review of cd7018f).
+    (namespace / rv.CORPUS_NAME).write_text('{"corpus_version": "x", "events": []}')
+    assert qualify.main(["verify-sealed"]) == 1
+    assert "not sealed" in capsys.readouterr().out
+    (namespace / rv.CORPUS_NAME).unlink()
     (namespace / "an_event").mkdir()
     (namespace / "an_event" / "RUN_MANIFEST.json").write_text("{}")
     assert qualify.main(["verify-sealed"]) == 1
@@ -1237,3 +1243,194 @@ def test_diff_reads_base_and_head_artifacts_from_their_own_checkouts(
     artifact.write_text("tampered committed artifact")
     with pytest.raises(diff.DiffError):
         qualify.main(command)
+
+
+# Unsupported pairs are a strict subset of missing ones, so a swap of the two
+# lists is caught; e__m is missing in 2023 (unsupported) and 2025 (a gap).
+MISSING = [{"measure_key": "e__m", "year": 2023}, {"measure_key": "e__m", "year": 2025}]
+UNSUPPORTED = [{"measure_key": "e__m", "year": 2023}]
+GRID = {
+    "full_supported_grid_complete": False,
+    "missing_measure_years": MISSING,
+    "unsupported_measure_years": UNSUPPORTED,
+}
+
+
+def test_staging_grid_records_a_variant_runs_own_lists():
+    from pipeline import diff_uk_event_runs as diff
+
+    staging = {
+        "variant_id": "v",
+        **GRID,
+        "inert_measure_years": [{"measure_key": "e__m", "year": 2024}],
+    }
+    assert diff.staging_grid({"supported_years": [2025, 2024]}, staging) == {
+        # From the run manifest: staging does not record supported years.
+        "supported_years": [2024, 2025],
+        "full_supported_grid_complete": False,
+        "inert_measure_years": [{"measure_key": "e__m", "year": 2024}],
+        "missing_measure_years": MISSING,
+        "unsupported_measure_years": UNSUPPORTED,
+    }
+    # Without inert pairs the list is present and empty.
+    staging.pop("inert_measure_years")
+    assert (
+        diff.staging_grid({"supported_years": []}, staging)["inert_measure_years"] == []
+    )
+    # A legacy-layout run has no variant grid: no gap is ever inferred.
+    assert (
+        diff.staging_grid(
+            {"supported_years": [2024]}, {"missing_measure_years": [], **GRID}
+        )
+        is None
+    )
+
+
+@settings(max_examples=60, deadline=None)
+@given(
+    pairs=st.lists(
+        st.fixed_dictionaries(
+            {
+                "measure_key": st.sampled_from(["e__a", "e__b"]),
+                "year": st.integers(2023, 2030),
+            }
+        ),
+        unique_by=lambda pair: (pair["measure_key"], pair["year"]),
+        max_size=6,
+    ),
+    data=st.data(),
+)
+def test_base_events_copy_the_base_grid_verbatim(pairs, data):
+    from pipeline import diff_uk_event_runs as diff
+
+    unsupported = data.draw(
+        st.lists(
+            st.sampled_from(pairs), unique_by=lambda p: (p["measure_key"], p["year"])
+        )
+        if pairs
+        else st.just([])
+    )
+    grid = diff.staging_grid(
+        {"supported_years": [2024]},
+        {
+            "variant_id": "v",
+            "full_supported_grid_complete": not pairs,
+            "missing_measure_years": pairs,
+            "unsupported_measure_years": unsupported,
+        },
+    )
+    recorded = {
+        "base": {
+            "inputs": {
+                "e": {
+                    "staging_manifest_sha256": "7" * 64,
+                    "run_manifest_sha256": "6" * 64,
+                },
+                "legacy": {
+                    "staging_manifest_sha256": "5" * 64,
+                    "run_manifest_sha256": "4" * 64,
+                },
+            },
+            "grids": {"e": grid},
+        }
+    }
+    events = qualify.base_events(recorded)
+    # Only events with a recorded grid; the legacy event has none.
+    assert set(events) == {"e"}
+    assert events["e"]["missing_measure_years"] == pairs
+    assert events["e"]["unsupported_measure_years"] == unsupported
+    assert events["e"]["staging_manifest_sha256"] == "7" * 64
+    assert events["e"]["run_manifest_sha256"] == "6" * 64
+    # A diff without inputs or grids names no base events.
+    assert qualify.base_events({"base": {"identity": {}}}) == {}
+
+
+def test_base_events_come_from_the_diff_when_base_and_candidate_share_a_root(
+    tmp_path, monkeypatch
+):
+    # Review of e4dee5e: a requalified certified pair's base and candidate
+    # share one result root. The receipt must carry the base the diff read in
+    # the runner checkout, never the candidate's fresh files.
+    from test_uk_event_diff import EVENT, make_namespace, synthetic_record
+    from pipeline import compute_uk_event as compute
+    from pipeline import diff_uk_event_runs as diff
+    from pipeline import stage_uk_event as stage
+
+    base_root = tmp_path / "runner"
+    head_root = tmp_path / "checkout"
+    monkeypatch.setattr(stage, "manifest_variant", synthetic_record)
+    monkeypatch.setattr(compute, "ROOT", base_root)
+    base = make_namespace(base_root, "pair", variant="pe6_uk2_build")
+    monkeypatch.setattr(compute, "ROOT", head_root)
+    head = make_namespace(head_root, "pair", variant="pe6_uk2_build", skip=(2025,))
+    monkeypatch.setattr(qualify, "ROOT", head_root)
+    monkeypatch.setattr(diff, "ROOT", head_root)
+    output = head_root / "diff"
+    work_variants = tmp_path / "work" / "variants.json"
+    assert (
+        qualify.main(
+            [
+                "diff",
+                "--base",
+                str(base["root"]),
+                "--base-root",
+                str(base_root),
+                "--head",
+                str(head["root"]),
+                "--variants-file",
+                str(work_variants),
+                "--output-dir",
+                str(output),
+            ]
+        )
+        == 0
+    )
+    summary = qualify.diff_summary(output)
+    recorded = json.loads((output / "DIFF.json").read_bytes())
+    base_staging = json.loads(
+        (base["root"] / EVENT / "STAGING_MANIFEST.json").read_bytes()
+    )
+    head_staging = json.loads(
+        (head["root"] / EVENT / "STAGING_MANIFEST.json").read_bytes()
+    )
+    assert (
+        base_staging["missing_measure_years"] != head_staging["missing_measure_years"]
+    )
+    (entry,) = summary["base_events"].values()
+    assert entry["missing_measure_years"] == base_staging["missing_measure_years"]
+    assert (
+        entry["staging_manifest_sha256"]
+        == recorded["base"]["inputs"][EVENT]["staging_manifest_sha256"]
+    )
+    # The candidate's files differ, and nothing in the receipt step reads them.
+    assert summary == qualify.diff_summary(output)
+
+
+def test_event_results_carry_staging_grid_lists_when_staging_has_them(tmp_path):
+    record = copy.deepcopy(rv.get_variant(CURRENT))
+    namespace = rv.namespace_root(record, root=tmp_path)
+    for event, staging in (
+        ("with_lists", GRID),
+        ("legacy_shape", {"full_supported_grid_complete": True}),
+    ):
+        directory = namespace / event
+        directory.mkdir(parents=True)
+        (directory / "RUN_MANIFEST.json").write_text(
+            json.dumps(
+                {
+                    "registry_sha256": "a" * 64,
+                    "supported_years": [2024],
+                    "unsupported_years": [],
+                    "artifacts": {},
+                }
+            )
+        )
+        (directory / "STAGING_MANIFEST.json").write_text(json.dumps(staging))
+        (directory / "COMPARISON_PROVENANCE.json").write_text("{}")
+    out, failures = qualify.event_results(
+        record, events=("with_lists", "legacy_shape"), root=tmp_path
+    )
+    assert failures == []
+    assert out["with_lists"]["missing_measure_years"] == MISSING
+    assert out["with_lists"]["unsupported_measure_years"] == UNSUPPORTED
+    assert not set(qualify.GRID_FIELDS) & set(out["legacy_shape"])

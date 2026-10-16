@@ -823,3 +823,36 @@ def test_a_namespace_without_results_summarises_only_replayable_events(tmp_path)
     # A historical registry is source accounting only.
     assert "Registry inventories available: 1." in summary
     assert "spring_statement_2022" not in summary
+
+
+def test_a_recorded_corpus_decides_the_summary_and_the_premises(tmp_path, monkeypatch):
+    # Review of cd7018f: the corpus rule is pinned at the summary and the
+    # premises audit, not only in namespace_events; registering another
+    # event changes neither.
+    import json
+    import shutil
+    from pathlib import Path
+
+    from pipeline import audit_uk_event_premises as premises
+    from pipeline import build_uk_event_registry as builder
+
+    events = Path(__file__).resolve().parent.parent / "data/uk/events"
+    registries = tmp_path / "data/uk/events"
+    registries.mkdir(parents=True)
+    for event in ("spring_statement_2025", "autumn_budget_2025"):
+        shutil.copy(events / f"{event}_measures.json", registries)
+    namespace = tmp_path / "results/uk/replays/ns"
+    namespace.mkdir(parents=True)
+    (namespace / "CORPUS.json").write_text(
+        json.dumps({"corpus_version": "x", "events": ["spring_statement_2025"]})
+    )
+    before = premises.namespace_events(namespace)
+    comparison.write_summary(namespace, artifact_root=tmp_path)
+    summary = (namespace / "SUMMARY.md").read_text()
+    assert before == ["spring_statement_2025"]
+    assert "Registry inventories available: 1." in summary
+    assert "autumn_budget_2025" not in summary
+    monkeypatch.setattr(builder, "EVENTS", {**builder.EVENTS, "a_later_event": "Later"})
+    assert premises.namespace_events(namespace) == before
+    comparison.write_summary(namespace, artifact_root=tmp_path)
+    assert (namespace / "SUMMARY.md").read_text() == summary

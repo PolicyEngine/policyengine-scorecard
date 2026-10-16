@@ -354,6 +354,7 @@ STANDARD_CONDITIONS = frozenset(
         # repeated worksheet rows. Inventory keys and classifications are
         # copied verbatim, independently of the canonical replay key.
         "source_row_id",
+        "edition",
         "event_key",
         "inventory_measure_key",
         # Exact printed cell text/numeric representation retained alongside

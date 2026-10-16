@@ -354,7 +354,10 @@ def main(argv: list[str] | None = None) -> int:
     selection.add_argument(
         "--namespace",
         type=Path,
-        help="cover the events this namespace holds results for (every event if none)",
+        help=(
+            "cover this namespace's events: its recorded corpus (CORPUS.json), "
+            "else the events it holds results for, else every registered event"
+        ),
     )
     parser.add_argument("--expect-engine", required=True)
     parser.add_argument("--output", type=Path, required=True)

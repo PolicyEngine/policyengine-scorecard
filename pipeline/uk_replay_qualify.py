@@ -56,6 +56,8 @@ EVENTS = (
 # The version names the event set: /1 is the five events from Spring Budget
 # 2023 to Spring Statement 2025; /2 adds Autumn Budget 2025.
 CORPUS_VERSION = "uk-fiscal-event-replay/2"
+# Staging's grid lists a receipt carries for each event, on both sides.
+GRID_FIELDS = ("missing_measure_years", "unsupported_measure_years")
 REJECTION_CODES = (
     "schema_invalid",
     "artifact_hash_mismatch",
@@ -607,8 +609,9 @@ def run_corpus(
             python,
             "-m",
             "pipeline.audit_uk_event_premises",
-            # The events this namespace holds results for (audit
-            # namespace_events), so a sealed namespace's premises regenerate.
+            # This namespace's recorded corpus (CORPUS.json, written before
+            # any event ran; uk_replay_variants.namespace_events), so a
+            # sealed namespace's premises regenerate byte for byte.
             "--namespace",
             str(namespace),
             "--expect-engine",
@@ -704,6 +707,12 @@ def event_results(
             ),
             "inert_measure_years": staging.get("inert_measure_years", []),
         }
+        # Staging's own grid lists, with staging's meanings (a missing pair
+        # is in the full event grid but has no artifact, so it includes the
+        # unsupported pairs); W4 matches them pair for pair to base_events.
+        for field in GRID_FIELDS:
+            if field in staging:
+                out[event][field] = staging[field]
         failures += construction_inert(
             event, out[event]["inert_measure_years"], premises.get(event, {})
         )
@@ -758,11 +767,34 @@ def construction_inert(event: str, inert: list[dict], premises: dict) -> list[di
     return failures
 
 
+def base_events(diff: dict) -> dict:
+    """The base side's own record of each event's grid, as the release diff
+    recorded it from the base's verified staging (diff_uk_event_runs
+    staging_grid), bound to the manifest digests the diff recorded. It is
+    copied from DIFF.json, which diff_sha256 binds, never re-read from a
+    checkout: when a certified pair requalifies, the base and the candidate
+    share one result root.
+
+    An event has no entry when the base is a legacy-layout run or did not
+    replay it: W4 then treats no gap as known."""
+    base = diff["base"]
+    inputs = base.get("inputs") or {}
+    return {
+        event: {
+            "staging_manifest_sha256": inputs[event]["staging_manifest_sha256"],
+            "run_manifest_sha256": inputs[event]["run_manifest_sha256"],
+            **grid,
+        }
+        for event, grid in sorted((base.get("grids") or {}).items())
+    }
+
+
 def diff_summary(diff_dir: Path) -> dict:
     payload = (diff_dir / "DIFF.json").read_bytes()
     diff = json.loads(payload)
     return {
         "base_variant_id": diff["base"]["identity"]["variant_id"],
+        "base_events": base_events(diff),
         "diff_sha256": sha256_bytes(payload),
         "flag_counts": diff["flag_counts"],
         "flagged_rows": [
@@ -1468,8 +1500,11 @@ def main(argv: list[str] | None = None) -> int:
         # manifest is still there), must be sealed. Premises, diagnostics
         # and an empty summary committed before the replay are not results.
         def must_be_sealed(namespace: Path) -> bool:
+            # CORPUS.json is evidence of a qualification run even when every
+            # event failed before writing a manifest.
             return (
                 any(namespace.glob("*/RUN_MANIFEST.json"))
+                or (namespace / variants.CORPUS_NAME).exists()
                 or (namespace / variants.RECEIPT_NAME).exists()
                 or (namespace / MANIFEST_NAME).exists()
             )

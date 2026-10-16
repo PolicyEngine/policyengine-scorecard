@@ -268,3 +268,58 @@ def test_receipt_digest_changes_with_any_flagged_value(a, b):
     right["diff"]["flagged_rows"][0]["head_gbp"] = b
     same = ui.jcs_bytes(a) == ui.jcs_bytes(b)
     assert (ui.receipt_sha256(left) == ui.receipt_sha256(right)) == same
+
+
+def test_receipts_carry_grid_lists_and_base_events_additively():
+    # The golden receipt predates these fields and stays valid; receipts that
+    # carry them validate, and a base record missing any field is refused.
+    receipt = golden("replay_receipt_golden.json")
+    ui.validate(ui.seal_receipt(receipt), ui.RECEIPT_SCHEMA_ID)
+    pair = [
+        {"measure_key": "spring_budget_2023__uc_childcare_cap_increase", "year": 2023}
+    ]
+    (event,) = receipt["corpus"]["events"].values()
+    event.update(missing_measure_years=pair, unsupported_measure_years=pair)
+    base_event = {
+        "staging_manifest_sha256": "7" * 64,
+        "run_manifest_sha256": "6" * 64,
+        "supported_years": [2024, 2025],
+        "full_supported_grid_complete": False,
+        "inert_measure_years": [],
+        "missing_measure_years": pair,
+        "unsupported_measure_years": pair,
+    }
+    receipt["diff"]["base_events"] = {"spring_budget_2023": base_event}
+    ui.validate(ui.seal_receipt(receipt), ui.RECEIPT_SCHEMA_ID)
+    for field in base_event:
+        broken = copy.deepcopy(receipt)
+        del broken["diff"]["base_events"]["spring_budget_2023"][field]
+        with pytest.raises(jsonschema.ValidationError):
+            ui.validate(ui.seal_receipt(broken), ui.RECEIPT_SCHEMA_ID)
+    broken = copy.deepcopy(receipt)
+    broken["diff"]["base_events"]["spring_budget_2023"]["unexpected"] = True
+    with pytest.raises(jsonschema.ValidationError):
+        ui.validate(ui.seal_receipt(broken), ui.RECEIPT_SCHEMA_ID)
+    broken = copy.deepcopy(receipt)
+    broken["diff"]["base_events"]["spring_budget_2023"]["inert_measure_years"] = [
+        {"measure_key": "x"}
+    ]
+    with pytest.raises(jsonschema.ValidationError):
+        ui.validate(ui.seal_receipt(broken), ui.RECEIPT_SCHEMA_ID)
+
+
+def test_measure_year_lists_refuse_duplicates_and_empty_keys():
+    receipt = golden("replay_receipt_golden.json")
+    (event,) = receipt["corpus"]["events"].values()
+    pair = {
+        "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+        "year": 2024,
+    }
+    for bad in ([pair, pair], [{"measure_key": "", "year": 2024}]):
+        broken = copy.deepcopy(receipt)
+        (target,) = broken["corpus"]["events"].values()
+        target["missing_measure_years"] = bad
+        with pytest.raises(jsonschema.ValidationError):
+            ui.validate(ui.seal_receipt(broken), ui.RECEIPT_SCHEMA_ID)
+    event["missing_measure_years"] = [pair]
+    ui.validate(ui.seal_receipt(receipt), ui.RECEIPT_SCHEMA_ID)
