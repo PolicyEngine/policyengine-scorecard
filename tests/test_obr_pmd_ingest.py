@@ -242,6 +242,7 @@ def test_every_inventory_fy_cell_joins_once_with_its_preferred_measure_key(
     registry_keys = {
         pointer["source_row_number"]: measure["measure_key"]
         for path in (ROOT / "data/uk/events").glob("*_measures.json")
+        if mod.is_replay_registry(json.loads(path.read_text()))
         for measure in json.loads(path.read_text())["measures"]
         for pointer in measure["source_rows"]
     }
@@ -288,7 +289,11 @@ def test_every_inventory_fy_cell_joins_once_with_its_preferred_measure_key(
 def test_every_replay_registry_source_cell_joins_once(
     source_cells, claims_by_line, legacy_by_line, cell_mapping
 ):
-    files = sorted((ROOT / "data/uk/events").glob("*_measures.json"))
+    files = sorted(
+        path
+        for path in (ROOT / "data/uk/events").glob("*_measures.json")
+        if mod.is_replay_registry(json.loads(path.read_text()))
+    )
     assert len(files) == 6
     total = 0
     frozen_aliases = 0
@@ -675,3 +680,22 @@ def test_claim_identity_is_invariant_to_condition_order(staged, index):
         },
     )
     assert changed.claim_id() != original.claim_id()
+
+
+def test_only_replay_registries_join_the_published_scores():
+    historical = json.loads(
+        (ROOT / "data/uk/events/spring_statement_2022_measures.json").read_text()
+    )
+    assert not mod.is_replay_registry(historical)
+    assert mod.is_replay_registry(
+        json.loads(
+            (ROOT / "data/uk/events/autumn_budget_2025_measures.json").read_text()
+        )
+    )
+    assert mod.is_replay_registry({"measures": []})
+    # The ingest's literal is the builder's status.
+    from pipeline import build_uk_event_registry as builder
+
+    assert not mod.is_replay_registry(
+        {"execution": {"status": builder.REQUIRES_EVENT_POPULATION}}
+    )

@@ -211,7 +211,13 @@ def test_pound_account_does_not_round_small_cells_beside_large_cancelling_cells(
     assert actual["net_gbp_in_decimal"] == actual["net_gbp_classified_decimal"]
 
 
-@pytest.mark.parametrize("event_slug", registry.EVENTS)
+HISTORICAL = tuple(
+    sorted(path.stem for path in (ROOT / "docs/uk_replay/selectors").glob("*.json"))
+)
+REGISTERED = tuple(registry.EVENTS) + HISTORICAL
+
+
+@pytest.mark.parametrize("event_slug", REGISTERED)
 def test_every_event_retains_every_harvested_row_and_pound_exactly_once(event_slug):
     p = ROOT / "data/uk/events" / f"{event_slug}_measures.json"
     document = json.loads(p.read_text())
@@ -400,7 +406,7 @@ def test_childcare_old_caps_preserve_subsequent_certified_uprating():
     assert "June2023" in m["missing_legs"][0]
 
 
-@pytest.mark.parametrize("event_slug", registry.EVENTS)
+@pytest.mark.parametrize("event_slug", REGISTERED)
 def test_every_replayed_event_agrees_with_the_inventory(event_slug):
     # The inventory (data/uk/events/inventory.jsonl) keys measures and lines
     # its own way and stores GBP millions as floats; the registry keeps exact
@@ -610,3 +616,140 @@ def test_ab2025_measure_keys_are_the_inventorys_keys():
     for event in registry.EVENTS:
         if event != "autumn_budget_2025":
             assert registry.inventory_registry_keys(event) == {}
+
+
+@pytest.mark.parametrize("event_slug", HISTORICAL)
+def test_historical_registries_are_source_accounting_bound_to_their_selector(
+    event_slug,
+):
+    import hashlib
+
+    document = json.loads(
+        (ROOT / "data/uk/events" / f"{event_slug}_measures.json").read_text()
+    )
+    selector_path = ROOT / "docs/uk_replay/selectors" / f"{event_slug}.json"
+    selector = json.loads(selector_path.read_bytes())
+    execution = document["execution"]
+    assert execution["status"] == registry.REQUIRES_EVENT_POPULATION
+    assert execution["selector"] == f"docs/uk_replay/selectors/{event_slug}.json"
+    assert (
+        execution["selector_sha256"]
+        == hashlib.sha256(selector_path.read_bytes()).hexdigest()
+    )
+    # Every original fiscal year is accounted; fy_start_year.v1 maps each to
+    # its start year, including years before any modern population's data.
+    assert document["scoring_fys"] == selector["scoring_fys"]
+    assert document["scoring_fys"] == sorted(
+        {s["fy"] for m in document["measures"] for s in m["source_rows"]}
+    )
+    assert document["calendar_years"] == [int(fy[:4]) for fy in document["scoring_fys"]]
+    assert min(document["calendar_years"]) < 2023
+    # No construction runs before a certified event population exists.
+    assert not any(
+        m.get("pe_baseline_modifier") or m.get("pe_reform_delta")
+        for m in document["measures"]
+    )
+    assert event_slug not in registry.EVENTS
+
+
+def test_a_registry_without_a_selector_has_no_execution_gate():
+    for event_slug in registry.EVENTS:
+        document = json.loads(
+            (ROOT / "data/uk/events" / f"{event_slug}_measures.json").read_text()
+        )
+        assert "execution" not in document and "scoring_fys" not in document
+
+
+def test_historical_selector_must_match_the_source_years(tmp_path, monkeypatch):
+    import shutil
+
+    shutil.copy(ROOT / "docs/uk_replay/selectors/spring_statement_2022.json", tmp_path)
+    selector = json.loads((tmp_path / "spring_statement_2022.json").read_text())
+    selector["scoring_fys"] = selector["scoring_fys"][1:]
+    (tmp_path / "spring_statement_2022.json").write_text(json.dumps(selector))
+    monkeypatch.setattr(registry, "SELECTORS", tmp_path)
+    rows = registry.source_rows("spring_statement_2022")
+    with pytest.raises(ValueError, match="scoring_fys differ"):
+        registry.historical_execution("spring_statement_2022", rows)
+    selector["scoring_fys"] = sorted({r["fy"] for r in rows})
+    selector["annualisation_bridge"]["status"] = "pending"
+    (tmp_path / "spring_statement_2022.json").write_text(json.dumps(selector))
+    with pytest.raises(ValueError, match="bridge"):
+        registry.historical_execution("spring_statement_2022", rows)
+    assert registry.historical_execution("autumn_budget_2025", rows) is None
+    # Review of 8c8c6e1: the bridge identity and the selector's own event are
+    # checked too.
+    selector["annualisation_bridge"]["status"] = "resolved"
+    selector["annualisation_bridge"]["bridge_id"] = "another_bridge.v1"
+    (tmp_path / "spring_statement_2022.json").write_text(json.dumps(selector))
+    with pytest.raises(ValueError, match="bridge"):
+        registry.historical_execution("spring_statement_2022", rows)
+    selector["annualisation_bridge"]["bridge_id"] = "fy_start_year.v1"
+    selector["event_slug"] = "autumn_budget_2021"
+    (tmp_path / "spring_statement_2022.json").write_text(json.dumps(selector))
+    with pytest.raises(ValueError, match="names another event"):
+        registry.historical_execution("spring_statement_2022", rows)
+
+
+def test_compute_refuses_a_registry_that_needs_an_event_population():
+    from pipeline import compute_uk_event as compute
+
+    document = json.loads(
+        (ROOT / "data/uk/events/spring_statement_2022_measures.json").read_text()
+    )
+    with pytest.raises(ValueError, match="certified event population"):
+        compute.refuse_unexecutable(document)
+    # An edited copy without the execution block is refused by its selector.
+    stripped = {k: v for k, v in document.items() if k != "execution"}
+    with pytest.raises(ValueError, match="event-vintage selector"):
+        compute.refuse_unexecutable(stripped)
+    compute.refuse_unexecutable(ab2025_registry())
+
+
+@pytest.mark.parametrize(
+    "event", ["spring_statement_2022", "autumn_statement_2022", "autumn_budget_2021"]
+)
+@pytest.mark.parametrize(
+    "flags", [["--dry-run"], ["--guards"], ["--dry-run", "--years", "2023"]]
+)
+def test_compute_main_refuses_a_historical_event(event, flags):
+    # Review of 8c8c6e1: the gate is pinned at the entry point, not only in
+    # the helper; no engine is needed to reach the refusal.
+    from pipeline import compute_uk_event as compute
+
+    with pytest.raises(ValueError, match="certified event population"):
+        compute.main(["--event", event, *flags])
+
+
+def test_historical_registries_carry_no_modern_bundle():
+    for event_slug in HISTORICAL:
+        document = json.loads(
+            (ROOT / "data/uk/events" / f"{event_slug}_measures.json").read_text()
+        )
+        assert "bundle" not in document
+
+
+def test_historical_keys_are_the_inventorys_per_title():
+    for event_slug in HISTORICAL:
+        keys = registry.inventory_registry_keys(event_slug)
+        document = json.loads(
+            (ROOT / "data/uk/events" / f"{event_slug}_measures.json").read_text()
+        )
+        assert {
+            m["title"].strip(): m["measure_key"] for m in document["measures"]
+        } == keys
+
+
+@pytest.mark.parametrize("event_slug", HISTORICAL)
+def test_the_builder_reproduces_each_historical_execution_block(event_slug):
+    import hashlib
+
+    built = registry.historical_execution(event_slug, registry.source_rows(event_slug))
+    document = json.loads(
+        (ROOT / "data/uk/events" / f"{event_slug}_measures.json").read_text()
+    )
+    payload = (ROOT / "docs/uk_replay/selectors" / f"{event_slug}.json").read_bytes()
+    assert built["execution"]["selector_sha256"] == hashlib.sha256(payload).hexdigest()
+    assert built["execution"] == document["execution"]
+    assert built["scoring_fys"] == document["scoring_fys"]
+    assert built["calendar_years"] == document["calendar_years"]

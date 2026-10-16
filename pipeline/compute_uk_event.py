@@ -587,6 +587,24 @@ def grid_rows(pairs) -> list[dict]:
     return [{"measure_key": key, "year": year} for key, year in sorted(pairs)]
 
 
+def refuse_unexecutable(registry: dict, event: str | None = None) -> None:
+    """A historical event is never run here: no guards, dry run or simulation
+    on the modern certified population stands in for an event population.
+
+    It is refused when its registry says so, and also whenever the event has
+    a committed selector, so an edited registry copy without the execution
+    block is refused too."""
+    event = event or registry.get("event_slug")
+    execution = registry.get("execution") or {}
+    if execution.get("status") == registry_builder.REQUIRES_EVENT_POPULATION:
+        raise ValueError(f"{event}: {execution['reason']}")
+    if event and (registry_builder.SELECTORS / f"{event}.json").is_file():
+        raise ValueError(
+            f"{event}: has an event-vintage selector, so it replays only on a "
+            "certified event population (docs/uk_replay/HISTORICAL_ADAPTER.md)"
+        )
+
+
 def validate_years(requested: list[int], registry: dict) -> list[int]:
     allowed = registry.get("calendar_years")
     if not allowed:
@@ -730,6 +748,7 @@ def main(argv: list[str] | None = None) -> int:
     registry = json.loads(registry_payload)
     validate_event_identity(registry, args.event)
     registry_builder.validate_registry(registry)
+    refuse_unexecutable(registry, args.event)
     if (
         not (args.dry_run or args.guards)
         and (args.measures or args.years)
