@@ -208,7 +208,9 @@ that file through the namespace manifest.
     "comparison_provenance_sha256": "…",
     "artifacts": 30,
     "full_supported_grid_complete": true,
-    "inert_measure_years": []
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "unsupported_measure_years": []
    }
   }
  },
@@ -218,6 +220,17 @@ that file through the namespace manifest.
  },
  "diff": {
   "base_variant_id": "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0",
+  "base_events": {
+   "autumn_budget_2024": {
+    "staging_manifest_sha256": "…",
+    "run_manifest_sha256": "…",
+    "supported_years": [2024, 2025, 2026, 2027, 2028, 2029],
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "unsupported_measure_years": []
+   }
+  },
   "diff_sha256": "…",
   "flag_counts": {"numerical": 0, "structural": 0, "coverage": 0, "mapping": 0, "support": 0, "inertness": 0, "construction": 0},
   "flagged_rows": [ {"event": "…", "measure_key": "…", "year": 2026, "level": "head", "key": "income_tax", "flags": ["numerical"], "base_gbp": 0.0, "head_gbp": 0.0} ]
@@ -281,6 +294,26 @@ How flags arise, so a gate built on them sees the intended events:
   an accounting identity broken in staging, or a `construction_inert`
   measure-year. These are structural failures; W4 blocks promotion on
   them.
+* Each corpus event also carries staging's own `missing_measure_years`
+  (pairs in the full event grid without an artifact, so including the
+  unsupported ones) and `unsupported_measure_years` (pairs in years outside
+  the variant's data years); a gap on the supported grid is a missing pair
+  that is not unsupported. A legacy-layout candidate's staging records only
+  `missing_measure_years`. Receipts issued before these fields were added
+  lack them.
+* `diff.base_events` is the base side's own record of each event's grid, in
+  the same fields with the same meanings, beside the base's staging and run
+  manifest digests. The release diff records it in `DIFF.json` (`base.grids`)
+  while it verifies the base's staging, taking `supported_years` from the
+  base's `RUN_MANIFEST.json` (staging does not record them); the receipt
+  copies it from there, so `diff_sha256` binds it and nothing is re-read.
+  This matters when a certified pair requalifies: its base and candidate
+  share one result root. `inert_measure_years` is always present. An event
+  has no entry when the base is a legacy-layout run or did not replay it, so
+  a base gap is reported only from the base's own verified staging, never
+  inferred.
+  Whether a candidate gap matching a base gap blocks promotion is W4's
+  policy.
 * `diff.flag_counts` and `flagged_rows` describe movements against the base
   variant. They carry no verdict. Whether an unexplained material move blocks
   promotion, and who reviews it, is W4's qualification policy under d1344.
