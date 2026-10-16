@@ -114,8 +114,9 @@ jobs:
             .venv-variant/bin/python -m pipeline.compute_uk_event --event "$event" --variant "$VARIANT" --guards > /dev/null
             echo "guards hold: $event"
           done
-      # A namespace's premises cover the events it holds results for, or
-      # every registered event when it holds none (namespace_events).
+      # A namespace's premises cover its recorded corpus (CORPUS.json), else
+      # the events it holds results for, else every registered replay event
+      # (uk_replay_variants.namespace_events).
       - name: Construction premises regenerate
         run: .venv-variant/bin/python -m pipeline.audit_uk_event_premises --namespace "$RESULT_ROOT" --expect-engine "$ENGINE" --output "$RESULT_ROOT/CONSTRUCTION_PREMISES.json" --check
       - name: Re-verified diagnostics regenerate

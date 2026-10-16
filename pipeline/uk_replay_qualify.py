@@ -609,8 +609,9 @@ def run_corpus(
             python,
             "-m",
             "pipeline.audit_uk_event_premises",
-            # The events this namespace holds results for (audit
-            # namespace_events), so a sealed namespace's premises regenerate.
+            # This namespace's recorded corpus (CORPUS.json, written before
+            # any event ran; uk_replay_variants.namespace_events), so a
+            # sealed namespace's premises regenerate byte for byte.
             "--namespace",
             str(namespace),
             "--expect-engine",
@@ -1499,8 +1500,11 @@ def main(argv: list[str] | None = None) -> int:
         # manifest is still there), must be sealed. Premises, diagnostics
         # and an empty summary committed before the replay are not results.
         def must_be_sealed(namespace: Path) -> bool:
+            # CORPUS.json is evidence of a qualification run even when every
+            # event failed before writing a manifest.
             return (
                 any(namespace.glob("*/RUN_MANIFEST.json"))
+                or (namespace / variants.CORPUS_NAME).exists()
                 or (namespace / variants.RECEIPT_NAME).exists()
                 or (namespace / MANIFEST_NAME).exists()
             )

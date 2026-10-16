@@ -944,6 +944,12 @@ def test_a_namespace_must_be_sealed_once_it_holds_replay_results(
         },
     )
     assert qualify.main(["verify-sealed"]) == 0
+    # A recorded corpus is a run, even if every event failed before writing
+    # a manifest (review of cd7018f).
+    (namespace / rv.CORPUS_NAME).write_text('{"corpus_version": "x", "events": []}')
+    assert qualify.main(["verify-sealed"]) == 1
+    assert "not sealed" in capsys.readouterr().out
+    (namespace / rv.CORPUS_NAME).unlink()
     (namespace / "an_event").mkdir()
     (namespace / "an_event" / "RUN_MANIFEST.json").write_text("{}")
     assert qualify.main(["verify-sealed"]) == 1

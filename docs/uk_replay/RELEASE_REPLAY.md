@@ -388,6 +388,12 @@ Removed measures retain their base title, source cells and citations.
 Packets are evidence for the coordinating session, which files upstream
 issues; this pipeline files none.
 
+`DIFF.json` also records, per side, `grids`: each event's grid as that side's
+verified staging recorded it (`diff_uk_event_runs.staging_grid`: supported
+years from the run manifest, `full_supported_grid_complete`, and the inert,
+missing and unsupported measure-years), for variant runs only. A
+qualification receipt copies the base side's into `diff.base_events`.
+
 Diff invariants are checked with deterministic cases and Hypothesis properties
 in `tests/test_uk_event_diff.py`: identical sides raise no flags; swapping sides
 preserves each record's flag set and mirrors its values; every source row in
@@ -396,12 +402,6 @@ exactly one packet, including support-only records; numerical moves flag only
 strictly above the stated threshold; coverage and support do not overlap; and,
 for events on both sides, coverage requires a year both sides support.
 
-
-`DIFF.json` also records, per side, `grids`: each event's grid as that side's
-verified staging recorded it (`diff_uk_event_runs.staging_grid`: supported
-years from the run manifest, `full_supported_grid_complete`, and the inert,
-missing and unsupported measure-years), for variant runs only. A
-qualification receipt copies the base side's into `diff.base_events`.
 ## Qualification requests and receipts
 
 See [QUALIFICATION_INTERFACE.md](QUALIFICATION_INTERFACE.md) for the request
