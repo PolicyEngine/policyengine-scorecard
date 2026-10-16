@@ -5,3 +5,6 @@
 *.csv -text
 *.csv-metadata.json -text
 *.jsonl -text
+# Methodology contracts, receipts and the decision record are bound by SHA-256.
+docs/uk_replay/contracts/** -text
+docs/uk_replay/HISTORICAL_DECISIONS.md -text

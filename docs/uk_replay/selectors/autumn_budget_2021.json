@@ -1,0 +1,92 @@
+{
+  "schema_version": "event_vintage_selector.v1",
+  "event_slug": "autumn_budget_2021",
+  "event_date": "2021-10-27",
+  "forecast_vintage": {
+    "id": "obr_efo_october_2021",
+    "label": "October 2021",
+    "published_at": "2021-10-27"
+  },
+  "source_locks": [
+    {
+      "lock_path": "data/uk/events/vintage_locks/autumn_budget_2021.json",
+      "lock_sha256": "c98e70e9bae5b0c526e873cbd8827028aa1f1fa39dea16afe5b7fcd65c476a1f",
+      "sources": [
+        {
+          "role": "economy",
+          "status": "obtained",
+          "sha256": "bb125bd9d40d7b998cff2e5fe01d30a95867267a6149a498d52511b3cb792c30"
+        },
+        {
+          "role": "receipts",
+          "status": "obtained",
+          "sha256": "fbe7fda3655e6ef7eb1537f1e3881567951a40ad0500d881f9573567971fe845"
+        },
+        {
+          "role": "expenditure",
+          "status": "obtained",
+          "sha256": "f4700cc614d9ea0979899249951f2ce0f08252b2daeb0abfc390fd6e37138bdc"
+        },
+        {
+          "role": "policy_measures",
+          "status": "obtained",
+          "sha256": "d091ebd9040d2a3ffa759bbd4334e0d6d1685f52605e15ba7205b1c952c78071"
+        },
+        {
+          "role": "hofd_row",
+          "status": "obtained",
+          "sha256": "d69fa5112266c71fff0c74bffe416b7c7c0f663b44e0b87e7a82899d09ba39d5"
+        },
+        {
+          "role": "dwp_benefit_expenditure_caseload",
+          "status": "obtained",
+          "sha256": "776ab6a6adad21849be2d3e7b253eaf4f9e42acdc5b88ede14492cdeac7980df"
+        }
+      ]
+    }
+  ],
+  "scoring_fys": [
+    "2021-22",
+    "2022-23",
+    "2023-24",
+    "2024-25",
+    "2025-26",
+    "2026-27"
+  ],
+  "admissible_survey_releases": [
+    {
+      "release_id": "frs_2019_20",
+      "survey_fy": "2019-20",
+      "published_at": "2021-03-25",
+      "publication_url": "https://www.gov.uk/government/statistics/family-resources-survey-financial-year-2019-to-2020",
+      "evidence": [
+        "docs/uk_replay/PLAN.md#phases-and-effort",
+        "docs/uk_replay/POPULATIONS_AND_VINTAGES.md",
+        "docs/uk_replay/HISTORICAL_FRS.md"
+      ]
+    }
+  ],
+  "preferred_survey_release": "frs_2019_20",
+  "policy_world_contract": {
+    "status": "resolved",
+    "contract_id": "published_end_state_same_weights.v1",
+    "contract_sha256": "f83e0c9249983e386fec9f9f4c2c7a689ddda8f676640e3013e652e1fe35ba88",
+    "decision_receipt": "cos d1344 (Max, 2026-10-15: delegated to the workstream with independent review)",
+    "decision_record": "docs/uk_replay/HISTORICAL_DECISIONS.md",
+    "decision_record_sha256": "b6db48a92283d54fec78cab772d2c39698f94b0d9f8c08623f3b0be1dcd288a3"
+  },
+  "annualisation_bridge": {
+    "status": "resolved",
+    "bridge_id": "fy_start_year.v1",
+    "receipt_sha256": "ffc885685c61b11358a6d3a5c6a4b9dd398e4a093a607ae10b47acfec609bca0"
+  },
+  "readiness": "ready_for_population_build",
+  "evidence": [
+    "docs/uk_replay/PLAN.md",
+    "docs/uk_replay/POPULATIONS_AND_VINTAGES.md",
+    "docs/uk_replay/evidence/population_receipts.json",
+    "docs/uk_replay/HISTORICAL_FRS.md",
+    "docs/uk_replay/VINTAGE_LOCKS.md",
+    "docs/uk_replay/HISTORICAL_DECISIONS.md"
+  ]
+}

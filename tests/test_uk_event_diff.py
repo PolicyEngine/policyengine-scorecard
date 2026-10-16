@@ -9,6 +9,7 @@ import copy
 import hashlib
 import json
 import random
+import shlex
 from pathlib import Path
 
 import pytest
@@ -109,6 +110,7 @@ def make_namespace(
     heads=None,
     skip=(),
     identical=(),
+    remove_measure=False,
 ):
     """A complete namespace for one event; effects maps year -> {variable: gain}."""
     effects = effects or {
@@ -120,7 +122,7 @@ def make_namespace(
         "event_slug": EVENT,
         "event": EVENT,
         "calendar_years": [2024, 2025],
-        "measures": [m],
+        "measures": [] if remove_measure else [m],
     }
     registry_path = (
         tmp_path / "data" / "uk" / "events" / f"{EVENT}_{name}_measures.json"
@@ -128,7 +130,7 @@ def make_namespace(
     registry_path.parent.mkdir(parents=True, exist_ok=True)
     registry_path.write_bytes(compute.canonical_bytes(registry))
     registry_sha = hashlib.sha256(registry_path.read_bytes()).hexdigest()
-    # The comparison loader binds to the canonical registry path.
+    # Keep the current registry as well as each run's receipt-bound snapshot.
     canonical = tmp_path / "data" / "uk" / "events" / f"{EVENT}_measures.json"
     canonical.write_bytes(registry_path.read_bytes())
     root = tmp_path / "ns" / name
@@ -140,7 +142,7 @@ def make_namespace(
         {"variant_id": variant, "variant_identity_sha256": "e" * 64} if variant else {}
     )
     artifacts = {}
-    for year in supported:
+    for year in () if remove_measure else supported:
         if year in skip:
             continue
         gains = effects[year]
@@ -162,6 +164,11 @@ def make_namespace(
             event=EVENT,
             variant_fields=variant_fields,
         )
+        artifact.update(
+            policyengine_version="6.2.6" if variant else "5.0.2",
+            engine_version="2.125.1" if variant else "2.89.2",
+            policyengine_core_version="3.33.0" if variant else "3.27.1",
+        )
         path = event_dir / f"{KEY}_{year}.json"
         path.write_bytes(compute.canonical_bytes(artifact))
         artifacts[str(path.relative_to(tmp_path))] = hashlib.sha256(
@@ -169,6 +176,7 @@ def make_namespace(
         ).hexdigest()
     manifest = {
         "event": EVENT,
+        "registry_path": str(registry_path.relative_to(tmp_path)),
         "registry_sha256": registry_sha,
         "certified_dataset_sha256": "a" * 64,
         "artifacts": artifacts,
@@ -177,6 +185,20 @@ def make_namespace(
         "policyengine_core_version": "3.33.0" if variant else "3.27.1",
         "data_bundle": "build",
     }
+    pairs = (
+        set()
+        if remove_measure
+        else {(KEY, year) for year in supported if year not in skip}
+    )
+    full_pairs = set() if remove_measure else {(KEY, year) for year in (2024, 2025)}
+    manifest.update(
+        artifact_grid=compute.grid_rows(pairs),
+        requested_grid=compute.grid_rows(pairs),
+        full_event_grid=compute.grid_rows(full_pairs),
+        full_event_complete=full_pairs <= pairs,
+        years=sorted({year for _, year in pairs}),
+        measures=sorted({key for key, _ in pairs}),
+    )
     if variant:
         manifest.update(
             variant_fields,
@@ -187,7 +209,9 @@ def make_namespace(
                 for y in (2024, 2025)
                 if y not in supported
             ],
-            full_supported_grid=[{"measure_key": KEY, "year": y} for y in supported],
+            full_supported_grid=[]
+            if remove_measure
+            else [{"measure_key": KEY, "year": y} for y in supported],
             full_supported_grid_complete=not skip,
         )
     (event_dir / "RUN_MANIFEST.json").write_bytes(compute.canonical_bytes(manifest))
@@ -208,7 +232,7 @@ def make_namespace(
     )
     compare.write_comparison(
         EVENT,
-        registry_path=canonical,
+        registry_path=registry_path,
         staged_path=event_dir / "STAGED.jsonl",
         output_dir=event_dir,
         artifact_root=tmp_path,
@@ -216,9 +240,34 @@ def make_namespace(
     return diff.load_side(root, artifact_root=tmp_path)
 
 
+def synthetic_record(manifest, registry, *, variants_path):
+    """Stand-in for staging's variant lookup. These sides use synthetic
+    variants (several share an id with different data years), so no one
+    variants document can hold them; staging's checks of a manifest against
+    its record are tested in test_uk_replay_variants.py."""
+    if manifest is None or manifest.get("variant_id") is None:
+        return None
+    return {
+        "variant_id": manifest["variant_id"],
+        "layout": "replay_namespace",
+        "identity_sha256": manifest["variant_identity_sha256"],
+        "data_years": manifest["data_years"],
+        "identity": {
+            "dataset": {
+                "path": "synthetic.h5",
+                "repo_id": "synthetic/data",
+                "revision": manifest["data_bundle"],
+                "sha256": manifest["certified_dataset_sha256"],
+            },
+            "release_bundle": {"certified_data_build_id": manifest["data_bundle"]},
+        },
+    }
+
+
 @pytest.fixture
 def ns(tmp_path, monkeypatch):
     monkeypatch.setattr(compute, "ROOT", tmp_path)
+    monkeypatch.setattr(stage, "manifest_variant", synthetic_record)
 
     def build(name, **kwargs):
         return make_namespace(tmp_path, name, **kwargs)
@@ -542,7 +591,7 @@ def test_output_bytes_do_not_depend_on_input_order(ns):
         assert diff.render(a, shuffled) == first
 
 
-def test_packets_cover_flagged_moves_but_not_support_only_rows(ns):
+def test_packets_cover_flagged_moves_including_support_only_rows(ns):
     a = ns("a")
     b = ns(
         "b",
@@ -552,22 +601,35 @@ def test_packets_cover_flagged_moves_but_not_support_only_rows(ns):
     )
     files = diff.render(a, b)
     names = sorted(p for p in files if p.startswith("packets/") and p.endswith(".json"))
-    assert names == [f"packets/{EVENT}__tax_and_benefit__2025.json"]
-    packet = json.loads(files[names[0]])
+    assert names == [
+        f"packets/{EVENT}__tax_and_benefit__2024.json",
+        f"packets/{EVENT}__tax_and_benefit__2025.json",
+    ]
+    support_packet = json.loads(files[names[0]])
+    assert support_packet["flags"] == ["support"]
+    packet = json.loads(files[names[1]])
     assert packet["flags"] == ["numerical"]
     assert [c["source_row_id"] for c in packet["source_cells"]] == [
         "tax_2025",
         "benefit_2025",
         "corporation_2025",
+        "tax_2025",
+        "benefit_2025",
+        "corporation_2025",
     ]
+    assert [c["side"] for c in packet["source_cells"]] == ["base"] * 3 + ["head"] * 3
     assert "--variant pe6_uk2_build" in packet["reproduce"]["head"]
     assert "--variant pe5.0.2_uk2.89.2_build" in packet["reproduce"]["base"]
-    assert packet["cited_sources"] == ["https://www.gov.uk/example"]
+    assert packet["cited_sources"] == [
+        {"side": "base", "url": "https://www.gov.uk/example"},
+        {"side": "head", "url": "https://www.gov.uk/example"},
+    ]
     assert packet["minimal_case"]["status"] == diff.PACKET_PENDING
     assert "files no issues" in packet["filing"]
     markdown = files["DIFF.md"].decode()
     assert "Years supported on one side only" in markdown
     assert f"| {EVENT} | 2024 | source_row | 2 |" in markdown
+    assert "Neither side has construction premises" in markdown
 
 
 def test_unverifiable_side_is_refused(ns, tmp_path):
@@ -576,6 +638,500 @@ def test_unverifiable_side_is_refused(ns, tmp_path):
     staged.write_bytes(staged.read_bytes() + b"\n")
     with pytest.raises(diff.DiffError, match="does not verify"):
         diff.load_side(tmp_path / "ns" / "a", artifact_root=tmp_path)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("certified_dataset_sha256", "b" * 64),
+        ("supported_years", []),
+        ("unsupported_years", []),
+        ("data_years", [2024, 2025]),
+        ("data_years", []),
+        ("full_supported_grid", []),
+        ("registry_sha256", "b" * 64),
+        ("engine_version", "forged"),
+        ("variant_identity_sha256", "b" * 64),
+        ("artifact_grid", []),
+        ("requested_grid", [{"measure_key": KEY, "year": 2024}]),
+        ("full_event_grid", []),
+        ("years", []),
+        ("measures", []),
+        ("full_event_complete", True),
+        ("full_supported_grid_complete", False),
+    ],
+)
+def test_run_manifest_must_reconcile_with_verified_receipts(ns, tmp_path, field, value):
+    ns("a", supported=(2025,), variant="pe6_uk2_build")
+    path = tmp_path / "ns" / "a" / EVENT / "RUN_MANIFEST.json"
+    manifest = json.loads(path.read_bytes())
+    manifest[field] = value
+    path.write_bytes(compute.canonical_bytes(manifest))
+    with pytest.raises(diff.DiffError):
+        diff.load_side(path.parent.parent, artifact_root=tmp_path)
+
+
+@pytest.mark.parametrize(
+    "corruption", ["raw_delta", "dataset_sha256_before", "dataset_sha256_after"]
+)
+def test_unreferenced_artifact_is_revalidated(ns, tmp_path, corruption):
+    ns("a", identical=(2024,))
+    event_dir = tmp_path / "ns" / "a" / EVENT
+    artifact_path = event_dir / f"{KEY}_2024.json"
+    artifact = json.loads(artifact_path.read_bytes())
+    if corruption == "raw_delta":
+        artifact["head_effects"]["income_tax"] = 2e9
+        artifact["measure_total_gbp"] = 2e9
+    else:
+        artifact[corruption] = "b" * 64
+    artifact_path.write_bytes(compute.canonical_bytes(artifact))
+    manifest_path = event_dir / "RUN_MANIFEST.json"
+    manifest = json.loads(manifest_path.read_bytes())
+    manifest["artifacts"][str(artifact_path.relative_to(tmp_path))] = hashlib.sha256(
+        artifact_path.read_bytes()
+    ).hexdigest()
+    manifest_path.write_bytes(compute.canonical_bytes(manifest))
+    with pytest.raises(diff.DiffError):
+        diff.load_side(event_dir.parent, artifact_root=tmp_path)
+
+
+def test_variant_identity_cannot_be_removed_from_run_manifest(ns, tmp_path):
+    ns("a", variant="pe6_uk2_build")
+    path = tmp_path / "ns" / "a" / EVENT / "RUN_MANIFEST.json"
+    manifest = json.loads(path.read_bytes())
+    for field in (
+        "variant_id",
+        "variant_identity_sha256",
+        "data_years",
+        "supported_years",
+        "unsupported_years",
+        "full_supported_grid",
+        "full_supported_grid_complete",
+    ):
+        del manifest[field]
+    path.write_bytes(compute.canonical_bytes(manifest))
+    with pytest.raises(diff.DiffError):
+        diff.load_side(path.parent.parent, artifact_root=tmp_path)
+
+
+def test_unreferenced_artifact_cannot_be_removed_from_inventory(ns, tmp_path):
+    ns("a", identical=(2024,))
+    event_dir = tmp_path / "ns" / "a" / EVENT
+    manifest_path = event_dir / "RUN_MANIFEST.json"
+    manifest = json.loads(manifest_path.read_bytes())
+    del manifest["artifacts"][f"ns/a/{EVENT}/{KEY}_2024.json"]
+    manifest_path.write_bytes(compute.canonical_bytes(manifest))
+    with pytest.raises(diff.DiffError):
+        diff.load_side(event_dir.parent, artifact_root=tmp_path)
+
+
+def test_both_historical_registries_load_after_both_runs_are_built(ns, tmp_path):
+    ns("base")
+    ns("head", modifier=0.3)
+    base = diff.load_side(tmp_path / "ns" / "base", artifact_root=tmp_path)
+    head = diff.load_side(tmp_path / "ns" / "head", artifact_root=tmp_path)
+    assert (
+        base["events"][EVENT]["registry_sha256"]
+        != head["events"][EVENT]["registry_sha256"]
+    )
+    # Existing summary callers still require the current registry.
+    with pytest.raises(compare.EventComparisonError, match="current event registry"):
+        compare.load_verified_comparison(
+            tmp_path / "ns" / "base" / EVENT / "COMPARISON.json",
+            artifact_root=tmp_path,
+        )
+
+
+@pytest.mark.parametrize("field", ["by_status", "computed_measure_years"])
+def test_verified_staging_tally_must_reconcile_with_run(ns, tmp_path, field):
+    ns("a")
+    event_dir = tmp_path / "ns" / "a" / EVENT
+    staging_path = event_dir / "STAGING_MANIFEST.json"
+    staging = json.loads(staging_path.read_bytes())
+    staging[field] = {} if field == "by_status" else 0
+    staging_path.write_bytes(compute.canonical_bytes(staging))
+    provenance_path = event_dir / "COMPARISON_PROVENANCE.json"
+    provenance = json.loads(provenance_path.read_bytes())
+    provenance["staging_manifest_sha256"] = hashlib.sha256(
+        staging_path.read_bytes()
+    ).hexdigest()
+    if field in provenance["replay_grid"]:
+        provenance["replay_grid"][field] = staging[field]
+    provenance_path.write_bytes(compute.canonical_bytes(provenance))
+    with pytest.raises(diff.DiffError):
+        diff.load_side(event_dir.parent, artifact_root=tmp_path)
+
+
+def test_inertness_uses_provenance_bound_staging_manifest(ns, tmp_path):
+    original = ns("a")
+    event_dir = tmp_path / "ns" / "a" / EVENT
+    relocated = tmp_path / "receipts" / EVENT
+    relocated.mkdir(parents=True)
+    for name in ("STAGED.jsonl", "STAGING_MANIFEST.json"):
+        (relocated / name).write_bytes((event_dir / name).read_bytes())
+    provenance_path = event_dir / "COMPARISON_PROVENANCE.json"
+    provenance = json.loads(provenance_path.read_bytes())
+    provenance["staged_path"] = str((relocated / "STAGED.jsonl").relative_to(tmp_path))
+    provenance["staging_manifest_path"] = str(
+        (relocated / "STAGING_MANIFEST.json").relative_to(tmp_path)
+    )
+    provenance_path.write_bytes(compute.canonical_bytes(provenance))
+    local_manifest = event_dir / "STAGING_MANIFEST.json"
+    staging = json.loads(local_manifest.read_bytes())
+    staging["inert_measure_years"] = [{"measure_key": KEY, "year": 2025}]
+    local_manifest.write_bytes(compute.canonical_bytes(staging))
+    reloaded = diff.load_side(event_dir.parent, artifact_root=tmp_path)
+    assert not reloaded["events"][EVENT]["inert_pairs"]
+    assert not any(row["flags"] for row in diff.diff_sides(original, reloaded)["rows"])
+
+
+def test_registry_digest_alone_flags_each_affected_record(ns):
+    base = ns("registry_base")
+    head = copy.deepcopy(base)
+    head_event = head["events"][EVENT]
+    head_event["registry"]["measures"][0]["title"] += " (revised registry note)"
+    head_event["registry_sha256"] = hashlib.sha256(
+        compute.canonical_bytes(head_event["registry"])
+    ).hexdigest()
+
+    result = diff.diff_sides(base, head)
+    assert result["events"][EVENT]["registry_changed"]
+    assert {record["level"] for record in result["rows"]} == set(diff.LEVELS)
+    for record in result["rows"]:
+        assert record["flags"] == ["mapping"]
+        assert record["details"] == [
+            {
+                "flag": "mapping",
+                "code": "registry_sha256_changed",
+                "base": base["events"][EVENT]["registry_sha256"],
+                "head": head_event["registry_sha256"],
+            }
+        ]
+
+
+@pytest.mark.parametrize(
+    "classification", ["out_of_household_scope", "not_expressible"]
+)
+@pytest.mark.parametrize("head_supported", [(2025,), (2024, 2025)])
+def test_missing_noncomputable_row_requires_shared_year_support(
+    ns, classification, head_supported
+):
+    base = ns("coverage_base", supported=(2025,), variant="pe6_uk2_build")
+    head = ns("coverage_head", supported=head_supported, variant="pe6_uk2_build")
+    base_event = base["events"][EVENT]
+    head_event = head["events"][EVENT]
+    base_event["rows"]["corporation_2024"]["classification"] = classification
+    del head_event["rows"]["corporation_2024"]
+
+    record = next(
+        row
+        for row in diff.compare_source_rows(EVENT, base_event, head_event)
+        if row["key"] == "corporation_2024"
+    )
+    assert record["flags"] == []
+
+
+def test_missing_noncomputable_row_has_coverage_when_both_support_the_year(ns):
+    base = ns("shared_base")
+    head = ns("shared_head")
+    del head["events"][EVENT]["rows"]["corporation_2024"]
+    record = next(
+        row
+        for row in diff.compare_source_rows(
+            EVENT, base["events"][EVENT], head["events"][EVENT]
+        )
+        if row["key"] == "corporation_2024"
+    )
+    assert record["flags"] == ["coverage"]
+
+
+def test_an_event_replayed_on_one_side_only_is_coverage(ns):
+    # Review of 8700d29, B: a head that lost an event (or never ran it) must
+    # not diff clean; every source row of that event is coverage.
+    base = ns("missing_event_base")["events"][EVENT]
+    for b, h, code in (
+        (base, None, "event_on_base_only"),
+        (None, base, "event_on_head_only"),
+    ):
+        records = diff.compare_source_rows(EVENT, b, h)
+        assert records
+        assert all(record["flags"] == ["coverage"] for record in records)
+        assert {d["code"] for r in records for d in r["details"]} == {code}
+
+
+def test_a_sealed_namespace_must_load_every_event_it_lists(ns, tmp_path):
+    ns("listed")
+    root = tmp_path / "ns" / "listed"
+    manifest = {"schema_version": 1, "files": {f"{EVENT}/RUN_MANIFEST.json": "0" * 64}}
+    (root / "NAMESPACE_MANIFEST.json").write_text(json.dumps(manifest))
+    diff.load_side(root, artifact_root=tmp_path)
+    manifest["files"]["another_event/RUN_MANIFEST.json"] = "0" * 64
+    (root / "NAMESPACE_MANIFEST.json").write_text(json.dumps(manifest))
+    with pytest.raises(diff.DiffError, match="differ from NAMESPACE_MANIFEST"):
+        diff.load_side(root, artifact_root=tmp_path)
+    # Both directions at once: one event unlisted, another listed but absent.
+    manifest["files"] = {"another_event/RUN_MANIFEST.json": "0" * 64}
+    (root / "NAMESPACE_MANIFEST.json").write_text(json.dumps(manifest))
+    with pytest.raises(diff.DiffError, match="differ from NAMESPACE_MANIFEST"):
+        diff.load_side(root, artifact_root=tmp_path)
+    # The other direction alone: an event on disk the manifest does not list.
+    manifest["files"] = {}
+    (root / "NAMESPACE_MANIFEST.json").write_text(json.dumps(manifest))
+    with pytest.raises(diff.DiffError, match="differ from NAMESPACE_MANIFEST"):
+        diff.load_side(root, artifact_root=tmp_path)
+
+
+def premises_for(side_name, tmp_path, *, engine, registry_sha256):
+    root = tmp_path / "ns" / side_name
+    document = {
+        "schema_version": 1,
+        "engine": engine,
+        "events": {EVENT: {"registry_sha256": registry_sha256, "measures": {}}},
+    }
+    (root / "CONSTRUCTION_PREMISES.json").write_text(json.dumps(document))
+    return root
+
+
+def test_premises_must_come_from_the_sides_engine_and_registry(ns, tmp_path):
+    # Review of 8700d29, D: a premises file from another engine, or naming
+    # another registry, must not drive construction flags.
+    side = ns("premised", variant="pe6_uk2_build")
+    registry = side["events"][EVENT]["registry_sha256"]
+    own = {
+        "policyengine": "6.2.6",
+        "policyengine_core": "3.33.0",
+        "policyengine_uk": "2.125.1",
+    }
+    root = premises_for("premised", tmp_path, engine=own, registry_sha256=registry)
+    assert diff.load_side(root, artifact_root=tmp_path)["premises"] is not None
+    for field, other in (
+        ("policyengine_uk", "2.89.2"),
+        ("policyengine", "6.4.1"),
+        ("policyengine_core", "3.24.1"),
+    ):
+        premises_for(
+            "premised",
+            tmp_path,
+            engine={**own, field: other},
+            registry_sha256=registry,
+        )
+        with pytest.raises(diff.DiffError, match="another engine"):
+            diff.load_side(root, artifact_root=tmp_path)
+    premises_for(
+        "premised",
+        tmp_path,
+        engine={key: value for key, value in own.items() if key != "policyengine"},
+        registry_sha256=registry,
+    )
+    with pytest.raises(diff.DiffError, match="another engine"):
+        diff.load_side(root, artifact_root=tmp_path)
+    premises_for("premised", tmp_path, engine=own, registry_sha256="f" * 64)
+    with pytest.raises(diff.DiffError, match="another registry"):
+        diff.load_side(root, artifact_root=tmp_path)
+
+
+def test_premises_on_one_side_only_flag_construction():
+    record = {"checks": {"annual_value_matches_30_april_sample": {"holds": False}}}
+    premises = {"events": {EVENT: {"measures": {KEY: record}}}}
+    details, _ = diff._premise_details(EVENT, KEY, 2024, premises, None)
+    assert [d["code"] for d in details] == ["premises_on_base_only"]
+    details, _ = diff._premise_details(EVENT, KEY, 2024, None, premises)
+    assert [d["code"] for d in details] == ["premises_on_head_only"]
+    assert diff._premise_details(EVENT, KEY, 2024, None, None) == ([], {})
+
+
+def test_diff_markdown_says_which_premises_were_compared():
+    def note(base, head):
+        return diff.premises_note(
+            {"base": {"premises_sha256": base}, "head": {"premises_sha256": head}}
+        )
+
+    assert "were not compared" in note(None, None)
+    assert "base side only" in note("a" * 64, None)
+    assert "premises_on_head_only" in note(None, "b" * 64)
+    both = note("a" * 64, "b" * 64)
+    assert "a" * 64 in both and "b" * 64 in both
+
+
+@st.composite
+def replay_sides(draw):
+    """Small sides for the pure diff's order, symmetry and membership properties."""
+    supported = sorted(draw(st.sets(st.sampled_from([2024, 2025]), min_size=1)))
+    included = draw(
+        st.sets(
+            st.sampled_from(
+                [
+                    f"{prefix}_{year}"
+                    for year in (2024, 2025)
+                    for prefix in ("tax", "benefit", "corporation")
+                ]
+            )
+        )
+    )
+    gains = {
+        year: {
+            variable: float(draw(st.integers(-200, 200)) * 1_000_000)
+            for variable in ("income_tax", "universal_credit")
+        }
+        for year in (2024, 2025)
+    }
+    m = measure()
+    m["source_rows"] = [
+        source for source in m["source_rows"] if source["source_row_id"] in included
+    ]
+    registry = {"calendar_years": [2024, 2025], "measures": [m]}
+    registry_sha256 = hashlib.sha256(compute.canonical_bytes(registry)).hexdigest()
+    rows = {}
+    for source in m["source_rows"]:
+        source_id = source["source_row_id"]
+        year = int(source["fy"][:4])
+        noncomputable = source.get("classification") == "out_of_household_scope"
+        variable = (
+            "income_tax" if source["tax_head"] == "Income tax" else "universal_credit"
+        )
+        value = (
+            None if noncomputable or year not in supported else gains[year][variable]
+        )
+        rows[source_id] = {
+            "measure_key": KEY,
+            "year": year,
+            "fy": source["fy"],
+            "tax_head": source["tax_head"],
+            "classification": source.get("classification", "partial"),
+            "pe_value_gbp": value,
+            "obr_value_gbp": source["value_gbp"],
+            "head_variables": [] if noncomputable else [variable],
+            "status": "out_of_household_scope" if noncomputable else "computed",
+            "ratio_bin": None if value is None else "synthetic_bin",
+        }
+    artifacts = {
+        (KEY, year): {
+            "path": f"synthetic/{KEY}_{year}.json",
+            "sha256": "a" * 64,
+            "artifact": {
+                "schema_version": 3,
+                "measure_total_gbp": sum(gains[year].values()),
+                "head_effects": gains[year],
+                "head_channels": {"income_tax": "tax", "universal_credit": "spending"},
+                "head_definitions": {},
+                "construction": "reversal_on_certified_world",
+                "baseline_world": {"reform_dict": {"gov.tax.rate": 0.2}},
+                "reform_world": {"reform_dict": None},
+            },
+        }
+        for year in supported
+    }
+    identity = {
+        "variant_id": "synthetic_variant",
+        "policyengine_version": "6",
+        "policyengine_uk_version": "2",
+        "policyengine_core_version": "3",
+        "data_bundle": "synthetic_build",
+        "certified_dataset_sha256": "a" * 64,
+    }
+    return {
+        "root": Path("/tmp/synthetic"),
+        "artifact_root": Path("/tmp"),
+        "identity": identity,
+        "premises": None,
+        "premises_sha256": None,
+        "events": {
+            EVENT: {
+                "rows": rows,
+                "artifacts": artifacts,
+                "registry": registry,
+                "registry_sha256": registry_sha256,
+                "registry_path": "registry.json",
+                "registry_years": [2024, 2025],
+                "supported_years": supported,
+                "inert_pairs": set(),
+                "inputs": {},
+            }
+        },
+    }
+
+
+def record_key(record):
+    return (
+        record["event"],
+        record["measure_key"],
+        record["year"],
+        record["level"],
+        record["key"],
+    )
+
+
+@settings(max_examples=100, deadline=None)
+@given(replay_sides())
+def test_identical_sides_have_no_flags(side):
+    result = diff.diff_sides(side, copy.deepcopy(side))
+    assert not any(record["flags"] for record in result["rows"])
+
+
+@settings(max_examples=100, deadline=None)
+@given(replay_sides(), replay_sides())
+def test_swapping_sides_preserves_flags_and_mirrors_values(base, head):
+    forward = {record_key(row): row for row in diff.diff_sides(base, head)["rows"]}
+    backward = {record_key(row): row for row in diff.diff_sides(head, base)["rows"]}
+    assert forward.keys() == backward.keys()
+    for key, row in forward.items():
+        reverse = backward[key]
+        assert row["flags"] == reverse["flags"]
+        assert row["base_gbp"] == reverse["head_gbp"]
+        assert row["head_gbp"] == reverse["base_gbp"]
+        assert row["delta_gbp"] == (
+            None if reverse["delta_gbp"] is None else -reverse["delta_gbp"]
+        )
+
+
+@settings(max_examples=100, deadline=None)
+@given(replay_sides(), replay_sides())
+def test_every_source_row_on_either_side_has_one_source_record(base, head):
+    result = diff.diff_sides(base, head)
+    expected = set(base["events"][EVENT]["rows"]) | set(head["events"][EVENT]["rows"])
+    source_keys = [row["key"] for row in result["rows"] if row["level"] == "source_row"]
+    assert set(source_keys) == expected
+    assert len(source_keys) == len(expected)
+
+
+@settings(max_examples=100, deadline=None)
+@given(replay_sides(), replay_sides())
+def test_every_flagged_record_belongs_to_exactly_one_packet(base, head):
+    result = diff.diff_sides(base, head)
+    packets = diff.build_packets(result, base, head)
+    for record in result["rows"]:
+        if record["flags"]:
+            assert (
+                sum(
+                    record_key(candidate) == record_key(record)
+                    for packet in packets.values()
+                    for candidate in packet["records"]
+                )
+                == 1
+            )
+
+
+@settings(max_examples=100, deadline=None)
+@given(replay_sides(), replay_sides())
+def test_coverage_flags_require_shared_year_support_for_shared_events(base, head):
+    # Both drawn sides replay the same event; an event on one side only is
+    # coverage in every year (test_an_event_replayed_on_one_side_only_is_coverage).
+    for record in diff.diff_sides(base, head)["rows"]:
+        if "coverage" in record["flags"]:
+            assert all(
+                record["year"] in side["events"][record["event"]]["supported_years"]
+                for side in (base, head)
+            )
+
+
+@settings(max_examples=100, deadline=None)
+@given(replay_sides(), replay_sides())
+def test_rows_without_counterparts_never_have_support_flags(base, head):
+    for record in diff.compare_source_rows(
+        EVENT, base["events"][EVENT], head["events"][EVENT]
+    ):
+        if record["key"].startswith("corporation_"):
+            assert "support" not in record["flags"]
 
 
 finite = st.floats(min_value=-1e13, max_value=1e13, allow_nan=False)
@@ -591,7 +1147,10 @@ def test_threshold_is_symmetric_and_strict(base, head):
 
 
 @settings(max_examples=300, deadline=None)
-@given(st.floats(min_value=0, max_value=1e12, allow_nan=False))
+# Whole pounds: below 2**53 their sums are exact, so "a move of exactly the
+# floor" is exactly the floor (with arbitrary floats, m + floor - m can round
+# above it).
+@given(st.integers(min_value=0, max_value=10**12).map(float))
 def test_no_flag_at_the_threshold_one_just_above(magnitude):
     threshold = diff.numerical_threshold(magnitude, magnitude)
     assert not diff.numerically_moved(magnitude, magnitude)
@@ -612,3 +1171,110 @@ def test_sign_details_are_symmetric(base, head):
     assert [d["code"] for d in diff.sign_details(base, head)] == [
         d["code"] for d in diff.sign_details(head, base)
     ]
+
+
+def test_removed_measure_packet_retains_base_source_evidence(ns):
+    base = ns("base")
+    head = ns("head", remove_measure=True)
+    packets = diff.build_packets(diff.diff_sides(base, head), base, head)
+    packet = packets[f"{EVENT}__tax_and_benefit__2024"]
+    assert "coverage" in packet["flags"]
+    assert packet["title"] == measure()["title"]
+    assert packet["measures"]["base"] == measure()
+    assert packet["measures"]["head"] is None
+    assert [
+        (cell["side"], cell["source_row_id"]) for cell in packet["source_cells"]
+    ] == [
+        ("base", "tax_2024"),
+        ("base", "benefit_2024"),
+        ("base", "corporation_2024"),
+    ]
+    assert packet["cited_sources"] == [
+        {"side": "base", "url": "https://www.gov.uk/example"}
+    ]
+    markdown = diff.render_packet_markdown("removed", packet)
+    assert "| base | tax_2024" in markdown
+    assert "* base: https://www.gov.uk/example" in markdown
+
+
+def test_packets_keep_each_sides_changed_cells_and_citations(ns):
+    base = ns("base")
+    head = ns(
+        "head",
+        effects={
+            2024: {"income_tax": 300e6, "universal_credit": -30e6},
+            2025: {"income_tax": 110e6, "universal_credit": -33e6},
+        },
+    )
+    head_measure = head["events"][EVENT]["registry"]["measures"][0]
+    head_measure["title"] = "Updated announcement: https://www.gov.uk/updated"
+    head_measure["source_rows"][0]["value_gbp"] = 125
+    head_measure["source_rows"][0]["source_column"] = "Updated column"
+    packets = diff.build_packets(diff.diff_sides(base, head), base, head)
+    packet = packets[f"{EVENT}__tax_and_benefit__2024"]
+    tax_cells = [c for c in packet["source_cells"] if c["source_row_id"] == "tax_2024"]
+    assert [(c["side"], c["obr_value_gbp"], c["source_column"]) for c in tax_cells] == [
+        ("base", 100, "C"),
+        ("head", 125, "Updated column"),
+    ]
+    assert packet["cited_sources"] == [
+        {"side": "base", "url": "https://www.gov.uk/example"},
+        {"side": "head", "url": "https://www.gov.uk/updated"},
+    ]
+
+
+def test_reproduction_uses_each_verified_registry_and_variant(ns, tmp_path):
+    base = ns("base")
+    head = ns("head", modifier=0.25, variant="pe6_uk2_build")
+    packet = diff.build_packets(diff.diff_sides(base, head), base, head)[
+        f"{EVENT}__tax_and_benefit__2024"
+    ]
+    for label, side in (("base", base), ("head", head)):
+        argv = shlex.split(packet["reproduce"][label])
+        registry_path = Path(argv[argv.index("--registry") + 1])
+        # Receipt-relative (review of 8700d29, C): runs from any checkout's
+        # root, and packet bytes do not depend on the rendering machine.
+        assert not registry_path.is_absolute()
+        assert str(registry_path) == side["events"][EVENT]["registry_path"]
+        assert (
+            hashlib.sha256((tmp_path / registry_path).read_bytes()).hexdigest()
+            == side["events"][EVENT]["registry_sha256"]
+        )
+        assert argv[argv.index("--variant") + 1] == side["identity"]["variant_id"]
+    assert packet["reproduce"]["base"] != packet["reproduce"]["head"]
+
+
+def test_committed_reproduction_command_is_accepted_by_compute_cli(
+    monkeypatch, tmp_path
+):
+    side = diff.load_side(diff.ROOT / "results" / "uk" / "events")
+    event = "autumn_budget_2024"
+    key, year = next(iter(side["events"][event]["artifacts"]))
+    argv = shlex.split(diff._reproduce(side, event, key, year))[3:]
+    argv[argv.index("--output-dir") + 1] = str(tmp_path / "reproduction")
+
+    def unavailable_engine():
+        raise ImportError("This regression checks the engine-free plan only")
+
+    monkeypatch.setattr(compute.worlds, "engine_resolver", unavailable_engine)
+    assert compute.main(argv + ["--dry-run"]) == 0
+
+
+def test_the_variants_file_reaches_staging(ns, tmp_path, monkeypatch):
+    # A qualification run diffs a candidate whose record is only in its work
+    # variants file; the diff must check each manifest against that file.
+    ns("base", variant="pe6_uk2_build")
+    seen = []
+    real = stage.stage_event
+
+    def spy(*args, **kwargs):
+        seen.append(kwargs.get("variants_path"))
+        return real(*args, **kwargs)
+
+    monkeypatch.setattr(stage, "stage_event", spy)
+    work = tmp_path / "work-variants.json"
+    diff.load_side(tmp_path / "ns" / "base", artifact_root=tmp_path, variants_path=work)
+    assert seen == [work]
+    seen.clear()
+    diff.load_side(tmp_path / "ns" / "base", artifact_root=tmp_path)
+    assert seen == [stage.variants.VARIANTS_PATH]

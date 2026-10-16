@@ -6,6 +6,14 @@ Every published original-scorecard FY cell, including zeroes, is retained in
 [`inventory.jsonl`](../../data/uk/events/inventory.jsonl). The event totals are
 in [`event_summary.json`](../../data/uk/events/event_summary.json).
 
+All 22,215 inventory FY cells are now scorecard database claims, including zeroes
+and rows outside household scope. The [complete PMD ingest](../../scorecard_db/README.md#2026-10-11-population-the-complete-staged-policy-measures-database-uk)
+also captures historical tax costings back to Budget 1970. It preserves the
+existing costings slice, retains the inventory keys and resolves source pointers
+to the replay registries' canonical keys where they differ. Source-cell identities
+join both lanes to this inventory. These external
+scores do not require a PolicyEngine replay or imply that one is complete.
+
 The scope is the November 2025 Policy measures database, from its exact event
 label `Budget 2010 #2` to `Autumn Budget 2025`. It includes Statements and the
 2020 Spending Review where the database carries costings; it does not silently
@@ -199,3 +207,8 @@ year-specific populations and an event-vintage calibration contract. Aggregate
 OBR forecasts are available for all events; detailed harvested forecast tables
 cover only three. See [POPULATIONS_AND_VINTAGES.md](POPULATIONS_AND_VINTAGES.md)
 and [PLAN.md](PLAN.md) for the route from this inventory to numerical comparisons.
+
+The first phase 0 slice adds [source-lock receipts](VINTAGE_LOCKS.md) and
+[event selectors](EVENT_VINTAGE_SELECTOR.md) for Spring Statement 2022,
+Autumn Statement 2022 and Autumn Budget 2021, with the full original FY
+accounting retained in the [historical adapter design](HISTORICAL_ADAPTER.md).

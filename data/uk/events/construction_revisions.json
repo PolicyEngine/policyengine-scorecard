@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "revisions": {
+    "autumn_budget_2024__capital_gains_main_rates_and_reliefs": {
+      "revision_id": "ab2024_cgt_fiscal_year_blend.v1",
+      "condition": {
+        "metadata_key": "fiscal_year_blend",
+        "equals": true,
+        "all_paths": [
+          "gov.hmrc.cgt.basic_rate",
+          "gov.hmrc.cgt.higher_rate",
+          "gov.hmrc.cgt.additional_rate"
+        ]
+      },
+      "baseline_start": "2024-01-01",
+      "baseline_values": {
+        "gov.hmrc.cgt.basic_rate": 0.1,
+        "gov.hmrc.cgt.higher_rate": 0.2,
+        "gov.hmrc.cgt.additional_rate": 0.2
+      },
+      "activation_fy": "2024-25",
+      "part_year_rule": "part_year_day_weighted",
+      "decision": "cos d1344 (Max, 2026-10-15): W6 chooses the reading supported by law, records its evidence, and lands on independent review.",
+      "law": {
+        "title": "Finance Act 2025, section 7: Capital gains tax rates",
+        "url": "https://www.legislation.gov.uk/ukpga/2025/8/section/7",
+        "effect": "The main rates increase from 10% and 20% to 18% and 24% for disposals on or after 30 October 2024."
+      },
+      "intent": "Keep the installed engine's fiscal_year_blend treatment. Reverse to pre-announcement main rates for the whole of FY2024-25, represented by period 2024; FY2023-24 stays unchanged. At a statutory reprocessing entry point the annual windows are submitted as 6 April to 5 April fiscal-year windows.",
+      "limitations": [
+        "The engine pools gains rather than distinguishing their statutory types.",
+        "Business Asset Disposal Relief and Investors' Relief changes remain unreversed."
+      ]
+    }
+  }
+}

@@ -25,6 +25,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from pipeline.build_uk_event_registry import _sum as source_gbp_sum
+from pipeline import uk_replay_variants as variants
 from pipeline.compare_uk_obr_costings import atomic_write_bytes, ratio_and_bin
 
 AXES_PATH = ROOT / "data" / "uk" / "obr_divergence_axes.json"
@@ -83,8 +84,8 @@ GRID_FIELDS = (
     "supported_grid_size",
     "full_supported_grid_complete",
 )
-# The review diagnoses and construction notes below were established on this
-# engine; on any other engine they are prior observations, not findings.
+# The review diagnoses and construction notes below were established on the
+# legacy execution (engine and populace-2023 bundle), not on every run of it.
 LEGACY_ENGINE = "2.89.2"
 REVIEW_DIAGNOSES_ESTABLISHED_ON = (LEGACY_ENGINE,)
 
@@ -96,7 +97,7 @@ def run_identity(directory: Path) -> dict:
     is treated as the legacy run, as before."""
     path = directory / "RUN_MANIFEST.json"
     manifest = json.loads(path.read_bytes()) if path.exists() else {}
-    return {
+    identity = {
         "engine_version": manifest.get("engine_version", LEGACY_ENGINE),
         "policyengine_version": manifest.get("policyengine_version"),
         "data_bundle": manifest.get("data_bundle"),
@@ -105,6 +106,9 @@ def run_identity(directory: Path) -> dict:
         "unsupported_years": manifest.get("unsupported_years", []),
         "run_manifest": path if "variant_id" in manifest else None,
     }
+    if manifest.get("construction_revisions"):
+        identity["construction_revisions"] = manifest["construction_revisions"]
+    return identity
 
 
 def is_variant(identity: dict | None) -> bool:
@@ -116,6 +120,8 @@ def review_diagnosis(
     year: int,
     tax_head: str = "",
     engine_version: str = LEGACY_ENGINE,
+    *,
+    identity: dict | None = None,
 ) -> dict:
     """Retain the review's source-level diagnoses without sizing national terms.
 
@@ -275,7 +281,7 @@ def review_diagnosis(
         "issues": [issue] if issue else [],
         "national_effect": "unsized",
     }
-    if engine_version in REVIEW_DIAGNOSES_ESTABLISHED_ON:
+    if not is_variant(identity) and engine_version in REVIEW_DIAGNOSES_ESTABLISHED_ON:
         return diagnosis
     return {
         "prior_diagnoses": [
@@ -288,15 +294,33 @@ def review_diagnosis(
     }
 
 
-def construction_note(measure: dict, engine_version: str = LEGACY_ENGINE) -> str:
+def construction_note(
+    measure: dict,
+    engine_version: str = LEGACY_ENGINE,
+    *,
+    identity: dict | None = None,
+) -> str:
     """Correct descriptive notes without invalidating unchanged result receipts.
 
-    The notes state facts about the engine they were written against. On any
-    other engine the authored note is labelled as such, and the 2.89.2-only
-    corrections below are not repeated as facts about this run."""
+    The notes describe the legacy run. On any variant the authored note is
+    labelled as such, and legacy-only corrections are not repeated as facts
+    about this run."""
     key = measure["measure_key"]
     note = measure.get("note", "")
-    if engine_version != LEGACY_ENGINE:
+    revision = (identity or {}).get("construction_revisions", {}).get(key)
+    if revision is not None:
+        from pipeline import uk_construction_revisions as revisions
+
+        recorded = revisions.get_revision(key, revision)
+        return " ".join(
+            [
+                f"Construction revision {recorded['revision_id']} ran:",
+                recorded["intent"],
+                *recorded.get("limitations", []),
+                "Evidence is recorded in CONSTRUCTION_PREMISES.json.",
+            ]
+        )
+    if is_variant(identity) or engine_version != LEGACY_ENGINE:
         if not note:
             return ""
         return (
@@ -768,7 +792,9 @@ def build_comparison_rows(
             "ratio_bin": bin_name,
             "status": row.get("status"),
             "reason": reason,
-            "construction_note": construction_note(measure, engine_version),
+            "construction_note": construction_note(
+                measure, engine_version, identity=identity
+            ),
             "missing_legs": measure.get("missing_legs", []),
             "head_variables": variables,
             "artifact": reference,
@@ -781,6 +807,7 @@ def build_comparison_rows(
                     int(source["fy"][:4]),
                     source.get("tax_head", ""),
                     engine_version,
+                    identity=identity,
                 ),
             },
             **describe_decomposition(gap, axes, components),
@@ -1069,7 +1096,7 @@ def render_markdown(
     caveats = [
         measure
         for measure in registry["measures"]
-        if construction_note(measure, engine_version)
+        if construction_note(measure, engine_version, identity=identity)
         and measure.get("classification", measure.get("computability"))
         in ("expressible", "partial")
     ]
@@ -1077,7 +1104,7 @@ def render_markdown(
         lines += ["", "## Construction caveats", ""]
         for measure in caveats:
             lines.append(
-                f"* `{measure['measure_key']}`: {construction_note(measure, engine_version)}"
+                f"* `{measure['measure_key']}`: {construction_note(measure, engine_version, identity=identity)}"
             )
     diagnosed = {}
     prior = {}
@@ -1098,11 +1125,11 @@ def render_markdown(
             "",
             (
                 f"## Prior diagnoses, established on policyengine-uk {LEGACY_ENGINE} "
-                f"and not re-verified on {engine_version}"
+                f"and not re-verified on this run (policyengine-uk {engine_version})"
             ),
             "",
             (
-                "These review observations describe the earlier engine. They are kept "
+                "These review observations describe the legacy engine and population run. They are kept "
                 "for investigation and are not findings about this run."
             ),
             "",
@@ -1201,6 +1228,7 @@ def write_comparison(
     )
     if registry.get("event_slug") != event:
         raise EventComparisonError("registry event differs from --event")
+    variants.assert_not_sealed(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     staging_manifest = _json(staging_manifest_path)
     replay_grid = {
@@ -1264,11 +1292,22 @@ def render_summary(
     replay_grids = replay_grids or {}
     variant = is_variant(identity)
     engine_version = (identity or {}).get("engine_version", LEGACY_ENGINE)
+    diagnostics = diagnostics or []
+    for diagnostic in diagnostics:
+        if diagnostic.get("engine_version") != engine_version:
+            raise EventComparisonError(
+                f"diagnostic {diagnostic.get('id', '<unrecorded>')} engine "
+                f"{diagnostic.get('engine_version')} differs from run engine {engine_version}"
+            )
     lines = [
         "# Recent OBR fiscal-event replays",
         "",
         (
-            f"These replays ran on certified variant `{identity['variant_id']}`. "
+            (
+                f"These replays ran on certified variant `{identity['variant_id']}`. "
+                if events
+                else f"This namespace describes certified variant `{identity['variant_id']}`. "
+            )
             + variant_description(identity)
             + " Registry years outside the population's data years are reported as "
             "unsupported, not computed. A seeded registry does not establish a "
@@ -1439,7 +1478,11 @@ def render_summary(
         diagnostic = {
             **diagnostic,
             **review_diagnosis(
-                row["measure_key"], row["year"], row.get("tax_head", ""), engine_version
+                row["measure_key"],
+                row["year"],
+                row.get("tax_head", ""),
+                engine_version,
+                identity=identity,
             ),
         }
         for earlier in diagnostic.get("prior_diagnoses", [])[:1]:
@@ -1449,8 +1492,11 @@ def render_summary(
                 "evidence": earlier["evidence"],
             }
         evidence = diagnostic.get("evidence", "Open: relevant axes unsized")
+        interpreter = (
+            ".venv-candidate/bin/python" if variant else ".venv-replay/bin/python"
+        )
         command = (
-            f"PYTHONPATH=. .venv-replay/bin/python pipeline/compute_uk_event.py --event {row['event_slug']} "
+            f"PYTHONPATH=. {interpreter} pipeline/compute_uk_event.py --event {row['event_slug']} "
             + (f"--variant {identity['variant_id']} " if variant else "")
             + f"--measures {row['measure_key']} --years {row['year']} --workers 1 "
             f"--output-dir .venv-replay-checks/reproductions/{row['event_slug']}/{row['measure_key']}_{row['year']}"
@@ -1467,14 +1513,14 @@ def render_summary(
     diagnosed = [
         r for r in computed if (r.get("diagnosis") or {}).get("class") == "pe_gap"
     ]
-    diagnostics = diagnostics or []
     active_events = set(events) | set(registries)
     relevant = [d for d in diagnostics if set(d.get("events", [])) & active_events]
     # A re-verified candidate counts only while its defect persists.
     concrete = [
         d
         for d in relevant
-        if d.get("class") == "pe_gap" and d.get("status", "persists") == "persists"
+        if d.get("class") == "pe_gap"
+        and d.get("status", "not re-verified" if variant else "persists") == "persists"
     ]
     lines += [
         "",
@@ -1496,14 +1542,19 @@ def render_summary(
             "",
             "| Candidate | Class | Variables | Evidence | Minimal reproducer |"
             if not variant
-            else "| Candidate | Class | Status on this engine | Variables | Evidence | Minimal reproducer |",
+            else "| Candidate | Class (established) | Status on this engine | Variables | Evidence | Minimal reproducer |",
             "|---|---|---|---|---|" if not variant else "|---|---|---|---|---|---|",
         ]
         for diagnostic in relevant:
             command = (
                 "PYTHONPATH=. .venv-replay/bin/python pipeline/diagnose_uk_event_models.py "
                 + diagnostic["reproducer"]
-                + (f" --expect-engine {engine_version}" if variant else "")
+                if not variant
+                else (
+                    "PYTHONPATH=. .venv-candidate/bin/python pipeline/diagnose_uk_event_models.py "
+                    "--reverify results/uk/events/MODEL_DIAGNOSTICS.json "
+                    f"--expect-engine {engine_version} --case {diagnostic['id']}"
+                )
             )
             status = (
                 f"{_md(diagnostic.get('status', 'not re-verified'))} "
@@ -1520,8 +1571,14 @@ def render_summary(
     return "\n".join(lines)
 
 
-def load_verified_comparison(path: Path, *, artifact_root: Path = ROOT) -> list[dict]:
-    """Bind summary-only reads to current source, stage, axes and artifact bytes."""
+def load_verified_comparison(
+    path: Path, *, artifact_root: Path = ROOT, registry_path: Path | None = None
+) -> list[dict]:
+    """Verify receipts against the current registry or an explicit snapshot.
+
+    Historical readers may select the receipt-bound registry snapshot. The
+    default preserves summaries' binding to the current event registry.
+    """
     provenance_path = path.parent / "COMPARISON_PROVENANCE.json"
     if not provenance_path.exists():
         raise EventComparisonError("summary requires COMPARISON_PROVENANCE.json")
@@ -1561,7 +1618,9 @@ def load_verified_comparison(path: Path, *, artifact_root: Path = ROOT) -> list[
         raise EventComparisonError("comparison replay-grid receipt differs")
     if registry.get("event_slug") != path.parent.name:
         raise EventComparisonError("summary registry event differs")
-    canonical_registry = (
+    if registry_path is not None and registry_path.resolve() != paths["registry"]:
+        raise EventComparisonError("comparison registry snapshot path differs")
+    canonical_registry = registry_path or (
         artifact_root / "data" / "uk" / "events" / f"{path.parent.name}_measures.json"
     )
     if (
@@ -1596,12 +1655,22 @@ def write_summary(events_root: Path, *, artifact_root: Path = ROOT) -> None:
             (artifact_root / "data" / "uk" / "events").glob("*_measures.json")
         )
     }
+    # A namespace summarises the events its premises cover
+    # (uk_replay_variants.namespace_events): a sealed or diff-bound
+    # namespace's summary then regenerates byte for byte after a later event
+    # is registered, and historical registries (source accounting only)
+    # appear in no replay namespace's summary.
+    covered = set(variants.namespace_events(events_root))
+    registries = {
+        event: registry for event, registry in registries.items() if event in covered
+    }
     identities = {
         json.dumps(
             {
                 k: v
                 for k, v in run_identity(path.parent).items()
-                if k not in ("run_manifest", "unsupported_years")
+                if k
+                not in ("run_manifest", "unsupported_years", "construction_revisions")
             },
             sort_keys=True,
         )
@@ -1610,6 +1679,27 @@ def write_summary(events_root: Path, *, artifact_root: Path = ROOT) -> None:
     if len(identities) > 1:
         raise EventComparisonError("summary events come from different executions")
     identity = json.loads(identities.pop()) if identities else None
+    variants_path = artifact_root / "data" / "uk" / "replay_variants.json"
+    if not events and variants_path.exists():
+        for registered in variants.load_document(variants_path)["variants"]:
+            if (
+                not variants.is_legacy(registered)
+                and variants.namespace_root(registered, root=artifact_root).resolve()
+                == events_root.resolve()
+            ):
+                record = variants.get_variant(
+                    registered["variant_id"], path=variants_path, root=artifact_root
+                )
+                packages = record["identity"]["packages"]
+                identity = {
+                    "engine_version": packages["policyengine-uk"]["version"],
+                    "policyengine_version": packages["policyengine"]["version"],
+                    "data_bundle": record["certification"]["data_build_id"],
+                    "variant_id": record["variant_id"],
+                    "data_years": record["data_years"],
+                }
+                break
+    variants.assert_not_sealed(events_root)
     events_root.mkdir(parents=True, exist_ok=True)
     atomic_write_bytes(
         events_root / "SUMMARY.md",

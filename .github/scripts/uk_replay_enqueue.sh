@@ -1,13 +1,29 @@
 #!/usr/bin/env bash
-# Enqueue each request file given as an argument on the replay-state branch
-# (idempotent), then commit and push, rebasing over concurrent writers.
+# Concurrent enqueues reapply the idempotent operation after a rebase conflict.
 set -euo pipefail
 # shellcheck source=.github/scripts/uk_replay_state.sh
-source "$(dirname "${BASH_SOURCE[0]}")/uk_replay_state.sh"
-CONTROL=(uv run --with rfc8785==0.1.4 --with jsonschema python)
-now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-for request in "$@"; do
-  "${CONTROL[@]}" -m pipeline.uk_replay_queue enqueue --state state \
-    --request "$request" --run-url "$RUN_URL" --now "$now"
+source .github/scripts/uk_replay_state.sh
+checkout_state
+
+for attempt in 1 2 3 4 5; do
+  "${CONTROL[@]}" -m pipeline.uk_replay_queue enqueue --state "$STATE" \
+    --request "$REQUEST_FILE" --run-url "$RUN_URL" --now "$(now)" \
+    | tee "$RUNNER_TEMP/enqueued.txt"
+  git -C "$STATE" add -A
+  if ! git -C "$STATE" diff --cached --quiet; then
+    git -C "$STATE" commit -qm "Queue $(cut -d' ' -f1 "$RUNNER_TEMP/enqueued.txt")"
+  fi
+  if git -C "$STATE" push -q origin "HEAD:$STATE_BRANCH"; then
+    exit 0
+  fi
+  if ! git -C "$STATE" pull -q --rebase origin "$STATE_BRANCH"; then
+    git -C "$STATE" rebase --abort
+    git -C "$STATE" fetch -q origin "$STATE_BRANCH"
+    git -C "$STATE" reset --hard "origin/$STATE_BRANCH"
+    git -C "$STATE" clean -fd
+    echo "enqueue conflicted; reapplying the request to the current state branch"
+  fi
+  sleep "$attempt"
 done
-push_replay_state state "Queue $# request(s)"
+echo "could not enqueue and push the request after five attempts" >&2
+exit 1

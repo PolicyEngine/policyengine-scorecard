@@ -1,0 +1,1010 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2030-31",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__phev_emissions_standard_and_bik_easement",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "model_or_data_gap",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__phev_emissions_standard_and_bik_easement",
+   "measure_type": "transport",
+   "missing_legs": [
+    "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "vehicle|company_car|van_benefit|air_passenger",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "num_vehicles",
+     "owns_vehicle"
+    ]
+   },
+   "note": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+   "pe_gap": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+   "pe_reform_delta": null,
+   "program": "transport",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12642:e15cdac6a0cd8e25",
+     "source_row_number": 12642,
+     "source_row_sha256": "e15cdac6a0cd8e257bb80bc046b503fc5e2d27cfb4f0261eaf67399dd0ed2a66",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": -461632.08056774695,
+     "value_gbp_decimal": "-461632.08056774695"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12643:b2ee22d9e98b53f8",
+     "source_row_number": 12643,
+     "source_row_sha256": "b2ee22d9e98b53f8b27133ef99564a7847d7b74e19674a67457feea484018b74",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": -1009711.9260570118,
+     "value_gbp_decimal": "-1009711.9260570118"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12644:3197782abc0a472e",
+     "source_row_number": 12644,
+     "source_row_sha256": "3197782abc0a472e17a84b045670ac7d73a47222e628aa601ca1b1322856b370",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": -1997458.833685185,
+     "value_gbp_decimal": "-1997458.833685185"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12645:76e8b6e6b1db72b7",
+     "source_row_number": 12645,
+     "source_row_sha256": "76e8b6e6b1db72b70c6cbf54dcba203343ad74d1c67c5dbf7c4fdf0f43b651f2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 207076.65441438294,
+     "value_gbp_decimal": "207076.65441438294"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12646:bdbb712f9fc83597",
+     "source_row_number": 12646,
+     "source_row_sha256": "bdbb712f9fc83597d446a0cf11cdfadf8fee260b626460ed26908a5e5890c955",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 21237142.116221853,
+     "value_gbp_decimal": "21237142.116221853"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12647:b6033905ed8e7d49",
+     "source_row_number": 12647,
+     "source_row_sha256": "b6033905ed8e7d4990892af6c42773c36a272029cf451386c20f2a80999b2fab",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 35941822.85472745,
+     "value_gbp_decimal": "35941822.85472745"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12648:a68bca528ccdbffe",
+     "source_row_number": 12648,
+     "source_row_sha256": "a68bca528ccdbffeda243e9818157b95777e3d259f8551f78c93c2b1fa313203",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": -193111.814688663,
+     "value_gbp_decimal": "-193111.814688663"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12649:8da68d49ff49e27e",
+     "source_row_number": 12649,
+     "source_row_sha256": "8da68d49ff49e27e2629b02609f29d67188ee4ec9ea84a7158dce7655c5f81b2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": -193111.814688663,
+     "value_gbp_decimal": "-193111.814688663"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12650:7c23d5fd346fb2fe",
+     "source_row_number": 12650,
+     "source_row_sha256": "7c23d5fd346fb2fe1747f7435428040243237c47de096b5c2b459096f9760680",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": -727159.8382063202,
+     "value_gbp_decimal": "-727159.8382063202"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12651:c7e0c6d4bfffd6aa",
+     "source_row_number": 12651,
+     "source_row_sha256": "c7e0c6d4bfffd6aa7d266d7ad837070a91a647d91e44e7a58d015f42f98357b4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": -1388541.949434492,
+     "value_gbp_decimal": "-1388541.949434492"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12652:46dd8a12848069bb",
+     "source_row_number": 12652,
+     "source_row_sha256": "46dd8a12848069bb688ce34bf01057e9952afe11f2571eb7265d0147df81d062",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": -1009482.5895774129,
+     "value_gbp_decimal": "-1009482.5895774129"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12653:c4257a6d6fe8c2b6",
+     "source_row_number": 12653,
+     "source_row_sha256": "c4257a6d6fe8c2b6ed8b4da818ddc6dc87d68b6c73505759743aa8f104b777b4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 7104992.25646607,
+     "value_gbp_decimal": "7104992.25646607"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12654:e41ec9b2f0610230",
+     "source_row_number": 12654,
+     "source_row_sha256": "e41ec9b2f0610230b88e055ab291e296c0bef37610ae71cd9a59a28a607877cc",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 434772.71799109597,
+     "value_gbp_decimal": "434772.71799109597"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12655:8ebc69138623088e",
+     "source_row_number": 12655,
+     "source_row_sha256": "8ebc69138623088ed7a7783d7a1c3de0c30970597d213fe780f4affb0bf7c852",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 17593566.957140155,
+     "value_gbp_decimal": "17593566.957140155"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12656:b65ccac5d29a452b",
+     "source_row_number": 12656,
+     "source_row_sha256": "b65ccac5d29a452b154607d3904fbf55a3b2716160c1030a318e0fbee15e64e8",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 35573185.46592995,
+     "value_gbp_decimal": "35573185.46592995"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12657:e850496f492b53f1",
+     "source_row_number": 12657,
+     "source_row_sha256": "e850496f492b53f1fb765ddf30c6f211d0af850d35fe7610dd3c668749f2c378",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 47072724.80736229,
+     "value_gbp_decimal": "47072724.80736229"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12658:292f1e5afa23e5d1",
+     "source_row_number": 12658,
+     "source_row_sha256": "292f1e5afa23e5d150a9f9970970c3a8aea9d11443a383740b4070b3025d5e2c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 49647473.70168744,
+     "value_gbp_decimal": "49647473.70168744"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12659:c0ff5290fac1d227",
+     "source_row_number": 12659,
+     "source_row_sha256": "c0ff5290fac1d2279c58dc9ec934aae484b40a8aa7a04c6952e974d193dbff9b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 48479843.35575951,
+     "value_gbp_decimal": "48479843.35575951"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12660:8780d30ef7c1b91a",
+     "source_row_number": 12660,
+     "source_row_sha256": "8780d30ef7c1b91a08636332af0ea7962117e4acd71671524a025627de58f29c",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": -1765500.446255966,
+     "value_gbp_decimal": "-1765500.446255966"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12661:b49798dfebcfab09",
+     "source_row_number": 12661,
+     "source_row_sha256": "b49798dfebcfab096e2f2a3819a71feb7e98a0a2aea6e10a6a6f32fcf8a686f2",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 17967065.64431187,
+     "value_gbp_decimal": "17967065.64431187"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12662:174fab9ace11cbcc",
+     "source_row_number": 12662,
+     "source_row_sha256": "174fab9ace11cbccbb1d103f08f512bdbdaee4c8b12a28567f137bb262ed228f",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 29247464.399816718,
+     "value_gbp_decimal": "29247464.399816718"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12663:f7b0c91c5f93a1de",
+     "source_row_number": 12663,
+     "source_row_sha256": "f7b0c91c5f93a1de128a2766bfcde336ad6400a5feafd722cb1b690d5e43686a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 29453855.584359508,
+     "value_gbp_decimal": "29453855.584359508"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12664:d3fbd278181dc4c1",
+     "source_row_number": 12664,
+     "source_row_sha256": "d3fbd278181dc4c1210909f9b346632a49e68094e8584626eaa0f94a8ede2ca4",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 7956781.889988278,
+     "value_gbp_decimal": "7956781.889988278"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12665:faf22cdd7094ca03",
+     "source_row_number": 12665,
+     "source_row_sha256": "faf22cdd7094ca03d2875c36d442a5715502deed8bd320c007e30f53911d6a05",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": -6909774.424314697,
+     "value_gbp_decimal": "-6909774.424314697"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24101:a89209138a8be2a0",
+     "source_row_number": 24101,
+     "source_row_sha256": "a89209138a8be2a08f67f8714f354301e45f7ef3fd8539145e585a214e1d6d3a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": -437.552404729654,
+     "value_gbp_decimal": "-437.552404729654"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24102:47c7a5ae46efaa51",
+     "source_row_number": 24102,
+     "source_row_sha256": "47c7a5ae46efaa51d57b31b0d72551cdfccb18eda9a2dd6643a6bbb826b6b113",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 6677.341651291187,
+     "value_gbp_decimal": "6677.341651291187"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24103:4e490a91649bf309",
+     "source_row_number": 24103,
+     "source_row_sha256": "4e490a91649bf3091517505ae00ee25e696b09c262caefe54d1f611ce7e0f950",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 12952.684663637869,
+     "value_gbp_decimal": "12952.684663637869"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24104:47becb83a93e802a",
+     "source_row_number": 24104,
+     "source_row_sha256": "47becb83a93e802afcffd080d7c5f9d99f3eeb6b7516231a24faf32d51d14fce",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 29278.033057060296,
+     "value_gbp_decimal": "29278.033057060296"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24105:1b4e97effee924e6",
+     "source_row_number": 24105,
+     "source_row_sha256": "1b4e97effee924e681d4e0a6ff553deed81dea81ff5b17758f3deb24d9931da3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 63265.525043187954,
+     "value_gbp_decimal": "63265.525043187954"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24106:06bd2691002ce775",
+     "source_row_number": 24106,
+     "source_row_sha256": "06bd2691002ce775cc7a36d2fc891df2c43b37aec15b27a14dab9952bf5b82b9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 70862.81300385106,
+     "value_gbp_decimal": "70862.81300385106"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24107:61872e3e66ce4133",
+     "source_row_number": 24107,
+     "source_row_sha256": "61872e3e66ce4133bcc61c5c6414bd2714d9037a2218ee4df802542b613c8181",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": -2812.415492720323,
+     "value_gbp_decimal": "-2812.415492720323"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24108:756e1534850c2b67",
+     "source_row_number": 24108,
+     "source_row_sha256": "756e1534850c2b679eb48edf8b6d33fa7cf19517086af2b753c14a176a2cb1d5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 43200.77998609205,
+     "value_gbp_decimal": "43200.77998609205"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24109:96da8654e9415de4",
+     "source_row_number": 24109,
+     "source_row_sha256": "96da8654e9415de44db80696f042f0cfc8852b34441b04bc3a8c7edc83faca79",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 84130.35618469822,
+     "value_gbp_decimal": "84130.35618469822"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24110:93665ea93098d22c",
+     "source_row_number": 24110,
+     "source_row_sha256": "93665ea93098d22c22973b5211fd2297b18a329b8c3d054d1c4e7d6d05e1f13c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 190413.50939606773,
+     "value_gbp_decimal": "190413.50939606773"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24111:444d03ffaa0262a6",
+     "source_row_number": 24111,
+     "source_row_sha256": "444d03ffaa0262a6fb4cabeb7823eb70adbe59a090b2997905cff38f2e39b7b8",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 411396.0905223749,
+     "value_gbp_decimal": "411396.0905223749"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24112:3feed75812871080",
+     "source_row_number": 24112,
+     "source_row_sha256": "3feed75812871080704ca7e8f259ea2015c104b7df5d6d92a504a587a4d8d4be",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+     "value_gbp": 461496.8095400092,
+     "value_gbp_decimal": "461496.8095400092"
+    }
+   ],
+   "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+   "unmapped_obr_heads": [
+    "Corporation tax (onshore)",
+    "Income tax",
+    "NICs",
+    "PSCE in RDEL",
+    "Scottish BGA (current)",
+    "Vehicle excise duty"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 35941822.85472745,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12647:b6033905ed8e7d49",
+   "level": "source_row",
+   "measure_key": "ab2025__phev_emissions_standard_and_bik_easement",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 7104992.25646607,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12653:c4257a6d6fe8c2b6",
+   "level": "source_row",
+   "measure_key": "ab2025__phev_emissions_standard_and_bik_easement",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 48479843.35575951,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12659:c0ff5290fac1d227",
+   "level": "source_row",
+   "measure_key": "ab2025__phev_emissions_standard_and_bik_easement",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": -6909774.424314697,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Vehicle excise duty"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12665:faf22cdd7094ca03",
+   "level": "source_row",
+   "measure_key": "ab2025__phev_emissions_standard_and_bik_easement",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 70862.81300385106,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24106:06bd2691002ce775",
+   "level": "source_row",
+   "measure_key": "ab2025__phev_emissions_standard_and_bik_easement",
+   "threshold_gbp": null,
+   "year": 2030
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2030-31",
+    "obr_value_gbp": 461496.8095400092,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24112:3feed75812871080",
+   "level": "source_row",
+   "measure_key": "ab2025__phev_emissions_standard_and_bik_easement",
+   "threshold_gbp": null,
+   "year": 2030
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__phev_emissions_standard_and_bik_easement --years 2030 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__phev_emissions_standard_and_bik_easement_2030"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 35941822.85472745,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12647:b6033905ed8e7d49",
+   "source_row_number": 12647,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 7104992.25646607,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12653:c4257a6d6fe8c2b6",
+   "source_row_number": 12653,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 48479843.35575951,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12659:c0ff5290fac1d227",
+   "source_row_number": 12659,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": -6909774.424314697,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:12665:faf22cdd7094ca03",
+   "source_row_number": 12665,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Vehicle excise duty"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 70862.81300385106,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:24106:06bd2691002ce775",
+   "source_row_number": 24106,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2030-31",
+   "head_gbp": null,
+   "obr_value_gbp": 461496.8095400092,
+   "side": "head",
+   "source_column": "2030-31",
+   "source_row_id": "obr_pmd_nov2025:24112:3feed75812871080",
+   "source_row_number": 24112,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Plug-in hybrid electric vehicle (PHEV) emissions regulatory standard changes and Benefit in Kind easement",
+ "year": 2030
+}

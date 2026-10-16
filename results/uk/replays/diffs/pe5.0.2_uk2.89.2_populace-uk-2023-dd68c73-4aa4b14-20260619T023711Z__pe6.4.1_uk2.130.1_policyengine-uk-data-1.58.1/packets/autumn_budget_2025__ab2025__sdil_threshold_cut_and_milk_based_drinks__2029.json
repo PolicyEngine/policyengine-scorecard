@@ -1,0 +1,335 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__sdil_threshold_cut_and_milk_based_drinks",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "construction_pending",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__sdil_threshold_cut_and_milk_based_drinks",
+   "measure_type": "indirect_tax",
+   "missing_legs": [
+    "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.conservatives.cb_hitc_household",
+     "gov.contrib.conservatives.pensioner_personal_allowance",
+     "gov.contrib.labour.private_school_vat",
+     "gov.economic_assumptions.indices.obr.private_pension_index",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.EAST_MIDLANDS",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.EAST_OF_ENGLAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.ENGLAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.LONDON",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.NORTHERN_IRELAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.NORTH_EAST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.NORTH_WEST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.SCOTLAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.SOUTH_EAST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.SOUTH_WEST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.UNITED_KINGDOM",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.WALES",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.WEST_MIDLANDS",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.YORKSHIRE",
+     "gov.economic_assumptions.yoy_growth.obr.private_pension_index",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.EAST_MIDLANDS",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.EAST_OF_ENGLAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.ENGLAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.LONDON",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTHERN_IRELAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTH_EAST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTH_WEST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.SCOTLAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.SOUTH_EAST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.SOUTH_WEST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.UNITED_KINGDOM",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.WALES",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.WEST_MIDLANDS",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.YORKSHIRE",
+     "gov.hmrc.vat.reduced_rate",
+     "gov.hmrc.vat.reduced_rate_share",
+     "gov.hmrc.vat.standard_rate",
+     "gov.indices.private_rent_index",
+     "gov.simulation.microdata_vat_coverage",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.0",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.10",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.100",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.15",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.20",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.25",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.30",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.35",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.40",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.45",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.5",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.50",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.55",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.60",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.65",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.70",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.75",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.80",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.85",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.90",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.95",
+     "gov.simulation.private_school_vat.private_school_factor",
+     "gov.simulation.private_school_vat.private_school_fees",
+     "gov.simulation.private_school_vat.private_school_vat_basis",
+     "household.consumption.carbon.emissions.alcohol_and_tobacco",
+     "household.consumption.carbon.emissions.food_and_non_alcoholic_beverages",
+     "household.consumption.carbon.intensity.alcohol_and_tobacco_consumption",
+     "household.consumption.carbon.intensity.food_and_non_alcoholic_beverages_consumption",
+     "household.consumption.total_by_category.alcohol_and_tobacco_consumption",
+     "household.consumption.total_by_category.food_and_non_alcoholic_beverages_consumption"
+    ],
+    "pattern": "alcohol|tobacco|vaping|vat|levy",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "alcohol_and_tobacco_consumption",
+     "attends_private_school",
+     "attends_private_school_random_draw",
+     "baseline_vat",
+     "food_and_non_alcoholic_beverages_consumption",
+     "full_rate_vat_consumption",
+     "full_rate_vat_expenditure_rate",
+     "private_pension_income",
+     "private_school_vat",
+     "private_transfer_income",
+     "reduced_rate_vat_consumption",
+     "vat",
+     "vat_change"
+    ]
+   },
+   "note": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+   "pe_gap": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+   "pe_reform_delta": null,
+   "program": "indirect_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12570:26cabf5ffb6299fb",
+     "source_row_number": 12570,
+     "source_row_sha256": "26cabf5ffb6299fbf29d4870b0bf8a2220d5eddb16075c5678a1db4770d71b28",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Soft drinks Levy",
+     "title": "Soft Drink Industry Levy: Reduce the levy threshold from 5g to 4.5g/100ml and extend to milk-based drinks and milk substitutes from 1 January 2028",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12571:cc579c20a8bdd22f",
+     "source_row_number": 12571,
+     "source_row_sha256": "cc579c20a8bdd22fc4e4c882cd1d56603eb706a9a9c3c23c7166636d560ea268",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Soft drinks Levy",
+     "title": "Soft Drink Industry Levy: Reduce the levy threshold from 5g to 4.5g/100ml and extend to milk-based drinks and milk substitutes from 1 January 2028",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12572:c020eba4e6e13593",
+     "source_row_number": 12572,
+     "source_row_sha256": "c020eba4e6e135934cea326826cc65167781dec50d791cda2a05a09ee61f6ad6",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Soft drinks Levy",
+     "title": "Soft Drink Industry Levy: Reduce the levy threshold from 5g to 4.5g/100ml and extend to milk-based drinks and milk substitutes from 1 January 2028",
+     "value_gbp": 10714693.596187511,
+     "value_gbp_decimal": "10714693.596187511"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12573:a501de9e8878f318",
+     "source_row_number": 12573,
+     "source_row_sha256": "a501de9e8878f318f36611cff9a220224fa6d0ec0a37296b5708b6ba09952f47",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Soft drinks Levy",
+     "title": "Soft Drink Industry Levy: Reduce the levy threshold from 5g to 4.5g/100ml and extend to milk-based drinks and milk substitutes from 1 January 2028",
+     "value_gbp": 38933891.08827753,
+     "value_gbp_decimal": "38933891.08827753"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12574:88f75db08466a51f",
+     "source_row_number": 12574,
+     "source_row_sha256": "88f75db08466a51f7e61f16acaaa278da374b62317dad76b15deb4a548b0aa9d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Soft drinks Levy",
+     "title": "Soft Drink Industry Levy: Reduce the levy threshold from 5g to 4.5g/100ml and extend to milk-based drinks and milk substitutes from 1 January 2028",
+     "value_gbp": 41354717.973902404,
+     "value_gbp_decimal": "41354717.973902404"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12575:b44c37a6eb5a5fbe",
+     "source_row_number": 12575,
+     "source_row_sha256": "b44c37a6eb5a5fbe183d39d888cc4d041a5e930148ea722c99a8574919124811",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Soft drinks Levy",
+     "title": "Soft Drink Industry Levy: Reduce the levy threshold from 5g to 4.5g/100ml and extend to milk-based drinks and milk substitutes from 1 January 2028",
+     "value_gbp": 42481897.28050386,
+     "value_gbp_decimal": "42481897.28050386"
+    }
+   ],
+   "title": "Soft Drink Industry Levy: Reduce the levy threshold from 5g to 4.5g/100ml and extend to milk-based drinks and milk substitutes from 1 January 2028",
+   "unmapped_obr_heads": [
+    "Soft drinks Levy"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 41354717.973902404,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Soft drinks Levy"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12574:88f75db08466a51f",
+   "level": "source_row",
+   "measure_key": "ab2025__sdil_threshold_cut_and_milk_based_drinks",
+   "threshold_gbp": null,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__sdil_threshold_cut_and_milk_based_drinks --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__sdil_threshold_cut_and_milk_based_drinks_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 41354717.973902404,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12574:88f75db08466a51f",
+   "source_row_number": 12574,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Soft drinks Levy"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Soft Drink Industry Levy: Reduce the levy threshold from 5g to 4.5g/100ml and extend to milk-based drinks and milk substitutes from 1 January 2028",
+ "year": 2029
+}

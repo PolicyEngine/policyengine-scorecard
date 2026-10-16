@@ -4,7 +4,7 @@
   "country": "US | UK | BE | NZ \u2014 the model instance the lane feeds (issue #42)",
   "note": "Repo-committed status feed (issue #7); graduate to Supabase when lane count makes commits noisy. Every lane writes its transition here."
  },
- "updated": "2026-10-07",
+ "updated": "2026-10-12",
  "lanes": [
   {
    "id": "urban-sotsn",
@@ -290,7 +290,7 @@
    "stage": "cataloged",
    "running": false,
    "updated": "2026-08-14",
-   "note": "Case schema + 1st battery landed (#41); connector run pending UKMOD environment; schema shared with taxsim-cases (#5)"
+   "note": "Case schema + 1st battery landed (#49); JRC connector run open in #41, pending a UKMOD environment; schema shared with taxsim-cases (#5)"
   },
   {
    "id": "cbo-baseline",
@@ -555,6 +555,17 @@
    "running": false,
    "updated": "2026-09-25",
    "note": "621 claims (552 Policy Measures Database rows + 69 EFO March 2026 Table 3.17 rows; 621 slice rows = 621 ingested)"
+  },
+  {
+   "id": "uk-obr-pmd",
+   "source": "OBR Policy Measures Database (November 2025)",
+   "area": "All original Treasury and OBR-scrutinised tax and spending scorecards, Budget 1970 to Autumn Budget 2025",
+   "mode": 2,
+   "country": "UK",
+   "stage": "ingested",
+   "running": false,
+   "updated": "2026-10-11",
+   "note": "23752 original PMD cells ingested; 24304 staged = 552 unchanged costings cells + 23752 here; all 84 events, Budget 1970 to Autumn Budget 2025; awaiting PolicyEngine counterparts"
   }
  ]
 }

@@ -350,6 +350,20 @@ STANDARD_CONDITIONS = frozenset(
         "spending_head",
         "tax_head",
         "obr_measure_key",
+        # Comprehensive PMD capture: replay source identity distinguishes
+        # repeated worksheet rows. Inventory keys and classifications are
+        # copied verbatim, independently of the canonical replay key.
+        "source_row_id",
+        "edition",
+        "event_key",
+        "inventory_measure_key",
+        # Exact printed cell text/numeric representation retained alongside
+        # normalized floating-point values by the harvest ingests.
+        "value_verbatim",
+        "pmd_class",
+        "pe_out_reason",
+        "pe_readiness",
+        "pe_expressibility_note",
         # when a macro house made its call relative to the fiscal event
         # (pre-Budget expectation | post-Budget assessment), #55 lane
         "timing",

@@ -1051,6 +1051,62 @@ BASELINES: list[tuple[dict, str, str, str, str]] = [
 ]
 
 
+# November 2025 PMD: register every event's announcement baseline. Reuse
+# existing policy-effects/costings worlds rather than replacing their
+# descriptions. The historical entries deliberately name HM Treasury:
+# those scorecards predate the OBR (including the March 2010 Budget).
+from .obr_pmd_identity import (  # noqa: E402
+    EVENTS as PMD_EVENTS,
+    HISTORICAL_EVENTS as PMD_HISTORICAL_EVENTS,
+    MARCH_EVENTS as PMD_MARCH_EVENTS,
+    baseline_descriptor as pmd_baseline_descriptor,
+    march_baseline_descriptor as pmd_march_baseline_descriptor,
+)
+
+_PMD_REGISTERED = {baseline_key(descriptor) for descriptor, *_ in BASELINES}
+for _event in PMD_EVENTS:
+    _descriptor = pmd_baseline_descriptor(_event)
+    if baseline_key(_descriptor) in _PMD_REGISTERED:
+        continue
+    _historical = _event in PMD_HISTORICAL_EVENTS
+    BASELINES.append(
+        (
+            _descriptor,
+            f"{_descriptor['policy']}__policy_parameters",
+            (
+                f"HM Treasury's pre-measures scorecard baseline for {_event}, "
+                "the historical Treasury costing's pre-announcement policy parameters."
+                if _historical
+                else f"The pre-measures forecast for {_event}, against which "
+                "HM Treasury's OBR-scrutinised scorecard measures are costed; "
+                "counterfactual kind: pre-announcement policy parameters."
+            ),
+            "policy_ref",
+            "Policy measures database November 2025, Notes worksheet; "
+            "sources/harvest-uk-2026-08-02/uk_obr/NOTES.md "
+            "(pre-June-2010 Treasury scorecards and post-2010 OBR-scrutinised "
+            "original costings). Descriptor follows ingest_obr_costings.py.",
+        )
+    )
+
+
+for _event in PMD_MARCH_EVENTS:
+    _descriptor = pmd_march_baseline_descriptor(_event)
+    BASELINES.append(
+        (
+            _descriptor,
+            f"{_descriptor['policy']}__policy_parameters",
+            f"The pre-measures forecast for {_event}, against which "
+            "HM Treasury's OBR-scrutinised scorecard measures are costed; "
+            "counterfactual kind: pre-announcement policy parameters.",
+            "policy_ref",
+            "Policy measures database March 2026, Notes worksheet; "
+            "sources/obr-pmd-march-2026/receipt.json. Edition-delta claims "
+            "only; no replay registry is implied.",
+        )
+    )
+
+
 def register_baselines_txn(db: ScorecardDB) -> int:
     """Registration gate with the CALLER owning the transaction: bare
     executes and loud raises, never a commit. Ingests run this INSIDE

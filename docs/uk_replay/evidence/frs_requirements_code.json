@@ -1,0 +1,542 @@
+{
+  "checked_on": "2026-10-11",
+  "method": "Read-only git show origin/main in existing local clones; gh api commits/main confirmed local SHAs. No microdata acquisition or builder execution. Column inventory is a code requirement, not an observed historical file schema.",
+  "fetch_attempts": [
+    {
+      "repo": "PolicyEngine/microcosm",
+      "command": "git -C /Users/maxghenis/PolicyEngine/microcosm fetch origin",
+      "status": "unavailable",
+      "reason": "Sandbox refused write to .git/FETCH_HEAD: Operation not permitted"
+    },
+    {
+      "repo": "PolicyEngine/policyengine-uk-data",
+      "command": "git -C /Users/maxghenis/PolicyEngine/policyengine-uk-data fetch origin",
+      "status": "unavailable",
+      "reason": "Sandbox refused write to .git/FETCH_HEAD: Operation not permitted"
+    }
+  ],
+  "github_metadata": {
+    "PolicyEngine/microcosm": {
+      "main_sha": "90958612874e7a52174c4d89d7df3f0f030783ba"
+    },
+    "PolicyEngine/policyengine-uk-data": {
+      "main_sha": "2b9c1c2c64ced6e1d95fed1ed398a22627233669",
+      "archived": false
+    }
+  },
+  "code": [
+    {
+      "repo": "PolicyEngine/microcosm",
+      "commit": "90958612874e7a52174c4d89d7df3f0f030783ba",
+      "path": "packages/microcosm-build/src/microcosm/build/uk/frs_release.json",
+      "sha256": "d14fc50accb0625b8d2d00c3f0cc4873db1a278aa07c7e68581105e0451caa8e",
+      "byte_size": 1244,
+      "snippets": [
+        {
+          "first_line": 1,
+          "last_line": 26,
+          "text": "{\n  \"version\": 1,\n  \"country\": \"uk\",\n  \"policy\": \"The UK FRS release pin freezes the raw Family Resources Survey vintage that seeds the UK build; runtime loaders and source manifests must agree on its survey, base, calibration, UKDS, DOI, acquisition, and hash identity before licensed tabs are consumed.\",\n  \"name\": \"frs_2024_25\",\n  \"survey_year\": 2024,\n  \"base_year\": 2024,\n  \"calibration_year\": 2025,\n  \"time_period\": \"2024\",\n  \"vintage\": \"2024_25\",\n  \"ukds_study_number\": 9563,\n  \"doi\": \"10.5255/UKDA-SN-9563-1\",\n  \"ukds_tab_zip\": {\n    \"filename\": \"9563tab_05DD0069587DBD25E5719D355CE05FC0827D5EDD58C24ECE9AB85ACD954A9AEB_V1.zip\",\n    \"sha256\": \"05dd0069587dbd25e5719d355ce05fc0827d5edd58c24ece9ab85acd954a9aeb\"\n  },\n  \"acquisition\": {\n    \"huggingface_repo\": \"policyengine/policyengine-uk-data-private\",\n    \"huggingface_revision\": \"a2039519d3b92aecc06c66dfd175cb46ac24cada\",\n    \"zip_filename\": \"frs_2024_25.zip\",\n    \"zip_sha256\": \"05dd0069587dbd25e5719d355ce05fc0827d5edd58c24ece9ab85acd954a9aeb\",\n    \"zip_size_bytes\": 46637202\n  },\n  \"notes\": \"Tape years labeled by tax year (2024_25) per the SPI-stage convention. Donor vintages (SPI 2022-23, WAS r8, LCFS 2023-24, ETB) unchanged. Adopted from the old E11 scope (microcosm#723).\"\n}"
+        }
+      ]
+    },
+    {
+      "repo": "PolicyEngine/microcosm",
+      "commit": "90958612874e7a52174c4d89d7df3f0f030783ba",
+      "path": "packages/microcosm-build/src/microcosm/build/uk_runtime/frs_release.py",
+      "sha256": "13b3af99fd15d26834da4c1cd14d9d59892a2d29fd639f872c0bac008f029f6c",
+      "byte_size": 4273,
+      "snippets": [
+        {
+          "first_line": 112,
+          "last_line": 127,
+          "text": "def _validate(release: UKFRSRelease) -> None:\n    if release.country != \"uk\":\n        raise ValueError(\"UK FRS release country must be 'uk'.\")\n    if not (release.survey_year <= release.base_year < release.calibration_year):\n        raise ValueError(\n            \"UK FRS release years must satisfy survey_year <= base_year < \"\n            \"calibration_year.\"\n        )\n    if release.time_period != str(release.base_year):\n        raise ValueError(\"UK FRS release time_period must equal base_year.\")\n    if not _VINTAGE.fullmatch(release.vintage):\n        raise ValueError(\"UK FRS release vintage must match YYYY_YY.\")\n    if not release.vintage.startswith(str(release.survey_year)):\n        raise ValueError(\"UK FRS release vintage must start with survey_year.\")\n    _validate_sha256(release.ukds_tab_zip, \"ukds_tab_zip.sha256\", \"sha256\")\n    _validate_sha256(release.acquisition, \"acquisition.zip_sha256\", \"zip_sha256\")"
+        }
+      ]
+    },
+    {
+      "repo": "PolicyEngine/microcosm",
+      "commit": "90958612874e7a52174c4d89d7df3f0f030783ba",
+      "path": "packages/microcosm-build/src/microcosm/build/uk_runtime/country_adapter.py",
+      "sha256": "a6aed1f79336aa0e80dc41799410b7f87e38f5e6282be6847e35a6c21ecdabed",
+      "byte_size": 7412,
+      "snippets": [
+        {
+          "first_line": 35,
+          "last_line": 90,
+          "text": "    root = next(stage for stage in spec.sources.stages if stage.stage == \"frs_spine\")\n    vintage = f\"uk_frs_{release.vintage}\"\n    expected = [\n        {\n            \"id\": f\"frs_{artifact['table']}\",\n            \"role\": \"frs_raw_table\",\n            \"sha256\": artifact[\"sha256\"],\n            \"byte_size\": artifact[\"size_bytes\"],\n            \"loader\": \"kernel:build_uk_frs_spine\",\n            \"vintages\": [f\"vintage:{vintage}\"],\n            **(\n                {\n                    \"vintage_authorities\": [\n                        {\n                            \"id\": vintage,\n                            \"kind\": \"survey_period\",\n                            \"value\": release.survey_year,\n                        }\n                    ]\n                }\n                if artifact[\"table\"] == \"adult\"\n                else {}\n            ),\n        }\n        for artifact in root.artifacts\n        if artifact[\"role\"] == \"frs_table\"\n    ]\n    # The atomic-area supports (microcosm#932) are declared beside the raw FRS\n    # tables with their own role and loader; every other row is an FRS table.\n    declared = [row for row in sources[\"sources\"] if row[\"role\"] == \"frs_raw_table\"]\n    if declared != expected:\n        raise ValueError(\n            \"UK country raw-source pins differ from the canonical FRS spine stage.\"\n        )\n    others = [row for row in sources[\"sources\"] if row[\"role\"] != \"frs_raw_table\"]\n    if any(\n        row[\"role\"] != \"uk_atomic_area_support\"\n        or row[\"loader\"] != \"kernel:load_uk_atomic_area_support\"\n        for row in others\n    ):\n        raise ValueError(\n            \"UK country sources beyond the raw FRS tables must be atomic-area supports.\"\n        )\n    if spine[\"channels\"] != [\n        {\n            \"id\": \"frs\",\n            \"source\": [row[\"id\"] for row in expected],\n            \"observed_geography\": \"region\",\n        }\n    ]:\n        raise ValueError(\"UK FRS channel must consume the declared raw FRS tables.\")\n    if bundle[\"dataset_run\"][\"target_period\"] != release.calibration_year:\n        raise ValueError(\n            \"UK country target period differs from the FRS release calibration year.\"\n        )\n"
+        }
+      ]
+    },
+    {
+      "repo": "PolicyEngine/microcosm",
+      "commit": "90958612874e7a52174c4d89d7df3f0f030783ba",
+      "path": "packages/microcosm-build/src/microcosm/build/uk/source_stages.json",
+      "sha256": "5c1c704066c0bba26859c57617b72b57d1f56399c600f2f65b6c19a6c0ece570",
+      "byte_size": 248548,
+      "snippets": []
+    },
+    {
+      "repo": "PolicyEngine/microcosm",
+      "commit": "90958612874e7a52174c4d89d7df3f0f030783ba",
+      "path": "packages/microcosm-build/src/microcosm/build/uk_runtime/frs_spine.py",
+      "sha256": "5d64600285a19971d67298e565c5fc412c70cbc43add93ac40dd62551172872d",
+      "byte_size": 61438,
+      "snippets": [
+        {
+          "first_line": 44,
+          "last_line": 61,
+          "text": "    \"accounts\",\n    \"adult\",\n    \"benefits\",\n    \"benunit\",\n    \"child\",\n    \"chldcare\",\n    \"extchild\",\n    \"househol\",\n    \"job\",\n    \"maint\",\n    \"mortgage\",\n    \"oddjob\",\n    \"penprov\",\n    \"pension\",\n)\n\nWEEKS_IN_YEAR = 365.25 / 7\nTIME_PERIOD = \"2024\""
+        },
+        {
+          "first_line": 1058,
+          "last_line": 1085,
+          "text": "    if column not in frame.columns:\n        return pd.Series(np.zeros(len(frame), dtype=\"float64\"), index=frame.index)\n    return pd.to_numeric(frame[column], errors=\"coerce\").fillna(0)\n\n\ndef _raw_number(frame: pd.DataFrame, column: str) -> pd.Series:\n    if column not in frame.columns:\n        return pd.Series(np.full(len(frame), np.nan), index=frame.index)\n    return pd.to_numeric(frame[column], errors=\"coerce\")\n\n\ndef _frs_benunit_capital(benunit: pd.DataFrame) -> pd.Series:\n    \"\"\"Map TOTCAPB4 to capital, using the sentinel only for unavailable values.\n\n    The I1 FRS 2024-25 audit found all 18,850 rows populated and nonnegative.\n    Future raw blanks, nonnumeric values, or negative codes map to\n    ``UC_CAPITAL_UNAVAILABLE``; observed zero is preserved.\n    \"\"\"\n\n    raw = _raw_number(benunit, \"totcapb4\")\n    return raw.where(raw.notna() & raw.ge(0), UC_CAPITAL_UNAVAILABLE).astype(float)\n\n\ndef _positive(frame: pd.DataFrame, column: str) -> pd.Series:\n    return np.maximum(_number(frame, column), 0)\n\n\n#: HOUSEHOL.HHSTAT 2: a shared household (shared on an equal basis, the head"
+        },
+        {
+          "first_line": 1181,
+          "last_line": 1205,
+          "text": "_UC_START_UP_PERSON_COLUMNS = (\n    \"empstati\",\n    \"samesit\",\n    \"seincam2\",\n    *(f\"sdemp{month:02d}\" for month in range(1, 13)),\n)\n_UC_START_UP_JOB_COLUMNS = (\"etype\", \"jobtype\", \"seend\", \"sejblong\", \"jobbus\")\n\n\ndef frs_interview_dates(household: pd.DataFrame) -> pd.Series:\n    \"\"\"Interview dates from HOUSEHOL.INTDATE, a SAS date (days since 1960-01-01).\"\"\"\n\n    raw = _raw_number(household, \"intdate\")\n    if raw.isna().any():\n        raise ValueError(\"FRS INTDATE (interview date) is missing for some households.\")\n    return pd.to_datetime(raw, unit=\"D\", origin=\"1960-01-01\")\n\n\ndef parse_frs_uc_claim_start(raw: pd.Series) -> pd.Series:\n    \"\"\"UC claim start dates from BENEFITS.UCSTART, written month/day/year.\n\n    UCSTART comes from DWP administrative data; it is blank where the survey's\n    UC record has no linked administrative record. Any other value refuses,\n    so a changed format cannot pass silently.\n    \"\"\""
+        },
+        {
+          "first_line": 1281,
+          "last_line": 1302,
+          "text": "\n    missing = [\n        f\"{table}.{column}\"\n        for table, frame, columns in (\n            (\"adult\", person, _UC_START_UP_PERSON_COLUMNS),\n            (\"job\", job, _UC_START_UP_JOB_COLUMNS),\n            (\"benefits\", benefits, (\"ucstart_raw\",)),\n        )\n        for column in columns\n        if column not in frame.columns\n    ]\n    if missing:\n        raise KeyError(\n            f\"The UC start-up period needs the FRS columns {missing} (uk-data#527).\"\n        )\n    interview = frs_interview_dates(household)\n    uc_rows = benefits.loc[\n        _number(benefits, \"benefit\").isin(BENEFIT_CODES[\"universal_credit\"])\n    ]\n    claim_months = pd.Series(\n        completed_months(\n            interview.reindex(uc_rows[\"household_id\"].to_numpy()),"
+        },
+        {
+          "first_line": 1489,
+          "last_line": 1511,
+          "text": "def scottish_water_and_sewerage_weekly(household: pd.DataFrame) -> pd.Series:\n    \"\"\"Weekly Scottish water + sewerage charge the household pays.\n\n    Scotland is not asked ``WATSEWRT`` \u2014 its water and sewerage charges ride on\n    the council tax bill \u2014 so the amount is assembled from the council-tax\n    water/sewerage cells.\n\n    FRS 2024-25 retired the two cells the incumbent used. ``CWATAMT``/\n    ``CSEWAMT`` (\"Wat./Sew. Charge: Final value after discount\") are still\n    present as headers but carry no data at all in this vintage, and the FRS\n    replaced them with the derived ``CWATAMT1``/``CSEWAMT1`` (\"Weeklyised gross\n    annual dom. water/sew. charge on bill\", Scotland only, \"DV created in\n    2024-25 as variable was removed from the dataset for 2024-25\" \u2014 SN 9563\n    ``9563_dv_summary_2425.xlsx``).\n\n    The household pays the gross charges less the status discount its council\n    tax records, which applies to the water and sewerage charges too (25% or\n    50%: ``CTDISC`` 1 with ``CT25D50D`` 1 or 2). For a council tax reduction\n    recipient (``CTREB`` 1) the Water Charges Reduction Scheme tops that\n    discount up to ``SCOTTISH_WATER_CHARGES_REDUCTION_MAXIMUM`` of the gross\n    charges, so a recipient pays the gross charges less the larger of its\n    discount and 35% (uk-data#499, microcosm#1095). ``CWATAMTD`` (\"Deriv\n    Council Tax water charge -Scot\") is not that amount: on the 2024-25 tab it"
+        }
+      ]
+    },
+    {
+      "repo": "PolicyEngine/microcosm",
+      "commit": "90958612874e7a52174c4d89d7df3f0f030783ba",
+      "path": "packages/microcosm-build/src/microcosm/build/uk_runtime/frs_relationships.py",
+      "sha256": "93d6029ab14e5a0d63b5be66a5e68e215746aff59af233fd17412f8bf7b13d4d",
+      "byte_size": 30895,
+      "snippets": [
+        {
+          "first_line": 91,
+          "last_line": 101,
+          "text": "#: Raw FRS columns the stage reads. ``grid`` is the pairwise relationship\n#: matrix keyed to the within-household person number (``person_id % 1000``);\n#: ``full_time_education`` lists the adult-tab flag in fallback order (the\n#: 2024-25 tape carries ``educft``; earlier tapes carried ``fted``).\nFRS_RELATIONSHIPS_SOURCE_COLUMNS: Mapping[str, Any] = {\n    \"head\": \"relhrp\",\n    \"head_flag\": \"hrpid\",\n    \"head_index\": \"hrpnum\",\n    \"grid\": [f\"r{index:02d}\" for index in range(1, 15)],\n    \"full_time_education\": [\"fted\", \"educft\"],\n}"
+        }
+      ]
+    },
+    {
+      "repo": "PolicyEngine/microcosm",
+      "commit": "90958612874e7a52174c4d89d7df3f0f030783ba",
+      "path": "packages/microcosm-build/src/microcosm/build/uk_runtime/frs_education.py",
+      "sha256": "7adc7ae1af629d28c21edbb19e64281f05a545617ff390b9142a7bada642c472",
+      "byte_size": 11955,
+      "snippets": [
+        {
+          "first_line": 165,
+          "last_line": 211,
+          "text": "def derive_frs_education(\n    person: pd.DataFrame, raw_person: pd.DataFrame\n) -> pd.DataFrame:\n    raw = raw_person.set_index(\"person_id\").reindex(person[\"person_id\"])\n    values = pd.DataFrame(index=person.index)\n    age = pd.to_numeric(person[\"age\"], errors=\"coerce\").fillna(0).to_numpy()\n    fted_source = \"fted\" if \"fted\" in raw.columns else \"educft\"\n    fted = _num(raw, fted_source).to_numpy()\n    typeed2 = _num(raw, \"typeed2\").to_numpy()\n    current = derive_current_education(fted=fted, typeed2=typeed2, age=age)\n    values[\"current_education\"] = current\n    values[\"highest_education\"] = (\n        _num(raw, \"educqual\").astype(int).map(EDUCQUAL_MAP).fillna(\"UPPER_SECONDARY\")\n    ).to_numpy()\n    values[\"is_in_non_advanced_education\"] = np.isin(\n        current, NON_ADVANCED_EDUCATION_LEVELS\n    )\n    if \"train\" in raw.columns:\n        approved = _num(raw, \"train\").isin(FRS_APPROVED_TRAINING_CODES)\n    elif \"train2\" in raw.columns:\n        # The 2024-25 vintage's recoded variable; code 9 is \"None of these\".\n        approved = _num(raw, \"train2\").isin(FRS_APPROVED_TRAINING_CODES_TRAIN2)\n    else:\n        approved = pd.Series(False, index=raw.index)\n    values[\"is_in_approved_training\"] = approved.to_numpy(dtype=bool)\n    in_qualifying = values[\"is_in_non_advanced_education\"].to_numpy(\n        dtype=bool\n    ) | values[\"is_in_approved_training\"].to_numpy(dtype=bool)\n    # Integer by the stage's own contract, whatever dtype ``age`` arrives in\n    # (int64 from the root since #845; float in synthetic frames).\n    values[\"age_started_or_accepted_current_education_or_training\"] = np.where(\n        in_qualifying,\n        np.minimum(age, 18),\n        UNKNOWN_QUALIFYING_EDUCATION_OR_TRAINING_ENTRY_AGE,\n    ).astype(\"int64\")\n    values[\"is_before_universal_credit_qualifying_young_person_terminal_date\"] = (\n        age == 19\n    ) & in_qualifying\n    if \"adema\" in raw.columns:\n        values[\"adult_ema\"] = _ema(raw, code_column=\"adema\", amount_column=\"ademaamt\")\n    else:\n        # Vintages without the adema pair carry eduma/edumaamt \u2014 the\n        # incumbent aliases them before its fill; 2023-24 is such a vintage.\n        values[\"adult_ema\"] = _ema(raw, code_column=\"eduma\", amount_column=\"edumaamt\")\n    values[\"child_ema\"] = _ema(raw, code_column=\"chema\", amount_column=\"chemaamt\")\n    benefit_columns = [\n        column for column in BENEFITS_IN_OWN_RIGHT_REPORTED_COLUMNS if column in person"
+        }
+      ]
+    },
+    {
+      "repo": "PolicyEngine/microcosm",
+      "commit": "90958612874e7a52174c4d89d7df3f0f030783ba",
+      "path": "packages/microcosm-build/src/microcosm/build/uk_runtime/frs_employment.py",
+      "sha256": "0fef5f33a8d3211efbc722bce89abd226934ac1d21c1d5d33dbd9b3af224092c",
+      "byte_size": 4012,
+      "snippets": [
+        {
+          "first_line": 91,
+          "last_line": 119,
+          "text": "def derive_frs_employment(person: pd.DataFrame, adult: pd.DataFrame) -> pd.DataFrame:\n    \"\"\"Return person-indexed employment derivations.\n\n    ``empstati``, ``mjobsect``, and ``sic`` are intentionally direct-indexed\n    so missing source columns fail loudly, matching the incumbent FRS port.\n    \"\"\"\n\n    raw = adult.set_index(\"person_id\")\n    aligned = raw.reindex(person[\"person_id\"])\n    values = pd.DataFrame(index=person.index)\n    empstati = pd.to_numeric(aligned[\"empstati\"], errors=\"coerce\").fillna(0)\n    # Unmapped codes above the declared domain follow the incumbent's\n    # post-map fillna to LONG_TERM_DISABLED; 0/NaN rows land on CHILD via\n    # the explicit map entry.\n    values[\"employment_status\"] = (\n        empstati.astype(int)\n        .map(EMPLOYMENT_STATUS_MAP)\n        .fillna(\"LONG_TERM_DISABLED\")\n        .to_numpy()\n    )\n    sector = pd.to_numeric(aligned[\"mjobsect\"], errors=\"coerce\").fillna(0)\n    values[\"employment_sector\"] = (\n        sector.astype(int).map(EMPLOYMENT_SECTOR_MAP).fillna(\"NOT_EMPLOYED\").to_numpy()\n    )\n    values[\"sic_industry_division\"] = (\n        pd.to_numeric(aligned[\"sic\"], errors=\"coerce\").fillna(0).clip(lower=0).astype(int).to_numpy()\n    )\n    return values\n"
+        }
+      ]
+    },
+    {
+      "repo": "PolicyEngine/microcosm",
+      "commit": "90958612874e7a52174c4d89d7df3f0f030783ba",
+      "path": "packages/microcosm-build/src/microcosm/build/uk_runtime/frs_council_tax.py",
+      "sha256": "85f31d0374a90c701f6f09439637e87ebca03d9e5995cb3be1e16ed97c1f32f9",
+      "byte_size": 9250,
+      "snippets": [
+        {
+          "first_line": 149,
+          "last_line": 201,
+          "text": "def derive_council_tax(\n    household: pd.DataFrame, household_raw: pd.DataFrame\n) -> pd.Series:\n    \"\"\"The council tax bill after discounts and before council tax reduction.\n\n    FRS 2024-25 ``CTANNUAL`` is the \"Annual CT amount after discounts/reduction\"\n    (DV summary, UKDS SN 9563), derived with the reported reduction ``CTREB`` /\n    ``CTREBAMT``; the engine reads ``council_tax`` as the liability before\n    council tax reduction. A household reporting a reduction (``CTREB`` 1)\n    therefore gets its weekly ``CTREBAMT`` added back, a full reduction\n    (``CTANNUAL`` 0) included: on the raw tab that restores the recipients'\n    bills to the non-recipients' in the same region, band and single-adult\n    cell (ratio 0.99 in England, 1.01 in Wales; uk-data#496/#499,\n    microcosm#1095). A recipient with no positive amount has an unknown\n    reduction and takes the larger of its bill and its cell's mean. Missing\n    or negative bills take the cell mean. The cells pool non-recipients with\n    a positive bill only, since recipients' ``CTANNUAL`` is net of their\n    reduction.\n\n    Scottish bills carry the water and sewerage charges, which council tax\n    reduction does not cover. They are netted at the gross cells\n    ``CWATAMT1`` + ``CSEWAMT1``, in full for non-recipients and at\n    ``SCOTTISH_CHARGES_IN_RECIPIENT_BILL`` for recipients, the shares DWP's\n    derivation embeds (uk-data#499); a household with no gross water cell\n    nets its recorded ``CWATAMTD``. The charge a household pays is a separate\n    quantity, ``frs_spine.scottish_water_and_sewerage_weekly``.\n    \"\"\"\n\n    missing_columns = sorted(set(FRS_COUNCIL_TAX_RAW_COLUMNS) - set(household_raw))\n    if missing_columns:\n        raise KeyError(f\"FRS council tax needs raw household cells {missing_columns}.\")\n    raw = household_raw.set_index(\"household_id\")\n    aligned = raw.reindex(household[\"household_id\"])\n\n    def number(column: str) -> pd.Series:\n        return pd.to_numeric(aligned[column], errors=\"coerce\")\n\n    def positive(column: str) -> pd.Series:\n        return number(column).fillna(0.0).clip(lower=0.0)\n\n    ctannual = number(\"ctannual\")\n    gvtregno = number(\"gvtregno\")\n    ctband = number(\"ctband\")\n    single_adult = number(\"adulth\") == 1\n    recipient = number(\"ctreb\") == 1\n    reduction = positive(\"ctrebamt\") * WEEKS_IN_YEAR\n    known_reduction = recipient & (reduction > 0)\n\n    gross_charges = positive(\"cwatamt1\") + positive(\"csewamt1\")\n    netted_weekly = np.where(\n        positive(\"cwatamt1\") > 0,\n        gross_charges * np.where(recipient, SCOTTISH_CHARGES_IN_RECIPIENT_BILL, 1.0),\n        positive(\"cwatamtd\"),"
+        }
+      ]
+    },
+    {
+      "repo": "PolicyEngine/microcosm",
+      "commit": "90958612874e7a52174c4d89d7df3f0f030783ba",
+      "path": "packages/microcosm-build/src/microcosm/build/uk_runtime/frs_hmrc_source.py",
+      "sha256": "6cdbcf02afb25215c58f3f01a07b4de9648da89f90df740bc3265a2db7d2e2d5",
+      "byte_size": 10436,
+      "snippets": [
+        {
+          "first_line": 180,
+          "last_line": 223,
+          "text": "def _materialize_source_leaves(\n    adult: pd.DataFrame,\n    benefits: pd.DataFrame,\n) -> pd.DataFrame:\n    adult_ids = _raw_source_person_ids(adult, label=\"ADULT\")\n    if pd.Index(adult_ids).duplicated().any():\n        duplicates = pd.Index(adult_ids)[pd.Index(adult_ids).duplicated()].unique()\n        raise ValueError(\n            \"Raw FRS ADULT person identities must be unique; duplicate \"\n            f\"value(s): {duplicates[:5].tolist()}.\"\n        )\n    earnings = _finite_numeric(adult[\"inearns\"], label=\"ADULT.INEARNS\")\n    pay = np.maximum(earnings, 0.0) * FRS_WEEKS_IN_YEAR\n    adult_leaf = pd.DataFrame(\n        {FRS_HMRC_PAY_COLUMN: pay},\n        index=pd.Index(adult_ids, name=\"source_person_id\"),\n    )\n\n    benefit_ids = _raw_source_person_ids(benefits, label=\"BENEFITS\")\n    benefit_codes = _strict_integer_values(\n        benefits[\"benefit\"],\n        label=\"BENEFITS.BENEFIT\",\n        minimum=0,\n    )\n    relevant = np.isin(benefit_codes, (5, 13, 14, 16, 17, 19))\n    amounts = np.zeros(len(benefits), dtype=float)\n    if relevant.any():\n        relevant_amounts = _finite_numeric(\n            benefits.loc[relevant, \"benamt\"],\n            label=\"relevant BENEFITS.BENAMT\",\n        )\n        if (relevant_amounts < 0.0).any():\n            raise ValueError(\"Relevant BENEFITS.BENAMT values must be non-negative.\")\n        amounts[relevant] = relevant_amounts\n\n    code16 = benefit_codes == 16\n    contribution_based_esa = np.zeros(len(benefits), dtype=bool)\n    if code16.any():\n        var2 = _strict_integer_values(\n            benefits.loc[code16, \"var2\"],\n            label=\"BENEFITS.VAR2 for BENEFIT=16\",\n        )\n        contribution_based_esa[code16] = np.isin(var2, (1, 3))\n"
+        }
+      ]
+    },
+    {
+      "repo": "PolicyEngine/microcosm",
+      "commit": "90958612874e7a52174c4d89d7df3f0f030783ba",
+      "path": "packages/microcosm-build/src/microcosm/build/uk_runtime/spine_build.py",
+      "sha256": "ebca84951fedcb13d9a54b740b6266ff3a7b630313721acb30e40dde28fe15a1",
+      "byte_size": 89180,
+      "snippets": [
+        {
+          "first_line": 246,
+          "last_line": 259,
+          "text": "            \"Build the deterministic UK FRS spine from pinned raw tabs. Every \"\n            \"stochastic stage draws identity-keyed from seeds declared in the \"\n            \"manifest, so two runs from the same inputs are payload-identical.\"\n        )\n    )\n    parser.add_argument(\n        \"--frs-raw-dir\",\n        type=Path,\n        help=\"Directory containing the 14 licensed FRS 2024-25 tab files.\",\n    )\n    parser.add_argument(\n        \"--spine-h5\",\n        type=Path,\n        required=True,"
+        },
+        {
+          "first_line": 454,
+          "last_line": 458,
+          "text": "    elif args.frs_raw_dir is None or not args.frs_raw_dir.is_dir():\n        raise ValueError(\n            f\"--frs-raw-dir must be an existing directory: {args.frs_raw_dir}\"\n        )\n    if args.spine_h5.suffix != \".h5\":"
+        }
+      ]
+    },
+    {
+      "repo": "PolicyEngine/microcosm",
+      "commit": "90958612874e7a52174c4d89d7df3f0f030783ba",
+      "path": "packages/microcosm-build/src/microcosm/build/uk_runtime/frs_disability.py",
+      "sha256": "f780b896cf731493cffc16e07196122594e239fdcf71912f4270ab92f8b6fee9",
+      "byte_size": 11091,
+      "snippets": [
+        {
+          "first_line": 94,
+          "last_line": 106,
+          "text": "        self.stage = stage\n        self.category_rates = category_rates\n        self.flag_rates = flag_rates\n\n    def __call__(self, frame: Frame) -> Frame:\n        _assert_frs_disability_stage_parameters(self.stage)\n        year = resolve_uk_year_rule(YEAR_RULE)\n        return add_frs_disability(\n            frame,\n            category_rates=self.category_rates\n            or uk_dwp_disability_category_rates(year),\n            flag_rates=self.flag_rates or uk_dwp_disability_flag_rates(year),\n        )"
+        }
+      ]
+    },
+    {
+      "repo": "PolicyEngine/microcosm",
+      "commit": "90958612874e7a52174c4d89d7df3f0f030783ba",
+      "path": "packages/microcosm-build/src/microcosm/build/uk_runtime/frs_legacy_proxies.py",
+      "sha256": "7b2c8adf20b6ae6050405309cac10d16cae5c5a080dd15dd848ebb8b09def87e",
+      "byte_size": 5732,
+      "snippets": [
+        {
+          "first_line": 64,
+          "last_line": 80,
+          "text": "        period = uk_time_period(frame)\n        assert_rules_engine_country(self.engine, \"uk\")\n        materialized = self.engine.materialize(\n            frame, UK_LEGACY_PROXY_PREDICTORS, period\n        )\n        return add_frs_legacy_proxies(\n            frame,\n            self.raw_dir,\n            stage=self.stage,\n            state_pension_age=materialized[\"state_pension_age\"],\n            policy=self.policy or uk_legacy_jsa_policy(period),\n        )\n\n    @staticmethod\n    def output_columns() -> tuple[str, ...]:\n        return FRS_LEGACY_PROXY_OUTPUT_COLUMNS\n"
+        }
+      ]
+    },
+    {
+      "repo": "PolicyEngine/policyengine-uk-data",
+      "commit": "2b9c1c2c64ced6e1d95fed1ed398a22627233669",
+      "path": "policyengine_uk_data/datasets/frs_release.py",
+      "sha256": "b6c4b3e67e0e6b757077572393549b536bf3510d1c64a92146470c68943612e2",
+      "byte_size": 1681,
+      "snippets": [
+        {
+          "first_line": 48,
+          "last_line": 68,
+          "text": "    @property\n    def tiny_enhanced_dataset_file(self) -> str:\n        return f\"{self.tiny_enhanced_dataset_name}.h5\"\n\n\nCURRENT_FRS_RELEASE = FRSRelease(\n    name=\"frs_2024_25\",\n    survey_year=2024,\n    base_year=2024,\n    calibration_year=2025,\n    ukds_study_number=9563,\n    doi=\"http://doi.org/10.5255/UKDA-SN-9563-1\",\n    ukds_tab_zip_filename=(\n        \"9563tab_05DD0069587DBD25E5719D355CE05FC0827D5EDD58C24ECE9\"\n        \"AB85ACD954A9AEB_V1.zip\"\n    ),\n    ukds_tab_zip_sha256=(\n        \"05dd0069587dbd25e5719d355ce05fc0827d5edd58c24ece9ab85acd954a9aeb\"\n    ),\n    ukds_tab_subdir=\"UKDA-9563-tab/tab\",\n)"
+        }
+      ]
+    },
+    {
+      "repo": "PolicyEngine/policyengine-uk-data",
+      "commit": "2b9c1c2c64ced6e1d95fed1ed398a22627233669",
+      "path": "policyengine_uk_data/datasets/frs.py",
+      "sha256": "1ad9d94c54b631a3af13d071231b7f5640015db6c18fb07666d054c823805223",
+      "byte_size": 74019,
+      "snippets": [
+        {
+          "first_line": 793,
+          "last_line": 824,
+          "text": "def derive_pension_credit_reported_capital(benunit: pd.DataFrame) -> np.ndarray:\n    \"\"\"Each benefit unit's capital as the FRS records it, for Pension Credit.\n\n    Uses ``TOTCAPB4``, DWP's derived benefit-unit total of the adults' savings\n    and investments, which its below-average-resources statistics use in place\n    of ``TOTCAPB3`` since it became available in 2019/20; ``TOTCAPB3`` is the\n    fallback for earlier survey years. Pension Credit counts the claimant's\n    capital and, under the State Pension Credit Act 2002 s. 5, the partner's,\n    and this is a benefit-unit measure. It is an approximation of Pension\n    Credit capital, not the assessed figure: it covers financial assets only\n    (second homes and land, which Pension Credit also counts, are not in it),\n    and no Schedule V disregard or reg. 19 valuation is applied to it. The\n    household wealth imputation instead draws a household's wealth from Wealth\n    and Assets Survey households with similar income, composition, tenure and\n    region, with no information on means-tested receipt, and policyengine-uk\n    spreads it over the household's pension-age adults.\n\n    A missing or negative value gives -1, so policyengine-uk falls back to the\n    household proxy.\n    \"\"\"\n    capital = np.full(len(benunit), np.nan)\n    for column in (\"totcapb3\", \"totcapb4\"):  # later columns take precedence\n        if column in benunit.columns:\n            # Plain float64, so nullable (pd.NA) inputs become NaN and the\n            # validity mask is a plain bool array with no missing entries.\n            values = (\n                pd.to_numeric(benunit[column], errors=\"coerce\")\n                .astype(\"float64\")\n                .to_numpy(dtype=float, na_value=np.nan)\n            )\n            valid = np.isfinite(values) & (values >= 0)\n            capital = np.where(valid, values, capital)"
+        },
+        {
+          "first_line": 1006,
+          "last_line": 1010,
+          "text": "    if \"fted\" in person.columns:\n        fted = person.fted\n    else:\n        fted = person.educft  # Renamed in FRS 2022-23\n    typeed2 = person.typeed2"
+        },
+        {
+          "first_line": 1249,
+          "last_line": 1255,
+          "text": "    # Domestic rates variables are all weeklyised, unlike Council Tax variables (despite the variable name suggesting otherwise)\n    if year < 2021:\n        DOMESTIC_RATES_VARIABLE = \"rtannual\"\n    else:\n        DOMESTIC_RATES_VARIABLE = \"niratlia\"\n    pe_household[\"domestic_rates\"] = (\n        np.select("
+        },
+        {
+          "first_line": 1478,
+          "last_line": 1482,
+          "text": "    pe_person[\"student_loans\"] = np.maximum(person.tuborr, 0)\n    if \"adema\" not in person.columns:\n        person[\"adema\"] = person.eduma\n        person[\"ademaamt\"] = person.edumaamt\n    pe_person[\"adult_ema\"] = fill_with_mean(person, \"adema\", \"ademaamt\")"
+        }
+      ]
+    }
+  ],
+  "current_frs_tables": [
+    "accounts",
+    "adult",
+    "benefits",
+    "benunit",
+    "child",
+    "chldcare",
+    "extchild",
+    "househol",
+    "job",
+    "maint",
+    "mortgage",
+    "oddjob",
+    "penprov",
+    "pension"
+  ],
+  "identity_columns": {
+    "household": "SERNUM",
+    "benefit_unit_link": "BENUNIT where consumed",
+    "person_link": "PERSON where consumed",
+    "notes": "Join ids are normalized by the readers. Identity fields are separate from the mapped-column inventory."
+  },
+  "current_reader_columns": {
+    "accounts": [
+      "ACCINT",
+      "ACCOUNT",
+      "ACCTAX",
+      "INVTAX"
+    ],
+    "benefits": [
+      "BENAMT",
+      "BENEFIT",
+      "UCHOUSEL",
+      "UCSTART",
+      "VAR2"
+    ],
+    "benunit": [
+      "DEPCHLDB",
+      "FAMTYPB2",
+      "HBOTHAMT",
+      "TOTCAPB4"
+    ],
+    "chldcare": [
+      "CHAMT",
+      "COST",
+      "REGISTRD"
+    ],
+    "extchild": [
+      "NHHAMT"
+    ],
+    "househol": [
+      "ADULTH",
+      "BEDROOM6",
+      "CHRGAMT1",
+      "CHRGAMT2",
+      "CHRGAMT3",
+      "CHRGAMT4",
+      "CHRGAMT5",
+      "CHRGAMT6",
+      "CHRGAMT7",
+      "CHRGAMT8",
+      "CHRGAMT9",
+      "CSEWAMT1",
+      "CT25D50D",
+      "CTANNUAL",
+      "CTBAND",
+      "CTDISC",
+      "CTREB",
+      "CTREBAMT",
+      "CWATAMT1",
+      "CWATAMTD",
+      "GROSS4",
+      "GVTREGNO",
+      "HHRENT",
+      "HHSTAT",
+      "HRPNUM",
+      "INTDATE",
+      "MORTINT",
+      "NIRATLIA",
+      "PTENTYP2",
+      "RT2REBAM",
+      "STRUINS",
+      "SUBRENT",
+      "TYPEACC",
+      "WATSEWRT"
+    ],
+    "job": [
+      "DEDUC1",
+      "ETYPE",
+      "JOBBUS",
+      "JOBTYPE",
+      "SALSAC",
+      "SEEND",
+      "SEJBLONG",
+      "SPNAMT"
+    ],
+    "maint": [
+      "MRAMT",
+      "MRUAMT",
+      "MRUS"
+    ],
+    "mortgage": [
+      "BORRAMT",
+      "MORTEND",
+      "RMAMT",
+      "RMORT"
+    ],
+    "oddjob": [
+      "OJAMT",
+      "OJNOW"
+    ],
+    "penprov": [
+      "PENAMT",
+      "STEMPPEN"
+    ],
+    "pension": [
+      "PENOTH",
+      "PENPAY",
+      "POAMT",
+      "POINC",
+      "PTAMT",
+      "PTINC"
+    ],
+    "adult_child_union": [
+      "ACCSSAMT",
+      "ACCSSPD",
+      "ADEMA",
+      "ADEMAAMT",
+      "AGE",
+      "AGE80",
+      "ALLPAY2",
+      "ALLPAY3",
+      "ALLPAY4",
+      "APAMT",
+      "APDAMT",
+      "CHAMTERN",
+      "CHAMTTST",
+      "CHEMA",
+      "CHEMAAMT",
+      "CONVBL",
+      "CVPAY",
+      "EDUCFT",
+      "EDUCQUAL",
+      "EDUMA",
+      "EDUMAAMT",
+      "EMPSTATI",
+      "FSBVAL",
+      "FSFVVAL",
+      "FSMVAL",
+      "FTED",
+      "GRTDIR1",
+      "GRTDIR2",
+      "HEARTVAL",
+      "HOURTOT",
+      "HRPID",
+      "INEARNS",
+      "MARITAL",
+      "MJOBSECT",
+      "MNTAMT1",
+      "MNTAMT2",
+      "MNTUS1",
+      "MNTUSAM1",
+      "PAREAMT",
+      "R01",
+      "R02",
+      "R03",
+      "R04",
+      "R05",
+      "R06",
+      "R07",
+      "R08",
+      "R09",
+      "R10",
+      "R11",
+      "R12",
+      "R13",
+      "R14",
+      "REDAMT",
+      "RELHRP",
+      "RENTPROF",
+      "ROYYR1",
+      "ROYYR2",
+      "ROYYR3",
+      "ROYYR4",
+      "SAMESIT",
+      "SDEMP01",
+      "SDEMP02",
+      "SDEMP03",
+      "SDEMP04",
+      "SDEMP05",
+      "SDEMP06",
+      "SDEMP07",
+      "SDEMP08",
+      "SDEMP09",
+      "SDEMP10",
+      "SDEMP11",
+      "SDEMP12",
+      "SEINCAM2",
+      "SEX",
+      "SIC",
+      "SLREPAMT",
+      "SMPADJ",
+      "SPCREG1",
+      "SRENTAMT",
+      "SSPADJ",
+      "TOTHOURS",
+      "TRAIN",
+      "TRAIN2",
+      "TUBORR",
+      "TYPEED2",
+      "UPERSON"
+    ]
+  },
+  "uk_data_additional_or_alternative_columns": {
+    "househol": [
+      "RTANNUAL",
+      "CSEWAMT"
+    ],
+    "benunit": [
+      "TOTCAPB3"
+    ]
+  },
+  "public_metadata_read": [
+    {
+      "url": "https://www.gov.uk/government/statistics/family-resources-survey-financial-year-2019-to-2020",
+      "observations": [
+        "Statistical publication 2021-03-25; microdata first-distribution date not established."
+      ]
+    },
+    {
+      "url": "https://www.gov.uk/government/statistics/family-resources-survey-financial-year-2020-to-2021",
+      "observations": [
+        "Statistical publication 2022-03-31, later page update 2023-05-12."
+      ]
+    },
+    {
+      "url": "https://ukdataservice.ac.uk/2022/06/10/latest-data-collections-and-new-editions-10-june-2022/",
+      "observations": [
+        "SN8948 Family Resources Survey 2020-2021 listed as a new dataset on 2022-06-10; exact first-file release date remains unverified."
+      ]
+    },
+    {
+      "url": "https://doc.ukdataservice.ac.uk/doc/8802/read8802.htm",
+      "observations": [
+        "SN8802 Family Resources Survey 2019-2020; registered user End User Licence; commercial use owner approval; April2025 second edition altered HOUSEHOL IMD fields."
+      ]
+    },
+    {
+      "url": "https://doc.ukdataservice.ac.uk/doc/8802/mrdoc/pdf/8802_frs_future_changes_summary_of_changes_2020_21.pdf",
+      "observations": [
+        "Public four-page questionnaire change summary read; it excludes processing changes and does not establish historical raw headers."
+      ]
+    },
+    {
+      "url": "https://www.gov.uk/government/statistics/family-resources-survey-financial-year-2024-to-2025/family-resources-survey-background-information-and-methodology",
+      "observations": [
+        "Current release substitutes administrative information for major benefits/tax credits; council-tax interview questions removed from April2024."
+      ]
+    }
+  ],
+  "unknowns": [
+    "FRS2019-20 first microdata distribution date and first-edition bytes",
+    "Exact original SN8948 release-day bytes and edition licence",
+    "Historical per-table headers, value domains, missing codes and date formats",
+    "Availability of current UCSTART and UCHOUSEL inputs in original historical editions",
+    "Historical raw-table, ZIP and donor digests",
+    "Historical donor release admissibility, access and rights",
+    "Historical derivation, engine compatibility, projection and certification"
+  ]
+}

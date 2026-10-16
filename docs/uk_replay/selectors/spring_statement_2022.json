@@ -1,0 +1,92 @@
+{
+  "schema_version": "event_vintage_selector.v1",
+  "event_slug": "spring_statement_2022",
+  "event_date": "2022-03-23",
+  "forecast_vintage": {
+    "id": "obr_efo_march_2022",
+    "label": "March 2022",
+    "published_at": "2022-03-23"
+  },
+  "source_locks": [
+    {
+      "lock_path": "data/uk/events/vintage_locks/spring_statement_2022.json",
+      "lock_sha256": "cdff2fd50b5033ad337f571eb9a8df9397d21f775de9912f901aabd8eb924782",
+      "sources": [
+        {
+          "role": "economy",
+          "status": "obtained",
+          "sha256": "00edcf15461481ed22daa86ae06e002d5f03b91db356f42dda626e475284237d"
+        },
+        {
+          "role": "receipts",
+          "status": "obtained",
+          "sha256": "130f14d90c2e2c3a6845448ec6e4d7a8049c7cfac31428251675ba31410f113e"
+        },
+        {
+          "role": "expenditure",
+          "status": "obtained",
+          "sha256": "44d10af3d9ce82fa0cc0cfa52449e1139f33bc0e9a2937452762aed94796bedf"
+        },
+        {
+          "role": "policy_measures",
+          "status": "obtained",
+          "sha256": "4b0701c46b4e3f19b9cb7dcd488c5752c6be6aebd8434a2de17943ed54a68fb8"
+        },
+        {
+          "role": "hofd_row",
+          "status": "obtained",
+          "sha256": "d69fa5112266c71fff0c74bffe416b7c7c0f663b44e0b87e7a82899d09ba39d5"
+        },
+        {
+          "role": "dwp_benefit_expenditure_caseload",
+          "status": "obtained",
+          "sha256": "4cc7b103a3f0317e628360f94f5504a657e0a21898e8e4510ed4912146719c95"
+        }
+      ]
+    }
+  ],
+  "scoring_fys": [
+    "2021-22",
+    "2022-23",
+    "2023-24",
+    "2024-25",
+    "2025-26",
+    "2026-27"
+  ],
+  "admissible_survey_releases": [
+    {
+      "release_id": "frs_2019_20",
+      "survey_fy": "2019-20",
+      "published_at": "2021-03-25",
+      "publication_url": "https://www.gov.uk/government/statistics/family-resources-survey-financial-year-2019-to-2020",
+      "evidence": [
+        "docs/uk_replay/PLAN.md#phases-and-effort",
+        "docs/uk_replay/POPULATIONS_AND_VINTAGES.md",
+        "docs/uk_replay/HISTORICAL_FRS.md"
+      ]
+    }
+  ],
+  "preferred_survey_release": "frs_2019_20",
+  "policy_world_contract": {
+    "status": "resolved",
+    "contract_id": "published_end_state_same_weights.v1",
+    "contract_sha256": "f83e0c9249983e386fec9f9f4c2c7a689ddda8f676640e3013e652e1fe35ba88",
+    "decision_receipt": "cos d1344 (Max, 2026-10-15: delegated to the workstream with independent review)",
+    "decision_record": "docs/uk_replay/HISTORICAL_DECISIONS.md",
+    "decision_record_sha256": "b6db48a92283d54fec78cab772d2c39698f94b0d9f8c08623f3b0be1dcd288a3"
+  },
+  "annualisation_bridge": {
+    "status": "resolved",
+    "bridge_id": "fy_start_year.v1",
+    "receipt_sha256": "ffc885685c61b11358a6d3a5c6a4b9dd398e4a093a607ae10b47acfec609bca0"
+  },
+  "readiness": "ready_for_population_build",
+  "evidence": [
+    "docs/uk_replay/PLAN.md",
+    "docs/uk_replay/POPULATIONS_AND_VINTAGES.md",
+    "docs/uk_replay/evidence/population_receipts.json",
+    "docs/uk_replay/HISTORICAL_FRS.md",
+    "docs/uk_replay/VINTAGE_LOCKS.md",
+    "docs/uk_replay/HISTORICAL_DECISIONS.md"
+  ]
+}

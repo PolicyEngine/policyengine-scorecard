@@ -8,8 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "predev": "mkdir -p public/data && cp ../data/comparison.json ../data/lanes.json ../data/exhibits.json ../data/populations.json public/data/",
-    "prebuild": "mkdir -p public/data && cp ../data/comparison.json ../data/lanes.json ../data/exhibits.json ../data/populations.json public/data/",
+    "predev": "bun scripts/copy-data.ts",
+    "prebuild": "bun scripts/copy-data.ts",
     "test": "bun test src"
   },
   "dependencies": {

@@ -1,0 +1,486 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__jobs_and_skills_youth_guarantee_and_levy",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "construction_pending",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__jobs_and_skills_youth_guarantee_and_levy",
+   "measure_type": "indirect_tax",
+   "missing_legs": [
+    "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.conservatives.cb_hitc_household",
+     "gov.contrib.conservatives.pensioner_personal_allowance",
+     "gov.contrib.labour.private_school_vat",
+     "gov.economic_assumptions.indices.obr.private_pension_index",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.EAST_MIDLANDS",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.EAST_OF_ENGLAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.ENGLAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.LONDON",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.NORTHERN_IRELAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.NORTH_EAST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.NORTH_WEST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.SCOTLAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.SOUTH_EAST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.SOUTH_WEST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.UNITED_KINGDOM",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.WALES",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.WEST_MIDLANDS",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.YORKSHIRE",
+     "gov.economic_assumptions.yoy_growth.obr.private_pension_index",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.EAST_MIDLANDS",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.EAST_OF_ENGLAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.ENGLAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.LONDON",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTHERN_IRELAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTH_EAST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTH_WEST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.SCOTLAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.SOUTH_EAST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.SOUTH_WEST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.UNITED_KINGDOM",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.WALES",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.WEST_MIDLANDS",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.YORKSHIRE",
+     "gov.hmrc.vat.reduced_rate",
+     "gov.hmrc.vat.reduced_rate_share",
+     "gov.hmrc.vat.standard_rate",
+     "gov.indices.private_rent_index",
+     "gov.simulation.microdata_vat_coverage",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.0",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.10",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.100",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.15",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.20",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.25",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.30",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.35",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.40",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.45",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.5",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.50",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.55",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.60",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.65",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.70",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.75",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.80",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.85",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.90",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.95",
+     "gov.simulation.private_school_vat.private_school_factor",
+     "gov.simulation.private_school_vat.private_school_fees",
+     "gov.simulation.private_school_vat.private_school_vat_basis",
+     "household.consumption.carbon.emissions.alcohol_and_tobacco",
+     "household.consumption.carbon.emissions.food_and_non_alcoholic_beverages",
+     "household.consumption.carbon.intensity.alcohol_and_tobacco_consumption",
+     "household.consumption.carbon.intensity.food_and_non_alcoholic_beverages_consumption",
+     "household.consumption.total_by_category.alcohol_and_tobacco_consumption",
+     "household.consumption.total_by_category.food_and_non_alcoholic_beverages_consumption"
+    ],
+    "pattern": "alcohol|tobacco|vaping|vat|levy",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "alcohol_and_tobacco_consumption",
+     "attends_private_school",
+     "attends_private_school_random_draw",
+     "baseline_vat",
+     "food_and_non_alcoholic_beverages_consumption",
+     "full_rate_vat_consumption",
+     "full_rate_vat_expenditure_rate",
+     "private_pension_income",
+     "private_school_vat",
+     "private_transfer_income",
+     "reduced_rate_vat_consumption",
+     "vat",
+     "vat_change"
+    ]
+   },
+   "note": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+   "pe_gap": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+   "pe_reform_delta": null,
+   "program": "indirect_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23717:dc1b55f049878476",
+     "source_row_number": 23717,
+     "source_row_sha256": "dc1b55f04987847647172677e9f549c5c0b313972ff12d4cd4c0ed145287e64c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23718:15d146dc6cb417ee",
+     "source_row_number": 23718,
+     "source_row_sha256": "15d146dc6cb417eedda3581e2be74ec5aacbba73d1f72305bc7e8b3c032f5a37",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+     "value_gbp": -528231417.50230277,
+     "value_gbp_decimal": "-528231417.50230277"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23719:4b2770afecb31b76",
+     "source_row_number": 23719,
+     "source_row_sha256": "4b2770afecb31b763a2c732a7a5009ea30c2f51b56049acf63fe328c03000127",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+     "value_gbp": -601006974.4468818,
+     "value_gbp_decimal": "-601006974.4468818"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23720:a5131295b696d108",
+     "source_row_number": 23720,
+     "source_row_sha256": "a5131295b696d108038257a0f8760f51563f1c016908fc52d368240a3c4bbe1e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+     "value_gbp": -542079138.4729699,
+     "value_gbp_decimal": "-542079138.4729699"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23721:aa0f8e4343530d23",
+     "source_row_number": 23721,
+     "source_row_sha256": "aa0f8e4343530d2383462a621ef3a21b76e4a4723f3b63dcba0b23396029637d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+     "value_gbp": -156871670.7791776,
+     "value_gbp_decimal": "-156871670.7791776"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23722:556e8bfde8f740cc",
+     "source_row_number": 23722,
+     "source_row_sha256": "556e8bfde8f740cc17d43953d1a188be424df63f3fad8b8afd6a2dfaa31110b3",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+     "value_gbp": -156871670.7791776,
+     "value_gbp_decimal": "-156871670.7791776"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23723:1703a92e162843ee",
+     "source_row_number": 23723,
+     "source_row_sha256": "1703a92e162843ee38f387b751166054c651d0fe405e191c0309f8164da39cd6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23724:2793d843522ffdaf",
+     "source_row_number": 23724,
+     "source_row_sha256": "2793d843522ffdaf6d3e7d300e356bedcda167141d1fafd917d8626505437558",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+     "value_gbp": 9000000.0,
+     "value_gbp_decimal": "9000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23725:9ba7404b8ef23bde",
+     "source_row_number": 23725,
+     "source_row_sha256": "9ba7404b8ef23bdeb54a722d3d84bf1c849432e42f3c9fd4d4bd01bb95455d2e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+     "value_gbp": 45000000.0,
+     "value_gbp_decimal": "45000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23726:ca4e0d174671933f",
+     "source_row_number": 23726,
+     "source_row_sha256": "ca4e0d174671933fb939cb3acfd4c584adbe02f91f5ab257221e2b435b046976",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+     "value_gbp": 47000000.0,
+     "value_gbp_decimal": "47000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23727:183c15e714a0be1b",
+     "source_row_number": 23727,
+     "source_row_sha256": "183c15e714a0be1b8dbed8586fd20dc612333f1ff99f6c7dd21fe808d60f4f60",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+     "value_gbp": 49000000.0,
+     "value_gbp_decimal": "49000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23728:e9247389f9eefabf",
+     "source_row_number": 23728,
+     "source_row_sha256": "e9247389f9eefabfd33eb6a5262e25b714a824a3ceeaf5629500dbc444440f42",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Welfare outside cap",
+     "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+     "value_gbp": 50000000.0,
+     "value_gbp_decimal": "50000000.0"
+    }
+   ],
+   "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+   "unmapped_obr_heads": [
+    "PSCE in RDEL",
+    "Welfare outside cap"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -542079138.4729699,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23720:a5131295b696d108",
+   "level": "source_row",
+   "measure_key": "ab2025__jobs_and_skills_youth_guarantee_and_levy",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 47000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Welfare outside cap"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23726:ca4e0d174671933f",
+   "level": "source_row",
+   "measure_key": "ab2025__jobs_and_skills_youth_guarantee_and_levy",
+   "threshold_gbp": null,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__jobs_and_skills_youth_guarantee_and_levy --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__jobs_and_skills_youth_guarantee_and_levy_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -542079138.4729699,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:23720:a5131295b696d108",
+   "source_row_number": 23720,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 47000000.0,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:23726:ca4e0d174671933f",
+   "source_row_number": 23726,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Welfare outside cap"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Jobs and Skills: Invest in Youth Guarantee, Growth and Skills Levy, and employment & skills support",
+ "year": 2028
+}

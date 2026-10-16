@@ -68,6 +68,8 @@ from . import (
     ingest_irs_eitc_participation,
     ingest_obr_divergence,
     ingest_obr_costings,
+    ingest_obr_pmd,
+    ingest_obr_pmd_march2026,
     ingest_obr_policy_effects,
     ingest_platform,
     ingest_reform_validation,
@@ -239,6 +241,14 @@ def build(db_path: Path) -> dict:
         # data/uk/obr_measure_reforms.yaml, with announcement-time
         # baselines (#13).
         ("obr_costings", lambda: ingest_obr_costings.ingest(db_path)),
+        # The complementary PMD cells: all original tax/spending scores
+        # from Budget 1970 onward, with no counterpart prerequisite.
+        ("obr_pmd", lambda: ingest_obr_pmd.ingest(db_path)),
+        # Edition delta only: November identities and replay sources stay frozen.
+        (
+            "obr_pmd_march2026",
+            lambda: ingest_obr_pmd_march2026.ingest(db_path),
+        ),
         # Every Autumn Budget 2025 score (#136): 25 harvest families from
         # 27 producers, keyed to data/uk/ab2025_measures.json, with exact
         # per-family accounting.

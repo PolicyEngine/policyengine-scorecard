@@ -1,0 +1,788 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__sizewell_c_rab_levy_reclassification",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "construction_pending",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__sizewell_c_rab_levy_reclassification",
+   "measure_type": "indirect_tax",
+   "missing_legs": [
+    "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.conservatives.cb_hitc_household",
+     "gov.contrib.conservatives.pensioner_personal_allowance",
+     "gov.contrib.labour.private_school_vat",
+     "gov.economic_assumptions.indices.obr.private_pension_index",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.EAST_MIDLANDS",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.EAST_OF_ENGLAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.ENGLAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.LONDON",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.NORTHERN_IRELAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.NORTH_EAST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.NORTH_WEST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.SCOTLAND",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.SOUTH_EAST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.SOUTH_WEST",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.UNITED_KINGDOM",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.WALES",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.WEST_MIDLANDS",
+     "gov.economic_assumptions.indices.ons.private_rental_prices.YORKSHIRE",
+     "gov.economic_assumptions.yoy_growth.obr.private_pension_index",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.EAST_MIDLANDS",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.EAST_OF_ENGLAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.ENGLAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.LONDON",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTHERN_IRELAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTH_EAST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.NORTH_WEST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.SCOTLAND",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.SOUTH_EAST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.SOUTH_WEST",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.UNITED_KINGDOM",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.WALES",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.WEST_MIDLANDS",
+     "gov.economic_assumptions.yoy_growth.ons.private_rental_prices.YORKSHIRE",
+     "gov.hmrc.vat.reduced_rate",
+     "gov.hmrc.vat.reduced_rate_share",
+     "gov.hmrc.vat.standard_rate",
+     "gov.indices.private_rent_index",
+     "gov.simulation.microdata_vat_coverage",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.0",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.10",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.100",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.15",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.20",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.25",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.30",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.35",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.40",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.45",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.5",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.50",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.55",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.60",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.65",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.70",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.75",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.80",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.85",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.90",
+     "gov.simulation.private_school_vat.private_school_attendance_rate.95",
+     "gov.simulation.private_school_vat.private_school_factor",
+     "gov.simulation.private_school_vat.private_school_fees",
+     "gov.simulation.private_school_vat.private_school_vat_basis",
+     "household.consumption.carbon.emissions.alcohol_and_tobacco",
+     "household.consumption.carbon.emissions.food_and_non_alcoholic_beverages",
+     "household.consumption.carbon.intensity.alcohol_and_tobacco_consumption",
+     "household.consumption.carbon.intensity.food_and_non_alcoholic_beverages_consumption",
+     "household.consumption.total_by_category.alcohol_and_tobacco_consumption",
+     "household.consumption.total_by_category.food_and_non_alcoholic_beverages_consumption"
+    ],
+    "pattern": "alcohol|tobacco|vaping|vat|levy",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "alcohol_and_tobacco_consumption",
+     "attends_private_school",
+     "attends_private_school_random_draw",
+     "baseline_vat",
+     "food_and_non_alcoholic_beverages_consumption",
+     "full_rate_vat_consumption",
+     "full_rate_vat_expenditure_rate",
+     "private_pension_income",
+     "private_school_vat",
+     "private_transfer_income",
+     "reduced_rate_vat_consumption",
+     "vat",
+     "vat_change"
+    ]
+   },
+   "note": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+   "pe_gap": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+   "pe_reform_delta": null,
+   "program": "indirect_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12636:55c54b2bb1401354",
+     "source_row_number": 12636,
+     "source_row_sha256": "55c54b2bb1401354bd4b0b3b85fb953a7e3cd8f9d5cabe3c14d165d0edc8128a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Environmental levies",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": 270000000.0,
+     "value_gbp_decimal": "270000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12637:5c68cba5ba8693e7",
+     "source_row_number": 12637,
+     "source_row_sha256": "5c68cba5ba8693e7df6a48e97b31215b01b39f95b9ad19e4a7500db52ad786e0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Environmental levies",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": 704000000.0,
+     "value_gbp_decimal": "704000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12638:1c16ea966f385f86",
+     "source_row_number": 12638,
+     "source_row_sha256": "1c16ea966f385f86bcf22338049d2f0ec821f46beac745de5310bb1a80b84525",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Environmental levies",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": 797000000.0,
+     "value_gbp_decimal": "797000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12639:090b39fe9ce72292",
+     "source_row_number": 12639,
+     "source_row_sha256": "090b39fe9ce72292b494b22d9edb1602c07ba2a198496102f080f1d525f60e9b",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Environmental levies",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": 985000000.0,
+     "value_gbp_decimal": "985000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12640:9e5b45cf605f9160",
+     "source_row_number": 12640,
+     "source_row_sha256": "9e5b45cf605f9160fa92812abaf3e0b4b995ec3fc5ed4136f04a508f808e9924",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Environmental levies",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": 1158000000.0,
+     "value_gbp_decimal": "1158000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12641:82b2b813f2253f2c",
+     "source_row_number": 12641,
+     "source_row_sha256": "82b2b813f2253f2c6304109aaf240aa108a22e2313cee22bc57d1ccee77759bf",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Environmental levies",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": 1396000000.0,
+     "value_gbp_decimal": "1396000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24083:d3f3cc0bf285bb22",
+     "source_row_number": 24083,
+     "source_row_sha256": "d3f3cc0bf285bb220e2cedd836f08bace0415fb3a9bf00804aa593e6cdc3db99",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": -219000000.0,
+     "value_gbp_decimal": "-219000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24084:4d89d10ff37a4a3a",
+     "source_row_number": 24084,
+     "source_row_sha256": "4d89d10ff37a4a3a8a74fa4fbf1e452d366a264db8724c845ab15f9910782a06",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": -227000000.0,
+     "value_gbp_decimal": "-227000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24085:b185c3194cff2a6d",
+     "source_row_number": 24085,
+     "source_row_sha256": "b185c3194cff2a6d1bddb47d1409e70c9643dcd40d92aee4666fd8720e52fc88",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": -267000000.0,
+     "value_gbp_decimal": "-267000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24086:7d263424af7046a6",
+     "source_row_number": 24086,
+     "source_row_sha256": "7d263424af7046a60a561af15b9e5c2a84e8cbdfda238c8d63808872c3753841",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": -314000000.0,
+     "value_gbp_decimal": "-314000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24087:60a5e2889b0bc2de",
+     "source_row_number": 24087,
+     "source_row_sha256": "60a5e2889b0bc2debe47df8b6c21c6d4165f99c8d81b4c85174e94260439456a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": -356000000.0,
+     "value_gbp_decimal": "-356000000.0"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "This targeted indirect-tax measure requires product/sector-specific tax-base inputs, rate histories or business/supply-side scope not established by a generic household consumption liability.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24088:c086e56fd1f5c1d0",
+     "source_row_number": 24088,
+     "source_row_sha256": "c086e56fd1f5c1d0a9f2928d3566737c6d3fed6afc23aadc2706cfb1424d2850",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other AME (current)",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": -412000000.0,
+     "value_gbp_decimal": "-412000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24089:896f323485d71932",
+     "source_row_number": 24089,
+     "source_row_sha256": "896f323485d71932158ba7552231f50930b2e3566f02e795602dd19e76a626c4",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24090:64b0a1414506fec1",
+     "source_row_number": 24090,
+     "source_row_sha256": "64b0a1414506fec1de1a45f52ceb8a450ff90369167c4893424f48b8f2125314",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": 2774000000.0,
+     "value_gbp_decimal": "2774000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24091:17466b9c49a015e0",
+     "source_row_number": 24091,
+     "source_row_sha256": "17466b9c49a015e055ffeaf3d9ebc825fb431e9775bf1a93417ad45d633d46f0",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": 3032000000.0,
+     "value_gbp_decimal": "3032000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24092:68cb6d72b4fddbac",
+     "source_row_number": 24092,
+     "source_row_sha256": "68cb6d72b4fddbacbcaa6de87276981c28d6fc3e8551fb08cd1e90c7392b57e2",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": 2414000000.0,
+     "value_gbp_decimal": "2414000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24093:bb79608095d782af",
+     "source_row_number": 24093,
+     "source_row_sha256": "bb79608095d782af18b89b2811bcfad186722f900c42b4dfa8ffd93ffc57b66d",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": 2710000000.0,
+     "value_gbp_decimal": "2710000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24094:575eed2e0198e142",
+     "source_row_number": 24094,
+     "source_row_sha256": "575eed2e0198e14238329faf279bfe6fb1fa56b3d1be32fa4fd68b7015a889bd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": 3671000000.0,
+     "value_gbp_decimal": "3671000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:24095:0feb318ce0e40190",
+     "source_row_number": 24095,
+     "source_row_sha256": "0feb318ce0e40190efd589eca49f5e6665bdb353490ff6c82372a5b160952b81",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other departmental expenditure (capital)",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:24096:719ff529f1498cb1",
+     "source_row_number": 24096,
+     "source_row_sha256": "719ff529f1498cb1281c683d9afeb49df4f5c097929c5f5b6acf864150eb3458",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other departmental expenditure (capital)",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": -2742740000.0,
+     "value_gbp_decimal": "-2742740000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:24097:0351690030fda211",
+     "source_row_number": 24097,
+     "source_row_sha256": "0351690030fda211404c11f4502939cc6a2c24a2b42dc8e98b72702c54a9352c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other departmental expenditure (capital)",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": -2982490000.0,
+     "value_gbp_decimal": "-2982490000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:24098:ba4ac73d6c50b8b4",
+     "source_row_number": 24098,
+     "source_row_sha256": "ba4ac73d6c50b8b4be750ed111bbd816e893fc370fa5c480827ce51575b41a40",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other departmental expenditure (capital)",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": -2410926000.0,
+     "value_gbp_decimal": "-2410926000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:24099:fa2b0e30f35e5c6a",
+     "source_row_number": 24099,
+     "source_row_sha256": "fa2b0e30f35e5c6a4c88da71fe911c5e91c912da3ecd3476b9c30abe10c65e42",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other departmental expenditure (capital)",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": -2717806000.0,
+     "value_gbp_decimal": "-2717806000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:24100:be86542b4199b393",
+     "source_row_number": 24100,
+     "source_row_sha256": "be86542b4199b393f17a6201a049783a4fbfdcd6aa087b8519fa9fc9e3234d84",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Other departmental expenditure (capital)",
+     "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+     "value_gbp": -3687355000.0,
+     "value_gbp_decimal": "-3687355000.0"
+    }
+   ],
+   "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+   "unmapped_obr_heads": [
+    "Environmental levies",
+    "Other AME (current)",
+    "Other departmental expenditure (capital)",
+    "PSGI in CDEL"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 985000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Environmental levies"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12639:090b39fe9ce72292",
+   "level": "source_row",
+   "measure_key": "ab2025__sizewell_c_rab_levy_reclassification",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -314000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Other AME (current)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24086:7d263424af7046a6",
+   "level": "source_row",
+   "measure_key": "ab2025__sizewell_c_rab_levy_reclassification",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": 2414000000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSGI in CDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24092:68cb6d72b4fddbac",
+   "level": "source_row",
+   "measure_key": "ab2025__sizewell_c_rab_levy_reclassification",
+   "threshold_gbp": null,
+   "year": 2028
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -2410926000.0,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Other departmental expenditure (capital)"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:24098:ba4ac73d6c50b8b4",
+   "level": "source_row",
+   "measure_key": "ab2025__sizewell_c_rab_levy_reclassification",
+   "threshold_gbp": null,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__sizewell_c_rab_levy_reclassification --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__sizewell_c_rab_levy_reclassification_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 985000000.0,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:12639:090b39fe9ce72292",
+   "source_row_number": 12639,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Environmental levies"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -314000000.0,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:24086:7d263424af7046a6",
+   "source_row_number": 24086,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Other AME (current)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": 2414000000.0,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:24092:68cb6d72b4fddbac",
+   "source_row_number": 24092,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSGI in CDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -2410926000.0,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:24098:ba4ac73d6c50b8b4",
+   "source_row_number": 24098,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Other departmental expenditure (capital)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Sizewell C: Reclassify construction costs and recognise income generated through the Regulated Asset Base levy",
+ "year": 2028
+}
