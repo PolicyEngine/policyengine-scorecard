@@ -127,5 +127,28 @@ def baseline_descriptor(event: str) -> dict:
     }
 
 
+# The later edition adds an event without extending the frozen November event
+# list, inventory, replay keys or registry. These identities serve edition-delta
+# claims only; a replay registry for the event is a separate artifact.
+MARCH_EVENTS = ("Spring Forecast 2026",)
+
+
+def march_event_slug(event: str) -> str:
+    if event in EVENTS:
+        return event_slug(event)
+    if event not in MARCH_EVENTS:
+        raise ValueError(f"obr_pmd: unregistered March-edition fiscal event {event!r}")
+    return event_key(event)
+
+
+def march_baseline_descriptor(event: str) -> dict:
+    if event in EVENTS:
+        return baseline_descriptor(event)
+    return {
+        "policy": f"obr_pre_measures_{march_event_slug(event)}",
+        "counterfactual": "policy_parameters",
+    }
+
+
 if len({event_slug(event) for event in EVENTS}) != len(EVENTS):
     raise ValueError("obr_pmd: event slugs must be unique")
