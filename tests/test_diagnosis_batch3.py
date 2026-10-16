@@ -50,7 +50,7 @@ def test_classes_and_routes():
                 )
             if item["classification"] == "open":
                 assert item["action_link"] is None
-    assert by_class == {"pe_gap": 50, "concept_mismatch": 2, "open": 5}
+    assert by_class == {"pe_gap": 54, "concept_mismatch": 2, "open": 1}
 
 
 def test_memos_match_the_records():
@@ -76,5 +76,5 @@ def test_ingest_wrote_the_batch():
         "SELECT stage FROM lanes WHERE lane = 'diagnosis-batch-3'"
     ).fetchone()
     conn.close()
-    assert dict(rows) == {"pe_gap": 50, "concept_mismatch": 2, "undiagnosed": 5}
+    assert dict(rows) == {"pe_gap": 54, "concept_mismatch": 2, "undiagnosed": 1}
     assert stage == ("computed",)

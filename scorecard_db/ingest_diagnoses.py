@@ -187,7 +187,7 @@ def ingest_batch3(db_path: Path) -> dict:
         "computed",
         f"{n} claims from the FNS, EITC and ASPE lanes adjudicated ({detail}); "
         "memos in diagnosis/batch3/",
-        "2026-10-07T23:59:00",
+        "2026-10-15T23:59:00",
     )
     db.close()
     return {"batch3_claims": n, "by_class": dict(sorted(counts.items()))}
