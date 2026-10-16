@@ -178,6 +178,38 @@ def test_the_builder_runs_no_release_code_and_never_merges():
             assert node.func.id not in {"eval", "exec", "__import__"}
 
 
+def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
+    # Defense in depth that correct code never trips (scope) still has to be
+    # wired in, in this order.
+    lines = SCRIPT.read_text().splitlines()
+
+    def at(fragment):
+        found = [
+            i
+            for i, line in enumerate(lines)
+            if fragment in line and not line.lstrip().startswith("#")
+        ]
+        assert found, fragment
+        return found[0]
+
+    assert (
+        at("uk_replay_output_guard.py")
+        < at("builder check ")
+        < at('git merge-base --is-ancestor "$receipt_commit"')
+        < at('| tar -x -C "$TREE" --strip-components=3')
+        < at("builder apply ")
+        < at('git -C "$TREE" add -A')
+        < at("builder scope ")
+        < at("commit -q -F")
+        < at('if [ "$expected" != "$committed" ]')
+        < at('pipeline.uk_replay_qualify verify-sealed "$(plan paths namespace)"')
+        < at("uk_replay_regenerate.sh")
+        < at("scorecard_db.build_db")
+        < at('git -C "$TREE" push -q origin')
+        < at("gh pr create")
+    )
+
+
 def test_the_control_environment_installs_what_the_builder_imports():
     line = next(
         line for line in SCRIPT.read_text().splitlines() if line.startswith("CONTROL=")
