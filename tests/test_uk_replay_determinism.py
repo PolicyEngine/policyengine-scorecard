@@ -12,10 +12,16 @@ from pipeline import uk_replay_determinism as determinism
 from pipeline.compute_uk_event import canonical_bytes
 
 ROOT = Path(__file__).resolve().parent.parent
-NEWEST = "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+# Sealed before #186 (its artifacts carry no processed-value evidence).
+PRE_EVIDENCE = "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+NEWEST = "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
 KEY = "autumn_budget_2024__private_school_vat_20pct"
 COMMITTED = (
-    ROOT / "results/uk/replays" / NEWEST / "autumn_budget_2024" / f"{KEY}_2026.json"
+    ROOT
+    / "results/uk/replays"
+    / PRE_EVIDENCE
+    / "autumn_budget_2024"
+    / f"{KEY}_2026.json"
 )
 # What #186's code writes for this forward delta on policyengine-uk 2.130.1
 # (review of f0ff21a): the baseline is certified current law, the reform the
@@ -74,6 +80,25 @@ def test_the_committed_6_4_1_artifact_predates_evidence_and_still_reproduces():
     matches, notice = determinism.compare(with_evidence(record), committed)
     assert matches and "predates processed-value evidence" in notice
     assert "processed_parameter_values, parameter_reform_routes" in notice
+
+
+def test_a_namespace_sealed_after_186_is_compared_whole():
+    # The 6.5.0 artifacts carry the evidence, so the replay must match every
+    # byte: removing the fields never makes a replay match one of them.
+    committed = (
+        ROOT / "results/uk/replays" / NEWEST / "autumn_budget_2024" / f"{KEY}_2026.json"
+    ).read_bytes()
+    record = json.loads(committed)
+    assert {"processed_parameter_values", "parameter_reform_routes"} <= set(record)
+    assert determinism.compare(committed, committed) == (True, None)
+    stripped = {
+        k: v
+        for k, v in record.items()
+        if k not in determinism.PROCESSED_EVIDENCE_FIELDS
+    }
+    assert determinism.compare(canonical_bytes(stripped), committed) == (False, None)
+    other = {**record, "measure_total_gbp": record["measure_total_gbp"] + 1}
+    assert determinism.compare(canonical_bytes(other), committed) == (False, None)
 
 
 def test_a_numerical_difference_fails_with_or_without_evidence():

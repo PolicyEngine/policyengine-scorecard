@@ -25,7 +25,8 @@ from pipeline import uk_replay_variants as rv
 
 LEGACY = "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
 CURRENT = "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
-NEWEST = "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+PREVIOUS = "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+NEWEST = "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
 DATASET_SHA256 = rv.get_variant(CURRENT)["identity"]["dataset"]["sha256"]
 
 
@@ -46,7 +47,12 @@ def reseal(r):
 def test_committed_variants_validate_and_default_is_legacy():
     document = rv.load_document()
     assert document["default_variant"] == LEGACY
-    assert [v["variant_id"] for v in document["variants"]] == [LEGACY, CURRENT, NEWEST]
+    assert [v["variant_id"] for v in document["variants"]] == [
+        LEGACY,
+        CURRENT,
+        PREVIOUS,
+        NEWEST,
+    ]
     for variant in document["variants"]:
         rv.validate_record(variant)
     assert rv.is_legacy(rv.get_variant())

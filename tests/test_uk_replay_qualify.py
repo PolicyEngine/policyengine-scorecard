@@ -23,7 +23,7 @@ from pipeline import uk_replay_variants as rv
 FIXTURES = Path(__file__).parent / "fixtures" / "uk_replay"
 CURRENT = "pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0"
 # The newest certified pair; the variants file is append-only, newest last.
-NEWEST = "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+NEWEST = "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
 RUN = "https://github.com/PolicyEngine/policyengine-scorecard/actions/runs/1"
 
 

@@ -84,6 +84,7 @@ jobs:
           - pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z
           - pe6.2.6_uk2.125.1_policyengine-uk-data-1.58.0
           - pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1
+          - pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1
     env:
       PYTHONPATH: .
       VARIANT: ${{ matrix.variant }}
