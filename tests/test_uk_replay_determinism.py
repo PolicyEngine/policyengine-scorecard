@@ -17,23 +17,23 @@ KEY = "autumn_budget_2024__private_school_vat_20pct"
 COMMITTED = (
     ROOT / "results/uk/replays" / NEWEST / "autumn_budget_2024" / f"{KEY}_2026.json"
 )
+# What #186's code writes for this forward delta on policyengine-uk 2.130.1
+# (review of f0ff21a): the baseline is certified current law, the reform the
+# construction's window.
+PATH = "gov.contrib.labour.private_school_vat"
 EVIDENCE = {
     "processed_parameter_values": {
-        "baseline_world": {
-            "gov.hmrc.vat.private_school": {"intended": 0.2, "processed": 0.2}
-        },
-        "reform_world": {
-            "gov.hmrc.vat.private_school": {"intended": 0.0, "processed": 0.0}
-        },
+        "baseline_world": {PATH: {"intended": 0.0, "processed": 0.0}},
+        "reform_world": {PATH: {"intended": 0.2, "processed": 0.2}},
     },
     "parameter_reform_routes": {
         "baseline_world": {
-            "entry_point": "construction_reform",
-            "submitted_reform": {},
-        },
-        "reform_world": {
             "entry_point": "certified_current_law",
             "submitted_reform": None,
+        },
+        "reform_world": {
+            "entry_point": "construction_reform",
+            "submitted_reform": {PATH: {"2025-01-01.2035-12-31": 0.2}},
         },
     },
 }
@@ -142,7 +142,9 @@ def test_removing_exactly_the_evidence_fields_reproduces_an_older_artifact(
 @given(artifacts, keys, leaves)
 def test_any_other_difference_fails(record, key, value):
     changed = {**record, key: value}
-    if changed == record:
+    # Bytes, not Python equality: True and 1, or -0.0 and 0.0, serialise
+    # differently and must fail too.
+    if canonical_bytes(changed) == canonical_bytes(record):
         return
     replay = canonical_bytes({**changed, **EVIDENCE})
     assert determinism.compare(replay, canonical_bytes(record)) == (False, None)
