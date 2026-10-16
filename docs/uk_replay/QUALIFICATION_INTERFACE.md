@@ -34,6 +34,8 @@ Two flows use the same receiver:
   the policyengine PyPI wheel SHA-256 and the packaged manifest SHA-256. The
   same receiver handles it and records the variant and sealed namespace for
   each successfully replayed dispatched release; there is no separate handler.
+  Missed-dispatch discovery constructs the same `released_bundle` request
+  from published artifacts and uses this queue and receiver.
 
 ## Transport
 
@@ -44,13 +46,39 @@ Two flows use the same receiver:
   `contents: read` on policyengine.py (public) and nothing else from W4.
 * The receiver writes incoming requests to the persistent queue on the
   `replay-state` branch, then dispatches a drain run. Incoming runs have
-  distinct concurrency groups; the prepare/run/record drain sequence shares
-  `uk-replay-drain`. GitHub's default concurrency queue can replace an older
+  distinct concurrency groups; the discovery/prepare/run/record drain sequence
+  shares `uk-replay-drain`. GitHub's default concurrency queue can replace an older
   pending run, so requests remain in the persistent queue until handled.
   ([GitHub concurrency documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency))
-  A scheduled catch-up every 3 hours drains recorded requests. Discovery of
-  policyengine.py releases that were never dispatched is separate work in
-  PR #165.
+  Every 3 hours a schedule-only `tick` job dispatches an empty
+  `workflow_dispatch` drain, without receiving the dataset token. Only an
+  empty-request `workflow_dispatch` runs `discover` → `discover_enqueue` →
+  `prepare`; incoming requests enqueue directly, and the workflow has no
+  pull-request trigger. Discovery failures do not block `prepare` from
+  draining requests already queued.
+* The read-only `discover` job checks out without persisted credentials. It
+  considers stable, non-yanked PyPI wrapper releases newer than the newest
+  certified variant (currently 6.4.1), oldest first, and builds at most three
+  requests from at most 30 release attempts per drain. Any recorded
+  qualification request covers its wrapper version, regardless of kind or
+  status; a queued or running 6.5.0 request therefore suppresses discovery of
+  6.5.0. The job reads downloaded wheels as ZIP/JSON data and runs no release
+  or candidate code. Its single token-holding step uses the read-only org
+  secret `PE_UK_PRIVATE_HF_READ_TOKEN` only to read the private release
+  manifest, whose SHA-256 and dataset size enter the request. No dataset is
+  downloaded during discovery.
+  `expected_release_bundle` is computed statically from the packaged manifest;
+  `RELEASE_REPLAY.md` cites the reviewed 6.4.1/6.5.0 wheel source and the exact
+  W4 fixtures. The normal runtime bundle comparison remains mandatory.
+* Public discovered requests and permanent skip evidence pass the receiver's
+  output guard before upload and again in `discover_enqueue`. That separate
+  job has `contents: write`, no dataset token, and runs only trusted control
+  code. It validates every discovered request against the vendored request
+  schema before enqueueing any, and refetches `replay-state` to deduplicate
+  versions again on every write attempt. This also covers a W4 request that
+  arrived while discovery ran. Immutable artifact contradictions can be
+  recorded with their digest evidence as permanent skips; transient failures
+  are retried on later drains.
 * State for request `<request_id>` lives at
   `replay-state:requests/<request_id>/`:
   `REQUEST.json` (the received request re-serialised as sorted, indented JSON;
@@ -64,8 +92,8 @@ Two flows use the same receiver:
 * Dataset fetching and candidate execution are separate steps of the run
   job, which has `contents: read` and no persisted checkout credential. The
   fetch step runs first, before any candidate code is installed, and is the
-  only step holding the read-only dataset token (the organisation secret
-  `PE_UK_PRIVATE_HF_READ_TOKEN`, only in `workflow_dispatch` and
+  only step in that job holding the read-only dataset token (the organisation
+  secret `PE_UK_PRIVATE_HF_READ_TOKEN`, only in `workflow_dispatch` and
   `repository_dispatch` runs). It verifies the file, which then goes to
   `run-request` as `--dataset-file`. Candidate code runs as an unprivileged
   account with no sudo, its own copy of the repository and inputs, and an

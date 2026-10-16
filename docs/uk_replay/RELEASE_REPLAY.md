@@ -35,8 +35,8 @@ Read in code at `61c13e38`:
   still has the 3% surcharge scale") unconditionally.
 * `diagnose_uk_event_models.investigate` refuses any engine but 2.89.2.
 
-The newest certified pair is policyengine.py **6.2.6** (PR #555 and its
-version bump `481940ec`): `policyengine-uk 2.125.1`, `policyengine-core
+The pair examined in the initial 11 October audit was policyengine.py
+**6.2.6** (PR #555 and its version bump `481940ec`): `policyengine-uk 2.125.1`, `policyengine-core
 3.33.0`, data `policyengine-uk-data-1.58.0`, default dataset
 `enhanced_frs_2024_25` (SHA-256 `5ba399ea…60b6`, 128,369,110 bytes,
 `hf://policyengine/policyengine-uk-data-private/enhanced_frs_2024_25.h5@1.58.0`).
@@ -248,6 +248,8 @@ the receiver's qualification of policyengine.py 6.4.1: request `b1f9a93d…`,
 receipt SHA-256 `3b420b5e…`, `replay-state` commit `484eaa7`. Its release
 diff against the legacy variant is committed beside it. All six corpus events
 have complete supported grids and no inert measure-years.
+This is the newest certified variant and the current missed-dispatch discovery
+floor; the 6.2.6 audit above remains historical evidence.
 
 The run predates the processed-value readback and the AB2024 CGT construction
 revision (#186). Its AB2024 Capital Gains Tax row for period 2024 (FY2024–25)
@@ -482,17 +484,72 @@ type `uk-replay-qualification-request` (and manual requests). An incoming
 request uses an `enqueue` job to write it to the persistent queue on the
 `replay-state` branch (`pipeline/uk_replay_queue.py`), then dispatches a drain
 run. Incoming runs have distinct concurrency groups; drain runs share
-`uk-replay-drain`, so only one prepare/run/record sequence executes at a time.
+`uk-replay-drain`, so only one discovery/prepare/run/record sequence executes
+at a time.
 GitHub's default concurrency queue can replace an older pending run; the
 request remains in `replay-state` for a later drain.
 ([GitHub concurrency documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency))
+
+An empty-request `workflow_dispatch` drain first runs `discover`, then
+`discover_enqueue`, before `prepare`. The schedule's `tick` job only dispatches
+that empty drain: it does not check out code or hold the dataset token. Neither
+discovery nor dataset fetching runs on a schedule tick or a pull request.
+
+| Job | Authority and inputs |
+|---|---|
+| `tick` | `actions: write`; dispatches an empty drain, without a dataset token. |
+| `enqueue` | `contents: write`, `actions: write`; records a received request and dispatches a drain; runs only trusted control code. |
+| `discover` | `contents: read`, checkout credentials disabled; reads PyPI and wheel ZIP/JSON bytes, with one token step reading only the private data release manifest. It installs, imports and executes no release or candidate code. |
+| `discover_enqueue` | `contents: write`; validates public discovery metadata and writes `replay-state`; no dataset token or release/candidate code. |
+| `prepare` | `contents: write`; selects a queued request and marks it running. |
+| `run` | `contents: read`, checkout credentials disabled; one trusted token step fetches the dataset, then candidate code runs in the sandbox below. |
+| `record` | `contents: write`, `actions: write`; rechecks public output, records the receipt and dispatches the next drain; no release/candidate code. |
+
+For the 6.4.1 and 6.5.0 wheels, a successful packaged-certification
+`release_bundle` is a pure function of the packaged manifest. The loader reads
+`data_releases[country]` (`policyengine/provenance/manifest.py:321–335` in
+both wheels); local overlays cannot shadow the default or certified dataset
+(`:300–317`). Offline certification selects the bundled certification for the
+pinned model (`:395–422`); a fingerprint mismatch can raise, rather than
+produce a different successful bundle. Bundle construction fills those
+manifest fields (`policyengine/tax_benefit_models/common/model_version.py:126–158`
+in 6.4.1, `:127–164` in 6.5.0), and the property projects the exact dictionary
+(`policyengine/core/tax_benefit_model_version.py:137–210` in 6.4.1,
+`:149–222` in 6.5.0). In particular, `policyengine_version` comes from that
+manifest (`:156` and `:168` respectively), not an imported wrapper.
+Discovery mirrors that projection and checks it against the exact W4 6.4.1
+and 6.5.0 request fixtures in `tests/fixtures/uk_replay/discovery/`. The
+receiver still compares the request with the installed release's actual
+runtime bundle: a future release that changes this projection is rejected
+if they differ.
+
+`pipeline/uk_replay_discover.py` considers stable, non-yanked PyPI releases
+newer than the newest certified variant, oldest first. A wrapper version named
+by any recorded qualification request is already covered, regardless of its
+kind or status: a queued or running 6.5.0 qualification prevents a second
+6.5.0 request. Each drain builds at most three requests and examines at most
+30 releases. Transient failures remain eligible next time; contradictions in
+verified immutable artifacts are recorded as permanent skip evidence, with
+the artifact digests that support the decision.
+
+Discovery derives public request fields from the wrapper wheel's packaged
+manifest and PyPI metadata without installing or importing the wheel. Its
+only token-holding step reads the private release manifest to bind its SHA-256
+and the certified dataset's size; it downloads no dataset. The artifact passed
+to `discover_enqueue` contains only requests and permanent skip evidence,
+checked by the receiver's output guard before upload. The write job guards
+that artifact again and validates **every** request against the vendored
+qualification schema before enqueueing any request. It refetches `replay-state`
+and checks covered versions again on each write attempt, so a concurrent W4
+qualification is not duplicated. Failed discovery or discovery enqueueing
+does not block `prepare`: existing queued requests still drain.
 
 The `prepare` job selects the oldest eligible request, marks it running and
 hands only `REQUEST.json` to the run job. The separate `run` job has
 `contents: read` and checks out with `persist-credentials: false`. Its first
 step after that fetches the dataset with `fetch-dataset`, checks its size and
 SHA-256, and records the fetch outcome, before any candidate code is
-installed. That one step holds the data token: the organisation secret
+installed. That step holds the data token: the organisation secret
 `PE_UK_PRIVATE_HF_READ_TOKEN` (read-only, policyengine-uk-data-private only),
 passed as `HUGGING_FACE_TOKEN`, and only in `workflow_dispatch` and
 `repository_dispatch` runs; the schedule only dispatches a drain, and the
@@ -539,8 +596,9 @@ process behind.
 Scorecard is public, so the dataset and anything household-level stay on the
 runner. No job saves or restores a cache (setup-uv's default cache is off on
 every use, and nothing uses `actions/cache`), so no cache links a candidate
-to the jobs that can write. The only artifacts are the request and the run's
-`output/` directory. `.github/scripts/uk_replay_output_guard.py` (standard
+to the jobs that can write. The only artifacts are public discovery metadata,
+the selected request and the run's `output/` directory.
+`.github/scripts/uk_replay_output_guard.py` (standard
 library, run with the runner's own Python) is an allowlist: every entry must
 be a regular file ending `.json`, `.jsonl`, `.csv`, `.md` or `.txt` whose
 bytes parse as that format (UTF-8 text, no NUL bytes), at most 10 MB each and
@@ -671,8 +729,9 @@ The recording job dispatches another drain run while pending requests remain;
 `workflow_dispatch` can create a run using `GITHUB_TOKEN`.
 ([GitHub workflow-trigger documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow))
 A scheduled run every three hours also drains the queue. This schedule only
-processes recorded requests; undispatched release discovery is separate work
-in PR #165. Concurrent enqueues retry with backoff and, on a rebase conflict,
+dispatches an empty `workflow_dispatch`; that drain discovers missed releases
+before selecting work. Concurrent enqueues retry with backoff and, on a
+rebase conflict,
 abort, check out the latest state branch and enqueue the request again.
 Exhausting retries reports an error.
 
