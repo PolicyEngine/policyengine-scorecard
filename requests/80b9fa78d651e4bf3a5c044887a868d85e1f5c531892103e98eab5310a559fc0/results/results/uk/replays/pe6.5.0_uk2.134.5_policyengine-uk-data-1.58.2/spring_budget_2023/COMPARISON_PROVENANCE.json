@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "9aff19741b3f53c359aaeec8db3ed51cff576f7a2d25ae5848f462718e2ac110",
+  "COMPARISON.json": "f5b52ecbbe9a4e73d88ffe20a68b8c822399937cddc477025e6ce3fbd61f38e0",
+  "COMPARISON.md": "e13e00a28e6ac2c679432b357f70b52fc5cf918cd5f7224488e355e515f7b690"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.5.0_uk2.134.5_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.5.0_uk2.134.5_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "d53d2070509b4579b0e9ac5133a799ffa1ca1443fda5ee6729813fafcccabb66",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.5.0_uk2.134.5_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "5607cd65e49a7732d390bf3a7f4650957c4ae339050401c43cff675a90fd80fd",
+ "staging_manifest_path": "results/uk/replays/pe6.5.0_uk2.134.5_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "996322a93d337068d5c18450f41c39fde7260d767ea783bf1db155170a05b84e"
+}

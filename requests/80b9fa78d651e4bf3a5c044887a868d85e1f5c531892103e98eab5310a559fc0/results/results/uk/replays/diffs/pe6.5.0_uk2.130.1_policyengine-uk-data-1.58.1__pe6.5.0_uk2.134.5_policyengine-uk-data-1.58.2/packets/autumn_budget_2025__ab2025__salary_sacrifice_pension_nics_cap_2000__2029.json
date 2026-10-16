@@ -1,0 +1,1775 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": {
+    "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+     "2029-01-01.2030-12-31": 0.0
+    },
+    "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+     "2029-01-01.2030-12-31": 1e+100
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__salary_sacrifice_pension_nics_cap_2000_2029.json",
+   "reform_reform_dict": null,
+   "sha256": "df1aca35339a04dfc2b5fe96eb3a2b0022323c12b2affb805f77c250ac68f3c3"
+  },
+  "head": {
+   "baseline_reform_dict": {
+    "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+     "2029-01-01.2030-12-31": 0.0
+    },
+    "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+     "2029-01-01.2030-12-31": 1e+100
+    }
+   },
+   "construction": "reversal_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.134.5_policyengine-uk-data-1.58.2/autumn_budget_2025/ab2025__salary_sacrifice_pension_nics_cap_2000_2029.json",
+   "reform_reform_dict": null,
+   "sha256": "bc43cdb806c63868ec1a6b434962d384abc70e37bb57b985b1901e09ff8a7296"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2029-30",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+   "data_bundle": "policyengine-uk-data-1.58.2",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.134.5",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.134.5_policyengine-uk-data-1.58.2"
+  }
+ },
+ "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2029-30",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": 0.0016,
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": "inf"
+    },
+    "2026": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": 0.0016,
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": "inf"
+    },
+    "2027": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": 0.0016,
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": "inf"
+    },
+    "2028": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": 0.0016,
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": "inf"
+    },
+    "2029": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": 0.0016,
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": 2000
+    },
+    "2030": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": 0.0016,
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": 2000
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_4"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_4"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate",
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap"
+    ],
+    "pattern": "gov\\.hmrc\\.national_insurance\\.salary_sacrifice_pension_cap|gov\\.contrib\\.behavioral_responses\\.salary_sacrifice_broad_base_haircut_rate",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+     "2029-01-01.2030-12-31": 0.0
+    },
+    "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+     "2029-01-01.2030-12-31": 1e+100
+    }
+   },
+   "pe_gap": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12336:7845fbf6ff26f361",
+     "source_row_number": 12336,
+     "source_row_sha256": "7845fbf6ff26f3616bb9cf2330340e7fc3c0f7bf9405b77d393e4271cad9e54a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12337:3b045b83864340cb",
+     "source_row_number": 12337,
+     "source_row_sha256": "3b045b83864340cb342a4585efaf8d0f364198646a8997938b9570e1568092e1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -25370811.47955587,
+     "value_gbp_decimal": "-25370811.47955587"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12338:97e677e9d5b1787d",
+     "source_row_number": 12338,
+     "source_row_sha256": "97e677e9d5b1787d1ba29bc9ae78ed0c23fb9662093e0e9b0db5d32e3b3570b1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -38102239.65153843,
+     "value_gbp_decimal": "-38102239.65153843"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12339:f1cbe0cc8417d518",
+     "source_row_number": 12339,
+     "source_row_sha256": "f1cbe0cc8417d518a774ae8d8538565fd29eb41c65b9387b1a8039813574764e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -50783026.3893156,
+     "value_gbp_decimal": "-50783026.3893156"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12340:56a6872c6215ff54",
+     "source_row_number": 12340,
+     "source_row_sha256": "56a6872c6215ff542c46fedb956e3faa2cac980615ea3c4d7d8df078acdfacda",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 1390554382.340003,
+     "value_gbp_decimal": "1390554382.340003"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12341:ce174c39c117892d",
+     "source_row_number": 12341,
+     "source_row_sha256": "ce174c39c117892d29fbed71a33d84e78cba5350b4fac4196f9cdddac8a10f88",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -714491346.3497609,
+     "value_gbp_decimal": "-714491346.3497609"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12342:8f33b3b6f2b603fd",
+     "source_row_number": 12342,
+     "source_row_sha256": "8f33b3b6f2b603fdf85124fb1113af5461d6d3cf3fe367c7a6e63913c647bf9e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12343:b79b48811830e061",
+     "source_row_number": 12343,
+     "source_row_sha256": "b79b48811830e061c9fa45c323a690b6159a1d066cfe93dc25ddf3124c45d2c7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -10729860.902800936,
+     "value_gbp_decimal": "-10729860.902800936"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12344:4e1c69b7573ca567",
+     "source_row_number": 12344,
+     "source_row_sha256": "4e1c69b7573ca56704c0a48616a92da9234dd7a56353517bfec52ddfcc04032d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -16095413.675439086,
+     "value_gbp_decimal": "-16095413.675439086"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12345:62f5602cdc68a152",
+     "source_row_number": 12345,
+     "source_row_sha256": "62f5602cdc68a15239f631beee8c23c10224c2caa012f494313880aa1a0d6257",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -21459998.959731616,
+     "value_gbp_decimal": "-21459998.959731616"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12346:3b87f6a01f129a2e",
+     "source_row_number": 12346,
+     "source_row_sha256": "3b87f6a01f129a2e638f54d2b5bc377a9e489aab142f7f226e4338ea14c42e35",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 3522669371.413509,
+     "value_gbp_decimal": "3522669371.413509"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12347:687b6f32b91450d1",
+     "source_row_number": 12347,
+     "source_row_sha256": "687b6f32b91450d1ce2b3e88dfe710cebd86c2e8b85df5d528428d7d29fb4e9d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 3531429304.873591,
+     "value_gbp_decimal": "3531429304.873591"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12348:933804c346b7051f",
+     "source_row_number": 12348,
+     "source_row_sha256": "933804c346b7051f0fb1ba928b8a1de630b4bcde0903ed574702c6dd9edbaa81",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12349:62c228b05eaaf660",
+     "source_row_number": 12349,
+     "source_row_sha256": "62c228b05eaaf660058c0627667065f119dd3433ef8a837107162b7583a55c77",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 538554.0185143711,
+     "value_gbp_decimal": "538554.0185143711"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12350:73024e01bfa0eb7b",
+     "source_row_number": 12350,
+     "source_row_sha256": "73024e01bfa0eb7b48bc54b5a6b7c30517e59aa73b389726b2220580ea08d398",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 807831.0277715565,
+     "value_gbp_decimal": "807831.0277715565"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12351:0722288bec0713d2",
+     "source_row_number": 12351,
+     "source_row_sha256": "0722288bec0713d28d2e6dbc2fe4a4e9bc3d786a8730ced1ccb86739c88f2c87",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 1077108.0370287423,
+     "value_gbp_decimal": "1077108.0370287423"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12352:de2a74b6a1944c9b",
+     "source_row_number": 12352,
+     "source_row_sha256": "de2a74b6a1944c9b28c4a61cc9a56e2eba28a5b153bacd78ebceace23938fb44",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -176809063.07459888,
+     "value_gbp_decimal": "-176809063.07459888"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12353:cddf67051176b3d2",
+     "source_row_number": 12353,
+     "source_row_sha256": "cddf67051176b3d213492eb5d0626b03b2d569d59039583d8ad806bdea2b3eed",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -177256504.03374776,
+     "value_gbp_decimal": "-177256504.03374776"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23963:1918b5c36770a0f5",
+     "source_row_number": 23963,
+     "source_row_sha256": "1918b5c36770a0f548787146262dfa192808ad5843ca33cfa2e236f0f72c2a31",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23964:2443fe5bded00bd3",
+     "source_row_number": 23964,
+     "source_row_sha256": "2443fe5bded00bd302546e194be629419a42cff681decae8bafd457864df4682",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -270297.92712643027,
+     "value_gbp_decimal": "-270297.92712643027"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23965:7a50110b34dcfda3",
+     "source_row_number": 23965,
+     "source_row_sha256": "7a50110b34dcfda398ced4c224c9ab2259345e57e632953902cbfb7532eef01b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -403221.639611952,
+     "value_gbp_decimal": "-403221.639611952"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23966:68d7c7b9372ff8ee",
+     "source_row_number": 23966,
+     "source_row_sha256": "68d7c7b9372ff8eeec37d27ed0ca3f1cfef7251cac5b1d073bda89b7c3c6620c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -534704.2806005152,
+     "value_gbp_decimal": "-534704.2806005152"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23967:c98aa1d14ad9fd8e",
+     "source_row_number": 23967,
+     "source_row_sha256": "c98aa1d14ad9fd8e4a9e03079cb42346df64a6e2185891014a96178ee95003d9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 14595528.132013462,
+     "value_gbp_decimal": "14595528.132013462"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23968:50cda063301b35eb",
+     "source_row_number": 23968,
+     "source_row_sha256": "50cda063301b35eb919222844ebee610faec820b3d68c2d3d8f558d1acbdce13",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -7460909.099500101,
+     "value_gbp_decimal": "-7460909.099500101"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23969:251e748ad043dffa",
+     "source_row_number": 23969,
+     "source_row_sha256": "251e748ad043dffa16ef12d860ef044256fb55d5381e7bc440a1fdce86387381",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23970:3ec40cddcc137aad",
+     "source_row_number": 23970,
+     "source_row_sha256": "3ec40cddcc137aadaa5796632ac632be11748a339f21208a0c39acdc63fabbdd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -1748761.99096802,
+     "value_gbp_decimal": "-1748761.99096802"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23971:9ccbfc7e5a8ec42d",
+     "source_row_number": 23971,
+     "source_row_sha256": "9ccbfc7e5a8ec42d0fc58bc9f7cb3d707416f4a4e789bc76c394827a5ba0dd6e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -2619007.645354344,
+     "value_gbp_decimal": "-2619007.645354344"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23972:f23aa7a5db4c06fc",
+     "source_row_number": 23972,
+     "source_row_sha256": "f23aa7a5db4c06fc955818c510b18a1a080aace0a0689d3d337eb24bf7a5132a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -3477519.079229659,
+     "value_gbp_decimal": "-3477519.079229659"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23973:beed70e727200ebb",
+     "source_row_number": 23973,
+     "source_row_sha256": "beed70e727200ebb88868734ccccb0b8f6f0ff3c5c01e078b2f015c986328171",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 94910193.32441647,
+     "value_gbp_decimal": "94910193.32441647"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23974:5b32bac74f033733",
+     "source_row_number": 23974,
+     "source_row_sha256": "5b32bac74f0337336455166929ff6b8c893de6527b52d7aece9ce98ace2ead6f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -48589458.980413295,
+     "value_gbp_decimal": "-48589458.980413295"
+    }
+   ],
+   "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+   "unmapped_obr_heads": [
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2029-30",
+   "computability": "partial",
+   "construction": "reversal_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2025": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": 0.0016,
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": "inf"
+    },
+    "2026": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": 0.0016,
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": "inf"
+    },
+    "2027": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": 0.0016,
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": "inf"
+    },
+    "2028": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": 0.0016,
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": "inf"
+    },
+    "2029": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": 0.0016,
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": 2000
+    },
+    "2030": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": 0.0016,
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": 2000
+    }
+   },
+   "fiscal_event": "Autumn Budget 2025",
+   "head_variables": [
+    "income_tax",
+    "ni_class_1_employee",
+    "ni_class_1_employer",
+    "ni_class_4"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "Income tax",
+     "pe_variables": [
+      "income_tax"
+     ]
+    },
+    {
+     "channel": "tax",
+     "obr_head": "NICs",
+     "pe_variables": [
+      "ni_class_1_employee",
+      "ni_class_1_employer",
+      "ni_class_4"
+     ]
+    }
+   ],
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "measure_type": "income_tax",
+   "missing_legs": [
+    "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate",
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap"
+    ],
+    "pattern": "gov\\.hmrc\\.national_insurance\\.salary_sacrifice_pension_cap|gov\\.contrib\\.behavioral_responses\\.salary_sacrifice_broad_base_haircut_rate",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce. Construction from the OBR costings lane (data/uk/obr_measure_reforms.yaml, #56).",
+   "pe_baseline_modifier": {
+    "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+     "2029-01-01.2030-12-31": 0.0
+    },
+    "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+     "2029-01-01.2030-12-31": 1e+100
+    }
+   },
+   "pe_gap": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+   "program": "income_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12336:7845fbf6ff26f361",
+     "source_row_number": 12336,
+     "source_row_sha256": "7845fbf6ff26f3616bb9cf2330340e7fc3c0f7bf9405b77d393e4271cad9e54a",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12337:3b045b83864340cb",
+     "source_row_number": 12337,
+     "source_row_sha256": "3b045b83864340cb342a4585efaf8d0f364198646a8997938b9570e1568092e1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -25370811.47955587,
+     "value_gbp_decimal": "-25370811.47955587"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12338:97e677e9d5b1787d",
+     "source_row_number": 12338,
+     "source_row_sha256": "97e677e9d5b1787d1ba29bc9ae78ed0c23fb9662093e0e9b0db5d32e3b3570b1",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -38102239.65153843,
+     "value_gbp_decimal": "-38102239.65153843"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12339:f1cbe0cc8417d518",
+     "source_row_number": 12339,
+     "source_row_sha256": "f1cbe0cc8417d518a774ae8d8538565fd29eb41c65b9387b1a8039813574764e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -50783026.3893156,
+     "value_gbp_decimal": "-50783026.3893156"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12340:56a6872c6215ff54",
+     "source_row_number": 12340,
+     "source_row_sha256": "56a6872c6215ff542c46fedb956e3faa2cac980615ea3c4d7d8df078acdfacda",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 1390554382.340003,
+     "value_gbp_decimal": "1390554382.340003"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12341:ce174c39c117892d",
+     "source_row_number": 12341,
+     "source_row_sha256": "ce174c39c117892d29fbed71a33d84e78cba5350b4fac4196f9cdddac8a10f88",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Income tax",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -714491346.3497609,
+     "value_gbp_decimal": "-714491346.3497609"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12342:8f33b3b6f2b603fd",
+     "source_row_number": 12342,
+     "source_row_sha256": "8f33b3b6f2b603fdf85124fb1113af5461d6d3cf3fe367c7a6e63913c647bf9e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12343:b79b48811830e061",
+     "source_row_number": 12343,
+     "source_row_sha256": "b79b48811830e061c9fa45c323a690b6159a1d066cfe93dc25ddf3124c45d2c7",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -10729860.902800936,
+     "value_gbp_decimal": "-10729860.902800936"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12344:4e1c69b7573ca567",
+     "source_row_number": 12344,
+     "source_row_sha256": "4e1c69b7573ca56704c0a48616a92da9234dd7a56353517bfec52ddfcc04032d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -16095413.675439086,
+     "value_gbp_decimal": "-16095413.675439086"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12345:62f5602cdc68a152",
+     "source_row_number": 12345,
+     "source_row_sha256": "62f5602cdc68a15239f631beee8c23c10224c2caa012f494313880aa1a0d6257",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -21459998.959731616,
+     "value_gbp_decimal": "-21459998.959731616"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12346:3b87f6a01f129a2e",
+     "source_row_number": 12346,
+     "source_row_sha256": "3b87f6a01f129a2e638f54d2b5bc377a9e489aab142f7f226e4338ea14c42e35",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 3522669371.413509,
+     "value_gbp_decimal": "3522669371.413509"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "PE's exact pre-policy cap is infinity, which standard JSON cannot retain in the required run artifact. This construction uses a finite 1e100 cap, above any modeled contribution, and sets the model's fixed 0.16% broad-base pay-haircut response to zero; code inspection verifies that this leaves salary sacrifice uncapped on the modeled data. The certified formula otherwise embeds that behavioural incidence assumption, and the OBR scores small pre-2029 effects that the direct PE lever cannot produce.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12347:687b6f32b91450d1",
+     "source_row_number": 12347,
+     "source_row_sha256": "687b6f32b91450d1ce2b3e88dfe710cebd86c2e8b85df5d528428d7d29fb4e9d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "NICs",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 3531429304.873591,
+     "value_gbp_decimal": "3531429304.873591"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12348:933804c346b7051f",
+     "source_row_number": 12348,
+     "source_row_sha256": "933804c346b7051f0fb1ba928b8a1de630b4bcde0903ed574702c6dd9edbaa81",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12349:62c228b05eaaf660",
+     "source_row_number": 12349,
+     "source_row_sha256": "62c228b05eaaf660058c0627667065f119dd3433ef8a837107162b7583a55c77",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 538554.0185143711,
+     "value_gbp_decimal": "538554.0185143711"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12350:73024e01bfa0eb7b",
+     "source_row_number": 12350,
+     "source_row_sha256": "73024e01bfa0eb7b48bc54b5a6b7c30517e59aa73b389726b2220580ea08d398",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 807831.0277715565,
+     "value_gbp_decimal": "807831.0277715565"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12351:0722288bec0713d2",
+     "source_row_number": 12351,
+     "source_row_sha256": "0722288bec0713d28d2e6dbc2fe4a4e9bc3d786a8730ced1ccb86739c88f2c87",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 1077108.0370287423,
+     "value_gbp_decimal": "1077108.0370287423"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12352:de2a74b6a1944c9b",
+     "source_row_number": 12352,
+     "source_row_sha256": "de2a74b6a1944c9b28c4a61cc9a56e2eba28a5b153bacd78ebceace23938fb44",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -176809063.07459888,
+     "value_gbp_decimal": "-176809063.07459888"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12353:cddf67051176b3d2",
+     "source_row_number": 12353,
+     "source_row_sha256": "cddf67051176b3d213492eb5d0626b03b2d569d59039583d8ad806bdea2b3eed",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Corporation tax (onshore)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -177256504.03374776,
+     "value_gbp_decimal": "-177256504.03374776"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23963:1918b5c36770a0f5",
+     "source_row_number": 23963,
+     "source_row_sha256": "1918b5c36770a0f548787146262dfa192808ad5843ca33cfa2e236f0f72c2a31",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23964:2443fe5bded00bd3",
+     "source_row_number": 23964,
+     "source_row_sha256": "2443fe5bded00bd302546e194be629419a42cff681decae8bafd457864df4682",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -270297.92712643027,
+     "value_gbp_decimal": "-270297.92712643027"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23965:7a50110b34dcfda3",
+     "source_row_number": 23965,
+     "source_row_sha256": "7a50110b34dcfda398ced4c224c9ab2259345e57e632953902cbfb7532eef01b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -403221.639611952,
+     "value_gbp_decimal": "-403221.639611952"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23966:68d7c7b9372ff8ee",
+     "source_row_number": 23966,
+     "source_row_sha256": "68d7c7b9372ff8eeec37d27ed0ca3f1cfef7251cac5b1d073bda89b7c3c6620c",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -534704.2806005152,
+     "value_gbp_decimal": "-534704.2806005152"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23967:c98aa1d14ad9fd8e",
+     "source_row_number": 23967,
+     "source_row_sha256": "c98aa1d14ad9fd8e4a9e03079cb42346df64a6e2185891014a96178ee95003d9",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 14595528.132013462,
+     "value_gbp_decimal": "14595528.132013462"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23968:50cda063301b35eb",
+     "source_row_number": 23968,
+     "source_row_sha256": "50cda063301b35eb919222844ebee610faec820b3d68c2d3d8f558d1acbdce13",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSCE in RDEL",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -7460909.099500101,
+     "value_gbp_decimal": "-7460909.099500101"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23969:251e748ad043dffa",
+     "source_row_number": 23969,
+     "source_row_sha256": "251e748ad043dffa16ef12d860ef044256fb55d5381e7bc440a1fdce86387381",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23970:3ec40cddcc137aad",
+     "source_row_number": 23970,
+     "source_row_sha256": "3ec40cddcc137aadaa5796632ac632be11748a339f21208a0c39acdc63fabbdd",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -1748761.99096802,
+     "value_gbp_decimal": "-1748761.99096802"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23971:9ccbfc7e5a8ec42d",
+     "source_row_number": 23971,
+     "source_row_sha256": "9ccbfc7e5a8ec42d0fc58bc9f7cb3d707416f4a4e789bc76c394827a5ba0dd6e",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -2619007.645354344,
+     "value_gbp_decimal": "-2619007.645354344"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23972:f23aa7a5db4c06fc",
+     "source_row_number": 23972,
+     "source_row_sha256": "f23aa7a5db4c06fc955818c510b18a1a080aace0a0689d3d337eb24bf7a5132a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -3477519.079229659,
+     "value_gbp_decimal": "-3477519.079229659"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23973:beed70e727200ebb",
+     "source_row_number": 23973,
+     "source_row_sha256": "beed70e727200ebb88868734ccccb0b8f6f0ff3c5c01e078b2f015c986328171",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": 94910193.32441647,
+     "value_gbp_decimal": "94910193.32441647"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23974:5b32bac74f033733",
+     "source_row_number": 23974,
+     "source_row_sha256": "5b32bac74f0337336455166929ff6b8c893de6527b52d7aece9ce98ace2ead6f",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "Scottish BGA (current)",
+     "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+     "value_gbp": -48589458.980413295,
+     "value_gbp_decimal": "-48589458.980413295"
+    }
+   ],
+   "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+   "unmapped_obr_heads": [
+    "Corporation tax (onshore)",
+    "PSCE in RDEL",
+    "Scottish BGA (current)"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+      "baseline_world": 0.0,
+      "current_law": 0.0016,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.0016,
+      "reform_world": 0.0016
+     },
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+      "baseline_world": 1e+100,
+      "current_law": 2000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 2000,
+      "reform_world": 2000
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "not a forward delta",
+     "holds": null
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "the reversal differs from current law in an in-force year",
+     "holds": true
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.contrib.behavioral_responses.salary_sacrifice_broad_base_haircut_rate": {
+      "baseline_world": 0.0,
+      "current_law": 0.0016,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0.0016,
+      "reform_world": 0.0016
+     },
+     "gov.hmrc.national_insurance.salary_sacrifice_pension_cap": {
+      "baseline_world": 1e+100,
+      "current_law": 2000,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 2000,
+      "reform_world": 2000
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 119185198.37719727,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 1390554382.340003,
+    "ratio_bin": {
+     "base": "same_sign_ratio_below_0.5",
+     "head": "same_sign_ratio_below_0.5"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "Income tax"
+   },
+   "delta_gbp": -49726165.041137695,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 1191851.9837719726
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 69459033.33605957,
+   "key": "obr_pmd_nov2025:12340:56a6872c6215ff54",
+   "level": "source_row",
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "threshold_gbp": 1191851.9837719726,
+   "year": 2029
+  },
+  {
+   "base_gbp": 2131284704.4253254,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 3522669371.413509,
+    "ratio_bin": {
+     "base": "same_sign_ratio_0.5_to_0.8",
+     "head": "same_sign_ratio_0.5_to_0.8"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "NICs"
+   },
+   "delta_gbp": -1867335.311572075,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 2129417369.1137533,
+   "key": "obr_pmd_nov2025:12346:3b87f6a01f129a2e",
+   "level": "source_row",
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "threshold_gbp": 21312847.044253256,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": -176809063.07459888,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Corporation tax (onshore)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12352:de2a74b6a1944c9b",
+   "level": "source_row",
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 14595528.132013462,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "PSCE in RDEL"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23967:c98aa1d14ad9fd8e",
+   "level": "source_row",
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2029-30",
+    "obr_value_gbp": 94910193.32441647,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "Scottish BGA (current)"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23973:beed70e727200ebb",
+   "level": "source_row",
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "threshold_gbp": null,
+   "year": 2029
+  },
+  {
+   "base_gbp": 2250469902.8025227,
+   "context": {},
+   "delta_gbp": -51593500.35270977,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 22504699.02802523
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 2198876402.449813,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "threshold_gbp": 22504699.02802523,
+   "year": 2029
+  },
+  {
+   "base_gbp": 119185198.37719727,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -49726165.041137695,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 1191851.9837719726
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 69459033.33605957,
+   "key": "income_tax",
+   "level": "head",
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "threshold_gbp": 1191851.9837719726,
+   "year": 2029
+  },
+  {
+   "base_gbp": 263855675.31918335,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -4437384.55670166,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 2638556.7531918334
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 259418290.7624817,
+   "key": "ni_class_1_employee",
+   "level": "head",
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "threshold_gbp": 2638556.7531918334,
+   "year": 2029
+  },
+  {
+   "base_gbp": 1867381527.8717651,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": 2588098.915740967,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 1869969626.787506,
+   "key": "ni_class_1_employer",
+   "level": "head",
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "threshold_gbp": 18699696.26787506,
+   "year": 2029
+  },
+  {
+   "base_gbp": 47501.23437690735,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -18049.67061138153,
+   "details": [],
+   "event": "autumn_budget_2025",
+   "flags": [],
+   "head_gbp": 29451.563765525818,
+   "key": "ni_class_4",
+   "level": "head",
+   "measure_key": "ab2025__salary_sacrifice_pension_nics_cap_2000",
+   "threshold_gbp": 1000000.0,
+   "year": 2029
+  }
+ ],
+ "registry_sha256": {
+  "base": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__salary_sacrifice_pension_nics_cap_2000 --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__salary_sacrifice_pension_nics_cap_2000_2029",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.5.0_uk2.134.5_policyengine-uk-data-1.58.2 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__salary_sacrifice_pension_nics_cap_2000 --years 2029 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.134.5_policyengine-uk-data-1.58.2/autumn_budget_2025/ab2025__salary_sacrifice_pension_nics_cap_2000_2029"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 119185198.37719727,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": 69459033.33605957,
+   "obr_value_gbp": 1390554382.340003,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12340:56a6872c6215ff54",
+   "source_row_number": 12340,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 2131284704.4253254,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": 2129417369.1137533,
+   "obr_value_gbp": 3522669371.413509,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12346:3b87f6a01f129a2e",
+   "source_row_number": 12346,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -176809063.07459888,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12352:de2a74b6a1944c9b",
+   "source_row_number": 12352,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 14595528.132013462,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23967:c98aa1d14ad9fd8e",
+   "source_row_number": 23967,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 94910193.32441647,
+   "side": "base",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23973:beed70e727200ebb",
+   "source_row_number": 23973,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  },
+  {
+   "base_gbp": 119185198.37719727,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2029-30",
+   "head_gbp": 69459033.33605957,
+   "obr_value_gbp": 1390554382.340003,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12340:56a6872c6215ff54",
+   "source_row_number": 12340,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Income tax"
+  },
+  {
+   "base_gbp": 2131284704.4253254,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": 2129417369.1137533,
+   "obr_value_gbp": 3522669371.413509,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12346:3b87f6a01f129a2e",
+   "source_row_number": 12346,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "NICs"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": -176809063.07459888,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:12352:de2a74b6a1944c9b",
+   "source_row_number": 12352,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Corporation tax (onshore)"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 14595528.132013462,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23967:c98aa1d14ad9fd8e",
+   "source_row_number": 23967,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSCE in RDEL"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2029-30",
+   "head_gbp": null,
+   "obr_value_gbp": 94910193.32441647,
+   "side": "head",
+   "source_column": "2029-30",
+   "source_row_id": "obr_pmd_nov2025:23973:beed70e727200ebb",
+   "source_row_number": 23973,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "Scottish BGA (current)"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Salary Sacrifice: Limit the value of salary sacrificed pension contributions that can receive employee and employer NICs relief to \u00a32,000 per year from 6 April 2029",
+ "year": 2029
+}
