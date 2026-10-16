@@ -52,6 +52,7 @@ from .ingest_harvest import sync_lane_feed
 REPO = Path(__file__).resolve().parent.parent
 URBAN_SOURCE = "urban_sotsn"
 PMD_REGISTRY = "obr_pmd_all_events"
+PMD_REGISTRIES = frozenset({PMD_REGISTRY, "obr_pmd_march2026"})
 PMD_DIRECTORY = "populations-pmd"
 
 
@@ -214,7 +215,7 @@ def export(
         publication = json.loads(c["publication"])
         reform = json.loads(c["reform_json"])
         conditions = json.loads(c["conditions"])
-        if publication.get("registry") == PMD_REGISTRY:
+        if publication.get("registry") in PMD_REGISTRIES:
             event = conditions["fiscal_event"]
             archive_events[c["claim_id"]] = (
                 event,

@@ -1,0 +1,639 @@
+{
+  "tax_measure_rows": 2593,
+  "staged_original_cells": 24548,
+  "tax_cells": 12857,
+  "skipped_extended_cells": 48902,
+  "spending_measure_rows": 1981,
+  "spending_cells": 11691,
+  "by_event": {
+    "Budget 1970": {
+      "measure_rows": 1,
+      "tax_measure_rows": 1,
+      "staged_original_cells": 2,
+      "skipped_extended_cells": 59,
+      "measures": 1
+    },
+    "Budget 1971": {
+      "measure_rows": 3,
+      "tax_measure_rows": 3,
+      "staged_original_cells": 6,
+      "skipped_extended_cells": 174,
+      "measures": 3
+    },
+    "Budget 1972": {
+      "measure_rows": 5,
+      "tax_measure_rows": 5,
+      "staged_original_cells": 10,
+      "skipped_extended_cells": 285,
+      "measures": 4
+    },
+    "Budget 1973": {
+      "measure_rows": 2,
+      "tax_measure_rows": 2,
+      "staged_original_cells": 4,
+      "skipped_extended_cells": 112,
+      "measures": 2
+    },
+    "Budget 1974": {
+      "measure_rows": 14,
+      "tax_measure_rows": 14,
+      "staged_original_cells": 28,
+      "skipped_extended_cells": 770,
+      "measures": 14
+    },
+    "Budget 1975": {
+      "measure_rows": 8,
+      "tax_measure_rows": 8,
+      "staged_original_cells": 16,
+      "skipped_extended_cells": 432,
+      "measures": 8
+    },
+    "Budget 1976": {
+      "measure_rows": 12,
+      "tax_measure_rows": 12,
+      "staged_original_cells": 24,
+      "skipped_extended_cells": 636,
+      "measures": 12
+    },
+    "Budget 1977": {
+      "measure_rows": 10,
+      "tax_measure_rows": 10,
+      "staged_original_cells": 20,
+      "skipped_extended_cells": 520,
+      "measures": 10
+    },
+    "Budget 1978": {
+      "measure_rows": 6,
+      "tax_measure_rows": 6,
+      "staged_original_cells": 12,
+      "skipped_extended_cells": 306,
+      "measures": 6
+    },
+    "Budget 1979": {
+      "measure_rows": 15,
+      "tax_measure_rows": 15,
+      "staged_original_cells": 30,
+      "skipped_extended_cells": 750,
+      "measures": 14
+    },
+    "Budget 1980": {
+      "measure_rows": 23,
+      "tax_measure_rows": 23,
+      "staged_original_cells": 46,
+      "skipped_extended_cells": 1127,
+      "measures": 21
+    },
+    "Budget 1981": {
+      "measure_rows": 14,
+      "tax_measure_rows": 14,
+      "staged_original_cells": 28,
+      "skipped_extended_cells": 672,
+      "measures": 12
+    },
+    "Budget 1982": {
+      "measure_rows": 18,
+      "tax_measure_rows": 18,
+      "staged_original_cells": 36,
+      "skipped_extended_cells": 846,
+      "measures": 18
+    },
+    "Budget 1983": {
+      "measure_rows": 13,
+      "tax_measure_rows": 13,
+      "staged_original_cells": 26,
+      "skipped_extended_cells": 598,
+      "measures": 13
+    },
+    "Budget 1984": {
+      "measure_rows": 8,
+      "tax_measure_rows": 8,
+      "staged_original_cells": 16,
+      "skipped_extended_cells": 360,
+      "measures": 8
+    },
+    "Budget 1985": {
+      "measure_rows": 7,
+      "tax_measure_rows": 7,
+      "staged_original_cells": 14,
+      "skipped_extended_cells": 308,
+      "measures": 7
+    },
+    "Budget 1986": {
+      "measure_rows": 11,
+      "tax_measure_rows": 11,
+      "staged_original_cells": 22,
+      "skipped_extended_cells": 473,
+      "measures": 11
+    },
+    "Budget 1987": {
+      "measure_rows": 14,
+      "tax_measure_rows": 14,
+      "staged_original_cells": 28,
+      "skipped_extended_cells": 588,
+      "measures": 14
+    },
+    "Budget 1988": {
+      "measure_rows": 13,
+      "tax_measure_rows": 13,
+      "staged_original_cells": 26,
+      "skipped_extended_cells": 533,
+      "measures": 13
+    },
+    "Budget 1989": {
+      "measure_rows": 13,
+      "tax_measure_rows": 13,
+      "staged_original_cells": 26,
+      "skipped_extended_cells": 520,
+      "measures": 13
+    },
+    "Budget 1990": {
+      "measure_rows": 12,
+      "tax_measure_rows": 12,
+      "staged_original_cells": 24,
+      "skipped_extended_cells": 468,
+      "measures": 12
+    },
+    "Budget 1991": {
+      "measure_rows": 16,
+      "tax_measure_rows": 16,
+      "staged_original_cells": 32,
+      "skipped_extended_cells": 608,
+      "measures": 16
+    },
+    "Budget 1992": {
+      "measure_rows": 11,
+      "tax_measure_rows": 11,
+      "staged_original_cells": 22,
+      "skipped_extended_cells": 407,
+      "measures": 11
+    },
+    "Budget 1993": {
+      "measure_rows": 20,
+      "tax_measure_rows": 20,
+      "staged_original_cells": 60,
+      "skipped_extended_cells": 700,
+      "measures": 20
+    },
+    "Budget 1993 #2": {
+      "measure_rows": 20,
+      "tax_measure_rows": 20,
+      "staged_original_cells": 60,
+      "skipped_extended_cells": 680,
+      "measures": 20
+    },
+    "Budget 1994": {
+      "measure_rows": 22,
+      "tax_measure_rows": 22,
+      "staged_original_cells": 66,
+      "skipped_extended_cells": 726,
+      "measures": 22
+    },
+    "Budget 1995": {
+      "measure_rows": 17,
+      "tax_measure_rows": 17,
+      "staged_original_cells": 51,
+      "skipped_extended_cells": 544,
+      "measures": 14
+    },
+    "Budget 1996": {
+      "measure_rows": 16,
+      "tax_measure_rows": 16,
+      "staged_original_cells": 48,
+      "skipped_extended_cells": 496,
+      "measures": 15
+    },
+    "Budget 1997": {
+      "measure_rows": 17,
+      "tax_measure_rows": 17,
+      "staged_original_cells": 51,
+      "skipped_extended_cells": 527,
+      "measures": 14
+    },
+    "Budget 1998": {
+      "measure_rows": 20,
+      "tax_measure_rows": 20,
+      "staged_original_cells": 60,
+      "skipped_extended_cells": 600,
+      "measures": 20
+    },
+    "Budget 1999": {
+      "measure_rows": 27,
+      "tax_measure_rows": 27,
+      "staged_original_cells": 81,
+      "skipped_extended_cells": 783,
+      "measures": 27
+    },
+    "Budget 2000": {
+      "measure_rows": 30,
+      "tax_measure_rows": 30,
+      "staged_original_cells": 90,
+      "skipped_extended_cells": 840,
+      "measures": 28
+    },
+    "PBR 2000": {
+      "measure_rows": 5,
+      "tax_measure_rows": 5,
+      "staged_original_cells": 20,
+      "skipped_extended_cells": 135,
+      "measures": 5
+    },
+    "Budget 2001": {
+      "measure_rows": 8,
+      "tax_measure_rows": 8,
+      "staged_original_cells": 24,
+      "skipped_extended_cells": 216,
+      "measures": 8
+    },
+    "PBR 2001": {
+      "measure_rows": 4,
+      "tax_measure_rows": 4,
+      "staged_original_cells": 13,
+      "skipped_extended_cells": 104,
+      "measures": 4
+    },
+    "Budget 2002": {
+      "measure_rows": 28,
+      "tax_measure_rows": 28,
+      "staged_original_cells": 84,
+      "skipped_extended_cells": 728,
+      "measures": 27
+    },
+    "PBR 2002": {
+      "measure_rows": 7,
+      "tax_measure_rows": 7,
+      "staged_original_cells": 28,
+      "skipped_extended_cells": 175,
+      "measures": 7
+    },
+    "Budget 2003": {
+      "measure_rows": 13,
+      "tax_measure_rows": 13,
+      "staged_original_cells": 39,
+      "skipped_extended_cells": 325,
+      "measures": 13
+    },
+    "PBR 2003": {
+      "measure_rows": 6,
+      "tax_measure_rows": 6,
+      "staged_original_cells": 24,
+      "skipped_extended_cells": 144,
+      "measures": 6
+    },
+    "Budget 2004": {
+      "measure_rows": 15,
+      "tax_measure_rows": 15,
+      "staged_original_cells": 45,
+      "skipped_extended_cells": 360,
+      "measures": 15
+    },
+    "PBR 2004": {
+      "measure_rows": 13,
+      "tax_measure_rows": 13,
+      "staged_original_cells": 52,
+      "skipped_extended_cells": 299,
+      "measures": 12
+    },
+    "Budget 2005": {
+      "measure_rows": 19,
+      "tax_measure_rows": 19,
+      "staged_original_cells": 57,
+      "skipped_extended_cells": 437,
+      "measures": 19
+    },
+    "PBR 2005": {
+      "measure_rows": 9,
+      "tax_measure_rows": 9,
+      "staged_original_cells": 36,
+      "skipped_extended_cells": 198,
+      "measures": 9
+    },
+    "Budget 2006": {
+      "measure_rows": 20,
+      "tax_measure_rows": 20,
+      "staged_original_cells": 60,
+      "skipped_extended_cells": 440,
+      "measures": 20
+    },
+    "PBR 2006": {
+      "measure_rows": 10,
+      "tax_measure_rows": 10,
+      "staged_original_cells": 40,
+      "skipped_extended_cells": 210,
+      "measures": 9
+    },
+    "Budget 2007": {
+      "measure_rows": 29,
+      "tax_measure_rows": 29,
+      "staged_original_cells": 87,
+      "skipped_extended_cells": 609,
+      "measures": 29
+    },
+    "PBR 2007": {
+      "measure_rows": 8,
+      "tax_measure_rows": 8,
+      "staged_original_cells": 32,
+      "skipped_extended_cells": 160,
+      "measures": 8
+    },
+    "Budget 2008": {
+      "measure_rows": 17,
+      "tax_measure_rows": 17,
+      "staged_original_cells": 51,
+      "skipped_extended_cells": 340,
+      "measures": 17
+    },
+    "PBR 2008": {
+      "measure_rows": 27,
+      "tax_measure_rows": 27,
+      "staged_original_cells": 108,
+      "skipped_extended_cells": 513,
+      "measures": 27
+    },
+    "Budget 2009": {
+      "measure_rows": 20,
+      "tax_measure_rows": 20,
+      "staged_original_cells": 60,
+      "skipped_extended_cells": 380,
+      "measures": 20
+    },
+    "PBR 2009": {
+      "measure_rows": 21,
+      "tax_measure_rows": 21,
+      "staged_original_cells": 84,
+      "skipped_extended_cells": 378,
+      "measures": 21
+    },
+    "Budget 2010": {
+      "measure_rows": 20,
+      "tax_measure_rows": 20,
+      "staged_original_cells": 80,
+      "skipped_extended_cells": 360,
+      "measures": 20
+    },
+    "Budget 2010 #2": {
+      "measure_rows": 66,
+      "tax_measure_rows": 30,
+      "staged_original_cells": 330,
+      "skipped_extended_cells": 1056,
+      "spending_measure_rows": 36,
+      "measures": 49
+    },
+    "Autumn 2010": {
+      "measure_rows": 39,
+      "tax_measure_rows": 7,
+      "staged_original_cells": 234,
+      "skipped_extended_cells": 585,
+      "spending_measure_rows": 32,
+      "measures": 26
+    },
+    "Budget 2011": {
+      "measure_rows": 79,
+      "tax_measure_rows": 58,
+      "staged_original_cells": 395,
+      "skipped_extended_cells": 1185,
+      "spending_measure_rows": 21,
+      "measures": 60
+    },
+    "Autumn 2011": {
+      "measure_rows": 38,
+      "tax_measure_rows": 20,
+      "staged_original_cells": 228,
+      "skipped_extended_cells": 532,
+      "spending_measure_rows": 18,
+      "measures": 31
+    },
+    "Budget 2012": {
+      "measure_rows": 84,
+      "tax_measure_rows": 61,
+      "staged_original_cells": 420,
+      "skipped_extended_cells": 1176,
+      "spending_measure_rows": 23,
+      "measures": 56
+    },
+    "Autumn 2012": {
+      "measure_rows": 71,
+      "tax_measure_rows": 34,
+      "staged_original_cells": 426,
+      "skipped_extended_cells": 923,
+      "spending_measure_rows": 37,
+      "measures": 39
+    },
+    "Budget 2013": {
+      "measure_rows": 109,
+      "tax_measure_rows": 73,
+      "staged_original_cells": 545,
+      "skipped_extended_cells": 1417,
+      "spending_measure_rows": 36,
+      "measures": 68
+    },
+    "Autumn 2013": {
+      "measure_rows": 109,
+      "tax_measure_rows": 53,
+      "staged_original_cells": 654,
+      "skipped_extended_cells": 1308,
+      "spending_measure_rows": 56,
+      "measures": 60
+    },
+    "Budget 2014": {
+      "measure_rows": 101,
+      "tax_measure_rows": 59,
+      "staged_original_cells": 505,
+      "skipped_extended_cells": 1212,
+      "spending_measure_rows": 42,
+      "measures": 57
+    },
+    "Autumn 2014": {
+      "measure_rows": 100,
+      "tax_measure_rows": 58,
+      "staged_original_cells": 600,
+      "skipped_extended_cells": 1100,
+      "spending_measure_rows": 42,
+      "measures": 61
+    },
+    "Budget 2015": {
+      "measure_rows": 73,
+      "tax_measure_rows": 40,
+      "staged_original_cells": 365,
+      "skipped_extended_cells": 803,
+      "spending_measure_rows": 33,
+      "measures": 48
+    },
+    "Budget 2015 #2": {
+      "measure_rows": 110,
+      "tax_measure_rows": 62,
+      "staged_original_cells": 660,
+      "skipped_extended_cells": 1100,
+      "spending_measure_rows": 48,
+      "measures": 61
+    },
+    "Autumn 2015": {
+      "measure_rows": 56,
+      "tax_measure_rows": 31,
+      "staged_original_cells": 336,
+      "skipped_extended_cells": 560,
+      "spending_measure_rows": 25,
+      "measures": 34
+    },
+    "Budget 2016": {
+      "measure_rows": 136,
+      "tax_measure_rows": 86,
+      "staged_original_cells": 680,
+      "skipped_extended_cells": 1360,
+      "spending_measure_rows": 50,
+      "measures": 78
+    },
+    "Autumn 2016": {
+      "measure_rows": 90,
+      "tax_measure_rows": 44,
+      "staged_original_cells": 540,
+      "skipped_extended_cells": 810,
+      "spending_measure_rows": 46,
+      "measures": 48
+    },
+    "Budget 2017": {
+      "measure_rows": 63,
+      "tax_measure_rows": 34,
+      "staged_original_cells": 315,
+      "skipped_extended_cells": 567,
+      "spending_measure_rows": 29,
+      "measures": 37
+    },
+    "Autumn Budget 2017": {
+      "measure_rows": 141,
+      "tax_measure_rows": 73,
+      "staged_original_cells": 846,
+      "skipped_extended_cells": 1128,
+      "spending_measure_rows": 68,
+      "measures": 76
+    },
+    "Spring Statement 2018": {
+      "measure_rows": 17,
+      "tax_measure_rows": 1,
+      "staged_original_cells": 101,
+      "skipped_extended_cells": 136,
+      "spending_measure_rows": 16,
+      "measures": 10
+    },
+    "Budget 2018": {
+      "measure_rows": 219,
+      "tax_measure_rows": 86,
+      "staged_original_cells": 1314,
+      "skipped_extended_cells": 1533,
+      "spending_measure_rows": 133,
+      "measures": 104
+    },
+    "Spring Statement 2019": {
+      "measure_rows": 33,
+      "tax_measure_rows": 9,
+      "staged_original_cells": 198,
+      "skipped_extended_cells": 231,
+      "spending_measure_rows": 24,
+      "measures": 20
+    },
+    "Budget 2020": {
+      "measure_rows": 244,
+      "tax_measure_rows": 103,
+      "staged_original_cells": 1464,
+      "skipped_extended_cells": 1464,
+      "spending_measure_rows": 141,
+      "measures": 104
+    },
+    "Spending Review 2020": {
+      "measure_rows": 149,
+      "tax_measure_rows": 74,
+      "staged_original_cells": 1043,
+      "skipped_extended_cells": 745,
+      "spending_measure_rows": 75,
+      "measures": 62
+    },
+    "Spring Budget 2021": {
+      "measure_rows": 170,
+      "tax_measure_rows": 83,
+      "staged_original_cells": 1020,
+      "skipped_extended_cells": 850,
+      "spending_measure_rows": 87,
+      "measures": 65
+    },
+    "Autumn Budget 2021": {
+      "measure_rows": 180,
+      "tax_measure_rows": 90,
+      "staged_original_cells": 1080,
+      "skipped_extended_cells": 720,
+      "spending_measure_rows": 90,
+      "measures": 66
+    },
+    "Spring Statement 2022": {
+      "measure_rows": 107,
+      "tax_measure_rows": 48,
+      "staged_original_cells": 642,
+      "skipped_extended_cells": 428,
+      "spending_measure_rows": 59,
+      "measures": 41
+    },
+    "Autumn Statement 2022": {
+      "measure_rows": 196,
+      "tax_measure_rows": 97,
+      "staged_original_cells": 1176,
+      "skipped_extended_cells": 588,
+      "spending_measure_rows": 99,
+      "measures": 71
+    },
+    "Spring Budget 2023": {
+      "measure_rows": 170,
+      "tax_measure_rows": 56,
+      "staged_original_cells": 1020,
+      "skipped_extended_cells": 510,
+      "spending_measure_rows": 114,
+      "measures": 89
+    },
+    "Autumn Statement 2023": {
+      "measure_rows": 186,
+      "tax_measure_rows": 68,
+      "staged_original_cells": 1116,
+      "skipped_extended_cells": 372,
+      "spending_measure_rows": 118,
+      "measures": 77
+    },
+    "Spring Budget 2024": {
+      "measure_rows": 136,
+      "tax_measure_rows": 65,
+      "staged_original_cells": 816,
+      "skipped_extended_cells": 272,
+      "spending_measure_rows": 71,
+      "measures": 49
+    },
+    "Autumn Budget 2024": {
+      "measure_rows": 189,
+      "tax_measure_rows": 94,
+      "staged_original_cells": 1134,
+      "skipped_extended_cells": 189,
+      "spending_measure_rows": 95,
+      "measures": 74
+    },
+    "Spring Statement 2025": {
+      "measure_rows": 83,
+      "tax_measure_rows": 28,
+      "staged_original_cells": 498,
+      "skipped_extended_cells": 83,
+      "spending_measure_rows": 55,
+      "measures": 32
+    },
+    "Autumn Budget 2025": {
+      "measure_rows": 252,
+      "tax_measure_rows": 117,
+      "staged_original_cells": 1512,
+      "spending_measure_rows": 135,
+      "measures": 105
+    },
+    "Spring Forecast 2026": {
+      "measure_rows": 41,
+      "tax_measure_rows": 14,
+      "staged_original_cells": 246,
+      "spending_measure_rows": 27,
+      "measures": 19
+    }
+  },
+  "staged_sha256": "52ea1b089d7c1dc175599394b9fd3d2309b23b56c7feb4738088b4bdd4c60eb6",
+  "workbook_sha256": "1364c625a62daab8ec9b97a81ca5f93044a067fdf471e1645a62d73fdfa498f6",
+  "receipt_sha256": "129cc10bb54dfb0d532275bf40f69a25e6dc1c6d4b783f48a124894423abf62d"
+}
