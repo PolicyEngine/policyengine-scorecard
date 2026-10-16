@@ -1,0 +1,252 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2028-29",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__innovation_in_wales_semiconductor_cluster",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "out_of_household_scope",
+   "computability": "out_of_household_scope",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "out_of_household_scope",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__innovation_in_wales_semiconductor_cluster",
+   "measure_type": "scope",
+   "missing_legs": [
+    "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "firm|corporation|department|block_grant",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_gap": "Business, departmental, local-authority, financing or block-grant accounts; no household tax/benefit counterpart for these source heads.",
+   "pe_reform_delta": null,
+   "program": "scope",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:23765:e9729087ab764108",
+     "source_row_number": 23765,
+     "source_row_sha256": "e9729087ab76410859c09d62e08ec46a9726207823b92b7b0ca9190d3c4eabb0",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Innovation in Wales: Invest in a world-leading semiconductor technologies cluster",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:23766:74f2879ea1ff202d",
+     "source_row_number": 23766,
+     "source_row_sha256": "74f2879ea1ff202d3aa66e1e65c30422a0d8a673406b8d8063ede5fec425b3c5",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Innovation in Wales: Invest in a world-leading semiconductor technologies cluster",
+     "value_gbp": -2818641.789208163,
+     "value_gbp_decimal": "-2818641.789208163"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:23767:c8c7a54839795fab",
+     "source_row_number": 23767,
+     "source_row_sha256": "c8c7a54839795fab602b0eace4802dc91fe6c3e155d2537592ab702edccc6c34",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Innovation in Wales: Invest in a world-leading semiconductor technologies cluster",
+     "value_gbp": -2818641.789208163,
+     "value_gbp_decimal": "-2818641.789208163"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:23768:a983c9839b5c14b2",
+     "source_row_number": 23768,
+     "source_row_sha256": "a983c9839b5c14b25d2452034fbe91a075d0f3df74d05da92e97c77d4442c067",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Innovation in Wales: Invest in a world-leading semiconductor technologies cluster",
+     "value_gbp": -2818641.789208163,
+     "value_gbp_decimal": "-2818641.789208163"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:23769:79ecf48676ffa87b",
+     "source_row_number": 23769,
+     "source_row_sha256": "79ecf48676ffa87b52c643a3f5c79b0128a88c9b85c96f3cad47f3b5297d2245",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Innovation in Wales: Invest in a world-leading semiconductor technologies cluster",
+     "value_gbp": -2818641.789208163,
+     "value_gbp_decimal": "-2818641.789208163"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2030-31",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:23770:47aa148568300154",
+     "source_row_number": 23770,
+     "source_row_sha256": "47aa148568300154387454e8a7e07895cedf39fa8e55bcf8ce9c94e53e01e8b6",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "PSGI in CDEL",
+     "title": "Innovation in Wales: Invest in a world-leading semiconductor technologies cluster",
+     "value_gbp": 0.0,
+     "value_gbp_decimal": "0.0"
+    }
+   ],
+   "title": "Innovation in Wales: Invest in a world-leading semiconductor technologies cluster",
+   "unmapped_obr_heads": [
+    "PSGI in CDEL"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2028-29",
+    "obr_value_gbp": -2818641.789208163,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "PSGI in CDEL"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:23768:a983c9839b5c14b2",
+   "level": "source_row",
+   "measure_key": "ab2025__innovation_in_wales_semiconductor_cluster",
+   "threshold_gbp": null,
+   "year": 2028
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__innovation_in_wales_semiconductor_cluster --years 2028 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__innovation_in_wales_semiconductor_cluster_2028"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2028-29",
+   "head_gbp": null,
+   "obr_value_gbp": -2818641.789208163,
+   "side": "head",
+   "source_column": "2028-29",
+   "source_row_id": "obr_pmd_nov2025:23768:a983c9839b5c14b2",
+   "source_row_number": 23768,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "PSGI in CDEL"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Innovation in Wales: Invest in a world-leading semiconductor technologies cluster",
+ "year": 2028
+}

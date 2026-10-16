@@ -1,0 +1,255 @@
+{
+ "artifacts": {
+  "base": null,
+  "head": null
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2025",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "coverage"
+ ],
+ "fy": "2025-26",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "f17306ccb2aad7ff0130be3589b560afb2e2a12a943570911cd0c77f07934833",
+   "data_bundle": "populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z",
+   "policyengine_core_version": "3.27.1",
+   "policyengine_uk_version": "2.89.2",
+   "policyengine_version": "5.0.2",
+   "variant_id": "pe5.0.2_uk2.89.2_populace-uk-2023-dd68c73-4aa4b14-20260619T023711Z"
+  },
+  "head": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.4.1",
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
+  }
+ },
+ "measure_key": "ab2025__expensive_car_supplement_threshold_for_zevs_50000",
+ "measures": {
+  "base": null,
+  "head": {
+   "classification": "not_expressible",
+   "computability": "not_expressible",
+   "construction": null,
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "fiscal_event": "Autumn Budget 2025",
+   "gap_kind": "model_or_data_gap",
+   "head_variables": [],
+   "heads": [],
+   "measure_key": "ab2025__expensive_car_supplement_threshold_for_zevs_50000",
+   "measure_type": "transport",
+   "missing_legs": [
+    "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [],
+    "pattern": "vehicle|company_car|van_benefit|air_passenger",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": [
+     "num_vehicles",
+     "owns_vehicle"
+    ]
+   },
+   "note": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+   "pe_gap": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+   "pe_reform_delta": null,
+   "program": "transport",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:12606:0fd63c032e08fd85",
+     "source_row_number": 12606,
+     "source_row_sha256": "0fd63c032e08fd85138725c3382d7b52e5b3e35bbdc20de972a05ed012325eb0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Support for British automotive industry: Increase the Expensive Car Supplement threshold for zero emission vehicles to \u00a350,000, from 1 April 2026",
+     "value_gbp": 36584.32782322052,
+     "value_gbp_decimal": "36584.32782322052"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:12607:0cba3cf56f4e55a0",
+     "source_row_number": 12607,
+     "source_row_sha256": "0cba3cf56f4e55a0e5f41c03af59409e02be043b2f8e268d9dcd0a8703035ec0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Support for British automotive industry: Increase the Expensive Car Supplement threshold for zero emission vehicles to \u00a350,000, from 1 April 2026",
+     "value_gbp": -50867543.285919964,
+     "value_gbp_decimal": "-50867543.285919964"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:12608:87a896c8f622ed03",
+     "source_row_number": 12608,
+     "source_row_sha256": "87a896c8f622ed03891afddbb49a50ff6505aa2e6613a1c5fa59e59a5ef758ab",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Support for British automotive industry: Increase the Expensive Car Supplement threshold for zero emission vehicles to \u00a350,000, from 1 April 2026",
+     "value_gbp": -108327908.69465862,
+     "value_gbp_decimal": "-108327908.69465862"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:12609:3da89917c4d23081",
+     "source_row_number": 12609,
+     "source_row_sha256": "3da89917c4d23081a05209cc59c5f1e88272e4009cedad4165ea3085ba75fd12",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Support for British automotive industry: Increase the Expensive Car Supplement threshold for zero emission vehicles to \u00a350,000, from 1 April 2026",
+     "value_gbp": -189276601.77268082,
+     "value_gbp_decimal": "-189276601.77268082"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:12610:154b68d14ab926d0",
+     "source_row_number": 12610,
+     "source_row_sha256": "154b68d14ab926d0ab1befc1e3131bbb0d69e16a6bcd7b081b40eff25110df40",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Support for British automotive industry: Increase the Expensive Car Supplement threshold for zero emission vehicles to \u00a350,000, from 1 April 2026",
+     "value_gbp": -326149112.78342515,
+     "value_gbp_decimal": "-326149112.78342515"
+    },
+    {
+     "classification": "not_expressible",
+     "classification_reason": "Targeted transport tax needs vehicle emissions/ownership, company-car benefit attributes or passenger journeys absent from the certified household inputs.",
+     "fy": "2030-31",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2030-31",
+     "source_row_id": "obr_pmd_nov2025:12611:f7317235f62ea7b7",
+     "source_row_number": 12611,
+     "source_row_sha256": "f7317235f62ea7b7bd3cefd506ae0d883f1dbde3bd3e2a17e23c0e6d601274b5",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "Vehicle excise duty",
+     "title": "Support for British automotive industry: Increase the Expensive Car Supplement threshold for zero emission vehicles to \u00a350,000, from 1 April 2026",
+     "value_gbp": -505027791.2997462,
+     "value_gbp_decimal": "-505027791.2997462"
+    }
+   ],
+   "title": "Support for British automotive industry: Increase the Expensive Car Supplement threshold for zero emission vehicles to \u00a350,000, from 1 April 2026",
+   "unmapped_obr_heads": [
+    "Vehicle excise duty"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": null,
+  "head": null
+ },
+ "records": [
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": 36584.32782322052,
+    "ratio_bin": {
+     "base": null,
+     "head": "not_available"
+    },
+    "status": {
+     "base": null,
+     "head": "not_computed"
+    },
+    "tax_head": "Vehicle excise duty"
+   },
+   "delta_gbp": null,
+   "details": [
+    {
+     "code": "event_on_head_only",
+     "flag": "coverage"
+    }
+   ],
+   "event": "autumn_budget_2025",
+   "flags": [
+    "coverage"
+   ],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:12606:0fd63c032e08fd85",
+   "level": "source_row",
+   "measure_key": "ab2025__expensive_car_supplement_threshold_for_zevs_50000",
+   "threshold_gbp": null,
+   "year": 2025
+  }
+ ],
+ "registry_sha256": {
+  "base": null,
+  "head": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e"
+ },
+ "reproduce": {
+  "base": "# This event is absent from this namespace.",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2025 --variant pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2025_measures.json --measures ab2025__expensive_car_supplement_threshold_for_zevs_50000 --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__expensive_car_supplement_threshold_for_zevs_50000_2025"
+ },
+ "source_cells": [
+  {
+   "base_gbp": null,
+   "flags": [
+    "coverage"
+   ],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": 36584.32782322052,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:12606:0fd63c032e08fd85",
+   "source_row_number": 12606,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "Vehicle excise duty"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "Support for British automotive industry: Increase the Expensive Car Supplement threshold for zero emission vehicles to \u00a350,000, from 1 April 2026",
+ "year": 2025
+}
