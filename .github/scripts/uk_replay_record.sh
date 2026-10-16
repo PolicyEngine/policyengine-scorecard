@@ -46,6 +46,15 @@ receipt_commit=$(git -C "$STATE" rev-parse HEAD)
   --request-id "$REQUEST_ID" --status "$status" --run-url "$RUN_URL" --now "$(now)" \
   --receipt-sha256 "$receipt_sha256" --receipt-commit "$receipt_commit"
 push_state "Status for $REQUEST_ID: $status"
+# A complete request's results reach main only through a pull request. The
+# results workflow decides whether this one is certified and never merges; a
+# failed dispatch must not stop the queue, and can be repeated by hand.
+if [ "$status" = complete ]; then
+  if ! gh workflow run uk-replay-results.yml --repo "$GITHUB_REPOSITORY" \
+    --ref "$DRAIN_REF" -f request_id="$REQUEST_ID"; then
+    echo "::warning::could not start the results workflow for $REQUEST_ID; run uk-replay-results.yml with this request_id"
+  fi
+fi
 "${CONTROL[@]}" -m pipeline.uk_replay_queue pending --state "$STATE" --now "$(now)" > "$RUNNER_TEMP/pending.txt"
 if [ -s "$RUNNER_TEMP/pending.txt" ]; then
   gh workflow run uk-replay.yml --repo "$GITHUB_REPOSITORY" --ref "$DRAIN_REF"

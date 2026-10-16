@@ -1,0 +1,58 @@
+name: UK replay results PR
+
+# Proposes a certified qualification's sealed results to main as a pull
+# request, as #188 (6.4.1) and #190 (6.5.0) were proposed by hand: the
+# request's results and requirements trees byte for byte, the variant record,
+# the CI matrix entry, the tests that name the newest certified variant and a
+# RELEASE_REPLAY.md paragraph from the receipt's counts
+# (.github/scripts/uk_replay_results_pr.sh, pipeline/uk_replay_results_pr.py).
+# The receiver's record job dispatches it when a request completes; it can
+# also be run by hand for a request id. It has no pull_request trigger.
+#
+# It reads only committed public results from replay-state, runs main's own
+# checks on them and never installs, imports or runs candidate or release
+# code; it references no secret, so it holds no dataset token. It writes only
+# its own uk-replay-results/<variant> branch. A pull request opened with
+# GITHUB_TOKEN starts no pull_request workflow, so the job dispatches CI on
+# the branch (actions: write). Nothing here merges: merging stays on the
+# normal gates, CI and an independent review.
+
+on:
+  workflow_dispatch:
+    inputs:
+      request_id:
+        description: "The replay-state request whose certified results to propose (64 hex)"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: uk-replay-results-${{ github.event.inputs.request_id }}
+  cancel-in-progress: false
+
+jobs:
+  results_pr:
+    name: propose certified results to main
+    # Only the default branch's builder writes a branch and opens a PR.
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
+      - name: Build, verify and propose the results branch
+        env:
+          REQUEST_ID: ${{ github.event.inputs.request_id }}
+          STATE_BRANCH: replay-state
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/uk_replay_results_pr.sh
