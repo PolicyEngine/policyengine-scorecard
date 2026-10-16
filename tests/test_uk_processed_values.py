@@ -426,6 +426,21 @@ def test_a_mismatch_is_recorded_only_before_commencement_with_identical_worlds(
     )
 
 
+@pytest.mark.parametrize("label", ["2028", "2028-99", "FY2028-29", "2028-2029", 2028])
+def test_a_malformed_commencement_label_refuses_rather_than_defers(label):
+    # Review of 4679c54: only a complete "YYYY-YY" label can defer a mismatch.
+    mismatch = {"world": "baseline_world", "year": 2025}
+    with pytest.raises(ValueError, match="invalid fiscal-year label"):
+        compute.processed_value_failures(
+            {"commences_fy": label}, 2025, artifact_with(True), [mismatch]
+        )
+
+
+@pytest.mark.parametrize("label", ["1999-00", "2028-29", "2099-00"])
+def test_commencement_year_reads_consecutive_fiscal_years(label):
+    assert compute.commencement_year(label) == int(label[:4])
+
+
 def test_a_measure_without_commencement_is_always_in_force():
     mismatch = {"world": "baseline_world", "year": 2020}
     refusals, notes = compute.processed_value_failures(
@@ -452,31 +467,50 @@ def window_value(reform, path, year):
     return None
 
 
-@pytest.mark.parametrize("statutory", [False, True])
-@pytest.mark.parametrize("blend", [True, False])
-def test_a_variant_run_selects_the_revision_and_checks_each_world(
-    tmp_path, monkeypatch, statutory, blend
+def parameter_tree(values, leaf=lambda value: lambda instant: value):
+    """A parameter tree; by default its leaves return the given period values."""
+    root = {}
+    for path, value in values.items():
+        *parents, name_of_leaf = path.split(".")
+        node = root
+        for name in parents:
+            node = node.setdefault(name, {})
+        node[name_of_leaf] = leaf(value)
+
+    def build(node):
+        return SimpleNamespace(
+            **{k: build(v) if isinstance(v, dict) else v for k, v in node.items()}
+        )
+
+    return build(root)
+
+
+def variant_run(
+    tmp_path,
+    monkeypatch,
+    measure,
+    current,
+    *,
+    statutory=False,
+    blend=False,
+    corrupt=None,
+    omit=False,
 ):
-    # Review of cce7cbb: the run path is pinned at compute.main with the real
-    # AB2024 CGT measure, so dropping the revision selection or swapping the
-    # worlds' checks fails here.
+    """Run compute.main on one variant year with the managed runner faked.
+
+    Each simulation's processed tree applies its submitted reform's windows over
+    `current`. `corrupt` names the simulation ("certified", "baseline_world" or
+    "reform_world") whose tree is off by 0.01; `omit` drops the evidence."""
     from test_uk_replay_variants import CURRENT, simulation as aggregates
 
     monkeypatch.setattr(compute, "ROOT", tmp_path)
-    source = json.loads(
-        (
-            compute.registry_builder.ROOT
-            / "data/uk/events/autumn_budget_2024_measures.json"
-        ).read_text()
-    )
-    (cgt,) = [m for m in source["measures"] if m["measure_key"] == KEY]
     registry_path = tmp_path / "registry.json"
     registry_path.write_text(
         json.dumps(
             {
                 "event_slug": "autumn_budget_2024",
                 "calendar_years": [2024],
-                "measures": [cgt],
+                "measures": [measure],
             }
         )
     )
@@ -484,7 +518,7 @@ def test_a_variant_run_selects_the_revision_and_checks_each_world(
     monkeypatch.setattr(
         compute.worlds,
         "engine_resolver",
-        lambda: lambda path, instant: BLENDED.get(path),
+        lambda: lambda path, instant: current.get(path),
     )
     data = tmp_path / "certified.h5"
     data.write_bytes(b"fake")
@@ -498,78 +532,56 @@ def test_a_variant_run_selects_the_revision_and_checks_each_world(
             "runtime_dataset_source": str(data),
         },
     )
-    tree = SimpleNamespace(
-        gov=SimpleNamespace(
-            hmrc=SimpleNamespace(
-                cgt=SimpleNamespace(
-                    **{
-                        name: SimpleNamespace(
-                            metadata={"fiscal_year_blend": True} if blend else {}
-                        )
-                        for name in ("basic_rate", "higher_rate", "additional_rate")
-                    }
-                )
-            )
-        )
-    )
+    metadata = {"fiscal_year_blend": True} if blend else {}
     monkeypatch.setitem(
         sys.modules,
         "policyengine_uk",
         SimpleNamespace(
-            CountryTaxBenefitSystem=lambda: SimpleNamespace(parameters=tree)
+            CountryTaxBenefitSystem=lambda: SimpleNamespace(
+                parameters=parameter_tree(
+                    {path: SimpleNamespace(metadata=metadata) for path in current},
+                    leaf=lambda node: node,
+                )
+            )
         ),
     )
     install_scenario(monkeypatch, statutory=statutory)
-    submitted = []
+    state = {"submitted": [], "calls": [], "world": None}
 
     def managed(**kwargs):
         reform = kwargs.get("reform")
-        submitted.append(reform)
-        values = {
-            path: (
-                window_value(reform, path, kwargs["year"])
-                if window_value(reform, path, kwargs["year"]) is not None
-                else BLENDED[path]
-            )
-            for path in BLENDED
-        }
-        sim = SimpleNamespace(
-            tax_benefit_system=SimpleNamespace(
-                parameters=SimpleNamespace(
-                    gov=SimpleNamespace(
-                        hmrc=SimpleNamespace(
-                            cgt=SimpleNamespace(
-                                **{
-                                    path.rsplit(".", 1)[1]: (
-                                        lambda v: lambda instant: v
-                                    )(value)
-                                    for path, value in values.items()
-                                }
-                            )
-                        )
-                    )
-                )
-            )
-        )
-        result = aggregates(900, 1000) if reform else aggregates(1000, 1030)
+        state["submitted"].append(reform)
+        values = {}
+        for path, law in current.items():
+            value = window_value(reform, path, kwargs["year"])
+            values[path] = law if value is None else value
+            if state["world"] == corrupt:
+                values[path] += 0.01
+        result = aggregates(0, 0)
         result["aggregates_gbp"] = {
-            variable: 900.0 if reform else 1000.0 for variable in kwargs["variables"]
+            variable: 1000.0 + 100 * len(state["calls"])
+            for variable in kwargs["variables"]
         }
         result["variable_metadata"] = {
             variable: {"entity": "person", "definition_period": "year"}
             for variable in kwargs["variables"]
         }
         result["policyengine_bundle"] = dict(release)
-        if kwargs.get("parameter_check"):
+        if kwargs.get("parameter_check") and not omit:
+            sim = SimpleNamespace(
+                tax_benefit_system=SimpleNamespace(parameters=parameter_tree(values))
+            )
             result["processed_parameter_values"] = kwargs["parameter_check"](sim)
         return result
 
     monkeypatch.setattr(compute.fiscal, "run_managed_simulation", managed)
-    calls = []
     run_sim = compute.run_sim
 
     def recording(year, variables, reform, pre):
-        calls.append(
+        state["world"] = (
+            "certified" if reform is None else pre["parameter_checks"][0]["world"]
+        )
+        state["calls"].append(
             {
                 "reform": reform is not None,
                 "checks": [
@@ -582,22 +594,46 @@ def test_a_variant_run_selects_the_revision_and_checks_each_world(
         return run_sim(year, variables, reform, pre)
 
     monkeypatch.setattr(compute, "run_sim", recording)
-    output = tmp_path / "results" / "uk" / "replays" / CURRENT / "autumn_budget_2024"
-    assert (
-        compute.main(
-            [
-                "--event",
-                "autumn_budget_2024",
-                "--variant",
-                CURRENT,
-                "--registry",
-                str(registry_path),
-                "--output-dir",
-                str(output),
-            ]
-        )
-        == 0
+    state["output"] = (
+        tmp_path / "results" / "uk" / "replays" / CURRENT / "autumn_budget_2024"
     )
+    state["argv"] = [
+        "--event",
+        "autumn_budget_2024",
+        "--variant",
+        CURRENT,
+        "--registry",
+        str(registry_path),
+        "--output-dir",
+        str(state["output"]),
+    ]
+    return state
+
+
+def ab2024_cgt():
+    source = json.loads(
+        (
+            compute.registry_builder.ROOT
+            / "data/uk/events/autumn_budget_2024_measures.json"
+        ).read_text()
+    )
+    (cgt,) = [m for m in source["measures"] if m["measure_key"] == KEY]
+    return cgt
+
+
+@pytest.mark.parametrize("statutory", [False, True])
+@pytest.mark.parametrize("blend", [True, False])
+def test_a_variant_run_selects_the_revision_and_checks_each_world(
+    tmp_path, monkeypatch, statutory, blend
+):
+    # Review of cce7cbb: the run path is pinned at compute.main with the real
+    # AB2024 CGT measure, so dropping the revision selection or swapping the
+    # worlds' checks fails here.
+    run = variant_run(
+        tmp_path, monkeypatch, ab2024_cgt(), BLENDED, statutory=statutory, blend=blend
+    )
+    assert compute.main(run["argv"]) == 0
+    output, calls = run["output"], run["calls"]
     manifest = json.loads((output / "RUN_MANIFEST.json").read_bytes())
     artifact = json.loads((output / f"{KEY}_2024.json").read_bytes())
     # The certified baseline is the reform world (current law) and also reads
@@ -614,7 +650,7 @@ def test_a_variant_run_selects_the_revision_and_checks_each_world(
             "revision": artifact.get("construction_revision"),
         },
     ]
-    (reversal,) = [r for r in submitted if r]
+    (reversal,) = [r for r in run["submitted"] if r]
     recorded = artifact["processed_parameter_values"]
     if blend:
         assert KEY in manifest["construction_revisions"]
@@ -638,3 +674,80 @@ def test_a_variant_run_selects_the_revision_and_checks_each_world(
         "intended": BLENDED[PATH],
         "processed": BLENDED[PATH],
     }
+    assert "processed_value_notes" not in artifact
+
+
+def two_world_measure():
+    from test_uk_event_compute import measure
+
+    return {
+        **measure("delta_on_modified_baseline"),
+        "pe_reform_delta": {"gov.tax.rate": 0.25},
+    }
+
+
+@pytest.mark.parametrize(
+    ("measure", "current", "corrupt", "refused"),
+    [
+        # A reversal: the reform world is the certified simulation.
+        (ab2024_cgt, BLENDED, "baseline_world", "baseline_world"),
+        (ab2024_cgt, BLENDED, "certified", "reform_world"),
+        # Both worlds modified: only the current-law readback sees the
+        # certified simulation.
+        (two_world_measure, {"gov.tax.rate": 0.3}, "baseline_world", "baseline_world"),
+        (two_world_measure, {"gov.tax.rate": 0.3}, "reform_world", "reform_world"),
+        (
+            two_world_measure,
+            {"gov.tax.rate": 0.3},
+            "certified",
+            "certified_current_law",
+        ),
+    ],
+)
+def test_a_variant_run_refuses_a_wrong_processed_world(
+    tmp_path, monkeypatch, measure, current, corrupt, refused
+):
+    # Review of 4679c54: the decision after both worlds run is exercised through
+    # the managed runner, not by raising from a faked run_sim.
+    run = variant_run(
+        tmp_path, monkeypatch, measure(), current, blend=True, corrupt=corrupt
+    )
+    with pytest.raises(compute.ProcessedValueMismatch) as refusal:
+        compute.main(run["argv"])
+    assert refusal.value.failure["world"] == refused
+    assert refusal.value.failure["processed"] == pytest.approx(
+        refusal.value.failure["intended"] + 0.01
+    )
+    output = run["output"]
+    assert json.loads((output / "INTEGRITY_FAILURES.json").read_bytes()) == [
+        refusal.value.failure
+    ]
+    assert not list(output.glob("*_2024.json"))
+    assert not (output / "RUN_MANIFEST.json").exists()
+
+
+def test_a_two_world_variant_run_checks_both_worlds_and_current_law(
+    tmp_path, monkeypatch
+):
+    run = variant_run(tmp_path, monkeypatch, two_world_measure(), {"gov.tax.rate": 0.3})
+    assert compute.main(run["argv"]) == 0
+    key = "test_event__tax_and_benefit"
+    assert run["calls"] == [
+        {"reform": False, "checks": [("certified_current_law", key)], "revision": None},
+        {"reform": True, "checks": [("baseline_world", key)], "revision": None},
+        {"reform": True, "checks": [("reform_world", key)], "revision": None},
+    ]
+    artifact = json.loads((run["output"] / f"{key}_2024.json").read_bytes())
+    assert artifact["processed_parameter_values"] == {
+        "baseline_world": {"gov.tax.rate": {"intended": 0.2, "processed": 0.2}},
+        "reform_world": {"gov.tax.rate": {"intended": 0.25, "processed": 0.25}},
+    }
+
+
+def test_a_variant_run_refuses_a_world_without_processed_evidence(
+    tmp_path, monkeypatch
+):
+    run = variant_run(tmp_path, monkeypatch, ab2024_cgt(), BLENDED, omit=True)
+    with pytest.raises(RuntimeError, match="processed parameter evidence"):
+        compute.main(run["argv"])
+    assert not list(run["output"].glob("*_2024.json"))

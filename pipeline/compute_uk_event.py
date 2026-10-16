@@ -103,6 +103,14 @@ def processed_mismatches(check: dict, values: dict) -> list[dict]:
     ]
 
 
+def commencement_year(label: str) -> int:
+    """Calendar-year proxy Y of a "YYYY-YY" fiscal-year label for FY Y to Y+1."""
+    match = re.fullmatch(r"(\d{4})-(\d{2})", label) if isinstance(label, str) else None
+    if not match or int(match[2]) != (int(match[1]) + 1) % 100:
+        raise ValueError(f"invalid fiscal-year label: {label!r}")
+    return int(match[1])
+
+
 def processed_value_failures(
     measure: dict, year: int, artifact: dict, mismatches: list[dict]
 ) -> tuple[list[dict], list[dict]]:
@@ -122,7 +130,7 @@ def processed_value_failures(
     from pipeline import stage_uk_ab2025 as ab_stage
 
     commences = measure.get("commences_fy")
-    in_force = commences is None or year >= int(commences[:4])
+    in_force = commences is None or year >= commencement_year(commences)
     refusals, notes = [], []
     for mismatch in mismatches:
         if (

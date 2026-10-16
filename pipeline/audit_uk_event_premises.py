@@ -414,7 +414,9 @@ def audit(
             "by the shared runtime intended-value rule. Current law is already "
             "fiscal-year processed; construction windows override that annual "
             "value. These are not simulation readbacks: measure-year artifacts "
-            "record each world's actual processed values and refuse a mismatch. "
+            "record each world's actual processed values and refuse a mismatch, "
+            "except one in an announcement world before the measure commences "
+            "whose worlds come out identical, listed under processed_value_notes. "
             "Selected metadata-based construction revisions are digest-bound."
             if (namespace is None and (engine.reads_blend or engine.reads_calendar))
             or selected

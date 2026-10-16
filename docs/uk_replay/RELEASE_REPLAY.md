@@ -606,8 +606,10 @@ refuses to write the measure-year artifact; qualification records
 a nonzero fiscal-head result: an in-force construction routed to a different
 annual value fails even when its population effect happens to be zero.
 
-The one accepted mismatch is in a year before the measure commences whose
-two worlds come out identical: it moved none of those totals. The artifact
+The one accepted mismatch is in an announcement world, never the certified
+current law, in a year before the measure commences whose two worlds come
+out identical: it moved none of those totals. A `commences_fy` that is not a
+complete `YYYY-YY` label for consecutive years is an error, not a deferral. The artifact
 is written and lists each such mismatch under `processed_value_notes`, with
 the same fields and `"accepted": "not_in_force_identical_worlds"`. In
 policyengine-uk 2.130.1, a construction-time change starting on a

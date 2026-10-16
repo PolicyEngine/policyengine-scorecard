@@ -263,9 +263,11 @@ policy.
 A world whose processed parameter value differs from its intended value
 records an integrity failure `processed_value_mismatch` (with `event`,
 `measure_key`, `year`, and `world`, `path`, `intended` and `processed` as
-JSON in `detail`), and the status is `failed`. The exception is a mismatch
-in a year before the measure commences whose two worlds come out identical;
-the measure-year's artifact lists it under `processed_value_notes` instead.
+JSON in `detail`), and the status is `failed`. The one exception is a
+mismatch in an announcement world (`baseline_world` or `reform_world`, never
+`certified_current_law`) in a year before the measure commences, when the two
+worlds come out identical; the measure-year's artifact lists it under
+`processed_value_notes` instead.
 `RELEASE_REPLAY.md` gives the rule.
 
 ### Division of judgement
