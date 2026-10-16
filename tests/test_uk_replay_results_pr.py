@@ -254,9 +254,12 @@ def test_the_control_environment_installs_what_the_builder_imports():
             sys.executable,
             "-c",
             "import importlib.metadata, sys\n"
-            "import pipeline.uk_replay_results_pr, pipeline.uk_replay_qualify\n"
+            # Interpreter startup (site, .pth hooks such as setuptools'
+            # _distutils_hack) is not the builder's: count what its imports add.
             "owners = importlib.metadata.packages_distributions()\n"
-            "names = {n.split('.')[0] for n in sys.modules}\n"
+            "before = set(sys.modules)\n"
+            "import pipeline.uk_replay_results_pr, pipeline.uk_replay_qualify\n"
+            "names = {n.split('.')[0] for n in set(sys.modules) - before}\n"
             "print('\\n'.join(sorted({d.lower() for n in names for d in owners.get(n, [])})))",
         ],
         cwd=ROOT,
