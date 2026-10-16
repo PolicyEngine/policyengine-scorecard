@@ -124,9 +124,10 @@ jobs:
           HUGGING_FACE_TOKEN: ${{ secrets.PE_UK_PRIVATE_HF_READ_TOKEN }}
         run: bash .github/scripts/uk_replay_discover.sh run
       - name: Check public discovery metadata before upload
+        id: guard
         run: python3 -I .github/scripts/uk_replay_output_guard.py discovery
       - uses: actions/upload-artifact@v4
-        if: steps.discover.outputs.has_metadata == 'true'
+        if: steps.guard.outcome == 'success' && steps.discover.outputs.has_metadata == 'true'
         with:
           name: replay-discovery
           path: discovery/
@@ -138,6 +139,7 @@ jobs:
     needs: discover
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.request == '' && needs.discover.result == 'success' && needs.discover.outputs.has_metadata == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:

@@ -91,6 +91,11 @@ def test_discovery_holds_the_token_only_in_an_empty_manual_drain():
     )
     assert upload["with"]["name"] == "replay-discovery"
     assert upload["with"]["path"] == "discovery/"
+    assert guard["id"] == "guard"
+    assert upload["if"] == (
+        "steps.guard.outcome == 'success' "
+        "&& steps.discover.outputs.has_metadata == 'true'"
+    )
 
 
 def test_discovery_and_enqueue_are_separate_and_failure_cannot_block_the_drain():
@@ -108,6 +113,7 @@ def test_discovery_and_enqueue_are_separate_and_failure_cannot_block_the_drain()
     )
     assert checkout["with"]["persist-credentials"] is False
     assert enqueue["permissions"] == {"contents": "write"}
+    assert enqueue["timeout-minutes"] == 10
     assert enqueue["needs"] == "discover"
     assert prepare["needs"] == "discover_enqueue"
     # always() is true even in a cancelled run; !cancelled() is not.
@@ -322,7 +328,34 @@ def test_enqueue_validates_the_whole_artifact_before_writing(enqueue_runner, inv
     assert not list((runner / "state" / "requests").glob("*/REQUEST.json"))
 
 
-@pytest.mark.parametrize("invalid", ["extra_field", "bad_evidence", "bad_version"])
+@pytest.mark.parametrize("invalid", ["extra_field", "bad_repo_id"])
+def test_enqueue_schema_validation_refuses_a_digest_named_complete_request(
+    enqueue_runner, invalid
+):
+    _, remote, create = enqueue_runner
+    runner, artifact, run = create()
+    request = released_request()
+    if invalid == "extra_field":
+        request["unexpected"] = "must be rejected by the closed schema"
+    else:
+        request["candidate"]["data"]["repo_id"] = "a/../b"
+    # Every later guard check passes: released PyPI bundle, stable version,
+    # unique version, and a filename matching its JCS digest. Only validation
+    # against the vendored schema can refuse this request before queue.enqueue,
+    # which intentionally records invalid requests for the receiver to reject.
+    digest = interface.jcs_sha256(request)
+    (artifact / "requests" / f"{digest}.json").write_text(json.dumps(request))
+    before = git(remote, "rev-parse", "replay-state")
+    result = run()
+    assert result.returncode != 0, result.stdout + result.stderr
+    assert "ValidationError" in result.stderr
+    assert git(remote, "rev-parse", "replay-state") == before
+    assert not list((runner / "state" / "requests").glob("*/REQUEST.json"))
+
+
+@pytest.mark.parametrize(
+    "invalid", ["extra_field", "bad_evidence", "bad_version", "long_reason"]
+)
 def test_enqueue_rejects_invalid_skip_metadata_before_any_request_write(
     enqueue_runner, invalid
 ):
@@ -338,6 +371,8 @@ def test_enqueue_rejects_invalid_skip_metadata_before_any_request_write(
         skipped["candidate_code"] = "print('untrusted')"
     elif invalid == "bad_evidence":
         skipped["evidence_sha256"] = {"policyengine_wheel": "not-a-digest"}
+    elif invalid == "long_reason":
+        skipped["reason"] = "x" * 2001
     else:
         skipped["version"] = "../outside"
     (artifact / "skipped/6.7.0.json").write_text(json.dumps(skipped))
@@ -345,6 +380,65 @@ def test_enqueue_rejects_invalid_skip_metadata_before_any_request_write(
     result = run()
     assert result.returncode != 0, result.stdout + result.stderr
     assert git(remote, "rev-parse", "replay-state") == before
+
+
+@pytest.mark.parametrize("kind", ["request", "skip"])
+def test_enqueue_refuses_metadata_with_the_wrong_filename(enqueue_runner, kind):
+    _, remote, create = enqueue_runner
+    runner, artifact, run = create(released_request())
+    if kind == "request":
+        path = next((artifact / "requests").glob("*.json"))
+        wrong_digest = "0" * 64 if path.stem != "0" * 64 else "1" * 64
+        path.rename(path.with_name(f"{wrong_digest}.json"))
+        error = "request filename differs from its digest"
+    else:
+        skipped = {
+            "schema": "policyengine.uk-replay-discovery-skip/v1",
+            "version": "6.7.0",
+            "reason": "immutable wheel mismatch",
+            "evidence_sha256": {"policyengine_wheel": "a" * 64},
+        }
+        (artifact / "skipped/6.8.0.json").write_text(json.dumps(skipped))
+        error = "skip filename differs from its release version"
+    before = git(remote, "rev-parse", "replay-state")
+    result = run()
+    assert result.returncode != 0, result.stdout + result.stderr
+    assert error in result.stderr
+    assert git(remote, "rev-parse", "replay-state") == before
+    assert not list((runner / "state" / "requests").glob("*/REQUEST.json"))
+
+
+@pytest.mark.parametrize("kind", ["request", "skip"])
+def test_enqueue_refuses_batches_above_each_per_run_bound(enqueue_runner, kind):
+    _, remote, create = enqueue_runner
+    requests = [released_request(f"6.6.{patch}") for patch in range(4)]
+    runner, artifact, run = create(*(requests if kind == "request" else requests[:1]))
+    if kind == "skip":
+        for patch in range(31):
+            skipped = {
+                "schema": "policyengine.uk-replay-discovery-skip/v1",
+                "version": f"6.7.{patch}",
+                "reason": "immutable wheel mismatch",
+                "evidence_sha256": {"policyengine_wheel": "a" * 64},
+            }
+            (artifact / "skipped" / f"6.7.{patch}.json").write_text(json.dumps(skipped))
+    before = git(remote, "rev-parse", "replay-state")
+    result = run()
+    assert result.returncode != 0, result.stdout + result.stderr
+    assert "per-run bounds" in result.stderr
+    assert git(remote, "rev-parse", "replay-state") == before
+    assert not list((runner / "state" / "requests").glob("*/REQUEST.json"))
+
+
+def test_enqueue_refuses_a_prerelease_above_the_certified_floor(enqueue_runner):
+    _, remote, create = enqueue_runner
+    runner, _, run = create(released_request("6.6.0rc1"))
+    before = git(remote, "rev-parse", "replay-state")
+    result = run()
+    assert result.returncode != 0, result.stdout + result.stderr
+    assert "prerelease discovery version: 6.6.0rc1" in result.stderr
+    assert git(remote, "rev-parse", "replay-state") == before
+    assert not list((runner / "state" / "requests").glob("*/REQUEST.json"))
 
 
 @pytest.mark.parametrize("refused", ["binary", "symlink"])
@@ -424,7 +518,9 @@ def test_enqueue_valid_requests_is_idempotent(enqueue_runner):
     assert git(remote, "rev-parse", "replay-state") == before
 
 
-@pytest.mark.parametrize("status", ["queued", "running"])
+@pytest.mark.parametrize(
+    "status", ["queued", "running", "complete", "failed", "rejected"]
+)
 @pytest.mark.parametrize("kind", ["candidate", "released_bundle"])
 def test_enqueue_does_not_duplicate_a_release_already_in_the_queue(
     enqueue_runner, status, kind
@@ -435,9 +531,15 @@ def test_enqueue_does_not_duplicate_a_release_already_in_the_queue(
     existing_id, _ = queue.enqueue(
         seed, existing, run_url=RUN_URL, now="2026-10-16T00:00:00Z"
     )
-    if status == "running":
+    if status != "queued":
         queue.set_status(
-            seed, existing_id, "running", run_url=RUN_URL, now="2026-10-16T01:00:00Z"
+            seed,
+            existing_id,
+            status,
+            run_url=RUN_URL,
+            now="2026-10-16T01:00:00Z",
+            receipt_sha256="c" * 64 if status in queue.TERMINAL else None,
+            receipt_commit="d" * 40 if status in queue.TERMINAL else None,
         )
     git(seed, "add", ".")
     git(seed, "commit", "-qm", "Already dispatched 6.5.0")

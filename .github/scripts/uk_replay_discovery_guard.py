@@ -26,7 +26,7 @@ SKIP_SCHEMA = {
     "properties": {
         "schema": {"const": "policyengine.uk-replay-discovery-skip/v1"},
         "version": {"type": "string", "maxLength": 100},
-        "reason": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "minLength": 1, "maxLength": 2000},
         "evidence_sha256": {
             "type": "object",
             "minProperties": 1,

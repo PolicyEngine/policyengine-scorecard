@@ -18,6 +18,7 @@ case "${1:?usage: uk_replay_discover.sh snapshot|run}" in
     mkdir -p "$BASELINE"
     shopt -s nullglob
     for path in "$STATE"/discovery/skipped/*.json; do
+      [ -L "$path" ] && continue
       cp "$path" "$BASELINE/"
     done
     ;;
@@ -32,6 +33,7 @@ case "${1:?usage: uk_replay_discover.sh snapshot|run}" in
     mkdir -p "$DISCOVERY_DIR/skipped"
     shopt -s nullglob
     for path in "$STATE"/discovery/skipped/*.json; do
+      [ -L "$path" ] && continue
       if ! cmp -s "$path" "$BASELINE/${path##*/}"; then
         cp "$path" "$DISCOVERY_DIR/skipped/"
       fi

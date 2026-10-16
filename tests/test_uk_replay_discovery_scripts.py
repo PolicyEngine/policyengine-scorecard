@@ -31,7 +31,7 @@ def discovery_shell(tmp_path):
         "if args[0] == 'fetch':\n"
         "    sys.exit(0)\n"
         "if args[:2] == ['worktree', 'add']:\n"
-        "    shutil.copytree(remote, args[-2])\n"
+        "    shutil.copytree(remote, args[-2], symlinks=True)\n"
         "    sys.exit(0)\n"
         "raise AssertionError(args)\n"
     )
@@ -122,3 +122,20 @@ def test_snapshot_transfers_only_new_skip_metadata(discovery_shell, new_skip):
     assert (root / "github-output").read_text() == (
         f"has_metadata={str(new_skip).lower()}\n"
     )
+
+
+def test_snapshot_and_handoff_skip_symlinks(discovery_shell):
+    root, environment, run = discovery_shell
+    remote = Path(environment["FAKE_REMOTE"]) / "discovery" / "skipped"
+    remote.mkdir(parents=True)
+    outside = root / "outside.json"
+    outside.write_text('{"version":"6.7.0","reason":"not state metadata"}')
+    (remote / "6.7.0.json").symlink_to(outside)
+
+    run("snapshot")
+    baseline = root / "runner-temp" / "discovery-existing-skips"
+    assert list(baseline.iterdir()) == []
+    assert (Path(environment["STATE"]) / "discovery/skipped/6.7.0.json").is_symlink()
+    run("run")
+    assert list((root / "discovery/skipped").iterdir()) == []
+    assert (root / "github-output").read_text() == "has_metadata=false\n"
