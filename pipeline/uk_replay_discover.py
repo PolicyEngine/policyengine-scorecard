@@ -184,16 +184,24 @@ def wheel_entry(document: dict) -> dict:
 
 
 def requested_versions(state: Path) -> set[Version]:
-    """Wrapper versions named by any recorded qualification request.
+    """Wrapper versions named by a recorded ``released_bundle`` request, in
+    any status (complete, failed and rejected included).
 
-    W4 may already be qualifying a release before promotion. Every recorded
-    request counts, including complete, failed and rejected qualifications.
+    A pre-promotion ``candidate`` request names the version the candidate will
+    be released as, but pins the candidate's wheels; push.yaml rebuilds the
+    released wheel, and only a replay of those released bytes is evidence for
+    the release (W4, 2026-10-16). So a candidate request neither covers nor
+    floors the released version, and a missed release dispatch is still
+    caught.
     """
     out = set()
     for path in (state / "requests").glob("*/REQUEST.json"):
         try:
             request = json.loads(path.read_text(encoding="utf-8"))
-            if not isinstance(request, dict):
+            if (
+                not isinstance(request, dict)
+                or request.get("kind") != "released_bundle"
+            ):
                 continue
             value = request["candidate"]["policyengine"]["version"]
             if isinstance(value, str):

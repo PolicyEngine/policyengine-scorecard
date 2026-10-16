@@ -83,18 +83,21 @@ def validate_batch(root: Path) -> tuple[list[dict], list[Path]]:
 
 
 def requested_versions(state: Path) -> set[Version]:
-    """Any recorded qualification already covers its wrapper version.
+    """A recorded ``released_bundle`` request, in any status, covers its
+    wrapper version.
 
     The queue also stores invalid requests to give rejections an address;
-    tolerate those, and include valid version fields without trusting status
-    or kind. W4 may already have a pre-promotion qualification running.
+    tolerate those. A pre-promotion ``candidate`` request does not cover the
+    released version: the released wheel is rebuilt by push.yaml, and its
+    replay is the evidence (pipeline/uk_replay_discover.requested_versions).
     """
     versions = set()
     for path in (state / "requests").glob("*/REQUEST.json"):
         try:
-            value = json.loads(path.read_bytes())["candidate"]["policyengine"][
-                "version"
-            ]
+            request = json.loads(path.read_bytes())
+            if request["kind"] != "released_bundle":
+                continue
+            value = request["candidate"]["policyengine"]["version"]
             if isinstance(value, str):
                 versions.add(Version(value))
         except (OSError, ValueError, KeyError, TypeError):

@@ -543,19 +543,26 @@ if they differ.
 whose wheel upload is at least six hours old, oldest first. The grace period
 allows W4's normal dispatch and publication metadata to arrive before
 catch-up. A version must be strictly newer than both the newest certified
-variant and the newest version named by any recorded qualification request,
-regardless of request kind or status (`queued`, `running`, `complete`,
-`failed` or `rejected`). A requested version raises this floor only if PyPI
-lists it and it is a plain final release (no epoch, local, pre, post or dev
-segment), so a stored request naming a version never published cannot stop
-discovery; it still counts against duplicating itself. A request for an
-unpublished candidate counts once that version is published. To recover from
-a wrong but valid request, correct or remove it on `replay-state`. The
-current certified variant is
-`pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1`; a requested or certified
-6.5.0 therefore suppresses discovery of 6.4.2 and 6.4.3 as well as 6.5.0.
-Superseded patch releases are not backfilled. Each drain builds at most three
-requests and examines at most 30 releases.
+variant and the newest version named by a recorded `released_bundle` request
+in any status (`queued`, `running`, `complete`, `failed` or `rejected`).
+Only `released_bundle` requests count, for this floor and for deduplication.
+A pre-promotion `candidate` request names the version the candidate will be
+released as but pins the candidate's wheels, while `push.yaml` rebuilds the
+released wheel, so a missed release dispatch is still caught and the
+released bytes replayed. A requested version raises the floor only while
+PyPI lists it and only if it is a plain final release (no epoch, local, pre,
+post or dev segment). A yanked release is still listed, so it still counts.
+A version PyPI no longer lists (removed or quarantined) stops counting, and
+the releases it superseded can then be discovered if they pass every other
+check. A stored request naming a version never published cannot stop
+discovery, yet still counts against duplicating itself. Requests are stored
+under their content digest, so a wrong request is recovered by removing it
+from `replay-state`, never by editing it in place. The current certified
+variant is `pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1`; a certified or
+released-bundle-requested 6.5.0 therefore suppresses discovery of 6.4.2 and
+6.4.3 as well as 6.5.0, so superseded patch releases are not backfilled
+while the superseding version remains listed. Each drain builds at most
+three requests and examines at most 30 releases.
 
 Before building a request, discovery reads the selected wheel's static PyPI
 integrity provenance JSON and requires an attestation bundle whose publisher

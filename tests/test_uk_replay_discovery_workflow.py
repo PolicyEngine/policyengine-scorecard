@@ -550,13 +550,11 @@ def test_enqueue_valid_requests_is_idempotent(enqueue_runner):
 @pytest.mark.parametrize(
     "status", ["queued", "running", "complete", "failed", "rejected"]
 )
-@pytest.mark.parametrize("kind", ["candidate", "released_bundle"])
 def test_enqueue_does_not_duplicate_a_release_already_in_the_queue(
-    enqueue_runner, status, kind
+    enqueue_runner, status
 ):
     seed, remote, create = enqueue_runner
     existing = released_request("6.5.0")
-    existing["kind"] = kind
     existing_id, _ = queue.enqueue(
         seed, existing, run_url=RUN_URL, now="2026-10-16T00:00:00Z"
     )
@@ -587,13 +585,31 @@ def test_enqueue_does_not_duplicate_a_release_already_in_the_queue(
     )
 
 
+def test_a_pre_promotion_candidate_request_does_not_cover_the_release(enqueue_runner):
+    # W4, 2026-10-16: the candidate qualification pins the candidate's wheels;
+    # the released wheel is rebuilt, so its discovered request is queued.
+    seed, remote, create = enqueue_runner
+    candidate = released_request("6.5.0")
+    candidate["kind"] = "candidate"
+    queue.enqueue(seed, candidate, run_url=RUN_URL, now="2026-10-16T00:00:00Z")
+    git(seed, "add", ".")
+    git(seed, "commit", "-qm", "W4 pre-promotion qualification")
+    git(seed, "push", "-q", str(remote), "HEAD:replay-state")
+    discovered = released_request("6.5.0", attempt=2)
+    _, _, run = create(discovered)
+    result = run()
+    assert result.returncode == 0, result.stdout + result.stderr
+    stored = git(remote, "ls-tree", "-r", "--name-only", "replay-state").splitlines()
+    assert f"requests/{interface.request_id(discovered)}/REQUEST.json" in stored
+
+
 def test_enqueue_rechecks_versions_after_a_concurrent_dispatch(enqueue_runner):
     seed, remote, create = enqueue_runner
     discovered = released_request("6.5.0", attempt=2)
     later = released_request("6.6.0")
     runner, _, run = create(discovered, later)
+    # W4's released_bundle dispatch for 6.5.0 lands mid-discovery.
     incoming = released_request("6.5.0")
-    incoming["kind"] = "candidate"
     incoming_id, _ = queue.enqueue(
         seed, incoming, run_url=RUN_URL, now="2026-10-16T00:00:00Z"
     )
