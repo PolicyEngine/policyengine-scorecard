@@ -441,6 +441,35 @@ def test_enqueue_refuses_a_prerelease_above_the_certified_floor(enqueue_runner):
     assert not list((runner / "state" / "requests").glob("*/REQUEST.json"))
 
 
+@pytest.mark.parametrize("collision", ["two_requests", "request_and_skip"])
+def test_enqueue_refuses_a_batch_naming_one_version_twice(enqueue_runner, collision):
+    # Review of 2043fa0: duplicate versions inside one batch are refused
+    # whole, before any write.
+    _, remote, create = enqueue_runner
+    if collision == "two_requests":
+        runner, _, run = create(
+            released_request("6.6.0"), released_request("6.6.0", attempt=2)
+        )
+    else:
+        runner, artifact, run = create(released_request("6.6.0"))
+        (artifact / "skipped/6.6.0.json").write_text(
+            json.dumps(
+                {
+                    "schema": "policyengine.uk-replay-discovery-skip/v1",
+                    "version": "6.6.0",
+                    "reason": "inconsistent immutable wheel metadata",
+                    "evidence_sha256": {"policyengine_wheel": "a" * 64},
+                }
+            )
+        )
+    before = git(remote, "rev-parse", "replay-state")
+    result = run()
+    assert result.returncode != 0, result.stdout + result.stderr
+    assert "duplicate or prerelease discovery version: 6.6.0" in result.stderr
+    assert git(remote, "rev-parse", "replay-state") == before
+    assert not list((runner / "state" / "requests").glob("*/REQUEST.json"))
+
+
 @pytest.mark.parametrize("refused", ["binary", "symlink"])
 def test_enqueue_applies_the_receivers_output_guard(enqueue_runner, refused):
     _, remote, create = enqueue_runner
