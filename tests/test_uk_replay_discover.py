@@ -8,8 +8,11 @@ import hashlib
 import io
 import json
 import subprocess
+import sys
+import types
 import urllib.error
 import zipfile
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -22,7 +25,35 @@ from pipeline import uk_replay_qualify as qualify
 from pipeline import uk_replay_variants as rv
 
 FIXTURES = Path(__file__).parent / "fixtures" / "uk_replay"
+NOW = datetime(2026, 10, 16, tzinfo=timezone.utc)
+UPLOAD_TIME = "2026-10-15T00:00:00Z"
+PROVENANCE_DOCUMENT = {
+    "version": 1,
+    "attestation_bundles": [
+        {
+            "publisher": {
+                "kind": "GitHub",
+                "repository": "PolicyEngine/policyengine.py",
+                "workflow": "push.yaml",
+                "environment": "pypi",
+            },
+            "attestations": [{"version": 1}],
+        }
+    ],
+}
+PROVENANCE_BYTES = json.dumps(PROVENANCE_DOCUMENT).encode()
+PROVENANCE_DIGEST = hashlib.sha256(PROVENANCE_BYTES).hexdigest()
 REQUESTED_BY = {"repository": "PolicyEngine/policyengine-scorecard", "commit": "0" * 40}
+REAL_FETCH = discover.fetch
+REAL_RELEASE_MANIFEST = discover.release_manifest
+
+
+@pytest.fixture(autouse=True)
+def forbid_network(monkeypatch):
+    def forbidden(*args, **kwargs):
+        raise AssertionError("tests must not access the network")
+
+    monkeypatch.setattr(discover.urllib.request, "urlopen", forbidden)
 
 
 def golden():
@@ -115,8 +146,8 @@ def stubs(tmp_path, monkeypatch):
                 "releases": {
                     "6.2.5": [],
                     "6.2.6": [],
-                    "6.5.0": [],
-                    "6.5.1rc1": [],
+                    "6.5.1": [],
+                    "6.6.0rc1": [],
                     "junk": [],
                 }
             }
@@ -139,6 +170,7 @@ def stubs(tmp_path, monkeypatch):
                     "filename": f"{package}-{version}-py3-none-any.whl",
                     "url": f"https://files.example/{package}-{version}.whl",
                     "digests": {"sha256": digest},
+                    "upload_time_iso_8601": state.get("upload_time", UPLOAD_TIME),
                 },
                 {
                     "packagetype": "sdist",
@@ -164,6 +196,13 @@ def stubs(tmp_path, monkeypatch):
         }
         return json.dumps(release).encode()
 
+    def provenance_response(url, **kwargs):
+        assert url.startswith("https://pypi.org/integrity/policyengine/")
+        if "provenance_error" in state:
+            raise state["provenance_error"]
+        return io.BytesIO(state.get("provenance", PROVENANCE_BYTES))
+
+    monkeypatch.setattr(discover.urllib.request, "urlopen", provenance_response)
     monkeypatch.setattr(discover, "pypi", pypi)
     monkeypatch.setattr(discover, "fetch", fetch)
     monkeypatch.setattr(discover, "release_manifest", release_manifest)
@@ -172,7 +211,7 @@ def stubs(tmp_path, monkeypatch):
 
 def test_a_release_becomes_a_valid_released_bundle_request(stubs, tmp_path):
     request = discover.provisional_request(
-        "6.5.0", tmp_path, token=None, requested_by=REQUESTED_BY
+        "6.5.0", tmp_path, token=None, requested_by=REQUESTED_BY, now=NOW
     )
     rid = qualify.request_id(request)
     assert len(rid) == 64
@@ -193,6 +232,8 @@ def test_a_release_becomes_a_valid_released_bundle_request(stubs, tmp_path):
     }
     assert candidate["data"]["size_bytes"] == 130_000_000
     assert request["kind"] == "released_bundle"
+    assert request["requested_by"]["pypi_provenance_sha256"] == PROVENANCE_DIGEST
+    assert "pypi_provenance_sha256" not in REQUESTED_BY
     assert candidate["expected_release_bundle"] == discover.expected_bundle(
         stubs["manifest"]
     )
@@ -268,7 +309,7 @@ def test_request_building_never_runs_installers_or_release_code(
 
     monkeypatch.setitem(globals(), "wheel_bytes", hostile_wheel)
     request = discover.provisional_request(
-        "6.5.0", tmp_path, token="read-only-secret", requested_by=REQUESTED_BY
+        "6.5.0", tmp_path, token="read-only-secret", requested_by=REQUESTED_BY, now=NOW
     )
     assert qualify.request_id(request)
 
@@ -302,7 +343,7 @@ def test_inconsistent_releases_are_skipped_with_a_reason(stubs, tmp_path, change
     change(stubs)
     with pytest.raises(discover.Skipped) as caught:
         discover.provisional_request(
-            "6.5.0", tmp_path, token=None, requested_by=REQUESTED_BY
+            "6.5.0", tmp_path, token=None, requested_by=REQUESTED_BY, now=NOW
         )
     assert caught.value.permanent
     assert (
@@ -324,7 +365,7 @@ def test_dataset_repo_type_overrides_the_data_package(
     if dataset_repo_type:
         dataset["repo_type"] = dataset_repo_type
     request = discover.provisional_request(
-        "6.5.0", tmp_path, token=None, requested_by=REQUESTED_BY
+        "6.5.0", tmp_path, token=None, requested_by=REQUESTED_BY, now=NOW
     )
     assert request["candidate"]["data"]["repo_type"] == (dataset_repo_type or "model")
 
@@ -338,7 +379,7 @@ def test_data_certification_at_a_movable_tag_is_not_permanently_skipped(
     stubs["release"] = {"artifacts": {}}
     with pytest.raises(discover.Skipped) as caught:
         discover.provisional_request(
-            "6.5.0", tmp_path, token=None, requested_by=REQUESTED_BY
+            "6.5.0", tmp_path, token=None, requested_by=REQUESTED_BY, now=NOW
         )
     assert not caught.value.permanent
     assert "data_release_manifest" in caught.value.evidence_sha256
@@ -361,7 +402,7 @@ def test_candidates_are_newer_unrequested_final_releases(tmp_path):
         "6.5.0",
         "6.5.1",
         "6.10.0",
-        "6.4.0rc1",
+        "6.6.0rc1",
         "junk",
         "7.0.0",
     ]
@@ -372,18 +413,22 @@ def test_candidates_are_newer_unrequested_final_releases(tmp_path):
     ]
 
 
-@pytest.mark.parametrize("status", ["queued", "running"])
+@pytest.mark.parametrize(
+    "status", ["queued", "running", "complete", "failed", "rejected"]
+)
 @pytest.mark.parametrize("kind", ["candidate", "released_bundle"])
-def test_existing_650_qualification_is_never_discovered_again(tmp_path, status, kind):
-    request = json.loads((FIXTURES / "discovery" / "pe6.5.0-request.json").read_bytes())
+def test_existing_qualification_in_any_status_sets_the_floor(tmp_path, status, kind):
+    # Keep the requested release above the current certified floor: otherwise
+    # certification itself would hide a regression that ignored terminal states.
+    request = request_for("6.6.0")
     request["kind"] = kind
     directory = tmp_path / "requests" / qualify.request_id(request)
     directory.mkdir(parents=True)
     (directory / "REQUEST.json").write_text(json.dumps(request))
     (directory / "STATUS.json").write_text(json.dumps({"status": status}))
     assert discover.candidates(
-        ["6.4.1", "6.5.0", "6.5.1"], rv.load_document(), tmp_path
-    ) == ["6.5.1"]
+        ["6.5.0", "6.5.1", "6.6.0", "6.6.1"], rv.load_document(), tmp_path
+    ) == ["6.6.1"]
 
 
 @pytest.mark.parametrize(
@@ -414,7 +459,7 @@ def test_malformed_stored_requests_do_not_break_discovery(tmp_path, malformed):
     directory.mkdir(parents=True)
     (directory / "REQUEST.json").write_text(json.dumps(malformed))
     assert discover.requested_versions(tmp_path) == set()
-    assert discover.candidates(["6.5.0"], rv.load_document(), tmp_path) == ["6.5.0"]
+    assert discover.candidates(["6.5.1"], rv.load_document(), tmp_path) == ["6.5.1"]
 
 
 def test_invalid_json_stored_request_is_ignored(tmp_path):
@@ -449,7 +494,11 @@ def test_discovery_without_a_certified_baseline_requests_nothing(
     monkeypatch.setattr(discover.variants, "load_document", lambda: {"variants": []})
     assert (
         discover.discover(
-            tmp_path / "state", tmp_path / "work", token=None, requested_by=REQUESTED_BY
+            tmp_path / "state",
+            tmp_path / "work",
+            token=None,
+            requested_by=REQUESTED_BY,
+            now=NOW,
         )
         == []
     )
@@ -489,7 +538,7 @@ def test_a_release_yanked_after_listing_is_skipped(
     monkeypatch.setattr(discover, "pypi", pypi)
     with pytest.raises(discover.Skipped, match="yanked") as caught:
         discover.provisional_request(
-            "6.5.0", tmp_path, token=None, requested_by=REQUESTED_BY
+            "6.5.0", tmp_path, token=None, requested_by=REQUESTED_BY, now=NOW
         )
     assert not caught.value.permanent
 
@@ -499,9 +548,13 @@ def test_discovery_caps_each_run_and_continues_past_a_skip(
 ):
     monkeypatch.setattr(discover, "MAX_PER_RUN", 1)
     found = discover.discover(
-        tmp_path / "state", tmp_path / "work", token=None, requested_by=REQUESTED_BY
+        tmp_path / "state",
+        tmp_path / "work",
+        token=None,
+        requested_by=REQUESTED_BY,
+        now=NOW,
     )
-    assert [r["candidate"]["policyengine"]["version"] for r in found] == ["6.5.0"]
+    assert [r["candidate"]["policyengine"]["version"] for r in found] == ["6.5.1"]
     assert (
         "building the oldest 1 now" not in capsys.readouterr().out
     )  # one candidate only
@@ -512,6 +565,7 @@ def test_discovery_caps_each_run_and_continues_past_a_skip(
             tmp_path / "work2",
             token=None,
             requested_by=REQUESTED_BY,
+            now=NOW,
         )
         == []
     )
@@ -528,7 +582,11 @@ def test_pypi_listing_outage_does_not_raise(tmp_path, monkeypatch, capsys, error
     monkeypatch.setattr(discover, "pypi", pypi)
     assert (
         discover.discover(
-            tmp_path / "state", tmp_path / "work", token=None, requested_by=REQUESTED_BY
+            tmp_path / "state",
+            tmp_path / "work",
+            token=None,
+            requested_by=REQUESTED_BY,
+            now=NOW,
         )
         == []
     )
@@ -546,10 +604,10 @@ def test_release_errors_do_not_stop_later_candidates(
 
     def pypi(package, version=None):
         if version is None:
-            return {"releases": {"6.5.0": [], "6.5.1": []}}
+            return {"releases": {"6.5.1": [], "6.5.2": []}}
         if package == "policyengine":
             stubs["manifest"] = bundle_manifest()
-            if version == "6.5.0":
+            if version == "6.5.1":
                 if failure == "url-error":
                     raise urllib.error.URLError("PyPI unavailable")
                 if failure == "http-error":
@@ -557,7 +615,7 @@ def test_release_errors_do_not_stop_later_candidates(
                 if failure == "missing-uk":
                     stubs["manifest"] = {"data_releases": {}}
             document = original(package, version)
-            if version == "6.5.0" and failure in {"missing-manifest", "manifest-json"}:
+            if version == "6.5.1" and failure in {"missing-manifest", "manifest-json"}:
                 buffer = io.BytesIO()
                 with zipfile.ZipFile(buffer, "w") as wheel:
                     wheel.writestr("policyengine-6.5.0.dist-info/METADATA", "metadata")
@@ -573,10 +631,10 @@ def test_release_errors_do_not_stop_later_candidates(
     monkeypatch.setattr(discover, "pypi", pypi)
     state = tmp_path / "state"
     requests = discover.discover(
-        state, tmp_path / "work", token=None, requested_by=REQUESTED_BY
+        state, tmp_path / "work", token=None, requested_by=REQUESTED_BY, now=NOW
     )
-    assert [r["candidate"]["policyengine"]["version"] for r in requests] == ["6.5.1"]
-    assert "policyengine 6.5.0: not requested" in capsys.readouterr().out
+    assert [r["candidate"]["policyengine"]["version"] for r in requests] == ["6.5.2"]
+    assert "policyengine 6.5.1: not requested" in capsys.readouterr().out
     assert not list((state / "discovery" / "skipped").glob("*.json"))
 
 
@@ -588,20 +646,20 @@ def test_permanent_skips_do_not_starve_the_good_release_in_this_or_next_run(
 
     def pypi(package, version=None):
         if version is None:
-            return {"releases": {f"6.5.{index}": [] for index in range(4)}}
+            return {"releases": {f"6.5.{index}": [] for index in range(1, 5)}}
         if package == "policyengine":
             attempted.append(version)
             stubs["manifest"] = bundle_manifest()
-            stubs["requires"] = REQUIRES[1:] if version != "6.5.3" else REQUIRES
+            stubs["requires"] = REQUIRES[1:] if version != "6.5.4" else REQUIRES
         return original(package, version)
 
     monkeypatch.setattr(discover, "pypi", pypi)
     state = tmp_path / "state"
     requests = discover.discover(
-        state, tmp_path / "work", token=None, requested_by=REQUESTED_BY
+        state, tmp_path / "work", token=None, requested_by=REQUESTED_BY, now=NOW
     )
-    assert [r["candidate"]["policyengine"]["version"] for r in requests] == ["6.5.3"]
-    assert attempted == ["6.5.0", "6.5.1", "6.5.2", "6.5.3"]
+    assert [r["candidate"]["policyengine"]["version"] for r in requests] == ["6.5.4"]
+    assert attempted == ["6.5.1", "6.5.2", "6.5.3", "6.5.4"]
     records = list((state / "discovery" / "skipped").glob("*.json"))
     assert len(records) == 3
     for path in records:
@@ -610,6 +668,7 @@ def test_permanent_skips_do_not_starve_the_good_release_in_this_or_next_run(
         assert set(record["evidence_sha256"]) == {
             "policyengine_wheel",
             "packaged_bundle_manifest",
+            "policyengine_provenance",
         }
         assert all(len(digest) == 64 for digest in record["evidence_sha256"].values())
     directory = state / "requests" / qualify.request_id(requests[0])
@@ -618,7 +677,7 @@ def test_permanent_skips_do_not_starve_the_good_release_in_this_or_next_run(
     attempted.clear()
     assert (
         discover.discover(
-            state, tmp_path / "work2", token=None, requested_by=REQUESTED_BY
+            state, tmp_path / "work2", token=None, requested_by=REQUESTED_BY, now=NOW
         )
         == []
     )
@@ -631,7 +690,7 @@ def test_discovery_has_a_separate_attempt_limit(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(
         discover,
         "pypi",
-        lambda package: {"releases": {f"6.5.{i}": [] for i in range(5)}},
+        lambda package: {"releases": {f"6.5.{i}": [] for i in range(1, 6)}},
     )
     attempted = []
 
@@ -642,11 +701,15 @@ def test_discovery_has_a_separate_attempt_limit(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(discover, "provisional_request", provisional)
     assert (
         discover.discover(
-            tmp_path / "state", tmp_path / "work", token=None, requested_by=REQUESTED_BY
+            tmp_path / "state",
+            tmp_path / "work",
+            token=None,
+            requested_by=REQUESTED_BY,
+            now=NOW,
         )
         == []
     )
-    assert attempted == ["6.5.0", "6.5.1"]
+    assert attempted == ["6.5.1", "6.5.2"]
     assert "2 attempts" in capsys.readouterr().out
     assert not list((tmp_path / "state" / "discovery" / "skipped").glob("*.json"))
 
@@ -663,7 +726,7 @@ def test_discovery_for_any_mix_is_bounded_and_excludes_recorded_or_yanked(
 ):
     state = tmp_path_factory.mktemp("mix-state")
     work = tmp_path_factory.mktemp("mix-work")
-    versions = {f"6.5.{index}": outcome for index, outcome in enumerate(outcomes)}
+    versions = {f"6.5.{index + 1}": outcome for index, outcome in enumerate(outcomes)}
     releases = {
         version: [{"packagetype": "bdist_wheel", "yanked": outcome == "yanked"}]
         for version, outcome in versions.items()
@@ -692,7 +755,9 @@ def test_discovery_for_any_mix_is_bounded_and_excludes_recorded_or_yanked(
     with pytest.MonkeyPatch.context() as patch:
         patch.setattr(discover, "pypi", lambda package: {"releases": releases})
         patch.setattr(discover, "provisional_request", provisional)
-        requests = discover.discover(state, work, token=None, requested_by=REQUESTED_BY)
+        requests = discover.discover(
+            state, work, token=None, requested_by=REQUESTED_BY, now=NOW
+        )
     requested = [
         request["candidate"]["policyengine"]["version"] for request in requests
     ]
@@ -722,5 +787,495 @@ def test_candidates_are_sorted_strictly_above_the_floor(tmp_path_factory, triple
     from packaging.version import Version
 
     assert out == sorted(set(out), key=Version)
-    assert all(Version(v) > Version("6.4.1") for v in out)
-    assert set(out) == {v for v in versions if Version(v) > Version("6.4.1")}
+    assert all(Version(v) > Version("6.5.0") for v in out)
+    assert set(out) == {v for v in versions if Version(v) > Version("6.5.0")}
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("repository", "attacker/policyengine.py"),
+        ("repository", "policyengine/policyengine.py"),
+        ("workflow", "release.yaml"),
+        ("environment", "production"),
+        ("kind", "GitLab"),
+        ("extra", "unexpected"),
+    ],
+)
+def test_wrong_publisher_is_permanently_refused_before_bundle_building(
+    stubs, tmp_path, monkeypatch, field, value
+):
+    document = json.loads(PROVENANCE_BYTES)
+    document["attestation_bundles"][0]["publisher"][field] = value
+    payload = json.dumps(document).encode()
+    stubs["provenance"] = payload
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError(
+            "untrusted provenance must be checked before reading a wheel"
+        )
+
+    monkeypatch.setattr(discover, "fetch", forbidden)
+    monkeypatch.setattr(discover, "expected_bundle", forbidden)
+    with pytest.raises(discover.Skipped, match="required trusted publisher") as caught:
+        discover.provisional_request(
+            "6.5.1", tmp_path, token=None, requested_by=REQUESTED_BY, now=NOW
+        )
+    assert caught.value.permanent
+    assert caught.value.evidence_sha256 == {
+        "policyengine_provenance": hashlib.sha256(payload).hexdigest()
+    }
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        b"{unreadable",
+        b"null",
+        b"{}",
+        b'{"attestation_bundles": []}',
+        json.dumps(
+            {
+                "attestation_bundles": [
+                    {
+                        "publisher": PROVENANCE_DOCUMENT["attestation_bundles"][0][
+                            "publisher"
+                        ]
+                    }
+                ]
+            }
+        ).encode(),
+        json.dumps(
+            {
+                "attestation_bundles": [
+                    {
+                        "publisher": PROVENANCE_DOCUMENT["attestation_bundles"][0][
+                            "publisher"
+                        ],
+                        "attestations": [],
+                    }
+                ]
+            }
+        ).encode(),
+        json.dumps(
+            {
+                "attestation_bundles": [
+                    {
+                        "publisher": PROVENANCE_DOCUMENT["attestation_bundles"][0][
+                            "publisher"
+                        ],
+                        "attestations": [None],
+                    }
+                ]
+            }
+        ).encode(),
+    ],
+)
+def test_missing_or_unreadable_provenance_has_response_digest(stubs, tmp_path, payload):
+    stubs["provenance"] = payload
+    with pytest.raises(discover.Skipped) as caught:
+        discover.provisional_request(
+            "6.5.1", tmp_path, token=None, requested_by=REQUESTED_BY, now=NOW
+        )
+    assert caught.value.permanent
+    assert (
+        caught.value.evidence_sha256["policyengine_provenance"]
+        == hashlib.sha256(payload).hexdigest()
+    )
+
+
+def test_missing_provenance_http_response_is_permanent_evidence(stubs, tmp_path):
+    payload = b'{"message": "No attestations found"}'
+    stubs["provenance_error"] = urllib.error.HTTPError(
+        "https://pypi.org/integrity/policyengine/6.5.1/wheel/provenance",
+        404,
+        "not found",
+        {},
+        io.BytesIO(payload),
+    )
+    state = tmp_path / "state"
+    assert (
+        discover.discover(
+            state, tmp_path / "work", token=None, requested_by=REQUESTED_BY, now=NOW
+        )
+        == []
+    )
+    record = json.loads((state / "discovery" / "skipped" / "6.5.1.json").read_text())
+    assert record["evidence_sha256"] == {
+        "policyengine_provenance": hashlib.sha256(payload).hexdigest()
+    }
+
+
+@pytest.mark.parametrize("code", [408, 425, 429, 500, 503, None])
+def test_transient_provenance_failure_is_retried_instead_of_recorded(
+    stubs, tmp_path, code
+):
+    stubs["provenance_error"] = (
+        urllib.error.HTTPError(
+            "https://pypi.org", code, "try later", {}, io.BytesIO(b"outage")
+        )
+        if code is not None
+        else urllib.error.URLError("try later")
+    )
+    state = tmp_path / "state"
+    assert (
+        discover.discover(
+            state, tmp_path / "first", token=None, requested_by=REQUESTED_BY, now=NOW
+        )
+        == []
+    )
+    assert not list((state / "discovery" / "skipped").glob("*.json"))
+    del stubs["provenance_error"]
+    requests = discover.discover(
+        state, tmp_path / "retry", token=None, requested_by=REQUESTED_BY, now=NOW
+    )
+    assert [r["candidate"]["policyengine"]["version"] for r in requests] == ["6.5.1"]
+
+
+@pytest.mark.parametrize(
+    "age,accepted",
+    [
+        (timedelta(hours=6) - timedelta(microseconds=1), False),
+        (timedelta(hours=6), True),
+        (timedelta(hours=6) + timedelta(microseconds=1), True),
+    ],
+)
+def test_wheel_upload_grace_period_boundary(stubs, tmp_path, age, accepted):
+    assert discover.MIN_RELEASE_AGE == timedelta(hours=6)
+    stubs["upload_time"] = (NOW - age).isoformat()
+    if accepted:
+        assert discover.provisional_request(
+            "6.5.1", tmp_path, token=None, requested_by=REQUESTED_BY, now=NOW
+        )
+    else:
+        with pytest.raises(discover.Skipped, match="grace period") as caught:
+            discover.provisional_request(
+                "6.5.1", tmp_path, token=None, requested_by=REQUESTED_BY, now=NOW
+            )
+        assert not caught.value.permanent
+
+
+@pytest.mark.parametrize("floor_source", ["requested", "certified"])
+def test_642_and_643_are_not_backfilled_after_650(tmp_path, floor_source):
+    document = {
+        "variants": [
+            {
+                "status": "certified",
+                "identity": {
+                    "packages": {
+                        "policyengine": {
+                            "version": "6.5.0"
+                            if floor_source == "certified"
+                            else "6.4.1"
+                        }
+                    }
+                },
+            }
+        ]
+    }
+    if floor_source == "requested":
+        directory = tmp_path / "requests" / ("a" * 64)
+        directory.mkdir(parents=True)
+        request = request_for("6.5.0")
+        # Every named request sets the floor, including one the queue will
+        # reject for an unsupported kind.
+        request["kind"] = "unsupported"
+        (directory / "REQUEST.json").write_text(json.dumps(request))
+        (directory / "STATUS.json").write_text(json.dumps({"status": "rejected"}))
+    assert discover.candidates(
+        ["6.4.1", "6.4.2", "6.4.3", "6.5.0", "6.5.1"], document, tmp_path
+    ) == ["6.5.1"]
+
+
+def test_prerelease_above_current_floor_is_not_discovered(tmp_path):
+    assert discover.candidates(["6.6.0rc1", "6.6.0"], rv.load_document(), tmp_path) == [
+        "6.6.0"
+    ]
+
+
+class BoundedResponse(io.BytesIO):
+    def __init__(self, payload):
+        super().__init__(payload)
+        self.read_sizes = []
+        self.bytes_read = 0
+
+    def read(self, size=-1):
+        assert size > 0, "responses must be streamed with bounded reads"
+        self.read_sizes.append(size)
+        payload = super().read(size)
+        self.bytes_read += len(payload)
+        return payload
+
+
+@pytest.mark.parametrize("correct_digest", [True, False])
+def test_fetch_streams_and_checks_the_actual_wheel_digest(
+    tmp_path, monkeypatch, correct_digest
+):
+    payload = b"static wheel bytes" * 10000
+    response = BoundedResponse(payload)
+    monkeypatch.setattr(
+        discover.urllib.request, "urlopen", lambda *args, **kwargs: response
+    )
+    destination = tmp_path / "wheel.whl"
+    digest = hashlib.sha256(payload).hexdigest() if correct_digest else "0" * 64
+    if correct_digest:
+        assert (
+            discover.fetch("https://files.example/wheel.whl", destination, digest)
+            == destination
+        )
+        assert destination.read_bytes() == payload
+    else:
+        with pytest.raises(discover.Skipped, match="differ from PyPI's digest"):
+            discover.fetch("https://files.example/wheel.whl", destination, digest)
+        assert not destination.exists()
+    assert len(response.read_sizes) > 1
+    assert max(response.read_sizes) <= discover.READ_CHUNK_BYTES
+
+
+@pytest.mark.parametrize("kind", ["wheel", "json", "provenance"])
+def test_response_caps_stop_reading_after_limit(tmp_path, monkeypatch, kind):
+    response = BoundedResponse(b"x" * 10000)
+    monkeypatch.setattr(
+        discover.urllib.request, "urlopen", lambda *args, **kwargs: response
+    )
+    monkeypatch.setattr(discover, "MAX_WHEEL_BYTES", 100)
+    monkeypatch.setattr(discover, "MAX_JSON_BYTES", 100)
+    with pytest.raises(discover.Skipped, match="100-byte limit") as caught:
+        if kind == "wheel":
+            discover.fetch(
+                "https://files.example/wheel.whl", tmp_path / "wheel.whl", "a" * 64
+            )
+        elif kind == "json":
+            discover.pypi("policyengine")
+        else:
+            discover.trusted_provenance("6.5.1", "wheel.whl")
+    assert response.bytes_read == 101
+    assert not caught.value.permanent
+    assert not caught.value.evidence_sha256
+    assert not (tmp_path / "wheel.whl").exists()
+
+
+@pytest.mark.parametrize(
+    "entry", [discover.MANIFEST_PATH, "policyengine-6.5.1.dist-info/METADATA"]
+)
+@pytest.mark.parametrize("limit", ["size", "compression"])
+def test_wheel_entries_are_checked_before_decompression(
+    tmp_path, monkeypatch, entry, limit
+):
+    path = tmp_path / "bomb.whl"
+    manifest = json.dumps(bundle_manifest()).encode()
+    metadata = "".join(f"Requires-Dist: {line}\n" for line in REQUIRES).encode()
+    content = b"a" * (
+        discover.MAX_WHEEL_ENTRY_BYTES + 1 if limit == "size" else 128 * 1024
+    )
+    compression = zipfile.ZIP_STORED if limit == "size" else zipfile.ZIP_DEFLATED
+    with zipfile.ZipFile(path, "w", compression=compression) as wheel:
+        wheel.writestr(
+            discover.MANIFEST_PATH,
+            content if entry == discover.MANIFEST_PATH else manifest,
+        )
+        wheel.writestr(
+            "policyengine-6.5.1.dist-info/METADATA",
+            content if entry.endswith("METADATA") else metadata,
+        )
+    original = zipfile.ZipFile.read
+
+    def checked_read(wheel, info, *args, **kwargs):
+        assert info.filename != entry, "unsafe ZIP entry must not be decompressed"
+        return original(wheel, info, *args, **kwargs)
+
+    monkeypatch.setattr(zipfile.ZipFile, "read", checked_read)
+    with pytest.raises(discover.Skipped, match="size or compression limit"):
+        discover.read_wheel(path)
+
+
+@pytest.mark.parametrize("failure", ["zip-bomb", "oversized-wheel"])
+def test_large_artifact_refusal_does_not_stop_the_drain(
+    stubs, tmp_path, monkeypatch, failure
+):
+    original_pypi = discover.pypi
+    original_wheel_bytes = wheel_bytes
+
+    def pypi(package, version=None):
+        if version is None:
+            return {"releases": {"6.5.1": [], "6.5.2": []}}
+        return original_pypi(package, version)
+
+    def maybe_bomb(manifest, requires):
+        if (
+            failure == "zip-bomb"
+            and manifest["data_releases"]["uk"]["policyengine_version"] == "6.5.1"
+        ):
+            buffer = io.BytesIO()
+            with zipfile.ZipFile(
+                buffer, "w", compression=zipfile.ZIP_DEFLATED
+            ) as wheel:
+                wheel.writestr(discover.MANIFEST_PATH, b"a" * (128 * 1024))
+                wheel.writestr("policyengine-6.5.1.dist-info/METADATA", "metadata")
+            return buffer.getvalue()
+        return original_wheel_bytes(manifest, requires)
+
+    def response(url, **kwargs):
+        if "/integrity/" in url:
+            return BoundedResponse(PROVENANCE_BYTES)
+        if failure == "oversized-wheel" and "6.5.1" in url:
+            return BoundedResponse(b"x" * (16 * 1024 + 1))
+        return BoundedResponse(stubs["wheel"])
+
+    monkeypatch.setitem(globals(), "wheel_bytes", maybe_bomb)
+    monkeypatch.setattr(discover, "pypi", pypi)
+    monkeypatch.setattr(discover, "fetch", REAL_FETCH)
+    monkeypatch.setattr(discover, "MAX_WHEEL_BYTES", 16 * 1024)
+    monkeypatch.setattr(discover.urllib.request, "urlopen", response)
+    state = tmp_path / "state"
+    requests = discover.discover(
+        state, tmp_path / "work", token=None, requested_by=REQUESTED_BY, now=NOW
+    )
+    assert [r["candidate"]["policyengine"]["version"] for r in requests] == ["6.5.2"]
+    assert not list((state / "discovery" / "skipped").glob("*.json"))
+
+
+@pytest.mark.parametrize("oversized", [False, True])
+def test_release_manifest_runtime_defaults_and_bounded_read(
+    tmp_path, monkeypatch, oversized
+):
+    path = tmp_path / "release_manifest.json"
+    path.write_bytes(
+        b"x" * (discover.MAX_JSON_BYTES + 1) if oversized else b'{"artifacts": {}}'
+    )
+    calls = []
+
+    def download(**kwargs):
+        calls.append(kwargs)
+        return path
+
+    monkeypatch.setitem(
+        sys.modules, "huggingface_hub", types.SimpleNamespace(hf_hub_download=download)
+    )
+    package = {"repo_id": "policyengine/private", "version": "1.2.3"}
+    if oversized:
+        with pytest.raises(discover.Skipped, match="byte limit"):
+            REAL_RELEASE_MANIFEST(package, token="read-only")
+    else:
+        assert REAL_RELEASE_MANIFEST(package, token="read-only") == path.read_bytes()
+    assert calls == [
+        {
+            "repo_id": "policyengine/private",
+            "repo_type": "model",
+            "filename": "release_manifest.json",
+            "revision": "1.2.3",
+            "token": "read-only",
+        }
+    ]
+
+
+def test_transient_skip_with_evidence_is_never_persisted(tmp_path, monkeypatch):
+    monkeypatch.setattr(discover, "pypi", lambda package: {"releases": {"6.5.1": []}})
+    attempts = []
+
+    def provisional(version, work, **kwargs):
+        attempts.append(version)
+        if len(attempts) == 1:
+            raise discover.Skipped(
+                "retry later", evidence_sha256={"policyengine_provenance": "a" * 64}
+            )
+        return request_for(version)
+
+    monkeypatch.setattr(discover, "provisional_request", provisional)
+    state = tmp_path / "state"
+    assert (
+        discover.discover(
+            state, tmp_path / "first", token=None, requested_by=REQUESTED_BY, now=NOW
+        )
+        == []
+    )
+    assert not list((state / "discovery" / "skipped").glob("*.json"))
+    assert (
+        len(
+            discover.discover(
+                state,
+                tmp_path / "retry",
+                token=None,
+                requested_by=REQUESTED_BY,
+                now=NOW,
+            )
+        )
+        == 1
+    )
+    assert attempts == ["6.5.1", "6.5.1"]
+
+
+def test_discovery_logs_untrusted_exception_text_on_one_line(stubs, tmp_path, capsys):
+    stubs["manifest"]["data_releases"]["uk"]["model_package"]["version"] = (
+        "invalid\n::error::injected"
+    )
+    assert (
+        discover.discover(
+            tmp_path / "state",
+            tmp_path / "work",
+            token=None,
+            requested_by=REQUESTED_BY,
+            now=NOW,
+        )
+        == []
+    )
+    output = capsys.readouterr().out
+    assert "::error::injected" in output
+    assert not any(line.startswith("::") for line in output.splitlines())
+
+
+@pytest.mark.parametrize("outcome", ["good", "transient", "permanent"])
+def test_default_three_request_and_thirty_attempt_bounds(
+    tmp_path, monkeypatch, outcome
+):
+    assert discover.MAX_PER_RUN == 3
+    assert discover.MAX_ATTEMPTS_PER_RUN == 30
+    monkeypatch.setattr(
+        discover,
+        "pypi",
+        lambda package: {"releases": {f"6.5.{i}": [] for i in range(1, 36)}},
+    )
+    attempts = []
+
+    def provisional(version, work, **kwargs):
+        attempts.append(version)
+        if outcome == "transient":
+            raise TimeoutError("retry later")
+        if outcome == "permanent":
+            raise discover.Skipped(
+                "immutable mismatch",
+                permanent=True,
+                evidence_sha256={"wheel": "a" * 64},
+            )
+        return request_for(version)
+
+    monkeypatch.setattr(discover, "provisional_request", provisional)
+    state = tmp_path / "state"
+    requests = discover.discover(
+        state, tmp_path / "work", token=None, requested_by=REQUESTED_BY, now=NOW
+    )
+    assert len(requests) == (3 if outcome == "good" else 0)
+    assert len(attempts) == (3 if outcome == "good" else 30)
+    assert len(list((state / "discovery" / "skipped").glob("*.json"))) == (
+        30 if outcome == "permanent" else 0
+    )
+
+
+def test_permanent_skip_reason_stays_within_public_schema_limit(tmp_path, monkeypatch):
+    monkeypatch.setattr(discover, "pypi", lambda package: {"releases": {"6.5.1": []}})
+
+    def provisional(*args, **kwargs):
+        raise discover.Skipped(
+            "untrusted " * 1000, permanent=True, evidence_sha256={"wheel": "a" * 64}
+        )
+
+    monkeypatch.setattr(discover, "provisional_request", provisional)
+    state = tmp_path / "state"
+    assert (
+        discover.discover(
+            state, tmp_path / "work", token=None, requested_by=REQUESTED_BY, now=NOW
+        )
+        == []
+    )
+    record = json.loads((state / "discovery" / "skipped" / "6.5.1.json").read_text())
+    assert len(record["reason"]) == 2000

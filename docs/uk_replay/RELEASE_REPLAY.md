@@ -531,7 +531,7 @@ produce a different successful bundle. Bundle construction fills those
 manifest fields (`policyengine/tax_benefit_models/common/model_version.py:126–158`
 in 6.4.1, `:127–164` in 6.5.0), and the property projects the exact dictionary
 (`policyengine/core/tax_benefit_model_version.py:137–210` in 6.4.1,
-`:149–222` in 6.5.0). In particular, `policyengine_version` comes from that
+`:148–222` in 6.5.0). In particular, `policyengine_version` comes from that
 manifest (`:156` and `:168` respectively), not an imported wrapper.
 Discovery mirrors that projection and checks it against the exact W4 6.4.1
 and 6.5.0 request fixtures in `tests/fixtures/uk_replay/discovery/`. The
@@ -540,24 +540,55 @@ runtime bundle: a future release that changes this projection is rejected
 if they differ.
 
 `pipeline/uk_replay_discover.py` considers stable, non-yanked PyPI releases
-newer than the newest certified variant, oldest first. A wrapper version named
-by any recorded qualification request is already covered, regardless of its
-kind or status: a queued or running 6.5.0 qualification prevents a second
-6.5.0 request. Each drain builds at most three requests and examines at most
-30 releases. Transient failures remain eligible next time; contradictions in
-verified immutable artifacts are recorded as permanent skip evidence, with
-the artifact digests that support the decision.
+whose wheel upload is at least six hours old, oldest first. The grace period
+allows W4's normal dispatch and publication metadata to arrive before
+catch-up. A version must be strictly newer than both the newest certified
+variant and the newest version named by any recorded qualification request,
+regardless of request kind or status (`queued`, `running`, `complete`,
+`failed` or `rejected`). The current certified variant is
+`pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1`; a requested or certified
+6.5.0 therefore suppresses discovery of 6.4.2 and 6.4.3 as well as 6.5.0.
+Superseded patch releases are not backfilled. Each drain builds at most three
+requests and examines at most 30 releases.
+
+Before building a request, discovery reads the selected wheel's static PyPI
+integrity provenance JSON and requires an attestation bundle with these
+case-sensitive publisher fields: `kind: "GitHub"`,
+`repository: "PolicyEngine/policyengine.py"`, `workflow: "push.yaml"`, and
+`environment: "pypi"`. The
+[6.5.0 wheel provenance](https://pypi.org/integrity/policyengine/6.5.0/policyengine-6.5.0-py3-none-any.whl/provenance)
+is the checked example of those exact field names and values. Discovery runs
+nothing from this response. Missing attestations, another publisher and
+unreadable provenance responses are permanent skips, evidenced by the
+response bytes' SHA-256; transient HTTP failures remain eligible next time.
+A read stopped at the size cap also remains retryable, since it has no digest
+of a complete response. Other contradictions in verified immutable artifacts
+are also recorded as permanent skips, with the artifact digests that support
+the decision.
+
+Accepted requests record the provenance response's SHA-256 in
+`requested_by.pypi_provenance_sha256`, so it is part of their request identity
+and public discovery metadata; discovery also logs the digest. The vendored
+[v1 request schema](schemas/qualification_request.v1.json) already permits
+additional provenance fields inside `requested_by`; no schema change is
+needed. Permanent skips record it as
+`evidence_sha256.policyengine_provenance`.
 
 Discovery derives public request fields from the wrapper wheel's packaged
 manifest and PyPI metadata without installing or importing the wheel. Its
 only token-holding step reads the private release manifest to bind its SHA-256
-and the certified dataset's size; it downloads no dataset. The artifact passed
-to `discover_enqueue` contains only requests and permanent skip evidence,
+and the certified dataset's size; it downloads no dataset. Downloaded wheels
+have a 64 MiB streaming-read cap; PyPI JSON responses have a 1 MiB cap.
+The packaged manifest and METADATA ZIP members must each be at most 1 MiB,
+with a compression ratio no greater than 100, before decompression. The
+artifact passed to `discover_enqueue` contains only requests and permanent skip evidence,
 checked by the receiver's output guard before upload. The write job guards
 that artifact again and validates **every** request against the vendored
 qualification schema before enqueueing any request. It refetches `replay-state`
-and checks covered versions again on each write attempt, so a concurrent W4
-qualification is not duplicated. Failed discovery or discovery enqueueing
+and checks covered versions again on each write attempt, so a W4 qualification
+that arrived before that attempt is not duplicated. A dispatch arriving after
+discovery has pushed can still create a distinct request; the six-hour grace
+period reduces that overlap. Failed discovery or discovery enqueueing
 does not block `prepare`: existing queued requests still drain.
 
 The `prepare` job selects the oldest eligible request, marks it running and
@@ -627,10 +658,15 @@ anything to the public `replay-state` branch, and drops a refused output, so
 the attempt is recorded as `failed`.
 
 What this protects, and what it does not. A request names its candidate by
-version and wheel SHA-256, and only a caller with write access to this
-repository can send one (`repository_dispatch` and `workflow_dispatch` both
-require it); requests are meant for PolicyEngine's own releases, from W4. A
-new candidate's dependencies resolve within the newest certified freeze
+version and wheel SHA-256. W4's explicit dispatch and manual request paths are
+joined by discovery's automatic path: discovery trusts a release on PyPI only
+when its wheel has trusted-publisher provenance naming
+`PolicyEngine/policyengine.py`, workflow `push.yaml`, environment `pypi`, with
+publisher kind exactly `GitHub`, as in the
+[checked 6.5.0 response](https://pypi.org/integrity/policyengine/6.5.0/policyengine-6.5.0-py3-none-any.whl/provenance).
+A PyPI upload without that provenance cannot create a discovery request.
+These requests remain intended for PolicyEngine's own releases. A new
+candidate's dependencies resolve within the newest certified freeze
 where they can. The candidate and its dependencies are trusted with the
 dataset: they compute on it, and the guard stops an honest run from
 publishing a dataset copy, a binary, or a `.csv` or `.jsonl` table under

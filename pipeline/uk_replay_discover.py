@@ -2,10 +2,10 @@
 
 Release qualification (W4) notifies this repository after each release, but
 a missing GitHub App, an outage or a cancelled run can lose that dispatch.
-The empty-request manual drain therefore also looks at PyPI itself: for every
-policyengine release newer than the newest certified replay variant that no
-request already names, it builds a ``released_bundle`` qualification request
-and leaves it for the queue.
+The empty-request manual drain therefore also looks at PyPI itself: for each
+stable release above both the certified and requested version floors, it
+checks trusted-publisher provenance and the dispatch grace period before
+building a ``released_bundle`` qualification request for the queue.
 
 The request is built from primary artifacts: the wheel's SHA-256 from PyPI
 (checked against the downloaded bytes), the packaged bundle manifest inside
@@ -23,12 +23,15 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import os
 import re
 import sys
+import urllib.error
 import urllib.request
 import zipfile
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from packaging.version import Version
@@ -41,9 +44,23 @@ from pipeline import uk_replay_qualify as qualify
 from pipeline import uk_replay_variants as variants
 
 PYPI = "https://pypi.org/pypi/{package}/json"
+PROVENANCE = "https://pypi.org/integrity/policyengine/{version}/{filename}/provenance"
+TRUSTED_PUBLISHER = {
+    "kind": "GitHub",
+    "repository": "PolicyEngine/policyengine.py",
+    "workflow": "push.yaml",
+    "environment": "pypi",
+}
 MANIFEST_PATH = "policyengine/data/bundle/manifest.json"
 MAX_PER_RUN = 3
 MAX_ATTEMPTS_PER_RUN = 30
+MIN_RELEASE_AGE = timedelta(hours=6)
+MAX_WHEEL_BYTES = 64 * 1024 * 1024
+MAX_JSON_BYTES = 1024 * 1024
+MAX_WHEEL_ENTRY_BYTES = 1024 * 1024
+MAX_WHEEL_COMPRESSION_RATIO = 100
+READ_CHUNK_BYTES = 64 * 1024
+MAX_SKIP_REASON_LENGTH = 2000
 EXTRA_PIN = re.compile(
     r"^(policyengine-uk|policyengine-core)\s*==\s*([^;\s]+)\s*;\s*extra\s*==\s*\"uk\"$"
 )
@@ -64,10 +81,76 @@ class Skipped(Exception):
         self.evidence_sha256 = evidence_sha256 or {}
 
 
+def copy_response(response, destination, *, max_bytes: int) -> str:
+    """Bound memory/disk use and hash response bytes as they arrive."""
+    digest = hashlib.sha256()
+    size = 0
+    while payload := response.read(min(READ_CHUNK_BYTES, max_bytes - size + 1)):
+        size += len(payload)
+        if size > max_bytes:
+            # An incomplete response has no whole-response digest, so this
+            # resource refusal remains retryable rather than permanent.
+            raise Skipped(f"response exceeds the {max_bytes}-byte limit")
+        digest.update(payload)
+        destination.write(payload)
+    return digest.hexdigest()
+
+
+def response_bytes(response) -> tuple[bytes, str]:
+    destination = io.BytesIO()
+    digest = copy_response(response, destination, max_bytes=MAX_JSON_BYTES)
+    return destination.getvalue(), digest
+
+
 def pypi(package: str, version: str | None = None) -> dict:
     url = PYPI.format(package=package if version is None else f"{package}/{version}")
     with urllib.request.urlopen(url, timeout=60) as response:  # Fixed HTTPS host.
-        return json.loads(response.read())
+        payload, _ = response_bytes(response)
+    return json.loads(payload)
+
+
+def trusted_provenance(version: str, filename: str) -> str:
+    """Read PyPI's static JSON; require its exact reviewed publisher fields."""
+    url = PROVENANCE.format(version=version, filename=filename)
+    try:
+        with urllib.request.urlopen(url, timeout=60) as response:
+            payload, digest = response_bytes(response)
+    except urllib.error.HTTPError as exc:
+        if exc.code in {408, 425, 429} or exc.code >= 500:
+            raise
+        # A missing attestation is a permanent refusal. Hash the actual error
+        # body as evidence, just as for an unreadable successful response.
+        with exc:
+            payload, digest = response_bytes(exc)
+        print(f"policyengine {version}: PyPI provenance sha256={digest}")
+        raise Skipped(
+            f"PyPI Trusted Publishing provenance unavailable (HTTP {exc.code})",
+            permanent=True,
+            evidence_sha256={"policyengine_provenance": digest},
+        ) from exc
+    print(f"policyengine {version}: PyPI provenance sha256={digest}")
+    try:
+        document = json.loads(payload)
+        bundles = document["attestation_bundles"]
+        accepted = isinstance(bundles, list) and any(
+            isinstance(bundle, dict)
+            and bundle.get("publisher") == TRUSTED_PUBLISHER
+            and isinstance(bundle.get("attestations"), list)
+            and any(
+                isinstance(attestation, dict) and bool(attestation)
+                for attestation in bundle["attestations"]
+            )
+            for bundle in bundles
+        )
+    except (ValueError, KeyError, TypeError, RecursionError):
+        accepted = False
+    if not accepted:
+        raise Skipped(
+            "PyPI provenance has no attestation from the required trusted publisher",
+            permanent=True,
+            evidence_sha256={"policyengine_provenance": digest},
+        )
+    return digest
 
 
 def wheel_entry(document: dict) -> dict:
@@ -82,23 +165,22 @@ def wheel_entry(document: dict) -> dict:
         "filename": wheels[0]["filename"],
         "url": wheels[0]["url"],
         "sha256": wheels[0]["digests"]["sha256"],
+        "upload_time": wheels[0].get("upload_time_iso_8601")
+        or wheels[0].get("upload_time"),
     }
 
 
 def requested_versions(state: Path) -> set[Version]:
-    """Wrapper versions named by a candidate or released-bundle request.
+    """Wrapper versions named by any recorded qualification request.
 
-    W4 may already be qualifying a release before promotion. Its candidate
-    request counts too, including when it is queued or running.
+    W4 may already be qualifying a release before promotion. Every recorded
+    request counts, including complete, failed and rejected qualifications.
     """
     out = set()
     for path in (state / "requests").glob("*/REQUEST.json"):
         try:
             request = json.loads(path.read_text(encoding="utf-8"))
-            if not isinstance(request, dict) or request.get("kind") not in {
-                "candidate",
-                "released_bundle",
-            }:
+            if not isinstance(request, dict):
                 continue
             value = request["candidate"]["policyengine"]["version"]
             if isinstance(value, str):
@@ -141,8 +223,7 @@ def yanked_release(release: list[dict] | dict) -> bool:
 def candidates(
     all_versions: list[str] | dict[str, list[dict] | dict], document: dict, state: Path
 ) -> list[str]:
-    """Releases newer than the newest certified variant's wrapper, not yet
-    requested, oldest first (so the queue replays them in release order)."""
+    """Final releases above both the certified and requested floors, oldest first."""
     certified = {
         Version(r["identity"]["packages"]["policyengine"]["version"])
         for r in document["variants"]
@@ -151,8 +232,9 @@ def candidates(
     if not certified:
         print("no certified policyengine release; discovery has no baseline")
         return []
-    floor = max(certified)
-    seen = requested_versions(state) | certified | skipped_versions(state)
+    requested = requested_versions(state)
+    floor = max(certified | requested)
+    seen = requested | certified | skipped_versions(state)
     out = {}
     for value in sorted(set(all_versions)):
         try:
@@ -185,23 +267,40 @@ def uk_pins(
 
 
 def read_wheel(path: Path) -> tuple[bytes, str]:
+    def read_entry(wheel, entry):
+        if (
+            entry.file_size > MAX_WHEEL_ENTRY_BYTES
+            or entry.file_size
+            > max(entry.compress_size, 1) * MAX_WHEEL_COMPRESSION_RATIO
+        ):
+            raise Skipped(
+                f"wheel entry exceeds size or compression limit: {entry.filename}"
+            )
+        return wheel.read(entry)
+
     with zipfile.ZipFile(path) as wheel:
-        manifest = wheel.read(MANIFEST_PATH)
+        manifest = read_entry(wheel, wheel.getinfo(MANIFEST_PATH))
         metadata = next(
-            wheel.read(name).decode()
-            for name in wheel.namelist()
-            if name.endswith(".dist-info/METADATA")
+            read_entry(wheel, entry).decode()
+            for entry in wheel.infolist()
+            if entry.filename.endswith(".dist-info/METADATA")
         )
     return manifest, metadata
 
 
 def fetch(url: str, destination: Path, sha256: str) -> Path:
     destination.parent.mkdir(parents=True, exist_ok=True)
-    with urllib.request.urlopen(url, timeout=300) as response:  # PyPI file URL.
-        payload = response.read()
-    if hashlib.sha256(payload).hexdigest() != sha256:
-        raise Skipped(f"{destination.name} bytes differ from PyPI's digest")
-    destination.write_bytes(payload)
+    try:
+        with (
+            urllib.request.urlopen(url, timeout=300) as response,
+            destination.open("wb") as output,
+        ):
+            digest = copy_response(response, output, max_bytes=MAX_WHEEL_BYTES)
+        if digest != sha256:
+            raise Skipped(f"{destination.name} bytes differ from PyPI's digest")
+    except Exception:
+        destination.unlink(missing_ok=True)
+        raise
     return destination
 
 
@@ -211,8 +310,10 @@ def release_manifest(data_package: dict, *, token: str | None) -> bytes:
     try:
         path = hf_hub_download(
             repo_id=data_package["repo_id"],
-            repo_type=data_package.get("repo_type") or "model",
-            filename=data_package["release_manifest_path"],
+            # policyengine 6.5.0 policyengine/provenance/manifest.py:30-31
+            # defaults DataPackageVersion's repo_type and manifest path.
+            repo_type=data_package.get("repo_type", "model"),
+            filename=data_package.get("release_manifest_path", "release_manifest.json"),
             revision=data_package.get("release_manifest_revision")
             or data_package["version"],
             token=token or None,
@@ -221,17 +322,29 @@ def release_manifest(data_package: dict, *, token: str | None) -> bytes:
         raise Skipped(
             f"data release manifest unavailable: {type(exc).__name__}"
         ) from exc
-    return Path(path).read_bytes()
+    with Path(path).open("rb") as manifest:
+        payload, _ = response_bytes(manifest)
+    return payload
 
 
 def provisional_request(
-    version: str, work: Path, *, token: str | None, requested_by: dict
+    version: str, work: Path, *, token: str | None, requested_by: dict, now: datetime
 ) -> dict:
     """A complete request from wheel metadata and the data release manifest."""
     wrapper = wheel_entry(pypi("policyengine", version))
+    if not wrapper["upload_time"]:
+        raise Skipped("the wheel's PyPI upload time is unavailable")
+    uploaded = datetime.fromisoformat(wrapper["upload_time"].replace("Z", "+00:00"))
+    if uploaded.tzinfo is None:
+        uploaded = uploaded.replace(tzinfo=timezone.utc)
+    if now - uploaded < MIN_RELEASE_AGE:
+        raise Skipped("the wheel is inside the six-hour dispatch grace period")
+    provenance_digest = trusted_provenance(version, wrapper["filename"])
+    requested_by = {**requested_by, "pypi_provenance_sha256": provenance_digest}
     wheel = fetch(wrapper["url"], work / wrapper["filename"], wrapper["sha256"])
     manifest_bytes, metadata = read_wheel(wheel)
     evidence = {
+        "policyengine_provenance": provenance_digest,
         "policyengine_wheel": wrapper["sha256"],
         "packaged_bundle_manifest": hashlib.sha256(manifest_bytes).hexdigest(),
     }
@@ -326,7 +439,7 @@ def expected_bundle(
     Read from both policyengine 6.4.1 and 6.5.0 wheels: provenance/manifest.py
     :321-335 reads this manifest, :395-422 returns its certification offline
     for the pinned model, and :184-191 chooses the certified default URI.
-    core/tax_benefit_model_version.py:137-210 (6.4.1), :149-222 (6.5.0)
+    core/tax_benefit_model_version.py:137-210 (6.4.1), :148-222 (6.5.0)
     defines precisely these fields. Missing optional fields remain JSON null.
     A nonlegacy runtime fingerprint mismatch can reject certification; it
     never changes a successful bundle. The receiver still checks at runtime.
@@ -370,13 +483,13 @@ def expected_bundle(
 
 
 def discover(
-    state: Path, work: Path, *, token: str | None, requested_by: dict
+    state: Path, work: Path, *, token: str | None, requested_by: dict, now: datetime
 ) -> list[dict]:
     document = variants.load_document()
     try:
         versions = candidates(pypi("policyengine")["releases"], document, state)
     except Exception as exc:  # noqa: BLE001 - discovery must never block the drain
-        print(f"policyengine release listing unavailable: {type(exc).__name__}: {exc}")
+        print(f"policyengine release listing unavailable: {exc!r}")
         return []
     requests = []
     for attempt, version in enumerate(versions, start=1):
@@ -388,11 +501,11 @@ def discover(
             break
         try:
             request = provisional_request(
-                version, work / version, token=token, requested_by=requested_by
+                version, work / version, token=token, requested_by=requested_by, now=now
             )
             request_id = qualify.request_id(request)
         except Exception as exc:  # noqa: BLE001 - one bad release cannot stop catch-up
-            print(f"policyengine {version}: not requested: {type(exc).__name__}: {exc}")
+            print(f"policyengine {version}: not requested: {exc!r}")
             if isinstance(exc, Skipped) and exc.permanent and exc.evidence_sha256:
                 try:
                     directory = state / "discovery" / "skipped"
@@ -402,7 +515,7 @@ def discover(
                             {
                                 "schema": "policyengine.uk-replay-discovery-skip/v1",
                                 "version": str(Version(version)),
-                                "reason": str(exc),
+                                "reason": str(exc)[:MAX_SKIP_REASON_LENGTH],
                                 "evidence_sha256": exc.evidence_sha256,
                             },
                             sort_keys=True,
@@ -413,7 +526,7 @@ def discover(
                     )
                 except Exception as record_error:  # noqa: BLE001 - keep draining
                     print(
-                        f"policyengine {version}: could not record skip: {record_error}"
+                        f"policyengine {version}: could not record skip: {record_error!r}"
                     )
             continue
         requests.append(request)
@@ -439,7 +552,11 @@ def main(argv: list[str] | None = None) -> int:
     token = os.environ.get("HUGGING_FACE_TOKEN") or os.environ.get("HF_TOKEN")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     for request in discover(
-        args.state, args.work, token=token, requested_by=requested_by
+        args.state,
+        args.work,
+        token=token,
+        requested_by=requested_by,
+        now=datetime.now(timezone.utc),
     ):
         path = args.output_dir / f"{qualify.request_id(request)}.json"
         path.write_bytes(qualify.canonical_bytes(request))

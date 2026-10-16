@@ -57,13 +57,30 @@ Two flows use the same receiver:
   pull-request trigger. Discovery failures do not block `prepare` from
   draining requests already queued.
 * The read-only `discover` job checks out without persisted credentials. It
-  considers stable, non-yanked PyPI wrapper releases newer than the newest
-  certified variant (currently 6.4.1), oldest first, and builds at most three
-  requests from at most 30 release attempts per drain. Any recorded
-  qualification request covers its wrapper version, regardless of kind or
-  status; a queued or running 6.5.0 request therefore suppresses discovery of
-  6.5.0. The job reads downloaded wheels as ZIP/JSON data and runs no release
-  or candidate code. Its single token-holding step uses the read-only org
+  considers stable, non-yanked PyPI wrapper releases whose wheel upload is at
+  least six hours old, oldest first. A version must be strictly newer than
+  both the newest certified variant (currently 6.5.0) and the newest wrapper
+  version named by any recorded request, regardless of kind or status
+  (`queued`, `running`, `complete`, `failed` or `rejected`). A requested or
+  certified 6.5.0 suppresses 6.4.2 and 6.4.3 as well as 6.5.0; superseded
+  patch releases are not backfilled. Discovery builds at most three requests
+  from at most 30 release attempts per drain.
+  Before building a request it reads the wheel's static PyPI integrity JSON
+  and requires an attestation bundle whose publisher fields match exactly:
+  `kind: "GitHub"`, `repository: "PolicyEngine/policyengine.py"`,
+  `workflow: "push.yaml"`, and `environment: "pypi"` (the
+  [checked 6.5.0 provenance response](https://pypi.org/integrity/policyengine/6.5.0/policyengine-6.5.0-py3-none-any.whl/provenance)).
+  Missing attestations, another publisher and unreadable provenance responses
+  become permanent skips with the response's SHA-256 as evidence; transient
+  HTTP failures are retried. A response stopped at the size cap is retryable
+  because no complete-response digest was obtained. The provenance response's
+  SHA-256 enters accepted requests as `requested_by.pypi_provenance_sha256`
+  and is also logged.
+  The job reads downloaded wheels as ZIP/JSON data and runs no provenance,
+  release or candidate code. Streaming responses are capped at 64 MiB for
+  wheels and 1 MiB for PyPI JSON; manifest and METADATA ZIP members are capped at
+  1 MiB each and a compression ratio of 100 before decompression. Its single
+  token-holding step uses the read-only org
   secret `PE_UK_PRIVATE_HF_READ_TOKEN` only to read the private release
   manifest, whose SHA-256 and dataset size enter the request. No dataset is
   downloaded during discovery.
@@ -75,8 +92,10 @@ Two flows use the same receiver:
   job has `contents: write`, no dataset token, and runs only trusted control
   code. It validates every discovered request against the vendored request
   schema before enqueueing any, and refetches `replay-state` to deduplicate
-  versions again on every write attempt. This also covers a W4 request that
-  arrived while discovery ran. Immutable artifact contradictions can be
+  versions again on every write attempt. This covers a W4 request that
+  arrived before that attempt. A later dispatch can still create a distinct
+  request after discovery has pushed; the six-hour grace period reduces that
+  overlap. Immutable artifact contradictions can be
   recorded with their digest evidence as permanent skips; transient failures
   are retried on later drains.
 * State for request `<request_id>` lives at
@@ -104,7 +123,9 @@ Two flows use the same receiver:
   uploaded and again before it is committed. RELEASE_REPLAY.md states what
   this protects and what it does not; in particular, a receipt is produced
   beside the candidate, so requests are for PolicyEngine's own releases
-  only. The qualifier writes a structured result
+  only. Automatic discovery additionally requires the exact trusted-publisher
+  provenance above; a PyPI upload alone does not authorize it. The qualifier
+  writes a structured result
   file with `status` and `receipt_sha256`, while logs remain visible in
   Actions. A separate recording job has `contents: write` and `actions: write`,
   validates the uploaded receipt, records it before terminal status and
@@ -165,7 +186,11 @@ Two flows use the same receiver:
 * `requested_by` names the requesting repository and commit;
   `workflow_run_id` is optional (a manual request made outside Actions has
   none), and additional provenance fields such as `run_attempt`
-  are accepted. Every other object is closed.
+  are accepted. Discovery uses this existing extension point for
+  `pypi_provenance_sha256`, the SHA-256 of the wheel's PyPI provenance response,
+  without changing the vendored schema. It is included in the request's JCS
+  digest and public discovery metadata. Permanent skip metadata uses
+  `evidence_sha256.policyengine_provenance`. Every other object is closed.
 * The wrapper is identified by `version` plus either a PyPI wheel
   (`{"pypi": {"wheel_sha256": …}}`) or, for an unreleased candidate whose
   regenerated manifest is not on PyPI yet, a public git commit. Scorecard
