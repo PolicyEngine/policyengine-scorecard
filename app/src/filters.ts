@@ -1,6 +1,18 @@
 import { SPINE_ORDER, type SpineBucket } from "./spine";
 import type { Country } from "./types";
 
+/** The comparison table's program and metric options, in table order; the
+ *  same closed vocabularies a link's ?program= / ?metric= are read against. */
+export const PROGRAM_ORDER = [
+  "snap", "ssi", "tanf", "wic", "ccdf", "housing", "liheap", "eitc",
+  "ctc_refund", "spm_poverty",
+];
+export const METRIC_ORDER = [
+  "eligible_count", "eligibility_rate", "participation_rate",
+  "participation_gap_count", "poverty_rate", "poverty_rate_fullpart",
+  "poverty_rate_relative_change_fullpart", "poverty_count_change_fullpart",
+];
+
 export interface Filters {
   country: Country;
   program: string;

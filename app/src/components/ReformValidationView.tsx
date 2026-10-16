@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { Label, Switch } from "@policyengine/ui-kit/primitives";
 import type { Country, PopulationRow, PopulationsFeed } from "../types";
 import {
@@ -86,17 +86,21 @@ export function filterRows(rows: PopulationRow[], f: RowFilters): PopulationRow[
 export function ReformValidationView({
   feed,
   country,
+  claim,
+  onClaimChange,
 }: {
   feed: PopulationsFeed;
   /** Owned by the country selector — this view scopes to it (issue #42). */
   country: Country;
+  /** The open row, owned by the address bar's ?claim= (issue #177). */
+  claim: string | null;
+  onClaimChange: (claim: string | null) => void;
 }) {
   const [source, setSource] = useState("all");
   const [status, setStatus] = useState("all");
   const [releasesOnly, setReleasesOnly] = useState(false);
   const [fiscalEvent, setFiscalEvent] = useState("all");
   const [benchmarkClass, setBenchmarkClass] = useState("all");
-  const [expanded, setExpanded] = useState<string | null>(null);
   const [archiveRows, setArchiveRows] = useState<{
     event: string;
     rows: PopulationRow[];
@@ -188,6 +192,34 @@ export function ReformValidationView({
       }),
     [inCountry, source, status, releasesOnly, fiscalEvent, benchmarkClass],
   );
+
+  // A claim that arrives from the address bar (a deep link, back/forward)
+  // is revealed once: filters that hide its row are cleared, then the row
+  // is scrolled into view and focused. A row the reader clicks opens in
+  // place, and a claim this country's rows lack opens nothing.
+  const revealed = useRef<string | null>(null);
+  const openRow = useRef<HTMLTableRowElement>(null);
+  const toggle = (id: string) => {
+    const next = claim === id ? null : id;
+    revealed.current = next;
+    onClaimChange(next);
+  };
+  useEffect(() => {
+    if (claim === null || claim === revealed.current) return;
+    const row = inCountry.find((r) => r.claim_id === claim);
+    if (row && !rows.includes(row)) {
+      setSource("all");
+      setStatus("all");
+      setReleasesOnly(false);
+      setBenchmarkClass("all");
+      if ((row.conditions.fiscal_event ?? "") !== fiscalEvent)
+        setFiscalEvent("all");
+      return; // revealed on the render that shows it
+    }
+    revealed.current = claim;
+    openRow.current?.scrollIntoView({ block: "center" });
+    openRow.current?.focus({ preventScroll: true });
+  }, [claim, inCountry, rows, fiscalEvent]);
 
   const th = "px-3 py-2 font-medium";
   const peLabel = country === "BE" ? "Axiom" : "PolicyEngine";
@@ -356,19 +388,18 @@ export function ReformValidationView({
             {rows.map((r) => (
               <Fragment key={r.claim_id}>
                 <tr
+                  ref={claim === r.claim_id ? openRow : undefined}
                   className={
                     "cursor-pointer border-b border-border hover:bg-muted/60 " +
-                    (expanded === r.claim_id ? "bg-muted/60" : "")
+                    (claim === r.claim_id ? "bg-muted/60" : "")
                   }
                   tabIndex={0}
-                  aria-expanded={expanded === r.claim_id}
-                  onClick={() =>
-                    setExpanded(expanded === r.claim_id ? null : r.claim_id)
-                  }
+                  aria-expanded={claim === r.claim_id}
+                  onClick={() => toggle(r.claim_id)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      setExpanded(expanded === r.claim_id ? null : r.claim_id);
+                      toggle(r.claim_id);
                     }
                   }}
                 >
@@ -435,7 +466,7 @@ export function ReformValidationView({
                     {r.results.length}
                   </td>
                 </tr>
-                {expanded === r.claim_id && <RowDetail row={r} />}
+                {claim === r.claim_id && <RowDetail row={r} />}
               </Fragment>
             ))}
           </tbody>

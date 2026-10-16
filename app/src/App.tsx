@@ -30,26 +30,45 @@ import { AboutView } from "./components/AboutView";
 import { Overview } from "./components/Overview";
 import { CountryEmptyState } from "./components/CountryEmptyState";
 import { ReformValidationView } from "./components/ReformValidationView";
-import { TABS, buildUrlQuery, parseUrlState, type TabId } from "./urlState";
+import {
+  TABS,
+  buildUrlQuery,
+  parseUrlState,
+  type TabId,
+  type UrlState,
+} from "./urlState";
+import { claimCountry } from "./populations";
 import { withBasePath } from "./basePath";
 
-function initialUrlState(): { country: Country; tab: TabId } {
+function initialUrlState(): UrlState {
   return parseUrlState(window.location.search);
+}
+
+/** A history entry's filters: those saved with it, under the comparison
+ *  filters its URL carries (a shared link arrives with nothing saved). */
+function entryFilters(saved: unknown, url: UrlState): Filters {
+  return { ...restoreFilters(saved, url.country), ...url.filters };
 }
 
 /**
  * Write the view into the address bar. A new view or country is a new
  * history entry, so the browser's back button returns to the previous view;
- * a filter change on the same view only updates the current entry. Each
- * entry carries its filters, so back/forward restores the exact table.
+ * a filter change or an opened claim on the same view only updates the
+ * current entry. Each entry carries its filters, so back/forward restores
+ * the exact table; the comparison filters and the open claim are also in
+ * the query, so a copied link opens the same table or claim.
  */
 function writeUrlState(
   country: Country,
   tab: TabId,
   filters: Filters,
+  claim: string | null,
   mode: "push" | "replace",
 ) {
-  const query = buildUrlQuery(window.location.search, country, tab);
+  const query = buildUrlQuery(window.location.search, country, tab, {
+    claim,
+    filters,
+  });
   const url =
     (query ? `${window.location.pathname}?${query}` : window.location.pathname) +
     window.location.hash;
@@ -73,15 +92,21 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<TabId>(() => initialUrlState().tab);
   const [filters, setFilters] = useState<Filters>(() =>
-    restoreFilters(window.history.state?.filters, initialUrlState().country),
+    entryFilters(window.history.state?.filters, initialUrlState()),
   );
   const country = filters.country;
+  // The open reform-validation claim (?claim=); null on every other view.
+  const [claim, setClaim] = useState<string | null>(
+    () => initialUrlState().claim ?? null,
+  );
 
   // The view last written to the address bar (null before the first write),
-  // and whether the pending render comes from the back/forward buttons —
-  // that render must not push a new entry on top of the one just restored.
+  // and whether the pending render must replace the current entry: a render
+  // from the back/forward buttons must not push a new entry on top of the
+  // one just restored, and a claim link moved to its claim's country
+  // corrects the entry it landed on.
   const written = useRef<{ country: Country; tab: TabId } | null>(null);
-  const fromHistory = useRef(false);
+  const replaceNext = useRef(false);
 
   useEffect(() => {
     const prev = written.current;
@@ -90,18 +115,20 @@ export default function App() {
       country,
       tab,
       filters,
-      prev === null || sameView || fromHistory.current ? "replace" : "push",
+      claim,
+      prev === null || sameView || replaceNext.current ? "replace" : "push",
     );
     written.current = { country, tab };
-    fromHistory.current = false;
-  }, [country, tab, filters]);
+    replaceNext.current = false;
+  }, [country, tab, filters, claim]);
 
   useEffect(() => {
     const onPopState = (e: PopStateEvent) => {
       const next = parseUrlState(window.location.search);
-      fromHistory.current = true;
-      setFilters(restoreFilters(e.state?.filters, next.country));
+      replaceNext.current = true;
+      setFilters(entryFilters(e.state?.filters, next));
       setTab(next.tab);
+      setClaim(next.claim ?? null);
     };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
@@ -125,6 +152,17 @@ export default function App() {
       .catch(() => setPopulations(null));
   }, []);
 
+  // A claim link names the claim, not always its country: once the feed is
+  // in, move to the claim's own country so its row can open.
+  useEffect(() => {
+    if (!populations || tab !== "validation" || claim === null) return;
+    const owner = claimCountry(populations.rows, claim);
+    if (owner && owner !== country) {
+      replaceNext.current = true;
+      setFilters(defaultFilters(owner));
+    }
+  }, [populations, tab, claim, country]);
+
   const buckets = useMemo(() => {
     if (!data) return new Map<Row, SpineBucket>();
     return new Map(data.rows.map((r) => [r, bucketOf(r)] as const));
@@ -141,14 +179,18 @@ export default function App() {
   }, [data, country]);
 
   // Switching country resets row filters: geography codes, buckets and
-  // subgroups don't carry across countries.
-  const selectCountry = (c: Country) => setFilters(defaultFilters(c));
+  // subgroups don't carry across countries. Nor do claims.
+  const selectCountry = (c: Country) => {
+    setFilters(defaultFilters(c));
+    setClaim(null);
+  };
 
   const nav = useMemo(
     () => ({
       go: (next: TabId, patch?: Partial<Filters>) => {
         if (patch) setFilters((f) => ({ ...f, ...patch }));
         setTab(next);
+        setClaim(null);
         window.scrollTo({ top: 0 });
       },
     }),
@@ -271,6 +313,8 @@ export default function App() {
                     key={country}
                     feed={populations}
                     country={country}
+                    claim={claim}
+                    onClaimChange={setClaim}
                   />
                 ) : (
                   <p className="text-sm text-muted-foreground">
