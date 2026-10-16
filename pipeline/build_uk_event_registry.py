@@ -318,8 +318,10 @@ def inventory_registry_keys(event_slug):
     lane's) when they share exactly one and no other title uses it; else the
     inventory's own measure_key, which is unique per title. A title whose
     rows carry several existing keys (one per tax head) or whose key another
-    title shares therefore keeps the inventory key, and the ingest maps each
-    row to its existing claim."""
+    title shares therefore keeps the inventory key. Joining such a registry
+    to the published scores would re-key those rows, so the ingest joins only
+    replay registries (scorecard_db/ingest_obr_pmd.is_replay_registry); a
+    historical event needs a per-row key mapping before it can replay."""
     if event_slug in FROZEN_KEY_EVENTS:
         return {}
     existing, own = defaultdict(set), defaultdict(set)
@@ -1116,6 +1118,9 @@ def build_registry(event_slug, engine_parameters, engine_variables, resolve):
         )
         registry["scoring_fys"] = historical["scoring_fys"]
         registry["execution"] = historical["execution"]
+        # The modern certified bundle's registry rule ("must execute
+        # against" its population) does not apply to a historical event.
+        registry.pop("bundle")
     return registry
 
 

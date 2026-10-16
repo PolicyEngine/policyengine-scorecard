@@ -299,6 +299,7 @@ def is_replay_registry(registry: dict) -> bool:
     the inventory's keys, which can differ by tax head within one measure,
     until the event replays."""
     execution = registry.get("execution") or {}
+    # build_uk_event_registry.REQUIRES_EVENT_POPULATION; a test pins the two.
     return execution.get("status") != "requires_event_population"
 
 

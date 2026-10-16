@@ -693,3 +693,9 @@ def test_only_replay_registries_join_the_published_scores():
         )
     )
     assert mod.is_replay_registry({"measures": []})
+    # The ingest's literal is the builder's status.
+    from pipeline import build_uk_event_registry as builder
+
+    assert not mod.is_replay_registry(
+        {"execution": {"status": builder.REQUIRES_EVENT_POPULATION}}
+    )

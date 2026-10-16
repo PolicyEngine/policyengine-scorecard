@@ -676,6 +676,18 @@ def test_historical_selector_must_match_the_source_years(tmp_path, monkeypatch):
     with pytest.raises(ValueError, match="bridge"):
         registry.historical_execution("spring_statement_2022", rows)
     assert registry.historical_execution("autumn_budget_2025", rows) is None
+    # Review of 8c8c6e1: the bridge identity and the selector's own event are
+    # checked too.
+    selector["annualisation_bridge"]["status"] = "resolved"
+    selector["annualisation_bridge"]["bridge_id"] = "another_bridge.v1"
+    (tmp_path / "spring_statement_2022.json").write_text(json.dumps(selector))
+    with pytest.raises(ValueError, match="bridge"):
+        registry.historical_execution("spring_statement_2022", rows)
+    selector["annualisation_bridge"]["bridge_id"] = "fy_start_year.v1"
+    selector["event_slug"] = "autumn_budget_2021"
+    (tmp_path / "spring_statement_2022.json").write_text(json.dumps(selector))
+    with pytest.raises(ValueError, match="names another event"):
+        registry.historical_execution("spring_statement_2022", rows)
 
 
 def test_compute_refuses_a_registry_that_needs_an_event_population():
@@ -686,7 +698,34 @@ def test_compute_refuses_a_registry_that_needs_an_event_population():
     )
     with pytest.raises(ValueError, match="certified event population"):
         compute.refuse_unexecutable(document)
+    # An edited copy without the execution block is refused by its selector.
+    stripped = {k: v for k, v in document.items() if k != "execution"}
+    with pytest.raises(ValueError, match="event-vintage selector"):
+        compute.refuse_unexecutable(stripped)
     compute.refuse_unexecutable(ab2025_registry())
+
+
+@pytest.mark.parametrize(
+    "event", ["spring_statement_2022", "autumn_statement_2022", "autumn_budget_2021"]
+)
+@pytest.mark.parametrize(
+    "flags", [["--dry-run"], ["--guards"], ["--dry-run", "--years", "2023"]]
+)
+def test_compute_main_refuses_a_historical_event(event, flags):
+    # Review of 8c8c6e1: the gate is pinned at the entry point, not only in
+    # the helper; no engine is needed to reach the refusal.
+    from pipeline import compute_uk_event as compute
+
+    with pytest.raises(ValueError, match="certified event population"):
+        compute.main(["--event", event, *flags])
+
+
+def test_historical_registries_carry_no_modern_bundle():
+    for event_slug in HISTORICAL:
+        document = json.loads(
+            (ROOT / "data/uk/events" / f"{event_slug}_measures.json").read_text()
+        )
+        assert "bundle" not in document
 
 
 def test_historical_keys_are_the_inventorys_per_title():

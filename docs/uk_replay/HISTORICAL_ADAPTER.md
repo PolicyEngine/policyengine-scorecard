@@ -12,16 +12,19 @@ and Autumn Budget 2021 have source-accounting registries
   mapping of them (2021–2026 for Spring Statement 2022 and Autumn Budget 2021,
   2022–2027 for Autumn Statement 2022), not the modern 2023–2030 window.
 * `execution` is `requires_event_population`, bound to the selector's
-  SHA-256. `compute_uk_event` refuses such a registry outright, so no guard,
-  dry run or simulation on the modern certified population stands in for an
-  event population. No measure has a construction yet.
+  SHA-256. `compute_uk_event` refuses such a registry outright, and refuses
+  any event with a committed selector even if a registry copy lacks the
+  block, so no guard, dry run or simulation on the modern certified
+  population stands in for an event population. No measure has a
+  construction yet, and the registry carries no modern certified bundle.
 * The scorecard DB ingest joins only replay registries
-  (`scorecard_db/ingest_obr_pmd.is_replay_registry`). These events' published
-  scores keep the inventory's keys, which can differ by tax head within one
-  measure (the costings lane keys the income tax and NICs rows of a joint
-  threshold freeze separately), until an event can replay. Each registry's
-  measure keys are the inventory's per title
-  (`build_uk_event_registry.inventory_registry_keys`).
+  (`scorecard_db/ingest_obr_pmd.is_replay_registry`). These events'
+  published scores keep the inventory's keys, which can differ by tax head
+  within one measure: the costings lane keys the income tax and NICs rows
+  of a joint threshold freeze separately. Each registry's measure keys are
+  the inventory's per title (`build_uk_event_registry.inventory_registry_keys`).
+  Before one of these events can replay, the ingest needs a per-row key
+  mapping (78 rows: 60 in Spring Statement 2022, 18 in Autumn Statement 2022).
 * A replay namespace without results summarises only the replayable events.
 
 The rest of this document is the proposed design for running them. The policy-world choice and
@@ -75,6 +78,9 @@ new selector and population-manifest join described below remains proposed.
 The union of `costing_gbp_m` keys for each event in
 [data/uk/events/inventory.jsonl](https://github.com/PolicyEngine/policyengine-scorecard/blob/61c13e38cfe4676756a7857e4fc6f67eac33cd0c/data/uk/events/inventory.jsonl)
 was read without loading an engine:
+
+Read at commit 61c13e3, before the first slice; every FY of these events is
+now excluded from execution until a certified event population exists.
 
 | Event | Required scoring FYs | FYs currently excluded from execution |
 |---|---|---|
