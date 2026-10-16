@@ -71,9 +71,11 @@ Two flows use the same receiver:
   `kind: "GitHub"`, `repository: "PolicyEngine/policyengine.py"`,
   `workflow: "push.yaml"`, and `environment: "pypi"` (the
   [checked 6.5.0 provenance response](https://pypi.org/integrity/policyengine/6.5.0/policyengine-6.5.0-py3-none-any.whl/provenance)).
-  Missing attestations, another publisher and unreadable provenance responses
-  become permanent skips with the response's SHA-256 as evidence; transient
-  HTTP failures are retried. A response stopped at the size cap is retryable
+  A 404 (no provenance), another publisher and an unreadable provenance
+  response become permanent skips with the response's SHA-256 as evidence;
+  any other HTTP status (including PyPI's temporary 403) and any network
+  failure are retried. A requested version raises the discovery floor only
+  if PyPI lists it as a plain final release. A response stopped at the size cap is retryable
   because no complete-response digest was obtained. The provenance response's
   SHA-256 enters accepted requests as `requested_by.pypi_provenance_sha256`
   and is also logged.

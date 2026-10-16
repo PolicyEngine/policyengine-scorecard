@@ -545,7 +545,13 @@ allows W4's normal dispatch and publication metadata to arrive before
 catch-up. A version must be strictly newer than both the newest certified
 variant and the newest version named by any recorded qualification request,
 regardless of request kind or status (`queued`, `running`, `complete`,
-`failed` or `rejected`). The current certified variant is
+`failed` or `rejected`). A requested version raises this floor only if PyPI
+lists it and it is a plain final release (no epoch, local, pre, post or dev
+segment), so a stored request naming a version never published cannot stop
+discovery; it still counts against duplicating itself. A request for an
+unpublished candidate counts once that version is published. To recover from
+a wrong but valid request, correct or remove it on `replay-state`. The
+current certified variant is
 `pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1`; a requested or certified
 6.5.0 therefore suppresses discovery of 6.4.2 and 6.4.3 as well as 6.5.0.
 Superseded patch releases are not backfilled. Each drain builds at most three
@@ -560,9 +566,12 @@ PyPI adds later is ignored, so it cannot permanently skip a genuine release):
 `environment: "pypi"`. The
 [6.5.0 wheel provenance](https://pypi.org/integrity/policyengine/6.5.0/policyengine-6.5.0-py3-none-any.whl/provenance)
 is the checked example of those exact field names and values. Discovery runs
-nothing from this response. Missing attestations, another publisher and
-unreadable provenance responses are permanent skips, evidenced by the
-response bytes' SHA-256; transient HTTP failures remain eligible next time.
+nothing from this response. A 404 (PyPI: "file has no provenance"), another
+publisher and an unreadable provenance response are permanent skips,
+evidenced by the response bytes' SHA-256. Any other HTTP status, including
+403 (access "temporarily disabled by the PyPI administrators") and 406, and
+any network failure, leaves the release eligible next time
+([PyPI integrity API](https://docs.pypi.org/api/integrity/)).
 A read stopped at the size cap also remains retryable, since it has no digest
 of a complete response. Other contradictions in verified immutable artifacts
 are also recorded as permanent skips, with the artifact digests that support

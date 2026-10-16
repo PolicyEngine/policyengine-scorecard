@@ -116,10 +116,15 @@ def trusted_provenance(version: str, filename: str) -> str:
         with urllib.request.urlopen(url, timeout=60) as response:
             payload, digest = response_bytes(response)
     except urllib.error.HTTPError as exc:
-        if exc.code in {408, 425, 429} or exc.code >= 500:
+        # https://docs.pypi.org/api/integrity/ documents 404 as "file has no
+        # provenance"; 403 is access "temporarily disabled by the PyPI
+        # administrators" and 406 an unrecognised Accept header. Only a 404
+        # is a permanent refusal: anything else is retried next drain, since a
+        # recorded skip suppresses the release for good.
+        if exc.code != 404:
             raise
-        # A missing attestation is a permanent refusal. Hash the actual error
-        # body as evidence, just as for an unreadable successful response.
+        # Hash the actual error body as evidence, just as for an unreadable
+        # successful response.
         with exc:
             payload, digest = response_bytes(exc)
         print(f"policyengine {version}: PyPI provenance sha256={digest}")
@@ -200,6 +205,26 @@ def requested_versions(state: Path) -> set[Version]:
     return out
 
 
+def floor_versions(requested: set[Version], published: set[Version]) -> set[Version]:
+    """Requested versions that raise the discovery floor: plain final releases
+    (no epoch, local, pre, post or dev segment) that PyPI actually lists. A
+    stored request naming a version PyPI has never published, however large,
+    cannot stop discovery; it still counts against duplicating itself through
+    requested_versions. A request for an unpublished candidate starts to count
+    once that version is published."""
+    return {
+        version
+        for version in requested & published
+        if not (
+            version.epoch
+            or version.local
+            or version.is_prerelease
+            or version.is_devrelease
+            or version.is_postrelease
+        )
+    }
+
+
 def skipped_versions(state: Path) -> set[Version]:
     out = set()
     for path in (state / "discovery" / "skipped").glob("*.json"):
@@ -241,7 +266,13 @@ def candidates(
         print("no certified policyengine release; discovery has no baseline")
         return []
     requested = requested_versions(state)
-    floor = max(certified | requested)
+    published = set()
+    for value in set(all_versions):
+        try:
+            published.add(Version(value))
+        except ValueError:
+            continue
+    floor = max(certified | floor_versions(requested, published))
     seen = requested | certified | skipped_versions(state)
     out = {}
     for value in sorted(set(all_versions)):

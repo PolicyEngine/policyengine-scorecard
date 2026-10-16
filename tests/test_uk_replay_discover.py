@@ -461,6 +461,45 @@ def test_existing_qualification_in_any_status_sets_the_floor(tmp_path, status, k
 
 
 @pytest.mark.parametrize(
+    "version", ["999999999!0", "9999.0", "9999.0+local", "6.6.0rc1", "6.6.0.post1"]
+)
+def test_a_request_naming_an_unpublished_or_odd_version_cannot_raise_the_floor(
+    tmp_path, version
+):
+    # Review of 2043fa0: a stored request naming an absurd version must not
+    # stop discovery for good. Written by name, since some fail the schema.
+    request = request_for("6.6.0")
+    request["candidate"]["policyengine"]["version"] = version
+    directory = tmp_path / "requests" / ("a" * 64)
+    directory.mkdir(parents=True)
+    (directory / "REQUEST.json").write_text(json.dumps(request))
+    # A prerelease or post release PyPI lists still cannot raise the floor; the
+    # requested post release itself is never duplicated.
+    published = ["6.5.0", "6.5.1", "6.6.0"] + (
+        [version] if version in {"6.6.0rc1", "6.6.0.post1"} else []
+    )
+    assert discover.candidates(published, rv.load_document(), tmp_path) == [
+        "6.5.1",
+        "6.6.0",
+    ]
+
+
+def test_an_unpublished_candidate_request_counts_once_published(tmp_path):
+    request = request_for("6.6.0")
+    request["kind"] = "candidate"
+    directory = tmp_path / "requests" / ("b" * 64)
+    directory.mkdir(parents=True)
+    (directory / "REQUEST.json").write_text(json.dumps(request))
+    document = rv.load_document()
+    # Not yet on PyPI: the floor stays at the certified 6.5.0.
+    assert discover.candidates(["6.5.0", "6.5.1"], document, tmp_path) == ["6.5.1"]
+    # Published: 6.6.0 raises the floor, and is itself never duplicated.
+    assert discover.candidates(
+        ["6.5.0", "6.5.1", "6.6.0", "6.6.1"], document, tmp_path
+    ) == ["6.6.1"]
+
+
+@pytest.mark.parametrize(
     "malformed",
     [
         None,
@@ -936,7 +975,7 @@ def test_missing_provenance_http_response_is_permanent_evidence(stubs, tmp_path)
     }
 
 
-@pytest.mark.parametrize("code", [408, 425, 429, 500, 503, None])
+@pytest.mark.parametrize("code", [403, 406, 408, 425, 429, 500, 503, None])
 def test_transient_provenance_failure_is_retried_instead_of_recorded(
     stubs, tmp_path, code
 ):
