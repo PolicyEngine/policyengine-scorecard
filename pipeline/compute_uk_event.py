@@ -26,12 +26,123 @@ from pipeline import build_uk_event_registry as registry_builder
 from pipeline import compute_uk_ab2025 as worlds
 from pipeline import compute_uk_obr_costings as fiscal
 from pipeline import uk_replay_variants as variants
+from pipeline import uk_construction_revisions as revisions
 
 ROOT = worlds.ROOT
 EVENT_PATTERN = re.compile(r"^[a-z0-9]+(?:_[a-z0-9]+)*$")
 UC_HEALTH_ELEMENT_PARAMETER = (
     "gov.dwp.universal_credit.rebalancing.new_claimant_health_element"
 )
+
+
+class ProcessedValueMismatch(RuntimeError):
+    """A processed simulation value differs from the construction's intent."""
+
+    def __init__(self, failure: dict):
+        self.failure = failure
+        super().__init__(failure)
+
+
+def parameter_scalar(value):
+    """JSON representation shared with the parameter-only premises audit."""
+    return revisions.scalar(value)
+
+
+def processed_values_match(intended, processed) -> bool:
+    """Relative tolerance only: a zero intended value must remain zero."""
+    if intended is None or processed is None:
+        return False
+    if isinstance(intended, (int, float)) and isinstance(processed, (int, float)):
+        return (
+            math.isfinite(intended)
+            and math.isfinite(processed)
+            and math.isclose(intended, processed, rel_tol=1e-9, abs_tol=0.0)
+        )
+    return intended == processed
+
+
+def check_processed_parameters(sim, checks: list[dict]) -> dict:
+    """Read period Y through the same January lookup used by formulas.
+
+    The parameter tree belongs to this simulation, after its actual reform
+    route has processed it. Never sample April or rebuild a parallel world.
+    """
+    values = {}
+    for check in checks:
+        for path, intended in check["intended_values"].items():
+            if path not in values:
+                try:
+                    node = worlds._resolve_parameter(
+                        sim.tax_benefit_system.parameters, path
+                    )
+                except (AttributeError, IndexError):
+                    values[path] = None
+                else:
+                    values[path] = parameter_scalar(node(f"{check['year']}-01-01"))
+            processed = values[path]
+            if not processed_values_match(intended, processed):
+                raise ProcessedValueMismatch(
+                    {
+                        "code": "processed_value_mismatch",
+                        **{
+                            k: check[k]
+                            for k in ("event", "measure_key", "year", "world")
+                        },
+                        "path": path,
+                        "intended": intended,
+                        "processed": processed,
+                    }
+                )
+    return values
+
+
+def intended_parameter_check(
+    event: str, key: str, year: int, world_name: str, world: dict, current: dict
+) -> dict:
+    paths = sorted(
+        set(world["baseline_reform"] or {}) | set(world["reform_reform"] or {})
+    )
+    reform = annual_reform(
+        world["baseline_reform" if world_name == "baseline_world" else "reform_reform"]
+    )
+    return {
+        "event": event,
+        "measure_key": key,
+        "year": year,
+        "world": world_name,
+        "intended_values": {
+            path: revisions.intended_value(reform, path, year, lambda p, d: current[p])
+            for path in paths
+        },
+    }
+
+
+def revision_reform_route(reform: dict | None, revision: dict | None) -> dict | None:
+    """A selected blended reversal covers whole fiscal years on either route.
+
+    Older engines edit the annualised tree. Engines exposing dated_reforms
+    reprocess construction-time dictionaries against statutory parameters;
+    their windows must therefore cover 6 April Y through 5 April Z+1.
+    Feature detection follows the actual Scenario entry point, not a version.
+    """
+    if not reform or not revision:
+        return reform
+    from policyengine_uk.utils.scenario import Scenario
+
+    if not getattr(Scenario.from_reform(reform), "dated_reforms", None):
+        return reform
+    return {
+        path: {
+            (
+                f"{start[:4]}-04-06.{int(stop[:4]) + 1}-04-05"
+                if path in revision["paths"]
+                else window
+            ): value
+            for window, value in windows.items()
+            for start, stop in [window.split(".")]
+        }
+        for path, windows in reform.items()
+    }
 
 
 def annual_reform(reform: dict | None) -> dict | None:
@@ -77,7 +188,7 @@ def annual_reform(reform: dict | None) -> dict | None:
     return normalized
 
 
-def uc_health_scenario(reform: dict):
+def uc_health_scenario(reform: dict, *, parameter_checks: list[dict] | None = None):
     """Refresh the pinned UC inputs after changing its new-claimant rate.
 
     The default UK modifier has already fixed uc_LCWRA_element before a
@@ -103,7 +214,12 @@ def uc_health_scenario(reform: dict):
         else:
             parameter_scenario.simulation_modifier(sim)
         sim.tax_benefit_system.reset_parameter_caches()
-        assert_reform_reached(sim, reform)
+        if parameter_checks is None:
+            assert_reform_reached(sim, reform)
+        else:
+            # This modifier runs inside simulation construction, before the
+            # managed runner's general readback hook can see the simulation.
+            check_processed_parameters(sim, parameter_checks)
         add_universal_credit_reform(sim)
 
     return Scenario(simulation_modifier=apply_and_refresh)
@@ -224,6 +340,7 @@ def build_artifact(
     registry_sha256: str,
     event: str,
     variant_fields: dict | None = None,
+    intended_current_law: dict | None = None,
 ) -> dict:
     """Numerical facts only: identical inputs produce identical artifact bytes.
 
@@ -310,6 +427,31 @@ def build_artifact(
     }
     if reversal:
         artifact["literal_reversal_minus_certified_gbp"] = literal
+    if variant_fields and "processed_parameter_values" in certified:
+        artifact["processed_parameter_values"] = {}
+        artifact["parameter_reform_routes"] = {}
+        current = (
+            intended_current_law
+            if intended_current_law is not None
+            else certified["processed_parameter_values"]
+        )
+        for name, simulation in (
+            ("baseline_world", baseline),
+            ("reform_world", reform),
+        ):
+            check = intended_parameter_check(
+                event, measure["measure_key"], year, name, world, current
+            )
+            actual = simulation["processed_parameter_values"]
+            artifact["processed_parameter_values"][name] = {
+                path: {"intended": intended, "processed": actual[path]}
+                for path, intended in check["intended_values"].items()
+            }
+            artifact["parameter_reform_routes"][name] = simulation[
+                "parameter_reform_route"
+            ]
+    if world.get("construction_revision"):
+        artifact["construction_revision"] = world["construction_revision"]
     # Legacy artifacts carry no variant fields, so their bytes are unchanged.
     artifact.update(variant_fields or {})
     return artifact
@@ -412,12 +554,19 @@ def variant_preflight(variant: dict, *, dataset_source: Path | None = None) -> d
 
 def run_sim(year: int, variables: list[str], reform: dict | None, pre: dict) -> dict:
     reform = annual_reform(reform)
-    scenario = (
-        uc_health_scenario(reform)
-        if reform and UC_HEALTH_ELEMENT_PARAMETER in reform
-        else None
-    )
+    reform = revision_reform_route(reform, pre.get("construction_revision"))
+    scenario = None
+    if reform and UC_HEALTH_ELEMENT_PARAMETER in reform:
+        scenario = (
+            uc_health_scenario(reform, parameter_checks=pre["parameter_checks"])
+            if "parameter_checks" in pre
+            else uc_health_scenario(reform)
+        )
     scenario_kwargs = {"scenario": scenario} if scenario is not None else {}
+    if "parameter_checks" in pre:
+        scenario_kwargs["parameter_check"] = lambda sim: check_processed_parameters(
+            sim, pre["parameter_checks"]
+        )
     result = fiscal.run_managed_simulation(
         year=year,
         variables=variables,
@@ -430,6 +579,19 @@ def run_sim(year: int, variables: list[str], reform: dict | None, pre: dict) -> 
         **scenario_kwargs,
     )
     fiscal.assert_managed_bundle(result["policyengine_bundle"], pre["release_bundle"])
+    if "parameter_checks" in pre:
+        if "processed_parameter_values" not in result:
+            raise RuntimeError(
+                "managed simulation did not return processed parameter evidence"
+            )
+        result["parameter_reform_route"] = {
+            "entry_point": "built_simulation_scenario"
+            if scenario is not None
+            else "construction_reform"
+            if reform
+            else "certified_current_law",
+            "submitted_reform": reform,
+        }
     return result
 
 
@@ -437,12 +599,55 @@ def run_year_job(job: dict) -> dict:
     """One year's baseline and sequential alternate worlds in one process."""
     year = job["year"]
     pre = job["pre"]
+    current = pre.get("intended_current_law", {}).get(str(year), {})
+    checks = (
+        {
+            key: {
+                name: intended_parameter_check(
+                    job["event"], key, year, name, job["runnable"][key], current
+                )
+                for name in ("baseline_world", "reform_world")
+            }
+            for key in job["selected"]
+        }
+        if "intended_current_law" in pre
+        else {}
+    )
+    baseline_pre = pre
+    if checks:
+        baseline_pre = {
+            **pre,
+            "parameter_checks": [
+                check
+                for pair in checks.values()
+                for check in pair.values()
+                if not job["runnable"][check["measure_key"]][
+                    "baseline_reform"
+                    if check["world"] == "baseline_world"
+                    else "reform_reform"
+                ]
+            ],
+        }
+        # Read every touched path even when both announcement worlds modify it.
+        baseline_pre["parameter_checks"] += [
+            {
+                "event": job["event"],
+                "measure_key": key,
+                "year": year,
+                "world": "certified_current_law",
+                "intended_values": {
+                    path: current[path]
+                    for path in pair["baseline_world"]["intended_values"]
+                },
+            }
+            for key, pair in checks.items()
+        ]
     started = time.perf_counter()
     print(
         f"[pid {os.getpid()} year {year}] starting certified baseline ({len(job['variables'])} heads)",
         flush=True,
     )
-    baseline = run_sim(year, job["variables"], None, pre)
+    baseline = run_sim(year, job["variables"], None, baseline_pre)
     # This spawned worker imported the engine itself: check its origin too.
     if pre.get("check_import_origins"):
         variants.verify_import_origins()
@@ -471,14 +676,32 @@ def run_year_job(job: dict) -> dict:
                 f"[pid {os.getpid()} year {year}] starting {key} baseline modifier ({world['construction']})",
                 flush=True,
             )
-            base = run_sim(year, variables, world["baseline_reform"], pre)
+            alternate_pre = (
+                {
+                    **pre,
+                    "parameter_checks": [checks[key]["baseline_world"]],
+                    "construction_revision": world.get("construction_revision"),
+                }
+                if checks
+                else pre
+            )
+            base = run_sim(year, variables, world["baseline_reform"], alternate_pre)
         reform = baseline
         if world["reform_reform"]:
             print(
                 f"[pid {os.getpid()} year {year}] starting {key} reform delta ({world['construction']})",
                 flush=True,
             )
-            reform = run_sim(year, variables, world["reform_reform"], pre)
+            alternate_pre = (
+                {
+                    **pre,
+                    "parameter_checks": [checks[key]["reform_world"]],
+                    "construction_revision": world.get("construction_revision"),
+                }
+                if checks
+                else pre
+            )
+            reform = run_sim(year, variables, world["reform_reform"], alternate_pre)
         artifact = build_artifact(
             measure=measure,
             world=world,
@@ -489,6 +712,7 @@ def run_year_job(job: dict) -> dict:
             registry_sha256=job["registry_sha256"],
             event=job["event"],
             variant_fields=job.get("variant_fields"),
+            intended_current_law=current,
         )
         path = job["output_dir"] / f"{key}_{year}.json"
         fiscal.atomic_write_bytes(path, canonical_bytes(artifact))
@@ -522,6 +746,11 @@ def progress_receipt(job: dict, artifacts: dict[str, str]) -> dict:
         "engine_version": fiscal.package_version("policyengine-uk"),
         **runtime_versions(),
         **(job.get("variant_fields") or {}),
+        **(
+            {"construction_revisions": job["construction_revisions"]}
+            if job.get("construction_revisions")
+            else {}
+        ),
         "artifacts": artifacts,
     }
 
@@ -534,9 +763,11 @@ def retained_artifact_digests(
     registry_sha256: str,
     pre: dict,
     variant_fields: dict | None = None,
+    construction_revisions: dict | None = None,
 ) -> dict[str, str]:
     """Read only SHA-bound completed outputs; unreceipted files are ignored."""
     variant_fields = variant_fields or {}
+    construction_revisions = construction_revisions or {}
     receipts = []
     manifest_path = output_dir / "RUN_MANIFEST.json"
     if manifest_path.exists():
@@ -546,6 +777,7 @@ def retained_artifact_digests(
             and manifest.get("registry_sha256") == registry_sha256
             and manifest.get("certified_dataset_sha256") == pre["sha256"]
             and all(manifest.get(k) == v for k, v in variant_fields.items())
+            and manifest.get("construction_revisions", {}) == construction_revisions
         ):
             receipts.append(manifest)
     for year in years:
@@ -560,10 +792,11 @@ def retained_artifact_digests(
                 "registry_sha256": registry_sha256,
                 "pre": pre,
                 "variant_fields": variant_fields,
+                "construction_revisions": construction_revisions,
             },
             {},
         )
-        if all(
+        if receipt.get("construction_revisions", {}) == construction_revisions and all(
             receipt.get(field) == value
             for field, value in expected.items()
             if field != "artifacts"
@@ -640,6 +873,25 @@ def verify_registry_identity(path: Path, expected_sha256: str) -> None:
         raise ValueError(
             "registry bytes changed after planning; refusing simulation or publication"
         )
+
+
+def revised_worlds(runnable: dict) -> dict:
+    """Read selection metadata from the installed engine, only if needed."""
+    parameters = None
+
+    def metadata(path):
+        nonlocal parameters
+        if parameters is None:
+            import policyengine_uk
+
+            parameters = policyengine_uk.CountryTaxBenefitSystem().parameters
+        node = worlds._resolve_parameter(parameters, path)
+        return dict(getattr(node, "metadata", None) or {})
+
+    return {
+        key: revisions.apply_revision(key, world, metadata)
+        for key, world in runnable.items()
+    }
 
 
 def parallel_year_results(jobs: list[dict], workers: int):
@@ -779,6 +1031,7 @@ def main(argv: list[str] | None = None) -> int:
             if args.guards:
                 import_engine()
             guard = "every reversal delta restates certified current law"
+            runnable = revised_worlds(runnable)
         plan = {
             "event": args.event,
             "years": years,
@@ -803,6 +1056,13 @@ def main(argv: list[str] | None = None) -> int:
                 unsupported_years=unsupported,
                 output_dir=fiscal.relative_to_root(output_dir),
             )
+        selected_revisions = {
+            key: world["construction_revision"]
+            for key, world in runnable.items()
+            if world.get("construction_revision")
+        }
+        if selected_revisions:
+            plan["construction_revisions"] = selected_revisions
         print(json.dumps(plan, indent=1, sort_keys=True))
         return 0
     started = time.perf_counter()
@@ -820,15 +1080,35 @@ def main(argv: list[str] | None = None) -> int:
         f"[pid {os.getpid()}] offline bundle preflight complete; starting processed-world reversal guard",
         flush=True,
     )
-    gaps = worlds.reversal_delta_mismatches(
-        index, worlds.engine_resolver(), years=years
-    )
+    resolve = worlds.engine_resolver()
+    gaps = worlds.reversal_delta_mismatches(index, resolve, years=years)
     gc.collect()
     if gaps:
         raise ValueError("\n".join(gaps))
+    runnable = revised_worlds(runnable)
+    selected_revisions = {
+        key: world["construction_revision"]
+        for key, world in runnable.items()
+        if world.get("construction_revision")
+    }
+    paths = sorted(
+        {
+            path
+            for world in runnable.values()
+            for field in ("baseline_reform", "reform_reform")
+            for path in (world[field] or {})
+        }
+    )
+    pre["intended_current_law"] = {
+        str(year): {
+            path: parameter_scalar(resolve(path, f"{year}-01-01")) for path in paths
+        }
+        for year in years
+    }
     print(f"[pid {os.getpid()}] processed-world reversal guard complete", flush=True)
     verify_registry_identity(registry_path, registry_sha256)
     output_dir.mkdir(parents=True, exist_ok=True)
+    (output_dir / "INTEGRITY_FAILURES.json").unlink(missing_ok=True)
     supported_calendar_years = (
         registry["calendar_years"]
         if legacy
@@ -841,6 +1121,7 @@ def main(argv: list[str] | None = None) -> int:
         registry_sha256=registry_sha256,
         pre=pre,
         variant_fields=variant_fields,
+        construction_revisions=selected_revisions,
     )
     requested_pairs = {(key, year) for key in selected for year in years}
     full_pairs = {
@@ -887,6 +1168,9 @@ def main(argv: list[str] | None = None) -> int:
                 previous.get(field) != value
                 for field, value in {**runtime_versions(), **variant_fields}.items()
             )
+            or previous.get("construction_revision")
+            != runnable[key].get("construction_revision")
+            or (not legacy and "processed_parameter_values" not in previous)
         ):
             raise ValueError("retained artifact identity differs from its receipt")
         committed[(key, year)] = digest
@@ -917,6 +1201,7 @@ def main(argv: list[str] | None = None) -> int:
                     "event": args.event,
                     "output_dir": output_dir,
                     "variant_fields": variant_fields,
+                    "construction_revisions": selected_revisions,
                     "retained_artifacts": {
                         str(
                             (output_dir / f"{key}_{year}.json").relative_to(ROOT)
@@ -926,16 +1211,24 @@ def main(argv: list[str] | None = None) -> int:
                     },
                 }
             )
-    if args.workers == 1:
-        for job in jobs:
-            result = run_year_job(job)
-            artifacts.update(result["artifacts"])
-            timings.extend(result["timings"])
-    elif jobs:
-        for result in parallel_year_results(jobs, args.workers):
-            artifacts.update(result["artifacts"])
-            timings.extend(result["timings"])
+    try:
+        if args.workers == 1:
+            for job in jobs:
+                result = run_year_job(job)
+                artifacts.update(result["artifacts"])
+                timings.extend(result["timings"])
+        elif jobs:
+            for result in parallel_year_results(jobs, args.workers):
+                artifacts.update(result["artifacts"])
+                timings.extend(result["timings"])
+    except ProcessedValueMismatch as exc:
+        fiscal.atomic_write_bytes(
+            output_dir / "INTEGRITY_FAILURES.json", canonical_bytes([exc.failure])
+        )
+        raise
     verify_registry_identity(registry_path, registry_sha256)
+    for key, evidence in selected_revisions.items():
+        revisions.get_revision(key, evidence)
     artifact_pairs = {expected_paths[relative] for relative in artifacts}
     if requested_pairs - artifact_pairs:
         raise ValueError(
@@ -960,8 +1253,12 @@ def main(argv: list[str] | None = None) -> int:
         "engine_version": fiscal.package_version("policyengine-uk"),
         **runtime_versions(),
         "not_computable": worlds.not_computable(index, years=years),
+        **(
+            {"construction_revisions": selected_revisions} if selected_revisions else {}
+        ),
     }
     if not legacy:
+        manifest["processed_value_check"] = "processed_period_values.v1"
         manifest.update(
             variants.manifest_fields(
                 variant,

@@ -350,6 +350,17 @@ def _verify_premises(premises: dict, identity: dict, events: dict, path: Path):
             raise DiffError(
                 f"{path}: {event} premises name another registry than the run"
             )
+        if event in events:
+            selected = events[event]["manifest"].get("construction_revisions", {})
+            recorded = {
+                key: measure["construction_revision"]
+                for key, measure in (record.get("measures") or {}).items()
+                if measure.get("construction_revision") is not None
+            }
+            if recorded != selected:
+                raise DiffError(
+                    f"{path}: {event} premises construction revisions differ from the run"
+                )
 
 
 def load_side(
@@ -710,6 +721,15 @@ def compare_artifacts(
                                 "code": f"{world}_reform_dict_changed",
                             }
                         )
+                if b.get("construction_revision") != h.get("construction_revision"):
+                    details.append(
+                        {
+                            "flag": "construction",
+                            "code": "construction_revision_changed",
+                            "base": b.get("construction_revision"),
+                            "head": h.get("construction_revision"),
+                        }
+                    )
                 inert = (
                     (measure_key, year) in base["inert_pairs"],
                     (measure_key, year) in head["inert_pairs"],

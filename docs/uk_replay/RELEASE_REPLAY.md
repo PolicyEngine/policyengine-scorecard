@@ -7,11 +7,15 @@ Status: design contract for workstream W6 of the Autumn Budget 2026 CI plan,
 that release qualification (W4, policyengine.py) can consume before a
 model/data pair is promoted.
 
-Nothing here changes a registered construction. A variant reruns the same
-frozen registries; where a construction's premise no longer holds on a
-variant, that is reported as a construction revision for review, never
-silently repaired. Methodology changes (counterfactual intent, annualisation
-semantics, acceptance policy) wait on cos d1344.
+The registries remain frozen. An explicit construction revision may be
+selected from `data/uk/events/construction_revisions.json` by metadata in
+the installed engine; its SHA-256 is bound in the run manifest and
+premises, and the comparison and release diff identify it. The AB2024 CGT
+revision follows W6's methodology choice under cos d1344 (Max, 15 October
+2026): use the reading supported by the law and land on independent review.
+Other failed premises remain revision candidates. See
+[CONSTRUCTION_REVISIONS.md](CONSTRUCTION_REVISIONS.md) for the decision,
+statutory citation and recorded limits.
 
 ## Why the existing runner cannot rerun
 
@@ -279,7 +283,7 @@ summary renders.
 `pipeline/audit_uk_event_premises.py` records, for each executable measure,
 year and parameter path the construction touches, on a given engine:
 current-law value at the annual lookup (1 January of the year), the raw
-value at 30 April, the executed baseline-world and reform-world values, and
+value at 30 April, the intended baseline-world and reform-world values, and
 these checks:
 
 | Check | Fails when |
@@ -304,10 +308,37 @@ before fiscal-year conversion. Installed-engine tests
 compare the CGT values directly and regenerate the corresponding committed
 premises; the engine-free suite reports an explicit skip for those checks.
 
+`baseline_world` and `reform_world` are the intended processed period-Y
+values: the construction's value at 1 January Y when its annual override
+contains that date, otherwise the current-law annual value. The premises
+audit and executor use one shared function to compute them. These fields
+describe the construction's intent; a parameter-only annual lookup does
+not prove a simulation executed it. This distinction matters when a reform
+is written to the statutory timeline and annualised again.
+
+For every replay, immediately after constructing each world's simulation,
+the executor reads period Y from that
+simulation's own processed parameter tree for every path touched by either
+world. It records both the intended and processed values, per path and
+world, in the measure-year artifact and requires relative agreement within
+`1e-9`. It reads the tree the engine actually built, so it checks both the
+annual-lookup and statutory-reprocessing routes without predicting either
+from a version string. Legacy-layout runs omit the field and retain their
+artifact bytes.
+
+In policyengine-uk 2.130.1, a construction-time reform's `start.stop`
+interval is written onto the statutory timeline before processing
+(`utils/dated_reforms.py`, `read_reform_dict`, and
+`tax_benefit_system.py`, `_rebuild`). A 1 January Y interval on a
+`fiscal_year_blend` path therefore also changes part of period Y−1. The
+AB2024 CGT revision uses complete fiscal-year intervals on that route;
+the annual-lookup route uses intervals containing 1 January of the intended
+year. The executed processed-value check remains mandatory in either case.
+
 A failed check is a **construction revision candidate**, reported in the
 release diff's construction flags and summarised in
-`docs/uk_replay/CONSTRUCTION_REVISIONS.md` with a proposed revision. Running
-a revised construction is a methodology change and waits on d1344.
+`docs/uk_replay/CONSTRUCTION_REVISIONS.md`. A selected revision is recorded
+there with its d1344 basis and exceptions; it never edits a frozen registry.
 
 Observed on 2.125.1 on 11 October (parameter tree only):
 
@@ -322,8 +353,10 @@ Observed on 2.125.1 on 11 October (parameter tree only):
   parameters over 6 April–5 April (`fiscal_year_average`) instead of
   sampling 30 April: 0.10 × 207/365 + 0.18 × 158/365 = 0.1346. The AB2024
   note assumes 2.89.2's raw 2025-04-06 date and 30 April sampling. The
-  reversal, first selected in January 2025, leaves the blended 2024 increase
-  in both worlds, so CY2024 shows no effect although current law has one.
+  frozen reversal, first selected in January 2025, leaves the blended 2024
+  increase in both worlds on this engine's annual-lookup route. The selected
+  construction revision instead holds the pre-announcement 10%/20% through
+  FY2024–25, activating FY2024–25 on blend engines. FY2023–24 is unchanged.
 * The UC childcare cap path (2024 £1,014.63 for one child) and the benefit
   CPI path feed the SB2023 and SS2025 frozen counterfactuals, which were
   derived from 2.89.2's values.
@@ -557,6 +590,15 @@ pair should be inert (a freeze can carry earlier years' rates forward), so
 such a pair leaves the grid incomplete and is listed in
 `inert_measure_years`. Whether either blocks promotion is W4's qualification
 policy.
+
+A processed parameter value that differs from its intended value is an
+integrity failure before aggregation. The executor refuses to write the
+measure-year artifact; qualification records `processed_value_mismatch`
+with `event`, `measure_key` and `year`, plus `world`, `path`, `intended` and
+`processed` as JSON in the receipt schema's `detail` field, and returns a
+failed receipt. This check does not depend on a
+nonzero fiscal-head result: it also catches a construction routed to a
+different annual value when its population effect happens to be zero.
 
 A step that fails before the candidate's identity is known yields a `failed`
 receipt with no execution block. If no event outputs exist, `corpus` is null.

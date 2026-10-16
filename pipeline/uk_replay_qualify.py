@@ -528,6 +528,61 @@ def run(command: list[str], *, cwd: Path = ROOT) -> None:
     subprocess.run(command, check=True, cwd=cwd, env=candidate_environment(cwd))
 
 
+def processed_value_failures(path: Path, event: str) -> list[dict]:
+    """Translate compute's refused-world evidence to the shared v1 receipt.
+
+    The receipt's closed failure schema has a string detail field. Keep the
+    path, world and both values there as JSON, preserving machine-readable
+    evidence without changing the receiver's versioned interface.
+    """
+    records = json.loads(path.read_bytes())
+    if not isinstance(records, list) or not records:
+        raise ValueError("processed-value evidence must be a nonempty list")
+    failures = []
+    required = {
+        "code",
+        "event",
+        "measure_key",
+        "year",
+        "world",
+        "path",
+        "intended",
+        "processed",
+    }
+    for record in records:
+        if (
+            not isinstance(record, dict)
+            or not required <= record.keys()
+            or record["code"] != "processed_value_mismatch"
+            or record["event"] != event
+            or not isinstance(record["measure_key"], str)
+            or not record["measure_key"]
+            or type(record["year"]) is not int
+            or record["world"]
+            not in ("baseline_world", "reform_world", "certified_current_law")
+            or not isinstance(record["path"], str)
+            or not record["path"]
+        ):
+            raise ValueError("invalid processed-value evidence for this event")
+        failures.append(
+            {
+                **{
+                    key: record[key] for key in ("code", "event", "measure_key", "year")
+                },
+                "detail": json.dumps(
+                    {
+                        key: record[key]
+                        for key in ("world", "path", "intended", "processed")
+                    },
+                    sort_keys=True,
+                    separators=(",", ":"),
+                    allow_nan=False,
+                ),
+            }
+        )
+    return failures
+
+
 def run_corpus(
     record: dict,
     variants_file: Path,
@@ -598,8 +653,17 @@ def run_corpus(
                 cwd=root,
             )
         except subprocess.CalledProcessError as exc:
+            evidence = output / "INTEGRITY_FAILURES.json"
+            if evidence.exists():
+                try:
+                    failures += processed_value_failures(evidence, event)
+                    continue
+                except (ValueError, TypeError, OSError) as invalid:
+                    detail = f"{exc}; invalid processed-value evidence: {invalid}"
+            else:
+                detail = str(exc)
             failures.append(
-                {"code": "event_run_failed", "detail": str(exc), "event": event}
+                {"code": "event_run_failed", "detail": detail, "event": event}
             )
     engine = record["identity"]["packages"]["policyengine-uk"]["version"]
     run(
