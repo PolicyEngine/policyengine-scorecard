@@ -249,9 +249,11 @@ have complete supported grids and no inert measure-years.
 The run predates the processed-value readback and the AB2024 CGT construction
 revision (#186). Its AB2024 Capital Gains Tax row for period 2024 (FY2024–25)
 therefore executes the frozen reversal on policyengine-uk 2.130.1's statutory
-reprocessing route, and carries that route's rate blend. The reversal window
-is 1 January 2025 to 31 December 2035. Reprocessed with `fiscal_year_blend`, it also covers
-95 of FY2024–25's 365 days. By the day-weighting rule, the reversal world's
+reprocessing route, and carries that route's rate blend. The registry's
+30 October 2024 start (which the artifacts record) is executed as the window
+1 January 2025 to 31 December 2035 (`compute_uk_event.annual_reform`).
+Reprocessed with `fiscal_year_blend`, that window also covers 95 of
+FY2024–25's 365 days. By the day-weighting rule, the reversal world's
 FY2024–25 rates are basic 0.1138 against an intended 0.1346, and higher and
 additional 0.2069 against 0.2173. The frozen construction intends identical
 worlds in period 2024, yet the row records +£0.575bn. That figure comes from
@@ -260,6 +262,12 @@ the route; it is not a PolicyEngine costing of the FY2024–25 increase.
 Periods 2025 to 2029 (FY2025–26 to FY2029–30) fall wholly inside the window,
 so their reversal rates are the intended 0.10 and 0.20. A rerun with #186
 executes the revision and refuses any processed mismatch in an in-force year.
+
+CI's real replay of this variant (pushes only) recomputes one artifact with
+the current code, which also writes the processed-value evidence fields. A
+committed artifact from before that check is compared with exactly those
+fields removed, and the step says so in a notice; every other byte must match
+(`pipeline/uk_replay_determinism.py`).
 
 ## Version-scoped diagnoses
 

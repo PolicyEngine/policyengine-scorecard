@@ -279,6 +279,7 @@
    },
    "identity_sha256": "fb1d19d6469a82dd447fdba3aff65daab22da9ed654a718a572da8d0da40d774",
    "layout": "replay_namespace",
+   "note": "The 6.4.1 released bundle, qualified through the receiver on 16 October 2026 (request b1f9a93d, receipt 3b420b5e); data built with policyengine-uk 2.122.2 and certified for 2.130.1.",
    "qualification_request_sha256": "b1f9a93db03ec45c73fad3d73537ece9af197284dc87a04a7461041b475968e0",
    "requirements": {
     "path": "docs/uk_replay/requirements/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1.txt",
@@ -286,8 +287,7 @@
    },
    "result_root": "results/uk/replays/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1",
    "status": "certified",
-   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1",
-   "note": "The 6.4.1 released bundle, qualified through the receiver on 16 October 2026 (request b1f9a93d, receipt 3b420b5e); data built with policyengine-uk 2.122.2 and certified for 2.130.1."
+   "variant_id": "pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1"
   }
  ]
 }

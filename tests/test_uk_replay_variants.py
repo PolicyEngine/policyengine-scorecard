@@ -55,6 +55,14 @@ def test_committed_variants_validate_and_default_is_legacy():
         rv.get_variant("pe9.9.9_uk9.9.9_unknown")
 
 
+def test_the_committed_index_is_in_canonical_form():
+    # Review of 500bf94: a hand-added field must sit in its sorted position.
+    from pipeline.compute_uk_event import canonical_bytes
+
+    raw = rv.VARIANTS_PATH.read_bytes()
+    assert raw == canonical_bytes(json.loads(raw))
+
+
 def test_identity_bytes_equal_rfc8785_for_committed_identities():
     rfc8785 = pytest.importorskip("rfc8785")
     for variant in rv.load_document()["variants"]:
