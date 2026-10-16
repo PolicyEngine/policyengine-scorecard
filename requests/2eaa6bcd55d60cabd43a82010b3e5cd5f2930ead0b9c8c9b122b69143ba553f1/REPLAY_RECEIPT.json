@@ -1,0 +1,24 @@
+{
+ "corpus": null,
+ "diff": null,
+ "execution": null,
+ "integrity": {
+  "failures": [],
+  "status": "not_run"
+ },
+ "receipt_sha256": "a023ecd83b4b1b90913d648ff4faaaa860296f544a75cda37c28fae0863b8b6a",
+ "rejection": {
+  "code": "artifact_hash_mismatch",
+  "detail": "a requested wheel is missing from PyPI"
+ },
+ "request_id": "2eaa6bcd55d60cabd43a82010b3e5cd5f2930ead0b9c8c9b122b69143ba553f1",
+ "results": {
+  "path": "requests/2eaa6bcd55d60cabd43a82010b3e5cd5f2930ead0b9c8c9b122b69143ba553f1/results/",
+  "ref": "replay-state",
+  "repository": "PolicyEngine/policyengine-scorecard"
+ },
+ "schema": "policyengine.uk-replay-receipt/v1",
+ "status": "rejected",
+ "variant_id": null,
+ "variant_identity_sha256": null
+}
