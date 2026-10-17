@@ -1,0 +1,57 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2024",
+ "outputs_sha256": {
+  "COMPARISON.csv": "2a68ec9fb2af62dff60831eee3264d7d3572b4e328bfa9986499450b19060ecb",
+  "COMPARISON.json": "8f512581c29e7261180584c2b9cbf6df5af7dc24bfaa36840c0febcd64e61d07",
+  "COMPARISON.md": "29fabb5b5121e86e8aa5624d73ee2eb89e2500f2f77d49c019747700d86c7182"
+ },
+ "registry_path": "data/uk/events/spring_budget_2024_measures.json",
+ "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+ "replay_grid": {
+  "computed_measure_years": 15,
+  "full_event_complete": false,
+  "full_event_grid_size": 18,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 15,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.7.2_uk2.130.1_policyengine-uk-data-1.58.1"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.7.2_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2024/RUN_MANIFEST.json",
+ "run_manifest_sha256": "7f12515ca3a699bc06c936ae4d204fafc80c218829e870ab9e9d4229cf3409a1",
+ "source_rows": 816,
+ "staged_path": "results/uk/replays/pe6.7.2_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2024/STAGED.jsonl",
+ "staged_sha256": "dd7b80c32dee76c58151e7532a062971c6222ca84c0470c698a73104625e0dbe",
+ "staging_manifest_path": "results/uk/replays/pe6.7.2_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2024/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "6735cee0bae9be2b20296fff4b6bfea1b3de196ea5abadaded6dc0d812941548"
+}

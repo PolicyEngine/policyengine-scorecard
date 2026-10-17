@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "d9784da49e23321d954373437d0f9b8c9c75a88f67495de3c04d7bd1524fd998",
+  "COMPARISON.json": "bced343ae85308977d207cbf27ab29e8250ae0d3f5c0dfe33551a8a7794f9093",
+  "COMPARISON.md": "8372a71b1236ccbccce7564f9d6b297b5eb3524c99c6c309378df7dafc933d94"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.7.2_uk2.130.1_policyengine-uk-data-1.58.1"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.7.2_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "f6e1558394291da5638c3f113d5561cd48503f3041a38daace6e757664a1790c",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.7.2_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "4ecf704d2b7ee361bc90e1110d931fa19917cfaf5a59eaff514dc0dd674075af",
+ "staging_manifest_path": "results/uk/replays/pe6.7.2_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "b947cbffd9c31425a3626959530d87697fa56fea27d3fe7ff828402e305d1807"
+}

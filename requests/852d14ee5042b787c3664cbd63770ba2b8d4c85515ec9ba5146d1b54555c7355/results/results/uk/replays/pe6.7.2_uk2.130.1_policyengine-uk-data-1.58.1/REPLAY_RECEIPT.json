@@ -1,0 +1,462 @@
+{
+ "corpus": {
+  "corpus_version": "uk-fiscal-event-replay/2",
+  "events": {
+   "autumn_budget_2024": {
+    "artifacts": 30,
+    "comparison_provenance_sha256": "07868eb236fab96ef8d85dd4c878163cdfb40f20aa4b9f2de095593d83d75896",
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+    "run_manifest_sha256": "50a3295ba7fba90f4451fff038d3291f034fe832e5d5ac3ca5585daea5cb9ebd",
+    "staging_manifest_sha256": "681127c380ff2289fe2d21c3a50fba155ab1a41207d0f717648306479fb2a942",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029
+    ],
+    "unsupported_measure_years": [],
+    "unsupported_years": []
+   },
+   "autumn_budget_2025": {
+    "artifacts": 54,
+    "comparison_provenance_sha256": "cf34c2c1ef3a9025b9c67ed1308169afbe4454dd3556479dc3be4a34db472885",
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+    "run_manifest_sha256": "fdccfc643e540f85f555233d0c34ae629586ade024153b2c189ee12124246e3d",
+    "staging_manifest_sha256": "b0bc9e2a65f9e04ef4626531475d69afd24fedf66dc624abcd3b7288010912d3",
+    "supported_years": [
+     2025,
+     2026,
+     2027,
+     2028,
+     2029,
+     2030
+    ],
+    "unsupported_measure_years": [],
+    "unsupported_years": []
+   },
+   "autumn_statement_2023": {
+    "artifacts": 20,
+    "comparison_provenance_sha256": "5f8531a223705deec62a26c2fa383ff5cf4faa22604515a639aeca24cc4df03d",
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [
+     {
+      "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+      "year": 2023
+     }
+    ],
+    "registry_sha256": "197d5583f0171104c673ca1f40b402a77ca2b003f496de37d6bc913fb9fd1021",
+    "run_manifest_sha256": "968beaa8a30653ec5585c6cdf9434d9270252d26b54757f79119b1be2f37f739",
+    "staging_manifest_sha256": "74aca2393cbb5ad8f1f3cf150a5ac35e5451ff13cf38ca8e51531cbdf63c40c6",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028
+    ],
+    "unsupported_measure_years": [
+     {
+      "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+      "year": 2023
+     }
+    ],
+    "unsupported_years": [
+     {
+      "reason": "before_data_year",
+      "year": 2023
+     }
+    ]
+   },
+   "spring_budget_2023": {
+    "artifacts": 8,
+    "comparison_provenance_sha256": "57d2130ea70ee22275890e652d0d5ef8e3a0292221597c5ae9bc8dddca780868",
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [
+     {
+      "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+      "year": 2023
+     }
+    ],
+    "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+    "run_manifest_sha256": "f6e1558394291da5638c3f113d5561cd48503f3041a38daace6e757664a1790c",
+    "staging_manifest_sha256": "b947cbffd9c31425a3626959530d87697fa56fea27d3fe7ff828402e305d1807",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027
+    ],
+    "unsupported_measure_years": [
+     {
+      "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+      "year": 2023
+     }
+    ],
+    "unsupported_years": [
+     {
+      "reason": "before_data_year",
+      "year": 2023
+     }
+    ]
+   },
+   "spring_budget_2024": {
+    "artifacts": 15,
+    "comparison_provenance_sha256": "08bc94f1cdca0f928b4dc9f441ba5c68eb2677af5f0992920a7e3608bd3f40ab",
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [
+     {
+      "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+      "year": 2023
+     }
+    ],
+    "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+    "run_manifest_sha256": "7f12515ca3a699bc06c936ae4d204fafc80c218829e870ab9e9d4229cf3409a1",
+    "staging_manifest_sha256": "6735cee0bae9be2b20296fff4b6bfea1b3de196ea5abadaded6dc0d812941548",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028
+    ],
+    "unsupported_measure_years": [
+     {
+      "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+      "year": 2023
+     }
+    ],
+    "unsupported_years": [
+     {
+      "reason": "before_data_year",
+      "year": 2023
+     }
+    ]
+   },
+   "spring_statement_2025": {
+    "artifacts": 12,
+    "comparison_provenance_sha256": "87a1293e01efa058c3e02c26b407ffc7c2d785b4f67949385103aa8467fd68bd",
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+    "run_manifest_sha256": "29a803ea5704aa18f822e3cbc02ee62dc46e60c9e905c6bd74c51ce65d516c41",
+    "staging_manifest_sha256": "143a0b134f71499eaace7efd9cd97fa542dabf540d633d4a9b9d2440452706c9",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029
+    ],
+    "unsupported_measure_years": [],
+    "unsupported_years": []
+   }
+  }
+ },
+ "diff": {
+  "base_events": {
+   "autumn_budget_2024": {
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "run_manifest_sha256": "23ab600e88ef0269fa7d73f5e403ec3500e7b0a7d5fcddd60ba14c8239e39fda",
+    "staging_manifest_sha256": "1d882c1d4eb7a13b523bf99ac31945e2d4a3ebf836d6789565a006d2b71e789e",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029
+    ],
+    "unsupported_measure_years": []
+   },
+   "autumn_budget_2025": {
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "run_manifest_sha256": "413acf6342a0e0a3a277cf1f2e9c0bf3c4be1e103204201f9171b90ab21ff5c5",
+    "staging_manifest_sha256": "5e4df8946e6cea2fa728200d1af2e6803cb74020cac521dd9b99f8869f80d456",
+    "supported_years": [
+     2025,
+     2026,
+     2027,
+     2028,
+     2029,
+     2030
+    ],
+    "unsupported_measure_years": []
+   },
+   "autumn_statement_2023": {
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [
+     {
+      "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+      "year": 2023
+     }
+    ],
+    "run_manifest_sha256": "eb3705d7edb480a91eb37555c3fd52169861ceee84c5514b5529e248247d882a",
+    "staging_manifest_sha256": "239703b8c314f555fcaf96adaf573a7831962433fcb0e2b26713a217ec48ec7e",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028
+    ],
+    "unsupported_measure_years": [
+     {
+      "measure_key": "autumn_statement_2023__class_1_employee_nics_main_rate_cut_2p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_2_self_employed_nics_abolition",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__class_4_self_employed_nics_main_rate_cut_1p",
+      "year": 2023
+     },
+     {
+      "measure_key": "autumn_statement_2023__lha_reset_to_30th_percentile",
+      "year": 2023
+     }
+    ]
+   },
+   "spring_budget_2023": {
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [
+     {
+      "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+      "year": 2023
+     }
+    ],
+    "run_manifest_sha256": "29944c4e0393091d621f260f658f700549c207dda4996dce198907665a2b3baa",
+    "staging_manifest_sha256": "a298924c7ed24832820ddb95196db1d9e9b7b40d32103762e7a5ac59477ef8fd",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027
+    ],
+    "unsupported_measure_years": [
+     {
+      "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+      "year": 2023
+     }
+    ]
+   },
+   "spring_budget_2024": {
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [
+     {
+      "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+      "year": 2023
+     }
+    ],
+    "run_manifest_sha256": "458f2f27eb954422bb8e8a3063b629b43f2ffae9cdf901680924c8846a3e9666",
+    "staging_manifest_sha256": "3679f6e865bd2068efe46db2ea3358f92d6be9d6ade8d2c1c901901ce9813d07",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028
+    ],
+    "unsupported_measure_years": [
+     {
+      "measure_key": "spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp",
+      "year": 2023
+     },
+     {
+      "measure_key": "spring_budget_2024__hicbc_threshold_and_taper",
+      "year": 2023
+     }
+    ]
+   },
+   "spring_statement_2025": {
+    "full_supported_grid_complete": true,
+    "inert_measure_years": [],
+    "missing_measure_years": [],
+    "run_manifest_sha256": "01d97cd339b9a389390e2de1eec9617ab4d3a0e0d3374cd2dd9d466bba717fe4",
+    "staging_manifest_sha256": "dcd2e1349596fa7cd26140ea2b4d29e3f6a2c2b7744359e93143af98d83bdb6c",
+    "supported_years": [
+     2024,
+     2025,
+     2026,
+     2027,
+     2028,
+     2029
+    ],
+    "unsupported_measure_years": []
+   }
+  },
+  "base_variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1",
+  "diff_sha256": "badb27e535a06f4c334f0437e2385521b5dc8cc584a23501c2e4dc7a74509ad6",
+  "flag_counts": {
+   "construction": 0,
+   "coverage": 0,
+   "inertness": 0,
+   "mapping": 0,
+   "numerical": 0,
+   "structural": 0,
+   "support": 0
+  },
+  "flagged_rows": []
+ },
+ "execution": {
+  "dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+  "packaged_bundle_manifest_sha256": "6680bb82cd34486f2fe8c9fad7455b34fdecbd2586487b65c2b4c2cec2e6f20b",
+  "packages": {
+   "policyengine": {
+    "record_sha256": "cabca5dc7cdb4f26e0f8b01cac210f689f39813522ac367e3bdf46c661020f13",
+    "version": "6.7.2",
+    "wheel_sha256": "e9efbf56c0a62b98b0e573e36c6cc9d14e59a67d18254f3ad0a269e0a11c1c3a"
+   },
+   "policyengine-core": {
+    "record_sha256": "53a92f2e67982a16faeba61b8b3d145d3ab9a50d298e92c512d61166ffe5d5d4",
+    "version": "3.33.0",
+    "wheel_sha256": "2e32d02a8910ab683a2b7600987904b351d058fc2bd5910a8ea6641438bcd789"
+   },
+   "policyengine-uk": {
+    "record_sha256": "365cc5256f85b474bd445403462e17e468a1c2f5da6cc2c2b1cbf626ac20e243",
+    "version": "2.130.1",
+    "wheel_sha256": "f8b1b8b917c9297ff66937811dbebd9a62d3b1796ce894c326e98051cac4c873"
+   }
+  },
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "python": "3.12.3",
+  "release_bundle": {
+   "bundle_id": "uk-6.7.2",
+   "certified_by": "policyengine.py bundle certification",
+   "certified_data_artifact_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "certified_data_build_id": "policyengine-uk-data-1.58.1",
+   "compatibility_basis": "legacy_compatible_model_package",
+   "country_id": "uk",
+   "data_build_fingerprint": "sha256:c094d7006fdd81df220090284212f16bbffb15624643bc442c4bb3e1b1e5dac8",
+   "data_build_model_git_sha": "daad71cd26c107f1b784ff600d1464ba59c70e4a",
+   "data_build_model_version": "2.122.2",
+   "data_package": "policyengine-uk-data",
+   "data_version": "1.58.1",
+   "default_dataset": "enhanced_frs_2024_25",
+   "default_dataset_uri": "hf://policyengine/policyengine-uk-data-private/enhanced_frs_2024_25.h5@1.58.1",
+   "model_package": "policyengine-uk",
+   "model_version": "2.130.1",
+   "policyengine_version": "6.7.2"
+  },
+  "requirements_sha256": "c5a9b235149c25b14650d4d5f7d3ec932d6895e29fa88c2e0c030817a4f2cb99",
+  "runner": "github-actions Linux X64"
+ },
+ "integrity": {
+  "failures": [],
+  "status": "complete"
+ },
+ "receipt_sha256": "303afb2cf27864107b2f72b19557238a2a8aa913c9d788543fd78c1c93c26d89",
+ "rejection": null,
+ "request_id": "852d14ee5042b787c3664cbd63770ba2b8d4c85515ec9ba5146d1b54555c7355",
+ "results": {
+  "manifest_sha256": "c597cfe2247633205318ad56a4843c477494df1a20a23229b64f025b2c928630",
+  "path": "requests/852d14ee5042b787c3664cbd63770ba2b8d4c85515ec9ba5146d1b54555c7355/results/",
+  "ref": "replay-state",
+  "repository": "PolicyEngine/policyengine-scorecard"
+ },
+ "schema": "policyengine.uk-replay-receipt/v1",
+ "status": "complete",
+ "variant_id": "pe6.7.2_uk2.130.1_policyengine-uk-data-1.58.1",
+ "variant_identity_sha256": "6eb2971893218ab52c7925b439de20c4270830aaf453fe5e1d3eef2fa447c50c"
+}

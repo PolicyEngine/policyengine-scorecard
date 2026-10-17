@@ -1,0 +1,29 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "autumn_budget_2024",
+ "outputs_sha256": {
+  "COMPARISON.csv": "d29b72a3feda61dbf889907287b5d07f040c22a5fd0195a87c997e785231c1e2",
+  "COMPARISON.json": "70e52d9fed6152c7370501abb9b9e85c191112e0f9e644d1ed4ea89fd94698b9",
+  "COMPARISON.md": "e0e713d188f0d5b0050d489c68a4f2eeb09f58519fafe0b00ea0ba484f1fd02d"
+ },
+ "registry_path": "data/uk/events/autumn_budget_2024_measures.json",
+ "registry_sha256": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+ "replay_grid": {
+  "computed_measure_years": 30,
+  "full_event_complete": true,
+  "full_event_grid_size": 30,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [],
+  "supported_grid_size": 30,
+  "unsupported_measure_years": [],
+  "unsupported_years": [],
+  "variant_id": "pe6.7.2_uk2.130.1_policyengine-uk-data-1.58.1"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.7.2_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/RUN_MANIFEST.json",
+ "run_manifest_sha256": "50a3295ba7fba90f4451fff038d3291f034fe832e5d5ac3ca5585daea5cb9ebd",
+ "source_rows": 1134,
+ "staged_path": "results/uk/replays/pe6.7.2_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/STAGED.jsonl",
+ "staged_sha256": "e6569c3f2dc31bde0c06cc12c6d1d3c91761fc8b3992307272e9ca08bb937f39",
+ "staging_manifest_path": "results/uk/replays/pe6.7.2_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "681127c380ff2289fe2d21c3a50fba155ab1a41207d0f717648306479fb2a942"
+}
