@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "4df92ad0708421965e789bf39284df5b18ee39587f2d3ddeb318bf5078a66884",
+  "COMPARISON.json": "bc430c7c7fef126f98f361398209b01fa3ce4f7e23e14fb039b1704c7883faed",
+  "COMPARISON.md": "3eaae9f1f901287047d93fb74d3d586e4bf655b66fb7ae01fae904ecf422ed8b"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.7.1_uk2.130.1_policyengine-uk-data-1.58.1"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.7.1_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "af1324979fde7e3c210ff2cc649ba4daaa29180cf5a2722f8fc1fb2b6a46e962",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.7.1_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "b7642475f8f0130d9ec58de1e293d8f92200dbebaab099d004ac7e0328c756c2",
+ "staging_manifest_path": "results/uk/replays/pe6.7.1_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "bbf5ed618421975aef6a435aef46fda91846641355807b0fe56e93520c40fbe0"
+}

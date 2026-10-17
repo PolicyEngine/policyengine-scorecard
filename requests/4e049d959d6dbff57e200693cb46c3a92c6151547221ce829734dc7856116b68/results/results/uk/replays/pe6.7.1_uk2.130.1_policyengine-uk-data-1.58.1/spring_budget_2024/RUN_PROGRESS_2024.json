@@ -1,0 +1,19 @@
+{
+ "artifacts": {
+  "results/uk/replays/pe6.7.1_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2024/spring_budget_2024__class_1_employee_nics_main_rate_cut_2pp_2024.json": "6304c563501e1c65ed7b8e2bf6c76d8703e8e661868f73057603bfcd4ec42058",
+  "results/uk/replays/pe6.7.1_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2024/spring_budget_2024__class_4_self_employed_nics_main_rate_cut_2pp_2024.json": "1ddbe68a0e9b1bfe1f97e353abc5dee95e37f5d07f31154389b8c39d32cd08d3",
+  "results/uk/replays/pe6.7.1_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2024/spring_budget_2024__hicbc_threshold_and_taper_2024.json": "62b0914537bbd25fa10d24f76e0089105e4ad80684c01f0814f2c41550760acf"
+ },
+ "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+ "data_bundle": "policyengine-uk-data-1.58.1",
+ "engine_version": "2.130.1",
+ "event": "spring_budget_2024",
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.7.1",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "64a3bccfd950e868ffc5d6261bf3903df88a3ebedc9b4444494acc717259817a",
+ "schema_version": 1,
+ "variant_id": "pe6.7.1_uk2.130.1_policyengine-uk-data-1.58.1",
+ "variant_identity_sha256": "1fc5602eed4c5455b251013543d9a573bb63e17011691bdaa2a009be4ecadde3",
+ "year": 2024
+}
