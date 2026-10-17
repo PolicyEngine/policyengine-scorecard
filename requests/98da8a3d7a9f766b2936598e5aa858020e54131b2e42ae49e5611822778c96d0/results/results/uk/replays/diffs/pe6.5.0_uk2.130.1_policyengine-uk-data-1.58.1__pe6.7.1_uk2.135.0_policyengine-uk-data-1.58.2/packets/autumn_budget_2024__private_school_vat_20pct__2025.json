@@ -1,0 +1,1130 @@
+{
+ "artifacts": {
+  "base": {
+   "baseline_reform_dict": null,
+   "construction": "forward_delta_on_certified_world",
+   "path": "results/uk/replays/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2025.json",
+   "reform_reform_dict": {
+    "gov.contrib.labour.private_school_vat": {
+     "2025-01-01.2035-12-31": 0.2
+    }
+   },
+   "sha256": "3c3807777332e31927198b3189d9b14a77aa0ebcd3aec01c59dd13889fc0abd0"
+  },
+  "head": {
+   "baseline_reform_dict": null,
+   "construction": "forward_delta_on_certified_world",
+   "path": "results/uk/replays/pe6.7.1_uk2.135.0_policyengine-uk-data-1.58.2/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2025.json",
+   "reform_reform_dict": {
+    "gov.contrib.labour.private_school_vat": {
+     "2025-01-01.2035-12-31": 0.2
+    }
+   },
+   "sha256": "81020419c0462d346f40a3817bce25107a626484eab5662f3655070d2b9b463a"
+  }
+ },
+ "cited_sources": [],
+ "event": "autumn_budget_2024",
+ "filing": "This pipeline files no issues. The coordinating session reviews the packet and decides whether to file upstream.",
+ "flags": [
+  "numerical"
+ ],
+ "fy": "2025-26",
+ "identities": {
+  "base": {
+   "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+   "data_bundle": "policyengine-uk-data-1.58.1",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.130.1",
+   "policyengine_version": "6.5.0",
+   "variant_id": "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+  },
+  "head": {
+   "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+   "data_bundle": "policyengine-uk-data-1.58.2",
+   "policyengine_core_version": "3.33.0",
+   "policyengine_uk_version": "2.135.0",
+   "policyengine_version": "6.7.1",
+   "variant_id": "pe6.7.1_uk2.135.0_policyengine-uk-data-1.58.2"
+  }
+ },
+ "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+ "measures": {
+  "base": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "forward_delta_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2024": {
+     "gov.contrib.labour.private_school_vat": 0
+    },
+    "2025": {
+     "gov.contrib.labour.private_school_vat": 0
+    },
+    "2026": {
+     "gov.contrib.labour.private_school_vat": 0
+    },
+    "2027": {
+     "gov.contrib.labour.private_school_vat": 0
+    },
+    "2028": {
+     "gov.contrib.labour.private_school_vat": 0
+    },
+    "2029": {
+     "gov.contrib.labour.private_school_vat": 0
+    }
+   },
+   "fiscal_event": "Autumn Budget 2024",
+   "head_variables": [
+    "private_school_vat"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "VAT",
+     "pe_variables": [
+      "private_school_vat"
+     ]
+    }
+   ],
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "measure_type": "value_added_tax",
+   "missing_legs": [
+    "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.",
+    "Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.labour.private_school_vat"
+    ],
+    "pattern": "gov\\.contrib\\.labour\\.private_school_vat",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "The certified private-school VAT lever remains zero, so set it to 20% from January2025. The formula multiplies imputed attending children by private_school_fees, rate and private_school_vat_basis. VAT refunds source rows remain outside household scope.",
+   "pe_gap": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+   "pe_reform_delta": {
+    "gov.contrib.labour.private_school_vat": {
+     "2025-01-01": 0.2
+    }
+   },
+   "program": "value_added_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11616:7ec5266dd314c230",
+     "source_row_number": 11616,
+     "source_row_sha256": "7ec5266dd314c23058df645729cfcf5fcb9e8301714d8b7eb8b0940e8937fb68",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 458469390.546581,
+     "value_gbp_decimal": "458469390.546581"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11617:414a87b10621e433",
+     "source_row_number": 11617,
+     "source_row_sha256": "414a87b10621e4339aee3fa79aa8d581e904c36e4a4345684560d9ef08a75ab0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 1505666693.4011223,
+     "value_gbp_decimal": "1505666693.4011223"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11618:ad4256274cc146d3",
+     "source_row_number": 11618,
+     "source_row_sha256": "ad4256274cc146d3dfabc3b5635b117d07f7f51b0e8669cd57811e5f5747b812",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 1557694028.0528445,
+     "value_gbp_decimal": "1557694028.0528445"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11619:8726edda9aa7b020",
+     "source_row_number": 11619,
+     "source_row_sha256": "8726edda9aa7b02034555ed5d759918c013a6436469f58b3ccc2632561dca843",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 1608930385.967045,
+     "value_gbp_decimal": "1608930385.967045"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11620:5446e6157f4ef4ec",
+     "source_row_number": 11620,
+     "source_row_sha256": "5446e6157f4ef4ec48d50baa6e91e2444e400ab93e168d4c0c855272deff3cc9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 1664253638.0025508,
+     "value_gbp_decimal": "1664253638.0025508"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11621:8bf103a18fecf781",
+     "source_row_number": 11621,
+     "source_row_sha256": "8bf103a18fecf78141c469bf630833e9ecf77124fd6199ca71ed5f26b95d9a63",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 1726469127.9784043,
+     "value_gbp_decimal": "1726469127.9784043"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11622:1347a077b1bc15a4",
+     "source_row_number": 11622,
+     "source_row_sha256": "1347a077b1bc15a4b3d2afe8f21a34aa4a04980475965a3e90ed4634f5ff8e9d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 136000000.0,
+     "value_gbp_decimal": "136000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11623:b03eabd172377164",
+     "source_row_number": 11623,
+     "source_row_sha256": "b03eabd172377164c5bdae0bfd3897809ea26652c3a8783b1f09e0652fc8c1ae",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 425000000.0,
+     "value_gbp_decimal": "425000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11624:58692c00fbcbe1a9",
+     "source_row_number": 11624,
+     "source_row_sha256": "58692c00fbcbe1a963a170461e28f4bf8e6e2a5534b21bdfb1e480f9adaccdce",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 439000000.0,
+     "value_gbp_decimal": "439000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11625:b0574efd1cd0378e",
+     "source_row_number": 11625,
+     "source_row_sha256": "b0574efd1cd0378ee88e32ad7bb51b9ae220e45b119d8ecf8702996cf3c73526",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 452000000.0,
+     "value_gbp_decimal": "452000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11626:0135955a60199873",
+     "source_row_number": 11626,
+     "source_row_sha256": "0135955a60199873d3e2aec069e758dd872a842e74354d70ec575e04be63f00e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 467000000.0,
+     "value_gbp_decimal": "467000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11627:37d39a5448ffd160",
+     "source_row_number": 11627,
+     "source_row_sha256": "37d39a5448ffd160e822498a7515d1a811000412565698af3e8194536de1656e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 484000000.0,
+     "value_gbp_decimal": "484000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22781:a55f17d59076a5ff",
+     "source_row_number": 22781,
+     "source_row_sha256": "a55f17d59076a5ffd875c80629becd8eb300a8ae34140633d66f309f716e993b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": -136000000.0,
+     "value_gbp_decimal": "-136000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22782:f6cf42e5375f2826",
+     "source_row_number": 22782,
+     "source_row_sha256": "f6cf42e5375f2826a658c65aba5a1e533d509eb8b717ff8606feac5c70fa0eed",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": -425000000.0,
+     "value_gbp_decimal": "-425000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22783:70b4189e19c7238f",
+     "source_row_number": 22783,
+     "source_row_sha256": "70b4189e19c7238f2498765167dfb98fe36e383c8acb222c5fc99ac781f0c1b1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": -439000000.0,
+     "value_gbp_decimal": "-439000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22784:b7a7cb6abf5168fd",
+     "source_row_number": 22784,
+     "source_row_sha256": "b7a7cb6abf5168fda4ee96808feae74c6dda35d83310d44f0b5b188194dfe1de",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": -452000000.0,
+     "value_gbp_decimal": "-452000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22785:2ad7bb129298e82a",
+     "source_row_number": 22785,
+     "source_row_sha256": "2ad7bb129298e82a1600ec591728ff285ab7437127dbbfe167731d458a0948a1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": -467000000.0,
+     "value_gbp_decimal": "-467000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22786:b2bc03d5bfd19f7f",
+     "source_row_number": 22786,
+     "source_row_sha256": "b2bc03d5bfd19f7fce3a1955b40ee111b074b2d4f51358892b73d3ff7ef4909a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": -484000000.0,
+     "value_gbp_decimal": "-484000000.0"
+    }
+   ],
+   "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+   "unmapped_obr_heads": [
+    "VAT refunds"
+   ]
+  },
+  "head": {
+   "classification": "partial",
+   "commences_fy": "2024-25",
+   "computability": "partial",
+   "construction": "forward_delta_on_certified_world",
+   "divergence_axes": [
+    "population_vintage",
+    "baseline_vintage",
+    "behavioural_adjustment",
+    "cy_proxies_fy",
+    "head_scope"
+   ],
+   "engine_baseline_by_year": {
+    "2024": {
+     "gov.contrib.labour.private_school_vat": 0
+    },
+    "2025": {
+     "gov.contrib.labour.private_school_vat": 0
+    },
+    "2026": {
+     "gov.contrib.labour.private_school_vat": 0
+    },
+    "2027": {
+     "gov.contrib.labour.private_school_vat": 0
+    },
+    "2028": {
+     "gov.contrib.labour.private_school_vat": 0
+    },
+    "2029": {
+     "gov.contrib.labour.private_school_vat": 0
+    }
+   },
+   "fiscal_event": "Autumn Budget 2024",
+   "head_variables": [
+    "private_school_vat"
+   ],
+   "heads": [
+    {
+     "channel": "tax",
+     "obr_head": "VAT",
+     "pe_variables": [
+      "private_school_vat"
+     ]
+    }
+   ],
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "measure_type": "value_added_tax",
+   "missing_legs": [
+    "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.",
+    "Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg."
+   ],
+   "name_search": {
+    "engine_version": "2.89.2",
+    "parameter_matches": [
+     "gov.contrib.labour.private_school_vat"
+    ],
+    "pattern": "gov\\.contrib\\.labour\\.private_school_vat",
+    "searched": [
+     "full_parameter_tree",
+     "full_variable_list"
+    ],
+    "variable_matches": []
+   },
+   "note": "The certified private-school VAT lever remains zero, so set it to 20% from January2025. The formula multiplies imputed attending children by private_school_fees, rate and private_school_vat_basis. VAT refunds source rows remain outside household scope.",
+   "pe_gap": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+   "pe_reform_delta": {
+    "gov.contrib.labour.private_school_vat": {
+     "2025-01-01": 0.2
+    }
+   },
+   "program": "value_added_tax",
+   "reported_status": "announced",
+   "source_rows": [
+    {
+     "classification": "partial",
+     "classification_reason": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11616:7ec5266dd314c230",
+     "source_row_number": 11616,
+     "source_row_sha256": "7ec5266dd314c23058df645729cfcf5fcb9e8301714d8b7eb8b0940e8937fb68",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 458469390.546581,
+     "value_gbp_decimal": "458469390.546581"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11617:414a87b10621e433",
+     "source_row_number": 11617,
+     "source_row_sha256": "414a87b10621e4339aee3fa79aa8d581e904c36e4a4345684560d9ef08a75ab0",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 1505666693.4011223,
+     "value_gbp_decimal": "1505666693.4011223"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11618:ad4256274cc146d3",
+     "source_row_number": 11618,
+     "source_row_sha256": "ad4256274cc146d3dfabc3b5635b117d07f7f51b0e8669cd57811e5f5747b812",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 1557694028.0528445,
+     "value_gbp_decimal": "1557694028.0528445"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11619:8726edda9aa7b020",
+     "source_row_number": 11619,
+     "source_row_sha256": "8726edda9aa7b02034555ed5d759918c013a6436469f58b3ccc2632561dca843",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 1608930385.967045,
+     "value_gbp_decimal": "1608930385.967045"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11620:5446e6157f4ef4ec",
+     "source_row_number": 11620,
+     "source_row_sha256": "5446e6157f4ef4ec48d50baa6e91e2444e400ab93e168d4c0c855272deff3cc9",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 1664253638.0025508,
+     "value_gbp_decimal": "1664253638.0025508"
+    },
+    {
+     "classification": "partial",
+     "classification_reason": "The engine uses imputed school attendance and average fees, not observed establishment-level education/boarding supplies.; Input-VAT recovery, state-school spending response and attendance/fee behaviour are absent from this gross private-school VAT leg.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11621:8bf103a18fecf781",
+     "source_row_number": 11621,
+     "source_row_sha256": "8bf103a18fecf78141c469bf630833e9ecf77124fd6199ca71ed5f26b95d9a63",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 1726469127.9784043,
+     "value_gbp_decimal": "1726469127.9784043"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:11622:1347a077b1bc15a4",
+     "source_row_number": 11622,
+     "source_row_sha256": "1347a077b1bc15a4b3d2afe8f21a34aa4a04980475965a3e90ed4634f5ff8e9d",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 136000000.0,
+     "value_gbp_decimal": "136000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:11623:b03eabd172377164",
+     "source_row_number": 11623,
+     "source_row_sha256": "b03eabd172377164c5bdae0bfd3897809ea26652c3a8783b1f09e0652fc8c1ae",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 425000000.0,
+     "value_gbp_decimal": "425000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:11624:58692c00fbcbe1a9",
+     "source_row_number": 11624,
+     "source_row_sha256": "58692c00fbcbe1a963a170461e28f4bf8e6e2a5534b21bdfb1e480f9adaccdce",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 439000000.0,
+     "value_gbp_decimal": "439000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:11625:b0574efd1cd0378e",
+     "source_row_number": 11625,
+     "source_row_sha256": "b0574efd1cd0378ee88e32ad7bb51b9ae220e45b119d8ecf8702996cf3c73526",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 452000000.0,
+     "value_gbp_decimal": "452000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:11626:0135955a60199873",
+     "source_row_number": 11626,
+     "source_row_sha256": "0135955a60199873d3e2aec069e758dd872a842e74354d70ec575e04be63f00e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 467000000.0,
+     "value_gbp_decimal": "467000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "tax",
+     "metric": "revenue_change",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:11627:37d39a5448ffd160",
+     "source_row_number": 11627,
+     "source_row_sha256": "37d39a5448ffd160e822498a7515d1a811000412565698af3e8194536de1656e",
+     "source_table": "Tax Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": 484000000.0,
+     "value_gbp_decimal": "484000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2024-25",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2024-25",
+     "source_row_id": "obr_pmd_nov2025:22781:a55f17d59076a5ff",
+     "source_row_number": 22781,
+     "source_row_sha256": "a55f17d59076a5ffd875c80629becd8eb300a8ae34140633d66f309f716e993b",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": -136000000.0,
+     "value_gbp_decimal": "-136000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2025-26",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2025-26",
+     "source_row_id": "obr_pmd_nov2025:22782:f6cf42e5375f2826",
+     "source_row_number": 22782,
+     "source_row_sha256": "f6cf42e5375f2826a658c65aba5a1e533d509eb8b717ff8606feac5c70fa0eed",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": -425000000.0,
+     "value_gbp_decimal": "-425000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2026-27",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2026-27",
+     "source_row_id": "obr_pmd_nov2025:22783:70b4189e19c7238f",
+     "source_row_number": 22783,
+     "source_row_sha256": "70b4189e19c7238f2498765167dfb98fe36e383c8acb222c5fc99ac781f0c1b1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": -439000000.0,
+     "value_gbp_decimal": "-439000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2027-28",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2027-28",
+     "source_row_id": "obr_pmd_nov2025:22784:b7a7cb6abf5168fd",
+     "source_row_number": 22784,
+     "source_row_sha256": "b7a7cb6abf5168fda4ee96808feae74c6dda35d83310d44f0b5b188194dfe1de",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": -452000000.0,
+     "value_gbp_decimal": "-452000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2028-29",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2028-29",
+     "source_row_id": "obr_pmd_nov2025:22785:2ad7bb129298e82a",
+     "source_row_number": 22785,
+     "source_row_sha256": "2ad7bb129298e82a1600ec591728ff285ab7437127dbbfe167731d458a0948a1",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": -467000000.0,
+     "value_gbp_decimal": "-467000000.0"
+    },
+    {
+     "classification": "out_of_household_scope",
+     "classification_reason": "Source head is outside household tax-benefit scope; retained for event accounting.",
+     "fy": "2029-30",
+     "head_kind": "spending",
+     "metric": "exchequer_impact",
+     "sign_convention": "positive_gain_to_exchequer",
+     "source_column": "2029-30",
+     "source_row_id": "obr_pmd_nov2025:22786:b2bc03d5bfd19f7f",
+     "source_row_number": 22786,
+     "source_row_sha256": "b2bc03d5bfd19f7fce3a1955b40ee111b074b2d4f51358892b73d3ff7ef4909a",
+     "source_table": "Spending Measures (Policy measures database)",
+     "tax_head": "VAT refunds",
+     "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+     "value_gbp": -484000000.0,
+     "value_gbp_decimal": "-484000000.0"
+    }
+   ],
+   "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+   "unmapped_obr_heads": [
+    "VAT refunds"
+   ]
+  }
+ },
+ "minimal_case": {
+  "status": "to be completed by the investigating lane"
+ },
+ "packet_schema": 1,
+ "premises": {
+  "base": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "the forward delta changes current law in an in-force year",
+     "holds": true
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "not a reversal",
+     "holds": null
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.contrib.labour.private_school_vat": {
+      "baseline_world": 0,
+      "current_law": 0,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0,
+      "reform_world": 0.2
+     }
+    }
+   }
+  },
+  "head": {
+   "checks": {
+    "annual_value_matches_30_april_sample": {
+     "detail": "every touched path is sampled at 30 April",
+     "holds": true
+    },
+    "authored_construction_reproduces": {
+     "detail": "re-authoring with this engine's parameters reproduces the registry",
+     "holds": true
+    },
+    "forward_delta_changes_current_law": {
+     "detail": "the forward delta changes current law in an in-force year",
+     "holds": true
+    },
+    "reversal_differs_from_current_law": {
+     "detail": "not a reversal",
+     "holds": null
+    }
+   },
+   "year": {
+    "in_force": true,
+    "paths": {
+     "gov.contrib.labour.private_school_vat": {
+      "baseline_world": 0,
+      "current_law": 0,
+      "fiscal_year_blend": false,
+      "preserve_calendar_dates": false,
+      "raw_30_april": 0,
+      "reform_world": 0.2
+     }
+    }
+   }
+  }
+ },
+ "records": [
+  {
+   "base_gbp": 1940272255.14898,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": 1505666693.4011223,
+    "ratio_bin": {
+     "base": "same_sign_ratio_1.25_to_2",
+     "head": "same_sign_ratio_0.8_to_1.25"
+    },
+    "status": {
+     "base": "constructed",
+     "head": "constructed"
+    },
+    "tax_head": "VAT"
+   },
+   "delta_gbp": -95993674.86898136,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 19402722.5514898
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1844278580.2799985,
+   "key": "obr_pmd_nov2025:11617:414a87b10621e433",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "threshold_gbp": 19402722.5514898,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": 425000000.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "VAT refunds"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:11623:b03eabd172377164",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": null,
+   "context": {
+    "fy": "2025-26",
+    "obr_value_gbp": -425000000.0,
+    "ratio_bin": {
+     "base": "not_available",
+     "head": "not_available"
+    },
+    "status": {
+     "base": "not_computed",
+     "head": "not_computed"
+    },
+    "tax_head": "VAT refunds"
+   },
+   "delta_gbp": null,
+   "details": [],
+   "event": "autumn_budget_2024",
+   "flags": [],
+   "head_gbp": null,
+   "key": "obr_pmd_nov2025:22782:f6cf42e5375f2826",
+   "level": "source_row",
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "threshold_gbp": null,
+   "year": 2025
+  },
+  {
+   "base_gbp": 1940272255.14898,
+   "context": {},
+   "delta_gbp": -95993674.86898136,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 19402722.5514898
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1844278580.2799985,
+   "key": "total",
+   "level": "measure_year",
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "threshold_gbp": 19402722.5514898,
+   "year": 2025
+  },
+  {
+   "base_gbp": 1940272255.14898,
+   "context": {
+    "channel": {
+     "base": "tax",
+     "head": "tax"
+    }
+   },
+   "delta_gbp": -95993674.86898136,
+   "details": [
+    {
+     "code": "move_above_threshold",
+     "flag": "numerical",
+     "threshold_gbp": 19402722.5514898
+    }
+   ],
+   "event": "autumn_budget_2024",
+   "flags": [
+    "numerical"
+   ],
+   "head_gbp": 1844278580.2799985,
+   "key": "private_school_vat",
+   "level": "head",
+   "measure_key": "autumn_budget_2024__private_school_vat_20pct",
+   "threshold_gbp": 19402722.5514898,
+   "year": 2025
+  }
+ ],
+ "registry_sha256": {
+  "base": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34",
+  "head": "89784d34920fb2d6aae702fb4028f84d7bf87f1694df77a0c9c5d255edbcdd34"
+ },
+ "reproduce": {
+  "base": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1 --registry data/uk/events/autumn_budget_2024_measures.json --measures autumn_budget_2024__private_school_vat_20pct --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2025",
+  "head": "PYTHONPATH=. python pipeline/compute_uk_event.py --event autumn_budget_2024 --variant pe6.7.1_uk2.135.0_policyengine-uk-data-1.58.2 --registry data/uk/events/autumn_budget_2024_measures.json --measures autumn_budget_2024__private_school_vat_20pct --years 2025 --workers 1 --output-dir .venv-replay-checks/reproductions/pe6.7.1_uk2.135.0_policyengine-uk-data-1.58.2/autumn_budget_2024/autumn_budget_2024__private_school_vat_20pct_2025"
+ },
+ "source_cells": [
+  {
+   "base_gbp": 1940272255.14898,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2025-26",
+   "head_gbp": 1844278580.2799985,
+   "obr_value_gbp": 1505666693.4011223,
+   "side": "base",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:11617:414a87b10621e433",
+   "source_row_number": 11617,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "VAT"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": 425000000.0,
+   "side": "base",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:11623:b03eabd172377164",
+   "source_row_number": 11623,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "VAT refunds"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": -425000000.0,
+   "side": "base",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:22782:f6cf42e5375f2826",
+   "source_row_number": 22782,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "VAT refunds"
+  },
+  {
+   "base_gbp": 1940272255.14898,
+   "flags": [
+    "numerical"
+   ],
+   "fy": "2025-26",
+   "head_gbp": 1844278580.2799985,
+   "obr_value_gbp": 1505666693.4011223,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:11617:414a87b10621e433",
+   "source_row_number": 11617,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "VAT"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": 425000000.0,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:11623:b03eabd172377164",
+   "source_row_number": 11623,
+   "source_table": "Tax Measures (Policy measures database)",
+   "tax_head": "VAT refunds"
+  },
+  {
+   "base_gbp": null,
+   "flags": [],
+   "fy": "2025-26",
+   "head_gbp": null,
+   "obr_value_gbp": -425000000.0,
+   "side": "head",
+   "source_column": "2025-26",
+   "source_row_id": "obr_pmd_nov2025:22782:f6cf42e5375f2826",
+   "source_row_number": 22782,
+   "source_table": "Spending Measures (Policy measures database)",
+   "tax_head": "VAT refunds"
+  }
+ ],
+ "statutory_evidence": {
+  "status": "to be completed by the investigating lane"
+ },
+ "title": "VAT: Applying the standard rate (20%) to education and boarding services provided by private schools from 1 January 2025",
+ "year": 2025
+}

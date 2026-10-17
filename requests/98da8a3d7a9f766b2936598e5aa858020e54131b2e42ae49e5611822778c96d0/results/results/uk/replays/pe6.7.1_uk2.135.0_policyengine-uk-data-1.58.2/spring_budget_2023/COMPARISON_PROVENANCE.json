@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "01f20583cc933ac5908bcede92c6d1cd4fff823c05962c09d6c85db280407b9c",
+  "COMPARISON.json": "03544ca87caadcfa161818f48abf805156c0ad600604e4b9ea9f258650a5e556",
+  "COMPARISON.md": "fd260934c28fb1a32cf716afe4b6b16ceb0e919f974dd18cf4dcb4719203598f"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.7.1_uk2.135.0_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.7.1_uk2.135.0_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "55707a54b8f0cffc933af4fe831bb3ef1bb5e7a24f8cf5f812096e2b6d3c378d",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.7.1_uk2.135.0_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "01c54c360be897b5b4bc3d8f40e7ead8bbecfb370bbe914488e2c64d7e36f169",
+ "staging_manifest_path": "results/uk/replays/pe6.7.1_uk2.135.0_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "055b10479e23c06076d15ad520b5da686870d307fbfb476d227ba31a4aada1d2"
+}
