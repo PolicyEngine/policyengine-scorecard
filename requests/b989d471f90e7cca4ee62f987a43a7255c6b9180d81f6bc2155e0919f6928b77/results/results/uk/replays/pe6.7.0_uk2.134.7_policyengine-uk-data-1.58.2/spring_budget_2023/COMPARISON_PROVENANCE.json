@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "5a5ea358ef8ec302d046839bb9478763732cd40352c0b2b03b40386b01452cf8",
+  "COMPARISON.json": "c06b39e9bdeee9f2518e6a0bdde31460edc7f779f5dbfcafecd2983596f20fef",
+  "COMPARISON.md": "37aae616aebe3b1bd10bb36e022aa3a20b799cbe6d359794335e2bd179b6ad10"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.7.0_uk2.134.7_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.7.0_uk2.134.7_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "f36cd0908ad1b8b75edd14e83d0a08ee058b89bdb0db4f6508fcf63d79ec7280",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.7.0_uk2.134.7_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "56993dad217f79fcba8b21a1539b48838641587e052faf3ccff7744f8c722037",
+ "staging_manifest_path": "results/uk/replays/pe6.7.0_uk2.134.7_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "2f06bc224c8f6376cb9063e21b3b15e02463304ab1a89afa322e5b701a810729"
+}
