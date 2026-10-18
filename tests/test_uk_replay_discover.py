@@ -46,6 +46,17 @@ PROVENANCE_DIGEST = hashlib.sha256(PROVENANCE_BYTES).hexdigest()
 REQUESTED_BY = {"repository": "PolicyEngine/policyengine-scorecard", "commit": "0" * 40}
 REAL_FETCH = discover.fetch
 REAL_RELEASE_MANIFEST = discover.release_manifest
+# The floor cases below were written when 6.5.0 was the newest certified
+# variant. Each newly certified variant is appended to the committed index
+# (pipeline/uk_replay_results_pr.py), so they read the index as it stood then.
+FLOOR_VARIANT = "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+
+
+def floor_document():
+    document = rv.load_document()
+    ids = [v["variant_id"] for v in document["variants"]]
+    document["variants"] = document["variants"][: ids.index(FLOOR_VARIANT) + 1]
+    return document
 
 
 @pytest.fixture(autouse=True)
@@ -415,7 +426,7 @@ def test_data_certification_at_a_movable_tag_is_not_permanently_skipped(
 
 
 def test_candidates_are_newer_unrequested_final_releases(tmp_path):
-    document = rv.load_document()
+    document = floor_document()
     request = golden()
     request["kind"] = "released_bundle"
     request["candidate"]["policyengine"]["version"] = "6.5.0"
@@ -460,7 +471,7 @@ def test_only_a_released_bundle_request_in_any_status_sets_the_floor(
     (directory / "REQUEST.json").write_text(json.dumps(request))
     (directory / "STATUS.json").write_text(json.dumps({"status": status}))
     assert discover.candidates(
-        ["6.5.0", "6.5.1", "6.6.0", "6.6.1"], rv.load_document(), tmp_path
+        ["6.5.0", "6.5.1", "6.6.0", "6.6.1"], floor_document(), tmp_path
     ) == (["6.6.1"] if kind == "released_bundle" else ["6.5.1", "6.6.0", "6.6.1"])
 
 
@@ -482,7 +493,7 @@ def test_a_request_naming_an_unpublished_or_odd_version_cannot_raise_the_floor(
     published = ["6.5.0", "6.5.1", "6.6.0"] + (
         [version] if version in {"6.6.0rc1", "6.6.0.post1"} else []
     )
-    assert discover.candidates(published, rv.load_document(), tmp_path) == [
+    assert discover.candidates(published, floor_document(), tmp_path) == [
         "6.5.1",
         "6.6.0",
     ]
@@ -493,7 +504,7 @@ def test_a_released_bundle_request_counts_once_its_version_is_published(tmp_path
     directory = tmp_path / "requests" / ("b" * 64)
     directory.mkdir(parents=True)
     (directory / "REQUEST.json").write_text(json.dumps(request))
-    document = rv.load_document()
+    document = floor_document()
     # Not yet on PyPI: the floor stays at the certified 6.5.0.
     assert discover.candidates(["6.5.0", "6.5.1"], document, tmp_path) == ["6.5.1"]
     # Published: 6.6.0 raises the floor, and is itself never duplicated.
@@ -516,7 +527,7 @@ def test_a_pre_promotion_or_other_request_neither_covers_nor_floors_a_release(
     (directory / "REQUEST.json").write_text(json.dumps(request))
     (directory / "STATUS.json").write_text(json.dumps({"status": "complete"}))
     assert discover.candidates(
-        ["6.5.0", "6.5.1", "6.6.0"], rv.load_document(), tmp_path
+        ["6.5.0", "6.5.1", "6.6.0"], floor_document(), tmp_path
     ) == ["6.5.1", "6.6.0"]
 
 
@@ -528,7 +539,7 @@ def test_an_epoch_version_cannot_raise_the_floor_even_when_published(tmp_path):
     directory.mkdir(parents=True)
     (directory / "REQUEST.json").write_text(json.dumps(request))
     assert discover.candidates(
-        ["6.5.0", "6.5.1", "1!0.1"], rv.load_document(), tmp_path
+        ["6.5.0", "6.5.1", "1!0.1"], floor_document(), tmp_path
     ) == ["6.5.1"]
 
 
@@ -573,7 +584,7 @@ def test_candidates_respect_the_floor_and_never_repeat_a_request(published, data
             directory = state / "requests" / (f"{index:x}" * 64)[:64]
             directory.mkdir(parents=True)
             (directory / "REQUEST.json").write_text(json.dumps(request))
-        document = rv.load_document()
+        document = floor_document()
         out = [Version(v) for v in discover.candidates(published, document, state)]
     certified = max(
         Version(r["identity"]["packages"]["policyengine"]["version"])
@@ -627,7 +638,7 @@ def test_malformed_stored_requests_do_not_break_discovery(tmp_path, malformed):
     directory.mkdir(parents=True)
     (directory / "REQUEST.json").write_text(json.dumps(malformed))
     assert discover.requested_versions(tmp_path) == set()
-    assert discover.candidates(["6.5.1"], rv.load_document(), tmp_path) == ["6.5.1"]
+    assert discover.candidates(["6.5.1"], floor_document(), tmp_path) == ["6.5.1"]
 
 
 def test_invalid_json_stored_request_is_ignored(tmp_path):
@@ -683,7 +694,7 @@ def test_yanked_release_or_wheel_is_not_a_candidate(tmp_path, release_yanked):
         "6.5.0": {"yanked": True, "urls": files} if release_yanked else files,
         "6.5.1": [{"packagetype": "bdist_wheel", "yanked": False}],
     }
-    assert discover.candidates(releases, rv.load_document(), tmp_path) == ["6.5.1"]
+    assert discover.candidates(releases, floor_document(), tmp_path) == ["6.5.1"]
 
 
 @pytest.mark.parametrize("location", ["release", "info", "wheel"])
@@ -949,9 +960,7 @@ def test_discovery_for_any_mix_is_bounded_and_excludes_recorded_or_yanked(
 )
 def test_candidates_are_sorted_strictly_above_the_floor(tmp_path_factory, triples):
     versions = [f"{a}.{b}.{c}" for a, b, c in triples]
-    out = discover.candidates(
-        versions, rv.load_document(), tmp_path_factory.mktemp("s")
-    )
+    out = discover.candidates(versions, floor_document(), tmp_path_factory.mktemp("s"))
     from packaging.version import Version
 
     assert out == sorted(set(out), key=Version)
@@ -1156,7 +1165,7 @@ def test_642_and_643_are_not_backfilled_after_650(tmp_path, floor_source):
 
 
 def test_prerelease_above_current_floor_is_not_discovered(tmp_path):
-    assert discover.candidates(["6.6.0rc1", "6.6.0"], rv.load_document(), tmp_path) == [
+    assert discover.candidates(["6.6.0rc1", "6.6.0"], floor_document(), tmp_path) == [
         "6.6.0"
     ]
 

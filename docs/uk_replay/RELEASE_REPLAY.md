@@ -243,13 +243,18 @@ FY2023–24 counterparts; that loss is shown, never hidden.
 
 ### Committed certified results
 
+Each certified qualification reaches main through a results pull request
+([below](#the-results-pull-request)), which adds its paragraph here from the
+receipt's counts; reviewers add any interpretation. The newest certified
+variant is the last `certified` record in `data/uk/replay_variants.json`.
+
 `results/uk/replays/pe6.4.1_uk2.130.1_policyengine-uk-data-1.58.1/` holds
 the receiver's qualification of policyengine.py 6.4.1: request `b1f9a93d…`,
 receipt SHA-256 `3b420b5e…`, `replay-state` commit `484eaa7`. Its release
 diff against the legacy variant is committed beside it. All six corpus events
 have complete supported grids and no inert measure-years.
-This is the newest certified variant and the current missed-dispatch discovery
-floor; the 6.2.6 audit above remains historical evidence.
+It was the newest certified variant until 6.5.0; the 6.2.6 audit above
+remains historical evidence.
 
 The run predates the processed-value readback and the AB2024 CGT construction
 revision (#186). Its AB2024 Capital Gains Tax row for period 2024 (FY2024–25)
@@ -519,7 +524,7 @@ discovery nor dataset fetching runs on a schedule tick or a pull request.
 | `discover_enqueue` | `contents: write`; validates public discovery metadata and writes `replay-state`; no dataset token or release/candidate code. |
 | `prepare` | `contents: write`; selects a queued request and marks it running. |
 | `run` | `contents: read`, checkout credentials disabled; one trusted token step fetches the dataset, then candidate code runs in the sandbox below. |
-| `record` | `contents: write`, `actions: write`; rechecks public output, records the receipt and dispatches the next drain; no release/candidate code. |
+| `record` | `contents: write`, `actions: write`; rechecks public output, records the receipt, dispatches the results workflow for a complete request and dispatches the next drain; no release/candidate code. |
 
 For the 6.4.1 and 6.5.0 wheels, a successful packaged-certification
 `release_bundle` is a pure function of the packaged manifest. The loader reads
@@ -557,12 +562,12 @@ the releases it superseded can then be discovered if they pass every other
 check. A stored request naming a version never published cannot stop
 discovery, yet still counts against duplicating itself. Requests are stored
 under their content digest, so a wrong request is recovered by removing it
-from `replay-state`, never by editing it in place. The current certified
-variant is `pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1`; a certified or
-released-bundle-requested 6.5.0 therefore suppresses discovery of 6.4.2 and
-6.4.3 as well as 6.5.0. A certified version suppresses older releases
-whatever PyPI lists; a requested one does so only while PyPI lists it. Each drain builds at most
-three requests and examines at most 30 releases.
+from `replay-state`, never by editing it in place. For example, once 6.5.0
+was certified (or requested as a released bundle), discovery no longer
+considered 6.4.2, 6.4.3 or 6.5.0 itself. A certified version suppresses older
+releases whatever PyPI lists; a requested one does so only while PyPI lists
+it. Each drain builds at most three requests and examines at most 30
+releases.
 
 Before building a request, discovery reads the selected wheel's static PyPI
 integrity provenance JSON and requires an attestation bundle whose publisher
@@ -812,6 +817,105 @@ workflow never runs more than two simulations at once. These runs use GitHub
 runners; manual replays on the shared Mac also respect the host reservation
 (`python3 ~/reviews/fleet-ops/tools/reservation.py allowed w6-replay`), which
 holds heavy local work back from 29 October to 2 November.
+
+### The results pull request
+
+A certified qualification reaches main through a pull request built by
+`.github/workflows/uk-replay-results.yml`, never by a direct push. When the
+`record` job writes terminal status `complete`, it dispatches that workflow
+with the request id; a failed dispatch is a warning, and the workflow can be
+run by hand with the same `request_id`. It has no `pull_request` trigger and
+runs only the default branch's code.
+
+| Job | Authority and inputs |
+|---|---|
+| `build` | `GITHUB_TOKEN` `contents: read`, checkout credentials not persisted, no secret. Assembles the commit and runs every check, with the PyPI packages the checks need. Outputs the verified tree, the main and `replay-state` commits it used, and two check results. |
+| `propose` | On a fresh runner. `GITHUB_TOKEN` `contents: read`; actions pinned to commits; no uv and no installed package. Assembles the same commit again with git and the standard library (the builder under `python3 -I -S`, small helpers under `python3 -I`) on the commits `build` used: `replay-state` history, and main history no older than the workflow's own commit. It decides again against main's current tip, and refuses unless its tree is `build`'s. Only then is a short-lived token for the organisation's `policyengine` GitHub App minted, scoped to this repository with `contents: write`, `pull-requests: write` and `workflows: write`, to push that commit and open the pull request. |
+
+Neither job holds a dataset token, and neither installs, imports or runs
+release or candidate code; both read only committed public results from
+`replay-state`. Two jobs, not two steps, because steps in one job share a
+runner: whatever the checks' packages did there (a `$GITHUB_PATH` or
+`$GITHUB_ENV` write, a planted program) would reach a later step that held
+the token. Job 2 receives only job 1's outputs, as strings it validates, and
+pushes only what this code builds from main's and `replay-state`'s history.
+The tree comparison catches an honest build job whose commit diverges; the
+`verify-sealed` and content-hash lines in the pull request body are the build
+job's word, checked only for shape. CI on the pull request runs the
+regeneration, both database builds and the drift check again.
+
+The App token, not `GITHUB_TOKEN`, writes for two reasons. The commit edits
+`ci.yml`, and only a token with `workflows` permission may push a change to a
+workflow file, which `GITHUB_TOKEN` can never hold. And a pull request opened
+with `GITHUB_TOKEN` starts no `pull_request` workflow
+([GitHub documentation](https://docs.github.com/en/actions/concepts/security/github_token)),
+while checks from a `workflow_dispatch` run do not count for a pull request
+([GitHub documentation](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks)),
+so its pull request would never carry checks. The App's push and pull request
+start CI as any other pull request does.
+
+`.github/scripts/uk_replay_results_pr.sh` and
+`pipeline/uk_replay_results_pr.py` build the pull request as #188 (6.4.1) and
+#190 (6.5.0) were built by hand:
+
+1. **Eligibility.** `STATUS.json` is `complete`; the receipt validates and is
+   the one `STATUS.json` names; `REQUEST.json` hashes to the request id; and
+   `results/VARIANT.json` is `certified`, is the receipt's variant and was
+   built from this request. A failed, rejected or candidate run, or a variant
+   the index already holds, ends the run with a notice and no pull request. A
+   certified variant whose policyengine version is older than the newest
+   certified one is refused: appended, it would become `latest_certified`.
+   That refusal is permanent for that request: the older release's results
+   stay on `replay-state`.
+   So is a variant id that could not name a branch and paths (anything but
+   letters, digits, `.`, `_` and `-`, or a `..`). An exactly certified pair
+   qualified again returns the committed record, so it ends with a notice
+   too; a record that only shares its id with a committed one (two runs that
+   finished before either merged) is refused, to be qualified again for an
+   id of its own.
+2. **Results, byte for byte.** The request directory passes the receiver's
+   output guard again, and its receipt and results must be unchanged since
+   the receipt commit. `requests/<request_id>/results/{results,docs}` is
+   extracted with `git archive … | tar -x --strip-components=3`. It may hold
+   only the variant's namespace, its release diff and its requirements
+   freeze, none of which main may already hold; the namespace's receipt must
+   be the request's, and its manifest and diff the ones the receipt binds.
+   After the commit, every one of those files must have the blob
+   `replay-state` holds. Nothing household-level is added: the namespace is
+   aggregates, and nothing is uploaded.
+3. **Edits.** `VARIANT.json` plus a `note` is appended to
+   `data/uk/replay_variants.json` in canonical form
+   (`compute_uk_event.canonical_bytes`). The variant joins the
+   `replay-engine` matrix, which must then list exactly the certified
+   variants. `NEWEST` in `tests/test_uk_replay_qualify.py` and
+   `tests/test_uk_replay_determinism.py` moves to it, and `COMMITTED` in
+   `tests/test_uk_replay_variants.py` gains it. A paragraph under "Committed
+   certified results" states the receipt's integrity, grid and diff-flag
+   counts. Each edit checks the text it replaces and fails if the file has
+   another shape, and the commit may touch nothing else.
+4. **Checks.** `uk_replay_qualify verify-sealed` (the new namespace, then
+   every one), CI's `.github/scripts/uk_replay_regenerate.sh`, and two
+   `scorecard_db.build_db` runs, which must agree on the content hash and
+   leave no tracked-file drift.
+5. **Pull request.** In the `propose` job, steps 1 to 3 run again with the
+   standard library, skipping only the JSON Schema, RFC 8785 and YAML checks
+   `build` made. Only when the tree matches is the App token minted. The
+   commit, authored and committed as `github-actions[bot]` (the receiver's
+   bot identity) with a `Replay-Request:` trailer and pushed with the App's
+   token, goes to `uk-replay-results/<variant_id>`, and a pull request
+   against main follows; CI runs on it as on any pull request, without the
+   dataset token. It is a draft when integrity is not `complete`.
+
+Running the workflow again for the same request is safe. An identical tree
+pushes nothing. A branch built on an older main is rebuilt and force-pushed,
+with a lease on the commit it read, only when it holds exactly one commit,
+authored and committed by the bot with this request's trailer; an added or
+amended commit is a person's, and the run fails and leaves the branch alone.
+Two certified requests built from the same main conflict in the index, the
+matrix and the tests: after the first merges, run the workflow again for the
+second, unless the second is the older release, which the version check then
+refuses. Nothing merges automatically. The pull request lands on the normal
+gates: CI and an independent review.
 
 ### Replay in CI
 
