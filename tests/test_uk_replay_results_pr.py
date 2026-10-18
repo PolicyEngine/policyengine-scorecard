@@ -290,15 +290,28 @@ def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
         "output tree",
         "output action build",
     )
+    rebuild = phase(script, "rebuild")
     order(
-        phase(script, "rebuild"),
+        rebuild,
         "the build job's outputs are malformed",
         'git merge-base --is-ancestor "$BUILT_BASE"',
+        'git merge-base --is-ancestor "$GITHUB_SHA"',
         "assemble ",
         "not the tree the build job verified",
+        'builder check --request-dir "$STAGE/$REQUEST" --checkout "$WORK/tip"',
+        "on main as it is now",
         " body ",
         "output action build",
     )
+    # Review of 78e080c6 (1): job 2 reads the request only as assemble
+    # extracted it, after the output guard; the tip check rereads that copy,
+    # never the replay-state tree.
+    commands = [
+        line for line in rebuild.splitlines() if not line.lstrip().startswith("#")
+    ]
+    assert not [line for line in commands if "git archive" in line or "tar " in line]
+    checks = [line for line in commands if "builder check" in line]
+    assert len(checks) == 1 and '--request-dir "$STAGE/$REQUEST"' in checks[0]
     order(
         phase(script, "propose"),
         "the results commit changed after it was assembled",

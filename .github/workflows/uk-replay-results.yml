@@ -21,8 +21,7 @@ name: UK replay results PR
 # tree is the one `build` verified (`build`'s other outputs are its word,
 # checked for shape; CI on the pull request reruns the checks), and only then
 # mints a short-lived token for the organisation's policyengine GitHub App,
-# scoped to
-# this repository: contents and pull-requests to push its own
+# scoped to this repository: contents and pull-requests to push its own
 # uk-replay-results/<variant> branch and open the pull request, workflows
 # because the commit adds the variant to ci.yml's matrix (GITHUB_TOKEN can
 # never hold workflows). A pull request opened with GITHUB_TOKEN would also
