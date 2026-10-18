@@ -19,7 +19,10 @@ import ast
 import contextlib
 import copy
 import difflib
+import functools
 import hashlib
+import importlib.metadata
+import importlib.util
 import json
 import os
 import re
@@ -337,44 +340,386 @@ def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
     )
 
 
-def test_the_control_environment_installs_what_the_builder_imports():
-    # The build job's CONTROL runs the builder's strict path and
-    # uk_replay_qualify verify-sealed. Their third-party imports, top-level
-    # or inside functions, must all be installed; release and dataset code
-    # (imported only by the qualifier's run and fetch steps) must not be.
+class ImportScan:
+    """The third-party imports that running the entry points can execute.
+
+    It follows the code that runs. A module's top level runs when it is
+    imported, except its ``if __name__ == "__main__"`` block. A function or
+    class runs when reachable code names it, directly or through a module
+    alias; a class makes all its methods reachable. An import statement in
+    reachable code imports its module; one in a function nothing reaches
+    does not. Pipeline modules are followed however they are named:
+    ``pipeline.x``, ``from pipeline import x``, a relative import, or the
+    bare sibling name some modules fall back to. A dynamic import in reached
+    code is recorded, since the scan cannot follow it."""
+
+    DYNAMIC = {"__import__", "importlib.import_module", "import_module", "exec", "eval"}
+
+    def __init__(self, root):
+        self.root = Path(root)
+        self.modules = {}
+        self.reached = set()
+        self.third_party = {}
+        self.dynamic = []
+
+    def source(self, name):
+        path = self.root / (name.replace(".", "/") + ".py")
+        return path if path.is_file() else None
+
+    def first_party(self, name):
+        if name.split(".")[0] == "pipeline":
+            return name
+        if self.source(f"pipeline.{name.split('.')[0]}"):
+            return f"pipeline.{name}"
+        return None
+
+    @staticmethod
+    def absolute(module, node):
+        if not node.level:
+            return node.module or ""
+        package = module.split(".")[: -node.level]
+        return ".".join([*package, *([node.module] if node.module else [])])
+
+    def module(self, name):
+        """Import ``name``: parse it and run its top level, once."""
+        if name in self.modules:
+            return self.modules[name]
+        tree = ast.parse(self.source(name).read_text())
+        defs = {
+            node.name: node
+            for node in tree.body
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+        }
+        aliases = {}
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    bound = alias.asname or alias.name.split(".")[0]
+                    target = self.first_party(alias.name if alias.asname else bound)
+                    aliases[bound] = ("module", target) if target else None
+            elif isinstance(node, ast.ImportFrom):
+                base = self.first_party(self.absolute(name, node))
+                for alias in node.names:
+                    local = alias.asname or alias.name
+                    if base and self.source(f"{base}.{alias.name}"):
+                        aliases[local] = ("module", f"{base}.{alias.name}")
+                    else:
+                        aliases[local] = ("symbol", base, alias.name) if base else None
+        self.modules[name] = {"defs": defs, "aliases": aliases}
+        for node in tree.body:
+            main_block = (
+                isinstance(node, ast.If)
+                and isinstance(node.test, ast.Compare)
+                and ast.unparse(node.test.left) == "__name__"
+            )
+            if main_block:
+                continue
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                parts = [
+                    *node.decorator_list,
+                    *node.args.defaults,
+                    *node.args.kw_defaults,
+                ]
+            elif isinstance(node, ast.ClassDef):
+                parts = [*node.decorator_list, *node.bases] + [
+                    stmt
+                    for stmt in node.body
+                    if not isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef))
+                ]
+            else:
+                parts = [node]
+            for part in parts:
+                if part is not None:
+                    self.walk(name, part)
+        return self.modules[name]
+
+    def reach(self, module, name):
+        if (module, name) in self.reached:
+            return
+        self.reached.add((module, name))
+        found = self.module(module)["defs"].get(name)
+        if found is not None:
+            self.walk(module, found)
+        elif self.source(f"{module}.{name}"):
+            self.module(f"{module}.{name}")
+
+    def resolve(self, module, expr):
+        if isinstance(expr, ast.Name):
+            info = self.module(module)
+            if expr.id in info["defs"]:
+                return ("symbol", module, expr.id)
+            return info["aliases"].get(expr.id)
+        if isinstance(expr, ast.Attribute):
+            base = self.resolve(module, expr.value)
+            if base and base[0] == "module":
+                if self.source(f"{base[1]}.{expr.attr}"):
+                    return ("module", f"{base[1]}.{expr.attr}")
+                return ("symbol", base[1], expr.attr)
+        return None
+
+    def imported(self, module, name, line):
+        """An import of ``name`` ran in ``module``."""
+        target = self.first_party(name)
+        if target is None:
+            top = name.split(".")[0]
+            if top not in sys.stdlib_module_names and top != "__future__":
+                self.third_party.setdefault(top, set()).add(f"{module}:{line}")
+        elif self.source(target):
+            self.module(target)
+
+    def walk(self, module, root):
+        """Run ``root``, a node of ``module``."""
+        for node in ast.walk(root):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    self.imported(module, alias.name, node.lineno)
+            elif isinstance(node, ast.ImportFrom):
+                base = self.absolute(module, node)
+                self.imported(module, base, node.lineno)
+                target = self.first_party(base)
+                for alias in node.names:
+                    if target and self.source(f"{target}.{alias.name}"):
+                        self.module(f"{target}.{alias.name}")
+            elif isinstance(node, (ast.Name, ast.Attribute)) and isinstance(
+                node.ctx, ast.Load
+            ):
+                found = self.resolve(module, node)
+                if found and found[0] == "symbol":
+                    self.reach(found[1], found[2])
+            if isinstance(node, ast.Call) and ast.unparse(node.func) in self.DYNAMIC:
+                self.dynamic.append(f"{module}:{node.lineno} {ast.unparse(node.func)}")
+
+    def entry(self, module, function, *, command=None):
+        """Run ``function`` of ``module`` (after its top level). With
+        ``command``, skip the other ``if args.command == "..."`` branches
+        of its body; exactly one branch must run ``command``."""
+        info = self.module(module)
+        branches = 0
+        for stmt in info["defs"][function].body:
+            test = getattr(stmt, "test", None)
+            chosen = None
+            if (
+                isinstance(stmt, ast.If)
+                and isinstance(test, ast.Compare)
+                and ast.unparse(test.left) == "args.command"
+            ):
+                chosen = test.comparators[0].value
+            if command is not None and chosen is not None:
+                if chosen != command:
+                    continue
+                branches += 1
+            self.walk(module, stmt)
+        if command is not None:
+            assert branches == 1, (module, function, command, branches)
+
+
+def control_line():
+    """The build job's CONTROL command, and the packages it installs."""
     line = next(
         line.strip().removeprefix("local ")
         for line in SCRIPT.read_text().splitlines()
         if "CONTROL=(" in line
     )
-    installed = {
-        word.split("==")[0]
-        for word, before in zip(line.split()[1:], line.split())
-        if before == "--with"
-    }
-    imported = set()
-    for relative in (
-        "pipeline/uk_replay_results_pr.py",
-        "pipeline/uk_replay_interface.py",
-        "pipeline/uk_replay_variants.py",
-        "pipeline/uk_replay_qualify.py",
-    ):
-        for node in ast.walk(ast.parse((ROOT / relative).read_text())):
-            if isinstance(node, ast.Import):
-                imported |= {alias.name.split(".")[0] for alias in node.names}
-            elif isinstance(node, ast.ImportFrom) and not node.level:
-                imported.add((node.module or "").split(".")[0])
-    third_party = imported - set(sys.stdlib_module_names) - {"pipeline", "__future__"}
-    release = {
-        "policyengine",
-        "policyengine_uk",
-        "policyengine_core",
-        "huggingface_hub",
-    }
-    needed = {{"yaml": "pyyaml"}.get(name, name) for name in third_party - release}
-    assert needed == {"jsonschema", "rfc8785", "pyyaml"}
+    words = line.removeprefix("CONTROL=(").removesuffix(")").split()
+    return words, [word for word, before in zip(words[1:], words) if before == "--with"]
+
+
+RELEASE = {"policyengine", "policyengine_uk", "policyengine_core", "huggingface_hub"}
+
+
+def test_the_control_environment_installs_what_the_builder_imports():
+    # Review of 78e080c6 (4): the build job's CONTROL runs the builder's
+    # strict path and `uk_replay_qualify verify-sealed`. Every third-party
+    # module the code they run can import, through any pipeline module they
+    # reach, must be installed; release and dataset code (which only the
+    # qualifier's run and fetch steps import) must not even be reached.
+    words, specs = control_line()
+    assert words[:2] == ["uv", "run"] and words[-1] == "python"
+    installed = {spec.split("==")[0] for spec in specs}
+    scan = ImportScan(ROOT)
+    scan.entry("pipeline.uk_replay_results_pr", "main")
+    scan.entry("pipeline.uk_replay_qualify", "main", command="verify-sealed")
+    assert scan.dynamic == []
+    assert not set(scan.third_party) & RELEASE, scan.third_party
+    needed = {{"yaml": "pyyaml"}.get(name, name) for name in scan.third_party}
+    assert needed == {"jsonschema", "rfc8785", "pyyaml"}, scan.third_party
     assert installed == needed, sorted(installed ^ needed)
-    assert not release & installed
+    # What the scan reached is what those paths run, and no more.
+    assert set(scan.modules) == {
+        "pipeline.uk_replay_interface",
+        "pipeline.uk_replay_qualify",
+        "pipeline.uk_replay_results_pr",
+        "pipeline.uk_replay_variants",
+    }
+    for reached in (
+        ("pipeline.uk_replay_qualify", "verify_sealed"),
+        ("pipeline.uk_replay_qualify", "latest_certified"),
+        ("pipeline.uk_replay_variants", "validate_record"),
+        ("pipeline.uk_replay_interface", "validate"),
+    ):
+        assert reached in scan.reached, reached
+    for unreached in (
+        ("pipeline.uk_replay_qualify", "probe"),
+        ("pipeline.uk_replay_qualify", "fetch_dataset"),
+        ("pipeline.uk_replay_qualify", "run_request"),
+    ):
+        assert unreached not in scan.reached, unreached
+
+
+SCAN_FIXTURE = {
+    "entry.py": """
+import json
+from pipeline import helper
+from . import sibling as near
+
+
+def main(args):
+    if args.command == "wanted":
+        helper.run()
+        near.used()
+    if args.command == "other":
+        import numpy
+    return 0
+
+
+def unreachable():
+    import pandas
+
+
+if __name__ == "__main__":
+    import scipy
+""",
+    "helper.py": """
+import yaml
+
+
+def run():
+    import jsonschema
+    from pipeline.deep import go
+
+    go()
+
+
+def unused():
+    import torch
+""",
+    "sibling.py": """
+def used():
+    from fallback import loader
+
+    return loader()
+""",
+    "fallback.py": """
+class Loader:
+    def load(self):
+        import rfc8785
+
+
+def loader():
+    return Loader()
+""",
+    "deep.py": """
+import attr
+
+
+def go():
+    import importlib
+
+    importlib.import_module("anything")
+
+
+def never():
+    import sklearn
+""",
+}
+
+
+def test_the_import_scan_follows_what_runs_and_skips_what_nothing_reaches(tmp_path):
+    for name, text in SCAN_FIXTURE.items():
+        (tmp_path / "pipeline").mkdir(exist_ok=True)
+        (tmp_path / "pipeline" / name).write_text(text)
+    scan = ImportScan(tmp_path)
+    scan.entry("pipeline.entry", "main", command="wanted")
+    assert set(scan.third_party) == {"yaml", "jsonschema", "rfc8785", "attr"}
+    line = (
+        SCAN_FIXTURE["deep.py"]
+        .splitlines()
+        .index('    importlib.import_module("anything")')
+    )
+    assert scan.dynamic == [f"pipeline.deep:{line + 1} importlib.import_module"]
+    whole = ImportScan(tmp_path)
+    whole.entry("pipeline.entry", "main")
+    assert set(whole.third_party) == {"yaml", "jsonschema", "rfc8785", "attr", "numpy"}
+    with pytest.raises(AssertionError):
+        ImportScan(tmp_path).entry("pipeline.entry", "main", command="missing")
+
+
+def in_control(tmp_path, specs, *arguments, cwd):
+    """``uv run --with SPEC... python -m ARGUMENTS`` through the test uv."""
+    tools = tmp_path / "uv-bin"
+    tools.mkdir(exist_ok=True)
+    flags = [word for spec in specs for word in ("--with", spec)]
+    return subprocess.run(
+        [str(install_uv(tools)), "run", *flags, "python", "-m", *arguments],
+        cwd=cwd,
+        env={**os.environ, "PYTHONPATH": str(cwd), "PYTHONDONTWRITEBYTECODE": "1"},
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def test_the_test_uv_imports_only_what_uv_run_with_installs(tmp_path):
+    (tmp_path / "probe.py").write_text(
+        "import importlib, sys\n"
+        "for name in sys.argv[1:]:\n"
+        "    try:\n"
+        "        importlib.import_module(name)\n"
+        "        print(name, 'imported')\n"
+        "    except ModuleNotFoundError:\n"
+        "        print(name, 'refused')\n"
+    )
+    names = ["json", "yaml", "jsonschema", "referencing", "rfc8785", "numpy"]
+    names += ["hypothesis", "pytest"]
+    for name in names:
+        assert importlib.util.find_spec(name), f"the suite installs {name}"
+    _, specs = control_line()
+    control = in_control(tmp_path, specs, "probe", *names, cwd=tmp_path)
+    assert control.returncode == 0, control.stderr
+    assert control.stdout.splitlines() == [
+        "json imported",
+        "yaml imported",
+        "jsonschema imported",
+        "referencing imported",
+        "rfc8785 imported",
+        "numpy refused",
+        "hypothesis refused",
+        "pytest refused",
+    ]
+    bare = in_control(tmp_path, [], "probe", "json", "yaml", "jsonschema", cwd=tmp_path)
+    assert bare.stdout.splitlines() == [
+        "json imported",
+        "yaml refused",
+        "jsonschema refused",
+    ]
+
+
+def test_verify_sealed_runs_with_controls_packages_alone(tmp_path):
+    # Every committed sealed namespace, as the build job's CONTROL checks
+    # them; a module that needs numpy fails there.
+    _, specs = control_line()
+    result = in_control(
+        tmp_path, specs, "pipeline.uk_replay_qualify", "verify-sealed", cwd=ROOT
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    checked = result.stdout.splitlines()[-1]
+    assert re.fullmatch(r"([0-9]+) sealed namespace\(s\) checked", checked)
+    assert int(checked.split()[0]) >= 2
+    numerical = in_control(
+        tmp_path, specs, "pipeline.compute_uk_event", "--help", cwd=ROOT
+    )
+    assert numerical.returncode != 0
+    assert "does not install it" in numerical.stderr
 
 
 def test_the_record_job_dispatches_the_results_workflow_only_when_complete():
@@ -987,6 +1332,103 @@ def terminal_status(directory, rid, receipt, commit, status="complete"):
     )
 
 
+# Review of 78e080c6 (4): the stub uv used to run the test interpreter with
+# everything the suite installs (numpy among it), so no test ran the build
+# job's checks with CONTROL's packages alone. This runs `uv run [--with
+# SPEC]... python -m MODULE ARGS` as uv does outside a project: only the
+# standard library, the specs and what they require, and the checkout's
+# own modules can be imported.
+UV_RUN = r'''"""uv run [--with SPEC]... python -m MODULE ARGS, in this interpreter
+with every package refused but the specs and what they require."""
+
+import importlib.abc
+import importlib.metadata as metadata
+import json
+import os
+import re
+import runpy
+import sys
+from pathlib import Path
+
+installed, specs = json.loads(Path(sys.argv[1]).read_text()), sys.argv[2].split()
+
+
+def normal(name):
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
+wanted, environment = list(specs), set()
+while wanted:
+    name = normal(re.match(r"[A-Za-z0-9._-]+", wanted.pop()).group(0))
+    if name in environment:
+        continue
+    environment.add(name)
+    try:
+        requires = metadata.requires(name) or []
+    except metadata.PackageNotFoundError:
+        continue
+    # Extras are not installed; other markers may be, so they stay.
+    wanted += [r for r in requires if "extra" not in r.partition(";")[2]]
+refused = {
+    top
+    for top, owners in installed.items()
+    if not {normal(owner) for owner in owners} & environment
+    and top not in sys.stdlib_module_names
+    and not (Path.cwd() / top).exists()
+}
+
+
+class Environment(importlib.abc.MetaPathFinder):
+    def find_spec(self, name, path=None, target=None):
+        top = name.partition(".")[0]
+        if top in refused:
+            raise ModuleNotFoundError(
+                f"No module named {top!r}: uv run --with "
+                f"{' '.join(specs) or '(nothing)'} does not install it",
+                name=top,
+            )
+        return None
+
+
+sys.meta_path.insert(0, Environment())
+command = sys.argv[3:]
+assert command[0] == "-m", command
+sys.argv = command[1:]
+sys.path[0] = os.getcwd()
+runpy.run_module(command[1], run_name="__main__", alter_sys=True)
+'''
+
+
+@functools.lru_cache(maxsize=1)
+def installed_modules():
+    """Each top-level module installed in this interpreter, with the
+    distributions that provide it."""
+    return {
+        top: sorted(set(owners))
+        for top, owners in importlib.metadata.packages_distributions().items()
+    }
+
+
+def install_uv(tools):
+    """A uv for ``tools`` that runs ``uv run [--with SPEC]... python -m ...``
+    through UV_RUN, and refuses any other use."""
+    (tools / "uv_run.py").write_text(UV_RUN)
+    (tools / "installed.json").write_text(json.dumps(installed_modules()))
+    uv = tools / "uv"
+    uv.write_text(
+        f"#!{sys.executable}\nimport os, sys\nargs = sys.argv[1:]\n"
+        "assert args[0] == 'run' and 'python' in args, args\n"
+        "assert 'venv' not in args and 'pip' not in args, args\n"
+        "at = args.index('python')\n"
+        "assert at % 2 and all(args[i] == '--with' for i in range(1, at, 2)), args\n"
+        f"os.execv({sys.executable!r}, [{sys.executable!r}, "
+        f"{str(tools / 'uv_run.py')!r}, {str(tools / 'installed.json')!r}, "
+        "' '.join(args[2:at:2]), *args[at + 1:]])\n"
+    )
+    uv.chmod(0o755)
+    return uv
+
+
 REGENERATE_STUB = """#!/usr/bin/env bash
 set -euo pipefail
 echo "regenerate $(git rev-parse HEAD)" >> "$CHECK_LOG"
@@ -1073,18 +1515,11 @@ class Remote:
         )
         self.tools = tmp_path / "bin"
         self.tools.mkdir()
-        uv = self.tools / "uv"
-        uv.write_text(
-            f"#!{sys.executable}\nimport os, sys\nargs = sys.argv[1:]\n"
-            "assert args[0] == 'run' and 'python' in args, args\n"
-            "assert 'venv' not in args and 'pip' not in args, args\n"
-            f"os.execv({sys.executable!r}, [{sys.executable!r}, "
-            "*args[args.index('python') + 1:]])\n"
-        )
+        # The build job's checks run with CONTROL's packages alone (UV_RUN).
+        install_uv(self.tools)
         gh = self.tools / "gh"
         gh.write_text(f"#!{sys.executable}\n{GH_STUB}")
-        for tool in (uv, gh):
-            tool.chmod(0o755)
+        gh.chmod(0o755)
         # python3 is the test interpreter: under -I -S it sees no
         # site-packages, so the stdlib rebuild cannot import a package.
         (self.tools / "python3").symlink_to(sys.executable)
