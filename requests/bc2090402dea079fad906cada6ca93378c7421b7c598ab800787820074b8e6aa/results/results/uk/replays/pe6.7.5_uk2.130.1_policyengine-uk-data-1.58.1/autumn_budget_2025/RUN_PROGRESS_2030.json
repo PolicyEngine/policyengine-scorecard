@@ -1,0 +1,25 @@
+{
+ "artifacts": {
+  "results/uk/replays/pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__dividend_rates_plus_2pp_2030.json": "aa2ffecbe5a39d70808b67445bfc0c086e0da0015b0f9fa002e2eb58d9d9a9f4",
+  "results/uk/replays/pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__employer_nics_secondary_threshold_freeze_to_2031_2030.json": "cc15f04dfa2e609b564740ab6273e75dbe00bc2ceff978c48d2afc62ae3b7d52",
+  "results/uk/replays/pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__high_value_council_tax_surcharge_2030.json": "87ddf27a17ab3d5bbaa32b9c39a14f1cfce5ccad71572f066d51e46e2e456fd0",
+  "results/uk/replays/pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__personal_tax_thresholds_freeze_to_2031_2030.json": "83873c41c00fe26c9b3e414654fa3a0e598e1c33d38dc5ce90e24bfd07a9fb07",
+  "results/uk/replays/pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__property_income_separate_rates_2030.json": "c89a3590665d03ea6ef38340fe1a2836fb372fb414a7967db1ab0485b2ac96e2",
+  "results/uk/replays/pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__salary_sacrifice_pension_nics_cap_2000_2030.json": "f8d44d366505c2c7b7e3a32bef8e3c2729e5b81509da1a482a1ecdc513de6576",
+  "results/uk/replays/pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__savings_rates_plus_2pp_and_starter_limit_held_2030.json": "3df53860bc022cd5a199a1bed588d99b7b78b0d6a5de6788d16bf9a0940cd7ae",
+  "results/uk/replays/pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__uc_child_element_remove_two_child_limit_2030.json": "d2c7fbbefdc5854e18a5bc78a89a3c1f674bf1c987e24cb3e4b69ddc09ad8580",
+  "results/uk/replays/pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1/autumn_budget_2025/ab2025__winter_fuel_payment_income_test_35000_2030.json": "16cd02c11358119269da7b69cbc30d87941b09c5783a5ec558fbf78c616720b1"
+ },
+ "certified_dataset_sha256": "056e80fd8e9151d78f432a25cde863340baee81304c6216a37fb575ce8563784",
+ "data_bundle": "policyengine-uk-data-1.58.1",
+ "engine_version": "2.130.1",
+ "event": "autumn_budget_2025",
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.7.5",
+ "receipt_kind": "completed_event_artifacts",
+ "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+ "schema_version": 1,
+ "variant_id": "pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1",
+ "variant_identity_sha256": "ecafc627fc4ae4c7141829e3e73726cc96f3e2a4180b48d516d77785f4ec1371",
+ "year": 2030
+}
