@@ -870,9 +870,12 @@ start CI as any other pull request does.
    So is a variant id that could not name a branch and paths (anything but
    letters, digits, `.`, `_` and `-`, or a `..`). An exactly certified pair
    qualified again returns the committed record, so it ends with a notice
-   too; a record that only shares its id with a committed one (two runs that
-   finished before either merged) is refused, to be qualified again for an
-   id of its own.
+   too. That comparison is the variant: its id and its `identity_sha256`,
+   which must be the digest of its identity, against a certified record on
+   main. The rest of main's record (the note, and anything a later change
+   to the index adds or reshapes) is not compared. A record that only
+   shares its id with a committed one (two runs that finished before either
+   merged) is refused, to be qualified again for an id of its own.
 2. **Results, byte for byte.** The request directory passes the receiver's
    output guard again, and its receipt and results must be unchanged since
    the receipt commit. `requests/<request_id>/results/{results,docs}` is

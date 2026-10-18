@@ -120,10 +120,6 @@ def version_key(version: str) -> tuple[int, ...]:
     return tuple(parts)
 
 
-def without_note(record: dict) -> dict:
-    return {key: value for key, value in record.items() if key != "note"}
-
-
 def wrapper_version(record: dict) -> str:
     return record["identity"]["packages"]["policyengine"]["version"]
 
@@ -227,16 +223,28 @@ def check(
     # The id gains its digest suffix only when main already holds the slug,
     # so two runs that finish before either merges can share an id with
     # different identities: the second is refused, to be qualified again.
+    need(
+        record["identity_sha256"] == variants.identity_sha256(record.get("identity")),
+        "VARIANT.json's identity_sha256 is not its identity's digest",
+    )
     document = variants.load_document(checkout / INDEX)
     ids = [v["variant_id"] for v in document["variants"]]
     if record["variant_id"] in ids:
-        # The committed record is VARIANT.json plus the note the results pull
-        # request added; compare them without it.
+        # The same variant is the same id and identity. The committed record
+        # is VARIANT.json plus the note the results pull request added, and a
+        # later change to the index (a schema migration) may add or reshape
+        # its other fields, so they are not compared.
         committed = document["variants"][ids.index(record["variant_id"])]
         need(
-            without_note(committed) == without_note(record),
-            f"{record['variant_id']} already names another record in {INDEX}; "
+            (committed["variant_id"], committed["identity_sha256"])
+            == (record["variant_id"], record["identity_sha256"]),
+            f"{record['variant_id']} already names another identity in {INDEX}; "
             "qualify this pair again so it gets its own id",
+        )
+        need(
+            committed["status"] == "certified",
+            f"{INDEX} holds {record['variant_id']} as {committed['status']}, "
+            "not certified",
         )
         raise Ineligible(f"{record['variant_id']} is already in {INDEX}")
     need(record["layout"] == "replay_namespace", "a certified result needs a namespace")

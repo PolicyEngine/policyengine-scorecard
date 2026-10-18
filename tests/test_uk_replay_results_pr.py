@@ -1407,8 +1407,156 @@ def test_an_id_main_holds_for_another_identity_is_refused_not_skipped(remote):
     assert record["identity_sha256"] != committed_record(PE650)["identity_sha256"]
     result = remote.run(rid)
     assert result.returncode == 1, result.stdout + result.stderr
-    assert f"{PE650} already names another record" in result.stderr
+    assert f"{PE650} already names another identity" in result.stderr
     assert "action" not in remote.outputs
+
+
+# Review of 78e080c6 (2): a request whose variant main already holds is the
+# same variant when the id and identity agree. Every other field of main's
+# record may differ: the note the results pull request added, and whatever a
+# later change to the index (a schema migration) adds, drops or reshapes.
+COMPARED = ("variant_id", "identity", "identity_sha256", "status")
+
+
+@pytest.fixture(scope="module")
+def requalified(tmp_path_factory):
+    """A complete request whose VARIANT.json is the committed 6.5.0 record,
+    as the receiver returns it for a pair it already certified."""
+    state = tmp_path_factory.mktemp("requalified")
+    rid, _, receipt = certified_results(state, requalify=True)
+    terminal_status(state, rid, receipt, "0" * 40)
+    return state / "requests" / rid, rid
+
+
+def decide(requalified, edit, *, strict=True):
+    """``check`` against a main whose 6.5.0 record ``edit`` changed: the
+    skip reason, or the refusal as ``Refused``."""
+    directory, rid = requalified
+    document = json.loads(rv.VARIANTS_PATH.read_bytes())
+    ids = [v["variant_id"] for v in document["variants"]]
+    edit(document["variants"][ids.index(PE650)])
+    checkout = directory.parent.parent / "main"
+    (checkout / builder.INDEX).parent.mkdir(parents=True, exist_ok=True)
+    (checkout / builder.INDEX).write_bytes(canonical_bytes(document))
+    with pytest.raises(builder.Ineligible) as skipped:
+        builder.check(directory, checkout, rid, "0" * 40, strict=strict)
+    return str(skipped.value)
+
+
+def migrate(record):
+    record["note"] = "Reworded after the merge."
+    record["schema_migration"] = {"from": 1, "to": 2}
+    record.pop("qualification_request_sha256")
+    record["data_years_evidence"] = {"reshaped": True}
+
+
+def other_identity(record):
+    record["identity"]["packages"]["policyengine"]["record_sha256"] = "f" * 64
+    record["identity_sha256"] = rv.identity_sha256(record["identity"])
+
+
+@pytest.mark.parametrize("strict", [True, False])
+@pytest.mark.parametrize(
+    ("edit", "refusal"),
+    [
+        (lambda record: None, None),
+        (migrate, None),
+        (other_identity, f"{PE650} already names another identity"),
+        (
+            lambda record: record.update(identity_sha256="f" * 64),
+            f"{PE650} already names another identity",
+        ),
+        (
+            lambda record: record.update(status="candidate"),
+            f"holds {PE650} as candidate, not certified",
+        ),
+    ],
+)
+def test_a_held_variant_is_skipped_only_for_the_same_identity(
+    requalified, edit, refusal, strict
+):
+    if refusal is None:
+        assert decide(requalified, edit, strict=strict) == (
+            f"{PE650} is already in {builder.INDEX}"
+        )
+    else:
+        with pytest.raises(builder.Refused, match=re.escape(refusal)):
+            decide(requalified, edit, strict=strict)
+
+
+def test_a_variant_whose_digest_is_not_its_identitys_is_refused(tmp_path):
+    # The skip rests on identity_sha256, so VARIANT.json's own digest must be
+    # its identity's: a record claiming the committed digest for another
+    # identity is refused, not skipped.
+    rid, record, receipt = certified_results(tmp_path, requalify=True)
+    terminal_status(tmp_path, rid, receipt, "0" * 40)
+    directory = tmp_path / "requests" / rid
+    record["identity"]["packages"]["policyengine"]["record_sha256"] = "f" * 64
+    (directory / "results/VARIANT.json").write_bytes(qualify.canonical_bytes(record))
+    (tmp_path / "main" / builder.INDEX).parent.mkdir(parents=True)
+    shutil.copyfile(rv.VARIANTS_PATH, tmp_path / "main" / builder.INDEX)
+    for strict in (True, False):
+        with pytest.raises(builder.Refused, match="not its identity's digest"):
+            builder.check(directory, tmp_path / "main", rid, "0" * 40, strict=strict)
+
+
+json_values = st.recursive(
+    st.none() | st.booleans() | st.integers(-5, 5) | st.text(max_size=6),
+    lambda children: (
+        st.lists(children, max_size=3)
+        | st.dictionaries(st.text(max_size=5), children, max_size=3)
+    ),
+    max_leaves=6,
+)
+
+
+@settings(max_examples=60, deadline=None)
+@given(
+    st.dictionaries(
+        st.text(min_size=1, max_size=12).filter(lambda key: key not in COMPARED),
+        json_values,
+        max_size=4,
+    ),
+    st.sets(st.sampled_from(sorted(set(committed_record(PE650)) - set(COMPARED)))),
+)
+def test_any_change_to_the_rest_of_the_record_still_skips(
+    requalified, changed, dropped
+):
+    def edit(record):
+        record.update(changed)
+        for key in dropped - set(changed):
+            record.pop(key)
+
+    assert decide(requalified, edit) == f"{PE650} is already in {builder.INDEX}"
+
+
+def leaves(value, path=()):
+    if isinstance(value, dict):
+        for key, child in value.items():
+            yield from leaves(child, (*path, key))
+    elif isinstance(value, str):
+        yield path
+
+
+IDENTITY_LEAVES = sorted(leaves(committed_record(PE650)["identity"]))
+
+
+@settings(max_examples=60, deadline=None)
+@given(st.sampled_from(IDENTITY_LEAVES), st.text(min_size=1, max_size=8))
+def test_any_change_to_the_identity_is_refused(requalified, path, value):
+    def edit(record):
+        *parents, last = path
+        holder = record["identity"]
+        for key in parents:
+            holder = holder[key]
+        if holder[last] == value:
+            holder[last] = value + "x"
+        else:
+            holder[last] = value
+        record["identity_sha256"] = rv.identity_sha256(record["identity"])
+
+    with pytest.raises(builder.Refused, match="already names another identity"):
+        decide(requalified, edit)
 
 
 def test_a_variant_id_that_cannot_name_a_branch_is_refused(remote):
@@ -1572,6 +1720,22 @@ def test_a_variant_already_on_main_is_skipped(remote):
     result = remote.run(rid)
     assert result.returncode == 0, result.stdout + result.stderr
     assert f"{record['variant_id']} is already in {builder.INDEX}" in result.stdout
+    # Review of 78e080c6 (2): a later change to main's copy of the record (a
+    # schema migration) does not turn the merged request's rerun into a
+    # refusal.
+    person = remote.tmp / "migration"
+    subprocess.run(["git", "clone", "-q", str(remote.remote), str(person)], check=True)
+    for key, value in (("user.name", "Migrator"), ("user.email", "m@example.org")):
+        git(person, "config", key, value)
+    document = json.loads((person / builder.INDEX).read_bytes())
+    migrate(document["variants"][-1])
+    (person / builder.INDEX).write_bytes(canonical_bytes(document))
+    git(person, "commit", "-qam", "Migrate the index")
+    git(person, "push", "-q", "origin", "HEAD:main")
+    result = remote.run(rid)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert f"{record['variant_id']} is already in {builder.INDEX}" in result.stdout
+    assert remote.outputs == {"action": "skip"}
 
 
 def tamper(remote, rid, record, how):
