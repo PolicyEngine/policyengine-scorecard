@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "a8cf122bb0981f7f6f08b2b4697b1da1fa92b4e5d44f934801a8f3eb5562e0d7",
+  "COMPARISON.json": "d11c790557b0db6c369bdceab4c163ca3d3633415dd30a9c82b4c069f96791ba",
+  "COMPARISON.md": "9601996f1d7ab6934e6cb8e50e5754de6b9e4728095e86966a9dbe32de4df917"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.7.4_uk2.130.1_policyengine-uk-data-1.58.1"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.7.4_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "b4324769cc414b740628ea7d177a8e8377edaf89d4d29a314446e953821b3ee7",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.7.4_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "8de37fda24d0591c346698d9596d33617431f46b2885d55e5ce417d044e453fd",
+ "staging_manifest_path": "results/uk/replays/pe6.7.4_uk2.130.1_policyengine-uk-data-1.58.1/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "48aeba49ceb5a8e2e32029a543006823c13bbb66702336c8ace95a22f94338ef"
+}
