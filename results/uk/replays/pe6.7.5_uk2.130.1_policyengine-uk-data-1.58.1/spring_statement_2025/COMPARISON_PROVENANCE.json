@@ -1,0 +1,29 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_statement_2025",
+ "outputs_sha256": {
+  "COMPARISON.csv": "27999ca719166f9d5126ec4f5992c4a201a6b8579bfdcf3835015ff2c5a925cd",
+  "COMPARISON.json": "c5cd6aad2015677016f48f23d6d6dcc3aae49df4cea9d08c37a3b4438e74dc86",
+  "COMPARISON.md": "e82cf29add2231272cd6ebd6aa367f51e638a4d337eac38f068113419ae09e36"
+ },
+ "registry_path": "data/uk/events/spring_statement_2025_measures.json",
+ "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+ "replay_grid": {
+  "computed_measure_years": 12,
+  "full_event_complete": true,
+  "full_event_grid_size": 12,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [],
+  "supported_grid_size": 12,
+  "unsupported_measure_years": [],
+  "unsupported_years": [],
+  "variant_id": "pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1/spring_statement_2025/RUN_MANIFEST.json",
+ "run_manifest_sha256": "0e3033dbfccf4e35e7fcc7a72a598f3f506f5b5311646344898ac5bcf44f03fd",
+ "source_rows": 498,
+ "staged_path": "results/uk/replays/pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1/spring_statement_2025/STAGED.jsonl",
+ "staged_sha256": "46321ac733efdf46af2da9e7d932866ecc1d5c5799a28d3201e5c1004e1ddc4d",
+ "staging_manifest_path": "results/uk/replays/pe6.7.5_uk2.130.1_policyengine-uk-data-1.58.1/spring_statement_2025/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "0934dc00b26ba313f4706a7ffe9ae656ce655b54f2528873d0478d1768758edd"
+}
