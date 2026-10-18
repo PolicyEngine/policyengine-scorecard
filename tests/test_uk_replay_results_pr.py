@@ -1524,6 +1524,8 @@ class Remote:
         # site-packages, so the stdlib rebuild cannot import a package.
         (self.tools / "python3").symlink_to(sys.executable)
         self.runs = 0
+        self.gh_log = tmp_path / "gh.jsonl"
+        self.check_log = tmp_path / "checks.log"
 
     def publish_state(self):
         git(self.state, "push", "-q", "-f", str(self.remote), "HEAD:replay-state")
@@ -1579,42 +1581,67 @@ class Remote:
             )
         return result, values
 
-    def run(self, rid, forge=None, **overrides):
-        """As the workflow runs it. Job 1 builds and verifies in this
-        runner's checkout. Job 2 runs on a fresh clone with its own temp
-        directory: it rebuilds with the standard library and, only when its
-        tree is job 1's, proposes with the token. ``forge`` overrides job 1's
-        outputs as job 2 receives them."""
-        self.runs += 1
-        temp = self.tmp / f"runner-temp-{self.runs}"
+    def checkout(self, directory, commit):
+        """``directory`` at ``commit``, as actions/checkout checks out
+        GITHUB_SHA: a fresh clone, or this runner's fetched again."""
+        if not directory.exists():
+            subprocess.run(
+                ["git", "clone", "-q", str(self.remote), str(directory)], check=True
+            )
+        git(directory, "fetch", "-q", "origin")
+        git(directory, "checkout", "-q", "--detach", commit)
+        return directory
+
+    def build_job(self, rid, sha, temp, **overrides):
+        """Job 1 of a run dispatched at main ``sha``, in this runner's
+        checkout of it: (result, outputs)."""
         temp.mkdir()
-        self.gh_log = temp / "gh.jsonl"
-        self.check_log = temp / "checks.log"
-        env = self.environment(temp, rid, **overrides)
-        built, self.outputs = self.step(
-            self.runner, "build", env, temp / "build-output.txt"
-        )
-        self.rebuilt = {}
-        if built.returncode or self.outputs.get("action") != "build":
-            return built
-        fresh = self.tmp / f"job2-{self.runs}"
-        subprocess.run(["git", "clone", "-q", str(self.remote), str(fresh)], check=True)
-        temp2 = self.tmp / f"runner-temp-{self.runs}-job2"
-        temp2.mkdir()
-        env2 = self.environment(temp2, rid, **overrides)
-        received = {**self.outputs, **(forge or {})}
-        self.job2 = (fresh, env2, temp2)
-        rebuilt, self.rebuilt = self.step(
+        self.gh_log, self.check_log = temp / "gh.jsonl", temp / "checks.log"
+        self.checkout(self.runner, sha)
+        env = self.environment(temp, rid, **{"GITHUB_SHA": sha, **overrides})
+        return self.step(self.runner, "build", env, temp / "build-output.txt")
+
+    def rebuild_job(self, rid, received, sha, name, **overrides):
+        """Job 2's rebuild for a run dispatched at main ``sha``, on a fresh
+        clone of it, given ``received`` as job 1's outputs: (result,
+        outputs, (checkout, environment, temp))."""
+        fresh = self.checkout(self.tmp / name, sha)
+        temp = self.tmp / f"{name}-temp"
+        temp.mkdir()
+        env = self.environment(temp, rid, **{"GITHUB_SHA": sha, **overrides})
+        result, outputs = self.step(
             fresh,
             "rebuild",
-            env2,
-            temp2 / "rebuild-output.txt",
+            env,
+            temp / "rebuild-output.txt",
             BUILT_TREE=received["tree"],
             BUILT_BASE=received["base"],
             BUILT_STATE=received["state"],
             BUILT_SEALED=received["sealed"],
             BUILT_CONTENT_HASH=received["content_hash"],
         )
+        return result, outputs, (fresh, env, temp)
+
+    def run(self, rid, forge=None, dispatched=None, **overrides):
+        """As the workflow runs it, dispatched when main was ``dispatched``
+        (default: main now). That commit is GITHUB_SHA, and both jobs check
+        it out. Job 1 builds and verifies in this runner's checkout. Job 2
+        runs on a fresh clone with its own temp directory: it rebuilds with
+        the standard library and, only when its tree is job 1's, proposes
+        with the token. ``forge`` overrides job 1's outputs as job 2
+        receives them."""
+        self.runs += 1
+        sha = dispatched or git(self.remote, "rev-parse", "main")
+        temp = self.tmp / f"runner-temp-{self.runs}"
+        built, self.outputs = self.build_job(rid, sha, temp, **overrides)
+        self.rebuilt = {}
+        if built.returncode or self.outputs.get("action") != "build":
+            return built
+        received = {**self.outputs, **(forge or {})}
+        rebuilt, self.rebuilt, self.job2 = self.rebuild_job(
+            rid, received, sha, f"job2-{self.runs}", **overrides
+        )
+        fresh, env2, _ = self.job2
         outs = [built, rebuilt]
         if not rebuilt.returncode and self.rebuilt.get("action") == "build":
             proposed, _ = self.step(
@@ -1665,6 +1692,10 @@ def test_a_certified_request_becomes_one_bot_commit_and_a_pull_request(remote):
     assert head
     main = git(remote.remote, "rev-parse", "main")
     assert git(remote.remote, "rev-parse", f"{head}^") == main
+    # The production case (review of 78e080c6, 5): GITHUB_SHA is main as
+    # dispatched, and job 2 ran that commit's code.
+    assert remote.job2[1]["GITHUB_SHA"] == main
+    assert git(remote.job2[0], "rev-parse", "HEAD") == main
     assert git(remote.remote, "log", "-1", "--format=%ae", head) == BOT_EMAIL
     message = git(remote.remote, "log", "-1", "--format=%B", head)
     assert message.startswith(f"Certify the policyengine.py {VERSION} replay results")
@@ -2160,45 +2191,70 @@ def test_job_2_pushes_only_what_it_rebuilt_and_job_1_verified(remote, forge, mes
     assert remote.gh_calls() == []
 
 
-def test_a_base_older_than_the_workflow_commit_is_refused(remote):
-    # Review of f7247f19 (3): a consistent older base, forged or stale.
-    rid, record, _ = remote.certify()
-    old_main = git(remote.remote, "rev-parse", "main")
-    (remote.seed / "NOTES.md").write_text("main moved\n")
+def move_main(remote, note="main moved\n"):
+    """A commit on main after the dispatch; the new main."""
+    (remote.seed / "NOTES.md").write_text(note)
     git(remote.seed, "add", ".")
     git(remote.seed, "commit", "-qm", "Main moves")
     git(remote.seed, "push", "-q", str(remote.remote), "HEAD:main")
-    git(remote.runner, "pull", "-q", "--ff-only")
-    workflow_commit = git(remote.remote, "rev-parse", "main")
-    result = remote.run(rid, forge={"base": old_main}, GITHUB_SHA=workflow_commit)
-    assert result.returncode == 1, result.stdout + result.stderr
-    assert "older than this workflow's commit" in result.stderr
+    return git(remote.remote, "rev-parse", "main")
+
+
+def test_a_run_dispatched_before_main_moved_proposes_on_the_new_main(remote):
+    # Review of 78e080c6 (5): the production case. GITHUB_SHA is main at
+    # dispatch and both jobs run that commit's code; main moves before job 1
+    # fetches it, so the base job 1 builds on is newer than GITHUB_SHA.
+    rid, record, _ = remote.certify()
+    dispatched = git(remote.remote, "rev-parse", "main")
+    newer = move_main(remote)
+    result = remote.run(rid, dispatched=dispatched)
+    assert result.returncode == 0, result.stdout + result.stderr
+    fresh, env, _ = remote.job2
+    assert env["GITHUB_SHA"] == dispatched
+    assert git(fresh, "rev-parse", "HEAD") == dispatched
+    assert git(remote.runner, "rev-parse", "HEAD") == dispatched
+    assert remote.outputs["base"] == newer
+    assert git(remote.remote, "rev-parse", f"{remote.branch(record)}^") == newer
+    assert [call[:2] for call in remote.gh_calls()] == [
+        ["pr", "list"],
+        ["pr", "create"],
+    ]
+
+
+def test_a_consistent_build_on_an_older_main_is_refused(remote):
+    # Review of f7247f19 (3) and 78e080c6 (5): job 1's outputs agree with
+    # each other (the tree is the one their base gives) but the base
+    # predates the run's own commit. Only the GITHUB_SHA check refuses it.
+    rid, record, _ = remote.certify()
+    old_main = git(remote.remote, "rev-parse", "main")
+    built, old = remote.build_job(rid, old_main, remote.tmp / "old-job1")
+    assert built.returncode == 0, built.stdout + built.stderr
+    assert old["action"] == "build" and old["base"] == old_main
+    new_main = move_main(remote)
+    # In the run that built them, on main's newer tip, they pass: the tree
+    # job 2 assembles on that base is job 1's.
+    honest, values, _ = remote.rebuild_job(rid, old, old_main, "honest-job2")
+    assert honest.returncode == 0, honest.stdout + honest.stderr
+    assert values["action"] == "build"
+    # In a run dispatched on today's main, they are refused.
+    forged, values, _ = remote.rebuild_job(rid, old, new_main, "forged-job2")
+    assert forged.returncode == 1, forged.stdout + forged.stderr
+    assert f"older than this workflow's commit {new_main}" in forged.stderr
+    assert "action" not in values
     assert not remote.branch(record)
+    assert remote.gh_calls() == []
 
 
 def test_a_rerun_after_the_merge_skips_on_mains_tip(remote):
     # Review of f7247f19 (3): job 2 rerun on job 1's old outputs once the
-    # results are on main must not open a second pull request.
+    # results are on main must not open a second pull request. A rerun
+    # keeps the run's GITHUB_SHA.
     rid, record, _ = remote.certify()
+    dispatched = git(remote.remote, "rev-parse", "main")
     assert remote.run(rid).returncode == 0
     built = dict(remote.outputs)
     git(remote.remote, "update-ref", "refs/heads/main", remote.branch(record))
-    fresh = remote.tmp / "rerun-job2"
-    subprocess.run(["git", "clone", "-q", str(remote.remote), str(fresh)], check=True)
-    temp = remote.tmp / "rerun-job2-temp"
-    temp.mkdir()
-    remote.gh_log = temp / "gh.jsonl"
-    rebuilt, values = remote.step(
-        fresh,
-        "rebuild",
-        remote.environment(temp, rid),
-        temp / "out.txt",
-        BUILT_TREE=built["tree"],
-        BUILT_BASE=built["base"],
-        BUILT_STATE=built["state"],
-        BUILT_SEALED=built["sealed"],
-        BUILT_CONTENT_HASH=built["content_hash"],
-    )
+    rebuilt, values, _ = remote.rebuild_job(rid, built, dispatched, "rerun-job2")
     assert rebuilt.returncode == 0, rebuilt.stdout + rebuilt.stderr
     assert values == {"action": "skip"}
     assert "on main as it is now" in rebuilt.stdout
@@ -2208,39 +2264,64 @@ def test_a_rerun_after_the_merge_skips_on_mains_tip(remote):
 def test_main_moving_between_the_jobs_still_rebuilds_on_the_verified_base(remote):
     # Job 2 rebuilds on the main job 1 verified, provided that commit is in
     # main's history; main moving in between does not fail the run.
-    rid, record, _ = remote.certify()
-    temp = remote.tmp / "job1"
-    temp.mkdir()
-    remote.gh_log, remote.check_log = temp / "gh.jsonl", temp / "checks.log"
-    built, outputs = remote.step(
-        remote.runner, "build", remote.environment(temp, rid), temp / "out.txt"
-    )
+    rid, _, _ = remote.certify()
+    dispatched = git(remote.remote, "rev-parse", "main")
+    built, outputs = remote.build_job(rid, dispatched, remote.tmp / "job1")
     assert built.returncode == 0, built.stdout + built.stderr
-    (remote.seed / "NOTES.md").write_text("main moved\n")
-    git(remote.seed, "add", ".")
-    git(remote.seed, "commit", "-qm", "Main moves")
-    git(remote.seed, "push", "-q", str(remote.remote), "HEAD:main")
-    assert git(remote.remote, "rev-parse", "main") != outputs["base"]
-    fresh = remote.tmp / "job2"
-    subprocess.run(["git", "clone", "-q", str(remote.remote), str(fresh)], check=True)
-    temp2 = remote.tmp / "job2-temp"
-    temp2.mkdir()
-    rebuilt, values = remote.step(
-        fresh,
-        "rebuild",
-        remote.environment(temp2, rid),
-        temp2 / "out.txt",
-        BUILT_TREE=outputs["tree"],
-        BUILT_BASE=outputs["base"],
-        BUILT_STATE=outputs["state"],
-        BUILT_SEALED=outputs["sealed"],
-        BUILT_CONTENT_HASH=outputs["content_hash"],
-    )
+    assert move_main(remote) != outputs["base"]
+    rebuilt, values, (_, _, temp) = remote.rebuild_job(rid, outputs, dispatched, "job2")
     assert rebuilt.returncode == 0, rebuilt.stdout + rebuilt.stderr
     assert values["action"] == "build"
-    tree = temp2 / "results-pr/tree"
+    tree = temp / "results-pr/tree"
     assert git(tree, "rev-parse", "HEAD^") == outputs["base"]
     assert git(tree, "rev-parse", "HEAD^{tree}") == outputs["tree"]
+
+
+def test_job_2_reports_a_request_missing_at_the_state_commit(remote):
+    # Review of 78e080c6 (1): with main moved on, a state commit that lacks
+    # the request (an older one in replay-state's history) ends with the
+    # builder's own message, not a raw git error from a tip-check extract.
+    rid, _, _ = remote.certify()
+    dispatched = git(remote.remote, "rev-parse", "main")
+    built, outputs = remote.build_job(rid, dispatched, remote.tmp / "job1")
+    assert built.returncode == 0, built.stdout + built.stderr
+    move_main(remote)
+    queued = git(remote.state, "rev-list", "--max-parents=0", "HEAD")
+    rebuilt, values, (_, _, temp) = remote.rebuild_job(
+        rid, {**outputs, "state": queued}, dispatched, "job2"
+    )
+    assert rebuilt.returncode == 1, rebuilt.stdout + rebuilt.stderr
+    assert f"replay-state has no request {rid}" in rebuilt.stderr
+    assert "fatal:" not in rebuilt.stderr
+    assert "action" not in values
+    assert not (temp / "results-pr/tip-plan.json").exists()
+
+
+def test_job_2_guards_the_request_before_deciding_on_mains_tip(remote):
+    # Review of 78e080c6 (1): the tip check reads the request only after
+    # the output guard. A state commit whose STATUS.json is a link (into
+    # the receipt) is refused by the guard; nothing reads through it.
+    rid, _, _ = remote.certify()
+    dispatched = git(remote.remote, "rev-parse", "main")
+    built, outputs = remote.build_job(rid, dispatched, remote.tmp / "job1")
+    assert built.returncode == 0, built.stdout + built.stderr
+    status = remote.state / "requests" / rid / "STATUS.json"
+    status.unlink()
+    os.symlink(rv.RECEIPT_NAME, status)
+    git(remote.state, "add", "-A")
+    git(remote.state, "commit", "-qm", "Link the status")
+    remote.publish_state()
+    linked = git(remote.state, "rev-parse", "HEAD")
+    move_main(remote)
+    rebuilt, values, (_, _, temp) = remote.rebuild_job(
+        rid, {**outputs, "state": linked}, dispatched, "job2"
+    )
+    assert rebuilt.returncode == 1, rebuilt.stdout + rebuilt.stderr
+    assert "STATUS.json: not a regular file" in rebuilt.stdout
+    assert "Traceback" not in rebuilt.stderr
+    assert "action" not in values
+    assert not (temp / "results-pr/tip-plan.json").exists()
+    assert not (temp / "results-pr/tip").exists()
 
 
 def test_propose_pushes_only_the_commit_rebuild_assembled(remote):
