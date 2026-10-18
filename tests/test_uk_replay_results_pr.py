@@ -16,7 +16,9 @@ Hypothesis property):
 """
 
 import ast
+import contextlib
 import copy
+import difflib
 import hashlib
 import json
 import os
@@ -224,15 +226,28 @@ def test_the_builder_runs_no_release_code_and_never_merges():
             if "python" in line and not line.lstrip().startswith("#"):
                 assert "python3 -I" in line, line
     assert 'python3 -I -S "$HERE/pipeline/uk_replay_results_pr.py"' in rebuild
-    # propose runs neither the builder nor any pipeline module (its prose
-    # may name them; its commands may not).
-    for line in propose.splitlines():
-        command = line.split("#", 1)[0]
-        if line.lstrip().startswith("#") or "::error::" in line:
-            continue
-        assert "pipeline" not in command and not re.search(r"\bbuilder\b", command), (
-            line
+    # propose runs neither the builder nor any pipeline module. Its messages
+    # may name them (review of 78e080c6, 3): only the text of a quoted
+    # ::error::, ::notice:: or ::warning:: string with no command
+    # substitution is set aside, never the rest of its line, and propose
+    # holds no inline comment for a command to hide behind.
+    message = re.compile(r'"::(?:error|notice|warning)::(?:[^"$\\`]|\$(?!\())*"')
+
+    def runs_pipeline_code(line):
+        command = message.sub('""', line)
+        return (
+            "#" in command
+            or "pipeline" in command
+            or bool(re.search(r"\bbuilder\b", command))
         )
+
+    assert runs_pipeline_code('echo "::error::fine" >&2; builder check')
+    assert runs_pipeline_code('echo "::notice::$(builder check)"')
+    assert runs_pipeline_code("true # builder check")
+    assert not runs_pipeline_code('echo "::error::$branch: not this builder\'s" >&2')
+    for line in propose.splitlines():
+        if not line.lstrip().startswith("#"):
+            assert not runs_pipeline_code(line), line
     tree = ast.parse((ROOT / "pipeline/uk_replay_results_pr.py").read_text())
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -463,25 +478,146 @@ def test_appending_a_record_reproduces_the_committed_index(variant_id):
         builder.append_variant(json.dumps(before).encode(), without_note, "n")
 
 
-@pytest.mark.parametrize("variant_id", [PE641, PE650])
-def test_the_stdlib_matrix_edit_is_the_strict_one_on_the_real_workflow(variant_id):
-    # Review of f7247f19: the propose job's --stdlib edit must be byte for
-    # byte the build job's, on the real inputs each certification saw.
-    text = (ROOT / builder.CI).read_text()
+# The ci.yml each hand-built results PR edited, byte for byte: #188 (6.4.1)
+# edited e796ffb5^'s and #190 (6.5.0) f4164f20^'s. CI's shallow checkout has
+# no history, so the files are committed; their git blob ids pin them to
+# those commits (`git rev-parse e796ffb5^:.github/workflows/ci.yml`).
+RESULTS_PR_FIXTURES = ROOT / "tests/fixtures/uk_replay/results_pr"
+HAND_EDITED = {
+    PE641: ("ci_before_188.yml", "9a5decd648be594e644443d0ddf020407ced5d03"),
+    PE650: ("ci_before_190.yml", "454624d30c1a3e9477a4e0b4a49408e104ff0d2c"),
+}
+# f4164f20:.github/workflows/ci.yml, #190's result. #188's result (#190's
+# input) also changed the determinism step, so only its matrix hunk is ours.
+AFTER_190 = "29f7a1b88bb05de435e7174e5ad630c24cb87492"
+SYNTHETIC = "pe9.9.9_uk9.9.9_x"
+
+
+def git_blob(data):
+    return hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
+
+
+def hand_edited(variant_id):
+    """The ci.yml the hand-built results PR for ``variant_id`` edited, and
+    the certified variants once it merged (append order)."""
+    name, blob = HAND_EDITED[variant_id]
+    data = (RESULTS_PR_FIXTURES / name).read_bytes()
+    assert git_blob(data) == blob, name
     certified = [
         v["variant_id"]
         for v in rv.load_document()["variants"]
         if v["status"] == "certified"
     ]
-    keep = certified.index(variant_id)
-    before = text
-    for later in certified[keep:]:
-        before = before.replace(f"          - {later}\n", "", 1)
-    strict = builder.add_matrix_variant(before, variant_id, certified[: keep + 1])
-    lean = builder.add_matrix_variant(
-        before, variant_id, certified[: keep + 1], strict=False
+    return data.decode(), certified[: certified.index(variant_id) + 1]
+
+
+@contextlib.contextmanager
+def without_yaml():
+    """``import yaml`` fails, as under the propose job's python3 -I -S."""
+    saved = sys.modules.get("yaml")
+    sys.modules["yaml"] = None
+    try:
+        yield
+    finally:
+        if saved is None:
+            del sys.modules["yaml"]
+        else:
+            sys.modules["yaml"] = saved
+
+
+def changes(before, after):
+    """Each change from ``before`` to ``after``: (tag, first line, last
+    line, the new lines)."""
+    old, new = before.splitlines(True), after.splitlines(True)
+    matcher = difflib.SequenceMatcher(None, old, new, autojunk=False)
+    return [
+        (tag, i1, i2, tuple(new[j1:j2]))
+        for tag, i1, i2, j1, j2 in matcher.get_opcodes()
+        if tag != "equal"
+    ]
+
+
+@pytest.mark.parametrize("variant_id", [PE641, PE650])
+def test_the_stdlib_matrix_edit_is_the_hand_built_one(variant_id):
+    # Review of 78e080c6 (3): on the bytes #188 and #190 edited, the propose
+    # job's edit, with no yaml importable, is the matrix edit each made by
+    # hand. (The strict edit returns the same text once its YAML checks
+    # pass; that agreement holds by construction.)
+    text, certified = hand_edited(variant_id)
+    with without_yaml():
+        lean = builder.add_matrix_variant(text, variant_id, certified, strict=False)
+        with pytest.raises(ImportError):
+            builder.add_matrix_variant(text, variant_id, certified)
+    if variant_id == PE650:
+        assert git_blob(lean.encode()) == AFTER_190
+    else:
+        after = (RESULTS_PR_FIXTURES / HAND_EDITED[PE650][0]).read_text()
+        ours = changes(text, lean)
+        assert ours == [("insert", 85, 85, (f"          - {PE641}\n",))]
+        assert ours[0] in changes(text, after)
+        assert len(changes(text, after)) == 2
+    assert builder.add_matrix_variant(text, variant_id, certified) == lean
+
+
+def test_the_propose_jobs_interpreter_makes_the_hand_built_edit():
+    # python3 -I -S, as the propose job runs the builder: no site-packages,
+    # so nothing but the standard library can be imported.
+    text, certified = hand_edited(PE650)
+    code = (
+        "import hashlib, sys\n"
+        "sys.path.insert(0, sys.argv[1])\n"
+        "from pipeline import uk_replay_results_pr as builder\n"
+        "text = open(sys.argv[2]).read()\n"
+        "edited = builder.add_matrix_variant(\n"
+        "    text, sys.argv[3], sys.argv[4:], strict=False\n"
+        ").encode()\n"
+        "print(hashlib.sha1(b'blob %d\\0' % len(edited) + edited).hexdigest())\n"
     )
-    assert strict == lean
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-I",
+            "-S",
+            "-c",
+            code,
+            str(ROOT),
+            str(RESULTS_PR_FIXTURES / HAND_EDITED[PE650][0]),
+            PE650,
+            *certified,
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout == f"{AFTER_190}\n"
+
+
+@settings(max_examples=200, deadline=None)
+@given(
+    st.sampled_from([PE641, PE650]),
+    st.data(),
+)
+def test_the_stdlib_list_check_alone_refuses_a_wrong_matrix(variant_id, data):
+    # The propose job skips the YAML checks, so its list check must refuse
+    # by itself: the real file with its matrix listing anything other than
+    # the certified variants before this one is refused.
+    text, certified = hand_edited(variant_id)
+    block = "".join(f"          - {v}\n" for v in certified[:-1])
+    assert text.count(block) == 1
+    listed = data.draw(
+        st.one_of(
+            st.just(certified[:-1]),
+            st.lists(st.sampled_from([*certified, SYNTHETIC]), max_size=6),
+        )
+    )
+    edited = text.replace(block, "".join(f"          - {v}\n" for v in listed), 1)
+    with without_yaml():
+        if listed == certified[:-1]:
+            builder.add_matrix_variant(edited, variant_id, certified, strict=False)
+        else:
+            with pytest.raises(builder.Refused):
+                builder.add_matrix_variant(edited, variant_id, certified, strict=False)
 
 
 def test_the_matrix_edit_reproduces_the_committed_ci_workflow():
