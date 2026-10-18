@@ -830,7 +830,7 @@ runs only the default branch's code.
 | Job | Authority and inputs |
 |---|---|
 | `build` | `GITHUB_TOKEN` `contents: read`, checkout credentials not persisted, no secret. Assembles the commit and runs every check, with the PyPI packages the checks need. Outputs the verified tree, the main and `replay-state` commits it used, and two check results. |
-| `propose` | On a fresh runner. `GITHUB_TOKEN` `contents: read`; actions pinned to commits; no uv and no installed package. Assembles the same commit again with git and `python3 -I -S` (the standard library alone) on the commits `build` used, which must be in main's and `replay-state`'s history, and refuses unless its tree is `build`'s. Only then is a short-lived token for the organisation's `policyengine` GitHub App minted, scoped to this repository with `contents: write`, `pull-requests: write` and `workflows: write`, to push that commit and open the pull request. |
+| `propose` | On a fresh runner. `GITHUB_TOKEN` `contents: read`; actions pinned to commits; no uv and no installed package. Assembles the same commit again with git and the standard library (the builder under `python3 -I -S`, small helpers under `python3 -I`) on the commits `build` used: `replay-state` history, and main history no older than the workflow's own commit. It decides again against main's current tip, and refuses unless its tree is `build`'s. Only then is a short-lived token for the organisation's `policyengine` GitHub App minted, scoped to this repository with `contents: write`, `pull-requests: write` and `workflows: write`, to push that commit and open the pull request. |
 
 Neither job holds a dataset token, and neither installs, imports or runs
 release or candidate code; both read only committed public results from
@@ -838,7 +838,11 @@ release or candidate code; both read only committed public results from
 runner: whatever the checks' packages did there (a `$GITHUB_PATH` or
 `$GITHUB_ENV` write, a planted program) would reach a later step that held
 the token. Job 2 receives only job 1's outputs, as strings it validates, and
-pushes only a commit it assembled itself.
+pushes only what this code builds from main's and `replay-state`'s history.
+The tree comparison catches an honest build job whose commit diverges; the
+`verify-sealed` and content-hash lines in the pull request body are the build
+job's word, checked only for shape. CI on the pull request runs the
+regeneration, both database builds and the drift check again.
 
 The App token, not `GITHUB_TOKEN`, writes for two reasons. The commit edits
 `ci.yml`, and only a token with `workflows` permission may push a change to a
@@ -861,8 +865,8 @@ start CI as any other pull request does.
    the index already holds, ends the run with a notice and no pull request. A
    certified variant whose policyengine version is older than the newest
    certified one is refused: appended, it would become `latest_certified`.
-   That refusal is permanent for that run: the older release's results stay
-   on `replay-state`.
+   That refusal is permanent for that request: the older release's results
+   stay on `replay-state`.
    So is a variant id that could not name a branch and paths (anything but
    letters, digits, `.`, `_` and `-`, or a `..`). An exactly certified pair
    qualified again returns the committed record, so it ends with a notice

@@ -120,6 +120,10 @@ def version_key(version: str) -> tuple[int, ...]:
     return tuple(parts)
 
 
+def without_note(record: dict) -> dict:
+    return {key: value for key, value in record.items() if key != "note"}
+
+
 def wrapper_version(record: dict) -> str:
     return record["identity"]["packages"]["policyengine"]["version"]
 
@@ -226,8 +230,11 @@ def check(
     document = variants.load_document(checkout / INDEX)
     ids = [v["variant_id"] for v in document["variants"]]
     if record["variant_id"] in ids:
+        # The committed record is VARIANT.json plus the note the results pull
+        # request added; compare them without it.
+        committed = document["variants"][ids.index(record["variant_id"])]
         need(
-            document["variants"][ids.index(record["variant_id"])] == record,
+            without_note(committed) == without_note(record),
             f"{record['variant_id']} already names another record in {INDEX}; "
             "qualify this pair again so it gets its own id",
         )

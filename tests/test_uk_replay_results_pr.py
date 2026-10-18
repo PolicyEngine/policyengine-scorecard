@@ -224,7 +224,15 @@ def test_the_builder_runs_no_release_code_and_never_merges():
             if "python" in line and not line.lstrip().startswith("#"):
                 assert "python3 -I" in line, line
     assert 'python3 -I -S "$HERE/pipeline/uk_replay_results_pr.py"' in rebuild
-    assert "pipeline" not in propose and "builder" not in propose
+    # propose runs neither the builder nor any pipeline module (its prose
+    # may name them; its commands may not).
+    for line in propose.splitlines():
+        command = line.split("#", 1)[0]
+        if line.lstrip().startswith("#") or "::error::" in line:
+            continue
+        assert "pipeline" not in command and not re.search(r"\bbuilder\b", command), (
+            line
+        )
     tree = ast.parse((ROOT / "pipeline/uk_replay_results_pr.py").read_text())
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -302,6 +310,10 @@ def test_every_guard_runs_before_the_commit_or_the_push_it_protects():
 
 
 def test_the_control_environment_installs_what_the_builder_imports():
+    # The build job's CONTROL runs the builder's strict path and
+    # uk_replay_qualify verify-sealed. Their third-party imports, top-level
+    # or inside functions, must all be installed; release and dataset code
+    # (imported only by the qualifier's run and fetch steps) must not be.
     line = next(
         line.strip().removeprefix("local ")
         for line in SCRIPT.read_text().splitlines()
@@ -312,31 +324,29 @@ def test_the_control_environment_installs_what_the_builder_imports():
         for word, before in zip(line.split()[1:], line.split())
         if before == "--with"
     }
-    # The distributions behind every module the builder (and the qualifier it
-    # reads latest_certified from) loads, as this environment resolves them.
-    probe = subprocess.run(
-        [
-            sys.executable,
-            "-c",
-            "import importlib.metadata, sys\n"
-            # Interpreter startup (site, .pth hooks such as setuptools'
-            # _distutils_hack) is not the builder's: count what its imports add.
-            "owners = importlib.metadata.packages_distributions()\n"
-            "before = set(sys.modules)\n"
-            "import pipeline.uk_replay_results_pr, pipeline.uk_replay_qualify\n"
-            "names = {n.split('.')[0] for n in set(sys.modules) - before}\n"
-            "print('\\n'.join(sorted({d.lower() for n in names for d in owners.get(n, [])})))",
-        ],
-        cwd=ROOT,
-        env={**os.environ, "PYTHONPATH": str(ROOT)},
-        capture_output=True,
-        text=True,
-        check=True,
-    )
-    needed = set(probe.stdout.split())
-    assert needed <= installed, sorted(needed - installed)
-    assert {"numpy", "pyyaml"} <= needed
-    assert not {"policyengine", "policyengine-uk", "policyengine-core"} & needed
+    imported = set()
+    for relative in (
+        "pipeline/uk_replay_results_pr.py",
+        "pipeline/uk_replay_interface.py",
+        "pipeline/uk_replay_variants.py",
+        "pipeline/uk_replay_qualify.py",
+    ):
+        for node in ast.walk(ast.parse((ROOT / relative).read_text())):
+            if isinstance(node, ast.Import):
+                imported |= {alias.name.split(".")[0] for alias in node.names}
+            elif isinstance(node, ast.ImportFrom) and not node.level:
+                imported.add((node.module or "").split(".")[0])
+    third_party = imported - set(sys.stdlib_module_names) - {"pipeline", "__future__"}
+    release = {
+        "policyengine",
+        "policyengine_uk",
+        "policyengine_core",
+        "huggingface_hub",
+    }
+    needed = {{"yaml": "pyyaml"}.get(name, name) for name in third_party - release}
+    assert needed == {"jsonschema", "rfc8785", "pyyaml"}
+    assert installed == needed, sorted(installed ^ needed)
+    assert not release & installed
 
 
 def test_the_record_job_dispatches_the_results_workflow_only_when_complete():
@@ -438,6 +448,27 @@ def test_appending_a_record_reproduces_the_committed_index(variant_id):
     ) == canonical_bytes(after)
     with pytest.raises(builder.Refused, match="not canonical"):
         builder.append_variant(json.dumps(before).encode(), without_note, "n")
+
+
+@pytest.mark.parametrize("variant_id", [PE641, PE650])
+def test_the_stdlib_matrix_edit_is_the_strict_one_on_the_real_workflow(variant_id):
+    # Review of f7247f19: the propose job's --stdlib edit must be byte for
+    # byte the build job's, on the real inputs each certification saw.
+    text = (ROOT / builder.CI).read_text()
+    certified = [
+        v["variant_id"]
+        for v in rv.load_document()["variants"]
+        if v["status"] == "certified"
+    ]
+    keep = certified.index(variant_id)
+    before = text
+    for later in certified[keep:]:
+        before = before.replace(f"          - {later}\n", "", 1)
+    strict = builder.add_matrix_variant(before, variant_id, certified[: keep + 1])
+    lean = builder.add_matrix_variant(
+        before, variant_id, certified[: keep + 1], strict=False
+    )
+    assert strict == lean
 
 
 def test_the_matrix_edit_reproduces_the_committed_ci_workflow():
@@ -1262,14 +1293,44 @@ def test_the_push_never_overwrites_a_branch_that_moved_after_it_was_read(remote)
     assert ["pr", "edit"] not in [call[:2] for call in remote.gh_calls()]
 
 
-def test_the_push_hands_git_the_token_only_through_gh(remote, tmp_path):
+def test_the_push_hands_git_the_token_only_through_gh(tmp_path):
     # Review of 97c351b9 (6): the credential path the tests' file remote
-    # never exercises. git must ask gh, and gh answers from GH_TOKEN.
+    # never exercises. git must ask gh, and gh must answer from GH_TOKEN.
     script = SCRIPT.read_text()
     helper = "-c credential.helper= -c 'credential.helper=!gh auth git-credential'"
     assert helper in script
+    request = (
+        "protocol=https\nhost=github.com\n"
+        "path=PolicyEngine/policyengine-scorecard.git\n\n"
+    )
+
+    def fill(path):
+        return subprocess.run(
+            [
+                "git",
+                "-c",
+                "credential.helper=",
+                "-c",
+                "credential.helper=!gh auth git-credential",
+                "credential",
+                "fill",
+            ],
+            input=request,
+            env={
+                **os.environ,
+                "PATH": path,
+                "GH_TOKEN": "app-token",
+                "GIT_TERMINAL_PROMPT": "0",
+                "GIT_CONFIG_NOSYSTEM": "1",
+                "HOME": str(tmp_path),
+            },
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
     log = tmp_path / "gh-credential.jsonl"
-    stub = tmp_path / "bin"
+    stub = tmp_path / "gh-stub-bin"
     stub.mkdir()
     (stub / "gh").write_text(
         f"#!{sys.executable}\nimport json, os, sys\n"
@@ -1279,33 +1340,20 @@ def test_the_push_hands_git_the_token_only_through_gh(remote, tmp_path):
         "print('password=' + os.environ['GH_TOKEN'])\n"
     )
     (stub / "gh").chmod(0o755)
-    filled = subprocess.run(
-        [
-            "git",
-            "-c",
-            "credential.helper=",
-            "-c",
-            "credential.helper=!gh auth git-credential",
-            "credential",
-            "fill",
-        ],
-        input="protocol=https\nhost=github.com\npath=PolicyEngine/policyengine-scorecard.git\n\n",
-        env={
-            **os.environ,
-            "PATH": f"{stub}:{os.environ['PATH']}",
-            "GH_TOKEN": "app-token",
-            "GIT_TERMINAL_PROMPT": "0",
-        },
-        capture_output=True,
-        text=True,
-        check=True,
-    )
-    assert "password=app-token" in filled.stdout
+    assert "password=app-token" in fill(f"{stub}:{os.environ['PATH']}").stdout
     assert json.loads(log.read_text().splitlines()[0]) == [
         "auth",
         "git-credential",
         "get",
     ]
+    # The real gh, where installed (the runner image has it), answers from
+    # GH_TOKEN without a network call.
+    real = shutil.which("gh")
+    if real is None:
+        pytest.skip("gh is not installed")
+    assert (
+        "password=app-token" in fill(f"{Path(real).parent}:{os.environ['PATH']}").stdout
+    )
 
 
 @pytest.mark.parametrize(
@@ -1378,6 +1426,51 @@ def test_job_2_pushes_only_what_it_rebuilt_and_job_1_verified(remote, forge, mes
     assert message in result.stderr
     assert not remote.branch(record)
     assert remote.gh_calls() == []
+
+
+def test_a_base_older_than_the_workflow_commit_is_refused(remote):
+    # Review of f7247f19 (3): a consistent older base, forged or stale.
+    rid, record, _ = remote.certify()
+    old_main = git(remote.remote, "rev-parse", "main")
+    (remote.seed / "NOTES.md").write_text("main moved\n")
+    git(remote.seed, "add", ".")
+    git(remote.seed, "commit", "-qm", "Main moves")
+    git(remote.seed, "push", "-q", str(remote.remote), "HEAD:main")
+    git(remote.runner, "pull", "-q", "--ff-only")
+    workflow_commit = git(remote.remote, "rev-parse", "main")
+    result = remote.run(rid, forge={"base": old_main}, GITHUB_SHA=workflow_commit)
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert "older than this workflow's commit" in result.stderr
+    assert not remote.branch(record)
+
+
+def test_a_rerun_after_the_merge_skips_on_mains_tip(remote):
+    # Review of f7247f19 (3): job 2 rerun on job 1's old outputs once the
+    # results are on main must not open a second pull request.
+    rid, record, _ = remote.certify()
+    assert remote.run(rid).returncode == 0
+    built = dict(remote.outputs)
+    git(remote.remote, "update-ref", "refs/heads/main", remote.branch(record))
+    fresh = remote.tmp / "rerun-job2"
+    subprocess.run(["git", "clone", "-q", str(remote.remote), str(fresh)], check=True)
+    temp = remote.tmp / "rerun-job2-temp"
+    temp.mkdir()
+    remote.gh_log = temp / "gh.jsonl"
+    rebuilt, values = remote.step(
+        fresh,
+        "rebuild",
+        remote.environment(temp, rid),
+        temp / "out.txt",
+        BUILT_TREE=built["tree"],
+        BUILT_BASE=built["base"],
+        BUILT_STATE=built["state"],
+        BUILT_SEALED=built["sealed"],
+        BUILT_CONTENT_HASH=built["content_hash"],
+    )
+    assert rebuilt.returncode == 0, rebuilt.stdout + rebuilt.stderr
+    assert values == {"action": "skip"}
+    assert "on main as it is now" in rebuilt.stdout
+    assert f"{record['variant_id']} is already in {builder.INDEX}" in rebuilt.stdout
 
 
 def test_main_moving_between_the_jobs_still_rebuilds_on_the_verified_base(remote):

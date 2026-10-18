@@ -115,7 +115,7 @@ assemble() {
 
 build() {
   # Every third-party module the builder and the checks import (tests check).
-  local CONTROL=(uv run --with rfc8785==0.1.4 --with jsonschema --with numpy --with pyyaml python)
+  local CONTROL=(uv run --with rfc8785==0.1.4 --with jsonschema --with pyyaml python)
   builder() { PYTHONPATH="$HERE" "${CONTROL[@]}" -m pipeline.uk_replay_results_pr "$@"; }
   git fetch -q --no-tags origin "+refs/heads/$BASE:$BASE_REF" \
     "+refs/heads/$STATE_BRANCH:$STATE_REF"
@@ -182,11 +182,32 @@ rebuild() {
   fi
   git fetch -q --no-tags origin "+refs/heads/$BASE:$BASE_REF" \
     "+refs/heads/$STATE_BRANCH:$STATE_REF"
-  # The commits the build job used must be real history of both branches.
+  # The commits the build job used must be real history of both branches,
+  # and main no older than the commit this workflow runs.
   if ! git merge-base --is-ancestor "$BUILT_BASE" "$BASE_REF" \
     || ! git merge-base --is-ancestor "$BUILT_STATE" "$STATE_REF"; then
     echo "::error::the build job's base or state commit is not on $BASE or $STATE_BRANCH" >&2
     exit 1
+  fi
+  if [ -n "${GITHUB_SHA:-}" ] && ! git merge-base --is-ancestor "$GITHUB_SHA" "$BUILT_BASE"; then
+    echo "::error::the build job's base is older than this workflow's commit $GITHUB_SHA" >&2
+    exit 1
+  fi
+  # Decide again on main as it is now: a request whose results main has
+  # gained since the build job ran (a rerun after the merge) is skipped.
+  local tip
+  tip=$(git rev-parse "$BASE_REF")
+  if [ "$tip" != "$BUILT_BASE" ]; then
+    mkdir -p "$WORK/tip-stage"
+    git archive "$BUILT_STATE" "$REQUEST" | tar -x -C "$WORK/tip-stage"
+    git worktree add -q --detach "$WORK/tip" "$tip"
+    builder check --request-dir "$WORK/tip-stage/$REQUEST" --checkout "$WORK/tip" \
+      --request-id "$REQUEST_ID" --state-commit "$BUILT_STATE" --plan "$WORK/tip-plan.json"
+    if [ "$(python3 -I -c 'import json, sys; print(json.load(open(sys.argv[1]))["action"])' "$WORK/tip-plan.json")" != build ]; then
+      echo "::notice::No results pull request for $REQUEST_ID: on main as it is now, $(python3 -I -c 'import json, sys; print(json.load(open(sys.argv[1]))["reason"])' "$WORK/tip-plan.json")"
+      output action skip
+      exit 0
+    fi
   fi
   assemble "$BUILT_BASE" "$BUILT_STATE"
   if [ "$(git -C "$TREE" rev-parse 'HEAD^{tree}')" != "$BUILT_TREE" ]; then
