@@ -1,0 +1,122 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+    "2026-01-01.2026-12-31": 437.66,
+    "2027-01-01.2027-12-31": 447.73,
+    "2028-01-01.2028-12-31": 456.68,
+    "2029-01-01.2029-12-31": 465.81
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2027 proxies FY 2027-28.",
+ "certified_aggregates_gbp": {
+  "universal_credit": 85514776305.18541
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "components": [
+  "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "dataset_sha256_after": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "dataset_sha256_before": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "engine_version": "2.138.0",
+ "event": "spring_statement_2025",
+ "fiscal_event": "Spring Statement 2025",
+ "fy_proxy": "2027-28",
+ "head_channels": {
+  "universal_credit": "spending"
+ },
+ "head_definitions": [
+  {
+   "channel": "spending",
+   "obr_head": "Welfare inside cap",
+   "pe_variables": [
+    "universal_credit"
+   ]
+  }
+ ],
+ "head_effects": {
+  "universal_credit": 866066283.9185333
+ },
+ "head_variables": [
+  "universal_credit"
+ ],
+ "literal_reform_minus_baseline": {
+  "universal_credit": -866066283.9185333
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "universal_credit": -866066283.9185333
+ },
+ "measure_key": "spring_statement_2025__uc_health_element_freeze_and_new_claimant_cut",
+ "measure_total_gbp": 866066283.9185333,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "built_simulation_scenario",
+   "submitted_reform": {
+    "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+     "2026-01-01.2026-12-31": 437.66,
+     "2027-01-01.2027-12-31": 447.73,
+     "2028-01-01.2028-12-31": 456.68,
+     "2029-01-01.2029-12-31": 465.81
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.7.6",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+    "intended": 447.73,
+    "processed": 447.73
+   }
+  },
+  "reform_world": {
+   "gov.dwp.universal_credit.rebalancing.new_claimant_health_element": {
+    "intended": 217.26,
+    "processed": 217.26
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "d01ce0612f3f24830a8d8ea0abaaa6b2626963316b16750310d303f404fbab5b",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "universal_credit": 86380842589.10394
+   }
+  },
+  "reform": {
+   "heads": {
+    "universal_credit": 85514776305.18541
+   }
+  }
+ },
+ "variable_metadata": {
+  "universal_credit": {
+   "definition_period": "year",
+   "documentation": null,
+   "engine_source": "policyengine_uk/variables/gov/dwp/universal_credit/universal_credit.py",
+   "entity": "benunit",
+   "label": "Universal Credit",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.7.6_uk2.138.0_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "17d7a41cd1db346187252e6295db54af96c3eb9439df9b10e0044a19e06be75e",
+ "year": 2027
+}

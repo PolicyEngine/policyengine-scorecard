@@ -1,0 +1,49 @@
+{
+ "axes_sha256": "01493ba64dc73e50edbbf405cba1fd13cf88f17b8ab910bba1d657da63846bcf",
+ "event_slug": "spring_budget_2023",
+ "outputs_sha256": {
+  "COMPARISON.csv": "16ac88b30df7fa8433eb9604c284c04c92bf2d4ba456f61d028c0c2aaaa88ea9",
+  "COMPARISON.json": "f1136a4597806593b13b837673e4f1858fbe19939ca91d4e470826d00c0f04fb",
+  "COMPARISON.md": "d5d541d770bbd2c5fee9f82ac8f243089d714ac5974aeac399176a9e4b710c07"
+ },
+ "registry_path": "data/uk/events/spring_budget_2023_measures.json",
+ "registry_sha256": "0a78bfe32712bd30bdf9137bdf182e82a266c7da0e9885dd61cac6ef99a76357",
+ "replay_grid": {
+  "computed_measure_years": 8,
+  "full_event_complete": false,
+  "full_event_grid_size": 10,
+  "full_supported_grid_complete": true,
+  "missing_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "supported_grid_size": 8,
+  "unsupported_measure_years": [
+   {
+    "measure_key": "spring_budget_2023__pension_annual_allowance_package",
+    "year": 2023
+   },
+   {
+    "measure_key": "spring_budget_2023__uc_childcare_cap_increase",
+    "year": 2023
+   }
+  ],
+  "unsupported_years": [
+   2023
+  ],
+  "variant_id": "pe6.7.6_uk2.138.0_policyengine-uk-data-1.58.2"
+ },
+ "run_manifest_path": "results/uk/replays/pe6.7.6_uk2.138.0_policyengine-uk-data-1.58.2/spring_budget_2023/RUN_MANIFEST.json",
+ "run_manifest_sha256": "c26b896d0583fcb96db30fedaf3ddc55edec6e38354f6e350dd31503e22cacd4",
+ "source_rows": 1020,
+ "staged_path": "results/uk/replays/pe6.7.6_uk2.138.0_policyengine-uk-data-1.58.2/spring_budget_2023/STAGED.jsonl",
+ "staged_sha256": "8df552f3903ff79a05d4f4b9607af206a6c66dc4e0ef0de2ca1e7f07ae78b11a",
+ "staging_manifest_path": "results/uk/replays/pe6.7.6_uk2.138.0_policyengine-uk-data-1.58.2/spring_budget_2023/STAGING_MANIFEST.json",
+ "staging_manifest_sha256": "890741826f1290d4d93676bdda45ed764092f36e8569e7e77d090723ec2691d0"
+}
