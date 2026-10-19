@@ -1,0 +1,153 @@
+{
+ "baseline_world": {
+  "executed": "certified world with pe_baseline_modifier",
+  "reform_dict": {
+   "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+    "2025-01-01.2030-12-31": 0
+   },
+   "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+    "2025-01-01.2030-12-31": false
+   }
+  }
+ },
+ "calendar_year_proxy": "PE calendar year 2029 proxies FY 2029-30.",
+ "certified_aggregates_gbp": {
+  "income_tax": 367654912243.8894,
+  "winter_fuel_allowance": 1567973254.2294278
+ },
+ "certified_dataset_sha256": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "components": [
+  "ab2025__winter_fuel_payment_income_test_35000"
+ ],
+ "construction": "reversal_on_certified_world",
+ "data_bundle": "policyengine-uk-data-1.58.2",
+ "dataset_sha256_after": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "dataset_sha256_before": "40804ba2540458cb6f3c476d29d3bb4bc88d9ac6b401fa285ed6e4232a55aa52",
+ "engine_version": "2.137.0",
+ "event": "autumn_budget_2025",
+ "fiscal_event": "Autumn Budget 2025",
+ "fy_proxy": "2029-30",
+ "head_channels": {
+  "income_tax": "tax",
+  "winter_fuel_allowance": "spending"
+ },
+ "head_definitions": [
+  {
+   "channel": "tax",
+   "obr_head": "Income tax",
+   "pe_variables": [
+    "income_tax"
+   ]
+  },
+  {
+   "channel": "spending",
+   "obr_head": "Welfare inside cap",
+   "pe_variables": [
+    "winter_fuel_allowance"
+   ]
+  }
+ ],
+ "head_effects": {
+  "income_tax": 0.0,
+  "winter_fuel_allowance": -1184476043.4475064
+ },
+ "head_variables": [
+  "income_tax",
+  "winter_fuel_allowance"
+ ],
+ "literal_reform_minus_baseline": {
+  "income_tax": -0.0,
+  "winter_fuel_allowance": 1184476043.4475064
+ },
+ "literal_reversal_minus_certified_gbp": {
+  "income_tax": -0.0,
+  "winter_fuel_allowance": 1184476043.4475064
+ },
+ "measure_key": "ab2025__winter_fuel_payment_income_test_35000",
+ "measure_total_gbp": -1184476043.4475064,
+ "null_executed_as_no_limit": [],
+ "parameter_reform_routes": {
+  "baseline_world": {
+   "entry_point": "construction_reform",
+   "submitted_reform": {
+    "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+     "2025-01-01.2030-12-31": 0
+    },
+    "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+     "2025-01-01.2030-12-31": false
+    }
+   }
+  },
+  "reform_world": {
+   "entry_point": "certified_current_law",
+   "submitted_reform": null
+  }
+ },
+ "policyengine_core_version": "3.33.0",
+ "policyengine_version": "6.7.6",
+ "processed_parameter_values": {
+  "baseline_world": {
+   "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+    "intended": 0,
+    "processed": 0
+   },
+   "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+    "intended": false,
+    "processed": false
+   }
+  },
+  "reform_world": {
+   "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.maximum_taxable_income": {
+    "intended": 35000,
+    "processed": 35000
+   },
+   "gov.dwp.winter_fuel_payment.eligibility.taxable_income_test.use_maximum_taxable_income": {
+    "intended": true,
+    "processed": true
+   }
+  }
+ },
+ "reform_world": {
+  "executed": "certified world as served (current law)",
+  "reform_dict": null
+ },
+ "registry_sha256": "3da50f9af6c7986fd5fe453ae2dac34275f319d1f2ccd441e3c438f51a18656e",
+ "schema_version": 1,
+ "scope": "sum of declared fiscal heads; static household microsimulation",
+ "sign_convention": "positive_gain_to_exchequer",
+ "totals": {
+  "baseline": {
+   "heads": {
+    "income_tax": 367654912243.8894,
+    "winter_fuel_allowance": 383497210.78192145
+   }
+  },
+  "reform": {
+   "heads": {
+    "income_tax": 367654912243.8894,
+    "winter_fuel_allowance": 1567973254.2294278
+   }
+  }
+ },
+ "variable_metadata": {
+  "income_tax": {
+   "definition_period": "year",
+   "documentation": "Total Income Tax liability",
+   "engine_source": "policyengine_uk/variables/gov/hmrc/income_tax/income_tax.py",
+   "entity": "person",
+   "label": "Income Tax",
+   "unit": "currency-GBP"
+  },
+  "winter_fuel_allowance": {
+   "definition_period": "year",
+   "documentation": "Winter Fuel Payments made to the members of this household (winter_fuel_payment). Payments in Scotland from the 2024 qualifying week are the Pension Age Winter Heating Payment (pawhp).",
+   "engine_source": "policyengine_uk/variables/gov/dwp/winter_fuel_allowance.py",
+   "entity": "household",
+   "label": "Winter Fuel Allowance",
+   "unit": "currency-GBP"
+  }
+ },
+ "variant_id": "pe6.7.6_uk2.137.0_policyengine-uk-data-1.58.2",
+ "variant_identity_sha256": "c2e0179ad8b6fd78839274dad7832fbffa44c66646be647fac850758693c401f",
+ "year": 2029
+}
