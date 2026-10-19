@@ -48,15 +48,33 @@ REAL_FETCH = discover.fetch
 REAL_RELEASE_MANIFEST = discover.release_manifest
 # The floor cases below were written when 6.5.0 was the newest certified
 # variant. Each newly certified variant is appended to the committed index
-# (pipeline/uk_replay_results_pr.py), so they read the index as it stood then.
+# (pipeline/uk_replay_results_pr.py), so they read the index as it stood then,
+# both where a test passes it in and where discover() loads it itself.
 FLOOR_VARIANT = "pe6.5.0_uk2.130.1_policyengine-uk-data-1.58.1"
+LOAD_DOCUMENT = rv.load_document
 
 
 def floor_document():
-    document = rv.load_document()
+    document = LOAD_DOCUMENT()
     ids = [v["variant_id"] for v in document["variants"]]
     document["variants"] = document["variants"][: ids.index(FLOOR_VARIANT) + 1]
     return document
+
+
+@pytest.fixture(autouse=True)
+def index_at_the_floor(monkeypatch):
+    # discover() reads the committed index through variants.load_document();
+    # a test that needs another index patches it again itself.
+    monkeypatch.setattr(discover.variants, "load_document", floor_document)
+
+
+def test_the_floor_index_ends_at_6_5_0_whatever_main_has_certified_since():
+    assert discover.variants.load_document()["variants"][-1]["variant_id"] == (
+        FLOOR_VARIANT
+    )
+    assert [v["variant_id"] for v in floor_document()["variants"]] == [
+        v["variant_id"] for v in LOAD_DOCUMENT()["variants"]
+    ][: len(floor_document()["variants"])]
 
 
 @pytest.fixture(autouse=True)
